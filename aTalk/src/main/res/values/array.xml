@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="pref_sip_preferred_transport">
+        <item>UDP</item>
+        <item>TCP</item>
+        <item>TLS</item>
+    </string-array>
+    <string-array name="pref_sip_keep_alive_method">
+        <item>NONE</item>
+        <item>OPTIONS</item>
+        <item>REGISTER</item>
+        <item>CRLF</item>
+    </string-array>
+    <string-array name="pref_sip_clist_type">
+        <item>Local</item>
+        <item>XCAP</item>
+        <item>XiVO</item>
+    </string-array>
+    <string-array name="pref_sip_dtmf_method">
+        <item>Auto: RTP or Inband (no SIP INFO)</item>
+        <item>RTP ( RFC2833 / RFC 4733 )</item>
+        <item>SIP INFO</item>
+        <item>Inband</item>
+    </string-array>
+    <string-array name="pref_sip_dtmf_method_values">
+        <item>AUTO_DTMF</item>
+        <item>RTP_DTMF</item>
+        <item>SIP_INFO_DTMF</item>
+        <item>INBAND_DTMF</item>
+    </string-array>
+    <string-array name="pref_savp_option_desc">
+        <item>Off (indicate RTP/AVP only)</item>
+        <item>Mandatory (offer and accept only RTP/SAVP)</item>
+        <item>Optional (offer RTP/SAVP first, then RTP/AVP)</item>
+    </string-array>
+    <string-array name="pref_jabber_dtmf_method">
+        <item>Auto: RTP or Inband</item>
+        <item>RTP ( RFC2833 / RFC 4733 )</item>
+        <item>Inband</item>
+    </string-array>
+    <string-array name="pref_jabber_dtmf_method_values">
+        <item>AUTO_DTMF</item>
+        <item>RTP_DTMF</item>
+        <item>INBAND_DTMF</item>
+    </string-array>
+    <string-array name="pref_opus_bandwidth">
+        <item>Auto</item>
+        <item>Fullband (48kHz)</item>
+        <item>Super-wideband (24kHz)</item>
+        <item>Wideband (16kHz)</item>
+        <item>Medium-band (12kHz)</item>
+        <item>Narrowband (8kHz)</item>
+    </string-array>
+    <string-array name="pref_opus_bandwidth_values">
+        <item>auto</item>
+        <item>fb</item>
+        <item>swb</item>
+        <item>wb</item>
+        <item>mb</item>
+        <item>nb</item>
+    </string-array>
+    <string-array name="pref_opus_complexity">
+        <item>10</item>
+        <item>9</item>
+        <item>8</item>
+        <item>7</item>
+        <item>6</item>
+        <item>5</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+    </string-array>
+    <string-array name="pref_proxy_type">
+        <item>HTTP</item>
+        <item>SOCKS4</item>
+        <item>SOCKS5</item>
+    </string-array>
+    <string-array name="pref_dnssec_default_behaviour">
+        <item>Ignore</item>
+        <item>Required</item>
+        <item>Required for signed zones</item>
+        <item>Ask on bogus reply</item>
+        <item>Ask on unsigned or bogus reply</item>
+    </string-array>
+    <string-array name="pref_dnssec_default_behaviour_values">
+        <item>IgnoreDnssec</item>
+        <item>SecureOnly</item>
+        <item>SecureOrUnsigned</item>
+        <item>WarnIfBogus</item>
+        <item>WarnIfBogusOrUnsigned</item>
+    </string-array>
+    <string-array name="pref_provisioning_method">
+        <item>None</item>
+        <item>DHCP</item>
+        <item>Bonjour</item>
+        <item>Manual</item>
+    </string-array>
+    <string-array name="pref_provisioning_method_values">
+        <item>NONE</item>
+        <item>DHCP</item>
+        <item>Bonjour</item>
+        <item>Manual</item>
+    </string-array>
+    <string-array name="vibrate_values">
+        <item>OFF</item>
+        <item>SYSTEM</item>
+        <item>ALWAYS</item>
+    </string-array>
+    <string-array name="networks_array">
+        <item>XMPP</item>
+        <item>SIP - Not Implemented</item>
+    </string-array>
+    <string-array name="networks_array_values">
+        <item>Jabber</item>
+        <item>SIP</item>
+    </string-array>
+
+    <string-array name="settings_theme_entries">
+        <item>@string/setting_theme_light</item>
+        <item>@string/setting_theme_dark</item>
+    </string-array>
+
+    <string-array name="settings_theme_values" translatable="false">
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+
+</resources>

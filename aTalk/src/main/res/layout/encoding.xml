@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/viewContent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <org.atalk.android.gui.widgets.TouchInterceptor
+
+        android:id="@+id/encodingList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:drawSelectorOnTop="false"
+        android:fastScrollEnabled="true"
+        custom:dragRegionEndX="@dimen/enc_list_drag_e_x"
+        custom:dragRegionStartX="@dimen/enc_list_drag_s_x"
+        custom:itemExpandedHeight="@dimen/expanded_item_height"
+        custom:itemHeight="@dimen/list_item_height" />
+
+</LinearLayout>

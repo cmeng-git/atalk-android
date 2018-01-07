@@ -1,0 +1,48 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/theme_background"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
+    <TextView
+        android:id="@+id/requestInfo"
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/service_gui_REQUEST_AUTHORIZATION_MSG" />
+
+    <EditText
+        android:id="@+id/requestText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/between_padding"
+        android:hint="@string/service_gui_TYPE_YOUR_REQUEST" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/between_padding"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/ignore"
+            style="@style/ButtonTop"
+            android:onClick="onCancelClicked"
+            android:text="@string/service_gui_CANCEL" />
+
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/authorize"
+            style="@style/ButtonTop"
+            android:onClick="onRequestClicked"
+            android:text="@string/service_gui_REQUEST" />
+    </LinearLayout>
+</LinearLayout>

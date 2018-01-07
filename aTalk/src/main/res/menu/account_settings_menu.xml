@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/add_account"
+        android:icon="@drawable/ic_account_new_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_NEW_ACCOUNT">
+    </item>
+    <item
+        android:id="@+id/add_group"
+        android:icon="@drawable/ic_group_new_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_CREATE_GROUP">
+    </item>
+    <item
+        android:id="@+id/purge_stores"
+        android:icon="@drawable/ic_sweep_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_REFRESH_STORES">
+    </item>
+</menu>

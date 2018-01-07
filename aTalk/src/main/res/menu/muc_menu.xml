@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/muc_Kick"
+        android:title="@string/service_gui_KICK">
+    </item>
+    <item
+        android:id="@+id/muc_PrivateMessage"
+        android:title="@string/service_gui_SEND_PRIVATE_MESSAGE">
+    </item>
+    <item
+        android:id="@+id/muc_send_file"
+        android:title="@string/service_gui_FILE_SEND_TO"
+        android:visible="false">
+    </item>
+
+</menu>

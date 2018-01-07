@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/theme_background"
+        android:padding="@dimen/screen_padding">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plugin_otr_authbuddydialog_AUTHENTICATION_INFO" />
+
+        <TextView
+            android:id="@+id/localFingerprintLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"
+            android:layout_marginTop="@dimen/between_padding"
+            android:text="@string/plugin_otr_authbuddydialog_LOCAL_FINGERPRINT" />
+
+        <TextView
+            android:id="@+id/remoteFingerprintLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/localFingerprintLbl"
+            android:layout_marginTop="@dimen/between_padding"
+            android:text="@string/plugin_otr_authbuddydialog_REMOTE_FINGERPRINT" />
+
+        <LinearLayout
+            android:id="@+id/actionLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/remoteFingerprintLbl"
+            android:layout_marginTop="@dimen/between_padding"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                android:id="@+id/verifyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="New ToggleButton"
+                android:textOff="@string/plugin_otr_authbuddydialog_I_HAVE_NOT"
+                android:textOn="@string/plugin_otr_authbuddydialog_I_HAVE" />
+
+            <TextView
+                android:id="@+id/actionTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:gravity="center_vertical"
+                android:text="@string/plugin_otr_authbuddydialog_VERIFY_ACTION" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/actionLayout"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancelButton"
+                style="@style/ButtonTop"
+                android:onClick="onCancelClicked"
+                android:text="@string/service_gui_CANCEL" />
+
+            <View
+                android:id="@+id/centerShim"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="5dp"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/okButton"
+                style="@style/ButtonTop"
+                android:onClick="onOkClicked"
+                android:text="@string/plugin_otr_authbuddydialog_VERIRY_BUDDY" />
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

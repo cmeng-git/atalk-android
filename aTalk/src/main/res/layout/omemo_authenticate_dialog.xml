@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/theme_background"
+    android:padding="@dimen/screen_padding">
+
+    <TextView
+        android:id="@+id/localFingerprintLbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/omemo_authbuddydialog_LOCAL_FINGERPRINT" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:layout_marginTop="@dimen/between_padding"
+        android:text="@string/omemo_authbuddydialog_AUTHENTICATION_INFO" />
+
+    <ListView
+        android:id="@+id/fp_list"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancelButton"
+            style="@style/ButtonTop"
+            android:onClick="onCancelClicked"
+            android:text="@string/service_gui_CANCEL" />
+
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/okButton"
+            style="@style/ButtonTop"
+            android:onClick="onOkClicked"
+            android:text="@string/plugin_otr_authbuddydialog_VERIRY_BUDDY" />
+    </LinearLayout>
+
+</LinearLayout>

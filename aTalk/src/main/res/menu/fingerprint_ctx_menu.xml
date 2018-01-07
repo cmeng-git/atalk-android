@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/distrust"
+          android:title="@string/crypto_menu_DISTRUST_FINGERPRINT">
+    </item>
+    <item android:id="@+id/trust"
+          android:title="@string/crypto_menu_TRUST_FINGERPRINT">
+    </item>
+    <item android:id="@+id/copy"
+          android:title="@string/crypto_menu_COPY_FINGERPRINT">
+    </item>
+    <item android:id="@+id/cancel"
+        android:title="@string/service_gui_CANCEL">
+    </item>
+</menu>

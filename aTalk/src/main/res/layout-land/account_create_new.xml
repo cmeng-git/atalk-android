@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/theme_background"
+    android:gravity="center">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/networkSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/item_height"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/between_padding"
+            android:background="@drawable/spinner_dark"
+            android:prompt="@string/choose_network" />
+
+        <EditText
+            android:id="@+id/usernameField"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/between_padding"
+            android:hint="@string/username_hint"
+            android:inputType="textNoSuggestions"
+            android:padding="8dp" />
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/pwdTypingArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/passwordField"
+                style="@style/EntryTextView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/between_padding"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:padding="8dp" />
+
+            <CheckBox
+                android:id="@+id/show_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@id/passwordField"
+                android:layout_alignRight="@id/passwordField" />
+
+            <ImageView
+                android:id="@+id/pwdviewImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/show_password"
+                android:layout_alignLeft="@+id/show_password"
+                android:layout_alignStart="@+id/show_password"
+                android:alpha="0.3"
+                android:src="@drawable/pwdview" />
+
+            <CheckBox
+                android:id="@+id/serverOverridden"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/passwordField"
+                android:layout_alignStart="@id/passwordField"
+                android:layout_below="@id/passwordField"
+                android:paddingBottom="@dimen/between_padding"
+                android:text="@string/account_override_server" />
+
+            <CheckBox
+                android:id="@+id/ibRegistration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@id/passwordField"
+                android:layout_alignRight="@id/passwordField"
+                android:layout_below="@id/passwordField"
+                android:paddingBottom="@dimen/between_padding"
+                android:text="@string/account_registration" />
+
+            <EditText
+                android:id="@+id/serverIpField"
+                style="@style/EntryTextView"
+                android:layout_width="300dp"
+                android:layout_height="@dimen/item_height"
+                android:layout_alignLeft="@id/passwordField"
+                android:layout_alignStart="@id/passwordField"
+                android:layout_below="@id/serverOverridden"
+                android:layout_marginBottom="@dimen/between_padding"
+                android:hint="@string/account_server_ip"
+                android:inputType="textNoSuggestions"
+                android:padding="8dp" />
+
+            <EditText
+                android:id="@+id/serverPortField"
+                style="@style/EntryTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/item_height"
+                android:layout_alignEnd="@id/passwordField"
+                android:layout_alignRight="@id/passwordField"
+                android:layout_below="@id/serverOverridden"
+                android:layout_marginBottom="@dimen/between_padding"
+                android:layout_marginLeft="@dimen/screen_padding"
+                android:layout_marginStart="@dimen/screen_padding"
+                android:layout_toEndOf="@id/serverIpField"
+                android:layout_toRightOf="@id/serverIpField"
+                android:inputType="textNoSuggestions"
+                android:padding="8dp"
+                android:text="@string/account_server_port" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonCancel"
+                style="@style/ButtonTop"
+                android:text="@string/service_gui_CANCEL" />
+
+            <View
+                android:id="@+id/centerShim"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="5dp"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/buttonSignIn"
+                style="@style/ButtonTop"
+                android:focusable="true"
+                android:text="@string/service_gui_SIGN_IN" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

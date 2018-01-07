@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/crypto_choice"
+        android:icon="@drawable/encrypted_unsecure_dark"
+        android:title="@string/encryption_choices"
+        android:enabled="true"
+        android:showAsAction="always" >
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/encryption_none"
+                    android:title="@string/encryption_choice_unencrypted"
+                    />
+                <item
+                    android:id="@+id/encryption_omemo"
+                    android:title="@string/encryption_choice_omemo"/>
+                <item
+                    android:id="@+id/encryption_otr"
+                    android:title="@string/encryption_choice_otr"/>
+            </group>
+        </menu>
+    </item>
+
+</menu>

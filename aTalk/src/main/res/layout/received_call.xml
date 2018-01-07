@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/call_background"
+    android:keepScreenOn="true"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/screen_padding"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="100dp" >
+
+        <ImageView
+            android:id="@+id/calleeAvatar"
+            android:layout_width="@dimen/avatar_height"
+            android:layout_height="@dimen/avatar_height"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/service_gui_CALL"
+            android:paddingBottom="@dimen/between_padding"
+            android:scaleType="fitXY"
+            android:src="@drawable/personphoto" />
+
+        <TextView
+            android:id="@+id/calleeDisplayName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/between_padding"
+            android:text="some.long.name@sip-communicator.org"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/calleeAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/between_padding"
+            android:text="name@sip-communicator.org/atalk-randowm23!@43$"
+            android:textSize="@dimen/label_text_size" />
+    </LinearLayout>
+
+    <!--
+         ImageView
+        android:id="@+id/fadeBackground"
+        android:src="@drawable/fade"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="0px"/
+    -->
+
+    <LinearLayout
+        android:id="@+id/layout2"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:background="#40000000"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/answerVideoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@drawable/image_button_background"
+            android:contentDescription="@string/accept_call_video"
+            android:focusable="true"
+            android:onClick="onAnswerWithVideoClicked"
+            android:src="@drawable/acceptvideocall" />
+
+        <ImageButton
+            android:id="@+id/callButton"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@drawable/image_button_background"
+            android:contentDescription="@string/service_gui_CALL"
+            android:focusable="true"
+            android:src="@drawable/callbutton" />
+
+        <ImageButton
+            android:id="@+id/hangupButton"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@drawable/image_button_background"
+            android:contentDescription="@string/hang_up"
+            android:focusable="true"
+            android:src="@drawable/callhangup" />
+    </LinearLayout>
+
+</RelativeLayout>

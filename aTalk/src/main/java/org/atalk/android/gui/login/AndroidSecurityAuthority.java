@@ -1,0 +1,236 @@
+/*
+ * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ * 
+ * Distributable under LGPL license. See terms of license at gnu.org.
+ */
+package org.atalk.android.gui.login;
+
+import android.content.Context;
+import android.os.*;
+import android.view.View;
+
+import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
+import net.java.sip.communicator.plugin.jabberaccregwizz.JabberAccountRegistrationActivator;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.util.Logger;
+
+import org.atalk.android.*;
+import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.android.gui.util.ViewUtil;
+import org.atalk.service.resources.ResourceManagementService;
+
+/**
+ * Android <tt>SecurityAuthority</tt> implementation.
+ * <p>
+ * The method checks for valid reason based on given reasonCode. Pending on the given reason, it
+ * either launches a user login dialog or displays an error message.
+ * When launching a login dialog, it will waits until the right activity is in view before
+ * displaying the dialog to the user. Otherwise the dialog may be obscured by other activity display
+ * windows. The login dialog menu allows user to change certain account settings before signing in.
+ *
+ * @author Pawel Domas
+ * @author Eng Chong Meng
+ */
+public class AndroidSecurityAuthority implements SecurityAuthority
+{
+	/**
+	 * The logger.
+	 */
+	private Logger logger = Logger.getLogger(AndroidSecurityAuthority.class);
+
+	/**
+	 * If user name should be editable when asked for credentials.
+	 */
+	private boolean isUserNameEditable = false;
+
+	/**
+	 * Returns a UserCredentials object associated with the specified realm (accountID), by
+	 * specifying the reason of this operation. Or display an error message.
+	 * <p/>
+	 *
+	 * @param accountID
+	 * 		The realm (accountID) that the credentials are needed for.
+	 * @param defaultValues
+	 * 		the values to propose the user by default
+	 * @param reasonCode
+	 * 		indicates the reason for which we're obtaining the credentials.
+	 * @return The credentials associated with the specified realm or null if none could be
+	 * obtained.
+	 */
+	public UserCredentials obtainCredentials(AccountID accountID, UserCredentials defaultValues,
+			int reasonCode, Boolean isShowServerOption)
+	{
+		if (reasonCode != SecurityAuthority.REASON_UNKNOWN) {
+			return obtainCredentials(accountID, defaultValues, isShowServerOption);
+		}
+
+		Context ctx = aTalkApp.getGlobalContext();
+		ResourceManagementService resources = AndroidGUIActivator.getResourcesService();
+
+		String errorMessage = resources.getI18NString("service.gui.CONNECTION_FAILED_MSG",
+				new String[]{defaultValues.getUserName(), defaultValues.getServerAddress()});
+
+		DialogActivity.showDialog(ctx, resources.getI18NString("service.gui.LOGIN.FAILED"),
+				errorMessage);
+		return defaultValues;
+	}
+
+	/**
+	 * Returns a UserCredentials object associated with the specified realm (AccountID), by
+	 * specifying the reason of this operation.
+	 * <p/>
+	 *
+	 * @param accountID
+	 * 		The accountId / realm that the credentials are needed for.
+	 * @param credentials
+	 * 		the values to propose the user by default
+	 * @return The credentials associated with the specified realm or null if none could be
+	 * obtained.
+	 */
+	public UserCredentials obtainCredentials(final AccountID accountID,
+			final UserCredentials credentials, final Boolean isShowServerOption)
+	{
+		if (Looper.myLooper() == Looper.getMainLooper()) {
+			logger.error("Cannot obtain credentials from the main thread!");
+			return credentials;
+		}
+		// Insert DialogActivity arguments
+		Bundle args = new Bundle();
+		// Login userName and editable state
+		String userName = credentials.getUserName();
+		args.putString(CredentialsFragment.ARG_LOGIN, userName);
+		args.putBoolean(CredentialsFragment.ARG_LOGIN_EDITABLE, isUserNameEditable);
+
+		// Password argument
+		char[] password = credentials.getPassword();
+		if (password != null) {
+			args.putString(CredentialsFragment.ARG_PASSWORD, credentials.getPasswordAsString());
+		}
+
+		// Persistent password argument
+		args.putBoolean(CredentialsFragment.ARG_STORE_PASSWORD,
+				credentials.isPasswordPersistent());
+
+		// InBand Registration argument
+		args.putBoolean(CredentialsFragment.ARG_IB_REGISTRATION,
+				accountID.isIbRegistration());
+
+		args.putBoolean(CredentialsFragment.ARG_IS_SHOWN_SERVER_OPTION, isShowServerOption);
+		if (isShowServerOption) {
+			// Server overridden argument
+			if (accountID != null) {
+				args.putBoolean(CredentialsFragment.ARG_IS_SERVER_OVERRIDDEN,
+						accountID.isServerOverridden());
+				args.putString(CredentialsFragment.ARG_SERVER_ADDRESS,
+						accountID.getServerAddress());
+				args.putString(CredentialsFragment.ARG_SERVER_PORT, accountID.getServerPort());
+			}
+		}
+		args.putString(CredentialsFragment.ARG_LOGIN_REASON, credentials.getLoginReason());
+		aTalkApp.waitForDisplay();
+
+		// Obtain credentials lock
+		final Object credentialsLock = new Object();
+		ResourceManagementService resources = AndroidGUIActivator.getResourcesService();
+
+		// Displays the credentials dialog and waits for it to complete
+		Long dialogID = DialogActivity.showCustomDialog(aTalkApp.getGlobalContext(),
+				resources.getI18NString("service.gui.LOGIN_CREDENTIAL"),
+				CredentialsFragment.class.getName(), args, resources.getI18NString("sign_in"),
+				new DialogActivity.DialogListener()
+				{
+					public boolean onConfirmClicked(DialogActivity dialog)
+					{
+						View dialogContent = dialog.findViewById(R.id.alertContent);
+						String userName = ViewUtil.getTextViewValue(dialogContent,
+								R.id.username).replaceAll("\\s", "");
+						String password = ViewUtil.getTextViewValue(dialogContent,
+								R.id.password).trim();
+						boolean storePassword = ViewUtil.isCompoundChecked(dialogContent,
+								R.id.store_password);
+						boolean ibRegistration = ViewUtil.isCompoundChecked(dialogContent,
+								R.id.ib_registration);
+
+						credentials.setUserName(userName);
+						credentials.setPassword(password.toCharArray());
+						credentials.setPasswordPersistent(storePassword);
+
+                        accountID.setPasswordPersistent(storePassword);
+                        if (storePassword) {
+                            accountID.setPassword(password);
+                            JabberActivator.getProtocolProviderFactory().storePassword(accountID, password);
+                        }
+						//credentials.setIbRegistration(ibRegistration);
+						accountID.setIbRegistration(ibRegistration);
+
+						if (isShowServerOption) {
+							boolean isServerOverridden = ViewUtil.isCompoundChecked(dialogContent,
+									R.id.serverOverridden);
+							String serverAddress = ViewUtil.getTextViewValue(dialogContent,
+									R.id.serverIpField).replaceAll("\\s", "");
+							String serverPort = ViewUtil.getTextViewValue(dialogContent,
+									R.id.serverPortField).replaceAll("\\s", "");
+
+							credentials.setIsServerOverridden(isServerOverridden);
+							credentials.setServerAddress(serverAddress);
+							credentials.setServerPort(serverPort);
+							credentials.setUserCancel(false);
+
+							accountID.setServerOverridden(isServerOverridden);
+							if (isServerOverridden) {
+							    accountID.setServerAddress(serverAddress);
+							    accountID.setServerPort(serverPort);
+                            }
+                            ProtocolProviderFactory factory
+                                    = JabberAccountRegistrationActivator.getJabberProtocolProviderFactory();
+						}
+						synchronized (credentialsLock) {
+							credentialsLock.notify();
+						}
+						return true;
+					}
+
+					public void onDialogCancelled(DialogActivity dialog)
+					{
+						credentials.setUserCancel(true);
+						synchronized (credentialsLock) {
+							credentialsLock.notify();
+						}
+					}
+				}, null);
+		try {
+			synchronized (credentialsLock) {
+				// Wait for the credentials
+				credentialsLock.wait();
+			}
+		}
+		catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		return credentials;
+	}
+
+	/**
+	 * Sets the userNameEditable property, which should indicate to the implementations of
+	 * this interface if the user name could be changed by user or not.
+	 *
+	 * @param isUserNameEditable
+	 * 		indicates if the user name could be changed by user in the implementation of this
+	 * 		interface.
+	 */
+	public void setUserNameEditable(boolean isUserNameEditable)
+	{
+		this.isUserNameEditable = isUserNameEditable;
+	}
+
+	/**
+	 * Indicates if the user name is currently editable, i.e. could be changed by user or not.
+	 *
+	 * @return <code>true</code> if the user name could be changed, <code>false</code> - otherwise.
+	 */
+	public boolean isUserNameEditable()
+	{
+		return isUserNameEditable;
+	}
+}

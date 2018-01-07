@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notificationContent"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/iconContainer"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="2dp"
+        android:layout_marginStart="2dp"
+        android:background="@color/status_bar_icon_bg">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_notification" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/calleeDisplayName"
+        style="@style/NotificationTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/iconContainer"
+        android:layout_toRightOf="@+id/iconContainer"
+        android:singleLine="true"
+        android:text="CalleeDisplayName@server.com" />
+
+    <TextView
+        android:id="@+id/call_duration"
+        style="@style/NotificationTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:singleLine="true"
+        android:text="00:00:00" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/iconContainer"
+        android:layout_toRightOf="@+id/iconContainer"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <ImageButton
+            android:id="@+id/back_to_call"
+            style="@style/NotificationCtrlButton"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:background="@color/status_bar_button"
+            android:padding="2dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/status_bar_show_call_dark" />
+
+        <ImageButton
+            android:id="@+id/speakerphone"
+            style="@style/NotificationCtrlButton"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:background="@color/status_bar_button"
+            android:padding="2dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/status_bar_speaker_dark" />
+
+        <Button
+            android:id="@+id/mute_button"
+            style="@style/NotificationCtrlButton"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/status_btn_off"
+            android:text="Mute" />
+
+        <Button
+            android:id="@+id/hold_button"
+            style="@style/NotificationCtrlButton"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/status_btn_off"
+            android:text="Hold" />
+
+        <ImageButton
+            android:id="@+id/hangup_button"
+            style="@style/NotificationCtrlButton"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:background="@color/status_bar_hangup"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/status_bar_hangup_dark" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/theme_background"
+    android:padding="@dimen/screen_padding">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/selectAccountTxt"
+            style="@style/MediumFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/label_padding"
+            android:text="@string/service_gui_SELECT_ACCOUNT" />
+
+        <Spinner
+            android:id="@+id/selectAccountSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/item_height"
+            android:layout_marginBottom="@dimen/between_padding"
+            android:background="@drawable/spinner_dark" />
+
+        <TextView
+            android:id="@+id/contactNameTxt"
+            style="@style/MediumFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/label_padding"
+            android:text="@string/service_gui_CONTACT_NAME" />
+
+        <EditText
+            android:id="@+id/editContactName"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height"
+            android:layout_marginBottom="@dimen/between_padding"
+            android:inputType="textNoSuggestions"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/selectGroupTxt"
+            style="@style/MediumFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/label_padding"
+            android:text="@string/service_gui_SELECT_GROUP" />
+
+        <Spinner
+            android:id="@+id/selectGroupSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/item_height"
+            android:layout_marginBottom="@dimen/between_padding"
+            android:background="@drawable/spinner_dark" />
+
+        <TextView
+            android:id="@+id/displayNameText"
+            style="@style/MediumFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/label_padding"
+            android:text="@string/service_gui_DISPLAY_NAME" />
+
+        <EditText
+            android:id="@+id/editDisplayName"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height"
+            android:layout_marginBottom="@dimen/between_padding"
+            android:inputType="textNoSuggestions"
+            android:padding="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_cancel"
+                style="@style/ButtonTop"
+                android:onClick="onCancelClicked"
+                android:text="@string/service_gui_CANCEL" />
+
+            <View
+                android:id="@+id/centerShim"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="5dp"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/button_add"
+                style="@style/ButtonTop"
+                android:onClick="onAddClicked"
+                android:text="@string/service_gui_ADD" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

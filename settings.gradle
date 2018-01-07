@@ -1,0 +1,4 @@
+include ':aTalk'
+include ':plugins:dnsjava'
+include ':plugins:ews-android-api'
+include ':plugins:easylocation'

@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="changelog_style.xsl"?><!--
+     The master change log is kept in res/xml/changelog_master.xml.
+     Locale specific versions are kept in res/xml-<locale qualifier>/changelog.xml.
+
+     Don't edit the changelog_<name>_branch.xml files in the gh-pages branch.
+     They are automatically updated with "ant bump-version".
+-->
+<changelog>
+    <release
+        version="1.0.1 (01/05/2018)" versioncode="1001">
+        <change>Update apk manifest file to include implicit hardware requirements and set the required state to false for device compatibility</change>
+    </release>
+
+    <release
+        version="1.0.0 (01/03/2018)" versioncode="1000">
+        <change>Enhance application ui theme and harmonize button layout for better user experience</change>
+        <change>Add support for user runtime resource access permissions request on android-M and later</change>
+        <change>Add About menu provides access to application information on history log, compliance XMPP standards and third parties libraries used etc</change>
+        <change>Display peer avatar during making call and receiving call for ease of identification</change>
+        <change>Ensure chat window background colors and crypto icons are in sync with the actual user selected chat mode during pager sliding</change>
+        <change>Change OTR status message after user has authenticated the buddy on prompt</change>
+        <change>Ensure no access to omemo when user is not registered or authenticated, otherwise system crash</change>
+        <change>Add action button in Regenerate OMEMO identities and Purge unused identities settings so it returns correctly to main setting menu</change>
+        <change>Add popup message when omemo prekey is empty or corrupted to alert user for action - identities regeneration</change>
+        <change>Auto-join chatroom when aTalk is minimized since user accept pop-up window is not permitted in this case</change>
+        <change>Fix system crash when access menu options to erase chatRoom or contact(s) chat history</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.9.1 (12/19/2017)" versioncode="910">
+        <change>Ensure account password is updated in credential when user changes in Account Settings... or re-login prompt</change>
+        <change>Fix stream video distortion at receiving end during conference when phone/camera is rotated to angles other than 0 degree</change>
+        <change>Enhance video resolution support: 320x240, 640x480, 720x480, 960x720 and 1280x720; auto optimise to ensure it is within device capability during call</change>
+        <change>Use 1:1 (736x736) resolution for Samsung Note-8 when phone is in portrait orientation as it cannot handle landscape preview video format</change>
+        <change>Fix system crash when phone orientation is changed during video call</change>
+        <change>Apply patch to ignore OmemoService prekey publish response timeout (~90s) to support slow device, prekey will complete publish in background</change>
+        <change>Fix system crash when starting chat prior to user log in due to isOmemoSupport access</change>
+        <change>Improve GPS tracking reliability using FusedLocationProviderClient replacing deprecated FusedLocationProviderApi</change>
+        <change>Remove option for Connect at Startup in Account Settings... and add optio to save password</change>
+        <change>Remove native libraries support for deprecated armeabi target architecture</change>
+        <change>update libraries: jxmp-jid-0.6.0, gmsPlayServicesVersion to 11.6.2 and smack-4.2.2</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.9.0 (11/11/2017)" versioncode="900">
+        <change>Add native libraries support with armeabi, armeabi-v7a and x86 architecture platforms for min android API-15</change>
+        <change>Implement OpenSSL (version 1.0.2l) native library to improve zrtp encryption speed</change>
+        <change>Implement ffmpeg-x264 shared library built from source (ffmpeg v1.0.10 and latest x264)</change>
+        <change>Use NDK_TOOLCHAIN_VERSION:=clang for all native libraries built for more optimized code generation</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.8.8 (10/16/2017)" versioncode="880">
+        <change>Avoid multiple invitationListeners registration with MultiUserChat Manager</change>
+        <change>Ignore further invitation received if already joined the chatRoom</change>
+        <change>Add user menu option to show chat room occupants</change>
+        <change>Act and reflect actual system status when user changes presence status in Account Settings menu</change>
+        <change>Ensure the JidToAvatarHashIndex is properly updated with the correct Account-Hash pair</change>
+        <change>Popup alert message when media device or codec configuration is not properly setup to make or receive call</change>
+        <change>Port to use smack-4.2.2-SNAPSHOT library build from source</change>
+        <change>Update libraries: commons-lang3:3.6, sdes4j-1.1.3, sdes4j-1.1.4, jmdns-3.5.3 and zrtp4j-light-4.1.0</change>
+        <change>Update xmpp extensions colibri, jibri, jingle, jitsimeet sources from jitsi</change>
+        <change>Improved IPv6 handling</change>
+        <change>Add recording_mode attribute to JibriIQ</change>
+        <change>Add an octo channel to ColibriConferenceIQ and correctly parsing bundle group</change>
+        <change>Remove adaptiveLastN and adaptiveSimulcast support etc</change>
+        <change>Removed support for Yahoo, Facebook and MSN</change>
+        <change>Update neomedia and JNI sources from libjitsi</change>
+        <change>Add video codec VPX (VP8 and VP9-nok) support with JNI built from source v1.6.1+ (master 10/12/2017)</change>
+        <change>Upgrade Opus jni source to latest 1.2.1 release</change>
+        <change>Upgrade jni source build with speex 1.2rc1. Speex is needed for audio resampling: android 44.1K to Opus 48.0K</change>
+        <change>Fixed libjnspeex.so has text relocation error during runtime</change>
+        <change>Set APP_PLATFORM=android-15 for all JNI shared-libraries built to properly support android API-15 min</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.8.7.c (08/27/2017)" versioncode="873">
+        <change>Reinstate FragmentPageAdapter and ChatRoom list on main UI</change>
+        <change>Do not add to groups that are having zero child - fixed metaContactList IndexOutOfBound Exception</change>
+        <change>Fixed system crashes when receive invitation to join chatRoom</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.8.7 (08/23/2017)" versioncode="870">
+        <change>Support avatar photo edit functions with gesture capability: region select, zoom, rotate and crop</change>
+        <change>Ensure avatar attached to outgoing messages in chat window display is correct for the current sender</change>
+        <change>Revert to full implementation for XEP-0153 VCardAvatar to properly support old xmpp client</change>
+        <change>Add view pager slider to give user access to chatRoom list and contacts list fragments</change>
+        <change>Ensure contactList fragment group is in expanded view on first application launch</change>
+        <change>Optimize chatRoom joining process to correctly setup multi-user chat</change>
+        <change>Enhance systray notification handlers for incoming muc chat message events</change>
+        <change>Port to use bouncycastle replacing obsoleted spongycastle libraries</change>
+        <change>Revert getDrawable(int id, Theme) to getDrawable(int) as it crashes device with API 15</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.8.6 (08/05/2017)" versioncode="860">
+        <change>Fix implementation error in denying OTR session setup request from buddy while OMEMO session is in progress</change>
+        <change>Implement XEP-0084 User Avatar publishing with reflection patch for Smack PepManager.publish to support old server</change>
+        <change>Harmonize operations between XEP-0084 User Avatar and XEP-0153 VCardAvatar for co-existence</change>
+        <change>When XEP-0084 is enabled, omit avatar hash in presence stanza VCardTempXUpdate x-extension</change>
+        <change>Sync main menu avatar display with user selected picture</change>
+        <change>Delay the auto software update version check on application start up</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.8.5 (07/25/2017)" versioncode="850">
+        <change>Change omemo buddy authentication dialog to support multiple undecided fingerprints verification</change>
+        <change>ReSync chatFragment crypto status icon and background color based on user action in authentication dialog</change>
+        <change>Synchronise the cryptoChoice selected button with the chatType changes from events</change>
+        <change>Fix buddy incoming otr session status and background unhandled change events</change>
+        <change>Deny OTR session setup request from buddy while OMEMO session is in progress. User may manually start OTR to proceed</change>
+        <change>Fix conference invitation received dialog exception due to null chatRoom attributes</change>
+        <change>Update smack library to 4.2.1-beta2-SNAPSHOT (July 2017)</change>
+        <change>Patch smack library with reflection methods access to resolve DeviceListListener and offline olmMessages problems</change>
+        <change>Revert to use omemo onOmemoMucMessageReceived to avoid DuplicateMessageException thrown by smack</change>
+        <change>Check for contact omemo capable using contactSupportsOmemo(), replacing the deleted resourceSupportsOmemo() method</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.8.4 (07/18/2017)" versioncode="840">
+        <change>Implement XEP-0084: User Avatar</change>
+        <change>Fix crypto privateKey menu access exception on null fingerprint object</change>
+        <change>Add vertical scroll view to "Refresh Persistent Stores..." menu</change>
+        <change>Omemo client advertised entityCapabilities need to include PEP_NODE_DEVICE_LIST_NOTIFY</change>
+        <change>Blind Trust before verification needs to include condition check for any existing trusted devices</change>
+        <change>Stop processing omemo encrypted messages by normal message handler to avoid displaying both the omemoHint text and omemoDecrypted text in the chat window</change>
+        <change>Set smack DefaultReplyTimeout to 20 seconds to take care any slow device (S3) and heavily loaded xmpp server</change>
+        <change>Add PEPListener to fetch new buddy omemoDevice and save it to omemo identities table</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.8.3 (07/12/2017)" versioncode="830">
+        <change>Add option for OMEMO private key regeneration</change>
+        <change>Add option to allow changing trust state for Omemo device fingerprints - stop untrusted buddies from receiving OMEMO messages</change>
+        <change>Add option to copy crypto privateKeys or fingerprints to clipboard to assist remote verification</change>
+        <change>Consolidate all crypto keys and fingerprints for OTR and OMEMO for better UI access</change>
+        <change>Display system message when OMEMO chatSession is setup with unverified or untrusted buddies</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.8.2 (07/09/2017)" versioncode="820">
+        <change>Implement OMEMO chat support using SQLite database for backend persistent storage</change>
+        <change>Add user option to blind trust contact omemo key before verification on first use</change>
+        <change>Add user option to regenerate omemo devices</change>
+        <change>Add user option to purge unused omemo devices</change>
+        <change>Add new background colour for OMEMO mode</change>
+        <change>Optimise background colour changes handler and consolidate in cryptoFragment</change>
+        <change>Enable event listeners for chatFragment only if it is in view and focus</change>
+        <change>Add user option for XEP-0384 OMEMO database clean up (use with care)</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.8.1 (07/01/2017)" versioncode="810">
+        <change>Implement OMEMO chat support using file-based persistent storage</change>
+        <change>Fix corrected message received handler for proper edited message display</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.8.0 (06/12/2017)" versioncode="800">
+        <change>Complete migration of all backend data in xml files storage to SQLite database</change>
+        <change>Full implementation for all handlers to support SQLite backend database</change>
+        <change>Fix authorization request prompt to show correct requester ID instead of null</change>
+        <change>Need to generate non-persistent entity sessionUuid for proper message retrieval</change>
+        <change>Add user option to support changing contact displayName in contactList fragment (RFC 6121)</change>
+        <change>Fix removal contact (waiting for approval) error - sending 'ask' attribute not allowed by RFC6121.</change>
+        <change>Cleanup and change OperationSetBasicInstantMessagingJabberImpl to use CarbonManager.setCarbonsEnabled</change>
+        <change>Execute ProtocolProviderServiceJabberImpl.initRosterStore only after account has been authenticated</change>
+        <change>Fix VCardAvatarManager.downloadVCard uncaught exception causing avatar loading failure intermittently</change>
+        <change>Use Smack 4.2.1-SNAPSHOT (June 2017) library for OMEMO support</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.7.9.b (05/18/2017)" versioncode="793">
+        <change>Fix ServerStoredContactListJabberImpl - must not remove the root group of metaContactGroup in database</change>
+        <change>Fix timeStamp errors for muc history messages received from server - Incorrect delayInformation extraction</change>
+        <change>Check received history message using nick and jabberID (in case contact joined with different nick)</change>
+        <change>Add XEP-0033: Extended Stanza Addressing support to ChatRoomJabberImpl</change>
+        <change>Fix conference history message retrieve error - change getHistory to be based on session descriptor i.e. metaContact or ChatRoom</change>
+        <change>Fix synchronization problem between chatFragment display messages and chatController text entry</change>
+        <change>Support multiple selection on chat messages in chatFragment for deletion</change>
+        <change>Increase login timeout period to 50 Sec to support slow device e.g. Samsung S3. Minimum API level support is 16</change>
+        <change>Update to use Smack version 4.2.0 (Mar 2017)</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.7.9.a (04/15/2017)" versioncode="792">
+        <change>Remove unused files and clean up old soundRecording Activity</change>
+        <change>initial database creation and migration (major)</change>
+        <change>1. Properties to accountID, accountProperties and Properties tables (+OTR keys); Remove obsoleted and ghost accounts properties</change>
+        <change>2. MetaContact List group, childContacts and contacts tables (+OTR keys)</change>
+        <change>3. messages (chat and muc) and file history xml records</change>
+        <change>4. call history xml records</change>
+        <change>5. Recent messages xml records</change>
+        <change>Add support for multiple update links to fetch firmware update</change>
+        <change>Fix updatePersistentDataForMetaContact for displayName</change>
+        <change>Upgrade Opus jni source to latest 1.1.4 release</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.7.8 (02/22/2017)" versioncode="780">
+        <change>Add support for multiLine chat messages sending and display</change>
+        <change>Add support for emojis sending and display (use device emojis resources)</change>
+        <change>Implement audio record and playback as background service</change>
+        <change>Implement Long click to send audio message using background service</change>
+        <change>Implement audio recording permission request for android 6.0 requirements</change>
+        <change>Improve message chat UI to allow for multiple messages selection etc</change>
+        <change>Filter and show only relevant contactList contextMenu options</change>
+        <change>Fix 'Erase this contact history' in contactList contextMenu</change>
+        <change>Remove 'Erase all contacts chat history' option in contextMenu</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.7.7 (02/06/2017)" versioncode="770">
+        <change>Implement proxy settings configuration per account instead of globally defined</change>
+        <change>Add device rotation tracking to both the Street Panorama and Map View in chat for 'Single Location fix'</change>
+        <change>Add location and rotation tracking to both the Street Panorama and Map View in chat for 'Continuous Location updates'</change>
+        <change>Long press 'Continuous Location updates' button for location demo</change>
+        <change>Add user option to set minimum distance travelled to send 'Continuous Location updates'</change>
+        <change>Add 'StreetView and Map' Button in outgoing message to allow review of the previously sent Location updates</change>
+        <change>Long press 'StreetView and Map' Button on incoming or outgoing chat message starts locations retrace animation</change>
+        <change>Add support for real-time tracking on incoming location messages when street and Map view is active</change>
+        <change>Add support for 'PTT' for voice sending during chat</change>
+        <change>Show error when user attempt to send outgoing message while offline</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.7.6 (01/24/2017)" versioncode="760">
+        <change>Add support to show StreetView Panorama and Map view in chat window when Send Single Location fix</change>
+        <change>Add user selectable button to display Street Panorama and Map view in chat window upon received a location fix</change>
+        <change>Fix Send Cont. Location updates early termination on screen rotation</change>
+        <change>Ensure all new messages sent or received are being updated in chat window when it is again in focus</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.7.5 (01/20/2017)" versioncode="750">
+        <change>Fix file sending problem - chat window must get refreshed after returning from file pick operation</change>
+        <change>Add option to Send Present Geo-Location to recipient during chat session for direction guide</change>
+        <change>Latest version check uses versionCode only and will not failed if versionName has alphabet exception</change>
+        <change>Clean and purge all the old log files after each Send Log operation</change>
+        <change>Port and replace jitsi GeoLocation Extension and Provider with Smack GeoLocation and Provider</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.7.4 (01/16/2017)" versioncode="740">
+        <change>Enable Send logs option in main menu for user selection</change>
+        <change>Add option to purge Debug Log File in Refresh persistent stores in case it gets too large to handle</change>
+        <change>Fix missing presence available stanza being sent after logout and successful login - online indicator remains grey</change>
+        <change>Support account reconnection-resume when device recovers from network disconnection on error</change>
+        <change>Account unRegistration must using thread to avoid android StrictMode Exception</change>
+        <change>Port to use Smack Library version 4.2.0-rc3 (SNAPSHOT)</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.7.3 (01/14/2017)" versioncode="730">
+        <change>Accounts gone offline due to network lost are automatically reconnected when network recovered</change>
+        <change>Fix display sometimes locked in black screen while in voice / video call</change>
+        <change>Prevent aTalk repeatedly waits in server capability retrieval when servers are non-compliant to XEP-0030: Service Discovery</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.7.2 (01/11/2017)" versioncode="720">
+        <change>Implement XEP-0077: In-Band Registration and XEP-0158: CAPTCHA Forms to handle captcha protection registration</change>
+        <change>Add custom smack iregisterx library classes to support account registration via fields or DataForm</change>
+        <change>Implement BoB extension and provider to support embedded BoB in iqRegister information</change>
+        <change>Major cleanup and enhancements on account login User Interface</change>
+        <change>Implement reason field to display info/error messages during User Login Credentials menu prompt</change>
+        <change>Remove showAlertDialog for login error messages as they are now display in User Login Credentials reason field</change>
+        <change>Reclassified and fine tune all login failure modes for better error handling</change>
+        <change>Fix unwanted multiple login for the same account during application launching</change>
+        <change>User password will not be cleared when login failed for whatever exceptions/reasons</change>
+        <change>Remove support for BareJid login when login with user localPart failed. Handle only special case for Google Talk</change>
+        <change>Use reflection to access private variable XMPPTCPConnection. socket and remove the local XMPPTCPConnection source</change>
+        <change>Port to use Smack Library version 4.2.0-rc2 (SNAPSHOT)</change>
+        <change>Remove jitsi reconnectPlugin class, use Smack ReconnectionManager instead</change>
+        <change>Fixed Policy-Violation exception and AccountManager.isSupport method in Smart Library v4.2.0-rc2 via Smart Development Team</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.7.1 (12/25/2016)" versioncode="710">
+        <change>Fix connectUsingSRVRecords - strip off the end dot in hostName returns by SRVRecord#getTarget()</change>
+    </release>
+
+    <release version="0.7.0 (12/18/2016)" versioncode="700">
+        <change>aTalk Ported to use Smack v4.2.0 libraries</change>
+        <change>Use MessageCorrectionExtension and Provider code from smack library</change>
+        <change>Implement full features for XEP-0085 Chat State Notifications</change>
+        <change>Clean up and remove strays from XEP-0022 old implementation</change>
+        <change>Update and sent EntityCaps node#version when ChatState Notifications is enabled or disabled</change>
+        <change>Fix account persistent storage refresh routines</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.6.0 (11/30/2016)" versioncode="600">
+        <change>Full implementation for XEP-0092: Software Version using Smack.VersionManager</change>
+        <change>Remove version information in CapsExtensionStanza.identity disc#info; replaced by XEP-0092 implementation</change>
+        <change>Add KeepAlive XEP-0199: XMPP Ping option to Account setting, and allow setting of ping interval per account</change>
+        <change>Revamp old XEP-0153 implementation to fully compliant with the protocol requirements</change>
+        <change>Add persistent cache support for XEP-0153: vCard-Based Avatars for performance and reduce bandwidth requirement</change>
+        <change>Synchronized InfoRetriever#retrieveDetails method to prevent Account result being overwritten by access from Contacts</change>
+        <change>Add option in Account Setting... to clean XEP-0153: vCard-Based Avatars persistent store when necessary</change>
+        <change>Implement XEP-0172: User Nickname - protocol for communicating user nicknames in XMPP presence subscription requests</change>
+        <change>Implement options to show password and server override options in login dialog when login failed</change>
+        <change>Server timeout (no password) and Server not found errors will now trigger a re-login dialog instead of a system notification</change>
+        <change>Ensure the login dialog is always visible to the user and not obscured by another activity</change>
+        <change>Ensure new account creation with server override option are correctly stored in the preferences</change>
+        <change>Purge all the account persistent storage when the account is removed</change>
+        <change>Revamp EntityPersistentStore, entityStoreDirectory and ServiceDiscoveryManager Implementations</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.5.8 (11/14/2016)" versioncode="580">
+        <change>Implement persistent RosterStore to support XEP-0237:Roster Versioning for performance and reduce bandwidth requirement</change>
+        <change>Implement persistent CapsStore to support XEP-0115:Entity Capabilities for performance and reduce bandwidth requirement</change>
+        <change>Implement persistent DiscoverInfoStore to support XEP-0030:Service Discovery for performance and reduce bandwidth requirement</change>
+        <change>Add options in Account Setting... to allow user to clean and refresh all the persistent stores when necessary</change>
+        <change>Set CapsExtensionInfo value in &lt;presence/&gt; to &quot;node='http://android.atalk.org', ver, hash&quot; for correct XEP-0237 implementation</change>
+        <change>Implement Disco#Info to advertise entity as "identity category='client' name='aTalk-android_{version}' type='mobile'/></change>
+        <change>Port aTalk application to use Smack.EntityCapsManager and Smack.ServiceDiscoveryManager</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.5.7 (11/03/2016)" versioncode="570">
+        <change>Improve account status/info handling when updating changes</change>
+        <change>Provide ui feedback while fetching server advertised features/info - implement background thread to avoid black screen</change>
+        <change>Disable videoBridge invite dialog when server does not support VideoBridge service</change>
+        <change>Add FileTransferActivator class to handle incoming file received request</change>
+        <change>Remove all static references in ContactListFragment context to avoid memory leaked</change>
+        <change>Enhance media streams handling during conference call setup</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.5.6 (10/21/2016)" versioncode="560">
+        <change>Add chatRoom invitation received dialog to Accept, Reject or Ignore sender chat request</change>
+        <change>Enhance Account Setting... option allowing user to upload all vCard-temp info supported by the server</change>
+        <change>Implement option for account avatar upload to the server (fixed earlier implementation error)</change>
+        <change>Implement option for account avatar removal from the server</change>
+        <change>Show blank face photo for account avatar not defined by user</change>
+        <change>Add ContactList context option to retrieve contact vCard-temp info from server</change>
+        <change>Support url access from contact URL link if defined in Contact Info</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.5.5 (10/08/2016)" versioncode="550">
+        <change>Add menu option in Settings... to display connection info and view SSL certificate</change>
+        <change>Group names in contactList default to use server or user defined font case</change>
+        <change>System crashes on menu item "Add Contact" selection with multiple accounts</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.5.4 (10/03/2016)" versioncode="540">
+        <change>Allow call only from online account in the same roster group</change>
+        <change>Add menu item for sign-in/sign-out in contact list view</change>
+        <change>Take immediately effect when user changes state from offline-online in account edit view</change>
+        <change>Prompt for user action when login failed due to authentication error</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.5.3 (09/29/2016)" versioncode="530">
+        <change>Display proper account name in contactList actionBar for multiple-accounts setup</change>
+        <change>Show only registered accounts in popup selection menu when making calls</change>
+        <change>Display all incoming chat messages correctly in chatPanel when contacts go offline-online</change>
+        <change>Fix account resource priority setting exception error</change>
+        <change>Fix system clashes when select "Event - Configure individual notifications"</change>
+        <change>Fix system clashes when select offline contact to chat</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.5.2.b (09/23/2016)" versioncode="522">
+        <change>Add presence status icon display to actionBar for contactListView and chatPanel</change>
+        <change>Update contact presence status text in actionBar for chatPanel</change>
+        <change>Implement fixes for group chat crash when launch</change>
+        <change>Implement fixes when proceed to send log information</change>
+        <change>Fix GroupChat Invite Dialog: offline contacts get filtered off when contact presence status change</change>
+        <change>Fix Conference Invite Dialog: offline contacts get filtered off when Contact presence status change</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.5.2.a (09/21/2016)" versioncode="521">
+        <change>Reinstate video call views on screen rotation</change>
+        <change>Relocate ZRTP Display window to avoid overlay with remote video window in landscape mode</change>
+        <change>ReSync avatar picture when new contact chat windows is scrolled into view</change>
+        <change>Receive and display only the intended chat messages on the relevant contact chat window</change>
+        <change>Update chat window with cached messages received when the contact view is scrolled into view</change>
+        <change>Sync OTR status icon when chat view window is scrolled into view</change>
+        <change>Improve hint on OTR fingerprint verification</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.5.2 (09/17/2016)" versioncode="520">
+        <change>Add both voice/video call option in contact list view</change>
+        <change>Show only the call option that is relevant to the contact</change>
+        <change>Update LocalVideoCallButton to its correct state on call start</change>
+        <change>Change default to voice and hide option not applicable to current chat contact in chat window</change>
+        <change>Remove duplicate/unimportance information display during contact search</change>
+        <change>Implement online auto check for application update and user selectable enable/disable option</change>
+        <change>Improve reliability in video call setup</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.5.1 (09/04/2016)" versioncode="510">
+        <change>Add option to show password</change>
+        <change>Allow connect server override on new account creation</change>
+        <change>Hide group with zero-contact in contact list view</change>
+        <change>Show all contacts of non-zero groups for conference/videoBridge participant selection</change>
+        <change>Add support for changelog info display</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.5.0 (08/28/2016)" versioncode="500">
+        <change>Initial release - fork org.jitsi to org.atalk.android</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.4.6 (08/25/2016)" versioncode="460">
+        <change>Cleanup all imported jar incompatible for android</change>
+        <change>Upgrade to smack:4.1.8 jars</change>
+        <change>Upgrade Opus jni source to latest 1.1.3 release</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.4.4 (08/15/2016)" versioncode="440">
+        <change>Support online update for both release and debug version</change>
+        <change>Improve update error handler for deleted download file</change>
+        <change>ChatInviteDialog - show selected contacts on entry</change>
+        <change>ConferenceInviteDialog - show selected contacts on entry</change>
+        <change>Implement show/hide offline contacts option</change>
+        <change>Enable UserSearch function</change>
+        <change>Trim user entered JID name and password - avoid incorrect accountID creation</change>
+        <change>Add basic support for jitsi-videobridge (jibri)</change>
+        <change>Grey videobridge option if init not ready</change>
+        <change>Add basic jingle support jitsi-meet</change>
+        <change>update spongycastle libraries to version 1.54.0.0</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.4.0 (01/25/2016)" versioncode="400">
+        <change>Implement auto video rotation for remote video streaming</change>
+        <change>Fix local preview display incorrect proportional ratio in portrait mode</change>
+        <change>Add V8 video codec support</change>
+        <change>Update Opus jni source to latest 1.1.1rc release</change>
+        <change>Fix audio graph creation errors</change>
+        <change>Add multi-chat conference creation, invitation and accept Invitation</change>
+        <change>Add participant join information</change>
+        <change>Add presence status for conference participants</change>
+        <change>Add sender avatar in message view holder</change>
+        <change>Fix avatar icon update problem</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.3.0 (09/07/2015)" versioncode="300">
+        <change>Port to support Smack 4.1.3 libraries</change>
+        <change>Add Stream Management v2/v3 for better network fringe area messaging handling</change>
+        <change>Add Scram Authentication method</change>
+        <change>Add Smack debugger for better source debug</change>
+        <change>Implement file transfer with BOB</change>
+        <change>Fix re-triggered file send request on android view redraw</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.2.0 (08/11/2015)" versioncode="200">
+        <change>Implement file transfer with IBB and Si protocols</change>
+        <change>Support concurrent files transferring</change>
+        <change>Add file size and thumbnail support prior to actual file transfer</change>
+        <change>Allow received files access from within chat windows</change>
+        <change>Add contact's history delete function</change>
+        <change>Change chat background color based on encryption type and verification state</change>
+        <change>Support multiple chat window instances</change>
+        <change>Source ported to support asmack 4.0 library</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="0.1.1 (05/25/2015)" versioncode="110">
+        <change>Implement multi-dex to support android code>64K execution</change>
+        <change>Implement encryption OTR V3</change>
+        <change>Fix Known OTR Finger settings option</change>
+    </release>
+
+</changelog>

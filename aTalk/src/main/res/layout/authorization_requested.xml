@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/theme_background"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
+    <TextView
+        android:id="@+id/requestInfo"
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:text="@string/service_gui_AUTHORIZATION_REQUESTED_INFO" />
+
+    <CheckBox
+        android:id="@+id/addToContacts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:checked="true"
+        android:text="@string/service_gui_ADD_AUTHORIZED_CONTACT" />
+
+    <TextView
+        android:id="@+id/selectGroupTxt"
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:text="@string/service_gui_SELECT_GROUP" />
+
+    <Spinner
+        android:id="@+id/selectGroupSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_height"
+        android:layout_marginBottom="@dimen/between_padding" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/ignore"
+            style="@style/ButtonTop"
+            android:onClick="onIgnoreClicked"
+            android:text="@string/service_gui_IGNORE" />
+
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/deny"
+            style="@style/ButtonTop"
+            android:onClick="onRejectClicked"
+            android:text="@string/service_gui_DENY" />
+
+        <View
+            android:id="@+id/centerShim2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/authorize"
+            style="@style/ButtonTop"
+            android:onClick="onAcceptClicked"
+            android:text="@string/service_gui_AUTHORIZE" />
+    </LinearLayout>
+</LinearLayout>

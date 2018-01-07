@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/username_label"
+            style="@style/MediumFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/username"
+            android:layout_margin="5dp"
+            android:text="@string/username_label" />
+
+        <EditText
+            android:id="@+id/username"
+            style="@style/EntryTextView"
+            android:layout_width="220dp"
+            android:layout_height="@dimen/item_height"
+            android:layout_toEndOf="@id/username_label"
+            android:layout_toRightOf="@id/username_label"
+            android:hint="@string/username_hint"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/password_label"
+            style="@style/MediumFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/username"
+            android:layout_margin="5dp"
+            android:layout_toEndOf="@id/username"
+            android:layout_toRightOf="@id/username"
+            android:text="@string/password_label" />
+
+        <EditText
+            android:id="@+id/password"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height"
+            android:layout_toEndOf="@id/password_label"
+            android:layout_toRightOf="@id/password_label"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:padding="8dp" />
+
+        <CheckBox
+            android:id="@+id/show_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/password"
+            android:layout_alignRight="@id/password"
+            android:layout_alignTop="@id/password" />
+
+        <ImageView
+            android:id="@+id/pwdviewImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/show_password"
+            android:layout_alignLeft="@id/show_password"
+            android:layout_alignStart="@id/show_password"
+            android:alpha="0.3"
+            android:src="@drawable/pwdview" />
+
+        <CheckBox
+            android:id="@+id/serverOverridden"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/username"
+            android:layout_margin="5dp"
+            android:text="@string/account_override_server" />
+
+        <CheckBox
+            android:id="@+id/store_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/password"
+            android:layout_alignRight="@id/password"
+            android:layout_below="@id/password"
+            android:layout_margin="5dp"
+            android:text="@string/store_password" />
+    </RelativeLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/serverField"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/serverIpField"
+            style="@style/EntryTextView"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/item_height"
+            android:layout_weight=".60"
+            android:hint="@string/account_server_ip"
+            android:inputType="textNoSuggestions"
+            android:padding="8dp" />
+
+        <EditText
+            android:id="@+id/serverPortField"
+            style="@style/EntryTextView"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/item_height"
+            android:layout_marginLeft="@dimen/between_padding"
+            android:layout_marginStart="@dimen/between_padding"
+            android:layout_weight=".40"
+            android:inputType="textNoSuggestions"
+            android:padding="8dp"
+            android:text="@string/account_server_port" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/captcha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+    <EditText
+        android:id="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="@string/captcha_hint"
+        android:inputType="textNoSuggestions">
+        <requestFocus />
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_Ignore"
+            style="@style/ButtonTop"
+            android:text="@string/service_gui_CANCEL" />
+
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/button_Accept"
+            style="@style/ButtonTop"
+            android:text="@string/service_gui_SUBMIT" />
+    </LinearLayout>
+</LinearLayout>

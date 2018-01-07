@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Message settings -->
+    <PreferenceCategory
+        android:title="@string/pref_cat_MESSAGING_SECURITY_OPTIONS">
+
+        <CheckBoxPreference
+            android:key="@string/pref_key_crypto_enable"
+            android:summaryOff="@string/service_gui_settings_CRYPTO_ENABLE_OFF"
+            android:summaryOn="@string/service_gui_settings_CRYPTO_ENABLE_ON"
+            android:title="@string/service_gui_settings_CRYPTO_ENABLE_TITLE"
+            />
+        <CheckBoxPreference
+            android:dependency="@string/pref_key_crypto_enable"
+            android:key="@string/pref_key_otr_auto"
+            android:summaryOff="@string/service_gui_settings_CRYPTO_AUTO_OFF"
+            android:summaryOn="@string/service_gui_settings_CRTOTI_AUTO_ON"
+            android:title="@string/service_gui_settings_CRYPTO_AUTO_TITLE"
+            />
+        <CheckBoxPreference
+            android:dependency="@string/pref_key_crypto_enable"
+            android:key="@string/pref_key_crypto_require"
+            android:summaryOff="@string/service_gui_settings_CRYPTO_REQUIRE_OFF"
+            android:summaryOn="@string/service_gui_settings_CRYPTO_REQUIRE_ON"
+            android:title="@string/service_gui_settings_CRYPTO_REQUIRE_TITLE"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_cat_OMEMO_SECURITY_SETTINGS">
+
+        <CheckBoxPreference
+            android:key="@string/pref_key_omemo_key_blind_trust"
+            android:summary="@string/pref_omemo_blind_trust_before_verification_summary"
+            android:title="@string/pref_omemo_blind_trust_before_verification"/>
+        <PreferenceScreen
+            android:summary="@string/pref_omemo_regenerate_identities_summary"
+            android:title="@string/pref_omemo_regenerate_identities_title">
+            <intent android:action=".crypto.omemo.OmemoRegenerateDialog"/>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:summary="@string/pref_omemo_purge_devices_summary"
+            android:title="@string/pref_omemo_purge_devices_title">
+            <intent android:action=".crypto.omemo.OmemoDeviceDeleteDialog"/>
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_cat_KEY_FINGERPRINT_SECURITY">
+        <PreferenceScreen
+            android:summary="@string/service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY"
+            android:title="@string/service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">
+            <intent android:action=".crypto.CryptoPrivateKeys"/>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:summary="@string/service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY"
+            android:title="@string/service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">
+            <intent android:action=".crypto.CryptoBuddyFingerPrints"/>
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+</PreferenceScreen>

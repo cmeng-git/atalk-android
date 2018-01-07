@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/screen_padding"
+    android:background="@color/color_primary"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/permission_hint"
+            style="@style/MediumFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/alpha_blue_01"
+            android:padding="@dimen/label_padding"
+            android:text="@string/permission_hint" />
+
+        <Button
+            android:id="@+id/camera_permission_button"
+            style="@style/PermissionButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:layout_below="@id/permission_hint"
+            android:layout_marginLeft="@dimen/screen_padding"
+            android:layout_marginStart="@dimen/screen_padding"
+            android:text="@string/ask_for_camera_permission_button" />
+
+        <TextView
+            android:id="@+id/camera_permission_feedback"
+            style="@style/PermissionFeedback"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/feedback_height"
+            android:layout_below="@id/permission_hint"
+            android:layout_toEndOf="@id/camera_permission_button"
+            android:layout_toRightOf="@id/camera_permission_button"
+            android:text="@string/permission_unknown_feedback" />
+
+        <Button
+            android:id="@+id/contacts_permission_button"
+            style="@style/PermissionButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:layout_below="@id/camera_permission_button"
+            android:layout_marginLeft="@dimen/screen_padding"
+            android:layout_marginStart="@dimen/screen_padding"
+            android:text="@string/ask_for_contacts_permission_button" />
+
+        <TextView
+            android:id="@+id/contacts_permission_feedback"
+            style="@style/PermissionFeedback"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/feedback_height"
+            android:layout_below="@id/camera_permission_feedback"
+            android:layout_centerHorizontal="true"
+            android:layout_toEndOf="@id/contacts_permission_button"
+            android:layout_toRightOf="@id/contacts_permission_button"
+            android:text="@string/permission_unknown_feedback" />
+
+        <Button
+            android:id="@+id/location_permission_button"
+            style="@style/PermissionButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:layout_below="@id/contacts_permission_button"
+            android:layout_marginLeft="@dimen/screen_padding"
+            android:layout_marginStart="@dimen/screen_padding"
+            android:text="@string/ask_for_location_permission_button" />
+
+        <TextView
+            android:id="@+id/location_permission_feedback"
+            style="@style/PermissionFeedback"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/feedback_height"
+            android:layout_below="@id/contacts_permission_feedback"
+            android:layout_toEndOf="@id/camera_permission_button"
+            android:layout_toRightOf="@id/camera_permission_button"
+            android:text="@string/permission_unknown_feedback" />
+
+        <Button
+            android:id="@+id/audio_permission_button"
+            style="@style/PermissionButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:layout_below="@id/location_permission_button"
+            android:layout_marginLeft="@dimen/screen_padding"
+            android:layout_marginStart="@dimen/screen_padding"
+            android:text="@string/ask_for_audio_permission_button" />
+
+        <TextView
+            android:id="@+id/audio_permission_feedback"
+            style="@style/PermissionFeedback"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/feedback_height"
+            android:layout_below="@id/location_permission_feedback"
+            android:layout_toEndOf="@id/audio_permission_button"
+            android:layout_toRightOf="@id/audio_permission_button"
+            android:text="@string/permission_unknown_feedback" />
+
+        <Button
+            android:id="@+id/phone_permission_button"
+            style="@style/PermissionButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:layout_below="@id/audio_permission_button"
+            android:layout_marginLeft="@dimen/screen_padding"
+            android:layout_marginStart="@dimen/screen_padding"
+            android:text="@string/ask_for_phone_permission_button" />
+
+        <TextView
+            android:id="@+id/phone_permission_feedback"
+            style="@style/PermissionFeedback"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/feedback_height"
+            android:layout_below="@id/audio_permission_feedback"
+            android:layout_toEndOf="@id/audio_permission_button"
+            android:layout_toRightOf="@id/audio_permission_button"
+            android:text="@string/permission_unknown_feedback" />
+
+        <Button
+            android:id="@+id/storage_permission_button"
+            style="@style/PermissionButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:layout_below="@id/phone_permission_button"
+            android:layout_marginLeft="@dimen/screen_padding"
+            android:layout_marginStart="@dimen/screen_padding"
+            android:text="@string/ask_for_storage_permission_button" />
+
+        <TextView
+            android:id="@+id/storage_permission_feedback"
+            style="@style/PermissionFeedback"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/feedback_height"
+            android:layout_below="@id/phone_permission_feedback"
+            android:layout_toEndOf="@id/audio_permission_button"
+            android:layout_toRightOf="@id/audio_permission_button"
+            android:text="@string/permission_unknown_feedback" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/button_Container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/all_permissions_button"
+            style="@style/ButtonTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/app_info_permissions_button"
+            android:layout_toStartOf="@+id/app_info_permissions_button"
+            android:text="@string/ask_for_all_permissions_button" />
+
+        <Button
+            android:id="@+id/app_info_permissions_button"
+            style="@style/ButtonTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:text="@string/app_info_permissions_button"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/button_done"
+            style="@style/ButtonTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_toEndOf="@+id/app_info_permissions_button"
+            android:layout_toRightOf="@+id/app_info_permissions_button"
+            android:text="@string/service_gui_DONE" />
+    </RelativeLayout>
+</RelativeLayout>

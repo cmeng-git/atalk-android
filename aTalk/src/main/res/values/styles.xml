@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="actionOverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_menu_moreoverflow_dark</item>
+    </style>
+
+    <style name="SpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="SpinnerItem.DropDownItem" parent="@android:style/Widget.DropDownItem.Spinner">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="EntryTextView" parent="@android:style/Widget.Holo.EditText">
+        <item name="android:radius">5dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:background">@drawable/white_rounded</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="MsgTextView" parent="@android:style/Widget.Holo.TextView">
+        <item name="android:radius">5dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:background">@drawable/white_rounded</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Theme.AppDialog" parent="@android:style/Theme.Holo.Light">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@drawable/popup_background_dark</item>
+        <item name="android:windowTitleStyle">?android:attr/textAppearanceLargeInverse</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowContentOverlay">@drawable/panel_separator_dark</item>
+    </style>
+
+    <style name="ScreenOffDialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+    <style name="Button">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#333</item>
+        <item name="android:background">@drawable/btn_bg</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawablePadding">0dip</item>
+        <item name="android:layout_marginBottom">5dip</item>
+        <item name="android:layout_marginTop">5dip</item>
+        <item name="android:padding">8dip</item>
+    </style>
+
+    <style name="ButtonTop" parent="@style/Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="ButtonBottom" parent="@style/Button">
+        <item name="android:layout_width">0dip</item>
+    </style>
+
+    <style name="XSmallFont" parent="@android:style/TextAppearance.Small">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="SmallFont" parent="@android:style/TextAppearance.Small">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="MediumFont" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="LargeFont" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- Call info section header -->
+    <style name="CallInfo.SectionHeader" parent="@android:style/TextAppearance.Small">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+    <!-- Call info header used for property names -->
+    <style name="CallInfo.Header" parent="@android:style/TextAppearance.Small">
+        <item name="android:layout_marginLeft">10dp</item>
+    </style>
+    <!-- Call info values style -->
+    <style name="CallInfo.Value" parent="@android:style/TextAppearance.Small">
+        <item name="android:maxLines">1</item>
+        <item name="android:layout_marginLeft">5dp</item>
+    </style>
+    <!-- Call info style of values displayed in single line -->
+    <style name="CallInfo.ValueSingleLine" parent="@android:style/TextAppearance.Small">
+        <item name="android:layout_marginLeft">20dp</item>
+    </style>
+    <!-- Notification buttons style -->
+    <style name="NotificationCtrlButton">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+    </style>
+
+    <style name="NotificationTitle" parent="@android:style/TextAppearance.StatusBar.EventContent.Title"></style>
+
+    <style name="ScreenPadding">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
+
+    <style name="Animations" />
+
+    <!-- PopDownMenu -->
+    <style name="Animations.PopDownMenu" />
+
+    <style name="Animations.PopDownMenu.Center">
+        <item name="android:windowEnterAnimation">@anim/grow_from_top</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_bottom</item>
+    </style>
+
+    <style name="Animations.PopDownMenu.Left">
+        <item name="android:windowEnterAnimation">@anim/grow_from_topleft_to_bottomright</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_bottomright_to_topleft</item>
+    </style>
+
+    <style name="Animations.PopDownMenu.Right">
+        <item name="android:windowEnterAnimation">@anim/grow_from_topright_to_bottomleft</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_bottomleft_to_topright</item>
+    </style>
+
+    <style name="Animations.PopDownMenu.Reflect">
+        <item name="android:windowEnterAnimation">@anim/pump_top</item>
+        <item name="android:windowExitAnimation">@anim/disappear</item>
+    </style>
+
+    <!-- PopUpMenu -->
+    <style name="Animations.PopUpMenu" />
+
+    <style name="Animations.PopUpMenu.Center">
+        <item name="android:windowEnterAnimation">@anim/grow_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_top</item>
+    </style>
+
+    <style name="Animations.PopUpMenu.Left">
+        <item name="android:windowEnterAnimation">@anim/grow_from_bottomleft_to_topright</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_topright_to_bottomleft</item>
+    </style>
+
+    <style name="Animations.PopUpMenu.Right">
+        <item name="android:windowEnterAnimation">@anim/grow_from_bottomright_to_topleft</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_topleft_to_bottomright</item>
+    </style>
+
+    <style name="Animations.PopUpMenu.Reflect">
+        <item name="android:windowEnterAnimation">@anim/pump_bottom</item>
+        <item name="android:windowExitAnimation">@anim/disappear</item>
+    </style>
+
+    <style name="RosterGroupName">
+        <item name="android:textSize">?attr/font_small</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="RosterGroupName.Dark">
+        <!-- <item name="android:background">@drawable/group_background_9_dark</item> -->
+        <!-- <item name="android:background">#FF5F6D77</item> -->
+        <item name="android:background">#FF2A81B7</item>
+    </style>
+
+    <style name="RosterGroupName.Light">
+        <!-- <item name="android:background">@drawable/group_background_9_light</item> -->
+        <!-- <item name="android:background">#FF86949E</item> -->
+        <item name="android:background">#FF6B994C</item>
+        <item name="android:textColor">#FF492900</item>
+    </style>
+
+    <style name="RosterGroupItem">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="RosterGroupItem.Dark">
+        <item name="android:background">@drawable/group_background_9_light</item>
+    </style>
+
+    <style name="RosterGroupItem.Light">
+        <item name="android:background">@drawable/group_background_9_dark</item>
+    </style>
+
+    <style name="StyleErrorView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">5sp</item>
+        <item name="android:textColor">#000</item>
+        <item name="android:background">#b44</item>
+        <item name="android:shadowColor">#44000000</item>
+        <item name="android:shadowRadius">3.0</item>
+    </style>
+
+    <style name="StyleErrorView.Light">
+        <item name="android:background">#f88</item>
+        <item name="android:textColor">#400</item>
+    </style>
+
+    <style name="RosterMessageCounter">
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">4dip</item>
+        <item name="android:layout_marginLeft">4dip</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">2dip</item>
+        <item name="android:paddingBottom">2dip</item>
+        <item name="android:paddingLeft">5dip</item>
+        <item name="android:paddingRight">5dip</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:background">@drawable/count_bcg</item>
+        <item name="android:text"></item>
+    </style>
+
+    <style name="RosterMessageCounter_Crypto">
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">4dip</item>
+        <item name="android:layout_marginLeft">4dip</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">2dip</item>
+        <item name="android:paddingBottom">2dip</item>
+        <item name="android:paddingLeft">5dip</item>
+        <item name="android:paddingRight">5dip</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:background">@drawable/count_bcg_crypto</item>
+        <item name="android:text"></item>
+    </style>
+
+    <style name="RosterMessageCounter_Stealth">
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">4dip</item>
+        <item name="android:layout_marginLeft">4dip</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">2dip</item>
+        <item name="android:paddingBottom">2dip</item>
+        <item name="android:paddingLeft">5dip</item>
+        <item name="android:paddingRight">5dip</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:background">@drawable/count_bcg_stealth</item>
+        <item name="android:text"></item>
+    </style>
+
+    <style name="RosterMessageCountDown">
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">4dip</item>
+        <item name="android:layout_marginLeft">4dip</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">2dip</item>
+        <item name="android:paddingBottom">2dip</item>
+        <item name="android:paddingLeft">5dip</item>
+        <item name="android:paddingRight">5dip</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:background">@drawable/count_bcg_crypto</item>
+        <item name="android:text"></item>
+    </style>
+
+    <style name="MyTabWidgetLight" parent="android:style/Widget.TabWidget">
+        <item name="android:textColor">@color/tab_text_selector_light</item>
+    </style>
+
+    <style name="MyTabWidgetDark" parent="android:style/Widget.TabWidget">
+        <item name="android:textColor">@color/tab_text_selector_dark</item>
+    </style>
+
+    <style name="MainChildPhotoDark">
+        <item name="android:background">#FF808080</item>
+    </style>
+
+    <style name="MainChildPhotoLight">
+        <item name="android:background">#FFA0A0A0</item>
+    </style>
+
+    <style name="MainChildNameDark">
+        <item name="android:background">#FFFCFFFF</item>
+        <item name="android:textColor">#FF404040</item>
+    </style>
+
+    <style name="MainChildNameLight">
+        <item name="android:background">#FF424649</item>
+        <item name="android:textColor">#FFE2E2E2</item>
+    </style>
+
+    <style name="MainChildNameDark.Crypto">
+        <item name="android:background">#FFFCFFFF</item>
+        <item name="android:textColor">#FFFF0000</item>
+    </style>
+
+    <style name="MainChildNameLight.Crypto">
+        <item name="android:background">#FF424649</item>
+        <item name="android:textColor">#FFE73C18</item>
+    </style>
+
+    <style name="MainChildNameDark.Stealth">
+        <item name="android:background">#FFFCFFFF</item>
+        <item name="android:textColor">#FF6A11A6</item>
+    </style>
+
+    <style name="MainChildNameLight.Stealth">
+        <item name="android:background">#FF424649</item>
+        <item name="android:textColor">#FFCF97F4</item>
+    </style>
+
+    <style name="chat_message">
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textColor">#f000</item>
+        <!-- <item name="android:textSize">13sp</item> -->
+        <item name="android:textSize">?attr/font_medium</item>
+    </style>
+
+    <style name="chat_date">
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textColor">#ff404040</item>
+        <!-- <item name="android:textSize">13sp</item> -->
+        <item name="android:textSize">?attr/font_xsmall</item>
+    </style>
+
+    <style name="chat_time">
+        <!-- <item name="android:textSize">10sp</item> -->
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textSize">?attr/font_xsmall</item>
+    </style>
+
+    <style name="chat_time.Light">
+        <!-- <item name="android:textColor">#ff404040</item> -->
+        <item name="android:textColor">#ffff</item>
+    </style>
+
+    <style name="chat_time.Dark">
+        <!-- <item name="android:textColor">#ff404040</item> -->
+        <item name="android:textColor">#ffff</item>
+    </style>
+
+    <style name="chat_from">
+        <item name="android:textColor">#ffff</item>
+        <!-- <item name="android:textSize">11sp</item> -->
+        <item name="android:textSize">?attr/font_xsmall</item>
+    </style>
+
+    <style name="FontStyle"></style>
+
+    <style name="FontStyle.Small">
+        <item name="font_xxsmall">10sp</item>
+        <item name="font_xsmall">12sp</item>
+        <item name="font_small">14sp</item>
+        <item name="font_medium">16sp</item>
+        <item name="font_large">18sp</item>
+        <item name="font_xlarge">20sp</item>
+    </style>
+
+    <style name="FontStyle.Medium">
+        <item name="font_xxsmall">14sp</item>
+        <item name="font_xsmall">16sp</item>
+        <item name="font_small">18sp</item>
+        <item name="font_medium">20sp</item>
+        <item name="font_large">22sp</item>
+        <item name="font_xlarge">24sp</item>
+    </style>
+
+    <style name="FontStyle.Large">
+        <item name="font_xxsmall">22sp</item>
+        <item name="font_xsmall">24sp</item>
+        <item name="font_small">26sp</item>
+        <item name="font_medium">28sp</item>
+        <item name="font_large">30sp</item>
+        <item name="font_xlarge">32sp</item>
+    </style>
+
+    <!--
+         <style name="Theme.Transparent" parent="Theme.Sherlock.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+     </style>
+    -->
+
+    <style name="CustomProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/custom_progressbar_horizontal</item>
+        <item name="android:minHeight">10dip</item>
+        <item name="android:maxHeight">20dip</item>
+    </style>
+
+    <style name="AboutDialogTextColor" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#808080</item>
+    </style>
+
+    <!-- Dexter -->
+    <style name="AppTheme2" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+    </style>
+
+    <style name="AppTitle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/title_font_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="PermissionButton">
+        <item name="android:background">@color/color_accent</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
+        <item name="android:layout_marginTop">@dimen/permission_button_margin_vertical</item>
+        <item name="android:layout_marginBottom">@dimen/permission_button_margin_vertical</item>
+    </style>
+
+    <style name="PermissionFeedback">
+        <item name="android:textColor">@color/permission_unknown</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginLeft">@dimen/feedback_margin_left</item>
+        <item name="android:layout_marginTop">@dimen/permission_feedback_margin_vertical</item>
+        <item name="android:layout_marginBottom">@dimen/permission_feedback_margin_vertical</item>
+    </style>
+
+</resources>

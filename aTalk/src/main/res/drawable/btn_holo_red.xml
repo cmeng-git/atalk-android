@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_window_focused="false" android:state_enabled="true"        
+        android:drawable="@drawable/alpha_red_01" />
+    <item android:state_window_focused="false" android:state_enabled="false"
+        android:drawable="@drawable/alpha_red_01" />
+    <item android:state_pressed="true"
+        android:drawable="@drawable/gradient_02" />
+    <item android:state_focused="true" android:state_enabled="true"
+        android:drawable="@drawable/alpha_red_01" />
+    <item android:state_enabled="true"
+        android:drawable="@drawable/alpha_red_01" />
+    <item android:state_enabled="false"
+        android:drawable="@drawable/greyshape" />
+    <item android:state_focused="true"
+        android:drawable="@drawable/alpha_red_01" />
+    <item
+         android:drawable="@drawable/alpha_red_01" />
+</selector>

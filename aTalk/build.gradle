@@ -1,0 +1,362 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "org.anarres.jarjar:jarjar-gradle:1.0.0" // jarjar.repackage
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'org.anarres.jarjar' // jarjar.repackage tool
+
+repositories {
+    jcenter()
+//    maven {
+//        // SNAPSHOT repository - need manual cleanup for new SNAPSHOT update:
+//       url 'https://oss.sonatype.org/content/repositories/snapshots'
+//    }
+    maven {
+        url 'https://jitpack.io'
+    }
+    maven {
+        url 'https://maven.google.com/'
+        name 'Google'
+    }
+}
+
+configurations {
+    jarjar2
+
+    // conflict with android internal classes
+    all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    all*.exclude group: 'xpp3', module: 'xpp3'
+}
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+
+    defaultConfig {
+        applicationId "org.atalk.android"
+        versionCode 1001
+        versionName "1.0.1" // no alphabet allowed (e.g. 0.8.7.a)
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.compileSdkVersion
+        multiDexEnabled true
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("${keystore}")
+            // keyAlias "atalk"
+            File propsFile = file("${secure_properties}")
+            if (propsFile.exists()) {
+                Properties props = new Properties()
+                props.load(new FileInputStream(propsFile))
+                storePassword props.getProperty('key.store.password')
+                keyAlias props.getProperty('key.store.alias')
+                keyPassword props.getProperty('key.alias.password')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            shrinkResources false
+            minifyEnabled false
+            // useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            buildConfigField "boolean", "DEVELOPER_MODE", "false"
+        }
+
+        debug {
+            debuggable true
+            minifyEnabled false
+            buildConfigField "boolean", "DEVELOPER_MODE", "true"
+        }
+    }
+
+    sourceSets {
+        main {
+            resources.srcDirs = ['src']
+
+            // to disable gradle automatic ndk-build call, which ignore our Android.mk
+            jni.srcDirs = []
+
+            // This is necessary if you have pre-compiled libraries .jar/.so in your project.
+            jniLibs.srcDirs = ['libs']
+        }
+
+        // Move the tests to tests/java, tests/res, etc...
+        instrumentTest.setRoot('tests')
+
+        // Move the build types to build-types/<type>
+        release.setRoot('build-types/release')
+    }
+
+    lintOptions {
+        abortOnError false
+        lintConfig file("lint.xml")
+    }
+
+    packagingOptions {
+        exclude 'jni/**'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'LICENSE.txt'
+    }
+}
+ext {
+    // Need manual cleanup for new SNAPSHOT update:
+    // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
+    smackVersion = '4.2.2'
+    // smackVersion = '4.2.2-SNAPSHOT'
+}
+
+dependencies {
+    jarjar2 'com.googlecode.jarjar:jarjar:1.3'
+
+    implementation project(':plugins:dnsjava')
+    implementation project(':plugins:ews-android-api')
+    implementation project(':plugins:easylocation')
+
+    // Java implementation dependency: ndkBuild & jarRepackage (avoid class conflict)
+    // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // direct import from local lib/bundles/*.jar
+    // must use local json-simple-1.1.1.jar - otherwise dependency conflict
+    // maven ice4j-2.0 not working for atalk
+    implementation files('lib/bundles/dhcp4java-1.00.jar')
+    implementation files('lib/bundles/ice4j-1.1.jar')
+    implementation files('lib/bundles/json-simple-1.1.1.jar')
+
+    implementation "com.android.support:support-v4:${rootProject.supportLibraryVersion}"
+    implementation "com.android.support:appcompat-v7:${rootProject.supportLibraryVersion}"
+    implementation "com.android.support:design:${rootProject.supportLibraryVersion}"
+    implementation 'com.android.support:multidex:1.0.2'
+
+    // libraries from maven repository
+    implementation 'ch.imvs:sdes4j:1.1.4'
+    // for android better picker
+    implementation 'com.code-troopers.betterpickers:library:3.1.0'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.karumi:dexter:4.2.0'
+    implementation 'com.github.yalantis:ucrop:2.2.1'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:7.5.1'
+    // when targeting Android API 23 and newer - class obsoleted
+    implementation 'cz.msebera.android:httpclient:4.4.1.2' // duplicate class
+    implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
+    implementation 'org.apache.commons:commons-lang3:3.6'
+    implementation 'org.bitlet:weupnp:0.1.4'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.57'
+    // (dependencies = core + prov)
+    implementation 'org.jmdns:jmdns:3.5.3'
+
+    // local /lib/smack library manual inclusion and dependencies
+//    implementation files('lib/smack/smack-android-4.2.2-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-android-extensions-4.2.2-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-bosh-4.2.2-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-compression-jzlib-4.2.2-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-core-4.2.2-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-experimental-4.2.2-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-extensions-4.2.2-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-im-4.2.2-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-legacy-4.2.2-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-resolver-minidns-4.2.2-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-sasl-provided-4.2.2-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-tcp-4.2.2-SNAPSHOT.jar')
+    implementation files('lib/smack/smack-omemo-4.2.2-SNAPSHOT.jar')
+    implementation files('lib/smack/smack-omemo-signal-4.2.2-SNAPSHOT.jar')
+    implementation 'org.whispersystems:signal-protocol-java:2.4.0'
+
+    // smack dependencies needed if use local libraries
+//    implementation 'org.igniterealtime.jbosh:jbosh:0.9.0'
+//    implementation 'de.measite.minidns:minidns-hla:0.2.4'
+
+    implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-compression-jzlib:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-experimental:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-im:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-legacy:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-resolver-minidns:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-sasl-provided:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-tcp:$smackVersion"
+
+//    implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
+//    implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
+
+    // keep for reference only
+    // Use jarjar.repackage in place of a dependency notation (destination file?).
+    //    implementation jarjar.repackage {
+    //        from "org.igniterealtime.smack:smack-omemo:$smackVersion"
+    //        classDelete 'org.jivesoftware.smackx.omemo.OmemoManager'
+    //    }
+
+    implementation 'org.jxmpp:jxmpp-jid:0.6.0'
+    // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
+
+    implementation 'org.osgi:osgi.core:6.0.0'
+    implementation "com.google.android.gms:play-services-location:${rootProject.gmsPlayServicesVersion}"
+    implementation "com.google.android.gms:play-services-maps:${rootProject.gmsPlayServicesVersion}"
+    implementation "com.google.android.gms:play-services-panorama:${rootProject.gmsPlayServicesVersion}"
+}
+
+task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
+    def ndkDir = android.ndkDirectory
+    def jniSrcDir = projectDir.toString() + "\\jni"
+
+    println '****************************************************************************************'
+    println "Main jni directory for NDK build => " + jniSrcDir
+    println '****************************************************************************************'
+
+    // APP_PLATFORM=android-15 for aTalk minimum SDK platform support i.e. API-15
+    // this setting if set takes priority over value set in jni/Application.mk
+    commandLine "$ndkDir/ndk-build",
+            '-C' + projectDir + '/jni',
+            '-j', Runtime.runtime.availableProcessors(),
+            'NDK_OUT=' + project.buildDir,
+            'NDK_LIBS_OUT=' + projectDir + '/libs/$(TARGET_ARCH_ABI)'
+            //'V=1'  // enable only for compilation debug only
+}
+
+task ndkClean(type: Exec, description: 'Clean JNI object files') {
+    def ndkDir = android.ndkDirectory
+    commandLine "$ndkDir/ndk-build",
+            '-C' + projectDir + '/jni',
+            'clean'
+}
+
+// renames packages to avoid conflict with android internal libraries
+task jarRepackage(type: Copy, description: 'Repackage jar to avoid conflict') {
+
+    project.ant {
+        taskdef name: "jarjar2", classname: 'com.tonicsystems.jarjar.JarJarTask',
+                classpath: configurations.jarjar2.asPath
+
+        jarjar2(jarfile: 'libs/dnssecjava-1.1.jar') {
+            zipfileset(src: 'lib/bundles/dnssecjava-1.1.jar')
+            rule pattern: 'org.jitsi.**',
+                    result: 'org.atalk.@1'
+        }
+
+        jarjar2(jarfile: 'libs/fmj-1.0.jar') {
+            zipfileset(src: 'lib/bundles/fmj-1.0.jar')
+            rule pattern: 'java.awt.**',
+                    result: 'org.atalk.android.util.java.awt.@1'
+            rule pattern: 'javax.swing.**',
+                    result: 'org.atalk.android.util.javax.swing.@1'
+            rule pattern: 'javax.sound.**',
+                    result: 'org.atalk.android.util.javax.sound.@1'
+            // remove extracted modules for changes
+            zap pattern: 'net.sf.fmj.media.RegistryDefaults'
+            zap pattern: 'javax.media.format.VideoFormat'
+            zap pattern: 'javax.media.Manager'
+            zap pattern: 'javax.media.Manager**'
+        }
+
+        // renaming this strings leads to Exception -
+        // ClassNotFoundException: org.atalk.gov.nist.org.atalk.javax.sip.header.HeaderFactoryImpl
+        // The cause is javax.sip.SipFactory constructing the header factories by name and
+        // renaming causes wrong classNames.
+        jarjar2(jarfile: 'libs/protocol-sip.jar') {
+            zipfileset(src: 'lib/bundles/protocol-sip.jar')
+            rule pattern: 'javax.sip.header.HeaderFactoryImpl',
+                    result: 'javax.sip.header.HeaderFactoryImpl'
+            rule pattern: 'javax.sip.message.MessageFactoryImpl',
+                    result: 'javax.sip.message.MessageFactoryImpl'
+            rule pattern: 'javax.sip.address.AddressFactoryImpl',
+                    result: 'javax.sip.address.AddressFactoryImpl'
+
+            rule pattern: 'javax.sip.**',
+                    result: 'org.atalk.javax.sip.@1'
+            rule pattern: 'gov.nist.core.**',
+                    result: 'org.atalk.gov.nist.core.@1'
+            rule pattern: 'gov.nist.javax.sdp.**',
+                    result: 'org.atalk.gov.nist.javax.sdp.@1'
+            rule pattern: 'gov.nist.javax.sip.**',
+                    result: 'org.atalk.gov.nist.javax.sip.@1'
+            rule pattern: 'java.awt.**',
+                    result: 'org.atalk.android.util.java.awt.@1'
+            rule pattern: 'org.jitsi.service.**',
+                    result: 'org.atalk.service.@1'
+        }
+
+        jarjar2(jarfile: 'libs/systray-service.jar') {
+            zipfileset(src: 'lib/bundles/systray-service.jar')
+            rule pattern: 'org.jitsi.**',
+                    result: 'org.atalk.@1'
+        }
+
+        jarjar2(jarfile: 'libs/ui-service.jar') {
+            zipfileset(src: 'lib/bundles/ui-service.jar')
+            rule pattern: 'java.awt.**',
+                    result: 'org.atalk.android.util.java.awt.@1'
+            rule pattern: 'javax.swing.**',
+                    result: 'org.atalk.android.util.javax.swing.@1'
+            rule pattern: 'javax.sound.**',
+                    result: 'org.atalk.android.util.javax.sound.@1'
+            rule pattern: 'org.jitsi.**',
+                    result: 'org.atalk.@1'
+            zap pattern: 'net.java.sip.communicator.service.gui.AccountRegistrationWizard'
+        }
+
+        jarjar2(jarfile: 'libs/util.jar') {
+            zipfileset(src: 'lib/bundles/util.jar')
+            rule pattern: 'org.jitsi.**',
+                    result: 'org.atalk.@1'
+            zap pattern: 'net.java.sip.communicator.util.SRVRecord'
+        }
+        jarjar2(jarfile: 'libs/zrtp4j-light-4.1.0.jar') {
+            zipfileset(src: 'lib/bundles/zrtp4j-light-4.1.0.jar')
+            rule pattern: 'org.jitsi.**',
+                    result: 'org.atalk.@1'
+        }
+    }
+}
+
+task updateVersionFile(type: Copy) {
+    description '<!-- Generate versionupdate.properties file -->'
+
+    def versionName = android.defaultConfig.versionName
+    def versionCode = android.defaultConfig.versionCode
+    def date = new Date()
+    // ******************************************
+    println "*** " + description
+    println "# Date: " + date
+    println "# last_version = " + versionName
+    println "# last_version_code = " + versionCode
+
+    outputs.upToDateWhen {
+        false
+    }
+    from('lib/versionupdate.properties') {
+        // Substitute property tokens in files
+        expand(DATE: date, BUILD_VERSION: versionName, BUILD_VERSION_CODE: versionCode)
+    }
+    into 'build/outputs/apk'
+}
+
+tasks.withType(JavaCompile) {
+        // cmeng - need to perform setup libs (first time & after clean)
+    compileTask -> compileTask.dependsOn ndkBuild, jarRepackage
+}
+
+// will clean /libs/armeabi/*.so
+clean.dependsOn 'ndkClean'
+build.dependsOn 'updateVersionFile'
+
+// not require in android studio - can be removed
+task run(type: Exec, dependsOn: 'installDebug') {
+    // windows: adb + environment setup
+    commandLine 'cmd', '/c', 'adb', 'shell', 'am', 'start', '-n', 'org.atalk/.android.gui.LauncherActivity', '-D'
+}
