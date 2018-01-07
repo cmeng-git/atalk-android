@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/muc_invite"
+        android:icon="@drawable/ic_add_to_chat_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_INVITE">
+    </item>
+    <item
+        android:id="@+id/send_file"
+        android:icon="@drawable/ic_attachment_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_FILE_SEND_TO">
+    </item>
+    <item
+        android:id="@+id/call_contact"
+        android:icon="@drawable/chatcall_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_CALL">
+    </item>
+    <item
+        android:id="@+id/send_location"
+        android:icon="@drawable/ic_location_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_GEO_SEND">
+    </item>
+    <item
+        android:id="@+id/gps_tracker"
+        android:title="@string/service_gui_GPS_TRACKER"
+        android:visible="false">
+    </item>
+    <item
+        android:id="@+id/erase_chat_history"
+        android:title="@string/service_gui_HISTORY_ERASE_PER_CONTACT">
+    </item>
+    <item
+        android:id="@+id/destroy_chat_room"
+        android:title="@string/service_gui_DESTROY_CHATROOM"
+        android:visible="false">
+    </item>
+    <item
+        android:id="@+id/show_chat_room_occupant"
+        android:title="@string/service_gui_CHATROOM_OCCUPANT"
+        android:visible="false">
+    </item>
+
+</menu>

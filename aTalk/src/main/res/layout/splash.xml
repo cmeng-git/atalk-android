@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/splash_screen"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/color_primary"
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical"
+    android:visibility="visible" >
+
+    <ImageView
+        android:id="@+id/loadingImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_logo"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/textViewPowerBy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/alpha_white_border_01"
+        android:layout_marginTop="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/PoweredBy"
+        android:textColor="#ffff" />
+
+    <TextView
+        android:id="@+id/restoring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/clickable_toast_bg"
+        android:layout_marginTop="@dimen/between_padding"
+        android:padding="@dimen/between_padding"
+        android:text="@string/service_gui_RESTORING"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</LinearLayout>

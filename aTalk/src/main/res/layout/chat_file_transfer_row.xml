@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants">
+
+    <RelativeLayout
+        android:id="@+id/incomingAvatarView"
+        android:layout_width="@dimen/chat_avatar"
+        android:layout_height="@dimen/chat_avatar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="5dip"
+        android:layout_marginStart="5dip">
+
+        <ImageButton
+            android:id="@+id/button_file"
+            android:layout_width="64sp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="{toolTip}"
+            android:src="@drawable/file_icon" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/msg_body_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dip"
+        android:layout_marginLeft="@dimen/chat_text_margin"
+        android:layout_marginRight="30dip"
+        android:layout_marginStart="@dimen/chat_text_margin"
+        android:layout_toEndOf="@+id/incomingAvatarView"
+        android:layout_toRightOf="@+id/incomingAvatarView"
+        android:background="@drawable/filexfer_bg"
+        android:orientation="vertical"
+        android:padding="5dip">
+
+        <TextView
+            android:id="@+id/filexferTitleView"
+            style="@style/SmallFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:padding="5dip"
+            android:text="{Title text}"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/filexferFileNameView"
+            style="@style/SmallFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:paddingBottom="5dip"
+            android:paddingLeft="5dip"
+            android:paddingStart="5dip"
+            android:text="{FileName text}"
+            android:textColor="@color/grey" />
+
+        <TextView
+            android:id="@+id/errorView"
+            style="@style/SmallFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:paddingLeft="5dip"
+            android:paddingStart="5dip"
+            android:text="{Error text}"
+            android:textColor="@color/red"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/file_progressbar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_gravity="center_horizontal"
+            android:padding="5dip"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/file_progressSpeed"
+            style="@style/SmallFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/chat_text_margin"
+            android:layout_marginStart="@dimen/chat_text_margin"
+            android:gravity="start"
+            android:paddingLeft="5dip"
+            android:paddingStart="5dip"
+            android:text="{Transfer Speed}"
+            android:textColor="@color/blue"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/file_estTime"
+            style="@style/SmallFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/chat_text_margin"
+            android:layout_marginStart="@dimen/chat_text_margin"
+            android:gravity="start"
+            android:paddingLeft="5dip"
+            android:paddingStart="5dip"
+            android:paddingTop="5dip"
+            android:text="{Time left}"
+            android:textColor="@color/blue"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_accept"
+                style="@style/ButtonTop"
+                android:drawableLeft="@drawable/ic_accept"
+                android:drawableStart="@drawable/ic_accept"
+                android:text="@string/service_gui_ACCEPT"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/button_reject"
+                style="@style/ButtonTop"
+                android:drawableLeft="@drawable/ic_reject"
+                android:drawableStart="@drawable/ic_cancel"
+                android:text="@string/service_gui_REJECT"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/button_retry"
+                style="@style/ButtonTop"
+                android:drawableLeft="@drawable/ic_retry"
+                android:drawableStart="@drawable/ic_retry"
+                android:text="@string/service_gui_RETRY"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/buttonCancel"
+                style="@style/ButtonTop"
+                android:drawableLeft="@drawable/ic_cancel"
+                android:drawableStart="@drawable/ic_cancel"
+                android:text="@string/service_gui_CANCEL"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/button_openfile"
+                style="@style/ButtonTop"
+                android:drawableLeft="@drawable/ic_file_dark"
+                android:drawableStart="@drawable/ic_file_dark"
+                android:text="@string/service_gui_OPEN"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/button_openfolder"
+                style="@style/ButtonTop"
+                android:drawableLeft="@drawable/ic_folder"
+                android:drawableStart="@drawable/ic_folder"
+                android:text="@string/service_gui_OPEN_FOLDER"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/xferTimeView"
+            style="@style/SmallFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingBottom="7dip"
+            android:paddingLeft="7dip"
+            android:paddingRight="7dip"
+            android:textColor="@color/grey"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/filexferArrowView"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/chat_arrow_height"
+        android:layout_alignLeft="@+id/msg_body_layout"
+        android:layout_alignStart="@+id/msg_body_layout"
+        android:layout_marginLeft="-10dp"
+        android:layout_marginStart="-10dp"
+        android:layout_marginTop="@dimen/chat_arrow_top"
+        android:src="@drawable/filexferarrowout" />
+
+</RelativeLayout>

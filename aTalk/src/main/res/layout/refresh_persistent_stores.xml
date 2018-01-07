@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/theme_background"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
+    <TextView
+        android:id="@+id/textHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_REFRESH_STORES_HINT"
+        android:textAppearance="@style/MediumFont" />
+
+    <CheckBox
+        android:id="@+id/cb_roster"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_REFRESH_STORES_ROSTER" />
+
+    <CheckBox
+        android:id="@+id/cb_caps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_REFRESH_STORES_CAPS" />
+
+    <CheckBox
+        android:id="@+id/cb_discoInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_REFRESH_STORES_DISCINFO" />
+
+    <CheckBox
+        android:id="@+id/cb_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_REFRESH_STORES_AVATAR" />
+
+    <CheckBox
+        android:id="@+id/cb_omemo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_REFRESH_STORES_OMEMO" />
+
+    <CheckBox
+        android:id="@+id/cb_export_database"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_EXPORT_SQL_DB"
+        android:visibility="gone" />
+
+    <CheckBox
+        android:id="@+id/cb_del_database"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_PURGE_SQL_DB"
+        android:visibility="gone" />
+
+    <CheckBox
+        android:id="@+id/cb_debug_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_PURGE_DEBUG_LOG" />
+
+</LinearLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/otr_padlock"
+          android:title="@string/plugin_otr_menu_OTR_TOOLTIP"
+          android:icon="@drawable/encrypted_unsecure_dark"
+          android:showAsAction="always">
+    </item>
+    <!--  android:menuCategory="system"
+          android:orderInCategory="1"
+    --> 
+</menu>

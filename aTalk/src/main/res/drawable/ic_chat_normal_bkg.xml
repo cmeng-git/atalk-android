@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/chat_normal_bkg" android:tileMode="repeat" >
+
+</bitmap> -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="rectangle">    
+    <solid android:color="#ff87A2B5"/>
+    
+</shape>

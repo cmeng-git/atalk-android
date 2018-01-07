@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/call_background">
+
+    <TextView
+        android:id="@+id/audioVideoLabel"
+        style="@style/CallInfo.SectionHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/call_status_bg"
+        android:text="@string/service_gui_callinfo_AUDIO_INFO" />
+
+    <TextView
+        android:id="@+id/mediaStreamLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/audioVideoLabel"
+        android:text="@string/service_gui_callinfo_MEDIA_STREAM_TRANSPORT_PROTOCOL" />
+
+    <TextView
+        android:id="@+id/mediaTransport"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mediaStreamLabel"
+        android:text="XXX / XXX (Key exchange protocol: XXX YYY-ZZ-XXX/YYY)" />
+
+    <TextView
+        android:id="@+id/videoSizeLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mediaTransport"
+        android:text="@string/service_gui_callinfo_VIDEO_SIZE" />
+
+    <TextView
+        android:id="@+id/videoSize"
+        style="@style/CallInfo.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mediaTransport"
+        android:layout_toEndOf="@+id/videoSizeLabel"
+        android:layout_toRightOf="@+id/videoSizeLabel"
+        android:text="↓ YYxYY ↑ YYxYY" />
+
+    <TextView
+        android:id="@+id/codecLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/videoSizeLabel"
+        android:text="@string/service_gui_callinfo_CODEC" />
+
+    <TextView
+        android:id="@+id/codec"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/codecLabel"
+        android:text="Xxxxx / Yyyyy Hz" />
+
+    <TextView
+        android:id="@+id/iceExtTypeLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/codec"
+        android:singleLine="false"
+        android:text="@string/service_gui_callinfo_ICE_CANDIDATE_EXTENDED_TYPE" />
+
+    <TextView
+        android:id="@+id/iceExtType"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceExtTypeLabel"
+        android:text="ICE ext cand type" />
+
+    <TextView
+        android:id="@+id/localHostLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceExtType"
+        android:text="@string/service_gui_callinfo_ICE_LOCAL_HOST_ADDRESS" />
+
+    <TextView
+        android:id="@+id/iceLocalHost"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/localHostLabel"
+        android:text="xxx.xxx.xxx.xxx / xxxx" />
+
+    <TextView
+        android:id="@+id/iceRemoteHostLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceLocalHost"
+        android:text="@string/service_gui_callinfo_ICE_REMOTE_HOST_ADDRESS" />
+
+    <TextView
+        android:id="@+id/iceRemoteHost"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceRemoteHostLabel"
+        android:text="xxx.xxx.xxx.xxx / xxxx" />
+
+    <TextView
+        android:id="@+id/iceLocalReflxLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceRemoteHost"
+        android:singleLine="false"
+        android:text="@string/service_gui_callinfo_ICE_LOCAL_REFLEXIVE_ADDRESS" />
+
+    <TextView
+        android:id="@+id/iceLocalReflx"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceLocalReflxLabel"
+        android:text="xxx.xxx.xxx.xxx / xxxx" />
+
+    <TextView
+        android:id="@+id/iceLocalRelayedLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceLocalReflx"
+        android:singleLine="false"
+        android:text="@string/service_gui_callinfo_ICE_LOCAL_RELAYED_ADDRESS" />
+
+    <TextView
+        android:id="@+id/iceLocalRelayed"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceLocalRelayedLabel"
+        android:text="xxx.xxx.xxx.xxx / xxxx" />
+
+    <TextView
+        android:id="@+id/iceRemoteRelayedLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceLocalRelayed"
+        android:singleLine="false"
+        android:text="@string/service_gui_callinfo_ICE_REMOTE_RELAYED_ADDRESS" />
+
+    <TextView
+        android:id="@+id/iceRemoteRelayed"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceRemoteRelayedLabel"
+        android:text="xxx.xxx.xxx.xxx / xxxx" />
+
+    <TextView
+        android:id="@+id/iceRemoteReflxLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceRemoteRelayed"
+        android:singleLine="false"
+        android:text="@string/service_gui_callinfo_ICE_REMOTE_REFLEXIVE_ADDRESS" />
+
+    <TextView
+        android:id="@+id/iceRemoteReflexive"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceRemoteReflxLabel"
+        android:text="xxx.xxx.xxx.xxx / xxxx" />
+
+    <TextView
+        android:id="@+id/localIpLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iceRemoteReflexive"
+        android:singleLine="false"
+        android:text="@string/service_gui_callinfo_LOCAL_IP" />
+
+    <TextView
+        android:id="@+id/localIp"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/localIpLabel"
+        android:text="xxx.xxx.xxx.xxx / xxxx" />
+
+    <TextView
+        android:id="@+id/remoteIpLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/localIp"
+        android:singleLine="false"
+        android:text="@string/service_gui_callinfo_REMOTE_IP" />
+
+    <TextView
+        android:id="@+id/remoteIp"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/remoteIpLabel"
+        android:text="xxx.xxx.xxx.xxx / xxxx" />
+
+    <TextView
+        android:id="@+id/bandwidthLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/remoteIp"
+        android:text="@string/service_gui_callinfo_BANDWITH" />
+
+    <TextView
+        android:id="@+id/bandwidth"
+        style="@style/CallInfo.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/remoteIp"
+        android:layout_toRightOf="@+id/bandwidthLabel"
+        android:text="↓ xx Kbps ↑ xx Kbps" />
+
+    <TextView
+        android:id="@+id/lossRateLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bandwidthLabel"
+        android:text="@string/service_gui_callinfo_LOSS_RATE" />
+
+    <TextView
+        android:id="@+id/lossRate"
+        style="@style/CallInfo.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bandwidthLabel"
+        android:layout_toEndOf="@+id/lossRateLabel"
+        android:layout_toRightOf="@+id/lossRateLabel"
+        android:text="↓ xx% ↑ xx%" />
+
+    <TextView
+        android:id="@+id/decodedWithFecLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lossRateLabel"
+        android:text="@string/service_gui_callinfo_DECODED_WITH_FEC" />
+
+    <TextView
+        android:id="@+id/decodedWithFEC"
+        style="@style/CallInfo.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lossRateLabel"
+        android:layout_toEndOf="@+id/decodedWithFecLabel"
+        android:layout_toRightOf="@+id/decodedWithFecLabel"
+        android:text="xx" />
+
+    <TextView
+        android:id="@+id/discarderPercentLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/decodedWithFecLabel"
+        android:text="@string/service_gui_callinfo_DISCARDED_PERCENT" />
+
+    <TextView
+        android:id="@+id/discardedPercent"
+        style="@style/CallInfo.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/decodedWithFecLabel"
+        android:layout_toRightOf="@+id/discarderPercentLabel"
+        android:layout_toEndOf="@+id/discarderPercentLabel"
+        android:text="xx%" />
+
+    <TextView
+        android:id="@+id/discarderTotalLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/discarderPercentLabel"
+        android:text="@string/service_gui_callinfo_DISCARDED_TOTAL" />
+
+    <TextView
+        android:id="@+id/discardedTotal"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/discarderTotalLabel"
+        android:text="xx (xx late, xx full, xx shrink, xx reset)" />
+
+    <TextView
+        android:id="@+id/adaptJitterLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/discardedTotal"
+        android:text="@string/service_gui_callinfo_ADAPTIVE_JITTER_BUFFER" />
+
+    <TextView
+        android:id="@+id/adaptiveJitterBuffer"
+        style="@style/CallInfo.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/discardedTotal"
+        android:layout_toEndOf="@+id/adaptJitterLabel"
+        android:layout_toRightOf="@+id/adaptJitterLabel"
+        android:text="enabled" />
+
+    <TextView
+        android:id="@+id/jitterBuffLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/adaptJitterLabel"
+        android:text="@string/service_gui_callinfo_JITTER_BUFFER_DELAY" />
+
+    <TextView
+        android:id="@+id/jitterBuffer"
+        style="@style/CallInfo.ValueSingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/jitterBuffLabel"
+        android:text="~xxms; currently in queue: xx/xx packets" />
+
+    <TextView
+        android:id="@+id/rttLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/jitterBuffer"
+        android:text="@string/service_gui_callinfo_RTT" />
+
+    <TextView
+        android:id="@+id/RTT"
+        style="@style/CallInfo.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/jitterBuffer"
+        android:layout_toRightOf="@+id/rttLabel"
+        android:layout_toEndOf="@+id/rttLabel"
+        android:text="xx ms" />
+
+    <TextView
+        android:id="@+id/jitterLabel"
+        style="@style/CallInfo.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rttLabel"
+        android:singleLine="false"
+        android:text="@string/service_gui_callinfo_JITTER" />
+
+    <TextView
+        android:id="@+id/jitter"
+        style="@style/CallInfo.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rttLabel"
+        android:layout_toRightOf="@+id/jitterLabel"
+        android:layout_toEndOf="@+id/jitterLabel"
+        android:text="↓ xx ms ↑ xx ms" />
+</RelativeLayout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/avatar_ChoosePicture"
+        android:title="@string/service_gui_avatar_CHOOSE_ICON">
+    </item>
+    <item
+        android:id="@+id/avatar_RemovePicture"
+        android:title="@string/service_gui_avatar_REMOVE_ICON">
+    </item>
+    <item
+        android:id="@+id/avatar_Cancel"
+        android:title="@string/service_gui_CANCEL">
+    </item>
+</menu>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/status_spin_height"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/presenceStatusIconView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/presenceStatusNameView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/presenceStatusNameView"
+        android:layout_centerVertical="true"
+        android:layout_gravity="start|center_vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/jabber_status_ffc" />
+
+    <TextView
+        android:id="@+id/presenceStatusNameView"
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/presenceStatusIconView"
+        android:layout_toRightOf="@id/presenceStatusIconView"
+        android:text="Offline" />
+</RelativeLayout>

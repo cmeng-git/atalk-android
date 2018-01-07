@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="AppStyles">
+        <attr name="iconActionDelete" format="reference" />
+        <attr name="iconActionMove" format="reference" />
+        <attr name="iconActionCopy" format="reference" />
+        <attr name="iconActionSearch" format="reference" />
+        <attr name="iconActionSend" format="reference" />
+        <attr name="iconActionSettings" format="reference" />
+        <attr name="iconActionAbout" format="reference" />
+        <attr name="iconActionAdd" format="reference" />
+        <attr name="iconActionSelectAll" format="reference" />
+        <attr name="iconActionCancel" format="reference" />
+        <attr name="iconActionExpand" format="reference" />
+        <attr name="iconActionCollapse" format="reference" />
+        <attr name="backgroundColorChooseAccountHeader" format="color" />
+        <attr name="messageListSelectedBackgroundColor" format="reference|color" />
+
+        <attr name="tintColorBulletPointPositive" format="reference|color"/>
+        <attr name="tintColorBulletPointNeutral" format="reference|color"/>
+        <attr name="tintColorBulletPointNegative" format="reference|color"/>
+    </declare-styleable>
+
+    <declare-styleable name="TouchInterceptor">
+        <attr name="itemHeight" format="dimension" />
+        <attr name="itemExpandedHeight" format="dimension" />
+        <attr name="dragRegionStartX" format="dimension" />
+        <attr name="dragRegionEndX" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="ConfigWidget">
+        <attr name="storeInNewThread" format="boolean" />
+        <attr name="mapSummary" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ConfigEditText">
+        <attr name="intMax" format="integer" />
+        <attr name="intMin" format="integer" />
+        <attr name="floatMax" format="float" />
+        <attr name="floatMin" format="float" />
+        <attr name="allowEmpty" format="boolean" />
+        <attr name="editable" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ConfigListPreference">
+        <attr name="disableDependentsValue" format="string" />
+        <attr name="disableOnNotEqualValue" format="boolean" />
+    </declare-styleable>
+
+    <!-- View styles -->
+    <attr name="MainGroup" format="reference" />
+    <attr name="MainChild" format="reference" />
+    <attr name="ErrorView" format="reference" />
+    <attr name="dialogTextColor" format="reference" />
+
+    <!-- Attributes -->
+    <attr name="ChatMsgHeaderMeColor" format="reference|color" />
+    <attr name="ChatMsgHeaderYouColor" format="reference|color" />
+    <attr name="OnlineFriends" format="reference" />
+    <attr name="AllFriends" format="reference" />
+
+    <attr name="color_text_primary" format="reference|color" />
+    <attr name="color_text_secondary" format="reference|color" />
+
+    <attr name="color_background_secondary" format="reference|color" />
+    <attr name="color_background_primary" format="reference|color" />
+
+    <attr name="ChatNewMessageColor" format="reference|color" />
+    <attr name="ChatStoredMessageColor" format="reference|color" />
+    <attr name="ChatTitleColor_Normal" format="reference|color" />
+    <attr name="ChatTitleColor_Crypto" format="reference|color" />
+    <attr name="ChatTitleColor_Stealth" format="reference|color" />
+
+    <attr name="MyTabWidget" format="reference" />
+    <attr name="MyTabContentBkg" format="reference|color" />
+    <attr name="MainChildPhoto" format="reference" />
+    <attr name="MainChildName" format="reference" />
+    <attr name="ChatListRowNormal" format="reference" />
+    <attr name="ChatListRowCrypto" format="reference" />
+    <attr name="ChatListRowStealth" format="reference" />
+    <attr name="chat_time" format="reference" />
+    <attr name="MainWindow_NewMsg_Normal_Color" format="reference|color"/>
+    <attr name="MainWindow_NewMsg_Crypto_Color" format="reference|color"/>
+    <attr name="MainWindow_NewMsg_Stealth_Color" format="reference|color"/>
+
+    <attr name="infocard_border" format="reference"/>
+
+    <declare-styleable name="FontStyle">
+        <attr name="font_xxsmall" format="dimension" />
+        <attr name="font_xsmall" format="dimension" />
+        <attr name="font_small" format="dimension" />
+        <attr name="font_medium" format="dimension" />
+        <attr name="font_large" format="dimension" />
+        <attr name="font_xlarge" format="dimension" />
+
+        <attr name="TextSizeInfo" format="dimension" />
+        <attr name="TextSizeBody" format="dimension" />
+        <attr name="TextSizeHeadline" format="dimension" />
+    </declare-styleable>
+
+</resources>

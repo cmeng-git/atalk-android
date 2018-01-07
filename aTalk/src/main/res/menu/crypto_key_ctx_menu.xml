@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/generate"
+          android:title="@string/crypto_menu_KEY_GENERATE">
+    </item>
+    <item android:id="@+id/regenerate"
+          android:title="@string/crypto_menu_KEY_REGENERATE">
+    </item>
+    <item android:id="@+id/copy"
+          android:title="@string/crypto_menu_COPY_FINGERPRINT">
+    </item>
+</menu>

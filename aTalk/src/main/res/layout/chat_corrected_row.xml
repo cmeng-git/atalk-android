@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants">
+
+    <RelativeLayout
+        android:id="@+id/outgoingAvatarView"
+        android:layout_width="@dimen/chat_avatar"
+        android:layout_height="@dimen/chat_avatar"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="5dip"
+        android:layout_marginRight="5dip">
+
+        <ImageView
+            android:id="@+id/outgoingAvatarIcon"
+            android:layout_width="@dimen/chat_avatar"
+            android:layout_height="fill_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="1px"
+            android:layout_marginRight="1px"
+            android:src="@drawable/avatar" />
+
+        <ImageView
+            android:id="@+id/outgoingStatusIcon"
+            android:layout_width="18dip"
+            android:layout_height="18dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/contact_offline" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/outgoingMessageHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/outgoingAvatarView"
+        android:layout_toStartOf="@+id/outgoingAvatarView"
+        android:background="@drawable/message_holder_correction"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/outgoingMessageView"
+            style="@style/MediumFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/chat_text_margin"
+            android:layout_marginRight="@dimen/chat_text_margin"
+            android:gravity="end"
+            android:padding="7dip"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/outgoingTimeView"
+            style="@style/SmallFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/chat_text_margin"
+            android:layout_marginRight="@dimen/chat_text_margin"
+            android:gravity="end"
+            android:paddingBottom="7dip"
+            android:paddingLeft="7dip"
+            android:paddingRight="7dip"
+            android:textColor="@color/grey"
+            tools:ignore="RtlHardcoded" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/messageArrowView"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/chat_arrow_height"
+        android:layout_marginLeft="-6dp"
+        android:layout_marginStart="-6dp"
+        android:layout_marginTop="@dimen/chat_arrow_top"
+        android:layout_toEndOf="@+id/outgoingMessageHolder"
+        android:layout_toRightOf="@+id/outgoingMessageHolder"
+        android:src="@drawable/messagearrowout_correction_dark" />
+
+</RelativeLayout>

@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/accountInfo_layout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="5dp">
+
+    <RelativeLayout
+        android:id="@+id/avatar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/avatar_Hint"
+            style="@style/MediumFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:gravity="center_vertical|start"
+            android:text="@string/service_gui_AVATAR_HINT"/>
+
+        <EditText
+            android:id="@+id/ai_ImageUrl"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/accountAvatar"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_below="@+id/avatar_Hint"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/personphoto"/>
+
+        <Spinner
+            android:id="@+id/presenceStatusSpinner"
+            android:layout_width="fill_parent"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/accountAvatar"
+            android:layout_toEndOf="@+id/accountAvatar"
+            android:layout_toRightOf="@+id/accountAvatar"
+            android:layout_alignEnd="@+id/statusMessage"
+            android:layout_alignRight="@+id/statusMessage"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:spinnerMode="dropdown"/>
+
+        <EditText
+            android:id="@+id/statusMessage"
+            style="@style/MediumFont"
+            android:layout_width="@dimen/status_screen_width"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/accountAvatar"
+            android:layout_toEndOf="@+id/accountAvatar"
+            android:layout_toRightOf="@+id/accountAvatar"
+            android:layout_below="@+id/presenceStatusSpinner"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_vertical"
+            android:focusable="true"
+            android:hint="@string/service_gui_EDIT_STATUS_MSG_TIP"
+            android:inputType="textCapSentences|textMultiLine"/>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:padding="5dp">
+
+            <LinearLayout
+                android:id="@+id/ai_DisplayName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_DisplayName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_DISPLAY_NAME"/>
+
+                <EditText
+                    android:id="@+id/ai_DisplayNameField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_FirstName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_FirstName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_FIRST_NAME"/>
+
+                <EditText
+                    android:id="@+id/ai_FirstNameField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_MiddleName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_MiddleName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_MIDDLE_NAME"/>
+
+                <EditText
+                    android:id="@+id/ai_MiddleNameField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_LastName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_LastName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_LAST_NAME"/>
+
+                <EditText
+                    android:id="@+id/ai_LastNameField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_NickName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_NickName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_NICKNAME"/>
+
+                <EditText
+                    android:id="@+id/ai_NickNameField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_URL_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_URL"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_URL"/>
+
+                <EditText
+                    android:id="@+id/ai_URLField"
+                    style="@style/MediumFont"
+                    android:inputType="textUri"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/service_gui_URL_HINT"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_Gender_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_Gender"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_GENDER"/>
+
+                <EditText
+                    android:id="@+id/ai_GenderField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_BirthDate_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_BirthDate"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/plugin_accountinfo_BDAY"/>
+
+                <EditText
+                    android:id="@+id/ai_BirthDateField"
+                    style="@style/MediumFont"
+                    android:inputType="date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:maxLines="1"/>
+
+                <ImageView
+                    android:id="@+id/datePicker"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_calender"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_Age_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_Age"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_AGE"/>
+
+                <EditText
+                    android:id="@+id/ai_AgeField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_StreetAddress_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_StreetAddress"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_STREET"/>
+
+                <EditText
+                    android:id="@+id/ai_StreetAddressField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_City_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_City"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_CITY"/>
+
+                <EditText
+                    android:id="@+id/ai_CityField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_Region_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_Region"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_REGION"/>
+
+                <EditText
+                    android:id="@+id/ai_RegionField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_PostalCode_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_PostalCode"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_POST"/>
+
+                <EditText
+                    android:id="@+id/ai_PostalCodeField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_Country_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_Country"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_COUNTRY"/>
+
+                <EditText
+                    android:id="@+id/ai_CountryField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_EMail_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_EMail"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_EMAIL"/>
+
+                <EditText
+                    android:id="@+id/ai_EMailField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_WorkEmail_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_WorkEmail"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_WORK_EMAIL"/>
+
+                <EditText
+                    android:id="@+id/ai_WorkEmailField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_Phone_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_Phone"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_PHONE"/>
+
+                <EditText
+                    android:id="@+id/ai_PhoneField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_WorkPhone_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_WorkPhone"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_WORK_PHONE"/>
+
+                <EditText
+                    android:id="@+id/ai_WorkPhoneField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_MobilePhone_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_MobilePhone"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_MOBILE_PHONE"/>
+
+                <EditText
+                    android:id="@+id/ai_MobilePhoneField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_OrganizationName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_OrganizationName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_ORGANIZATION"/>
+
+                <EditText
+                    android:id="@+id/ai_OrganizationNameField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_JobTitle_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ai_JobTitle"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_JOB_TITLE"/>
+
+                <EditText
+                    android:id="@+id/ai_JobTitleField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ai_AboutMe_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/ai_AboutMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/plugin_accountinfo_ABOUT_ME"/>
+
+                <EditText
+                    android:id="@+id/ai_AboutMeField"
+                    style="@style/MediumFont"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="@string/plugin_accountinfo_ABOUT_ME_HINT"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/button_Container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_Cancel"
+            style="@style/ButtonTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/service_gui_CANCEL"/>
+
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible"/>
+
+        <Button
+            android:id="@+id/button_Apply"
+            style="@style/ButtonTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/service_gui_APPLY"/>
+    </LinearLayout>
+</LinearLayout>

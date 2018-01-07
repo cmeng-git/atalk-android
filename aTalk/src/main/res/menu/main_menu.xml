@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/search"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@drawable/search_dark"
+        android:showAsAction="always|collapseActionView"
+        android:title="@string/service_gui_ENTER_NAME_OR_NUMBER">
+    </item>
+    <item
+        android:id="@+id/add_chat_room"
+        android:icon="@drawable/ic_chat_room_add_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_CHAT_ROOM_JOIN">
+    </item>
+    <item
+        android:id="@+id/create_videobridge"
+        android:icon="@drawable/ic_videobridge"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_CREATE_VIDEO_BRIDGE"
+        android:visible="false">
+    </item>
+    <item
+        android:id="@+id/show_hide_offline"
+        android:icon="@drawable/show_hide_offline_light"
+        android:title="@string/service_gui_HIDE_OFFLINE_CONTACTS">
+    </item>
+    <item
+        android:id="@+id/add_contact"
+        android:icon="@drawable/addcontact_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_ADD_CONTACT">
+    </item>
+    <item
+        android:id="@+id/main_settings"
+        android:title="@string/system_settings">
+    </item>
+    <item
+        android:id="@+id/account_settings"
+        android:title="@string/service_gui_ACCOUNT_SETTINGS">
+    </item>
+    <item
+        android:id="@+id/sign_in_off"
+        android:title="@string/service_gui_SIGN_OUT">
+    </item>
+    <item
+        android:id="@+id/about"
+        android:icon="?attr/iconActionAbout"
+        android:title="@string/About_action" >
+    </item>
+</menu>

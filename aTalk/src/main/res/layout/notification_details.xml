@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:padding="10dp"
+        android:text="[Some detailed event description text explaining when it&apos;s being fired]"
+        android:textAppearance="@style/MediumFont"
+        android:visibility="gone" />
+
+    <CheckBox
+        android:id="@+id/popup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="5dp"
+        android:onClick="onPopupClicked"
+        android:text="@string/plugin_notificationconfig_popup_notification"
+        android:textAppearance="@style/MediumFont" />
+
+    <CheckBox
+        android:id="@+id/soundNotification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="5dp"
+        android:onClick="onSoundNotificationClicked"
+        android:text="@string/plugin_notificationconfig_notification_sound"
+        android:textAppearance="@style/MediumFont" />
+
+    <CheckBox
+        android:id="@+id/soundPlayback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="5dp"
+        android:onClick="onSoundPlaybackClicked"
+        android:text="@string/plugin_notificationconfig_playback_sound"
+        android:textAppearance="@style/MediumFont" />
+
+    <CheckBox
+        android:id="@+id/vibrate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="5dp"
+        android:onClick="onVibrateClicked"
+        android:text="@string/plugin_notificationconfig_vibration"
+        android:textAppearance="@style/MediumFont" />
+
+</LinearLayout>

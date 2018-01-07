@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contactInfo_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <RelativeLayout
+        android:id="@+id/avatar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <ImageView
+            android:id="@+id/contactAvatar"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/personphoto" />
+
+        <ImageView
+            android:id="@+id/presenceStatusIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/contactAvatar"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@+id/contactAvatar"
+            android:layout_toRightOf="@+id/contactAvatar"
+            android:src="@drawable/jabber_status_ffc" />
+
+        <TextView
+            android:id="@+id/presenceStatusName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/presenceStatusIcon"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/presenceStatusIcon"
+            android:layout_toRightOf="@id/presenceStatusIcon"
+            android:text="Offline" />
+
+        <TextView
+            android:id="@+id/statusMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/accountAvatar"
+            android:layout_marginLeft="100dp"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="40dp"
+            android:layout_toEndOf="@+id/accountAvatar"
+            android:layout_toRightOf="@+id/accountAvatar"
+            android:hint="@string/plugin_contactinfo_USER_STATUS_MESSAGE"
+            tools:ignore="UnknownIdInLayout" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:id="@+id/ci_DisplayName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_DisplayName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_DISPLAY_NAME" />
+
+                <TextView
+                    android:id="@+id/ci_DisplayNameField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_FirstName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_FirstName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_FIRST_NAME" />
+
+                <TextView
+                    android:id="@+id/ci_FirstNameField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_MiddleName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_MiddleName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_MIDDLE_NAME" />
+
+                <TextView
+                    android:id="@+id/ci_MiddleNameField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_LastName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_LastName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_LAST_NAME" />
+
+                <TextView
+                    android:id="@+id/ci_LastNameField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_NickName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_NickName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_NICKNAME" />
+
+                <TextView
+                    android:id="@+id/ci_NickNameField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_URL_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_URL"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_URL" />
+
+                <TextView
+                    android:id="@+id/ci_URLField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_Gender_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_Gender"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_GENDER" />
+
+                <TextView
+                    android:id="@+id/ci_GenderField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_BirthDate_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_BirthDate"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:text="@string/plugin_accountinfo_BDAY" />
+
+                <TextView
+                    android:id="@+id/ci_BirthDateField"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_Age_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_Age"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_AGE" />
+
+                <TextView
+                    android:id="@+id/ci_AgeField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_StreetAddress_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_StreetAddress"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_STREET" />
+
+                <TextView
+                    android:id="@+id/ci_StreetAddressField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_City_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_City"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_CITY" />
+
+                <TextView
+                    android:id="@+id/ci_CityField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_Region_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_Region"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_REGION" />
+
+                <TextView
+                    android:id="@+id/ci_RegionField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_PostalCode_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_PostalCode"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_POST" />
+
+                <TextView
+                    android:id="@+id/ci_PostalCodeField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_Country_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_Country"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_COUNTRY" />
+
+                <TextView
+                    android:id="@+id/ci_CountryField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_EMail_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_EMail"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_EMAIL" />
+
+                <TextView
+                    android:id="@+id/ci_EMailField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_WorkEmail_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_WorkEmail"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_WORK_EMAIL" />
+
+                <TextView
+                    android:id="@+id/ci_WorkEmailField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_Phone_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_Phone"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_PHONE" />
+
+                <TextView
+                    android:id="@+id/ci_PhoneField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_WorkPhone_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_WorkPhone"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_WORK_PHONE" />
+
+                <TextView
+                    android:id="@+id/ci_WorkPhoneField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_MobilePhone_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_MobilePhone"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_MOBILE_PHONE" />
+
+                <TextView
+                    android:id="@+id/ci_MobilePhoneField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_OrganizationName_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_OrganizationName"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_ORGANIZATION" />
+
+                <TextView
+                    android:id="@+id/ci_OrganizationNameField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_JobTitle_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ci_JobTitle"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plugin_accountinfo_JOB_TITLE" />
+
+                <TextView
+                    android:id="@+id/ci_JobTitleField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ci_AboutMe_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/ci_AboutMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/plugin_accountinfo_ABOUT_ME" />
+
+                <TextView
+                    android:id="@+id/ci_AboutMeField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/button_Container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/button_OK"
+            style="@style/ButtonTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_toEndOf="@+id/centerShim"
+            android:layout_toRightOf="@+id/centerShim"
+            android:text="@string/service_gui_OK" />
+    </RelativeLayout>
+</LinearLayout>

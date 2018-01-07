@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_reason_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dip"
+            android:layout_marginStart="5dip"
+            android:text="@string/service_gui_INVITE_REASON_INVITE"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/text_reason"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@string/service_gui_INVITE_REASON"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="3dip"
+        android:layout_marginBottom="5dip"
+        android:background="@color/contact_list_divider" />
+
+    <ExpandableListView
+        android:id="@+id/ContactListView"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:cacheColorHint="@color/white"
+        android:choiceMode="multipleChoice"
+        android:divider="@null"
+        android:dividerHeight="0dip"
+        android:groupIndicator="@null" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="3dip"
+        android:layout_marginTop="5dip"
+        android:background="@color/contact_list_divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonCancel"
+            style="@style/ButtonTop"
+            android:enabled="true"
+            android:text="@string/service_gui_CANCEL" />
+
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/button_invite"
+            style="@style/ButtonTop"
+            android:enabled="false"
+            android:text="@string/service_gui_INVITE" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Theme.App.NoActionBar" parent="@android:style/Theme.Holo.NoActionBar">
+        <item name="android:windowBackground">@color/color_primary</item>
+    </style>
+
+    <style name="Theme.App" parent="@android:style/Theme.Holo">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionOverflowButtonStyle">@style/actionOverflowButtonStyle</item>
+        <item name="android:actionBarSize">@dimen/actionbar_height</item>
+
+        <!--item name="android:windowBackground">@color/theme_background</item-->
+        <!--
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item-->
+        <!-- colorAccent is used as the default value for colorControlActivated which is used to tint widgets. -->
+        <!--item name="colorAccent">@color/color_accent</item-->
+    </style>
+
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@drawable/actionbar_bg</item>
+        <item name="android:displayOptions">useLogo|showHome|homeAsUp|showCustom</item>
+        <item name="android:icon">@drawable/ic_notification</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_height">@dimen/actionbar_height</item>
+        <item name="android:customNavigationLayout">@layout/action_bar</item>
+        <item name="android:padding">@dimen/action_bar_padding</item>
+    </style>
+
+    <style name="Theme.App.Light" parent="Theme.App.Light.Common" />
+
+    <style name="Theme.App.Dark" parent="Theme.App.Dark.Common" />
+
+    <!-- Empty base themes that can be easily replaced by RRO (Runtime Resource Overlay) themes -->
+    <style name="Theme.App.Light.Base" parent="@android:style/Theme.Holo.Light" />
+
+    <style name="Theme.App.Dark.Base" parent="@android:style/Theme.Holo" />
+
+
+    <style name="Theme.App.Light.Common" parent="Theme.App.Light.Base">
+        <item name="color_text_primary">@color/black87</item>
+        <item name="color_text_secondary">@color/black54</item>
+
+        <item name="color_background_primary">@color/grey50</item>
+        <item name="color_background_secondary">@color/grey200</item>
+
+        <item name="android:actionBarStyle">@style/MyActionBarDark</item>
+        <!-- <item name="android:windowBackground">@color/holo_light_bg_color</item> -->
+        <item name="MainGroup">@style/RosterGroupName.Light</item>
+        <item name="MainChild">@style/RosterGroupItem.Light</item>
+        <item name="MainChildPhoto">@style/MainChildPhotoLight</item>
+        <item name="MainChildName">@style/MainChildNameLight</item>
+        <item name="ChatListRowNormal">@style/MainChildNameLight</item>
+        <item name="ChatListRowCrypto">@style/MainChildNameLight.Crypto</item>
+        <item name="ChatListRowStealth">@style/MainChildNameLight.Stealth</item>
+        <item name="OnlineFriends">@drawable/ic_action_online_friends_light</item>
+        <item name="AllFriends">@drawable/ic_action_all_friends_light</item>
+        <!-- <item name="android:listSeparatorTextViewStyle">@style/PreferenceListHeader</item> -->
+        <item name="ChatMsgHeaderMeColor">#ff6d6dcc</item>
+        <item name="ChatMsgHeaderYouColor">#ffcc5050</item>
+        <item name="ErrorView">@style/StyleErrorView.Light</item>
+        <item name="ChatNewMessageColor">#ffb0b0b0</item>
+        <item name="ChatStoredMessageColor">#60b0b0b0</item>
+        <item name="dialogTextColor">@style/dialogBackground</item>
+        <item name="ChatTitleColor_Normal">#0075A7FF</item>
+        <item name="ChatTitleColor_Crypto">#00FF7575</item>
+        <item name="ChatTitleColor_Stealth">#009A75FF</item>
+        <item name="MyTabWidget">@style/MyTabWidgetLight</item>
+        <item name="MyTabContentBkg">#000</item>
+        <item name="chat_time">@style/chat_time.Light</item>
+        <item name="MainWindow_NewMsg_Normal_Color">#FF7FC9FF</item>
+        <item name="MainWindow_NewMsg_Crypto_Color">#FFFF6D6D</item>
+        <item name="MainWindow_NewMsg_Stealth_Color">#FFA880FF</item>
+    </style>
+
+    <style name="Theme.App.Dark.Common" parent="Theme.App.Dark.Base">
+        <item name="color_text_primary">@color/white</item>
+        <item name="color_text_secondary">@color/white70</item>
+
+        <item name="color_background_primary">@color/grey800</item>
+        <item name="color_background_secondary">@color/grey900</item>
+
+        <item name="android:actionBarStyle">@style/MyActionBarDark</item>
+        <item name="MainGroup">@style/RosterGroupName.Dark</item>
+        <item name="MainChild">@style/RosterGroupItem.Dark</item>
+        <item name="MainChildPhoto">@style/MainChildPhotoDark</item>
+        <item name="MainChildName">@style/MainChildNameDark</item>
+        <item name="ChatListRowNormal">@style/MainChildNameDark</item>
+        <item name="ChatListRowCrypto">@style/MainChildNameDark.Crypto</item>
+        <item name="ChatListRowStealth">@style/MainChildNameDark.Stealth</item>
+        <item name="OnlineFriends">@drawable/ic_action_online_friends_dark</item>
+        <item name="AllFriends">@drawable/ic_action_all_friends_dark</item>
+        <item name="ChatMsgHeaderMeColor">#ff8888ff</item>
+        <item name="ChatMsgHeaderYouColor">#ffff8888</item>
+        <item name="ChatNewMessageColor">#ff404040</item>
+        <item name="ChatStoredMessageColor">#60404040</item>
+        <item name="ErrorView">@style/StyleErrorView</item>
+        <item name="dialogTextColor">@style/dialogBackground</item>
+        <item name="ChatTitleColor_Normal">#000000ff</item>
+        <item name="ChatTitleColor_Crypto">#00ff0000</item>
+        <item name="ChatTitleColor_Stealth">#00ff00ff</item>
+        <item name="MyTabWidget">@style/MyTabWidgetDark</item>
+        <item name="MyTabContentBkg">#ffe2e2e2</item>
+        <item name="chat_time">@style/chat_time.Dark</item>
+        <item name="MainWindow_NewMsg_Normal_Color">#FF004A7F</item>
+        <item name="MainWindow_NewMsg_Crypto_Color">#FF7F0000</item>
+        <item name="MainWindow_NewMsg_Stealth_Color">#FF57007F</item>
+    </style>
+
+    <style name="IndeterminateProgress" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:minWidth">32dip</item>
+        <item name="android:maxWidth">32dip</item>
+        <item name="android:minHeight">32dip</item>
+        <item name="android:maxHeight">32dip</item>
+    </style>
+
+    <style name="MyActionBarLight" parent="android:Widget.Holo.Light">
+        <!-- <item name="android:background">#3000</item>
+        <item name="background">#3000</item> -->
+        <item name="android:indeterminateProgressStyle">@style/IndeterminateProgress</item>
+    </style>
+
+    <style name="MyActionBarDark" parent="android:Widget.Holo">
+        <item name="android:indeterminateProgressStyle">@style/IndeterminateProgress</item>
+    </style>
+
+    <style name="Theme.XMail.Dialog.Light" parent="Theme.App.Light">
+        <item name="backgroundColorChooseAccountHeader">#cccccc</item>
+    </style>
+
+    <style name="Theme.XMail.Dialog.Dark" parent="Theme.App.Dark">
+        <item name="backgroundColorChooseAccountHeader">#404040</item>
+    </style>
+
+    <style name="Theme.XMail.Dialog.Translucent.Dark" parent="@android:style/Theme.Holo.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+
+        <item name="tintColorBulletPointPositive">#77aa22</item>
+        <item name="tintColorBulletPointNegative">#dd2222</item>
+        <item name="tintColorBulletPointNeutral">#bbb</item>
+    </style>
+
+    <style name="Theme.XMail.Dialog.Translucent.Light" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+
+        <item name="tintColorBulletPointPositive">#77aa22</item>
+        <item name="tintColorBulletPointNegative">#dd2222</item>
+        <item name="tintColorBulletPointNeutral">#bbb</item>
+    </style>
+
+    <style name="Theme.XMail.Transparent" parent="@android:style/Theme.NoDisplay" />
+</resources>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/theme_background"
+    android:padding="@dimen/screen_padding">
+
+    <TextView
+        android:id="@+id/textMsgView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_INVITATION_RECEIVED"
+        android:textAppearance="@style/MediumFont" />
+
+    <TextView
+        android:id="@+id/textInvitationTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/service_gui_INVITATION"
+        android:textAppearance="@style/MediumFont"
+        android:textStyle="normal|bold" />
+
+    <TextView
+        android:id="@+id/textInvitation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_INVITE_REASON"
+        android:textAppearance="@style/MediumFont" />
+
+    <TextView
+        android:id="@+id/textReason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/service_gui_INVITE_REASON_REJECT"
+        android:textAppearance="@style/MediumFont"
+        android:textStyle="normal|bold" />
+
+    <EditText
+        android:id="@+id/rejectReasonTextArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/service_gui_INVITE_REJECT_REASON" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_Ignore"
+            style="@style/ButtonTop"
+            android:enabled="true"
+            android:text="@string/service_gui_IGNORE" />
+
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/button_Reject"
+            style="@style/ButtonTop"
+            android:enabled="true"
+            android:text="@string/service_gui_REJECT" />
+
+        <View
+            android:id="@+id/centerShim2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/button_Accept"
+            style="@style/ButtonTop"
+            android:enabled="true"
+            android:text="@string/service_gui_ACCEPT" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/contact_list_row_height"
+    android:background="@color/white"
+    android:descendantFocusability="blocksDescendants">
+
+    <ImageView
+        android:id="@+id/room_icon"
+        android:layout_width="48dp"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:paddingLeft="5dp"
+        android:paddingStart="5dp"
+        android:src="@drawable/ic_chatroom" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/room_icon"
+        android:layout_toRightOf="@+id/room_icon"
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        android:paddingStart="8dp">
+
+        <TextView
+            android:id="@+id/room_name"
+            style="@style/MediumFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="chatroom@conference.server.com"
+            android:textColor="@color/list_text_selection_color" />
+
+        <TextView
+            android:id="@+id/room_status"
+            style="@style/SmallFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginBottom="5dp"
+            android:gravity="bottom"
+            android:maxLines="1"
+            android:text="chatroom@conference.server.com"
+            android:textColor="@color/list_details_selection_color" />
+    </LinearLayout>
+
+</RelativeLayout>
