@@ -1,5 +1,21 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.0.2 (1002)
+Author:         cmeng
+Upload Date:	1/12/2018
+- Compile aTalk for android 8.0(Oreo) compatibility
+- In getCachedRecentMessages()->convertHistoryRecordToMessageEvent for chatRoom, ChatRoom#getUserRole() must not have null ResourcePart
+- Do not attempt to retrieve contact or chatRoom for virtual server in getContactOrRoomByID()
+- remove protcol-sip library and sip support - not use and android-source is too old
+- Remove non-existence textViewVersion.setVisibility in splash screen
+
+- Samsung SII slow device causes exception at on first apk installation and run: (little can be done)
+util.AvatarCacheUtils.cacheAvatar().340 Failed to store avatar. java.io.IOException: Failed to create file
+/data/data/org.atalk.android/files/avatarcache/Jabber&_coxyz123@atalk.org/hawk@atalk.org
+at net.java.sip.communicator.util.AvatarCacheUtils.cacheAvatar(AvatarCacheUtils.java:319)
+TODO: actually cacheAvatar() is not necessary as it is already handled and stored by AvatarManager???
+
+=========================================================================
 Version:		1.0.1 (1001)
 Author:         cmeng
 Upload Date:	1/6/2018

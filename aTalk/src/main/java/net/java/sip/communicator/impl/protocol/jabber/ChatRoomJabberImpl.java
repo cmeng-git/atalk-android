@@ -1314,22 +1314,19 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
 			throws OperationFailedException
 	{
 		// parseLocalPart or take nickname as it
-		mNickname = XmppStringUtils.parseLocalpart(nickname);
-		if (mNickname.length() == 0)
-			mNickname = nickname;
+   		mNickname = nickname.split("@")[0];
 
-		try {
-			mMultiUserChat.changeNickname(Resourcepart.from(mNickname));
-		}
-		catch (XMPPException | NoResponseException | NotConnectedException |
-				XmppStringprepException
-				| MultiUserChatException.MucNotJoinedException | InterruptedException e) {
-			logger.error("Failed to change nickname for chat room: " + getName());
+        try {
+            mMultiUserChat.changeNickname(Resourcepart.from(mNickname));
+        } catch (XMPPException | NoResponseException | NotConnectedException
+                | XmppStringprepException
+                | MultiUserChatException.MucNotJoinedException | InterruptedException e) {
 
-			throw new OperationFailedException("The " + nickname
-					+ " already exists in this chat room. ",
-					OperationFailedException.IDENTIFICATION_CONFLICT);
-		}
+            String msg = "Failed to change nickname for chat room: " + getName() + " => " + e.getMessage();
+            logger.error(msg);
+
+            throw new OperationFailedException(msg, OperationFailedException.IDENTIFICATION_CONFLICT);
+        }
 	}
 
 	/**

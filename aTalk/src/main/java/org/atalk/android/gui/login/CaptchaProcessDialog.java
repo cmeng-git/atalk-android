@@ -177,10 +177,14 @@ public class CaptchaProcessDialog extends Dialog
 		{
 			public void onClick(View v)
 			{
-				updateAccount();
-				boolean isSuccess = onAcceptClicked();
-				closeDialog();
-				showMessage(isSuccess);
+                boolean isSuccess = false;
+                // server disconnect user if waited for too long
+                if (mConnection.isConnected()) {
+                    updateAccount();
+                    isSuccess = onAcceptClicked();
+                }
+                closeDialog();
+                showMessage(isSuccess);
 			}
 		});
 		mIgnoreButton.setOnClickListener(new View.OnClickListener()
@@ -190,8 +194,7 @@ public class CaptchaProcessDialog extends Dialog
 				String errMsg = "InBand registration cancelled by user!";
 				XMPPError xmppError = XMPPError.from(XMPPError.Condition.registration_required,
 						errMsg).build();
-				mPPS.accountIBRegistered
-						.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
+				mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
 				closeDialog();
 			}
 		});
@@ -264,7 +267,8 @@ public class CaptchaProcessDialog extends Dialog
 
 	private void closeDialog()
 	{   // Ignore android.os.StrictMode$AndroidBlockGuardPolicy.onNetwork(StrictMode.java:1147)
-		mConnection.disconnect();
+        if (mConnection.isConnected())
+    		mConnection.disconnect();
 		this.cancel();
 	}
 

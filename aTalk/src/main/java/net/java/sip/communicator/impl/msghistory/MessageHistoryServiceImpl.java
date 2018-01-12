@@ -37,6 +37,7 @@ import org.atalk.android.gui.chat.*;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
+import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.*;
 
 import java.beans.*;
@@ -607,7 +608,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	 * 		contacts
 	 * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
 	 */
-	Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter,
+	public Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter,
 			String contactToFilter, boolean isSMSEnabled)
 	{
 		String sessionUuid;
@@ -711,7 +712,11 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	private Object getContactOrRoomByID(String accountUuid, String contactId, boolean isSMSEnabled)
 			throws IOException
 	{
-		AccountID accountID = null;
+        // skip for system virtual server e.g. atalk.org without "@"
+        if (StringUtils.isNullOrEmpty(contactId) || contactId.indexOf("@") <= 0)
+            return null;
+
+        AccountID accountID = null;
 		for (AccountID acc : AccountUtils.getStoredAccounts()) {
 			if (!acc.isHidden() && acc.isEnabled()
 					&& accountUuid.equals(acc.getAccountUuid())) {
@@ -726,8 +731,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		if (pps == null)
 			return null;
 
-		OperationSetPersistentPresence opSetPresence
-				= pps.getOperationSet(OperationSetPersistentPresence.class);
+		OperationSetPersistentPresence opSetPresence = pps.getOperationSet(OperationSetPersistentPresence.class);
 
 		if (opSetPresence == null)
 			return null;
@@ -738,13 +742,11 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
 		if (isSMSEnabled) {
 			// we will check only for sms contacts
-			OperationSetSmsMessaging opSetSMS
-					= pps.getOperationSet(OperationSetSmsMessaging.class);
+			OperationSetSmsMessaging opSetSMS = pps.getOperationSet(OperationSetSmsMessaging.class);
 			return (opSetSMS == null) ? null : opSetSMS.getContact(contactId);
 		}
 
-		OperationSetMultiUserChat opSetMuc
-				= pps.getOperationSet(OperationSetMultiUserChat.class);
+		OperationSetMultiUserChat opSetMuc = pps.getOperationSet(OperationSetMultiUserChat.class);
 		if (opSetMuc == null)
 			return null;
 
@@ -958,8 +960,13 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		String nickName = mProperties.get(ChatMessage.ENTITY_JID);  // nick for muc
 		// String nickName = entityJid.split("/")[1];
 		String jabberID = mProperties.get(ChatMessage.JID);
-		ChatRoomMember from = new ChatRoomMemberImpl(room, nickName, room.getUserRole());
-		// = new ChatRoomMemberJabberImpl((ChatRoomJabberImpl) room, nickName, jabberID);
+
+        // getUserRole must have Resourcepart != null
+        ChatRoomMemberRole userRole = ChatRoomMemberRole.GUEST;
+        if (room.getUserNickname() != null) {
+            userRole = room.getUserRole();
+        }
+        ChatRoomMember from = new ChatRoomMemberImpl(room, nickName, userRole);
 
 		if (msg.isOutgoing) {
 			return new ChatRoomMessageDeliveredEvent(room, timestamp, msg,

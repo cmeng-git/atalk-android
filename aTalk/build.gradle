@@ -41,8 +41,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1001
-        versionName "1.0.1" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1002
+        versionName "1.0.2" // no alphabet allowed (e.g. 0.8.7.a)
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true
@@ -51,7 +51,6 @@ android {
     signingConfigs {
         release {
             storeFile file("${keystore}")
-            // keyAlias "atalk"
             File propsFile = file("${secure_properties}")
             if (propsFile.exists()) {
                 Properties props = new Properties()
@@ -156,10 +155,12 @@ dependencies {
     implementation 'cz.msebera.android:httpclient:4.4.1.2' // duplicate class
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
     implementation 'org.apache.commons:commons-lang3:3.6'
+
     implementation 'org.bitlet:weupnp:0.1.4'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.57'
     // (dependencies = core + prov)
     implementation 'org.jmdns:jmdns:3.5.3'
+    implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
     // local /lib/smack library manual inclusion and dependencies
 //    implementation files('lib/smack/smack-android-4.2.2-SNAPSHOT.jar')
@@ -268,28 +269,30 @@ task jarRepackage(type: Copy, description: 'Repackage jar to avoid conflict') {
         // ClassNotFoundException: org.atalk.gov.nist.org.atalk.javax.sip.header.HeaderFactoryImpl
         // The cause is javax.sip.SipFactory constructing the header factories by name and
         // renaming causes wrong classNames.
-        jarjar2(jarfile: 'libs/protocol-sip.jar') {
-            zipfileset(src: 'lib/bundles/protocol-sip.jar')
-            rule pattern: 'javax.sip.header.HeaderFactoryImpl',
-                    result: 'javax.sip.header.HeaderFactoryImpl'
-            rule pattern: 'javax.sip.message.MessageFactoryImpl',
-                    result: 'javax.sip.message.MessageFactoryImpl'
-            rule pattern: 'javax.sip.address.AddressFactoryImpl',
-                    result: 'javax.sip.address.AddressFactoryImpl'
-
-            rule pattern: 'javax.sip.**',
-                    result: 'org.atalk.javax.sip.@1'
-            rule pattern: 'gov.nist.core.**',
-                    result: 'org.atalk.gov.nist.core.@1'
-            rule pattern: 'gov.nist.javax.sdp.**',
-                    result: 'org.atalk.gov.nist.javax.sdp.@1'
-            rule pattern: 'gov.nist.javax.sip.**',
-                    result: 'org.atalk.gov.nist.javax.sip.@1'
-            rule pattern: 'java.awt.**',
-                    result: 'org.atalk.android.util.java.awt.@1'
-            rule pattern: 'org.jitsi.service.**',
-                    result: 'org.atalk.service.@1'
-        }
+//        jarjar2(jarfile: 'libs/protocol-sip.jar') {
+//            zipfileset(src: 'lib/bundles/protocol-sip.jar')
+//            rule pattern: 'javax.sip.header.HeaderFactoryImpl',
+//                    result: 'javax.sip.header.HeaderFactoryImpl'
+//            rule pattern: 'javax.sip.message.MessageFactoryImpl',
+//                    result: 'javax.sip.message.MessageFactoryImpl'
+//            rule pattern: 'javax.sip.address.AddressFactoryImpl',
+//                    result: 'javax.sip.address.AddressFactoryImpl'
+//
+//            rule pattern: 'javax.sip.**',
+//                    result: 'org.atalk.javax.sip.@1'
+//            rule pattern: 'gov.nist.core.**',
+//                    result: 'org.atalk.gov.nist.core.@1'
+//            rule pattern: 'gov.nist.javax.sdp.**',
+//                    result: 'org.atalk.gov.nist.javax.sdp.@1'
+//            rule pattern: 'gov.nist.javax.sip.**',
+//                    result: 'org.atalk.gov.nist.javax.sip.@1'
+//            rule pattern: 'java.awt.**',
+//                    result: 'org.atalk.android.util.java.awt.@1'
+//            rule pattern: 'org.jitsi.service.protocol.DTMFTone',
+//                    result: 'org.atalk.service.neomedia.DTMFTone'
+//            rule pattern: 'org.jitsi.**',
+//                    result: 'org.atalk.@1'
+//        }
 
         jarjar2(jarfile: 'libs/systray-service.jar') {
             zipfileset(src: 'lib/bundles/systray-service.jar')

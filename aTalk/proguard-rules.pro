@@ -10,10 +10,14 @@
 -dontnote org.apache.http.**
 -dontnote de.cketti.safecontentresolver.**
 
--dontwarn java.awt.**
--dontwarn javax.imageio.**
--dontwarn javax.naming.**
+-dontwarn android.app.**
+-dontwarn android.javax.xml.transform.**
 -dontwarn com.sun.naming.internal.**
 
-# Project specific rules
-## -dontnote com.fsck.k9.ui.messageview.**
+-dontwarn org.atalk.android.util.javax.swing.**
+-dontwarn org.atalk.android.util.java.awt.**
+
+-dontwarn java.awt.**
+-dontwarn java.beans.**
+-dontwarn javax.imageio.**
+-dontwarn javax.naming.**

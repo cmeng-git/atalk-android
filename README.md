@@ -2,6 +2,9 @@
 - an encrypted instant messaging with video call and GPS features for android
 
 <p align="center">
+    <a href="http://atalk.sytes.net">
+        <img src="./art/atalk.png" alt="aTalk">
+    </a>
     <a href="https://play.google.com/store/apps/details?id=org.atalk.android&hl=en">
         <img src="./art/google_play.png" alt="Google PlayStore">
     </a>
@@ -11,12 +14,13 @@
 </p>
 
 ## Features
+aTalk is an xmpp client designed for android and supports the following features:
 * Instant messaging in plain text and End-to-End encryption with [OMEMO](http://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
-* Omemo encryption is also available during multi-user group chat session, giving users' maximum privacy and security
+* Omemo encryption is available during multi-user group chat session, giving users' maximum privacy and security
 * Supports both voice and video call with ZRTP encryption
-* Send and receive files for all document types and images. Pre-send thumb nail for preview and acceptance before the actual image is sent
+* Send and receive files for all document types and images. For image file, a thumb nail is first sent for preview and acceptance before the actual file is sent
 * Unique feature to send GPS locations to chosen buddy, requesting real-time guidance to reach desired destination
-* A 360 degree street view of your current location, may use for self-guided tour
+* A 360° street view of your current location, may use for self-guided tour. The street view tracks and follows your direction of sight.
 * Integrated photo editor with zooming and cropping, user can update his/her avatar with ease
 * Multiple accounts support
 
@@ -70,11 +74,11 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0320: Use of DTLS-SRTP in Jingle Sessions](https://xmpp.org/extensions/xep-0320.html)
 * [XEP-0352: Client State Indication](https://xmpp.org/extensions/xep-052.html)
 * [XEP-0364: Off-the-Record Messaging (V2/3)](https://xmpp.org/extensions/xep-0364.html)
-* [XEP-0384: OMEMO Encryption](https://xmpp.org/extensions/xep-0384.html)
-
 
 Libraries used in this project
 ------------------------------
+* [XEP-0384: OMEMO Encryption](https://xmpp.org/extensions/xep-0384.html)
+
 * [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html)
 * [android-betterpickers](https://github.com/code-troopers/android-betterpickers)
 * [Android-EasyLocation](https://github.com/akhgupta/Android-EasyLocation)
@@ -103,6 +107,7 @@ Libraries used in this project
 * [opensles](https://github.com/openssl/openssl )
 * [osgi.core](http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0)
 * [sdes4j](https://github.com/ibauersachs/sdes4j)
+* [sdp-api](https://mvnrepository.com/artifact/org.opentelecoms.sdp/sdp-api)
 * [Smack](https://github.com/igniterealtime/Smack)
 * [speex](https://github.com/xiph/speex)
 * [uCrop](https://github.com/Yalantis/uCrop)
@@ -130,4 +135,4 @@ License
     limitations under the License.
 
 
-[Privacy Policy](http://atalk.sytes.net) 
+[Privacy Policy](http://atalk.sytes.net/privacypolicy.html) 

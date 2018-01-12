@@ -396,13 +396,11 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 	{
 		// cmeng - "item-not-found" for request on a 5-second wait timeout. Actually server does
 		// reply @ 28 seconds after disco#info is sent
-		connection.setReplyTimeout(
-				ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT);
+		connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT);
 
 		DiscoverInfo discoInfo = discoveryManager.discoverInfo(entityID, node);
 
-		connection.setReplyTimeout(
-				ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_DEFAULT_TIMEOUT);
+		connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_DEFAULT_TIMEOUT);
 		return discoInfo;
 	}
 

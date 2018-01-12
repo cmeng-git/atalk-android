@@ -7,6 +7,12 @@
 -->
 <changelog>
     <release
+        version="1.0.2 (01/12/2018)" versioncode="1002">
+        <change>Compile aTalk for android 8.0(Oreo) compatibility</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release
         version="1.0.1 (01/05/2018)" versioncode="1001">
         <change>Update apk manifest file to include implicit hardware requirements and set the required state to false for device compatibility</change>
     </release>

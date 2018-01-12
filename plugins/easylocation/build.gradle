@@ -23,13 +23,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly "com.google.android.gms:play-services-location:${rootProject.gmsPlayServicesVersion}"
-    // implementation "com.android.support:support-v4:${rootProject.supportLibraryVersion}"
     implementation "com.android.support:appcompat-v7:${rootProject.supportLibraryVersion}"
+    implementation "com.android.support:support-media-compat:${rootProject.supportLibraryVersion}"
 
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
