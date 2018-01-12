@@ -13,7 +13,10 @@ bin/
 gen/
 out/
 
-# Gradle files
+#JNI files
+*.o
+
+# Gradle files - matches "build" in any subfolder
 .gradle/
 build/
 
@@ -53,3 +56,8 @@ google-services.json
 freeline.py
 freeline/
 freeline_project_description.json
+
+# ignore all files ending with ~
+*~
+# Local reference
+reference/
