@@ -763,13 +763,11 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 	 * 		if <tt>metaContact</tt> is not an instance that belongs to the underlying
 	 * 		implementation.
 	 */
-	public void changeMetaContactAvatar(MetaContact metaContact, Contact protoContact,
-			byte[] newAvatar)
+	public void changeMetaContactAvatar(MetaContact metaContact, Contact protoContact, byte[] newAvatar)
 			throws IllegalArgumentException
 	{
 		if (!(metaContact instanceof MetaContactImpl)) {
-			throw new IllegalArgumentException(metaContact
-					+ " is not a MetaContactImpl instance.");
+			throw new IllegalArgumentException(metaContact + " is not a MetaContactImpl instance.");
 		}
 
 		byte[] oldAvatar = metaContact.getAvatar(true);
@@ -2135,8 +2133,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 		 */
 		public void contactModified(ContactPropertyChangeEvent evt)
 		{
-			MetaContactImpl mc
-					= (MetaContactImpl) findMetaContactByContact(evt.getSourceContact());
+			MetaContactImpl mc = (MetaContactImpl) findMetaContactByContact(evt.getSourceContact());
 
 			if (ContactPropertyChangeEvent.PROPERTY_DISPLAY_NAME.equals(evt.getPropertyName())) {
 				if (evt.getOldValue() != null && evt.getOldValue().equals(mc.getDisplayName())) {
@@ -2155,10 +2152,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 					&& evt.getNewValue() != null) {
 				changeMetaContactAvatar(mc, evt.getSourceContact(), (byte[]) evt.getNewValue());
 			}
-			else if (ContactPropertyChangeEvent.PROPERTY_PERSISTENT_DATA.equals(
-					evt.getPropertyName())
-					|| ContactPropertyChangeEvent.PROPERTY_DISPLAY_DETAILS.equals(
-					evt.getPropertyName())) {
+			else if (ContactPropertyChangeEvent.PROPERTY_PERSISTENT_DATA.equals(evt.getPropertyName())
+					|| ContactPropertyChangeEvent.PROPERTY_DISPLAY_DETAILS.equals(evt.getPropertyName())) {
 				// if persistent data changed fire an event to store it
 				fireProtoContactEvent(evt.getSourceContact(),
 						ProtoContactEvent.PROTO_CONTACT_MODIFIED, mc, mc);

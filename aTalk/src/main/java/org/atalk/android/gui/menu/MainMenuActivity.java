@@ -105,6 +105,7 @@ public class MainMenuActivity extends ExitMenuActivity
             new String[]{"opensles", "https://github.com/openssl/openssl "},
             new String[]{"osgi.core", "http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0"},
             new String[]{"sdes4j", "https://github.com/ibauersachs/sdes4j"},
+            new String[]{"sdp-api", "https://mvnrepository.com/artifact/org.opentelecoms.sdp/sdp-api"},
             new String[]{"Smack", "https://github.com/igniterealtime/Smack"},
             new String[]{"speex", "https://github.com/xiph/speex"},
             new String[]{"uCrop", "https://github.com/Yalantis/uCrop"},

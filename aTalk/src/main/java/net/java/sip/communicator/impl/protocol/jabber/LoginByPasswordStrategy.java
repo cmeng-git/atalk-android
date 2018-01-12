@@ -143,7 +143,9 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
 			throws XMPPException, SmackException
 	{
 		XMPPTCPConnection connection = pps.getConnection();
-		try {
+        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_DEFAULT_TIMEOUT);
+
+        try {
 			// Reconnect if the connection is closed by the earlier exception
 			if (!connection.isConnected())
 				connection.connect();
@@ -170,14 +172,14 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
 						if (urlField != null) {
 							String urlString = urlField.getValues().get(0);
 							URL uri = new URL(urlString);
-							captcha = BitmapFactory
-									.decodeStream(uri.openConnection().getInputStream());
+							captcha = BitmapFactory.decodeStream(uri.openConnection().getInputStream());
 						}
 					}
 					if ((captcha != null) && (dataForm != null)) {
 						// Wait for right moment before proceed, otherwise captcha dialog will be
 						// obscured by other launching activities in progress.
-						aTalkApp.waitForDisplay();
+                        aTalkApp.waitForDisplay();
+
 						Context context = aTalkApp.getCurrentActivity();
 						processCaptcha(context, pps, accountId, dataForm, captcha);
 					}
@@ -198,8 +200,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
 			// No response received within reply timeout. Timeout was 5000ms (~5s).
 			// Rethrow XMPPException will trigger a re-login / registration dialog
 			String exMsg = ex.getMessage();
-			XMPPError.Builder xmppErrorBuilder
-					= XMPPError.from(XMPPError.Condition.not_authorized, exMsg);
+			XMPPError.Builder xmppErrorBuilder = XMPPError.from(XMPPError.Condition.not_authorized, exMsg);
 			throw new XMPPException.XMPPErrorException(null, xmppErrorBuilder.build());
 		}
 		return true;

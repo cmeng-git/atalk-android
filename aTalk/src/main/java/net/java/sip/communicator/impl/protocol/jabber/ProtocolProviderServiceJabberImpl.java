@@ -202,8 +202,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 	 * The name of the property under which the user may specify if the desktop streaming or
 	 * sharing should be disabled.
 	 */
-	private static final String IS_DESKTOP_STREAMING_DISABLED
-			= "protocol.jabber.DESKTOP_STREAMING_DISABLED";
+	private static final String IS_DESKTOP_STREAMING_DISABLED = "protocol.jabber.DESKTOP_STREAMING_DISABLED";
 
 	/**
 	 * The name of the property under which the user may specify if audio/video calls should be
@@ -1232,7 +1231,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 		}
 
 		// Reset back to Smack default - may not reach here if exception
-		mConnection.setReplyTimeout(SmackConfiguration.getDefaultReplyTimeout());
+		mConnection.setReplyTimeout(SMACK_PACKET_REPLY_DEFAULT_TIMEOUT);
 
 		if (!success) {
 			disconnectAndCleanConnection();
@@ -1462,7 +1461,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 	public void disconnectAndCleanConnection()
 	{
 		if (mConnection != null) {
-			mConnection.setReplyTimeout(SmackConfiguration.getDefaultPacketReplyTimeout());
+			mConnection.setReplyTimeout(SMACK_PACKET_REPLY_DEFAULT_TIMEOUT);
 
 			// disconnect anyway because it will clear any listeners that maybe added even if
 			// it is not connected

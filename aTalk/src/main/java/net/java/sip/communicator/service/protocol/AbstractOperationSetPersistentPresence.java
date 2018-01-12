@@ -177,11 +177,9 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 	 * @param newValue
 	 *        the value that the changed property currently has (after the change has occurred).
 	 */
-	public void fireContactPropertyChangeEvent(Contact source, String eventID, Object oldValue,
-		Object newValue)
+	public void fireContactPropertyChangeEvent(Contact source, String eventID, Object oldValue, Object newValue)
 	{
-		ContactPropertyChangeEvent evt
-				= new ContactPropertyChangeEvent(source, eventID, oldValue, newValue);
+		ContactPropertyChangeEvent evt = new ContactPropertyChangeEvent(source, eventID, oldValue, newValue);
 
 		Collection<SubscriptionListener> listeners;
 		synchronized (subscriptionListeners) {

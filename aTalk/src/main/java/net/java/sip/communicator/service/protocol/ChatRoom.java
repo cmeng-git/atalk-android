@@ -178,7 +178,6 @@ public interface ChatRoom
 	 *
 	 * @param nickname
 	 *        the new nickname within the room.
-	 *
 	 * @throws OperationFailedException
 	 *         if the new nickname already exist in this room
 	 */

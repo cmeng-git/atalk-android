@@ -21,7 +21,9 @@ import net.java.sip.communicator.util.*;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
+import org.bouncycastle.util.encoders.Base64;
 import org.osgi.framework.BundleContext;
+
 
 import java.util.*;
 // disambiguation

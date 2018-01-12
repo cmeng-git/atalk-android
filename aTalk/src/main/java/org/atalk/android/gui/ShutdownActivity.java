@@ -47,7 +47,6 @@ public class ShutdownActivity extends Activity
 
 		setProgressBarIndeterminateVisibility(true);
 		setContentView(R.layout.splash);
-        findViewById(R.id.textViewVersion).setVisibility(View.GONE);
 		((TextView) findViewById(R.id.restoring)).setText(R.string.service_gui_SHUTDOWN_IN_PROGRESS);
 	}
 }

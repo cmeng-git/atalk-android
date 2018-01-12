@@ -24,20 +24,17 @@ public interface MessageHistoryService
 	/**
 	 * Name of the property that indicates whether the logging of messages is enabled.
 	 */
-	public static final String PNAME_IS_MESSAGE_HISTORY_ENABLED
-			= "msghistory.IS_MESSAGE_HISTORY_ENABLED";
+	public static final String PNAME_IS_MESSAGE_HISTORY_ENABLED = "msghistory.IS_MESSAGE_HISTORY_ENABLED";
 
 	/**
 	 * Name of the property that indicates whether the recent messages is enabled.
 	 */
-	public static final String PNAME_IS_RECENT_MESSAGES_DISABLED
-			= "msghistory.IS_RECENT_MESSAGES_DISABLED";
+	public static final String PNAME_IS_RECENT_MESSAGES_DISABLED = "msghistory.IS_RECENT_MESSAGES_DISABLED";
 
 	/**
 	 * Name of the property that indicates whether the logging of messages is enabled.
 	 */
-	public static final String PNAME_IS_MESSAGE_HISTORY_PER_CONTACT_ENABLED_PREFIX
-			= "msghistory.contact";
+	public static final String PNAME_IS_MESSAGE_HISTORY_PER_CONTACT_ENABLED_PREFIX = "msghistory.contact";
 
 	/**
 	 * Returns all the messages exchanged by all the contacts in the supplied metaContact after
@@ -207,6 +204,21 @@ public interface MessageHistoryService
 	 */
 	Collection<EventObject> findLastMessagesBefore(MetaContact contact, Date date, int count);
 
+    /**
+     * Returns the messages for the recently contacted <tt>count</tt> contacts.
+     *
+     * @param count
+     * 		contacts count
+     * @param providerToFilter
+     * 		can be filtered by provider e.g. Jabber:abc123@atalk.org, or <tt>null</tt> to search
+     * 		for all  providers
+     * @param contactToFilter
+     * 		can be filtered by contact e.g. xyx123@atalk.org, or <tt>null</tt> to search for all
+     * 		contacts
+     * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
+     */
+    Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter,
+                                                         String contactToFilter, boolean isSMSEnabled);
 	/**
 	 * Adding progress listener for monitoring progress of search process
 	 *

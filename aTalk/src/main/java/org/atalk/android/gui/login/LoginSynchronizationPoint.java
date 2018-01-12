@@ -287,8 +287,9 @@ public class LoginSynchronizationPoint<E extends Exception>
 			case Initial:
 			case NoResponse:
 			case RequestSent:
-				throw new AssertionError("Still waiting for status at state: " + state);
-				// throw NoResponseException.newWith(mConnect, waitFor);
+			    // Do not throw AssertionError => system clash
+				// throw new AssertionError("Still waiting for status at state: " + state);
+				throw NoResponseException.newWith(mConnect, waitFor);
 			case Success:
 				return null;
 			case Failure:

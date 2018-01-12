@@ -19,7 +19,8 @@ package org.atalk.persistance;
 import android.content.*;
 import android.database.*;
 import android.database.sqlite.*;
-import android.util.*;
+import android.util.Base64;
+import android.util.Log;
 
 import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
 import net.java.sip.communicator.impl.msghistory.MessageSourceService;
@@ -452,7 +453,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
 
 	public void deletePresenceTemplate(PresenceTemplate template)
 	{
-		Log.d(Config.LOGTAG, "deleting presence template with uuid " + template.getUuid());
+        Log.d(Config.LOGTAG, "deleting presence template with uuid " + template.getUuid());
 		SQLiteDatabase db = this.getWritableDatabase();
 		String where = PresenceTemplate.UUID + "=?";
 		String[] whereArgs = {template.getUuid()};

@@ -146,8 +146,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 			sourceServiceType = HISTORY_TYPE;
 		}
 
-		MESSAGE_HISTORY_NAME = MessageHistoryActivator.getResources()
-				.getI18NString("service.gui.RECENT_MESSAGES");
+		MESSAGE_HISTORY_NAME = MessageHistoryActivator.getResources().getI18NString("service.gui.RECENT_MESSAGES");
 		numberOfMessages = conf.getInt(NUMBER_OF_RECENT_MSGS_PROP, numberOfMessages);
 		isSMSEnabled = conf.getBoolean(IS_MESSAGE_SUBTYPE_SMS_PROP, isSMSEnabled);
 		RECENT_MSGS_VER = conf.getString(VER_OF_RECENT_MSGS_PROP, RECENT_MSGS_VER);
@@ -204,13 +203,11 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 		// lets check if we have cached recent messages for this provider, and fire events if
 		// found and are newer
 		synchronized (recentMessages) {
-			List<ComparableEvtObj> cachedRecentMessages
-					= getCachedRecentMessages(provider, isStatusChanged);
+			List<ComparableEvtObj> cachedRecentMessages = getCachedRecentMessages(provider, isStatusChanged);
 			if (cachedRecentMessages.isEmpty()) {
 				// there is no cached history for this, let's check and load it not from cache,
 				// but do a local search
-				Collection<EventObject> res
-						= messageHistoryService.findRecentMessagesPerContact(numberOfMessages,
+				Collection<EventObject> res = messageHistoryService.findRecentMessagesPerContact(numberOfMessages,
 						provider.getAccountID().getAccountUniqueID(), null, isSMSEnabled);
 
 				List<ComparableEvtObj> newMsc = new ArrayList<>();
@@ -245,8 +242,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 				}
 				recentMessages.removeAll(removedItems);
 				if (!recentMessages.isEmpty())
-					oldestRecentMessage
-							= recentMessages.get(recentMessages.size() - 1).getTimestamp();
+					oldestRecentMessage = recentMessages.get(recentMessages.size() - 1).getTimestamp();
 				else
 					oldestRecentMessage = null;
 
@@ -370,12 +366,12 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 		List<ComparableEvtObj> cachedRecentMessages = new ArrayList<>();
 		for (String contactID : recentMessagesContactIDs) {
 			try {
-				res = messageHistoryService.findRecentMessagesPerContact(numberOfMessages,
+                res = messageHistoryService.findRecentMessagesPerContact(numberOfMessages,
 						providerID, contactID, isSMSEnabled);
 				processEventObjects(res, cachedRecentMessages, isStatusChanged);
 			}
 			catch (Exception e) { // IndexOutOfBound
-				logger.warn("Index out of Bound: " + e);
+				logger.warn("Get cache recent message exception for: " + contactID + " => " + e);
 			}
 		}
 		return cachedRecentMessages;
