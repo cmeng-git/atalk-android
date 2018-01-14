@@ -15,6 +15,8 @@
  */
 package net.java.sip.communicator.impl.packetlogging;
 
+import com.google.common.collect.EvictingQueue;
+
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.service.fileaccess.FileCategory;
@@ -38,7 +40,15 @@ public class PacketLoggingServiceImpl implements PacketLoggingService {
 	 */
 	private static final Logger logger = Logger.getLogger(PacketLoggingServiceImpl.class);
 
-	/**
+    /**
+     * The max size of the <tt>EvictingQueue</tt> that the saver thread
+     * is using.
+     *
+     * TODO this needs to be configurable eventually.
+     */
+    private static final int EVICTING_QUEUE_MAX_SIZE = 1000;
+
+    /**
 	 * The OutputStream we are currently writing to.
 	 */
 	private FileOutputStream outputStream = null;
@@ -60,9 +70,16 @@ public class PacketLoggingServiceImpl implements PacketLoggingService {
 			new byte[]{
 					(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
 					(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-					(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-					(byte) 0x08, (byte) 0x00
+                (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00
 			};
+
+    /** IEEE 802.3 EtherType for IPv4 */
+    private final static byte[] ipv4EtherType =
+        new byte[] { 0x08, 0x00 };
+
+    /** IEEE 802.3 EtherType for IPv6 */
+    private final static byte[] ipv6EtherType =
+        new byte[] { (byte)0x86, (byte)0xdd };
 
 	/**
 	 * The fake ipv4 header we use as template.
@@ -395,8 +412,9 @@ public class PacketLoggingServiceImpl implements PacketLoggingService {
 	 */
 	private void savePacket(Packet packet)
 			throws Exception {
-		// if one of the addresses is ipv4 we are using ipv4, local udp addresses come as 0.0.0.0
-		// .0....0.0.0 when ipv6 is enabled in the underlying os
+        // if one of the addresses is ipv4 we are using ipv4,
+        // local udp addresses come as 0.0.0.0.0....0.0.0 when
+        // ipv6 is enabled in the underlying os
 		boolean isIPv4 = packet.sourceAddress.length == 4
 				|| packet.destinationAddress.length == 4;
 
@@ -514,6 +532,7 @@ public class PacketLoggingServiceImpl implements PacketLoggingService {
 		int tsSec = (int) (current / 1000);
 		int tsUsec = (int) ((current % 1000) * 1000);
 		int feakHeaderLen = fakeEthernetHeader.length +
+                (isIPv4 ? ipv4EtherType : ipv6EtherType).length +
 				ipHeader.length + transportHeader.length;
 		int inclLen = packet.packetLength + feakHeaderLen;
 		int origLen = inclLen;
@@ -535,6 +554,7 @@ public class PacketLoggingServiceImpl implements PacketLoggingService {
 			addInt(origLen);
 
 			outputStream.write(fakeEthernetHeader);
+            outputStream.write(isIPv4 ? ipv4EtherType : ipv6EtherType);
 			outputStream.write(ipHeader);
 			outputStream.write(transportHeader);
 			outputStream.write(
@@ -720,8 +740,8 @@ public class PacketLoggingServiceImpl implements PacketLoggingService {
 		/**
 		 * List of packets queued to be written in the file.
 		 */
-		private final List<Packet> pktsToSave = new ArrayList<>();
-
+        private final EvictingQueue<Packet> pktsToSave
+            = EvictingQueue.create(EVICTING_QUEUE_MAX_SIZE);
 		/**
 		 * Initializes a new <tt>SaverThread</tt>.
 		 */
@@ -748,7 +768,7 @@ public class PacketLoggingServiceImpl implements PacketLoggingService {
 						continue;
 					}
 
-					pktToSave = pktsToSave.remove(0);
+                    pktToSave = pktsToSave.poll();
 				}
 
 				if (pktToSave != null) {
@@ -781,7 +801,13 @@ public class PacketLoggingServiceImpl implements PacketLoggingService {
 		 *
 		 * @param packet new packet to save.
 		 */
-		public synchronized void queuePacket(Packet packet) {
+        public synchronized void queuePacket(Packet packet)
+        {
+            if (EVICTING_QUEUE_MAX_SIZE - pktsToSave.size() == 0)
+            {
+                logger.warn("Queue is full, packets are being evicted.");
+            }
+
 			pktsToSave.add(packet);
 			notifyAll();
 		}
