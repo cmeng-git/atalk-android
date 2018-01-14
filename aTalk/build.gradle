@@ -14,10 +14,10 @@ apply plugin: 'org.anarres.jarjar' // jarjar.repackage tool
 
 repositories {
     jcenter()
-//    maven {
-//        // SNAPSHOT repository - need manual cleanup for new SNAPSHOT update:
-//       url 'https://oss.sonatype.org/content/repositories/snapshots'
-//    }
+    maven {
+       // SNAPSHOT repository - need manual cleanup for new SNAPSHOT update if same name with date change only:
+       url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
     maven {
         url 'https://jitpack.io'
     }
@@ -113,10 +113,10 @@ android {
     }
 }
 ext {
-    // Need manual cleanup for new SNAPSHOT update:
+    // Need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
-    smackVersion = '4.2.2'
-    // smackVersion = '4.2.2-SNAPSHOT'
+    // smackVersion = '4.2.2'
+    smackVersion = '4.2.3-SNAPSHOT'
 }
 
 dependencies {
@@ -164,21 +164,22 @@ dependencies {
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
     // local /lib/smack library manual inclusion and dependencies
-//    implementation files('lib/smack/smack-android-4.2.2-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-android-extensions-4.2.2-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-bosh-4.2.2-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-compression-jzlib-4.2.2-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-core-4.2.2-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-experimental-4.2.2-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-extensions-4.2.2-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-im-4.2.2-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-legacy-4.2.2-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-resolver-minidns-4.2.2-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-sasl-provided-4.2.2-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-tcp-4.2.2-SNAPSHOT.jar')
-    implementation files('lib/smack/smack-omemo-4.2.2-SNAPSHOT.jar')
-    implementation files('lib/smack/smack-omemo-signal-4.2.2-SNAPSHOT.jar')
-    implementation 'org.whispersystems:signal-protocol-java:2.4.0'
+//    implementation files('lib/smack/smack-android-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-android-extensions-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-bosh-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-compression-jzlib-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-core-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-experimental-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-extensions-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-im-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-legacy-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-resolver-minidns-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-sasl-provided-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-tcp-4.2.3-SNAPSHOT.jar')
+
+//    implementation files('lib/smack/smack-omemo-4.2.3-SNAPSHOT.jar')
+//    implementation files('lib/smack/smack-omemo-signal-4.2.3-SNAPSHOT.jar')
+//    implementation 'org.whispersystems:signal-protocol-java:2.6.2'
 
     // smack dependencies needed if use local libraries
 //    implementation 'org.igniterealtime.jbosh:jbosh:0.9.0'
@@ -194,8 +195,8 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-sasl-provided:$smackVersion"
     implementation "org.igniterealtime.smack:smack-tcp:$smackVersion"
 
-//    implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
-//    implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
     // keep for reference only
     // Use jarjar.repackage in place of a dependency notation (destination file?).
