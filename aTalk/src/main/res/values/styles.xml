@@ -435,7 +435,8 @@
     </style>
 
     <style name="AboutDialogTextColor" parent="@android:style/TextAppearance">
-        <item name="android:textColor">#808080</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:textColorLink">@color/light_blue</item>
     </style>
 
     <!-- Dexter -->

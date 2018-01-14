@@ -208,6 +208,7 @@
     <string name="check_new_version">Check Update</string>
     <string name="show_history_log">History Logs</string>
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nAll rights reserved.</string>
+    <string name="AboutDialog_website">http://atalk.sytes.net</string>
     <string name="About_action">About</string>
 
     <string name="app_authors_fmt">Authors: %s</string>
