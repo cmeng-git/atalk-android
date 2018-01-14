@@ -1,12 +1,13 @@
 Project aTalk-Android Release Notes
 =========================================================================
-Version:		1.0.2+ (1002)
+Version:		1.0.3 (1003)
 Author:         cmeng
-Upload Date:	1/18/2018
+Upload Date:	1/15/2018
 - update to use smack 4.2.3-SNAPSHOTS
 - consolidate all info for about dialog into About.java class
 - Add atalk site/help link in About dialog box
 
+-------------------------
 Upload Date:	1/14/2018
 - remove unused libraries jar and JNI targets and .so
 - add guava-15.0.jar - use by PacketLoggingServiceImpl.java
