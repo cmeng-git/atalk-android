@@ -1,0 +1,71 @@
+--- /home/cmeng/sandbox/source/smack/Smack.git/trunk/smack-omemo/src/main/java/org/jivesoftware/smackx/omemo/OmemoService.java	2017-11-26 01:45:32.000000000 
++++ /home/cmeng/workspace/android/smack/smack-omemo/src/main/java/org/jivesoftware/smackx/omemo/OmemoService.java	2018-01-14 06:54:16.000000000 
+@@ -39,14 +39,16 @@
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ import javax.crypto.BadPaddingException;
+ import javax.crypto.IllegalBlockSizeException;
+ import javax.crypto.NoSuchPaddingException;
+ 
++import org.jivesoftware.smack.SmackConfiguration;
+ import org.jivesoftware.smack.SmackException;
+ import org.jivesoftware.smack.StanzaListener;
++import org.jivesoftware.smack.XMPPConnection;
+ import org.jivesoftware.smack.XMPPException;
+ import org.jivesoftware.smack.filter.StanzaFilter;
+ import org.jivesoftware.smack.packet.Message;
+ import org.jivesoftware.smack.packet.Stanza;
+ import org.jivesoftware.smack.packet.XMPPError;
+ import org.jivesoftware.smack.util.Async;
+@@ -99,13 +101,12 @@
+  * @param <T_ECPub>     Elliptic Curve PublicKey class
+  * @param <T_Bundle>    Bundle class
+  * @param <T_Ciph>      Cipher class
+  * @author Paul Schaub
+  */
+ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> {
+-
+     static {
+         Security.addProvider(new BouncyCastleProvider());
+     }
+ 
+     protected static final Logger LOGGER = Logger.getLogger(OmemoService.class.getName());
+ 
+@@ -289,16 +290,34 @@
+                 getOmemoStoreBackend().changeSignedPreKey(omemoManager);
+             }
+         } else {
+             getOmemoStoreBackend().setDateOfLastSignedPreKeyRenewal(omemoManager);
+         }
+ 
++        /*
++         * Patch to ignore OmemoService prekey publish response timeout (~90s) to support slow device,
++         * prekey will still complete publish in background.
++         * Smack omemo sometimes report response timeout even the reply stanza is received within timeout period.
++         */
+         // publish
+-        PubSubManager.getInstance(omemoManager.getConnection(), omemoManager.getOwnJid())
+-                .tryToPublishAndPossibleAutoCreate(OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(omemoManager.getDeviceId()),
+-                        new PayloadItem<>(getOmemoStoreBackend().packOmemoBundle(omemoManager)));
++//        PubSubManager.getInstance(omemoManager.getConnection(), omemoManager.getOwnJid())
++//                .tryToPublishAndPossibleAutoCreate(OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(omemoManager.getDeviceId()),
++//                        new PayloadItem<>(getOmemoStoreBackend().packOmemoBundle(omemoManager)));
++
++        // LOGGER.log(Level.INFO, "Start Prekeys preparation");
++        PubSubManager pubSubMgr = PubSubManager.getInstance(omemoManager.getConnection(), omemoManager.getOwnJid());
++        String deviceId = OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(omemoManager.getDeviceId());
++        PayloadItem<OmemoBundleVAxolotlElement> payLoad = new PayloadItem<>(getOmemoStoreBackend().packOmemoBundle(omemoManager));
++        // LOGGER.log(Level.INFO, "PayLoad generated: " + payLoad.toXML());
++
++        try {
++            pubSubMgr.tryToPublishAndPossibleAutoCreate(deviceId, payLoad);
++        } catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
++            LOGGER.log(Level.WARNING, "Ignore OmemoManager publish response timeout ~90S on SII"
++                    + e.getMessage());
++        }
+     }
+ 
+     /**
+      * Publish our deviceId in case it is not on the list already.
+      * This method calls publishDeviceIdIfNeeded(omemoManager, deleteOtherDevices, false).
+      * @param omemoManager          OmemoManager

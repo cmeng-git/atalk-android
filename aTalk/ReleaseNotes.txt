@@ -1,5 +1,16 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.0.2+ (1002)
+Author:         cmeng
+Upload Date:	1/14/2018
+
+- remove unused libraries jar and JNI targets and .so
+- add guava-15.0.jar - use by PacketLoggingServiceImpl.java
+- update libjitsi to v1031 (12/03/2018)
+
+- bump failed to use ice4j-2.0.0-20170720.150550-1.jar - cannot find candidate and call cannot connect. So abort
+
+=========================================================================
 Version:		1.0.2 (1002)
 Author:         cmeng
 Upload Date:	1/12/2018

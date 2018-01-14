@@ -65,7 +65,7 @@ android {
     buildTypes {
         release {
             shrinkResources false
-            minifyEnabled false
+            minifyEnabled false  // too many missing reference when enable
             // useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
@@ -131,10 +131,10 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // direct import from local lib/bundles/*.jar
-    // must use local json-simple-1.1.1.jar - otherwise dependency conflict
-    // maven ice4j-2.0 not working for atalk
     implementation files('lib/bundles/dhcp4java-1.00.jar')
+    // maven ice4j-2.0 not working for atalk - unable to get candidates and call won't connect
     implementation files('lib/bundles/ice4j-1.1.jar')
+    // must use local json-simple-1.1.1.jar - otherwise dependency conflict
     implementation files('lib/bundles/json-simple-1.1.1.jar')
 
     implementation "com.android.support:support-v4:${rootProject.supportLibraryVersion}"
@@ -150,6 +150,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.karumi:dexter:4.2.0'
     implementation 'com.github.yalantis:ucrop:2.2.1'
+    implementation 'com.google.guava:guava:23.6-android'
     implementation 'com.googlecode.libphonenumber:libphonenumber:7.5.1'
     // when targeting Android API 23 and newer - class obsoleted
     implementation 'cz.msebera.android:httpclient:4.4.1.2' // duplicate class
@@ -206,6 +207,7 @@ dependencies {
     implementation 'org.jxmpp:jxmpp-jid:0.6.0'
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
 
+    implementation 'org.jetbrains:annotations-java5:15.0'
     implementation 'org.osgi:osgi.core:6.0.0'
     implementation "com.google.android.gms:play-services-location:${rootProject.gmsPlayServicesVersion}"
     implementation "com.google.android.gms:play-services-maps:${rootProject.gmsPlayServicesVersion}"
@@ -264,35 +266,6 @@ task jarRepackage(type: Copy, description: 'Repackage jar to avoid conflict') {
             zap pattern: 'javax.media.Manager'
             zap pattern: 'javax.media.Manager**'
         }
-
-        // renaming this strings leads to Exception -
-        // ClassNotFoundException: org.atalk.gov.nist.org.atalk.javax.sip.header.HeaderFactoryImpl
-        // The cause is javax.sip.SipFactory constructing the header factories by name and
-        // renaming causes wrong classNames.
-//        jarjar2(jarfile: 'libs/protocol-sip.jar') {
-//            zipfileset(src: 'lib/bundles/protocol-sip.jar')
-//            rule pattern: 'javax.sip.header.HeaderFactoryImpl',
-//                    result: 'javax.sip.header.HeaderFactoryImpl'
-//            rule pattern: 'javax.sip.message.MessageFactoryImpl',
-//                    result: 'javax.sip.message.MessageFactoryImpl'
-//            rule pattern: 'javax.sip.address.AddressFactoryImpl',
-//                    result: 'javax.sip.address.AddressFactoryImpl'
-//
-//            rule pattern: 'javax.sip.**',
-//                    result: 'org.atalk.javax.sip.@1'
-//            rule pattern: 'gov.nist.core.**',
-//                    result: 'org.atalk.gov.nist.core.@1'
-//            rule pattern: 'gov.nist.javax.sdp.**',
-//                    result: 'org.atalk.gov.nist.javax.sdp.@1'
-//            rule pattern: 'gov.nist.javax.sip.**',
-//                    result: 'org.atalk.gov.nist.javax.sip.@1'
-//            rule pattern: 'java.awt.**',
-//                    result: 'org.atalk.android.util.java.awt.@1'
-//            rule pattern: 'org.jitsi.service.protocol.DTMFTone',
-//                    result: 'org.atalk.service.neomedia.DTMFTone'
-//            rule pattern: 'org.jitsi.**',
-//                    result: 'org.atalk.@1'
-//        }
 
         jarjar2(jarfile: 'libs/systray-service.jar') {
             zipfileset(src: 'lib/bundles/systray-service.jar')
@@ -357,9 +330,3 @@ tasks.withType(JavaCompile) {
 // will clean /libs/armeabi/*.so
 clean.dependsOn 'ndkClean'
 build.dependsOn 'updateVersionFile'
-
-// not require in android studio - can be removed
-task run(type: Exec, dependsOn: 'installDebug') {
-    // windows: adb + environment setup
-    commandLine 'cmd', '/c', 'adb', 'shell', 'am', 'start', '-n', 'org.atalk/.android.gui.LauncherActivity', '-D'
-}
