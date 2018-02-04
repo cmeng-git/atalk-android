@@ -24,6 +24,8 @@ public class Migrations {
         switch (db.getVersion()) {
             case 1:
                 MigrationTo2.createOmemoTables(db);
+            case 2:
+                MigrationTo3.updateSQLDatabase(db);
         }
     }
 }

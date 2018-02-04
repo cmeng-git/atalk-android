@@ -65,8 +65,7 @@ public class AccountInfoUtils
 	public static String getDisplayName(OperationSetServerStoredAccountInfo accountInfoOpSet)
 	{
 		DisplayNameDetail displayName = null;
-		Iterator<GenericDetail> displayNameDetails
-				= accountInfoOpSet.getDetails(DisplayNameDetail.class);
+		Iterator<GenericDetail> displayNameDetails = accountInfoOpSet.getDetails(DisplayNameDetail.class);
 
 		if ((displayNameDetails != null) && displayNameDetails.hasNext())
 			displayName = (DisplayNameDetail) displayNameDetails.next();

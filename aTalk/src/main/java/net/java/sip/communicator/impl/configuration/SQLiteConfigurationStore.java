@@ -32,7 +32,7 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
 	 */
 	private static final Logger logger = Logger.getLogger(SQLiteConfigurationStore.class);
 
-	public static final String TABLE_NAME = "Properties";
+	public static final String TABLE_NAME = "properties";
 	public static final String COLUMN_NAME = "Name";
 	public static final String COLUMN_VALUE = "Value";
 
@@ -47,8 +47,7 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
 	 */
 	public SQLiteConfigurationStore()
 	{
-		Context context = ServiceUtils.getService(ConfigurationActivator.getBundleContext(),
-				OSGiService.class);
+		Context context = ServiceUtils.getService(ConfigurationActivator.getBundleContext(), OSGiService.class);
 		openHelper = DatabaseBackend.getInstance(context);
 	}
 

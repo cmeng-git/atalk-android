@@ -208,8 +208,10 @@
     <string name="check_new_version">Check Update</string>
     <string name="show_history_log">History Logs</string>
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nAll rights reserved.</string>
-    <string name="AboutDialog_website">http://atalk.sytes.net</string>
+    <string name="AboutDialog_help"><a herf="http://atalk.sytes.net">Online Help</a></string>
+    <string name="AboutDialog_Link">http://atalk.sytes.net</string>
     <string name="About_action">About</string>
+    <string name="About_help">Help</string>
 
     <string name="app_authors_fmt">Authors: %s</string>
     <string name="app_revision_fmt">Revision Information: %s</string>
@@ -422,7 +424,7 @@
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Unknown error has occurred while delivering your message.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">A network problem occurred. Please check your network configuration and try again.</string>
     <string name="service_gui_MSG_RECEIVED">{0} wrote</string>
-    <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">You should be connected to be able to send messages.</string>
+    <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">You must login first to send message.</string>
 	<string name="service_gui_MULTIPLE_LOGIN">Multiple login instants not allowed. The following account: User name: {0}, Server name: {1} has been disconnected.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Mutually On Hold</string>
     <string name="service_gui_NEW_ACCOUNT">Add new account</string>
@@ -486,10 +488,10 @@
     <string name="service_gui_SELECT_NO_GROUP">No group</string>
 
     <!-- Logs -->
-    <string name="service_gui_SEND_LOGS">Submit Logs</string>
-    <string name="service_gui_SEND_LOGS_QUESTION">aTalk has just recovered after serious crash. Do you want to send the logs?</string>
-    <string name="service_gui_SEND_LOGS_SUBJECT">aTalk logs</string>
-    <string name="service_gui_SEND_LOGS_TITLE">Send aTalk logs</string>
+    <string name="service_gui_SEND_LOGS">Report Bugs</string>
+    <string name="service_gui_SEND_LOGS_QUESTION">aTalk has just recovered after serious crash. Do you want to report the bugs to devepers?</string>
+    <string name="service_gui_SEND_LOGS_SUBJECT">aTalk bugs report</string>
+    <string name="service_gui_SEND_LOGS_TITLE">aTalk bugs report via email</string>
 
     <string name="service_gui_SEND_MESSAGE">Send a message</string>
 	<string name="service_gui_SEND_AS_SMS">Send as SMS</string>
@@ -498,7 +500,7 @@
 	<string name="service_gui_SENT">sent</string>
 	<string name="service_gui_SERVER_CHAT_ROOMS">Server Chat Rooms</string>
 	<string name="service_gui_SHOW_OFFLINE_CONTACTS">Show offline contacts</string>
-    <string name="service_gui_SHUTDOWN_IN_PROGRESS">Shutdown in progress&#8230;</string>
+    <string name="service_gui_SHUTDOWN_IN_PROGRESS">shuting down&#8230;</string>
 	<string name="service_gui_STATUS">Status</string>
     <string name="service_gui_TYPE_YOUR_REQUEST">Type your request reason</string>
     <string name="service_gui_UNKNOWN_CONTACT">Unknown</string>
@@ -616,33 +618,32 @@
 
     <!-- Security certificates -->
     <string name="service_gui_ALWAYS_TRUST">Always trust this certificate</string>
-    <string name="service_gui_CERT_DIALOG_TITLE">Verify Certificate</string>
-    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>{0} can\'\'t verify the identity
-    of the server when connecting to&lt;br/>
-        &lt;b>{1}&lt;/b>.&lt;br/>&lt;br/>
-    The certificate is not trusted, which means that the server\'\'s
-    identity cannot be automatically verified.&lt;br/>&lt;br/>
-    Do you want to continue connecting?&lt;br/>
-    For more information, click "Show Certificate".&lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>{0} can\'\'t verify the
-    identity of the server\'\'s certificate.&lt;br/>&lt;br/>
-    The certificate is not trusted, which means that the server\'\'s
-    identity cannot&lt;br/>be automatically verified.
-    Do you want to continue connecting?&lt;br/>&lt;br/>
-    For more information, click "Show Certificate".&lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>{0} can\'\'t verify the identity
-    of the connecting client.&lt;br/>&lt;br/>
-    The certificate is not trusted, which means that the client\'\'s
-    identity cannot<br />be automatically verified.
-    Do you want to accept the connection?&lt;br/>&lt;br/>
-    For more information, click "Show Certificate".&lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT">&lt;html>{0} can\'\'t verify the identity
-    of the peer {1}.&lt;br/>&lt;br/>
-    The certificate is not trusted, which means that the peer\'\'s
-    identity cannot&lt;br/>be automatically verified.
-    Do you want to continue connecting?&lt;br/>&lt;br/>
-    For more information, click "Show Certificate".&lt;/html></string>
-    <string name="service_gui_CONTINUE_ANYWAY">Continue anyway</string>
+    <string name="service_gui_CERT_DIALOG_TITLE">Certificate Verification</string>
+    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>{0} cannot verify the
+        identity of the server when connecting to&lt;br/>&lt;b>{1}&lt;/b>&lt;br/>&lt;br/>
+        The certificate is not trusted (a self-signed certificate), which means that the server\'\'s
+        identity cannot be automatically verified.&lt;br/>&lt;br/>
+        Proceed with connection for this instance only?&lt;br/>
+        For more option and info, click "Show Certificate".&lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>{0} cannot verify the
+        identity of the server\'\'s certificate.&lt;br/>&lt;br/>
+        The certificate is not trusted (a self-signed certificate), which means that the server\'\'s
+        identity cannot be automatically verified.&lt;br/>&lt;br/>
+        Proceed with connection for this instance only?&lt;br/>
+        For more option and info, click "Show Certificate".&lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>{0} cannot verify the
+        identity of the connecting client.&lt;br/>&lt;br/>
+        The certificate is not trusted (a self-signed certificate), which means that the client\'\'s
+        identity cannot be automatically verified.&lt;br/>&lt;br/>
+        Proceed with connection for this instance only?&lt;br/>
+        For more option and info, click "Show Certificate".&lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT">&lt;html>{0} cannot verify the
+        identity of the peer {1}.&lt;br/>&lt;br/>
+        The certificate is not trusted (a self-signed certificate), which means that the peer\'\'s
+        identity cannot be automatically verified.&lt;br/>&lt;br/>
+        Proceed with connection for this instance only?&lt;br/>
+        For more option and info, click "Show Certificate".&lt;/html></string>
+   <string name="service_gui_PROCEED">Proceed</string>
     <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;html>&lt;b>Issued To&lt;/b>&lt;/html></string>
     <string name="service_gui_CERT_INFO_CHAIN">Certificate Chain:</string>
     <string name="service_gui_CERT_INFO_CN">Common Name:</string>
@@ -824,7 +825,7 @@
     <string name="plugin_otr_menu_CRYPTO_NON_AUTHETICATED">CRYPTO Non-Authenticated</string>
     <string name="plugin_otr_menu_CRYPTO_Finish">CRYPTO Finished</string>
     <string name="plugin_otr_authbuddydialog_HELP_URI">https://jitsi.org/GSOC2009/OTR</string>
-    <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">Authenticating a buddy helps
+    <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">Authenticating a buddy helps to
     ensure that the person you are talking to is who he or she claims to be. To verify the fingerprint, contact your buddy via
     some other authenticated channel, such as the telephone or GPG-signed email. Each of you should tell your fingerprint to the
     other. If everything matches up, you should indicate in the following dialog that *I have* verified the fingerprint.</string>
@@ -885,6 +886,16 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Authenticate Buddy</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">You have unauthenticated buddies. Unverified buddies cannot receive OMEMO message. Check to authenticate.</string>
+    <string name="omemo_init_failed_title">OmemoManager init failed</string>
+    <string name="omemo_init_failed_noresponse">Initialize OmemoManager has failed and omemo messaging may not be working.\n\n
+        No response received within reply timeout.</string>
+    <string name="omemo_init_failed_CorruptedOmemoKeyException">Initialize OmemoManager has failed and omemo messaging is not working. If problem persists
+        after restart, please proceed to "Regnerate OMEMO identities" for the failed omomoDevice: %1$s.\n\nException: %2$s.</string>
+    <string name="omemo_rebuild_session">Rebuild new session for missing: %1$s</string>
+    <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs is missing for: %1$s</string>
+    <string name="omemo_identity_keypairs_invalid">Invalid IdentityKeyPairs for omemoDevice: %1$s.\nException: %2$s.</string>
+    <string name="omemo_identity_key_missing">OMEMO IdentityKey is missing for: %1$s</string>
+    <string name="omemo_identity_key_invalid">Invalid IdentityKey for omemoDevice: %1$s.\nException: %2$s.</string>
 
     <!-- Global proxy plugin -->
     <string name="service_gui_settings_PROXY">Global proxy</string>
@@ -1448,7 +1459,7 @@
     <!-- OMEMO regenerate screen -->
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">OMEMO Identities Refresh</string>
     <string name="pref_omemo_regenerate_identities_title">Regenerate OMEMO identities</string>
-    <string name="pref_omemo_regenerate_identities_summary">Upon regenerated your OMEMO keys (takes ~20Sec), all your contacts will need to re-verify you. Perform only when having omemo session problem.</string>
+    <string name="pref_omemo_regenerate_identities_summary">Upon regenerated your OMEMO identity, all your contacts will receive the new fingerprint and are required to re-verify you. Relaunch aTalk after regeneration. Perform only when having omemo session setup problem.</string>
     <!-- OMEMO purge device screen -->
     <string name="service_gui_settings_OMEMO_PURGE_DEVICE_TITLE">OMEMO Devices Delete</string>
     <string name="pref_omemo_purge_devices_title">Purge unused identities</string>
@@ -1460,8 +1471,9 @@
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">Crypto private keys</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">Manage crypto private fingerprints</string>
     <!-- Crypto fingerprints screen -->
-    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">Crypto buddy fingerprints</string>
-    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY">Manage known buddy fingerprints</string>
+    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">Crypto devices fingerprints</string>
+    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY">Manage all known devices fingerprints\n
+        color: cyan=ownDevice; gray=inactive</string>
 
     <!-- Crypto contextMenu, dialog, message and toast -->
     <string name="crypto_dialog_KEY_GENERATE_TITLE">Private key generation</string>
@@ -1486,9 +1498,10 @@
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">OTR session request from your buddy has been denied while in OMEMO session. You may enable OTR session manually!</string>
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">Your OTR session request has been denied while omemo session is in progress!</string>
 
-    <string name="crypto_text_FINGERPRINT_VERIFIED_TRUE">Yes</string>
-    <string name="crypto_text_FINGERPRINT_VERIFIED_FALSE">No</string>
-    <string name="crypto_text_NO_KEY_PRESENT">No key present</string>
+    <string name="crypto_FINGERPRINT_STATUS">Verified: %s</string>
+    <string name="crypto_FINGERPRINT_VERIFIED">Yes</string>
+    <string name="crypto_FINGERPRINT_NOT_VERIFIED">No</string>
+    <string name="crypto_NO_KEY_PRESENT">No key present</string>
 
     <string name="crypto_toast_OMEMO_TRUST_MESSAGE_RESUME">Resume sending OMEMO message to buddy: %s</string>
     <string name="crypto_toast_OMEMO_DISTRUST_MESSAGE_STOP">Stop further sending OMEMO message to buddy: %s</string>

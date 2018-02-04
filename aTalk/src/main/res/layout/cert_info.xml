@@ -47,7 +47,7 @@
                 android:id="@+id/continueBtn"
                 style="@style/ButtonTop"
                 android:onClick="onContinueClicked"
-                android:text="@string/service_gui_CONTINUE_ANYWAY" />
+                android:text="@string/service_gui_PROCEED" />
         </LinearLayout>
 
     </LinearLayout>

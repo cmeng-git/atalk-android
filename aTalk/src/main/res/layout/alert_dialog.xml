@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/theme_background"
+    android:padding="@dimen/screen_padding_small"
     android:orientation="vertical">
 
     <ScrollView
@@ -24,7 +25,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:padding="@dimen/screen_padding"
                 android:text="{Alert dialog text}" />
         </LinearLayout>
     </ScrollView>
@@ -32,7 +32,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:paddingTop="10dp"
         android:orientation="horizontal">
 
         <Button

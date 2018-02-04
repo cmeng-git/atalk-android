@@ -40,17 +40,22 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
+import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
 import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.OmemoService;
+import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
+import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -82,6 +87,9 @@ public class CryptoPrivateKeys extends OSGiActivity
      */
     private final Map<String, AccountID> accountList = new TreeMap<>();
 
+    /* Map contains omemo devices and theirs associated fingerPrint */
+    private final Map<String, String> deviceFingerprints = new TreeMap<>();
+
     /**
      * {@inheritDoc}
      */
@@ -92,7 +100,7 @@ public class CryptoPrivateKeys extends OSGiActivity
         setContentView(R.layout.list_layout);
 
         ListView accountsKeysList = (ListView) findViewById(R.id.list);
-        this.accountsAdapter = new PrivateKeyListAdapter(getAccountList());
+        this.accountsAdapter = new PrivateKeyListAdapter(getDeviceFingerPrints());
         accountsKeysList.setAdapter(accountsAdapter);
         registerForContextMenu(accountsKeysList);
     }
@@ -102,18 +110,41 @@ public class CryptoPrivateKeys extends OSGiActivity
      *
      * @return the map of all known accounts with bareJid as key.
      */
-    Map<String, AccountID> getAccountList()
+    Map<String, String> getDeviceFingerPrints()
     {
+        String deviceJid;
+
         // Get all the registered protocolProviders
         Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : providers) {
+            OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
+            OmemoDevice userDevice = omemoManager.getOwnDevice();
             AccountID accountId = pps.getAccountID();
             String bareJid = accountId.getAccountJid();
 
-            accountList.put(OMEMO + bareJid, accountId);
-            accountList.put(OTR + bareJid, accountId);
+            // Get OmemoDevice fingerprint
+            String fingerprint = null;
+            deviceJid = OMEMO + userDevice;
+            try {
+                fingerprint = omemoManager.getOwnFingerprint().toString();
+            } catch (SmackException.NotLoggedInException e) {
+                e.printStackTrace();
+            } catch (CorruptedOmemoKeyException e) {
+                e.printStackTrace();
+            }
+            deviceFingerprints.put(deviceJid, fingerprint);
+            accountList.put(deviceJid, accountId);
+
+            // Get OTRDevice fingerprint - can be null for new generation
+            deviceJid = OTR + bareJid;
+            fingerprint = keyManager.getLocalFingerprint(accountId);
+            if (!StringUtils.isNullOrEmpty(fingerprint)) {
+                fingerprint = fingerprint.toLowerCase();
+            }
+            deviceFingerprints.put(deviceJid, fingerprint);
+            accountList.put(deviceJid, accountId);
         }
-        return accountList;
+        return deviceFingerprints;
     }
 
     /**
@@ -141,8 +172,7 @@ public class CryptoPrivateKeys extends OSGiActivity
     @Override
     public boolean onContextItemSelected(MenuItem item)
     {
-        AdapterView.AdapterContextMenuInfo info
-                = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int pos = info.position;
         String bareJid = accountsAdapter.getBareJidFromRow(pos);
 
@@ -160,15 +190,65 @@ public class CryptoPrivateKeys extends OSGiActivity
 
             case R.id.copy:
                 String privateKey = accountsAdapter.getOwnKeyFromRow(pos);
-                ClipboardManager cbManager
-                        = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                cbManager.setPrimaryClip(ClipData.newPlainText(null,
-                        CryptoHelper.prettifyFingerprint(privateKey)));
-                Toast.makeText(this, R.string.crypto_toast_FINGERPRINT_COPY, Toast.LENGTH_SHORT)
-                        .show();
+                ClipboardManager cbManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                cbManager.setPrimaryClip(ClipData.newPlainText(null, CryptoHelper.prettifyFingerprint(privateKey)));
+                Toast.makeText(this, R.string.crypto_toast_FINGERPRINT_COPY, Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onContextItemSelected(item);
+    }
+
+    /**
+     * Displays alert asking user if he wants to regenerate or generate new privateKey.
+     *
+     * @param bareJid the account bareJid
+     * @param isKeyExist <tt>true</tt>if key exist
+     */
+    private void showGenerateKeyAlert(final String bareJid, boolean isKeyExist)
+    {
+        final AccountID accountId = accountList.get(bareJid);
+        int getResStrId = isKeyExist ? R.string.crypto_dialog_KEY_REGENERATE_QUESTION
+                : R.string.crypto_dialog_KEY_GENERATE_QUESTION;
+
+        String warnMsg = bareJid.startsWith(OMEMO)
+                ? getString(R.string.pref_omemo_regenerate_identities_summary) : "";
+        String message = getString(getResStrId, bareJid, warnMsg);
+
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setTitle(getString(R.string.crypto_dialog_KEY_GENERATE_TITLE))
+                .setMessage(message)
+                .setPositiveButton(R.string.service_gui_PROCEED, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        if (accountId != null) {
+                            if (bareJid.startsWith(OMEMO))
+                                regenerate(accountId);
+                            else if (bareJid.startsWith(OTR))
+                                keyManager.generateKeyPair(accountId);
+                        }
+                        accountsAdapter.notifyDataSetChanged();
+                    }
+                }).setNegativeButton(R.string.service_gui_CANCEL, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+    /**
+     * Regenerate the OMEMO keyPair parameters for the given accountId
+     *
+     * @param accountId the accountID
+     */
+    private void regenerate(AccountID accountId)
+    {
+        OmemoStore omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
+        ((SQLiteOmemoStore) omemoStore).regenerate(accountId);
     }
 
     /**
@@ -177,20 +257,20 @@ public class CryptoPrivateKeys extends OSGiActivity
     private class PrivateKeyListAdapter extends BaseAdapter
     {
         /**
-         * List of <tt>AccountID</tt> for which the private keys are being displayed.
+         * The list of currently displayed devices and FingerPrints.
          */
-        private final Map<String, AccountID> accountIDs;
+        private final List<String> deviceJid;
+        private final List<String> deviceFP;
 
         /**
-         * Creates new instance of <tt>PrivateKeyListAdapter</tt>.
+         * Creates new instance of <tt>FingerprintListAdapter</tt>.
          *
-         * @param accountList
-         *         the list of <tt>AccountID</tt>s for which private keys will be displayed by
-         *         this adapter.
+         * @param fingerprintList list of <tt>device</tt> for which OMEMO/OTR fingerprints will be displayed.
          */
-        PrivateKeyListAdapter(Map<String, AccountID> accountList)
+        PrivateKeyListAdapter(Map<String, String> fingerprintList)
         {
-            accountIDs = accountList;
+            deviceJid = new ArrayList<>(fingerprintList.keySet());
+            deviceFP = new ArrayList<>(fingerprintList.values());
         }
 
         /**
@@ -199,7 +279,7 @@ public class CryptoPrivateKeys extends OSGiActivity
         @Override
         public int getCount()
         {
-            return accountIDs.size();
+            return deviceFP.size();
         }
 
         /**
@@ -208,8 +288,7 @@ public class CryptoPrivateKeys extends OSGiActivity
         @Override
         public Object getItem(int position)
         {
-            String bareJid = getBareJidFromRow(position);
-            return accountIDs.get(bareJid);
+            return getBareJidFromRow(position);
         }
 
         /**
@@ -228,138 +307,28 @@ public class CryptoPrivateKeys extends OSGiActivity
         public View getView(int position, View rowView, ViewGroup parent)
         {
             if (rowView == null)
-                rowView = getLayoutInflater().inflate(R.layout.crypto_privkey_list_row, parent,
-                        false);
+                rowView = getLayoutInflater().inflate(R.layout.crypto_privkey_list_row, parent, false);
+
             String bareJid = getBareJidFromRow(position);
             ViewUtil.setTextViewValue(rowView, R.id.protocolProvider, bareJid);
 
             String fingerprint = getOwnKeyFromRow(position);
-            String fingerprintStr;
+            String fingerprintStr = fingerprint;
             if (StringUtils.isNullOrEmpty(fingerprint)) {
-                fingerprintStr = getString(R.string.crypto_text_NO_KEY_PRESENT);
+                fingerprintStr = getString(R.string.crypto_NO_KEY_PRESENT);
             }
-            else {
-                fingerprintStr = fingerprint;
-            }
-            ViewUtil.setTextViewValue(rowView, R.id.fingerprint,
-                    CryptoHelper.prettifyFingerprint(fingerprintStr));
+            ViewUtil.setTextViewValue(rowView, R.id.fingerprint, CryptoHelper.prettifyFingerprint(fingerprintStr));
             return rowView;
         }
 
         String getBareJidFromRow(int row)
         {
-            int index = -1;
-            for (String bareJid : accountIDs.keySet()) {
-                index++;
-                if (index == row) {
-                    return bareJid;
-                }
-            }
-            return null;
+            return deviceJid.get(row);
         }
 
         String getOwnKeyFromRow(int row)
         {
-            String bareJid = getBareJidFromRow(row);
-            AccountID accountId = accountIDs.get(bareJid);
-
-            String fingerprint = null;
-            if (bareJid.startsWith(OMEMO))
-                fingerprint = getOwnFingerprint(accountId);
-            else if (bareJid.startsWith(OTR)) {
-                fingerprint = keyManager.getLocalFingerprint(accountId);
-                if (!StringUtils.isNullOrEmpty(fingerprint))
-                    fingerprint = fingerprint.toLowerCase();
-            }
-            return fingerprint;
+            return deviceFP.get(row);
         }
-    }
-
-    /**
-     * Displays alert asking user if he wants to regenerate or generate new privateKey.
-     *
-     * @param bareJid
-     *         the account bareJid
-     * @param isKeyExist
-     *         <tt>true</tt>if key exist
-     */
-    private void showGenerateKeyAlert(final String bareJid, boolean isKeyExist)
-    {
-        final AccountID accountId = accountList.get(bareJid);
-        int getResStrId = isKeyExist ? R.string.crypto_dialog_KEY_REGENERATE_QUESTION
-                : R.string.crypto_dialog_KEY_GENERATE_QUESTION;
-
-        String warnMsg = bareJid.startsWith(OMEMO)
-                ? getString(R.string.pref_omemo_regenerate_identities_summary) : "";
-        String message = getString(getResStrId, bareJid, warnMsg);
-
-        AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setTitle(getString(R.string.crypto_dialog_KEY_GENERATE_TITLE))
-                .setMessage(message)
-                .setPositiveButton(R.string.service_gui_YES, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        if (accountId != null) {
-                            if (bareJid.startsWith(OMEMO))
-                                regenerate(accountId);
-                            else if (bareJid.startsWith(OTR))
-                                keyManager.generateKeyPair(accountId);
-                        }
-                        accountsAdapter.notifyDataSetChanged();
-                    }
-                }).setNegativeButton(R.string.service_gui_NO, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.dismiss();
-            }
-        }).show();
-    }
-
-    /**
-     * Regenerate the OMEMO key parameters for the given accountId
-     *
-     * @param accountId
-     *         the accountID
-     */
-    private void regenerate(AccountID accountId)
-    {
-        ProtocolProviderService pps = accountId.getProtocolProvider();
-        if (pps != null) {
-            XMPPTCPConnection connection = pps.getConnection();
-            if ((connection != null) && connection.isAuthenticated()) {
-                OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
-                try {
-                    omemoManager.regenerate();
-                } catch (SmackException | InterruptedException
-                        | XMPPException.XMPPErrorException
-                        | CorruptedOmemoKeyException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    /**
-     * @param accountId
-     *         the accountID
-     * @return the owner fingerPrint for the given accountID
-     */
-    private String getOwnFingerprint(AccountID accountId)
-    {
-        String ownFingerprint = null;
-
-        ProtocolProviderService pps = accountId.getProtocolProvider();
-        if (pps != null) {
-            XMPPTCPConnection connection = pps.getConnection();
-            if ((connection != null) && connection.isAuthenticated()) {
-                OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
-                ownFingerprint = omemoManager.getOurFingerprint().toString();
-            }
-        }
-        return ownFingerprint;
     }
 }

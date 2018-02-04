@@ -5,11 +5,16 @@
  */
 package org.atalk.android.gui.util;
 
+import android.content.res.ColorStateList;
 import android.os.Handler;
 import android.view.View;
 import android.widget.*;
 
 import net.java.sip.communicator.util.Logger;
+
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.android.util.java.awt.Color;
 
 /**
  * Utility class that encapsulates common operations on some <tt>View</tt> types.
@@ -53,7 +58,13 @@ public class ViewUtil
 		tv.setText(text);
 	}
 
-	public static String getTextViewValue(View container, int id)
+    public static void setTextViewColor(View container, int id, int color)
+    {
+        TextView tv = (TextView) container.findViewById(id);
+        tv.setTextColor(aTalkApp.getAppResources().getColor(color));
+    }
+
+    public static String getTextViewValue(View container, int id)
 	{
 		return ((TextView) container.findViewById(id)).getText().toString();
 	}

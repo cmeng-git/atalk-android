@@ -802,6 +802,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
 	 **/
 	private int getChildIndex(TreeSet<MetaContact> contactList, MetaContact metaContact)
 	{
+	    if ((contactList == null) || contactList.isEmpty())
+            return -1;
+
 		int i = 0;
 		for (MetaContact mContact : contactList) {
 			if (metaContact.equals(mContact))

@@ -24,6 +24,8 @@ import net.java.sip.communicator.util.*;
 import org.json.*;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A default implementation of the <code>MetaContact</code> interface.
@@ -47,7 +49,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
 	/**
 	 * The list of capabilities of the meta contact.
 	 */
-	private final Map<String, List<Contact>> capabilities = new HashMap<>();
+	private final ConcurrentHashMap<String, List<Contact>> capabilities = new ConcurrentHashMap<>();
 
 	/**
 	 * The number of contacts online in this meta contact.
@@ -367,8 +369,8 @@ public class MetaContactImpl extends DataObject implements MetaContact
 				ProtocolProviderService contactProvider = protoContact.getProtocolProvider();
 
 				// First try to ask the capabilities operation set if such is available.
-				OperationSetContactCapabilities capOpSet = contactProvider.getOperationSet(
-						OperationSetContactCapabilities.class);
+				OperationSetContactCapabilities capOpSet
+                        = contactProvider.getOperationSet(OperationSetContactCapabilities.class);
 
 				// We filter to care only about contact which support the needed opset.
 				if (capOpSet != null) {

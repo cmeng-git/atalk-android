@@ -19,6 +19,7 @@ package org.atalk.crypto.omemo;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -66,25 +67,28 @@ public class FingerprintStatus implements Comparable<FingerprintStatus>
         final FingerprintStatus status = new FingerprintStatus();
         try {
             int deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
-            BareJid bareJid = JidCreate.bareFrom(
-					cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.BARE_JID)));
+            BareJid bareJid = JidCreate.bareFrom(cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.BARE_JID)));
             status.mDevice = new OmemoDevice(bareJid, deviceId);
         }
         catch (XmppStringprepException e) {
             e.printStackTrace();
         }
-        status.mFingerPrint
-                = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.FINGERPRINT));
+        status.mFingerPrint = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.FINGERPRINT));
+        if (StringUtils.isNullOrEmpty(status.mFingerPrint ))
+            return null;
+
         try {
-            status.trust = Trust.valueOf(cursor.getString(
-                    cursor.getColumnIndex(SQLiteOmemoStore.TRUST)));
+            String trust = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.TRUST));
+            if (StringUtils.isNullOrEmpty(trust))
+                status.trust = Trust.UNDECIDED;
+            else
+                status.trust = Trust.valueOf(trust);
         } catch(IllegalArgumentException e) {
             status.trust = Trust.UNTRUSTED;
         }
 
         status.active = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.ACTIVE)) > 0;
-        status.lastActivation
-                = cursor.getLong(cursor.getColumnIndex(SQLiteOmemoStore.LAST_ACTIVATION));
+        status.lastActivation = cursor.getLong(cursor.getColumnIndex(SQLiteOmemoStore.LAST_ACTIVATION));
         return status;
     }
 

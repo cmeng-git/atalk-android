@@ -41,8 +41,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1003
-        versionName "1.0.3" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1010
+        versionName "1.1.0" // no alphabet allowed (e.g. 0.8.7.a)
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true
@@ -177,9 +177,9 @@ dependencies {
 //    implementation files('lib/smack/smack-sasl-provided-4.2.3-SNAPSHOT.jar')
 //    implementation files('lib/smack/smack-tcp-4.2.3-SNAPSHOT.jar')
 
-//    implementation files('lib/smack/smack-omemo-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-omemo-signal-4.2.3-SNAPSHOT.jar')
-//    implementation 'org.whispersystems:signal-protocol-java:2.6.2'
+    implementation files('lib/smack/smack-omemo-4.2.3-SNAPSHOT.jar')
+    implementation files('lib/smack/smack-omemo-signal-4.2.3-SNAPSHOT.jar')
+    implementation 'org.whispersystems:signal-protocol-java:2.6.2'
 
     // smack dependencies needed if use local libraries
 //    implementation 'org.igniterealtime.jbosh:jbosh:0.9.0'
@@ -195,8 +195,8 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-sasl-provided:$smackVersion"
     implementation "org.igniterealtime.smack:smack-tcp:$smackVersion"
 
-    implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
-    implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
+//    implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
+//    implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
     // keep for reference only
     // Use jarjar.repackage in place of a dependency notation (destination file?).

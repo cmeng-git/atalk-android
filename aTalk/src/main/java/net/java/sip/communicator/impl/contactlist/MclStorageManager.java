@@ -402,14 +402,14 @@ public class MclStorageManager implements MetaContactListListener
 		if ((MetaContactGroupEvent.CONTACT_GROUP_ADDED_TO_META_GROUP != evt.getEventID())
 				&& (mcGroupName == null)) {
 			logger.warn("Failed to find modifying metaContactGroup: " + mcGroup.getGroupName());
-			new Exception().printStackTrace();
+			new Exception("May ignore - for debug only").printStackTrace();
 			return;
 		}
 
 		// Modification to the root entry in the table is strictly not allowed
 		if (ContactGroup.ROOT_GROUP_UID.equals(mcGroupUid)) {
 			logger.warn("### Ignore attempt to modify root group! " + evt.toString());
-			new Exception().printStackTrace();
+			new Exception("May ignore - for debug only").printStackTrace();
 			return;
 		}
 
@@ -507,7 +507,7 @@ public class MclStorageManager implements MetaContactListListener
 		if (cursor.getCount() != 1) {
 			logger.error("Rename of the protoGroup is not allowed with multiple owners: "
 					+ newProtoGroupUid);
-			new Exception().printStackTrace();
+			new Exception("May ignore - for debug only").printStackTrace();
 		}
 		else {
 			cursor.moveToNext();
@@ -650,7 +650,7 @@ public class MclStorageManager implements MetaContactListListener
 		// Just logged in an internal err if rename contact not found (non-persistent)
 		if (contactJid == null) {
 			logger.warn("MetaContact not found for modification: " + evt.getSourceMetaContact());
-			new Exception().printStackTrace();
+			new Exception("May ignore - for debug only").printStackTrace();
 			return;
 		}
 
@@ -744,7 +744,7 @@ public class MclStorageManager implements MetaContactListListener
 //		}
 		if (findMetaContactEntry(metaContactUid) == null) {
 			logger.error("MetaContact Uid cannot be null " + metaContact.getDisplayName());
-			new Exception().printStackTrace();
+			new Exception("May ignore - for debug only").printStackTrace();
 			return;
 		}
 
@@ -782,7 +782,7 @@ public class MclStorageManager implements MetaContactListListener
 		// Just logged in an internal err if none is found
 		if (contactJid == null) {
 			logger.warn("MetaContact not found for removal: " + evt.getSourceMetaContact());
-			new Exception().printStackTrace();
+			new Exception("May ignore - for debug only").printStackTrace();
 			return;
 		}
 
@@ -877,7 +877,7 @@ public class MclStorageManager implements MetaContactListListener
 
 			logger.error("ProtoContact not found for modification: " + evt.getParent()
 					+ " for: " + metaContactUid);
-			new Exception().printStackTrace();
+			new Exception("May ignore - for debug only").printStackTrace();
 			return;
 		}
 
@@ -910,7 +910,7 @@ public class MclStorageManager implements MetaContactListListener
 		if (contactJid == null) {
 			logger.error("ProtoContact not found for modification: " + evt.getParent()
 					+ " for: " + metaContactUid);
-			new Exception().printStackTrace();
+			new Exception("May ignore - for debug only").printStackTrace();
 			return;
 		}
 

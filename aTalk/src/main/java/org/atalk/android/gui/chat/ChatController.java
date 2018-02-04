@@ -271,11 +271,9 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 		// Last message correction
 		else {
 			if (chatPanel.isOmemoChat())
-				mChatTransport.correctInstantMessage(content, ChatMessage.ENCRYPTION_OMEMO,
-						correctionUID);
+				mChatTransport.correctInstantMessage(content, ChatMessage.ENCRYPTION_OMEMO, correctionUID);
 			else
-				mChatTransport.correctInstantMessage(content, ChatMessage.ENCODE_PLAIN,
-						correctionUID);
+				mChatTransport.correctInstantMessage(content, ChatMessage.ENCODE_PLAIN, correctionUID);
 
 			// Clears correction UI state
 			chatPanel.setCorrectionUID(null);

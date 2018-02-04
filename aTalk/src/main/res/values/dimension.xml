@@ -30,6 +30,7 @@
     <dimen name="min_button_width">32dp</dimen>
     <dimen name="radian_gradient">300dp</dimen>
     <dimen name="screen_padding">20dp</dimen>
+    <dimen name="screen_padding_small">10dp</dimen>
     <dimen name="screen_padding_land">40dp</dimen>
     <dimen name="status_screen_width">300dp</dimen>
     <dimen name="status_spin_height">50dp</dimen>

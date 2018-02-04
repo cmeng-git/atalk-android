@@ -84,12 +84,10 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
 	 * @throws java.lang.IllegalArgumentException
 	 *         if <tt>to</tt> is not an instance belonging to the underlying implementation.
 	 */
-	public void sendInstantMessage(Contact to, ContactResource toResource, Message message)
-		throws IllegalStateException, IllegalArgumentException;
+	public void sendInstantMessage(Contact to, ContactResource toResource, Message message);
 
-	public void sendInstantMessage(Contact to, ContactResource toResource, Message message,
-			OmemoManager omemoManager)
-			throws IllegalStateException, IllegalArgumentException;
+    public void sendInstantMessage(Contact to, ContactResource resource, Message message, String correctedMessageUID,
+            OmemoManager omemoManager);
 
 	/**
 	 * Registers a <tt>MessageListener</tt> with this operation set so that it gets notifications of

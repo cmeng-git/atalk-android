@@ -324,7 +324,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl
 		VCardAvatarManager vCardAvatarMgr = VCardAvatarManager.getInstanceFor(xmppConnection);
 
 		// modify our reply timeout because some server may send "result" IQ late (> 5 seconds).
-		xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT);
+		xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT);
 
 		List<GenericDetail> details = infoRetriever.getUserDetails(uin);
 		VCard vCard = new VCard();
@@ -422,14 +422,14 @@ public class OperationSetServerStoredAccountInfoJabberImpl
 		}
 		catch (XMPPException | NoResponseException | NotConnectedException
 				| InterruptedException e) {
-			// Reset to SMACK_PACKET_REPLY_DEFAULT_TIMEOUT
-			xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_DEFAULT_TIMEOUT);
+			// Reset to SMACK_PACKET_REPLY_SET_TIMEOUT
+			xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_SET_TIMEOUT);
 
 			logger.error("Error loading/saving vcard: ", e);
 			throw new OperationFailedException("Error loading/saving vcard: ", 1, e);
 		}
-		// Reset to SMACK_PACKET_REPLY_DEFAULT_TIMEOUT
-		xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_DEFAULT_TIMEOUT);
+		// Reset to SMACK_PACKET_REPLY_SET_TIMEOUT
+		xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_SET_TIMEOUT);
 	}
 
 	/**
@@ -457,7 +457,6 @@ public class OperationSetServerStoredAccountInfoJabberImpl
 	{
 		if (((jabberProvider == null) || !jabberProvider.isRegistered())) {
 			logger.warn(aTalkApp.getResString(R.string.service_gui_NETOWRK_ASSERTION_ERROR));
-			new Exception().printStackTrace();
 			return false;
 		}
 		return true;

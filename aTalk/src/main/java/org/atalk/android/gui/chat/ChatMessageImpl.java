@@ -565,9 +565,13 @@ public class ChatMessageImpl implements ChatMessage
 	 */
 	public static String getAccountDisplayName(ProtocolProviderService protocolProvider)
 	{
-		final OperationSetServerStoredAccountInfo accountInfoOpSet
-				= protocolProvider.getOperationSet(OperationSetServerStoredAccountInfo.class);
+	    // Get displayName from OperationSetServerStoredAccountInfo need account to be login in
+        if (((protocolProvider == null) || !protocolProvider.isRegistered())) {
+            return protocolProvider.getAccountID().getDisplayName();
+        }
 
+        final OperationSetServerStoredAccountInfo accountInfoOpSet
+				= protocolProvider.getOperationSet(OperationSetServerStoredAccountInfo.class);
 		try {
 			if (accountInfoOpSet != null) {
 				String displayName = AccountInfoUtils.getDisplayName(accountInfoOpSet);
@@ -578,7 +582,7 @@ public class ChatMessageImpl implements ChatMessage
 		catch (Exception e) {
 			logger.warn("Cannot obtain display name through OPSet");
 		}
-		return protocolProvider.getAccountID().getDisplayName();
+        return protocolProvider.getAccountID().getDisplayName();
 	}
 
 	// ================================================

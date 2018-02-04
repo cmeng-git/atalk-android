@@ -13,8 +13,7 @@ import java.util.*;
 
 /**
  * Represents a default implementation of <tt>OperationSetPersistentPresence</tt> in order to make
- * it easier for implementers to provide complete solutions while focusing on
- * implementation-specific details.
+ * it easier for implementers to provide complete solutions while focusing on implementation-specific details.
  *
  * @author Lubomir Marinov
  * @author Eng Chong Meng
@@ -26,13 +25,12 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 	 * The <tt>Logger</tt> used by the <tt>AbstractOperationSetPersistentPresence</tt> class and its
 	 * instances for logging output.
 	 */
-	private static final Logger logger = Logger
-		.getLogger(AbstractOperationSetPersistentPresence.class);
+	private static final Logger logger = Logger.getLogger(AbstractOperationSetPersistentPresence.class);
 
 	/**
 	 * A list of listeners registered for <tt>ContactPresenceStatusChangeEvent</tt>s.
 	 */
-	private final List<ContactPresenceStatusListener> contactPresenceStatusListeners = new Vector<ContactPresenceStatusListener>();
+	private final List<ContactPresenceStatusListener> contactPresenceStatusListeners = new Vector<>();
 
 	/**
 	 * The provider that created us.
@@ -42,17 +40,17 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 	/**
 	 * A list of listeners registered for <tt>ProviderPresenceStatusChangeEvent</tt>s.
 	 */
-	private final List<ProviderPresenceStatusListener> providerPresenceStatusListeners = new Vector<ProviderPresenceStatusListener>();
+	private final List<ProviderPresenceStatusListener> providerPresenceStatusListeners = new Vector<>();
 
 	/**
 	 * A list of listeners registered for <tt>ServerStoredGroupChangeEvent</tt>s.
 	 */
-	private final List<ServerStoredGroupListener> serverStoredGroupListeners = new Vector<ServerStoredGroupListener>();
+	private final List<ServerStoredGroupListener> serverStoredGroupListeners = new Vector<>();
 
 	/**
 	 * The list of listeners interested in <tt>SubscriptionEvent</tt>s.
 	 */
-	private final List<SubscriptionListener> subscriptionListeners = new Vector<SubscriptionListener>();
+	private final List<SubscriptionListener> subscriptionListeners = new Vector<>();
 
 	/**
 	 * Initializes a new <tt>AbstractOperationSetPersistentPresence</tt> instance created by a
@@ -158,8 +156,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 		}
 
 		if (logger.isDebugEnabled())
-			logger.debug("Dispatching Contact Status Change. Listeners=" + listeners.size()
-				+ " evt=" + evt);
+			logger.debug("Dispatching Contact Status Change. Listeners=" + listeners.size() + " evt = " + evt);
 
 		for (ContactPresenceStatusListener listener : listeners)
 			listener.contactPresenceStatusChanged(evt);
@@ -188,7 +185,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 
 		if (logger.isDebugEnabled())
 			logger.debug("Dispatching a Contact Property Change Event to" + listeners.size()
-				+ " listeners. Evt=" + evt);
+				+ " listeners. Evt = " + evt);
 
 		for (SubscriptionListener listener : listeners)
 			listener.contactModified(evt);
@@ -215,8 +212,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 	 */
 	protected void fireProviderStatusChangeEvent(PresenceStatus oldValue, PresenceStatus newValue)
 	{
-		ProviderPresenceStatusChangeEvent evt
-				= new ProviderPresenceStatusChangeEvent(parentProvider, oldValue, newValue);
+		ProviderPresenceStatusChangeEvent evt = new ProviderPresenceStatusChangeEvent(parentProvider, oldValue, newValue);
 
 		Collection<ProviderPresenceStatusListener> listeners;
 		synchronized (providerPresenceStatusListeners) {
@@ -224,8 +220,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 		}
 
 		if (logger.isDebugEnabled())
-			logger.debug("Dispatching Provider Status Change. Listeners=" + listeners.size()
-				+ " evt=" + evt);
+			logger.debug("Dispatching Provider Status Change. Listeners = " + listeners.size() + " evt = " + evt);
 
 		for (ProviderPresenceStatusListener listener : listeners)
 			listener.providerStatusChanged(evt);
@@ -242,21 +237,18 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 	 * @param newStatusMessage
 	 *        the status message we have from now on
 	 */
-	protected void fireProviderStatusMessageChangeEvent(String oldStatusMessage,
-		String newStatusMessage)
+	protected void fireProviderStatusMessageChangeEvent(String oldStatusMessage, String newStatusMessage)
 	{
 		PropertyChangeEvent evt = new PropertyChangeEvent(parentProvider,
 			ProviderPresenceStatusListener.STATUS_MESSAGE, oldStatusMessage, newStatusMessage);
 
 		Collection<ProviderPresenceStatusListener> listeners;
 		synchronized (providerPresenceStatusListeners) {
-			listeners = new ArrayList<ProviderPresenceStatusListener>(
-				providerPresenceStatusListeners);
+			listeners = new ArrayList<ProviderPresenceStatusListener>(providerPresenceStatusListeners);
 		}
 
 		if (logger.isDebugEnabled())
-			logger.debug("Dispatching  stat. msg change. Listeners=" + listeners.size() + " evt="
-				+ evt);
+			logger.debug("Dispatching  stat. msg change. Listeners = " + listeners.size() + " evt = " + evt);
 
 		for (ProviderPresenceStatusListener listener : listeners)
 			listener.providerStatusMessageChanged(evt);
@@ -322,8 +314,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 		}
 
 		if (logger.isDebugEnabled())
-			logger.debug("Dispatching a Subscription Event to" + listeners.size()
-				+ " listeners. Evt=" + evt);
+			logger.debug("Dispatching a Subscription Event to" + listeners.size() + " listeners. Evt = " + evt);
 
 		for (SubscriptionListener listener : listeners)
 			switch (eventID) {
@@ -364,8 +355,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 		}
 
 		if (logger.isDebugEnabled())
-			logger.debug("Dispatching a Subscription Event to" + listeners.size()
-				+ " listeners. Evt=" + evt);
+			logger.debug("Dispatching a Subscription Event to" + listeners.size() + " listeners. Evt = " + evt);
 
 		for (SubscriptionListener listener : listeners)
 			listener.subscriptionMoved(evt);

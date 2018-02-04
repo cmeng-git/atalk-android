@@ -513,8 +513,7 @@ public class ServerStoredContactListJabberImpl
 				new StanzaTypeFilter(Presence.class));
 
 		// modify our reply timeout because some XMPP may send "result" IQ late (> 5 seconds).
-		xmppConnection.setReplyTimeout(
-				ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT);
+		xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT);
 
 		try {
 			this.roster.createEntry(contactJid, bareId, parentNames);
@@ -538,8 +537,8 @@ public class ServerStoredContactListJabberImpl
 			ex.printStackTrace();
 		}
 
-		// Reset to SMACK_PACKET_REPLY_DEFAULT_TIMEOUT
-		xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_DEFAULT_TIMEOUT);
+		// Reset to SMACK_PACKET_REPLY_SET_TIMEOUT
+		xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_SET_TIMEOUT);
 	}
 
 	/**
@@ -826,7 +825,7 @@ public class ServerStoredContactListJabberImpl
 
 		// create the entry with the new group so it can be removed from other groups if any.
 		// modify our reply timeout because some XMPP may send "result" IQ late (> 5 seconds).
-		xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT);
+		xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT);
 
 		try {
 			roster.createEntry(contact.getSourceEntry().getJid(), contact.getDisplayName(),
@@ -843,8 +842,8 @@ public class ServerStoredContactListJabberImpl
 			e.printStackTrace();
 		}
 
-		// Reset to SMACK_PACKET_REPLY_DEFAULT_TIMEOUT
-		xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_DEFAULT_TIMEOUT);
+		// Reset to SMACK_PACKET_REPLY_SET_TIMEOUT
+		xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_SET_TIMEOUT);
 	}
 
 	/**

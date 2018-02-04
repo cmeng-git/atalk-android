@@ -32,6 +32,7 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.util.FileAccess;
+import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.migrations.MigrationTo2;
 import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.service.libjitsi.LibJitsi;
@@ -39,6 +40,8 @@ import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.omemo.OmemoConfiguration;
+import org.jivesoftware.smackx.omemo.OmemoService;
+import org.jivesoftware.smackx.omemo.OmemoStore;
 
 import java.io.*;
 import java.util.Collection;
@@ -271,12 +274,12 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
 		String JSONKEY_CURRENT_PREKEY_ID = "omemoCurPreKeyId";
 		Context ctx = aTalkApp.getGlobalContext();
 
-		if (OmemoConfiguration.getFileBasedOmemoStoreDefaultPath() == null) {
+        OmemoStore omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
+        Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
+   		if (omemoStore instanceof SQLiteOmemoStore) {
 			DatabaseBackend db = DatabaseBackend.getInstance(ctx);
-			Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
 			for (ProtocolProviderService pps : ppServices) {
 				AccountID accountId = pps.getAccountID();
-
 				accountId.unsetKey(JSONKEY_CURRENT_PREKEY_ID);
 				accountId.unsetKey(JSONKEY_REGISTRATION_ID);
 				db.updateAccount(accountId);
@@ -301,20 +304,10 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
 		// start to regenerate all Omemo data for registered accounts - has exception
 		// SQLiteOmemoStore.loadOmemoSignedPreKey().371 There is no SignedPreKeyRecord for: 0
 		// SignedPreKeyRecord.getKeyPair()' on a null object reference
-
-//		Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
-//		for (ProtocolProviderService pps : providers) {
-//			OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
-//			try {
-
-//				omemoManager.regenerate();
-//			}
-//			catch (SmackException | InterruptedException
-//					| XMPPException.XMPPErrorException
-//					| CorruptedOmemoKeyException e) {
-//				e.printStackTrace();
-//			}
-//		}
+		for (ProtocolProviderService pps : ppServices) {
+            AccountID accountId = pps.getAccountID();
+            ((SQLiteOmemoStore)omemoStore).regenerate(accountId);
+		}
 		logger.info("### Omemo store has been refreshed!");
 	}
 
