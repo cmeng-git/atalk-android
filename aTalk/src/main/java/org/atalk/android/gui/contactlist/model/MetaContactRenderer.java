@@ -225,7 +225,6 @@ public class MetaContactRenderer implements UIContactRenderer
 			else
 				status = (contactStatus.compareTo(status) > 0) ? contactStatus : status;
 		}
-
 		return StatusUtil.getContactStatusIcon(status);
 	}
 }

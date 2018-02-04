@@ -56,7 +56,7 @@
         <PreferenceScreen
             android:summary="@string/service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY"
             android:title="@string/service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">
-            <intent android:action=".crypto.CryptoBuddyFingerPrints"/>
+            <intent android:action=".crypto.CryptoDeviceFingerPrints"/>
         </PreferenceScreen>
 
     </PreferenceCategory>

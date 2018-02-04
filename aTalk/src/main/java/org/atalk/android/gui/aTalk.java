@@ -105,8 +105,7 @@ public class aTalk extends MainMenuActivity
 		setContentView(R.layout.main_view);
 		if (savedInstanceState == null) {
 			// Inserts ActionBar functionality
-			getSupportFragmentManager().beginTransaction()
-					.add(new ActionBarStatusFragment(), "action_bar").commit();
+			getSupportFragmentManager().beginTransaction().add(new ActionBarStatusFragment(), "action_bar").commit();
 		}
 
 		// Instantiate a ViewPager and a PagerAdapter.

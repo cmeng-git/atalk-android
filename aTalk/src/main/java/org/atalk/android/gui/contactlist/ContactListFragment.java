@@ -467,8 +467,8 @@ public class ContactListFragment extends OSGiFragment
 	 */
 	private void requestAuthorization(final Contact contact)
 	{
-		final OperationSetExtendedAuthorizations authOpSet = contact.getProtocolProvider()
-				.getOperationSet(OperationSetExtendedAuthorizations.class);
+		final OperationSetExtendedAuthorizations authOpSet
+                = contact.getProtocolProvider().getOperationSet(OperationSetExtendedAuthorizations.class);
 		if (authOpSet == null)
 			return;
 
@@ -504,8 +504,7 @@ public class ContactListFragment extends OSGiFragment
 	private void startContactInfoActivity(MetaContact metaContact)
 	{
 		Intent statusIntent = new Intent(getActivity(), ContactInfoActivity.class);
-		statusIntent.putExtra(ContactInfoActivity.INTENT_CONTACT_ID,
-				metaContact.getDisplayName());
+		statusIntent.putExtra(ContactInfoActivity.INTENT_CONTACT_ID, metaContact.getDisplayName());
 		startActivity(statusIntent);
 	}
 
@@ -524,11 +523,9 @@ public class ContactListFragment extends OSGiFragment
 	 * will take predominant over subsequent metaContact chat session launches by another account
 	 */
 	@Override
-	public boolean onChildClick(ExpandableListView listView, View v,
-			int groupPosition, int childPosition, long id)
+	public boolean onChildClick(ExpandableListView listView, View v, int groupPosition, int childPosition, long id)
 	{
-		BaseContactListAdapter adapter
-				= (BaseContactListAdapter) listView.getExpandableListAdapter();
+		BaseContactListAdapter adapter = (BaseContactListAdapter) listView.getExpandableListAdapter();
 		int position = adapter.getListIndex(groupPosition, childPosition);
 
 		contactListView.setSelection(position);
@@ -541,8 +538,7 @@ public class ContactListFragment extends OSGiFragment
 		}
 
 		MetaContact metaContact = (MetaContact) clicked;
-		if (!metaContact.getContactsForOperationSet(OperationSetBasicInstantMessaging.class)
-				.isEmpty()) {
+		if (!metaContact.getContactsForOperationSet(OperationSetBasicInstantMessaging.class).isEmpty()) {
 			startChatActivity(metaContact);
 			return true;
 		}

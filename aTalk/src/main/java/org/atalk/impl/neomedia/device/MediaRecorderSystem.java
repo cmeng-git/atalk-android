@@ -100,11 +100,14 @@ public class MediaRecorderSystem extends DeviceSystem
 		throws Exception
 	{
 		int cameraCount = Camera.getNumberOfCameras();
-
 		if (cameraCount <= 0)
 			return;
 
-		Camera.CameraInfo cameraInfo = null;
+        if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            return;
+
+        Camera.CameraInfo cameraInfo = null;
 		List<CaptureDeviceInfo> captureDevices = new LinkedList<CaptureDeviceInfo>();
 
 		for (int cameraId = 0; cameraId < cameraCount; cameraId++) {

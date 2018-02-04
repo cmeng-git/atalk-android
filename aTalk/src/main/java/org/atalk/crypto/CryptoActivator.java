@@ -20,16 +20,12 @@ import net.java.sip.communicator.plugin.otr.OtrActionHandler;
 
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.crypto.otr.AndroidOtrActionHandler;
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smackx.omemo.*;
-import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
+import org.jivesoftware.smackx.omemo.OmemoConfiguration;
+import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
-import org.osgi.framework.*;
-
-import java.io.UnsupportedEncodingException;
-import java.security.*;
-
-import javax.crypto.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * Android OTR activator which registers <tt>OtrActionHandler</tt> specific to this system.
@@ -38,51 +34,40 @@ import javax.crypto.*;
  */
 public class CryptoActivator implements BundleActivator
 {
-	@Override
-	public void start(BundleContext bundleContext)
-			throws Exception
-	{
-		bundleContext.registerService(OtrActionHandler.class.getName(),
-				new AndroidOtrActionHandler(), null);
-		setupOmemoConfigStore();
-	}
+    @Override
+    public void start(BundleContext bundleContext)
+            throws Exception {
+        bundleContext.registerService(OtrActionHandler.class.getName(),
+                new AndroidOtrActionHandler(), null);
+        setupOmemoConfigStore();
+    }
 
-	@Override
-	public void stop(BundleContext bundleContext)
-			throws Exception
-	{
-	}
+    @Override
+    public void stop(BundleContext bundleContext)
+            throws Exception {
+    }
 
-	/**
-	 * Init OMEMO configuration setting and Store
-	 * - Acknowledge OMEMO licensing.
-	 * - Initialize the OMEMO configuration settings
-	 * - Setup OMEMO default data storage
-	 */
-	private void setupOmemoConfigStore()
-	{
-		SignalOmemoService.acknowledgeLicense();
-		try {
-			SignalOmemoService.setup();
-		}
-		catch (InvalidKeyException | NoSuchPaddingException | XMPPException.XMPPErrorException
-				| UnsupportedEncodingException | InvalidAlgorithmParameterException
-				| IllegalBlockSizeException | NoSuchAlgorithmException | NoSuchProviderException
-				| BadPaddingException | InterruptedException | SmackException
-				| CorruptedOmemoKeyException e) {
-			e.printStackTrace();
-		}
+    /**
+     * Init OMEMO configuration setting and Store
+     * - Acknowledge OMEMO licensing.
+     * - Initialize the OMEMO configuration settings
+     * - Setup OMEMO default data storage
+     */
+    private void setupOmemoConfigStore() {
+        SignalOmemoService.acknowledgeLicense();
+        SignalOmemoService.setup();
 
-		// Omemo configuration settings
-		OmemoConfiguration.setAddOmemoHintBody(true);
-		OmemoConfiguration.setAddEmeEncryptionHint(true);
+        // Omemo configuration settings
+        OmemoConfiguration.setAddOmemoHintBody(true);
+        OmemoConfiguration.setRenewOldSignedPreKeys(true);
+        OmemoConfiguration.setDeleteStaleDevices(true);
 
-		// Uncomment to setup to use a file-based persistent storage for OMEMO
-		// File omemoStoreDirectory = aTalkApp.getGlobalContext().getFilesDir();
-		// OmemoConfiguration.setFileBasedOmemoStoreDefaultPath(omemoStoreDirectory);
+        // Uncomment to setup to use a file-based persistent storage for OMEMO
+        // File omemoStoreDirectory = aTalkApp.getGlobalContext().getFilesDir();
+        // OmemoConfiguration.setFileBasedOmemoStoreDefaultPath(omemoStoreDirectory);
 
-		// Alternatively initialize to use SQLiteOmemoStore backend database
-		OmemoStore omemoStore = new SQLiteOmemoStore();
-		SignalOmemoService.getInstance().setOmemoStoreBackend(omemoStore);
-	}
+        // Alternatively initialize to use SQLiteOmemoStore backend database
+        OmemoStore omemoStore = new SQLiteOmemoStore();
+        SignalOmemoService.getInstance().setOmemoStoreBackend(omemoStore);
+    }
 }

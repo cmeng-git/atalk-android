@@ -7,6 +7,7 @@ package net.java.sip.communicator.service.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
 
+import org.atalk.service.configuration.ConfigurationService;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -650,13 +651,12 @@ public class JabberAccountID extends AccountID
 	 */
 	public static String getDefaultStr(String key)
 	{
-		String value = ProtocolProviderActivator.getConfigurationService()
-				.getString(JBR_DEFAULT_PREFIX + key);
+        String value = null;
+        ConfigurationService configService = ProtocolProviderActivator.getConfigurationService();
+        if (configService != null)
+		    value = configService.getString(JBR_DEFAULT_PREFIX + key);
 
-		if (value == null)
-			value = AccountID.getDefaultStr(key);
-
-		return value;
+		return (value == null) ? AccountID.getDefaultStr(key) : value;
 	}
 
 	/**

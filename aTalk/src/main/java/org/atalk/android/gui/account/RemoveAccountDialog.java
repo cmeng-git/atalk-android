@@ -12,6 +12,10 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
+import org.atalk.crypto.omemo.SQLiteOmemoStore;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smackx.omemo.OmemoService;
+import org.jivesoftware.smackx.omemo.OmemoStore;
 
 import static net.java.sip.communicator.plugin.otr.OtrActivator.configService;
 
@@ -52,6 +56,10 @@ public class RemoveAccountDialog
 	private static void onRemoveClicked(final DialogInterface dialog, final Account account,
 			final OnAccountRemovedListener l)
 	{
+        // cleanup omemo data for the deleted user account
+        SQLiteOmemoStore omemoStore = (SQLiteOmemoStore ) OmemoService.getInstance().getOmemoStoreBackend();
+        omemoStore.purgeUserOmemoData(account);
+
 		// Fix "network on main thread"
 		final Thread removeAccountThread = new Thread()
 		{
@@ -64,10 +72,11 @@ public class RemoveAccountDialog
 			}
 		};
 		removeAccountThread.start();
-		try {
+
+        try {
 			// Simply block UI thread as it shouldn't take too long to uninstall
 			removeAccountThread.join();
-			// Notify about results
+            // Notify about results
 			l.onAccountRemoved(account);
 			dialog.dismiss();
 		}
@@ -109,10 +118,9 @@ public class RemoveAccountDialog
 	}
 
 	/**
-	 * Interfaces used to notify about account removal which happens after the user confirms the
-	 * action.
+	 * Interfaces used to notify about account removal which happens after the user confirms the action.
 	 */
-	interface OnAccountRemovedListener
+    interface OnAccountRemovedListener
 	{
 		/**
 		 * Fired after <tt>Account</tt> is removed from the system which happens after user

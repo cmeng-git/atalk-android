@@ -143,7 +143,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
 			throws XMPPException, SmackException
 	{
 		XMPPTCPConnection connection = pps.getConnection();
-        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_DEFAULT_TIMEOUT);
+        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_SET_TIMEOUT);
 
         try {
 			// Reconnect if the connection is closed by the earlier exception

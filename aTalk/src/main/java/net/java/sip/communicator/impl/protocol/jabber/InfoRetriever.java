@@ -48,7 +48,7 @@ public class InfoRetriever
 		this.jabberProvider = jabberProvider;
 		vcardTimeoutReply = JabberActivator.getConfigurationService().getLong(
 				ProtocolProviderServiceJabberImpl.VCARD_REPLY_TIMEOUT_PROPERTY,
-				ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT);
+				ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT);
 	}
 
 	/**

@@ -23,6 +23,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -35,6 +37,7 @@ import net.java.sip.communicator.util.ServiceUtils;
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.util.java.awt.Color;
 
 import de.cketti.library.changelog.ChangeLog;
 
@@ -43,14 +46,7 @@ import de.cketti.library.changelog.ChangeLog;
  */
 public class About extends Activity implements OnClickListener, View.OnLongClickListener
 {
-    private final int FETCH_ERROR = 10;
-    private final int NO_NEW_VERSION = 20;
-    private final int DOWNLOAD_ERROR = 30;
-
-    private final static int CHECK_NEW_VERSION = 10;
-    private static String appVersion = "";
-
-    private static String[][] USED_LIBRARIES = new String[][]{
+     private static String[][] USED_LIBRARIES = new String[][]{
             new String[]{"Android Support Library", "https://developer.android.com/topic/libraries/support-library/index.html"},
             new String[]{"android-betterpickers", "https://github.com/code-troopers/android-betterpickers"},
             new String[]{"Android-EasyLocation", "https://github.com/akhgupta/Android-EasyLocation"},
@@ -148,6 +144,12 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
         View atakUrl = findViewById(R.id.atalk_link);
         atakUrl.setOnClickListener(this);
 
+        TextView atalkHelp = (TextView) findViewById(R.id.atalk_help);
+//        atalkHelp.setText(Html.fromHtml(getString(R.string.AboutDialog_help)));
+//        atalkHelp.setMovementMethod(LinkMovementMethod.getInstance());
+        atalkHelp.setTextColor(getResources().getColor(R.color.light_blue));
+        atalkHelp.setOnClickListener(this);
+
         findViewById(R.id.ok_button).setOnClickListener(this);
         findViewById(R.id.history_log).setOnClickListener(this);
 
@@ -210,6 +212,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
                 ChangeLog cl = new ChangeLog(this);
                 cl.getFullLogDialog().show();
                 break;
+            case R.id.atalk_help:
             case R.id.atalk_link:
                 atalkUrlAccess();
                 break;
@@ -220,7 +223,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
     }
 
     private void atalkUrlAccess(){
-        String url = getString(R.string.AboutDialog_website);
+        String url = getString(R.string.AboutDialog_Link);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);

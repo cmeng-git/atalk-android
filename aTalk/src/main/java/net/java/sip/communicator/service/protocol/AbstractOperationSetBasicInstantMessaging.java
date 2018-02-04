@@ -27,8 +27,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements
 	 * The <tt>Logger</tt> used by the <tt>AbstractOperationSetBasicInstantMessaging</tt> class and
 	 * its instances for logging output.
 	 */
-	private static final Logger logger
-			= Logger.getLogger(AbstractOperationSetBasicInstantMessaging.class);
+	private static final Logger logger = Logger.getLogger(AbstractOperationSetBasicInstantMessaging.class);
 
 	/**
 	 * A list of listeners registered for message events.
@@ -136,11 +135,11 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements
 	{
 		Collection<MessageListener> listeners = null;
 		synchronized (this.messageListeners) {
-			listeners = new ArrayList<MessageListener>(this.messageListeners);
+			listeners = new ArrayList<>(this.messageListeners);
 		}
 
 		if (logger.isDebugEnabled())
-			logger.debug("Dispatching Message Listeners=" + listeners.size() + " evt=" + evt);
+			logger.debug("Dispatching Message Listeners = " + listeners.size() + " evt = " + evt);
 
 		/*
 		 * TODO Create a super class like this MessageEventObject that would contain the
@@ -272,8 +271,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements
 				return new EventObject[]{evt};
 		}
 
-		OperationSetInstantMessageTransformImpl opSetMessageTransform
-				= (OperationSetInstantMessageTransformImpl)
+		OperationSetInstantMessageTransformImpl opSetMessageTransform = (OperationSetInstantMessageTransformImpl)
 				protocolProvider.getOperationSet(OperationSetInstantMessageTransform.class);
 
 		if (opSetMessageTransform == null)
@@ -365,13 +363,8 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements
 	 * 		the resource to which the message should be send
 	 * @param message
 	 * 		the <tt>Message</tt> to send.
-	 * @throws java.lang.IllegalStateException
-	 * 		if the underlying ICQ stack is not registered and initialized.
-	 * @throws java.lang.IllegalArgumentException
-	 * 		if <tt>to</tt> is not an instance belonging to the underlying implementation.
 	 */
 	public void sendInstantMessage(Contact to, ContactResource toResource, Message message)
-			throws IllegalStateException, IllegalArgumentException
 	{
 		sendInstantMessage(to, message);
 	}

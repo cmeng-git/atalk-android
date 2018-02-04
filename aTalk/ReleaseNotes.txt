@@ -1,8 +1,37 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.1.0 (1010)
+Author:         cmeng
+Upload Date:	02/04/2018
+- Port to use latest smack omemo library now supports message carbons and offline omemo messages
+- Port to use smack CarbonExtension and remove old CarbonPacketExtension
+- Implement last message correction for omemo messaging
+- Enhance crypto device fingerPrints menu to include fingerprints states (own and active) and for siblings etc
+- Fixed system abort in crypto device fingerprints: need to handle identity entry with null trust state and fingerPrint
+- Add user alert dialog on corrupted or missing OmemoKeyPairs and prompt for action
+- Fixed first missing message for invited participant joining the omemo conference when the identities is only partially filled
+- Display toast messages when omemo initialization failed, also to provide update on omemo activities status
+- SQLiteOmemoStore#storeCachedDeviceList must create a new table entry, partially filled with OmemoDevice and active state if the identity does not exist
+- Remove AndroidOmemoService#buddyDeviceListUpdateListener - no more required after the new SQLiteOmemoStore#storeCachedDeviceLis implementation
+- Do no use AssertionError() during SQL database read/write as this will crash system, just diplay warning
+- Clean up database associated omemo table entries when an user account is removed
+- Upgrade database to version 3 - update Omemo identities table to add two new fields last_deviceid_publish and last_message_received
+- last_deviceid_publish helps to resolved endless loop in publication when two devices of same contact joing the conference
+- Fixed getLastMessageReceiveDate to return null if date not set
+- Purge all obsoleted history files, database and entries in new database (defer to later release)
+
+Note:
+Previously when the user IdentityKeyPair is corrupted or missing. any omemo manager send from user will appear ok in chat window.
+However the received omemo message cannot be decrypted and only a debug message is display i.e.
+Could not decrypt incoming message: CryptoFailedException: Transported key could not be decrypted, since no suitable message key was provided. Provides keys:
+
+### TODO:
+org.jitsi E/libOpenSLES: class Engine interface 0 required but unavailable MPH=9
+
+=========================================================================
 Version:		1.0.3 (1003)
 Author:         cmeng
-Upload Date:	1/15/2018
+Upload Date:	01/15/2018
 - update to use smack 4.2.3-SNAPSHOTS
 - consolidate all info for about dialog into About.java class
 - Add atalk site/help link in About dialog box
@@ -18,7 +47,7 @@ Upload Date:	1/14/2018
 =========================================================================
 Version:		1.0.2 (1002)
 Author:         cmeng
-Upload Date:	1/12/2018
+Upload Date:	01/12/2018
 - Compile aTalk for android 8.0(Oreo) compatibility
 - In getCachedRecentMessages()->convertHistoryRecordToMessageEvent for chatRoom, ChatRoom#getUserRole() must not have null ResourcePart
 - Do not attempt to retrieve contact or chatRoom for virtual server in getContactOrRoomByID()
@@ -34,13 +63,13 @@ TODO: actually cacheAvatar() is not necessary as it is already handled and store
 =========================================================================
 Version:		1.0.1 (1001)
 Author:         cmeng
-Upload Date:	1/6/2018
+Upload Date:	01/06/2018
 - Update apk manifest file to include implicit hardware requirements and set the required state to false for device compatibility
 
 =========================================================================
 Version:		1.0.0 (1000)
 Author:         cmeng
-Upload Date:	1/3/2018
+Upload Date:	01/03/2018
 - Enhance application ui theme and harmonize button layout for better user experience
 - Add support for user runtime resource access permissions request on android-M and later
 - Add About menu provides access to application information on history log, compliance XMPP standards and third parties libraries used etc
@@ -166,10 +195,6 @@ Upload Date:	10/16/2017
   Fixed libjnspeex.so has text relocation. This is wasting memory and prevents security hardening.
 
 - Check in jni sources for ffmpeg, jawtrenderer, speex, vpx etc
-
-### TODO:
-- Purge all obsoleted history files, database and entries in new database (defer to later release)
-org.jitsi E/libOpenSLES: class Engine interface 0 required but unavailable MPH=9
 
 =========================================================================
 Version:		0.8.7.c (873)

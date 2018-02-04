@@ -113,8 +113,7 @@ public class MessageDeliveredEvent extends EventObject
 	 * @param timestamp
 	 *        a date indicating the exact moment when the event occurred
 	 */
-	public MessageDeliveredEvent(Message source, Contact to, ContactResource toResource,
-		Date timestamp)
+	public MessageDeliveredEvent(Message source, Contact to, ContactResource toResource, Date timestamp)
 	{
 		super(source);
 		this.to = to;

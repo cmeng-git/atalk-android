@@ -29,7 +29,4 @@ public interface OperationSetMessageCorrection extends OperationSetBasicInstantM
 	 */
 	public void correctMessage(Contact to, ContactResource resource, Message message,
 		String correctedMessageUID);
-
-	public void correctMessage(Contact to, ContactResource resource, Message message,
-			String correctedMessageUID, OmemoManager omemoManager);
 }

@@ -30,8 +30,7 @@ public abstract class UIContactImpl extends UIContact
 	/**
 	 * Whether we should filter all addresses shown in tooltips and to remove the domain part.
 	 */
-	private static final String FILTER_DOMAIN_IN_TIP_ADDRESSES
-			= "gui.contactlist.FILTER_DOMAIN_IN_TIP_ADDRESSES";
+	private static final String FILTER_DOMAIN_IN_TIP_ADDRESSES = "gui.contactlist.FILTER_DOMAIN_IN_TIP_ADDRESSES";
 
 	/**
 	 * Returns the corresponding <tt>ContactNode</tt>. The <tt>ContactNode</tt> is the real node
@@ -98,8 +97,7 @@ public abstract class UIContactImpl extends UIContact
 	 */
 	protected String filterAddressDisplay(String addressToDisplay)
 	{
-		if (!AndroidGUIActivator.getConfigurationService()
-				.getBoolean(FILTER_DOMAIN_IN_TIP_ADDRESSES, false))
+		if (!AndroidGUIActivator.getConfigurationService().getBoolean(FILTER_DOMAIN_IN_TIP_ADDRESSES, false))
 			return addressToDisplay;
 
 		int ix = addressToDisplay.indexOf("@");

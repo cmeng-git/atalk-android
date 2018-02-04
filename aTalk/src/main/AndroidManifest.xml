@@ -258,10 +258,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.atalk.crypto.CryptoBuddyFingerPrints"
+            android:name="org.atalk.crypto.CryptoDeviceFingerPrints"
             android:label="@string/service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">
             <intent-filter>
-                <action android:name=".crypto.CryptoBuddyFingerPrints"/>
+                <action android:name=".crypto.CryptoDeviceFingerPrints"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

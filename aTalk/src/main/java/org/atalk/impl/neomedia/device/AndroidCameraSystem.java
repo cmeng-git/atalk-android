@@ -25,9 +25,12 @@ import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.MediaType;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
+import android.support.v4.content.ContextCompat;
 import android.view.Surface;
 
 /**
@@ -72,8 +75,11 @@ public class AndroidCameraSystem extends DeviceSystem
 	protected void doInitialize()
 		throws Exception
 	{
-		Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            return;
 
+		Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
 		for (int cameraId = 0; cameraId < Camera.getNumberOfCameras(); cameraId++) {
 			Camera.getCameraInfo(cameraId, cameraInfo);
 

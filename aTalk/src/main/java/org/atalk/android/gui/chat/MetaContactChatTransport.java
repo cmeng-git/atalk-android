@@ -353,8 +353,7 @@ public class MetaContactChatTransport
 
 		Message msg;
 		ProtocolProviderService pps = contact.getProtocolProvider();
-		OperationSetBasicInstantMessaging imOpSet
-				= pps.getOperationSet(OperationSetBasicInstantMessaging.class);
+		OperationSetBasicInstantMessaging imOpSet = pps.getOperationSet(OperationSetBasicInstantMessaging.class);
 
 		if (encType == ChatMessage.ENCODE_HTML
 				&& imOpSet.isContentTypeSupported(ChatMessage.ENCODE_HTML)) {
@@ -364,11 +363,10 @@ public class MetaContactChatTransport
 			msg = imOpSet.createMessage(message);
 		}
 
-		ContactResource toResource
-				= (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
+		ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
 		if (encType == ChatMessage.ENCRYPTION_OMEMO) {
 			OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
-			imOpSet.sendInstantMessage(contact, toResource, msg, omemoManager);
+			imOpSet.sendInstantMessage(contact, toResource, msg, null, omemoManager);
 		} else {
 			imOpSet.sendInstantMessage(contact, toResource, msg);
 		}
@@ -387,16 +385,14 @@ public class MetaContactChatTransport
 	 * @param correctedMessageUID
 	 * 		The ID of the message being corrected by this message.
 	 */
-	public void correctInstantMessage(String message, int encType,
-			String correctedMessageUID)
+	public void correctInstantMessage(String message, int encType, String correctedMessageUID)
 	{
 		if (!allowsMessageCorrections()) {
 			return;
 		}
 
 		ProtocolProviderService pps = contact.getProtocolProvider();
-		OperationSetMessageCorrection mcOpSet =
-				pps.getOperationSet(OperationSetMessageCorrection.class);
+		OperationSetMessageCorrection mcOpSet = pps.getOperationSet(OperationSetMessageCorrection.class);
 		Message msg;
 		if (encType == ChatMessage.ENCODE_HTML
 				&& mcOpSet.isContentTypeSupported(ChatMessage.ENCODE_HTML)) {
@@ -406,11 +402,10 @@ public class MetaContactChatTransport
 			msg = mcOpSet.createMessage(message);
 		}
 
-		ContactResource toResource
-				= (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
+		ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
 		if (encType == ChatMessage.ENCRYPTION_OMEMO) {
 			OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
-			mcOpSet.correctMessage(contact, toResource, msg, correctedMessageUID, omemoManager);
+			mcOpSet.sendInstantMessage(contact, toResource, msg, correctedMessageUID, omemoManager);
 		} else {
 			mcOpSet.correctMessage(contact, toResource, msg, correctedMessageUID);
 		}
@@ -425,8 +420,8 @@ public class MetaContactChatTransport
 	 */
 	public boolean isContentTypeSupported(int encType)
 	{
-		OperationSetBasicInstantMessaging imOpSet = contact.getProtocolProvider().getOperationSet(
-				OperationSetBasicInstantMessaging.class);
+		OperationSetBasicInstantMessaging imOpSet
+                = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
 
 		return (imOpSet != null) && imOpSet.isContentTypeSupported(encType);
 	}
@@ -461,8 +456,8 @@ public class MetaContactChatTransport
 		if (!allowsSmsMessage())
 			return false;
 
-		OperationSetSmsMessaging smsOpSet = contact.getProtocolProvider().getOperationSet(
-				OperationSetSmsMessaging.class);
+		OperationSetSmsMessaging smsOpSet
+                = contact.getProtocolProvider().getOperationSet(OperationSetSmsMessaging.class);
 		return smsOpSet.askForNumber(contact);
 	}
 
@@ -498,8 +493,8 @@ public class MetaContactChatTransport
 
 			// if protocol is not registered or contact is offline don't try to send chat state
 			// notifications
-			if (pps.isRegistered() && (contact.getPresenceStatus().getStatus()
-					>= PresenceStatus.ONLINE_THRESHOLD)) {
+			if (pps.isRegistered()
+                    && (contact.getPresenceStatus().getStatus() >= PresenceStatus.ONLINE_THRESHOLD)) {
 
 				OperationSetChatStateNotifications tnOperationSet
 						= pps.getOperationSet(OperationSetChatStateNotifications.class);
@@ -546,29 +541,28 @@ public class MetaContactChatTransport
 
 		if (FileUtils.isImage(file.getName())) {
 			// Create a thumbNailed file if possible.
-			OperationSetThumbnailedFileFactory tfOpSet = contact.getProtocolProvider()
-					.getOperationSet(
-							OperationSetThumbnailedFileFactory.class);
+			OperationSetThumbnailedFileFactory tfOpSet
+                    = contact.getProtocolProvider().getOperationSet(OperationSetThumbnailedFileFactory.class);
 
 			if (tfOpSet != null) {
 				byte[] thumbnail = getFileThumbnail(file);
 
 				if (thumbnail != null && thumbnail.length > 0) {
 					file = tfOpSet.createFileWithThumbnail(file, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT,
-							"image/png", thumbnail);
+                            "image/png", thumbnail);
 				}
 			}
 		}
 		if (isMultimediaMessage) {
-			OperationSetSmsMessaging smsOpSet = contact.getProtocolProvider().getOperationSet(
-					OperationSetSmsMessaging.class);
+			OperationSetSmsMessaging smsOpSet
+                    = contact.getProtocolProvider().getOperationSet(OperationSetSmsMessaging.class);
 			if (smsOpSet == null)
 				return null;
 			return smsOpSet.sendMultimediaFile(contact, file);
 		}
 		else {
-			OperationSetFileTransfer ftOpSet = contact.getProtocolProvider().getOperationSet(
-					OperationSetFileTransfer.class);
+			OperationSetFileTransfer ftOpSet
+                    = contact.getProtocolProvider().getOperationSet(OperationSetFileTransfer.class);
 			return ftOpSet.sendFile(contact, file);
 		}
 	}
@@ -595,8 +589,7 @@ public class MetaContactChatTransport
 	 */
 	public long getMaximumFileLength()
 	{
-		OperationSetFileTransfer ftOpSet = contact.getProtocolProvider().getOperationSet(
-				OperationSetFileTransfer.class);
+		OperationSetFileTransfer ftOpSet = contact.getProtocolProvider().getOperationSet(OperationSetFileTransfer.class);
 		return ftOpSet.getMaximumFileLength();
 	}
 
@@ -627,8 +620,7 @@ public class MetaContactChatTransport
 		if (!allowsSmsMessage())
 			return;
 
-		OperationSetSmsMessaging smsOpSet = contact.getProtocolProvider().getOperationSet(
-				OperationSetSmsMessaging.class);
+		OperationSetSmsMessaging smsOpSet = contact.getProtocolProvider().getOperationSet(OperationSetSmsMessaging.class);
 		smsOpSet.addMessageListener(l);
 	}
 
@@ -644,8 +636,8 @@ public class MetaContactChatTransport
 		if (!allowsInstantMessage())
 			return;
 
-		OperationSetBasicInstantMessaging imOpSet = contact.getProtocolProvider().getOperationSet(
-				OperationSetBasicInstantMessaging.class);
+		OperationSetBasicInstantMessaging imOpSet
+                = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
 		imOpSet.addMessageListener(l);
 	}
 
@@ -661,8 +653,8 @@ public class MetaContactChatTransport
 		if (!allowsSmsMessage())
 			return;
 
-		OperationSetSmsMessaging smsOpSet = contact.getProtocolProvider().getOperationSet(
-				OperationSetSmsMessaging.class);
+		OperationSetSmsMessaging smsOpSet
+                = contact.getProtocolProvider().getOperationSet(OperationSetSmsMessaging.class);
 		smsOpSet.removeMessageListener(l);
 	}
 
@@ -678,8 +670,8 @@ public class MetaContactChatTransport
 		if (!allowsInstantMessage())
 			return;
 
-		OperationSetBasicInstantMessaging imOpSet = contact.getProtocolProvider().getOperationSet(
-				OperationSetBasicInstantMessaging.class);
+		OperationSetBasicInstantMessaging imOpSet
+                = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
 		imOpSet.removeMessageListener(l);
 	}
 

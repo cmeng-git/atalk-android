@@ -29,7 +29,9 @@ import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.omemo.OmemoFingerprint;
+import org.jivesoftware.smackx.omemo.OmemoService;
+import org.jivesoftware.smackx.omemo.OmemoStore;
+import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 
@@ -104,18 +106,13 @@ public class OmemoRegenerateDialog extends OSGiActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
+                        OmemoStore omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
                         for (int i = 0; i < checkedItems.length; ++i) {
                             if (checkedItems[i]) {
                                 ProtocolProviderService pps = accountMap.get(accounts.get(i).toString());
                                 if (pps != null) {
-                                    OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
-                                    try {
-                                        omemoManager.regenerate();
-                                    } catch (SmackException | InterruptedException
-                                            | XMPPException.XMPPErrorException
-                                            | CorruptedOmemoKeyException e) {
-                                        e.printStackTrace();
-                                    }
+                                    AccountID accountID = pps.getAccountID();
+                                    ((SQLiteOmemoStore) omemoStore).regenerate(accountID);
                                 }
                             }
                         }

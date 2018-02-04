@@ -3,11 +3,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
     android:background="@color/theme_background"
-
     android:divider="?android:attr/dividerHorizontal"
+
     android:orientation="vertical"
+    android:paddingTop="10dp"
     android:showDividers="middle">
 
     <ScrollView
@@ -53,8 +53,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
-                        android:text="@string/AboutDialog_Version"
-                        android:textSize="16sp" />
+                        android:text="@string/AboutDialog_Version" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -65,19 +64,17 @@
                 android:gravity="center_horizontal"
                 android:padding="5dp"
                 android:paddingTop="5dp"
-                android:text="@string/AboutDialog_Copyright"
-                android:textSize="16sp" />
+                android:text="@string/AboutDialog_Copyright" />
 
             <TextView
+                android:id="@+id/atalk_help"
                 style="@style/AboutDialogTextColor"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="10dp"
-                android:autoLink="web"
                 android:gravity="center_horizontal"
-                android:text="@string/AboutDialog_website"
-                android:textSize="16sp" />
+                android:text="@string/AboutDialog_help" />
 
             <WebView
                 android:id="@+id/AboutDialog_Info"

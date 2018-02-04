@@ -8,6 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.*;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jxmpp.jid.*;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -47,6 +48,13 @@ public interface ChatRoom
 	 * @return a <tt>EntityBareJid</tt> containing the identifier of this <tt>ChatRoom</tt>.
 	 */
 	EntityBareJid getIdentifier();
+
+    /**
+     * Returns the muc for the chat room instance.
+     *
+     * @return the muc in the protocol stack.
+     */
+    MultiUserChat getMultiUserChat();
 
 	/**
 	 * Joins this chat room with the nickname of the local user so that the user would start

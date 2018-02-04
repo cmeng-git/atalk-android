@@ -246,8 +246,7 @@ public class UserAvatarManager extends AvatarManager
 	 */
 	private boolean publishAvatarMetaData(String id, AvatarMetadata metadata)
 	{
-		PayloadItem<AvatarMetadata> item
-				= new PayloadItem<>(id, metadata);
+		PayloadItem<AvatarMetadata> item = new PayloadItem<>(id, metadata);
 		String node = AvatarMetadata.NAMESPACE;
 
 		try {
@@ -332,8 +331,7 @@ public class UserAvatarManager extends AvatarManager
 			try {
 				String currentAvatarHash = getAvatarHashByJid(from);
 
-				AvatarRetriever retriever
-						= AvatarRetrieverFactory.getRetriever(mConnection, from, info);
+				AvatarRetriever retriever = AvatarRetrieverFactory.getRetriever(mConnection, from, info);
 				byte[] avatar = retriever.getAvatar();
 
 				addAvatarImageByAvatarId(avatarId, avatar);
@@ -404,8 +402,8 @@ public class UserAvatarManager extends AvatarManager
 					List<Info> infos = ext.getInfo();
 					if (infos.size() > 0 && mAutoDownload) {
 						Info info = selectAvatar(infos);
-						downloadAvatar(from, avatarId, info);
-						fireListeners(from, avatarId, infos);
+						if (downloadAvatar(from, avatarId, info))
+    						fireListeners(from, avatarId, infos);
 					}
 				}
 			}

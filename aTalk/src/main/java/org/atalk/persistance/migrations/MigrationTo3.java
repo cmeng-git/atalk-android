@@ -7,23 +7,35 @@ import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.util.FileAccess;
+import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 
 import java.io.File;
 
 public class MigrationTo3
 {
-    public static void createOmemoTables(SQLiteDatabase db) {
-        // remove old property name
-        String[] args = {"replacement.%"};
-        db.delete(SQLiteConfigurationStore.TABLE_NAME, SQLiteConfigurationStore.COLUMN_NAME +
-                        "LIKE ", args);
+    public static void updateSQLDatabase(SQLiteDatabase db) {
+        updateOmemoIdentitiesTable(db);
+        clearUnsedTableEntries(db);
+        deleteOldDatabase();
     }
 
-    private void deleteOldDatabase() {
+    private static void updateOmemoIdentitiesTable(SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE " + SQLiteOmemoStore.IDENTITIES_TABLE_NAME
+                + " ADD " + SQLiteOmemoStore.LAST_DEVICE_ID_PUBLISH + " NUMBER");
+        db.execSQL("ALTER TABLE " + SQLiteOmemoStore.IDENTITIES_TABLE_NAME
+                + " ADD " + SQLiteOmemoStore.LAST_MESSAGE_RX + " NUMBER");
+    }
+
+    private static void clearUnsedTableEntries(SQLiteDatabase db) {
+        // remove old property name
+        String[] args = {"replacement.%"};
+        db.delete(SQLiteConfigurationStore.TABLE_NAME, SQLiteConfigurationStore.COLUMN_NAME + " LIKE ?", args);
+    }
+
+    private static void deleteOldDatabase() {
         // Proceed to delete if "SQLiteConfigurationStore.db" exist
-        String PROPERTIES_DB
-                = "net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore.db";
+        String PROPERTIES_DB = "net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore.db";
         Context ctx = aTalkApp.getGlobalContext();
         String DBPath = ctx.getDatabasePath(PROPERTIES_DB).getPath();
         File dbFile = new File(DBPath);

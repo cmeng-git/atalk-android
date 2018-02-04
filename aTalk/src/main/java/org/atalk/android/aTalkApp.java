@@ -10,8 +10,11 @@ import android.content.*;
 import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.support.multidex.MultiDex;
+import android.widget.Toast;
 
 import net.java.sip.communicator.service.protocol.AccountManager;
 import net.java.sip.communicator.util.*;
@@ -25,6 +28,7 @@ import org.atalk.android.gui.util.DrawableCache;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
+import org.jivesoftware.smack.XMPPConnection;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -247,7 +251,36 @@ public class aTalkApp extends Application
 		return getAppResources().getString(id, arg);
 	}
 
-	/**
+
+    /**
+     * Toast show message in UI thread
+     *
+     * @param message
+     * 		the string message to display.
+     */
+    public static void showToastMessage(final String message)
+    {
+        new Handler(Looper.getMainLooper()).post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Toast.makeText(getGlobalContext(), message, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public static void showToastMessage(int id)
+    {
+        showToastMessage(getResString(id));
+    }
+
+    public static void showToastMessage(int id, Object... arg)
+    {
+        showToastMessage(getAppResources().getString(id, arg));
+    }
+
+    /**
 	 * Returns home <tt>Activity</tt> class.
 	 *
 	 * @return Returns home <tt>Activity</tt> class.
@@ -322,7 +355,10 @@ public class aTalkApp extends Application
 	 */
 	public static boolean isIconEnabled()
 	{
-		return getConfig().getBoolean(SHOW_ICON_PROPERTY_NAME, true);
+	    if (getConfig() != null) {
+            return getConfig().getBoolean(SHOW_ICON_PROPERTY_NAME, true);
+        }
+        return true;
 	}
 
     /**

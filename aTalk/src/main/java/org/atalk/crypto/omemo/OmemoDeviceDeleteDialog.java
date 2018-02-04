@@ -29,10 +29,9 @@ import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.omemo.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
+import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -113,13 +112,11 @@ public class OmemoDeviceDeleteDialog extends OSGiActivity
                             if (checkedItems[i]) {
                                 ProtocolProviderService pps = accountMap.get(accounts.get(i).toString());
                                 if (pps != null) {
-                                    OmemoManager omemoManager
-                                            = OmemoManager.getInstanceFor(pps.getConnection());
+                                    OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
                                     try {
-                                        omemoManager.purgeDevices();
+                                        omemoManager.purgeDeviceList();
                                     } catch (SmackException | InterruptedException
-                                            | XMPPException.XMPPErrorException
-                                            | CorruptedOmemoKeyException e) {
+                                            | XMPPException.XMPPErrorException e) {
                                         e.printStackTrace();
                                     }
                                 }
@@ -136,8 +133,7 @@ public class OmemoDeviceDeleteDialog extends OSGiActivity
     /**
      * Method fired when the ok button is clicked.
      *
-     * @param v
-     *         ok button's <tt>View</tt>.
+     * @param v ok button's <tt>View</tt>.
      */
     public void onOkClicked(View v)
     {
@@ -147,8 +143,7 @@ public class OmemoDeviceDeleteDialog extends OSGiActivity
     /**
      * Method fired when the cancel button is clicked.
      *
-     * @param v
-     *         the cancel button's <tt>View</tt>
+     * @param v the cancel button's <tt>View</tt>
      */
     public void onCancelClicked(View v)
     {
