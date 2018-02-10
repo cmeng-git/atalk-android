@@ -81,8 +81,7 @@ public class GlobalStatusServiceImpl
 			// We do not show hidden protocols in our status bar,
 			// so we do not care about their status here.
 			if (!protocolProvider.getAccountID().isHidden() && protocolProvider.isRegistered()) {
-				OperationSetPresence presence
-						= protocolProvider.getOperationSet(OperationSetPresence.class);
+				OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
 				if (presence == null) {
 					hasAvailableProvider = true;
 				}
@@ -150,8 +149,7 @@ public class GlobalStatusServiceImpl
 		PresenceStatus status = null;
 
 		if (lastStatus != null) {
-			OperationSetPresence presence
-					= protocolProvider.getOperationSet(OperationSetPresence.class);
+			OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
 			if (presence == null)
 				return null;
 
@@ -168,33 +166,27 @@ public class GlobalStatusServiceImpl
 			if (status == null) {
 				switch (lastStatus) {
 					case GlobalStatusEnum.ONLINE_STATUS:
-						status = getPresenceStatus(protocolProvider,
-								PresenceStatus.AVAILABLE_THRESHOLD,
+						status = getPresenceStatus(protocolProvider, PresenceStatus.AVAILABLE_THRESHOLD,
 								PresenceStatus.EAGER_TO_COMMUNICATE_THRESHOLD);
 						break;
 					case GlobalStatusEnum.AWAY_STATUS:
-						status = getPresenceStatus(protocolProvider,
-								PresenceStatus.AWAY_THRESHOLD,
+						status = getPresenceStatus(protocolProvider, PresenceStatus.AWAY_THRESHOLD,
 								PresenceStatus.AVAILABLE_THRESHOLD);
 						break;
 					case GlobalStatusEnum.EXTENDED_AWAY_STATUS:
-						status = getPresenceStatus(protocolProvider,
-								PresenceStatus.EXTENDED_AWAY_THRESHOLD,
+						status = getPresenceStatus(protocolProvider, PresenceStatus.EXTENDED_AWAY_THRESHOLD,
 								PresenceStatus.AWAY_THRESHOLD);
 						break;
 					case GlobalStatusEnum.DO_NOT_DISTURB_STATUS:
-						status = getPresenceStatus(protocolProvider,
-								PresenceStatus.ONLINE_THRESHOLD,
+						status = getPresenceStatus(protocolProvider, PresenceStatus.ONLINE_THRESHOLD,
 								PresenceStatus.EXTENDED_AWAY_THRESHOLD);
 						break;
 					case GlobalStatusEnum.FREE_FOR_CHAT_STATUS:
-						status = getPresenceStatus(protocolProvider,
-								PresenceStatus.AVAILABLE_THRESHOLD,
+						status = getPresenceStatus(protocolProvider, PresenceStatus.AVAILABLE_THRESHOLD,
 								PresenceStatus.MAX_STATUS_VALUE);
 						break;
 					case GlobalStatusEnum.OFFLINE_STATUS:
-						status = getPresenceStatus(protocolProvider, 0,
-								GlobalStatusEnum.ONLINE_THRESHOLD);
+						status = getPresenceStatus(protocolProvider, 0, GlobalStatusEnum.ONLINE_THRESHOLD);
 						break;
 				}
 			}
@@ -216,8 +208,7 @@ public class GlobalStatusServiceImpl
 
 		String accountUuid = protocolProvider.getAccountID().getAccountUuid();
 		if (!StringUtils.isNullOrEmpty(accountUuid)) {
-			ConfigurationService configService
-					= GlobalDisplayDetailsActivator.getConfigurationService();
+			ConfigurationService configService = GlobalDisplayDetailsActivator.getConfigurationService();
 			lastStatus = configService.getString(accountUuid + ".lastAccountStatus");
 		}
 		return lastStatus;
@@ -272,8 +263,7 @@ public class GlobalStatusServiceImpl
 	private void publishStatusInternal(ProtocolProviderService protocolProvider,
 			PresenceStatus status, boolean dueToRegistrationStateChanged)
 	{
-		OperationSetPresence presence
-				= protocolProvider.getOperationSet(OperationSetPresence.class);
+		OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
 
 		LoginManager loginManager = null;
 		UIService uiService = GlobalDisplayDetailsActivator.getUIService();
@@ -333,8 +323,7 @@ public class GlobalStatusServiceImpl
 		String itemName = globalStatus.getStatusName();
 		LoginManager loginManager = GlobalDisplayDetailsActivator.getUIService().getLoginManager();
 
-		Collection<ProtocolProviderService> protocolProviders
-				= AccountUtils.getRegisteredProviders();
+		Collection<ProtocolProviderService> protocolProviders = AccountUtils.getRegisteredProviders();
 		for (ProtocolProviderService protocolProvider : protocolProviders) {
 			switch (itemName) {
 				case GlobalStatusEnum.ONLINE_STATUS:
@@ -343,8 +332,7 @@ public class GlobalStatusServiceImpl
 						loginManager.login(protocolProvider);
 					}
 					else {
-						OperationSetPresence presence
-								= protocolProvider.getOperationSet(OperationSetPresence.class);
+						OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
 						if (presence == null) {
 							saveStatusInformation(protocolProvider, itemName);
 						}
@@ -352,14 +340,10 @@ public class GlobalStatusServiceImpl
 							Iterator<PresenceStatus> statusSet = presence.getSupportedStatusSet();
 							while (statusSet.hasNext()) {
 								PresenceStatus status = statusSet.next();
-								if ((status.getStatus() < PresenceStatus
-										.EAGER_TO_COMMUNICATE_THRESHOLD)
-										&& (status.getStatus() >= PresenceStatus
-										.AVAILABLE_THRESHOLD)) {
-									new PublishPresenceStatusThread(protocolProvider, presence,
-											status).start();
-									this.saveStatusInformation(protocolProvider,
-											status.getStatusName());
+								if ((status.getStatus() < PresenceStatus.EAGER_TO_COMMUNICATE_THRESHOLD)
+										&& (status.getStatus() >= PresenceStatus.AVAILABLE_THRESHOLD)) {
+									new PublishPresenceStatusThread(protocolProvider, presence, status).start();
+									this.saveStatusInformation(protocolProvider, status.getStatusName());
 									break;
 								}
 							}
@@ -368,12 +352,9 @@ public class GlobalStatusServiceImpl
 					break;
 
 				case GlobalStatusEnum.OFFLINE_STATUS:
-					if (!protocolProvider.getRegistrationState().equals(
-							RegistrationState.UNREGISTERED)
-							&& !protocolProvider.getRegistrationState().equals(
-							RegistrationState.UNREGISTERING)) {
-						OperationSetPresence presence
-								= protocolProvider.getOperationSet(OperationSetPresence.class);
+					if (!protocolProvider.getRegistrationState().equals(RegistrationState.UNREGISTERED)
+							&& !protocolProvider.getRegistrationState().equals(RegistrationState.UNREGISTERING)) {
+						OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
 
 						if (presence == null) {
 							saveStatusInformation(protocolProvider, itemName);
@@ -384,8 +365,7 @@ public class GlobalStatusServiceImpl
 							while (statusSet.hasNext()) {
 								PresenceStatus status = statusSet.next();
 								if (status.getStatus() < PresenceStatus.ONLINE_THRESHOLD) {
-									this.saveStatusInformation(protocolProvider,
-											status.getStatusName());
+									this.saveStatusInformation(protocolProvider, status.getStatusName());
 									break;
 								}
 							}
@@ -403,8 +383,7 @@ public class GlobalStatusServiceImpl
 					}
 					else
 						// we search for highest available status here
-						publishStatus(protocolProvider, PresenceStatus.AVAILABLE_THRESHOLD,
-								PresenceStatus.MAX_STATUS_VALUE);
+						publishStatus(protocolProvider, PresenceStatus.AVAILABLE_THRESHOLD, PresenceStatus.MAX_STATUS_VALUE);
 					break;
 
 				case GlobalStatusEnum.DO_NOT_DISTURB_STATUS:
@@ -414,8 +393,7 @@ public class GlobalStatusServiceImpl
 					}
 					else {
 						// status between online and away is DND
-						publishStatus(protocolProvider, PresenceStatus.ONLINE_THRESHOLD,
-								PresenceStatus.EXTENDED_AWAY_THRESHOLD);
+						publishStatus(protocolProvider, PresenceStatus.ONLINE_THRESHOLD, PresenceStatus.EXTENDED_AWAY_THRESHOLD);
 					}
 					break;
 
@@ -426,8 +404,7 @@ public class GlobalStatusServiceImpl
 					}
 					else {
 						// a status in the away interval
-						publishStatus(protocolProvider, PresenceStatus.AWAY_THRESHOLD,
-								PresenceStatus.AVAILABLE_THRESHOLD);
+						publishStatus(protocolProvider, PresenceStatus.AWAY_THRESHOLD, PresenceStatus.AVAILABLE_THRESHOLD);
 					}
 					break;
 
@@ -438,8 +415,7 @@ public class GlobalStatusServiceImpl
 					}
 					else {
 						// a status in the away interval
-						publishStatus(protocolProvider, PresenceStatus.EXTENDED_AWAY_THRESHOLD,
-								PresenceStatus.AWAY_THRESHOLD);
+						publishStatus(protocolProvider, PresenceStatus.EXTENDED_AWAY_THRESHOLD, PresenceStatus.AWAY_THRESHOLD);
 					}
 					break;
 			}
@@ -460,11 +436,9 @@ public class GlobalStatusServiceImpl
 			int ceilStatusValue)
 	{
 		if (protocolProvider.isRegistered()) {
-			PresenceStatus status = getPresenceStatus(protocolProvider, floorStatusValue,
-					ceilStatusValue);
+			PresenceStatus status = getPresenceStatus(protocolProvider, floorStatusValue, ceilStatusValue);
 			if (status != null) {
-				OperationSetPresence presence
-						= protocolProvider.getOperationSet(OperationSetPresence.class);
+				OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
 				new PublishPresenceStatusThread(protocolProvider, presence, status).start();
 				this.saveStatusInformation(protocolProvider, status.getStatusName());
 			}
@@ -474,8 +448,7 @@ public class GlobalStatusServiceImpl
 	private PresenceStatus getPresenceStatus(ProtocolProviderService protocolProvider,
 			int floorStatusValue, int ceilStatusValue)
 	{
-		OperationSetPresence presence
-				= protocolProvider.getOperationSet(OperationSetPresence.class);
+		OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
 		if (presence == null)
 			return null;
 
@@ -510,11 +483,9 @@ public class GlobalStatusServiceImpl
 	 * @param statusName
 	 * 		the name of the status to save
 	 */
-	private void saveStatusInformation(ProtocolProviderService protocolProvider,
-			String statusName)
+	private void saveStatusInformation(ProtocolProviderService protocolProvider, String statusName)
 	{
-		ConfigurationService configService
-				= GlobalDisplayDetailsActivator.getConfigurationService();
+		ConfigurationService configService = GlobalDisplayDetailsActivator.getConfigurationService();
 
 		String accountUuid = protocolProvider.getAccountID().getAccountUuid();
 		if (!StringUtils.isNullOrEmpty(accountUuid)) {

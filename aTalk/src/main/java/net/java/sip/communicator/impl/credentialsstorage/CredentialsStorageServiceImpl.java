@@ -243,8 +243,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
 	public boolean changeMasterPassword(String oldPassword, String newPassword)
 	{
 		// get all encrypted account password properties
-		List<String> encryptedAccountProps
-				= configurationService.getPropertyNamesBySuffix(ACCOUNT_ENCRYPTED_PASSWORD);
+		List<String> encryptedAccountProps = configurationService.getPropertyNamesBySuffix(ACCOUNT_ENCRYPTED_PASSWORD);
 
 		// this map stores propName -> password
 		Map<String, String> passwords = new HashMap<>();
@@ -363,8 +362,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
 			configurationService.removeProperty(MASTER_PROP);
 		else {
 			try {
-				configurationService.setProperty(
-						MASTER_PROP, crypto.encrypt(MASTER_PROP_VALUE));
+				configurationService.setProperty(MASTER_PROP, crypto.encrypt(MASTER_PROP_VALUE));
 			}
 			catch (CryptoException cex) {
 				logger.error("Failed to encrypt and write verification value", cex);
@@ -435,8 +433,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
 		// null returned
 		boolean correct = true;
 
-		MasterPasswordInputService masterPasswordInputService
-				= CredentialsStorageActivator.getMasterPasswordInputService();
+		MasterPasswordInputService masterPasswordInputService = CredentialsStorageActivator.getMasterPasswordInputService();
 
 		if (masterPasswordInputService == null) {
 			logger.error("Missing MasterPasswordInputService to show input dialog");
@@ -485,8 +482,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
 	 */
 	private void setEncrypted(String accountUuid, String value)
 	{
-		configurationService.setProperty(
-				accountUuid + "." + ACCOUNT_ENCRYPTED_PASSWORD, value);
+		configurationService.setProperty(accountUuid + "." + ACCOUNT_ENCRYPTED_PASSWORD, value);
 	}
 
 	/**
@@ -498,8 +494,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
 	 */
 	public boolean isStoredEncrypted(String accountUuid)
 	{
-		return configurationService
-				.getString(accountUuid + "." + ACCOUNT_ENCRYPTED_PASSWORD) != null;
+		return configurationService.getString(accountUuid + "." + ACCOUNT_ENCRYPTED_PASSWORD) != null;
 	}
 
 	/**
@@ -511,8 +506,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
 	 */
 	private String getUnencrypted(String accountUuid)
 	{
-		return configurationService.getString(
-				accountUuid + "." + ACCOUNT_UNENCRYPTED_PASSWORD);
+		return configurationService.getString(accountUuid + "." + ACCOUNT_UNENCRYPTED_PASSWORD);
 	}
 
 	/**
@@ -525,7 +519,6 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
 	 */
 	private void setUnencrypted(String accountUuid, String value)
 	{
-		configurationService.setProperty(
-				accountUuid + "." + ACCOUNT_UNENCRYPTED_PASSWORD, value);
+		configurationService.setProperty(accountUuid + "." + ACCOUNT_UNENCRYPTED_PASSWORD, value);
 	}
 }

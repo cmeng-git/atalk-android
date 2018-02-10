@@ -33,7 +33,6 @@ import org.atalk.android.gui.util.ViewUtil;
  */
 public class CredentialsFragment extends Fragment
 {
-
 	/**
 	 * Pre-entered login argument.
 	 */
@@ -96,8 +95,7 @@ public class CredentialsFragment extends Fragment
 	 * {@inheritDoc}
 	 */
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		Bundle args = getArguments();
 		View content = inflater.inflate(R.layout.credentials, container, false);
@@ -114,11 +112,9 @@ public class CredentialsFragment extends Fragment
 		mPasswordField.setText(args.getString(ARG_PASSWORD));
 		// ViewUtil.setTextViewValue(content, R.id.password, args.getString(ARG_PASSWORD));
 
-		ViewUtil.setCompoundChecked(content, R.id.store_password,
-				args.getBoolean(ARG_STORE_PASSWORD, true));
+		ViewUtil.setCompoundChecked(content, R.id.store_password, args.getBoolean(ARG_STORE_PASSWORD, true));
 
-		ViewUtil.setCompoundChecked(content, R.id.ib_registration,
-				args.getBoolean(ARG_IB_REGISTRATION, false));
+		ViewUtil.setCompoundChecked(content, R.id.ib_registration, args.getBoolean(ARG_IB_REGISTRATION, false));
 
 		Boolean isShownServerOption = args.getBoolean(ARG_IS_SHOWN_SERVER_OPTION, false);
 		if (isShownServerOption) {
@@ -171,8 +167,7 @@ public class CredentialsFragment extends Fragment
 			mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
 		} else {
 			mShowPasswordImage.setAlpha(0.3f);
-			mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT
-					| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+			mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 		}
 		mPasswordField.setSelection(cursorPosition);
 	}

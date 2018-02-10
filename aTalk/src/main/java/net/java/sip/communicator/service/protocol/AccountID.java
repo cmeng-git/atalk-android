@@ -15,6 +15,7 @@ import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.gui.account.settings.JabberPreferenceFragment;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.util.StringUtils;
@@ -607,10 +608,12 @@ public class AccountID
      *
      * @return true if the underlying protocol provider is to persistently (and possibly
      * insecurely) store the passWord and false otherwise.
+     * Note: Default must set to be the same default as in, until user changes it
+     * @link JabberPreferenceFragment.rememberPassword
      */
     public boolean isPasswordPersistent()
     {
-        return getAccountPropertyBoolean(ProtocolProviderFactory.PASSWORD_PERSISTENT, false);
+        return getAccountPropertyBoolean(ProtocolProviderFactory.PASSWORD_PERSISTENT, true);
     }
 
     /**

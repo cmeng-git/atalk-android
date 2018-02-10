@@ -176,8 +176,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
 		AccountRegistrationImpl wizard = getJbrWizard();
 		JabberAccountRegistration registration = wizard.getAccountRegistration();
 
-		SharedPreferences preferences
-				= PreferenceManager.getDefaultSharedPreferences(getActivity());
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		SharedPreferences.Editor editor = preferences.edit();
 
 		// User name and password
@@ -376,12 +375,10 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
             reg.setRememberPassword(shPrefs.getBoolean(PREF_KEY_STORE_PASSWORD, false));
         }
 		else if (key.equals(PREF_KEY_GMAIL_NOTIFICATIONS)) {
-			reg.setGmailNotificationEnabled(
-					shPrefs.getBoolean(PREF_KEY_GMAIL_NOTIFICATIONS, false));
+			reg.setGmailNotificationEnabled(shPrefs.getBoolean(PREF_KEY_GMAIL_NOTIFICATIONS, false));
 		}
 		else if (key.equals(PREF_KEY_GOOGLE_CONTACTS_ENABLED)) {
-			reg.setGoogleContactsEnabled(
-					shPrefs.getBoolean(PREF_KEY_GOOGLE_CONTACTS_ENABLED, false));
+			reg.setGoogleContactsEnabled(shPrefs.getBoolean(PREF_KEY_GOOGLE_CONTACTS_ENABLED, false));
 		}
 		else if (key.equals(PREF_KEY_ALLOW_NON_SECURE_CONN)) {
 			reg.setAllowNonSecure(shPrefs.getBoolean(PREF_KEY_ALLOW_NON_SECURE_CONN, false));
@@ -453,8 +450,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
 			reg.setOverridePhoneSuffix(shPrefs.getString(PREF_KEY_OVERRIDE_PHONE_SUFFIX, null));
 		}
 		else if (key.equals(PREF_KEY_TELE_BYPASS_GTALK_CAPS)) {
-			reg.setTelephonyDomainBypassCaps(
-					shPrefs.getString(PREF_KEY_TELE_BYPASS_GTALK_CAPS, null));
+			reg.setTelephonyDomainBypassCaps(shPrefs.getString(PREF_KEY_TELE_BYPASS_GTALK_CAPS, null));
 		}
 	}
 
