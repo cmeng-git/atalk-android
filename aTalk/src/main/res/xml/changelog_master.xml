@@ -6,6 +6,11 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.1.1 (02/10/2018)" versioncode="1011">
+        <change>Enhance IBR UI and improve registration process handling for all events return by server</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.1.0 (02/04/2018)" versioncode="1010">
         <change>Omemo messaging now supports last message correction, message carbons and offline messages</change>
         <change>Enhance crypto device fingerPrints ui to include fingerprints of siblings and states i.e. own and active etc</change>

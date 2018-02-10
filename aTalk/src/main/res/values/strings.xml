@@ -39,8 +39,10 @@
     <string name="account_server_port">5222</string>
     <string name="ibr_registration">IB Registration</string>
     <string name="captcha_registration_request">Registration-Captcha</string>
-    <string name="captcha_registration_fail">Registration-Captcha has failed! %1$s\nPlease sign in and try again</string>
+    <string name="captcha_registration_fail">Registration-Captcha has failed!\n%1$s</string>
     <string name="captcha_registration_success">Registration-Captcha is successful.\nYou can now proceed to log in!</string>
+    <string name="captcha_registration_reason">Inband registration requested by user</string>
+    <string name="captcha_registration_pwd_empty">Error: password field is empty!</string>
     <string name="captcha_hint">Enter text seen in image above</string>
     <string name="choose_network">Choose a network</string>
     <string name="encryption_TOOLTIP">Encrypt chat</string>
@@ -1633,7 +1635,7 @@
     <string name="ask_for_storage_permission_button">Storage</string>
     <string name="ask_for_all_permissions_button">Request all</string>
     <string name="app_info_permissions_button">App Info</string>
-    <string name="permission_hint">For application maximum performances and full features support, aTalk requires you to grant permissions for the following resources access. Without them, aTalk may not work or may have unexpected behavior!</string>
+    <string name="permission_hint">For application maximum performance and full features support, aTalk requires you to grant permissions for the following services. Without them, aTalk may not work or may have unexpected behavior!</string>
 
     <string name="permission_granted_feedback">GRANTED</string>
     <string name="permission_denied_feedback">DENIED</string>
@@ -1656,13 +1658,13 @@
     <string name="phone_permission_denied_dialog_feedback">Phone features will not be available until you grant the permission request</string>
 
     <string name="storage_permission_denied_dialog_title">Storage permission request</string>
-    <string name="storage_permission_denied_dialog_feedback">Saving of received contents in external storage will not be available until you grant the permission request</string>
+    <string name="storage_permission_denied_dialog_feedback">Saving of received contents in external storage will not be allowed until you grant the permission request</string>
 
     <string name="all_permission_denied_dialog_title">All permissions request</string>
-    <string name="all_permissions_denied_feedback">aTalk may not work properly or may have unexpected behavior as some resources access have been denied!\nIf you have selected \"Don\'t ask again\" option, you need to go to android Settings -> APP INFO for aTalk to enable the resource access permission</string>
+    <string name="all_permissions_denied_feedback">aTalk may not work properly or may have unexpected behavior as some services have been denied!\nIf you have selected \"Don\'t ask again\" option, you need to go to android Settings -> APP INFO for aTalk to enable the resource access permission</string>
 
     <string name="permission_rationale_title">aTalk needs permissions</string>
-    <string name="permission_rationale_message">You will be presented with each resource needed by aTalk; please proceed to allow aTalk to access the resources for full features supported</string>
+    <string name="permission_rationale_message">You are presented with each service needed by aTalk; please allow aTalk to access these services for full features supported</string>
     <string name="permission_rationale_settings_button_text">SETTINGS</string>
 
 </resources>

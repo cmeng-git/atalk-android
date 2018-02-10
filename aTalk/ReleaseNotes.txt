@@ -1,5 +1,11 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.1.1 (1011)
+Author:         cmeng
+Upload Date:	02/10/2018
+- Enhance IBR UI and improve registration process handling for all events return by server
+
+=========================================================================
 Version:		1.1.0 (1010)
 Author:         cmeng
 Upload Date:	02/04/2018

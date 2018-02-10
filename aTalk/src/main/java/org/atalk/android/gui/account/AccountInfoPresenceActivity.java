@@ -455,8 +455,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			aboutMeArea.setEnabled(false);
 
 			InputFilter[] filterArray = new InputFilter[1];
-			filterArray[0] = new InputFilter.LengthFilter(Integer
-					.valueOf(getString(R.string.plugin_accountinfo_ABOUT_ME_MAX_CHARACTERS)));
+			filterArray[0] = new InputFilter.LengthFilter(Integer.valueOf(getString(R.string.plugin_accountinfo_ABOUT_ME_MAX_CHARACTERS)));
 			aboutMeArea.setFilters(filterArray);
 			aboutMeArea.setBackgroundResource(R.drawable.alpha_blue_01);
 			detailToTextField.put(AboutMeDetail.class, aboutMeArea);

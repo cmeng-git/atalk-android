@@ -864,8 +864,8 @@ public abstract class ProtocolProviderFactory
 	 */
 	protected String loadPassword(BundleContext bundleContext, AccountID accountID)
 	{
-		CredentialsStorageService credentialsStorage = ServiceUtils.getService(bundleContext,
-				CredentialsStorageService.class);
+		CredentialsStorageService credentialsStorage
+                = ServiceUtils.getService(bundleContext, CredentialsStorageService.class);
 		return credentialsStorage.loadPassword(accountID.getAccountUuid());
 	}
 

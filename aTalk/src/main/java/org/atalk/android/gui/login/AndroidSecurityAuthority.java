@@ -71,8 +71,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
 		String errorMessage = resources.getI18NString("service.gui.CONNECTION_FAILED_MSG",
 				new String[]{defaultValues.getUserName(), defaultValues.getServerAddress()});
 
-		DialogActivity.showDialog(ctx, resources.getI18NString("service.gui.LOGIN.FAILED"),
-				errorMessage);
+		DialogActivity.showDialog(ctx, resources.getI18NString("service.gui.LOGIN.FAILED"), errorMessage);
 		return defaultValues;
 	}
 
@@ -109,21 +108,17 @@ public class AndroidSecurityAuthority implements SecurityAuthority
 		}
 
 		// Persistent password argument
-		args.putBoolean(CredentialsFragment.ARG_STORE_PASSWORD,
-				credentials.isPasswordPersistent());
+		args.putBoolean(CredentialsFragment.ARG_STORE_PASSWORD, credentials.isPasswordPersistent());
 
 		// InBand Registration argument
-		args.putBoolean(CredentialsFragment.ARG_IB_REGISTRATION,
-				accountID.isIbRegistration());
+		args.putBoolean(CredentialsFragment.ARG_IB_REGISTRATION, accountID.isIbRegistration());
 
 		args.putBoolean(CredentialsFragment.ARG_IS_SHOWN_SERVER_OPTION, isShowServerOption);
 		if (isShowServerOption) {
 			// Server overridden argument
 			if (accountID != null) {
-				args.putBoolean(CredentialsFragment.ARG_IS_SERVER_OVERRIDDEN,
-						accountID.isServerOverridden());
-				args.putString(CredentialsFragment.ARG_SERVER_ADDRESS,
-						accountID.getServerAddress());
+				args.putBoolean(CredentialsFragment.ARG_IS_SERVER_OVERRIDDEN, accountID.isServerOverridden());
+				args.putString(CredentialsFragment.ARG_SERVER_ADDRESS, accountID.getServerAddress());
 				args.putString(CredentialsFragment.ARG_SERVER_PORT, accountID.getServerPort());
 			}
 		}
@@ -143,14 +138,10 @@ public class AndroidSecurityAuthority implements SecurityAuthority
 					public boolean onConfirmClicked(DialogActivity dialog)
 					{
 						View dialogContent = dialog.findViewById(R.id.alertContent);
-						String userName = ViewUtil.getTextViewValue(dialogContent,
-								R.id.username).replaceAll("\\s", "");
-						String password = ViewUtil.getTextViewValue(dialogContent,
-								R.id.password).trim();
-						boolean storePassword = ViewUtil.isCompoundChecked(dialogContent,
-								R.id.store_password);
-						boolean ibRegistration = ViewUtil.isCompoundChecked(dialogContent,
-								R.id.ib_registration);
+						String userName = ViewUtil.getTextViewValue(dialogContent, R.id.username).replaceAll("\\s", "");
+						String password = ViewUtil.getTextViewValue(dialogContent, R.id.password).trim();
+						boolean storePassword = ViewUtil.isCompoundChecked(dialogContent, R.id.store_password);
+						boolean ibRegistration = ViewUtil.isCompoundChecked(dialogContent, R.id.ib_registration);
 
 						credentials.setUserName(userName);
 						credentials.setPassword(password.toCharArray());

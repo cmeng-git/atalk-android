@@ -66,8 +66,7 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
 	{
 		// logger.warn("SMACK stack access: " + Log.getStackTraceString(new Exception()));
 		loginRenderer.startConnectingUI(protocolProvider);
-		new RegisterProvider(protocolProvider,
-				loginRenderer.getSecurityAuthorityImpl(protocolProvider)).start();
+		new RegisterProvider(protocolProvider, loginRenderer.getSecurityAuthorityImpl(protocolProvider)).start();
 	}
 
 	/**

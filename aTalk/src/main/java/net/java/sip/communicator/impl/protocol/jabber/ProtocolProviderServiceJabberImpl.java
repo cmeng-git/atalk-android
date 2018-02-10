@@ -628,8 +628,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 inConnectAndLogin = true;
             }
             String loginReason = "User Authentication Required!";
-            initializeConnectAndLogin(authority, SecurityAuthority.AUTHENTICATION_REQUIRED,
-                    loginReason, false);
+            initializeConnectAndLogin(authority, SecurityAuthority.AUTHENTICATION_REQUIRED, loginReason, false);
         } catch (XMPPException | SmackException ex) {
             logger.error("Error registering: ", ex);
             eventDuringLogin = null;
@@ -1147,7 +1146,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         try {
             mConnection.connect();
         } catch (StreamErrorException ex) {
-            String errMsg = ex.getStreamError().getDescriptiveText();
+            String errMsg = ex.getMessage();
+            if (StringUtils.isNullOrEmpty(errMsg))
+                errMsg = ex.getStreamError().getDescriptiveText();
             logger.error("Encounter problem during XMPPConnection: " + errMsg);
             XMPPError xmppError = XMPPError.from(Condition.policy_violation, errMsg).build();
             throw new XMPPException.XMPPErrorException(null, xmppError);
@@ -1213,17 +1214,21 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         } catch (SmackException | XMPPException el) {
             String errMsg = el.getMessage();
             /*
-			 * If account is not registered on server, send registration to server if user
+             * If account is not registered on server, send registration to server if user
 			 * requested. Otherwise throw back to user and ask for InBand registration
 			 * confirmation.
 			 */
             if (errMsg.contains("not-authorized")) {
                 if (mAccountID.isIbRegistration()) {
                     try {
-                        // Server sends stream disconnect on "not-authorized". So perform manual
-                        // disconnect and connect again before server closes the stream
-                        mConnection.disconnect();
-                        mConnection.connect();
+                        // Server sends stream disconnect on "not-authorized". So perform manual connect again before
+                        // server closes the stream. Some Server does otherwise, so check before making connection.
+                        if (!mConnection.isConnected())
+                            mConnection.connect();
+                        // stop pps connectionListener from disturbing IBR registration process
+                        mConnection.removeConnectionListener(connectionListener);
+                        connectionListener = null;
+
                         accountIBRegistered = new LoginSynchronizationPoint<>(this, "account ib registered");
                         loginStrategy.registerAccount(this, mAccountID);
                         eventDuringLogin = null;
@@ -1330,10 +1335,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             fireRegistrationStateChanged(getRegistrationState(),
                     RegistrationState.CONNECTION_FAILED,
                     RegistrationStateChangeEvent.REASON_NOT_SPECIFIED, errMsg);
-
-//			if (androidOmemoService != null) {
-//				androidOmemoService.handleProviderRemoved();
-//			}
         }
 
         /**
@@ -1463,6 +1464,14 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             String msg = "Smack: User Authenticated with isResumed state: " + resumed;
             mConnection.setUseStreamManagementResumption(true);
 
+            /*
+             * Enable ReconnectionManager with ReconnectionPolicy.RANDOM_INCREASING_DELAY
+             * - attempt to reconnect when server disconnect unexpectedly
+             * Only enable on authentication. Otherwise <not-authorized/> will also trigger reconnection.
+             */
+            reconnectionManager = ReconnectionManager.getInstanceFor(mConnection);
+            reconnectionManager.enableAutomaticReconnection();
+
             if (mAccountID.isIbRegistration())
                 mAccountID.setIbRegistration(false);
 
@@ -1503,10 +1512,11 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             mConnection.setReplyTimeout(SMACK_PACKET_REPLY_SET_TIMEOUT);
 
             /*
-             * Must stop any reocnnection timer if any; disconnect does not kill the timer. It continuous
-             * to count down and starts another reconnection which disrupts the existing connection.
+             * Must stop any reconnection timer if any; disconnect does not kill the timer. It continuous
+             * to count down and starts another reconnection which disrupts the existing established connection.
              */
-            reconnectionManager.abortPossiblyRunningReconnection();
+            if (reconnectionManager != null)
+                reconnectionManager.abortPossiblyRunningReconnection();
 
             // disconnect anyway because it will clear any listeners that maybe added even if
             // it is not connected
@@ -1726,13 +1736,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 		  to same instance of xmppConnection.  Perform only after connection is connected to ensure the user is defined
 		 */
         androidOmemoService = new AndroidOmemoService(this);
-
-		/*
-		 * Enable ReconnectionManager with ReconnectionPolicy.RANDOM_INCREASING_DELAY
-		 * - attempt to reconnect when server disconnect unexpectedly
-		 */
-        reconnectionManager = ReconnectionManager.getInstanceFor(mConnection);
-        reconnectionManager.enableAutomaticReconnection();
 
         /*
          * add SupportedFeatures only prior to registerServiceDiscoveryManager. Otherwise found
