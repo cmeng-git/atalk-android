@@ -73,6 +73,7 @@ import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
+import org.jxmpp.util.XmppStringUtils;
 
 import java.net.URI;
 import java.security.PublicKey;
@@ -604,9 +605,15 @@ public class CryptoFragment extends OSGiFragment
                 && activeChat.getChatSession() instanceof MetaContactChatSession) {
             metaContact = activeChat.getMetaContact();
         }
-
         Contact contact = (metaContact == null) ? null : metaContact.getDefaultContact();
-        setCurrentContact(contact, chatSessionId);
+
+        // do not proceed if the chat session is triggered from system server i.e. welcome message
+        if (XmppStringUtils.isBareJid(contact.getJid().toString()))
+            setCurrentContact(contact, chatSessionId);
+        else {
+            mOmemo.setEnabled(false);
+            mOtr.setEnabled(false);
+        }
     }
 
     /**

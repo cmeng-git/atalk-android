@@ -323,6 +323,8 @@ public class IBRCaptchaProcessDialog extends Dialog
                     xmppError = XMPPError.from(XMPPError.Condition.not_acceptable, errMsg).build();
                 }
                 logger.error("Exception: " + errMsg + ": " + errDetails);
+                if (errMsg.contains("conflict") && errDetails.contains("exists"))
+                    mAccountId.setIbRegistration(false);
                 mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
             }
         }
@@ -347,6 +349,7 @@ public class IBRCaptchaProcessDialog extends Dialog
             mConnection.removeConnectionListener(connectionListener);
             connectionListener = null;
         }
+        mConnection = null;
         this.cancel();
     }
 
@@ -463,7 +466,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                     accountManager.createAccount(username, mPassword);
                 }
             }
-        } catch (IOException | InterruptedException | XMPPException | SmackException  e) {
+        } catch (IOException | InterruptedException | XMPPException | SmackException e) {
             String errMsg = e.getMessage();
             XMPPError xmppError = XMPPError.from(XMPPError.Condition.not_authorized, errMsg).build();
             mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));

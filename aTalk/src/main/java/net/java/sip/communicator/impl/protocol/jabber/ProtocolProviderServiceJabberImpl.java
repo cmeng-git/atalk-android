@@ -1455,7 +1455,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             androidOmemoService.initOmemoDevice();
 
 			/*
-			 * XEP-0237:Roster Versioning - init RosterStore for each authenticated account to
+             * XEP-0237:Roster Versioning - init RosterStore for each authenticated account to
 			 * support persistent storage
 		 	 */
             initRosterStore();
@@ -1504,54 +1504,55 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Used to disconnect current connection and clean it.
+     * Use to disconnect current connection if exists and do the necessary clean up.
      */
     public void disconnectAndCleanConnection()
     {
-        if (mConnection != null) {
-            mConnection.setReplyTimeout(SMACK_PACKET_REPLY_SET_TIMEOUT);
+        if (mConnection == null)
+            return;
 
-            /*
-             * Must stop any reconnection timer if any; disconnect does not kill the timer. It continuous
-             * to count down and starts another reconnection which disrupts the existing established connection.
-             */
-            if (reconnectionManager != null)
-                reconnectionManager.abortPossiblyRunningReconnection();
+        mConnection.setReplyTimeout(SMACK_PACKET_REPLY_SET_TIMEOUT);
 
-            // disconnect anyway because it will clear any listeners that maybe added even if
-            // it is not connected
+        /*
+         * Must stop any reconnection timer if any; disconnect does not kill the timer. It continuous
+         * to count down and starts another reconnection which disrupts any new established connection.
+         */
+        if (reconnectionManager != null)
+            reconnectionManager.abortPossiblyRunningReconnection();
+
+        // Remove the listener that is added at connection setup
+        if (connectionListener != null) {
             mConnection.removeConnectionListener(connectionListener);
             connectionListener = null;
+        }
 
-            try {
-                Presence unavailablePresence = new Presence(Presence.Type.unavailable);
-                if ((OpSetPP != null)
-                        && !StringUtils.isNullOrEmpty(OpSetPP.getCurrentStatusMessage())) {
-                    unavailablePresence.setStatus(OpSetPP.getCurrentStatusMessage());
-                }
-                mConnection.disconnect(unavailablePresence);
-            } catch (Exception ex) {
-                logger.warn("Exception while disconnect and clean connection!!!");
+        try {
+            Presence unavailablePresence = new Presence(Presence.Type.unavailable);
+            if ((OpSetPP != null)
+                    && !StringUtils.isNullOrEmpty(OpSetPP.getCurrentStatusMessage())) {
+                unavailablePresence.setStatus(OpSetPP.getCurrentStatusMessage());
             }
+            mConnection.disconnect(unavailablePresence);
+        } catch (Exception ex) {
+            logger.warn("Exception while disconnect and clean connection!!!");
+        }
 
-            // make it null as it also holds a reference to the old connection; it will be created
-            // again on new connection
-            mConnection = null;
-            try {
-				/*
-				 * The discoveryManager is exposed as service-public by the
-				 * OperationSetContactCapabilities of this ProtocolProviderService.
-				 * No longer expose it because it's going away.
-				 */
-                if (opsetContactCapabilities != null)
-                    opsetContactCapabilities.setDiscoveryManager(null);
-            } finally {
-                if (discoveryManager != null) {
-                    discoveryManager.stop();
-                    discoveryManager = null;
-                }
+        try {
+            /*
+             * The discoveryManager is exposed as service-public by the OperationSetContactCapabilities of this
+             * ProtocolProviderService. No longer expose it because it's going away.
+             */
+            if (opsetContactCapabilities != null)
+                opsetContactCapabilities.setDiscoveryManager(null);
+        } finally {
+            if (discoveryManager != null) {
+                discoveryManager.stop();
+                discoveryManager = null;
             }
         }
+
+        // set it null as it also holds a reference to the old connection; it will be created again on new connection setup
+        mConnection = null;
     }
 
     /**
@@ -1679,8 +1680,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         String[] featuresToAdd = supportedFeatures.toArray(new String[supportedFeatures.size()]);
         // boolean cacheNonCaps = true;
 
-        discoveryManager = new ScServiceDiscoveryManager(this, mConnection,
-                featuresToRemove, featuresToAdd, true);
+        discoveryManager = new ScServiceDiscoveryManager(this, mConnection, featuresToRemove, featuresToAdd, true);
 
         boolean isCallingDisabled = JabberActivator.getConfigurationService().getBoolean(
                 "protocol.jabber.CALLING_DISABLED", false);
@@ -2211,8 +2211,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             opsetContactCapabilities = new OperationSetContactCapabilitiesJabberImpl(this);
             if (discoveryManager != null)
                 opsetContactCapabilities.setDiscoveryManager(discoveryManager);
-            addSupportedOperationSet(OperationSetContactCapabilities.class,
-                    opsetContactCapabilities);
+            addSupportedOperationSet(OperationSetContactCapabilities.class, opsetContactCapabilities);
 
             addSupportedOperationSet(OperationSetGenericNotifications.class,
                     new OperationSetGenericNotificationsJabberImpl(this));
@@ -2234,8 +2233,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             OperationSetTLS opsetTLS = new OperationSetTLSJabberImpl(this);
             addSupportedOperationSet(OperationSetTLS.class, opsetTLS);
 
-            OperationSetConnectionInfo opsetConnectionInfo
-                    = new OperationSetConnectionInfoJabberImpl();
+            OperationSetConnectionInfo opsetConnectionInfo = new OperationSetConnectionInfoJabberImpl();
             addSupportedOperationSet(OperationSetConnectionInfo.class, opsetConnectionInfo);
             isInitialized = true;
         }

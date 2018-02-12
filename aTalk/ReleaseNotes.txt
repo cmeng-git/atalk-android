@@ -1,5 +1,12 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.1.2 (1012)
+Author:         cmeng
+Upload Date:	02/12/2018
+- Fix black screen display when opening welcome message after IBR registration
+- Revert to user login screen when server throws user already exists exception while doing IBR registration
+
+=========================================================================
 Version:		1.1.1 (1011)
 Author:         cmeng
 Upload Date:	02/10/2018

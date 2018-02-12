@@ -1,7 +1,18 @@
 /*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
- * Distributable under LGPL license. See terms of license at gnu.org.
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.atalk.android.gui.login;
 
@@ -15,20 +26,20 @@ import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 
 /**
- * The credentials fragment can be used to retrieve username, password, the "store password" option
- * status, login server overridden option and the server ip:port. Use the arguments to fill the
- * fragment with default values.
- * Supported arguments are:<br/>
- * - {@link #ARG_LOGIN} login default text value<br/>
- * - {@link #ARG_LOGIN_EDITABLE} <tt>boolean</tt> flag indicating if the login field is
- * editable<br/>
- * - {@link #ARG_PASSWORD} password default text value<br/>
+ * The credentials fragment can be used to retrieve username, password, the "store password" option status, login
+ * server overridden option and the server ip:port. Use the arguments to fill the fragment with default values.
+ * Supported arguments are:
+ * - {@link #ARG_LOGIN} login default text value; editable only if new user creation
+ * - {@link #ARG_LOGIN_EDITABLE} <tt>boolean</tt> flag indicating if the login field is editable
+ * - {@link #ARG_PASSWORD} password default text value
+ * - {@link #ARG_IB_REGISTRATION} "store password" default <tt>boolean</tt> value
+ * - {@link #ARG_IB_REGISTRATION} "ibr_registration" default <tt>boolean</tt> value
  * - {@link #ARG_STORE_PASSWORD} "store password" default <tt>boolean</tt> value
  * - {@link #ARG_IS_SERVER_OVERRIDDEN} "Server Overridden" default <tt>boolean</tt> value
- * - {@link #ARG_SERVER_ADDRESS} Server address default text value<br/>
- * - {@link #ARG_SERVER_PORT} Server port default text value<br/>
+ * - {@link #ARG_SERVER_ADDRESS} Server address default text value
+ * - {@link #ARG_SERVER_PORT} Server port default text value
+ * - {@link #ARG_LOGIN_REASON} login in reason, present last server return exception if any
  *
- * @author Pawel Domas
  * @author Eng Chong Meng
  */
 public class CredentialsFragment extends Fragment
