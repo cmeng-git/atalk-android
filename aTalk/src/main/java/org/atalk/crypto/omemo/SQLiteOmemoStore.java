@@ -399,7 +399,6 @@ public class SQLiteOmemoStore extends SignalOmemoStore
         }
         if (!StringUtils.isNullOrEmpty(msg)) {
             logger.warn(msg);
-            aTalkApp.showToastMessage(msg);
             // throw only if key is corrupted else return null
             if (isCorrupted)
                 throw new CorruptedOmemoKeyException(msg);

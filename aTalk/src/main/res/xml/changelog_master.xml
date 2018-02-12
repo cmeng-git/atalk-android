@@ -6,6 +6,11 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.1.2 (02/12/2018)" versioncode="1012">
+        <change>Fix black screen display when opening welcome message after IBR registration</change>
+        <change>Revert to user login screen when server throws user already exists exception while doing IBR registration</change>
+    </release>
+
     <release version="1.1.1 (02/10/2018)" versioncode="1011">
         <change>Enhance IBR UI and improve registration process handling for all events return by server</change>
         <change>Bug fixes and other enhancements</change>

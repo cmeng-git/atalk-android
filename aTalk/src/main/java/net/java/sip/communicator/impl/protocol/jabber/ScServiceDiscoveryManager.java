@@ -92,8 +92,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 	 * An empty array of <tt>UserCapsNodeListener</tt> elements explicitly defined
 	 * in order to reduce unnecessary allocations.
 	 */
-	private static final UserCapsNodeListener[] NO_USER_CAPS_NODE_LISTENERS
-			= new UserCapsNodeListener[0];
+	private static final UserCapsNodeListener[] NO_USER_CAPS_NODE_LISTENERS = new UserCapsNodeListener[0];
 
 	/**
 	 * The runnable responsible for retrieving discover info.
@@ -101,8 +100,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 	private DiscoveryInfoRetriever retriever = new DiscoveryInfoRetriever();
 
 	/**
-	 * persistentAvatarCache is used only by ScServiceDiscoveryManager for the specific account
-	 * entities received
+	 * persistentAvatarCache is used only by ScServiceDiscoveryManager for the specific account entities received
 	 */
 	private static EntityCapsPersistentCache discoInfoPersistentCache = null;
 
@@ -124,8 +122,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 	 * @param parentProvider
 	 * 		the parent provider that creates discovery manager.
 	 * @param connection
-	 * 		Smack connection object that will be used by this instance to handle XMPPTCP
-	 * 		connection.
+	 * 		Smack connection object that will be used by this instance to handle XMPPTCP connection.
 	 * @param featuresToRemove
 	 * 		an array of <tt>String</tt>s representing the features to be removed from the
 	 * 		<tt>ServiceDiscoveryManager</tt> of the specified <tt>connection</tt> which is to be
@@ -136,10 +133,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 	 * 		is to be wrapped by the new instance
 	 */
 	public ScServiceDiscoveryManager(ProtocolProviderServiceJabberImpl parentProvider,
-			XMPPTCPConnection connection,
-			String[] featuresToRemove,
-			String[] featuresToAdd,
-			boolean cacheNonCaps)
+			XMPPTCPConnection connection, String[] featuresToRemove, String[] featuresToAdd, boolean cacheNonCaps)
 	{
 		this.parentProvider = parentProvider;
 		this.connection = connection;
@@ -157,9 +151,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 		// Sync DiscoverInfo.Identity with ServiceDiscoveryManager that has been initialized in
 		// ProtocolProviderServiceImpl #ServiceDiscoveryManager.setDefaultIdentity().
 		DiscoverInfo.Identity identity = new DiscoverInfo.Identity(
-				"client",
-				discoveryManager.getIdentityName(),
-				discoveryManager.getIdentityType());
+				"client", discoveryManager.getIdentityName(), discoveryManager.getIdentityType());
 		identities.add(identity);
 
 		// add support for Entity Capabilities
@@ -299,8 +291,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 	 * @throws InterruptedException
 	 */
 	public DiscoverInfo discoverInfo(Jid entityID)
-			throws  NoResponseException, XMPPException.XMPPErrorException, NotConnectedException,
-			InterruptedException
+			throws  NoResponseException, XMPPException.XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		// Check if we have it cached in the Entity Capabilities Manager
 		DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityID);
@@ -416,8 +407,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 	 * @throws InterruptedException
 	 */
 	public DiscoverItems discoverItems(Jid entityID)
-			throws  NoResponseException, XMPPException.XMPPErrorException, NotConnectedException,
-			InterruptedException
+			throws  NoResponseException, XMPPException.XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		return discoveryManager.discoverItems(entityID);
 	}
@@ -437,8 +427,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 	 * @throws InterruptedException
 	 */
 	public DiscoverItems discoverItems(Jid entityID, String node)
-			throws  NoResponseException, XMPPException.XMPPErrorException, NotConnectedException,
-			InterruptedException
+			throws  NoResponseException, XMPPException.XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		return discoveryManager.discoverItems(entityID, node);
 	}
@@ -631,8 +620,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 			// information to decide if we're going to send the discover info request.
 			boolean online = (packet instanceof Presence) && ((Presence) packet).isAvailable();
 
-			CapsExtension ext
-					= packet.getExtension(CapsExtension.ELEMENT, CapsExtension.NAMESPACE);
+			CapsExtension ext = packet.getExtension(CapsExtension.ELEMENT, CapsExtension.NAMESPACE);
 			Jid userId = packet.getFrom();
 
 			if ((ext != null) && online) {
@@ -667,18 +655,15 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 	 */
 	public static void initEntityPersistentStore()
 	{
-		entityStoreDirectory
-				= new File(aTalkApp.getGlobalContext().getFilesDir() + "/entityStore");
+		entityStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir() + "/entityStore");
 
 		if (!entityStoreDirectory.exists()) {
 			if (!entityStoreDirectory.mkdir())
-				logger.error("Entity Store directory creation error: "
-						+ entityStoreDirectory.getAbsolutePath());
+				logger.error("Entity Store directory creation error: " + entityStoreDirectory.getAbsolutePath());
 		}
 
 		if (entityStoreDirectory.exists()) {
-			SimpleDirectoryPersistentCache entityPersistentCache
-					= new SimpleDirectoryPersistentCache(entityStoreDirectory);
+			SimpleDirectoryPersistentCache entityPersistentCache = new SimpleDirectoryPersistentCache(entityStoreDirectory);
 			EntityCapsManager.setPersistentCache(entityPersistentCache);
 		}
 	}
@@ -698,18 +683,15 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 	public void initDiscoInfoPersistentStore()
 	{
 		String userID = parentProvider.getAccountID().getUserID();
-		discoInfoStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir()
-				+ "/discoInfoStore_" + userID);
+		discoInfoStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir() + "/discoInfoStore_" + userID);
 
 		if (!discoInfoStoreDirectory.exists()) {
 			if (!discoInfoStoreDirectory.mkdir())
-				logger.error("DiscoInfo Store directory creation error: "
-						+ discoInfoStoreDirectory.getAbsolutePath());
+				logger.error("DiscoInfo Store directory creation error: " + discoInfoStoreDirectory.getAbsolutePath());
 		}
 
 		if (discoInfoStoreDirectory.exists()) {
-			SimpleDirectoryPersistentCache persistentCache
-					= new SimpleDirectoryPersistentCache(discoInfoStoreDirectory);
+			SimpleDirectoryPersistentCache persistentCache = new SimpleDirectoryPersistentCache(discoInfoStoreDirectory);
 			setDiscoInfoPersistentStore(persistentCache);
 		}
 	}
@@ -775,8 +757,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 							}
 						}
 
-						Iterator<Map.Entry<Jid, NodeVerHash>> iter
-								= entities.entrySet().iterator();
+						Iterator<Map.Entry<Jid, NodeVerHash>> iter = entities.entrySet().iterator();
 						if (iter.hasNext()) {
 							entityToProcess = iter.next();
 							iter.remove();
@@ -805,8 +786,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 		private void requestDiscoveryInfo(final Jid entityID, NodeVerHash nvh)
 		{
 			try {
-				DiscoverInfo discoverInfo
-						= discoverInfo(entityID, (nvh == null) ? null : nvh.getNodeVer());
+				DiscoverInfo discoverInfo = discoverInfo(entityID, (nvh == null) ? null : nvh.getNodeVer());
 
 				if ((nvh != null)
 						&& !EntityCapsManager.verifyDiscoverInfoVersion(nvh.getVer(),
