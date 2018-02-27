@@ -172,88 +172,88 @@
 	<string name="service_gui_CHAT_ROOM">Sala</string>
 	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">{0} ha cambiado de tema a {1}</string>
 	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Puede continuar la conversación en la siguiente sala: {0}</string>
-	<string name="service_gui_CHAT_NICKNAME_CHANGE">{0} is now known as {1}</string>
-    <string name="service_gui_CLOSE">Close</string>
-    <string name="service_gui_CLOSE_ALL_CHATS">Close all active chats</string>
-    <string name="service_gui_CLOSE_CHAT">Close current chat session</string>
-    <string name="service_gui_CONNECTED_STATUS">Connected</string>
-    <string name="service_gui_CONNECTING_ACCOUNT">Connecting %s</string>
-    <string name="service_gui_CONNECTING_STATUS">Connecting</string>
-	<string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Connecting*</string>
-    <string name="service_gui_CONNECTION_FAILED_MSG">Account connection login failed: User name: {0}\n
-        Server name: {1}\nPlease check your network connection OR contact your network administrator for more information.</string>
-    <string name="service_gui_CONTACT_NAME_EMPTY">The contact displayName must not be empty.</string>
-    <string name="service_gui_CONTACT_NAME">Contact JID or Number</string>
-    <string name="service_gui_CONTACT_PAUSED_TYPING">has paused typing</string>
-	<string name="service_gui_CONTACT_COMPOSING">is composing a message</string>
-    <string name="service_gui_CONTACT_ACTIVE">is active in chat session</string>
-    <string name="service_gui_CONTACT_INACTIVE">is temporary away</string>
-    <string name="service_gui_CONTACT_GONE">has left the chat session</string>
-    <string name="service_gui_CONTACT_INFO">Contact info</string>
-    <string name="service_gui_CONTACTS">Contacts</string>
-    <string name="service_gui_COPY_MESSAGE_TEXT">Copy text</string>
+	<string name="service_gui_CHAT_NICKNAME_CHANGE">{0} ahora se conoce como {1}</string>
+    <string name="service_gui_CLOSE">Cerrar</string>
+    <string name="service_gui_CLOSE_ALL_CHATS">Cerrar todos los chats activos</string>
+    <string name="service_gui_CLOSE_CHAT">Cerrar la sesión actual del chat</string>
+    <string name="service_gui_CONNECTED_STATUS">Conectado</string>
+    <string name="service_gui_CONNECTING_ACCOUNT">Conectando %s</string>
+    <string name="service_gui_CONNECTING_STATUS">Conectando</string>
+	<string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Connectando*</string>
+    <string name="service_gui_CONNECTION_FAILED_MSG">Fallo en el login de conexión de la cuenta: Nombre de usuario: {0}\n
+        Nombre del servidor: {1}\nCompruebe la conexión de red o póngase en contacto con el administrador de red para obtener mas información..</string>
+    <string name="service_gui_CONTACT_NAME_EMPTY">El nombre del contacto no debe estar vacío.</string>
+    <string name="service_gui_CONTACT_NAME">JID del contacto o número</string>
+    <string name="service_gui_CONTACT_PAUSED_TYPING">ha dejado de escribir</string>
+	<string name="service_gui_CONTACT_COMPOSING">está escribiendo un mensaje</string>
+    <string name="service_gui_CONTACT_ACTIVE">está activo en esta sesión de chat</string>
+    <string name="service_gui_CONTACT_INACTIVE">está temporalmente ausente</string>
+    <string name="service_gui_CONTACT_GONE">Ha salido de la sesión de chat</string>
+    <string name="service_gui_CONTACT_INFO">Información del contacto</string>
+    <string name="service_gui_CONTACTS">Contactos</string>
+    <string name="service_gui_COPY_MESSAGE_TEXT">Copia el texto</string>
 
-    <string name="service_gui_CREATE">Create</string>
-    <string name="service_gui_CREATE_CALL_FAILED">Failed to create the call.</string>
-    <string name="service_gui_CREATE_CHAT_ROOM">Create chat room&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Failed to create {0} chat room.</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Create chat room wizard</string>
-    <string name="service_gui_CREATE_CONFERENCE_CALL">Create a conference call&#8230;</string>
-    <string name="service_gui_CREATE_CONFERENCE_CHAT">Create a conference chat&#8230;</string>
-    <string name="service_gui_CREATE_GROUP">Create group&#8230;</string>
-    <string name="service_gui_CREATE_GROUP_NAME">In the field below enter the name of the group you would like to create.</string>
-    <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Your contact list does not contain any groups. Please create a group first (File/Create group).</string>
+    <string name="service_gui_CREATE">Crear</string>
+    <string name="service_gui_CREATE_CALL_FAILED">No se ha podido realizar la llamada.</string>
+    <string name="service_gui_CREATE_CHAT_ROOM">Crear Sala&#8230;</string>
+    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Error al crear la sala {0}.</string>
+    <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Asistente para crear una sala</string>
+    <string name="service_gui_CREATE_CONFERENCE_CALL">Crear una conferencia telefónica&#8230;</string>
+    <string name="service_gui_CREATE_CONFERENCE_CHAT">Crear una sala&#8230;</string>
+    <string name="service_gui_CREATE_GROUP">Crear un grupo&#8230;</string>
+    <string name="service_gui_CREATE_GROUP_NAME">En el siguiente campo introduzca el nombre del grupo que desea crear.</string>
+    <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Su lista de contactos no contiene ningún grupo. Por favor, cree un grupo primero (Archivo/Crear grupo).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_title">About</string>
-    <string name="AboutDialog_Version">Version %s</string>
-    <string name="check_new_version">Check Update</string>
-    <string name="show_history_log">History Logs</string>
-    <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nAll rights reserved.</string>
-    <string name="AboutDialog_help"><a herf="http://atalk.sytes.net">Online Help</a></string>
+    <string name="AboutDialog_title">Sobre</string>
+    <string name="AboutDialog_Version">Versión %s</string>
+    <string name="check_new_version">Comprobar actualizaciones</string>
+    <string name="show_history_log">Historial de registros</string>
+    <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nTodos los derechos reservados.</string>
+    <string name="AboutDialog_help"><a herf="http://atalk.sytes.net">Ayuda on-line</a></string>
     <string name="AboutDialog_Link">http://atalk.sytes.net</string>
-    <string name="About_action">About</string>
-    <string name="About_help">Help</string>
+    <string name="About_action">Sobre</string>
+    <string name="About_help">Ayuda</string>
 
-    <string name="app_authors_fmt">Authors: %s</string>
-    <string name="app_revision_fmt">Revision Information: %s</string>
-    <string name="app_xeps">aTalk supports the following XEPs: %s</string>
-    <string name="app_libraries">aTalk uses the following third-party libraries: %s</string>
+    <string name="app_authors_fmt">Autores: %s</string>
+    <string name="app_revision_fmt">Información de la revisión: %s</string>
+    <string name="app_xeps">aTalk soporta los siguientes XEPs: %s</string>
+    <string name="app_libraries">aTalk utiliza las siguientes bibliotecas de terceros: %s</string>
 
     <!-- Welcome message -->
-    <string name="welcome_message_title">Welcome to aTalk (android)</string>
-    <string name="version_apps">Version: %s</string>
-    <string name="PoweredBy">Powered By atalk.org</string>
+    <string name="welcome_message_title">Bienvenido a aTalk (android)</string>
+    <string name="version_apps">Versión: %s</string>
+    <string name="PoweredBy">Desarrollado por atalk.org</string>
 
     <!-- PTT Chat -->
-    <string name="chat_soundRecordStartButton">Start Recording</string>
-    <string name="chat_soundRecordStopButton">Done</string>
-    <string name="chat_soundRecordCancelButton">Cancel</string>
-    <string name="chatRecordCancel">&lt; slide left\nto cancel</string>
+    <string name="chat_soundRecordStartButton">Comenzar la grabación</string>
+    <string name="chat_soundRecordStopButton">Hecho</string>
+    <string name="chat_soundRecordCancelButton">Cancelar</string>
+    <string name="chatRecordCancel">&lt; portaobjetos de la izquierda\npara cancelar</string>
     <string name="chat_timeZero">00:00</string>
     <string name="chat_dbZero">00.00dB</string>
-    <string name="chat_noaudio_buddyOffline">Audio chat with an offline recipient is not allowed.</string>
+    <string name="chat_noaudio_buddyOffline">No se permite el chat de audio con un destinatario que está fuera de línea.</string>
 
     <!-- GPS Location -->
-    <string name="service_gui_GEO_LATITUDE">Latitude:</string>
-    <string name="service_gui_GEO_LONGITUDE">Longitude</string>
-    <string name="service_gui_GEO_LOCATION">Location:</string>
-    <string name="service_gui_GEO_SEND">Send my GPS-Location</string>
-    <string name="service_gui_GPS_TRACK">GPS-Map</string>
-    <string name="service_gui_GPS_TRACKER">Start GPS Tracker</string>
-    <string name="send_single_location_fix">Single Location fix</string>
-    <string name="send_cont_location_updates">Cont. Location updates (%1$dm) @%2$dsec</string>
-    <string name="stop_location_updates">Stop sending Location updates</string>
-    <string name="apply_new_interval_setting">Click \"Send Cont. Location updates\" Button to apply the new interval setting</string>
-    <string name="show_google_map">StreetView &amp; Map</string>
+    <string name="service_gui_GEO_LATITUDE">Latitud:</string>
+    <string name="service_gui_GEO_LONGITUDE">Longitud</string>
+    <string name="service_gui_GEO_LOCATION">Localización:</string>
+    <string name="service_gui_GEO_SEND">Enviar mi localización GPS</string>
+    <string name="service_gui_GPS_TRACK">Mapas-GPS</string>
+    <string name="service_gui_GPS_TRACKER">Iniciar el rastreador GPS</string>
+    <string name="send_single_location_fix">Fijación de posición única</string>
+    <string name="send_cont_location_updates">Cont. Actualizaciones de localización (%1$dm) @%2$dsec</string>
+    <string name="stop_location_updates">Dejar de enviar actualizaciones de localización</string>
+    <string name="apply_new_interval_setting">Pulse en \"Enviar contenido. Actualizar ubicación \"Botón para aplicar el nuevo ajuste de intervalo</string>
+    <string name="show_google_map">Vista de la calle &amp; Mapa</string>
 
     <!-- Google Map    -->
     <string name="gmap_name">GoogleMap</string>
-    <string name="legal_info">Legal Info</string>
-    <string name="play_services_not_installed">Google Play services is not installed on this device.</string>
-    <string name="split_street_view_panorama_and_map_description">Demonstrates how to show a Street View panorama and map.</string>
-    <string name="split_street_view_panorama_and_map_label">Street View Panorama and Map</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="legal_info">Información legal</string>
+    <string name="play_services_not_installed">Los servicios de Google Play no están instalados en este dispositivo.</string>
+    <string name="split_street_view_panorama_and_map_description">Demuestra cómo mostrar un panorama y mapa de Street View.</string>
+    <string name="split_street_view_panorama_and_map_label">Vista panorámica y mapa de la calle</string>
+    <string name="title_activity_maps">Mapa</string>
 
     <!--    Permissions    -->
     <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
