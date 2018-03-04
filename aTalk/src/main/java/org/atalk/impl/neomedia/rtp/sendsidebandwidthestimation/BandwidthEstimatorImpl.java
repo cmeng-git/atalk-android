@@ -15,6 +15,7 @@ package org.atalk.impl.neomedia.rtp.sendsidebandwidthestimation;
 
 import net.sf.fmj.media.rtp.*;
 
+import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.*;
@@ -81,7 +82,7 @@ public class BandwidthEstimatorImpl extends RTCPReportAdapter
 	 * @param stream
 	 *        the {@link MediaStream}.
 	 */
-	public BandwidthEstimatorImpl(MediaStream stream)
+	public BandwidthEstimatorImpl(MediaStreamImpl stream)
 	{
 		sendSideBandwidthEstimation = new SendSideBandwidthEstimation(stream, START_BITRATE_BPS);
 		sendSideBandwidthEstimation.setMinMaxBitrate(MIN_BITRATE_BPS, MAX_BITRATE_BPS);

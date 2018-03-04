@@ -67,6 +67,7 @@ import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.PacketLossAwareEncoder;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.DiagnosticContext;
 import org.atalk.util.Logger;
 import org.atalk.util.RTPUtils;
 
@@ -158,8 +159,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Returns a human-readable representation of a specific <tt>DataSource</tt> instance in the
      * form of a <tt>String</tt> value.
      *
-     * @param dataSource
-     *         the <tt>DataSource</tt> to return a human-readable representation of
+     * @param dataSource the <tt>DataSource</tt> to return a human-readable representation of
      * @return a <tt>String</tt> value which gives a human-readable representation of the specified
      * <tt>dataSource</tt>
      */
@@ -239,7 +239,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * that it offers this information with its getLocalSSRC() method?
      * TAG(cat4-local-ssrc-hurricane)
      */
-    private long localSourceID = (new Random().nextInt()) & Integer.MAX_VALUE;
+    private long localSourceID = (new Random().nextInt()) & 0x00000000FFFFFFFFL;
 
     /**
      * The MediaStreamStatsImpl object used to compute the statistics about this MediaStreamImpl.
@@ -392,6 +392,11 @@ public class MediaStreamImpl extends AbstractMediaStream
             = new OriginalHeaderBlockTransformEngine();
 
     /**
+     * The {@link DiagnosticContext} that this instance provides.
+     */
+    private final DiagnosticContext diagnosticContext = new DiagnosticContext();
+
+    /**
      * The ID of the frame markings RTP header extension. We use this field as
      * a cache, in order to not access {@link #activeRTPExtensions} every time.
      */
@@ -410,11 +415,9 @@ public class MediaStreamImpl extends AbstractMediaStream
      * an associated <tt>StreamConnector</tt> and it must be set later for the new instance to be
      * able to exchange media with a remote peer.
      *
-     * @param device
-     *         the <tt>MediaDevice</tt> the new instance is to use for both capture and playback of
-     *         media
-     * @param srtpControl
-     *         an existing control instance to control the SRTP operations
+     * @param device the <tt>MediaDevice</tt> the new instance is to use for both capture and playback of
+     * media
+     * @param srtpControl an existing control instance to control the SRTP operations
      */
     public MediaStreamImpl(MediaDevice device, SrtpControl srtpControl)
     {
@@ -426,23 +429,19 @@ public class MediaStreamImpl extends AbstractMediaStream
      * <tt>MediaDevice</tt> for both capture and playback of media exchanged via the specified
      * <tt>StreamConnector</tt>.
      *
-     * @param connector
-     *         the <tt>StreamConnector</tt> the new instance is to use for sending and receiving
-     *         media or <tt>null</tt> if the <tt>StreamConnector</tt> of the new instance is to not
-     *         be set at initialization time but specified later on
-     * @param device
-     *         the <tt>MediaDevice</tt> the new instance is to use for both capture and playback of
-     *         media exchanged via the specified <tt>StreamConnector</tt>
-     * @param srtpControl
-     *         an existing control instance to control the ZRTP operations or <tt>null</tt> if a new
-     *         control instance is to be created by the new <tt>MediaStreamImpl</tt>
+     * @param connector the <tt>StreamConnector</tt> the new instance is to use for sending and receiving
+     * media or <tt>null</tt> if the <tt>StreamConnector</tt> of the new instance is to not
+     * be set at initialization time but specified later on
+     * @param device the <tt>MediaDevice</tt> the new instance is to use for both capture and playback of
+     * media exchanged via the specified <tt>StreamConnector</tt>
+     * @param srtpControl an existing control instance to control the ZRTP operations or <tt>null</tt> if a new
+     * control instance is to be created by the new <tt>MediaStreamImpl</tt>
      */
-    public MediaStreamImpl(StreamConnector connector, MediaDevice device,
-                           SrtpControl srtpControl)
+    public MediaStreamImpl(StreamConnector connector, MediaDevice device, SrtpControl srtpControl)
     {
         if (device != null) {
             /*
-			 * XXX Set the device early in order to make sure that it is of the right type because
+             * XXX Set the device early in order to make sure that it is of the right type because
 			 * we do not support just about any MediaDevice yet.
 			 */
             setDevice(device);
@@ -469,6 +468,15 @@ public class MediaStreamImpl extends AbstractMediaStream
         if (logger.isTraceEnabled()) {
             logger.trace("Created " + getClass().getSimpleName() + " with hashCode " + hashCode());
         }
+        diagnosticContext.put("stream", hashCode());
+    }
+
+    /**
+     * Gets the {@link DiagnosticContext} of this instance.
+     */
+    public DiagnosticContext getDiagnosticContext()
+    {
+        return diagnosticContext;
     }
 
     /**
@@ -477,12 +485,10 @@ public class MediaStreamImpl extends AbstractMediaStream
      * RTP flows sending and receiving media in <tt>format</tt>. Usually, <tt>rtpPayloadType</tt>
      * will be in the range of dynamic RTP payload types.
      *
-     * @param rtpPayloadType
-     *         the RTP payload type to be associated in this <tt>MediaStream</tt> with the specified
-     *         <tt>MediaFormat</tt>
-     * @param format
-     *         the <tt>MediaFormat</tt> to be associated in this <tt>MediaStream</tt> with
-     *         <tt>rtpPayloadType</tt>
+     * @param rtpPayloadType the RTP payload type to be associated in this <tt>MediaStream</tt> with the specified
+     * <tt>MediaFormat</tt>
+     * @param format the <tt>MediaFormat</tt> to be associated in this <tt>MediaStream</tt> with
+     * <tt>rtpPayloadType</tt>
      * @see MediaStream#addDynamicRTPPayloadType(byte, MediaFormat)
      */
     @Override
@@ -573,10 +579,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * this way.
      * <p/>
      *
-     * @param originalPt
-     *         the payload type that we are overriding
-     * @param overloadPt
-     *         the payload type that we are overriding it with
+     * @param originalPt the payload type that we are overriding
+     * @param overloadPt the payload type that we are overriding it with
      */
     @Override
     public void addDynamicRTPPayloadTypeOverride(byte originalPt, byte overloadPt)
@@ -588,8 +592,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Adds a specific <tt>ReceiveStream</tt> to {@link #receiveStreams}.
      *
-     * @param receiveStream
-     *         the <tt>ReceiveStream</tt> to add
+     * @param receiveStream the <tt>ReceiveStream</tt> to add
      * @return <tt>true</tt> if <tt>receiveStreams</tt> changed as a result of the method call;
      * otherwise, <tt>false</tt>
      */
@@ -634,8 +637,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Sets the remote SSRC identifier and fires the corresponding <tt>PropertyChangeEvent</tt>.
      *
-     * @param remoteSourceID
-     *         the SSRC identifier that this stream will be using in outgoing RTP packets from now on.
+     * @param remoteSourceID the SSRC identifier that this stream will be using in outgoing RTP packets from now on.
      */
     protected void addRemoteSourceID(long remoteSourceID)
     {
@@ -652,10 +654,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * mapping is removed from the local extensions table and the extension would not be
      * transmitted or handled by this stream's <tt>RTPConnector</tt>.
      *
-     * @param extensionID
-     *         the ID that is being mapped to <tt>rtpExtension</tt>
-     * @param rtpExtension
-     *         the <tt>RTPExtension</tt> that we are mapping.
+     * @param extensionID the ID that is being mapped to <tt>rtpExtension</tt>
+     * @param rtpExtension the <tt>RTPExtension</tt> that we are mapping.
      */
     @Override
     public void addRTPExtension(byte extensionID, RTPExtension rtpExtension)
@@ -719,10 +719,8 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Enables the use of a specific RTP extension.
      *
-     * @param extensionID
-     *         the ID.
-     * @param rtpExtension
-     *         the extension.
+     * @param extensionID the ID.
+     * @param rtpExtension the extension.
      */
     private void enableRTPExtension(byte extensionID, RTPExtension rtpExtension)
     {
@@ -765,8 +763,8 @@ public class MediaStreamImpl extends AbstractMediaStream
     @Override
     public void close()
     {
-		/*
-		 * Some statistics cannot be taken from the RTP manager and have to be gathered from the
+        /*
+         * Some statistics cannot be taken from the RTP manager and have to be gathered from the
 		 * ReceiveStream. We need to do this before calling stop().
 		 */
         if (logger.isInfoEnabled())
@@ -820,7 +818,7 @@ public class MediaStreamImpl extends AbstractMediaStream
                     throw (ThreadDeath) t;
 
 				/*
-				 * Analysis of heap dumps and application logs suggests that RTPManager#dispose()
+                 * Analysis of heap dumps and application logs suggests that RTPManager#dispose()
 				 * may throw an exception after a NullPointerException has been thrown by
 				 * SendStream#close() as documented in #stopSendStreams(Iterable<SendStream>,
 				 * boolean). It is unknown at the time of this writing whether we can do
@@ -860,9 +858,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Performs any optional configuration on a specific <tt>RTPConnectorInputStream</tt> of an
      * <tt>RTPManager</tt> to be used by this <tt>MediaStreamImpl</tt>. Allows extenders to override.
      *
-     * @param dataInputStream
-     *         the <tt>RTPConnectorInputStream</tt> to be used by an <tt>RTPManager</tt> of this
-     *         <tt>MediaStreamImpl</tt> and to be configured
+     * @param dataInputStream the <tt>RTPConnectorInputStream</tt> to be used by an <tt>RTPManager</tt> of this
+     * <tt>MediaStreamImpl</tt> and to be configured
      */
     protected void configureDataInputStream(RTPConnectorInputStream<?> dataInputStream)
     {
@@ -874,9 +871,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * <tt>RTPManager</tt> to be used by this <tt>MediaStreamImpl</tt>. Allows extenders to
      * override.
      *
-     * @param dataOutputStream
-     *         the <tt>RTPConnectorOutputStream</tt> to be used by an <tt>RTPManager</tt> of this
-     *         <tt>MediaStreamImpl</tt> and to be configured
+     * @param dataOutputStream the <tt>RTPConnectorOutputStream</tt> to be used by an <tt>RTPManager</tt> of this
+     * <tt>MediaStreamImpl</tt> and to be configured
      */
     protected void configureDataOutputStream(RTPConnectorOutputStream dataOutputStream)
     {
@@ -888,11 +884,9 @@ public class MediaStreamImpl extends AbstractMediaStream
      * <tt>RTPManager</tt> which is to be used as the <tt>RTPManager</tt> of this
      * <tt>MediaStreamImpl</tt>. Allows extenders to override.
      *
-     * @param rtpManager
-     *         the <tt>RTPManager</tt> which is to be used by this <tt>MediaStreamImpl</tt>
-     * @param bufferControl
-     *         the <tt>BufferControl</tt> of <tt>rtpManager</tt> on which any optional configuration
-     *         is to be performed
+     * @param rtpManager the <tt>RTPManager</tt> which is to be used by this <tt>MediaStreamImpl</tt>
+     * @param bufferControl the <tt>BufferControl</tt> of <tt>rtpManager</tt> on which any optional configuration
+     * is to be performed
      */
     protected void configureRTPManagerBufferControl(StreamRTPManager rtpManager, BufferControl bufferControl)
     {
@@ -1121,7 +1115,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         }
 
         if (transportCCEngine != null) {
-            engineChain.add(transportCCEngine);
+            engineChain.add(transportCCEngine.getEgressEngine());
         }
 
         // Debug
@@ -1136,6 +1130,10 @@ public class MediaStreamImpl extends AbstractMediaStream
         TransformEngine srtpTransformEngine = srtpControl.getTransformEngine();
         if (srtpTransformEngine != null) {
             engineChain.add(srtpControl.getTransformEngine());
+        }
+
+        if (transportCCEngine != null) {
+            engineChain.add(transportCCEngine.getIngressEngine());
         }
 
         // SSRC audio levels
@@ -1161,10 +1159,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * media has been changed. Allows extenders to override and provide additional processing of
      * <tt>oldValue</tt> and <tt>newValue</tt>.
      *
-     * @param oldValue
-     *         the <tt>MediaDeviceSession</tt> with the <tt>MediaDevice</tt> this instance used work with
-     * @param newValue
-     *         the <tt>MediaDeviceSession</tt> with the <tt>MediaDevice</tt> this instance is to work with
+     * @param oldValue the <tt>MediaDeviceSession</tt> with the <tt>MediaDevice</tt> this instance used work with
+     * @param newValue the <tt>MediaDeviceSession</tt> with the <tt>MediaDevice</tt> this instance is to work with
      */
     protected void deviceSessionChanged(MediaDeviceSession oldValue, MediaDeviceSession newValue)
     {
@@ -1191,9 +1187,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * don't need to be advertising CSRC lists. If that's not the case, we also add our own SSRC
      * to the list of IDs and cache the entire list.
      *
-     * @param ev
-     *         the <tt>PropertyChangeEvent</tt> containing the list of SSRC identifiers handled by our
-     *         device session before and after it changed.
+     * @param ev the <tt>PropertyChangeEvent</tt> containing the list of SSRC identifiers handled by our
+     * device session before and after it changed.
      */
     private void deviceSessionSsrcListChanged(PropertyChangeEvent ev)
     {
@@ -1246,10 +1241,9 @@ public class MediaStreamImpl extends AbstractMediaStream
      * {@link #setTarget(MediaStreamTarget)}, sets the specified <tt>target</tt> on this
      * <tt>MediaStreamImpl</tt> even if its current <tt>target</tt> is equal to the specified one.
      *
-     * @param target
-     *         the <tt>MediaStreamTarget</tt> describing the data (e.g. RTP) and the control data
-     *         (e.g. RTCP) locations to which this <tt>MediaStream</tt> is to send and from which it
-     *         is to receive
+     * @param target the <tt>MediaStreamTarget</tt> describing the data (e.g. RTP) and the control data
+     * (e.g. RTCP) locations to which this <tt>MediaStream</tt> is to send and from which it
+     * is to receive
      * @see MediaStreamImpl#setTarget(MediaStreamTarget)
      */
     private void doSetTarget(MediaStreamTarget target)
@@ -1346,8 +1340,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Returns the ID currently assigned to a specific RTP extension.
      *
-     * @param rtpExtension
-     *         the RTP extension to get the currently assigned ID of
+     * @param rtpExtension the RTP extension to get the currently assigned ID of
      * @return the ID currently assigned to the specified RTP extension or <tt>-1</tt> if no ID has
      * been defined for this extension so far
      */
@@ -1446,8 +1439,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * specified <tt>encoding</tt>, then this method would return the first one it encounters while
      * iterating through the map.
      *
-     * @param encoding
-     *         the encoding whose payload type we are trying to obtain.
+     * @param encoding the encoding whose payload type we are trying to obtain.
      * @return the payload type number that has been negotiated for the specified <tt>encoding</tt>
      * or <tt>-1</tt> if no payload type has been negotiated for it.
      */
@@ -1657,8 +1649,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Gets a <tt>ReceiveStream</tt> which this instance plays back on its associated
      * <tt>MediaDevice</tt> and which has a specific synchronization source identifier (SSRC).
      *
-     * @param ssrc
-     *         the synchronization source identifier of the <tt>ReceiveStream</tt> to return
+     * @param ssrc the synchronization source identifier of the <tt>ReceiveStream</tt> to return
      * @return a <tt>ReceiveStream</tt> which this instance plays back on its associated
      * <tt>MediaDevice</tt> and which has the specified <tt>ssrc</tt>
      */
@@ -1957,9 +1948,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * the remote peer. The view of the remote peer matters for the playback of
      * <tt>ReceiveStream</tt>s.
      *
-     * @param rtpManager
-     *         the <tt>StreamRTPManager</tt> to update the registered FMJ <tt>Format</tt>s of. If
-     *         <tt>null</tt>, the method uses {@link #rtpManager}.
+     * @param rtpManager the <tt>StreamRTPManager</tt> to update the registered FMJ <tt>Format</tt>s of. If
+     * <tt>null</tt>, the method uses {@link #rtpManager}.
      */
     private void maybeUpdateDynamicRTPPayloadTypes(StreamRTPManager rtpManager)
     {
@@ -2002,8 +1992,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Prints all statistics available for {@link #rtpManager}.
      *
-     * @param rtpManager
-     *         the <tt>RTPManager</tt> to print statistics for
+     * @param rtpManager the <tt>RTPManager</tt> to print statistics for
      */
     private void printFlowStatistics(StreamRTPManager rtpManager)
     {
@@ -2141,8 +2130,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * associations defined in this instance of (dynamic) RTP payload types to <tt>MediaFormat</tt>
      * s.
      *
-     * @param rtpManager
-     *         the <tt>RTPManager</tt> to register any custom JMF <tt>Format</tt> s with
+     * @param rtpManager the <tt>RTPManager</tt> to register any custom JMF <tt>Format</tt> s with
      */
     protected void registerCustomCodecFormats(StreamRTPManager rtpManager)
     {
@@ -2161,8 +2149,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Removes a specific <tt>ReceiveStream</tt> from {@link #receiveStreams}.
      *
-     * @param receiveStream
-     *         the <tt>ReceiveStream</tt> to remove
+     * @param receiveStream the <tt>ReceiveStream</tt> to remove
      * @return <tt>true</tt> if <tt>receiveStreams</tt> changed as a result of the method call;
      * otherwise, <tt>false</tt>
      */
@@ -2217,12 +2204,10 @@ public class MediaStreamImpl extends AbstractMediaStream
      * override and perform additional processing after this <tt>MediaStream</tt> has changed its
      * <tt>RTPConnector</tt> instance.
      *
-     * @param oldValue
-     *         the <tt>RTPConnector</tt> of this <tt>MediaStream</tt> implementation before it got
-     *         changed to <tt>newValue</tt>
-     * @param newValue
-     *         the current <tt>RTPConnector</tt> of this <tt>MediaStream</tt> which replaced
-     *         <tt>oldValue</tt>
+     * @param oldValue the <tt>RTPConnector</tt> of this <tt>MediaStream</tt> implementation before it got
+     * changed to <tt>newValue</tt>
+     * @param newValue the current <tt>RTPConnector</tt> of this <tt>MediaStream</tt> which replaced
+     * <tt>oldValue</tt>
      */
     protected void rtpConnectorChanged(AbstractRTPConnector oldValue, AbstractRTPConnector newValue)
     {
@@ -2270,11 +2255,9 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Notifies this instance that its {@link #rtpConnector} has created a new
      * <tt>RTPConnectorInputStream</tt> either RTP or RTCP.
      *
-     * @param inputStream
-     *         the new <tt>RTPConnectorInputStream</tt> instance created by the <tt>rtpConnector</tt>
-     *         of this instance
-     * @param data
-     *         <tt>true</tt> if <tt>inputStream</tt> will be used for RTP or <tt>false</tt> for RTCP
+     * @param inputStream the new <tt>RTPConnectorInputStream</tt> instance created by the <tt>rtpConnector</tt>
+     * of this instance
+     * @param data <tt>true</tt> if <tt>inputStream</tt> will be used for RTP or <tt>false</tt> for RTCP
      */
     private void rtpConnectorInputStreamCreated(RTPConnectorInputStream<?> inputStream, boolean data)
     {
@@ -2302,9 +2285,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Sets the <tt>StreamConnector</tt> to be used by this instance for sending and receiving
      * media.
      *
-     * @param connector
-     *         the <tt>StreamConnector</tt> to be used by this instance for sending and receiving
-     *         media
+     * @param connector the <tt>StreamConnector</tt> to be used by this instance for sending and receiving
+     * media
      */
     @Override
     public void setConnector(StreamConnector connector)
@@ -2406,8 +2388,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * <tt>MediaDevice</tt>.
      * </p>
      *
-     * @param device
-     *         the <tt>MediaDevice</tt> that this stream should use to play back and capture media
+     * @param device the <tt>MediaDevice</tt> that this stream should use to play back and capture media
      * @see MediaStream#setDevice(MediaDevice)
      */
     @Override
@@ -2492,9 +2473,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * it only in the specified <tt>direction</tt>. If it is currently started in a direction
      * different than the specified, directions other than the specified will be stopped.
      *
-     * @param direction
-     *         the <tt>MediaDirection</tt> in which this <tt>MediaStream</tt> is to stream media when
-     *         it is started
+     * @param direction the <tt>MediaDirection</tt> in which this <tt>MediaStream</tt> is to stream media when
+     * it is started
      * @see MediaStream#setDirection(MediaDirection)
      */
     @Override
@@ -2549,8 +2529,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Sets the <tt>MediaFormat</tt> that this <tt>MediaStream</tt> should transmit in.
      *
-     * @param format
-     *         the <tt>MediaFormat</tt> that this <tt>MediaStream</tt> should transmit in
+     * @param format the <tt>MediaFormat</tt> that this <tt>MediaStream</tt> should transmit in
      * @see MediaStream#setFormat(MediaFormat)
      */
     @Override
@@ -2586,8 +2565,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Sets the local SSRC identifier and fires the corresponding <tt>PropertyChangeEvent</tt>.
      *
-     * @param localSourceID
-     *         the SSRC identifier that this stream will be using in outgoing RTP packets from now on
+     * @param localSourceID the SSRC identifier that this stream will be using in outgoing RTP packets from now on
      */
     protected void setLocalSourceID(long localSourceID)
     {
@@ -2614,11 +2592,10 @@ public class MediaStreamImpl extends AbstractMediaStream
      * video data which is not the captured video data and may represent, for example, a black
      * image.
      *
-     * @param mute
-     *         <tt>true</tt> to have this <tt>MediaStream</tt> transmit "silence" instead of the
-     *         actual media data that it captures from its <tt>MediaDevice</tt>; <tt>false</tt> to
-     *         transmit actual media data captured from the <tt>MediaDevice</tt> of this
-     *         <tt>MediaStream</tt>
+     * @param mute <tt>true</tt> to have this <tt>MediaStream</tt> transmit "silence" instead of the
+     * actual media data that it captures from its <tt>MediaDevice</tt>; <tt>false</tt> to
+     * transmit actual media data captured from the <tt>MediaDevice</tt> of this
+     * <tt>MediaStream</tt>
      * @see MediaStream#setMute(boolean)
      */
     @Override
@@ -2659,10 +2636,9 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Sets the target of this <tt>MediaStream</tt> to which it is to send and from which it is to
      * receive data (e.g. RTP) and control data (e.g. RTCP).
      *
-     * @param target
-     *         the <tt>MediaStreamTarget</tt> describing the data (e.g. RTP) and the control data
-     *         (e.g. RTCP) locations to which this <tt>MediaStream</tt> is to send and from which it
-     *         is to receive
+     * @param target the <tt>MediaStreamTarget</tt> describing the data (e.g. RTP) and the control data
+     * (e.g. RTCP) locations to which this <tt>MediaStream</tt> is to send and from which it
+     * is to receive
      * @see MediaStream#setTarget(MediaStreamTarget)
      */
     @Override
@@ -2696,11 +2672,10 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Starts the processing of media in this instance in a specific direction.
      *
-     * @param direction
-     *         a <tt>MediaDirection</tt> value which represents the direction of the processing of
-     *         media to be started. For example, {@link MediaDirection#SENDRECV} to start both
-     *         capture and playback of media in this instance or {@link MediaDirection#SENDONLY} to
-     *         only start the capture of media in this instance
+     * @param direction a <tt>MediaDirection</tt> value which represents the direction of the processing of
+     * media to be started. For example, {@link MediaDirection#SENDRECV} to start both
+     * capture and playback of media in this instance or {@link MediaDirection#SENDONLY} to
+     * only start the capture of media in this instance
      */
     private void start(MediaDirection direction)
     {
@@ -2858,11 +2833,10 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Stops the processing of media in this instance in a specific direction.
      *
-     * @param direction
-     *         a <tt>MediaDirection</tt> value which represents the direction of the processing of
-     *         media to be stopped. For example, {@link MediaDirection#SENDRECV} to stop both capture
-     *         and playback of media in this instance or {@link MediaDirection#SENDONLY} to only stop
-     *         the capture of media in this instance
+     * @param direction a <tt>MediaDirection</tt> value which represents the direction of the processing of
+     * media to be stopped. For example, {@link MediaDirection#SENDRECV} to stop both capture
+     * and playback of media in this instance or {@link MediaDirection#SENDONLY} to only stop
+     * the capture of media in this instance
      */
     private void stop(MediaDirection direction)
     {
@@ -2950,9 +2924,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Stops the <tt>SendStream</tt>s that this instance is sending to its remote peer and
      * optionally closes them.
      *
-     * @param close
-     *         <tt>true</tt> to close the <tt>SendStream</tt>s that this instance is sending to its
-     *         remote peer after stopping them; <tt>false</tt> to only stop them
+     * @param close <tt>true</tt> to close the <tt>SendStream</tt>s that this instance is sending to its
+     * remote peer after stopping them; <tt>false</tt> to only stop them
      * @return the <tt>SendStream</tt>s which were stopped
      */
     private Iterable<SendStream> stopSendStreams(boolean close)
@@ -2972,11 +2945,9 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Stops specific <tt>SendStream</tt>s and optionally closes them.
      *
-     * @param sendStreams
-     *         the <tt>SendStream</tt>s to be stopped and optionally closed
-     * @param close
-     *         <tt>true</tt> to close the specified <tt>SendStream</tt>s after stopping them;
-     *         <tt>false</tt> to only stop them
+     * @param sendStreams the <tt>SendStream</tt>s to be stopped and optionally closed
+     * @param close <tt>true</tt> to close the specified <tt>SendStream</tt>s after stopping them;
+     * <tt>false</tt> to only stop them
      * @return the stopped <tt>SendStream</tt>s
      */
     private Iterable<SendStream> stopSendStreams(Iterable<SendStream> sendStreams, boolean close)
@@ -3020,9 +2991,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Notifies this <tt>ReceiveStreamListener</tt> that the <tt>RTPManager</tt> it is registered
      * with has generated an event related to a <tt>ReceiveStream</tt>.
      *
-     * @param ev
-     *         the <tt>ReceiveStreamEvent</tt> which specifies the <tt>ReceiveStream</tt>
-     *         that is the cause of the event and the very type of the event
+     * @param ev the <tt>ReceiveStreamEvent</tt> which specifies the <tt>ReceiveStream</tt>
+     * that is the cause of the event and the very type of the event
      * @see ReceiveStreamListener#update(ReceiveStreamEvent)
      */
     @Override
@@ -3126,8 +3096,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Events.RemoteEvents are one of ReceiverReportEvent, SenderReportEvent or
      * RemoteCollisionEvent
      *
-     * @param ev
-     *         the event
+     * @param ev the event
      */
     @Override
     public void update(RemoteEvent ev)
@@ -3217,9 +3186,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Notifies this <tt>SendStreamListener</tt> that the <tt>RTPManager</tt> it is registered with
      * has generated an event related to a <tt>SendStream</tt>.
      *
-     * @param ev
-     *         the <tt>SendStreamEvent</tt> which specifies the <tt>SendStream</tt> that is the cause
-     *         of the event and the very type of the event
+     * @param ev the <tt>SendStreamEvent</tt> which specifies the <tt>SendStream</tt> that is the cause
+     * of the event and the very type of the event
      * @see SendStreamListener#update(SendStreamEvent)
      */
     @Override
@@ -3242,8 +3210,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * has generated an event which pertains to the session as a whole and does not belong to a
      * <tt>ReceiveStream</tt> or a <tt>SendStream</tt> or a remote participant necessarily.
      *
-     * @param ev
-     *         the <tt>SessionEvent</tt> which specifies the source and the very type of the event
+     * @param ev the <tt>SessionEvent</tt> which specifies the source and the very type of the event
      * @see SessionListener#update(SessionEvent)
      */
     @Override
@@ -3315,8 +3282,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * {@inheritDoc}
      *
-     * @param pkt
-     *         the packet from which to get the temporal layer id
+     * @param pkt the packet from which to get the temporal layer id
      * @return the TID of the packet, -1 otherwise.
      * <p>
      * FIXME(gp) conceptually this belongs to the {@link VideoMediaStreamImpl},
@@ -3369,8 +3335,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Utility method that determines the spatial layer index (SID) of an RTP
      * packet.
      *
-     * @param pkt
-     *         the RTP packet.
+     * @param pkt the RTP packet.
      * @return the SID of the packet, -1 otherwise.
      * <p>
      * FIXME(gp) conceptually this belongs to the {@link VideoMediaStreamImpl},
@@ -3416,8 +3381,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * the frame boundaries for the codec of the packet that is specified as an
      * argument.
      *
-     * @param pkt
-     *         the {@link RawPacket} that holds the RTP packet.
+     * @param pkt the {@link RawPacket} that holds the RTP packet.
      * @return true if we're able to detect the frame boundaries for the codec
      * of the packet that is specified as an argument, false otherwise.
      */
@@ -3445,8 +3409,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Utility method that determines whether or not a packet is a start of
      * frame.
      *
-     * @param pkt
-     *         raw rtp packet.
+     * @param pkt raw rtp packet.
      * @return true if the packet is the start of a frame, false otherwise.
      * <p>
      * FIXME(gp) conceptually this belongs to the {@link VideoMediaStreamImpl},
@@ -3477,17 +3440,12 @@ public class MediaStreamImpl extends AbstractMediaStream
                 vp9PT = getDynamicRTPPayloadType(Constants.VP9);
 
         if (redBlock.getPayloadType() == vp8PT) {
-            return org.atalk.impl.neomedia.codec.video.vp8.DePacketizer.VP8PayloadDescriptor
-                    .isStartOfFrame(
-                            redBlock.getBuffer(),
-                            redBlock.getOffset());
+            return org.atalk.impl.neomedia.codec.video.vp8.DePacketizer.VP8PayloadDescriptor.isStartOfFrame(
+                    redBlock.getBuffer(), redBlock.getOffset());
         }
         else if (redBlock.getPayloadType() == vp9PT) {
-            return org.atalk.impl.neomedia.codec.video.vp9.DePacketizer.VP9PayloadDescriptor
-                    .isStartOfFrame(
-                            redBlock.getBuffer(),
-                            redBlock.getOffset(),
-                            redBlock.getLength());
+            return org.atalk.impl.neomedia.codec.video.vp9.DePacketizer.VP9PayloadDescriptor.isStartOfFrame(
+                    redBlock.getBuffer(), redBlock.getOffset(), redBlock.getLength());
         }
         else {
             return false;
@@ -3498,8 +3456,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Utility method that determines whether or not a packet is an end of
      * frame.
      *
-     * @param pkt
-     *         raw rtp packet.
+     * @param pkt raw rtp packet.
      * @return true if the packet is the end of a frame, false otherwise.
      * <p>
      * FIXME(gp) conceptually this belongs to the {@link VideoMediaStreamImpl},
@@ -3529,11 +3486,8 @@ public class MediaStreamImpl extends AbstractMediaStream
 
         final byte vp9PT = getDynamicRTPPayloadType(Constants.VP9);
         if (redBlock.getPayloadType() == vp9PT) {
-            return org.atalk.impl.neomedia.codec.video.vp9.DePacketizer.VP9PayloadDescriptor
-                    .isEndOfFrame(
-                            redBlock.getBuffer(),
-                            redBlock.getOffset(),
-                            redBlock.getLength());
+            return org.atalk.impl.neomedia.codec.video.vp9.DePacketizer.VP9PayloadDescriptor.isEndOfFrame(
+                    redBlock.getBuffer(), redBlock.getOffset(), redBlock.getLength());
         }
         else {
             return RawPacket.isPacketMarked(pkt);
@@ -3643,8 +3597,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Gets the {@link REDBlock} that contains the payload of the packet passed
      * in as a parameter.
      *
-     * @param pkt
-     *         the packet from which we want to get the primary RED block
+     * @param pkt the packet from which we want to get the primary RED block
      * @return the {@link REDBlock} that contains the payload of the packet
      * passed in as a parameter, or null if the buffer is invalid.
      */

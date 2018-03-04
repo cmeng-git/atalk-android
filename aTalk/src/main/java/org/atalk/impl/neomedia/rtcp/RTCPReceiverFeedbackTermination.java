@@ -15,20 +15,36 @@
  */
 package org.atalk.impl.neomedia.rtcp;
 
-import net.sf.fmj.media.rtp.*;
+import net.sf.fmj.media.rtp.RTCPCompoundPacket;
+import net.sf.fmj.media.rtp.RTCPPacket;
+import net.sf.fmj.media.rtp.RTCPRRPacket;
+import net.sf.fmj.media.rtp.RTCPReportBlock;
+import net.sf.fmj.media.rtp.SSRCCache;
+import net.sf.fmj.media.rtp.SSRCInfo;
 
-import org.atalk.impl.neomedia.*;
+import org.atalk.impl.neomedia.MediaStreamImpl;
+import org.atalk.impl.neomedia.RTCPPacketPredicate;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
 import org.atalk.impl.neomedia.rtp.remotebitrateestimator.RemoteBitrateEstimatorWrapper;
 import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
-import org.atalk.impl.neomedia.transform.*;
-import org.atalk.service.neomedia.*;
+import org.atalk.impl.neomedia.transform.PacketTransformer;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
+import org.atalk.impl.neomedia.transform.TransformEngine;
+import org.atalk.service.neomedia.ByteArrayBuffer;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.MediaType;
+import org.atalk.service.neomedia.RTPTranslator;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.TransmissionFailedException;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
-import org.atalk.util.*;
+import org.atalk.util.ArrayUtils;
+import org.atalk.util.Logger;
 import org.atalk.util.concurrent.PeriodicRunnable;
 import org.atalk.util.function.RTCPGenerator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.media.rtp.ReceiveStream;
 
@@ -39,336 +55,336 @@ import javax.media.rtp.ReceiveStream;
  * @author Boris Grozev
  */
 public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
-		implements TransformEngine
+        implements TransformEngine
 {
-	/**
-	 * The maximum number of RTCP report blocks that an RR can contain.
-	 */
-	private static final int MAX_RTCP_REPORT_BLOCKS = 31;
+    /**
+     * The maximum number of RTCP report blocks that an RR can contain.
+     */
+    private static final int MAX_RTCP_REPORT_BLOCKS = 31;
 
-	/**
-	 * The minimum number of RTCP report blocks that an RR can contain.
-	 */
-	private static final int MIN_RTCP_REPORT_BLOCKS = 0;
+    /**
+     * The minimum number of RTCP report blocks that an RR can contain.
+     */
+    private static final int MIN_RTCP_REPORT_BLOCKS = 0;
 
-	/**
-	 * The reporting period for RRs and REMBs.
-	 */
-	private static final long REPORT_PERIOD_MS = 500;
+    /**
+     * The reporting period for RRs and REMBs.
+     */
+    private static final long REPORT_PERIOD_MS = 500;
 
-	/**
-	 * The generator that generates <tt>RawPacket</tt>s from <tt>RTCPCompoundPacket</tt>s.
-	 */
-	private final RTCPGenerator generator = new RTCPGenerator();
+    /**
+     * The generator that generates <tt>RawPacket</tt>s from <tt>RTCPCompoundPacket</tt>s.
+     */
+    private final RTCPGenerator generator = new RTCPGenerator();
 
-	/**
-	 * A reusable array that holds {@link #MIN_RTCP_REPORT_BLOCKS} <tt>RTCPReportBlock</tt>s.
-	 */
-	private static final RTCPReportBlock[] MIN_RTCP_REPORT_BLOCKS_ARRAY
-			= new RTCPReportBlock[MIN_RTCP_REPORT_BLOCKS];
+    /**
+     * A reusable array that holds {@link #MIN_RTCP_REPORT_BLOCKS} <tt>RTCPReportBlock</tt>s.
+     */
+    private static final RTCPReportBlock[] MIN_RTCP_REPORT_BLOCKS_ARRAY
+            = new RTCPReportBlock[MIN_RTCP_REPORT_BLOCKS];
 
-	/**
-	 * The {@link Logger} used by the {@link RTCPReceiverFeedbackTermination}
-	 * class to print debug information.
-	 */
-	private static final Logger logger = Logger.getLogger(RTCPReceiverFeedbackTermination.class);
+    /**
+     * The {@link Logger} used by the {@link RTCPReceiverFeedbackTermination}
+     * class to print debug information.
+     */
+    private static final Logger logger = Logger.getLogger(RTCPReceiverFeedbackTermination.class);
 
-	/**
-	 * The {@link MediaStream} that owns this instance.
-	 */
-	private final MediaStreamImpl stream;
+    /**
+     * The {@link MediaStream} that owns this instance.
+     */
+    private final MediaStreamImpl stream;
 
-	/**
-	 *
-	 */
-	private final RTCPTransformer rtcpTransformer = new RTCPTransformer();
+    /**
+     *
+     */
+    private final RTCPTransformer rtcpTransformer = new RTCPTransformer();
 
-	/**
-	 * @param stream
-	 * 		the {@link MediaStream} that owns this instance.
-	 */
-	public RTCPReceiverFeedbackTermination(MediaStreamImpl stream)
-	{
-		super(REPORT_PERIOD_MS);
-		this.stream = stream;
-	}
+    /**
+     * @param stream the {@link MediaStream} that owns this instance.
+     */
+    public RTCPReceiverFeedbackTermination(MediaStreamImpl stream)
+    {
+        super(REPORT_PERIOD_MS);
+        this.stream = stream;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void run()
-	{
-		super.run();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run()
+    {
+        super.run();
 
-		// cmeng - just return if stream or rtpTranslator is null i.e. nothing to report
-		if ((stream == null) || stream.getRTPTranslator() == null)
-			return;
+        // cmeng - just return if stream or rtpTranslator is null i.e. nothing to report
+        if ((stream == null) || stream.getRTPTranslator() == null)
+            return;
 
-		// Create and return the packet.
-		// We use the stream's local source ID (SSRC) as the SSRC of packet sender.
-		long senderSSRC = getSenderSSRC();
-		if (senderSSRC == -1) {
-			return;
-		}
+        // Create and return the packet.
+        // We use the stream's local source ID (SSRC) as the SSRC of packet sender.
+        long senderSSRC = getSenderSSRC();
+        if (senderSSRC == -1) {
+            return;
+        }
 
-		// RRs
-		RTCPRRPacket[] rrs = makeRRs(senderSSRC);
+        // RRs
+        RTCPRRPacket[] rrs = makeRRs(senderSSRC);
 
-		// Bail out (early) if we have nothing to report.
-		if (ArrayUtils.isNullOrEmpty(rrs)) {
-			return;
-		}
+        // Bail out (early) if we have nothing to report.
+        if (ArrayUtils.isNullOrEmpty(rrs)) {
+            return;
+        }
 
-		// REMB
-		RTCPREMBPacket remb = makeREMB(senderSSRC);
+        // REMB
+        RTCPREMBPacket remb = makeREMB(senderSSRC);
 
-		// Build the RTCP compound packet to return.
-		RTCPPacket[] rtcpPackets;
-		if (remb == null) {
-			rtcpPackets = rrs;
-		}
-		else {
-			// NOTE the add method throws an exception if remb == null.
-			rtcpPackets = ArrayUtils.add(rrs, RTCPPacket.class, remb);
-		}
-		RTCPCompoundPacket compound = new RTCPCompoundPacket(rtcpPackets);
+        // Build the RTCP compound packet to return.
+        RTCPPacket[] rtcpPackets;
+        if (remb == null) {
+            rtcpPackets = rrs;
+        }
+        else {
+            // NOTE the add method throws an exception if remb == null.
+            rtcpPackets = ArrayUtils.add(rrs, RTCPPacket.class, remb);
+        }
+        RTCPCompoundPacket compound = new RTCPCompoundPacket(rtcpPackets);
 
-		// inject the packets into the MediaStream.
-		RawPacket pkt = generator.apply(compound);
+        // inject the packets into the MediaStream.
+        RawPacket pkt = generator.apply(compound);
 
-		try {
-			stream.injectPacket(pkt, false, this);
-		}
-		catch (TransmissionFailedException e) {
-			logger.error("transmission of an RTCP packet failed.", e);
-		}
-	}
+        try {
+            stream.injectPacket(pkt, false, this);
+        } catch (TransmissionFailedException e) {
+            logger.error("transmission of an RTCP packet failed.", e);
+        }
+    }
 
-	/**
-	 * (attempts) to get the local SSRC that will be used in the media sender
-	 * SSRC field of the RTCP reports. TAG(cat4-local-ssrc-hurricane)
-	 *
-	 * @return the local sender SSRC ID
-	 */
-	private long getSenderSSRC()
-	{
-		StreamRTPManager streamRTPManager = stream.getStreamRTPManager();
-		if (streamRTPManager == null) {
-			return -1;
-		}
-		return stream.getStreamRTPManager().getLocalSSRC();
-	}
+    /**
+     * (attempts) to get the local SSRC that will be used in the media sender
+     * SSRC field of the RTCP reports. TAG(cat4-local-ssrc-hurricane)
+     *
+     * @return the local sender SSRC ID
+     */
+    private long getSenderSSRC()
+    {
+        StreamRTPManager streamRTPManager = stream.getStreamRTPManager();
+        if (streamRTPManager == null) {
+            return -1;
+        }
+        return streamRTPManager.getLocalSSRC();
+    }
 
 
-	/**
-	 * Makes <tt>RTCPRRPacket</tt>s using information in FMJ.
-	 *
-	 * @return A <tt>List</tt> of <tt>RTCPRRPacket</tt>s to inject into the <tt>MediaStream</tt>.
-	 */
-	private RTCPRRPacket[] makeRRs(long senderSSRC)
-	{
-		RTCPReportBlock[] reportBlocks = makeReportBlocks();
-		if (ArrayUtils.isNullOrEmpty(reportBlocks)) {
-			return null;
-		}
+    /**
+     * Makes <tt>RTCPRRPacket</tt>s using information in FMJ.
+     *
+     * @return A <tt>List</tt> of <tt>RTCPRRPacket</tt>s to inject into the <tt>MediaStream</tt>.
+     */
+    private RTCPRRPacket[] makeRRs(long senderSSRC)
+    {
+        RTCPReportBlock[] reportBlocks = makeReportBlocks();
+        if (ArrayUtils.isNullOrEmpty(reportBlocks)) {
+            return null;
+        }
 
-		int mod = reportBlocks.length % MAX_RTCP_REPORT_BLOCKS;
-		int div = reportBlocks.length / MAX_RTCP_REPORT_BLOCKS;
+        int mod = reportBlocks.length % MAX_RTCP_REPORT_BLOCKS;
+        int div = reportBlocks.length / MAX_RTCP_REPORT_BLOCKS;
 
-		RTCPRRPacket[] rrs = new RTCPRRPacket[mod == 0 ? div : div + 1];
+        RTCPRRPacket[] rrs = new RTCPRRPacket[mod == 0 ? div : div + 1];
 
-		// Since a maximum of 31 reception report blocks will fit in an SR or RR packet,
-		// additional RR packets SHOULD be stacked after the initial SR or RR packet as needed to
-		// contain the reception reports for all sources heard during the interval since the last
-		// report.
-		if (reportBlocks.length > MAX_RTCP_REPORT_BLOCKS) {
-			int rrIdx = 0;
-			for (int off = 0; off < reportBlocks.length; off += MAX_RTCP_REPORT_BLOCKS) {
-				int blockCount = Math.min(reportBlocks.length - off, MAX_RTCP_REPORT_BLOCKS);
-				RTCPReportBlock[] blocks = new RTCPReportBlock[blockCount];
-				System.arraycopy(reportBlocks, off, blocks, 0, blocks.length);
-				rrs[rrIdx++] = new RTCPRRPacket((int) senderSSRC, blocks);
-			}
-		}
-		else {
-			rrs[0] = new RTCPRRPacket((int) senderSSRC, reportBlocks);
-		}
-		return rrs;
-	}
+        // Since a maximum of 31 reception report blocks will fit in an SR or RR packet,
+        // additional RR packets SHOULD be stacked after the initial SR or RR packet as needed to
+        // contain the reception reports for all sources heard during the interval since the last
+        // report.
+        if (reportBlocks.length > MAX_RTCP_REPORT_BLOCKS) {
+            int rrIdx = 0;
+            for (int off = 0; off < reportBlocks.length; off += MAX_RTCP_REPORT_BLOCKS) {
+                int blockCount = Math.min(reportBlocks.length - off, MAX_RTCP_REPORT_BLOCKS);
+                RTCPReportBlock[] blocks = new RTCPReportBlock[blockCount];
+                System.arraycopy(reportBlocks, off, blocks, 0, blocks.length);
+                rrs[rrIdx++] = new RTCPRRPacket((int) senderSSRC, blocks);
+            }
+        }
+        else {
+            rrs[0] = new RTCPRRPacket((int) senderSSRC, reportBlocks);
+        }
+        return rrs;
+    }
 
-	/**
-	 * Iterate through all the <tt>ReceiveStream</tt>s that this <tt>MediaStream</tt> has and
-	 * make <tt>RTCPReportBlock</tt>s for all of them.
-	 *
-	 * cmeng: rptTranslator is currently disabled for Android or peer is not the conference focus.
-	 *
-	 * {@link net.java.sip.communicator.service.protocol.media.MediaAwareCallConference#getRTPTranslator(MediaType)}
-	 *
-	 * @return
-	 */
-	private RTCPReportBlock[] makeReportBlocks()
-	{
-		// State validation.
-		if (stream == null) {
-			logger.warn("stream is null.");
-			return MIN_RTCP_REPORT_BLOCKS_ARRAY;
-		}
+    /**
+     * Iterate through all the <tt>ReceiveStream</tt>s that this <tt>MediaStream</tt> has and
+     * make <tt>RTCPReportBlock</tt>s for all of them.
+     *
+     * cmeng: rptTranslator is currently disabled for Android or peer is not the conference focus.
+     *
+     * {@link net.java.sip.communicator.service.protocol.media.MediaAwareCallConference#getRTPTranslator(MediaType)}
+     *
+     * @return
+     */
+    private RTCPReportBlock[] makeReportBlocks()
+    {
+        // State validation.
+        if (stream == null) {
+            logger.warn("stream is null.");
+            return MIN_RTCP_REPORT_BLOCKS_ARRAY;
+        }
 
-		StreamRTPManager streamRTPManager = stream.getStreamRTPManager();
-		if (streamRTPManager == null) {
-			logger.warn("streamRTPManager is null.");
-			return MIN_RTCP_REPORT_BLOCKS_ARRAY;
-		}
+        StreamRTPManager streamRTPManager = stream.getStreamRTPManager();
+        if (streamRTPManager == null) {
+            logger.warn("streamRTPManager is null.");
+            return MIN_RTCP_REPORT_BLOCKS_ARRAY;
+        }
 
 		/*
-		 * XXX MediaStreamImpl's implementation of #getReceiveStreams() says that, unfortunately,
+         * XXX MediaStreamImpl's implementation of #getReceiveStreams() says that, unfortunately,
 		 * it has been observed that sometimes there are valid ReceiveStreams in MediaStreamImpl
 		 * which are not returned by FMJ's RTPManager. Since
 		 * (1) MediaStreamImpl#getReceiveStreams() will include the results of StreamRTPManager#getReceiveStreams() and
 		 * (2) we are going to check the results against SSRCCache, it should be relatively safe
 		 * to rely on MediaStreamImpl's implementation.
 		 */
-		Collection<ReceiveStream> receiveStreams = stream.getReceiveStreams();
+        Collection<ReceiveStream> receiveStreams = stream.getReceiveStreams();
 
-		if (receiveStreams == null || receiveStreams.isEmpty()) {
-			logger.debug("There are no receive streams to build report blocks for.");
-			return MIN_RTCP_REPORT_BLOCKS_ARRAY;
-		}
+        if (receiveStreams == null || receiveStreams.isEmpty()) {
+            logger.debug("There are no receive streams to build report blocks for.");
+            return MIN_RTCP_REPORT_BLOCKS_ARRAY;
+        }
 
-		RTPTranslator rtpTranslator = stream.getRTPTranslator();
-		SSRCCache cache = rtpTranslator.getSSRCCache();
-		// SSRCCache cache = stream.getRTPTranslator().getSSRCCache();
-		if (cache == null) {
-			logger.info("cache is null.");
-			return MIN_RTCP_REPORT_BLOCKS_ARRAY;
-		}
-		// Create and populate the return object.
-		Collection<RTCPReportBlock> reportBlocks = new ArrayList<>();
+        RTPTranslator rtpTranslator = stream.getRTPTranslator();
+        SSRCCache cache = rtpTranslator.getSSRCCache();
+        // SSRCCache cache = stream.getRTPTranslator().getSSRCCache();
+        if (cache == null) {
+            logger.info("cache is null.");
+            return MIN_RTCP_REPORT_BLOCKS_ARRAY;
+        }
+        // Create and populate the return object.
+        Collection<RTCPReportBlock> reportBlocks = new ArrayList<>();
 
-		for (ReceiveStream receiveStream : receiveStreams) {
-			// Dig into the guts of FMJ and get the stats for the current receiveStream.
-			SSRCInfo info = cache.cache.get((int) receiveStream.getSSRC());
+        for (ReceiveStream receiveStream : receiveStreams) {
+            // Dig into the guts of FMJ and get the stats for the current receiveStream.
+            SSRCInfo info = cache.cache.get((int) receiveStream.getSSRC());
 
-			if (info == null) {
-				logger.warn("We have a ReceiveStream but not an SSRCInfo for that ReceiveStream.");
-				continue;
-			}
-			if (!info.ours && info.sender) {
-				RTCPReportBlock reportBlock = info.makeReceiverReport(getLastProcessTime());
-				reportBlocks.add(reportBlock);
+            if (info == null) {
+                logger.warn("We have a ReceiveStream but not an SSRCInfo for that ReceiveStream.");
+                continue;
+            }
+            if (!info.ours && info.sender) {
+                RTCPReportBlock reportBlock = info.makeReceiverReport(getLastProcessTime());
+                reportBlocks.add(reportBlock);
 
-				if (logger.isTraceEnabled()) {
-					logger.trace("created_report_block," + hashCode()
-							+ "," + System.currentTimeMillis()
-							+ "," + reportBlock.getSSRC()
-							+ "," + reportBlock.getNumLost()
-							+ "," + (reportBlock.getFractionLost() / 256D)
-							+ "," + reportBlock.getJitter()
-							+ "," + reportBlock.getXtndSeqNum());
-				}
-			}
-		}
-		return reportBlocks.toArray(new RTCPReportBlock[reportBlocks.size()]);
-	}
+                if (logger.isTraceEnabled()) {
+                    logger.trace(stream.getDiagnosticContext()
+                            .makeTimeSeriesPoint("created_report_block")
+                            .addKey("rtcp_termination", hashCode())
+                            .addField("ssrc", reportBlock.getSSRC())
+                            .addField("num_lost", reportBlock.getNumLost())
+                            .addField("fraction_lost", reportBlock.getFractionLost() / 256D)
+                            .addField("jitter", reportBlock.getJitter())
+                            .addField("xtnd_seqnum", reportBlock.getXtndSeqNum()));
+                }
+            }
+        }
 
-	/**
-	 * Makes an <tt>RTCPREMBPacket</tt> that provides receiver feedback to the
-	 * endpoint from which we receive.
-	 *
-	 * @return an <tt>RTCPREMBPacket</tt> that provides receiver feedback to the
-	 * endpoint from which we receive.
-	 */
-	private RTCPREMBPacket makeREMB(long senderSSRC)
-	{
-		// Destination
-		RemoteBitrateEstimatorWrapper remoteBitrateEstimator = stream.getRemoteBitrateEstimator();
+        return reportBlocks.toArray(new RTCPReportBlock[reportBlocks.size()]);
+    }
 
-		if (!remoteBitrateEstimator.receiveSideBweEnabled()) {
-			return null;
-		}
+    /**
+     * Makes an <tt>RTCPREMBPacket</tt> that provides receiver feedback to the
+     * endpoint from which we receive.
+     *
+     * @return an <tt>RTCPREMBPacket</tt> that provides receiver feedback to the
+     * endpoint from which we receive.
+     */
+    private RTCPREMBPacket makeREMB(long senderSSRC)
+    {
+        // Destination
+        RemoteBitrateEstimatorWrapper remoteBitrateEstimator = stream.getRemoteBitrateEstimator();
 
-		Collection<Long> ssrcs = remoteBitrateEstimator.getSsrcs();
+        if (!remoteBitrateEstimator.receiveSideBweEnabled()) {
+            return null;
+        }
 
-		// TODO(gp) intersect with SSRCs from signaled simulcast layers
-		// NOTE(gp) The Google Congestion Control algorithm (sender side)
-		// doesn't seem to care about the SSRCs in the dest field.
-		long[] dest = new long[ssrcs.size()];
-		int i = 0;
+        Collection<Long> ssrcs = remoteBitrateEstimator.getSsrcs();
 
-		for (Long ssrc : ssrcs)
-			dest[i++] = ssrc;
+        // TODO(gp) intersect with SSRCs from signaled simulcast layers
+        // NOTE(gp) The Google Congestion Control algorithm (sender side)
+        // doesn't seem to care about the SSRCs in the dest field.
+        long[] dest = new long[ssrcs.size()];
+        int i = 0;
 
-		// Exp & mantissa
-		long bitrate = remoteBitrateEstimator.getLatestEstimate();
+        for (Long ssrc : ssrcs)
+            dest[i++] = ssrc;
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Estimated bitrate (bps): " + bitrate + ", dest: "
-					+ Arrays.toString(dest) + ", time (ms): "
-					+ System.currentTimeMillis());
-		}
-		if (bitrate == -1) {
-			return null;
-		}
-		else {
-			return new RTCPREMBPacket(senderSSRC, 0L, bitrate, dest);
-		}
-	}
+        // Exp & mantissa
+        long bitrate = remoteBitrateEstimator.getLatestEstimate();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PacketTransformer getRTPTransformer()
-	{
-		return null;
-	}
+        if (logger.isDebugEnabled()) {
+            logger.debug("Estimated bitrate (bps): " + bitrate + ", dest: "
+                    + Arrays.toString(dest) + ", time (ms): "
+                    + System.currentTimeMillis());
+        }
+        if (bitrate == -1) {
+            return null;
+        }
+        else {
+            return new RTCPREMBPacket(senderSSRC, 0L, bitrate, dest);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PacketTransformer getRTCPTransformer()
-	{
-		return rtcpTransformer;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PacketTransformer getRTPTransformer()
+    {
+        return null;
+    }
 
-	/**
-	 *
-	 */
-	class RTCPTransformer extends SinglePacketTransformerAdapter
-	{
-		/**
-		 * Ctor.
-		 */
-		RTCPTransformer()
-		{
-			super(RTCPPacketPredicate.INSTANCE);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PacketTransformer getRTCPTransformer()
+    {
+        return rtcpTransformer;
+    }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public RawPacket transform(RawPacket pkt)
-		{
-			// Kill the RRs that FMJ is sending.
-			return doTransform(pkt, true);
-		}
+    /**
+     *
+     */
+    class RTCPTransformer extends SinglePacketTransformerAdapter
+    {
+        /**
+         * Ctor.
+         */
+        RTCPTransformer()
+        {
+            super(RTCPPacketPredicate.INSTANCE);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public RawPacket reverseTransform(RawPacket pkt)
-		{
-			return doTransform(pkt, false);
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public RawPacket transform(RawPacket pkt)
+        {
+            // Kill the RRs that FMJ is sending.
+            return doTransform(pkt, true);
+        }
 
-		private RawPacket doTransform(RawPacket pkt, boolean send)
-		{
-			RTCPIterator it = new RTCPIterator(pkt);
-			while (it.hasNext()) {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public RawPacket reverseTransform(RawPacket pkt)
+        {
+            return doTransform(pkt, false);
+        }
+
+        private RawPacket doTransform(RawPacket pkt, boolean send)
+        {
+            RTCPIterator it = new RTCPIterator(pkt);
+            while (it.hasNext()) {
                 ByteArrayBuffer baf = it.next();
                 int pt = RTCPHeaderUtils.getPacketType(baf);
                 if (pt == RTCPRRPacket.RR
@@ -379,19 +395,18 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
                 }
 
                 if (!send && pt > -1) {
-					int fmt = RTCPHeaderUtils.getReportCount(baf);
-					if ((pt == RTCPFeedbackMessageEvent.PT_PS
-							&& fmt == RTCPFeedbackMessageEvent.FMT_PLI)
-							|| (pt == RTCPFeedbackMessageEvent.PT_PS
-							&& fmt == RTCPFeedbackMessageEvent.FMT_FIR)) {
-						long source = RTCPFBPacket.getSourceSSRC(baf);
-						((RTPTranslatorImpl) stream.getRTPTranslator())
-								.getRtcpFeedbackMessageSender().requestKeyframe(source);
-						it.remove();
-					}
-				}
-			}
-			return pkt.getLength() == 0 ? null : pkt;
-		}
-	}
+                    int fmt = RTCPHeaderUtils.getReportCount(baf);
+                    if ((pt == RTCPFeedbackMessageEvent.PT_PS
+                            && fmt == RTCPFeedbackMessageEvent.FMT_PLI)
+                            || (pt == RTCPFeedbackMessageEvent.PT_PS
+                            && fmt == RTCPFeedbackMessageEvent.FMT_FIR)) {
+                        long source = RTCPFBPacket.getSourceSSRC(baf);
+                        ((RTPTranslatorImpl) stream.getRTPTranslator()).getRtcpFeedbackMessageSender().requestKeyframe(source);
+                        it.remove();
+                    }
+                }
+            }
+            return pkt.getLength() == 0 ? null : pkt;
+        }
+    }
 }

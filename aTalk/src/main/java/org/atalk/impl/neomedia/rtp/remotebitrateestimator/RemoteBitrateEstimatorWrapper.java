@@ -15,12 +15,17 @@
  */
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 
-import org.atalk.impl.neomedia.transform.*;
+import org.atalk.impl.neomedia.transform.AbsSendTimeEngine;
+import org.atalk.impl.neomedia.transform.PacketTransformer;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
+import org.atalk.impl.neomedia.transform.TransformEngine;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.rtp.RemoteBitrateEstimator;
+import org.atalk.util.DiagnosticContext;
 import org.atalk.util.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
@@ -35,7 +40,7 @@ import java.util.Collection;
  * @author George Politis
  */
 public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapter
-    implements RemoteBitrateEstimator, TransformEngine
+        implements RemoteBitrateEstimator, TransformEngine
 {
     /**
      * The {@link Logger} used by the {@link RemoteBitrateEstimatorWrapper}
@@ -64,8 +69,7 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
      * estimator.
      */
     private static final boolean ENABLE_AST_RBE =
-        cfg != null ? cfg.getBoolean(ENABLE_AST_RBE_PNAME,
-            ENABLE_AST_RBE_DEFAULT) : ENABLE_AST_RBE_DEFAULT;
+            cfg != null ? cfg.getBoolean(ENABLE_AST_RBE_PNAME, ENABLE_AST_RBE_DEFAULT) : ENABLE_AST_RBE_DEFAULT;
 
     /**
      * After this many packets without the AST header, switch to the SS RBE.
@@ -117,16 +121,25 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
     private RemoteBitrateEstimator rbe;
 
     /**
+     * The {@link DiagnosticContext} for this instance.
+     */
+    private final DiagnosticContext diagnosticContext;
+
+    /**
      * Ctor.
      *
      * @param observer the observer to notify on bitrate estimation changes.
+     * @param diagnosticContext the {@link DiagnosticContext} to be used by
+     * this instance.
      */
-    public RemoteBitrateEstimatorWrapper(RemoteBitrateObserver observer)
+    public RemoteBitrateEstimatorWrapper(
+            RemoteBitrateObserver observer,
+            @NotNull DiagnosticContext diagnosticContext)
     {
         this.observer = observer;
-
+        this.diagnosticContext = diagnosticContext;
         // Initialize to the default RTP timestamp based RBE.
-        rbe = new RemoteBitrateEstimatorSingleStream(observer);
+        this.rbe = new RemoteBitrateEstimatorSingleStream(observer, diagnosticContext);
     }
 
     /**
@@ -170,8 +183,7 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
      * {@inheritDoc}
      */
     @Override
-    public void incomingPacketInfo(
-        long arrivalTimeMs, long timestamp, int payloadSize, long ssrc)
+    public void incomingPacketInfo(long arrivalTimeMs, long timestamp, int payloadSize, long ssrc)
     {
         rbe.incomingPacketInfo(arrivalTimeMs, timestamp, payloadSize, ssrc);
     }
@@ -182,84 +194,59 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
     @Override
     public RawPacket reverseTransform(RawPacket pkt)
     {
-        if (!receiveSideBweEnabled())
-        {
+        if (!receiveSideBweEnabled()) {
             return pkt;
         }
 
         RawPacket.HeaderExtension ext = null;
         int astExtensionID = this.astExtensionID;
-        if (ENABLE_AST_RBE && astExtensionID != -1)
-        {
+        if (ENABLE_AST_RBE && astExtensionID != -1) {
             ext = pkt.getHeaderExtension((byte) astExtensionID);
         }
 
-        if (ext != null)
-        {
+        if (ext != null) {
             // If we see AST in header, switch RBE strategy immediately.
-            if (!usingAbsoluteSendTime)
-            {
+            if (!usingAbsoluteSendTime) {
                 usingAbsoluteSendTime = true;
 
-                this.rbe = new RemoteBitrateEstimatorAbsSendTime(observer);
-                if (logger.isTraceEnabled()) {
-                    logger.trace("created_rbe," + hashCode()
-                            + "," + System.currentTimeMillis()
-                            + "," + this.rbe.hashCode());
-                }
+                this.rbe = new RemoteBitrateEstimatorAbsSendTime(observer, diagnosticContext);
 
                 int minBitrateBps = this.minBitrateBps;
-                if (minBitrateBps > 0)
-                {
+                if (minBitrateBps > 0) {
                     this.rbe.setMinBitrate(minBitrateBps);
                 }
             }
-
             packetsSinceAbsoluteSendTime = 0;
         }
-        else
-        {
+        else {
             // When we don't see AST, wait for a few packets before going
             // back to SS.
-            if (usingAbsoluteSendTime)
-            {
+            if (usingAbsoluteSendTime) {
                 ++packetsSinceAbsoluteSendTime;
-                if (packetsSinceAbsoluteSendTime >= SS_THRESHOLD)
-                {
+                if (packetsSinceAbsoluteSendTime >= SS_THRESHOLD) {
                     usingAbsoluteSendTime = false;
-                    rbe = new RemoteBitrateEstimatorSingleStream(observer);
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("created_rbe," + hashCode()
-                                + "," + System.currentTimeMillis()
-                                + "," + this.rbe.hashCode());
-                    }
-
+                    rbe = new RemoteBitrateEstimatorSingleStream(observer, diagnosticContext);
                     int minBitrateBps = this.minBitrateBps;
-                    if (minBitrateBps > 0)
-                    {
+                    if (minBitrateBps > 0) {
                         rbe.setMinBitrate(minBitrateBps);
                     }
                 }
             }
         }
-
-        if (!usingAbsoluteSendTime)
-        {
+        if (!usingAbsoluteSendTime) {
             incomingPacketInfo(System.currentTimeMillis(), pkt.getTimestamp(),
-                pkt.getPayloadLength(), pkt.getSSRCAsLong());
+                    pkt.getPayloadLength(), pkt.getSSRCAsLong());
 
             return pkt;
         }
 
         long sendTime24bits = astExtensionID == -1
-            ? -1 : AbsSendTimeEngine.getAbsSendTime(pkt, (byte) astExtensionID);
+                ? -1 : AbsSendTimeEngine.getAbsSendTime(pkt, (byte) astExtensionID);
 
-        if (usingAbsoluteSendTime && sendTime24bits != -1)
-        {
+        if (usingAbsoluteSendTime && sendTime24bits != -1) {
             incomingPacketInfo(System.currentTimeMillis(), sendTime24bits,
-                pkt.getPayloadLength(), pkt.getSSRCAsLong());
+                    pkt.getPayloadLength(), pkt.getSSRCAsLong());
         }
-
         return pkt;
     }
 
@@ -316,6 +303,7 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
     /**
      * Sets the value of the flag which indicates whether the remote end
      * supports RTCP REMB or not.
+     *
      * @param supportsRemb the value to set.
      */
     public void setSupportsRemb(boolean supportsRemb)

@@ -1170,7 +1170,7 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Get RTP payload type from a RTP packet
      *
-     * @return RTP payload type of source RTP packet
+     * @return RTP payload type of source RTP packet, or -1 in case of an error.
      */
     public static int getPayloadType(byte[] buf, int off, int len)
     {
@@ -1180,6 +1180,22 @@ public class RawPacket implements ByteArrayBuffer
         }
 
         return (buf[off + 1] & 0x7F);
+    }
+
+    /**
+     * Get RTP payload type from a RTP packet
+     *
+     * @return RTP payload type of source RTP packet, or -1 in case of an error.
+     */
+    public static int getPayloadType(RawPacket pkt)
+    {
+        if (pkt == null)
+        {
+            return -1;
+        }
+
+        return getPayloadType(
+                pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
     }
 
     /**

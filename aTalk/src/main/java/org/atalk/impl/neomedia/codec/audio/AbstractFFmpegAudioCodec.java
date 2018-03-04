@@ -69,7 +69,6 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
 	protected AbstractFFmpegAudioCodec(String name, int codecID, Format[] supportedOutputFormats)
 	{
 		super(name, AudioFormat.class, supportedOutputFormats);
-
 		this.codecID = codecID;
 	}
 
@@ -111,19 +110,16 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
 		long codec = findAVCodec(codecID);
 
 		if (codec == 0) {
-			throw new ResourceUnavailableException("Could not find FFmpeg codec "
-				+ codecIDToString(codecID) + "!");
+			throw new ResourceUnavailableException("Could not find FFmpeg codec " + codecIDToString(codecID) + "!");
 		}
 
 		avctx = FFmpeg.avcodec_alloc_context3(codec);
 		if (avctx == 0) {
 			throw new ResourceUnavailableException(
-				"Could not allocate AVCodecContext for FFmpeg codec " + codecIDToString(codecID)
-					+ "!");
+				"Could not allocate AVCodecContext for FFmpeg codec " + codecIDToString(codecID) + "!");
 		}
 
 		int avcodec_open = -1;
-
 		try {
 			AudioFormat format = getAVCodecContextFormat();
 			int channels = format.getChannels();
@@ -132,6 +128,17 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
 			if (channels == Format.NOT_SPECIFIED)
 				channels = 1;
 			FFmpeg.avcodeccontext_set_channels(avctx, channels);
+            if (channels == 1)
+            {
+                //mono
+                FFmpeg.avcodeccontext_set_channel_layout(avctx, 0x4);
+            }
+            else if (channels == 2)
+            {
+                //stereo
+                FFmpeg.avcodeccontext_set_channel_layout(avctx, 0x3);
+            }
+
 			if (sampleRate != Format.NOT_SPECIFIED)
 				FFmpeg.avcodeccontext_set_sample_rate(avctx, sampleRate);
 

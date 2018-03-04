@@ -8,10 +8,16 @@ package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 import net.sf.fmj.media.rtp.util.RTPPacket;
 
 import org.atalk.service.neomedia.rtp.RemoteBitrateEstimator;
-import org.atalk.util.concurrent.RecurringRunnable;
+import org.atalk.util.DiagnosticContext;
 import org.ice4j.util.RateStatistics;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * webrtc/modules/remote_bitrate_estimator/remote_bitrate_estimator_single_stream.cc
@@ -21,88 +27,93 @@ import java.util.*;
  */
 public class RemoteBitrateEstimatorSingleStream implements RemoteBitrateEstimator
 {
-	static final double kTimestampToMs = 1.0 / 90.0;
+    static final double kTimestampToMs = 1.0 / 90.0;
 
-	private final Object critSect = new Object();
+    private final Object critSect = new Object();
 
-	/**
-	 * Reduces the effects of allocations and garbage collection of the method
-	 * {@code incomingPacket}.
-	 */
-	private final long[] deltas = new long[3];
+    /**
+     * Reduces the effects of allocations and garbage collection of the method
+     * {@code incomingPacket}.
+     */
+    private final long[] deltas = new long[3];
 
-	private final RateStatistics incomingBitrate = new RateStatistics(kBitrateWindowMs, 8000F);
+    private final RateStatistics incomingBitrate = new RateStatistics(kBitrateWindowMs, 8000F);
 
-	/**
-	 * Reduces the effects of allocations and garbage collection of the method
-	 * {@code updateEstimate} by promoting the {@code RateControlInput} instance from a local
-	 * variable to a field and reusing the same instance across method invocations. (Consequently,
-	 * the default values used to initialize the field are of no importance because they will be
-	 * overwritten before they are actually used.)
-	 */
-	private final RateControlInput input = new RateControlInput(BandwidthUsage.kBwNormal, 0L, 0D);
+    /**
+     * Reduces the effects of allocations and garbage collection of the method
+     * {@code updateEstimate} by promoting the {@code RateControlInput} instance from a local
+     * variable to a field and reusing the same instance across method invocations. (Consequently,
+     * the default values used to initialize the field are of no importance because they will be
+     * overwritten before they are actually used.)
+     */
+    private final RateControlInput input = new RateControlInput(BandwidthUsage.kBwNormal, 0L, 0D);
 
-	private long lastProcessTime = -1L;
+    private long lastProcessTime = -1L;
 
-	private final RemoteBitrateObserver observer;
+    private final RemoteBitrateObserver observer;
 
-    private final Map<Long,Detector> overuseDetectors = new HashMap<>();
+    private final Map<Long, Detector> overuseDetectors = new HashMap<>();
 
-	private long processIntervalMs = kProcessIntervalMs;
+    private long processIntervalMs = kProcessIntervalMs;
 
-	private final AimdRateControl remoteRate = new AimdRateControl();
+    private final AimdRateControl remoteRate;
 
-	/**
-	 * The set of synchronization source identifiers (SSRCs) currently being received. Represents an
-	 * unmodifiable copy/snapshot of the current keys of {@link #overuseDetectors} suitable for
-	 * public access and introduced for the purposes of reducing the number of allocations and the
-	 * effects of garbage collection.
-	 */
+    /**
+     * The set of synchronization source identifiers (SSRCs) currently being received. Represents an
+     * unmodifiable copy/snapshot of the current keys of {@link #overuseDetectors} suitable for
+     * public access and introduced for the purposes of reducing the number of allocations and the
+     * effects of garbage collection.
+     */
     private Collection<Long> ssrcs;
 
-	public RemoteBitrateEstimatorSingleStream(RemoteBitrateObserver observer)
-	{
-		this.observer = observer;
-	}
+    private final DiagnosticContext diagnosticContext;
 
-	private long getExtensionTransmissionTimeOffset(RTPPacket header)
-	{
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    public RemoteBitrateEstimatorSingleStream(
+            RemoteBitrateObserver observer,
+            @NotNull DiagnosticContext diagnosticContext)
+    {
+        this.observer = observer;
+        this.diagnosticContext = diagnosticContext;
+        this.remoteRate = new AimdRateControl(diagnosticContext);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public long getLatestEstimate()
-	{
-		long bitrateBps;
+    private long getExtensionTransmissionTimeOffset(RTPPacket header)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-		synchronized (critSect) {
-			if (remoteRate.isValidEstimate()) {
-				if (getSsrcs().isEmpty())
-					bitrateBps = 0L;
-				else
-					bitrateBps = remoteRate.getLatestEstimate();
-			}
-			else {
-				bitrateBps = -1L;
-			}
-		}
-		return bitrateBps;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getLatestEstimate()
+    {
+        long bitrateBps;
+        synchronized (critSect) {
+            if (remoteRate.isValidEstimate()) {
+                if (getSsrcs().isEmpty())
+                    bitrateBps = 0L;
+                else
+                    bitrateBps = remoteRate.getLatestEstimate();
+            }
+            else {
+                bitrateBps = -1L;
+            }
+        }
+        return bitrateBps;
+    }
 
-	@Override
+    @Override
     public Collection<Long> getSsrcs()
-	{
-		synchronized (critSect) {
-			if (ssrcs == null) {
-				ssrcs = Collections.unmodifiableCollection(new ArrayList<>(overuseDetectors.keySet()));
-			}
-			return ssrcs;
-		}
-	}
+    {
+        synchronized (critSect) {
+            if (ssrcs == null) {
+                ssrcs = Collections.unmodifiableCollection(new ArrayList<>(overuseDetectors.keySet()));
+            }
+            return ssrcs;
+        }
+    }
 
     /**
      * Notifies this instance of an incoming packet.
@@ -114,91 +125,80 @@ public class RemoteBitrateEstimatorSingleStream implements RemoteBitrateEstimato
      */
     @Override
     public void incomingPacketInfo(
-        long arrivalTimeMs, long timestamp, int payloadSize, long ssrc_)
+            long arrivalTimeMs, long timestamp, int payloadSize, long ssrc_)
     {
         long nowMs = System.currentTimeMillis();
 
-        synchronized (critSect)
-        {
-			// XXX The variable naming is chosen to keep the source code close to
-			// the original.
-			Detector it = overuseDetectors.get(ssrc_);
+        synchronized (critSect) {
+            // XXX The variable naming is chosen to keep the source code close to
+            // the original.
+            Detector it = overuseDetectors.get(ssrc_);
 
-			if (it == null) {
-				// This is a new SSRC. Adding to map.
-				// TODO(holmer): If the channel changes SSRC the old SSRC will still
-				// be around in this map until the channel is deleted. This is OK
-				// since the callback will no longer be called for the old SSRC.
-				// This will be automatically cleaned up when we have one
-				// RemoteBitrateEstimator per REMB group.
-				it = new Detector(nowMs, new OverUseDetectorOptions(), true);
-				overuseDetectors.put(ssrc_, it);
-				ssrcs = null;
-			}
+            if (it == null) {
+                // This is a new SSRC. Adding to map.
+                // TODO(holmer): If the channel changes SSRC the old SSRC will still
+                // be around in this map until the channel is deleted. This is OK
+                // since the callback will no longer be called for the old SSRC.
+                // This will be automatically cleaned up when we have one
+                // RemoteBitrateEstimator per REMB group.
+                it = new Detector(nowMs, new OverUseDetectorOptions(), true);
+                overuseDetectors.put(ssrc_, it);
+                ssrcs = null;
+            }
 
-			// XXX The variable naming is chosen to keep the source code close to
-			// the original.
-			Detector estimator = it;
+            // XXX The variable naming is chosen to keep the source code close to
+            // the original.
+            Detector estimator = it;
 
-			estimator.lastPacketTimeMs = nowMs;
-			this.incomingBitrate.update(payloadSize, nowMs);
+            estimator.lastPacketTimeMs = nowMs;
+            this.incomingBitrate.update(payloadSize, nowMs);
 
-			BandwidthUsage priorState = estimator.detector.getState();
-			long[] deltas = this.deltas;
+            BandwidthUsage priorState = estimator.detector.getState();
+            long[] deltas = this.deltas;
 
-			/* long timestampDelta */deltas[0] = 0;
-			/* long timeDelta */deltas[1] = 0;
-			/* int sizeDelta */deltas[2] = 0;
+			/* long timestampDelta */
+            deltas[0] = 0;
+            /* long timeDelta */
+            deltas[1] = 0;
+            /* int sizeDelta */
+            deltas[2] = 0;
 
-        if (estimator.interArrival.computeDeltas(
-                timestamp,
-                nowMs,
-                payloadSize,
-                deltas))
-        {
-            double timestampDeltaMs
-                = /* timestampDelta */ deltas[0] * kTimestampToMs;
+            if (estimator.interArrival.computeDeltas(timestamp, nowMs, payloadSize, deltas)) {
+                double timestampDeltaMs = /* timestampDelta */ deltas[0] * kTimestampToMs;
 
-            estimator.estimator.update(
+                estimator.estimator.update(
                     /* timeDelta */ deltas[1],
-                    timestampDeltaMs,
+                        timestampDeltaMs,
                     /* sizeDelta */ (int) deltas[2],
-                    estimator.detector.getState(), nowMs);
-            estimator.detector.detect(
-                    estimator.estimator.getOffset(),
-                    timestampDeltaMs,
-                    estimator.estimator.getNumOfDeltas(),
-                    nowMs);
-        }
+                        estimator.detector.getState(), nowMs);
+                estimator.detector.detect(
+                        estimator.estimator.getOffset(),
+                        timestampDeltaMs,
+                        estimator.estimator.getNumOfDeltas(),
+                        nowMs);
+            }
 
-        boolean updateEstimate = false;
-        if (lastProcessTime < 0L
-            || lastProcessTime + processIntervalMs - nowMs <= 0L)
-        {
-            updateEstimate = true;
-        }
-        else if (estimator.detector.getState() == BandwidthUsage.kBwOverusing)
-        {
-            long incomingBitrateBps = this.incomingBitrate.getRate(nowMs);
-
-            if (priorState != BandwidthUsage.kBwOverusing
-                    || remoteRate.isTimeToReduceFurther(
-                            nowMs,
-                            incomingBitrateBps))
-            {
-                // The first overuse should immediately trigger a new estimate.
-                // We also have to update the estimate immediately if we are
-                // overusing and the target bitrate is too high compared to what
-                // we are receiving.
+            boolean updateEstimate = false;
+            if (lastProcessTime < 0L
+                    || lastProcessTime + processIntervalMs - nowMs <= 0L) {
                 updateEstimate = true;
             }
-        }
+            else if (estimator.detector.getState() == BandwidthUsage.kBwOverusing) {
+                long incomingBitrateBps = this.incomingBitrate.getRate(nowMs);
 
-        if (updateEstimate)
-        {
-            updateEstimate(nowMs);
-            lastProcessTime = nowMs;
-        }
+                if (priorState != BandwidthUsage.kBwOverusing
+                        || remoteRate.isTimeToReduceFurther(nowMs, incomingBitrateBps)) {
+                    // The first overuse should immediately trigger a new estimate.
+                    // We also have to update the estimate immediately if we are
+                    // overusing and the target bitrate is too high compared to what
+                    // we are receiving.
+                    updateEstimate = true;
+                }
+            }
+            if (updateEstimate) {
+                updateEstimate(nowMs);
+                lastProcessTime = nowMs;
+            }
         } // synchronized (critSect)
     }
 
@@ -208,8 +208,7 @@ public class RemoteBitrateEstimatorSingleStream implements RemoteBitrateEstimato
     @Override
     public void onRttUpdate(long avgRttMs, long maxRttMs)
     {
-        synchronized (critSect)
-        {
+        synchronized (critSect) {
             remoteRate.setRtt(avgRttMs);
         }
     }
@@ -227,94 +226,91 @@ public class RemoteBitrateEstimatorSingleStream implements RemoteBitrateEstimato
         }
     }
 
-	@Override
-	public void setMinBitrate(int minBitrateBps)
-	{
-		synchronized (critSect) {
-			remoteRate.setMinBitrate(minBitrateBps);
-		}
-	}
+    @Override
+    public void setMinBitrate(int minBitrateBps)
+    {
+        synchronized (critSect) {
+            remoteRate.setMinBitrate(minBitrateBps);
+        }
+    }
 
-	/**
-	 * Triggers a new estimate calculation.
-	 *
-	 * @param nowMs
-	 */
-	private void updateEstimate(long nowMs)
-	{
-		synchronized (critSect) {
+    /**
+     * Triggers a new estimate calculation.
+     *
+     * @param nowMs
+     */
+    private void updateEstimate(long nowMs)
+    {
+        synchronized (critSect) {
 
-			BandwidthUsage bwState = BandwidthUsage.kBwNormal;
-			double sumVarNoise = 0D;
+            BandwidthUsage bwState = BandwidthUsage.kBwNormal;
+            double sumVarNoise = 0D;
 
-			for (Iterator<Detector> it = overuseDetectors.values().iterator(); it.hasNext();) {
-				Detector overuseDetector = it.next();
-				long timeOfLastReceivedPacket = overuseDetector.lastPacketTimeMs;
+            for (Iterator<Detector> it = overuseDetectors.values().iterator(); it.hasNext(); ) {
+                Detector overuseDetector = it.next();
+                long timeOfLastReceivedPacket = overuseDetector.lastPacketTimeMs;
 
-				if (timeOfLastReceivedPacket >= 0L
-					&& nowMs - timeOfLastReceivedPacket > kStreamTimeOutMs) {
-					// This over-use detector hasn't received packets for
-					// kStreamTimeOutMs milliseconds and is considered stale.
-					it.remove();
-					ssrcs = null;
-				}
-				else {
-					sumVarNoise += overuseDetector.estimator.getVarNoise();
+                if (timeOfLastReceivedPacket >= 0L
+                        && nowMs - timeOfLastReceivedPacket > kStreamTimeOutMs) {
+                    // This over-use detector hasn't received packets for
+                    // kStreamTimeOutMs milliseconds and is considered stale.
+                    it.remove();
+                    ssrcs = null;
+                }
+                else {
+                    sumVarNoise += overuseDetector.estimator.getVarNoise();
 
-					// Make sure that we trigger an over-use if any of the over-use
-					// detectors is detecting over-use.
-					BandwidthUsage overuseDetectorBwState = overuseDetector.detector.getState();
+                    // Make sure that we trigger an over-use if any of the over-use
+                    // detectors is detecting over-use.
+                    BandwidthUsage overuseDetectorBwState = overuseDetector.detector.getState();
 
-					if (overuseDetectorBwState.ordinal() > bwState.ordinal())
-						bwState = overuseDetectorBwState;
-				}
-			}
-			// We can't update the estimate if we don't have any active streams.
-			if (overuseDetectors.isEmpty()) {
-				remoteRate.reset();
-				return;
-			}
+                    if (overuseDetectorBwState.ordinal() > bwState.ordinal())
+                        bwState = overuseDetectorBwState;
+                }
+            }
+            // We can't update the estimate if we don't have any active streams.
+            if (overuseDetectors.isEmpty()) {
+                remoteRate.reset();
+                return;
+            }
 
-			double meanNoiseVar = sumVarNoise / (double) overuseDetectors.size();
-			RateControlInput input = this.input;
+            double meanNoiseVar = sumVarNoise / (double) overuseDetectors.size();
+            RateControlInput input = this.input;
 
-			input.bwState = bwState;
-			input.incomingBitRate = incomingBitrate.getRate(nowMs);
-			input.noiseVar = meanNoiseVar;
-			remoteRate.update(input, nowMs);
+            input.bwState = bwState;
+            input.incomingBitRate = incomingBitrate.getRate(nowMs);
+            input.noiseVar = meanNoiseVar;
+            remoteRate.update(input, nowMs);
 
-			long targetBitrate = remoteRate.updateBandwidthEstimate(nowMs);
+            long targetBitrate = remoteRate.updateBandwidthEstimate(nowMs);
 
-			if (remoteRate.isValidEstimate()) {
-				processIntervalMs = remoteRate.getFeedBackInterval();
+            if (remoteRate.isValidEstimate()) {
+                processIntervalMs = remoteRate.getFeedBackInterval();
+                RemoteBitrateObserver observer = this.observer;
+                if (observer != null)
+                    observer.onReceiveBitrateChanged(getSsrcs(), targetBitrate);
+            }
 
-				RemoteBitrateObserver observer = this.observer;
+        } // synchronized (critSect)
+    }
 
-				if (observer != null)
-					observer.onReceiveBitrateChanged(getSsrcs(), targetBitrate);
-			}
+    private class Detector
+    {
+        public OveruseDetector detector;
 
-		} // synchronized (critSect)
-	}
+        public OveruseEstimator estimator;
 
-	private static class Detector
-	{
-		public OveruseDetector detector;
+        public InterArrival interArrival;
 
-		public OveruseEstimator estimator;
+        public long lastPacketTimeMs;
 
-		public InterArrival interArrival;
-
-		public long lastPacketTimeMs;
-
-		public Detector(long lastPacketTimeMs, OverUseDetectorOptions options,
-			boolean enableBurstGrouping)
-		{
-			this.lastPacketTimeMs = lastPacketTimeMs;
-			this.interArrival = new InterArrival(90 * kTimestampGroupLengthMs, kTimestampToMs,
-				enableBurstGrouping);
-			this.estimator = new OveruseEstimator(options);
-			this.detector = new OveruseDetector(options);
-		}
-	}
+        public Detector(long lastPacketTimeMs, OverUseDetectorOptions options, boolean enableBurstGrouping)
+        {
+            this.lastPacketTimeMs = lastPacketTimeMs;
+            this.interArrival = new InterArrival(90 * kTimestampGroupLengthMs, kTimestampToMs,
+                        enableBurstGrouping, diagnosticContext);
+            this.estimator = new OveruseEstimator(options, diagnosticContext);
+            this.detector = new OveruseDetector(options, diagnosticContext);
+        }
+    }
 }
