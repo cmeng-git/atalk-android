@@ -19,6 +19,7 @@ import javax.media.*;
  * @author Damian Minkov
  * @author Lyubomir Marinov
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class FMJPlugInConfiguration
 {
@@ -231,8 +232,7 @@ public class FMJPlugInConfiguration
 					}
 				}
 				else {
-					logger.warn("Codec " + className + " is NOT successfully registered",
-							exception);
+					logger.warn("Codec " + className + " is NOT successfully registered", exception);
 				}
 			}
 		}

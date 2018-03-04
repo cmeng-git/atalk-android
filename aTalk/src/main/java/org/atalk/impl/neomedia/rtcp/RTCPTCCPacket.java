@@ -17,10 +17,14 @@ package org.atalk.impl.neomedia.rtcp;
 
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 
-import org.atalk.service.neomedia.*;
-import org.atalk.util.*;
+import org.atalk.service.neomedia.ByteArrayBuffer;
+import org.atalk.service.neomedia.ByteArrayBufferImpl;
+import org.atalk.util.DiagnosticContext;
+import org.atalk.util.Logger;
+import org.atalk.util.RTPUtils;
 
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A class which represents an RTCP packet carrying transport-wide congestion
@@ -58,16 +62,15 @@ import java.util.*;
  * @author Boris Grozev
  * @author George Politis
  */
-public class RTCPTCCPacket
-        extends RTCPFBPacket
+public class RTCPTCCPacket extends RTCPFBPacket
 {
     /**
      * Gets a boolean indicating whether or not the RTCP packet specified in the
-     * {@link ByteArrayBuffer} that is passed as an argument is a NACK packet or not.
+     * {@link ByteArrayBuffer} that is passed as an argument is a TCC packet or
+     *  
      *
-     * @param baf
-     *         the {@link ByteArrayBuffer}
-     * @return true if the byte array buffer holds a NACK packet, otherwise false.
+     * @param baf the {@link ByteArrayBuffer}
+     * @return true if the byte array buffer holds a TCC packet, otherwise false.
      */
     public static boolean isTCCPacket(ByteArrayBuffer baf)
     {
@@ -81,7 +84,7 @@ public class RTCPTCCPacket
      * Warning: the timestamps are represented in the 250µs format used by the
      * on-the-wire format, and don't represent local time. This is different
      * than the timestamps expected as input when constructing a packet with
-     * {@link RTCPTCCPacket#RTCPTCCPacket(long, long, PacketMap, byte)}.
+     * {@link RTCPTCCPacket#RTCPTCCPacket(long, long, PacketMap, byte, DiagnosticContext)}
      *
      * @param baf the buffer which contains the RTCP packet.
      */
@@ -98,7 +101,7 @@ public class RTCPTCCPacket
      * unit facilitates the arrival time computations, as the deltas have 250µs
      * resolution.
      */
-    public static long getReferenceTime(ByteArrayBuffer fciBuffer)
+    public static long getReferenceTime250us(ByteArrayBuffer fciBuffer)
     {
         byte[] buf = fciBuffer.getBuffer();
         int off = fciBuffer.getOffset();
@@ -141,7 +144,7 @@ public class RTCPTCCPacket
         int baseSeq = RTPUtils.readUint16AsInt(buf, off);
         int packetStatusCount = RTPUtils.readUint16AsInt(buf, off + 2);
 
-        long referenceTime = getReferenceTime(fciBuffer);
+        long referenceTime = getReferenceTime250us(fciBuffer);
 
         // The offset at which the packet status chunk list starts.
         int pscOff = off + 8;
@@ -209,8 +212,7 @@ public class RTCPTCCPacket
                     // but we push the packet in the map to indicate that it was
                     // marked as not received.
                     packets.put(baseSeq, NEGATIVE_ONE);
-                    if (logger.isDebugEnabled())
-                    {
+                    if (logger.isDebugEnabled()) {
                         logger.debug("seq=" + baseSeq
                                 + ",reference_time=" + referenceTime
                                 + ",delta=" + -1
@@ -247,13 +249,10 @@ public class RTCPTCCPacket
      * is found to be invalid (although the validity check is not performed
      * for RLE chunks).
      *
-     * @param buf
-     *         the buffer which contains the Packet Status Chunk.
-     * @param off
-     *         the offset in {@code buf} at which the Packet Status Chunk
-     *         begins.
-     * @param i
-     *         the zero-based index of the symbol to return.
+     * @param buf the buffer which contains the Packet Status Chunk.
+     * @param off the offset in {@code buf} at which the Packet Status Chunk
+     * begins.
+     * @param i the zero-based index of the symbol to return.
      * @return the {@code i}-th symbol from the given Packet Status Chunk.
      */
     private static int readSymbol(byte[] buf, int off, int i)
@@ -320,10 +319,8 @@ public class RTCPTCCPacket
      * symbols), then we want to read only 3 packets (but this method will
      * return 7).
      *
-     * @param buf
-     *         the buffer which contains the Packet Status Chunk
-     * @param off
-     *         the offset at which the Packet Status Chunk starts.
+     * @param buf the buffer which contains the Packet Status Chunk
+     * @param off the offset at which the Packet Status Chunk starts.
      * @return the number of packets described by the Packet Status Chunk.
      */
     private static int getPacketCount(byte[] buf, int off)
@@ -353,7 +350,7 @@ public class RTCPTCCPacket
         }
         // This should never happen.
         throw new IllegalStateException(
-            "The one-bit chunk type is neither 0 nor 1. A superposition is not a valid chunk type.");
+                "The one-bit chunk type is neither 0 nor 1. A superposition is not a valid chunk type.");
     }
 
     /**
@@ -361,7 +358,7 @@ public class RTCPTCCPacket
      * instances for logging output.
      */
     private static final Logger logger
-        = Logger.getLogger(RTCPTCCPacket.class);
+            = Logger.getLogger(RTCPTCCPacket.class);
 
     /**
      * The value of the "fmt" field for a transport-cc RTCP feedback packet.
@@ -445,26 +442,20 @@ public class RTCPTCCPacket
      * Initializes a new {@link RTCPTCCPacket} instance with a specific "packet sender SSRC" and
      * "media source SSRC" values, and which describes a specific set of sequence numbers.
      *
-     * @param senderSSRC
-     *         the value to use for the "packet sender SSRC" field.
-     * @param sourceSSRC
-     *         the value to use for the "media source SSRC" field.
-     * @param packets
-     *         the set of RTP sequence numbers and their reception
-     *         timestamps which this packet is to describe. Note that missing sequence
-     *         numbers, as well as those mapped to a negative will be interpreted as
-     *         missing (not received) packets.
-     * @param fbPacketCount
-     *         the index of this feedback packet, to be used in the "fb pkt count" field.
-     *         Warning: The timestamps for the packets are expected to be in
-     *         millisecond increments, which is different than the output map produced
-     *         after parsing a packet!
-     *         Note: this implementation is not optimized and might not always use
-     *         the minimal possible number of bytes to describe a given set of packets.
+     * @param senderSSRC the value to use for the "packet sender SSRC" field.
+     * @param sourceSSRC the value to use for the "media source SSRC" field.
+     * @param packets the set of RTP sequence numbers and their reception
+     * timestamps which this packet is to describe. Note that missing sequence
+     * numbers, as well as those mapped to a negative will be interpreted as
+     * missing (not received) packets.
+     * @param fbPacketCount the index of this feedback packet, to be used in the "fb pkt count" field.
+     * Warning: The timestamps for the packets are expected to be in
+     * millisecond increments, which is different than the output map produced
+     * after parsing a packet!
+     * Note: this implementation is not optimized and might not always use
+     * the minimal possible number of bytes to describe a given set of packets.
      */
-    public RTCPTCCPacket(long senderSSRC, long sourceSSRC,
-            PacketMap packets,
-            byte fbPacketCount)
+    public RTCPTCCPacket(long senderSSRC, long sourceSSRC, PacketMap packets, byte fbPacketCount, DiagnosticContext diagnosticContext)
     {
         super(FMT, RTPFB, senderSSRC, sourceSSRC);
 
@@ -476,7 +467,9 @@ public class RTCPTCCPacket
         // Temporary buffer to store the fixed fields (8 bytes) and the list of
         // packet status chunks (see the format above). The buffer may be longer
         // than needed. We pack 7 packets in a chunk, and a chunk is 2 bytes.
-        byte[] buf = new byte[(packetCount / 7 + 1) * 2 + 8];
+        byte[] buf = packetCount % 7 == 0
+                ? new byte[(packetCount / 7) * 2 + 8]
+                : new byte[(packetCount / 7 + 1) * 2 + 8];
         // Temporary buffer to store the list of deltas (see the format above).
         // We allocated for the worst case (2 bytes per packet), which may
         // be longer than needed.
@@ -532,6 +525,14 @@ public class RTCPTCCPacket
                     // The small delta is an 8-bit unsigned with a resolution of
                     // 250µs. Our deltas are all in milliseconds (hence << 2).
                     deltas[deltaOff++] = (byte) ((tsDelta << 2) & 0xff);
+                    if (logger.isTraceEnabled()) {
+                        logger.trace(diagnosticContext
+                                .makeTimeSeriesPoint("small_delta")
+                                .addField("seq", seq)
+                                .addField("arrival_time_ms", ts)
+                                .addField("ref_time_ms", nextReferenceTime)
+                                .addField("delta", tsDelta));
+                    }
                 }
                 else if (tsDelta < 8191 && tsDelta > -8192) {
                     symbol = SYMBOL_LARGE_DELTA;
@@ -541,6 +542,14 @@ public class RTCPTCCPacket
                     short d = (short) (tsDelta << 2);
                     deltas[deltaOff++] = (byte) ((d >> 8) & 0xff);
                     deltas[deltaOff++] = (byte) ((d) & 0xff);
+                    if (logger.isTraceEnabled()) {
+                        logger.trace(diagnosticContext
+                                .makeTimeSeriesPoint("large_delta")
+                                .addField("seq", seq)
+                                .addField("arrival_time_ms", ts)
+                                .addField("ref_time_ms", nextReferenceTime)
+                                .addField("delta", tsDelta));
+                    }
                 }
                 else {
                     // The RTCP packet format does not support deltas bigger
@@ -560,31 +569,31 @@ public class RTCPTCCPacket
             // symbol (we've already set 'off' to point to the correct byte).
             //  0 1 2 3 4 5 6 7          8 9 0 1 2 3 4 5
             //  S T <0> <1> <2>          <3> <4> <5> <6>
-            int symbolOffset;
+            int symbolShift;
             switch (seqDelta % 7) {
                 case 0:
                 case 4:
-                    symbolOffset = 4;
+                    symbolShift = 4;
                     break;
                 case 1:
                 case 5:
-                    symbolOffset = 2;
+                    symbolShift = 2;
                     break;
                 case 2:
                 case 6:
-                    symbolOffset = 0;
+                    symbolShift = 0;
                     break;
                 case 3:
                 default:
-                    symbolOffset = 6;
+                    symbolShift = 6;
             }
 
-            symbol <<= symbolOffset;
+            symbol <<= symbolShift;
             buf[off] |= symbol;
         }
 
         off++;
-        if (packetCount % 7 <= 3) {
+        if (packetCount % 7 > 0 && packetCount % 7 <= 3) {
             // the last chunk was not complete
             buf[off++] = 0;
         }

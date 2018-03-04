@@ -32,7 +32,8 @@ import javax.media.format.*;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class JNIEncoder extends AbstractCodec implements RTCPFeedbackMessageListener
+public class JNIEncoder extends AbstractCodec
+        implements RTCPFeedbackMessageListener
 {
 	/**
 	 * The available presets we can use with the encoder.
@@ -70,7 +71,7 @@ public class JNIEncoder extends AbstractCodec implements RTCPFeedbackMessageList
 	 * The default value of the {@link #DEFAULT_PROFILE_PNAME} <tt>ConfigurationService</tt>
 	 * property.
 	 */
-	public static final String DEFAULT_DEFAULT_PROFILE = MAIN_PROFILE;
+    public static final String DEFAULT_DEFAULT_PROFILE = BASELINE_PROFILE;
 
 	/**
 	 * The frame rate to be assumed by <tt>JNIEncoder</tt> instances in the absence of any other
@@ -149,12 +150,10 @@ public class JNIEncoder extends AbstractCodec implements RTCPFeedbackMessageList
 	static final Format[] SUPPORTED_OUTPUT_FORMATS = {
 			new ParameterizedVideoFormat(
 					Constants.H264,
-					VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP,
-					"0"),
+					VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0"),
 			new ParameterizedVideoFormat(
 					Constants.H264,
-					VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP,
-					"1")};
+					VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "1")};
 
 	public static final int X264_KEYINT_MAX_INFINITE = 1 << 30;
 
@@ -332,9 +331,7 @@ public class JNIEncoder extends AbstractCodec implements RTCPFeedbackMessageList
 					Format.NOT_SPECIFIED, /* maxDataLength */
 					Format.byteArray,
 					frameRate,
-					ParameterizedVideoFormat.toMap(
-							VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP,
-							packetizationModes[index]));
+					ParameterizedVideoFormat.toMap(VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, packetizationModes[index]));
 		}
 		return matchingOutputFormats;
 	}
@@ -508,8 +505,7 @@ public class JNIEncoder extends AbstractCodec implements RTCPFeedbackMessageList
 		FFmpeg.avcodeccontext_set_size(avctx, width, height);
 		FFmpeg.avcodeccontext_set_qcompress(avctx, 0.6f);
 
-		int bitRate = 1000 * NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration()
-				.getVideoBitrate();
+		int bitRate = 1000 * NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration().getVideoBitrate();
 		int frameRate = Format.NOT_SPECIFIED;
 
 		// Allow the outputFormat to request a certain frameRate.
@@ -660,8 +656,7 @@ public class JNIEncoder extends AbstractCodec implements RTCPFeedbackMessageList
 		}
 
 		// Copy the data of inBuffer into avFrame.
-		FFmpeg.memcpy(rawFrameBuffer, (byte[]) inBuffer.getData(),
-				inBuffer.getOffset(), rawFrameLen);
+		FFmpeg.memcpy(rawFrameBuffer, (byte[]) inBuffer.getData(), inBuffer.getOffset(), rawFrameLen);
 
 		boolean keyFrame = isKeyFrame();
 
