@@ -1,11 +1,4 @@
 #!/bin/bash
-export DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PARENT="$(dirname "${DIR}")"
-# export NDK="$(dirname "${PARENT}")"
-export NDK="/opt/android/android-sdk/ndk-bundle"
-export PATH="$PATH:$NDK"
-export PROJECT_JNI="$(dirname "${NDK}")/JNI/app/jni"
-export PROJECT_LIBS="$(dirname "${NDK}")/JNI/app/libs"
 
 ## Build arm v6 v7a
 ./build_android_arm.sh

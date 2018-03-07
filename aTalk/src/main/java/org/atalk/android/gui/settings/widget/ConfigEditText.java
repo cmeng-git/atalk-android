@@ -7,11 +7,14 @@ package org.atalk.android.gui.settings.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.*;
+import android.preference.EditTextPreference;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
 
 /**
@@ -23,180 +26,178 @@ import org.atalk.util.StringUtils;
  */
 public class ConfigEditText extends EditTextPreference implements Preference.OnPreferenceChangeListener
 {
-	/**
-	 * Integer upper bound for accepted value
-	 */
-	private Integer intMax;
-	/**
-	 * Integer lower limit for accepted value
-	 */
-	private Integer intMin;
-	/**
-	 * Float upper bound for accepted value
-	 */
-	private Float floatMin;
-	/**
-	 * Float lower limit for accepted value
-	 */
-	private Float floatMax;
+    /**
+     * Integer upper bound for accepted value
+     */
+    private Integer intMax;
+    /**
+     * Integer lower limit for accepted value
+     */
+    private Integer intMin;
+    /**
+     * Float upper bound for accepted value
+     */
+    private Float floatMin;
+    /**
+     * Float lower limit for accepted value
+     */
+    private Float floatMax;
 
-	/**
-	 * <tt>ConfigWidgetUtil</tt> used by this instance
-	 */
-	private ConfigWidgetUtil configUtil = new ConfigWidgetUtil(this, true);
+    /**
+     * <tt>ConfigWidgetUtil</tt> used by this instance
+     */
+    private ConfigWidgetUtil configUtil = new ConfigWidgetUtil(this, true);
 
-	/**
-	 * Flag indicates if this edit text field is editable.
-	 */
-	private boolean editable = true;
-	/**
-	 * Flag indicates if we want to allow empty values to go thought the value range check.
-	 */
-	private boolean allowEmpty = true;
+    /**
+     * Flag indicates if this edit text field is editable.
+     */
+    private boolean editable = true;
+    /**
+     * Flag indicates if we want to allow empty values to go thought the value range check.
+     */
+    private boolean allowEmpty = true;
 
-	public ConfigEditText(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
+    public ConfigEditText(Context context, AttributeSet attrs, int defStyle)
+    {
+        super(context, attrs, defStyle);
+        initAttributes(context, attrs);
+    }
 
-		initAttributes(context, attrs);
-	}
+    public ConfigEditText(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+        initAttributes(context, attrs);
+    }
 
-	public ConfigEditText(Context context, AttributeSet attrs) {
-		super(context, attrs);
+    public ConfigEditText(Context context)
+    {
+        super(context);
+    }
 
-		initAttributes(context, attrs);
-	}
+    /**
+     * Parses attributes array.
+     *
+     * @param context the Android context.
+     * @param attrs attributes set.
+     */
+    private void initAttributes(Context context, AttributeSet attrs)
+    {
+        TypedArray attArray = context.obtainStyledAttributes(attrs, R.styleable.ConfigEditText);
 
-	public ConfigEditText(Context context) {
-		super(context);
-	}
+        for (int i = 0; i < attArray.getIndexCount(); i++) {
+            int attribute = attArray.getIndex(i);
+            switch (attribute) {
+                case R.styleable.ConfigEditText_intMax:
+                    this.intMax = attArray.getInt(attribute, -1);
+                    break;
+                case R.styleable.ConfigEditText_intMin:
+                    this.intMin = attArray.getInt(attribute, -1);
+                    break;
+                case R.styleable.ConfigEditText_floatMax:
+                    this.floatMax = attArray.getFloat(attribute, -1);
+                    break;
+                case R.styleable.ConfigEditText_floatMin:
+                    this.floatMin = attArray.getFloat(attribute, -1);
+                    break;
+                case R.styleable.ConfigEditText_editable:
+                    this.editable = attArray.getBoolean(attribute, true);
+                    break;
+                case R.styleable.ConfigEditText_allowEmpty:
+                    this.allowEmpty = attArray.getBoolean(attribute, true);
+                    break;
+            }
+        }
+        // Register listener to perform checks before new value is accepted
+        setOnPreferenceChangeListener(this);
 
-	/**
-	 * Parses attributes array.
-	 * 
-	 * @param context
-	 *        the Android context.
-	 * @param attrs
-	 *        attributes set.
-	 */
-	private void initAttributes(Context context, AttributeSet attrs)
-	{
-		TypedArray attArray = context.obtainStyledAttributes(attrs, R.styleable.ConfigEditText);
+        configUtil.parseAttributes(context, attrs);
+    }
 
-		for (int i = 0; i < attArray.getIndexCount(); i++) {
-			int attribute = attArray.getIndex(i);
-			switch (attribute) {
-				case R.styleable.ConfigEditText_intMax:
-					this.intMax = attArray.getInt(attribute, -1);
-					break;
-				case R.styleable.ConfigEditText_intMin:
-					this.intMin = attArray.getInt(attribute, -1);
-					break;
-				case R.styleable.ConfigEditText_floatMax:
-					this.floatMax = attArray.getFloat(attribute, -1);
-					break;
-				case R.styleable.ConfigEditText_floatMin:
-					this.floatMin = attArray.getFloat(attribute, -1);
-					break;
-				case R.styleable.ConfigEditText_editable:
-					this.editable = attArray.getBoolean(attribute, true);
-					break;
-				case R.styleable.ConfigEditText_allowEmpty:
-					this.allowEmpty = attArray.getBoolean(attribute, true);
-					break;
-			}
-		}
-		// Register listener to perform checks before new value is accepted
-		setOnPreferenceChangeListener(this);
+    @Override
+    protected void onAttachedToHierarchy(PreferenceManager preferenceManager)
+    {
+        // Force load default value from configuration service
+        setDefaultValue(getPersistedString(null));
+        super.onAttachedToHierarchy(preferenceManager);
+    }
 
-		configUtil.parseAttributes(context, attrs);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
+    {
+        super.onSetInitialValue(restoreValue, defaultValue);
 
-	@Override
-	protected void onAttachedToHierarchy(PreferenceManager preferenceManager)
-	{
-		// Force load default value from configuration service
-		setDefaultValue(getPersistedString(null));
+        // Set summary on init
+        configUtil.updateSummary(getText());
+    }
 
-		super.onAttachedToHierarchy(preferenceManager);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPersistedString(String defaultReturnValue)
+    {
+        ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
+        if (configService == null)
+            return defaultReturnValue;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
-	{
-		super.onSetInitialValue(restoreValue, defaultValue);
+        return configService.getString(getKey(), defaultReturnValue);
+    }
 
-		// Set summary on init
-		configUtil.updateSummary(getText());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean persistString(String value)
+    {
+        super.persistString(value);
+        configUtil.handlePersistValue(value);
+        return true;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getPersistedString(String defaultReturnValue)
-	{
-		return AndroidGUIActivator.getConfigurationService().getString(getKey(), defaultReturnValue);
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * Performs value range checks before the value is accepted.
+     */
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue)
+    {
+        if (allowEmpty && StringUtils.isNullOrEmpty((String) newValue)) {
+            return true;
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean persistString(String value)
-	{
-		super.persistString(value);
+        if (intMax != null && intMin != null) {
+            // Integer range check
+            try {
+                Integer newInt = Integer.parseInt((String) newValue);
+                return intMin <= newInt && newInt <= intMax;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        else if (floatMin != null && floatMax != null) {
+            // Float range check
+            try {
+                Float newFloat = Float.parseFloat((String) newValue);
+                return floatMin <= newFloat && newFloat <= floatMax;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        // No checks by default
+        return true;
+    }
 
-		configUtil.handlePersistValue(value);
-
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * Performs value range checks before the value is accepted.
-	 */
-	@Override
-	public boolean onPreferenceChange(Preference preference, Object newValue)
-	{
-		if (allowEmpty && StringUtils.isNullOrEmpty((String) newValue)) {
-			return true;
-		}
-
-		if (intMax != null && intMin != null) {
-			// Integer range check
-			try {
-				Integer newInt = Integer.parseInt((String) newValue);
-				return intMin <= newInt && newInt <= intMax;
-			}
-			catch (NumberFormatException e) {
-				return false;
-			}
-		}
-		else if (floatMin != null && floatMax != null) {
-			// Float range check
-			try {
-				Float newFloat = Float.parseFloat((String) newValue);
-				return floatMin <= newFloat && newFloat <= floatMax;
-			}
-			catch (NumberFormatException e) {
-				return false;
-			}
-		}
-		// No checks by default
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void onClick()
-	{
-		if (editable)
-			super.onClick();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onClick()
+    {
+        if (editable)
+            super.onClick();
+    }
 }

@@ -7,7 +7,7 @@ export NDK_ROOT="/opt/android/android-sdk/ndk-bundle"
 TOOLS_ROOT=`pwd`
 
 # cmeng: Never mix two api level to build static library for use on the same apk.
-# Set to API:-15 for aTalk mininum support for platform API-15
+# Set to API:-15 for aTalk minimun support for platform API-15
 
 ANDROID_API=${ANDROID_API:-15}
 

@@ -5,12 +5,13 @@
  */
 package org.atalk.android.gui.settings.widget;
 
-import org.atalk.android.gui.AndroidGUIActivator;
-
 import android.content.Context;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+
+import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.service.configuration.ConfigurationService;
 
 /**
  * Checkbox preference that persists the value through <tt>ConfigurationService</tt>.
@@ -19,67 +20,68 @@ import android.util.AttributeSet;
  */
 public class ConfigCheckBox extends CheckBoxPreference
 {
-	/**
-	 * <tt>ConfigWidgetUtil</tt> used by this instance.
-	 */
-	private ConfigWidgetUtil configUtil = new ConfigWidgetUtil(this);
+    /**
+     * <tt>ConfigWidgetUtil</tt> used by this instance.
+     */
+    private ConfigWidgetUtil configUtil = new ConfigWidgetUtil(this);
 
-	public ConfigCheckBox(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
+    public ConfigCheckBox(Context context, AttributeSet attrs, int defStyle)
+    {
+        super(context, attrs, defStyle);
+        configUtil.parseAttributes(context, attrs);
+    }
 
-		configUtil.parseAttributes(context, attrs);
-	}
+    public ConfigCheckBox(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+        configUtil.parseAttributes(context, attrs);
+    }
 
-	public ConfigCheckBox(Context context, AttributeSet attrs) {
-		super(context, attrs);
+    public ConfigCheckBox(Context context)
+    {
+        super(context);
+    }
 
-		configUtil.parseAttributes(context, attrs);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
+    {
+        super.onSetInitialValue(restoreValue, defaultValue);
+        configUtil.updateSummary(isChecked());
+    }
 
-	public ConfigCheckBox(Context context) {
-		super(context);
-	}
+    @Override
+    protected void onAttachedToHierarchy(PreferenceManager preferenceManager)
+    {
+        // Force load default value from configuration service
+        setDefaultValue(getPersistedBoolean(false));
+        super.onAttachedToHierarchy(preferenceManager);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
-	{
-		super.onSetInitialValue(restoreValue, defaultValue);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean getPersistedBoolean(boolean defaultReturnValue)
+    {
+        ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
+        if (configService == null)
+            return defaultReturnValue;
 
-		configUtil.updateSummary(isChecked());
-	}
+        return configService.getBoolean(getKey(), defaultReturnValue);
+    }
 
-	@Override
-	protected void onAttachedToHierarchy(PreferenceManager preferenceManager)
-	{
-		// Force load default value from configuration service
-		setDefaultValue(getPersistedBoolean(false));
-
-		super.onAttachedToHierarchy(preferenceManager);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean getPersistedBoolean(boolean defaultReturnValue)
-	{
-		return AndroidGUIActivator.getConfigurationService().getBoolean(getKey(), defaultReturnValue);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean persistBoolean(boolean value)
-	{
-		super.persistBoolean(value);
-
-		// Sets boolean value in the ConfigurationService
-		configUtil.handlePersistValue(value);
-
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean persistBoolean(boolean value)
+    {
+        super.persistBoolean(value);
+        // Sets boolean value in the ConfigurationService
+        configUtil.handlePersistValue(value);
+        return true;
+    }
 }

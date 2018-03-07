@@ -1,4 +1,7 @@
 #!/bin/bash
+set -u
+source ./build_settings.sh
+
 # arch64-bit built need api-21
 export PLATFORM="android-21"
 SYSROOT=$NDK/platforms/$PLATFORM/arch-x86_64/

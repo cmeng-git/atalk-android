@@ -22,7 +22,7 @@ APP_ABI := armeabi-v7a x86
 # cmeng: Use system for smaller shared library generation and safely compatible with any pre-built libraries
 
 # APP_STL := gnustl_static |  c++_static | c++_shared
-APP_STL := system
+APP_STL := c++_shared
 
 # Enforced the support for Exceptions and RTTI in all generated machine code.
 APP_CPPFLAGS := -frtti -fexceptions

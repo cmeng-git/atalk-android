@@ -1,4 +1,0 @@
-LIBAVDEVICE_54 {
-        global: avdevice_*;
-        local: *;
-};

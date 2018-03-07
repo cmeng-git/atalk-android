@@ -19,8 +19,6 @@
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
 #include <libswscale/swscale.h>
-#include <libavfilter/internal.h> /* ff_request_frame */
-#include <libavfilter/formats.h> /* ff_default_query_formats, ff_make_format_list, ff_set_common_formats */
 
 #define DEFINE_AVCODECCONTEXT_F_PROPERTY_SETTER(name, property) \
     JNIEXPORT void JNICALL \
@@ -898,8 +896,8 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_get_1filtered_1video_1frame
     AVFilterContext *ffsink_ = (AVFilterContext *) (intptr_t) ffsink;
     // AVFrame *output_ = (AVFrame *)(intptr_t)output;
     // result = av_buffersink_get_frame(ffsink_, output_);
-    AVFilterBufferRef *output_;
-    result = av_buffersink_get_buffer_ref(ffsink_, &output_, AV_BUFFERSINK_FLAG_PEEK);
+    AVFilterBufferRef *output_ = (AVFilterBufferRef *)(intptr_t)output;
+    result = av_buffersink_read(ffsink_, &output_);
     return (jlong)result;
 	
 /*	

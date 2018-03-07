@@ -1,4 +1,5 @@
-# libvpx Library for iOS and Android<table>
+## libvpx Library for iOS and Android<table>
+####
 <thead>
 <tr><td>library</td><td>version</td><td>platform support</td><td>arch support</td><td>pull commit</td></tr>
 </thead>
@@ -8,25 +9,20 @@
 <tr><td></td><td></td><td>android</td><td>armeabi armeabi-v7a arm64-v8a x86 x86_64 mips mips64</td><td>aae1672</td></tr>
 </table>
 
-## Android NDK Version
+### Build For Android
 
- - android-sdk/ndk-bundle
-
-## How to build
-### For Android
-
-Set ENV `NDK_ROOT`
-
-
-```
-cd tools
-sh ./build-libvpx4android.sh
-```
-
-You could build it with ABI like
+- Use Android NDK: android-sdk/ndk-bundle
+- Copy the libvpx directory into your linux working directory.
+- Do not copy mater.tar.gz if you want to use the latest libvpx source from github
+- When you first build-libvpx4android.sh, it pull the latest libvpx source from github.
+- You may change e.g LIB_GIT="v1.6.1" to the libvpx version you want to build.
+  
+You build the static libvpx.a for the various architecture using the command as below.
+All the built libvpx.a and *.h will be placed in the ./output/<cpu>/lib and ./output/<cpu>/include
+respectively
 
 ```
-cd tools
+cd libvpx
 sh ./build-libvpx4android.sh android  # for armeabi
 sh ./build-libvpx4android.sh android-armeabi #for armeabi-v7a
 sh ./build-libvpx4android.sh android64-arm64 #for arm64_v8a
@@ -36,15 +32,15 @@ sh ./build-libvpx4android.sh android-mips  #for mips
 sh ./build-libvpx4android.sh android64-mips64 #for mips64
 ```
 
+Copy `lib/armeabi`, `lib/armeabi-v7a` and `lib/x86` directories to the android project
+jni directory e.g. aTalk/jni/vpx
 
-## How to use
-### For Android
+Similarly copy all the include directories to the android project jni directory.
 
-Copy `lib/armeabi` folder and `lib/armeabi-v7a` folder and `lib/x86` to your android project `libs` folder.
+Note: All information given below is for reference only. See aTalk/jni for its implementation.
 
-Copy `include/libvpx` folder and `include/curl` to your android project.
-
-#### Android Makefile
+##### ============================================
+#### Android.mk makefile - for other project
 Add libvpx include path to `jni/Android.mk`. 
 
 ```
@@ -55,16 +51,13 @@ LOCAL_MODULE := libvpx
 LOCAL_SRC_FILES := Your libVPX Library Path/$(TARGET_ARCH_ABI)/libvpx.a
 include $(PREBUILT_STATIC_LIBRARY)
 
-LOCAL_C_INCLUDES := \
-	$(LOCAL_PATH)/Your libvpx Include Path/libvpx
-
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/Your libvpx Include Path/libvpx
 LOCAL_STATIC_LIBRARIES := libvpx
-
 LOCAL_LDLIBS := -lz
 	
 ```
 
-### CMake
+#### CMake
 Define `vpx` as *STATIC IMPORTED* libraries.
 
 ```

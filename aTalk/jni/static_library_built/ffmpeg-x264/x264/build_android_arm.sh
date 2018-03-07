@@ -1,4 +1,7 @@
 #!/bin/bash
+set -u
+source ./build_settings.sh
+
 export PLATFORM="android-15"
 SYSROOT=$NDK/platforms/$PLATFORM/arch-arm/
 TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64
@@ -32,10 +35,8 @@ build_target
 # duplicate built library etc for armeabi
 cp -r "$PREFIX" "./android/armeabi" 
 
-
 cd $PROJECT_JNI
 export ABI=$CPU
-
 # $NDK/ndk-build
 # cp -r "$PROJECT_LIBS/$CPU" "$PROJECT_LIBS/../out" 
 # cd $DIR

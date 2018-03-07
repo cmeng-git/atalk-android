@@ -1,25 +1,29 @@
 #!/bin/bash
+set -u
+source ./build_settings.sh
+
 export PLATFORM="android-15"
 SYSROOT=$NDK/platforms/$PLATFORM/arch-arm/
+# SYSROOT=$NDK/sysroot
 TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64
 rm -f $(pwd)/compat/strtod.o
 
 function build_target
 {
 ./configure \
-    $COMMON $CONFIGURATION \
-    --prefix=$PREFIX \
-    --cross-prefix=$CROSS_PREFIX \
-    --nm=${CROSS_PREFIX}nm \
-    --sysroot=$SYSROOT \
-    --cc=${CROSS_PREFIX}gcc \
-    --extra-libs="-lgcc" \
-    --target-os=linux \
-    --arch=arm \
-    --cpu=armv7-a \
-    --enable-neon \
-    --extra-cflags="-Os -march=armv7-a -mfloat-abi=softfp -fPIC -DANDROID -marm $ADDI_CFLAGS -I../x264/android/$CPU/include" \
-    --extra-ldflags="$ADDI_LDFLAGS -L../x264/android/$CPU/lib"
+  $COMMON $CONFIGURATION \
+  --prefix=$PREFIX \
+  --cross-prefix=$CROSS_PREFIX \
+  --nm=${CROSS_PREFIX}nm \
+  --sysroot=$SYSROOT \
+  --cc=${CROSS_PREFIX}gcc \
+  --extra-libs="-lgcc" \
+  --target-os=linux \
+  --arch=arm \
+  --cpu=armv7-a \
+  --enable-neon \
+  --extra-cflags="-Os -march=armv7-a -mfloat-abi=softfp -fPIC -DANDROID -marm $ADDI_CFLAGS -I../x264/android/$CPU/include" \
+  --extra-ldflags="$ADDI_LDFLAGS -L../x264/android/$CPU/lib"
 
 make clean
 make -j4

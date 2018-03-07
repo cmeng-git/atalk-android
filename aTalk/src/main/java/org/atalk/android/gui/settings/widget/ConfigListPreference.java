@@ -5,14 +5,15 @@
  */
 package org.atalk.android.gui.settings.widget;
 
-import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+
+import org.atalk.android.R;
+import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.service.configuration.ConfigurationService;
 
 /**
  * List preference that stores it's value through the <tt>ConfigurationService</tt>. It also supports
@@ -22,130 +23,134 @@ import android.util.AttributeSet;
  */
 public class ConfigListPreference extends ListPreference
 {
-	/**
-	 * Optional attribute which contains value that disables all dependents.
-	 */
-	private String dependentValue;
-	/**
-	 * Disables dependents when current value is different than <tt>dependentValue</tt>.
-	 */
-	private boolean disableOnNotEqual;
+    /**
+     * Optional attribute which contains value that disables all dependents.
+     */
+    private String dependentValue;
+    /**
+     * Disables dependents when current value is different than <tt>dependentValue</tt>.
+     */
+    private boolean disableOnNotEqual;
 
-	public ConfigListPreference(Context context, AttributeSet attrs) {
-		super(context, attrs);
+    public ConfigListPreference(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+        initAttributes(context, attrs);
+    }
 
-		initAttributes(context, attrs);
-	}
+    public ConfigListPreference(Context context)
+    {
+        super(context);
+    }
 
-	public ConfigListPreference(Context context) {
-		super(context);
-	}
+    /**
+     * Parses attribute set.
+     *
+     * @param context Android context.
+     * @param attrs attribute set.
+     */
+    private void initAttributes(Context context, AttributeSet attrs)
+    {
+        TypedArray attArray = context.obtainStyledAttributes(attrs, R.styleable.ConfigListPreference);
 
-	/**
-	 * Parses attribute set.
-	 * 
-	 * @param context
-	 *        Android context.
-	 * @param attrs
-	 *        attribute set.
-	 */
-	private void initAttributes(Context context, AttributeSet attrs)
-	{
-		TypedArray attArray = context.obtainStyledAttributes(attrs, R.styleable.ConfigListPreference);
+        for (int i = 0; i < attArray.getIndexCount(); i++) {
+            int attrIdx = attArray.getIndex(i);
+            switch (attrIdx) {
+                case R.styleable.ConfigListPreference_disableDependentsValue:
+                    this.dependentValue = attArray.getString(attrIdx);
+                    break;
+                case R.styleable.ConfigListPreference_disableOnNotEqualValue:
+                    this.disableOnNotEqual = attArray.getBoolean(attrIdx, false);
+                    break;
+            }
+        }
+    }
 
-		for (int i = 0; i < attArray.getIndexCount(); i++) {
-			int attrIdx = attArray.getIndex(i);
-			switch (attrIdx) {
-				case R.styleable.ConfigListPreference_disableDependentsValue:
-					this.dependentValue = attArray.getString(attrIdx);
-					break;
-				case R.styleable.ConfigListPreference_disableOnNotEqualValue:
-					this.disableOnNotEqual = attArray.getBoolean(attrIdx, false);
-					break;
-			}
-		}
-	}
+    @Override
+    protected void onAttachedToHierarchy(PreferenceManager preferenceManager)
+    {
+        // Force load default value from configuration service
+        setDefaultValue(getPersistedString(null));
+        super.onAttachedToHierarchy(preferenceManager);
+    }
 
-	@Override
-	protected void onAttachedToHierarchy(PreferenceManager preferenceManager)
-	{
-		// Force load default value from configuration service
-		setDefaultValue(getPersistedString(null));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
+    {
+        super.onSetInitialValue(restoreValue, defaultValue);
 
-		super.onAttachedToHierarchy(preferenceManager);
-	}
+        // Update summary every time the value is read
+        updateSummary(getValue());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
-	{
-		super.onSetInitialValue(restoreValue, defaultValue);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPersistedString(String defaultReturnValue)
+    {
+        ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
+        if (configService == null)
+            return defaultReturnValue;
 
-		// Update summary every time the value is read
-		updateSummary(getValue());
-	}
+        return configService.getString(getKey(), defaultReturnValue);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getPersistedString(String defaultReturnValue)
-	{
-		return AndroidGUIActivator.getConfigurationService().getString(getKey(), defaultReturnValue);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean persistString(String value)
+    {
+        super.persistString(value);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean persistString(String value)
-	{
-		super.persistString(value);
+        ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
+        if (configService == null)
+            return false;
 
-		AndroidGUIActivator.getConfigurationService().setProperty(getKey(), value);
+        // Update summary when the value has changed
+        configService.setProperty(getKey(), value);
+        updateSummary(value);
+        return true;
+    }
 
-		// Update summary when the value has changed
-		updateSummary(value);
+    /**
+     * Updates the summary using entry corresponding to currently selected value.
+     *
+     * @param value the current value
+     */
+    private void updateSummary(String value)
+    {
+        int idx = findIndexOfValue(value);
+        if (idx != -1) {
+            setSummary(getEntries()[idx]);
+        }
+    }
 
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setValue(String value)
+    {
+        super.setValue(value);
 
-	/**
-	 * Updates the summary using entry corresponding to currently selected value.
-	 *
-	 * @param value
-	 *        the current value
-	 */
-	private void updateSummary(String value)
-	{
-		int idx = findIndexOfValue(value);
-		if (idx != -1) {
-			setSummary(getEntries()[idx]);
-		}
-	}
+        // Disables dependents
+        notifyDependencyChange(shouldDisableDependents());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setValue(String value)
-	{
-		super.setValue(value);
-
-		// Disables dependents
-		notifyDependencyChange(shouldDisableDependents());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * Additionally checks if current value is equal to disable dependents value.
-	 */
-	@Override
-	public boolean shouldDisableDependents()
-	{
-		return super.shouldDisableDependents() || (dependentValue != null && disableOnNotEqual != dependentValue.equals(getValue()));
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * Additionally checks if current value is equal to disable dependents value.
+     */
+    @Override
+    public boolean shouldDisableDependents()
+    {
+        return super.shouldDisableDependents()
+                || (dependentValue != null && disableOnNotEqual != dependentValue.equals(getValue()));
+    }
 }

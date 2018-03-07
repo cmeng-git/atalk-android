@@ -199,12 +199,13 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
 	 */
 	public static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories()
 	{
-		Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
+		Collection<ServiceReference<ProtocolProviderFactory>> serRefs = null;
 		Map<Object, ProtocolProviderFactory> providerFactoriesMap = new Hashtable<>();
 
+        // get all registered provider factories
 		try {
-			// get all registered provider factories
-			serRefs = bundleContext.getServiceReferences(ProtocolProviderFactory.class, null);
+            if (bundleContext != null)
+    			serRefs = bundleContext.getServiceReferences(ProtocolProviderFactory.class, null);
 		}
 		catch (InvalidSyntaxException ex) {
 			serRefs = null;
@@ -214,8 +215,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
 		if ((serRefs != null) && !serRefs.isEmpty()) {
 			for (ServiceReference<ProtocolProviderFactory> serRef : serRefs) {
 				ProtocolProviderFactory providerFactory = bundleContext.getService(serRef);
-				providerFactoriesMap.put(serRef.getProperty(ProtocolProviderFactory.PROTOCOL),
-						providerFactory);
+				providerFactoriesMap.put(serRef.getProperty(ProtocolProviderFactory.PROTOCOL), providerFactory);
 			}
 		}
 		return providerFactoriesMap;

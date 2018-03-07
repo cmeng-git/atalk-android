@@ -55,7 +55,6 @@
             ((vpx_image_t *) (intptr_t) img)->property = (int) value; \
         }
 
-
 /*
  * Method:    codec_ctx_malloc
  */
