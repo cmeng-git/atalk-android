@@ -19,7 +19,7 @@ LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libavdevice.so
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 include $(PREBUILT_SHARED_LIBRARY)
 
-# ========== libavlibavfilterutil ==================
+# ========== libavfilter ==================
 include $(CLEAR_VARS)
 LOCAL_MODULE:= libavfilter
 LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libavfilter.so
@@ -50,6 +50,13 @@ include $(PREBUILT_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE:= libswscale
 LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libswscale.so
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
+include $(PREBUILT_SHARED_LIBRARY)
+
+# ========== libpostproc ==================
+include $(CLEAR_VARS)
+LOCAL_MODULE:= libpostproc
+LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libpostproc.so
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 include $(PREBUILT_SHARED_LIBRARY)
 # ========== jnffmpeg (.so library) ==================

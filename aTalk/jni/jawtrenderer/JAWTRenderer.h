@@ -12,7 +12,7 @@
     typedef void JAWT_DrawingSurfaceInfo;
 #else /* #ifdef __ANDROID__ */
     #include <jawt.h>
-#endif /* #ifndef __ANDROID__ */
+#endif /* #ifdef __ANDROID__ */
 #include <jni.h>
 
 #ifndef NULL

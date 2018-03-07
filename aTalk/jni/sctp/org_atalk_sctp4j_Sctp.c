@@ -194,7 +194,6 @@ Java_org_atalk_sctp4j_Sctp_usrsctp_1init
     usrsctp_sysctl_set_sctp_debug_on(SCTP_DEBUG_NONE);
 #endif
 
-
     /* TODO(ldixon) Consider turning this on/off. */
     usrsctp_sysctl_set_sctp_ecn_enable(0);
 

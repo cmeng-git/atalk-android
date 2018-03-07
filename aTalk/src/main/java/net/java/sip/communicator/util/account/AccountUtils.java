@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The <tt>AccountUtils</tt> provides utility methods helping us to easily obtain an account or
@@ -43,8 +44,7 @@ public class AccountUtils
 	 */
 	public static Collection<AccountID> getStoredAccounts()
 	{
-		AccountManager accountManager = ServiceUtils.getService(UtilActivator.bundleContext,
-				AccountManager.class);
+		AccountManager accountManager = ServiceUtils.getService(UtilActivator.bundleContext, AccountManager.class);
 		return accountManager.getStoredAccounts();
 	}
 
@@ -58,7 +58,6 @@ public class AccountUtils
 	public static AccountID getAccountIDForUID(String accountUID)
 	{
 		Collection<AccountID> allAccounts = getStoredAccounts();
-
 		for (AccountID account : allAccounts) {
 			if (account.getAccountUniqueID().equals(accountUID))
 				return account;
@@ -77,7 +76,6 @@ public class AccountUtils
 	public static AccountID getAccountIDForUserID(String userID)
 	{
 		Collection<AccountID> allAccounts = getStoredAccounts();
-
 		for (AccountID account : allAccounts) {
 			if (account.getUserID().equals(userID))
 				return account;
@@ -98,19 +96,14 @@ public class AccountUtils
 			Class<? extends OperationSet> opSetClass)
 	{
 		List<ProtocolProviderService> opSetProviders = new LinkedList<>();
-
-		for (ProtocolProviderFactory providerFactory
-				: UtilActivator.getProtocolProviderFactories().values()) {
+		for (ProtocolProviderFactory providerFactory : UtilActivator.getProtocolProviderFactories().values()) {
 			for (AccountID accountID : providerFactory.getRegisteredAccounts()) {
-				ServiceReference<ProtocolProviderService> ref
-						= providerFactory.getProviderForAccount(accountID);
+				ServiceReference<ProtocolProviderService> ref = providerFactory.getProviderForAccount(accountID);
 
 				if (ref != null) {
-					ProtocolProviderService protocolProvider
-							= UtilActivator.bundleContext.getService(ref);
+					ProtocolProviderService protocolProvider = UtilActivator.bundleContext.getService(ref);
 
-					if ((protocolProvider.getOperationSet(
-							opSetClass) != null) && protocolProvider.isRegistered()) {
+					if ((protocolProvider.getOperationSet(opSetClass) != null) && protocolProvider.isRegistered()) {
 						opSetProviders.add(protocolProvider);
 					}
 				}
@@ -137,15 +130,12 @@ public class AccountUtils
 
 		if (providerFactory != null) {
 			for (AccountID accountID : providerFactory.getRegisteredAccounts()) {
-				ServiceReference<ProtocolProviderService> ref
-						= providerFactory.getProviderForAccount(accountID);
+				ServiceReference<ProtocolProviderService> ref = providerFactory.getProviderForAccount(accountID);
 
 				if (ref != null) {
-					ProtocolProviderService protocolProvider
-							= UtilActivator.bundleContext.getService(ref);
+					ProtocolProviderService protocolProvider = UtilActivator.bundleContext.getService(ref);
 
-					if ((protocolProvider.getOperationSet(
-							opSetClass) != null) && protocolProvider.isRegistered()) {
+					if ((protocolProvider.getOperationSet(opSetClass) != null) && protocolProvider.isRegistered()) {
 						opSetProviders.add(protocolProvider);
 					}
 				}
@@ -173,7 +163,6 @@ public class AccountUtils
 			String preferredProtocolName)
 	{
 		List<ProtocolProviderService> providers = new ArrayList<>();
-
 		if (preferredProvider != null) {
 			if (preferredProvider.isRegistered()) {
 				providers.add(preferredProvider);
@@ -209,11 +198,9 @@ public class AccountUtils
 	 */
 	public static ProtocolProviderService getRegisteredProviderForAccount(AccountID accountID)
 	{
-		for (ProtocolProviderFactory factory
-				: UtilActivator.getProtocolProviderFactories().values()) {
+		for (ProtocolProviderFactory factory : UtilActivator.getProtocolProviderFactories().values()) {
 			if (factory.getRegisteredAccounts().contains(accountID)) {
-				ServiceReference<ProtocolProviderService> ref = factory.getProviderForAccount(
-						accountID);
+				ServiceReference<ProtocolProviderService> ref = factory.getProviderForAccount(accountID);
 
 				if (ref != null) {
 					return UtilActivator.bundleContext.getService(ref);
@@ -230,8 +217,7 @@ public class AccountUtils
 	 * 		the <tt>ProtocolProviderService</tt>, which factory we're looking for
 	 * @return a <tt>ProtocolProviderFactory</tt> for a given protocol provider
 	 */
-	public static ProtocolProviderFactory getProtocolProviderFactory(
-			ProtocolProviderService protocolProvider)
+	public static ProtocolProviderFactory getProtocolProviderFactory(ProtocolProviderService protocolProvider)
 	{
 		return getProtocolProviderFactory(protocolProvider.getProtocolName());
 	}
@@ -250,12 +236,10 @@ public class AccountUtils
 
 		try {
 			Collection<ServiceReference<ProtocolProviderFactory>> refs
-					= UtilActivator.bundleContext.getServiceReferences(
-					ProtocolProviderFactory.class, osgiFilter);
+					= UtilActivator.bundleContext.getServiceReferences(ProtocolProviderFactory.class, osgiFilter);
 
 			if ((refs != null) && !refs.isEmpty()) {
-				protocolProviderFactory = UtilActivator.bundleContext.getService(
-						refs.iterator().next());
+				protocolProviderFactory = UtilActivator.bundleContext.getService(refs.iterator().next());
 			}
 		}
 		catch (InvalidSyntaxException ex) {
@@ -272,16 +256,12 @@ public class AccountUtils
 	public static Collection<ProtocolProviderService> getRegisteredProviders()
 	{
 		List<ProtocolProviderService> registeredProviders = new LinkedList<>();
-
-		for (ProtocolProviderFactory providerFactory
-				: UtilActivator.getProtocolProviderFactories().values()) {
+		for (ProtocolProviderFactory providerFactory : UtilActivator.getProtocolProviderFactories().values()) {
 			for (AccountID accountID : providerFactory.getRegisteredAccounts()) {
-				ServiceReference<ProtocolProviderService> ref
-						= providerFactory.getProviderForAccount(accountID);
+				ServiceReference<ProtocolProviderService> ref = providerFactory.getProviderForAccount(accountID);
 
 				if (ref != null) {
-					ProtocolProviderService protocolProvider
-							= UtilActivator.bundleContext.getService(ref);
+					ProtocolProviderService protocolProvider = UtilActivator.bundleContext.getService(ref);
 					registeredProviders.add(protocolProvider);
 				}
 			}
@@ -298,15 +278,12 @@ public class AccountUtils
 	{
 		List<ProtocolProviderService> onlineProviders = new LinkedList<>();
 
-		for (ProtocolProviderFactory providerFactory
-				: UtilActivator.getProtocolProviderFactories().values()) {
+		for (ProtocolProviderFactory providerFactory : UtilActivator.getProtocolProviderFactories().values()) {
 			for (AccountID accountID : providerFactory.getRegisteredAccounts()) {
-				ServiceReference<ProtocolProviderService> ref
-						= providerFactory.getProviderForAccount(accountID);
+				ServiceReference<ProtocolProviderService> ref = providerFactory.getProviderForAccount(accountID);
 
 				if (ref != null) {
-					ProtocolProviderService protocolProvider
-							= UtilActivator.bundleContext.getService(ref);
+					ProtocolProviderService protocolProvider = UtilActivator.bundleContext.getService(ref);
 					if (protocolProvider.isRegistered())
 						onlineProviders.add(protocolProvider);
 				}

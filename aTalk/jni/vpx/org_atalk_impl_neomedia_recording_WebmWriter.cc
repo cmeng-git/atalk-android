@@ -12,8 +12,6 @@
 extern "C" {
 #include "libmkv/EbmlWriter.h"
 #include "libmkv/EbmlIDs.h"
-// #include "mkvmuxer/mkvwriter.h"
-// #include "common/webmids.h"
 }
 #define LITERALU64(n) n##LLU
 

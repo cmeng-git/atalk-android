@@ -1,4 +1,7 @@
 #!/bin/bash
+set -u
+source ./build_settings.sh
+
 export PLATFORM="android-15"
 SYSROOT=$NDK/platforms/$PLATFORM/arch-arm64/
 TOOLCHAIN=$NDK/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64
@@ -6,17 +9,17 @@ TOOLCHAIN=$NDK/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64
 function build_target
 {
 ./configure \
-    $COMMON $CONFIGURATION \
-    --prefix=$PREFIX \
-    --cross-prefix=$CROSS_PREFIX \
-    --nm=${CROSS_PREFIX}nm \
-    --sysroot=$SYSROOT \
-    --cc=${CROSS_PREFIX}gcc \
-    --extra-libs="-lgcc" \
-    --target-os=linux \
-    --arch=aarch64 \
-    --extra-cflags="-O3 -DANDROID -Dipv6mr_interface=ipv6mr_ifindex -fasm -Wno-psabi -fno-short-enums -fno-strict-aliasing $ADDI_CFLAGS -I../x264/android/$CPU/include" \
-    --extra-ldflags="-Wl,-rpath-link=$SYSROOT/usr/lib -L$SYSROOT/usr/lib -nostdlib -lc -lm -ldl -llog $ADDI_LDFLAGS -L../x264/android/$CPU/lib"
+  $COMMON $CONFIGURATION \
+  --prefix=$PREFIX \
+  --cross-prefix=$CROSS_PREFIX \
+  --nm=${CROSS_PREFIX}nm \
+  --sysroot=$SYSROOT \
+  --cc=${CROSS_PREFIX}gcc \
+  --extra-libs="-lgcc" \
+  --target-os=linux \
+  --arch=aarch64 \
+  --extra-cflags="-O3 -DANDROID -Dipv6mr_interface=ipv6mr_ifindex -fasm -Wno-psabi -fno-short-enums -fno-strict-aliasing $ADDI_CFLAGS -I../x264/android/$CPU/include" \
+  --extra-ldflags="-Wl,-rpath-link=$SYSROOT/usr/lib -L$SYSROOT/usr/lib -nostdlib -lc -lm -ldl -llog $ADDI_LDFLAGS -L../x264/android/$CPU/lib"
 
 make clean
 make -j4

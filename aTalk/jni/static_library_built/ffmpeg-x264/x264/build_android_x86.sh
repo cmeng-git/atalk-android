@@ -1,4 +1,7 @@
 #!/bin/bash
+set -u
+source ./build_settings.sh
+
 export PLATFORM="android-15"
 SYSROOT=$NDK/platforms/$PLATFORM/arch-x86/
 TOOLCHAIN=$NDK/toolchains/x86-4.9/prebuilt/linux-x86_64

@@ -144,7 +144,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
         View atakUrl = findViewById(R.id.atalk_link);
         atakUrl.setOnClickListener(this);
 
-        TextView atalkHelp = (TextView) findViewById(R.id.atalk_help);
+        TextView atalkHelp = findViewById(R.id.atalk_help);
 //        atalkHelp.setText(Html.fromHtml(getString(R.string.AboutDialog_help)));
 //        atalkHelp.setMovementMethod(LinkMovementMethod.getInstance());
         atalkHelp.setTextColor(getResources().getColor(R.color.light_blue));
@@ -168,7 +168,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
         }
 
         String aboutInfo = getAboutInfo();
-        WebView wv = (WebView) findViewById(R.id.AboutDialog_Info);
+        WebView wv = findViewById(R.id.AboutDialog_Info);
         wv.loadDataWithBaseURL("file:///android_res/drawable/", aboutInfo, "text/html", "utf-8", null);
 
         setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
@@ -176,8 +176,8 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
         try {
             PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
 
-            TextView textView = (TextView) findViewById(R.id.AboutDialog_Version);
-            textView.setText(String.format(aTalkApp.getResString(R.string.AboutDialog_Version), pi.versionName));
+            TextView textView = findViewById(R.id.AboutDialog_Version);
+            textView.setText(String.format(getString(R.string.AboutDialog_Version), pi.versionName));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

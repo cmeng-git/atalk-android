@@ -31,14 +31,14 @@ include $(CLEAR_VARS)
 #LOCAL_SRC_FILES := ./libs/libjnffmpeg.so
 #include $(PREBUILT_SHARED_LIBRARY)
 
-### FFMPEG Shared Library built from source
-#include ./ffmpeg/Android.mk
-
 ### FFMPEG library build using static libraries (v1.0.10) pre-built on ubuntu
 include ./ffmpeg/Android_a.mk
 
-### FFMPEG library build using shared libraries
+### FFMPEG library build using shared libraries - multiple .so generated (without x264)
 #include ./ffmpeg/Android_so.mk
+
+### FFMPEG Shared Library built from source (see version.h)
+#include ./ffmpeg/Android.mk
 
 # ================================= Openmax-h264 ======================================
 ### H264 library build using android internal library
@@ -74,6 +74,7 @@ SPEEX_DIR  := speex
 include ./speex/Android.mk
 
 # ================================= G722 ==============================================
+### Refer to libjitsi and jitsi-lgpl-dependency for support if so required
 ### G722 library build (cmeng - removed support for jn722, incomplete libjn722.so provided)
 # LOCAL_PATH := $(ROOT)
 # include $(CLEAR_VARS)

@@ -20,6 +20,7 @@ source ./_shared.sh
 # Setup architectures, library name and other vars + cleanup from previous runs
 # Use LIB_VPX-master i.e. 1.6.1+ (10/12/2017)
 # LIB_GIT="v1.6.1"
+# aTalk uses the trunk master instead
 LIB_GIT="master"
 LIB_VPX="libvpx"
 LIB_DEST_DIR=${TOOLS_ROOT}/libs
@@ -33,6 +34,7 @@ configure_make() {
 
 # rm -rf "${LIB_VPX}"
 # tar xfz "${LIB_GIT}.tar.gz" "${LIB_VPX}"
+[ -d "${LIB_VPX}" ] || tar xfz "${LIB_GIT}.tar.gz" "${LIB_VPX}";
 
   pushd "${LIB_VPX}"
   configure $*
@@ -63,6 +65,7 @@ configure_make() {
 
    ./configure \
      --target=${TARGET} \
+     --disable-runtime-cpu-detect \
      --disable-examples \
      --disable-tools \
      --sdk-path=${NDK_ROOT}/ \

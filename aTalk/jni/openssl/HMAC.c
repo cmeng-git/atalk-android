@@ -16,7 +16,8 @@
  * Method:    EVP_MD_size
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_EVP_1MD_1size
+JNIEXPORT jint JNICALL
+Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_EVP_1MD_1size
   (JNIEnv *env, jclass clazz, jlong md)
 {
     return EVP_MD_size((const EVP_MD *)(intptr_t) md);
@@ -27,7 +28,8 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_E
  * Method:    EVP_sha1
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_EVP_1sha1
+JNIEXPORT jlong JNICALL
+Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_EVP_1sha1
   (JNIEnv *env, jclass clazz)
 {
     return (jlong)(intptr_t) EVP_sha1();
@@ -38,7 +40,8 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_
  * Method:    HMAC_CTX_create
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_HMAC_1CTX_1create
+JNIEXPORT jlong JNICALL
+Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_HMAC_1CTX_1create
   (JNIEnv *env, jclass clazz)
 {
     HMAC_CTX *ctx = malloc(sizeof(HMAC_CTX));
@@ -53,7 +56,8 @@ JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_
  * Method:    HMAC_CTX_destroy
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_HMAC_1CTX_1destroy
+JNIEXPORT void JNICALL
+Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_HMAC_1CTX_1destroy
   (JNIEnv *env, jclass clazz, jlong ctx)
 {
     HMAC_CTX *ctx_ = (HMAC_CTX *) (intptr_t) ctx;
@@ -67,7 +71,8 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_H
  * Method:    HMAC_Final
  * Signature: (J[BII)I
  */
-JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_HMAC_1Final
+JNIEXPORT jint JNICALL
+Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_HMAC_1Final
   (JNIEnv *env, jclass clazz, jlong ctx, jbyteArray md, jint mdOff, jint mdLen)
 {
     jbyte *md_ = (*env)->GetPrimitiveArrayCritical(env, md, NULL);
@@ -97,7 +102,8 @@ JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_H
  * Method:    HMAC_Init_ex
  * Signature: (J[BIJJ)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_HMAC_1Init_1ex
+JNIEXPORT jboolean JNICALL
+Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_HMAC_1Init_1ex
   (JNIEnv *env, jclass clazz, jlong ctx, jbyteArray key, jint keyLen, jlong md, jlong impl)
 {
     jbyte *key_;
@@ -132,7 +138,8 @@ JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHM
  * Method:    HMAC_Update
  * Signature: (J[BII)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_HMAC_1Update
+JNIEXPORT jboolean JNICALL
+Java_org_atalk_impl_neomedia_transform_srtp_OpenSSLHMAC_HMAC_1Update
   (JNIEnv *env, jclass clazz, jlong ctx, jbyteArray data, jint offset, jint len)
 {
     jbyte *data_ = (*env)->GetPrimitiveArrayCritical(env, data, NULL);

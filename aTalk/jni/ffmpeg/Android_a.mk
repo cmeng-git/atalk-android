@@ -81,10 +81,11 @@ LOCAL_MODULE := jnffmpeg
 LOCAL_LDLIBS += -llog -lz
 # for x-86 shared library built warning
 LOCAL_LDLIBS += -Wl,--no-warn-shared-textrel
-# Ensure each static library interdepencies are defined in its respective PREBUILT_STATIC_LIBRARY block
+# Ensure each static library inter-dependencies are defined in its respective PREBUILT_STATIC_LIBRARY block
 # or setup the dependency in PREBUILT_STATIC_LIBRARY blocks
 LOCAL_STATIC_LIBRARIES := libavcodec libavdevice libavfilter libavutil libavformat libswresample libswscale libx264
-LOCAL_C_INCLUDES := $($(LOCAL_LIB_PATH))/include $(PATH_X264)/include
+# Must use exact format prefix with $(LOCAL_PATH) below to work - $(LOCAL_LIB_PATH)/include etc not working
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/android/$(TARGET_ARCH_ABI)/include $(PATH_X264)/include
 LOCAL_SRC_FILES := ./org_atalk_impl_neomedia_codec_FFmpeg.c
 LOCAL_CFLAGS := -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H -Wdeprecated-declarations
 
