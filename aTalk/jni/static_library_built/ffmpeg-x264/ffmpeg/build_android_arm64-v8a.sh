@@ -1,10 +1,9 @@
 #!/bin/bash
-set -u
 source ./build_settings.sh
 
 export PLATFORM="android-15"
-SYSROOT=$NDK/platforms/$PLATFORM/arch-arm64/
-TOOLCHAIN=$NDK/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64
+SYSROOT=$ANDROID_NDK/platforms/$PLATFORM/arch-arm64/
+TOOLCHAIN=$ANDROID_NDK/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64
 
 function build_target
 {
@@ -29,11 +28,16 @@ make install
 export CPU=arm64-v8a
 PREFIX=./android/$CPU 
 CROSS_PREFIX=$TOOLCHAIN/bin/arm-linux-androideabi-
+
+pushd ffmpeg
 build_target
 
-cd $PROJECT_JNI
-export ABI=$CPU
-# $NDK/ndk-build
+# Use AS NDK to build
+# cd $PROJECT_JNI
+# export ABI=$CPU
+# $ANDROID_NDK/ndk-build
 # cp -r "$PROJECT_LIBS/$CPU" "$PROJECT_LIBS/../out" 
 # cd $DIR
+
+popd
 echo "=== Android ffmpeg for $CPU builds completed ==="
