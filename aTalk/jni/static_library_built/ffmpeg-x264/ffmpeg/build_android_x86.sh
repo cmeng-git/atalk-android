@@ -1,10 +1,9 @@
 #!/bin/bash
-set -u
 source ./build_settings.sh
 
 export PLATFORM="android-15"
-SYSROOT=$NDK/platforms/$PLATFORM/arch-x86/
-TOOLCHAIN=$NDK/toolchains/x86-4.9/prebuilt/linux-x86_64
+SYSROOT=$ANDROID_NDK/platforms/$PLATFORM/arch-x86/
+TOOLCHAIN=$ANDROID_NDK/toolchains/x86-4.9/prebuilt/linux-x86_64
 rm -f $(pwd)/compat/strtod.o
 
 function build_target
@@ -35,14 +34,17 @@ export CPU=x86
 PREFIX=./android/$CPU 
 CROSS_PREFIX=$TOOLCHAIN/bin/i686-linux-android-
 
-# export CC="$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7-none-linux-androideabi -gcc-toolchain $TOOLCHAIN"
-# export CXX="$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ -target armv7-none-linux-androideabi -gcc-toolchain $TOOLCHAIN"
+pushd ffmpeg
+# export CC="$ANDROID_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7-none-linux-androideabi -gcc-toolchain $TOOLCHAIN"
+# export CXX="$ANDROID_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ -target armv7-none-linux-androideabi -gcc-toolchain $TOOLCHAIN"
 build_target
 
-cd $PROJECT_JNI
-export ABI=$CPU
-# $NDK/ndk-build
+# Use AS NDK to build
+# cd $PROJECT_JNI
+# export ABI=$CPU
+# $ANDROID_NDK/ndk-build
 # cp -r "$PROJECT_LIBS/$CPU" "$PROJECT_LIBS/../out" 
 # cd $DIR
 
+popd
 echo "=== Android ffmpeg for $CPU builds completed ==="
