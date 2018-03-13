@@ -128,6 +128,9 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
         getOmemoDeviceFingerprintStatus();
 
         for (ProtocolProviderService pps : providers) {
+            if (pps.getConnection() == null)
+                continue;
+
             // Generate a list of own omemoDevices
             OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
             String userDevice = OMEMO + omemoManager.getOwnDevice();
