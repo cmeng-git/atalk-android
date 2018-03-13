@@ -118,8 +118,8 @@ public class ContactInfoActivity extends OSGiActivity
 		if (presenceStatus != null) {
 			ActionBarUtil.setStatus(this, presenceStatus.getStatusIcon());
 
-			TextView statusNameView = (TextView) findViewById(R.id.presenceStatusName);
-			ImageView statusIconView = (ImageView) findViewById(R.id.presenceStatusIcon);
+			TextView statusNameView = findViewById(R.id.presenceStatusName);
+			ImageView statusIconView = findViewById(R.id.presenceStatusIcon);
 
 			// Set status icon
 			Bitmap presenceIcon = AndroidImageUtil.bitmapFromBytes(presenceStatus.getStatusIcon());
@@ -130,7 +130,7 @@ public class ContactInfoActivity extends OSGiActivity
 			statusNameView.setText(statusName);
 
 			// Add users status message if it exists
-			TextView statusMessage = (TextView) findViewById(R.id.statusMessage);
+			TextView statusMessage = findViewById(R.id.statusMessage);
 			ProtocolProviderService pps = mContact.getProtocolProvider();
 			OperationSetPresence contactPresence = pps.getOperationSet(OperationSetPresence.class);
 			String statusMsg = contactPresence.getCurrentStatusMessage();
@@ -151,74 +151,74 @@ public class ContactInfoActivity extends OSGiActivity
 	private void initSummaryPanel()
 	{
 		// Display name details.
-		TextView displayNameField = (TextView) findViewById(R.id.ci_DisplayNameField);
+		TextView displayNameField = findViewById(R.id.ci_DisplayNameField);
 		detailToTextField.put(DisplayNameDetail.class, displayNameField);
 
 		// First name details.
-		TextView firstNameField = (TextView) findViewById(R.id.ci_FirstNameField);
+		TextView firstNameField = findViewById(R.id.ci_FirstNameField);
 		detailToTextField.put(FirstNameDetail.class, firstNameField);
 
 		// Middle name details.
-		TextView middleNameField = (TextView) findViewById(R.id.ci_MiddleNameField);
+		TextView middleNameField = findViewById(R.id.ci_MiddleNameField);
 		detailToTextField.put(MiddleNameDetail.class, middleNameField);
 
 		// Last name details.
-		TextView lastNameField = (TextView) findViewById(R.id.ci_LastNameField);
+		TextView lastNameField = findViewById(R.id.ci_LastNameField);
 		detailToTextField.put(LastNameDetail.class, lastNameField);
 
-		TextView nicknameField = (TextView) findViewById(R.id.ci_NickNameField);
+		TextView nicknameField = findViewById(R.id.ci_NickNameField);
 		detailToTextField.put(NicknameDetail.class, nicknameField);
 
-		urlField = (TextView) findViewById(R.id.ci_URLField);
+		urlField = findViewById(R.id.ci_URLField);
 		detailToTextField.put(URLDetail.class, urlField);
 
 		// Gender details.
-		TextView genderField = (TextView) findViewById(R.id.ci_GenderField);
+		TextView genderField = findViewById(R.id.ci_GenderField);
 		detailToTextField.put(GenderDetail.class, genderField);
 
 		// Birthday and Age details.
-		ageField = (TextView) findViewById(R.id.ci_AgeField);
-		birthDateField = (TextView) findViewById(R.id.ci_BirthDateField);
+		ageField = findViewById(R.id.ci_AgeField);
+		birthDateField = findViewById(R.id.ci_BirthDateField);
 		detailToTextField.put(BirthDateDetail.class, birthDateField);
 
-		TextView streetAddressField = (TextView) findViewById(R.id.ci_StreetAddressField);
+		TextView streetAddressField = findViewById(R.id.ci_StreetAddressField);
 		detailToTextField.put(AddressDetail.class, streetAddressField);
 
-		TextView cityField = (TextView) findViewById(R.id.ci_CityField);
+		TextView cityField = findViewById(R.id.ci_CityField);
 		detailToTextField.put(CityDetail.class, cityField);
 
-		TextView regionField = (TextView) findViewById(R.id.ci_RegionField);
+		TextView regionField = findViewById(R.id.ci_RegionField);
 		detailToTextField.put(ProvinceDetail.class, regionField);
 
-		TextView postalCodeField = (TextView) findViewById(R.id.ci_PostalCodeField);
+		TextView postalCodeField = findViewById(R.id.ci_PostalCodeField);
 		detailToTextField.put(PostalCodeDetail.class, postalCodeField);
 
-		TextView countryField = (TextView) findViewById(R.id.ci_CountryField);
+		TextView countryField = findViewById(R.id.ci_CountryField);
 		detailToTextField.put(CountryDetail.class, countryField);
 
 		// Email details.
-		TextView emailField = (TextView) findViewById(R.id.ci_EMailField);
+		TextView emailField = findViewById(R.id.ci_EMailField);
 		detailToTextField.put(EmailAddressDetail.class, emailField);
 
-		TextView workEmailField = (TextView) findViewById(R.id.ci_WorkEmailField);
+		TextView workEmailField = findViewById(R.id.ci_WorkEmailField);
 		detailToTextField.put(WorkEmailAddressDetail.class, workEmailField);
 
 		// Phone number details.
-		TextView phoneField = (TextView) findViewById(R.id.ci_PhoneField);
+		TextView phoneField = findViewById(R.id.ci_PhoneField);
 		detailToTextField.put(PhoneNumberDetail.class, phoneField);
 
-		TextView workPhoneField = (TextView) findViewById(R.id.ci_WorkPhoneField);
+		TextView workPhoneField = findViewById(R.id.ci_WorkPhoneField);
 		detailToTextField.put(WorkPhoneDetail.class, workPhoneField);
 
-		TextView mobilePhoneField = (TextView) findViewById(R.id.ci_MobilePhoneField);
+		TextView mobilePhoneField = findViewById(R.id.ci_MobilePhoneField);
 		detailToTextField.put(MobilePhoneDetail.class, mobilePhoneField);
 
-		TextView organizationField = (TextView) findViewById(R.id.ci_OrganizationNameField);
+		TextView organizationField = findViewById(R.id.ci_OrganizationNameField);
 		detailToTextField.put(WorkOrganizationNameDetail.class, organizationField);
-		TextView jobTitleField = (TextView) findViewById(R.id.ci_JobTitleField);
+		TextView jobTitleField = findViewById(R.id.ci_JobTitleField);
 		detailToTextField.put(JobTitleDetail.class, jobTitleField);
 
-		TextView aboutMeArea = (TextView) findViewById(R.id.ci_AboutMeField);
+		TextView aboutMeArea = findViewById(R.id.ci_AboutMeField);
 		InputFilter[] filterArray = new InputFilter[1];
 		filterArray[0] = new InputFilter.LengthFilter(Integer.valueOf(
 				getString(R.string.plugin_accountinfo_ABOUT_ME_MAX_CHARACTERS)));
@@ -226,7 +226,7 @@ public class ContactInfoActivity extends OSGiActivity
 		aboutMeArea.setBackgroundResource(R.drawable.alpha_blue_01);
 		detailToTextField.put(AboutMeDetail.class, aboutMeArea);
 
-		Button mOkButton = (Button) findViewById(R.id.button_OK);
+		Button mOkButton = findViewById(R.id.button_OK);
 		mOkButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -264,7 +264,7 @@ public class ContactInfoActivity extends OSGiActivity
 	private void loadDetail(GenericDetail detail)
 	{
 		if (detail instanceof BinaryDetail) {
-			ImageView avatarView = (ImageView) findViewById(R.id.contactAvatar);
+			ImageView avatarView = findViewById(R.id.contactAvatar);
 
 			// If the user has a contact image, let's use it. If not, leave the default as it
 			byte[] avatarImage = (byte[]) detail.getDetailValue();

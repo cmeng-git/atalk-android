@@ -135,11 +135,11 @@ public class InvitationReceivedDialog extends Dialog
 		setContentView(R.layout.muc_invitation_received_dialog);
 		setTitle(mContext.getString(R.string.service_gui_INVITATION_RECEIVED));
 
-		TextView infoTextArea = (TextView) this.findViewById(R.id.textMsgView);
+		TextView infoTextArea = this.findViewById(R.id.textMsgView);
 		infoTextArea.setText(mContext.getString(R.string.service_gui_INVITATION_RECEIVED_MSG,
 				mInviter, mChatRoomName));
 
-		TextView textInvitation = (TextView) this.findViewById(R.id.textInvitation);
+		TextView textInvitation = this.findViewById(R.id.textInvitation);
 		if (!TextUtils.isEmpty(mReason)) {
 			textInvitation.setSingleLine(false);
 			textInvitation.setText(mReason);
@@ -147,9 +147,9 @@ public class InvitationReceivedDialog extends Dialog
 		else {
 			textInvitation.setText("");
 		}
-		reasonTextArea = (EditText) this.findViewById(R.id.rejectReasonTextArea);
+		reasonTextArea = this.findViewById(R.id.rejectReasonTextArea);
 
-		Button mAcceptButton = (Button) this.findViewById(R.id.button_Accept);
+		Button mAcceptButton = this.findViewById(R.id.button_Accept);
 		mAcceptButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -159,7 +159,7 @@ public class InvitationReceivedDialog extends Dialog
 			}
 		});
 
-		Button mRejectButton = (Button) this.findViewById(R.id.button_Reject);
+		Button mRejectButton = this.findViewById(R.id.button_Reject);
 		mRejectButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -169,7 +169,7 @@ public class InvitationReceivedDialog extends Dialog
 			}
 		});
 
-		Button mIgnoreButton = (Button) this.findViewById(R.id.button_Ignore);
+		Button mIgnoreButton = this.findViewById(R.id.button_Ignore);
 		mIgnoreButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)

@@ -84,12 +84,12 @@ public class CallContactFragment extends OSGiFragment
 	{
 		final View content = inflater.inflate(R.layout.call_contact, container, false);
 
-		final ImageView callButton = (ImageView) content.findViewById(R.id.callButtonFull);
+		final ImageView callButton = content.findViewById(R.id.callButtonFull);
 		callButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
 			{
-				final EditText callField = (EditText) content.findViewById(R.id.callField);
+				final EditText callField = content.findViewById(R.id.callField);
 				String contact = callField.getText().toString();
 				if (contact.isEmpty()) {
 					System.err.println("Contact is empty");
@@ -123,13 +123,10 @@ public class CallContactFragment extends OSGiFragment
 		Menu menu = popup.getMenu();
 		ProtocolProviderService mProvider = null;
 
-		Collection<ProtocolProviderService> onlineProviders
-				= AccountUtils.getOnlineProviders();
+		Collection<ProtocolProviderService> onlineProviders = AccountUtils.getOnlineProviders();
 
 		for (final ProtocolProviderService provider : onlineProviders) {
-			XMPPTCPConnection connection
-					= ((ProtocolProviderServiceJabberImpl) provider).getConnection();
-
+			XMPPTCPConnection connection = provider.getConnection();
 			try {
 				if (Roster.getInstanceFor(connection)
 						.contains(JidCreate.bareFrom(calleeAddress))) {

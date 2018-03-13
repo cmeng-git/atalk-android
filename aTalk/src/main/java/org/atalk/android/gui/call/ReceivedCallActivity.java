@@ -73,9 +73,9 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.received_call);
-        TextView displayNameView = (TextView) findViewById(R.id.calleeDisplayName);
-        TextView addressView = (TextView) findViewById(R.id.calleeAddress);
-        ImageView avatarView = (ImageView) findViewById(R.id.calleeAvatar);
+        TextView displayNameView = findViewById(R.id.calleeDisplayName);
+        TextView addressView = findViewById(R.id.calleeAddress);
+        ImageView avatarView = findViewById(R.id.calleeAvatar);
         Bundle extras = getIntent().getExtras();
         displayNameView.setText(extras.getString(CallManager.CALLEE_DISPLAY_NAME));
         addressView.setText(extras.getString(CallManager.CALLEE_ADDRESS));
@@ -94,7 +94,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
             return;
         }
 
-        ImageView hangupView = (ImageView) findViewById(R.id.hangupButton);
+        ImageView hangupView = findViewById(R.id.hangupButton);
         hangupView.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
@@ -103,7 +103,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
             }
         });
 
-        final ImageView callButton = (ImageView) findViewById(R.id.callButton);
+        final ImageView callButton = findViewById(R.id.callButton);
         callButton.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)

@@ -192,7 +192,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 		setContentView(R.layout.account_info_presence_status);
 		mButtonContainer = findViewById(R.id.button_Container);
 
-		avatarView = (ImageView) findViewById(R.id.accountAvatar);
+		avatarView = findViewById(R.id.accountAvatar);
 		registerForContextMenu(avatarView);
 		avatarView.setOnClickListener(new View.OnClickListener()
 		{
@@ -281,7 +281,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 		ActionBarUtil.setTitle(this, title);
 
 		// Create spinner with status list
-		Spinner statusSpinner = (Spinner) findViewById(R.id.presenceStatusSpinner);
+		Spinner statusSpinner = findViewById(R.id.presenceStatusSpinner);
 
 		// Create list adapter
 		Iterator<PresenceStatus> statusIter = accountPresence.getSupportedStatusSet();
@@ -296,7 +296,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 		statusSpinner.setOnItemSelectedListener(this);
 
 		// Sets current status message
-		EditText statusMessageEdit = (EditText) findViewById(R.id.statusMessage);
+		EditText statusMessageEdit = findViewById(R.id.statusMessage);
 		statusMessageEdit.setText(accountPresence.getCurrentStatusMessage());
 
 		// Watch the text for any changes
@@ -310,10 +310,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 	 */
 	private void initSummaryPanel()
 	{
-		imageUrlField = (EditText) findViewById(R.id.ai_ImageUrl);
+		imageUrlField = findViewById(R.id.ai_ImageUrl);
 		detailToTextField.put(ImageDetail.class, imageUrlField);
 
-		EditText displayNameField = (EditText) findViewById(R.id.ai_DisplayNameField);
+		EditText displayNameField = findViewById(R.id.ai_DisplayNameField);
 		View displayNameContainer = findViewById(R.id.ai_DisplayName_Container);
 		displayNameContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(DisplayNameDetail.class)) {
@@ -321,16 +321,16 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(DisplayNameDetail.class, displayNameField);
 		}
 
-		EditText firstNameField = (EditText) findViewById(R.id.ai_FirstNameField);
+		EditText firstNameField = findViewById(R.id.ai_FirstNameField);
 		detailToTextField.put(FirstNameDetail.class, firstNameField);
 
-		EditText middleNameField = (EditText) findViewById(R.id.ai_MiddleNameField);
+		EditText middleNameField = findViewById(R.id.ai_MiddleNameField);
 		detailToTextField.put(MiddleNameDetail.class, middleNameField);
 
-		EditText lastNameField = (EditText) findViewById(R.id.ai_LastNameField);
+		EditText lastNameField = findViewById(R.id.ai_LastNameField);
 		detailToTextField.put(LastNameDetail.class, lastNameField);
 
-		EditText nicknameField = (EditText) findViewById(R.id.ai_NickNameField);
+		EditText nicknameField = findViewById(R.id.ai_NickNameField);
 		View nickNameContainer = findViewById(R.id.ai_NickName_Container);
 		nickNameContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(NicknameDetail.class)) {
@@ -338,7 +338,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(NicknameDetail.class, nicknameField);
 		}
 
-		urlField = (EditText) findViewById(R.id.ai_URLField);
+		urlField = findViewById(R.id.ai_URLField);
 		View urlContainer = findViewById(R.id.ai_URL_Container);
 		urlContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(URLDetail.class)) {
@@ -346,7 +346,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(URLDetail.class, urlField);
 		}
 
-		EditText genderField = (EditText) findViewById(R.id.ai_GenderField);
+		EditText genderField = findViewById(R.id.ai_GenderField);
 		View genderContainer = findViewById(R.id.ai_Gender_Container);
 		genderContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(GenderDetail.class)) {
@@ -354,14 +354,14 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(GenderDetail.class, genderField);
 		}
 
-		birthDateField = (EditText) findViewById(R.id.ai_BirthDateField);
+		birthDateField = findViewById(R.id.ai_BirthDateField);
 		detailToTextField.put(BirthDateDetail.class, birthDateField);
 		birthDateField.setEnabled(false);
 
-		ageField = (EditText) findViewById(R.id.ai_AgeField);
+		ageField = findViewById(R.id.ai_AgeField);
 		ageField.setEnabled(false);
 
-		EditText streetAddressField = (EditText) findViewById(R.id.ai_StreetAddressField);
+		EditText streetAddressField = findViewById(R.id.ai_StreetAddressField);
 		View streetAddressContainer = findViewById(R.id.ai_StreetAddress_Container);
 		streetAddressContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(AddressDetail.class)) {
@@ -369,7 +369,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(AddressDetail.class, streetAddressField);
 		}
 
-		EditText cityField = (EditText) findViewById(R.id.ai_CityField);
+		EditText cityField = findViewById(R.id.ai_CityField);
 		View cityContainer = findViewById(R.id.ai_City_Container);
 		cityContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(CityDetail.class)) {
@@ -377,7 +377,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(CityDetail.class, cityField);
 		}
 
-		EditText regionField = (EditText) findViewById(R.id.ai_RegionField);
+		EditText regionField = findViewById(R.id.ai_RegionField);
 		View regionContainer = findViewById(R.id.ai_Region_Container);
 		regionContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(ProvinceDetail.class)) {
@@ -385,7 +385,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(ProvinceDetail.class, regionField);
 		}
 
-		EditText postalCodeField = (EditText) findViewById(R.id.ai_PostalCodeField);
+		EditText postalCodeField = findViewById(R.id.ai_PostalCodeField);
 		View postalCodeContainer = findViewById(R.id.ai_PostalCode_Container);
 		postalCodeContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(PostalCodeDetail.class)) {
@@ -393,7 +393,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(PostalCodeDetail.class, postalCodeField);
 		}
 
-		EditText countryField = (EditText) findViewById(R.id.ai_CountryField);
+		EditText countryField = findViewById(R.id.ai_CountryField);
 		View countryContainer = findViewById(R.id.ai_Country_Container);
 		countryContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(CountryDetail.class)) {
@@ -401,10 +401,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(CountryDetail.class, countryField);
 		}
 
-		EditText emailField = (EditText) findViewById(R.id.ai_EMailField);
+		EditText emailField = findViewById(R.id.ai_EMailField);
 		detailToTextField.put(EmailAddressDetail.class, emailField);
 
-		EditText workEmailField = (EditText) findViewById(R.id.ai_WorkEmailField);
+		EditText workEmailField = findViewById(R.id.ai_WorkEmailField);
 		View workEmailContainer = findViewById(R.id.ai_WorkEmail_Container);
 		workEmailContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(WorkEmailAddressDetail.class)) {
@@ -412,10 +412,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(WorkEmailAddressDetail.class, workEmailField);
 		}
 
-		EditText phoneField = (EditText) findViewById(R.id.ai_PhoneField);
+		EditText phoneField = findViewById(R.id.ai_PhoneField);
 		detailToTextField.put(PhoneNumberDetail.class, phoneField);
 
-		EditText workPhoneField = (EditText) findViewById(R.id.ai_WorkPhoneField);
+		EditText workPhoneField = findViewById(R.id.ai_WorkPhoneField);
 		View workPhoneContainer = findViewById(R.id.ai_WorkPhone_Container);
 		workPhoneContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(WorkPhoneDetail.class)) {
@@ -423,7 +423,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(WorkPhoneDetail.class, workPhoneField);
 		}
 
-		EditText mobilePhoneField = (EditText) findViewById(R.id.ai_MobilePhoneField);
+		EditText mobilePhoneField = findViewById(R.id.ai_MobilePhoneField);
 		View mobileContainer = findViewById(R.id.ai_MobilePhone_Container);
 		mobileContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(MobilePhoneDetail.class)) {
@@ -431,7 +431,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(MobilePhoneDetail.class, mobilePhoneField);
 		}
 
-		EditText organizationField = (EditText) findViewById(R.id.ai_OrganizationNameField);
+		EditText organizationField = findViewById(R.id.ai_OrganizationNameField);
 		View organizationNameContainer = findViewById(R.id.ai_OrganizationName_Container);
 		organizationNameContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(WorkOrganizationNameDetail.class)) {
@@ -439,7 +439,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(WorkOrganizationNameDetail.class, organizationField);
 		}
 
-		EditText jobTitleField = (EditText) findViewById(R.id.ai_JobTitleField);
+		EditText jobTitleField = findViewById(R.id.ai_JobTitleField);
 		View jobDetailContainer = findViewById(R.id.ai_JobTitle_Container);
 		jobDetailContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(JobTitleDetail.class)) {
@@ -447,7 +447,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			detailToTextField.put(JobTitleDetail.class, jobTitleField);
 		}
 
-		aboutMeArea = (EditText) findViewById(R.id.ai_AboutMeField);
+		aboutMeArea = findViewById(R.id.ai_AboutMeField);
 		View aboutMeContainer = findViewById(R.id.ai_AboutMe_Container);
 		aboutMeContainer.setVisibility(View.GONE);
 		if (accountInfoOpSet.isDetailClassSupported(AboutMeDetail.class)) {
@@ -477,7 +477,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 				.setCancelText("Cancel")
 				.setThemeDark();
 
-		mCalenderButton = (ImageView) findViewById(R.id.datePicker);
+		mCalenderButton = findViewById(R.id.datePicker);
 		mCalenderButton.setEnabled(false);
 		mCalenderButton.setOnClickListener(new View.OnClickListener()
 		{
@@ -487,7 +487,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			}
 		});
 
-		Button mApplyButton = (Button) findViewById(R.id.button_Apply);
+		Button mApplyButton = findViewById(R.id.button_Apply);
 		mApplyButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -499,7 +499,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 			}
 		});
 
-		Button mCancelButton = (Button) findViewById(R.id.button_Cancel);
+		Button mCancelButton = findViewById(R.id.button_Cancel);
 		mCancelButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -1345,8 +1345,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 	private void commitStatusChanges()
 	{
 		if (hasStatusChanges) {
-			Spinner statusSpinner = (Spinner) findViewById(R.id.presenceStatusSpinner);
-			EditText statusMessageEdit = (EditText) findViewById(R.id.statusMessage);
+			Spinner statusSpinner = findViewById(R.id.presenceStatusSpinner);
+			EditText statusMessageEdit = findViewById(R.id.statusMessage);
 
 			PresenceStatus selectedStatus = (PresenceStatus) statusSpinner.getSelectedItem();
 			String statusMessageText = statusMessageEdit.getText().toString();
@@ -1485,9 +1485,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 	 */
 	private void initSoftKeyboard()
 	{
-		LinearLayout mainLayout = (LinearLayout) findViewById(R.id.accountInfo_layout);
-		InputMethodManager im = (InputMethodManager) getSystemService(
-				Service.INPUT_METHOD_SERVICE);
+		LinearLayout mainLayout = findViewById(R.id.accountInfo_layout);
+		InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
 
 		/*  Instantiate and pass a callback */
 		softKeyboard = new SoftKeyboard(mainLayout, im);

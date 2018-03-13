@@ -121,35 +121,23 @@ public abstract class FileTransferConversation extends OSGiFragment
 		if (init) {
 			convertView = inflater.inflate(R.layout.chat_file_transfer_row, container, false);
 
-			messageViewHolder.imageLabel
-					= (ImageButton) convertView.findViewById(R.id.button_file);
-			messageViewHolder.cancelButton = (Button) convertView.findViewById(R.id.buttonCancel);
-			messageViewHolder.retryButton = (Button) convertView.findViewById(R.id.button_retry);
-			messageViewHolder.acceptButton = (Button) convertView.findViewById(R.id.button_accept);
-			messageViewHolder.rejectButton = (Button) convertView.findViewById(R.id.button_reject);
-			messageViewHolder.openFileButton
-					= (Button) convertView.findViewById(R.id.button_openfile);
-			messageViewHolder.openFolderButton
-					= (Button) convertView.findViewById(R.id.button_openfolder);
-			messageViewHolder.arrowDir
-					= (ImageView) convertView.findViewById(R.id.filexferArrowView);
+			messageViewHolder.imageLabel = convertView.findViewById(R.id.button_file);
+			messageViewHolder.cancelButton = convertView.findViewById(R.id.buttonCancel);
+			messageViewHolder.retryButton = convertView.findViewById(R.id.button_retry);
+			messageViewHolder.acceptButton = convertView.findViewById(R.id.button_accept);
+			messageViewHolder.rejectButton = convertView.findViewById(R.id.button_reject);
+			messageViewHolder.openFileButton = convertView.findViewById(R.id.button_openfile);
+			messageViewHolder.openFolderButton = convertView.findViewById(R.id.button_openfolder);
+			messageViewHolder.arrowDir = convertView.findViewById(R.id.filexferArrowView);
 
-			messageViewHolder.titleLabel
-					= (TextView) convertView.findViewById(R.id.filexferTitleView);
-			messageViewHolder.fileLabel
-					= (TextView) convertView.findViewById(R.id.filexferFileNameView);
-			messageViewHolder.viewFileXferError
-					= (TextView) convertView.findViewById(R.id.errorView);
+			messageViewHolder.titleLabel = convertView.findViewById(R.id.filexferTitleView);
+			messageViewHolder.fileLabel = convertView.findViewById(R.id.filexferFileNameView);
+			messageViewHolder.viewFileXferError = convertView.findViewById(R.id.errorView);
 
-			messageViewHolder.timeView = (TextView) convertView.findViewById(R.id.xferTimeView);
-
-			messageViewHolder.progressSpeedLabel
-					= (TextView) convertView.findViewById(R.id.file_progressSpeed);
-			messageViewHolder.estimatedTimeLabel
-					= (TextView) convertView.findViewById(R.id.file_estTime);
-
-			messageViewHolder.mProgressBar
-					= (ProgressBar) convertView.findViewById(R.id.file_progressbar);
+			messageViewHolder.timeView = convertView.findViewById(R.id.xferTimeView);
+			messageViewHolder.progressSpeedLabel =  convertView.findViewById(R.id.file_progressSpeed);
+			messageViewHolder.estimatedTimeLabel = convertView.findViewById(R.id.file_estTime);
+			messageViewHolder.mProgressBar = convertView.findViewById(R.id.file_progressbar);
 		}
 		else {
 			messageViewHolder.cancelButton.setVisibility(View.GONE);
@@ -165,8 +153,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 		messageViewHolder.cancelButton.setOnClickListener(onAction);
 		messageViewHolder.openFileButton.setOnClickListener(onAction);
 		messageViewHolder.openFolderButton.setOnClickListener(onAction);
-		messageViewHolder.titleLabel
-				.setTextColor(AndroidGUIActivator.getResources().getColor("black"));
+		messageViewHolder.titleLabel.setTextColor(AndroidGUIActivator.getResources().getColor("black"));
 		return convertView;
 	}
 

@@ -49,8 +49,8 @@ public class ScrollingTable extends LinearLayout
 	{
 		super.onLayout(changed, left, top, right, bottom);
 
-		TableLayout header = (TableLayout) findViewById(R.id.table_header);
-		TableLayout body = (TableLayout) findViewById(R.id.table_body);
+		TableLayout header = findViewById(R.id.table_header);
+		TableLayout body = findViewById(R.id.table_body);
 
 		// Find max column widths
 		int[] headerWidths = findMaxWidths(header);

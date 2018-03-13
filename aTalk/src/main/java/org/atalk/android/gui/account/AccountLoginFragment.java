@@ -96,20 +96,20 @@ public class AccountLoginFragment extends OSGiFragment
 			Bundle savedInstanceState)
 	{
 		View content = inflater.inflate(R.layout.account_create_new, container, false);
-		Spinner spinner = (Spinner) content.findViewById(R.id.networkSpinner);
+		Spinner spinner = content.findViewById(R.id.networkSpinner);
 
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
 				R.array.networks_array, R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(R.layout.dropdown_spinner_item);
 		spinner.setAdapter(adapter);
 
-		mPasswordField = (EditText) content.findViewById(R.id.passwordField);
-		mShowPasswordImage = (ImageView) content.findViewById(R.id.pwdviewImage);
-		mShowPasswordCheckBox = (CheckBox) content.findViewById(R.id.show_password);
-		mIBRegistrationCheckBox = (CheckBox) content.findViewById(R.id.ibRegistration);
-		mServerOverrideCheckBox = (CheckBox) content.findViewById(R.id.serverOverridden);
-		mServerIpField = (EditText) content.findViewById(R.id.serverIpField);
-		mServerPortField = (EditText) content.findViewById(R.id.serverPortField);
+		mPasswordField = content.findViewById(R.id.passwordField);
+		mShowPasswordImage = content.findViewById(R.id.pwdviewImage);
+		mShowPasswordCheckBox = content.findViewById(R.id.show_password);
+		mIBRegistrationCheckBox = content.findViewById(R.id.ibRegistration);
+		mServerOverrideCheckBox = content.findViewById(R.id.serverOverridden);
+		mServerIpField = content.findViewById(R.id.serverIpField);
+		mServerPortField = content.findViewById(R.id.serverPortField);
         // Hide ip and port fields on first create
         updateViewVisibility(false);
 		initializeViewListeners();
@@ -153,15 +153,15 @@ public class AccountLoginFragment extends OSGiFragment
 		 */
 	private void initButton(final View content)
 	{
-		final Button signInButton = (Button) content.findViewById(R.id.buttonSignIn);
+		final Button signInButton = content.findViewById(R.id.buttonSignIn);
 		signInButton.setEnabled(true);
 
 		signInButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
 			{
-				final Spinner spinner = (Spinner) content.findViewById(R.id.networkSpinner);
-				final EditText userNameField = (EditText) content.findViewById(R.id.usernameField);
+				final Spinner spinner = content.findViewById(R.id.networkSpinner);
+				final EditText userNameField = content.findViewById(R.id.usernameField);
 
 				// Translate network label to network value
 				String[] networkValues = getResources().getStringArray(R.array.networks_array_values);
@@ -192,7 +192,7 @@ public class AccountLoginFragment extends OSGiFragment
 			}
 		});
 
-        final Button cancelButton = (Button) content.findViewById(R.id.buttonCancel);
+        final Button cancelButton = content.findViewById(R.id.buttonCancel);
         cancelButton.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)

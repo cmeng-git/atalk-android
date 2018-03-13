@@ -65,7 +65,7 @@ public class NotificationSettings extends OSGiActivity
 		super.onResume();
 		// Refresh the list each time is displayed
 		adapter = new NotificationsAdapter();
-		ListView listView = (ListView) findViewById(R.id.list);
+		ListView listView =  findViewById(R.id.list);
 		listView.setAdapter(adapter);
 		// And start listening for updates
 		notificationService.addNotificationChangeListener(adapter);

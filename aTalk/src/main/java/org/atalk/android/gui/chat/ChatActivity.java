@@ -171,7 +171,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 .add(new CryptoFragment(), CRYPTO_FRAGMENT).commit();
 
         // Instantiate a ViewPager and a PagerAdapter.
-        chatPager = (ViewPager) findViewById(R.id.chatPager);
+        chatPager = findViewById(R.id.chatPager);
         chatPagerAdapter = new ChatPagerAdapter(getSupportFragmentManager(), this);
         chatPager.setAdapter(chatPagerAdapter);
         chatPager.setOffscreenPageLimit(CHAT_PAGER_SIZE);

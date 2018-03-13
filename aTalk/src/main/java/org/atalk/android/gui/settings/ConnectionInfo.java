@@ -61,7 +61,7 @@ public class ConnectionInfo extends OSGiActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_layout);
 
-		ListView pProviderKeysList = (ListView) findViewById(R.id.list);
+		ListView pProviderKeysList = findViewById(R.id.list);
 		List<ProtocolProviderService> protocolProviders
 				= new ArrayList<>(AccountUtils.getRegisteredProviders());
 

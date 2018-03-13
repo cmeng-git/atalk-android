@@ -116,10 +116,10 @@ public class CredentialsFragment extends Fragment
 		boolean loginEditable = args.getBoolean(ARG_LOGIN_EDITABLE, true);
 		content.findViewById(R.id.username).setEnabled(loginEditable);
 
-		mShowPasswordCheckBox = (CheckBox) content.findViewById(R.id.show_password);
-		mShowPasswordImage = (ImageView) content.findViewById(R.id.pwdviewImage);
+		mShowPasswordCheckBox = content.findViewById(R.id.show_password);
+		mShowPasswordImage = content.findViewById(R.id.pwdviewImage);
 
-		mPasswordField = (EditText) content.findViewById(R.id.password);
+		mPasswordField = content.findViewById(R.id.password);
 		mPasswordField.setText(args.getString(ARG_PASSWORD));
 		// ViewUtil.setTextViewValue(content, R.id.password, args.getString(ARG_PASSWORD));
 
@@ -130,13 +130,13 @@ public class CredentialsFragment extends Fragment
 		Boolean isShownServerOption = args.getBoolean(ARG_IS_SHOWN_SERVER_OPTION, false);
 		if (isShownServerOption) {
 			Boolean isServerOverridden = args.getBoolean(ARG_IS_SERVER_OVERRIDDEN, false);
-			mServerOverrideCheckBox = (CheckBox) content.findViewById(R.id.serverOverridden);
+			mServerOverrideCheckBox = content.findViewById(R.id.serverOverridden);
 			ViewUtil.setCompoundChecked(content, R.id.serverOverridden, isServerOverridden);
 
-			mServerIpField = (EditText) content.findViewById(R.id.serverIpField);
+			mServerIpField = content.findViewById(R.id.serverIpField);
 			mServerIpField.setText(args.getString(ARG_SERVER_ADDRESS));
 
-			mServerPortField = (EditText) content.findViewById(R.id.serverPortField);
+			mServerPortField = content.findViewById(R.id.serverPortField);
 			mServerPortField.setText(args.getString(ARG_SERVER_PORT));
 			updateViewVisibility(isServerOverridden);
 		}
@@ -146,7 +146,7 @@ public class CredentialsFragment extends Fragment
 		}
 
 		String loginReason = args.getString(ARG_LOGIN_REASON);
-		TextView reasonField = (TextView) content.findViewById(R.id.reason_field);
+		TextView reasonField = content.findViewById(R.id.reason_field);
 		reasonField.setText(loginReason);
 
 		initializeViewListeners();

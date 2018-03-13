@@ -55,8 +55,7 @@ public class ContactRenameDialog extends OSGiDialogFragment
 	private MetaContact metaContact;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		getDialog().setTitle(R.string.service_gui_CONTACT_RENAME_TITLE);
 		this.metaContact = AndroidGUIActivator.getContactListService()
@@ -69,7 +68,7 @@ public class ContactRenameDialog extends OSGiDialogFragment
 		TextView accountOwner = (TextView) contentView.findViewById(R.id.accountOwner);
 		accountOwner.setText(getString(R.string.service_gui_CONTACT_OWNER, userId));
 
-		mEditName = (EditText) contentView.findViewById(R.id.editName);
+		mEditName = contentView.findViewById(R.id.editName);
 		String contactNick = getArguments().getString(CONTACT_NICK);
 		if (!StringUtils.isNullOrEmpty(contactNick))
 			mEditName.setText(contactNick);
@@ -97,7 +96,6 @@ public class ContactRenameDialog extends OSGiDialogFragment
 				dismiss();
 			}
 		});
-
 		return contentView;
 	}
 
@@ -109,13 +107,11 @@ public class ContactRenameDialog extends OSGiDialogFragment
 			public void run()
 			{
 				try {
-					AndroidGUIActivator.getContactListService()
-							.renameMetaContact(metaContact, newDisplayName);
+					AndroidGUIActivator.getContactListService().renameMetaContact(metaContact, newDisplayName);
 				}
 				catch (MetaContactListException e) {
 					logger.error(e, e);
-					AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), "Error",
-							e.getMessage());
+					AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), "Error", e.getMessage());
 				}
 			}
 		}.start();
@@ -136,8 +132,7 @@ public class ContactRenameDialog extends OSGiDialogFragment
 	public static ContactRenameDialog getInstance(MetaContact metaContact)
 	{
 		Bundle args = new Bundle();
-		String userId = metaContact.getDefaultContact().getProtocolProvider()
-				.getAccountID().getUserID();
+		String userId = metaContact.getDefaultContact().getProtocolProvider().getAccountID().getUserID();
 		args.putString(USER_ID, userId);
 		args.putString(META_CONTACT_UID, metaContact.getMetaUID());
 		args.putString(CONTACT_NICK, metaContact.getDisplayName());

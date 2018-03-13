@@ -105,7 +105,7 @@ public class ChatRoomProviderAdapter extends CollectionAdapter<Object>
 
 	private void init(int adapterViewId)
 	{
-		AdapterView aView = (AdapterView) getParentActivity().findViewById(adapterViewId);
+		AdapterView aView = getParentActivity().findViewById(adapterViewId);
 		init(aView);
 	}
 
@@ -182,10 +182,8 @@ public class ChatRoomProviderAdapter extends CollectionAdapter<Object>
 			inflater)
 	{
 		int rowResId = isDropDown ? dropDownLayout : itemLayout;
-
 		View rowView = inflater.inflate(rowResId, parent, false);
-
-		TextView tv = (TextView) rowView.findViewById(android.R.id.text1);
+		TextView tv = rowView.findViewById(android.R.id.text1);
 
 		if (item.equals(ADD_NEW_OBJECT)) {
 			tv.setText(R.string.service_gui_CREATE_GROUP);
@@ -197,7 +195,6 @@ public class ChatRoomProviderAdapter extends CollectionAdapter<Object>
 		else {
 			tv.setText(((MetaContactGroup) item).getGroupName());
 		}
-
 		return rowView;
 	}
 

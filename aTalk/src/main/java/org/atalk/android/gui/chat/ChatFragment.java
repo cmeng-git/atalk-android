@@ -253,14 +253,14 @@ public class ChatFragment extends OSGiFragment
     {
         mCFView = inflater.inflate(R.layout.chat_conversation, container, false);
         chatListAdapter = new ChatListAdapter();
-        chatListView = (ListView) mCFView.findViewById(R.id.chatListView);
+        chatListView = mCFView.findViewById(R.id.chatListView);
 
         // Inflates and adds the header, hidden by default
         this.header = inflater.inflate(R.layout.progressbar, chatListView, false);
         header.setVisibility(View.GONE);
         chatListView.addHeaderView(header);
 
-        chatStateView = (LinearLayout) mCFView.findViewById(R.id.chatStateView);
+        chatStateView = mCFView.findViewById(R.id.chatStateView);
         chatListView.setAdapter(chatListAdapter);
         chatListView.setSelector(R.drawable.contact_list_selector);
         initListViewListeners();
@@ -1203,13 +1203,13 @@ public class ChatFragment extends OSGiFragment
 
             if (viewType == INCOMING_MESSAGE_VIEW) {
                 convertView = inflater.inflate(R.layout.chat_incoming_row, parent, false);
-                messageViewHolder.avatarView = (ImageView) convertView.findViewById(R.id.incomingAvatarIcon);
-                messageViewHolder.statusView = (ImageView) convertView.findViewById(R.id.incomingStatusIcon);
-                messageViewHolder.jidView = (TextView) convertView.findViewById(R.id.incomingJidView);
-                messageViewHolder.messageView = (TextView) convertView.findViewById(R.id.incomingMessageView);
-                messageViewHolder.timeView = (TextView) convertView.findViewById(R.id.incomingTimeView);
-                messageViewHolder.chatStateView = (ImageView) convertView.findViewById(R.id.chatStateImageView);
-                messageViewHolder.showMapButton = (Button) convertView.findViewById(R.id.showMapButton);
+                messageViewHolder.avatarView = convertView.findViewById(R.id.incomingAvatarIcon);
+                messageViewHolder.statusView = convertView.findViewById(R.id.incomingStatusIcon);
+                messageViewHolder.jidView = convertView.findViewById(R.id.incomingJidView);
+                messageViewHolder.messageView = convertView.findViewById(R.id.incomingMessageView);
+                messageViewHolder.timeView = convertView.findViewById(R.id.incomingTimeView);
+                messageViewHolder.chatStateView = convertView.findViewById(R.id.chatStateImageView);
+                messageViewHolder.showMapButton = convertView.findViewById(R.id.showMapButton);
             }
             else if (viewType == OUTGOING_MESSAGE_VIEW || viewType == CORRECTED_MESSAGE_VIEW) {
                 if (viewType == OUTGOING_MESSAGE_VIEW) {
@@ -1218,18 +1218,18 @@ public class ChatFragment extends OSGiFragment
                 else {
                     convertView = inflater.inflate(R.layout.chat_corrected_row, parent, false);
                 }
-                messageViewHolder.avatarView = (ImageView) convertView.findViewById(R.id.outgoingAvatarIcon);
-                messageViewHolder.statusView = (ImageView) convertView.findViewById(R.id.outgoingStatusIcon);
-                messageViewHolder.messageView = (TextView) convertView.findViewById(R.id.outgoingMessageView);
-                messageViewHolder.timeView = (TextView) convertView.findViewById(R.id.outgoingTimeView);
+                messageViewHolder.avatarView = convertView.findViewById(R.id.outgoingAvatarIcon);
+                messageViewHolder.statusView = convertView.findViewById(R.id.outgoingStatusIcon);
+                messageViewHolder.messageView = convertView.findViewById(R.id.outgoingMessageView);
+                messageViewHolder.timeView = convertView.findViewById(R.id.outgoingTimeView);
                 messageViewHolder.outgoingMessageHolder = convertView.findViewById(R.id.outgoingMessageHolder);
-                messageViewHolder.showMapButton = (Button) convertView.findViewById(R.id.showMapButton);
+                messageViewHolder.showMapButton = convertView.findViewById(R.id.showMapButton);
             }
             else {
                 // System or error view
                 convertView = inflater.inflate((viewType == SYSTEM_MESSAGE_VIEW)
                         ? R.layout.chat_system_row : R.layout.chat_error_row, parent, false);
-                messageViewHolder.messageView = (TextView) convertView.findViewById(R.id.messageView);
+                messageViewHolder.messageView = convertView.findViewById(R.id.messageView);
             }
 
             // Set link movement method
@@ -1786,8 +1786,8 @@ public class ChatFragment extends OSGiFragment
             public void run()
             {
                 if (chatState != null) {
-                    TextView chatStateTextView = (TextView) chatStateView.findViewById(R.id.chatStateTextView);
-                    ImageView chatStateImgView = (ImageView) chatStateView.findViewById(R.id.chatStateImageView);
+                    TextView chatStateTextView = chatStateView.findViewById(R.id.chatStateTextView);
+                    ImageView chatStateImgView = chatStateView.findViewById(R.id.chatStateImageView);
 
                     switch (chatState) {
                         case composing:

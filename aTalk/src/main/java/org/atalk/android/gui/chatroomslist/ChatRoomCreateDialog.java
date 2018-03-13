@@ -94,17 +94,17 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 		setTitle(R.string.service_gui_CHAT_ROOM_JOIN);
 		this.setContentView(R.layout.muc_room_create_dialog);
 
-		accountsSpinner = (Spinner) this.findViewById(R.id.jid_Accounts_Spinner);
+		accountsSpinner = this.findViewById(R.id.jid_Accounts_Spinner);
 		initAccountSpinner();
 
-		nicknameField = (EditText) this.findViewById(R.id.NickName_Edit);
-		subjectField = (EditText) this.findViewById(R.id.chatRoom_Subject_Edit);
+		nicknameField = this.findViewById(R.id.NickName_Edit);
+		subjectField = this.findViewById(R.id.chatRoom_Subject_Edit);
 		subjectField.setText(mParent.getString(R.string.service_gui_GROUP_CHAT));
 
-		chatRoomComboBox = (ComboBox) this.findViewById(R.id.chatRoom_Combo);
+		chatRoomComboBox = this.findViewById(R.id.chatRoom_Combo);
 		initComboBox();
 
-		mJoinButton = (Button) this.findViewById(R.id.button_Join);
+		mJoinButton = this.findViewById(R.id.button_Join);
 		mJoinButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -114,7 +114,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 			}
 		});
 
-		Button mCancelButton = (Button) this.findViewById(R.id.button_Cancel);
+		Button mCancelButton = this.findViewById(R.id.button_Cancel);
 		mCancelButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -139,8 +139,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 		}
 
 		// Create an ArrayAdapter using the string array and a default spinner layout
-		ArrayAdapter<String> mAdapter
-				= new ArrayAdapter<String>(mParent, android.R.layout.simple_spinner_item, list);
+		ArrayAdapter<String> mAdapter = new ArrayAdapter<>(mParent, android.R.layout.simple_spinner_item, list);
 		// Specify the layout to use when the list of choices appears
 		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
@@ -215,8 +214,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 	private void setDefaultNickname(ProtocolProviderService pps)
 	{
 		if (pps != null) {
-			String nickName
-					= AndroidGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
+			String nickName = AndroidGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
 			if ((nickName == null) || nickName.contains("@"))
 				nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
 			nicknameField.setText(nickName);
@@ -285,8 +283,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 			ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
 
 			// create if new chatRoom
-			ChatRoomWrapper chatRoomWrapper
-					= mucService.findChatRoomWrapperFromChatRoomID(chatRoomID, pps);
+			ChatRoomWrapper chatRoomWrapper = mucService.findChatRoomWrapperFromChatRoomID(chatRoomID, pps);
 			if (chatRoomWrapper == null) {
 				createNew = true;
 				chatRoomWrapper = mucService.createChatRoom(chatRoomID, pps, contacts,
