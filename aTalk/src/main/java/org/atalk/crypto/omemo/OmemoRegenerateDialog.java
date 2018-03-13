@@ -62,7 +62,7 @@ public class OmemoRegenerateDialog extends OSGiActivity
 
         Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : providers) {
-            if (pps.getConnection().isAuthenticated()) {
+            if ((pps.getConnection() != null) && pps.getConnection().isAuthenticated()) {
                 AccountID accountId = pps.getAccountID();
                 String userId = accountId.getUserID();
                 accountMap.put(userId, pps);

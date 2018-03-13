@@ -1472,6 +1472,7 @@
     <!-- Crypto private Keys screen -->
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">Crypto private keys</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">Manage crypto private fingerprints</string>
+    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_EMPTY">Zero registered user found</string>
     <!-- Crypto fingerprints screen -->
     <string name="service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">Crypto devices fingerprints</string>
     <string name="service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY">Manage all known devices fingerprints\n

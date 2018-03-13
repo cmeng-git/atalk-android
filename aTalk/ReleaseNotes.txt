@@ -1,11 +1,12 @@
 Project aTalk-Android Release Notes
 =========================================================================
-Version:		1.1.3a (1013)
+Version:		1.1.3 (1013)
 Author:         cmeng
-Upload Date:	03/09/2018
+Upload Date:	03/13/2018
 - Upate libjitsi to add openh264 support in neomedia and setEncodingPreference to H264
 - Fixes send-side bandwidth estimations and enables log mining
-- Cleanup jni directory and update ffmpeg-x264 build scripts
+- Cleanup jni directory and update ffmpeg-x264 wrapper and build scripts
+- Fixed system crash when accessing Messaging Security settings while user is not registered on network
 
 
 =========================================================================

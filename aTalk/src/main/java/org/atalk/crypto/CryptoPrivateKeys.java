@@ -39,6 +39,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.service.osgi.OSGiActivity;
@@ -46,7 +47,6 @@ import org.atalk.util.CryptoHelper;
 import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.OmemoStore;
@@ -67,11 +67,6 @@ import java.util.TreeMap;
  */
 public class CryptoPrivateKeys extends OSGiActivity
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(CryptoPrivateKeys.class);
-
     private static final String OTR = "OTR:";
     private static final String OMEMO = "OMEMO:";
 
@@ -99,7 +94,7 @@ public class CryptoPrivateKeys extends OSGiActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout);
 
-        ListView accountsKeysList = (ListView) findViewById(R.id.list);
+        ListView accountsKeysList = findViewById(R.id.list);
         this.accountsAdapter = new PrivateKeyListAdapter(getDeviceFingerPrints());
         accountsKeysList.setAdapter(accountsAdapter);
         registerForContextMenu(accountsKeysList);
@@ -117,6 +112,9 @@ public class CryptoPrivateKeys extends OSGiActivity
         // Get all the registered protocolProviders
         Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : providers) {
+            if (pps.getConnection() == null)
+                continue;
+
             OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
             OmemoDevice userDevice = omemoManager.getOwnDevice();
             AccountID accountId = pps.getAccountID();
@@ -144,6 +142,8 @@ public class CryptoPrivateKeys extends OSGiActivity
             deviceFingerprints.put(deviceJid, fingerprint);
             accountList.put(deviceJid, accountId);
         }
+        if (deviceFingerprints.isEmpty())
+            deviceFingerprints.put(aTalkApp.getResString(R.string.service_gui_settings_CRYPTO_PRIV_KEYS_EMPTY), "");
         return deviceFingerprints;
     }
 
