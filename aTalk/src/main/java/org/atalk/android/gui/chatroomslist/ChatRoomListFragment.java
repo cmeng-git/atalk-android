@@ -121,7 +121,7 @@ public class ChatRoomListFragment extends OSGiFragment
 		}
 
 		ViewGroup content = (ViewGroup) inflater.inflate(R.layout.chatroom_list, container, false);
-		chatRoomListView = (ExpandableListView) content.findViewById(R.id.chatRoomListView);
+		chatRoomListView = content.findViewById(R.id.chatRoomListView);
 		chatRoomListView.setSelector(R.drawable.contact_list_selector);
 		chatRoomListView.setOnChildClickListener(this);
 		chatRoomListView.setOnGroupClickListener(this);
@@ -153,7 +153,7 @@ public class ChatRoomListFragment extends OSGiFragment
 			SearchView searchView = (SearchView) mSearchItem.getActionView();
 			int id = searchView.getContext().getResources()
 					.getIdentifier("android:id/search_src_text", null, null);
-			TextView textView = (TextView) searchView.findViewById(id);
+			TextView textView = searchView.findViewById(id);
 
 			filterChatRoomWrapperList(textView.getText().toString());
 			bindSearchListener();
@@ -235,7 +235,7 @@ public class ChatRoomListFragment extends OSGiFragment
 
 		int id = searchView.getContext().getResources()
 				.getIdentifier("android:id/search_src_text", null, null);
-		TextView textView = (TextView) searchView.findViewById(id);
+		TextView textView = searchView.findViewById(id);
 		textView.setTextColor(getResources().getColor(R.color.white));
 		textView.setHintTextColor(getResources().getColor(R.color.white));
 //		textView.setTextColor(ContextCompat.getColor(getContext(), R.color.white));

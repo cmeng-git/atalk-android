@@ -9,7 +9,6 @@ import android.annotation.TargetApi;
 import android.app.*;
 import android.content.Intent;
 import android.os.*;
-import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 

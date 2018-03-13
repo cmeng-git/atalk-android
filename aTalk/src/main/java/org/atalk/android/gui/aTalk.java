@@ -109,7 +109,7 @@ public class aTalk extends MainMenuActivity
 		}
 
 		// Instantiate a ViewPager and a PagerAdapter.
-		mPager = (ViewPager) findViewById(R.id.mainViewPager);
+		mPager = findViewById(R.id.mainViewPager);
 		// The pager adapter, which provides the pages to the view pager widget.
 		PagerAdapter mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
 		mPager.setAdapter(mPagerAdapter);

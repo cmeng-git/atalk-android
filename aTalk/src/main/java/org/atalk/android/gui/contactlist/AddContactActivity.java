@@ -65,7 +65,7 @@ public class AddContactActivity extends OSGiActivity
 	 */
 	private void initAccountSpinner()
 	{
-		Spinner accountsSpinner = (Spinner) findViewById(R.id.selectAccountSpinner);
+		Spinner accountsSpinner =  findViewById(R.id.selectAccountSpinner);
 
 		Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
 		List<AccountID> accounts = new ArrayList<>();
@@ -101,7 +101,7 @@ public class AddContactActivity extends OSGiActivity
 	 */
 	private void initContactGroupSpinner()
 	{
-		Spinner groupSpinner = (Spinner) findViewById(R.id.selectGroupSpinner);
+		Spinner groupSpinner = findViewById(R.id.selectGroupSpinner);
 		MetaContactGroupAdapter contactGroupAdapter
 				= new MetaContactGroupAdapter(this, R.id.selectGroupSpinner, true, true);
 
@@ -118,7 +118,7 @@ public class AddContactActivity extends OSGiActivity
 	 */
 	public void onAddClicked(View v)
 	{
-		Spinner accountsSpinner = (Spinner) findViewById(R.id.selectAccountSpinner);
+		Spinner accountsSpinner = findViewById(R.id.selectAccountSpinner);
 		Account selectedAcc = (Account) accountsSpinner.getSelectedItem();
 		if (selectedAcc == null) {
 			logger.error("No account selected");
@@ -139,7 +139,7 @@ public class AddContactActivity extends OSGiActivity
 			addRenameListener(pps, null, contactAddress, displayName);
 		}
 
-		Spinner groupSpinner = (Spinner) findViewById(R.id.selectGroupSpinner);
+		Spinner groupSpinner = findViewById(R.id.selectGroupSpinner);
 		ContactListUtils.addContact(pps, (MetaContactGroup) groupSpinner.getSelectedItem(), contactAddress);
 		finish();
 	}

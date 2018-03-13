@@ -181,7 +181,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 				= contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
 
 		if (contactView != null) {
-			ImageView avatarView = (ImageView) contactView.findViewById(R.id.avatarIcon);
+			ImageView avatarView = contactView.findViewById(R.id.avatarIcon);
 
 			if (avatarView != null)
 				setAvatar(avatarView, getContactRenderer(groupIndex).getAvatarImage(contactImpl));
@@ -205,7 +205,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 				= contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
 
 		if (contactView != null) {
-			ImageView statusView = (ImageView) contactView.findViewById(R.id.contactStatusIcon);
+			ImageView statusView = contactView.findViewById(R.id.contactStatusIcon);
 
 			if (statusView == null) {
 				logger.warn("No status view found for " + contactImpl);
@@ -285,26 +285,26 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 			convertView = inflater.inflate(R.layout.contact_list_row, parent, false);
 
 			contactViewHolder = new ContactViewHolder();
-			contactViewHolder.displayName = (TextView) convertView.findViewById(R.id.displayName);
-			contactViewHolder.statusMessage = (TextView) convertView.findViewById(R.id.statusMessage);
+			contactViewHolder.displayName = convertView.findViewById(R.id.displayName);
+			contactViewHolder.statusMessage = convertView.findViewById(R.id.statusMessage);
 
-			contactViewHolder.avatarView = (ImageView) convertView.findViewById(R.id.avatarIcon);
+			contactViewHolder.avatarView = convertView.findViewById(R.id.avatarIcon);
 			contactViewHolder.avatarView.setOnClickListener(avatarIconClickListener);
 			contactViewHolder.avatarView.setTag(contactViewHolder);
-			contactViewHolder.statusView = (ImageView) convertView.findViewById(R.id.contactStatusIcon);
+			contactViewHolder.statusView = convertView.findViewById(R.id.contactStatusIcon);
 
 			// Create call button listener and add bind holder tag
 			contactViewHolder.callButtonLayout = convertView.findViewById(R.id.callButtonLayout);
-			contactViewHolder.callButton = (ImageView) convertView.findViewById(R.id.contactCallButton);
+			contactViewHolder.callButton = convertView.findViewById(R.id.contactCallButton);
 			contactViewHolder.callButton.setOnClickListener(callButtonListener);
 			contactViewHolder.callButton.setTag(contactViewHolder);
 
-			contactViewHolder.callVideoButton = (ImageView) convertView.findViewById(R.id.contactCallVideoButton);
+			contactViewHolder.callVideoButton = convertView.findViewById(R.id.contactCallVideoButton);
 			contactViewHolder.callVideoButton.setOnClickListener(callButtonListener);
 			contactViewHolder.callVideoButton.setTag(contactViewHolder);
 
-			contactViewHolder.selectedBgView = (ImageView) convertView.findViewById(R.id.selectedBackgroundIcon);
-			contactViewHolder.buttonSeparatorView = (ImageView) convertView.findViewById(R.id.buttonSeparatorView);
+			contactViewHolder.selectedBgView = convertView.findViewById(R.id.selectedBackgroundIcon);
+			contactViewHolder.buttonSeparatorView = convertView.findViewById(R.id.buttonSeparatorView);
 
 			convertView.setTag(contactViewHolder);
 		}
@@ -411,8 +411,8 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 			convertView = inflater.inflate(R.layout.contact_list_group_row, parent, false);
 
 			groupViewHolder = new GroupViewHolder();
-			groupViewHolder.displayName = (TextView) convertView.findViewById(R.id.displayName);
-			groupViewHolder.indicator = (ImageView) convertView.findViewById(R.id.groupIndicatorView);
+			groupViewHolder.displayName = convertView.findViewById(R.id.displayName);
+			groupViewHolder.indicator = convertView.findViewById(R.id.groupIndicatorView);
 			convertView.setTag(groupViewHolder);
 		}
 		else {

@@ -200,7 +200,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 sasToastController.hideToast(true);
             }
         };
-        peerAvatar = (ImageView) findViewById(R.id.calleeAvatar);
+        peerAvatar = findViewById(R.id.calleeAvatar);
 
         sasToastController = new ClickableToastController(toastView, toastclickHandler);
         if (savedInstanceState == null) {
@@ -252,7 +252,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private void initHangupView()
     {
-        ImageView hangupView = (ImageView) findViewById(R.id.callHangupButton);
+        ImageView hangupView = findViewById(R.id.callHangupButton);
         hangupView.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
@@ -308,7 +308,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private void initMicrophoneView()
     {
-        final ImageView microphoneButton = (ImageView) findViewById(R.id.callMicrophoneButton);
+        final ImageView microphoneButton = findViewById(R.id.callMicrophoneButton);
         microphoneButton.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
@@ -350,7 +350,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
     private void doUpdateMuteStatus()
     {
-        final ImageView microphoneButton = (ImageView) findViewById(R.id.callMicrophoneButton);
+        final ImageView microphoneButton = findViewById(R.id.callMicrophoneButton);
 
         if (isMuted()) {
             microphoneButton.setBackgroundColor(0x50000000);
@@ -410,7 +410,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private void updateSpeakerphoneStatus()
     {
-        final ImageView speakerPhoneButton = (ImageView) findViewById(R.id.speakerphoneButton);
+        final ImageView speakerPhoneButton = findViewById(R.id.speakerphoneButton);
 
         if (aTalkApp.getAudioManager().isSpeakerphoneOn()) {
             speakerPhoneButton.setBackgroundColor(0x50000000);
@@ -587,7 +587,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         {
             public void run()
             {
-                TextView statusName = (TextView) findViewById(R.id.callStatus);
+                TextView statusName = findViewById(R.id.callStatus);
                 statusName.setText(stateString);
             }
         });
@@ -652,7 +652,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             {
                 callState.errorReason = reason;
 
-                TextView errorReason = (TextView) findViewById(R.id.callErrorReason);
+                TextView errorReason = findViewById(R.id.callErrorReason);
                 if (errorReason != null) {
                     errorReason.setText(reason);
                     errorReason.setVisibility(View.VISIBLE);
@@ -717,7 +717,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private void doUpdateHoldStatus()
     {
-        final ImageView holdButton = (ImageView) findViewById(R.id.callHoldButton);
+        final ImageView holdButton = findViewById(R.id.callHoldButton);
 
         if (isOnHold()) {
             holdButton.setBackgroundColor(0x50000000);

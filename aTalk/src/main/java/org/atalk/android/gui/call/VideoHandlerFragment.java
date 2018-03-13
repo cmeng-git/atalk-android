@@ -130,9 +130,9 @@ public class VideoHandlerFragment extends OSGiFragment
 		super.onActivityCreated(savedInstanceState);
 		mActivity = getActivity();
 
-		remoteVideoContainer = (ViewGroup) mActivity.findViewById(R.id.remoteVideoContainer);
-		localPreviewContainer = (ViewGroup) mActivity.findViewById(R.id.localPreviewContainer);
-		callInfoGroup = (ViewGroup) mActivity.findViewById(R.id.callInfoGroup);
+		remoteVideoContainer = mActivity.findViewById(R.id.remoteVideoContainer);
+		localPreviewContainer = mActivity.findViewById(R.id.localPreviewContainer);
+		callInfoGroup = mActivity.findViewById(R.id.callInfoGroup);
 		ctrlButtonsGroup = mActivity.findViewById(R.id.button_Container);
 
 		// (must be done after layout or 0 sizes will be returned)
@@ -157,7 +157,7 @@ public class VideoHandlerFragment extends OSGiFragment
 					}
 				});
 
-		calleeAvatar = (ImageView) mActivity.findViewById(R.id.calleeAvatar);
+		calleeAvatar = mActivity.findViewById(R.id.calleeAvatar);
 		mCallVideoButton = mActivity.findViewById(R.id.callVideoButton);
 		mCallVideoButton.setOnClickListener(new View.OnClickListener()
 		{

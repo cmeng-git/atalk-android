@@ -102,10 +102,8 @@ public class CallTimerFragment extends OSGiFragment
 			return;
 
 		String timeStr = GuiUtils.formatTime(callStartDate.getTime(), System.currentTimeMillis());
-		TextView callTime = (TextView) getActivity().findViewById(R.id.callTime);
-
+		TextView callTime = getActivity().findViewById(R.id.callTime);
 		callTime.setText(timeStr);
-
 		VideoCallActivity.callState.callDuration = timeStr;
 	}
 

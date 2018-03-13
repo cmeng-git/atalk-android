@@ -145,7 +145,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 			chatPanel = chatFragment.getChatPanel();
 
 			// Gets message edit view
-			msgEdit = ((EditText) parent.findViewById(R.id.chatWriteText));
+			msgEdit = parent.findViewById(R.id.chatWriteText);
 
 			// Restore edited text
 			msgEdit.setText(chatPanel.getEditedText());
@@ -170,11 +170,11 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 			audioBtn.setOnLongClickListener(this);
 			audioBtn.setOnTouchListener(this);
 
-			mSoundMeter = (SoundMeter) parent.findViewById(R.id.sound_meter);
-			mRecordTimer = (TextView) parent.findViewById(R.id.recordTimer);
-			mdBTextView = (TextView) parent.findViewById(R.id.dBTextView);
+			mSoundMeter = parent.findViewById(R.id.sound_meter);
+			mRecordTimer = parent.findViewById(R.id.recordTimer);
+			mdBTextView =  parent.findViewById(R.id.dBTextView);
 
-			mTrash = (ImageView) parent.findViewById(R.id.ic_mic_trash);
+			mTrash = parent.findViewById(R.id.ic_mic_trash);
 			mTrashAnimate = (AnimationDrawable) mTrash.getBackground();
 
 			animBlink = AnimationUtils.loadAnimation(parent, R.anim.blink);

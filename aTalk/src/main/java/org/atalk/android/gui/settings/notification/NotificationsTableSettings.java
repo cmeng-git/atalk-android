@@ -87,7 +87,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
 	{
 		setContentView(R.layout.notifications_settings);
 
-		TableLayout table = (TableLayout) findViewById(R.id.table_body);
+		TableLayout table = findViewById(R.id.table_body);
 
 		LayoutInflater inflater = getLayoutInflater();
 

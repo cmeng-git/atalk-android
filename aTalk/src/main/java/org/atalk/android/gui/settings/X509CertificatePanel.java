@@ -73,7 +73,7 @@ public class X509CertificatePanel extends Dialog
 		setContentView(R.layout.x509_certificate_view);
 		setTitle(mContext.getString(R.string.service_gui_CERT_INFO_CHAIN));
 
-		WebView certInfo = (WebView) findViewById(R.id.certificateInfo);
+		WebView certInfo = findViewById(R.id.certificateInfo);
 		WebSettings settings = certInfo.getSettings();
 		settings.setDefaultFontSize(10);
 		settings.setDefaultFixedFontSize(10);

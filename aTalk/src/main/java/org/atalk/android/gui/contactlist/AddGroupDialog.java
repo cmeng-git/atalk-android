@@ -104,7 +104,7 @@ public class AddGroupDialog extends OSGiFragment
 				return false;
 
 			AddGroupDialog content = (AddGroupDialog) dialog.getContentFragment();
-			EditText editText = (EditText) content.getView().findViewById(R.id.editText);
+			EditText editText = content.getView().findViewById(R.id.editText);
 
 			String groupName = editText.getText().toString().trim();
 			if (groupName.length() == 0) {

@@ -43,7 +43,7 @@ public class MediaCodecList extends OSGiActivity implements AdapterView.OnItemCl
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_layout);
 
-		ListView list = (ListView) findViewById(R.id.list);
+		ListView list = findViewById(R.id.list);
 		list.setAdapter(new MediaCodecAdapter());
 		list.setOnItemClickListener(this);
 	}

@@ -216,7 +216,7 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
 
 		this.setContentView(R.layout.videobridge_invite_dialog);
 
-		contactListView = (ExpandableListView) this.findViewById(R.id.ContactListView);
+		contactListView =  this.findViewById(R.id.ContactListView);
 		contactListView.setSelector(R.drawable.contact_list_selector);
 		contactListView.setOnChildClickListener(this);
 
@@ -224,7 +224,7 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
 		registerForContextMenu(contactListView);
 		initListAdapter();
 
-		mInviteButton = (Button) this.findViewById(R.id.button_invite);
+		mInviteButton = this.findViewById(R.id.button_invite);
 		if (mucContactList.isEmpty()) {
 			mInviteButton.setEnabled(false);
 			mInviteButton.setAlpha(.3f);
@@ -250,7 +250,7 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
 			}
 		});
 
-		mCancelButton = (Button) this.findViewById(R.id.buttonCancel);
+		mCancelButton = this.findViewById(R.id.buttonCancel);
 		mCancelButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				closeDialog();

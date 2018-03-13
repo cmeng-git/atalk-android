@@ -153,9 +153,9 @@ public class ChatInviteDialog extends Dialog
 		setTitle(R.string.service_gui_INVITE_CONTACT_TO_CHAT);
 
 		this.setContentView(R.layout.muc_invite_dialog);
-		reasonText = (EditText) this.findViewById(R.id.text_reason);
+		reasonText =  this.findViewById(R.id.text_reason);
 
-		contactListView = (ExpandableListView) this.findViewById(R.id.ContactListView);
+		contactListView = this.findViewById(R.id.ContactListView);
 		contactListView.setSelector(R.drawable.contact_list_selector);
 		contactListView.setOnChildClickListener(this);
 		contactListView.setOnGroupClickListener(this);
@@ -164,10 +164,9 @@ public class ChatInviteDialog extends Dialog
 		registerForContextMenu(contactListView);
 		initListAdapter();
 
-		mInviteButton = (Button) this.findViewById(R.id.button_invite);
+		mInviteButton = this.findViewById(R.id.button_invite);
 		if (chatPanel.getChatSession() instanceof MetaContactChatSession) {
-			mucContactList.put(chatPanel.getMetaContact().getMetaUID(), chatPanel.getMetaContact
-					());
+			mucContactList.put(chatPanel.getMetaContact().getMetaUID(), chatPanel.getMetaContact());
 			mInviteButton.setEnabled(true);
 		}
 		else {
@@ -183,7 +182,7 @@ public class ChatInviteDialog extends Dialog
 			}
 		});
 
-		Button mCancelButton = (Button) this.findViewById(R.id.buttonCancel);
+		Button mCancelButton = this.findViewById(R.id.buttonCancel);
 		mCancelButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)

@@ -62,17 +62,16 @@ public class GeoLocation extends EasyLocationActivity
 		}
 
 		setContentView(R.layout.geo_location);
-		mLatitudeTextView = (TextView) findViewById(R.id.latitude_textview);
-		mLongitudeTextView = (TextView) findViewById(R.id.longitude_textview);
-		mLocationAddressTextView = (TextView) findViewById(R.id.locationAddress_textview);
+		mLatitudeTextView = findViewById(R.id.latitude_textview);
+		mLongitudeTextView = findViewById(R.id.longitude_textview);
+		mLocationAddressTextView = findViewById(R.id.locationAddress_textview);
 
-		mSendSingle = (Button) findViewById(R.id.requestSingleLocationButton);
+		mSendSingle = findViewById(R.id.requestSingleLocationButton);
 		mSendSingle.setOnClickListener(this);
-		mGpsTrack = (CheckBox) findViewById(R.id.gps_track);
+		mGpsTrack = findViewById(R.id.gps_track);
 
-		mSendCont = (Button) findViewById(R.id.requestLocationUpdatesButton);
-		mSendCont.setText(String.format(getString(R.string.send_cont_location_updates),
-				gpsMinDistance, sendTimeInterval));
+		mSendCont = findViewById(R.id.requestLocationUpdatesButton);
+		mSendCont.setText(String.format(getString(R.string.send_cont_location_updates), gpsMinDistance, sendTimeInterval));
 		mSendCont.setOnClickListener(this);
 		mSendCont.setOnLongClickListener(new View.OnLongClickListener() {
 			@Override
@@ -83,12 +82,12 @@ public class GeoLocation extends EasyLocationActivity
 			}
 		});
 
-		mSeekDistanceInterval = (SeekBar) findViewById(R.id.seekDistanceInterval);
+		mSeekDistanceInterval = findViewById(R.id.seekDistanceInterval);
 		mSeekDistanceInterval.setMax(100);
 		mSeekDistanceInterval.setProgress(gpsMinDistance / gpsDistanceStep);
 		mSeekDistanceInterval.setOnSeekBarChangeListener(this);
 
-		mSeekTimeInterval = (SeekBar) findViewById(R.id.seekTimeInterval);
+		mSeekTimeInterval = findViewById(R.id.seekTimeInterval);
 		mSeekTimeInterval.setMax(100);
 		int progress = (sendTimeInterval - timeIntervalStep) / timeIntervalStep;
 		if (progress < 0)

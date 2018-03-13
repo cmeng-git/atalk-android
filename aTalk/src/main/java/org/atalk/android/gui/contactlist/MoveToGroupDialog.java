@@ -55,15 +55,13 @@ public class MoveToGroupDialog extends OSGiDialogFragment
 		this.metaContact = AndroidGUIActivator.getContactListService()
 				.findMetaContactByMetaUID(getArguments().getString(META_CONTACT_UID));
 
-		View contentView = getActivity().getLayoutInflater().inflate(R.layout.move_to_group,
-				container, false);
+		View contentView = getActivity().getLayoutInflater().inflate(R.layout.move_to_group, container, false);
 
 		String UserId = getArguments().getString(USER_ID);
-		TextView accountOwner = (TextView) contentView.findViewById(R.id.accountOwner);
+		TextView accountOwner = contentView.findViewById(R.id.accountOwner);
 		accountOwner.setText(getString(R.string.service_gui_CONTACT_OWNER, UserId));
 
-		final AdapterView groupList
-				= (AdapterView) contentView.findViewById(R.id.selectGroupSpinner);
+		final AdapterView groupList = contentView.findViewById(R.id.selectGroupSpinner);
 		MetaContactGroupAdapter contactGroupAdapter
 				= new MetaContactGroupAdapter(getActivity(), groupList, false, true);
 		groupList.setAdapter(contactGroupAdapter);
@@ -86,7 +84,6 @@ public class MoveToGroupDialog extends OSGiDialogFragment
 				dismiss();
 			}
 		});
-
 		return contentView;
 	}
 
@@ -98,13 +95,11 @@ public class MoveToGroupDialog extends OSGiDialogFragment
 			public void run()
 			{
 				try {
-					AndroidGUIActivator.getContactListService()
-							.moveMetaContact(metaContact, selectedItem);
+					AndroidGUIActivator.getContactListService().moveMetaContact(metaContact, selectedItem);
 				}
 				catch (MetaContactListException e) {
 					logger.error(e, e);
-					AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), "Error",
-							e.getMessage());
+					AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), "Error", e.getMessage());
 				}
 			}
 		}.start();
@@ -125,8 +120,7 @@ public class MoveToGroupDialog extends OSGiDialogFragment
 	public static MoveToGroupDialog getInstance(MetaContact metaContact)
 	{
 		Bundle args = new Bundle();
-		String userName = metaContact.getDefaultContact().getProtocolProvider()
-				.getAccountID().getUserID();
+		String userName = metaContact.getDefaultContact().getProtocolProvider().getAccountID().getUserID();
 		args.putString(USER_ID, userName);
 		args.putString(META_CONTACT_UID, metaContact.getMetaUID());
 

@@ -89,11 +89,11 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
 		this.rms = ServiceUtils.getService(AndroidGUIActivator.bundleContext, ResourceManagementService.class);
 
 		setContentView(R.layout.notification_details);
-		this.description = (TextView) findViewById(R.id.description);
-		this.popup = (CompoundButton) findViewById(R.id.popup);
-		this.soundNotification = (CompoundButton) findViewById(R.id.soundNotification);
-		this.soundPlayback = (CompoundButton) findViewById(R.id.soundPlayback);
-		this.vibrate = (CompoundButton) findViewById(R.id.vibrate);
+		this.description = findViewById(R.id.description);
+		this.popup = findViewById(R.id.popup);
+		this.soundNotification = findViewById(R.id.soundNotification);
+		this.soundPlayback = findViewById(R.id.soundPlayback);
+		this.vibrate = findViewById(R.id.vibrate);
 
 		ActionBarUtil.setTitle(this, rms.getI18NString("plugin.notificationconfig.event." + eventType));
 		if (savedInstanceState == null) {

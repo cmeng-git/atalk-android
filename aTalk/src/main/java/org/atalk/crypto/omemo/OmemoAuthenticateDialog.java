@@ -82,7 +82,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
 		setTitle(R.string.omemo_authbuddydialog_AUTHENTICATE_BUDDY);
 
 		fpListAdapter = new FingerprintListAdapter(getBuddyFingerPrints());
-		ListView fingerprintsList = ((ListView) findViewById(R.id.fp_list));
+		ListView fingerprintsList = findViewById(R.id.fp_list);
 		fingerprintsList.setAdapter(fpListAdapter);
 
 		String account = mOmemoManager.getOwnJid().toString();

@@ -66,7 +66,7 @@ public class VerifyCertificateActivity extends OSGiActivity
 		}
 
 		setContentView(R.layout.verify_certificate);
-		TextView msgView = (TextView) findViewById(R.id.message);
+		TextView msgView = findViewById(R.id.message);
 		msgView.setText(Html.fromHtml(certDialog.getMsg()));
 		setTitle(certDialog.getTitle());
 	}

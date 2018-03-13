@@ -23,7 +23,7 @@ public class GPSTrackingActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gps_tracker);
 
-		btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
+		btnShowLocation = findViewById(R.id.btnShowLocation);
 
 		// Show location button click event
 		btnShowLocation.setOnClickListener(new View.OnClickListener() {

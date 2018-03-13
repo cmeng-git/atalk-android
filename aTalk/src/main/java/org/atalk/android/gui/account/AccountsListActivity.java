@@ -149,7 +149,7 @@ public class AccountsListActivity extends OSGiActivity
 		listAdapter = new AccountStatusListAdapter(accountIDCollection);
 
 		// Puts the adapter into accounts ListView
-		ListView lv = (ListView) findViewById(R.id.accountListView);
+		ListView lv = findViewById(R.id.accountListView);
 		lv.setAdapter(listAdapter);
 	}
 

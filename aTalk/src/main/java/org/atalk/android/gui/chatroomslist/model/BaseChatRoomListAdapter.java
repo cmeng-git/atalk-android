@@ -179,15 +179,13 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 			final Object chatRoomWrapper)
 	{
 		int firstIndex = chatRoomListView.getFirstVisiblePosition();
-		View chatRoomView = chatRoomListView.getChildAt(
-						getListIndex(groupIndex, chatRoomIndex) - firstIndex);
+		View chatRoomView = chatRoomListView.getChildAt(getListIndex(groupIndex, chatRoomIndex) - firstIndex);
 
 		if (chatRoomView != null) {
-			ImageView avatarView = (ImageView) chatRoomView.findViewById(R.id.room_icon);
+			ImageView avatarView = chatRoomView.findViewById(R.id.room_icon);
 
 			if (avatarView != null)
-				setRoomIcon(avatarView,
-						getChatRoomRenderer(groupIndex).getChatRoomIcon(chatRoomWrapper));
+				setRoomIcon(avatarView, getChatRoomRenderer(groupIndex).getChatRoomIcon(chatRoomWrapper));
 		}
 	}
 
@@ -261,10 +259,10 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 			convertView = inflater.inflate(R.layout.chatroom_list_row, parent, false);
 
 			chatRoomViewHolder = new ChatRoomViewHolder();
-			chatRoomViewHolder.roomName = (TextView) convertView.findViewById(R.id.room_name);
-			chatRoomViewHolder.statusMessage = (TextView) convertView.findViewById(R.id.room_status);
+			chatRoomViewHolder.roomName = convertView.findViewById(R.id.room_name);
+			chatRoomViewHolder.statusMessage = convertView.findViewById(R.id.room_status);
 
-			chatRoomViewHolder.roomIcon = (ImageView) convertView.findViewById(R.id.room_icon);
+			chatRoomViewHolder.roomIcon = convertView.findViewById(R.id.room_icon);
 			chatRoomViewHolder.roomIcon.setOnClickListener(roomIconClickListener);
 			chatRoomViewHolder.roomIcon.setTag(chatRoomViewHolder);
 
@@ -331,9 +329,8 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 			convertView = inflater.inflate(R.layout.chatroom_list_group_row, parent, false);
 
 			groupViewHolder = new GroupViewHolder();
-			groupViewHolder.ppsUserId = (TextView) convertView.findViewById(R.id.displayName);
-			groupViewHolder.indicator
-					= (ImageView) convertView.findViewById(R.id.groupIndicatorView);
+			groupViewHolder.ppsUserId = convertView.findViewById(R.id.displayName);
+			groupViewHolder.indicator = convertView.findViewById(R.id.groupIndicatorView);
 			convertView.setTag(groupViewHolder);
 		}
 		else {
