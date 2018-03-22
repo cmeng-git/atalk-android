@@ -256,9 +256,9 @@
     <string name="title_activity_maps">Mapa</string>
 
     <!--    Permissions    -->
-    <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
-    <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
-    <string name="permission_required_toast">Location permission is required for this demo.</string>
+    <string name="permission_rationale_location">El acceso al servicio de localización es necesario para demostrar la función \"mi localización"\, que muestra tu posición actual en el mapa.</string>
+    <string name="location_permission_denied">Esta muestra requiere permiso de ubicación para habilitar la capa \"mi ubicación"\. Por favor, inténtalo de nuevo y concede acceso para usar la ubicación.\nSi el permiso ha sido denegado permanentemente, se puede habilitar desde la Configuración del sistema &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+    <string name="permission_required_toast">Se requiere permiso de ubicación para esta demostración.</string>
 
     <string name="service_gui_REFRESH_APPLY">Apply</string>
     <string name="service_gui_REFRESH_STORES">Refresh persistent stores&#8230;</string>
