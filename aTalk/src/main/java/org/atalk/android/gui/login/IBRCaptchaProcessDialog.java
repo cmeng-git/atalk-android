@@ -176,6 +176,8 @@ public class IBRCaptchaProcessDialog extends Dialog
         if (initIBRRegistration()) {
             UpdateDialogContent();
             initializeViewListeners();
+        } else { // unable to start IBR registration on server
+            onIBRServerFailure();
         }
     }
 
@@ -272,6 +274,20 @@ public class IBRCaptchaProcessDialog extends Dialog
                 closeDialog();
             }
         });
+    }
+
+    // Server failure with start of IBR registration
+    private void onIBRServerFailure() {
+        mReasonText = "InBand registration - Server Error!";
+        mImageView.setVisibility(View.GONE);
+        mReason.setText(mReasonText);
+        mPasswordField.setEnabled(false);
+        mCaptchaText.setVisibility(View.GONE);
+        mAcceptButton.setEnabled(false);
+        mAcceptButton.setAlpha(0.5f);
+        mOKButton.setEnabled(false);
+        mOKButton.setAlpha(0.5f);
+        initializeViewListeners();
     }
 
     /**
@@ -437,6 +453,9 @@ public class IBRCaptchaProcessDialog extends Dialog
                 Registration info = accountManager.getRegistrationInfo();
                 if (info != null) {
                     DataForm dataForm = info.getDataForm();
+                    // do not proceed if dataForm is null
+                    if (dataForm == null)
+                        return false;
 
                     Bitmap captcha = null;
                     BoB bob = info.getBoB();

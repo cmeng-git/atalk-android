@@ -1,5 +1,13 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.1.4 (1014)
+Author:         cmeng
+Upload Date:	03/23/2018
+- Fix InfoRetriever uncaughtException and slow server response timeout with 10s elapsed time
+- Provide proper handler for start of IBR registration failure on server
+- Update to use smack 4.2.3 release
+
+=========================================================================
 Version:		1.1.3 (1013)
 Author:         cmeng
 Upload Date:	03/13/2018
@@ -7,7 +15,6 @@ Upload Date:	03/13/2018
 - Fixes send-side bandwidth estimations and enables log mining
 - Cleanup jni directory and update ffmpeg-x264 wrapper and build scripts
 - Fixed system crash when accessing Messaging Security settings while user is not registered on network
-
 
 =========================================================================
 Version:		1.1.2 (1012)

@@ -41,8 +41,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1013
-        versionName "1.1.3" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1014
+        versionName "1.1.4" // no alphabet allowed (e.g. 0.8.7.a)
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true
@@ -116,7 +116,7 @@ ext {
     // Need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
     // smackVersion = '4.2.2'
-    smackVersion = '4.2.3-SNAPSHOT'
+    smackVersion = '4.2.3'
 }
 
 dependencies {

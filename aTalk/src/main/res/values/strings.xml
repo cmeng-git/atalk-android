@@ -85,7 +85,7 @@
     <string name="service_gui_ADD_AUTHORIZED_CONTACT">Add %s to your contact list</string>
     <string name="service_gui_ADD_CONTACT_TO">Add contact to</string>
     <string name="service_gui_ADD_CONTACT_ERROR">Failed to add contact with id: %s</string>
-    <string name="service_gui_ADD_CONTACT_ERROR_TITLE">Add contact Error</string>
+    <string name="service_gui_ADD_CONTACT_ERROR_TITLE">Add Contact Error</string>
     <string name="service_gui_ADD_CONTACT_EXIST_ERROR">The contact %s already exists in your contact list.</string>
     <string name="service_gui_ADD_CONTACT_NETWORK_ERROR">Server did not respond to our request adding contact with id: %s.</string>
     <string name="service_gui_ADD_CONTACT_NOT_SUPPORTED">Failed to add contact with id: %s. Operation not supported.</string>

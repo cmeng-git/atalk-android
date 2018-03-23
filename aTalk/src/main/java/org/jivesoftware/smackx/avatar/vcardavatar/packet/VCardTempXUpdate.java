@@ -36,8 +36,7 @@ public class VCardTempXUpdate implements ExtensionElement
 	 * The <tt>Logger</tt> used by the <tt>VCardTempXUpdatePresenceExtension</tt> class and its
 	 * instances for logging output.
 	 */
-	private static final Logger LOGGER
-			= Logger.getLogger(VCardTempXUpdate.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(VCardTempXUpdate.class.getName());
 
 	/**
 	 * This presence extension namespace.

@@ -1002,8 +1002,7 @@ public class OperationSetPersistentPresenceJabberImpl
                     xmppConnection.removeAsyncStanzaListener(subscriptionPacketListener);
 
                     // the roster is guaranteed to be non-null
-                    Roster.getInstanceFor(xmppConnection)
-                            .removeRosterListener(contactChangesListener);
+                    Roster.getInstanceFor(xmppConnection).removeRosterListener(contactChangesListener);
                     // vCardAvatarManager can be null for unRegistered account
                     if (vCardAvatarManager != null) {
                         vCardAvatarManager.removeVCardAvatarChangeListener(OperationSetPersistentPresenceJabberImpl.this);
@@ -1399,7 +1398,7 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Listens for subscription events coming from stack.
+     * Listens for subscription events coming from smack.
      */
     private class JabberSubscriptionListener implements StanzaListener
     {

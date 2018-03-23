@@ -17,19 +17,14 @@ import java.util.Calendar;
 public class OnlineUpdateService extends IntentService
 {
 	private static final String UPDATE_AVAIL_TAG = "aTalk Update Available";
-
-	public static final String ACTION_AUTO_UPDATE_APP
-			= "org.atalk.android.ACTION_AUTO_UPDATE_APP";
-	public static final String ACTION_AUTO_UPDATE_START
-			= "org.atalk.android.ACTION_AUTO_UPDATE_START";
-	public static final String ACTION_AUTO_UPDATE_STOP
-			= "org.atalk.android.ACTION_AUTO_UPDATE_STOP";
-	private static final String ACTION_UPDATE_AVAILABLE
-			= "org.atalk.android.ACTION_UPDATE_AVAILABLE";
+	public static final String ACTION_AUTO_UPDATE_APP = "org.atalk.android.ACTION_AUTO_UPDATE_APP";
+	public static final String ACTION_AUTO_UPDATE_START = "org.atalk.android.ACTION_AUTO_UPDATE_START";
+	public static final String ACTION_AUTO_UPDATE_STOP = "org.atalk.android.ACTION_AUTO_UPDATE_STOP";
+	private static final String ACTION_UPDATE_AVAILABLE = "org.atalk.android.ACTION_UPDATE_AVAILABLE";
 	private static final String ONLINE_UPDATE_SERVICE = "OnlineUpdateService";
 
 	// in unit of seconds
-	public static int CHECK_INTERVAL_ON_LAUNCH = 10;
+	public static int CHECK_INTERVAL_ON_LAUNCH = 30;
 	public static int CHECK_NEW_VERSION_INTERVAL = 24 * 60 * 60;
 	private static final int UPDATE_AVAIL_NOTIFY_ID = 1;
 
@@ -64,8 +59,7 @@ public class OnlineUpdateService extends IntentService
 						break;
 					case ACTION_UPDATE_AVAILABLE:
 						UpdateServiceImpl updateService = (UpdateServiceImpl) ServiceUtils
-								.getService(
-								AndroidGUIActivator.bundleContext, UpdateService.class);
+								.getService(AndroidGUIActivator.bundleContext, UpdateService.class);
 						if (updateService != null) {
 							updateService.checkForUpdates(true);
 						}
@@ -86,11 +80,9 @@ public class OnlineUpdateService extends IntentService
 		Boolean isAutoUpdateCheckEnable = true;
 		ConfigurationService cfg = AndroidGUIActivator.getConfigurationService();
 		if (cfg != null)
-			isAutoUpdateCheckEnable
-					= cfg.getBoolean(SettingsActivity.AUTO_UPDATE_CHECK_ENABLE, true);
+			isAutoUpdateCheckEnable = cfg.getBoolean(SettingsActivity.AUTO_UPDATE_CHECK_ENABLE, true);
 
-		UpdateService updateService = ServiceUtils.getService(AndroidGUIActivator.bundleContext,
-				UpdateService.class);
+		UpdateService updateService = ServiceUtils.getService(AndroidGUIActivator.bundleContext, UpdateService.class);
 		if (updateService != null) {
 			boolean isLatest = updateService.isLatestVersion();
 
@@ -106,14 +98,11 @@ public class OnlineUpdateService extends IntentService
 				mBuilder.setContentTitle(getString(R.string.app_name));
 				mBuilder.setContentText(msgString);
 
-				Intent intent
-						= new Intent(this.getApplicationContext(), OnlineUpdateService.class);
+				Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
 				intent.setAction(ACTION_UPDATE_AVAILABLE);
-				PendingIntent pending = PendingIntent.getService(this, 0, intent,
-						PendingIntent.FLAG_UPDATE_CURRENT);
+				PendingIntent pending = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 				mBuilder.setContentIntent(pending);
-				mNotificationMgr.notify(UPDATE_AVAIL_TAG, UPDATE_AVAIL_NOTIFY_ID,
-						mBuilder.build());
+				mNotificationMgr.notify(UPDATE_AVAIL_TAG, UPDATE_AVAIL_NOTIFY_ID, mBuilder.build());
 			}
 		}
 
@@ -126,8 +115,7 @@ public class OnlineUpdateService extends IntentService
 		AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
 		intent.setAction(ACTION_AUTO_UPDATE_APP);
-		PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent,
-				PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(System.currentTimeMillis());
 		cal.add(Calendar.SECOND, nextAlarmTime);
@@ -140,8 +128,7 @@ public class OnlineUpdateService extends IntentService
 		AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
 		intent.setAction(ACTION_AUTO_UPDATE_APP);
-		PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent,
-				PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		alarmManager.cancel(pendingIntent);
 	}
 }

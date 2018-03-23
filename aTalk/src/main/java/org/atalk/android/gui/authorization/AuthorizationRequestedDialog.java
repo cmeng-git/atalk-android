@@ -154,8 +154,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
 			// Add to contacts
 			Spinner groupSpinner = findViewById(R.id.selectGroupSpinner);
 			ContactListUtils.addContact(request.contact.getProtocolProvider(),
-					(MetaContactGroup) groupSpinner.getSelectedItem(),
-					request.contact.getAddress());
+					(MetaContactGroup) groupSpinner.getSelectedItem(), request.contact.getAddress());
 		}
 		request.notifyResponseReceived(responseCode);
 	}

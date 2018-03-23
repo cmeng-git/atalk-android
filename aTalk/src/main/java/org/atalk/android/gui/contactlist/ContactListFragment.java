@@ -105,8 +105,7 @@ public class ContactListFragment extends OSGiFragment
 	 * {@inheritDoc}
 	 */
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		if (AndroidGUIActivator.bundleContext == null) {
 			return null;
@@ -309,8 +308,7 @@ public class ContactListFragment extends OSGiFragment
 	 * @param child
 	 * 		clicked contact index.
 	 */
-	private void createContactCtxMenu(ContextMenu menu, MenuInflater inflater,
-			int group, int child)
+	private void createContactCtxMenu(ContextMenu menu, MenuInflater inflater, int group, int child)
 	{
 		// Inflate contact list context menu
 		inflater.inflate(R.menu.contact_ctx_menu, menu);
@@ -344,8 +342,7 @@ public class ContactListFragment extends OSGiFragment
 			return;
 		}
 
-		OperationSetExtendedAuthorizations authOpSet
-				= pps.getOperationSet(OperationSetExtendedAuthorizations.class);
+		OperationSetExtendedAuthorizations authOpSet = pps.getOperationSet(OperationSetExtendedAuthorizations.class);
 		boolean reRequestVisible = false;
 		if (authOpSet != null
 				&& authOpSet.getSubscriptionStatus(contact) != null
@@ -606,7 +603,6 @@ public class ContactListFragment extends OSGiFragment
 			// Display the contact list
 			if (contactListView.getExpandableListAdapter() != getContactListAdapter()) {
 				contactListView.setAdapter(getContactListAdapter());
-
 				contactListAdapter.filterData("");
 			}
 

@@ -42,8 +42,7 @@ public class ContactListUtils {
 			@Override
 			public void run() {
 				try {
-					AndroidGUIActivator.getContactListService().createMetaContact(protocolProvider,
-							group, contactAddress);
+					AndroidGUIActivator.getContactListService().createMetaContact(protocolProvider, group, contactAddress);
 				}
 				catch (MetaContactListException ex) {
 					logger.error(ex);
@@ -60,8 +59,7 @@ public class ContactListUtils {
 									contactAddress);
 							break;
 						case MetaContactListException.CODE_NETWORK_ERROR:
-							msg = ctx.getString(R.string.service_gui_ADD_CONTACT_NETWORK_ERROR,
-									contactAddress);
+							msg = ctx.getString(R.string.service_gui_ADD_CONTACT_NETWORK_ERROR, contactAddress);
 							break;
 						case MetaContactListException.CODE_NOT_SUPPORTED_OPERATION:
 							msg = ctx.getString(R.string.service_gui_ADD_CONTACT_NOT_SUPPORTED,
