@@ -21,8 +21,7 @@ import org.jivesoftware.smack.roster.packet.RosterPacket;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class OperationSetExtendedAuthorizationsJabberImpl implements
-	OperationSetExtendedAuthorizations
+public class OperationSetExtendedAuthorizationsJabberImpl implements OperationSetExtendedAuthorizations
 {
 	/**
 	 * A reference to the persistent presence operation set that we use to match incoming messages
@@ -65,11 +64,10 @@ public class OperationSetExtendedAuthorizationsJabberImpl implements
 		opSetPersPresence.assertConnected();
 
 		if (!(contact instanceof ContactJabberImpl))
-			throw new IllegalArgumentException("The specified contact is not an jabber contact."
-				+ contact);
+			throw new IllegalArgumentException("The specified contact is not an jabber contact." + contact);
 
 		Presence responsePacket = new Presence(Presence.Type.subscribed);
-		responsePacket.setTo(contact.getAddress());
+		responsePacket.setTo(contact.getJid());
 		try {
 			parentProvider.getConnection().sendStanza(responsePacket);
 		}
@@ -95,11 +93,10 @@ public class OperationSetExtendedAuthorizationsJabberImpl implements
 		opSetPersPresence.assertConnected();
 
 		if (!(contact instanceof ContactJabberImpl))
-			throw new IllegalArgumentException("The specified contact is not an jabber contact: "
-				+ contact);
+			throw new IllegalArgumentException("The specified contact is not an jabber contact: " + contact);
 
 		Presence responsePacket = new Presence(Presence.Type.subscribe);
-		responsePacket.setTo(contact.getAddress());
+		responsePacket.setTo(contact.getJid());
 		try {
 			parentProvider.getConnection().sendStanza(responsePacket);
 		}
@@ -118,8 +115,7 @@ public class OperationSetExtendedAuthorizationsJabberImpl implements
 	public SubscriptionStatus getSubscriptionStatus(Contact contact)
 	{
 		if (!(contact instanceof ContactJabberImpl))
-			throw new IllegalArgumentException("The specified contact is not an jabber contact."
-				+ contact);
+			throw new IllegalArgumentException("The specified contact is not an jabber contact." + contact);
 
 		RosterEntry entry = ((ContactJabberImpl) contact).getSourceEntry();
 

@@ -87,7 +87,6 @@ public class AccountInfoUtils
 
 		if ((imageDetails != null) && imageDetails.hasNext())
 			image = (ImageDetail) imageDetails.next();
-
 		return (image != null)? image.getBytes(): null;
 	}
 

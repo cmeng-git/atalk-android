@@ -316,7 +316,6 @@ public class OperationSetChatStateNotificationsJabberImpl extends
 		public void composingNotification(Jid from, String packetID)
 		{
 			String fromID = from.asBareJid().toString();
-
 			Contact sourceContact = opSetPeersPresence.findContactByID(fromID);
 
 			if (sourceContact == null) {
@@ -364,8 +363,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
 
 			String fromID = parseBareJid(fromJID);
 			boolean isPrivateMessagingAddress = false;
-			OperationSetMultiUserChat mucOpSet
-					= parentProvider.getOperationSet(OperationSetMultiUserChat.class);
+			OperationSetMultiUserChat mucOpSet = parentProvider.getOperationSet(OperationSetMultiUserChat.class);
 			if (mucOpSet != null) {
 				List<ChatRoom> chatRooms = mucOpSet.getCurrentlyJoinedChatRooms();
 				for (ChatRoom chatRoom : chatRooms) {
@@ -376,8 +374,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
 				}
 			}
 
-			Contact sourceContact = opSetPeersPresence.findContactByID((isPrivateMessagingAddress
-					? fromJID : fromID));
+			Contact sourceContact = opSetPeersPresence.findContactByID((isPrivateMessagingAddress ? fromJID : fromID));
 			if (sourceContact == null) {
 				// in private messaging we can receive some errors when we left room and we try
 				// to send some message (isPrivateMessagingAddress == false)
@@ -386,8 +383,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
 
 				if (sourceContact == null) {
 					// create the volatile contact
-					sourceContact = opSetPeersPresence.createVolatileContact(fromJID,
-							isPrivateMessagingAddress);
+					sourceContact = opSetPeersPresence.createVolatileContact(fromJID, isPrivateMessagingAddress);
 				}
 			}
 			if (message.getError() != null)
@@ -407,8 +403,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
 		public void processStanza(Stanza packet)
 		{
 			Message msg = (Message) packet;
-			ChatStateExtension ext
-					= (ChatStateExtension) msg.getExtension(ChatStateManager.NAMESPACE);
+			ChatStateExtension ext = (ChatStateExtension) msg.getExtension(ChatStateManager.NAMESPACE);
 			if (ext != null) {
 				stateChanged(ext.getChatState(), msg);
 			}

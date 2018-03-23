@@ -87,8 +87,7 @@ public class VCardAvatarManager extends AvatarManager
 	 * namespace "vcard-temp:x:update".
 	 */
 	private static final StanzaFilter PRESENCES_WITH_VCARD
-			= new AndFilter(new StanzaTypeFilter(Presence.class),
-			new StanzaExtensionFilter(ELEMENT, NAMESPACE));
+			= new AndFilter(new StanzaTypeFilter(Presence.class), new StanzaExtensionFilter(ELEMENT, NAMESPACE));
 
 	static {
 		XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener()
@@ -225,8 +224,7 @@ public class VCardAvatarManager extends AvatarManager
 						persistentAvatarCache.purgeItemFor(currentAvatarHash);
 				}
 			}
-			LOGGER.log(Level.INFO, "Downloaded vcard info for: " + userId + "; Hash = "
-					+ avatarHash);
+			LOGGER.log(Level.INFO, "Downloaded vcard info for: " + userId + "; Hash = " + avatarHash);
 		}
 		return mVCard;
 	}
@@ -243,8 +241,7 @@ public class VCardAvatarManager extends AvatarManager
 	 * 		if there was no connection to the server.
 	 */
 	public boolean saveVCard(VCard vCard)
-			throws NoResponseException, XMPPErrorException, NotConnectedException,
-			InterruptedException
+			throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		boolean isImageUpdated = false;
 		if (vCard != null) {

@@ -315,7 +315,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * e.g. disco#info (30 seconds). Also on some slow client e.g. Samsung S3 takes up to 30
      * Sec to response to sasl authentication challenge on first login
      */
-    public static final int SMACK_PACKET_REPLY_EXTENDED_TIMEOUT = 50000;  // 50 seconds
+    // 50sec causing too long black screen so reduce it to 10S
+    public static final int SMACK_PACKET_REPLY_EXTENDED_TIMEOUT = 10000;  // 10 seconds
 
     /**
      * aTalk Smack packet reply default timeout.
@@ -1261,7 +1262,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     }
                 }
                 else {
-                    errMsg = "You are not authorized to access the server. Check account settings"
+                    errMsg = "You are not authorized to access the server. Check account settings, password"
                             + " or enable IB Registration and try again: " + errMsg;
                     XMPPError xmppError = XMPPError.from(Condition.not_authorized, errMsg).build();
                     throw new XMPPException.XMPPErrorException(null, xmppError);

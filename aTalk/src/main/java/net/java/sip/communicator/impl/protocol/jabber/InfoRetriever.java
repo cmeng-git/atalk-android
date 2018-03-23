@@ -107,7 +107,6 @@ public class InfoRetriever
 	List<GenericDetail> getUserDetails(BareJid bareJid)
 	{
 		List<GenericDetail> result = getCachedUserDetails(bareJid);
-
 		if (result == null) {
 			return retrieveDetails(bareJid);
 		}
@@ -144,8 +143,13 @@ public class InfoRetriever
 		connection.setReplyTimeout(SmackConfiguration.getDefaultReplyTimeout());
 
 		// cmeng - vCard can be null due to smack request response timeout (2017/11/29)
+        // return an empty list if VCard fetching from server failed
+        if (card == null) {
+            logger.warn("Failed to download Vcard from server!");
+            return result;
+        }
 
-		String msg = "Unable to load details for contact " + bareJid + " exception: ";
+        String msg = "Unable to load details for contact " + bareJid + " exception: ";
 		String tmp;
 		tmp = checkForFullName(card);
 		if (tmp != null)

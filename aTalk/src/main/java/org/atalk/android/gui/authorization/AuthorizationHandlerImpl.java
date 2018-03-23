@@ -55,12 +55,10 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
 	 * Called by the protocol provider whenever someone would like to add us to their contact list.
 	 */
 	@Override
-	public AuthorizationResponse processAuthorisationRequest(AuthorizationRequest req,
-			Contact sourceContact)
+	public AuthorizationResponse processAuthorisationRequest(AuthorizationRequest req, Contact sourceContact)
 	{
 		Long id = System.currentTimeMillis();
-		AuthorizationRequestedHolder requestHolder
-				= new AuthorizationRequestedHolder(id, req, sourceContact);
+		AuthorizationRequestedHolder requestHolder = new AuthorizationRequestedHolder(id, req, sourceContact);
 
 		requestMap.put(id, requestHolder);
 		AuthorizationRequestedDialog.showDialog(id);
@@ -81,8 +79,7 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
 	{
 		AuthorizationRequest request = new AuthorizationRequest();
 		Long id = System.currentTimeMillis();
-		AuthorizationRequestedHolder requestHolder
-				= new AuthorizationRequestedHolder(id, request, contact);
+		AuthorizationRequestedHolder requestHolder = new AuthorizationRequestedHolder(id, request, contact);
 
 		requestMap.put(id, requestHolder);
 		Intent dialogIntent = RequestAuthorizationDialog.getRequestAuthDialogIntent(id);

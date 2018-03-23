@@ -14,8 +14,7 @@ import java.util.*;
  *
  * @author Damian Minkov
  */
-public class OperationSetPersistentPresencePermissionsJabberImpl implements
-		OperationSetPersistentPresencePermissions
+public class OperationSetPersistentPresencePermissionsJabberImpl implements OperationSetPersistentPresencePermissions
 {
 	/**
 	 * Will indicate everything is readonly.
@@ -41,8 +40,8 @@ public class OperationSetPersistentPresencePermissionsJabberImpl implements
 	{
 		this.provider = provider;
 
-		String readOnlyGroupsStr = provider.getAccountID().getAccountPropertyString(
-				ProtocolProviderFactory.ACCOUNT_READ_ONLY_GROUPS);
+		String readOnlyGroupsStr
+                = provider.getAccountID().getAccountPropertyString(ProtocolProviderFactory.ACCOUNT_READ_ONLY_GROUPS);
 
 		if (readOnlyGroupsStr == null)
 			return;
@@ -67,9 +66,7 @@ public class OperationSetPersistentPresencePermissionsJabberImpl implements
 		List<String> groupsList = new ArrayList<String>();
 		groupsList.add(ROOT_GROUP_STR);
 		Iterator<ContactGroup> groupsIter = provider
-				.getOperationSet(
-						OperationSetPersistentPresence.class).getServerStoredContactListRoot()
-				.subgroups();
+				.getOperationSet(OperationSetPersistentPresence.class).getServerStoredContactListRoot().subgroups();
 		while (groupsIter.hasNext()) {
 			groupsList.add(groupsIter.next().getGroupName());
 		}
@@ -78,12 +75,8 @@ public class OperationSetPersistentPresencePermissionsJabberImpl implements
 			return false;
 
 		groupsList.removeAll(readonlyGroups);
-
-		if (groupsList.size() > 0)
-			return false;
-
-		return true;
-	}
+        return (groupsList.size() <= 0);
+    }
 
 	/**
 	 * Checks whether the <tt>contact</tt> can be edited, removed, moved. If the parent group is
