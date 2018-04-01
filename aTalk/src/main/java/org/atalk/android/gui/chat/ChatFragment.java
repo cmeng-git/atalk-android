@@ -1789,6 +1789,7 @@ public class ChatFragment extends OSGiFragment
                     TextView chatStateTextView = chatStateView.findViewById(R.id.chatStateTextView);
                     ImageView chatStateImgView = chatStateView.findViewById(R.id.chatStateImageView);
 
+                    String buddy = chatPanel.getShortDisplayName();
                     switch (chatState) {
                         case composing:
                             Drawable chatStateDrawable = chatStateImgView.getDrawable();
@@ -1799,33 +1800,26 @@ public class ChatFragment extends OSGiFragment
 
                             if (!((AnimationDrawable) chatStateDrawable).isRunning()) {
                                 AnimationDrawable animatedDrawable = (AnimationDrawable) chatStateDrawable;
-
                                 animatedDrawable.setOneShot(false);
                                 animatedDrawable.start();
                             }
-
-                            chatStateTextView.setText(chatPanel.getShortDisplayName()
-                                    + " " + aTalkApp.getResString(R.string.service_gui_CONTACT_COMPOSING));
+                            chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_COMPOSING, buddy));
                             break;
                         case paused:
                             chatStateImgView.setImageResource(R.drawable.typing1);
-                            chatStateTextView.setText(chatPanel.getShortDisplayName()
-                                    + " " + aTalkApp.getResString(R.string.service_gui_CONTACT_PAUSED_TYPING));
+                            chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_PAUSED_TYPING, buddy));
                             break;
                         case active:
                             chatStateImgView.setImageResource(R.drawable.global_ffc);
-                            chatStateTextView.setText(chatPanel.getShortDisplayName()
-                                    + " " + aTalkApp.getResString(R.string.service_gui_CONTACT_ACTIVE));
+                            chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_ACTIVE, buddy));
                             break;
                         case inactive:
                             chatStateImgView.setImageResource(R.drawable.global_away);
-                            chatStateTextView.setText(chatPanel.getShortDisplayName()
-                                    + " " + aTalkApp.getResString(R.string.service_gui_CONTACT_INACTIVE));
+                            chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_INACTIVE, buddy));
                             break;
                         case gone:
                             chatStateImgView.setImageResource(R.drawable.global_extended_away);
-                            chatStateTextView.setText(chatPanel.getShortDisplayName()
-                                    + " " + aTalkApp.getResString(R.string.service_gui_CONTACT_GONE));
+                            chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_GONE, buddy));
                             break;
                     }
                     chatStateImgView.getLayoutParams().height = LayoutParams.WRAP_CONTENT;

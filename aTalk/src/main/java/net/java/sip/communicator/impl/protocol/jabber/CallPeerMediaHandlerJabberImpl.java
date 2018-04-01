@@ -38,8 +38,7 @@ import java.util.*;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class CallPeerMediaHandlerJabberImpl
-		extends AbstractCallPeerMediaHandlerJabberGTalkImpl<CallPeerJabberImpl>
+public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandlerJabberGTalkImpl<CallPeerJabberImpl>
 {
 	/**
 	 * The <tt>Logger</tt> used by the <tt>CallPeerMediaHandlerJabberImpl</tt> class and its
@@ -135,7 +134,6 @@ public class CallPeerMediaHandlerJabberImpl
 	public CallPeerMediaHandlerJabberImpl(CallPeerJabberImpl peer)
 	{
 		super(peer);
-
 		qualityControls = new QualityControlWrapper(peer);
 	}
 
@@ -177,21 +175,6 @@ public class CallPeerMediaHandlerJabberImpl
 		// 4. the device direction
 		postHoldDir = postHoldDir.and(device.getDirection());
 		return postHoldDir;
-	}
-
-	/**
-	 * Closes the <tt>CallPeerMediaHandler</tt>.
-	 */
-	@Override
-	public synchronized void close()
-	{
-		super.close();
-		OperationSetDesktopSharingClientJabberImpl client =
-				(OperationSetDesktopSharingClientJabberImpl) getPeer().getProtocolProvider()
-						.getOperationSet(OperationSetDesktopSharingClient.class);
-
-		if (client != null)
-			client.fireRemoteControlRevoked(getPeer());
 	}
 
 	/**

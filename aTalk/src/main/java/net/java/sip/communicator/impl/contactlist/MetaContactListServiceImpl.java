@@ -290,8 +290,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 	 * @throws MetaContactListException
 	 * 		with an appropriate code if the operation fails for some reason.
 	 */
-	private void addNewContactToMetaContact(ProtocolProviderService provider, MetaContactGroup
-			parentMetaGroup, MetaContact metaContact, String contactID, boolean fireEvent)
+	private void addNewContactToMetaContact(ProtocolProviderService provider, MetaContactGroup parentMetaGroup,
+            MetaContact metaContact, String contactID, boolean fireEvent)
 			throws MetaContactListException
 	{
 		OperationSetPersistentPresence opSetPersPresence = provider.getOperationSet(OperationSetPersistentPresence.class);
@@ -301,8 +301,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 		}
 
 		if (!(metaContact instanceof MetaContactImpl)) {
-			throw new IllegalArgumentException(
-					metaContact + " is not an instance of MetaContactImpl");
+			throw new IllegalArgumentException(metaContact + " is not an instance of MetaContactImpl");
 		}
 
 		ContactGroup parentProtoGroup = resolveProtoPath(provider, (MetaContactGroupImpl) parentMetaGroup);
@@ -317,9 +316,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 		opSetPersPresence.addServerStoredGroupChangeListener(evtRetriever);
 
 		try {
-			// create the contact in the group if its the root group just call subscribe
+			// create and subscribe the contact in the group; if it is the root group just call subscribe
 			if (parentMetaGroup.equals(rootMetaGroup))
-				opSetPersPresence.subscribe(contactID);
+				opSetPersPresence.subscribe(provider, contactID);
 			else
 				opSetPersPresence.subscribe(parentProtoGroup, contactID);
 
@@ -523,8 +522,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 	 * @throws MetaContactListException
 	 * 		with an appropriate code if the operation fails for some reason.
 	 */
-	public MetaContact createMetaContact(ProtocolProviderService provider,
-			MetaContactGroup metaContactGroup, String contactID)
+	public MetaContact createMetaContact(ProtocolProviderService provider, MetaContactGroup metaContactGroup,
+            String contactID)
 			throws MetaContactListException
 	{
 		if (!(metaContactGroup instanceof MetaContactGroupImpl)) {
@@ -536,7 +535,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
 		// don't fire a PROTO_CONT_ADDED event we'll fire our own event here.
 		fireMetaContactEvent(newMetaContact, findParentMetaContactGroup(newMetaContact),
-				MetaContactEvent.META_CONTACT_ADDED);
+                MetaContactEvent.META_CONTACT_ADDED);
 		return newMetaContact;
 	}
 

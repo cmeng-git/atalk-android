@@ -2301,8 +2301,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
 		public String getContactAddress()
 		{
-			return (getContact() == null)
-					? nick : contact.getAddress();
+			return (getContact() == null) ? nick : contact.getAddress();
 		}
 
 		public String getNickName()

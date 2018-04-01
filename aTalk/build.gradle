@@ -1,10 +1,11 @@
 buildscript {
     repositories {
         jcenter()
+        google()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.0'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.0" // jarjar.repackage
     }
 }
@@ -25,6 +26,7 @@ repositories {
         url 'https://maven.google.com/'
         name 'Google'
     }
+    google()
 }
 
 configurations {
@@ -91,7 +93,7 @@ android {
         }
 
         // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
+        androidTest.setRoot('tests')
 
         // Move the build types to build-types/<type>
         release.setRoot('build-types/release')

@@ -21,6 +21,7 @@ import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -459,7 +460,7 @@ public class OperationSetTelephonyConferencingJabberImpl
 
 		// cmeng - local callPeer IQ's (from == null)
 		if (from != null) {
-			String chatRoomName = from.asBareJid().toString();
+			BareJid chatRoomName = from.asBareJid();
 			OperationSetMultiUserChatJabberImpl opSetMUC = (OperationSetMultiUserChatJabberImpl) parentProvider
 					.getOperationSet(OperationSetMultiUserChat.class);
 			ChatRoom room = null;

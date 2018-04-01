@@ -125,13 +125,16 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
     {
         String title = aTalkApp.getResString(R.string.omemo_init_failed_title);
         logger.error(title, cause);
-        if (cause.getMessage().contains("CorruptedOmemoKeyException")) {
-            String msg = aTalkApp.getResString(R.string.omemo_init_failed_CorruptedOmemoKeyException,
-                    mOmemoManager.getOwnDevice(), cause.getMessage());
-            DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);
-        } else {
-            aTalkApp.showToastMessage(R.string.omemo_init_failed_noresponse);
-
+        String errMsg = cause.getMessage();
+        if (errMsg != null) {
+            if (errMsg.contains("CorruptedOmemoKeyException")) {
+                String msg = aTalkApp.getResString(R.string.omemo_init_failed_CorruptedOmemoKeyException,
+                        mOmemoManager.getOwnDevice(), cause.getMessage());
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);
+            }
+            else {
+                aTalkApp.showToastMessage(R.string.omemo_init_failed_noresponse);
+            }
         }
     }
 }

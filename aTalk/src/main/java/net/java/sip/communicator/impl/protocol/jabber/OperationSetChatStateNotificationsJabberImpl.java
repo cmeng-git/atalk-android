@@ -16,21 +16,38 @@
 
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.packet.ThumbnailIQ;
+import net.java.sip.communicator.service.protocol.AbstractOperationSetChatStateNotifications;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.MetaContactChatTransport;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.IQTypeFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jivesoftware.smackx.chatstates.*;
+import org.jivesoftware.smackx.chatstates.ChatState;
+import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
-import org.jivesoftware.smackx.xevent.*;
+import org.jivesoftware.smackx.xevent.MessageEventManager;
+import org.jivesoftware.smackx.xevent.MessageEventNotificationListener;
+import org.jivesoftware.smackx.xevent.MessageEventRequestListener;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
 import java.util.List;
@@ -46,370 +63,347 @@ import static org.jxmpp.util.XmppStringUtils.parseBareJid;
  * @author Eng Chong Meng
  */
 public class OperationSetChatStateNotificationsJabberImpl extends
-		AbstractOperationSetChatStateNotifications<ProtocolProviderServiceJabberImpl>
+        AbstractOperationSetChatStateNotifications<ProtocolProviderServiceJabberImpl>
 {
-	/**
-	 * The logger.
-	 */
-	private static final Logger logger
-			= Logger.getLogger(OperationSetChatStateNotificationsJabberImpl.class);
+    /**
+     * The logger.
+     */
+    private static final Logger logger = Logger.getLogger(OperationSetChatStateNotificationsJabberImpl.class);
 
-	/**
-	 * An active instance of the opSetPeersPresence operation set. We're using it to map incoming
-	 * events to contacts in our contact list.
-	 */
-	private OperationSetPersistentPresenceJabberImpl opSetPeersPresence = null;
+    /**
+     * An active instance of the opSetPeersPresence operation set. We're using it to map incoming
+     * events to contacts in our contact list.
+     */
+    private OperationSetPersistentPresenceJabberImpl opSetPeersPresence = null;
 
-	/**
-	 * An active instance of the opSetBasicIM operation set.
-	 */
-	private OperationSetBasicInstantMessagingJabberImpl opSetBasicIM = null;
+    /**
+     * An active instance of the opSetBasicIM operation set.
+     */
+    private OperationSetBasicInstantMessagingJabberImpl opSetBasicIM = null;
 
-	/**
-	 * An active instance of the ChatStateManager.
-	 */
-	private ChatStateManager chatStateManager = null;
+    /**
+     * XMPPTCPConnection connection for chat session.
+     */
+    XMPPTCPConnection mConnection;
 
-	/**
-	 * XMPPTCPConnection connection for chat session.
-	 */
-	XMPPTCPConnection mConnection;
+    /**
+     * The manger which send us the chat state info and through which we send inf
+     */
+    private MessageEventManager messageEventManager = null;
 
-	/**
-	 * We use this listener to cease the moment when the protocol provider has been successfully
-	 * registered.
-	 */
-	private ProviderRegListener providerRegListener = new ProviderRegListener();
+    /**
+     * The listener instance that we use to track chat states according to XEP-0085;
+     */
+    private SmackChatStateListener smackChatStateListener = null;
 
-	/**
-	 * The manger which send us the chat state info and through which we send inf
-	 */
-	private MessageEventManager messageEventManager = null;
+    /*
+     * ChatState StanzaFilter for the listener
+     */
+    private static final StanzaFilter CHATSTATE = new AndFilter(new StanzaTypeFilter(Message.class),
+            new StanzaExtensionFilter(ChatStateExtension.NAMESPACE));
 
-	/**
-	 * The listener instance that we use to track chat states according to XEP-0085;
-	 */
-	private SmackChatStateListener smackChatStateListener = null;
+    /**
+     * @param provider a ref to the <tt>ProtocolProviderServiceImpl</tt> that created us and that we'll use
+     * for retrieving the underlying aim connection.
+     */
+    OperationSetChatStateNotificationsJabberImpl(ProtocolProviderServiceJabberImpl provider)
+    {
+        super(provider);
+        // We use this listener to seize the moment when the protocol provider has been successfully registered.
+        provider.addRegistrationStateChangeListener(new ProviderRegListener());
+    }
 
-	/**
-	 * @param provider
-	 * 		a ref to the <tt>ProtocolProviderServiceImpl</tt> that created us and that we'll use
-	 * 		for retrieving the underlying aim connection.
-	 */
-	OperationSetChatStateNotificationsJabberImpl(ProtocolProviderServiceJabberImpl provider)
-	{
-		super(provider);
-		provider.addRegistrationStateChangeListener(providerRegListener);
-	}
+    /**
+     * Sends a chat state notification to <tt>contact</tt> that chat state we are in
+     *
+     * @param contact the <tt>Contact</tt> to notify
+     * @param chatState the chat state that we have entered.
+     * @throws java.lang.IllegalStateException if the underlying stack is not registered and initialized.
+     * @throws java.lang.IllegalArgumentException if <tt>notifiedContact</tt> is not an instance belonging to the underlying
+     * implementation.
+     */
+    public void sendChatStateNotification(Contact contact, ChatState chatState)
+            throws IllegalStateException, IllegalArgumentException, NotConnectedException,
+            InterruptedException
+    {
+        assertConnected();
+        if (!(contact instanceof ContactJabberImpl))
+            throw new IllegalArgumentException("The specified contact is not a Jabber contact." + contact);
 
-	/**
-	 * Sends a chat state notification to <tt>contact</tt> that chat state we are in
-	 *
-	 * @param contact
-	 * 		the <tt>Contact</tt> to notify
-	 * @param chatState
-	 * 		the chat state that we have entered.
-	 * @throws java.lang.IllegalStateException
-	 * 		if the underlying stack is not registered and initialized.
-	 * @throws java.lang.IllegalArgumentException
-	 * 		if <tt>notifiedContact</tt> is not an instance belonging to the underlying
-	 * 		implementation.
-	 */
-	public void sendChatStateNotification(Contact contact, ChatState chatState)
-			throws IllegalStateException, IllegalArgumentException, NotConnectedException,
-			InterruptedException
-	{
-		assertConnected();
-		if (!(contact instanceof ContactJabberImpl))
-			throw new IllegalArgumentException("The specified contact is not a Jabber contact."
-					+ contact);
-
-		// now handle XEP-0085 chat state sending
+        // now handle XEP-0085 chat state sending
 //		Chat chat = opSetBasicIM.getChat((EntityJid) contact.getJid());
 //		if (opSetBasicIM != null && mConnection != null && chat != null) {
 //			logger.info("Sending Chat State for : " + chatState.toString());
 //			chatStateManager.setCurrentState(chatState, chat);
 //		}
 
-		if (opSetBasicIM != null && mConnection != null) {
-			Jid toJid = opSetBasicIM.getRecentFullJidForContactIfPossible(contact);
+        if (opSetBasicIM != null && mConnection != null) {
+            Jid toJid = opSetBasicIM.getRecentFullJidForContactIfPossible(contact);
 
 			/*
-			 * find the currently contacted jid to send chat state info or if we do not have a
-			 * jid and we have already sent message to the bare jid we will also send chat state
-			 * info there
+             * find the currently contacted jid to send chat state info or if we do not have a jid and
+			 * we have already sent message to the bare jid we will also send chat state info there
 			 */
 
-			// if we haven't sent a message yet, do not send chat state notifications
-			if (toJid == null)
-				return;
+            // if we haven't sent a message yet, do not send chat state notifications
+            if (toJid == null)
+                return;
 
-			if (logger.isTraceEnabled())
-				logger.trace("Sending XEP-0085 chat state=" + chatState + " to " + toJid);
+            if (logger.isTraceEnabled())
+                logger.trace("Sending XEP-0085 chat state=" + chatState + " to " + toJid);
 
-			setCurrentState(chatState, toJid);
-		}
-	}
+            setCurrentState(chatState, toJid);
+        }
+    }
 
-	/**
-	 * Creates and sends a packet for the new chat state.
-	 *
-	 * @param chatState
-	 * 		the new chat state.
-	 * @param jid
-	 * 		the JID of the receiver.
-	 */
-	private void setCurrentState(ChatState chatState, Jid jid)
-			throws NotConnectedException, InterruptedException
-	{
-		String threadID = opSetBasicIM.getThreadIDForAddress(jid, true);
+    /**
+     * Creates and sends a packet for the new chat state.
+     *
+     * @param chatState the new chat state.
+     * @param jid the JID of the receiver.
+     */
+    private void setCurrentState(ChatState chatState, Jid jid)
+            throws NotConnectedException, InterruptedException
+    {
+        String threadID = opSetBasicIM.getThreadIDForAddress(jid, true);
 
-		Message message = new Message();
-		ChatStateExtension extension = new ChatStateExtension(chatState);
-		message.addExtension(extension);
+        Message message = new Message();
+        ChatStateExtension extension = new ChatStateExtension(chatState);
+        message.addExtension(extension);
 
-		message.setTo(jid);
-		message.setType(Message.Type.chat);
-		message.setThread(threadID);
-		message.setFrom(mConnection.getUser());
-		mConnection.sendStanza(message);
+        message.setTo(jid);
+        message.setType(Message.Type.chat);
+        message.setThread(threadID);
+        message.setFrom(mConnection.getUser());
+        mConnection.sendStanza(message);
 
-		if (chatState == ChatState.gone)
-			opSetBasicIM.purgeGoneJidThreads(jid);
-	}
+        if (chatState == ChatState.gone)
+            opSetBasicIM.purgeGoneJidThreads(jid);
+    }
 
-	/**
-	 * Utility method throwing an exception if the stack is not properly initialized.
-	 *
-	 * @throws java.lang.IllegalStateException
-	 * 		if the underlying stack is not registered and initialized.
-	 */
-	@Override
-	protected void assertConnected()
-			throws IllegalStateException
-	{
-		if (parentProvider != null && !parentProvider.isRegistered()
-				&& opSetPeersPresence.getPresenceStatus().isOnline()) {
-			// if we are not registered but the current status is online
-			// change the current status
-			opSetPeersPresence.fireProviderStatusChangeEvent(opSetPeersPresence.getPresenceStatus(),
-					parentProvider.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE));
-		}
-		super.assertConnected();
-	}
+    /**
+     * Utility method throwing an exception if the stack is not properly initialized.
+     *
+     * @throws java.lang.IllegalStateException if the underlying stack is not registered and initialized.
+     */
+    @Override
+    protected void assertConnected()
+            throws IllegalStateException
+    {
+        if (parentProvider != null && !parentProvider.isRegistered()
+                && opSetPeersPresence.getPresenceStatus().isOnline()) {
+            // if we are not registered but the current status is online
+            // change the current status
+            opSetPeersPresence.fireProviderStatusChangeEvent(opSetPeersPresence.getPresenceStatus(),
+                    parentProvider.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE));
+        }
+        super.assertConnected();
+    }
 
-	/**
-	 * Our listener that will tell us when we're registered and ready to accept us as a listener.
-	 */
-	private class ProviderRegListener implements RegistrationStateChangeListener
-	{
-		/**
-		 * The method is called by a ProtocolProvider implementation whenever a change in the
-		 * registration state of the corresponding provider had occurred.
-		 *
-		 * @param evt
-		 * 		ProviderStatusChangeEvent the event describing the status change.
-		 */
-		public void registrationStateChanged(RegistrationStateChangeEvent evt)
-		{
-			if (evt.getNewState() == RegistrationState.REGISTERED) {
-				mConnection = parentProvider.getConnection();
-				// chatStateManager = ChatStateManager.getInstance(mConnection);
+    /**
+     * Our listener that will tell us when we're registered and ready to accept us as a listener.
+     */
+    private class ProviderRegListener implements RegistrationStateChangeListener
+    {
+        /**
+         * The method is called by a ProtocolProvider implementation whenever a change in the
+         * registration state of the corresponding provider had occurred.
+         *
+         * @param evt ProviderStatusChangeEvent the event describing the status change.
+         */
+        public void registrationStateChanged(RegistrationStateChangeEvent evt)
+        {
+            if (evt.getNewState() == RegistrationState.REGISTERED) {
+                mConnection = parentProvider.getConnection();
+                // chatStateManager = ChatStateManager.getInstance(mConnection);
 
-				opSetPeersPresence = (OperationSetPersistentPresenceJabberImpl) parentProvider
-						.getOperationSet(OperationSetPersistentPresence.class);
-				opSetBasicIM = (OperationSetBasicInstantMessagingJabberImpl) parentProvider
-						.getOperationSet(OperationSetBasicInstantMessaging.class);
+                opSetPeersPresence = (OperationSetPersistentPresenceJabberImpl) parentProvider
+                        .getOperationSet(OperationSetPersistentPresence.class);
+                opSetBasicIM = (OperationSetBasicInstantMessagingJabberImpl) parentProvider
+                        .getOperationSet(OperationSetBasicInstantMessaging.class);
 
-				messageEventManager
-						= MessageEventManager.getInstanceFor(parentProvider.getConnection());
-				messageEventManager
-						.addMessageEventRequestListener(new JabberMessageEventRequestListener());
-				messageEventManager
-						.addMessageEventNotificationListener(new IncomingMessageEventsListener());
+                messageEventManager = MessageEventManager.getInstanceFor(parentProvider.getConnection());
+                messageEventManager.addMessageEventRequestListener(new JabberMessageEventRequestListener());
+                messageEventManager.addMessageEventNotificationListener(new IncomingMessageEventsListener());
 
-				if (smackChatStateListener == null)
-					smackChatStateListener = new SmackChatStateListener();
+				if (smackChatStateListener == null) {
+                    smackChatStateListener = new SmackChatStateListener();
+                    mConnection.addAsyncStanzaListener(smackChatStateListener, CHATSTATE);
+                }
+            }
+            else if (evt.getNewState() == RegistrationState.UNREGISTERED
+                    || evt.getNewState() == RegistrationState.AUTHENTICATION_FAILED
+                    || evt.getNewState() == RegistrationState.CONNECTION_FAILED) {
+                if (parentProvider.getConnection() != null) {
+                    parentProvider.getConnection().removeAsyncStanzaListener(smackChatStateListener);
+                }
+                smackChatStateListener = null;
+                if (messageEventManager != null) {
+                    messageEventManager = null;
+                }
+            }
+        }
+    }
 
-				parentProvider.getConnection().addAsyncStanzaListener(smackChatStateListener,
-						new StanzaTypeFilter(Message.class));
+    /**
+     * Listens for incoming request for chat state info
+     */
+    private class JabberMessageEventRequestListener implements MessageEventRequestListener
+    {
+        public void deliveredNotificationRequested(Jid from, String packetID, MessageEventManager messageEventManager)
+        {
+            try {
+                messageEventManager.sendDeliveredNotification(from, packetID);
+            } catch (NotConnectedException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
-			}
-			else if (evt.getNewState() == RegistrationState.UNREGISTERED
-					|| evt.getNewState() == RegistrationState.AUTHENTICATION_FAILED
-					|| evt.getNewState() == RegistrationState.CONNECTION_FAILED) {
-				if (parentProvider.getConnection() != null) {
-					parentProvider.getConnection()
-							.removeAsyncStanzaListener(smackChatStateListener);
-				}
-				smackChatStateListener = null;
-				if (messageEventManager != null) {
-					messageEventManager = null;
-				}
-			}
-		}
-	}
+        public void displayedNotificationRequested(Jid from, String packetID,
+                MessageEventManager messageEventManager)
+        {
+            try {
+                messageEventManager.sendDisplayedNotification(from, packetID);
+            } catch (NotConnectedException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
-	/**
-	 * Listens for incoming request for chat state info
-	 */
-	private class JabberMessageEventRequestListener implements MessageEventRequestListener
-	{
-		public void deliveredNotificationRequested(Jid from, String packetID,
-				MessageEventManager messageEventManager)
-		{
-			try {
-				messageEventManager.sendDeliveredNotification(from, packetID);
-			}
-			catch (NotConnectedException | InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+        public void composingNotificationRequested(Jid from, String packetID,
+                MessageEventManager messageEventManager)
+        {
+            try {
+                messageEventManager.sendComposingNotification(from, packetID);
+            } catch (NotConnectedException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
-		public void displayedNotificationRequested(Jid from, String packetID,
-				MessageEventManager messageEventManager)
-		{
-			try {
-				messageEventManager.sendDisplayedNotification(from, packetID);
-			}
-			catch (NotConnectedException | InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+        public void offlineNotificationRequested(Jid from, String packetID,
+                MessageEventManager messageEventManager)
+        {
+            try {
+                messageEventManager.sendCancelledNotification(from, packetID);
+            } catch (NotConnectedException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-		public void composingNotificationRequested(Jid from, String packetID,
-				MessageEventManager messageEventManager)
-		{
-			try {
-				messageEventManager.sendComposingNotification(from, packetID);
-			}
-			catch (NotConnectedException | InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+    /**
+     * Receives incoming typing info
+     */
+    private class IncomingMessageEventsListener implements MessageEventNotificationListener
+    {
+        public void deliveredNotification(Jid from, String packetID)
+        {
+        }
 
-		public void offlineNotificationRequested(Jid from, String packetID,
-				MessageEventManager messageEventManager)
-		{
-			try {
-				messageEventManager.sendCancelledNotification(from, packetID);
-			}
-			catch (NotConnectedException | InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+        public void displayedNotification(Jid from, String packetID)
+        {
+        }
 
-	/**
-	 * Receives incoming typing info
-	 */
-	private class IncomingMessageEventsListener implements MessageEventNotificationListener
-	{
-		public void deliveredNotification(Jid from, String packetID)
-		{
-		}
+        public void composingNotification(Jid from, String packetID)
+        {
+            Contact sourceContact = opSetPeersPresence.findContactByID(from);
 
-		public void displayedNotification(Jid from, String packetID)
-		{
-		}
+            if (sourceContact == null) {
+                // create the volatile contact
+                sourceContact = opSetPeersPresence.createVolatileContact(from);
+            }
+            fireChatStateNotificationsEvent(sourceContact, ChatState.composing, null);
+        }
 
-		public void composingNotification(Jid from, String packetID)
-		{
-			String fromID = from.asBareJid().toString();
-			Contact sourceContact = opSetPeersPresence.findContactByID(fromID);
+        public void offlineNotification(Jid from, String packetID)
+        {
+        }
 
-			if (sourceContact == null) {
-				// create the volatile contact
-				sourceContact = opSetPeersPresence.createVolatileContact(from.toString());
-			}
-			fireChatStateNotificationsEvent(sourceContact, ChatState.composing, null);
-		}
+        public void cancelledNotification(Jid from, String packetID)
+        {
+            BareJid fromID = from.asBareJid();
+            Contact sourceContact = opSetPeersPresence.findContactByID(fromID);
 
-		public void offlineNotification(Jid from, String packetID)
-		{
-		}
+            if (sourceContact == null) {
+                // create the volatile contact
+                sourceContact = opSetPeersPresence.createVolatileContact(from);
+            }
+            fireChatStateNotificationsEvent(sourceContact, ChatState.inactive, null);
+        }
+    }
 
-		public void cancelledNotification(Jid from, String packetID)
-		{
-			String fromID = from.asBareJid().toString();
-			Contact sourceContact = opSetPeersPresence.findContactByID(fromID);
+    /**
+     * The listener that we use to track chat state notifications according to XEP-0085.
+     * Called by smack when the state of a chat changes.
+     *
+     * @param state the new state of the participant.
+     * @param message the message carrying the chat state.
+     * Fired when the state of a chat with another user changes.
+     */
+    private void stateChanged(ChatState state, Message message)
+    {
+        Jid fromJid = message.getFrom();
+        if (logger.isTraceEnabled())
+            logger.trace(fromJid + " entered the " + state.name() + " state.");
 
-			if (sourceContact == null) {
-				// create the volatile contact
-				sourceContact = opSetPeersPresence.createVolatileContact(from.toString());
-			}
-			fireChatStateNotificationsEvent(sourceContact, ChatState.inactive, null);
-		}
-	}
+        boolean isPrivateMessagingAddress = false;
+        OperationSetMultiUserChat mucOpSet = parentProvider.getOperationSet(OperationSetMultiUserChat.class);
+        if (mucOpSet != null) {
+            List<ChatRoom> chatRooms = mucOpSet.getCurrentlyJoinedChatRooms();
+            for (ChatRoom chatRoom : chatRooms) {
+                if (chatRoom.getIdentifier().equals(fromJid)) {
+                    isPrivateMessagingAddress = true;
+                    break;
+                }
+            }
+        }
 
-	/**
-	 * The listener that we use to track chat state notifications according to XEP-0085.
-	 */
-	private class SmackChatStateListener implements StanzaListener
-	{
-		/**
-		 * Called by smack when the state of a chat changes.
-		 *
-		 * @param chatState
-		 * 		the new state of the chat.
-		 * @param message
-		 * 		the message containing the new chat state
-		 */
-		public void stateChanged(ChatState chatState, Message message)
-		{
-			String fromJID = message.getFrom().toString();
-			if (logger.isTraceEnabled())
-				logger.trace(fromJID + " entered the " + chatState.name() + " state.");
+        Contact sourceContact
+                = opSetPeersPresence.findContactByID((isPrivateMessagingAddress ? fromJid : fromJid.asBareJid()));
+        if (sourceContact == null) {
+            // in private messaging we can receive some errors when we left room and we try
+            // to send some message (isPrivateMessagingAddress == false)
+            if (message.getError() != null)
+                sourceContact = opSetPeersPresence.findContactByID(fromJid);
 
-			String fromID = parseBareJid(fromJID);
-			boolean isPrivateMessagingAddress = false;
-			OperationSetMultiUserChat mucOpSet = parentProvider.getOperationSet(OperationSetMultiUserChat.class);
-			if (mucOpSet != null) {
-				List<ChatRoom> chatRooms = mucOpSet.getCurrentlyJoinedChatRooms();
-				for (ChatRoom chatRoom : chatRooms) {
-					if (chatRoom.getName().equals(fromID)) {
-						isPrivateMessagingAddress = true;
-						break;
-					}
-				}
-			}
+            if (sourceContact == null) {
+                // create the volatile contact
+                sourceContact = opSetPeersPresence.createVolatileContact(fromJid, isPrivateMessagingAddress);
+            }
+        }
+        if (message.getError() != null)
+            fireChatStateNotificationsDeliveryFailedEvent(sourceContact, state);
+        else {
+            // Invalid the last thread associated with the contact when he is gone
+            if (state == ChatState.gone)
+                opSetBasicIM.purgeGoneJidThreads(message.getFrom());
+            else if (state == ChatState.active)
+                MetaContactChatTransport.setChatStateSupport(true);
 
-			Contact sourceContact = opSetPeersPresence.findContactByID((isPrivateMessagingAddress ? fromJID : fromID));
-			if (sourceContact == null) {
-				// in private messaging we can receive some errors when we left room and we try
-				// to send some message (isPrivateMessagingAddress == false)
-				if (message.getError() != null)
-					sourceContact = opSetPeersPresence.findContactByID(fromJID);
+            fireChatStateNotificationsEvent(sourceContact, state, message);
+        }
+    }
 
-				if (sourceContact == null) {
-					// create the volatile contact
-					sourceContact = opSetPeersPresence.createVolatileContact(fromJID, isPrivateMessagingAddress);
-				}
-			}
-			if (message.getError() != null)
-				fireChatStateNotificationsDeliveryFailedEvent(sourceContact, chatState);
-			else {
-				// Invalid the last thread associated with the contact when he is gone
-				if (chatState == ChatState.gone)
-					opSetBasicIM.purgeGoneJidThreads(message.getFrom());
-				else if (chatState == ChatState.active)
-					MetaContactChatTransport.setChatStateSupport(true);
-
-				fireChatStateNotificationsEvent(sourceContact, chatState, message);
-			}
-		}
-
-		@Override
-		public void processStanza(Stanza packet)
-		{
-			Message msg = (Message) packet;
-			ChatStateExtension ext = (ChatStateExtension) msg.getExtension(ChatStateManager.NAMESPACE);
-			if (ext != null) {
-				stateChanged(ext.getChatState(), msg);
-			}
-			else {
-				MetaContactChatTransport.setChatStateSupport(false);
-			}
-		}
-	}
+    /**
+     * Handles incoming messages and dispatches whatever events are necessary.
+     *
+     * @param message the message that we need to handle.
+     */
+    /**
+     * The listener that we use to track chat state notifications according to XEP-0085.
+     */
+    private class SmackChatStateListener implements StanzaListener
+    {
+        @Override
+        public void processStanza(Stanza packet)
+        {
+            Message message = (Message) packet;
+            ChatStateExtension ext = (ChatStateExtension) message.getExtension(ChatStateManager.NAMESPACE);
+            if (ext != null) {
+                stateChanged(ext.getChatState(), message);
+            }
+            else {
+                MetaContactChatTransport.setChatStateSupport(false);
+            }
+        }
+    }
 }

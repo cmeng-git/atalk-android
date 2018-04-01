@@ -87,7 +87,7 @@
     <string name="service_gui_ADD_CONTACT_ERROR">Failed to add contact with id: %s</string>
     <string name="service_gui_ADD_CONTACT_ERROR_TITLE">Add Contact Error</string>
     <string name="service_gui_ADD_CONTACT_EXIST_ERROR">The contact %s already exists in your contact list.</string>
-    <string name="service_gui_ADD_CONTACT_NETWORK_ERROR">Server did not respond to our request adding contact with id: %s.</string>
+    <string name="service_gui_ADD_CONTACT_NETWORK_ERROR">Server did not respond to our request adding contact with jid: %s.</string>
     <string name="service_gui_ADD_CONTACT_NOT_SUPPORTED">Failed to add contact with id: %s. Operation not supported.</string>
     <string name="service_gui_ADD_CONTACT_NOT_CONNECTED">You need to be connected in order to add a contact. Please sign in to the selected provider and try again.</string>
     <string name="service_gui_ADD_GROUP_LOCAL_ERROR">Failed to add group with name: %s. The problem occurred during a local IO operation.</string>
@@ -184,11 +184,11 @@
         Server name: {1}\nPlease check your network connection OR contact your network administrator for more information.</string>
     <string name="service_gui_CONTACT_NAME_EMPTY">The contact displayName must not be empty.</string>
     <string name="service_gui_CONTACT_NAME">Contact JID or Number</string>
-    <string name="service_gui_CONTACT_PAUSED_TYPING">has paused typing</string>
-	<string name="service_gui_CONTACT_COMPOSING">is composing a message</string>
-    <string name="service_gui_CONTACT_ACTIVE">is active in chat session</string>
-    <string name="service_gui_CONTACT_INACTIVE">is temporary away</string>
-    <string name="service_gui_CONTACT_GONE">has left the chat session</string>
+    <string name="service_gui_CONTACT_PAUSED_TYPING">** %s has paused typing</string>
+	<string name="service_gui_CONTACT_COMPOSING">** %s is composing a message</string>
+    <string name="service_gui_CONTACT_ACTIVE">** %s is active in chat session</string>
+    <string name="service_gui_CONTACT_INACTIVE">** %s is temporary away</string>
+    <string name="service_gui_CONTACT_GONE">** %s has left the chat session</string>
     <string name="service_gui_CONTACT_INFO">Contact info</string>
     <string name="service_gui_CONTACTS">Contacts</string>
     <string name="service_gui_COPY_MESSAGE_TEXT">Copy text</string>
@@ -889,8 +889,7 @@
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">You have unauthenticated buddies. Unverified buddies cannot receive OMEMO message. Check to authenticate.</string>
     <string name="omemo_init_failed_title">OmemoManager init failed</string>
-    <string name="omemo_init_failed_noresponse">Initialize OmemoManager has failed and omemo messaging may not be working.\n\n
-        No response received within reply timeout.</string>
+    <string name="omemo_init_failed_noresponse">Initialize OmemoManager has failed and omemo messaging may not work properly.</string>
     <string name="omemo_init_failed_CorruptedOmemoKeyException">Initialize OmemoManager has failed and omemo messaging is not working. If problem persists
         after restart, please proceed to "Regnerate OMEMO identities" for the failed omomoDevice: %1$s.\n\nException: %2$s.</string>
     <string name="omemo_rebuild_session">Rebuild new session for missing: %1$s</string>

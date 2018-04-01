@@ -26,9 +26,6 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ZrtpHash
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingleinfo.JingleInfoQueryIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingleinfo.JingleInfoQueryIQProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.ThumbnailElement;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.whiteboard.WhiteboardObjectJabberProvider;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.whiteboard.WhiteboardObjectPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.whiteboard.WhiteboardSessionPacketExtension;
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.dns.DnssecException;
 import net.java.sip.communicator.service.protocol.AbstractProtocolProviderService;
@@ -47,12 +44,8 @@ import net.java.sip.communicator.service.protocol.OperationSetConnectionInfo;
 import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
 import net.java.sip.communicator.service.protocol.OperationSetCusaxUtils;
 import net.java.sip.communicator.service.protocol.OperationSetDTMF;
-import net.java.sip.communicator.service.protocol.OperationSetDesktopSharingClient;
-import net.java.sip.communicator.service.protocol.OperationSetDesktopSharingServer;
-import net.java.sip.communicator.service.protocol.OperationSetDesktopStreaming;
 import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizations;
 import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
-import net.java.sip.communicator.service.protocol.OperationSetGenericNotifications;
 import net.java.sip.communicator.service.protocol.OperationSetIncomingDTMF;
 import net.java.sip.communicator.service.protocol.OperationSetInstantMessageTransform;
 import net.java.sip.communicator.service.protocol.OperationSetInstantMessageTransformImpl;
@@ -73,7 +66,6 @@ import net.java.sip.communicator.service.protocol.OperationSetThumbnailedFileFac
 import net.java.sip.communicator.service.protocol.OperationSetUserSearch;
 import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
 import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetWhiteboarding;
 import net.java.sip.communicator.service.protocol.ProtocolIcon;
 import net.java.sip.communicator.service.protocol.ProtocolNames;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
@@ -1693,7 +1685,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         }
 
 		/*
-		 * Expose the discoveryManager as service-public through the
+         * Expose the discoveryManager as service-public through the
 		 * OperationSetContactCapabilities of this ProtocolProviderService.
 		 */
         if (opsetContactCapabilities != null)
@@ -1983,7 +1975,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     new CoinIQProvider());
 
             // Jitsi Videobridge IQProvider and PacketExtensionProvider
-            ProviderManager.addIQProvider(ColibriConferenceIQ.ELEMENT_NAME,
+            ProviderManager.addIQProvider(ColibriConferenceIQ.ELEMENT,
                     ColibriConferenceIQ.NAMESPACE, new ColibriIQProvider());
 
             // register our input event provider
@@ -2042,15 +2034,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addExtensionProvider(VCardTempXUpdate.ELEMENT,
                     VCardTempXUpdate.NAMESPACE, new VCardTempXUpdateProvider());
 
-            // Add the custom WhiteboardObjectJabberProvider to the Smack library
-            ProviderManager.addExtensionProvider(WhiteboardObjectPacketExtension.ELEMENT_NAME,
-                    WhiteboardObjectPacketExtension.NAMESPACE,
-                    new WhiteboardObjectJabberProvider());
-
-            ProviderManager.addExtensionProvider(WhiteboardSessionPacketExtension.ELEMENT_NAME,
-                    WhiteboardSessionPacketExtension.NAMESPACE,
-                    new WhiteboardObjectJabberProvider());
-
             // in case of modified account, we clear list of supported features and all state
             // change listeners, otherwise we can have two OperationSet for same feature and it
             // can causes problem (i.e. two OperationSetBasicTelephony can launch two ICE
@@ -2101,10 +2084,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // The http://jabber.org/protocol/xhtml-im feature is included already in smack.
             addSupportedOperationSet(OperationSetExtendedAuthorizations.class,
                     new OperationSetExtendedAuthorizationsJabberImpl(this, persistentPresence));
-
-            // initialize the Whiteboard operation set
-            addSupportedOperationSet(OperationSetWhiteboarding.class,
-                    new OperationSetWhiteboardingJabberImpl(this));
 
             // initialize the chat state notifications operation set
             addSupportedOperationSet(OperationSetChatStateNotifications.class,
@@ -2188,24 +2167,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                         .getBoolean(IS_DESKTOP_STREAMING_DISABLED, false);
                 boolean isAccountDesktopStreamingDisabled = accountID.getAccountPropertyBoolean(
                         ProtocolProviderFactory.IS_DESKTOP_STREAMING_DISABLED, false);
-
-                if (!isDesktopStreamingDisabled && !isAccountDesktopStreamingDisabled) {
-                    isDesktopSharingEnable = true;
-
-                    // initialize desktop streaming OperationSet
-                    addSupportedOperationSet(OperationSetDesktopStreaming.class,
-                            new OperationSetDesktopStreamingJabberImpl(basicTelephony));
-
-                    if (!accountID.getAccountPropertyBoolean(
-                            ProtocolProviderFactory.IS_DESKTOP_REMOTE_CONTROL_DISABLED, false)) {
-                        // initialize desktop sharing OperationSets
-                        addSupportedOperationSet(OperationSetDesktopSharingServer.class,
-                                new OperationSetDesktopSharingServerJabberImpl(basicTelephony));
-
-                        addSupportedOperationSet(OperationSetDesktopSharingClient.class,
-                                new OperationSetDesktopSharingClientJabberImpl(this));
-                    }
-                }
             }
 
             // OperationSetContactCapabilities
@@ -2213,9 +2174,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             if (discoveryManager != null)
                 opsetContactCapabilities.setDiscoveryManager(discoveryManager);
             addSupportedOperationSet(OperationSetContactCapabilities.class, opsetContactCapabilities);
-
-            addSupportedOperationSet(OperationSetGenericNotifications.class,
-                    new OperationSetGenericNotificationsJabberImpl(this));
 
             OperationSetChangePassword opsetChangePassword
                     = new OperationSetChangePasswordJabberImpl(this);

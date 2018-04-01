@@ -529,20 +529,17 @@ public class OperationSetFileTransferJabberImpl
 							|| status == FileTransferStatusChangeEvent.CANCELED
 							|| status == FileTransferStatusChangeEvent.REFUSED) {
 						if (fileTransfer instanceof OutgoingFileTransferJabberImpl) {
-							((OutgoingFileTransferJabberImpl) fileTransfer)
-									.removeThumbnailRequestListener();
+							((OutgoingFileTransferJabberImpl) fileTransfer).removeThumbnailRequestListener();
 						}
 
 						// sometimes a file transfer can be preparing and then completed :
 						// transferred in one iteration of current thread so it won't go through
 						// intermediate state - inProgress make sure this won't happen
 						if (status == FileTransferStatusChangeEvent.COMPLETED
-								&& fileTransfer.getStatus()
-								== FileTransferStatusChangeEvent.PREPARING) {
+								&& fileTransfer.getStatus() == FileTransferStatusChangeEvent.PREPARING) {
 							fileTransfer.fireStatusChangeEvent(
 									FileTransferStatusChangeEvent.IN_PROGRESS, "Status changed");
-							fileTransfer.fireProgressChangeEvent(System.currentTimeMillis(),
-									progress);
+							fileTransfer.fireProgressChangeEvent(System.currentTimeMillis(), progress);
 						}
 						break;
 					}

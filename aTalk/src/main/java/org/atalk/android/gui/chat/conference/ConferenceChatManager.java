@@ -248,16 +248,14 @@ public class ConferenceChatManager
 				// cmeng:never match and should be implemented in ChatRoomMessageDeliveredEvent
 				if (o instanceof ChatRoomMessageDeliveredEvent) {
 					ChatRoomMessageDeliveredEvent ev = (ChatRoomMessageDeliveredEvent) o;
-					if (evt.getTimestamp() != null
-							&& evt.getTimestamp().equals(ev.getTimestamp())) {
+					if ((evt.getTimestamp() != null) && evt.getTimestamp().equals(ev.getTimestamp())) {
 						hasMatch = true;
 						break;
 					}
 				}
 				else if (o instanceof ChatRoomMessageReceivedEvent) {
 					ChatRoomMessageReceivedEvent ev = (ChatRoomMessageReceivedEvent) o;
-					if (evt.getTimestamp() != null
-							&& evt.getTimestamp().equals(ev.getTimestamp())) {
+					if ((evt.getTimestamp() != null) && evt.getTimestamp().equals(ev.getTimestamp())) {
 						hasMatch = true;
 						break;
 					}
@@ -271,7 +269,7 @@ public class ConferenceChatManager
 //			if (hasMatch)
 //				return; // cmeng disable for now
 		}
-		String jabberID = ((JabberChatRoomMember) sourceMember).getJabberID();
+		String jabberID = sourceMember.getContactAddress();
 		String displayName = sourceMember.getNickName();
 		chatPanel.addMessage(jabberID, displayName, evt.getTimestamp(), messageType,
 				messageContent, message.getEncType(), message.getMessageUID(), null);

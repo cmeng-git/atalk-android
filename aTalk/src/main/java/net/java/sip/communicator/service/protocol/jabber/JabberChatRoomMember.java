@@ -7,19 +7,19 @@ package net.java.sip.communicator.service.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
 
+import org.jxmpp.jid.Jid;
+
 /**
- * {@link ChatRoomMember} interface extension that provides additional methods specific to Jabber
- * protocol.
+ * {@link ChatRoomMember} interface extension that provides additional methods specific to Jabber protocol.
  *
  * @author Pawel Domas
  */
 public interface JabberChatRoomMember extends ChatRoomMember
 {
 	/**
-	 * Returns the Jabber ID of the member.
+	 * Returns the Jabber ID of the member; can either be BareJid or reserved nick.
 	 * 
-	 * @return the Jabber ID or <tt>null</tt> if we don't have enough permissions to look up user's
-	 *         JID.
+	 * @return the Jabber ID or <tt>null</tt> if we don't have enough permissions to look up user's JID.
 	 */
-	public String getJabberID();
+	public Jid getJabberID();
 }
