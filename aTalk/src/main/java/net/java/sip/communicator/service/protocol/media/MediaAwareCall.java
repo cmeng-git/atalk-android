@@ -588,8 +588,8 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
 	public Recorder createRecorder()
 		throws OperationFailedException
 	{
-		final Recorder recorder = ProtocolMediaActivator.getMediaService().createRecorder(
-			getDefaultDevice(MediaType.AUDIO));
+		final Recorder recorder
+                = ProtocolMediaActivator.getMediaService().createRecorder(getDefaultDevice(MediaType.AUDIO));
 
 		if (recorder != null) {
 			// listens for mute event to update recorder

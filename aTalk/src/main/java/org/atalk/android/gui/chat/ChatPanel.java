@@ -1122,7 +1122,7 @@ public class ChatPanel implements Chat, MessageListener
 		}
 		if (!StringUtils.isNullOrEmpty(statusMessage)) {
 			String contactName
-					= ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getJabberID();
+					= ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getContactAddress();
 			this.addMessage(contactName, chatContact.getName(), new Date(), Chat.STATUS_MESSAGE,
 					statusMessage, ChatMessage.ENCODE_PLAIN, null, null);
 		}

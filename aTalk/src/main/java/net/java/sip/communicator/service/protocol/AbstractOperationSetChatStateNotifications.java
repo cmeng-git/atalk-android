@@ -32,8 +32,7 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
 	 * The <tt>Logger</tt> used by the <tt>AbstractOperationSetChatStateNotifications</tt> class and
 	 * its instances for logging output.
 	 */
-	private static final Logger logger
-			= Logger.getLogger(AbstractOperationSetChatStateNotifications.class);
+	private static final Logger logger = Logger.getLogger(AbstractOperationSetChatStateNotifications.class);
 
 	/**
 	 * The provider that created us.
@@ -43,8 +42,7 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
 	/**
 	 * The list of currently registered <tt>ChatStateNotificationsListener</tt>s.
 	 */
-	private final List<ChatStateNotificationsListener> chatStateNotificationsListeners
-			= new ArrayList<>();
+	private final List<ChatStateNotificationsListener> chatStateNotificationsListeners = new ArrayList<>();
 
 	/**
 	 * Initializes a new <tt>AbstractOperationSetChatStateNotifications</tt> instance created by a
@@ -85,11 +83,9 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
 		throws IllegalStateException
 	{
 		if (parentProvider == null)
-			throw new IllegalStateException("The provider must be non-null before being able to " +
-					"communicate.");
+			throw new IllegalStateException("The provider must be non-null before being able to  communicate.");
 		if (!parentProvider.isRegistered())
-			throw new IllegalStateException("The provider must be signed on the service"
-				+ " before being able to communicate.");
+			throw new IllegalStateException("The provider must be signed on the service before being able to communicate.");
 	}
 
 	/**
@@ -114,8 +110,7 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
 				+ " listeners. Contact " + sourceContact.getAddress()
 				+ " has now a chat state of " + chatState);
 
-		ChatStateNotificationEvent evt = new ChatStateNotificationEvent(sourceContact, chatState,
-				message);
+		ChatStateNotificationEvent evt = new ChatStateNotificationEvent(sourceContact, chatState, message);
 
 		for (ChatStateNotificationsListener listener : listeners)
 			listener.chatStateNotificationReceived(evt);
@@ -143,8 +138,7 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
 				+ " listeners for chatStateNotificationDeliveryFailed. Contact "
 				+ sourceContact.getAddress() + " has now a chat status of " + evtCode);
 
-		ChatStateNotificationEvent evt = new ChatStateNotificationEvent(sourceContact, evtCode,
-				null);
+		ChatStateNotificationEvent evt = new ChatStateNotificationEvent(sourceContact, evtCode, null);
 
 		for (ChatStateNotificationsListener listener : listeners)
 			listener.chatStateNotificationDeliveryFailed(evt);

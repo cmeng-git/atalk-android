@@ -16,6 +16,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smackx.filetransfer.*;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.io.*;
@@ -68,7 +69,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
 		this.fileTransferOpSet = fileTransferOpSet;
 		this.fileTransferRequest = fileTransferRequest;
 
-		String fromUserID = fileTransferRequest.getRequestor().toString();
+		Jid fromUserID = fileTransferRequest.getRequestor();
 
 		OperationSetPersistentPresenceJabberImpl opSetPersPresence = (OperationSetPersistentPresenceJabberImpl) jabberProvider
 			.getOperationSet(OperationSetPersistentPresence.class);
@@ -80,7 +81,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
 				.getOperationSet(OperationSetMultiUserChat.class);
 
 			if (mucOpSet != null)
-				privateContactRoom = mucOpSet.getChatRoom(XmppStringUtils.parseBareJid(fromUserID));
+				privateContactRoom = mucOpSet.getChatRoom(fromUserID.asBareJid());
 			if (privateContactRoom != null) {
 				sender = ((OperationSetPersistentPresenceJabberImpl) jabberProvider
 					.getOperationSet(OperationSetPersistentPresence.class)).createVolatileContact(
@@ -221,16 +222,16 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
 	 */
 	private class ThumbnailResponseListener implements StanzaListener
 	{
-		public void processStanza(Stanza packet)
+		public void processStanza(Stanza stanza)
 		{
 			// If this is not an IQ packet, we're not interested.
-			if (!(packet instanceof ThumbnailIQ))
+			if (!(stanza instanceof ThumbnailIQ))
 				return;
 
 			if (logger.isDebugEnabled())
 				logger.debug("Thumbnail response received.");
 
-			ThumbnailIQ thumbnailResponse = (ThumbnailIQ) packet;
+			ThumbnailIQ thumbnailResponse = (ThumbnailIQ) stanza;
 			if ((thumbnailResponse.getCid() != null)
 				&& thumbnailResponse.getCid().equals(thumbnailCid)) {
 				thumbnail = thumbnailResponse.getData();

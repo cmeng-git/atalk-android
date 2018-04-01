@@ -462,13 +462,10 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     List<ChatRoomMember> occupants = chatRoomWrapper.getChatRoom().getMembers();
                     for (ChatRoomMember member : occupants) {
                         ChatRoomMemberJabberImpl occupant = (ChatRoomMemberJabberImpl) member;
-                        memberList += occupant.getNickName() + " - "
-                                + occupant.getJabberID() + "<br/>";
+                        memberList += occupant.getNickName() + " - " + occupant.getJabberID() + "<br/>";
                     }
-                    String user = chatRoomWrapper.getParentProvider().getProtocolProvider()
-                            .getAccountID().getUserID();
-                    selectedChatPanel.addMessage(user, new Date(), Chat.SYSTEM_MESSAGE,
-                            memberList, ChatMessage.ENCODE_HTML);
+                    String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
+                    selectedChatPanel.addMessage(user, new Date(), Chat.SYSTEM_MESSAGE, memberList, ChatMessage.ENCODE_HTML);
                 }
                 return true;
 

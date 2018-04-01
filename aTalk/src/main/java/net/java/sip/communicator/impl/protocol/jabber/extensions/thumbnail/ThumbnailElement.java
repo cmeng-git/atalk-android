@@ -29,7 +29,7 @@ public class ThumbnailElement
 	/**
 	 * The name of the XML element used for transport of thumbnail parameters.
 	 */
-	public static final String ELEMENT_NAME = "thumbnail";
+	public static final String ELEMENT = "thumbnail";
 
 	/**
 	 * The names XMPP space that the thumbnail elements belong to.
@@ -88,7 +88,7 @@ public class ThumbnailElement
 	/**
 	 * Creates a <tt>ThumbnailElement</tt> by parsing the given <tt>xml</tt>.
 	 *
-	 * @param xml
+	 * @param parser
 	 *        the XML from which we obtain the needed information to create this
 	 *        <tt>ThumbnailElement</tt>
 	 */
@@ -104,7 +104,7 @@ public class ThumbnailElement
 				elementName = parser.getName();
 
 				if (eventType == XmlPullParser.START_TAG) {
-					if (elementName.equals(ELEMENT_NAME)) {
+					if (elementName.equals(ELEMENT)) {
 						this.setCid(parser.getAttributeValue("", CID));
 						this.setMimeType(parser.getAttributeValue("", MIME_TYPE));
 						this.setWidth(Integer.parseInt(parser.getAttributeValue("", WIDTH)));
@@ -112,7 +112,7 @@ public class ThumbnailElement
 					}
 				}
 				else if (eventType == XmlPullParser.END_TAG) {
-					if (elementName.equals(ELEMENT_NAME)) {
+					if (elementName.equals(ELEMENT)) {
 						done = true;
 					}
 				}
@@ -139,7 +139,7 @@ public class ThumbnailElement
 		StringBuffer buf = new StringBuffer();
 
 		// open element
-		buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\"");
+		buf.append("<").append(ELEMENT).append(" xmlns=\"").append(NAMESPACE).append("\"");
 
 		// adding thumbnail parameters
 		buf = addXmlAttribute(buf, CID, this.getCid());

@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.impl.protocol.jabber;
@@ -132,7 +132,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     /**
      * The multi user chat smack object that we encapsulate in this room.
      */
-    private MultiUserChat mMultiUserChat = null;
+    private MultiUserChat mMultiUserChat;
 
     /**
      * Listeners that will be notified of changes in member status in the room such as member
@@ -178,21 +178,19 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     private final OperationSetMultiUserChatJabberImpl opSetMuc;
 
     /**
-     * The list of members of this chat room.
+     * The list of members of this chat room EntityFullJid
      */
     private final Hashtable<EntityFullJid, ChatRoomMemberJabberImpl> members = new Hashtable<>();
 
     /**
-     * The list of banned members of this chat room.
+     * The list of banned members of this chat room EntityFullJid.
      */
     private final Hashtable<EntityFullJid, ChatRoomMember> banList = new Hashtable<>();
 
     /**
-     * The nickname of this chat room local user participant.
+     * The ResoucePart of this chat room local user participant i.e.NickName.
      */
-    private String mNickname;
-
-    private Resourcepart mNickResource;
+    private Resourcepart mNickName;
 
     /**
      * The subject of this chat room. Keeps track of the subject changes.
@@ -507,7 +505,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     {
         OperationSetPersistentPresenceJabberImpl opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
                 mProvider.getOperationSet(OperationSetPersistentPresence.class);
-        String jid = getName() + "/" + nickname;
+
+        Jid jid;
+        try {
+            jid = JidCreate.fullFrom(getIdentifier(), Resourcepart.from(nickname));
+        } catch (XmppStringprepException e) {
+            throw new IllegalArgumentException("Invalid XMPP nickname");
+        }
+
         Contact sourceContact = opSetPersPresence.findContactByID(jid);
         if (sourceContact == null) {
             sourceContact = opSetPersPresence.createVolatileContact(jid, true);
@@ -588,30 +593,28 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             throws OperationFailedException
     {
         assertConnected();
-        // parseLocalPart or take nickname as it
-        mNickname = XmppStringUtils.parseLocalpart(nickname);
-        if (StringUtils.isNullOrEmpty(mNickname))
-            mNickname = nickname;
+
+        // parseLocalPart or take nickname as it to join chatRoom
+        String sNickname = nickname.split("@")[0];
 
         String errorMessage = "Failed to join room " + getName() + " with nickname: " + nickname;
         try {
-            mNickResource = Resourcepart.from(mNickname);
-
+            mNickName = Resourcepart.from(sNickname);
             if (mMultiUserChat.isJoined()) {
-                if (!mMultiUserChat.getNickname().toString().equals(mNickname))
-                    mMultiUserChat.changeNickname(mNickResource);
+                if (!mMultiUserChat.getNickname().equals(mNickName))
+                    mMultiUserChat.changeNickname(mNickName);
             }
             else {
                 if (password == null)
-                    mMultiUserChat.join(mNickResource);
+                    mMultiUserChat.join(mNickName);
                 else
-                    mMultiUserChat.join(mNickResource, new String(password));
+                    mMultiUserChat.join(mNickName, new String(password));
             }
 
-            ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(this, mNickname,
-                    mProvider.getAccountID().getAccountJid());
+            ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(this, mNickName,
+                    mProvider.getAccountID().getFullJid().asBareJid());
             synchronized (members) {
-                final EntityFullJid entityFullJid = JidCreate.fullFrom(mMultiUserChat.getRoom(), mNickResource);
+                final EntityFullJid entityFullJid = JidCreate.fullFrom(mMultiUserChat.getRoom(), mNickName);
                 members.put(entityFullJid, member);
             }
             // We don't specify a reason.
@@ -811,7 +814,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     public void sendMessage(Message message, OmemoManager omemoManager)
-            throws OperationFailedException
     {
         String msgContent = message.getContent();
         OmemoMessage.Sent encryptedMucMessage;
@@ -881,8 +883,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     public ChatRoomMemberRole getUserRole()
     {
         if (mRole == null) {
-            EntityFullJid participant = JidCreate.entityFullFrom(mMultiUserChat.getRoom(),
-                    mMultiUserChat.getNickname());
+            EntityFullJid participant = JidCreate.entityFullFrom(mMultiUserChat.getRoom(), mMultiUserChat.getNickname());
 
             Occupant o = mMultiUserChat.getOccupant(participant);
             if (o == null)
@@ -990,15 +991,18 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             if (logger.isInfoEnabled())
                 logger.info(participant + " has joined chatRoom: " + getName());
 
+            // We try to get the nickname of the participantName in case it's in the form john@servicename.com,
+            // because the nickname we keep in the nickname property is just the user name like "john".
+            Resourcepart participantNick = participant.getResourceOrThrow();
+
             // when somebody changes its nickname we first receive event for its nickname changed
-            // and after that that has joined we check is this already joined and if so we skip it
-            String nickName = participant.getResourcepart().toString();
-            if (!mNickname.equals(nickName) && !members.containsKey(participant)) {
+            // and after that that has joined we check if this already joined and if so we skip it
+            if (!mNickName.equals(participantNick) && !members.containsKey(participant)) {
 
                 // smack returns fully qualified occupant names.
                 Occupant occupant = mMultiUserChat.getOccupant(participant);
-                ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this,
-                        occupant.getNick().toString(), occupant.getJid().toString());
+                ChatRoomMemberJabberImpl member
+                        = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, occupant.getNick(), occupant.getJid());
 
                 members.put(participant, member);
                 // we don't specify a reason
@@ -1040,11 +1044,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             if (member == null)
                 return;
 
-            String nickName = newNickname.toString();
-            if (mNickname.equals(getNickName(member.getNickName())))
-                mNickname = nickName;
+            // update local mNickName if from own NickName change
+            if (mNickName.equals(member.getNickNameAsResourcepart()))
+                mNickName = newNickname;
 
-            member.setNickName(nickName);
+            member.setNickName(newNickname);
             synchronized (members) {
                 // change the member key
                 members.put(participant, member);
@@ -1254,10 +1258,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * Returns the list of banned users.
      *
      * @return a list of all banned participants
-     * @throws OperationFailedException if we could not obtain the ban list
      */
     public Iterator<ChatRoomMember> getBanList()
-            throws OperationFailedException
     {
         return banList.values().iterator();
     }
@@ -1273,16 +1275,16 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             throws OperationFailedException
     {
         // parseLocalPart or take nickname as it
-        mNickname = nickname.split("@")[0];
+        String sNickname = nickname.split("@")[0];
 
         try {
-            mMultiUserChat.changeNickname(Resourcepart.from(mNickname));
+            mNickName = Resourcepart.from(sNickname);
+            mMultiUserChat.changeNickname(mNickName);
         } catch (XMPPException | NoResponseException | NotConnectedException | XmppStringprepException
                 | MultiUserChatException.MucNotJoinedException | InterruptedException e) {
 
             String msg = "Failed to change nickname for chat room: " + getName() + " => " + e.getMessage();
             logger.error(msg);
-
             throw new OperationFailedException(msg, OperationFailedException.IDENTIFICATION_CONFLICT);
         }
     }
@@ -1495,7 +1497,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             String displayName;
             if (TextUtils.isEmpty(name)) {
                 displayName = JabberActivator.getResources().getI18NString(
-                        "service.gui.CHAT_CONFERENCE_ITEM_LABEL", new String[]{mNickname});
+                        "service.gui.CHAT_CONFERENCE_ITEM_LABEL", new String[]{mNickName.toString()});
             }
             else {
                 displayName = name;
@@ -1520,12 +1522,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         }
         /*
          * Save the extensions to set to other outgoing Presence packets
-		 */
+         */
         publishedConference = !cd.isAvailable() ? null : cd;
         publishedConferenceExt = (publishedConference == null) ? null : ext;
 
-        EntityFullJid participant
-                = JidCreate.entityFullFrom(mMultiUserChat.getRoom(), mMultiUserChat.getNickname());
+        EntityFullJid participant = JidCreate.entityFullFrom(mMultiUserChat.getRoom(), mMultiUserChat.getNickname());
 
         fireConferencePublishedEvent(members.get(participant), cd,
                 ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_SENT);
@@ -1715,7 +1716,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             }
 
             // for delay message only
-            Jid jabberID = null;
+            Jid jabberID = msg.getFrom();
             MultipleAddresses mAddress = msg.getExtension(MultipleAddresses.ELEMENT, MultipleAddresses.NAMESPACE);
             if (mAddress != null) {
                 List<MultipleAddresses.Address> addresses = mAddress.getAddressesOfType(MultipleAddresses.Type.ofrom);
@@ -1734,7 +1735,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             // when the message comes from the room itself, it is a system message
             if (entityJid.equals(getName())) {
                 messageReceivedEventType = ChatRoomMessageReceivedEvent.SYSTEM_MESSAGE_RECEIVED;
-                member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, getName(), getName());
+                member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, Resourcepart.EMPTY, getIdentifier());
             }
             else {
                 member = members.get(entityJid.asEntityFullJidIfPossible());
@@ -1743,7 +1744,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             // sometimes when connecting to rooms they send history when the member is no longer
             // available we create a fake one so the messages to be displayed.
             if (member == null) {
-                member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, fromNick.toString(), jabberID.toString());
+                member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, fromNick, jabberID);
             }
 
             if (logger.isDebugEnabled()) {
@@ -1791,8 +1792,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             else {
                 // CONVERSATION_MESSAGE_RECEIVED or SYSTEM_MESSAGE_RECEIVED
                 ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
-                        ChatRoomJabberImpl.this, member, timeStamp, newMessage,
-                        messageReceivedEventType);
+                        ChatRoomJabberImpl.this, member, timeStamp, newMessage, messageReceivedEventType);
 
                 if (messageReceivedEventType == ChatRoomMessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED
                         && newMessage.getContent().contains(getUserNickname() + ":")) {
@@ -1824,9 +1824,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             // only fire event if subject has really changed, not for new one
             if (subject != null && !subject.equals(oldSubject)) {
                 ChatRoomPropertyChangeEvent evt = new ChatRoomPropertyChangeEvent(
-                        ChatRoomJabberImpl.this, ChatRoomPropertyChangeEvent.CHAT_ROOM_SUBJECT,
-                        oldSubject, subject);
-
+                        ChatRoomJabberImpl.this, ChatRoomPropertyChangeEvent.CHAT_ROOM_SUBJECT, oldSubject, subject);
                 firePropertyChangeEvent(evt);
             }
             // Keeps track of the subject.
@@ -2097,8 +2095,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                         OperationFailedException.NOT_ENOUGH_PRIVILEGES, e);
             else
                 throw new OperationFailedException(
-                        "Failed to obtain smack multi user chat config form.",
-                        OperationFailedException.GENERAL_ERROR, e);
+                        "Failed to obtain smack multi user chat config form.", OperationFailedException.GENERAL_ERROR, e);
         } catch (NoResponseException | NotConnectedException e) {
             e.printStackTrace();
         }
@@ -2146,15 +2143,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * @param nickName the nick name to search for.
      * @return the member of this chat room corresponding to the given nick name.
      */
-    public ChatRoomMemberJabberImpl findMemberForNickName(String nickName)
+    public ChatRoomMemberJabberImpl findMemberForNickName(Resourcepart nickName)
     {
-        EntityFullJid participant = null;
-        try {
-            participant = JidCreate.entityFullFrom(getName() + "/" + nickName);
-        } catch (XmppStringprepException e) {
-            e.printStackTrace();
-        }
-
+        EntityFullJid participant = JidCreate.entityFullFrom(getIdentifier(), nickName);
         synchronized (members) {
             return members.get(participant);
         }
@@ -2349,25 +2340,25 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         }
     }
 
-    /**
-     * Returns the nickname of the given participant name. For example, for the address
-     * "john@xmppservice.com", "john" would be returned. If no @ is found in the address we return
-     * the given name.
-     *
-     * @param participantAddress the address of the participant
-     * @return the nickname part of the given participant address
-     */
-    private static String getNickName(String participantAddress)
-    {
-        if (participantAddress == null)
-            return null;
-
-        int atIndex = participantAddress.lastIndexOf("@");
-        if (atIndex == -1)
-            return participantAddress;
-        else
-            return participantAddress.substring(0, atIndex);
-    }
+//    /**
+//     * Returns the nickname of the given participant name. For example, for the address
+//     * "john@xmppservice.com", "john" would be returned. If no @ is found in the address we return
+//     * the given name.
+//     *
+//     * @param participantAddress the address of the participant
+//     * @return the nickname part of the given participant address
+//     */
+//    private static String getNickName(String participantAddress)
+//    {
+//        if (participantAddress == null)
+//            return null;
+//
+//        int atIndex = participantAddress.lastIndexOf("@");
+//        if (atIndex == -1)
+//            return participantAddress;
+//        else
+//            return participantAddress.substring(0, atIndex);
+//    }
 
     /**
      * Returns the internal stack used chat room instance.
@@ -2395,8 +2386,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         public void processPresence(Presence presence)
         {
             if (presence != null) {
-                setPacketExtension(presence, publishedConferenceExt,
-                        ConferenceDescriptionPacketExtension.NAMESPACE);
+                setPacketExtension(presence, publishedConferenceExt, ConferenceDescriptionPacketExtension.NAMESPACE);
                 lastPresenceSent = presence;
             }
         }
@@ -2414,7 +2404,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
          */
         public void processPresence(Presence presence)
         {
-            String myRoomJID = mMultiUserChat.getRoom() + "/" + mNickResource;
+            String myRoomJID = mMultiUserChat.getRoom() + "/" + mNickName;
             if (presence.getFrom().equals(myRoomJID))
                 processOwnPresence(presence);
             else
@@ -2433,8 +2423,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                 MUCAffiliation affiliation = mucUser.getItem().getAffiliation();
                 MUCRole role = mucUser.getItem().getRole();
 
-                // if status 201 is available means that room is created and locked till we send
-                // the configuration
+                // if status 201 is available means that room is created and locked till we send the configuration
                 if ((mucUser.getStatus() != null)
                         && mucUser.getStatus().contains(MUCUser.Status.ROOM_CREATED_201)) {
                     try {
@@ -2464,8 +2453,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                             && role.toString().equals("none"))) {
                         Destroy destroy = mucUser.getDestroy();
                         if (destroy == null) {
-                            // the room is unavailable to us, there is no message we will just
-                            // leave
+                            // the room is unavailable to us, there is no message we will just leave
                             leave();
                         }
                         else {
@@ -2495,8 +2483,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                 if (member != null) {
                     if (logger.isDebugEnabled())
                         logger.debug("Received " + cd + " from " + from.toString() + " in " + mMultiUserChat.getRoom());
-                    fireConferencePublishedEvent(member, cd,
-                            ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_RECEIVED);
+                    fireConferencePublishedEvent(member, cd, ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_RECEIVED);
                 }
                 else {
                     logger.warn("Received a ConferenceDescription from an unknown member ("
@@ -2504,17 +2491,17 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                 }
             }
 
-            Nick nickExtension = (Nick) presence.getExtension(Nick.ELEMENT_NAME, Nick.NAMESPACE);
+            Nick nickExtension = presence.getExtension(Nick.ELEMENT_NAME, Nick.NAMESPACE);
             if (member != null && nickExtension != null) {
                 member.setDisplayName(nickExtension.getName());
             }
 
-            Email emailExtension = (Email) presence.getExtension(Email.ELEMENT_NAME, Email.NAMESPACE);
+            Email emailExtension = presence.getExtension(Email.ELEMENT_NAME, Email.NAMESPACE);
             if (member != null && emailExtension != null) {
                 member.setEmail(emailExtension.getAddress());
             }
 
-            AvatarUrl avatarUrl = (AvatarUrl) presence.getExtension(AvatarUrl.ELEMENT_NAME, AvatarUrl.NAMESPACE);
+            AvatarUrl avatarUrl = presence.getExtension(AvatarUrl.ELEMENT_NAME, AvatarUrl.NAMESPACE);
             if (member != null && avatarUrl != null) {
                 member.setAvatarUrl(avatarUrl.getAvatarUrl());
             }
@@ -2545,10 +2532,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             // Check if the MUCUser informs that the invitee has declined the invitation
             if ((mucUser != null) && (rejection != null)
                     && (message.getType() != org.jivesoftware.smack.packet.Message.Type.error)) {
-                int messageReceivedEventType = ChatRoomMessageReceivedEvent
-                        .SYSTEM_MESSAGE_RECEIVED;
+                int messageReceivedEventType = ChatRoomMessageReceivedEvent.SYSTEM_MESSAGE_RECEIVED;
                 ChatRoomMemberJabberImpl member
-                        = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, getName(), getName());
+                        = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, Resourcepart.EMPTY, getIdentifier());
                 EntityBareJid from = rejection.getFrom();
                 String fromStr = from.toString();
 
@@ -2563,7 +2549,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                     }
                 }
 
-                String msgBody = JabberActivator.getResources().getI18NString( "service.gui.INVITATION_REJECTED",
+                String msgBody = JabberActivator.getResources().getI18NString("service.gui.INVITATION_REJECTED",
                         new String[]{fromStr, mucUser.getDecline().getReason()});
 
                 ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(

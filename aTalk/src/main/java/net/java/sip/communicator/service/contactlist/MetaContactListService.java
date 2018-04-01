@@ -106,7 +106,6 @@ public interface MetaContactListService
      */
     MetaContactGroup findParentMetaContactGroup(MetaContact child);
 
-
     /**
      * Returns the MetaContact containing the specified contact or null if no
      * such MetaContact was found. The method can be used when for example
@@ -160,8 +159,7 @@ public interface MetaContactListService
      * @return a list of all <tt>MetaContact</tt>s containing a protocol contact
      * from the given <tt>ProtocolProviderService</tt>.
      */
-    Iterator<MetaContact> findAllMetaContactsForProvider(
-        ProtocolProviderService protocolProvider);
+    Iterator<MetaContact> findAllMetaContactsForProvider(ProtocolProviderService protocolProvider);
 
     /**
      * Returns a list of all <tt>MetaContact</tt>s contained in the given group
@@ -176,8 +174,7 @@ public interface MetaContactListService
      * from the given <tt>ProtocolProviderService</tt>.
      */
     Iterator<MetaContact> findAllMetaContactsForProvider(
-        ProtocolProviderService protocolProvider,
-        MetaContactGroup metaContactGroup);
+        ProtocolProviderService protocolProvider, MetaContactGroup metaContactGroup);
 
     /**
      * Returns a list of all <tt>MetaContact</tt>s containing a protocol contact
@@ -268,8 +265,7 @@ public interface MetaContactListService
      * @throws MetaContactListException with an appropriate code if the
      * operation fails for some reason.
      */
-    void addNewContactToMetaContact(ProtocolProviderService provider,
-                                  MetaContact metaContact, String contactID)
+    void addNewContactToMetaContact(ProtocolProviderService provider, MetaContact metaContact, String contactID)
         throws MetaContactListException;
 
     /**
@@ -295,8 +291,7 @@ public interface MetaContactListService
      * @throws MetaContactListException with an appropriate code if the
      * operation fails for some reason.
      */
-    MetaContact createMetaContact(ProtocolProviderService provider,
-                                  MetaContactGroup contactGroup, String contactID)
+    MetaContact createMetaContact(ProtocolProviderService provider, MetaContactGroup contactGroup, String contactID)
         throws MetaContactListException;
 
     /**

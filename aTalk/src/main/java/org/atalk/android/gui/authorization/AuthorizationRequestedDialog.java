@@ -65,8 +65,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
 				getString(R.string.service_gui_ADD_AUTHORIZED_CONTACT, contactId));
 
 		Spinner contactGroupSpinner = findViewById(R.id.selectGroupSpinner);
-		contactGroupSpinner.setAdapter(new MetaContactGroupAdapter(this, R.id.selectGroupSpinner,
-				true, true));
+		contactGroupSpinner.setAdapter(new MetaContactGroupAdapter(this, R.id.selectGroupSpinner, true, true));
 
 		CompoundButton addToContactsCb = findViewById(R.id.addToContacts);
 		addToContactsCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
@@ -88,8 +87,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
 		super.onResume();
 
 		// Update add to contacts status
-		updateAddToContactsStatus(ViewUtil.isCompoundChecked(getContentView(),
-				R.id.addToContacts));
+		updateAddToContactsStatus(ViewUtil.isCompoundChecked(getContentView(), R.id.addToContacts));
 	}
 
 	/**

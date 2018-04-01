@@ -48,16 +48,16 @@ public class RayoIqProvider extends IQProvider<IQ>
 	public void registerRayoIQs(ProviderManager providerManager)
 	{
 		// <dial>
-		ProviderManager.addIQProvider(DialIq.ELEMENT_NAME, NAMESPACE, this);
+		ProviderManager.addIQProvider(DialIq.ELEMENT, NAMESPACE, this);
 		// <ref>
-		ProviderManager.addIQProvider(RefIq.ELEMENT_NAME, NAMESPACE, this);
+		ProviderManager.addIQProvider(RefIq.ELEMENT, NAMESPACE, this);
 		// <hangup>
-		ProviderManager.addIQProvider(HangUp.ELEMENT_NAME, NAMESPACE, this);
+		ProviderManager.addIQProvider(HangUp.ELEMENT, NAMESPACE, this);
 		// <end> presence extension
 		ProviderManager.addExtensionProvider(EndExtension.ELEMENT_NAME, NAMESPACE,
 				new DefaultPacketExtensionProvider<>(EndExtension.class));
 		// <header> extension
-		ProviderManager.addExtensionProvider(HeaderExtension.ELEMENT_NAME, "",
+		ProviderManager.addExtensionProvider(HeaderExtension.ELEMENT, "",
 				new DefaultPacketExtensionProvider<>(HeaderExtension.class));
 	}
 
@@ -81,7 +81,7 @@ public class RayoIqProvider extends IQProvider<IQ>
 		RefIq ref;
 		// End end = null;
 
-		if (DialIq.ELEMENT_NAME.equals(rootElement)) {
+		if (DialIq.ELEMENT.equals(rootElement)) {
 			iq = dial = new DialIq();
 			String src = parser.getAttributeValue("", DialIq.SRC_ATTR_NAME);
 			String dst = parser.getAttributeValue("", DialIq.DST_ATTR_NAME);
@@ -93,7 +93,7 @@ public class RayoIqProvider extends IQProvider<IQ>
 			dial.setSource(src);
 			dial.setDestination(dst);
 		}
-		else if (RefIq.ELEMENT_NAME.equals(rootElement)) {
+		else if (RefIq.ELEMENT.equals(rootElement)) {
 			iq = ref = new RefIq();
 			String uri = parser.getAttributeValue("", RefIq.URI_ATTR_NAME);
 
@@ -102,11 +102,11 @@ public class RayoIqProvider extends IQProvider<IQ>
 
 			ref.setUri(uri);
 		}
-		else if (HangUp.ELEMENT_NAME.equals(rootElement)) {
+		else if (HangUp.ELEMENT.equals(rootElement)) {
 			iq = new HangUp();
 		}
 		/*
-		 * else if (End.ELEMENT_NAME.equals(rootElement)) { iq = end = new End(); }
+		 * else if (End.ELEMENT.equals(rootElement)) { iq = end = new End(); }
 		 */
 		else {
 			return null;
@@ -123,7 +123,7 @@ public class RayoIqProvider extends IQProvider<IQ>
 					if (rootElement.equals(name)) {
 						done = true;
 					}
-					else if (HeaderExtension.ELEMENT_NAME.equals(name)) {
+					else if (HeaderExtension.ELEMENT.equals(name)) {
 						if (header != null) {
 							iq.addExtension(header);
 							header = null;
@@ -139,7 +139,7 @@ public class RayoIqProvider extends IQProvider<IQ>
 				case XmlPullParser.START_TAG: {
 					String name = parser.getName();
 
-					if (HeaderExtension.ELEMENT_NAME.equals(name)) {
+					if (HeaderExtension.ELEMENT.equals(name)) {
 						header = new HeaderExtension();
 						String nameAttr = parser.getAttributeValue("",
 								HeaderExtension.NAME_ATTR_NAME);
@@ -271,7 +271,7 @@ public class RayoIqProvider extends IQProvider<IQ>
 		/**
 		 * The name of XML element for this IQ.
 		 */
-		public static final String ELEMENT_NAME = "dial";
+		public static final String ELEMENT = "dial";
 
 		/**
 		 * The name of source URI/address attribute. Referred as "source" to avoid confusion with
@@ -300,7 +300,7 @@ public class RayoIqProvider extends IQProvider<IQ>
 		 */
 		public DialIq()
 		{
-			super(DialIq.ELEMENT_NAME);
+			super(DialIq.ELEMENT);
 		}
 
 		/**
@@ -386,7 +386,7 @@ public class RayoIqProvider extends IQProvider<IQ>
 		/**
 		 * XML element name of <tt>RefIq</tt>.
 		 */
-		public static final String ELEMENT_NAME = "ref";
+		public static final String ELEMENT = "ref";
 
 		/**
 		 * Name of the URI attribute that stores call resource reference.
@@ -403,7 +403,7 @@ public class RayoIqProvider extends IQProvider<IQ>
 		 */
 		protected RefIq()
 		{
-			super(RefIq.ELEMENT_NAME);
+			super(RefIq.ELEMENT);
 		}
 
 		/**
@@ -487,14 +487,14 @@ public class RayoIqProvider extends IQProvider<IQ>
 		/**
 		 * The name of 'hangup' element.
 		 */
-		public static final String ELEMENT_NAME = "hangup";
+		public static final String ELEMENT = "hangup";
 
 		/**
 		 * Creates new instance of <tt>HangUp</tt> IQ.
 		 */
 		protected HangUp()
 		{
-			super(ELEMENT_NAME);
+			super(ELEMENT);
 		}
 
 		/**

@@ -28,7 +28,7 @@ public class ColibriConferenceIQ extends IQ {
 	/**
 	 * The XML element name of the Jitsi Videobridge <tt>conference</tt> IQ.
 	 */
-	public static final String ELEMENT_NAME = "conference";
+	public static final String ELEMENT = "conference";
 
 	/**
 	 * The XML COnferencing with LIghtweight BRIdging namespace of the Jitsi Videobridge
@@ -118,7 +118,7 @@ public class ColibriConferenceIQ extends IQ {
 	 * Initializes a new <tt>ColibriConferenceIQ</tt> instance.
 	 */
 	public ColibriConferenceIQ() {
-		super(ELEMENT_NAME, NAMESPACE);
+		super(ELEMENT, NAMESPACE);
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class ColibriConferenceIQ extends IQ {
 				xml.append(new GracefulShutdown().toXML());
 		}
 
-		// closeELement(ELEMENT_NAME); // cmeng: auto closed by IQ handler
+		// closeELement(ELEMENT); // cmeng: auto closed by IQ handler
 		return xml;
 	}
 

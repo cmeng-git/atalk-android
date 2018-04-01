@@ -142,8 +142,7 @@ public class ContactListFragment extends OSGiFragment
 		// Restore search state based on entered text
 		if (searchItem != null) {
 			SearchView searchView = (SearchView) searchItem.getActionView();
-			int id = searchView.getContext().getResources()
-					.getIdentifier("android:id/search_src_text", null, null);
+			int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
 			TextView textView = (TextView) searchView.findViewById(id);
 
 			filterContactList(textView.getText().toString());
@@ -271,8 +270,7 @@ public class ContactListFragment extends OSGiFragment
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenu.ContextMenuInfo menuInfo)
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
 	{
 		super.onCreateContextMenu(menu, v, menuInfo);
 
@@ -280,8 +278,7 @@ public class ContactListFragment extends OSGiFragment
 			return;
 		}
 
-		ExpandableListView.ExpandableListContextMenuInfo info
-				= (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
+		ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
 		int type = ExpandableListView.getPackedPositionType(info.packedPosition);
 		int group = ExpandableListView.getPackedPositionGroup(info.packedPosition);
 		int child = ExpandableListView.getPackedPositionChild(info.packedPosition);
@@ -484,8 +481,7 @@ public class ContactListFragment extends OSGiFragment
 				}
 				catch (OperationFailedException e) {
 					Context ctx = aTalkApp.getGlobalContext();
-					DialogActivity.showConfirmDialog(ctx,
-							ctx.getString(R.string.service_gui_RE_REQUEST_AUTHORIZATION),
+					DialogActivity.showConfirmDialog(ctx, ctx.getString(R.string.service_gui_RE_REQUEST_AUTHORIZATION),
 							e.getMessage(), null, null);
 				}
 			}

@@ -196,14 +196,12 @@ public class AndroidLoginRenderer implements LoginRenderer
 	 */
 	public void protocolProviderConnected(ProtocolProviderService protocolProvider, long date)
 	{
-		OperationSetPresence presence
-				= AccountStatusUtils.getProtocolPresenceOpSet(protocolProvider);
+		OperationSetPresence presence = AccountStatusUtils.getProtocolPresenceOpSet(protocolProvider);
 		if (presence != null) {
 			presence.setAuthorizationHandler(authorizationHandler);
 		}
 
-		OperationSetMultiUserChat multiUserChat
-				= MUCService.getMultiUserChatOpSet(protocolProvider);
+		OperationSetMultiUserChat multiUserChat = MUCService.getMultiUserChatOpSet(protocolProvider);
 		MUCService mucService;
 		if ((multiUserChat != null)
 				&& (mucService = AndroidGUIActivator.getMUCService()) != null) {

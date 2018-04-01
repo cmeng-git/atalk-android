@@ -189,7 +189,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
 		String namespace = parser.getNamespace();
 		IQ iq;
 
-		if (ColibriConferenceIQ.ELEMENT_NAME.equals(parser.getName())
+		if (ColibriConferenceIQ.ELEMENT.equals(parser.getName())
 				&& ColibriConferenceIQ.NAMESPACE.equals(namespace)) {
 			ColibriConferenceIQ conferenceIQ = new ColibriConferenceIQ();
 			String conferenceID = parser.getAttributeValue("", ColibriConferenceIQ.ID_ATTR_NAME);
@@ -223,7 +223,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
 					case XmlPullParser.END_TAG: {
 						String name = parser.getName();
 
-						if (ColibriConferenceIQ.ELEMENT_NAME.equals(name)) {
+						if (ColibriConferenceIQ.ELEMENT.equals(name)) {
 							done = true;
 						}
 						else if (ColibriConferenceIQ.Channel.ELEMENT_NAME.equals(name)) {

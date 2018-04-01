@@ -26,7 +26,7 @@ public class HeaderExtension extends AbstractPacketExtension
 	/**
 	 * XML element name.
 	 */
-	public static final String ELEMENT_NAME = "header";
+	public static final String ELEMENT = "header";
 
 	/**
 	 * The name of 'name' attribute.
@@ -43,7 +43,7 @@ public class HeaderExtension extends AbstractPacketExtension
 	 */
 	public HeaderExtension()
 	{
-		super(ELEMENT_NAME, null);
+		super(ELEMENT, null);
 	}
 
 	/**

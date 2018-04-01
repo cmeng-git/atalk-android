@@ -53,7 +53,6 @@ public class AddContactActivity extends OSGiActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.add_contact);
 		setTitle(R.string.service_gui_ADD_CONTACT);
 		initAccountSpinner();
@@ -130,7 +129,6 @@ public class AddContactActivity extends OSGiActivity
 			logger.error("No provider registered for account " + selectedAcc.getAccountName());
 			return;
 		}
-
 		View content = findViewById(android.R.id.content);
 		String contactAddress = ViewUtil.getTextViewValue(content, R.id.editContactName).trim();
 
@@ -138,7 +136,6 @@ public class AddContactActivity extends OSGiActivity
 		if (!TextUtils.isEmpty(displayName)) {
 			addRenameListener(pps, null, contactAddress, displayName);
 		}
-
 		Spinner groupSpinner = findViewById(R.id.selectGroupSpinner);
 		ContactListUtils.addContact(pps, (MetaContactGroup) groupSpinner.getSelectedItem(), contactAddress);
 		finish();
@@ -160,8 +157,7 @@ public class AddContactActivity extends OSGiActivity
 	 * @param displayName
 	 * 		the new display name
 	 */
-	private void addRenameListener(final ProtocolProviderService protocolProvider,
-			final MetaContact metaContact,
+	private void addRenameListener(final ProtocolProviderService protocolProvider, final MetaContact metaContact,
 			final String contactAddress, final String displayName)
 	{
 		AndroidGUIActivator.getContactListService().addMetaContactListListener(
