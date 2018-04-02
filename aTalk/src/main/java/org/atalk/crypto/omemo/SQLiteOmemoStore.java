@@ -174,31 +174,6 @@ public class SQLiteOmemoStore extends SignalOmemoStore
         trustCache.remove(fingerprint); // clear old status in trustCache
     }
 
-//    public X509Certificate getFingerprintCertificate(String fingerprint)
-//    {
-//        return mDB.getIdentityKeyCertificate(mDevice, fingerprint);
-//    }
-//
-//    public void setFingerprintCertificate(String fingerprint, X509Certificate x509Certificate)
-//    {
-//        mDB.setIdentityKeyCertificate(mDevice, fingerprint, x509Certificate);
-//    }
-//
-//    public Set<IdentityKey> getContactKeysWithTrust(String bareJid, FingerprintStatus status)
-//    {
-//        return mDB.loadIdentityKeys(mDevice, status);
-//    }
-//
-//    public long getContactNumTrustedKeys(String bareJid)
-//    {
-//        return mDB.numTrustedKeys(bareJid);
-//    }
-//
-//    public void preVerifyFingerprint(OmemoDevice device, String name, String fingerprint)
-//    {
-//        mDB.storePreVerification(device, fingerprint, FingerprintStatus.createInactiveVerified());
-//    }
-
     //======================= OMEMO Store =========================================
 
     // --------------------------------------
