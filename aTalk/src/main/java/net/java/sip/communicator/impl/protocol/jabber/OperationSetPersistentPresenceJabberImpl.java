@@ -1530,7 +1530,7 @@ public class OperationSetPersistentPresenceJabberImpl
         if (ext != null)
             displayName = ext.getName();
 
-        logger.info("Subscription authorization request from: " + fromJid);
+        logger.info("Subscription authorization request event from: " + fromJid);
         synchronized (this) {
             // keep the request for later process when handler becomes ready
             if (handler == null) {
@@ -1587,6 +1587,7 @@ public class OperationSetPersistentPresenceJabberImpl
             return;
         }
 
+        logger.info("Presence subscription request accepted by: " + address);
         ContactJabberImpl contact = ssContactList.findContactById(fromID);
         AuthorizationResponse response = new AuthorizationResponse(AuthorizationResponse.ACCEPT, "");
         handler.processAuthorizationResponse(response, contact);
@@ -1602,11 +1603,10 @@ public class OperationSetPersistentPresenceJabberImpl
     public void presenceUnsubscribed(BareJid address, Presence unsubscribedPresence)
     {
         Jid fromID = unsubscribedPresence.getFrom();
-        if (logger.isTraceEnabled())
-            logger.trace(fromID + " does not allow your subscription");
+        logger.info(address + " rejected your presence subscription");
 
         if (handler == null) {
-            logger.warn("No unsubscribed AuthorizationHandler for " + fromID);
+            logger.warn("No unsubscribed Authorization Handler for " + address);
             return;
         }
 

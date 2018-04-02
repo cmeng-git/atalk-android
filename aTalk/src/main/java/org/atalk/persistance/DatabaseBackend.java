@@ -20,11 +20,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Base64;
-import android.util.Log;
 
 import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
 import net.java.sip.communicator.impl.msghistory.MessageSourceService;
@@ -36,33 +34,23 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.Logger;
 
-import org.atalk.Config;
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
-import org.atalk.android.gui.chat.ChatMessageImpl;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.crypto.omemo.FingerprintStatus;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
-import org.atalk.entities.PresenceTemplate;
-import org.atalk.entities.Roster;
 import org.atalk.persistance.migrations.MigrationToSqlDB;
 import org.atalk.persistance.migrations.Migrations;
 import org.atalk.persistance.migrations.MigrationsHelper;
 import org.atalk.util.StringUtils;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.OmemoService;
-import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.Jid;
 import org.whispersystems.libsignal.IdentityKey;
 import org.whispersystems.libsignal.IdentityKeyPair;
 import org.whispersystems.libsignal.InvalidKeyException;
@@ -70,17 +58,11 @@ import org.whispersystems.libsignal.state.PreKeyRecord;
 import org.whispersystems.libsignal.state.SessionRecord;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -287,10 +269,10 @@ public class DatabaseBackend extends SQLiteOpenHelper
                 + MetaContactGroup.MC_GROUP_UID + ", " + MetaContactGroup.PARENT_PROTO_GROUP_UID
                 + ") ON CONFLICT REPLACE);");
 
-		/*
+        /*
          * Meta contact group members table. The entries in the table are linked to the
-		 * MetaContactGroup.TABLE_NAME each entry by ACCOUNT_UUID && PROTO_GROUP_UID
-		*/
+         * MetaContactGroup.TABLE_NAME each entry by ACCOUNT_UUID && PROTO_GROUP_UID
+         */
         db.execSQL("CREATE TABLE " + MetaContactGroup.TBL_CHILD_CONTACTS + "("
                 + MetaContactGroup.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + MetaContactGroup.MC_UID + " TEXT, "
@@ -423,203 +405,10 @@ public class DatabaseBackend extends SQLiteOpenHelper
         }
     }
 
-    public void createConversation(ChatSession conversation)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(ChatSession.TABLE_NAME, null, conversation.getContentValues());
-    }
-
-    public void createMessage(ChatMessageImpl message)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(ChatMessage.TABLE_NAME, null, message.getContentValues());
-    }
-
     public void createAccount(AccountID accountId)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(AccountID.TABLE_NAME, null, accountId.getContentValues());
-    }
-
-    public void insertDiscoveryResult(EntityCapsDatabase result)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(EntityCapsDatabase.TABLE_NAME, null, result.getContentValues());
-    }
-
-    public EntityCapsManager findDiscoveryResult(final String hash, final String ver)
-    {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String[] selectionArgs = {hash, ver};
-        Cursor cursor = db.query(EntityCapsDatabase.TABLE_NAME, null,
-                EntityCapsDatabase.HASH + "=? AND " + EntityCapsDatabase.VER + "=?",
-                selectionArgs, null, null, null);
-        if (cursor.getCount() == 0) {
-            cursor.close();
-            return null;
-        }
-        cursor.moveToFirst();
-
-        EntityCapsManager result = null;
-//		try {
-//			result = new EntityCapsManager(cursor);
-//		}
-//		catch (JSONException e) { /* result is still null */ }
-
-        cursor.close();
-        return result;
-    }
-
-    public void insertPresenceTemplate(PresenceTemplate template)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(PresenceTemplate.TABLE_NAME, null, template.getContentValues());
-    }
-
-    public List<PresenceTemplate> getPresenceTemplates()
-    {
-        ArrayList<PresenceTemplate> templates = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(PresenceTemplate.TABLE_NAME, null, null, null, null, null,
-                PresenceTemplate.LAST_SEEN + " desc");
-        while (cursor.moveToNext()) {
-            templates.add(PresenceTemplate.fromCursor(cursor));
-        }
-        cursor.close();
-        return templates;
-    }
-
-    public void deletePresenceTemplate(PresenceTemplate template)
-    {
-        Log.d(Config.LOGTAG, "deleting presence template with uuid " + template.getUuid());
-        SQLiteDatabase db = this.getWritableDatabase();
-        String where = PresenceTemplate.UUID + "=?";
-        String[] whereArgs = {template.getUuid()};
-        db.delete(PresenceTemplate.TABLE_NAME, where, whereArgs);
-    }
-
-//	public CopyOnWriteArrayList<ChatSession> getConversations(int status)
-//	{
-//		CopyOnWriteArrayList<ChatSession> list = new CopyOnWriteArrayList<>();
-//		SQLiteDatabase db = this.getReadableDatabase();
-//		String[] selectionArgs = {Integer.toString(status)};
-//		Cursor cursor = db.rawQuery("select * from " + ChatSession.TABLE_NAME
-//				+ " where " + ChatSession.STATUS + " =? order by "
-//				+ ChatSession.CREATED + " desc", selectionArgs);
-//		while (cursor.moveToNext()) {
-//			list.add(ChatSession.fromCursor(cursor));
-//		}
-//		cursor.close();
-//		return list;
-//	}
-
-    public ArrayList<ChatMessage> getMessages(ChatSession chatSession, int limit)
-    {
-        return getMessages(chatSession, limit, -1);
-    }
-
-    public ArrayList<ChatMessage> getMessages(ChatSession chatSession, int limit, long timestamp)
-    {
-        ArrayList<ChatMessage> list = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor;
-        if (timestamp == -1) {
-            String[] selectionArgs = {chatSession.getSessionUuid()};
-            cursor = db.query(ChatMessage.TABLE_NAME, null, ChatMessage.SESSION_UUID
-                    + "=?", selectionArgs, null, null, ChatMessage.TIME_STAMP
-                    + " DESC", Integer.toString(limit));
-        }
-        else {
-            String[] selectionArgs = {chatSession.getSessionUuid(), Long.toString(timestamp)};
-            cursor = db.query(ChatMessage.TABLE_NAME, null, ChatMessage.SESSION_UUID
-                            + "=? and " + ChatMessage.TIME_STAMP + "<?", selectionArgs,
-                    null, null, ChatMessage.TIME_STAMP + " DESC",
-                    Integer.toString(limit));
-        }
-        if (cursor.getCount() > 0) {
-            cursor.moveToLast();
-            do {
-                ChatMessageImpl message = ChatMessageImpl.fromCursor(cursor);
-                message.setChatSession(chatSession);
-                list.add(message);
-            } while (cursor.moveToPrevious());
-        }
-        cursor.close();
-        return list;
-    }
-
-    public Iterable<ChatMessage> getMessagesIterable(final ChatSession conversation)
-    {
-        return new Iterable<ChatMessage>()
-        {
-            @Override
-            public Iterator<ChatMessage> iterator()
-            {
-                class MessageIterator implements Iterator<ChatMessage>
-                {
-                    SQLiteDatabase db = getReadableDatabase();
-                    String[] selectionArgs = {conversation.getSessionUuid()};
-                    Cursor cursor = db.query(ChatMessage.TABLE_NAME, null, ChatMessage.SESSION_UUID
-                            + "=?", selectionArgs, null, null, ChatMessage.TIME_STAMP
-                            + " ASC", null);
-
-                    public MessageIterator()
-                    {
-                        cursor.moveToFirst();
-                    }
-
-                    @Override
-                    public boolean hasNext()
-                    {
-                        return !cursor.isAfterLast();
-                    }
-
-                    @Override
-                    public ChatMessage next()
-                    {
-                        ChatMessage message = ChatMessageImpl.fromCursor(cursor);
-                        cursor.moveToNext();
-                        return message;
-                    }
-
-                    @Override
-                    public void remove()
-                    {
-                        throw new UnsupportedOperationException();
-                    }
-                }
-                return new MessageIterator();
-            }
-        };
-    }
-
-    public ChatSession findConversation(final AccountID accountId, final Jid contactJid)
-    {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String[] selectionArgs = {accountId.getAccountUuid(),
-                contactJid.asFullJidIfPossible().toString() + "/%",
-                contactJid.asFullJidIfPossible().toString()
-        };
-        Cursor cursor = db.query(ChatSession.TABLE_NAME, null,
-                ChatSession.ACCOUNT_UUID + "=? AND (" + ChatSession.ACCOUNT_UID
-                        + " like ? OR " + ChatSession.ACCOUNT_UID + "=?)", selectionArgs, null,
-                null, null);
-        if (cursor.getCount() == 0) {
-            cursor.close();
-            return null;
-        }
-        cursor.moveToFirst();
-        ChatSession conversation = ChatSession.fromCursor(cursor);
-        cursor.close();
-        return conversation;
-    }
-
-    public void updateConversation(final ChatSession conversation)
-    {
-        final SQLiteDatabase db = this.getWritableDatabase();
-        final String[] args = {conversation.getSessionUuid()};
-        db.update(ChatSession.TABLE_NAME, conversation.getContentValues(),
-                ChatSession.SESSION_UUID + "=?", args);
     }
 
     public List<String> getAllAccountIDs()
@@ -668,26 +457,6 @@ public class DatabaseBackend extends SQLiteOpenHelper
         return rows == 1;
     }
 
-    public boolean hasEnabledAccounts()
-    {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select count(" + AccountID.ACCOUNT_UUID + ")  from "
-                + AccountID.TABLE_NAME + " where not options & (1 <<1)", null);
-        try {
-            cursor.moveToFirst();
-            int count = cursor.getInt(0);
-            return (count > 0);
-        } catch (SQLiteCantOpenDatabaseException e) {
-            return true; // better safe than sorry
-        } catch (RuntimeException e) {
-            return true; // better safe than sorry
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
     @Override
     public SQLiteDatabase getWritableDatabase()
     {
@@ -696,55 +465,6 @@ public class DatabaseBackend extends SQLiteOpenHelper
         String query = String.format("PRAGMA foreign_keys =%s", "ON");
         db.execSQL(query);
         return db;
-    }
-
-    public void updateMessage(ChatMessageImpl message)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String[] args = {message.getUuid()};
-        db.update(ChatMessage.TABLE_NAME, message.getContentValues(), ChatMessage.UUID + "=?", args);
-    }
-
-    public void updateMessage(ChatMessageImpl message, String uuid)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String[] args = {uuid};
-        db.update(ChatMessage.TABLE_NAME, message.getContentValues(), ChatMessage.UUID + "=?", args);
-    }
-
-    public void readRoster(Roster roster)
-    {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor;
-        String args[] = {roster.getAccount().getAccountUuid()};
-        cursor = db.query(Contact.TABLE_NAME, null, Contact.CONTACT_UUID + "=?",
-                args, null, null, null);
-        while (cursor.moveToNext()) {
-            // roster.initContact(Contact.fromCursor(cursor));
-        }
-        cursor.close();
-    }
-
-    public void writeRoster(final Roster roster)
-    {
-        final AccountID accountId = roster.getAccount();
-        final SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
-        for (Contact contact : roster.getContacts()) {
-//			if (contact.getOption(Contact.Options.IN_ROSTER)) {
-//				db.insert(Contact.TABLE_NAME, null, contact.getContentValues());
-//			}
-//			else {
-            String where = Contact.CONTACT_UUID + "=? AND " + Contact.CONTACT_JID +
-                    "=?";
-            String[] whereArgs = {accountId.getAccountUuid(), contact.getAddress()};
-            db.delete(Contact.TABLE_NAME, where, whereArgs);
-//			}
-        }
-        db.setTransactionSuccessful();
-        db.endTransaction();
-        accountId.setRosterVersion(roster.getVersion());
-        updateAccount(accountId);
     }
 
     // ========= OMEMO Devices =========
@@ -1335,7 +1055,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
          * Important: Must clear values before use, otherwise update exiting deviceID with new deviceID but still keeping
          * old fingerPrint and identityKey. This forbids update of the fingerPrint and IdentityKey for the new deviceID,
          * Worst it causes aTalk to crash on next access to omemo chat with the identity
-        */
+         */
         values.clear();
         values.put(SQLiteOmemoStore.ACTIVE, 0);
         Set<Integer> inActiveDevices = deviceList.getInactiveDevices();
@@ -1460,54 +1180,6 @@ public class DatabaseBackend extends SQLiteOpenHelper
                 fingerprintStatus.toContentValues(), SQLiteOmemoStore.BARE_JID + "=? AND "
                         + SQLiteOmemoStore.DEVICE_ID + "=? AND " + SQLiteOmemoStore.FINGERPRINT + "=?", selectionArgs);
         return rows == 1;
-    }
-
-    public boolean setIdentityKeyCertificate(OmemoDevice device, String fingerprint,
-            X509Certificate x509Certificate)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String[] selectionArgs = {device.getJid().toString(),
-                Integer.toString(device.getDeviceId()), fingerprint};
-        try {
-            ContentValues values = new ContentValues();
-            values.put(SQLiteOmemoStore.CERTIFICATE, x509Certificate.getEncoded());
-            return db.update(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, values,
-                    SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=? AND "
-                            + SQLiteOmemoStore.FINGERPRINT + "=?", selectionArgs) == 1;
-        } catch (CertificateEncodingException e) {
-            Log.d(Config.LOGTAG, "could not encode certificate");
-            return false;
-        }
-    }
-
-    public X509Certificate getIdentityKeyCertificate(OmemoDevice device, String fingerprint)
-    {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String[] selectionArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId()), fingerprint};
-        String[] columns = {SQLiteOmemoStore.CERTIFICATE};
-        String selection = SQLiteOmemoStore.BARE_JID + "=? AND "
-                + SQLiteOmemoStore.DEVICE_ID + "=? AND " + SQLiteOmemoStore.FINGERPRINT + "=?";
-        Cursor cursor = db.query(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, columns, selection,
-                selectionArgs, null, null, null);
-        if (cursor.getCount() < 1) {
-            return null;
-        }
-        else {
-            cursor.moveToFirst();
-            byte[] certificate = cursor.getBlob(
-                    cursor.getColumnIndex(SQLiteOmemoStore.CERTIFICATE));
-            cursor.close();
-            if ((certificate == null) || (certificate.length == 0)) {
-                return null;
-            }
-            try {
-                CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-                return (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certificate));
-            } catch (CertificateException e) {
-                Log.d(Config.LOGTAG, "certificate exception " + e.getMessage());
-                return null;
-            }
-        }
     }
 
     // ========= OMEMO session =========

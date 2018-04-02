@@ -1,17 +1,19 @@
 Project aTalk-Android Release Notes
 =========================================================================
-Version:		1.1.5a (1015)
+Version:		1.1.5b (1015)
 Author:         cmeng
-Upload Date:	04/01/2018
+Upload Date:	04/02/2018
 - Update OperationSetBasicInstantMessageJabberImpl to use IncomingChatMessageListener instead of local StanzaLitsener
 - Redesign and optimize the "add contact" handlers and UI
 - Optimize all asynStanzaListeners to listen in with more specific StanzaFilters
 - Fixed NPE at CryptoFragment#setCurrentChatSession when contact is null while accepting muc invitation
 - Include special handler when add contact to RootGroup with nogroup selected
 - Avoid ConcurrentModificationException in smack-omemo OmemoService#removeStaleDevicesFromDeviceList
+- Disable IgnoreStaleDevices option, otherwise devices can get lockout in this state if no omemo messaging for 7 days
 - Remove incomplete XEP support sources: jirecon, geolocation, mailnotification, notification, userSearch, whiteboard
 - Remove Opset: DesktopSharing, GenericNotification, Geolocation, Whiteboarding
 - Migrate more classes to use smack Jid instead of string for user identifications
+- Remove all dirty code which were added in earlier omemo implementation
 
 
 =========================================================================

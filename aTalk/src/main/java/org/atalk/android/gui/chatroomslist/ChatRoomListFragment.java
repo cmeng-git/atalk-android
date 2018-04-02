@@ -330,8 +330,7 @@ public class ChatRoomListFragment extends OSGiFragment
 		menu.setHeaderTitle(mClickedChatRoom.getChatRoomID());
 
 		// Checks if close chat option should be visible for this contact
-		boolean closeChatVisible
-				= ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID()) != null;
+		boolean closeChatVisible = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID()) != null;
 		menu.findItem(R.id.close_chatroom).setVisible(closeChatVisible);
 
 		// Close all chats option should be visible if chatList is not empty

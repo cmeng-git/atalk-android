@@ -607,7 +607,7 @@ public class CryptoFragment extends OSGiFragment
         }
         Contact contact = (metaContact == null) ? null : metaContact.getDefaultContact();
 
-        // contact == null when accepting muc invitation
+        // skip (contact == null) when accepting muc invitation
         // do not proceed if the chat session is triggered from system server i.e. welcome message
         if ((contact != null) && XmppStringUtils.isBareJid(contact.getJid().toString()))
             setCurrentContact(contact, chatSessionId);
