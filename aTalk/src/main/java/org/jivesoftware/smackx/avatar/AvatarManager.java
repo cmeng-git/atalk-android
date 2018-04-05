@@ -259,8 +259,7 @@ public class AvatarManager extends Manager
 	public static byte[] getAvatarImageByJid(BareJid jid)
 	{
 		String avatarId = getAvatarHashByJid(jid);
-		LOGGER.log(Level.INFO, "Fetching avatar from local storage for: (" + jid + ") => "
-				+ avatarId);
+		LOGGER.log(Level.INFO, "Fetching avatar from local storage for: (" + jid + ") => " + avatarId);
 
 		return (avatarId == null)? null : getAvatarImageByHash(avatarId);
 	}

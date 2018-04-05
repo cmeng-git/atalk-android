@@ -83,8 +83,7 @@ public class AndroidCallUtil
 					= ((ProtocolProviderServiceJabberImpl) provider).getConnection();
 
 			try {
-				if (Roster.getInstanceFor(connection)
-						.contains(JidCreate.bareFrom(calleeAddress))) {
+				if (Roster.getInstanceFor(connection).contains(JidCreate.bareFrom(calleeAddress))) {
 					String accountAddress = provider.getAccountID().getAccountJid();
 					MenuItem menuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, accountAddress);
 					menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()

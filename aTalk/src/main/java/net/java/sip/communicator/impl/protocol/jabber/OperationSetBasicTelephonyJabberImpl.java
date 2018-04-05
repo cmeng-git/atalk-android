@@ -482,9 +482,7 @@ public class OperationSetBasicTelephonyJabberImpl extends
 	Jid getFullCalleeURI(Jid calleeAddress)
 	{
 		return (calleeAddress.isEntityFullJid())
-				? calleeAddress
-				: Roster.getInstanceFor(mConnection).getPresence(calleeAddress.asBareJid())
-				.getFrom();
+				? calleeAddress : Roster.getInstanceFor(mConnection).getPresence(calleeAddress.asBareJid()).getFrom();
 	}
 
 	/**

@@ -1293,6 +1293,12 @@
     <string name="pref_key_chat_state_notifications">pref.key.msg.chat_state_notifications</string>
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Send chat state notifications</string>
 
+    <!-- Tell others when we are writing to them -->
+    <string name="pref_key_presence_subscribe_mode">pref.key.presence.subscribe_mode</string>
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presence subscribe approval</string>
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Subscribe approval - auto accept all</string>
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Subscribe approval - manual</string>
+
     <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
     <!-- Use task bar / dock alerts on incoming calls and chats -->
     <string name="pref_key_chat_alerts">pref.key.msg.chat_alerts</string>
