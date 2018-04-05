@@ -28,24 +28,23 @@ import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeE
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.event.ServerStoredGroupListener;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
+import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.util.StringUtils;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.roster.AbstractRosterListener;
 import org.jivesoftware.smack.roster.PresenceEventListener;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smack.roster.RosterLoadedListener;
+import org.jivesoftware.smack.roster.RosterUtil;
 import org.jivesoftware.smack.roster.SubscribeListener;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
@@ -425,20 +424,6 @@ public class OperationSetPersistentPresenceJabberImpl
             Jid fullJid = p.getFrom();
             rs.put(fullJid, createResource(p, p.getFrom(), localContact));
         }
-
-        // adds xmpp listener for changes in the local contact resources
-//        parentProvider.getConnection().addAsyncStanzaListener(new StanzaListener()
-//        {
-//            @Override
-//            public void processStanza(Stanza stanza)
-//            {
-//                Presence presence = (Presence) stanza;
-//                Jid from = presence.getFrom();
-//                // own resource update, let's process it
-//                if ((from != null) && from.isParentOf(jid))
-//                    updateResource(localContact, null, presence);
-//            }
-//        }, StanzaTypeFilter.PRESENCE);
         return localContact;
     }
 
@@ -930,29 +915,31 @@ public class OperationSetPersistentPresenceJabberImpl
             RegistrationState eventNew = evt.getNewState();
             XMPPConnection xmppConnection = parentProvider.getConnection();
             if (eventNew == RegistrationState.REGISTERING) {
+                // contactChangesListener will be used to store presence events till roster is initialized
+                contactChangesListener = new ContactChangesListener();
+                contactChangesListener.storeEvents();
+            }
+            else if (eventNew == RegistrationState.REGISTERED) {
                 /*
                  * Add a RosterLoaded listener as this will indicate when the roster is
                  * received or loaded from RosterStore (upon authenticated). We are then ready
                  * to dispatch the contact list. Note the actual RosterListener used is added
                  * and active just after the RosterLoadedListener is triggered.
+                 *
+                 * setup to init ssContactList upon receiving the rosterLoaded event
                  */
-
-                // will be used to store presence events till roster is initialized
-                contactChangesListener = new ContactChangesListener();
-
-                // setup to init ssContactList upon receiving the rosterLoaded event
                 mRoster = Roster.getInstanceFor(xmppConnection);
                 mRoster.addRosterLoadedListener(new ServerStoredListInit());
 
-                // Adds subscription listeners as soon as connection is created or we may miss subscription requests
+                // Adds subscription listeners only when user is authenticated
                 if (!handleSubsribeEvent) {
-                    logger.warn("Registering subscription litsener during REGISTERING");
-                    mRoster.addPresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
+                    mRoster = Roster.getInstanceFor(xmppConnection);
                     mRoster.addSubscribeListener(OperationSetPersistentPresenceJabberImpl.this);
+                    mRoster.addPresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
                     handleSubsribeEvent = true;
+                    logger.info("SubscribeListener and PresenceEventListener added");
                 }
-            }
-            else if (eventNew == RegistrationState.REGISTERED) {
+
                 if (vCardAvatarManager == null) {
                     /* Add avatar change listener to handle contacts' avatar changes via XEP-0153*/
                     vCardAvatarManager = VCardAvatarManager.getInstanceFor(xmppConnection);
@@ -965,16 +952,7 @@ public class OperationSetPersistentPresenceJabberImpl
                     userAvatarManager.addAvatarListener(OperationSetPersistentPresenceJabberImpl.this);
                 }
 
-                // Adds subscription listeners after resume
-                if (!handleSubsribeEvent) {
-                    logger.warn("Registering subscription litsener during REGISTERED");
-                    mRoster = Roster.getInstanceFor(xmppConnection);
-                    mRoster.addPresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
-                    mRoster.addSubscribeListener(OperationSetPersistentPresenceJabberImpl.this);
-                    handleSubsribeEvent = true;
-                }
-
-                // Do the following if no from resumed
+                // Do the following if no from resumed (do once only)
                 if (evt.getReasonCode() != RegistrationStateChangeEvent.REASON_RESUMED) {
                     /*
                      * Immediately Upon account registration, load the account VCard info and cache the
@@ -1012,13 +990,12 @@ public class OperationSetPersistentPresenceJabberImpl
 
                 if (xmppConnection != null) {
                     // Remove all subscription listeners upon de-registration
-                    logger.warn("UnRegistering subscription litsener during UNREGISTERED");
-
-                    mRoster.removePresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
                     mRoster.removeSubscribeListener(OperationSetPersistentPresenceJabberImpl.this);
+                    mRoster.removePresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
+                    mRoster.removeRosterListener(contactChangesListener);
+                    mRoster = null;
+                    logger.info("SubscribeListener and PresenceEventListener removed");
 
-                    // the roster is guaranteed to be non-null
-                    Roster.getInstanceFor(xmppConnection).removeRosterListener(contactChangesListener);
                     // vCardAvatarManager can be null for unRegistered account
                     if (vCardAvatarManager != null) {
                         vCardAvatarManager.removeVCardAvatarChangeListener(OperationSetPersistentPresenceJabberImpl.this);
@@ -1042,8 +1019,7 @@ public class OperationSetPersistentPresenceJabberImpl
      */
     private boolean updateResources(ContactJabberImpl contact, boolean removeUnavailable)
     {
-        if (!contact.isResolved()
-                || (contact instanceof VolatileContactJabberImpl
+        if (!contact.isResolved() || (contact instanceof VolatileContactJabberImpl
                 && ((VolatileContactJabberImpl) contact).isPrivateMessagingContact()))
             return false;
 
@@ -1068,8 +1044,7 @@ public class OperationSetPersistentPresenceJabberImpl
             return eventFired;
         }
 
-        Roster roster = Roster.getInstanceFor(xmppConnection);
-        List<Presence> it = roster.getPresences(contact.getJid().asBareJid());
+        List<Presence> it = mRoster.getPresences(contact.getJid().asBareJid());
         // Choose the resource which has the highest priority AND supports Jingle, if we have two
         // resources with same priority take the most available.
         for (Presence presence : it) {
@@ -1081,7 +1056,7 @@ public class OperationSetPersistentPresenceJabberImpl
 
         Set<Jid> resourceKeys = resources.keySet();
         for (Jid fullJid : resourceKeys) {
-            if (!roster.getPresenceResource(fullJid.asFullJidIfPossible()).isAvailable()) {
+            if (!mRoster.getPresenceResource(fullJid.asFullJidIfPossible()).isAvailable()) {
                 eventFired = removeResource(contact, fullJid) || eventFired;
             }
         }
@@ -1207,7 +1182,7 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * Manage changes of statuses by resource.
      */
-    class ContactChangesListener implements RosterListener
+    class ContactChangesListener extends AbstractRosterListener
     {
         /**
          * Store events for later processing, used when initializing contactList.
@@ -1225,46 +1200,14 @@ public class OperationSetPersistentPresenceJabberImpl
         private final Map<Jid, TreeSet<Presence>> statuses = new Hashtable<>();
 
         /**
-         * Not used here.
-         *
-         * @param addresses list of addresses added
-         */
-        public void entriesAdded(Collection<Jid> addresses)
-        {
-        }
-
-        /**
-         * Not used here.
-         *
-         * @param addresses list of addresses updated
-         */
-        public void entriesUpdated(Collection<Jid> addresses)
-        {
-        }
-
-        /**
-         * Not used here.
-         *
-         * @param addresses list of addresses deleted
-         */
-        public void entriesDeleted(Collection<Jid> addresses)
-        {
-        }
-
-        /**
-         * Not used here.
-         */
-        public void rosterError(XMPPError error, Stanza stanza)
-        {
-        }
-
-        /**
          * Received on resource status change.
          *
          * @param presence presence that has changed
          */
+        @Override
         public void presenceChanged(Presence presence)
         {
+            logger.warn("Presence change received: " + presence);
             firePresenceStatusChanged(presence);
         }
 
@@ -1480,6 +1423,14 @@ public class OperationSetPersistentPresenceJabberImpl
                     if (response != null) {
                         if (response.getResponseCode().equals(AuthorizationResponse.ACCEPT)) {
                             responsePresenceType = Presence.Type.subscribed;
+                            // return request for presence subscription
+                            try {
+                                RosterUtil.askForSubscriptionIfRequired(mRoster, fromJid.asBareJid());
+                            } catch (NotConnectedException | InterruptedException e) {
+                                logger.error("Return presence subscription request failed: ", e);
+                            } catch (SmackException.NotLoggedInException e) {
+                                e.printStackTrace();
+                            }
                             if (logger.isInfoEnabled())
                                 logger.info("Sending Accepted Subscription");
                         }
@@ -1507,7 +1458,7 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Handle incoming presence subscription requests on a different thread to prevent blocking.
+     * Handle incoming presence subscription request; run on a different thread if manual approval to avoid blocking smack.
      *
      * @param from the JID requesting the subscription.
      * @param subscribeRequest the presence stanza used for the request.
@@ -1518,11 +1469,15 @@ public class OperationSetPersistentPresenceJabberImpl
     {
         Jid fromJid = subscribeRequest.getFrom();
 
-        // Approved if contact is already persistent i.e. exist in DB
+        /*
+         * Approved presence subscription request if auto accept-all option is selected OR
+         * if the contact is already persistent i.e. exist in DB
+         */
         ContactJabberImpl srcContact = ssContactList.findContactById(fromJid);
-        if ((srcContact != null) && (srcContact.isPersistent())) {
-            logger.info("Auto accept for persistent contact: " + fromJid);
-            return SubscribeAnswer.Approve;
+        if (ConfigurationUtils.isPresenceSubscribeAuto()
+                || ((srcContact != null) && srcContact.isPersistent())) {
+            logger.info("Approve and return request if required for contact: " + fromJid);
+            return SubscribeAnswer.ApproveAndAlsoRequestIfRequired;
         }
 
         String displayName = null;
@@ -1530,7 +1485,7 @@ public class OperationSetPersistentPresenceJabberImpl
         if (ext != null)
             displayName = ext.getName();
 
-        logger.info("Subscription authorization request event from: " + fromJid);
+        logger.info("Subscription authorization request from: " + fromJid);
         synchronized (this) {
             // keep the request for later process when handler becomes ready
             if (handler == null) {
@@ -1540,11 +1495,12 @@ public class OperationSetPersistentPresenceJabberImpl
                 handleSubscribeReceived(fromJid, displayName);
             }
         }
+        // Request smack roster to leave handling of the presence subscription request to user for manual approval
         return null;
     }
 
     /**
-     * Handler for presence subscribe events return from smack
+     * Handler for presence available events return from smack
      *
      * @param address FullJid of own or the buddy subscribe to (sender)
      * @param availablePresence presence with available state
@@ -1552,14 +1508,18 @@ public class OperationSetPersistentPresenceJabberImpl
     @Override
     public void presenceAvailable(FullJid address, Presence availablePresence)
     {
+        logger.warn("Presence available received for: " + address);
+
+        // Keep a copy in storedPresences for later processing if isStoringPresenceEvents().
         if ((contactChangesListener != null) && contactChangesListener.isStoringPresenceEvents()) {
             contactChangesListener.addPresenceEvent(availablePresence);
         }
 
         // Update resource if receive from own presence and localContact is not null
         Jid jid = parentProvider.getOurJID();
-        if ((address != null) && address.isParentOf(jid) && (localContact != null))
+        if ((localContact != null) && (address != null) && address.isParentOf(jid)) {
             updateResource(localContact, address, availablePresence);
+        }
     }
 
     @Override
@@ -1573,7 +1533,7 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Buddy approved the presence subscription request
+     * Buddy has approved the presence subscription request
      *
      * @param address FullJid of the the buddy subscribe to
      * @param subscribedPresence presence with subscribed state i.e. approved
@@ -1630,14 +1590,13 @@ public class OperationSetPersistentPresenceJabberImpl
      */
     private class ServerStoredListInit implements Runnable, RosterLoadedListener
     {
-        Roster mRoster;
-
         public void run()
         {
             // we are already being notified lets remove us from the rosterLoaded listener
             mRoster.removeRosterLoadedListener(this);
 
             // init the presenceChangeLister, RosterChangeLister and update contact list status
+            mRoster.addRosterListener(contactChangesListener);
             ssContactList.init(contactChangesListener);
 
             // as we have dispatched the contact list and Roster is ready lets start the jingle nodes discovery
@@ -1645,8 +1604,8 @@ public class OperationSetPersistentPresenceJabberImpl
         }
 
         /**
-         * When rosterLoaded event is received we are ready to to dispatch the
-         * contact list, doing it in different thread to avoid blocking xmpp stanza receiving.
+         * When rosterLoaded event is received we are ready to dispatch the contact list,
+         * doing it in different thread to avoid blocking xmpp stanza receiving.
          *
          * @param roster the roster stanza
          */
@@ -1662,7 +1621,7 @@ public class OperationSetPersistentPresenceJabberImpl
         @Override
         public void onRosterLoadingFailed(Exception exception)
         {
-
+            logger.warn("Roster loading failed at startup!");
         }
     }
 

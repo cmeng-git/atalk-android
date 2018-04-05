@@ -56,6 +56,8 @@ public class SettingsActivity extends OSGiActivity
 	static private final String P_KEY_SHOW_HISTORY = aTalkApp.getResString(R.string.pref_key_show_history);
 	static private final String P_KEY_HISTORY_SIZE = aTalkApp.getResString(R.string.pref_key_chat_history_size);
 	static private final String P_KEY_CHAT_STATE_NOTIFICATIONS = aTalkApp.getResString(R.string.pref_key_chat_state_notifications);
+    static private final String P_KEY_PRESENCE_SUBSCRIBE_MODE = aTalkApp.getResString(R.string.pref_key_presence_subscribe_mode);
+
 	// static private final String P_KEY_AUTO_UPDATE_CHECK_ENABLE = aTalkApp.getResString(R.string.pref_key_auto_update_check_enable);
 	/*
 	 * Chat alerter is not implemented on Android static private final String P_KEY_CHAT_ALERTS =
@@ -228,6 +230,9 @@ public class SettingsActivity extends OSGiActivity
 
 			PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_CHAT_STATE_NOTIFICATIONS,
 					ConfigurationUtils.isSendChatStateNotifications());
+
+            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_PRESENCE_SUBSCRIBE_MODE,
+                    ConfigurationUtils.isPresenceSubscribeAuto());
 
 			/*
 			 * PreferenceUtil.setCheckboxVal( this, P_KEY_CHAT_ALERTS,
@@ -533,9 +538,13 @@ public class SettingsActivity extends OSGiActivity
 			}
 			else if (key.equals(P_KEY_CHAT_STATE_NOTIFICATIONS)) {
 				ConfigurationUtils.setSendChatStateNotifications(shPreferences.getBoolean(
-						P_KEY_CHAT_STATE_NOTIFICATIONS,
-						ConfigurationUtils.isSendChatStateNotifications()));
+						P_KEY_CHAT_STATE_NOTIFICATIONS, ConfigurationUtils.isSendChatStateNotifications()));
 			}
+            else if (key.equals(P_KEY_PRESENCE_SUBSCRIBE_MODE)) {
+                ConfigurationUtils.setPresenceSubscribeAuto(shPreferences.getBoolean(
+                        P_KEY_PRESENCE_SUBSCRIBE_MODE, ConfigurationUtils.isPresenceSubscribeAuto()));
+            }
+
 //			else if (key.equals(P_KEY_AUTO_UPDATE_CHECK_ENABLE)) {
 //				Boolean isEnable = shPreferences.getBoolean(P_KEY_AUTO_UPDATE_CHECK_ENABLE, true);
 //				AndroidGUIActivator.getConfigurationService()

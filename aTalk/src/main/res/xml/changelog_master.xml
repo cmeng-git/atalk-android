@@ -6,6 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.2.0 (04/05/2018)" versioncode="1020">
+        <change>Optimize the add contact handlers and UI</change>
+        <change>Add user option for presence subscribe mode with auto accept-all or manual approval</change>
+        <change>Include special handler when add contact with nogroup selected</change>
+        <change>Fixed NPE when accepting muc invitation</change>
+        <change>Fix ConcurrentModificationException in smack OmemoService</change>
+        <change>Disable IgnoreStaleDevices option, otherwise devices can get lockout in this state if no omemo messaging for 7 days</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.1.4 (03/23/2018)" versioncode="1014">
         <change>Fix InfoRetriever exception and slow server response timeout with 10s elapsed time</change>
         <change>Provide proper handler for start of IBR registration failure on server</change>

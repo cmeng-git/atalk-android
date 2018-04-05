@@ -147,13 +147,14 @@ public class AuthorizationRequestedDialog extends OSGiActivity
 	{
 		super.onDestroy();
 
-		if (ViewUtil.isCompoundChecked(getContentView(), R.id.addToContacts)
-				&& responseCode.equals(AuthorizationResponse.ACCEPT)) {
-			// Add to contacts
-			Spinner groupSpinner = findViewById(R.id.selectGroupSpinner);
-			ContactListUtils.addContact(request.contact.getProtocolProvider(),
-					(MetaContactGroup) groupSpinner.getSelectedItem(), request.contact.getAddress());
-		}
+		// cmeng - Handle in OperationSetPresistencePresenceJabberImpl#handleSubscribeReceived
+//		if (ViewUtil.isCompoundChecked(getContentView(), R.id.addToContacts)
+//				&& responseCode.equals(AuthorizationResponse.ACCEPT)) {
+//			// Add to contacts
+//			Spinner groupSpinner = findViewById(R.id.selectGroupSpinner);
+//			ContactListUtils.addContact(request.contact.getProtocolProvider(),
+//					(MetaContactGroup) groupSpinner.getSelectedItem(), request.contact.getAddress());
+//		}
 		request.notifyResponseReceived(responseCode);
 	}
 

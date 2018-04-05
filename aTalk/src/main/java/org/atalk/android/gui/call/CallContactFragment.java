@@ -128,8 +128,7 @@ public class CallContactFragment extends OSGiFragment
 		for (final ProtocolProviderService provider : onlineProviders) {
 			XMPPTCPConnection connection = provider.getConnection();
 			try {
-				if (Roster.getInstanceFor(connection)
-						.contains(JidCreate.bareFrom(calleeAddress))) {
+				if (Roster.getInstanceFor(connection).contains(JidCreate.bareFrom(calleeAddress))) {
 
 					String accountAddress = provider.getAccountID().getAccountJid();
 

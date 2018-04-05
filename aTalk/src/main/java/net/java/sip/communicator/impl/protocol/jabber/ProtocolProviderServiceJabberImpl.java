@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.impl.protocol.jabber;
@@ -385,6 +385,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     private File rosterStoreDirectory;
 
+    private Roster mRoster = null;
+
     /**
      * Persistent Storage directory for Avatar.
      */
@@ -672,8 +674,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             eventDuringLogin = null;
             disconnectAndCleanConnection();
             fireRegistrationStateChanged(getRegistrationState(),
-                    RegistrationState.CONNECTION_FAILED,
-                    RegistrationStateChangeEvent.REASON_INTERNAL_ERROR, null);
+                    RegistrationState.CONNECTION_FAILED, RegistrationStateChangeEvent.REASON_INTERNAL_ERROR, null);
         } catch (XMPPException | SmackException ex) {
             logger.error("Error ReRegistering: ", ex);
             eventDuringLogin = null;
@@ -748,8 +749,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 return;
 
             JabberLoginStrategy loginStrategy = createLoginStrategy();
-            userCredentials
-                    = loginStrategy.prepareLogin(authority, reasonCode, loginReason, isShowAlways);
+            userCredentials = loginStrategy.prepareLogin(authority, reasonCode, loginReason, isShowAlways);
             if (!loginStrategy.loginPreparationSuccessful()
                     || ((userCredentials != null) && userCredentials.isUserCancel()))
                 return;
@@ -766,35 +766,32 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     ProtocolProviderFactory.IS_SERVER_OVERRIDDEN, false);
 
             if (!isServerOverridden) {
-                state = connectUsingSRVRecords(serviceName, serviceName, hadDnsSecException,
-                        loginStrategy);
+                state = connectUsingSRVRecords(serviceName, serviceName, hadDnsSecException, loginStrategy);
                 if (hadDnsSecException[0]) {
                     setDnssecLoginFailure();
                     return;
                 }
-                if ((state == ConnectState.ABORT_CONNECTING)
-                        || (state == ConnectState.STOP_TRYING))
+                if ((state == ConnectState.ABORT_CONNECTING) || (state == ConnectState.STOP_TRYING)) {
                     return;
+                }
             }
 
             // check for custom xmpp domain which will check for SRV records for server addresses
             // cmeng - value not defined currently for CUSTOM_XMPP_DOMAIN server login
-            String customXMPPDomain = mAccountID.getAccountPropertyString(
-                    ProtocolProviderFactory.CUSTOM_XMPP_DOMAIN);
+            String customXMPPDomain = mAccountID.getAccountPropertyString(ProtocolProviderFactory.CUSTOM_XMPP_DOMAIN);
 
             if (customXMPPDomain != null && !hadDnsSecException[0]) {
                 logger.info("Connect using custom xmpp domain: " + customXMPPDomain);
-                state = connectUsingSRVRecords(customXMPPDomain, serviceName, hadDnsSecException,
-                        loginStrategy);
+                state = connectUsingSRVRecords(customXMPPDomain, serviceName, hadDnsSecException, loginStrategy);
 
                 logger.info("state for connectUsingSRVRecords: " + state);
                 if (hadDnsSecException[0]) {
                     setDnssecLoginFailure();
                     return;
                 }
-                if ((state == ConnectState.ABORT_CONNECTING)
-                        || (state == ConnectState.STOP_TRYING))
+                if ((state == ConnectState.ABORT_CONNECTING) || (state == ConnectState.STOP_TRYING)) {
                     return;
+                }
             }
 
             // connect with the given xmpp server name in the preference settings
@@ -818,8 +815,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 logger.error(noServerFound);
                 eventDuringLogin = null;
 
-                fireRegistrationStateChanged(getRegistrationState(),
-                        RegistrationState.CONNECTION_FAILED,
+                fireRegistrationStateChanged(getRegistrationState(), RegistrationState.CONNECTION_FAILED,
                         RegistrationStateChangeEvent.REASON_SERVER_NOT_FOUND, noServerFound);
 
                 // Throw XMPPError to show re-login dialog; and do not just send notification
@@ -1122,7 +1118,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         // String password = userCredentials.getPasswordAsString();
         // config.setUsernameAndPassword(userJid, password);
 
-		/* Start monitoring the status before connection-login. Only register listener once */
+        /* Start monitoring the status before connection-login. Only register listener once */
         mConnection = new XMPPTCPConnection(config.build());
         if (connectionListener == null) {
             connectionListener = new JabberConnectionListener();
@@ -1208,9 +1204,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             String errMsg = el.getMessage();
             /*
              * If account is not registered on server, send registration to server if user
-			 * requested. Otherwise throw back to user and ask for InBand registration
-			 * confirmation.
-			 */
+             * requested. Otherwise throw back to user and ask for InBand registration
+             * confirmation.
+             */
             if (errMsg.contains("not-authorized")) {
                 if (mAccountID.isIbRegistration()) {
                     try {
@@ -1312,6 +1308,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             XMPPErrorException xmppException = new XMPPErrorException(null, xmppError);
             xmppConnected.reportFailure(xmppException);
 
+            if (reconnectionManager != null)
+                reconnectionManager.disableAutomaticReconnection();
+
             // if we are in the middle of connecting process do not fire events, will do it later
             // when the method connectAndLogin finishes its work
             synchronized (connectAndLoginLock) {
@@ -1319,7 +1318,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     eventDuringLogin = new RegistrationStateChangeEvent(
                             ProtocolProviderServiceJabberImpl.this, getRegistrationState(),
                             RegistrationState.CONNECTION_FAILED,
-                            RegistrationStateChangeEvent.REASON_NOT_SPECIFIED, errMsg);
+                            RegistrationStateChangeEvent.REASON_USER_REQUEST, errMsg);
                     return;
                 }
             }
@@ -1327,7 +1326,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // closed can be authentication, ssl security etc that an auto retrial is of little use
             fireRegistrationStateChanged(getRegistrationState(),
                     RegistrationState.CONNECTION_FAILED,
-                    RegistrationStateChangeEvent.REASON_NOT_SPECIFIED, errMsg);
+                    RegistrationStateChangeEvent.REASON_USER_REQUEST, errMsg);
         }
 
         /**
@@ -1374,16 +1373,13 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             synchronized (connectAndLoginLock) {
                 if (inConnectAndLogin) {
                     eventDuringLogin = new RegistrationStateChangeEvent(
-                            ProtocolProviderServiceJabberImpl.this,
-                            getRegistrationState(),
-                            RegistrationState.CONNECTION_FAILED,
-                            regEvent, errMsg);
+                            ProtocolProviderServiceJabberImpl.this, getRegistrationState(),
+                            RegistrationState.CONNECTION_FAILED, regEvent, errMsg);
                     return;
                 }
             }
             // Reconnecting state - keep all contacts' status
-            fireRegistrationStateChanged(getRegistrationState(),
-                    RegistrationState.RECONNECTING, regEvent, errMsg);
+            fireRegistrationStateChanged(getRegistrationState(), RegistrationState.RECONNECTING, regEvent, errMsg);
         }
 
         /**
@@ -1403,6 +1399,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         public void reconnectionSuccessful()
         {
             xmppConnected.reportSuccess();
+            if (reconnectionManager != null)
+                reconnectionManager.disableAutomaticReconnection();
+
             if (logger.isInfoEnabled())
                 logger.info("Reconnection Successful");
         }
@@ -1423,35 +1422,62 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 logger.info("Reconnection Failed: ", exception);
         }
 
-        @Override
+        /**
+         * Notification that the connection has been successfully connected to the remote endpoint (e.g. the XMPP server).
+         * <p>
+         * Note that the connection is likely not yet authenticated and therefore only limited operations like registering
+         * an account may be possible.
+         * </p>
+         *
+         * @param connection the XMPPConnection which successfully connected to its endpoint.
+         */
         public void connected(XMPPConnection connection)
         {
             xmppConnected.reportSuccess();
-//			if (logger.isInfoEnabled())
-//				logger.info("Smack: CP Connection Successful");
             setTrafficClass();
-            // must initialize caps entities upon success connection to ensure it is ready for
-            // the very first <iq/> send
+
+            // must initialize caps entities upon success connection to ensure it is ready for the very first <iq/> send
             initServicesAndFeatures();
-            fireRegistrationStateChanged(getRegistrationState(),
-                    RegistrationState.CONNECTION_CONNECTED,
-                    RegistrationStateChangeEvent.REASON_NOT_SPECIFIED,
-                    "TCP Connection Successful");
+            fireRegistrationStateChanged(getRegistrationState(), RegistrationState.CONNECTION_CONNECTED,
+                    RegistrationStateChangeEvent.REASON_USER_REQUEST, "TCP Connection Successful");
         }
 
-        @Override
+        /**
+         * Notification that the connection has been authenticated.
+         *
+         * @param connection the XMPPConnection which successfully authenticated.
+         * @param resumed true if a previous XMPP session's stream was resumed.
+         */
         public void authenticated(XMPPConnection connection, boolean resumed)
         {
             accountAuthenticated.reportSuccess();
 
-			/*  Must only initialize omemoDevice after user authenticated */
+            /*
+             * Must initialize omemoManager on every new connected connection, to ensure both pps and omemoManager is referred
+             * to same instance of xmppConnection.  Perform only after connection is connected to ensure the user is defined
+             */
+            // androidOmemoService = new AndroidOmemoService(ProtocolProviderServiceJabberImpl.this);
+
+            /*  Must only initialize omemoDevice after user authenticated */
             androidOmemoService.initOmemoDevice();
 
-			/*
+            // Get the Roster instance for this authenticated user
+            mRoster = Roster.getInstanceFor(mConnection);
+
+            /*
              * XEP-0237:Roster Versioning - init RosterStore for each authenticated account to
-			 * support persistent storage
-		 	 */
+             * support persistent storage
+             */
             initRosterStore();
+
+            /* Always set roster subscription mode to manual so Roster passes the control back to aTalk for processing */
+            mRoster.setSubscriptionMode(Roster.SubscriptionMode.manual);
+
+            /* Set Roster subscription mode per global defined option for this accounts - Roaster will handle accept-all*/
+//            if (ConfigurationUtils.isPresenceSubscribeAuto())
+//                mRoster.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
+//            else
+//                mRoster.setSubscriptionMode(Roster.SubscriptionMode.manual);
 
             isResumed = resumed;
             String msg = "Smack: User Authenticated with isResumed state: " + resumed;
@@ -1519,10 +1545,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             connectionListener = null;
         }
 
+        mRoster = null;
         try {
             Presence unavailablePresence = new Presence(Presence.Type.unavailable);
-            if ((OpSetPP != null)
-                    && !StringUtils.isNullOrEmpty(OpSetPP.getCurrentStatusMessage())) {
+            if ((OpSetPP != null) && !StringUtils.isNullOrEmpty(OpSetPP.getCurrentStatusMessage())) {
                 unavailablePresence.setStatus(OpSetPP.getCurrentStatusMessage());
             }
             mConnection.disconnect(unavailablePresence);
@@ -1636,7 +1662,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     public void initRosterStore()
     {
-        Roster roster = Roster.getInstanceFor(mConnection);
         String userID = mAccountID.getUserID();
 
         rosterStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir() + "/rosterStore_" + userID);
@@ -1650,7 +1675,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             if (rosterStore == null) {
                 rosterStore = DirectoryRosterStore.init(rosterStoreDirectory);
             }
-            roster.setRosterStore(rosterStore);
+            mRoster.setRosterStore(rosterStore);
         }
     }
 
@@ -1684,10 +1709,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             isCallingDisabled = true;
         }
 
-		/*
+        /*
          * Expose the discoveryManager as service-public through the
-		 * OperationSetContactCapabilities of this ProtocolProviderService.
-		 */
+         * OperationSetContactCapabilities of this ProtocolProviderService.
+         */
         if (opsetContactCapabilities != null)
             opsetContactCapabilities.setDiscoveryManager(discoveryManager);
     }
@@ -1702,17 +1727,16 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     private void initServicesAndFeatures()
     {
-		/*  XEP-0092: Software Version initialization */
+        /*  XEP-0092: Software Version initialization */
         VersionManager versionManager = VersionManager.getInstanceFor(mConnection);
 
-		/* XEP-0199: XMPP Ping: Each account may set his own ping interval */
+        /* XEP-0199: XMPP Ping: Each account may set his own ping interval */
         PingManager pingManager = PingManager.getInstanceFor(mConnection);
 
         boolean isKeepAliveEnable = mAccountID.getAccountPropertyBoolean(
                 ProtocolProviderFactory.IS_KEEP_ALIVE_ENABLE, false);
         if (isKeepAliveEnable) {
-            int pingInterval
-                    = mAccountID.getAccountPropertyInt(ProtocolProviderFactory.PING_INTERVAL, defaultPingInterval);
+            int pingInterval = mAccountID.getAccountPropertyInt(ProtocolProviderFactory.PING_INTERVAL, defaultPingInterval);
             pingManager.setPingInterval(pingInterval);
         }
         else {
@@ -1720,7 +1744,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             pingManager.setPingInterval(0);
         }
 
-		/*  Start up VCardAvatarManager / UserAvatarManager for mAccount auto-update */
+        /*  Start up VCardAvatarManager / UserAvatarManager for mAccount auto-update */
         VCardAvatarManager.getInstanceFor(mConnection);
         UserAvatarManager.getInstanceFor(mConnection);
 
@@ -1728,18 +1752,18 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 		  Must initialize omemoManager on every new connected connection, to ensure both pps and omemoManager is referred
 		  to same instance of xmppConnection.  Perform only after connection is connected to ensure the user is defined
 		 */
-        androidOmemoService = new AndroidOmemoService(this);
+        androidOmemoService = new AndroidOmemoService(this); // move to authenticated stage?
 
         /*
          * add SupportedFeatures only prior to registerServiceDiscoveryManager. Otherwise found
          * some race condition with some optional features not properly initialized
-        */
+         */
         addSupportedCapsFeatures();
 
-		/*
-		 * XEP-0030:Service Discovery: Leave it to the last step so all features are included in
-		 * caps ver calculation
-		 */
+        /*
+         * XEP-0030:Service Discovery: Leave it to the last step so all features are included in
+         * caps ver calculation
+         */
         registerServiceDiscoveryManager();
     }
 
@@ -1755,9 +1779,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         String NOTIFY = "+notify";
         supportedFeatures.clear();
 
-		/*
-		 * Adds Jingle related features to the supported features.
-		 */
+        /*
+         * Adds Jingle related features to the supported features.
+         */
         // XEP-0166: Jingle
         supportedFeatures.add(URN_XMPP_JINGLE);
         // XEP-0167: Jingle RTP Sessions
@@ -1765,9 +1789,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         // XEP-0177: Jingle Raw UDP Transport Method
         supportedFeatures.add(URN_XMPP_JINGLE_RAW_UDP_0);
 
-		/*
-		 * Reflect the preference of the user with respect to the use of ICE.
-		 */
+        /*
+         * Reflect the preference of the user with respect to the use of ICE.
+         */
         if (mAccountID.getAccountPropertyBoolean(ProtocolProviderFactory.IS_USE_ICE, true)) {
             // XEP-0176: Jingle ICE-UDP Transport Method
             supportedFeatures.add(URN_XMPP_JINGLE_ICE_UDP_1);
@@ -1780,9 +1804,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         // XEP-0262: Use of ZRTP in Jingle RTP Sessions
         supportedFeatures.add(URN_XMPP_JINGLE_RTP_ZRTP);
 
-		/*
-		 * Reflect the preference of the user with respect to the use of Jingle Nodes.
-		 */
+        /*
+         * Reflect the preference of the user with respect to the use of Jingle Nodes.
+         */
         if (mAccountID.getAccountPropertyBoolean(
                 ProtocolProviderFactoryJabberImpl.IS_USE_JINGLE_NODES, true)) {
             // XEP-0278: Jingle Relay Nodes
@@ -1834,11 +1858,11 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         // XEP-0308: Last Message Correction
         supportedFeatures.add(MessageCorrectExtension.NAMESPACE);
 
-		/* This is the "main" feature to advertise when a client support muc. We have to
-		 * add some features for specific functionality we support in muc.
-		 * see http://www.xmpp.org/extensions/xep-0045.html
-		 * The http://jabber.org/protocol/muc feature is already included in smack.
-		 */
+        /* This is the "main" feature to advertise when a client support muc. We have to
+         * add some features for specific functionality we support in muc.
+         * see http://www.xmpp.org/extensions/xep-0045.html
+         * The http://jabber.org/protocol/muc feature is already included in smack.
+         */
         // XEP-0045: Multi-User Chat
         supportedFeatures.add(MUCInitialPresence.NAMESPACE + "#rooms");
         supportedFeatures.add(MUCInitialPresence.NAMESPACE + "#traffic");
@@ -1900,7 +1924,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         String entityNode = OSUtils.IS_ANDROID ? "http://android.atalk.org" : "http://atalk.org";
         EntityCapsManager.setDefaultEntityNode(entityNode);
 
-		/* setup EntityCapsManager persistent store for XEP-0115: Entity Capabilities */
+        /* setup EntityCapsManager persistent store for XEP-0115: Entity Capabilities */
         ScServiceDiscoveryManager.initEntityPersistentStore();
 
         /**
@@ -1929,16 +1953,12 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
          */
         PingManager.setDefaultPingInterval(defaultPingInterval);
 
-		/* Set Roster subscription to manual for all accounts */
-        Roster.setDefaultSubscriptionMode(Roster.SubscriptionMode.manual);
-
         // cmeng - to take care of slow device S3=7s (N3=4.5S) and heavy loaded server.
         SmackConfiguration.setDefaultReplyTimeout(omemoReplyTimeout);
 
         // Need to disable certain ReflectionDebuggerFactory.DEFAULT_DEBUGGERS loading for
         // Android (that are only for windows)
-        SmackConfiguration.addDisabledSmackClass(
-                "org.jivesoftware.smackx.debugger.EnhancedDebugger");
+        SmackConfiguration.addDisabledSmackClass("org.jivesoftware.smackx.debugger.EnhancedDebugger");
         SmackConfiguration.addDisabledSmackClass("org.jivesoftware.smack.debugger.LiteDebugger");
 
         XMPPTCPConnection.setUseStreamManagementDefault(true);
@@ -1971,37 +1991,31 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
              * Tell Smack what are the additional IQProviders that aTalk can support
              */
             // register our coin provider
-            ProviderManager.addIQProvider(CoinIQ.ELEMENT_NAME, CoinIQ.NAMESPACE,
-                    new CoinIQProvider());
+            ProviderManager.addIQProvider(CoinIQ.ELEMENT_NAME, CoinIQ.NAMESPACE, new CoinIQProvider());
 
             // Jitsi Videobridge IQProvider and PacketExtensionProvider
-            ProviderManager.addIQProvider(ColibriConferenceIQ.ELEMENT,
-                    ColibriConferenceIQ.NAMESPACE, new ColibriIQProvider());
+            ProviderManager.addIQProvider(ColibriConferenceIQ.ELEMENT, ColibriConferenceIQ.NAMESPACE,
+                    new ColibriIQProvider());
 
             // register our input event provider
-            ProviderManager.addIQProvider(InputEvtIQ.ELEMENT_NAME, InputEvtIQ.NAMESPACE,
-                    new InputEvtIQProvider());
+            ProviderManager.addIQProvider(InputEvtIQ.ELEMENT_NAME, InputEvtIQ.NAMESPACE, new InputEvtIQProvider());
 
-            ProviderManager.addIQProvider(JibriIq.ELEMENT_NAME, JibriIq.NAMESPACE,
-                    new JibriIqProvider());
+            ProviderManager.addIQProvider(JibriIq.ELEMENT_NAME, JibriIq.NAMESPACE, new JibriIqProvider());
 
             // register our JingleInfo provider
-            ProviderManager.addIQProvider(JingleInfoQueryIQ.ELEMENT_NAME,
-                    JingleInfoQueryIQ.NAMESPACE, new JingleInfoQueryIQProvider());
+            ProviderManager.addIQProvider(JingleInfoQueryIQ.ELEMENT_NAME, JingleInfoQueryIQ.NAMESPACE,
+                    new JingleInfoQueryIQProvider());
 
             // register our jingle provider
-            ProviderManager.addIQProvider(JingleIQ.ELEMENT_NAME, JingleIQ.NAMESPACE,
-                    new JingleIQProvider());
+            ProviderManager.addIQProvider(JingleIQ.ELEMENT_NAME, JingleIQ.NAMESPACE, new JingleIQProvider());
 
-            ProviderManager.addIQProvider(Registration.ELEMENT, Registration.NAMESPACE,
-                    new RegistrationProvider());
+            ProviderManager.addIQProvider(Registration.ELEMENT, Registration.NAMESPACE, new RegistrationProvider());
 
             /**
              * Tell Smack what are the additional StreamFeatureProvider and ExtensionProviders that
              * aTalk can support
              */
-            ProviderManager.addStreamFeatureProvider(Registration.Feature.ELEMENT,
-                    Registration.Feature.NAMESPACE,
+            ProviderManager.addStreamFeatureProvider(Registration.Feature.ELEMENT, Registration.Feature.NAMESPACE,
                     (ExtensionElementProvider) new RegistrationStreamFeatureProvider());
 
             ProviderManager.addExtensionProvider(CapsExtension.ELEMENT, CapsExtension.NAMESPACE,
@@ -2016,19 +2030,17 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 //					GeolocationPacketExtensionProvider.NAMESPACE,
 //					new GeolocationPacketExtensionProvider());
 
-            ProviderManager.addExtensionProvider(Nick.ELEMENT_NAME, Nick.NAMESPACE,
-                    new Nick.Provider());
+            ProviderManager.addExtensionProvider(Nick.ELEMENT_NAME, Nick.NAMESPACE, new Nick.Provider());
 
             // XEP-0231: Bits of Binary
             ProviderManager.addExtensionProvider(BoB.ELEMENT, BoB.NAMESPACE, new BoBProvider());
 
             // XEP-0084: User Avatar (metadata) + notify
-            ProviderManager.addExtensionProvider(AvatarMetadata.ELEMENT,
-                    AvatarMetadata.NAMESPACE, new AvatarMetadataProvider());
+            ProviderManager.addExtensionProvider(AvatarMetadata.ELEMENT, AvatarMetadata.NAMESPACE,
+                    new AvatarMetadataProvider());
 
             // XEP-0084: User Avatar (data)
-            ProviderManager.addExtensionProvider(AvatarData.ELEMENT, AvatarData.NAMESPACE,
-                    new AvatarDataProvider());
+            ProviderManager.addExtensionProvider(AvatarData.ELEMENT, AvatarData.NAMESPACE, new AvatarDataProvider());
 
             // XEP-0153: vCard-Based Avatars
             ProviderManager.addExtensionProvider(VCardTempXUpdate.ELEMENT,
@@ -2066,8 +2078,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // register it once again for those that simply need presence
             addSupportedOperationSet(OperationSetPresence.class, persistentPresence);
 
-            if (accountID.getAccountPropertyString(
-                    ProtocolProviderFactory.ACCOUNT_READ_ONLY_GROUPS) != null) {
+            if (accountID.getAccountPropertyString(ProtocolProviderFactory.ACCOUNT_READ_ONLY_GROUPS) != null) {
                 addSupportedOperationSet(OperationSetPersistentPresencePermissions.class,
                         new OperationSetPersistentPresencePermissionsJabberImpl(this));
             }
@@ -2076,8 +2087,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             OperationSetBasicInstantMessagingJabberImpl basicInstantMessaging
                     = new OperationSetBasicInstantMessagingJabberImpl(this);
 
-            addSupportedOperationSet(OperationSetBasicInstantMessaging.class,
-                    basicInstantMessaging);
+            addSupportedOperationSet(OperationSetBasicInstantMessaging.class, basicInstantMessaging);
 
             addSupportedOperationSet(OperationSetMessageCorrection.class, basicInstantMessaging);
 
@@ -2100,8 +2110,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     new OperationSetServerStoredContactInfoJabberImpl(infoRetriever));
 
             OperationSetServerStoredAccountInfo accountInfo
-                    = new OperationSetServerStoredAccountInfoJabberImpl(
-                    this, infoRetriever, screenName);
+                    = new OperationSetServerStoredAccountInfoJabberImpl(this, infoRetriever, screenName);
 
             addSupportedOperationSet(OperationSetServerStoredAccountInfo.class, accountInfo);
 
@@ -2128,8 +2137,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             // Check if calling is enabled.
             if (!isCallingDisabled && !isCallingDisabledForAccount) {
-                OperationSetBasicTelephonyJabberImpl basicTelephony
-                        = new OperationSetBasicTelephonyJabberImpl(this);
+                OperationSetBasicTelephonyJabberImpl basicTelephony = new OperationSetBasicTelephonyJabberImpl(this);
                 addSupportedOperationSet(OperationSetAdvancedTelephony.class, basicTelephony);
                 addSupportedOperationSet(OperationSetBasicTelephony.class, basicTelephony);
                 addSupportedOperationSet(OperationSetSecureZrtpTelephony.class, basicTelephony);
@@ -2159,14 +2167,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 OperationSetDTMFJabberImpl operationSetDTMF = new OperationSetDTMFJabberImpl(this);
                 addSupportedOperationSet(OperationSetDTMF.class, operationSetDTMF);
 
-                addSupportedOperationSet(OperationSetIncomingDTMF.class,
-                        new OperationSetIncomingDTMFJabberImpl());
-
-                // Check if desktop streaming is enabled.
-                boolean isDesktopStreamingDisabled = JabberActivator.getConfigurationService()
-                        .getBoolean(IS_DESKTOP_STREAMING_DISABLED, false);
-                boolean isAccountDesktopStreamingDisabled = accountID.getAccountPropertyBoolean(
-                        ProtocolProviderFactory.IS_DESKTOP_STREAMING_DISABLED, false);
+                addSupportedOperationSet(OperationSetIncomingDTMF.class, new OperationSetIncomingDTMFJabberImpl());
             }
 
             // OperationSetContactCapabilities
@@ -2175,19 +2176,15 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 opsetContactCapabilities.setDiscoveryManager(discoveryManager);
             addSupportedOperationSet(OperationSetContactCapabilities.class, opsetContactCapabilities);
 
-            OperationSetChangePassword opsetChangePassword
-                    = new OperationSetChangePasswordJabberImpl(this);
+            OperationSetChangePassword opsetChangePassword = new OperationSetChangePasswordJabberImpl(this);
             addSupportedOperationSet(OperationSetChangePassword.class, opsetChangePassword);
 
-            OperationSetCusaxUtils opsetCusaxCusaxUtils
-                    = new OperationSetCusaxUtilsJabberImpl(this);
+            OperationSetCusaxUtils opsetCusaxCusaxUtils = new OperationSetCusaxUtilsJabberImpl(this);
             addSupportedOperationSet(OperationSetCusaxUtils.class, opsetCusaxCusaxUtils);
 
-            boolean isUserSearchEnabled = accountID.getAccountPropertyBoolean(
-                    IS_USER_SEARCH_ENABLED_PROPERTY, false);
+            boolean isUserSearchEnabled = accountID.getAccountPropertyBoolean(IS_USER_SEARCH_ENABLED_PROPERTY, false);
             if (isUserSearchEnabled) {
-                addSupportedOperationSet(OperationSetUserSearch.class,
-                        new OperationSetUserSearchJabberImpl(this));
+                addSupportedOperationSet(OperationSetUserSearch.class, new OperationSetUserSearchJabberImpl(this));
             }
             OperationSetTLS opsetTLS = new OperationSetTLSJabberImpl(this);
             addSupportedOperationSet(OperationSetTLS.class, opsetTLS);
@@ -2519,9 +2516,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     {
         // when we are not connected there is no full jid
         if (mConnection != null && mConnection.isConnected()) {
-            Roster roster = Roster.getInstanceFor(mConnection);
-            if (roster != null)
-                jid = roster.getPresence(jid.asBareJid()).getFrom();
+            if (mRoster != null)
+                jid = mRoster.getPresence(jid.asBareJid()).getFrom();
         }
         return jid;
     }

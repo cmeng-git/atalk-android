@@ -1,11 +1,14 @@
 Project aTalk-Android Release Notes
 =========================================================================
-Version:		1.1.5b (1015)
+Version:		1.2.0 (1020)
 Author:         cmeng
-Upload Date:	04/02/2018
-- Update OperationSetBasicInstantMessageJabberImpl to use IncomingChatMessageListener instead of local StanzaLitsener
+Upload Date:	04/05/2018
 - Redesign and optimize the "add contact" handlers and UI
+- Add user option for presence subscription mode for auto accept-all or manual approval
+- Roster.getInstanceFor() should only be carried out upon user authenticated
+- Only tag <x xmlns='vcard-temp:x:update'> to presence stanza with type=available
 - Optimize all asynStanzaListeners to listen in with more specific StanzaFilters
+- Update OperationSetBasicInstantMessageJabberImpl to use IncomingChatMessageListener instead of local StanzaLitsener
 - Fixed NPE at CryptoFragment#setCurrentChatSession when contact is null while accepting muc invitation
 - Include special handler when add contact to RootGroup with nogroup selected
 - Avoid ConcurrentModificationException in smack-omemo OmemoService#removeStaleDevicesFromDeviceList
@@ -14,7 +17,6 @@ Upload Date:	04/02/2018
 - Remove Opset: DesktopSharing, GenericNotification, Geolocation, Whiteboarding
 - Migrate more classes to use smack Jid instead of string for user identifications
 - Remove all dirty code which were added in earlier omemo implementation
-
 
 =========================================================================
 Version:		1.1.4 (1014)

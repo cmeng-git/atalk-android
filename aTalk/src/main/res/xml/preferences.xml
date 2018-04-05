@@ -97,6 +97,13 @@
             android:summaryOn="@string/service_gui_settings_ENABLED_STR"
             android:title="@string/service_gui_settings_TYPING_NOTIFICATIONS" />
 
+        <!-- Prersence Subcription Mode - Auto or Manual -->
+        <CheckBoxPreference
+            android:key="@string/pref_key_presence_subscribe_mode"
+            android:summaryOff="@string/service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL"
+            android:summaryOn="@string/service_gui_settings_PRESENCE_SUBSCRIBE_AUTO"
+            android:title="@string/service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE" />
+
         <!--
         Use task bar / dock alerts on incoming calls and chats not implemented on Android
 		<CheckBoxPreference

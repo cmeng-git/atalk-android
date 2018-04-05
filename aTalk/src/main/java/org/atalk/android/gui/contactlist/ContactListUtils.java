@@ -36,8 +36,8 @@ public class ContactListUtils {
 	 * @param contactAddress
 	 * 		new contact address.
 	 */
-	public static void addContact(final ProtocolProviderService protocolProvider,
-			final MetaContactGroup group, final String contactAddress) {
+	public static void addContact(final ProtocolProviderService protocolProvider, final MetaContactGroup group,
+            final String contactAddress) {
 		new Thread() {
 			@Override
 			public void run() {

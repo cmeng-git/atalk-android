@@ -30,6 +30,7 @@ import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.json.JSONException;
@@ -105,7 +106,12 @@ public class ConfigurationUtils
     /**
      * Indicates if chat state notifications should be sent.
      */
-    private static boolean isSendChatStateNotifications;
+    private static boolean isSendChatStateNotifications = true;
+
+    /**
+     * Indicates if presence subscription mode is auto approval.
+     */
+    private static boolean isPresenceSubscribeAuto = true;
 
     /**
      * Indicates if confirmation should be requested before really moving a contact.
@@ -382,6 +388,7 @@ public class ConfigurationUtils
     private static String pAutoPopupNewMessage = "gui.AUTO_POPUP_NEW_MESSAGE";
     private static String pMsgCommand = "gui.SEND_MESSAGE_COMMAND";
     private static String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
+    private static String pPresenceSubscribeAuto = "gui.PRESENCE_SUBSCRIBE_MODE_AUTO";
     private static String pMultiChatWindowEnabled = "gui.IS_MULTI_CHAT_WINDOW_ENABLED";
     private static String pLeaveChatRoomOnWindowClose = "gui.LEAVE_CHATROOM_ON_WINDOW_CLOSE";
     private static String pMessageHistoryShown = "gui.IS_MESSAGE_HISTORY_SHOWN";
@@ -420,7 +427,6 @@ public class ConfigurationUtils
 
     private static SQLiteDatabase mDB;
     private static ContentValues contentValues = new ContentValues();
-
 
     /**
      * Loads all user interface configurations.
@@ -469,6 +475,9 @@ public class ConfigurationUtils
 
         if (!StringUtils.isNullOrEmpty(isSendTypingNotification))
             isSendChatStateNotifications = Boolean.parseBoolean(isSendTypingNotification);
+
+        // Load the "isPresenceSubscribeMode" property.
+        isPresenceSubscribeAuto = configService.getBoolean(pPresenceSubscribeAuto, isPresenceSubscribeAuto);
 
         // Load the "isMoveContactConfirmationRequested" property.
         String isMoveContactConfirmationRequestedString
@@ -615,8 +624,8 @@ public class ConfigurationUtils
         isPresetStatusMessagesEnabled = configService.getBoolean("gui.presence.PRESET_STATUS_MESSAGES", true);
 
         // Load the gui.main.account.ADVANCED_CONFIG_DISABLED" property.
-        String advancedConfigDisabledDefaultProp = UtilActivator.getResources()
-                .getSettingsString("gui.account.ADVANCED_CONFIG_DISABLED");
+        String advancedConfigDisabledDefaultProp
+                = UtilActivator.getResources().getSettingsString("gui.account.ADVANCED_CONFIG_DISABLED");
 
         boolean isAdvancedConfigDisabled = false;
         if (!StringUtils.isNullOrEmpty(advancedConfigDisabledDefaultProp))
@@ -633,8 +642,7 @@ public class ConfigurationUtils
         if (!StringUtils.isNullOrEmpty(singleInterfaceEnabledProp))
             isEnabled = Boolean.parseBoolean(singleInterfaceEnabledProp);
         else
-            isEnabled = Boolean.parseBoolean(UtilActivator.getResources()
-                    .getSettingsString("gui.SINGLE_WINDOW_INTERFACE"));
+            isEnabled = Boolean.parseBoolean(UtilActivator.getResources().getSettingsString("gui.SINGLE_WINDOW_INTERFACE"));
 
         // Load the advanced account configuration disabled.
         isSingleWindowInterfaceEnabled = configService.getBoolean(SINGLE_WINDOW_INTERFACE_ENABLED, isEnabled);
@@ -670,8 +678,8 @@ public class ConfigurationUtils
 
         showStatusChangedInChat = configService.getBoolean(pShowStatusChangedInChat, showStatusChangedInChat);
 
-        String routeVideoAndDesktopUsingPhoneNumberDefault = UtilActivator.getResources()
-                .getSettingsString(pRouteVideoAndDesktopUsingPhoneNumber);
+        String routeVideoAndDesktopUsingPhoneNumberDefault
+                = UtilActivator.getResources().getSettingsString(pRouteVideoAndDesktopUsingPhoneNumber);
 
         if (!StringUtils.isNullOrEmpty(routeVideoAndDesktopUsingPhoneNumberDefault))
             routeVideoAndDesktopUsingPhoneNumber = Boolean.parseBoolean(routeVideoAndDesktopUsingPhoneNumberDefault);
@@ -844,7 +852,33 @@ public class ConfigurationUtils
         isSendChatStateNotifications = isChatStateNotification;
         configService.setProperty(pTypingNotification, Boolean.toString(isChatStateNotification));
         updateChatStateCapsFeature(isChatStateNotification);
+    }
 
+    /**
+     * Return TRUE if "isPresenceSubscribeAuto" property is true, otherwise - return FALSE.
+     * Indicates to user whether presence subscription mode is auto or manual approval.
+     *
+     * @return TRUE if "isPresenceSubscribeAuto" property is true, otherwise - return FALSE.
+     */
+    public static boolean isPresenceSubscribeAuto()
+    {
+        return isPresenceSubscribeAuto;
+    }
+
+    /**
+     * Updates the "isPresenceSubscribeAuto" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param presenceSubscribeAuto <code>true</code> to indicate that chat state notifications are enabled,
+     * <code>false</code> otherwise.
+     */
+    public static void setPresenceSubscribeAuto(boolean presenceSubscribeAuto)
+    {
+        isPresenceSubscribeAuto = presenceSubscribeAuto;
+        configService.setProperty(pPresenceSubscribeAuto, Boolean.toString(presenceSubscribeAuto));
+        if (presenceSubscribeAuto)
+            Roster.setDefaultSubscriptionMode(Roster.SubscriptionMode.accept_all);
+        else
+            Roster.setDefaultSubscriptionMode(Roster.SubscriptionMode.manual);
     }
 
     /**
@@ -2162,6 +2196,9 @@ public class ConfigurationUtils
             }
             else if (evt.getPropertyName().equals(pTypingNotification)) {
                 isSendChatStateNotifications = Boolean.parseBoolean(newValue);
+            }
+            else if (evt.getPropertyName().equals(pPresenceSubscribeAuto)) {
+                isPresenceSubscribeAuto = Boolean.parseBoolean(newValue);
             }
             else if (evt.getPropertyName().equals("gui.isMoveContactConfirmationRequested")) {
                 isMoveContactConfirmationRequested = Boolean.parseBoolean(newValue);

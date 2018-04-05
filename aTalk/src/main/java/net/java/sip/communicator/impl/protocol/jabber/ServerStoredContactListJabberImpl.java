@@ -22,6 +22,7 @@ import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEve
 import net.java.sip.communicator.service.protocol.event.ServerStoredGroupEvent;
 import net.java.sip.communicator.service.protocol.event.ServerStoredGroupListener;
 import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
+import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.persistance.DatabaseBackend;
@@ -84,7 +85,7 @@ public class ServerStoredContactListJabberImpl
     /**
      * The jabber list that we encapsulate
      */
-    private Roster roster = null;
+    private Roster mRoster = null;
 
     /**
      * The root <code>ContactGroup</code>. The container for all jabber buddies and groups.
@@ -188,7 +189,7 @@ public class ServerStoredContactListJabberImpl
      */
     RosterEntry getRosterEntry(BareJid userJid)
     {
-        return ((roster == null) || (userJid == null)) ? null : roster.getEntry(userJid);
+        return ((mRoster == null) || (userJid == null)) ? null : mRoster.getEntry(userJid);
     }
 
     /**
@@ -199,7 +200,7 @@ public class ServerStoredContactListJabberImpl
      */
     RosterGroup getRosterGroup(String name)
     {
-        return roster.getGroup(name);
+        return mRoster.getGroup(name);
     }
 
     /**
@@ -267,8 +268,8 @@ public class ServerStoredContactListJabberImpl
                 ContactJabberImpl c = (ContactJabberImpl) iter.next();
 
                 // roster can be null, receiving system messages from server before we are log in
-                if (roster != null) {
-                    parentOperationSet.firePresenceStatusChanged(roster.getPresence(c.getJid().asBareJid()));
+                if (mRoster != null) {
+                    parentOperationSet.firePresenceStatusChanged(mRoster.getPresence(c.getJid().asBareJid()));
                 }
             }
         }
@@ -509,14 +510,13 @@ public class ServerStoredContactListJabberImpl
                 }
             }
         };
-        // xmppConnection.addPacketInterceptor(presenceInterceptor, new StanzaTypeFilter(Presence.class));
-        xmppConnection.addPacketInterceptor(presenceInterceptor, PresenceTypeFilter.SUBSCRIBE);
+        // xmppConnection.addPacketInterceptor(presenceInterceptor, PresenceTypeFilter.SUBSCRIBE);
 
         /* Creates a new roster entry and presence subscription. The server will asynchronously
          * update the roster with the subscription status.
          */
         try {
-            this.roster.createEntry(contactJid, contactJid.toString(), parentNames);
+            mRoster.createEntry(contactJid, contactJid.toString(), parentNames);
         } catch (XMPPErrorException ex) {
             String errTxt = "Error adding new jabber roster entry";
             logger.error(errTxt, ex);
@@ -665,7 +665,7 @@ public class ServerStoredContactListJabberImpl
                     OperationFailedException.CONTACT_GROUP_ALREADY_EXISTS);
         }
 
-        RosterGroup newRosterGroup = roster.createGroup(groupName);
+        RosterGroup newRosterGroup = mRoster.createGroup(groupName);
         ContactGroupJabberImpl newGroup = new ContactGroupJabberImpl(newRosterGroup,
                 new ArrayList<RosterEntry>().iterator(), this, true);
         rootGroup.addSubGroup(newGroup);
@@ -697,7 +697,7 @@ public class ServerStoredContactListJabberImpl
             while (iter.hasNext()) {
                 ContactJabberImpl item = (ContactJabberImpl) iter.next();
                 if (item.isPersistent())
-                    roster.removeEntry(item.getSourceEntry());
+                    mRoster.removeEntry(item.getSourceEntry());
             }
         } catch (XMPPException ex) {
             logger.error("Error removing group", ex);
@@ -724,7 +724,7 @@ public class ServerStoredContactListJabberImpl
         RosterEntry entry = contactToRemove.getSourceEntry();
         if (entry != null) {
             try {
-                this.roster.removeEntry(entry);
+                mRoster.removeEntry(entry);
             } catch (XMPPErrorException ex) {
                 String errTxt = "Error removing contact";
                 int errorCode = OperationFailedException.INTERNAL_ERROR;
@@ -797,7 +797,7 @@ public class ServerStoredContactListJabberImpl
         xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT);
 
         try {
-            roster.createEntry(contact.getSourceEntry().getJid(), contact.getDisplayName(),
+            mRoster.createEntry(contact.getSourceEntry().getJid(), contact.getDisplayName(),
                     new String[]{newParent.getGroupName()});
             newParent.addContact(contact);
         } catch (XMPPException ex) {
@@ -818,11 +818,7 @@ public class ServerStoredContactListJabberImpl
     void init(OperationSetPersistentPresenceJabberImpl.ContactChangesListener presenceChangeListener)
     {
         xmppConnection = jabberProvider.getConnection();
-        this.roster = Roster.getInstanceFor(xmppConnection);
-
-        presenceChangeListener.storeEvents();
-        this.roster.addRosterListener(presenceChangeListener);
-        this.roster.setSubscriptionMode(Roster.SubscriptionMode.manual);
+        mRoster = Roster.getInstanceFor(xmppConnection);
 
         initRoster();
         AvatarManager avatarManager = AvatarManager.getInstanceFor(xmppConnection);
@@ -836,11 +832,13 @@ public class ServerStoredContactListJabberImpl
         synchronized (rosterInitLock) {
             this.isRosterInitialized = true;
         }
+
         // now send initial presence status that was on hold earlier
         sendInitialStatus();
         presenceChangeListener.processStoredEvents();
+
         rosterChangeListener = new ChangeListener();
-        this.roster.addRosterListener(rosterChangeListener);
+        mRoster.addRosterListener(rosterChangeListener);
     }
 
     /**
@@ -887,11 +885,11 @@ public class ServerStoredContactListJabberImpl
             imageRetriever = null;
         }
 
-        if (this.roster != null)
-            this.roster.removeRosterListener(rosterChangeListener);
+        if (mRoster != null)
+            mRoster.removeRosterListener(rosterChangeListener);
 
         this.rosterChangeListener = null;
-        this.roster = null;
+        mRoster = null;
 
         synchronized (rosterInitLock) {
             this.isRosterInitialized = false;
@@ -905,8 +903,8 @@ public class ServerStoredContactListJabberImpl
     private synchronized void initRoster()
     {
         // first if non-filed entries will move them in a group
-        if (roster.getUnfiledEntryCount() > 0) {
-            for (RosterEntry item : roster.getUnfiledEntries()) {
+        if (mRoster.getUnfiledEntryCount() > 0) {
+            for (RosterEntry item : mRoster.getUnfiledEntries()) {
                 ContactJabberImpl contact = findContactById(item.getJid());
 
                 // some services automatically add contacts from their address book to the roster
@@ -948,7 +946,7 @@ public class ServerStoredContactListJabberImpl
                 // packets can be received before the roster items packet, and we miss it,
                 // cause we add our listener after roster is received and smack don't allow
                 // to add our listener earlier
-                parentOperationSet.firePresenceStatusChanged(roster.getPresence(item.getJid()));
+                parentOperationSet.firePresenceStatusChanged(mRoster.getPresence(item.getJid()));
             }
         }
 
@@ -968,7 +966,7 @@ public class ServerStoredContactListJabberImpl
         }
         contactsToRemove.clear();
 
-        for (RosterGroup item : roster.getGroups()) {
+        for (RosterGroup item : mRoster.getGroups()) {
             ContactGroupJabberImpl group = findContactGroup(item.getName());
             if (group != null) {
                 // the group exist so just resolved. The group will check and create or resolve its entries
@@ -1017,7 +1015,7 @@ public class ServerStoredContactListJabberImpl
         }
 
         // fill in root group
-        for (RosterGroup item : roster.getGroups()) {
+        for (RosterGroup item : mRoster.getGroups()) {
             ContactGroupJabberImpl group = findContactGroup(item.getName());
 
             // create the group as it doesn't exist
@@ -1030,11 +1028,11 @@ public class ServerStoredContactListJabberImpl
                 fireGroupEvent(newGroup, ServerStoredGroupEvent.GROUP_CREATED_EVENT);
 
                 // if presence was already received it, we must check & dispatch it
-                if (roster != null) {
+                if (mRoster != null) {
                     Iterator<Contact> cIter = newGroup.contacts();
                     while (cIter.hasNext()) {
                         Jid contactJid = cIter.next().getJid();
-                        parentOperationSet.firePresenceStatusChanged(roster.getPresence(contactJid.asBareJid()));
+                        parentOperationSet.firePresenceStatusChanged(mRoster.getPresence(contactJid.asBareJid()));
                     }
                 }
             }
@@ -1077,8 +1075,8 @@ public class ServerStoredContactListJabberImpl
         // if we are already registered (roster != null) and we are currently creating the contact
         // list, presences maybe already received before we have created the contacts, so lets
         // check
-        if (roster != null) {
-            parentOperationSet.firePresenceStatusChanged(roster.getPresence(contact.getJid().asBareJid()));
+        if (mRoster != null) {
+            parentOperationSet.firePresenceStatusChanged(mRoster.getPresence(contact.getJid().asBareJid()));
         }
 
         // dispatch
@@ -1103,8 +1101,8 @@ public class ServerStoredContactListJabberImpl
         // if we are already registered(roster != null) and we are currently creating the contact
         // list, presences maybe already received before we have created the contacts, so lets
         // check
-        if (roster != null) {
-            parentOperationSet.firePresenceStatusChanged(roster.getPresence(contact.getJid().asBareJid()));
+        if (mRoster != null) {
+            parentOperationSet.firePresenceStatusChanged(mRoster.getPresence(contact.getJid().asBareJid()));
         }
 
         // dispatch
@@ -1224,7 +1222,7 @@ public class ServerStoredContactListJabberImpl
          */
         private ContactJabberImpl addEntryToContactList(Jid rosterEntryID)
         {
-            RosterEntry entry = roster.getEntry(rosterEntryID.asBareJid());
+            RosterEntry entry = mRoster.getEntry(rosterEntryID.asBareJid());
             if (!isEntryDisplayable(entry))
                 return null;
 
@@ -1318,7 +1316,7 @@ public class ServerStoredContactListJabberImpl
 
             // will search for group renamed
             for (Jid contactJid : addresses) {
-                RosterEntry entry = roster.getEntry(contactJid.asBareJid());
+                RosterEntry entry = mRoster.getEntry(contactJid.asBareJid());
                 ContactJabberImpl contact = addEntryToContactList(contactJid);
 
                 if (contact == null)
@@ -1665,7 +1663,7 @@ public class ServerStoredContactListJabberImpl
      */
     public List<Presence> getPresences(BareJid userJid)
     {
-        return roster.getPresences(userJid);
+        return mRoster.getPresences(userJid);
     }
 
     /**
