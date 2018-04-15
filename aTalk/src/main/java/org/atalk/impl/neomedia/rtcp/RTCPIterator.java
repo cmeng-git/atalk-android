@@ -18,6 +18,7 @@ package org.atalk.impl.neomedia.rtcp;
 import net.sf.fmj.media.rtp.RTCPHeader;
 
 import org.atalk.service.neomedia.*;
+import org.atalk.util.RTCPUtils;
 
 import java.util.Iterator;
 
@@ -74,8 +75,7 @@ public class RTCPIterator implements Iterator<ByteArrayBuffer>
 	@Override
 	public boolean hasNext()
 	{
-		return RTCPHeaderUtils.getLength(baf.getBuffer(),
-				nextOff, remainingLen) >= RTCPHeader.SIZE;
+		return RTCPUtils.getLength(baf.getBuffer(), nextOff, remainingLen) >= RTCPHeader.SIZE;
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class RTCPIterator implements Iterator<ByteArrayBuffer>
 	@Override
 	public ByteArrayBuffer next()
 	{
-		int pktLen = RTCPHeaderUtils.getLength(baf.getBuffer(), nextOff, remainingLen);
+		int pktLen = RTCPUtils.getLength(baf.getBuffer(), nextOff, remainingLen);
 		if (pktLen < RTCPHeader.SIZE) {
 			throw new IllegalStateException();
 		}
@@ -110,8 +110,7 @@ public class RTCPIterator implements Iterator<ByteArrayBuffer>
 			throw new IllegalStateException();
 		}
 
-		System.arraycopy(baf.getBuffer(), nextOff,
-				baf.getBuffer(), nextOff - lastLen, remainingLen);
+		System.arraycopy(baf.getBuffer(), nextOff, baf.getBuffer(), nextOff - lastLen, remainingLen);
 
 		nextOff -= lastLen;
 		baf.setLength(baf.getLength() - lastLen);

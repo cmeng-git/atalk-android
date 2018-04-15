@@ -18,7 +18,6 @@ package org.atalk.impl.neomedia.transform.rtcp;
 import net.sf.fmj.media.rtp.BurstMetrics;
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 import net.sf.fmj.media.rtp.RTCPFeedback;
-import net.sf.fmj.media.rtp.RTCPHeader;
 import net.sf.fmj.media.rtp.RTCPPacket;
 import net.sf.fmj.media.rtp.RTCPReceiverReport;
 import net.sf.fmj.media.rtp.RTCPReport;
@@ -54,6 +53,7 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.rtp.RTCPExtendedReport;
 import org.atalk.service.neomedia.rtp.RTCPReports;
 import org.atalk.util.Logger;
+import org.atalk.util.RTCPUtils;
 import org.atalk.util.RTPUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -78,8 +78,7 @@ import javax.media.rtp.ReceptionStats;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class StatisticsEngine extends SinglePacketTransformer
-        implements TransformEngine
+public class StatisticsEngine extends SinglePacketTransformer implements TransformEngine
 {
     /**
      * The <tt>Logger</tt> used by the <tt>StatisticsEngine</tt> class and its
@@ -108,36 +107,19 @@ public class StatisticsEngine extends SinglePacketTransformer
      */
     private static int getLengthIfRTCP(byte[] buf, int off, int len)
     {
-        if ((off >= 0)
-                && (len >= 4)
-                && (buf != null)
-                && (buf.length >= (off + len))) {
-            int v = (buf[off] & 0xc0) >>> 6;
+        if (off >= 0 && RTCPUtils.isRtcp(buf, off, len)) {
+            int bytes = RTCPUtils.getLength(buf, off, len);
 
-            if (v == RTCPHeader.VERSION) {
-                int words = ((buf[off + 2] & 0xff) << 8) | (buf[off + 3] & 0xff);
-                int bytes = (words + 1) * 4;
-
-                if (bytes <= len)
-                    return bytes;
+            if (bytes <= len) {
+                return bytes;
             }
         }
         return -1;
     }
 
     /**
-     * Determines whether a specific <tt>RawPacket</tt> appears to represent an RTCP packet.
-     *
-     * @param pkt the <tt>RawPacket</tt> to be examined
-     * @return <tt>true</tt> if the specified <tt>pkt</tt> appears to represent an RTCP packet
-     */
-    private static boolean isRTCP(RawPacket pkt)
-    {
-        return getLengthIfRTCP(pkt.getBuffer(), pkt.getOffset(), pkt.getLength()) > 0;
-    }
-
-    /**
-     * The minimum inter arrival jitter value we have reported, in RTP timestamp units.
+     * The minimum inter arrival jitter value we have reported, in RTP timestamp
+     * units.
      */
     private long maxInterArrivalJitter = 0;
 
@@ -188,8 +170,7 @@ public class StatisticsEngine extends SinglePacketTransformer
      */
     public StatisticsEngine(MediaStreamImpl stream)
     {
-        // XXX think about removing the isRTCP method now that we have the RTCPPacketPredicate in
-        // place.
+        // XXX think about removing the isRTCP method now that we have the RTCPPacketPredicate in place.
         super(RTCPPacketPredicate.INSTANCE);
 
         mediaStream = stream;
@@ -265,8 +246,8 @@ public class StatisticsEngine extends SinglePacketTransformer
             }
 
             // Write extendedReport into pkt.
-            DataOutputStream dataoutputstream = new DataOutputStream(new ByteBufferOutputStream(
-                    buf, off, extendedReportLen));
+            DataOutputStream dataoutputstream
+                    = new DataOutputStream(new ByteBufferOutputStream(buf, off, extendedReportLen));
 
             try {
                 extendedReport.assemble(dataoutputstream);
@@ -330,8 +311,7 @@ public class StatisticsEngine extends SinglePacketTransformer
                     int senderSSRC = RTPUtils.readInt(buf, off + 4);
                     // Collect the SSRCs of the RTP data packet sources being
                     // reported upon by the RTCP RR/SR packet because they may
-                    // be of concern to the RTCP XR packet (e.g. VoIP Metrics
-                    // Report Block).
+                    // be of concern to the RTCP XR packet (e.g. VoIP Metrics Report Block).
                     int[] sourceSSRCs = new int[rc];
 
                     for (int i = 0; i < rc; i++) {
@@ -380,12 +360,8 @@ public class StatisticsEngine extends SinglePacketTransformer
             String sdpParams)
     {
         RTCPExtendedReport xr = null;
-
-        if ((sourceSSRCs != null)
-                && (sourceSSRCs.length != 0)
-                && (sdpParams != null)
-                && sdpParams.contains(
-                RTCPExtendedReport.VoIPMetricsReportBlock.SDP_PARAMETER)) {
+        if ((sourceSSRCs != null) && (sourceSSRCs.length != 0)
+                && (sdpParams != null) && sdpParams.contains(RTCPExtendedReport.VoIPMetricsReportBlock.SDP_PARAMETER)) {
             xr = new RTCPExtendedReport();
             for (int sourceSSRC : sourceSSRCs) {
                 RTCPExtendedReport.VoIPMetricsReportBlock reportBlock
@@ -443,7 +419,6 @@ public class StatisticsEngine extends SinglePacketTransformer
     createVoIPMetricsReportBlock(int senderSSRC, ReceiveStream receiveStream)
     {
         RTCPExtendedReport.VoIPMetricsReportBlock voipMetrics = new RTCPExtendedReport.VoIPMetricsReportBlock();
-
         voipMetrics.setSourceSSRC((int) receiveStream.getSSRC());
 
         // loss rate
@@ -458,17 +433,14 @@ public class StatisticsEngine extends SinglePacketTransformer
             if (expectedPacketCount > 0) {
                 long lostPacketCount = receptionStats.getPDUlost();
 
-                if ((lostPacketCount > 0)
-                        && (lostPacketCount <= expectedPacketCount)) {
+                if ((lostPacketCount > 0) && (lostPacketCount <= expectedPacketCount)) {
                     // RFC 3611 mentions that the total number of packets lost takes into account
                     // "the effects of applying any error protection such as FEC".
                     long fecDecodedPacketCount = getFECDecodedPacketCount(receiveStream);
 
-                    if ((fecDecodedPacketCount > 0)
-                            && (fecDecodedPacketCount <= lostPacketCount)) {
+                    if ((fecDecodedPacketCount > 0) && (fecDecodedPacketCount <= lostPacketCount)) {
                         lostPacketCount -= fecDecodedPacketCount;
                     }
-
                     lossRate = (lostPacketCount / (double) expectedPacketCount) * 256;
                     if (lossRate > 255)
                         lossRate = 255;
@@ -496,15 +468,15 @@ public class StatisticsEngine extends SinglePacketTransformer
 
         // signal level
         // noise level
-		/*
-		 * The computation of noise level requires the notion of silent period
+        /*
+         * The computation of noise level requires the notion of silent period
          * which we do not have (because, for example, we do not voice activity
          * detection).
          */
 
         // residual echo return loss (RERL)
-		/*
-		 * WebRTC, which is available and default on OS X, appears to be able to
+        /*
+         * WebRTC, which is available and default on OS X, appears to be able to
          * provide the residual echo return loss. Speex, which is available and
          * not default on the supported operating systems, and WASAPI, which is
          * available and default on Windows, do not seem to be able to provide
@@ -548,8 +520,7 @@ public class StatisticsEngine extends SinglePacketTransformer
          * We insert silence in place of lost packets by default and we have FEC
          * and/or PLC for OPUS and SILK.
          */
-        byte packetLossConcealment
-                = RTCPExtendedReport.VoIPMetricsReportBlock.DISABLED_PACKET_LOSS_CONCEALMENT;
+        byte packetLossConcealment = RTCPExtendedReport.VoIPMetricsReportBlock.DISABLED_PACKET_LOSS_CONCEALMENT;
         MediaFormat mediaFormat = mediaStream.getFormat();
 
         if (mediaFormat != null) {
@@ -570,16 +541,14 @@ public class StatisticsEngine extends SinglePacketTransformer
         double discardRate;
 
         if (jbc == null) {
-            voipMetrics.setJitterBufferAdaptive(
-                    RTCPExtendedReport.VoIPMetricsReportBlock.UNKNOWN_JITTER_BUFFER_ADAPTIVE);
+            voipMetrics.setJitterBufferAdaptive(RTCPExtendedReport.VoIPMetricsReportBlock.UNKNOWN_JITTER_BUFFER_ADAPTIVE);
         }
         else {
             // discard rate
             if (expectedPacketCount > 0) {
                 int discardedPacketCount = jbc.getDiscarded();
 
-                if ((discardedPacketCount > 0)
-                        && (discardedPacketCount <= expectedPacketCount)) {
+                if ((discardedPacketCount > 0) && (discardedPacketCount <= expectedPacketCount)) {
                     discardRate = (discardedPacketCount / (double) expectedPacketCount) * 256;
                     if (discardRate > 255)
                         discardRate = 255;
@@ -785,14 +754,13 @@ public class StatisticsEngine extends SinglePacketTransformer
     public RawPacket reverseTransform(RawPacket pkt)
     {
         // SRTP may send non-RTCP packets.
-        if (isRTCP(pkt)) {
+        if (RTCPUtils.isRtcp(pkt.getBuffer(), pkt.getOffset(), pkt.getLength())) {
             mediaStreamStats.rtcpPacketReceived(pkt.getRTCPSSRC(), pkt.getLength());
 
             RTCPCompoundPacket compound;
             Exception ex;
             try {
-                compound = (RTCPCompoundPacket) parser.parse(
-                        pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
+                compound = (RTCPCompoundPacket) parser.parse(pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
                 ex = null;
             } catch (BadFormatException | IllegalStateException e) {
                 // In some parsing failures, FMJ swallows the original
@@ -805,9 +773,14 @@ public class StatisticsEngine extends SinglePacketTransformer
             if (compound == null
                     || compound.packets == null
                     || compound.packets.length == 0) {
-                logger.info("Failed to analyze an incoming RTCP packet for the"
-                        + " purposes of statistics.", ex);
-                return pkt;
+                logger.info(
+                        "Failed to parse an incoming RTCP packet: " + (ex == null ? "null" : ex.getMessage()));
+
+                // Either this is an empty packet, or parsing failed. In any
+                // case, drop the packet to make sure we're not forwarding
+                // broken RTCP (we've observed Chrome 49 sending SRs with an
+                // incorrect 'rc' field).
+                return null;
             }
 
             try {
@@ -820,8 +793,7 @@ public class StatisticsEngine extends SinglePacketTransformer
                     throw (ThreadDeath) t;
                 }
                 else {
-                    logger.error("Failed to analyze an incoming RTCP packet for the"
-                            + " purposes of statistics.", t);
+                    logger.error("Failed to analyze an incoming RTCP packet for the purposes of statistics.", t);
                 }
             }
         }
@@ -834,7 +806,6 @@ public class StatisticsEngine extends SinglePacketTransformer
      * ones which were not consumed and should be output from this instance.
      *
      * @param in the input packets
-     * @return {@code true} iff some packets were consumed.
      */
     private void updateReceivedMediaStreamStats(RTCPPacket[] in)
     {
@@ -884,7 +855,7 @@ public class StatisticsEngine extends SinglePacketTransformer
                         streamStats.nackReceived(nack);
                     }
                     else if (rtcp instanceof RTCPTCCPacket) {
-                        /**
+                        /*
                          * Intuition: Packet is RTCP, wakeup RTCPPacketListeners which may
                          * include BWE workers
                          */
@@ -918,7 +889,7 @@ public class StatisticsEngine extends SinglePacketTransformer
     public RawPacket transform(RawPacket pkt)
     {
         // SRTP may send non-RTCP packets.
-        if (isRTCP(pkt)) {
+        if (RTCPUtils.isRtcp(pkt.getBuffer(), pkt.getOffset(), pkt.getLength())) {
             mediaStreamStats.rtcpPacketSent(pkt.getRTCPSSRC(), pkt.getLength());
             try {
                 updateSentMediaStreamStats(pkt);
@@ -1043,7 +1014,6 @@ public class StatisticsEngine extends SinglePacketTransformer
             for (Long value : map.values()) {
                 if (value == null)
                     continue;
-
                 cumulativeValue += value;
             }
         }
@@ -1075,10 +1045,7 @@ public class StatisticsEngine extends SinglePacketTransformer
      * @param ssrc the key of the value to increment
      * @param step increment step value
      */
-    private static void incrementSSRCCounter(
-            Map<Long, Long> map,
-            long ssrc,
-            long step)
+    private static void incrementSSRCCounter(Map<Long, Long> map, long ssrc, long step)
     {
         synchronized (map) {
             Long count = map.get(ssrc);
@@ -1096,22 +1063,14 @@ public class StatisticsEngine extends SinglePacketTransformer
         @Override
         public RawPacket transform(RawPacket pkt)
         {
-            mediaStreamStats.rtpPacketSent(
-                    pkt.getSSRCAsLong(),
-                    pkt.getSequenceNumber(),
-                    pkt.getLength());
-
+            mediaStreamStats.rtpPacketSent(pkt.getSSRCAsLong(), pkt.getSequenceNumber(), pkt.getLength());
             return pkt;
         }
 
         @Override
         public RawPacket reverseTransform(RawPacket pkt)
         {
-            mediaStreamStats.rtpPacketReceived(
-                    pkt.getSSRCAsLong(),
-                    pkt.getSequenceNumber(),
-                    pkt.getLength());
-
+            mediaStreamStats.rtpPacketReceived(pkt.getSSRCAsLong(), pkt.getSequenceNumber(), pkt.getLength());
             return pkt;
         }
     }

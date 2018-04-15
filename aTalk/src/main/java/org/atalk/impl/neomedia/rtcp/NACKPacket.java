@@ -8,6 +8,7 @@ package org.atalk.impl.neomedia.rtcp;
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 
 import org.atalk.service.neomedia.*;
+import org.atalk.util.RTCPUtils;
 
 import java.util.*;
 
@@ -55,7 +56,7 @@ public class NACKPacket extends RTCPFBPacket
 	 */
 	public static boolean isNACKPacket(ByteArrayBuffer baf)
 	{
-		int rc = RTCPHeaderUtils.getReportCount(baf);
+		int rc = RTCPUtils.getReportCount(baf);
 		return rc == FMT && isRTPFBPacket(baf);
 	}
 

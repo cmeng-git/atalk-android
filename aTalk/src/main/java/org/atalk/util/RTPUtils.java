@@ -24,6 +24,14 @@ import java.util.*;
 public class RTPUtils
 {
     /**
+     * Hex characters for converting bytes to readable hex strings
+     */
+    private final static char[] HEXES = new char[]
+        {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8',
+            '9', 'A', 'B', 'C', 'D', 'E', 'F'
+        };
+    /**
      * Returns the delta between two RTP sequence numbers, taking into account
      * rollover.  This will return the 'shortest' delta between the two
      * sequence numbers in the form of the number you'd add to b to get a. e.g.:
@@ -296,15 +304,6 @@ public class RTPUtils
     }
 
     /**
-     * Hex characters for converting bytes to readable hex strings
-     */
-    private static char[] hexes = new char[]
-        {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8',
-            '9', 'A', 'B', 'C', 'D', 'E', 'F'
-        };
-
-    /**
      * Return a string containing the hex string version of the given byte
      * @param b
      * @return
@@ -312,11 +311,10 @@ public class RTPUtils
     private static String toHexString(byte b)
     {
 
-        StringBuilder hexStringBuilder
-            = new StringBuilder(2);
+        StringBuilder hexStringBuilder  = new StringBuilder(2);
 
-        hexStringBuilder.append(hexes[(b & 0xF0) >> 4]);
-        hexStringBuilder.append(hexes[b & 0x0F]);
+        hexStringBuilder.append(HEXES[(b & 0xF0) >> 4]);
+        hexStringBuilder.append(HEXES[b & 0x0F]);
 
         return hexStringBuilder.toString();
     }

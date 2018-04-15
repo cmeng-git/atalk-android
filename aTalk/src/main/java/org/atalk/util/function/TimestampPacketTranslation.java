@@ -15,16 +15,20 @@
  */
 package org.atalk.util.function;
 
-import net.sf.fmj.media.rtp.*;
-import org.atalk.impl.neomedia.*;
-import org.atalk.impl.neomedia.rtcp.*;
-import org.atalk.service.neomedia.*;
+import net.sf.fmj.media.rtp.RTCPPacket;
+
+import org.atalk.impl.neomedia.RTCPPacketPredicate;
+import org.atalk.impl.neomedia.RTPPacketPredicate;
+import org.atalk.impl.neomedia.rtcp.RTCPSenderInfoUtils;
+import org.atalk.service.neomedia.ByteArrayBuffer;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.util.RTCPUtils;
 
 /**
  * @author George Politis
  */
 public class TimestampPacketTranslation<T extends ByteArrayBuffer>
-extends AbstractFunction<T, T>
+        extends AbstractFunction<T, T>
 {
     /**
      * The {@link TimestampTranslation} to apply to the timestamp of the
@@ -49,34 +53,27 @@ extends AbstractFunction<T, T>
     @Override
     public T apply(T pktIn)
     {
-        if (RTPPacketPredicate.INSTANCE.test(pktIn))
-        {
+        if (RTPPacketPredicate.INSTANCE.test(pktIn)) {
             long srcTs = RawPacket.getTimestamp(pktIn);
             long dstTs = tsTranslation.apply(srcTs);
 
-            if (dstTs != srcTs)
-            {
+            if (dstTs != srcTs) {
                 RawPacket.setTimestamp(pktIn, dstTs);
             }
-
             return pktIn;
         }
         else if (RTCPPacketPredicate.INSTANCE.test(pktIn)
-            && RTCPHeaderUtils.getPacketType(pktIn) == RTCPPacket.SR)
-        {
+                && RTCPUtils.getPacketType(pktIn) == RTCPPacket.SR) {
             // Rewrite the timestamp of an SR packet.
             long srcTs = RTCPSenderInfoUtils.getTimestamp(pktIn);
             long dstTs = tsTranslation.apply(srcTs);
 
-            if (srcTs != dstTs)
-            {
+            if (srcTs != dstTs) {
                 RTCPSenderInfoUtils.setTimestamp(pktIn, (int) dstTs);
             }
-
             return pktIn;
         }
-        else
-        {
+        else {
             return pktIn;
         }
     }

@@ -39,6 +39,7 @@ import org.atalk.service.neomedia.TransmissionFailedException;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
 import org.atalk.util.ArrayUtils;
 import org.atalk.util.Logger;
+import org.atalk.util.RTCPUtils;
 import org.atalk.util.concurrent.PeriodicRunnable;
 import org.atalk.util.function.RTCPGenerator;
 
@@ -235,14 +236,14 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
             return MIN_RTCP_REPORT_BLOCKS_ARRAY;
         }
 
-		/*
+        /*
          * XXX MediaStreamImpl's implementation of #getReceiveStreams() says that, unfortunately,
-		 * it has been observed that sometimes there are valid ReceiveStreams in MediaStreamImpl
-		 * which are not returned by FMJ's RTPManager. Since
-		 * (1) MediaStreamImpl#getReceiveStreams() will include the results of StreamRTPManager#getReceiveStreams() and
-		 * (2) we are going to check the results against SSRCCache, it should be relatively safe
-		 * to rely on MediaStreamImpl's implementation.
-		 */
+         * it has been observed that sometimes there are valid ReceiveStreams in MediaStreamImpl
+         * which are not returned by FMJ's RTPManager. Since
+         * (1) MediaStreamImpl#getReceiveStreams() will include the results of StreamRTPManager#getReceiveStreams() and
+         * (2) we are going to check the results against SSRCCache, it should be relatively safe
+         * to rely on MediaStreamImpl's implementation.
+         */
         Collection<ReceiveStream> receiveStreams = stream.getReceiveStreams();
 
         if (receiveStreams == null || receiveStreams.isEmpty()) {
@@ -284,7 +285,6 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
                 }
             }
         }
-
         return reportBlocks.toArray(new RTCPReportBlock[reportBlocks.size()]);
     }
 
@@ -299,11 +299,9 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
     {
         // Destination
         RemoteBitrateEstimatorWrapper remoteBitrateEstimator = stream.getRemoteBitrateEstimator();
-
         if (!remoteBitrateEstimator.receiveSideBweEnabled()) {
             return null;
         }
-
         Collection<Long> ssrcs = remoteBitrateEstimator.getSsrcs();
 
         // TODO(gp) intersect with SSRCs from signaled simulcast layers
@@ -386,7 +384,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
             RTCPIterator it = new RTCPIterator(pkt);
             while (it.hasNext()) {
                 ByteArrayBuffer baf = it.next();
-                int pt = RTCPHeaderUtils.getPacketType(baf);
+                int pt = RTCPUtils.getPacketType(baf);
                 if (pt == RTCPRRPacket.RR
                         || RTCPREMBPacket.isREMBPacket(baf)
                         || RTCPTCCPacket.isTCCPacket(baf)) {
@@ -395,7 +393,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
                 }
 
                 if (!send && pt > -1) {
-                    int fmt = RTCPHeaderUtils.getReportCount(baf);
+                    int fmt = RTCPUtils.getReportCount(baf);
                     if ((pt == RTCPFeedbackMessageEvent.PT_PS
                             && fmt == RTCPFeedbackMessageEvent.FMT_PLI)
                             || (pt == RTCPFeedbackMessageEvent.PT_PS

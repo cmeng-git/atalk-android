@@ -20,6 +20,7 @@ import org.atalk.impl.neomedia.rtcp.RTCPReceiverFeedbackTermination;
 import org.atalk.impl.neomedia.rtp.MediaStreamTrackReceiver;
 import org.atalk.impl.neomedia.rtp.RTPEncodingDesc;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
+import org.atalk.impl.neomedia.rtp.VideoMediaStreamTrackReceiver;
 import org.atalk.impl.neomedia.rtp.remotebitrateestimator.RemoteBitrateEstimatorWrapper;
 import org.atalk.impl.neomedia.rtp.remotebitrateestimator.RemoteBitrateObserver;
 import org.atalk.impl.neomedia.rtp.sendsidebandwidthestimation.BandwidthEstimatorImpl;
@@ -73,8 +74,7 @@ import javax.media.protocol.DataSource;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class VideoMediaStreamImpl extends MediaStreamImpl
-        implements VideoMediaStream
+public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaStream
 {
     /**
      * The <tt>Logger</tt> used by the <tt>VideoMediaStreamImpl</tt> class and its instances for
@@ -376,11 +376,9 @@ public class VideoMediaStreamImpl extends MediaStreamImpl
     private final QualityControlImpl qualityControl = new QualityControlImpl();
 
     /**
-     * The instance that is aware of all of the {@link RTPEncodingDesc} of the
-     * remote endpoint.
+     * The instance that is aware of all of the {@link RTPEncodingDesc} of the remote endpoint.
      */
-    private final MediaStreamTrackReceiver mediaStreamTrackReceiver
-            = new MediaStreamTrackReceiver(this);
+    private final MediaStreamTrackReceiver mediaStreamTrackReceiver = new VideoMediaStreamTrackReceiver(this);
 
     /**
      * The transformer which handles outgoing rtx (RFC-4588) packets for this
@@ -391,14 +389,12 @@ public class VideoMediaStreamImpl extends MediaStreamImpl
     /**
      * The transformer which handles incoming and outgoing fec
      */
-    private TransformEngineWrapper<FECTransformEngine> fecTransformEngineWrapper
-            = new TransformEngineWrapper<>();
+    private TransformEngineWrapper<FECTransformEngine> fecTransformEngineWrapper = new TransformEngineWrapper<>();
 
     /**
      * The instance that terminates RRs and REMBs.
      */
-    private final RTCPReceiverFeedbackTermination rtcpFeedbackTermination
-            = new RTCPReceiverFeedbackTermination(this);
+    private final RTCPReceiverFeedbackTermination rtcpFeedbackTermination = new RTCPReceiverFeedbackTermination(this);
 
     /**
      *
@@ -465,8 +461,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl
      * video exchanged via the specified <tt>StreamConnector</tt>
      * @param srtpControl a control which is already created, used to control the srtp operations.
      */
-    public VideoMediaStreamImpl(StreamConnector connector, MediaDevice device,
-            SrtpControl srtpControl)
+    public VideoMediaStreamImpl(StreamConnector connector, MediaDevice device, SrtpControl srtpControl)
     {
         super(connector, device, srtpControl);
         recurringRunnableExecutor.registerRecurringRunnable(rtcpFeedbackTermination);
@@ -559,7 +554,6 @@ public class VideoMediaStreamImpl extends MediaStreamImpl
     protected void addRemoteSourceID(long ssrc)
     {
         super.addRemoteSourceID(ssrc);
-
         MediaDeviceSession deviceSession = getDeviceSession();
 
         if (deviceSession instanceof VideoMediaDeviceSession)
@@ -619,8 +613,8 @@ public class VideoMediaStreamImpl extends MediaStreamImpl
 		 * because it is hard since MediaRecorder generates encoded video.
 		 */
         if (!OSUtils.IS_ANDROID) {
-            int maxBandwidth = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration()
-                    .getVideoRTPPacingThreshold();
+            int maxBandwidth
+                    = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration().getVideoRTPPacingThreshold();
 
             // Ignore the case of maxBandwidth > 1000, because in this case
             // setMaxPacketsPerMillis fails. Effectively, this means that no pacing is performed
@@ -681,7 +675,6 @@ public class VideoMediaStreamImpl extends MediaStreamImpl
     protected void deviceSessionChanged(MediaDeviceSession oldValue, MediaDeviceSession newValue)
     {
         super.deviceSessionChanged(oldValue, newValue);
-
         if (oldValue instanceof VideoMediaDeviceSession) {
             VideoMediaDeviceSession oldVideoMediaDeviceSession = (VideoMediaDeviceSession) oldValue;
 
@@ -772,8 +765,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl
      * important because <tt>Component</tt>s belong to a single <tt>Container</tt> at a
      * time); otherwise, <tt>false</tt>
      */
-    protected boolean fireVideoEvent(int type, Component visualComponent, int origin,
-            boolean wait)
+    protected boolean fireVideoEvent(int type, Component visualComponent, int origin, boolean wait)
     {
         if (logger.isTraceEnabled())
             logger.trace("Firing VideoEvent with type " + VideoEvent.typeToString(type)
@@ -942,19 +934,16 @@ public class VideoMediaStreamImpl extends MediaStreamImpl
 						 * If the width and height attributes have been collected into
 						 * outputSize, do not override the Dimension they have specified.
 						 */
-                        if ((attrs.containsKey("width") || attrs.containsKey("height"))
-                                && (outputSize != null)) {
+                        if ((attrs.containsKey("width") || attrs.containsKey("height")) && (outputSize != null)) {
                             continue;
                         }
 
                         Dimension res[] = parseSendRecvResolution(value);
                         if (res != null) {
                             setOutputSize(res[1]);
-
                             qualityControl.setRemoteSendMaxPreset(new QualityPreset(res[0]));
                             qualityControl.setRemoteReceiveResolution(outputSize);
-                            ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(
-                                    outputSize);
+                            ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(outputSize);
                         }
                         break;
 
@@ -964,31 +953,26 @@ public class VideoMediaStreamImpl extends MediaStreamImpl
                                 || ((outputSize.width < dim.width)
                                 && (outputSize.height < dim.height))) {
                             setOutputSize(dim);
-                            ((VideoMediaDeviceSession) getDeviceSession())
-                                    .setOutputSize(outputSize);
+                            ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(outputSize);
                         }
                         break;
 
                     case "QCIF":
                         dim = new Dimension(176, 144);
                         if ((outputSize == null)
-                                || ((outputSize.width < dim.width)
-                                && (outputSize.height < dim.height))) {
+                                || ((outputSize.width < dim.width) && (outputSize.height < dim.height))) {
                             setOutputSize(dim);
-                            ((VideoMediaDeviceSession) getDeviceSession())
-                                    .setOutputSize(outputSize);
+                            ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(outputSize);
                         }
                         break;
 
                     case "VGA":  // X-Lite sends it.
                         dim = new Dimension(640, 480);
                         if ((outputSize == null)
-                                || ((outputSize.width < dim.width)
-                                && (outputSize.height < dim.height))) {
+                                || ((outputSize.width < dim.width) && (outputSize.height < dim.height))) {
                             // X-Lite does not display anything if we send 640x480.
                             setOutputSize(dim);
-                            ((VideoMediaDeviceSession) getDeviceSession())
-                                    .setOutputSize(outputSize);
+                            ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(outputSize);
                         }
                         break;
 
@@ -998,15 +982,12 @@ public class VideoMediaStreamImpl extends MediaStreamImpl
                             continue;
 
                         try {
-                            dim = new Dimension(Integer.parseInt(args[0]),
-                                    Integer.parseInt(args[1]));
+                            dim = new Dimension(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
 
                             if ((outputSize == null)
-                                    || ((outputSize.width < dim.width)
-                                    && (outputSize.height < dim.height))) {
+                                    || ((outputSize.width < dim.width) && (outputSize.height < dim.height))) {
                                 setOutputSize(dim);
-                                ((VideoMediaDeviceSession) getDeviceSession())
-                                        .setOutputSize(outputSize);
+                                ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(outputSize);
                             }
                         } catch (Exception e) {
                         }
