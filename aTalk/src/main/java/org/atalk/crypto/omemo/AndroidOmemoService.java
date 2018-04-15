@@ -82,7 +82,7 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
             userJid = mConnection.getUser().asBareJid();
         }
         else {
-            userJid = pps.getAccountID().getFullJid().asBareJid();
+            userJid = pps.getAccountID().getBareJid();
         }
 
         int defaultDeviceId;

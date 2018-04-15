@@ -24,8 +24,7 @@ public class JabberAccountRegistrationActivator implements BundleActivator
 {
 	public static BundleContext bundleContext;
 
-	private static final Logger logger = Logger
-			.getLogger(JabberAccountRegistrationActivator.class);
+	private static final Logger logger = Logger.getLogger(JabberAccountRegistrationActivator.class);
 
 	/**
 	 * A reference to the configuration service.
@@ -47,13 +46,11 @@ public class JabberAccountRegistrationActivator implements BundleActivator
 			throws Exception
 	{
 		bundleContext = bc;
-		ServiceReference<?> uiServiceRef
-				= bundleContext.getServiceReference(UIService.class.getName());
+		ServiceReference<?> uiServiceRef = bundleContext.getServiceReference(UIService.class.getName());
 		jabberRegistration = new AccountRegistrationImpl();
 		Hashtable<String, String> containerFilter = new Hashtable<String, String>();
 		containerFilter.put(ProtocolProviderFactory.PROTOCOL, ProtocolNames.JABBER);
-		bundleContext.registerService(AccountRegistrationWizard.class.getName(),
-				jabberRegistration, containerFilter);
+		bundleContext.registerService(AccountRegistrationWizard.class.getName(), jabberRegistration, containerFilter);
 	}
 
 	public void stop(BundleContext bundleContext)
@@ -68,8 +65,7 @@ public class JabberAccountRegistrationActivator implements BundleActivator
 	 */
 	public static ProtocolProviderFactory getJabberProtocolProviderFactory()
 	{
-		return ProtocolProviderFactory.getProtocolProviderFactory(bundleContext,
-				ProtocolNames.JABBER);
+		return ProtocolProviderFactory.getProtocolProviderFactory(bundleContext, ProtocolNames.JABBER);
 	}
 
 	/**
@@ -97,7 +93,6 @@ public class JabberAccountRegistrationActivator implements BundleActivator
 		if (certService == null) {
 			ServiceReference<?> serviceReference
 					= bundleContext.getServiceReference(CertificateService.class.getName());
-
 			certService = (CertificateService) bundleContext.getService(serviceReference);
 		}
 		return certService;

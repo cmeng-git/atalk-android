@@ -21,5 +21,5 @@ public interface JabberChatRoomMember extends ChatRoomMember
 	 * 
 	 * @return the Jabber ID or <tt>null</tt> if we don't have enough permissions to look up user's JID.
 	 */
-	public Jid getJabberID();
+	Jid getJabberID();
 }

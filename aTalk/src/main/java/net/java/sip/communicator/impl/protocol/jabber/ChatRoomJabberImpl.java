@@ -611,7 +611,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             }
 
             ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(this, mNickName,
-                    mProvider.getAccountID().getFullJid().asBareJid());
+                    mProvider.getAccountID().getBareJid());
             synchronized (members) {
                 final EntityFullJid entityFullJid = JidCreate.fullFrom(mMultiUserChat.getRoom(), mNickName);
                 members.put(entityFullJid, member);
@@ -2370,7 +2370,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     /**
-     * The <tt>PacketInterceptor</tt> we use to make sure that our outgoing <tt>Presence</tt>
+     * The <tt>StanzaInterceptor</tt> we use to make sure that our outgoing <tt>Presence</tt>
      * packets contain the correct <tt>ConferenceAnnouncementPacketExtension</tt>.
      */
     private class PresenceInterceptor implements PresenceListener

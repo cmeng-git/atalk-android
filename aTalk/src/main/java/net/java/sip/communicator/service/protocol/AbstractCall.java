@@ -24,8 +24,7 @@ import net.java.sip.communicator.service.protocol.event.*;
  * @author Emil Ivov
  * @author Lyubomir Marinov
  */
-public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProviderService> extends
-	Call
+public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProviderService> extends Call
 {
 	/**
 	 * The list of <tt>CallPeer</tt>s of this <tt>Call</tt>. It is implemented as a copy-on-write

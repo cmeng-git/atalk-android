@@ -13,6 +13,7 @@ import org.atalk.android.util.ApiLib;
 import org.atalk.service.neomedia.*;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.IQ;
+import org.jxmpp.jid.Jid;
 
 import java.util.*;
 
@@ -30,7 +31,7 @@ import java.util.*;
  * and {@link #addSourceInfo(Map, ColibriConferenceIQ)}.
  * </li>
  * <li>
- * Compile the request by calling {@link #getRequest(String)}. Then send it to the bridge.
+ * Compile the request by calling {@link #getRequest(Jid)}. Then send it to the bridge.
  * </li>
  * <li>
  * Use {@link ColibriAnalyser} to extract particular channels info or create response to the client.
@@ -795,11 +796,9 @@ public class ColibriBuilder
 	 * query is {@link RequestType#EXPIRE_CHANNELS} and there are no channels to be expired
 	 * then <tt>null</tt> is returned which signals that there's nothing to be done.
 	 */
-	public ColibriConferenceIQ getRequest(String videobridge)
+	public ColibriConferenceIQ getRequest(Jid videobridge)
 	{
-		if (StringUtils.isNullOrEmpty(videobridge)) {
-			throw new NullPointerException("videobridge");
-		}
+	    ApiLib.requireNonNull(videobridge, "videobridge");
 
 		request.setTo(videobridge);
 		if (requestType == RequestType.EXPIRE_CHANNELS) {

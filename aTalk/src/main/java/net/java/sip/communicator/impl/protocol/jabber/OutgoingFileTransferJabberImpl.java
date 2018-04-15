@@ -80,8 +80,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
         this.protocolProvider = protocolProvider;
 
         // Create the identifier of this file transfer that is used from the history and the user
-        // interface to track
-        // this transfer.
+        // interface to track this transfer.
         this.id = String.valueOf(System.currentTimeMillis()) + String.valueOf(hashCode());
 
         // Add this outgoing transfer as a packet interceptor in order to manage thumbnails.
@@ -89,7 +88,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
                 && ((ThumbnailedFile) file).getThumbnailData().length > 0) {
             if (protocolProvider.isFeatureListSupported(protocolProvider.getFullJidIfPossible(receiver),
                     "urn:xmpp:thumbs:0", "urn:xmpp:bob")) {
-                protocolProvider.getConnection().addPacketInterceptor(this, IQTypeFilter.SET);
+                protocolProvider.getConnection().addStanzaInterceptor(this, IQTypeFilter.SET);
             }
         }
     }
@@ -207,7 +206,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
             }
         }
         // Remove this packet interceptor after we're done.
-        connection.removePacketInterceptor(this);
+        connection.removeStanzaInterceptor(this);
     }
 
     /**

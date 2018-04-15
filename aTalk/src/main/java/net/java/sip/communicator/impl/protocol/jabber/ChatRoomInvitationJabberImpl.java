@@ -1,13 +1,14 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ChatRoomInvitation;
 
-import org.jxmpp.jid.*;
+import org.jxmpp.jid.EntityJid;
 
 /**
  * The Jabber implementation of the <tt>ChatRoomInvitation</tt> interface.
@@ -16,53 +17,47 @@ import org.jxmpp.jid.*;
  */
 public class ChatRoomInvitationJabberImpl implements ChatRoomInvitation
 {
-	private ChatRoom chatRoom;
+    private ChatRoom chatRoom;
 
-	private EntityJid inviter;
+    private EntityJid inviter;
 
-	private String reason;
+    private String reason;
 
-	private byte[] password;
+    private byte[] password;
 
-	/**
-	 * Creates an invitation for the given <tt>targetChatRoom</tt>, from the given <tt>inviter</tt>.
-	 *
-	 * @param targetChatRoom
-	 *        the <tt>ChatRoom</tt> for which the invitation is
-	 * @param inviter
-	 *        the <tt>ChatRoomMember</tt>, which sent the invitation
-	 * @param reason
-	 *        the reason of the invitation
-	 * @param password
-	 *        the password
-	 */
-	public ChatRoomInvitationJabberImpl(ChatRoom targetChatRoom, EntityJid inviter, String
-			reason,
-		byte[] password)
-	{
-		this.chatRoom = targetChatRoom;
-		this.inviter = inviter;
-		this.reason = reason;
-		this.password = password;
-	}
+    /**
+     * Creates an invitation for the given <tt>targetChatRoom</tt>, from the given <tt>inviter</tt>.
+     *
+     * @param targetChatRoom the <tt>ChatRoom</tt> for which the invitation is
+     * @param inviter the <tt>ChatRoomMember</tt>, which sent the invitation
+     * @param reason the reason of the invitation
+     * @param password the password
+     */
+    public ChatRoomInvitationJabberImpl(ChatRoom targetChatRoom, EntityJid inviter, String reason, byte[] password)
+    {
+        this.chatRoom = targetChatRoom;
+        this.inviter = inviter;
+        this.reason = reason;
+        this.password = password;
+    }
 
-	public ChatRoom getTargetChatRoom()
-	{
-		return chatRoom;
-	}
+    public ChatRoom getTargetChatRoom()
+    {
+        return chatRoom;
+    }
 
-	public EntityJid getInviter()
-	{
-		return inviter;
-	}
+    public EntityJid getInviter()
+    {
+        return inviter;
+    }
 
-	public String getReason()
-	{
-		return reason;
-	}
+    public String getReason()
+    {
+        return reason;
+    }
 
-	public byte[] getChatRoomPassword()
-	{
-		return password;
-	}
+    public byte[] getChatRoomPassword()
+    {
+        return password;
+    }
 }

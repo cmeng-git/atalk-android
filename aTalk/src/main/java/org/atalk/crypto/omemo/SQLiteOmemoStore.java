@@ -790,7 +790,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
             XMPPTCPConnection connection = pps.getConnection();
             if ((connection != null) && connection.isAuthenticated()) {
 
-                BareJid userJid = accountId.getFullJid().asBareJid();
+                BareJid userJid = accountId.getBareJid();
                 SortedSet<Integer> deviceIds = localDeviceIdsOf(userJid);
                 for (int deviceId : deviceIds) {
                     OmemoDevice userDevice = new OmemoDevice(userJid, deviceId);

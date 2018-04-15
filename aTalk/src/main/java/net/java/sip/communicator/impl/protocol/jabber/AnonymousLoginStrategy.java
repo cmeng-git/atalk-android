@@ -18,6 +18,8 @@ import net.java.sip.communicator.service.protocol.*;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.parts.Resourcepart;
 
 import java.security.GeneralSecurityException;
 
@@ -69,7 +71,7 @@ public class AnonymousLoginStrategy implements JabberLoginStrategy
 	}
 
 	@Override
-	public boolean login(XMPPTCPConnection connection, String userName, String resource)
+	public boolean login(XMPPTCPConnection connection, String userName, Resourcepart resource)
 		throws XMPPException, SmackException
 	{
 		// connection.loginAnonymously();
