@@ -43,12 +43,12 @@ public abstract class AbstractPacketExtension implements ExtensionElement {
 	/**
 	 * A map of all attributes that this extension is currently using.
 	 */
-	protected final Map<String, Object> attributes = new LinkedHashMap<String, Object>();
+	protected final Map<String, Object> attributes = new LinkedHashMap<>();
 
 	/**
 	 * A list of all packets that are wrapped by this extension.
 	 */
-	private final List<Stanza> packets = new LinkedList<Stanza>();
+	private final List<Stanza> packets = new LinkedList<>();
 
 	/**
 	 * The text content of this packet extension, if any.
@@ -331,7 +331,7 @@ public abstract class AbstractPacketExtension implements ExtensionElement {
 	 */
 	public List<String> getAttributeNames() {
 		synchronized (attributes) {
-			return new ArrayList<String>(attributes.keySet());
+			return new ArrayList<>(attributes.keySet());
 		}
 	}
 
@@ -393,7 +393,7 @@ public abstract class AbstractPacketExtension implements ExtensionElement {
 	 */
 	public <T extends ExtensionElement> List<T> getChildExtensionsOfType(Class<T> type) {
 		List<? extends ExtensionElement> childExtensions = getChildExtensions();
-		List<T> result = new ArrayList<T>();
+		List<T> result = new ArrayList<>();
 
 		if (childExtensions == null)
 			return result;

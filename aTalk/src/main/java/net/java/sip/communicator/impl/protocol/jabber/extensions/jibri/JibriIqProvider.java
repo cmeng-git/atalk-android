@@ -10,6 +10,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -49,8 +51,10 @@ public class JibriIqProvider extends IQProvider<JibriIq> {
                 iq.setRecordingMode(JibriIq.RecordingMode.parse(recordingMode));
 						
 			String room = parser.getAttributeValue("", JibriIq.ROOM_ATTR_NAME);
-			if (!StringUtils.isNullOrEmpty(room))
-				iq.setRoom(room);
+			if (!StringUtils.isNullOrEmpty(room)) {
+                EntityBareJid roomJid = JidCreate.entityBareFrom(room);
+                iq.setRoom(roomJid);
+            }
 
 			String streamId = parser.getAttributeValue("", JibriIq.STREAM_ID_ATTR_NAME);
 			if (!StringUtils.isNullOrEmpty(streamId))

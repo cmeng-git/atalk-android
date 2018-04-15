@@ -25,5 +25,5 @@ public interface TransportInfoSender
 	 *        the <tt>ContentPacketExtension</tt>s to be sent in a <tt>transport-info</tt>
 	 *        <tt>JingleIQ</tt> from the local peer to the remote peer
 	 */
-	public void sendTransportInfo(Iterable<ContentPacketExtension> contents);
+	void sendTransportInfo(Iterable<ContentPacketExtension> contents);
 }

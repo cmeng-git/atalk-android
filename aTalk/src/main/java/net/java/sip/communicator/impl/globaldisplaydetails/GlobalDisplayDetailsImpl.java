@@ -133,7 +133,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
 			pps = ((List<ProtocolProviderService>) providers).get(0);
 		}
 
-		BareJid userJid = pps.getAccountID().getFullJid().asBareJid();
+		BareJid userJid = pps.getAccountID().getBareJid();
 		return AvatarManager.getAvatarImageByJid(userJid);
 	}
 

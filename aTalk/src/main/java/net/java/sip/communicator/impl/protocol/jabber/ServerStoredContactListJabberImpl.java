@@ -494,23 +494,23 @@ public class ServerStoredContactListJabberImpl
         }
 
         // @see <a href="http://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
-        StanzaListener presenceInterceptor = new StanzaListener()
+        StanzaListener stanzaInterceptor = new StanzaListener()
         {
             @Override
-            public void processStanza(Stanza packet)
+            public void processStanza(Stanza stanza)
             {
-                Presence presence = (Presence) packet;
+                Presence presence = (Presence) stanza;
                 if ((presence.getType() == Presence.Type.subscribe) && presence.getTo().isParentOf(contactJid)) {
                     Nick nicknameExt
                             = new Nick(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(jabberProvider));
                     presence.addExtension(nicknameExt);
 
                     // cmeng - End the listener once job is completed - otherwise receive multiple triggers.
-                    xmppConnection.removePacketInterceptor(this);
+                    xmppConnection.removeStanzaInterceptor(this);
                 }
             }
         };
-        // xmppConnection.addPacketInterceptor(presenceInterceptor, PresenceTypeFilter.SUBSCRIBE);
+        xmppConnection.addStanzaInterceptor(stanzaInterceptor, PresenceTypeFilter.SUBSCRIBE);
 
         /* Creates a new roster entry and presence subscription. The server will asynchronously
          * update the roster with the subscription status.

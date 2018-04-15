@@ -35,8 +35,7 @@ import java.util.*;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
-	RegistrationStateChangeListener
+public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch, RegistrationStateChangeListener
 {
 	/**
 	 * The logger.

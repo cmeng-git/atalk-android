@@ -131,12 +131,12 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
             if (channels == 1)
             {
                 //mono
-                FFmpeg.avcodeccontext_set_channel_layout(avctx, 0x4);
+                FFmpeg.avcodeccontext_set_channel_layout(avctx, FFmpeg.AV_CH_LAYOUT_MONO);
             }
             else if (channels == 2)
             {
                 //stereo
-                FFmpeg.avcodeccontext_set_channel_layout(avctx, 0x3);
+                FFmpeg.avcodeccontext_set_channel_layout(avctx, FFmpeg.AV_CH_LAYOUT_STEREO);
             }
 
 			if (sampleRate != Format.NOT_SPECIFIED)

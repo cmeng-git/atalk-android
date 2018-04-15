@@ -7,6 +7,7 @@ package net.java.sip.communicator.impl.protocol.jabber.extensions.jibri;
 
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.*;
+import org.jxmpp.jid.EntityBareJid;
 
 import java.util.*;
 
@@ -124,7 +125,7 @@ public class JibriIq extends IQ
 	/**
 	 * The name of the conference room to be recorded.
 	 */
-	private String room = null;
+	private EntityBareJid room = null;
 
     /**
      * @return the value for {@link #DISPLAY_NAME_ATTR_NAME}
@@ -195,7 +196,7 @@ public class JibriIq extends IQ
 	 * empty.
 	 * @see #room
 	 */
-	public String getRoom()
+	public EntityBareJid getRoom()
 	{
 		return room;
 	}
@@ -208,7 +209,7 @@ public class JibriIq extends IQ
 	 * 		element.
 	 * @see #room
 	 */
-	public void setRoom(String room)
+	public void setRoom(EntityBareJid room)
 	{
 		this.room = room;
 	}

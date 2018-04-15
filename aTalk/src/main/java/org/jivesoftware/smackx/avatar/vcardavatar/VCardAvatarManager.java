@@ -138,7 +138,7 @@ public class VCardAvatarManager extends AvatarManager
             /**
              * Upon user authentication, update account avatarHash so it is ready for
              * x-extension inclusion in <presence/> sending.
-             * @see XMPPConnection#addPacketInterceptor(StanzaListener, StanzaFilter)
+             * @see XMPPConnection#addStanzaInterceptor(StanzaListener, StanzaFilter)
              * @see VCardAvatarManager#processStanza(Stanza)
              *
              * Application can also update the avatarHash anytime using
@@ -160,7 +160,7 @@ public class VCardAvatarManager extends AvatarManager
          * The Presence stanza interceptor with type=available to insert VCardTempXUpdate element
          */
         // if (!isUserAvatarEnable) {
-        connection.addPacketInterceptor(this, PresenceTypeFilter.AVAILABLE);
+        connection.addStanzaInterceptor(this, PresenceTypeFilter.AVAILABLE);
         //}
 
         /*

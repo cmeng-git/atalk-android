@@ -12,6 +12,7 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 import java.net.*;
 import java.text.*;
@@ -43,7 +44,7 @@ public class InfoRetriever
 	 */
 	private final long vcardTimeoutReply;
 
-	protected InfoRetriever(ProtocolProviderServiceJabberImpl jabberProvider, String ownerUin)
+	protected InfoRetriever(ProtocolProviderServiceJabberImpl jabberProvider, EntityBareJid ownerUin)
 	{
 		this.jabberProvider = jabberProvider;
 		vcardTimeoutReply = JabberActivator.getConfigurationService().getLong(

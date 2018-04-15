@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0'
+        classpath 'com.android.tools.build:gradle:3.1.1'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.0" // jarjar.repackage
     }
 }
@@ -117,8 +117,7 @@ android {
 ext {
     // Need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
-    // smackVersion = '4.2.2'
-    smackVersion = '4.2.3'
+    smackVersion = '4.2.4-SNAPSHOT'
 }
 
 dependencies {
@@ -165,27 +164,9 @@ dependencies {
     implementation 'org.jmdns:jmdns:3.5.3'
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
-    // local /lib/smack library manual inclusion and dependencies
-//    implementation files('lib/smack/smack-android-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-android-extensions-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-bosh-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-compression-jzlib-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-core-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-experimental-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-extensions-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-im-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-legacy-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-resolver-minidns-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-sasl-provided-4.2.3-SNAPSHOT.jar')
-//    implementation files('lib/smack/smack-tcp-4.2.3-SNAPSHOT.jar')
-
     implementation files('lib/smack/smack-omemo-4.2.3-SNAPSHOT.jar')
     implementation files('lib/smack/smack-omemo-signal-4.2.3-SNAPSHOT.jar')
     implementation 'org.whispersystems:signal-protocol-java:2.6.2'
-
-    // smack dependencies needed if use local libraries
-//    implementation 'org.igniterealtime.jbosh:jbosh:0.9.0'
-//    implementation 'de.measite.minidns:minidns-hla:0.2.4'
 
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
     implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"

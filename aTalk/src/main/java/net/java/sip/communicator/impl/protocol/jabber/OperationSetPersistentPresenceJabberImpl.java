@@ -42,7 +42,6 @@ import org.jivesoftware.smack.roster.AbstractRosterListener;
 import org.jivesoftware.smack.roster.PresenceEventListener;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
-import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smack.roster.RosterLoadedListener;
 import org.jivesoftware.smack.roster.RosterUtil;
 import org.jivesoftware.smack.roster.SubscribeListener;
@@ -63,7 +62,6 @@ import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -1207,7 +1205,6 @@ public class OperationSetPersistentPresenceJabberImpl
         @Override
         public void presenceChanged(Presence presence)
         {
-            logger.warn("Presence change received: " + presence);
             firePresenceStatusChanged(presence);
         }
 
@@ -1508,8 +1505,6 @@ public class OperationSetPersistentPresenceJabberImpl
     @Override
     public void presenceAvailable(FullJid address, Presence availablePresence)
     {
-        logger.warn("Presence available received for: " + address);
-
         // Keep a copy in storedPresences for later processing if isStoringPresenceEvents().
         if ((contactChangesListener != null) && contactChangesListener.isStoringPresenceEvents()) {
             contactChangesListener.addPresenceEvent(availablePresence);

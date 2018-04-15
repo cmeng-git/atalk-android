@@ -1,13 +1,11 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -27,19 +25,10 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jivesoftware.smackx.bob.packet.BoB;
-import org.jivesoftware.smackx.iqregisterx.AccountManager;
-import org.jivesoftware.smackx.iqregisterx.packet.Registration;
-import org.jivesoftware.smackx.xdata.FormField;
-import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.jid.parts.Localpart;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.security.GeneralSecurityException;
 
 import javax.net.ssl.SSLContext;
@@ -104,16 +93,16 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
      * Performs the login on an XMPP connection using SASL PLAIN.
      *
      * @param connection The connection on which the login is performed.
-     * @param userName The username for the login.
+     * @param userName The full Jid username for the login.
      * @param resource The XMPP resource.
      * @return always true.
      * @throws XMPPException
      */
-    public boolean login(XMPPTCPConnection connection, String userName, String resource)
+    public boolean login(XMPPTCPConnection connection, String userName, Resourcepart resource)
             throws XMPPException, SmackException
     {
         try {
-            connection.login(userName, password, Resourcepart.from(resource));
+            connection.login(userName, password, resource);
         } catch (IOException | InterruptedException ex) {
             // No response received within reply timeout. Timeout was 5000ms (~10s).
             // Rethrow XMPPException will trigger a re-login dialog
@@ -209,8 +198,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
             if (credentials.isUserCancel()) {
                 protocolProvider.fireRegistrationStateChanged(
                         protocolProvider.getRegistrationState(), RegistrationState.UNREGISTERED,
-                        RegistrationStateChangeEvent.REASON_USER_REQUEST,
-                        "User cancel credentials request");
+                        RegistrationStateChangeEvent.REASON_USER_REQUEST, "User cancel credentials request");
                 return credentials;
             }
 

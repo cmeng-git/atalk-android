@@ -625,7 +625,7 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
 	 * @throws OperationFailedException
 	 * 		with the corresponding code if we fail to create the call.
 	 */
-	public CallPeerJabberImpl initiateSession(String calleeJID, DiscoverInfo discoverInfo,
+	public CallPeerJabberImpl initiateSession(Jid calleeJID, DiscoverInfo discoverInfo,
 			Iterable<ExtensionElement> sessionInitiateExtensions,
 			Collection<String> supportedTransports)
 			throws OperationFailedException
@@ -775,7 +775,7 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
 	{
 		// Use the IQs 'from', instead of the jingle 'initiator' field, because we want to make
 		// sure that following IQs are sent with the correct 'to'.
-		String remoteParty = jingleIQ.getFrom().toString();
+		Jid remoteParty = jingleIQ.getFrom();
 
 		boolean autoAnswer = false;
 		CallPeerJabberImpl attendant = null;

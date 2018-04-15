@@ -1,6 +1,6 @@
 /*
  * aTalk / Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.service.protocol;
@@ -15,14 +15,13 @@ import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.atalk.android.gui.account.settings.JabberPreferenceFragment;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.BareJid;
 import org.osgi.framework.BundleContext;
 
 import java.util.ArrayList;
@@ -100,8 +99,7 @@ public class AccountID
     private XMPPTCPConnection xmppConnection = null;
 
     /**
-     * The <tt>Logger</tt> used by the <tt>AccountID</tt> class and its instances for logging
-     * output.
+     * The <tt>Logger</tt> used by the <tt>AccountID</tt> class and its instances for logging output.
      */
     private static final Logger logger = Logger.getLogger(AccountID.class);
 
@@ -117,8 +115,7 @@ public class AccountID
     private final String protocolName;
 
     /**
-     * The protocol display name. In the case of overridden protocol name this would be the new
-     * name.
+     * The protocol display name. In the case of overridden protocol name this would be the new name.
      */
     private final String protocolDisplayName;
 
@@ -150,7 +147,7 @@ public class AccountID
     /**
      * An XMPP Jabber ID associated with this particular account. e.g. abc123@example.org
      */
-    private FullJid userFullJid;
+    private BareJid userBareJid;
 
     /**
      * The name of the service that defines the context for this account. e.g. example.org
@@ -163,8 +160,8 @@ public class AccountID
      * there, prevent changing account uid when server changed (serviceName has changed).
      *
      * @param userID a String that uniquely identifies the user.
-     * @param accountProperties a Map containing any other protocol and implementation specific account initialization
-     * properties
+     * @param accountProperties a Map containing any other protocol and implementation specific account
+     * initialization properties
      * @param protocolName the protocol name implemented by the provider that this id is meant for e.g. Jabber
      * @param serviceName the name of the service (e.g. iptel.org, jabber.org, icq.com) that this account is
      * registered with.
@@ -173,14 +170,13 @@ public class AccountID
      * @see net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration or
      * @see net.java.sip.communicator.service.protocol.sip.SIPAccountRegistration constructor
      */
-    protected AccountID(String userID, Map<String, String> accountProperties, String protocolName,
-            String serviceName)
+    protected AccountID(String userID, Map<String, String> accountProperties, String protocolName, String serviceName)
     {
         /*
          * Allow account registration wizards to override the default protocol name through
-		 * accountProperties for the purposes of presenting a well-known protocol name associated
-		 * with the account that is different from the name of the effective protocol.
-		 */
+         * accountProperties for the purposes of presenting a well-known protocol name associated
+         * with the account that is different from the name of the effective protocol.
+         */
         this.protocolName = protocolName;
         this.protocolDisplayName = getOverriddenProtocolName(accountProperties, protocolName);
         this.userID = userID;
@@ -200,8 +196,7 @@ public class AccountID
             }
         }
         mKeys = tmp;
-        logger.info("### Set Account UUID to: " + uuid + ": " + accountUID
-                + " for " + userID);
+        logger.info("### Set Account UUID to: " + uuid + ": " + accountUID + " for " + userID);
     }
 
     /**
@@ -222,13 +217,11 @@ public class AccountID
      * overriding value
      * @return the protocol name
      */
-    private static String getOverriddenProtocolName(Map<String, String> accountProperties,
-            String defaultProtocolName)
+    private static String getOverriddenProtocolName(Map<String, String> accountProperties, String defaultProtocolName)
     {
         String key = ProtocolProviderFactory.PROTOCOL;
         String protocolName = accountProperties.get(key);
-        if (StringUtils.isNullOrEmpty(protocolName)
-                && !StringUtils.isNullOrEmpty(defaultProtocolName)) {
+        if (StringUtils.isNullOrEmpty(protocolName) && !StringUtils.isNullOrEmpty(defaultProtocolName)) {
             protocolName = defaultProtocolName;
             accountProperties.put(key, protocolName);
         }
@@ -250,15 +243,15 @@ public class AccountID
         return userID;
     }
 
-    // Override for Jabber implementation for the fullJid
-    public FullJid getFullJid()
+    // Override for Jabber implementation for the BareJid
+    public BareJid getBareJid()
     {
-        return userFullJid;
+        return userBareJid;
     }
 
-    public void setFullJid(FullJid jid)
+    public void setBareJid(BareJid jid)
     {
-        userFullJid = jid;
+        userBareJid = jid;
     }
 
     /**
@@ -961,8 +954,7 @@ public class AccountID
      */
     public void setDtmfMinimalToneDuration(String dtmfMinimalToneDuration)
     {
-        putAccountProperty(ProtocolProviderFactory.DTMF_MINIMAL_TONE_DURATION,
-                dtmfMinimalToneDuration);
+        putAccountProperty(ProtocolProviderFactory.DTMF_MINIMAL_TONE_DURATION, dtmfMinimalToneDuration);
     }
 
     /**
@@ -1012,8 +1004,7 @@ public class AccountID
      */
     public boolean isStatusMenuHidden()
     {
-        return getAccountPropertyString(
-                ProtocolProviderFactory.IS_ACCOUNT_STATUS_MENU_HIDDEN) != null;
+        return getAccountPropertyString(ProtocolProviderFactory.IS_ACCOUNT_STATUS_MENU_HIDDEN) != null;
     }
 
     /**
@@ -1034,11 +1025,9 @@ public class AccountID
      */
     public boolean isPreferredProvider()
     {
-        String preferredProtocolProp
-                = getAccountPropertyString(ProtocolProviderFactory.IS_PREFERRED_PROTOCOL);
+        String preferredProtocolProp = getAccountPropertyString(ProtocolProviderFactory.IS_PREFERRED_PROTOCOL);
 
-        return !TextUtils.isEmpty(preferredProtocolProp)
-                && Boolean.parseBoolean(preferredProtocolProp);
+        return !TextUtils.isEmpty(preferredProtocolProp) && Boolean.parseBoolean(preferredProtocolProp);
     }
 
     /**
@@ -1083,8 +1072,7 @@ public class AccountID
             if (stunServer == null)
                 break;
 
-            String password = loadStunPassword(bundleContext, this,
-                    ProtocolProviderFactory.STUN_PREFIX + i);
+            String password = loadStunPassword(bundleContext, this, ProtocolProviderFactory.STUN_PREFIX + i);
             if (password != null)
                 stunServer.setPassword(password);
             stunServerList.add(stunServer);
@@ -1103,17 +1091,16 @@ public class AccountID
     protected static String loadStunPassword(BundleContext bundleContext, AccountID accountID,
             String namePrefix)
     {
-        ProtocolProviderFactory providerFactory = ProtocolProviderFactory
-                .getProtocolProviderFactory(bundleContext, accountID.getSystemProtocolName());
+        ProtocolProviderFactory providerFactory
+                = ProtocolProviderFactory.getProtocolProviderFactory(bundleContext, accountID.getSystemProtocolName());
 
         String password;
         String className = providerFactory.getClass().getName();
         String packageSourceName = className.substring(0, className.lastIndexOf('.'));
 
-        String accountPrefix = ProtocolProviderFactory.findAccountPrefix(bundleContext, accountID,
-                packageSourceName);
-        CredentialsStorageService credentialsService = ServiceUtils.getService(bundleContext,
-                CredentialsStorageService.class);
+        String accountPrefix = ProtocolProviderFactory.findAccountPrefix(bundleContext, accountID, packageSourceName);
+        CredentialsStorageService credentialsService
+                = ServiceUtils.getService(bundleContext, CredentialsStorageService.class);
 
         try {
             password = credentialsService.loadPassword(accountPrefix + "." + namePrefix);
@@ -1180,20 +1167,18 @@ public class AccountID
      */
     public List<SrtpControlType> getSortedEnabledEncryptionProtocolList()
     {
-        Map<String, Integer> encryptionProtocols = getIntegerPropertiesByPrefix(
-                ProtocolProviderFactory.ENCRYPTION_PROTOCOL, true);
-        Map<String, Boolean> encryptionProtocolStatus = getBooleanPropertiesByPrefix(
-                ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS, true, false);
+        Map<String, Integer> encryptionProtocols
+                = getIntegerPropertiesByPrefix(ProtocolProviderFactory.ENCRYPTION_PROTOCOL, true);
+        Map<String, Boolean> encryptionProtocolStatus
+                = getBooleanPropertiesByPrefix(ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS, true, false);
 
         // If the account is not yet configured, then ZRTP is activated by default.
         if (encryptionProtocols.size() == 0) {
             encryptionProtocols.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL + ".ZRTP", 0);
-            encryptionProtocolStatus.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS
-                    + ".ZRTP", true);
+            encryptionProtocolStatus.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS + ".ZRTP", true);
         }
 
-        List<SrtpControlType> sortedEncryptionProtocols
-                = new ArrayList<>(encryptionProtocols.size());
+        List<SrtpControlType> sortedEncryptionProtocols = new ArrayList<>(encryptionProtocols.size());
 
         // First: add all protocol in the right order.
         for (Map.Entry<String, Integer> e : encryptionProtocols.entrySet()) {
@@ -1203,8 +1188,7 @@ public class AccountID
                 if (index > sortedEncryptionProtocols.size()) {
                     index = sortedEncryptionProtocols.size();
                 }
-                String name = e.getKey().substring(
-                        ProtocolProviderFactory.ENCRYPTION_PROTOCOL.length() + 1);
+                String name = e.getKey().substring(ProtocolProviderFactory.ENCRYPTION_PROTOCOL.length() + 1);
 
                 try {
                     sortedEncryptionProtocols.add(index, SrtpControlType.valueOf(name));
@@ -1409,8 +1393,7 @@ public class AccountID
      * @param accountIconPath the path to the account icon if used
      * @param accountProperties output properties map
      */
-    public void storeProperties(String protocolIconPath, String accountIconPath,
-            Map<String, String> accountProperties)
+    public void storeProperties(String protocolIconPath, String accountIconPath, Map<String, String> accountProperties)
     {
         if (protocolIconPath != null)
             setProtocolIconPath(protocolIconPath);
@@ -1472,8 +1455,7 @@ public class AccountID
      * @param factory Account protocolProvider Factory
      * @return the new AccountID constructed
      */
-    public static AccountID fromCursor(SQLiteDatabase db, Cursor cursor,
-            ProtocolProviderFactory factory)
+    public static AccountID fromCursor(SQLiteDatabase db, Cursor cursor, ProtocolProviderFactory factory)
     {
         String accountUuid = cursor.getString(cursor.getColumnIndex(ACCOUNT_UUID));
 

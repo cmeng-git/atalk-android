@@ -24,6 +24,12 @@ public class FFmpeg
     public static final int AV_NUM_DATA_POINTERS = 8;
 
     /**
+     *  Audio channel masks.
+     */
+    public static final int AV_CH_LAYOUT_STEREO = 3;
+    public static final int AV_CH_LAYOUT_MONO = 4;
+
+    /**
      * The AV sample format for signed 16.
      */
     public static final int AV_SAMPLE_FMT_S16 = 1;

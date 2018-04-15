@@ -42,15 +42,13 @@ public class ConferenceMediumProvider extends
 		boolean done = false;
 		int eventType;
 		String elementName = null;
-		String label = parser
-			.getAttributeValue("", ConferenceMediumPacketExtension.LABEL_ATTR_NAME);
+		String label = parser.getAttributeValue("", ConferenceMediumPacketExtension.LABEL_ATTR_NAME);
 
 		if (label == null) {
 			try {
 				throw new Exception("Coin medium element must contain entity attribute");
 			}
 			catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -79,7 +77,6 @@ public class ConferenceMediumProvider extends
 				}
 			}
 			catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

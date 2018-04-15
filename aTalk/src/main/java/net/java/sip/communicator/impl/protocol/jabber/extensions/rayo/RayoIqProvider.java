@@ -32,7 +32,7 @@ import java.io.IOException;
  *
  * @author Pawel Domas
  */
-public class RayoIqProvider extends IQProvider<IQ>
+public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
 {
 	/**
 	 * Rayo namespace.
@@ -65,7 +65,7 @@ public class RayoIqProvider extends IQProvider<IQ>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public IQ parse(XmlPullParser parser, int initialDepth)
+	public RayoIq parse(XmlPullParser parser, int initialDepth)
 			throws XmlPullParserException, IOException, SmackException
 	{
 		String namespace = parser.getNamespace();
