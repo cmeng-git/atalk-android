@@ -73,8 +73,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
      * The {@link Logger} used by the {@link TransportCCEngine} class and its
      * instances for logging output.
      */
-    private static final Logger logger
-            = Logger.getLogger(TransportCCEngine.class);
+    private static final Logger logger = Logger.getLogger(TransportCCEngine.class);
 
     /**
      * The {@link TimeSeriesLogger} to be used by this instance to print time series.
@@ -168,8 +167,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
      * Holds a key value pair of the packet sequence number and an object made
      * up of the packet send time and the packet size.
      */
-    private Map<Integer, PacketDetail> sentPacketDetails
-            = new LRUCache<>(MAX_OUTGOING_PACKETS_HISTORY);
+    private Map<Integer, PacketDetail> sentPacketDetails = new LRUCache<>(MAX_OUTGOING_PACKETS_HISTORY);
 
     /**
      * Used for estimating the bitrate from RTCP TCC feedback packets
@@ -202,8 +200,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
                 incomingPackets = new RTCPTCCPacket.PacketMap();
             }
             if (incomingPackets.size() >= MAX_INCOMING_PACKETS_HISTORY) {
-                Iterator<Map.Entry<Integer, Long>> iter
-                        = incomingPackets.entrySet().iterator();
+                Iterator<Map.Entry<Integer, Long>> iter = incomingPackets.entrySet().iterator();
                 if (iter.hasNext()) {
                     iter.next();
                     iter.remove();
@@ -240,8 +237,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
             return -1;
         }
 
-        MediaStreamTrackReceiver receiver
-                = stream.getMediaStreamTrackReceiver();
+        MediaStreamTrackReceiver receiver = stream.getMediaStreamTrackReceiver();
         if (receiver == null) {
             return -1;
         }
@@ -255,7 +251,6 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
         if (encodings == null || encodings.length == 0) {
             return -1;
         }
-
         return encodings[0].getPrimarySSRC();
     }
 
@@ -278,16 +273,27 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
                 // No packets with unsent feedback.
                 return;
             }
-
             delta = firstIncomingTs == -1 ? 0 : (now - firstIncomingTs);
+
+            // The number of packets represented in incomingPackets (including
+            // the missing ones), i.e. the number of entries that the RTCP TCC
+            // packet would include.
+            int packetCount
+                    = 1 + RTPUtils.subtractNumber(
+                    incomingPackets.lastKey(),
+                    incomingPackets.firstKey());
+
             // This condition controls when we send feedback:
             // 1. If 100ms have passed,
             // 2. If we see the end of a frame, and 20ms have passed, or
             // 3. If we have at least 100 packets.
+            // 4. We are approaching the maximum number of packets we can
+            // report on in one RTCP packet.
             // The exact values and logic here are to be improved.
             if (delta > 100
                     || (delta > 20 && marked)
-                    || incomingPackets.size() > 100) {
+                    || incomingPackets.size() > 100
+                    || packetCount >= RTCPTCCPacket.MAX_PACKET_COUNT - 20) {
                 packets = incomingPackets;
                 incomingPackets = null;
                 firstIncomingTs = -1;
@@ -302,8 +308,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
             }
 
             try {
-                long senderSSRC
-                        = anyVideoMediaStream.getStreamRTPManager().getLocalSSRC();
+                long senderSSRC = anyVideoMediaStream.getStreamRTPManager().getLocalSSRC();
                 if (senderSSRC == -1) {
                     logger.warn("No sender SSRC, can't send RTCP.");
                     return;
@@ -323,17 +328,19 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
                 // Inject the TCC packet *after* this engine. We don't want
                 // RTCP termination -which runs before this engine in the 
                 // egress- to drop the packet we just sent.
-                stream.injectPacket(
-                        rtcpPacket.toRawPacket(), false /* rtcp */, egressEngine);
+                stream.injectPacket(rtcpPacket.toRawPacket(), false /* rtcp */, egressEngine);
             } catch (IllegalArgumentException iae) {
                 // This comes from the RTCPTCCPacket constructor when the
                 // list of packets contains a delta which cannot be expressed
-                // in a single packet (more than 8192 milliseconds). In this
-                // case we would have to split the feedback in two RTCP packets.
+                // in a single packet (more than 8192 milliseconds), or the
+                // number of packets to report (including the ones lost) is
+                // too big for one RTCP TCC packet. In this case we would have
+                // to split the feedback in two or more RTCP TCC packets.
                 // We currently don't do this, because it only happens if the
-                // receiver stops sending packets for over 8s. In this case
-                // we will fail to send one feedback message.
-                logger.warn("Not sending transport-cc feedback, delta too big.");
+                // receiver stops sending packets for over 8s or there is a
+                // significant gap in the received sequence numbers. In this
+                // case we will fail to send one feedback message.
+                logger.warn("Not sending transport-cc feedback, delta or packet count too big.");
             } catch (IOException | TransmissionFailedException e) {
                 logger.error("Failed to send transport feedback RTCP: ", e);
             }
@@ -381,7 +388,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
     }
 
     /**
-     * Calls the bitrate estimator with receiver and sender parameters.
+     * Handles an incoming RTCP transport-cc feedback packet.
      *
      * @param tccPacket the received TCC packet.
      */
@@ -399,7 +406,6 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
             if (remoteReferenceTimeMs == -1) {
                 remoteReferenceTimeMs = RTCPTCCPacket.getReferenceTime250us(
                         new ByteArrayBufferImpl(tccPacket.fci, 0, tccPacket.fci.length)) / 4;
-
                 localReferenceTimeMs = System.currentTimeMillis();
             }
 
@@ -412,8 +418,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
                 continue;
             }
 
-            long arrivalTimeMs = arrivalTime250Us / 4
-                    - remoteReferenceTimeMs + localReferenceTimeMs;
+            long arrivalTimeMs = arrivalTime250Us / 4 - remoteReferenceTimeMs + localReferenceTimeMs;
 
             if (timeSeriesLogger.isTraceEnabled()) {
                 if (previousArrivalTimeMs != -1) {
@@ -433,14 +438,10 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
             }
 
             previousArrivalTimeMs = arrivalTimeMs;
-            long sendTime24bits = RemoteBitrateEstimatorAbsSendTime
-                    .convertMsTo24Bits(packetDetail.packetSendTimeMs);
+            long sendTime24bits = RemoteBitrateEstimatorAbsSendTime.convertMsTo24Bits(packetDetail.packetSendTimeMs);
 
             bitrateEstimatorAbsSendTime.incomingPacketInfo(
-                    arrivalTimeMs,
-                    sendTime24bits,
-                    packetDetail.packetLength,
-                    tccPacket.getSourceSSRC());
+                    arrivalTimeMs, sendTime24bits, packetDetail.packetLength, tccPacket.getSourceSSRC());
         }
     }
 
@@ -536,9 +537,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
     /**
      * Handles outgoing RTP packets for this {@link TransportCCEngine}.
      */
-    public class EgressEngine
-            extends SinglePacketTransformerAdapter
-            implements TransformEngine
+    public class EgressEngine extends SinglePacketTransformerAdapter implements TransformEngine
     {
         /**
          * Ctor.
@@ -559,17 +558,13 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
         public RawPacket transform(RawPacket pkt)
         {
             if (extensionId != -1) {
-                RawPacket.HeaderExtension ext
-                        = pkt.getHeaderExtension((byte) extensionId);
+                RawPacket.HeaderExtension ext = pkt.getHeaderExtension((byte) extensionId);
                 if (ext == null) {
                     ext = pkt.addExtension((byte) extensionId, 2);
                 }
 
                 int seq = outgoingSeq.getAndIncrement() & 0xffff;
-                RTPUtils.writeShort(
-                        ext.getBuffer(),
-                        ext.getOffset() + 1,
-                        (short) seq);
+                RTPUtils.writeShort(ext.getBuffer(), ext.getOffset() + 1, (short) seq);
 
                 if (timeSeriesLogger.isTraceEnabled()) {
                     timeSeriesLogger.trace(diagnosticContext
@@ -578,11 +573,8 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
                             .addField("pt", RawPacket.getPayloadType(pkt))
                             .addField("tcc_seq", seq));
                 }
-
                 synchronized (sentPacketsSyncRoot) {
-                    sentPacketDetails.put(seq, new PacketDetail(
-                            pkt.getLength(),
-                            System.currentTimeMillis()));
+                    sentPacketDetails.put(seq, new PacketDetail(pkt.getLength(), System.currentTimeMillis()));
                 }
             }
             return pkt;
@@ -607,13 +599,10 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
         }
     }
 
-
     /**
      * Handles incoming RTP packets for this {@link TransportCCEngine}.
      */
-    public class IngressEngine
-            extends SinglePacketTransformerAdapter
-            implements TransformEngine
+    public class IngressEngine extends SinglePacketTransformerAdapter implements TransformEngine
     {
         /**
          * Ctor.
@@ -630,15 +619,10 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
         public RawPacket reverseTransform(RawPacket pkt)
         {
             if (extensionId != -1) {
-                RawPacket.HeaderExtension he
-                        = pkt.getHeaderExtension((byte) extensionId);
+                RawPacket.HeaderExtension he = pkt.getHeaderExtension((byte) extensionId);
                 if (he != null && he.getExtLength() == 2) {
-                    int seq = RTPUtils.readUint16AsInt(
-                            he.getBuffer(), he.getOffset() + 1);
-                    packetReceived(
-                            seq,
-                            RawPacket.getPayloadType(pkt),
-                            pkt.isPacketMarked());
+                    int seq = RTPUtils.readUint16AsInt(he.getBuffer(), he.getOffset() + 1);
+                    packetReceived(seq, RawPacket.getPayloadType(pkt), pkt.isPacketMarked());
                 }
             }
             return pkt;

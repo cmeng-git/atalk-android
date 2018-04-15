@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia;
@@ -20,6 +20,7 @@ import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.device.ScreenDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 
 import java.util.ArrayList;
@@ -41,6 +42,11 @@ import javax.sdp.SdpConstants;
  */
 public class MediaUtils
 {
+    /**
+     * The <tt>Logger</tt> used by the <tt>MediaUtils</tt> class for logging output.
+     */
+    private static final Logger logger = Logger.getLogger(MediaUtils.class);
+
     /**
      * An empty array with <tt>MediaFormat</tt> element type. Explicitly defined in order to reduce
      * unnecessary allocations, garbage collection.
@@ -87,10 +93,10 @@ public class MediaUtils
                 AudioFormat.ULAW_RTP,
                 8000);
 
-		/*
+        /*
          * Some codecs depend on JMF native libraries which are only available on 32-bit Linux and
-		 * 32-bit Windows.
-		 */
+         * 32-bit Windows.
+         */
         if (OSUtils.IS_LINUX32 || OSUtils.IS_WINDOWS32) {
             Map<String, String> g723FormatParams = new HashMap<>();
             g723FormatParams.put("annexa", "no");
@@ -240,7 +246,7 @@ public class MediaUtils
             VideoFormat.H261_RTP);
             */
 
-		/* H264 */
+        /* H264 */
         // Checks whether ffmpeg is enabled and whether h264 is available in the provided binaries
         boolean enableFfmpeg = cfg.getBoolean(MediaService.ENABLE_FFMPEG_CODECS_PNAME, false);
         boolean h264Enabled = false;
@@ -254,15 +260,15 @@ public class MediaUtils
             String packetizationMode = VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP;
             Map<String, String> h264AdvancedAttributes = new HashMap<>();
 
-    		/*
-    		 * Disable PLI because the periodic intra-refresh feature of FFmpeg/x264 is used.
-    		 */
+            /*
+             * Disable PLI because the periodic intra-refresh feature of FFmpeg/x264 is used.
+             */
             // h264AdvancedAttributes.put("rtcp-fb", "nack pli");
 
-    		/*
-    		 * XXX The initialization of MediaServiceImpl is very complex so it is wise to not
-    		 * reference it at the early stage of its initialization.
-    		 */
+            /*
+             * XXX The initialization of MediaServiceImpl is very complex so it is wise to not
+             * reference it at the early stage of its initialization.
+             */
             ScreenDevice screen = ScreenDeviceImpl.getDefaultScreenDevice();
             Dimension res = (screen == null) ? null : screen.getSize();
 
@@ -296,15 +302,15 @@ public class MediaUtils
             }
             // packetization-mode=0
 
-    		/*
-    		 * XXX At the time of this writing,
-    		 * EncodingConfiguration#compareEncodingPreferences(MediaFormat, MediaFormat) is incomplete
-    		 * and considers two MediaFormats to be equal if they have an equal number of format
-    		 * parameters (given that the encodings and clock rates are equal, of course). Either fix
-    		 * the method in question or don't add a format parameter for packetization-mode 0
-    		 * equivalent to having packetization-mode explicitly defined as 0 anyway, according to the
-    		 * respective RFC).
-    		 */
+            /*
+             * XXX At the time of this writing,
+             * EncodingConfiguration#compareEncodingPreferences(MediaFormat, MediaFormat) is incomplete
+             * and considers two MediaFormats to be equal if they have an equal number of format
+             * parameters (given that the encodings and clock rates are equal, of course). Either fix
+             * the method in question or don't add a format parameter for packetization-mode 0
+             * equivalent to having packetization-mode explicitly defined as 0 anyway, according to the
+             * respective RFC).
+             */
             h264FormatParams.remove(packetizationMode);
             addMediaFormats(
                     MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN,
@@ -514,8 +520,8 @@ public class MediaUtils
                     throw new IllegalArgumentException("mediaType");
             }
 
-            MediaFormat mediaFormat = MediaFormatImpl.createInstance(format, clockRate,
-                    formatParameters, advancedAttributes);
+            MediaFormat mediaFormat
+                    = MediaFormatImpl.createInstance(format, clockRate, formatParameters, advancedAttributes);
 
             if (mediaFormat != null)
                 mediaFormats.add(mediaFormat);
@@ -529,8 +535,7 @@ public class MediaUtils
                         mediaFormats.toArray(EMPTY_MEDIA_FORMATS));
 
             jmfEncodingToEncodings.put(
-                    ((MediaFormatImpl<? extends Format>) mediaFormats.get(0)).getJMFEncoding(),
-                    encoding);
+                    ((MediaFormatImpl<? extends Format>) mediaFormats.get(0)).getJMFEncoding(), encoding);
         }
     }
 
@@ -590,13 +595,13 @@ public class MediaUtils
 
         /* send width */
         if (sendSize != null) {
-			/* single value => send [x=width,y=height] */
+            /* single value => send [x=width,y=height] */
 			/*img.append("send [x=");
 			img.append((int)sendSize.getWidth());
             img.append(",y=");
             img.append((int)sendSize.getHeight());
             img.append("]");*/
-			/* send [x=[min:max],y=[min:max]] */
+            /* send [x=[min:max],y=[min:max]] */
             img.append("send [x=[1:");
             img.append((int) sendSize.getWidth());
             img.append("],y=[1:");
@@ -664,11 +669,9 @@ public class MediaUtils
             clockRate = Format.NOT_SPECIFIED;
 
         byte rtpPayloadType = getRTPPayloadType(format.getEncoding(), clockRate);
-
         if (MediaFormatImpl.RTP_PAYLOAD_TYPE_UNKNOWN != rtpPayloadType) {
             for (MediaFormat mediaFormat : getMediaFormats(rtpPayloadType)) {
-                MediaFormatImpl<? extends Format> mediaFormatImpl
-                        = (MediaFormatImpl<? extends Format>) mediaFormat;
+                MediaFormatImpl<? extends Format> mediaFormatImpl = (MediaFormatImpl<? extends Format>) mediaFormat;
 
                 if (format.matches(mediaFormatImpl.getFormat()))
                     return mediaFormat;
@@ -701,8 +704,7 @@ public class MediaUtils
      * @return the <tt>MediaFormat</tt> known to <tt>MediaUtils</tt> and having the specified
      * <tt>encoding</tt> (name), <tt>clockRate</tt> and matching format parameters
      */
-    public static MediaFormat getMediaFormat(String encoding, double clockRate,
-            Map<String, String> fmtps)
+    public static MediaFormat getMediaFormat(String encoding, double clockRate, Map<String, String> fmtps)
     {
         for (MediaFormat format : getMediaFormats(encoding))
             if ((format.getClockRate() == clockRate) && format.formatParametersMatch(fmtps))
@@ -735,8 +737,7 @@ public class MediaUtils
      */
     public static MediaFormat[] getMediaFormats(byte rtpPayloadType)
     {
-        MediaFormat[] mediaFormats
-                = rtpPayloadTypeStrToMediaFormats.get(Byte.toString(rtpPayloadType));
+        MediaFormat[] mediaFormats = rtpPayloadTypeStrToMediaFormats.get(Byte.toString(rtpPayloadType));
 
         return (mediaFormats == null) ? EMPTY_MEDIA_FORMATS : mediaFormats.clone();
     }
@@ -778,7 +779,7 @@ public class MediaUtils
         String jmfEncoding = null;
 
         for (Map.Entry<String, String> jmfEncodingToEncoding : jmfEncodingToEncodings.entrySet())
-            if (jmfEncodingToEncoding.getValue().equals(encoding)) {
+            if (jmfEncodingToEncoding.getValue().equalsIgnoreCase(encoding)) {
                 jmfEncoding = jmfEncodingToEncoding.getKey();
                 break;
             }

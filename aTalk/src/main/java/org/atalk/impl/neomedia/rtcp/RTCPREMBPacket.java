@@ -9,6 +9,7 @@ import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 
 import org.atalk.impl.neomedia.RTCPFeedbackMessagePacket;
 import org.atalk.service.neomedia.ByteArrayBuffer;
+import org.atalk.util.RTCPUtils;
 
 import java.io.*;
 import java.util.Arrays;
@@ -230,7 +231,7 @@ public class RTCPREMBPacket extends RTCPFBPacket
      */
     public static boolean isREMBPacket(ByteArrayBuffer baf)
     {
-        int rc = RTCPHeaderUtils.getReportCount(baf);
+        int rc = RTCPUtils.getReportCount(baf);
         return isPSFBPacket(baf) && rc == FMT;
     }
 }

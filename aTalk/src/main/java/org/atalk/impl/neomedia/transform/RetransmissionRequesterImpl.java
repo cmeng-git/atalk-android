@@ -67,13 +67,13 @@ public class RetransmissionRequesterImpl extends SinglePacketTransformerAdapter
      * Create a single executor to service the nack processing for all the
      * {@link RetransmissionRequesterImpl} instances
      */
-    private static RecurringRunnableExecutor recurringRunnableExecutor = new RecurringRunnableExecutor();
+    private static RecurringRunnableExecutor recurringRunnableExecutor
+            = new RecurringRunnableExecutor(RetransmissionRequesterImpl.class.getSimpleName());
 
     /**
      * Initializes a new <tt>RetransmissionRequester</tt> for the given <tt>RtpChannel</tt>.
      *
-     * @param stream
-     *         the {@link MediaStream} that the instance belongs to.
+     * @param stream the {@link MediaStream} that the instance belongs to.
      */
     public RetransmissionRequesterImpl(MediaStream stream)
     {
@@ -145,6 +145,7 @@ public class RetransmissionRequesterImpl extends SinglePacketTransformerAdapter
     }
 
     // TransformEngine methods
+
     /**
      * {@inheritDoc}
      */
@@ -164,6 +165,7 @@ public class RetransmissionRequesterImpl extends SinglePacketTransformerAdapter
     }
 
     // RetransmissionRequester methods
+
     /**
      * {@inheritDoc}
      */
