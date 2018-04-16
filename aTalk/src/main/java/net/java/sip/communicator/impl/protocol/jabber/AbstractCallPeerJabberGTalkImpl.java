@@ -26,7 +26,8 @@ import org.jxmpp.jid.Jid;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractCallPeerJabberGTalkImpl<T extends AbstractCallJabberGTalkImpl<?>, U extends AbstractCallPeerMediaHandlerJabberGTalkImpl<?>, V extends IQ>
+public abstract class AbstractCallPeerJabberGTalkImpl<T extends AbstractCallJabberGTalkImpl<?>, U
+        extends AbstractCallPeerMediaHandlerJabberGTalkImpl<?>, V extends IQ>
         extends MediaAwareCallPeer<T, U, ProtocolProviderServiceJabberImpl>
 {
     /**
@@ -97,9 +98,7 @@ public abstract class AbstractCallPeerJabberGTalkImpl<T extends AbstractCallJabb
      */
     public Contact getContact()
     {
-        OperationSetPresence presence = getProtocolProvider().getOperationSet(
-                OperationSetPresence.class);
-
+        OperationSetPresence presence = getProtocolProvider().getOperationSet(OperationSetPresence.class);
         return (presence == null) ? null : presence.findContactByID(getAddress());
     }
 
@@ -184,9 +183,7 @@ public abstract class AbstractCallPeerJabberGTalkImpl<T extends AbstractCallJabb
             String oldAddress = getAddress();
 
             peerJid = address;
-
-            fireCallPeerChangeEvent(CallPeerChangeEvent.CALL_PEER_ADDRESS_CHANGE, oldAddress,
-                    address.toString());
+            fireCallPeerChangeEvent(CallPeerChangeEvent.CALL_PEER_ADDRESS_CHANGE, oldAddress, address.toString());
         }
     }
 

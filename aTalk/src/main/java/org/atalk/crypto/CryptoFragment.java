@@ -607,9 +607,8 @@ public class CryptoFragment extends OSGiFragment
         }
         Contact contact = (metaContact == null) ? null : metaContact.getDefaultContact();
 
-        // skip (contact == null) when accepting muc invitation
-        // do not proceed if the chat session is triggered from system server i.e. welcome message
-        if ((contact != null) && XmppStringUtils.isBareJid(contact.getJid().toString()))
+        // Do not proceed if chat session is triggered from system server (domain part only) i.e. welcome message
+        if ((contact == null) || !XmppStringUtils.parseLocalpart(contact.getAddress()).isEmpty())
             setCurrentContact(contact, chatSessionId);
         else {
             mOmemo.setEnabled(false);

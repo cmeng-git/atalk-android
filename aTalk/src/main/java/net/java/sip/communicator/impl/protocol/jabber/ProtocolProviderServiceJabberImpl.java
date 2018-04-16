@@ -2626,12 +2626,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             jid = mConnection.getUser();
         }
         else {
-            // get Jid from accountID if connection is not established.
-            try {
-                jid = JidCreate.entityFullFrom(mAccountID.getAccountJid());
-            } catch (XmppStringprepException e) {
-                e.printStackTrace();
-            }
+            jid = JidCreate.fullFrom(mAccountID.getBareJid().asEntityBareJidIfPossible(), mResource);
         }
         return jid;
     }
