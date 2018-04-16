@@ -35,13 +35,11 @@ import org.atalk.service.neomedia.MediaType;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaCollector;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.Jid;
 
@@ -163,7 +161,7 @@ public class CallPeerJabberImpl
 
             setState(CallPeerState.FAILED, reasonText);
             try {
-                getProtocolProvider().getConnection().sendStanza(errResp);
+                mConnection.sendStanza(errResp);
             } catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -176,7 +174,7 @@ public class CallPeerJabberImpl
         // send the packet first and start the stream later in case the media relay needs to see it
         // before letting hole punching techniques through.
         try {
-            getProtocolProvider().getConnection().sendStanza(response);
+            mConnection.sendStanza(response);
         } catch (NotConnectedException | InterruptedException e1) {
             e1.printStackTrace();
         }
@@ -195,7 +193,7 @@ public class CallPeerJabberImpl
 
             setState(CallPeerState.FAILED, reasonText);
             try {
-                getProtocolProvider().getConnection().sendStanza(errResp);
+                mConnection.sendStanza(errResp);
             } catch (NotConnectedException | InterruptedException e1) {
                 e1.printStackTrace();
             }
@@ -253,7 +251,7 @@ public class CallPeerJabberImpl
 
         if (prevPeerState.equals(CallPeerState.CONNECTED)
                 || CallPeerState.isOnHold(prevPeerState)) {
-            responseIQ = JinglePacketFactory.createBye(getProtocolProvider().getOurJID(), peerJid, getSID());
+            responseIQ = JinglePacketFactory.createBye(mProtocolProvider.getOurJID(), peerJid, getSID());
         }
         else if (CallPeerState.CONNECTING.equals(prevPeerState)
                 || CallPeerState.CONNECTING_WITH_EARLY_MEDIA.equals(prevPeerState)
@@ -268,10 +266,10 @@ public class CallPeerJabberImpl
                     return;
                 }
             }
-            responseIQ = JinglePacketFactory.createCancel(getProtocolProvider().getOurJID(), peerJid, getSID());
+            responseIQ = JinglePacketFactory.createCancel(mProtocolProvider.getOurJID(), peerJid, getSID());
         }
         else if (prevPeerState.equals(CallPeerState.INCOMING_CALL)) {
-            responseIQ = JinglePacketFactory.createBusy(getProtocolProvider().getOurJID(), peerJid, getSID());
+            responseIQ = JinglePacketFactory.createBusy(mProtocolProvider.getOurJID(), peerJid, getSID());
         }
         else if (prevPeerState.equals(CallPeerState.BUSY)
                 || prevPeerState.equals(CallPeerState.FAILED)) {
@@ -284,8 +282,8 @@ public class CallPeerJabberImpl
 
         if (responseIQ != null) {
             if (reasonOtherExtension != null) {
-                ReasonPacketExtension reason = responseIQ.getExtension(
-                        ReasonPacketExtension.ELEMENT_NAME, ReasonPacketExtension.NAMESPACE);
+                ReasonPacketExtension reason
+                        = responseIQ.getExtension(ReasonPacketExtension.ELEMENT_NAME, ReasonPacketExtension.NAMESPACE);
 
                 if (reason != null) {
                     reason.setOtherExtension(reasonOtherExtension);
@@ -294,9 +292,8 @@ public class CallPeerJabberImpl
                     responseIQ.setReason((ReasonPacketExtension) reasonOtherExtension);
                 }
             }
-
             try {
-                getProtocolProvider().getConnection().sendStanza(responseIQ);
+                mConnection.sendStanza(responseIQ);
             } catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -318,10 +315,9 @@ public class CallPeerJabberImpl
 
         // Create the media description that we'd like to send to the other side.
         List<ContentPacketExtension> offer = getMediaHandler().createContentList();
-        ProtocolProviderServiceJabberImpl protocolProvider = getProtocolProvider();
 
         synchronized (sidSyncRoot) {
-            sessionInitIQ = JinglePacketFactory.createSessionInitiate(protocolProvider.getOurJID(),
+            sessionInitIQ = JinglePacketFactory.createSessionInitiate(mProtocolProvider.getOurJID(),
                     this.peerJid, JingleIQ.generateSID(), offer);
 
             if (cancelled) {
@@ -338,7 +334,7 @@ public class CallPeerJabberImpl
         }
 
         try {
-            protocolProvider.getConnection().sendStanza(sessionInitIQ);
+            mConnection.sendStanza(sessionInitIQ);
         } catch (NotConnectedException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -382,12 +378,12 @@ public class CallPeerJabberImpl
             // Send an error response.
             String reason = "Error: " + e.getMessage();
             JingleIQ errResp = JinglePacketFactory.createSessionTerminate(
-                    getProtocolProvider().getOurJID(), peerJid, sessionInitIQ.getSID(),
+                    mProtocolProvider.getOurJID(), peerJid, sessionInitIQ.getSID(),
                     Reason.INCOMPATIBLE_PARAMETERS, reason);
 
             setState(CallPeerState.FAILED, reason);
             try {
-                getProtocolProvider().getConnection().sendStanza(errResp);
+                mConnection.sendStanza(errResp);
             } catch (NotConnectedException | InterruptedException e1) {
                 e1.printStackTrace();
             }
@@ -459,20 +455,20 @@ public class CallPeerJabberImpl
             logger.warn("Exception occurred", e);
 
             answerContents = null;
-            contentIQ = JinglePacketFactory.createContentReject(getProtocolProvider().getOurJID(),
+            contentIQ = JinglePacketFactory.createContentReject(mProtocolProvider.getOurJID(),
                     this.peerJid, getSID(), answerContents);
         }
 
         if (contentIQ == null) {
             /* send content-accept */
-            contentIQ = JinglePacketFactory.createContentAccept(getProtocolProvider().getOurJID(),
+            contentIQ = JinglePacketFactory.createContentAccept(mProtocolProvider.getOurJID(),
                     this.peerJid, getSID(), answerContents);
             for (ContentPacketExtension c : answerContents)
                 setSenders(getMediaType(c), c.getSenders());
         }
 
         try {
-            getProtocolProvider().getConnection().sendStanza(contentIQ);
+            mConnection.sendStanza(contentIQ);
         } catch (NotConnectedException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -519,12 +515,12 @@ public class CallPeerJabberImpl
             // Send an error response.
             String reason = "Error: " + e.getMessage();
             JingleIQ errResp = JinglePacketFactory.createSessionTerminate(
-                    getProtocolProvider().getOurJID(), peerJid, sessionInitIQ.getSID(),
+                    mProtocolProvider.getOurJID(), peerJid, sessionInitIQ.getSID(),
                     Reason.INCOMPATIBLE_PARAMETERS, reason);
 
             setState(CallPeerState.FAILED, reason);
             try {
-                getProtocolProvider().getConnection().sendStanza(errResp);
+                mConnection.sendStanza(errResp);
             } catch (NotConnectedException | InterruptedException e1) {
                 e1.printStackTrace();
             }
@@ -546,7 +542,7 @@ public class CallPeerJabberImpl
 
             setState(CallPeerState.FAILED, "Error: content rejected");
             try {
-                getProtocolProvider().getConnection().sendStanza(errResp);
+                mConnection.sendStanza(errResp);
             } catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -622,7 +618,7 @@ public class CallPeerJabberImpl
 
             setState(CallPeerState.FAILED, "Error: " + exc.getMessage());
             try {
-                getProtocolProvider().getConnection().sendStanza(errResp);
+                mConnection.sendStanza(errResp);
             } catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -677,7 +673,6 @@ public class CallPeerJabberImpl
         // Do initiate the session.
         this.sessionInitIQ = sessionInitIQ;
         this.initiator = true;
-        XMPPTCPConnection connection = getProtocolProvider().getConnection();
 
         // This is the SDP offer that came from the initial session-initiate. Contrary to SIP,
         // we are guaranteed to have content because
@@ -709,7 +704,7 @@ public class CallPeerJabberImpl
 
             setState(CallPeerState.FAILED, reasonText);
             try {
-                connection.sendStanza(errResp);
+                mConnection.sendStanza(errResp);
             } catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -727,7 +722,7 @@ public class CallPeerJabberImpl
             logger.trace("will send ringing response: ");
 
         try {
-            connection.sendStanza(JinglePacketFactory.createRinging(sessionInitIQ));
+            mConnection.sendStanza(JinglePacketFactory.createRinging(sessionInitIQ));
         } catch (NotConnectedException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -745,10 +740,9 @@ public class CallPeerJabberImpl
         if ((discoverInfo != null)
                 && discoverInfo.containsFeature(ProtocolProviderServiceJabberImpl.URN_IETF_RFC_3264)) {
             try {
-                getProtocolProvider().getConnection().sendStanza(
-                        JinglePacketFactory.createDescriptionInfo(sessionInitIQ.getTo(),
-                                sessionInitIQ.getFrom(), sessionInitIQ.getSID(),
-                                getMediaHandler().getLocalContentList()));
+                mConnection.sendStanza(JinglePacketFactory.createDescriptionInfo(sessionInitIQ.getTo(),
+                        sessionInitIQ.getFrom(), sessionInitIQ.getSID(),
+                        getMediaHandler().getLocalContentList()));
             } catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -806,7 +800,7 @@ public class CallPeerJabberImpl
         }
 
         // Checks if the transfer remote peer is contained by the roster of this account.
-        Roster roster = Roster.getInstanceFor(getProtocolProvider().getConnection());
+        Roster roster = Roster.getInstanceFor(mConnection);
         if (!roster.contains(calleeAddress.asBareJid())) {
             String failedMessage = "Transfer impossible:\n"
                     + "Account roster does not contain transfer peer: "
@@ -815,8 +809,8 @@ public class CallPeerJabberImpl
             logger.info(failedMessage);
         }
 
-        OperationSetBasicTelephonyJabberImpl basicTelephony = (OperationSetBasicTelephonyJabberImpl) getProtocolProvider()
-                .getOperationSet(OperationSetBasicTelephony.class);
+        OperationSetBasicTelephonyJabberImpl basicTelephony
+                = (OperationSetBasicTelephonyJabberImpl) mProtocolProvider.getOperationSet(OperationSetBasicTelephony.class);
         CallJabberImpl calleeCall = new CallJabberImpl(basicTelephony);
         TransferPacketExtension calleeTransfer = new TransferPacketExtension();
         String sid = transfer.getSID();
@@ -862,12 +856,12 @@ public class CallPeerJabberImpl
             // send an error response
             String reasonText = "Error: " + ofe.getMessage();
             JingleIQ errResp = JinglePacketFactory.createSessionTerminate(
-                    getProtocolProvider().getOurJID(), peerJid, sessionInitIQ.getSID(),
+                    mProtocolProvider.getOurJID(), peerJid, sessionInitIQ.getSID(),
                     Reason.GENERAL_ERROR, reasonText);
 
             setState(CallPeerState.FAILED, reasonText);
             try {
-                getProtocolProvider().getConnection().sendStanza(errResp);
+                mConnection.sendStanza(errResp);
             } catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -902,9 +896,9 @@ public class CallPeerJabberImpl
         // spoiling it all with an exception while sending the packet :).
         reevalLocalHoldStatus();
         JingleIQ onHoldIQ = JinglePacketFactory.createSessionInfo(
-                getProtocolProvider().getOurJID(), peerJid, getSID(), type);
+                mProtocolProvider.getOurJID(), peerJid, getSID(), type);
         try {
-            getProtocolProvider().getConnection().sendStanza(onHoldIQ);
+            mConnection.sendStanza(onHoldIQ);
         } catch (NotConnectedException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -923,11 +917,10 @@ public class CallPeerJabberImpl
             return false;
         }
 
-        ProtocolProviderServiceJabberImpl protocolProvider = getProtocolProvider();
-        JingleIQ contentIQ = JinglePacketFactory.createContentAdd(protocolProvider.getOurJID(),
+        JingleIQ contentIQ = JinglePacketFactory.createContentAdd(mProtocolProvider.getOurJID(),
                 this.peerJid, getSID(), contents);
         try {
-            protocolProvider.getConnection().sendStanza(contentIQ);
+            mConnection.sendStanza(contentIQ);
             return true;
         } catch (NotConnectedException | InterruptedException e) {
             e.printStackTrace();
@@ -941,13 +934,13 @@ public class CallPeerJabberImpl
      */
     public void sendCoinSessionInfo()
     {
-        JingleIQ sessionInfoIQ = JinglePacketFactory.createSessionInfo(getProtocolProvider().getOurJID(),
+        JingleIQ sessionInfoIQ = JinglePacketFactory.createSessionInfo(mProtocolProvider.getOurJID(),
                 this.peerJid, getSID());
         CoinPacketExtension coinExt = new CoinPacketExtension(getCall().isConferenceFocus());
 
         sessionInfoIQ.addExtension(coinExt);
         try {
-            getProtocolProvider().getConnection().sendStanza(sessionInfoIQ);
+            mConnection.sendStanza(sessionInfoIQ);
         } catch (NotConnectedException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -1066,12 +1059,11 @@ public class CallPeerJabberImpl
             // cmeng: must update local videoSenders for content-modify
             setSenders(MediaType.VIDEO, newSenders);
 
-            ProtocolProviderServiceJabberImpl protocolProvider = getProtocolProvider();
             JingleIQ contentIQ = JinglePacketFactory.createContentModify(
-                    protocolProvider.getOurJID(), this.peerJid, getSID(), ext);
+                    mProtocolProvider.getOurJID(), this.peerJid, getSID(), ext);
 
             try {
-                protocolProvider.getConnection().sendStanza(contentIQ);
+                mConnection.sendStanza(contentIQ);
             } catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -1110,11 +1102,10 @@ public class CallPeerJabberImpl
         if (senders != null)
             content.setSenders(senders);
 
-        ProtocolProviderServiceJabberImpl protocolProvider = getProtocolProvider();
-        JingleIQ contentIQ = JinglePacketFactory.createContentModify(protocolProvider.getOurJID(),
+        JingleIQ contentIQ = JinglePacketFactory.createContentModify(mProtocolProvider.getOurJID(),
                 this.peerJid, getSID(), content);
         try {
-            protocolProvider.getConnection().sendStanza(contentIQ);
+            mConnection.sendStanza(contentIQ);
         } catch (NotConnectedException | InterruptedException e1) {
             e1.printStackTrace();
         }
@@ -1144,12 +1135,11 @@ public class CallPeerJabberImpl
         content.setCreator(remoteContent.getCreator());
         content.setSenders(remoteContent.getSenders());
 
-        ProtocolProviderServiceJabberImpl protocolProvider = getProtocolProvider();
-        JingleIQ contentIQ = JinglePacketFactory.createContentRemove(protocolProvider.getOurJID(),
+        JingleIQ contentIQ = JinglePacketFactory.createContentRemove(mProtocolProvider.getOurJID(),
                 this.peerJid, getSID(), Collections.singletonList(content));
 
         try {
-            protocolProvider.getConnection().sendStanza(contentIQ);
+            mConnection.sendStanza(contentIQ);
         } catch (NotConnectedException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -1174,19 +1164,16 @@ public class CallPeerJabberImpl
         for (ContentPacketExtension content : contents)
             transportInfo.addContent(content);
 
-        ProtocolProviderServiceJabberImpl protocolProvider = getProtocolProvider();
-
         transportInfo.setAction(JingleAction.TRANSPORT_INFO);
-        transportInfo.setFrom(protocolProvider.getOurJID());
+        transportInfo.setFrom(mProtocolProvider.getOurJID());
         transportInfo.setSID(getSID());
         transportInfo.setTo(peerJid);
         transportInfo.setType(IQ.Type.set);
 
-        StanzaCollector collector = protocolProvider.getConnection().createStanzaCollector(
-                new StanzaIdFilter(transportInfo.getStanzaId()));
+        StanzaCollector collector = mConnection.createStanzaCollector(new StanzaIdFilter(transportInfo.getStanzaId()));
 
         try {
-            protocolProvider.getConnection().sendStanza(transportInfo);
+            mConnection.sendStanza(transportInfo);
         } catch (NotConnectedException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -1244,10 +1231,9 @@ public class CallPeerJabberImpl
             throws OperationFailedException
     {
         JingleIQ transferSessionInfo = new JingleIQ();
-        ProtocolProviderServiceJabberImpl protocolProvider = getProtocolProvider();
 
         transferSessionInfo.setAction(JingleAction.SESSION_INFO);
-        transferSessionInfo.setFrom(protocolProvider.getOurJID());
+        transferSessionInfo.setFrom(mProtocolProvider.getOurJID());
         transferSessionInfo.setSID(getSID());
         transferSessionInfo.setTo(peerJid);
         transferSessionInfo.setType(IQ.Type.set);
@@ -1260,12 +1246,12 @@ public class CallPeerJabberImpl
              * should be but the examples in "XEP-0251: Jingle Session Transfer" has it in the case
              * of attended transfer.
              */
-            transfer.setFrom(protocolProvider.getOurJID());
+            transfer.setFrom(mProtocolProvider.getOurJID());
             transfer.setSID(sid);
 
             // Puts on hold the 2 calls before making the attended transfer.
-            OperationSetBasicTelephonyJabberImpl basicTelephony = (OperationSetBasicTelephonyJabberImpl) protocolProvider
-                    .getOperationSet(OperationSetBasicTelephony.class);
+            OperationSetBasicTelephonyJabberImpl basicTelephony
+                    = (OperationSetBasicTelephonyJabberImpl) mProtocolProvider.getOperationSet(OperationSetBasicTelephony.class);
             CallPeerJabberImpl callPeer = basicTelephony.getActiveCallPeer(sid);
             if (callPeer != null) {
                 if (!CallPeerState.isOnHold(callPeer.getState())) {
@@ -1280,11 +1266,10 @@ public class CallPeerJabberImpl
         transfer.setTo(to);
         transferSessionInfo.addExtension(transfer);
 
-        XMPPConnection connection = protocolProvider.getConnection();
         StanzaCollector collector
-                = connection.createStanzaCollector(new StanzaIdFilter(transferSessionInfo.getStanzaId()));
+                = mConnection.createStanzaCollector(new StanzaIdFilter(transferSessionInfo.getStanzaId()));
         try {
-            protocolProvider.getConnection().sendStanza(transferSessionInfo);
+            mConnection.sendStanza(transferSessionInfo);
         } catch (NotConnectedException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -1509,7 +1494,7 @@ public class CallPeerJabberImpl
     private AbstractConferenceMember findConferenceMemberByAddress(Jid address)
     {
         for (ConferenceMember member : getConferenceMembers()) {
-            if (member.getAddress().equals(address)) {
+            if (member.getAddress().equals(address.toString())) {
                 return (AbstractConferenceMember) member;
             }
         }

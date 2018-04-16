@@ -79,8 +79,7 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
 
 		/* if we have already a candidate (RTCP) allocated, get it */
 		if (localAddressSecond != null && relayedAddressSecond != null) {
-			LocalCandidate candidate = createJingleNodesCandidate(relayedAddressSecond, component,
-					localAddressSecond);
+			LocalCandidate candidate = createJingleNodesCandidate(relayedAddressSecond, component, localAddressSecond);
 
 			// try to add the candidate to the component and then only add it to the harvest not
 			// redundant (not sure how it could be red. but ...)
@@ -107,8 +106,7 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
 			port = ciq.getRemoteport();
 
 			if (logger.isInfoEnabled()) {
-				logger.info("JN relay: " + ip + " remote port:" + port
-						+ " local port: " + ciq.getLocalport());
+				logger.info("JN relay: " + ip + " remote port:" + port + " local port: " + ciq.getLocalport());
 			}
 
 			if (ip == null || ciq.getRemoteport() == 0) {
@@ -126,11 +124,9 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
 
 			/* RTP */
 			TransportAddress relayedAddress = new TransportAddress(ip, port, Transport.UDP);
-			TransportAddress localAddress
-					= new TransportAddress(ip, ciq.getLocalport(), Transport.UDP);
+			TransportAddress localAddress = new TransportAddress(ip, ciq.getLocalport(), Transport.UDP);
 
-			LocalCandidate local
-					= createJingleNodesCandidate(relayedAddress, component, localAddress);
+			LocalCandidate local = createJingleNodesCandidate(relayedAddress, component, localAddress);
 
 			/* RTCP */
 			relayedAddressSecond = new TransportAddress(ip, port + 1, Transport.UDP);
@@ -166,7 +162,7 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
 			jnCandidate = new JingleNodesCandidate(transportAddress, component, localEndPoint);
 			IceSocketWrapper stunSocket = jnCandidate.getStunSocket(null);
 			jnCandidate.getStunStack().addSocket(stunSocket);
-            // cmeng: component.getComponentSocket().add(cand.getCandidateIceSocketWrapper());
+            // cmeng: component.getComponentSocket().add(jnCandidate.getCandidateIceSocketWrapper());
 		}
 		catch (Throwable e) {
 			logger.debug("Exception occurred when creating JingleNodesCandidate: " + e);

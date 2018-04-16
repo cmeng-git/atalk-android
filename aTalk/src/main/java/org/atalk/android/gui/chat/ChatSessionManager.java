@@ -365,8 +365,7 @@ public class ChatSessionManager
      *
      * @param protocolProvider protocol provider for which all chat sessions will be removed.
      */
-    public synchronized static void removeAllChatsForProvider(
-            ProtocolProviderService protocolProvider)
+    public synchronized static void removeAllChatsForProvider(ProtocolProviderService protocolProvider)
     {
         ArrayList<ChatPanel> toBeRemoved = new ArrayList<>();
         for (ChatPanel chat : activeChats.values()) {
@@ -412,8 +411,7 @@ public class ChatSessionManager
             return null;
         }
         else {
-            metaContact = AndroidGUIActivator.getContactListService()
-                    .findMetaContactByContact(contact);
+            metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
             if (metaContact == null) {
                 logger.warn("No meta contact found for " + contact);
                 return null;
@@ -445,22 +443,21 @@ public class ChatSessionManager
         }
         // Create new chatPanel only if it does not exist.
         else if (chatMode == MC_CHAT) {
-            MetaContact metaContact
-                    = AndroidGUIActivator.getContactListService().findMetaContactByMetaUID(chatId);
+            MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByMetaUID(chatId);
             if (metaContact != null) {
                 chatPanel = createChat(metaContact);
             }
         }
         else if (chatMode == MUC_CC) {
-            ChatRoomWrapper chatRoomWrapper = AndroidGUIActivator.getMUCService()
-                    .findChatRoomWrapperFromChatRoomID(chatId, null);
+            ChatRoomWrapper chatRoomWrapper
+                    = AndroidGUIActivator.getMUCService().findChatRoomWrapperFromChatRoomID(chatId, null);
             if (chatRoomWrapper != null) {
                 chatPanel = createChat(chatRoomWrapper);
             }
         }
         else if (chatMode == MUC_ADHOC) {
-            ChatRoomWrapper chatRoomWrapper = AndroidGUIActivator.getMUCService()
-                    .findChatRoomWrapperFromChatRoomID(chatId, null);
+            ChatRoomWrapper chatRoomWrapper
+                    = AndroidGUIActivator.getMUCService().findChatRoomWrapperFromChatRoomID(chatId, null);
             if (chatRoomWrapper != null) {
                 chatPanel = createChat((AdHocChatRoomWrapper) chatRoomWrapper);
             }
@@ -541,8 +538,7 @@ public class ChatSessionManager
      * or <tt>null</tt> if no such
      * <tt>ChatPanel</tt> exists and <tt>create</tt> is <tt>false</tt>
      */
-    private static ChatPanel getMultiChatInternal(AdHocChatRoomWrapper chatRoomWrapper,
-            boolean create)
+    private static ChatPanel getMultiChatInternal(AdHocChatRoomWrapper chatRoomWrapper, boolean create)
     {
         synchronized (chatSyncRoot) {
             ChatPanel chatPanel = findChatPanelForDescriptor(chatRoomWrapper);
@@ -569,8 +565,8 @@ public class ChatSessionManager
     private static ChatPanel getMultiChatInternal(ChatRoom chatRoom, boolean create, String escapedMessageID)
     {
         synchronized (chatSyncRoot) {
-            ChatRoomWrapper chatRoomWrapper = AndroidGUIActivator.getMUCService()
-                    .getChatRoomWrapperByChatRoom(chatRoom, create);
+            ChatRoomWrapper chatRoomWrapper
+                    = AndroidGUIActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, create);
             ChatPanel chatPanel = null;
 
             if (chatRoomWrapper != null) {
@@ -634,8 +630,8 @@ public class ChatSessionManager
     private static ChatPanel getMultiChatInternal(AdHocChatRoom adHocChatRoom, boolean create, String escapedMessageID)
     {
         synchronized (chatSyncRoot) {
-            AdHocChatRoomList chatRoomList = AndroidGUIActivator.getUIService()
-                    .getConferenceChatManager().getAdHocChatRoomList();
+            AdHocChatRoomList chatRoomList
+                    = AndroidGUIActivator.getUIService().getConferenceChatManager().getAdHocChatRoomList();
 
             // Search in the chat room's list for a chat room that correspond to the given one.
             AdHocChatRoomWrapper chatRoomWrapper = chatRoomList.findChatRoomWrapperFromAdHocChatRoom(adHocChatRoom);
@@ -669,8 +665,7 @@ public class ChatSessionManager
      * <tt>null</tt> if there is no such
      * <tt>ChatPanel</tt> and <tt>create</tt> is <tt>false</tt>
      */
-    public static ChatPanel getMultiChat(AdHocChatRoom adHocChatRoom, boolean create, String
-            escapedMessageID)
+    public static ChatPanel getMultiChat(AdHocChatRoom adHocChatRoom, boolean create, String escapedMessageID)
     {
         return getMultiChatInternal(adHocChatRoom, create, escapedMessageID);
     }
@@ -712,8 +707,8 @@ public class ChatSessionManager
         }
 
         ProtocolProviderService defaultProvider = defaultContact.getProtocolProvider();
-        OperationSetBasicInstantMessaging defaultIM = defaultProvider.getOperationSet
-                (OperationSetBasicInstantMessaging.class);
+        OperationSetBasicInstantMessaging defaultIM
+                = defaultProvider.getOperationSet(OperationSetBasicInstantMessaging.class);
 
         if ((defaultContact.getPresenceStatus().getStatus() < 1)
                 && (!defaultIM.isOfflineMessagingSupported() || !defaultProvider.isRegistered())) {
@@ -833,8 +828,7 @@ public class ChatSessionManager
     private static ChatPanel createChat(AdHocChatRoomWrapper chatRoomWrapper, String escapedMessageID)
     {
         ChatPanel chatPanel = new ChatPanel(null);
-        AdHocConferenceChatSession chatSession
-                = new AdHocConferenceChatSession(chatPanel, chatRoomWrapper);
+        AdHocConferenceChatSession chatSession = new AdHocConferenceChatSession(chatPanel, chatRoomWrapper);
         chatPanel.setChatSession(chatSession);
 
         addActiveChat(chatPanel);

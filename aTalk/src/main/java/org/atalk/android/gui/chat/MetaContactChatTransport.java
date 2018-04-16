@@ -1,22 +1,43 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.chat;
 
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
+import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
+import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
+import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetThumbnailedFileFactory;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.MessageListener;
+import net.java.sip.communicator.util.ConfigurationUtils;
+import net.java.sip.communicator.util.FileUtils;
+import net.java.sip.communicator.util.Logger;
 
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jxmpp.jid.EntityBareJid;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * The single chat implementation of the <tt>ChatTransport</tt> interface that provides abstraction
@@ -25,742 +46,705 @@ import java.io.*;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class MetaContactChatTransport
-		implements ChatTransport, ContactPresenceStatusListener
+public class MetaContactChatTransport implements ChatTransport, ContactPresenceStatusListener
 {
-	/**
-	 * The logger.
-	 */
-	private static final Logger logger = Logger.getLogger(MetaContactChatTransport.class);
+    /**
+     * The logger.
+     */
+    private static final Logger logger = Logger.getLogger(MetaContactChatTransport.class);
 
-	/**
-	 * The parent <tt>ChatSession</tt>, where this transport is available.
-	 */
-	private final MetaContactChatSession parentChatSession;
+    /**
+     * The parent <tt>ChatSession</tt>, where this transport is available.
+     */
+    private final MetaContactChatSession parentChatSession;
 
-	/**
-	 * The associated protocol <tt>Contact</tt>.
-	 */
-	private final Contact contact;
+    /**
+     * The associated protocol <tt>Contact</tt>.
+     */
+    private final Contact contact;
 
-	/**
-	 * The resource associated with this contact.
-	 */
-	private ContactResource contactResource;
+    /**
+     * The resource associated with this contact.
+     */
+    private ContactResource contactResource;
 
-	/**
-	 * <tt>true</tt> when a contact sends a message with XEP-0085 chat state notifications;
-	 * override contact disco#info no XEP-0085 feature advertised.
-	 */
-	private static boolean isChatStateSupported = false;
+    /**
+     * <tt>true</tt> when a contact sends a message with XEP-0085 chat state notifications;
+     * override contact disco#info no XEP-0085 feature advertised.
+     */
+    private static boolean isChatStateSupported = false;
 
-	/**
-	 * The protocol presence operation set associated with this transport.
-	 */
-	private final OperationSetPresence presenceOpSet;
+    /**
+     * The protocol presence operation set associated with this transport.
+     */
+    private final OperationSetPresence presenceOpSet;
 
-	/**
-	 * The thumbnail default width.
-	 */
-	private static final int THUMBNAIL_WIDTH = 64;
+    /**
+     * The thumbnail default width.
+     */
+    private static final int THUMBNAIL_WIDTH = 64;
 
-	/**
-	 * The thumbnail default height.
-	 */
-	private static final int THUMBNAIL_HEIGHT = 64;
+    /**
+     * The thumbnail default height.
+     */
+    private static final int THUMBNAIL_HEIGHT = 64;
 
-	/**
-	 * Indicates if only the resource name should be displayed.
-	 */
-	private boolean isDisplayResourceOnly = false;
+    /**
+     * Indicates if only the resource name should be displayed.
+     */
+    private boolean isDisplayResourceOnly = false;
 
-	/**
-	 * Creates an instance of <tt>MetaContactChatTransport</tt> by specifying the parent
-	 * <tt>chatSession</tt> and the <tt>contact</tt> associated with the transport.
-	 *
-	 * @param chatSession
-	 * 		the parent <tt>ChatSession</tt>
-	 * @param contact
-	 * 		the <tt>Contact</tt> associated with this transport
-	 */
-	public MetaContactChatTransport(MetaContactChatSession chatSession, Contact contact)
-	{
-		this(chatSession, contact, null, false);
-	}
+    /**
+     * Creates an instance of <tt>MetaContactChatTransport</tt> by specifying the parent
+     * <tt>chatSession</tt> and the <tt>contact</tt> associated with the transport.
+     *
+     * @param chatSession the parent <tt>ChatSession</tt>
+     * @param contact the <tt>Contact</tt> associated with this transport
+     */
+    public MetaContactChatTransport(MetaContactChatSession chatSession, Contact contact)
+    {
+        this(chatSession, contact, null, false);
+    }
 
-	/**
-	 * Creates an instance of <tt>MetaContactChatTransport</tt> by specifying the parent
-	 * <tt>chatSession</tt>, <tt>contact</tt>, and the <tt>contactResource</tt>
-	 * associated with the transport.
-	 *
-	 * @param chatSession
-	 * 		the parent <tt>ChatSession</tt>
-	 * @param contact
-	 * 		the <tt>Contact</tt> associated with this transport
-	 * @param contactResource
-	 * 		the <tt>ContactResource</tt> associated with the contact
-	 * @param isDisplayResourceOnly
-	 * 		indicates if only the resource name should be displayed
-	 */
-	public MetaContactChatTransport(MetaContactChatSession chatSession, Contact contact,
-			ContactResource contactResource, boolean isDisplayResourceOnly)
-	{
-		this.parentChatSession = chatSession;
-		this.contact = contact;
-		this.contactResource = contactResource;
-		this.isDisplayResourceOnly = isDisplayResourceOnly;
+    /**
+     * Creates an instance of <tt>MetaContactChatTransport</tt> by specifying the parent
+     * <tt>chatSession</tt>, <tt>contact</tt>, and the <tt>contactResource</tt>
+     * associated with the transport.
+     *
+     * @param chatSession the parent <tt>ChatSession</tt>
+     * @param contact the <tt>Contact</tt> associated with this transport
+     * @param contactResource the <tt>ContactResource</tt> associated with the contact
+     * @param isDisplayResourceOnly indicates if only the resource name should be displayed
+     */
+    public MetaContactChatTransport(MetaContactChatSession chatSession, Contact contact,
+            ContactResource contactResource, boolean isDisplayResourceOnly)
+    {
+        this.parentChatSession = chatSession;
+        this.contact = contact;
+        this.contactResource = contactResource;
+        this.isDisplayResourceOnly = isDisplayResourceOnly;
 
-		presenceOpSet = contact.getProtocolProvider().getOperationSet(OperationSetPresence.class);
-		if (presenceOpSet != null)
-			presenceOpSet.addContactPresenceStatusListener(this);
+        presenceOpSet = contact.getProtocolProvider().getOperationSet(OperationSetPresence.class);
+        if (presenceOpSet != null)
+            presenceOpSet.addContactPresenceStatusListener(this);
 
-		isChatStateSupported = (contact.getProtocolProvider().getOperationSet(
-				OperationSetChatStateNotifications.class) != null);
+        isChatStateSupported = (contact.getProtocolProvider().getOperationSet(
+                OperationSetChatStateNotifications.class) != null);
 
-		// checking this can be slow so make sure its out of our way
-		new Thread(new Runnable()
-		{
-			public void run()
-			{
-				checkImCaps();
-			}
-		}).start();
-	}
+        // checking this can be slow so make sure its out of our way
+        new Thread(new Runnable()
+        {
+            public void run()
+            {
+                checkImCaps();
+            }
+        }).start();
+    }
 
-	/**
-	 * If sending im is supported check it for supporting html messages if a font is set.
-	 * As it can be slow make sure its not on our way
-	 */
-	private void checkImCaps()
-	{
-		if ((ConfigurationUtils.getChatDefaultFontFamily() != null)
-				&& (ConfigurationUtils.getChatDefaultFontSize() > 0)) {
-			OperationSetBasicInstantMessaging imOpSet = contact.getProtocolProvider()
-					.getOperationSet(
-					OperationSetBasicInstantMessaging.class);
+    /**
+     * If sending im is supported check it for supporting html messages if a font is set.
+     * As it can be slow make sure its not on our way
+     */
+    private void checkImCaps()
+    {
+        if ((ConfigurationUtils.getChatDefaultFontFamily() != null)
+                && (ConfigurationUtils.getChatDefaultFontSize() > 0)) {
+            OperationSetBasicInstantMessaging imOpSet
+                    = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
 
-			if (imOpSet != null)
-				imOpSet.isContentTypeSupported(ChatMessage.ENCODE_HTML, contact);
-		}
-	}
+            if (imOpSet != null)
+                imOpSet.isContentTypeSupported(ChatMessage.ENCODE_HTML, contact);
+        }
+    }
 
-	/**
-	 * Returns the contact associated with this transport.
-	 *
-	 * @return the contact associated with this transport
-	 */
-	public Contact getContact()
-	{
-		return contact;
-	}
+    /**
+     * Returns the contact associated with this transport.
+     *
+     * @return the contact associated with this transport
+     */
+    public Contact getContact()
+    {
+        return contact;
+    }
 
-	/**
-	 * Returns the contact address corresponding to this chat transport.
-	 *
-	 * @return The contact address corresponding to this chat transport.
-	 */
-	public String getName()
-	{
-		return contact.getAddress();
-	}
+    /**
+     * Returns the contact address corresponding to this chat transport.
+     *
+     * @return The contact address corresponding to this chat transport.
+     */
+    public String getName()
+    {
+        return contact.getAddress();
+    }
 
-	/**
-	 * Returns the display name corresponding to this chat transport.
-	 *
-	 * @return The display name corresponding to this chat transport.
-	 */
-	public String getDisplayName()
-	{
-		return contact.getDisplayName();
-	}
+    /**
+     * Returns the display name corresponding to this chat transport.
+     *
+     * @return The display name corresponding to this chat transport.
+     */
+    public String getDisplayName()
+    {
+        return contact.getDisplayName();
+    }
 
-	/**
-	 * Returns the contact resource of this chat transport that encapsulate
-	 * contact information of the contact who is logged.
-	 *
-	 * @return The display name of this chat transport resource.
-	 */
-	public ContactResource getContactResource()
-	{
-		return contactResource;
-	}
+    /**
+     * Returns the contact resource of this chat transport that encapsulate
+     * contact information of the contact who is logged.
+     *
+     * @return The display name of this chat transport resource.
+     */
+    public ContactResource getContactResource()
+    {
+        return contactResource;
+    }
 
-	/**
-	 * Returns the resource name of this chat transport. This is for example the name of the
-	 * user agent from which the contact is logged.
-	 *
-	 * @return The display name of this chat transport resource.
-	 */
-	public String getResourceName()
-	{
-		if (contactResource != null)
-			return contactResource.getResourceName();
-		return null;
-	}
+    /**
+     * Returns the resource name of this chat transport. This is for example the name of the
+     * user agent from which the contact is logged.
+     *
+     * @return The display name of this chat transport resource.
+     */
+    public String getResourceName()
+    {
+        if (contactResource != null)
+            return contactResource.getResourceName();
+        return null;
+    }
 
-	public boolean isDisplayResourceOnly()
-	{
-		return isDisplayResourceOnly;
-	}
+    public boolean isDisplayResourceOnly()
+    {
+        return isDisplayResourceOnly;
+    }
 
-	/**
-	 * Returns the presence status of this transport.
-	 *
-	 * @return the presence status of this transport.
-	 */
-	public PresenceStatus getStatus()
-	{
-		if (contactResource != null)
-			return contactResource.getPresenceStatus();
-		else
-			return contact.getPresenceStatus();
-	}
+    /**
+     * Returns the presence status of this transport.
+     *
+     * @return the presence status of this transport.
+     */
+    public PresenceStatus getStatus()
+    {
+        if (contactResource != null)
+            return contactResource.getPresenceStatus();
+        else
+            return contact.getPresenceStatus();
+    }
 
-	/**
-	 * Returns the <tt>ProtocolProviderService</tt>, corresponding to this chat transport.
-	 *
-	 * @return the <tt>ProtocolProviderService</tt>, corresponding to this chat transport.
-	 */
-	public ProtocolProviderService getProtocolProvider()
-	{
-		return contact.getProtocolProvider();
-	}
+    /**
+     * Returns the <tt>ProtocolProviderService</tt>, corresponding to this chat transport.
+     *
+     * @return the <tt>ProtocolProviderService</tt>, corresponding to this chat transport.
+     */
+    public ProtocolProviderService getProtocolProvider()
+    {
+        return contact.getProtocolProvider();
+    }
 
-	/**
-	 * Returns <code>true</code> if this chat transport supports instant
-	 * messaging, otherwise returns <code>false</code>.
-	 *
-	 * @return <code>true</code> if this chat transport supports instant
-	 * messaging, otherwise returns <code>false</code>.
-	 */
-	public boolean allowsInstantMessage()
-	{
-		// First try to ask the capabilities operation set if such is available.
-		OperationSetContactCapabilities capOpSet = getProtocolProvider().getOperationSet(
-				OperationSetContactCapabilities.class);
-		if (capOpSet != null) {
-			if (capOpSet.getOperationSet(contact,
-					OperationSetBasicInstantMessaging.class) != null) {
-				return true;
-			}
-		}
-		else if (contact.getProtocolProvider().getOperationSet(
-				OperationSetBasicInstantMessaging.class) != null)
-			return true;
+    /**
+     * Returns <code>true</code> if this chat transport supports instant
+     * messaging, otherwise returns <code>false</code>.
+     *
+     * @return <code>true</code> if this chat transport supports instant
+     * messaging, otherwise returns <code>false</code>.
+     */
+    public boolean allowsInstantMessage()
+    {
+        // First try to ask the capabilities operation set if such is available.
+        OperationSetContactCapabilities capOpSet
+                = getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
+        if (capOpSet != null) {
+            if (capOpSet.getOperationSet(contact, OperationSetBasicInstantMessaging.class) != null) {
+                return true;
+            }
+        }
+        else if (contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class) != null)
+            return true;
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Returns <code>true</code> if this chat transport supports message corrections and false
-	 * otherwise.
-	 *
-	 * @return <code>true</code> if this chat transport supports message corrections and false
-	 * otherwise.
-	 */
-	public boolean allowsMessageCorrections()
-	{
-		OperationSetContactCapabilities capOpSet = getProtocolProvider().getOperationSet(
-				OperationSetContactCapabilities.class);
-		if (capOpSet != null) {
-			return capOpSet.getOperationSet(contact, OperationSetMessageCorrection.class) != null;
-		}
-		else {
-			return contact.getProtocolProvider().getOperationSet(
-					OperationSetMessageCorrection.class) != null;
-		}
-	}
+    /**
+     * Returns <code>true</code> if this chat transport supports message corrections and false
+     * otherwise.
+     *
+     * @return <code>true</code> if this chat transport supports message corrections and false
+     * otherwise.
+     */
+    public boolean allowsMessageCorrections()
+    {
+        OperationSetContactCapabilities capOpSet
+                = getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
+        if (capOpSet != null) {
+            return capOpSet.getOperationSet(contact, OperationSetMessageCorrection.class) != null;
+        }
+        else {
+            return contact.getProtocolProvider().getOperationSet(OperationSetMessageCorrection.class) != null;
+        }
+    }
 
-	/**
-	 * Returns <code>true</code> if this chat transport supports sms
-	 * messaging, otherwise returns <code>false</code>.
-	 *
-	 * @return <code>true</code> if this chat transport supports sms
-	 * messaging, otherwise returns <code>false</code>.
-	 */
-	public boolean allowsSmsMessage()
-	{
-		// First try to ask the capabilities operation set if such is available.
-		OperationSetContactCapabilities capOpSet = getProtocolProvider().getOperationSet(
-				OperationSetContactCapabilities.class);
-		if (capOpSet != null) {
-			if (capOpSet.getOperationSet(contact, OperationSetSmsMessaging.class) != null) {
-				return true;
-			}
-		}
-		else if (contact.getProtocolProvider().getOperationSet(
-				OperationSetSmsMessaging.class) != null)
-			return true;
-		return false;
-	}
+    /**
+     * Returns <code>true</code> if this chat transport supports sms
+     * messaging, otherwise returns <code>false</code>.
+     *
+     * @return <code>true</code> if this chat transport supports sms
+     * messaging, otherwise returns <code>false</code>.
+     */
+    public boolean allowsSmsMessage()
+    {
+        // First try to ask the capabilities operation set if such is available.
+        OperationSetContactCapabilities capOpSet
+                = getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
+        if (capOpSet != null) {
+            if (capOpSet.getOperationSet(contact, OperationSetSmsMessaging.class) != null) {
+                return true;
+            }
+        }
+        else if (contact.getProtocolProvider().getOperationSet(OperationSetSmsMessaging.class) != null)
+            return true;
+        return false;
+    }
 
-	/**
-	 * Returns <code>true</code> if this chat transport supports chat state notifications,
-	 * otherwise returns <code>false</code>.
-	 * User SHOULD explicitly discover whether the Contact supports the protocol or negotiate the
-	 * use of chat state notifications with the Contact (e.g., via XEP-0155 Stanza Session
-	 * Negotiation).
-	 *
-	 * @return <code>true</code> if this chat transport supports chat state
-	 * notifications, otherwise returns <code>false</code>.
-	 */
-	public boolean allowsChatStateNotifications()
-	{
+    /**
+     * Returns <code>true</code> if this chat transport supports chat state notifications,
+     * otherwise returns <code>false</code>.
+     * User SHOULD explicitly discover whether the Contact supports the protocol or negotiate the
+     * use of chat state notifications with the Contact (e.g., via XEP-0155 Stanza Session
+     * Negotiation).
+     *
+     * @return <code>true</code> if this chat transport supports chat state
+     * notifications, otherwise returns <code>false</code>.
+     */
+    public boolean allowsChatStateNotifications()
+    {
 //		Object tnOpSet = contact.getProtocolProvider().getOperationSet(
 //				OperationSetChatStateNotifications.class);
 //		return ((tnOpSet != null) && isChatStateSupported);
-		return isChatStateSupported;
+        return isChatStateSupported;
 
-	}
+    }
 
-	public static void setChatStateSupport(boolean isEnable) {
-		isChatStateSupported = isEnable;
-	}
+    public static void setChatStateSupport(boolean isEnable)
+    {
+        isChatStateSupported = isEnable;
+    }
 
-	/**
-	 * Returns <code>true</code> if this chat transport supports file transfer, otherwise returns
-	 * <code>false</code>.
-	 *
-	 * @return <code>true</code> if this chat transport supports file transfer, otherwise returns
-	 * <code>false</code>.
-	 */
-	public boolean allowsFileTransfer()
-	{
-		Object ftOpSet = contact.getProtocolProvider().getOperationSet(
-				OperationSetFileTransfer.class);
+    /**
+     * Returns <code>true</code> if this chat transport supports file transfer, otherwise returns
+     * <code>false</code>.
+     *
+     * @return <code>true</code> if this chat transport supports file transfer, otherwise returns
+     * <code>false</code>.
+     */
+    public boolean allowsFileTransfer()
+    {
+        Object ftOpSet = contact.getProtocolProvider().getOperationSet(OperationSetFileTransfer.class);
 
-		return (ftOpSet != null);
-	}
+        return (ftOpSet != null);
+    }
 
-	/**
-	 * Sends the given instant message through this chat transport, by specifying the mime type
-	 * (html or plain text).
-	 *
-	 * @param message
-	 * 		The message to send.
-	 * @param encType
-	 *        The encType of the message to send: 1=text/html or 0=text/plain.
-	 *        @see ChatMessage Encryption Type
-	 * @throws Exception
-	 * 		if the send operation is interrupted
-	 */
-	public void sendInstantMessage(String message, int encType)
-			throws Exception
-	{
-		// If this chat transport does not support instant messaging we do nothing here.
-		if (!allowsInstantMessage())
-			return;
+    /**
+     * Sends the given instant message through this chat transport, by specifying the mime type
+     * (html or plain text).
+     *
+     * @param message The message to send.
+     * @param encType The encType of the message to send: 1=text/html or 0=text/plain.
+     * @throws Exception if the send operation is interrupted
+     * @see ChatMessage Encryption Type
+     */
+    public void sendInstantMessage(String message, int encType)
+            throws Exception
+    {
+        // If this chat transport does not support instant messaging we do nothing here.
+        if (!allowsInstantMessage())
+            return;
 
-		Message msg;
-		ProtocolProviderService pps = contact.getProtocolProvider();
-		OperationSetBasicInstantMessaging imOpSet = pps.getOperationSet(OperationSetBasicInstantMessaging.class);
+        Message msg;
+        ProtocolProviderService pps = contact.getProtocolProvider();
+        OperationSetBasicInstantMessaging imOpSet = pps.getOperationSet(OperationSetBasicInstantMessaging.class);
 
-		if (encType == ChatMessage.ENCODE_HTML
-				&& imOpSet.isContentTypeSupported(ChatMessage.ENCODE_HTML)) {
-			msg = imOpSet.createMessage(message, ChatMessage.ENCODE_HTML, "");
-		}
-		else {
-			msg = imOpSet.createMessage(message);
-		}
+        if (encType == ChatMessage.ENCODE_HTML
+                && imOpSet.isContentTypeSupported(ChatMessage.ENCODE_HTML)) {
+            msg = imOpSet.createMessage(message, ChatMessage.ENCODE_HTML, "");
+        }
+        else {
+            msg = imOpSet.createMessage(message);
+        }
 
-		ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
-		if (encType == ChatMessage.ENCRYPTION_OMEMO) {
-			OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
-			imOpSet.sendInstantMessage(contact, toResource, msg, null, omemoManager);
-		} else {
-			imOpSet.sendInstantMessage(contact, toResource, msg);
-		}
-	}
+        ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
+        if (encType == ChatMessage.ENCRYPTION_OMEMO) {
+            OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
+            imOpSet.sendInstantMessage(contact, toResource, msg, null, omemoManager);
+        }
+        else {
+            imOpSet.sendInstantMessage(contact, toResource, msg);
+        }
+    }
 
-	/**
-	 * Sends <tt>message</tt> as a message correction through this transport, specifying the mime
-	 * type (html or plain text) and the id of
-	 * the message to replace.
-	 *
-	 * @param message
-	 * 		The message to send.
-	 * @param encType
-	 *        The encType of the message to send: 1=text/html or 0=text/plain.
-	 *        @see ChatMessage Encryption Type
-	 * @param correctedMessageUID
-	 * 		The ID of the message being corrected by this message.
-	 */
-	public void correctInstantMessage(String message, int encType, String correctedMessageUID)
-	{
-		if (!allowsMessageCorrections()) {
-			return;
-		}
+    /**
+     * Sends <tt>message</tt> as a message correction through this transport, specifying the mime
+     * type (html or plain text) and the id of
+     * the message to replace.
+     *
+     * @param message The message to send.
+     * @param encType The encType of the message to send: 1=text/html or 0=text/plain.
+     * @param correctedMessageUID The ID of the message being corrected by this message.
+     * @see ChatMessage Encryption Type
+     */
+    public void correctInstantMessage(String message, int encType, String correctedMessageUID)
+    {
+        if (!allowsMessageCorrections()) {
+            return;
+        }
 
-		ProtocolProviderService pps = contact.getProtocolProvider();
-		OperationSetMessageCorrection mcOpSet = pps.getOperationSet(OperationSetMessageCorrection.class);
-		Message msg;
-		if (encType == ChatMessage.ENCODE_HTML
-				&& mcOpSet.isContentTypeSupported(ChatMessage.ENCODE_HTML)) {
-			msg = mcOpSet.createMessage(message, ChatMessage.ENCODE_HTML, "");
-		}
-		else {
-			msg = mcOpSet.createMessage(message);
-		}
+        ProtocolProviderService pps = contact.getProtocolProvider();
+        OperationSetMessageCorrection mcOpSet = pps.getOperationSet(OperationSetMessageCorrection.class);
+        Message msg;
+        if (encType == ChatMessage.ENCODE_HTML
+                && mcOpSet.isContentTypeSupported(ChatMessage.ENCODE_HTML)) {
+            msg = mcOpSet.createMessage(message, ChatMessage.ENCODE_HTML, "");
+        }
+        else {
+            msg = mcOpSet.createMessage(message);
+        }
 
-		ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
-		if (encType == ChatMessage.ENCRYPTION_OMEMO) {
-			OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
-			mcOpSet.sendInstantMessage(contact, toResource, msg, correctedMessageUID, omemoManager);
-		} else {
-			mcOpSet.correctMessage(contact, toResource, msg, correctedMessageUID);
-		}
-	}
+        ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
+        if (encType == ChatMessage.ENCRYPTION_OMEMO) {
+            OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
+            mcOpSet.sendInstantMessage(contact, toResource, msg, correctedMessageUID, omemoManager);
+        }
+        else {
+            mcOpSet.correctMessage(contact, toResource, msg, correctedMessageUID);
+        }
+    }
 
-	/**
-	 * Determines whether this chat transport supports the supplied content type
-	 *
-	 * @param encType
-	 * 		the encryption type we want to check
-	 * @return <tt>true</tt> if the chat transport supports it and <tt>false</tt> otherwise.
-	 */
-	public boolean isContentTypeSupported(int encType)
-	{
-		OperationSetBasicInstantMessaging imOpSet
+    /**
+     * Determines whether this chat transport supports the supplied content type
+     *
+     * @param encType the encryption type we want to check
+     * @return <tt>true</tt> if the chat transport supports it and <tt>false</tt> otherwise.
+     */
+    public boolean isContentTypeSupported(int encType)
+    {
+        OperationSetBasicInstantMessaging imOpSet
                 = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
 
-		return (imOpSet != null) && imOpSet.isContentTypeSupported(encType);
-	}
+        return (imOpSet != null) && imOpSet.isContentTypeSupported(encType);
+    }
 
-	/**
-	 * Sends the given sms message trough this chat transport.
-	 *
-	 * @param phoneNumber
-	 * 		phone number of the destination
-	 * @param messageText
-	 * 		The message to send.
-	 * @throws Exception
-	 * 		if the send operation is interrupted
-	 */
-	public void sendSmsMessage(String phoneNumber, String messageText)
-			throws Exception
-	{
-		// If this chat transport does not support sms messaging we do nothing here.
-		if (allowsSmsMessage()) {
-			// SMSManager.sendSMS(contact.getProtocolProvider(), phoneNumber, messageText);}
-		}
-	}
+    /**
+     * Sends the given sms message trough this chat transport.
+     *
+     * @param phoneNumber phone number of the destination
+     * @param messageText The message to send.
+     * @throws Exception if the send operation is interrupted
+     */
+    public void sendSmsMessage(String phoneNumber, String messageText)
+            throws Exception
+    {
+        // If this chat transport does not support sms messaging we do nothing here.
+        if (allowsSmsMessage()) {
+            // SMSManager.sendSMS(contact.getProtocolProvider(), phoneNumber, messageText);}
+        }
+    }
 
-	/**
-	 * Whether a dialog need to be opened so the user can enter the destination number.
-	 *
-	 * @return <tt>true</tt> if dialog needs to be open.
-	 */
-	public boolean askForSMSNumber()
-	{
-		// If this chat transport does not support sms messaging we do nothing here.
-		if (!allowsSmsMessage())
-			return false;
+    /**
+     * Whether a dialog need to be opened so the user can enter the destination number.
+     *
+     * @return <tt>true</tt> if dialog needs to be open.
+     */
+    public boolean askForSMSNumber()
+    {
+        // If this chat transport does not support sms messaging we do nothing here.
+        if (!allowsSmsMessage())
+            return false;
 
-		OperationSetSmsMessaging smsOpSet
+        OperationSetSmsMessaging smsOpSet
                 = contact.getProtocolProvider().getOperationSet(OperationSetSmsMessaging.class);
-		return smsOpSet.askForNumber(contact);
-	}
+        return smsOpSet.askForNumber(contact);
+    }
 
-	/**
-	 * Sends the given sms message trough this chat transport.
-	 *
-	 * @param message
-	 * 		the message to send
-	 * @throws Exception
-	 * 		if the send operation is interrupted
-	 */
-	public void sendSmsMessage(String message)
-			throws Exception
-	{
-		// If this chat transport does not support sms messaging we do nothing here.
-		if (allowsSmsMessage()) {
-			// SMSManager.sendSMS(contact, message);
-		}
-	}
+    /**
+     * Sends the given sms message trough this chat transport.
+     *
+     * @param message the message to send
+     * @throws Exception if the send operation is interrupted
+     */
+    public void sendSmsMessage(String message)
+            throws Exception
+    {
+        // If this chat transport does not support sms messaging we do nothing here.
+        if (allowsSmsMessage()) {
+            // SMSManager.sendSMS(contact, message);
+        }
+    }
 
-	/**
-	 * Sends a chat state notification.
-	 *
-	 * @param chatState
-	 * 		the chat state notification to send
-	 */
-	public void sendChatStateNotification(ChatState chatState)
-	{
-		// If this chat transport does not allow chat state notification then just return
-		if (allowsChatStateNotifications()) {
+    /**
+     * Sends a chat state notification.
+     *
+     * @param chatState the chat state notification to send
+     */
+    public void sendChatStateNotification(ChatState chatState)
+    {
+        // If this chat transport does not allow chat state notification then just return
+        if (allowsChatStateNotifications()) {
 
-			ProtocolProviderService pps = contact.getProtocolProvider();
+            ProtocolProviderService pps = contact.getProtocolProvider();
 
-			// if protocol is not registered or contact is offline don't try to send chat state
-			// notifications
-			if (pps.isRegistered()
+            // if protocol is not registered or contact is offline don't try to send chat state
+            // notifications
+            if (pps.isRegistered()
                     && (contact.getPresenceStatus().getStatus() >= PresenceStatus.ONLINE_THRESHOLD)) {
 
-				OperationSetChatStateNotifications tnOperationSet
-						= pps.getOperationSet(OperationSetChatStateNotifications.class);
-				try {
-					tnOperationSet.sendChatStateNotification(contact, chatState);
-				}
-				catch (Exception ex) {
-					logger.error("Failed to send chat state notifications.", ex);
-				}
-			}
-		}
-	}
+                OperationSetChatStateNotifications tnOperationSet
+                        = pps.getOperationSet(OperationSetChatStateNotifications.class);
+                try {
+                    tnOperationSet.sendChatStateNotification(contact, chatState);
+                } catch (Exception ex) {
+                    logger.error("Failed to send chat state notifications.", ex);
+                }
+            }
+        }
+    }
 
-	/**
-	 * Sends the given file through this chat transport file transfer operation set.
-	 *
-	 * @param file
-	 * 		the file to send
-	 * @return the <tt>FileTransfer</tt> object charged to transfer the file
-	 * @throws Exception
-	 * 		if anything goes wrong
-	 */
-	public FileTransfer sendFile(File file)
-			throws Exception
-	{
-		return sendFile(file, false);
-	}
+    /**
+     * Sends the given file through this chat transport file transfer operation set.
+     *
+     * @param file the file to send
+     * @return the <tt>FileTransfer</tt> object charged to transfer the file
+     * @throws Exception if anything goes wrong
+     */
+    public FileTransfer sendFile(File file)
+            throws Exception
+    {
+        return sendFile(file, false);
+    }
 
-	/**
-	 * Sends the given file through this chat transport file transfer operation set.
-	 *
-	 * @param file
-	 * 		the file to send
-	 * @return the <tt>FileTransfer</tt> object charged to transfer the file
-	 * @throws Exception
-	 * 		if anything goes wrong
-	 */
-	private FileTransfer sendFile(File file, boolean isMultimediaMessage)
-			throws Exception
-	{
-		// If this chat transport does not support instant messaging we do nothing here.
-		if (!allowsFileTransfer())
-			return null;
+    /**
+     * Sends the given file through this chat transport file transfer operation set.
+     *
+     * @param file the file to send
+     * @return the <tt>FileTransfer</tt> object charged to transfer the file
+     * @throws Exception if anything goes wrong
+     */
+    private FileTransfer sendFile(File file, boolean isMultimediaMessage)
+            throws Exception
+    {
+        // If this chat transport does not support instant messaging we do nothing here.
+        if (!allowsFileTransfer())
+            return null;
 
-		if (FileUtils.isImage(file.getName())) {
-			// Create a thumbNailed file if possible.
-			OperationSetThumbnailedFileFactory tfOpSet
+        if (FileUtils.isImage(file.getName())) {
+            // Create a thumbNailed file if possible.
+            OperationSetThumbnailedFileFactory tfOpSet
                     = contact.getProtocolProvider().getOperationSet(OperationSetThumbnailedFileFactory.class);
 
-			if (tfOpSet != null) {
-				byte[] thumbnail = getFileThumbnail(file);
+            if (tfOpSet != null) {
+                byte[] thumbnail = getFileThumbnail(file);
 
-				if (thumbnail != null && thumbnail.length > 0) {
-					file = tfOpSet.createFileWithThumbnail(file, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT,
+                if (thumbnail != null && thumbnail.length > 0) {
+                    file = tfOpSet.createFileWithThumbnail(file, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT,
                             "image/png", thumbnail);
-				}
-			}
-		}
-		if (isMultimediaMessage) {
-			OperationSetSmsMessaging smsOpSet
+                }
+            }
+        }
+        if (isMultimediaMessage) {
+            OperationSetSmsMessaging smsOpSet
                     = contact.getProtocolProvider().getOperationSet(OperationSetSmsMessaging.class);
-			if (smsOpSet == null)
-				return null;
-			return smsOpSet.sendMultimediaFile(contact, file);
-		}
-		else {
-			OperationSetFileTransfer ftOpSet
+            if (smsOpSet == null)
+                return null;
+            return smsOpSet.sendMultimediaFile(contact, file);
+        }
+        else {
+            OperationSetFileTransfer ftOpSet
                     = contact.getProtocolProvider().getOperationSet(OperationSetFileTransfer.class);
-			return ftOpSet.sendFile(contact, file);
-		}
-	}
+            return ftOpSet.sendFile(contact, file);
+        }
+    }
 
-	/**
-	 * Sends the given SMS multimedia message trough this chat transport, leaving the
-	 * transport to choose the destination.
-	 *
-	 * @param file
-	 * 		the file to send
-	 * @throws Exception
-	 * 		if the send doesn't succeed
-	 */
-	public FileTransfer sendMultimediaFile(File file)
-			throws Exception
-	{
-		return sendFile(file, true);
-	}
+    /**
+     * Sends the given SMS multimedia message trough this chat transport, leaving the
+     * transport to choose the destination.
+     *
+     * @param file the file to send
+     * @throws Exception if the send doesn't succeed
+     */
+    public FileTransfer sendMultimediaFile(File file)
+            throws Exception
+    {
+        return sendFile(file, true);
+    }
 
-	/**
-	 * Returns the maximum file length supported by the protocol in bytes.
-	 *
-	 * @return the file length that is supported.
-	 */
-	public long getMaximumFileLength()
-	{
-		OperationSetFileTransfer ftOpSet = contact.getProtocolProvider().getOperationSet(OperationSetFileTransfer.class);
-		return ftOpSet.getMaximumFileLength();
-	}
+    /**
+     * Returns the maximum file length supported by the protocol in bytes.
+     *
+     * @return the file length that is supported.
+     */
+    public long getMaximumFileLength()
+    {
+        OperationSetFileTransfer ftOpSet = contact.getProtocolProvider().getOperationSet(OperationSetFileTransfer.class);
+        return ftOpSet.getMaximumFileLength();
+    }
 
-	public void inviteChatContact(EntityBareJid contactAddress, String reason)
-	{
-	}
+    public void inviteChatContact(EntityBareJid contactAddress, String reason)
+    {
+    }
 
-	/**
-	 * Returns the parent session of this chat transport. A <tt>ChatSession</tt> could contain
-	 * more than one transports.
-	 *
-	 * @return the parent session of this chat transport
-	 */
-	public ChatSession getParentChatSession()
-	{
-		return parentChatSession;
-	}
+    /**
+     * Returns the parent session of this chat transport. A <tt>ChatSession</tt> could contain
+     * more than one transports.
+     *
+     * @return the parent session of this chat transport
+     */
+    public ChatSession getParentChatSession()
+    {
+        return parentChatSession;
+    }
 
-	/**
-	 * Adds an SMS message listener to this chat transport.
-	 *
-	 * @param l
-	 * 		The message listener to add.
-	 */
-	public void addSmsMessageListener(MessageListener l)
-	{
-		// If this chat transport does not support sms messaging we do nothing here.
-		if (!allowsSmsMessage())
-			return;
+    /**
+     * Adds an SMS message listener to this chat transport.
+     *
+     * @param l The message listener to add.
+     */
+    public void addSmsMessageListener(MessageListener l)
+    {
+        // If this chat transport does not support sms messaging we do nothing here.
+        if (!allowsSmsMessage())
+            return;
 
-		OperationSetSmsMessaging smsOpSet = contact.getProtocolProvider().getOperationSet(OperationSetSmsMessaging.class);
-		smsOpSet.addMessageListener(l);
-	}
+        OperationSetSmsMessaging smsOpSet = contact.getProtocolProvider().getOperationSet(OperationSetSmsMessaging.class);
+        smsOpSet.addMessageListener(l);
+    }
 
-	/**
-	 * Adds an instant message listener to this chat transport.
-	 *
-	 * @param l
-	 * 		The message listener to add.
-	 */
-	public void addInstantMessageListener(MessageListener l)
-	{
-		// If this chat transport does not support instant messaging we do nothing here.
-		if (!allowsInstantMessage())
-			return;
+    /**
+     * Adds an instant message listener to this chat transport.
+     *
+     * @param l The message listener to add.
+     */
+    public void addInstantMessageListener(MessageListener l)
+    {
+        // If this chat transport does not support instant messaging we do nothing here.
+        if (!allowsInstantMessage())
+            return;
 
-		OperationSetBasicInstantMessaging imOpSet
+        OperationSetBasicInstantMessaging imOpSet
                 = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
-		imOpSet.addMessageListener(l);
-	}
+        imOpSet.addMessageListener(l);
+    }
 
-	/**
-	 * Removes the given sms message listener from this chat transport.
-	 *
-	 * @param l
-	 * 		The message listener to remove.
-	 */
-	public void removeSmsMessageListener(MessageListener l)
-	{
-		// If this chat transport does not support sms messaging we do nothing here.
-		if (!allowsSmsMessage())
-			return;
+    /**
+     * Removes the given sms message listener from this chat transport.
+     *
+     * @param l The message listener to remove.
+     */
+    public void removeSmsMessageListener(MessageListener l)
+    {
+        // If this chat transport does not support sms messaging we do nothing here.
+        if (!allowsSmsMessage())
+            return;
 
-		OperationSetSmsMessaging smsOpSet
+        OperationSetSmsMessaging smsOpSet
                 = contact.getProtocolProvider().getOperationSet(OperationSetSmsMessaging.class);
-		smsOpSet.removeMessageListener(l);
-	}
+        smsOpSet.removeMessageListener(l);
+    }
 
-	/**
-	 * Removes the instant message listener from this chat transport.
-	 *
-	 * @param l
-	 * 		The message listener to remove.
-	 */
-	public void removeInstantMessageListener(MessageListener l)
-	{
-		// If this chat transport does not support instant messaging we do nothing here.
-		if (!allowsInstantMessage())
-			return;
+    /**
+     * Removes the instant message listener from this chat transport.
+     *
+     * @param l The message listener to remove.
+     */
+    public void removeInstantMessageListener(MessageListener l)
+    {
+        // If this chat transport does not support instant messaging we do nothing here.
+        if (!allowsInstantMessage())
+            return;
 
-		OperationSetBasicInstantMessaging imOpSet
+        OperationSetBasicInstantMessaging imOpSet
                 = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
-		imOpSet.removeMessageListener(l);
-	}
+        imOpSet.removeMessageListener(l);
+    }
 
-	/**
-	 * Indicates that a contact has changed its status.
-	 *
-	 * @param evt
-	 * 		The presence event containing information about the contact status change.
-	 */
-	public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
-	{
-		// If the contactResource is set then the status will be updated from the
-		// MetaContactChatSession.
-		// cmeng: contactResource condition removed to fix contact goes offline<->online
-		if (evt.getSourceContact().equals(contact)
-				&& !evt.getOldStatus().equals(evt.getNewStatus())
-			//&& (contactResource == null)
-				) {
-			this.updateContactStatus();
-		}
-	}
+    /**
+     * Indicates that a contact has changed its status.
+     *
+     * @param evt The presence event containing information about the contact status change.
+     */
+    public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
+    {
+        // If the contactResource is set then the status will be updated from the
+        // MetaContactChatSession.
+        // cmeng: contactResource condition removed to fix contact goes offline<->online
+        if (evt.getSourceContact().equals(contact)
+                && !evt.getOldStatus().equals(evt.getNewStatus())
+            //&& (contactResource == null)
+                ) {
+            this.updateContactStatus();
+        }
+    }
 
-	/**
-	 * Updates the status of this contact with the new given status.
-	 */
-	private void updateContactStatus()
-	{
-		// Update the status of the given contact in the "send via" selector box.
-		parentChatSession.getChatSessionRenderer().updateChatTransportStatus(this);
-	}
+    /**
+     * Updates the status of this contact with the new given status.
+     */
+    private void updateContactStatus()
+    {
+        // Update the status of the given contact in the "send via" selector box.
+        parentChatSession.getChatSessionRenderer().updateChatTransportStatus(this);
+    }
 
-	/**
-	 * Removes all previously added listeners.
-	 */
-	public void dispose()
-	{
-		if (presenceOpSet != null)
-			presenceOpSet.removeContactPresenceStatusListener(this);
-	}
+    /**
+     * Removes all previously added listeners.
+     */
+    public void dispose()
+    {
+        if (presenceOpSet != null)
+            presenceOpSet.removeContactPresenceStatusListener(this);
+    }
 
-	/**
-	 * Returns the descriptor of this chat transport.
-	 *
-	 * @return the descriptor of this chat transport
-	 */
-	public Object getDescriptor()
-	{
-		return contact;
-	}
+    /**
+     * Returns the descriptor of this chat transport.
+     *
+     * @return the descriptor of this chat transport
+     */
+    public Object getDescriptor()
+    {
+        return contact;
+    }
 
-	/**
-	 * Sets the icon for the given file.
-	 *
-	 * @param file
-	 * 		the file to set an icon for
-	 * @return the byte array containing the thumbnail
-	 */
-	public static byte[] getFileThumbnail(File file)
-	{
-		byte[] imageData = null;
+    /**
+     * Sets the icon for the given file.
+     *
+     * @param file the file to set an icon for
+     * @return the byte array containing the thumbnail
+     */
+    public static byte[] getFileThumbnail(File file)
+    {
+        byte[] imageData = null;
 
-		if (FileUtils.isImage(file.getName())) {
-			String imagePath = file.toString();
-			try {
-				FileInputStream fis = new FileInputStream(imagePath);
-				Bitmap imageBitmap = BitmapFactory.decodeStream(fis);
+        if (FileUtils.isImage(file.getName())) {
+            String imagePath = file.toString();
+            try {
+                FileInputStream fis = new FileInputStream(imagePath);
+                Bitmap imageBitmap = BitmapFactory.decodeStream(fis);
 
-				// check to ensure BitmapFactory can handle the MIME type
-				if (imageBitmap != null) {
-					int width = imageBitmap.getWidth();
-					int height = imageBitmap.getHeight();
+                // check to ensure BitmapFactory can handle the MIME type
+                if (imageBitmap != null) {
+                    int width = imageBitmap.getWidth();
+                    int height = imageBitmap.getHeight();
 
-					if (width > THUMBNAIL_WIDTH)
-						width = THUMBNAIL_WIDTH;
-					if (height > THUMBNAIL_HEIGHT)
-						height = THUMBNAIL_HEIGHT;
+                    if (width > THUMBNAIL_WIDTH)
+                        width = THUMBNAIL_WIDTH;
+                    if (height > THUMBNAIL_HEIGHT)
+                        height = THUMBNAIL_HEIGHT;
 
-					imageBitmap = ThumbnailUtils.extractThumbnail(imageBitmap, width, height);
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-					imageData = baos.toByteArray();
-				}
-			}
-			catch (FileNotFoundException e) {
-				if (logger.isDebugEnabled())
-					logger.debug("Could not locate image file.", e);
-				e.printStackTrace();
-			}
-		}
-		return imageData;
-	}
+                    imageBitmap = ThumbnailUtils.extractThumbnail(imageBitmap, width, height);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    imageData = baos.toByteArray();
+                }
+            } catch (FileNotFoundException e) {
+                if (logger.isDebugEnabled())
+                    logger.debug("Could not locate image file.", e);
+                e.printStackTrace();
+            }
+        }
+        return imageData;
+    }
 }
