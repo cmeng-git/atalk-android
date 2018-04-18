@@ -570,7 +570,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            String filePath = "";
+            String filePath;
 
             switch (requestCode) {
                 case SELECT_PHOTO:
