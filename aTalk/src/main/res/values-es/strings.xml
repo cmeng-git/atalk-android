@@ -833,274 +833,274 @@
     Cada uno de vosotros debe decirle a su huella dactilar al otro. Si todo coincide, debes indicar en el siguiente cuadro de diálogo que 
     *He* verificado la huella dactilar.</string>
 	
-    <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint for %1$s: %2$s</string>
-    <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Remote fingerprint for %1$s: %2$s</string>
-    <string name="plugin_otr_authbuddydialog_CANCEL">Cancel</string>
-    <string name="plugin_otr_authbuddydialog_HELP">Help</string>
-    <string name="plugin_otr_authbuddydialog_TITLE">Authenticate Buddy</string>
-    <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">Verify Buddy</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE">I have</string>
-    <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">I have not</string>
-    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">verified that this is in fact the correct fingerprint for %1$s.</string>
-    <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Please enter the fingerprint you received from {0}.</string>
-    <string name="plugin_otr_configform_MY_PRIVATE_KEYS">My Private Keys</string>
-    <string name="plugin_otr_configform_KNOWN_FINGERPRINTS">Known Fingerprints</string>
-    <string name="plugin_otr_configform_CB_AUTO">Automatically initiate private messaging</string>
-    <string name="plugin_otr_configform_CB_ENABLE">Enable private messaging</string>
-    <string name="plugin_otr_configform_CB_REQUIRE">Require private messaging</string>
-    <string name="plugin_otr_configform_GENERATE">Generate</string>
-    <string name="plugin_otr_configform_REGENERATE">Re-generate</string>
-    <string name="plugin_otr_configform_FINGERPRINT">Fingerprint</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_CONTACT">Contact</string>
-    <string name="plugin_otr_configform_COLUMN_NAME_VERIFIED_STATUS">Verified</string>
-    <string name="plugin_otr_configform_VERIFY_STATUS">Verified: %s</string>
+    <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Mi huella digiral para %1$s: %2$s</string>
+    <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Huella digital remota para %1$s: %2$s</string>
+    <string name="plugin_otr_authbuddydialog_CANCEL">Cancelar</string>
+    <string name="plugin_otr_authbuddydialog_HELP">Ayuda</string>
+    <string name="plugin_otr_authbuddydialog_TITLE">Autentificar al amigo</string>
+    <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">Verificar al amigo</string>
+    <string name="plugin_otr_authbuddydialog_I_HAVE">Tengo</string>
+    <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">No tengo</string>
+    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">verificado que ésta, es de hecho la huella digital correcta para %1$s.</string>
+    <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Por favor, introduce la huella digital que recibió de {0}.</string>
+    <string name="plugin_otr_configform_MY_PRIVATE_KEYS">Mis claves privadas</string>
+    <string name="plugin_otr_configform_KNOWN_FINGERPRINTS">Huellas digitales conocidas</string>
+    <string name="plugin_otr_configform_CB_AUTO">Iniciar automáticamente la mensajería privada</string>
+    <string name="plugin_otr_configform_CB_ENABLE">Habilitar la mensajería privada</string>
+    <string name="plugin_otr_configform_CB_REQUIRE">Requiere mensajería privada</string>
+    <string name="plugin_otr_configform_GENERATE">Generar</string>
+    <string name="plugin_otr_configform_REGENERATE">Regenerar</string>
+    <string name="plugin_otr_configform_FINGERPRINT">Huella digital</string>
+    <string name="plugin_otr_configform_COLUMN_NAME_CONTACT">Contacto</string>
+    <string name="plugin_otr_configform_COLUMN_NAME_VERIFIED_STATUS">Verificado</string>
+    <string name="plugin_otr_configform_VERIFY_STATUS">Verificado: %s</string>
 
-	<string name="plugin_otr_activator_unverifiedsessionwarning">{0} has not been authenticated yet. You should &lt;a href="atalk://{1}/{2}?{3}">&lt;b>authenticate&lt;/b>&lt;/a> this buddy.</string>
-    <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Unverified&lt;/b> private conversation with {0} started.</string>
-    <string name="plugin_otr_activator_sessionstared">Private OTR conversation with {0} has started.</string>
-    <string name="plugin_otr_activator_sessionfinished">{0} has ended his/her private OTR conversation with you; you should do the same.</string>
-    <string name="plugin_otr_activator_sessionlost">Private OTR conversation with {0} has ended.</string>
-    <string name="plugin_otr_activator_historyon">{0} is recording this conversation on your device.
-        You can &lt;a href=\"atalk://{1}/{2}\">turn off chat history here&lt;/a>.</string>
-    <string name="plugin_otr_activator_historyoff">{0} is NOT recording this conversation.
-        You can &lt;a href=\"atalk://{1}/{2}\">activate chat history here&lt;/a>.</string>
-    <string name="plugin_otr_activator_sessionfinishederror">Your message was not sent. Please end your private OTR conversation with {0}.</string>
-    <string name="plugin_otr_activator_smpaborted">{0} has aborted the OTR authentication process.</string>
-    <string name="plugin_otr_activator_smperror">An error occurred in the OTR authentication process.</string>
-    <string name="plugin_otr_activator_unencryptedmsgreceived">The message was received unencrypted.</string>
-    <string name="plugin_otr_activator_unreadablemsgreceived">{0} sent you an unreadable encrypted message.</string>
-    <string name="plugin_otr_activator_requireencryption">Your message was not sent. Private messaging is required.</string>
-    <string name="plugin_otr_activator_unreadablemsgreply">You sent {0} an unreadable encrypted message.
-        Please end your private conversation with {1} or refresh it.</string>
-    <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">{0} is trying to initiate an encrypted
+	<string name="plugin_otr_activator_unverifiedsessionwarning">{0} no ha sido autentificado todavía. Debes &lt;a href="atalk://{1}/{2}?{3}">&lt;b>authentificar&lt;/b>&lt;/a> este amigo.</string>
+    <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>No verificado&lt;/b> conversación privada con {0} comenzada.</string>
+    <string name="plugin_otr_activator_sessionstared">Se inició una conversación OTR privada con {0}.</string>
+    <string name="plugin_otr_activator_sessionfinished">{0} ha terminado la/su conversación OTR privada contigo; debes hacer lo mismo.</string>
+    <string name="plugin_otr_activator_sessionlost">La conversación privada OTR con {0} ha terminado..</string>
+    <string name="plugin_otr_activator_historyon">{0} está grabando esta conversación en tu dispositivo.
+        Tienes que &lt;a href=\"atalk://{1}/{2}\">desactivar el historial de chat aquí&lt;/a>.</string>
+    <string name="plugin_otr_activator_historyoff">{0} NO está grabando esta conversación
+        Tienes que &lt;a href=\"atalk://{1}/{2}\">activar el historial de chat aquí&lt;/a>.</string>
+    <string name="plugin_otr_activator_sessionfinishederror">Tu mensaje no ha sido enviado. Por favor, finaliza tu conversación OTR privada con {0}.</string>
+    <string name="plugin_otr_activator_smpaborted">{0} ha abortado el proceso de autenticación OTR.</string>
+    <string name="plugin_otr_activator_smperror">Se ha producido un error en el proceso de autenticación OTR..</string>
+    <string name="plugin_otr_activator_unencryptedmsgreceived">El mensaje fue recibido sin encriptar.</string>
+    <string name="plugin_otr_activator_unreadablemsgreceived">{0} te envió un mensaje encriptado ilegible.</string>
+    <string name="plugin_otr_activator_requireencryption">Tu mensaje no ha sido enviado. Se requiere mensajería privada.</string>
+    <string name="plugin_otr_activator_unreadablemsgreply">Su mensaje no ha sido enviado. Se requiere mensajería privada
+        Por favor, termina su conversación privada con {1} o actualízala.</string>
+    <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">{0} está intentando iniciar una encriptación
         &lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-        Off-The-Record conversation&lt;/a>with you. However, your software does not support
-        Off-The-Record messaging. For more information see &lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-        http://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
-    <string name="plugin_otr_activator_multipleinstancesdetected">Multiple private OTR conversation instances with {0} detected.</string>
-    <string name="plugin_otr_activator_msgfromanotherinstance">Received message from another OTR conversation instances with {0} detected.</string>
+        Conversación Off-The-Record&lt;/a>contigo. Sin embargo, tu software no soporta
+        mensajería Off-The-Record. Para más información, véase&lt;a href="http://es.wikipedia.org/wiki/Off-the-Record_Messaging">
+        http://es.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
+    <string name="plugin_otr_activator_multipleinstancesdetected">Múltiples instancias privadas de conversación OTR con {0} detectadas.</string>
+    <string name="plugin_otr_activator_msgfromanotherinstance">Mensaje recibido de otras instancias de conversación OTR detectadas con {0}.</string>
 
     <!-- Crypto OMEMO -->
-    <string name="menu_omemo_authenticated">OMEMO Authenticated</string>
-    <string name="menu_omemo_unauthenticated">OMEMO unAuthenticated</string>
-    <string name="menu_omemo_untrusted">OMEMO Un-Trusted</string>
-    <string name="menu_crypto_plain_text">Plain Text</string>
+    <string name="menu_omemo_authenticated">OMEMO Authenticado</string>
+    <string name="menu_omemo_unauthenticated">OMEMO No authenticado</string>
+    <string name="menu_omemo_untrusted">OMEMO Sin confianza</string>
+    <string name="menu_crypto_plain_text">Texto plano</string>
 
-    <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Authenticate Buddy</string>
-    <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
-    <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">You have unauthenticated buddies. Unverified buddies cannot receive OMEMO message. Check to authenticate.</string>
-    <string name="omemo_init_failed_title">OmemoManager init failed</string>
-    <string name="omemo_init_failed_noresponse">Initialize OmemoManager has failed and omemo messaging may not be working.\n\n
-        No response received within reply timeout.</string>
-    <string name="omemo_init_failed_CorruptedOmemoKeyException">Initialize OmemoManager has failed and omemo messaging is not working. If problem persists
-        after restart, please proceed to "Regnerate OMEMO identities" for the failed omomoDevice: %1$s.\n\nException: %2$s.</string>
-    <string name="omemo_rebuild_session">Rebuild new session for missing: %1$s</string>
-    <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs is missing for: %1$s</string>
-    <string name="omemo_identity_keypairs_invalid">Invalid IdentityKeyPairs for omemoDevice: %1$s.\nException: %2$s.</string>
-    <string name="omemo_identity_key_missing">OMEMO IdentityKey is missing for: %1$s</string>
-    <string name="omemo_identity_key_invalid">Invalid IdentityKey for omemoDevice: %1$s.\nException: %2$s.</string>
+    <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Authentifical al amigo Buddy</string>
+    <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Mi huella digital %1$s:\n%2$s</string>
+    <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">Tienes amigos no autentificados. Los amigos no verificados no pueden recibir el mensajes OMEMO. Compruébalo para autenticar.</string>
+    <string name="omemo_init_failed_title">Error en el inicio de OmemoManager</string>
+    <string name="omemo_init_failed_noresponse">Falló el inicio de OmemoManager y es posible que la mensajería omemo no funcione.\n\n
+        No se ha recibido respuesta dentro del tiempo límite de respuesta.</string>
+    <string name="omemo_init_failed_CorruptedOmemoKeyException">Falló el inicio de OmemoManager y la mensajería omemo no funciona. Si el problema continúa
+        después de reiniciar, procede a "Regenerar las identidades OMEMO" para el dispositivo Omemo que ha fallado.: %1$s.\n\nExcepción: %2$s.</string>
+    <string name="omemo_rebuild_session">Reinicia una nueva sesión para que no aparezca: %1$s</string>
+    <string name="omemo_identity_keypairs_missing">Faltan IdentityKeyPairs de OMEMO para: %1$s</string>
+    <string name="omemo_identity_keypairs_invalid">IdentityKeyPairs inválidos para el dispositivo omemo: %1$s.\nExcepción: %2$s.</string>
+    <string name="omemo_identity_key_missing">Falta la IdentityKey OMEMO para: %1$s</string>
+    <string name="omemo_identity_key_invalid">IdentityKey inválido para el dispositivo omemo: %1$s.\nExcepción: %2$s.</string>
 
     <!-- Global proxy plugin -->
-    <string name="service_gui_settings_PROXY">Global proxy</string>
-    <string name="service_gui_settings_PROXY_SUMMARY">Configure proxy options&#8230;</string>
-    <string name="plugin_globalproxy_PROXY_TYPE">Proxy Type</string>
-    <string name="plugin_globalproxy_PROXY_ADDRESS">Proxy Server</string>
-    <string name="plugin_globalproxy_PROXY_USERNAME">Proxy username</string>
-    <string name="plugin_globalproxy_PROXY_PASSWORD">Proxy password</string>
-    <string name="plugin_globalproxy_PROXY_PORT">Proxy port</string>
+    <string name="service_gui_settings_PROXY">Proxy global</string>
+    <string name="service_gui_settings_PROXY_SUMMARY">Configurar las opciones de proxy&#8230;</string>
+    <string name="plugin_globalproxy_PROXY_TYPE">Tipo de proxy</string>
+    <string name="plugin_globalproxy_PROXY_ADDRESS">Servidor proxy</string>
+    <string name="plugin_globalproxy_PROXY_USERNAME">Nombre de usuario para el proxy</string>
+    <string name="plugin_globalproxy_PROXY_PASSWORD">Contraseña para el proxy</string>
+    <string name="plugin_globalproxy_PROXY_PORT">Puerto del proxy</string>
 
     <!-- Account proxy plugin -->
-    <string name="service_gui_settings_ACCOUNT_PROXY">Proxy Configuration</string>
-    <string name="service_gui_settings_ACCOUNT_PROXY_SUMMARY">Configure account proxy options&#8230;</string>
-    <string name="plugin_proxy_PROXY_ENABLE">Use Proxy</string>
-    <string name="plugin_proxy_PROXY_ENABLE_SUMMARY">Enable connection via proxy for the account</string>
-    <string name="plugin_proxy_PROXY_TYPE">Proxy Type</string>
-    <string name="plugin_proxy_PROXY_ADDRESS">Proxy Server</string>
-    <string name="plugin_proxy_PROXY_USERNAME">Proxy username</string>
-    <string name="plugin_proxy_PROXY_PASSWORD">Proxy password</string>
-    <string name="plugin_proxy_PROXY_PORT">Proxy port</string>
+    <string name="service_gui_settings_ACCOUNT_PROXY">Configuración del proxy</string>
+    <string name="service_gui_settings_ACCOUNT_PROXY_SUMMARY">Configurar las opciones de la cuenta del proxy&#8230;</string>
+    <string name="plugin_proxy_PROXY_ENABLE">Usar Proxy</string>
+    <string name="plugin_proxy_PROXY_ENABLE_SUMMARY">Habilitar la conexión vía proxy para la cuenta</string>
+    <string name="plugin_proxy_PROXY_TYPE">Tipo de proxy</string>
+    <string name="plugin_proxy_PROXY_ADDRESS">Servidor proxy</string>
+    <string name="plugin_proxy_PROXY_USERNAME">Nombre de usuario para el proxy</string>
+    <string name="plugin_proxy_PROXY_PASSWORD">Contraseña para el proxy</string>
+    <string name="plugin_proxy_PROXY_PORT">Puerto del Proxy</string>
 
     <!-- Plugin reconnect -->
-    <string name="plugin_reconnectplugin_CONNECTION_FAILED_MSG">Account re-connection login failed:\nUser Name: {0}\nServer Name: {1}\nPlease check the account settings OR\nContact your network administrator for more information.</string>
-    <string name="plugin_reconnectplugin_NETWORK_DOWN">Network connectivity lost!</string>
+    <string name="plugin_reconnectplugin_CONNECTION_FAILED_MSG">Error de reconexión en el inicio de sesión de la cuenta:\nNombre de uauario: {0}\nServidor: {1}\nComprueba la configuración de la cuenta o\ncontacta con el administrador de red para obtener más información..</string>
+    <string name="plugin_reconnectplugin_NETWORK_DOWN">Pérdida de conectividad de red!</string>
 
     <!-- Provisioning Plugin-->
-    <string name="plugin_provisioning_PROVISIONING">Provisioning</string>
-    <string name="plugin_provisioning_PROVISIONING_SUMMARY">Configure provisioning settings</string>
-    <string name="plugin_provisioning_ENABLE_DISABLE">Enable provisioning</string>
-    <string name="plugin_provisioning_AUTO">Automatically discover a provisioning URI</string>
-    <string name="plugin_provisioning_METHOD">Provisioning method</string>
+    <string name="plugin_provisioning_PROVISIONING">Aprovisionamiento</string>
+    <string name="plugin_provisioning_PROVISIONING_SUMMARY">Configurar las opciones de aprovisionamiento</string>
+    <string name="plugin_provisioning_ENABLE_DISABLE">Activar el aprovisionamiento</string>
+    <string name="plugin_provisioning_AUTO">Descubrir automáticamente una URI de aprovisionamiento</string>
+    <string name="plugin_provisioning_METHOD">Método de aprovisionamiento</string>
     <string name="plugin_provisioning_DHCP">DHCP</string>
     <string name="plugin_provisioning_DNS">DNS</string>
     <string name="plugin_provisioning_BONJOUR">Bonjour</string>
-    <string name="plugin_provisioning_MANUAL">Manually specify a provisioning URI</string>
+    <string name="plugin_provisioning_MANUAL">Especificar manualmente una URI de aprovisionamiento</string>
     <string name="plugin_provisioning_URI">URI</string>
-    <string name="plugin_provisioning_RESTART_WARNING">Note that your changes will only take effect next time you start aTalk!</string>
+    <string name="plugin_provisioning_RESTART_WARNING">Ten en cuenta que sus cambios sólo tendrán efecto la próxima vez que se reinicie aTalk!</string>
     <string name="plugin_provisioning_UUID">UUID</string>
-    <string name="plugin_provisioning_COPYTOCLIPBOARD">Copy UUID to clipboard</string>
-    <string name="plugin_provisioning_CLIPBOARD_FAILED">Failed to copy UUID to clipboard</string>
-    <string name="plugin_provisioning_EXIT_ON_FAIL">Exit the application if the provisioning fails</string>
-    <string name="plugin_provisioning_CREDENTIALS">Last stored provisioning credentials</string>
-    <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Are you sure you want to remove provisioning password?</string>
-    <string name="plugin_provisioning_PROV_FAILED">Provisioning failed</string>
-    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Provisioning failed. {0}! <br />Please, try again later or contact your administrator.</html></string>
-    <string name="plugin_provisioning_FORGET_PASSWORD">Forget password</string>
+    <string name="plugin_provisioning_COPYTOCLIPBOARD">Copiar UUID en el portapapeles</string>
+    <string name="plugin_provisioning_CLIPBOARD_FAILED">Error al copiar la UUID en el portapapeles</string>
+    <string name="plugin_provisioning_EXIT_ON_FAIL">Salir de la aplicación si el aprovisionamiento falla</string>
+    <string name="plugin_provisioning_CREDENTIALS">Últimas credenciales de aprovisionamiento almacenadas</string>
+    <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">¿Estás seguro de que deseas eliminar la contraseña de aprovisionamiento?</string>
+    <string name="plugin_provisioning_PROV_FAILED">Fallo en el aprovisionamiento</string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Falló el aprovisionamiento. {0}! <br />Por favor, inténtalo de nuevo más tarde o ponte en contacto con su administrador.</html></string>
+    <string name="plugin_provisioning_FORGET_PASSWORD">Olvidé mi contraseña</string>
 
-    <string name="status_available">Online</string>
-    <string name="status_away">Away</string>
-    <string name="status_chat">Free for chat</string>
-    <string name="status_dnd">Do not disturb</string>
-    <string name="status_xa">Not available</string>
-    <string name="status_offline">Offline</string>
-    <string name="title_activity_attach_option_dialog">Send attachment</string>
-    <string name="attachOptionDialog_picture">Pictures</string>
-    <string name="attachOptionDialog_camera">Capture picture</string>
-    <string name="attachOptionDialog_Videos">Videos</string>
-    <string name="attachOptionDialog_videoRecord">Capture video</string>
-    <string name="attachOptionDialog_shareFile">Share File</string>
-    <string name="choose_file_activity_title">Choose a file</string>
-    <string name="chat_fileTransferButton">Open</string>
-    <string name="title_activity_activation_view">Activation</string>
-    <string name="Menu_Settings">Settings</string>
-    <string name="menu_settings">Settings</string>
-    <string name="chatRoom_Subject">Subject</string>
-    <string name="chat_message_select_all">Select all</string>
-    <string name="chat_message_del">Delete text</string>
-    <string name="chat_message_edit">Edit</string>
-    <string name="chat_message_long_press_hint">Avoid clicking within the message area for multi-item selection operation</string>
+    <string name="status_available">En línea</string>
+    <string name="status_away">Lejos</string>
+    <string name="status_chat">Disponible para charlar</string>
+    <string name="status_dnd">No molestar</string>
+    <string name="status_xa">No disponible</string>
+    <string name="status_offline">Fuera de línea</string>
+    <string name="title_activity_attach_option_dialog">Enviar archivo adjunto</string>
+    <string name="attachOptionDialog_picture">Fotos</string>
+    <string name="attachOptionDialog_camera">Hacer Foto</string>
+    <string name="attachOptionDialog_Videos">Vídeos</string>
+    <string name="attachOptionDialog_videoRecord">Grabar un vídeo</string>
+    <string name="attachOptionDialog_shareFile">Compartir archivo</string>
+    <string name="choose_file_activity_title">Elije un archivo</string>
+    <string name="chat_fileTransferButton">Abrir</string>
+    <string name="title_activity_activation_view">Activación</string>
+    <string name="Menu_Settings">Ajustes</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="chatRoom_Subject">Tema</string>
+    <string name="chat_message_select_all">Seleccionar todo</string>
+    <string name="chat_message_del">Borrar el texto</string>
+    <string name="chat_message_edit">Editar</string>
+    <string name="chat_message_long_press_hint">Evite hacer clic dentro del área de mensajes para la operación de selección de varios items.</string>
 
     <!-- DNS config -->
     <string name="service_gui_settings_DNS">DNS</string>
-    <string name="plugin_dnsconfig_DNSSEC">DNS Security (DNSSEC)</string>
-    <string name="plugin_dnsconfig_PARALLEL_DNS">Parallel DNS</string>
-    <string name="plugin_dnsconfig_border_TITLE">Backup resolver</string>
-    <string name="plugin_dnsconfig_chkBackupDnsEnabled_text">Enable parallel DNS resolving</string>
-    <string name="plugin_dnsconfig_lblBackupResolver_text">Hostname</string>
-    <string name="plugin_dnsconfig_lblBackupResolverFallbackIP_text">Fallback IP</string>
-    <string name="plugin_dnsconfig_lblBackupPort_text">Port</string>
-    <string name="plugin_dnsconfig_lblRedemption_text">Back to primary resolver</string>
-    <string name="plugin_dnsconfig_lblRedemption_description"><html>the number of prompt responses that the primary resolver needs to provide before we turn that backup off again</html></string>
-    <string name="plugin_dnsconfig_lblPatience_text">Start backup resolver after</string>
-    <string name="plugin_dnsconfig_lblPatience_description"><html>number of ms to wait for a response from primary DNS before starting the backup resolver</html></string>
-    <string name="plugin_dnsconfig_dnssec_chkEnabled">Enable DNSSEC resolver</string>
-    <string name="plugin_dnsconfig_dnssec_lblDefault">Default behavior</string>
-    <string name="plugin_dnsconfig_dnssec_chkAbsolute">Treat all domain names as absolute</string>
-    <string name="plugin_dnsconfig_dnssec_lblNameservers">Custom name servers</string>
-    <string name="plugin_dnsconfig_dnssec_lblNameserversHint"><html>Multiple servers can be delimited with a comma, e.g. 149.20.64.20, 149.20.64.21 (OARC\'s Open DNSSEC Validating Resolver)</html></string>
-    <string name="plugin_dnsconfig_dnssec_DOMAIN_NAME">Domain</string>
-    <string name="plugin_dnsconfig_dnssec_MODE">Behavior</string>
-    <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">State change failed</string>
-    <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Change of the DNSSEC enabled state has failed.</string>
-    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING"><html>Note that enabling or disabling DNSSEC disables the parallel resolver and will only take effect the next time you start aTalk.</html></string>
-    <string name="service_gui_settings_DNS_SUMMARY">Configure DNS settings</string>
+    <string name="plugin_dnsconfig_DNSSEC">Seguridad en DNS (DNSSEC)</string>
+    <string name="plugin_dnsconfig_PARALLEL_DNS">DNS paralelo</string>
+    <string name="plugin_dnsconfig_border_TITLE">Resolvedor de respaldo</string>
+    <string name="plugin_dnsconfig_chkBackupDnsEnabled_text">Habilitar la resolución paralela de DNS</string>
+    <string name="plugin_dnsconfig_lblBackupResolver_text">Nombre del Host</string>
+    <string name="plugin_dnsconfig_lblBackupResolverFallbackIP_text">IP de respaldo</string>
+    <string name="plugin_dnsconfig_lblBackupPort_text">Puerto</string>
+    <string name="plugin_dnsconfig_lblRedemption_text">Volver al resolutor primario</string>
+    <string name="plugin_dnsconfig_lblRedemption_description"><html>el número de respuestas rápidas que debe proporcionar el resolvedor primario antes de volver a desactivar el de reserva</html></string>
+    <string name="plugin_dnsconfig_lblPatience_text">Iniciar el resolvedor de reserva después</string>
+    <string name="plugin_dnsconfig_lblPatience_description"><html>número de ms para esperar una respuesta del DNS primario antes de iniciar el resolvedor de reserva</html></string>
+    <string name="plugin_dnsconfig_dnssec_chkEnabled">Activar el resolvedor DNSSEC</string>
+    <string name="plugin_dnsconfig_dnssec_lblDefault">Comportamiento predeterminado</string>
+    <string name="plugin_dnsconfig_dnssec_chkAbsolute">Tratar todos los nombres de dominio como absolutos</string>
+    <string name="plugin_dnsconfig_dnssec_lblNameservers">Nombres de Servidores personalizados</string>
+    <string name="plugin_dnsconfig_dnssec_lblNameserversHint"><html>Se pueden delimitar múltiples servidores con una coma, e.j. 149.20.64.20, 149.20.64.21 (OARC\'s Abrir resolución de validación de DNSSEC)</html></string>
+    <string name="plugin_dnsconfig_dnssec_DOMAIN_NAME">Dominio</string>
+    <string name="plugin_dnsconfig_dnssec_MODE">Comportamiento</string>
+    <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">Falló el cambio de estado</string>
+    <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Ha fallado el cambio del estado en la habilitación de DNSSEC.</string>
+    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING"><html>Ten en cuenta que habilitar o deshabilitar DNSSEC deshabilita el resolvedor paralelo y sólo tendrá efecto la próxima vez que se inicie. aTalk.</html></string>
+    <string name="service_gui_settings_DNS_SUMMARY">Configurar los ajustes de DNS</string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">SSL Certificate</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Manage SSL Certificates</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">SSL Certificate Manager</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">SSL Certificate Deletion</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Please confirm to delete SSL certificate for: %s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Certificado SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Administración de certificados SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Administrador de certificados SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Borrado de certificados SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Por favor, confirma la eliminación del certificado SSL para: %s</string>
    
     <!-- Settings -->
-    <string name="service_gui_COMMIT_PROGRESS_MSG">Storing account changes, please wait&#8230;</string>
-    <string name="service_gui_COMMIT_PROGRESS_TITLE">"Committing&#8230;"</string>
-    <string name="service_gui_SETTINGS_NOT_SET">(Not set)</string>
+    <string name="service_gui_COMMIT_PROGRESS_MSG">Cambios en el almacenamiento de la cuenta, por favor espera&#8230;</string>
+    <string name="service_gui_COMMIT_PROGRESS_TITLE">"Comprometiéndose&#8230;"</string>
+    <string name="service_gui_SETTINGS_NOT_SET">(No fijado)</string>
     
     <!-- Connection settings -->
-    <string name="service_gui_CONN_NO_CERT">None</string>
+    <string name="service_gui_CONN_NO_CERT">Ninguno</string>
     <!-- Encoding settings -->
-    <string name="service_gui_ENC_AUDIO_TITLE">Audio encoding</string>
-    <string name="service_gui_ENC_OVERRIDE_GLOBAL">Override global</string>
-	<string name="service_gui_ENC_VIDEO_TITLE">Video encoding</string>
+    <string name="service_gui_ENC_AUDIO_TITLE">Codificando el audio</string>
+    <string name="service_gui_ENC_OVERRIDE_GLOBAL">Anular global</string>
+	<string name="service_gui_ENC_VIDEO_TITLE">Codificando el vídeo</string>
     
     <!-- Security settings -->
-    <string name="service_gui_SEC_ENABLE_ENCRYPTION">Encryption</string>
+    <string name="service_gui_SEC_ENABLE_ENCRYPTION">Encriptación</string>
 
     <!-- Security protocols dialog -->
-    <string name="service_gui_LIST_EMPTY">None</string>
-    <string name="service_gui_SEC_PROTOCOLS_TITLE">Security protocols</string>
-    <string name="service_gui_SEC_PROTOCOLS_MSG">Please select desired protocols in order</string>
-    <string name="service_gui_SEC_PROTOCOLS_OK">Save</string>
-    <string name="service_gui_SEC_PROTOCOLS_CANCEL">Discard</string>
-    <string name="service_gui_SEC_ZRTP_SIGNALING_ON">ZRTP will be advertised over signaling protocol</string>
-    <string name="service_gui_SEC_ZRTP_SIGNALING_OFF">There will be no ZRTP advertisement</string>
+    <string name="service_gui_LIST_EMPTY">Ninguno</string>
+    <string name="service_gui_SEC_PROTOCOLS_TITLE">Protocolos de seguridad</string>
+    <string name="service_gui_SEC_PROTOCOLS_MSG">Por favor, selecciona el orden de llos protocolos deseados</string>
+    <string name="service_gui_SEC_PROTOCOLS_OK">Guardar</string>
+    <string name="service_gui_SEC_PROTOCOLS_CANCEL">Descartar</string>
+    <string name="service_gui_SEC_ZRTP_SIGNALING_ON">ZRTP será anunciado sobre el protocolo de señalización</string>
+    <string name="service_gui_SEC_ZRTP_SIGNALING_OFF">No habrá ningún anuncio ZRTP</string>
 
     <!-- STUN/Jingle Nodes list -->
-    <string name="service_gui_SERVERS_LIST_ADD_SERVER">Add server</string>
-    <string name="service_gui_SERVERS_LIST_EMPTY">The list is empty. Click to add new entry&#8230;</string>
-    <string name="service_gui_SERVERS_LIST_CANCEL">Cancel</string>
-    <string name="service_gui_SERVERS_LIST_REMOVE">Remove</string>
-    <string name="service_gui_SERVERS_LIST_SAVE">Save</string>
+    <string name="service_gui_SERVERS_LIST_ADD_SERVER">Añadir servidor</string>
+    <string name="service_gui_SERVERS_LIST_EMPTY">La lista está vacía. Haz clic para añadir una nueva entrada&#8230;</string>
+    <string name="service_gui_SERVERS_LIST_CANCEL">Cancelar</string>
+    <string name="service_gui_SERVERS_LIST_REMOVE">Eliminar</string>
+    <string name="service_gui_SERVERS_LIST_SAVE">Guardar</string>
     
     <!-- Jingle Nodes edit -->
-    <string name="service_gui_JINGLE_EDIT_JID">JID Address</string>
-    <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Support relay</string>
+    <string name="service_gui_JINGLE_EDIT_JID">Dirección JID</string>
+    <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Soporte relé</string>
     
     <!-- STUN edit -->
-    <string name="service_gui_STUN_EDIT_ADDRESS">IP Address</string>
-    <string name="service_gui_STUN_EDIT_PASSWORD">Password</string>
-    <string name="service_gui_STUN_EDIT_PORT">Server port</string>
+    <string name="service_gui_STUN_EDIT_ADDRESS">Dirección IP</string>
+    <string name="service_gui_STUN_EDIT_PASSWORD">Contraseña</string>
+    <string name="service_gui_STUN_EDIT_PORT">Puerto del Servidor</string>
     <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Support TURN</string>
-    <string name="service_gui_STUN_EDIT_TURN_USER">TURN username</string>
+    <string name="service_gui_STUN_EDIT_TURN_USER">Nombre usuario TURN</string>
  
     <!-- Security preferences -->
-    <string name="service_gui_PREF_SECURITY_ENCRYPTION">Enable call encryption</string>
-    <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Encryption protocols</string>
+    <string name="service_gui_PREF_SECURITY_ENCRYPTION">Habilitar el cifrado de llamadas</string>
+    <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Protocolos de encriptación</string>
     <string name="service_gui_PREF_SECURITY_GENERAL">General</string>
-    <string name="service_gui_PREF_SECURITY_RTP_SAVP">RTP/SAVP indication</string>
-    <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">RTP/SAVP indication method</string>
-	<string name="service_gui_PREF_SECURITY_SDES">SDes options</string>
-    <string name="service_gui_PREF_SECURITY_SDES_DLG_TITLE">Select desired cipher suites</string>
-    <string name="service_gui_PREF_SECURITY_SDES_TITLE">SDES cipher suites</string>
-    <string name="service_gui_PREF_SECURITY_ZRTP">ZRTP options</string>
-    <string name="service_gui_PREF_SECURITY_ZRTP_SIGNALING">ZRTP signaling</string>
+    <string name="service_gui_PREF_SECURITY_RTP_SAVP">Indicació RTP/SAVP</string>
+    <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">Método de indicación RTP/SAVP</string>
+	<string name="service_gui_PREF_SECURITY_SDES">Opciones SDes</string>
+    <string name="service_gui_PREF_SECURITY_SDES_DLG_TITLE">Selecciona las suites de cifrado deseadas</string>
+    <string name="service_gui_PREF_SECURITY_SDES_TITLE">Suites de cifrado SDES</string>
+    <string name="service_gui_PREF_SECURITY_ZRTP">Opciones ZRTP</string>
+    <string name="service_gui_PREF_SECURITY_ZRTP_SIGNALING">Señalización ZRTP</string>
 
     <!-- SIP preferences -->
-    <string name="service_gui_CRYPTOSIP_REGISTRAR">Crypto Registrar</string>
-    <string name="service_gui_SIP_ADVANCED">Advanced</string>
-    <string name="service_gui_SIP_AUTH_NAME">Authorization name</string>
-    <string name="service_gui_SIP_AUTO_SIGNIN">Connect at Startup</string>
-    <string name="service_gui_SIP_CLIST_PASS">Password</string>
-    <string name="service_gui_SIP_CLIST_TYPE">Type</string>
-    <string name="service_gui_SIP_CLIST_TYPE_DLG_TITLE">Contact list type selection</string>
-    <string name="service_gui_SIP_CLIST_URI">Contactlist server URI/Address</string>
-    <string name="service_gui_SIP_CLIST_SIP_CREDENTIALS">Use SIP credentials</string>
-    <string name="service_gui_SIP_CLIST_USER">User</string>
-    <string name="service_gui_SIP_CONNECTION">Connection</string>
-    <string name="service_gui_SIP_CONNECTION_DESC">Set connection details&#8230;</string>
+    <string name="service_gui_CRYPTOSIP_REGISTRAR">Registrador de cifrado</string>
+    <string name="service_gui_SIP_ADVANCED">Advanzado</string>
+    <string name="service_gui_SIP_AUTH_NAME">Nombre para la autorización</string>
+    <string name="service_gui_SIP_AUTO_SIGNIN">Conectar al inicio</string>
+    <string name="service_gui_SIP_CLIST_PASS">Contraseña</string>
+    <string name="service_gui_SIP_CLIST_TYPE">Tipo</string>
+    <string name="service_gui_SIP_CLIST_TYPE_DLG_TITLE">Selección del tipo de lista de contactos</string>
+    <string name="service_gui_SIP_CLIST_URI">Servidor de listas de contactos URI/Dirección</string>
+    <string name="service_gui_SIP_CLIST_SIP_CREDENTIALS">Usar crdenciales SIP</string>
+    <string name="service_gui_SIP_CLIST_USER">Usuario</string>
+    <string name="service_gui_SIP_CONNECTION">Conexión</string>
+    <string name="service_gui_SIP_CONNECTION_DESC">Configurar los detalles de la conexión&#8230;</string>
     <string name="service_gui_SIP_CONN_GENERAL">General</string>
-    <string name="service_gui_SIP_CONTACTLIST_OPTIONS">Contactlist Options</string>
-    <string name="service_gui_SIP_CONTACTS_POLLING">Offline contacts polling period(in s.)</string>
-    <string name="service_gui_SIP_DISPLAYNAME">Displayname</string>
-    <string name="service_gui_SIP_DTMF">DTMF method</string>
-    <string name="service_gui_SIP_DTMF_TITLE">DTMF method selection</string>
-    <string name="service_gui_SIP_ENABLE_SIMPLE">Enable presence (SIMPLE)</string>
-    <string name="service_gui_SIP_FORCE_P2P">Force peer-to-peer presence mode</string>
-    <string name="service_gui_SIP_GENERAL">User name and password</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_CAT">Keep alive</string>
-    <string name="service_gui_SIP_KEEP_ALIVE">Keep alive method</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_TITLE">Keep alive method selection</string>
-    <string name="service_gui_SIP_PING_INTERVAL">Ping interval</string>
-    <string name="service_gui_SIP_PASSWORD">Enter password</string>
-    <string name="service_gui_SIP_PORT">Server port</string>
-    <string name="service_gui_SIP_PREF_TRANSPORT">Preferred transport</string>
-    <string name="service_gui_SIP_PREF_TRANS_TITLE">Proxy preferred transport selection</string>
-    <string name="service_gui_SIP_PRESENCE">Presence</string>
-    <string name="service_gui_SIP_PRESENCE_DESC">Configure presence options&#8230;</string>
-    <string name="service_gui_SIP_PRESENCE_OPTIONS">Presence Options</string>
-    <string name="service_gui_SIP_PROXY">Proxy options</string>
-    <string name="service_gui_SIP_PROXY_AUTO">Configure proxy automatically</string>
-    <string name="service_gui_SIP_PROXY_ADDR">Proxy address</string>
-    <string name="service_gui_SIP_PROXY_PORT">Proxy port</string>
+    <string name="service_gui_SIP_CONTACTLIST_OPTIONS">Opciones de la lista de contactos</string>
+    <string name="service_gui_SIP_CONTACTS_POLLING">Período de sondeo de contactos fuera de línea(en s.)</string>
+    <string name="service_gui_SIP_DISPLAYNAME">Nombre en la pantalla</string>
+    <string name="service_gui_SIP_DTMF">Método DTMF</string>
+    <string name="service_gui_SIP_DTMF_TITLE">Selección del método DTMF</string>
+    <string name="service_gui_SIP_ENABLE_SIMPLE">Habilitar la presencia (SIMPLE)</string>
+    <string name="service_gui_SIP_FORCE_P2P">Forzar el modo de presencia peer-to-peer</string>
+    <string name="service_gui_SIP_GENERAL">Nombre de usuario y contraseña</string>
+    <string name="service_gui_SIP_KEEP_ALIVE_CAT">Mantener activo</string>
+    <string name="service_gui_SIP_KEEP_ALIVE">Método para mantener activo</string>
+    <string name="service_gui_SIP_KEEP_ALIVE_TITLE">Selección del método para mantenerlo activo</string>
+    <string name="service_gui_SIP_PING_INTERVAL">Intervalo de ping</string>
+    <string name="service_gui_SIP_PASSWORD">Introducir la contraseña</string>
+    <string name="service_gui_SIP_PORT">Puerto del servidor</string>
+    <string name="service_gui_SIP_PREF_TRANSPORT">Transporte preferido</string>
+    <string name="service_gui_SIP_PREF_TRANS_TITLE">Selección del transporte preferido para el proxy</string>
+    <string name="service_gui_SIP_PRESENCE">Presencia</string>
+    <string name="service_gui_SIP_PRESENCE_DESC">Configurar las opciones de presencia&#8230;</string>
+    <string name="service_gui_SIP_PRESENCE_OPTIONS">Opciones de presencia</string>
+    <string name="service_gui_SIP_PROXY">Opciones del Proxy</string>
+    <string name="service_gui_SIP_PROXY_AUTO">Configurar el proxy automáticamente</string>
+    <string name="service_gui_SIP_PROXY_ADDR">Dirección del proxy</string>
+    <string name="service_gui_SIP_PROXY_PORT">Puerto del proxy</string>
     <string name="service_gui_SIP_REGISTRAR">Registrar</string>
-    <string name="service_gui_SIP_TLS_CERT">Client TLS certificate</string>
-    <string name="service_gui_SIP_TLS_CERT_PROMPT">Please select TLS certificate</string>
-    <string name="service_gui_SIP_SUBSCRIPTION_DUR">Default subscription duration(in s.)</string>
+    <string name="service_gui_SIP_TLS_CERT">Certificado TLS del cliente</string>
+    <string name="service_gui_SIP_TLS_CERT_PROMPT">Por favor, seleccional el certificado TLS</string>
+    <string name="service_gui_SIP_SUBSCRIPTION_DUR">Duración predeterminada de la suscripción(en s.)</string>
     <string name="service_gui_SIP_USER">CRYPTO ID</string>
-    <string name="service_gui_SIP_VOICEMAIL">Voicemail</string>
-    <string name="service_gui_SIP_VMAIL_URI">Voicemail Subscription URI</string>
-    <string name="service_gui_SIP_VMAIL_CHECK_URI">Voicemail check URI</string>
-    <string name="service_gui_SIP_WMI">Message Waiting (MWI)</string>
+    <string name="service_gui_SIP_VOICEMAIL">Buzón de voz</string>
+    <string name="service_gui_SIP_VMAIL_URI">URI de la subscripción al buzón de voz</string>
+    <string name="service_gui_SIP_VMAIL_CHECK_URI">Comprobación de la URI del buzón de voz</string>
+    <string name="service_gui_SIP_WMI">Mensaje en espera (MWI)</string>
 
     <!-- Common preferences -->
     <string name="service_gui_PREF_AUDIO_ENCODING">Audio encoding</string>
