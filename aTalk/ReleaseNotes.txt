@@ -1,5 +1,12 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.2.2a (1022)
+Author:         cmeng
+Upload Date:	04/18/2018
+- AudiobBgService can only check for permissions, and not request permissions (removed)
+- Disable audio sending option if permission.RECORD_AUDIO is denied
+
+=========================================================================
 Version:		1.2.1 (1021)
 Author:         cmeng
 Upload Date:	04/15/2018
