@@ -245,6 +245,17 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
+     * Check if current chat is set to OTR crypto mode
+     *
+     * @return return <tt>true</tt> if OMEMO crypto chat is selected
+     */
+    public boolean isOTRChat()
+    {
+        return ((mChatType == ChatFragment.MSGTYPE_OTR)
+                || (mChatType == ChatFragment.MSGTYPE_OTR_UA));
+    }
+
+    /**
      * Stores recently edited message text.
      *
      * @param editedText recently edited message text.
@@ -707,13 +718,14 @@ public class ChatPanel implements Chat, MessageListener
      * @param contactName the name of the contact sending the message
      * @param date the time at which the message is sent or received
      * @param messageType the type of the message
+     * @param mimeType the content encode type i.e plain or html
      * @param message the message text
-     * @param encType the content encryption type
      */
     @Override
-    public void addMessage(String contactName, Date date, String messageType, String message, int encType)
+    public void addMessage(String contactName, Date date, String messageType, int mimeType, String message)
     {
-        addMessage(contactName, contactName, date, messageType, message, encType, null, null);
+        addMessage(contactName, contactName, date, messageType, mimeType, message, ChatMessage.ENCRYPTION_NONE,
+                null, null);
     }
 
     /**
@@ -723,15 +735,16 @@ public class ChatPanel implements Chat, MessageListener
      * @param displayName the display name of the contact
      * @param date the time at which the message is sent or received
      * @param messageType the type of the message. One of MESSAGE_OUT or MESSAGE_IN
+     * @param mimeType the content encode type i.e plain or html
      * @param message the message text
-     * @param encType the content encryption type
+     * @param encryptionType the content encryption type
      */
-    public void addMessage(String contactName, String displayName, Date date, String messageType,
-            String message, int encType, String messageUID, String correctedMessageUID)
+    public void addMessage(String contactName, String displayName, Date date, String messageType, int mimeType,
+            String message, int encryptionType, String messageUID, String correctedMessageUID)
     {
         int chatMsgType = chatTypeToChatMsgType(messageType);
-        ChatMessageImpl chatMessage = new ChatMessageImpl(contactName, displayName, date,
-                chatMsgType, null, message, encType, messageUID, correctedMessageUID);
+        ChatMessageImpl chatMessage = new ChatMessageImpl(contactName, displayName, date, chatMsgType, mimeType,
+                message, encryptionType, messageUID, correctedMessageUID);
 
         synchronized (cacheLock) {
             // Must always cache the chatMsg as chatFragment has not registered to handle incoming
@@ -756,8 +769,7 @@ public class ChatPanel implements Chat, MessageListener
      *
      * @param date the date on which the request has been received
      */
-    public void addFTRequest(OperationSetFileTransfer opSet, IncomingFileTransferRequest request,
-            Date date)
+    public void addFTRequest(OperationSetFileTransfer opSet, IncomingFileTransferRequest request, Date date)
     {
         Contact sender = request.getSender();
         String senderName = sender.getAddress();
@@ -765,8 +777,8 @@ public class ChatPanel implements Chat, MessageListener
                 new String[]{date.toString(), senderName});
 
         int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
-        int encType = ChatMessage.ENCODE_PLAIN;
-        ChatMessageImpl chatMsg = new ChatMessageImpl(senderName, date, msgType, message, encType, opSet, request);
+        int mimeType = ChatMessage.ENCODE_PLAIN;
+        ChatMessageImpl chatMsg = new ChatMessageImpl(senderName, date, msgType, mimeType, message, opSet, request);
 
         synchronized (cacheLock) {
             // Must cache chatMsg as chatFragment has not registered to handle incoming message on
@@ -893,8 +905,7 @@ public class ChatPanel implements Chat, MessageListener
     public void messageReceived(MessageReceivedEvent messageReceivedEvent)
     {
         // cmeng: only handle messageReceivedEvent belongs to this.metaContact
-        if ((metaContact != null)
-                && metaContact.containsContact(messageReceivedEvent.getSourceContact())) {
+        if ((metaContact != null) && metaContact.containsContact(messageReceivedEvent.getSourceContact())) {
             synchronized (cacheLock) {
                 // Must cache chatMsg as chatFragment has not registered to handle incoming
                 // message on first onAttach or not in focus
@@ -982,9 +993,8 @@ public class ChatPanel implements Chat, MessageListener
             errorMsg += " " + rms.getI18NString("service.gui.ERROR_WAS", new String[]{reason});
 
         addMessage(metaContact.getDisplayName(), new Date(), Chat.OUTGOING_MESSAGE,
-                sourceMessage.getContent(), sourceMessage.getEncType());
-        addMessage(metaContact.getDisplayName(), new Date(), Chat.ERROR_MESSAGE,
-                errorMsg, ChatMessage.ENCODE_PLAIN);
+                sourceMessage.getMimeType(), sourceMessage.getContent());
+        addMessage(metaContact.getDisplayName(), new Date(), Chat.ERROR_MESSAGE, ChatMessage.ENCODE_PLAIN, errorMsg);
     }
 
     /**
@@ -1022,11 +1032,10 @@ public class ChatPanel implements Chat, MessageListener
         String contactName = ((MetaContactChatTransport) chatTransport).getContact().getAddress();
         if (ConfigurationUtils.isShowStatusChangedInChat()) {
             // Show a status message to the user.
-            this.addMessage(contactName, chatTransport.getName(), new Date(), Chat.STATUS_MESSAGE,
-                    AndroidGUIActivator.getResources()
-                            .getI18NString("service.gui.STATUS_CHANGED_CHAT_MESSAGE",
-                                    new String[]{chatTransport.getStatus().getStatusName()}),
-                    ChatMessage.ENCODE_PLAIN, null, null);
+            this.addMessage(contactName, chatTransport.getName(), new Date(), Chat.STATUS_MESSAGE, ChatMessage.ENCODE_PLAIN,
+                    AndroidGUIActivator.getResources().getI18NString("service.gui.STATUS_CHANGED_CHAT_MESSAGE",
+                            new String[]{chatTransport.getStatus().getStatusName()}),
+                    ChatMessage.ENCRYPTION_NONE, null, null);
         }
     }
 
@@ -1062,10 +1071,9 @@ public class ChatPanel implements Chat, MessageListener
         if ((chatSubject.length() != 0) && !chatSubject.equals(subject)) {
             chatSubject = subject;
 
-            this.addMessage(mChatSession.getChatName(), new Date(), Chat.STATUS_MESSAGE,
-                    AndroidGUIActivator.getResources().getI18NString("service.gui" +
-                            ".CHAT_ROOM_SUBJECT_CHANGED", new String[]{mChatSession.getChatName(),
-                            subject}), ChatMessage.ENCODE_PLAIN);
+            this.addMessage(mChatSession.getChatName(), new Date(), Chat.STATUS_MESSAGE, ChatMessage.ENCODE_PLAIN,
+                    AndroidGUIActivator.getResources().getI18NString("service.gui.CHAT_ROOM_SUBJECT_CHANGED",
+                            new String[]{mChatSession.getChatName(), subject}));
         }
     }
 
@@ -1102,8 +1110,8 @@ public class ChatPanel implements Chat, MessageListener
         if (!StringUtils.isNullOrEmpty(statusMessage)) {
             String contactName
                     = ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getContactAddress();
-            this.addMessage(contactName, chatContact.getName(), new Date(), Chat.STATUS_MESSAGE,
-                    statusMessage, ChatMessage.ENCODE_PLAIN, null, null);
+            this.addMessage(contactName, chatContact.getName(), new Date(), Chat.STATUS_MESSAGE, ChatMessage.ENCODE_PLAIN,
+                    statusMessage, ChatMessage.ENCRYPTION_NONE, null, null);
         }
     }
 

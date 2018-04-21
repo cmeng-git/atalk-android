@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.plugin.notificationwiring;
@@ -487,27 +487,27 @@ public class NotificationManager implements
             while (peerIter.hasNext()) {
                 CallPeer aPeer = peerIter.next();
 
-				/*
+                /*
                  * The peer is still in a call/telephony conference so the DIALING sound may need
-				 * to be played.
-				 */
+                 * to be played.
+                 */
                 if (peer == aPeer)
                     play = true;
 
                 CallPeerState state = peer.getState();
                 if (CallPeerState.INITIATING_CALL.equals(state)
                         || CallPeerState.CONNECTING.equals(state)) {
-					/*
-					 * The DIALING sound should be played for the first CallPeer only.
-					 */
+                    /*
+                     * The DIALING sound should be played for the first CallPeer only.
+                     */
                     if (peer != aPeer)
                         return false;
                 }
                 else {
-					/*
-					 * The DIALING sound should not be played if there is a CallPeer which does
-					 * not require the DIALING sound to be played.
-					 */
+                    /*
+                     * The DIALING sound should not be played if there is a CallPeer which does
+                     * not require the DIALING sound to be played.
+                     */
                     return false;
                 }
             }
@@ -861,12 +861,12 @@ public class NotificationManager implements
             peerInfo.put("caller.name", peerName);
             peerInfo.put("caller.id", peer.getPeerID());
 
-			/*
-			 * The loopCondition will stay with the notification sound until the latter is stopped.
-			 * If by any chance the sound fails to stop by the time the call is no longer
-			 * referenced, do try to stop it then. That's why the loopCondition will weakly
-			 * reference the call.
-			 */
+            /*
+             * The loopCondition will stay with the notification sound until the latter is stopped.
+             * If by any chance the sound fails to stop by the time the call is no longer
+             * referenced, do try to stop it then. That's why the loopCondition will weakly
+             * reference the call.
+             */
             final WeakReference<Call> weakCall = new WeakReference<>(call);
             NotificationData notification = fireNotification(INCOMING_CALL, "",
                     NotificationWiringActivator.getResources()
@@ -880,10 +880,10 @@ public class NotificationManager implements
                             if (call == null)
                                 return false;
 
-						/*
-						 * INCOMING_CALL should be played for a Call only while there is a
-						 * CallPeer in the INCOMING_CALL state.
-						 */
+                            /*
+                             * INCOMING_CALL should be played for a Call only while there is a
+                             * CallPeer in the INCOMING_CALL state.
+                             */
                             Iterator<? extends CallPeer> peerIter = call.getCallPeers();
                             boolean loop = false;
                             while (peerIter.hasNext()) {
@@ -1076,18 +1076,16 @@ public class NotificationManager implements
             fireChatNotification = (nickname == null)
                     || messageContent.toLowerCase().contains(nickname.toLowerCase());
             if (fireChatNotification) {
-                String title = NotificationWiringActivator.getResources()
-                        .getI18NString("service.gui.MSG_RECEIVED",
-                                new String[]{sourceParticipant.getDisplayName()});
+                String title = NotificationWiringActivator.getResources().getI18NString("service.gui.MSG_RECEIVED",
+                        new String[]{sourceParticipant.getDisplayName()});
                 final String htmlContent;
-                if (ChatMessage.ENCODE_HTML == evt.getMessage().getEncType()) {
+                if (ChatMessage.ENCODE_HTML == evt.getMessage().getMimeType()) {
                     htmlContent = messageContent;
                 }
                 else {
                     htmlContent = StringEscapeUtils.escapeHtml4(messageContent);
                 }
-                fireChatNotification(sourceChatRoom, INCOMING_MESSAGE, title, htmlContent,
-                        evt.getMessage().getMessageUID());
+                fireChatNotification(sourceChatRoom, INCOMING_MESSAGE, title, htmlContent, evt.getMessage().getMessageUID());
             }
         } catch (Throwable t) {
             logger.error("Error notifying for adHoc message received", t);
@@ -1111,10 +1109,10 @@ public class NotificationManager implements
             final Message sourceMsg = evt.getMessage();
             String messageContent = sourceMsg.getContent();
 
-			/*
-			 * It is uncommon for IRC clients to display popup notifications for messages which
-			 * are sent to public channels and which do not mention the nickname of the local user.
-			 */
+            /*
+             * It is uncommon for IRC clients to display popup notifications for messages which
+             * are sent to public channels and which do not mention the nickname of the local user.
+             */
             if (sourceChatRoom.isSystem() || isPrivate(sourceChatRoom) || (messageContent == null))
                 fireChatNotification = true;
             else {
@@ -1130,18 +1128,16 @@ public class NotificationManager implements
             }
 
             if (fireChatNotification) {
-                String title = NotificationWiringActivator.getResources()
-                        .getI18NString("service.gui.MSG_RECEIVED",
-                                new String[]{sourceMember.getNickName()});
+                String title = NotificationWiringActivator.getResources().getI18NString("service.gui.MSG_RECEIVED",
+                        new String[]{sourceMember.getNickName()});
                 final String htmlContent;
-                if (ChatMessage.ENCODE_HTML == sourceMsg.getEncType()) {
+                if (ChatMessage.ENCODE_HTML == sourceMsg.getMimeType()) {
                     htmlContent = messageContent;
                 }
                 else {
                     htmlContent = StringEscapeUtils.escapeHtml4(messageContent);
                 }
-                fireChatNotification(sourceChatRoom, INCOMING_MESSAGE, title, htmlContent,
-                        sourceMsg.getMessageUID());
+                fireChatNotification(sourceChatRoom, INCOMING_MESSAGE, title, htmlContent, sourceMsg.getMessageUID());
             }
         } catch (Throwable t) {
             logger.error("Error notifying for chat room message received", t);
@@ -1157,20 +1153,18 @@ public class NotificationManager implements
     {
         try {
             // Fire notification
-            String title = NotificationWiringActivator.getResources()
-                    .getI18NString("service.gui.MSG_RECEIVED",
-                            new String[]{evt.getSourceContact().getDisplayName()});
+            String title = NotificationWiringActivator.getResources().getI18NString("service.gui.MSG_RECEIVED",
+                    new String[]{evt.getSourceContact().getDisplayName()});
 
             final Message sourceMsg = evt.getSourceMessage();
             final String htmlContent;
-            if (ChatMessage.ENCODE_HTML == sourceMsg.getEncType()) {
+            if (ChatMessage.ENCODE_HTML == sourceMsg.getMimeType()) {
                 htmlContent = sourceMsg.getContent();
             }
             else {
                 htmlContent = StringEscapeUtils.escapeHtml4(sourceMsg.getContent());
             }
-            fireChatNotification(evt.getSourceContact(), INCOMING_MESSAGE, title, htmlContent,
-                    sourceMsg.getMessageUID());
+            fireChatNotification(evt.getSourceContact(), INCOMING_MESSAGE, title, htmlContent, sourceMsg.getMessageUID());
         } catch (Throwable t) {
             logger.error("Error notifying for message received", t);
         }
@@ -1238,15 +1232,15 @@ public class NotificationManager implements
             // Stop the dialing audio when we enter any other state.
             if ((newState == CallPeerState.INITIATING_CALL)
                     || (newState == CallPeerState.CONNECTING)) {
-				/*
-				 * The loopCondition will stay with the notification sound until the latter is
-				 * stopped. If by any chance the sound fails to stop by the time the peer is no
-				 * longer referenced, do try to stop it then. That's why the loopCondition will
-				 * weakly reference the peer.
-				 */
+                /*
+                 * The loopCondition will stay with the notification sound until the latter is
+                 * stopped. If by any chance the sound fails to stop by the time the peer is no
+                 * longer referenced, do try to stop it then. That's why the loopCondition will
+                 * weakly reference the peer.
+                 */
                 final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
 
-				/* We want to play the dialing once for multiple CallPeers. */
+                /* We want to play the dialing once for multiple CallPeers. */
                 if (shouldPlayDialingSound(weakPeer)) {
                     NotificationData notification = fireNotification(DIALING,
                             new Callable<Boolean>()
@@ -1451,10 +1445,10 @@ public class NotificationManager implements
                     break;
 
                 default:
-					/*
-					 * Whatever other severity there is or will be, we do not how to react to it
-					 * yet.
-					 */
+                    /*
+                     * Whatever other severity there is or will be, we do not how to react to it
+                     * yet.
+                     */
                     messageTitleKey = null;
             }
 
@@ -1573,11 +1567,11 @@ public class NotificationManager implements
             if (notificationService != null)
                 notificationService.stopNotification(data);
         } finally {
-			/*
-			 * The field callNotifications associates a Call with a NotificationData for the
-			 * purposes of the stopSound method so the stopSound method should dissociate them
-			  * upon stopping a specific NotificationData.
-			 */
+            /*
+             * The field callNotifications associates a Call with a NotificationData for the
+             * purposes of the stopSound method so the stopSound method should dissociate them
+             * upon stopping a specific NotificationData.
+             */
             Iterator<Map.Entry<Call, NotificationData>> i = callNotifications.entrySet()
                     .iterator();
 

@@ -29,15 +29,11 @@ public class HealthCheckIQProvider extends IQProvider<HealthCheckIQ>
 {
 	/**
 	 * Registers <tt>HealthCheckIQProvider</tt> as an <tt>IQProvider</tt>
-	 * 
-	 * @param providerManager
-	 *        the <tt>ProviderManager</tt> to which this instance will be bound to.
 	 */
 	public void registerIQProvider()
 	{
 		// ColibriStatsIQ
-		ProviderManager.addIQProvider(HealthCheckIQ.ELEMENT_NAME, HealthCheckIQ.NAMESPACE,
-			new HealthCheckIQProvider());
+		ProviderManager.addIQProvider(HealthCheckIQ.ELEMENT_NAME, HealthCheckIQ.NAMESPACE, new HealthCheckIQProvider());
 	}
 
 	/**

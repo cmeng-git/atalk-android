@@ -47,8 +47,7 @@ public class RelayProvider extends ExtensionElementProvider<RelayPacketExtension
 				if (elementName.equals(ServerPacketExtension.ELEMENT_NAME)) {
 					ExtensionElementProvider<ExtensionElement> provider
 							= ProviderManager.getExtensionProvider(
-									ServerPacketExtension.ELEMENT_NAME,
-									ServerPacketExtension.NAMESPACE);
+									ServerPacketExtension.ELEMENT_NAME, ServerPacketExtension.NAMESPACE);
 					ExtensionElement childExtension = (ExtensionElement) provider.parse(parser);
 					ext.addChildExtension(childExtension);
 				}

@@ -366,8 +366,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 // serviceNames = MultiUserChat.getServiceNames(getXmppConnection()).iterator();
                 serviceNames = mMucMgr.getXMPPServiceDomains();
             } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
-                throw new OperationFailedException(
-                        "Failed to retrieve Jabber conference service names",
+                throw new OperationFailedException("Failed to retrieve Jabber conference service names",
                         OperationFailedException.GENERAL_ERROR, ex);
             }
 
@@ -379,10 +378,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                     try {
                         roomsOnThisService.addAll(mMucMgr.getHostedRooms(serviceName));
                     } catch (XMPPException | NoResponseException | NotConnectedException
-                            | MultiUserChatException.NotAMucServiceException
-                            | InterruptedException ex) {
-                        logger.error("Failed to retrieve rooms for serviceName=" + serviceName,
-                                ex);
+                            | MultiUserChatException.NotAMucServiceException | InterruptedException ex) {
+                        logger.error("Failed to retrieve rooms for serviceName=" + serviceName, ex);
                         continue;
                     }
 
@@ -436,8 +433,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     {
         if (mMucMgr != null) {
             try {
-                mMucMgr.decline(
-                        JidCreate.entityBareFrom(invitation.getTargetChatRoom().getIdentifier()),
+                mMucMgr.decline(JidCreate.entityBareFrom(invitation.getTargetChatRoom().getIdentifier()),
                         invitation.getInviter().asEntityBareJidIfPossible(), rejectReason);
             } catch (NotConnectedException | InterruptedException | XmppStringprepException e) {
                 e.printStackTrace();
@@ -836,8 +832,9 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         EntityFullJid msgFrom = (EntityFullJid) message.getFrom();
         ChatRoomMemberJabberImpl member = chatRoom.findMemberFromParticipant(msgFrom);
 
+        int encType = ChatMessage.ENCRYPTION_OMEMO | ChatMessage.ENCODE_PLAIN;
         net.java.sip.communicator.service.protocol.Message newMessage
-                = new MessageJabberImpl(decryptedBody, ChatMessage.ENCODE_PLAIN, null);
+                = new MessageJabberImpl(decryptedBody, encType, null);
         ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
                 chatRoom, member, timeStamp, newMessage, ChatRoomMessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED);
 

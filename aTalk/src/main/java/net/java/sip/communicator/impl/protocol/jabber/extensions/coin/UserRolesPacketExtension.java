@@ -5,14 +5,14 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.coin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketExtension;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User roles packet extension.
@@ -49,7 +49,7 @@ public class UserRolesPacketExtension extends AbstractPacketExtension
 	public UserRolesPacketExtension()
 	{
 		super(ELEMENT_NAME, NAMESPACE);
-	}
+    }
 
 	/**
 	 * Add roles.

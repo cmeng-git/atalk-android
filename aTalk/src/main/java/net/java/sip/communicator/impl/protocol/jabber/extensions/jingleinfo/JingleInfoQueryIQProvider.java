@@ -30,8 +30,7 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
 	/**
 	 * Relay packet extension provider.
 	 */
-	private final ExtensionElementProvider<RelayPacketExtension> relayProvider
-			= new RelayProvider();
+	private final ExtensionElementProvider<RelayPacketExtension> relayProvider = new RelayProvider();
 
 	/**
 	 * Creates a new instance of the <tt>JingleInfoQueryIQProvider</tt> and register all related
@@ -41,8 +40,7 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
 	public JingleInfoQueryIQProvider()
 	{
 		ProviderManager.addExtensionProvider(
-				ServerPacketExtension.ELEMENT_NAME,
-				ServerPacketExtension.NAMESPACE,
+				ServerPacketExtension.ELEMENT_NAME, ServerPacketExtension.NAMESPACE,
 				new DefaultPacketExtensionProvider<>(ServerPacketExtension.class));
 	}
 

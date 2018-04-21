@@ -7,11 +7,14 @@ package net.java.sip.communicator.service.protocol;
 
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.gui.chat.ChatMessage;
+
 /**
  * Represents a default implementation of {@link Message} in order to make it easier for
  * implementers to provide complete solutions while focusing on implementation-specific details.
  *
  * @author Lubomir Marinov
+ * @author Eng Chong Meng
  */
 public abstract class AbstractMessage implements Message
 {
@@ -21,35 +24,50 @@ public abstract class AbstractMessage implements Message
 	 */
 	private static final Logger logger = Logger.getLogger(AbstractMessage.class);
 
-	private String content;
+	private String mContent;
 
-	private final int encType;
+	private final int mMimeType;
 
-	private final String messageUID;
+    private final int mEncryption;
+
+	private final String mMessageUID;
 
 	/**
 	 * The content of this message, in raw bytes according to the encoding.
 	 */
 	private byte[] rawData;
 
-	private final String subject;
+	private final String mSubject;
 
+    /**
+     * @param content the text content of the message.
+     * @param encType contains both mime and encryption types @see ChatMessage.ENC_TYPE definition
+     * @param subject the subject of the message or null for empty.
+     */
 	protected AbstractMessage(String content, int encType, String subject)
 	{
-		this.encType = encType;
-		this.subject = subject;
+        mMimeType = encType & ChatMessage.MIME_MASK;
+        mEncryption = encType & ChatMessage.ENCRYPTION_MASK;
+        mSubject = subject;
 
 		setContent(content);
-		this.messageUID = createMessageUID();
+        mMessageUID = createMessageUID();
 	}
 
+    /**
+     * @param content the text content of the message.
+     * @param encType contains both mime and encryption types @see ChatMessage.ENC_TYPE definition
+     * @param subject the subject of the message or null for empty.
+     * @param messageUID @see net.java.sip.communicator.service.protocol.Message#getMessageUID()
+     */
 	protected AbstractMessage(String content, int encType, String subject, String messageUID)
 	{
-		this.encType = encType;
-		this.subject = subject;
+        mMimeType = encType & ChatMessage.MIME_MASK;
+        mEncryption = encType & ChatMessage.ENCRYPTION_MASK;
+        mSubject = subject;
 
 		setContent(content);
-		this.messageUID = messageUID == null ? createMessageUID() : messageUID;
+        mMessageUID = messageUID == null ? createMessageUID() : messageUID;
 	}
 
 	protected String createMessageUID()
@@ -57,7 +75,17 @@ public abstract class AbstractMessage implements Message
 		return String.valueOf(System.currentTimeMillis()) + String.valueOf(hashCode());
 	}
 
-	/**
+    /*
+     * (non-Javadoc)
+     *
+     * @see net.java.sip.communicator.service.protocol.Message#getMimeType()
+     */
+    public int getMimeType()
+    {
+        return mMimeType;
+    }
+
+    /**
 	 * Returns the content of this message if representable in text form or null if this message
 	 * does not contain text data.
 	 * <p>
@@ -69,18 +97,27 @@ public abstract class AbstractMessage implements Message
 	 */
 	public final String getContent()
 	{
-		return content;
+		return mContent;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see net.java.sip.communicator.service.protocol.Message#getEncType()
+	 * @see net.java.sip.communicator.service.protocol.Message#getMimeType()
 	 */
-	public int getEncType()
+	public int getEncryptionType()
 	{
-		return encType;
+		return mEncryption;
 	}
+
+    /**
+     *
+     * @return the encType of both Mime and Encryption combined
+     */
+    public int getEncType()
+    {
+        return mEncryption | mMimeType;
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -89,7 +126,7 @@ public abstract class AbstractMessage implements Message
 	 */
 	public String getMessageUID()
 	{
-		return messageUID;
+		return mMessageUID;
 	}
 
 	/*
@@ -123,14 +160,14 @@ public abstract class AbstractMessage implements Message
 	 */
 	public String getSubject()
 	{
-		return subject;
+		return mSubject;
 	}
 
 	protected void setContent(String content)
 	{
-		if (!equals(this.content, content)) {
-			this.content = content;
-			this.rawData = null;
+		if (!equals(mContent, content)) {
+            mContent = content;
+			rawData = null;
 		}
 	}
 

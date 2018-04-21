@@ -46,8 +46,7 @@ public class StunProvider extends ExtensionElementProvider<StunPacketExtension>
 				if (elementName.equals(ServerPacketExtension.ELEMENT_NAME)) {
 					ExtensionElementProvider<ExtensionElement> provider
 							= ProviderManager.getExtensionProvider(
-									ServerPacketExtension.ELEMENT_NAME,
-									ServerPacketExtension.NAMESPACE);
+									ServerPacketExtension.ELEMENT_NAME, ServerPacketExtension.NAMESPACE);
 					ExtensionElement childExtension = provider.parse(parser);
 					ext.addChildExtension(childExtension);
 				}

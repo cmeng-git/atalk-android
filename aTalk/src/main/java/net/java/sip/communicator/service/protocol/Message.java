@@ -32,11 +32,18 @@ public interface Message
 	String getContent();
 
 	/**
-	 * Returns the encode/encryption type for the message content.
+	 * Returns the mime type for the message content.
 	 * 
-	 * @return a String containing the mime type of the message constant.
+	 * @return an integer for the mime type of the message content.
 	 */
-	int getEncType();
+	int getMimeType();
+
+    /**
+     * Returns the encryption type for the message content.
+     *
+     * @return an integer for the encryption type of the message content.
+     */
+    int getEncryptionType();
 
 	/**
 	 * Get the raw/binary content of an instant message.

@@ -2006,14 +2006,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addExtensionProvider(CapsExtension.ELEMENT, CapsExtension.NAMESPACE,
                     new CapsExtensionProvider());
 
-            ProviderManager.addExtensionProvider(ConferenceDescriptionPacketExtension.ELEMENT_NAME,
-                    ConferenceDescriptionPacketExtension.NAMESPACE,
+            ProviderManager.addExtensionProvider(
+                    ConferenceDescriptionPacketExtension.ELEMENT_NAME, ConferenceDescriptionPacketExtension.NAMESPACE,
                     new ConferenceDescriptionPacketExtension.Provider());
-
-            // Add the custom GeolocationExtension to the Smack library - need cleanup
-//			ProviderManager.addExtensionProvider(GeolocationPacketExtensionProvider.ELEMENT,
-//					GeolocationPacketExtensionProvider.NAMESPACE,
-//					new GeolocationPacketExtensionProvider());
 
             ProviderManager.addExtensionProvider(Nick.ELEMENT_NAME, Nick.NAMESPACE, new Nick.Provider());
 
@@ -2028,8 +2023,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addExtensionProvider(AvatarData.ELEMENT, AvatarData.NAMESPACE, new AvatarDataProvider());
 
             // XEP-0153: vCard-Based Avatars
-            ProviderManager.addExtensionProvider(VCardTempXUpdate.ELEMENT,
-                    VCardTempXUpdate.NAMESPACE, new VCardTempXUpdateProvider());
+            ProviderManager.addExtensionProvider(VCardTempXUpdate.ELEMENT, VCardTempXUpdate.NAMESPACE,
+                    new VCardTempXUpdateProvider());
 
             // in case of modified account, we clear list of supported features and all state
             // change listeners, otherwise we can have two OperationSet for same feature and it
@@ -2144,8 +2139,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
                 if (!isVideobridgeDisabled) {
                     // init video bridge
-                    addSupportedOperationSet(OperationSetVideoBridge.class,
-                            new OperationSetVideoBridgeImpl(this));
+                    addSupportedOperationSet(OperationSetVideoBridge.class, new OperationSetVideoBridgeImpl(this));
                 }
 
                 // init DTMF

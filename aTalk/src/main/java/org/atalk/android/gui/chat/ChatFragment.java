@@ -1,7 +1,7 @@
 /*
- * 
+ *
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.chat;
@@ -373,16 +373,16 @@ public class ChatFragment extends OSGiFragment
         super.onResume();
         /*
          * If this chatFragment is added to the pager adapter for the first time it is required to
-		 * check again, because it's marked visible when the Views are not created yet
-		 *
-		 * cmeng - seeing problem as it includes other non-focus chatFragment causing non-sync
-		 * between chatFragment and chatController i.e. msg sent to wrong chatFragment
-		 * - resolved with initChatController() passing focus state as parameter, taking
-		 * appropriate actions pending the focus state;
-		 *
-		 *  Perform chatTransport changes only if and only if this chatFragment is the
-		 *  selected primary page - notified by chatPager (Check at ChatController)
-		 */
+         * check again, because it's marked visible when the Views are not created yet
+         *
+         * cmeng - seeing problem as it includes other non-focus chatFragment causing non-sync
+         * between chatFragment and chatController i.e. msg sent to wrong chatFragment
+         * - resolved with initChatController() passing focus state as parameter, taking
+         * appropriate actions pending the focus state;
+         *
+         *  Perform chatTransport changes only if and only if this chatFragment is the
+         *  selected primary page - notified by chatPager (Check at ChatController)
+         */
         if (primarySelected) {
             initChatController(true);
 
@@ -411,16 +411,16 @@ public class ChatFragment extends OSGiFragment
         // cryptoFragment.removeCryptoModeListener(this);
         ChatSessionManager.removeCurrentChatListener(this);
 
-		/*
+        /*
          * Indicates that this fragment is no longer in focus, because of this call parent
-		 * <tt>Activities don't have to call it in onPause().
-		 */
+         * <tt>Activities don't have to call it in onPause().
+         */
         initChatController(false);
 
-		/*
-		 * Need to clear msgCache onPause, forcing chatFragment to use FileRecord for view display
-		  * on resume. The file transfer status is only reflected in DisplayMessage messages
-		 */
+        /*
+         * Need to clear msgCache onPause, forcing chatFragment to use FileRecord for view display
+         * on resume. The file transfer status is only reflected in DisplayMessage messages
+         */
         if (clearMsgCache) {
             chatPanel.clearMsgCache();
         }
@@ -512,18 +512,18 @@ public class ChatFragment extends OSGiFragment
      */
     private void initAdapter()
     {
-		/*
-		 * Initial history load is delayed until the chat is displayed to the user. We previously
-		 * relayed on onCreate, but it will be called too early on phone layouts where
-		 * ChatPagerAdapter is used. It creates ChatFragment too early that is before the first
-		 * message is added to the history and we are unable to retrieve it without hacks.
-		 */
+        /*
+         * Initial history load is delayed until the chat is displayed to the user. We previously
+         * relayed on onCreate, but it will be called too early on phone layouts where
+         * ChatPagerAdapter is used. It creates ChatFragment too early that is before the first
+         * message is added to the history and we are unable to retrieve it without hacks.
+         */
         if (!historyLoaded) {
-			/*
-			 * chatListAdapter.isEmpty() is used as initActive flag, chatPanel.msgCache must be
-			 * cleared. Otherwise it will cause chatPanel.getHistory to return old data when the
-			 * underlying data changed or adapter has been cleared
-			 */
+            /*
+             * chatListAdapter.isEmpty() is used as initActive flag, chatPanel.msgCache must be
+             * cleared. Otherwise it will cause chatPanel.getHistory to return old data when the
+             * underlying data changed or adapter has been cleared
+             */
             loadHistoryTask = new LoadHistoryTask(chatListAdapter.isEmpty());
             loadHistoryTask.execute();
             historyLoaded = true;
@@ -1164,17 +1164,22 @@ public class ChatFragment extends OSGiFragment
                     // Set position used for click handling from click adapter
                     // int clickedPos = position + chatListView.getHeaderViewsCount();
                     messageViewHolder.messageView.setTag(clickedPos);
-                    if (messageViewHolder.outgoingMessageHolder != null)
+                    if (messageViewHolder.outgoingMessageHolder != null) {
                         messageViewHolder.outgoingMessageHolder.setTag(clickedPos);
-                    // MessageDisplay message = getMessageDisplay(position);
+                    }
                     if (message != null) {
                         if (messageViewHolder.viewType == INCOMING_MESSAGE_VIEW
                                 || messageViewHolder.viewType == OUTGOING_MESSAGE_VIEW
                                 || messageViewHolder.viewType == CORRECTED_MESSAGE_VIEW) {
 
                             String jid = message.getChatMessage().getContactName();
-                            if (messageViewHolder.viewType == INCOMING_MESSAGE_VIEW)
+                            if (messageViewHolder.viewType == INCOMING_MESSAGE_VIEW) {
                                 messageViewHolder.jidView.setText(message.getChatMessage().getContactDisplayName() + ":");
+                                setEncState(messageViewHolder.encStateView, message.getEncryption());
+                            }
+                            if (messageViewHolder.viewType == OUTGOING_MESSAGE_VIEW) {
+                                setEncState(messageViewHolder.encStateView, message.getEncryption());
+                            }
                             updateStatusAndAvatarView(messageViewHolder, jid);
 
                             if (messageViewHolder.showMapButton != null) {
@@ -1207,6 +1212,7 @@ public class ChatFragment extends OSGiFragment
                 messageViewHolder.statusView = convertView.findViewById(R.id.incomingStatusIcon);
                 messageViewHolder.jidView = convertView.findViewById(R.id.incomingJidView);
                 messageViewHolder.messageView = convertView.findViewById(R.id.incomingMessageView);
+                messageViewHolder.encStateView = convertView.findViewById(R.id.encStateView);
                 messageViewHolder.timeView = convertView.findViewById(R.id.incomingTimeView);
                 messageViewHolder.chatStateView = convertView.findViewById(R.id.chatStateImageView);
                 messageViewHolder.showMapButton = convertView.findViewById(R.id.showMapButton);
@@ -1221,6 +1227,7 @@ public class ChatFragment extends OSGiFragment
                 messageViewHolder.avatarView = convertView.findViewById(R.id.outgoingAvatarIcon);
                 messageViewHolder.statusView = convertView.findViewById(R.id.outgoingStatusIcon);
                 messageViewHolder.messageView = convertView.findViewById(R.id.outgoingMessageView);
+                messageViewHolder.encStateView = convertView.findViewById(R.id.encStateView);
                 messageViewHolder.timeView = convertView.findViewById(R.id.outgoingTimeView);
                 messageViewHolder.outgoingMessageHolder = convertView.findViewById(R.id.outgoingMessageHolder);
                 messageViewHolder.showMapButton = convertView.findViewById(R.id.showMapButton);
@@ -1405,6 +1412,11 @@ public class ChatFragment extends OSGiFragment
             private int status;
 
             /**
+             * Message Encryption Type.
+             */
+            private int encryption;
+
+            /**
              * Incoming or outgoing File Transfer object
              */
             private Object fileXfer;
@@ -1452,6 +1464,7 @@ public class ChatFragment extends OSGiFragment
                 this.id = idGenerator++;
                 this.status = -1; // Initial state
                 this.fileXfer = null;
+                this.encryption = msg.getEncryptionType();
                 this.msg = msg;
                 checkLatLng();
             }
@@ -1537,6 +1550,11 @@ public class ChatFragment extends OSGiFragment
                 return hasLatLng;
             }
 
+            public int getEncryption()
+            {
+                return encryption;
+            }
+
             /**
              * Returns formatted date string for the <tt>ChatMessage</tt>.
              *
@@ -1607,6 +1625,7 @@ public class ChatFragment extends OSGiFragment
     {
         ImageView avatarView;
         ImageView statusView;
+        ImageView encStateView;
         TextView jidView;
         TextView messageView;
         public TextView timeView;
@@ -1767,6 +1786,27 @@ public class ChatFragment extends OSGiFragment
         // cmeng - server shut down causing null pointer, why???
         if (statusView != null)
             statusView.setImageDrawable(statusDrawable);
+    }
+
+    /**
+     * Sets the status of the given view.
+     *
+     * @param encStateView the encryption state view
+     * @param encType the encryption
+     */
+    public void setEncState(ImageView encStateView, int encType)
+    {
+        switch (encType) {
+            case ChatMessage.ENCRYPTION_NONE:
+                encStateView.setImageResource(R.drawable.encryption_none);
+                break;
+            case ChatMessage.ENCRYPTION_OMEMO:
+                encStateView.setImageResource(R.drawable.encryption_omemo);
+                break;
+            case ChatMessage.ENCRYPTION_OTR:
+                encStateView.setImageResource(R.drawable.encryption_otr);
+                break;
+        }
     }
 
     /**
@@ -1936,15 +1976,15 @@ public class ChatFragment extends OSGiFragment
         int msgPos = activeMsgTransfers.get(fileTransfer.getID());
         // if chatFragment is still active
         if (chatListAdapter != null) {
-            // Send a initActive message to recipient if file transfer is initActive while in
-            // preparing
+            // Send an initActive message to recipient if file transfer is initActive while in preparing
             // state. Currently protocol did not broadcast status change under this condition.
             if ((newStatus == FileTransferStatusChangeEvent.CANCELED)
                     && (chatListAdapter.getXferStatus(msgPos) == FileTransferStatusChangeEvent.PREPARING)) {
                 String msg = AndroidGUIActivator.getResources().getI18NString("service.gui.FILE_TRANSFER_CANCELED");
                 // chatPanel.sendMessage(msg);
                 try {
-                    chatPanel.getChatSession().getCurrentChatTransport().sendInstantMessage(msg, ChatMessage.ENCODE_PLAIN);
+                    chatPanel.getChatSession().getCurrentChatTransport().sendInstantMessage(msg,
+                            ChatMessage.ENCRYPTION_NONE, ChatMessage.ENCODE_PLAIN);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1992,9 +2032,8 @@ public class ChatFragment extends OSGiFragment
             long maxFileLength = currentChatTransport.getMaximumFileLength();
             if (file.length() > maxFileLength) {
                 chatPanel.addMessage(currentChatTransport.getDisplayName(), new Date(), Chat.ERROR_MESSAGE,
-                        AndroidGUIActivator.getResources().getI18NString("service.gui.FILE_TOO_BIG",
-                                new String[]{ByteFormat.format(maxFileLength)}),
-                        ChatMessage.ENCODE_PLAIN);
+                        ChatMessage.ENCODE_PLAIN, AndroidGUIActivator.getResources().getI18NString(
+                                "service.gui.FILE_TOO_BIG", new String[]{ByteFormat.format(maxFileLength)}));
 
                 // stop background task to proceed and update status
                 chkMaxSize = false;
@@ -2038,13 +2077,13 @@ public class ChatFragment extends OSGiFragment
 
                 if (ex instanceof IllegalStateException) {
                     chatPanel.addMessage(currentChatTransport.getDisplayName(), new Date(), Chat.ERROR_MESSAGE,
-                            AndroidGUIActivator.getResources().getI18NString("service.gui.MSG_SEND_CONNECTION_PROBLEM"),
-                            ChatMessage.ENCODE_PLAIN);
+                            ChatMessage.ENCODE_PLAIN, AndroidGUIActivator.getResources()
+                                    .getI18NString("service.gui.MSG_SEND_CONNECTION_PROBLEM"));
                 }
                 else {
                     chatPanel.addMessage(currentChatTransport.getDisplayName(), new Date(), Chat.ERROR_MESSAGE,
-                            AndroidGUIActivator.getResources().getI18NString("service.gui.FILE_DELIVERY_ERROR",
-                                    new String[]{ex.getMessage()}), ChatMessage.ENCODE_PLAIN);
+                            ChatMessage.ENCODE_PLAIN, AndroidGUIActivator.getResources().getI18NString(
+                                    "service.gui.FILE_DELIVERY_ERROR", new String[]{ex.getMessage()}));
                 }
             }
         }

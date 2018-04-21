@@ -465,7 +465,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                         memberList += occupant.getNickName() + " - " + occupant.getJabberID() + "<br/>";
                     }
                     String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
-                    selectedChatPanel.addMessage(user, new Date(), Chat.SYSTEM_MESSAGE, memberList, ChatMessage.ENCODE_HTML);
+                    selectedChatPanel.addMessage(user, new Date(), Chat.SYSTEM_MESSAGE, ChatMessage.ENCODE_HTML, memberList);
                 }
                 return true;
 
@@ -636,8 +636,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             if (uiService != null) {
                 chatPanel = (ChatPanel) uiService.getChat(mRecipient);
                 if (chatPanel != null) {
-                    chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE,
-                            filePath, ChatMessage.ENCODE_PLAIN);
+                    chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, ChatMessage.ENCODE_PLAIN, filePath);
                 }
             }
         }
@@ -653,9 +652,15 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             if (uiService != null) {
                 chatPanel = (ChatPanel) uiService.getChat(mRecipient);
                 if (chatPanel != null) {
+                    int encryption = ChatMessage.ENCRYPTION_NONE;
+                    if (chatPanel.isOmemoChat())
+                        encryption = ChatMessage.ENCRYPTION_OMEMO;
+                    else if (chatPanel.isOTRChat())
+                        encryption = ChatMessage.ENCRYPTION_OTR;
+
                     ChatTransport mChatTransport = chatPanel.getChatSession().getCurrentChatTransport();
                     try {
-                        mChatTransport.sendInstantMessage(location, ChatMessage.ENCODE_PLAIN);
+                        mChatTransport.sendInstantMessage(location, encryption, ChatMessage.ENCODE_PLAIN);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

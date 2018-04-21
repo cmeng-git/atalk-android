@@ -46,14 +46,12 @@ public class MediaPresenceExtension extends AbstractPacketExtension
 	{
 		// <media>
 		ProviderManager.addExtensionProvider(
-				MediaPresenceExtension.ELEMENT_NAME,
-				MediaPresenceExtension.NAMESPACE,
+				MediaPresenceExtension.ELEMENT_NAME, MediaPresenceExtension.NAMESPACE,
 				new DefaultPacketExtensionProvider<>(MediaPresenceExtension.class));
 
 		// <source>
 		ProviderManager.addExtensionProvider(
-				MediaPresenceExtension.Source.ELEMENT_NAME,
-				MediaPresenceExtension.Source.NAMESPACE,
+				MediaPresenceExtension.Source.ELEMENT_NAME, MediaPresenceExtension.Source.NAMESPACE,
 				new DefaultPacketExtensionProvider<>(Source.class));
 	}
 
