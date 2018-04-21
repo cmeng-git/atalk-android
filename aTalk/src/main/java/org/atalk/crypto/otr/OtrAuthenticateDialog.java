@@ -106,8 +106,8 @@ public class OtrAuthenticateDialog extends OSGiActivity
             String sender = contact.getDisplayName();
             String message = OtrActivator.resourceService.getI18NString("plugin.otr.activator.sessionstared",
                     new String[]{sender + resourceName});
-            OtrActivator.uiService.getChat(contact).addMessage(sender,
-                    new Date(), Chat.SYSTEM_MESSAGE, message, ChatMessage.ENCODE_HTML);
+            OtrActivator.uiService.getChat(contact).addMessage(sender, new Date(), Chat.SYSTEM_MESSAGE,
+                    ChatMessage.ENCODE_HTML, message);
         }
         else {
             keyManager.unverify(otrContact, remoteFingerprint);

@@ -1205,6 +1205,8 @@ public class OperationSetPersistentPresenceJabberImpl
         @Override
         public void presenceChanged(Presence presence)
         {
+            Jid userJid = presence.getFrom();
+            logger.info("Received presence status update for: " + userJid + "; Presence: " + presence.getStatus());
             firePresenceStatusChanged(presence);
         }
 
@@ -1274,11 +1276,10 @@ public class OperationSetPersistentPresenceJabberImpl
                 }
 
                 if (logger.isDebugEnabled())
-                    logger.debug("Received a status update for buddy = " + userJid);
+                    logger.debug("Received presence status update for buddy: " + userJid);
 
-                // all contact statuses that are received from all its resources ordered by
-                // priority (higher first) and those with equal priorities order with the one
-                // that is most connected as first
+                // all contact statuses that are received from all its resources ordered by priority (higher first)
+                // and those with equal priorities order with the one that is most connected as first
                 TreeSet<Presence> userStats = statuses.get(userJid);
                 if (userStats == null) {
                     userStats = new TreeSet<>(new Comparator<Presence>()
@@ -1307,9 +1308,8 @@ public class OperationSetPersistentPresenceJabberImpl
                     statuses.put(userJid, userStats);
                 }
                 else {
+                    // remove the status for this resource if we are online we will update its value with the new status
                     Resourcepart resource = presence.getFrom().getResourceOrEmpty();
-                    // remove the status for this resource if we are online we will update its
-                    // value with the new status
                     for (Iterator<Presence> iter = userStats.iterator(); iter.hasNext(); ) {
                         Presence p = iter.next();
                         if (resource.equals(p.getFrom().getResourceOrEmpty()))
@@ -1317,9 +1317,8 @@ public class OperationSetPersistentPresenceJabberImpl
                     }
                 }
 
-                if (!jabberStatusToPresenceStatus(presence, parentProvider).equals(
-                        parentProvider.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE)
-                )) {
+                if (!jabberStatusToPresenceStatus(presence, parentProvider)
+                        .equals(parentProvider.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE))) {
                     userStats.add(presence);
                 }
 
@@ -1505,6 +1504,8 @@ public class OperationSetPersistentPresenceJabberImpl
     @Override
     public void presenceAvailable(FullJid address, Presence availablePresence)
     {
+        logger.info("Received presence status available for buddy = " + address);
+
         // Keep a copy in storedPresences for later processing if isStoringPresenceEvents().
         if ((contactChangesListener != null) && contactChangesListener.isStoringPresenceEvents()) {
             contactChangesListener.addPresenceEvent(availablePresence);
@@ -1608,6 +1609,7 @@ public class OperationSetPersistentPresenceJabberImpl
         public void onRosterLoaded(Roster roster)
         {
             mRoster = roster;
+            logger.info("Roster loaded completed at startup!");
             if (!ssContactList.isRosterInitialized()) {
                 new Thread(this, getClass().getName()).start();
             }

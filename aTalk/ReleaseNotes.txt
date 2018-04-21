@@ -5,6 +5,9 @@ Author:         cmeng
 Upload Date:	04/18/2018
 - AudiobBgService can only check for permissions, and not request permissions (removed)
 - Disable audio sending option if permission.RECORD_AUDIO is denied
+- Change local message creation to include encryption and mime types information
+- Add encryption indication for incoming and outgoing messages
+- Apply current selected encryption to location messages sending
 
 =========================================================================
 Version:		1.2.1 (1021)

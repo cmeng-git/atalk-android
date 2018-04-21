@@ -277,24 +277,22 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         String content = msgEdit.getText().toString();
         String correctionUID = chatPanel.getCorrectionUID();
 
+        int encryption = ChatMessage.ENCRYPTION_NONE;
+        if (chatPanel.isOmemoChat())
+            encryption = ChatMessage.ENCRYPTION_OMEMO;
+        else if (chatPanel.isOTRChat())
+            encryption = ChatMessage.ENCRYPTION_OTR;
+
         if (correctionUID == null) {
-            // Sends the message
             try {
-                if (chatPanel.isOmemoChat())
-                    mChatTransport.sendInstantMessage(content, ChatMessage.ENCRYPTION_OMEMO);
-                else
-                    mChatTransport.sendInstantMessage(content, ChatMessage.ENCODE_PLAIN);
+                mChatTransport.sendInstantMessage(content, encryption, ChatMessage.ENCODE_PLAIN);
             } catch (Exception ex) {
                 logger.warn("Send message failed: " + ex.getMessage());
             }
         }
         // Last message correction
         else {
-            if (chatPanel.isOmemoChat())
-                mChatTransport.correctInstantMessage(content, ChatMessage.ENCRYPTION_OMEMO, correctionUID);
-            else
-                mChatTransport.correctInstantMessage(content, ChatMessage.ENCODE_PLAIN, correctionUID);
-
+            mChatTransport.sendInstantMessage(content, encryption, ChatMessage.ENCODE_PLAIN, correctionUID);
             // Clears correction UI state
             chatPanel.setCorrectionUID(null);
             updateCorrectionState();

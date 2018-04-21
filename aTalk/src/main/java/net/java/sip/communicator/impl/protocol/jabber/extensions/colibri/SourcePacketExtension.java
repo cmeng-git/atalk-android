@@ -1,17 +1,17 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.colibri;
 
-import java.util.List;
-
-import org.jivesoftware.smack.packet.ExtensionElement;
-
 import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketExtension;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ParameterPacketExtension;
 import net.java.sip.communicator.util.Logger;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
+
+import java.util.List;
 
 /**
  * Implements <tt>AbstractPacketExtension</tt> for the <tt>source</tt> element defined by <a
@@ -23,24 +23,24 @@ import net.java.sip.communicator.util.Logger;
  */
 public class SourcePacketExtension extends AbstractPacketExtension
 {
-	private final static Logger logger = Logger.getLogger(SourcePacketExtension.class);
-	/**
-	 * The XML name of the <tt>setup</tt> element defined by Source-Specific Media Attributes in
-	 * Jingle.
-	 */
-	public static final String ELEMENT_NAME = "source";
+    private final static Logger logger = Logger.getLogger(SourcePacketExtension.class);
+    /**
+     * The XML name of the <tt>setup</tt> element defined by Source-Specific Media Attributes in
+     * Jingle.
+     */
+    public static final String ELEMENT_NAME = "source";
 
-	/**
-	 * The XML namespace of the <tt>setup</tt> element defined by Source-Specific Media Attributes
-	 * in Jingle.
-	 */
-	public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:ssma:0";
+    /**
+     * The XML namespace of the <tt>setup</tt> element defined by Source-Specific Media Attributes
+     * in Jingle.
+     */
+    public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:ssma:0";
 
-	/**
-	 * The XML name of the <tt>setup</tt> element's attribute which corresponds to the <tt>ssrc</tt>
-	 * media attribute in SDP.
-	 */
-	public static final String SSRC_ATTR_NAME = "ssrc";
+    /**
+     * The XML name of the <tt>setup</tt> element's attribute which corresponds to the <tt>ssrc</tt>
+     * media attribute in SDP.
+     */
+    public static final String SSRC_ATTR_NAME = "ssrc";
 
     /**
      * The XML name of the attribute which corresponds to the <tt>rid</tt>
@@ -48,82 +48,79 @@ public class SourcePacketExtension extends AbstractPacketExtension
      */
     public static final String RID_ATTR_NAME = "rid";
 
-	/** Initializes a new <tt>SourcePacketExtension</tt> instance. */
-	public SourcePacketExtension()
-	{
-		super(ELEMENT_NAME, NAMESPACE);
-	}
+    /**
+     * Initializes a new <tt>SourcePacketExtension</tt> instance.
+     */
+    public SourcePacketExtension()
+    {
+        super(ELEMENT_NAME, NAMESPACE);
+    }
 
-	/**
-	 * Adds a specific parameter (as defined by Source-Specific Media Attributes in Jingle) to this
-	 * source.
-	 *
-	 * @param parameter
-	 *        the <tt>ParameterPacketExtension</tt> to add to this source
-	 */
-	public void addParameter(ParameterPacketExtension parameter)
-	{
-		addChildExtension(parameter);
-	}
+    /**
+     * Adds a specific parameter (as defined by Source-Specific Media Attributes in Jingle) to this
+     * source.
+     *
+     * @param parameter the <tt>ParameterPacketExtension</tt> to add to this source
+     */
+    public void addParameter(ParameterPacketExtension parameter)
+    {
+        addChildExtension(parameter);
+    }
 
-	/**
-	 * Gets the parameters (as defined by Source-Specific Media Attributes in Jingle) of this
-	 * source.
-	 *
-	 * @return the <tt>ParameterPacketExtension</tt>s of this source
-	 */
-	public List<ParameterPacketExtension> getParameters()
-	{
-		return getChildExtensionsOfType(ParameterPacketExtension.class);
-	}
+    /**
+     * Gets the parameters (as defined by Source-Specific Media Attributes in Jingle) of this
+     * source.
+     *
+     * @return the <tt>ParameterPacketExtension</tt>s of this source
+     */
+    public List<ParameterPacketExtension> getParameters()
+    {
+        return getChildExtensionsOfType(ParameterPacketExtension.class);
+    }
 
-	/**
-	 * Finds the value of SSRC parameter identified by given name.
-	 * 
-	 * @param name
-	 *        the name of SSRC parameter to find.
-	 * @return value of SSRC parameter
-	 */
-	public String getParameter(String name)
-	{
-		for (ParameterPacketExtension param : getParameters()) {
-			if (name.equals(param.getName()))
-				return param.getValue();
-		}
-		return null;
-	}
-
-	/**
-	 * Gets the synchronization source (SSRC) ID of this source.
-	 *
-	 * @return the synchronization source (SSRC) ID of this source
-	 */
-	public long getSSRC()
-	{
-		String s = getAttributeAsString(SSRC_ATTR_NAME);
-
-		return (s == null) ? -1 : Long.parseLong(s);
-	}
-
-	/**
-	 * Sets the synchronization source (SSRC) ID of this source.
-	 *
-	 * @param ssrc
-	 *        the synchronization source (SSRC) ID to be set on this source
-	 */
-	public void setSSRC(long ssrc)
-	{
-		if (ssrc == -1)
-        {
-			removeAttribute(SSRC_ATTR_NAME);
+    /**
+     * Finds the value of SSRC parameter identified by given name.
+     *
+     * @param name the name of SSRC parameter to find.
+     * @return value of SSRC parameter
+     */
+    public String getParameter(String name)
+    {
+        for (ParameterPacketExtension param : getParameters()) {
+            if (name.equals(param.getName()))
+                return param.getValue();
         }
-		else
-        {
-			setAttribute(SSRC_ATTR_NAME, Long.toString(0xffffffffL & ssrc));
-        }
-	}
+        return null;
+    }
 
-	/**
+    /**
+     * Gets the synchronization source (SSRC) ID of this source.
+     *
+     * @return the synchronization source (SSRC) ID of this source
+     */
+    public long getSSRC()
+    {
+        String s = getAttributeAsString(SSRC_ATTR_NAME);
+
+        return (s == null) ? -1 : Long.parseLong(s);
+    }
+
+    /**
+     * Sets the synchronization source (SSRC) ID of this source.
+     *
+     * @param ssrc the synchronization source (SSRC) ID to be set on this source
+     */
+    public void setSSRC(long ssrc)
+    {
+        if (ssrc == -1) {
+            removeAttribute(SSRC_ATTR_NAME);
+        }
+        else {
+            setAttribute(SSRC_ATTR_NAME, Long.toString(0xffffffffL & ssrc));
+        }
+    }
+
+    /**
      * Check if this source has an ssrc
      *
      * @return true if it has an ssrc, false otherwise
@@ -150,12 +147,10 @@ public class SourcePacketExtension extends AbstractPacketExtension
      */
     public void setRid(String rid)
     {
-        if (rid == null)
-        {
+        if (rid == null) {
             removeAttribute(RID_ATTR_NAME);
         }
-        else
-        {
+        else {
             setAttribute(RID_ATTR_NAME, rid);
         }
     }
@@ -182,48 +177,43 @@ public class SourcePacketExtension extends AbstractPacketExtension
      */
     public boolean sourceEquals(SourcePacketExtension other)
     {
-        if (hasSSRC() && other.hasSSRC())
-        {
+        if (hasSSRC() && other.hasSSRC()) {
             return getSSRC() == other.getSSRC();
         }
-        else if (hasRid() && other.hasRid())
-        {
+        else if (hasRid() && other.hasRid()) {
             return getRid().equals(other.getRid());
         }
         return false;
     }
 
     /**
-	 * Returns deep copy of this <tt>SourcePacketExtension</tt>.
-	 */
-	public SourcePacketExtension copy()
-	{
-		SourcePacketExtension copy = AbstractPacketExtension.clone(this);
+     * Returns deep copy of this <tt>SourcePacketExtension</tt>.
+     */
+    public SourcePacketExtension copy()
+    {
+        SourcePacketExtension copy = AbstractPacketExtension.clone(this);
 
         // COPY SSRC PARAMS
         for (ExtensionElement ppe : getChildExtensions()) {
-			if (ppe instanceof AbstractPacketExtension) {
-				copy.addChildExtension(AbstractPacketExtension.clone((AbstractPacketExtension) ppe));
-			}
-			else {
-				logger.error("Failed to clone " + ppe);
-			}
-		}
-		return copy;
-	}
+            if (ppe instanceof AbstractPacketExtension) {
+                copy.addChildExtension(AbstractPacketExtension.clone((AbstractPacketExtension) ppe));
+            }
+            else {
+                logger.error("Failed to clone " + ppe);
+            }
+        }
+        return copy;
+    }
 
     public String toString()
     {
-        if (hasRid())
-        {
+        if (hasRid()) {
             return "rid=" + getRid();
         }
-        else if (hasSSRC())
-        {
+        else if (hasSSRC()) {
             return "ssrc=" + getAttributeAsString(SSRC_ATTR_NAME);
         }
-        else
-        {
+        else {
             return "[no identifier]";
         }
     }

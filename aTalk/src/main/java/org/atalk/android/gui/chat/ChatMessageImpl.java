@@ -56,6 +56,11 @@ public class ChatMessageImpl implements ChatMessage
     private int messageType;
 
     /**
+     * The mime type of the message content.
+     */
+    private int mimeType;
+
+    /**
      * The content of the message.
      */
     private String message;
@@ -63,7 +68,7 @@ public class ChatMessageImpl implements ChatMessage
     /**
      * The encryption type of the message content.
      */
-    private int encType;
+    private int encryptionType;
 
     /**
      * A unique identifier for this message.
@@ -115,44 +120,28 @@ public class ChatMessageImpl implements ChatMessage
      * @param contactName the name of the contact sending the message
      * @param date the time at which the message is sent or received
      * @param messageType the type (INCOMING or OUTGOING)
+     * @param mimeType the mime type of the message content
      * @param message the message content
-     * @param encType the content type (e.g. "text", "text/html", etc.)
+     * @param encryptionType the encryption type
      */
-    public ChatMessageImpl(String contactName, Date date, int messageType, String message, int encType)
+    public ChatMessageImpl(String contactName, Date date, int messageType, int mimeType, String message, int encryptionType)
     {
-        this(contactName, null, date, messageType, null, message, encType, null, null,
-                null, null, null);
+        this(contactName, null, date, messageType, mimeType , message, encryptionType,
+                null, null, null, null, null);
     }
 
-    public ChatMessageImpl(String contactName, Date date, int messageType, String message,
-            int encType, OperationSetFileTransfer opSet, IncomingFileTransferRequest request)
+    public ChatMessageImpl(String contactName, Date date, int messageType, int mimeType, String message,
+            OperationSetFileTransfer opSet, IncomingFileTransferRequest request)
     {
-        this(contactName, null, date, messageType, null, message, encType, null, null,
-                opSet, request, null);
+        this(contactName, null, date, messageType, mimeType, message, ChatMessage.ENCRYPTION_NONE,
+                null, null, opSet, request, null);
     }
 
-    public ChatMessageImpl(String contactName, Date date, int messageType, String message,
-            int encType, String messageUID, FileRecord fileRecord)
+    public ChatMessageImpl(String contactName, Date date, int messageType, int mimeType, String message,
+            String messageUID, FileRecord fileRecord)
     {
-        this(contactName, null, date, messageType, null, message, encType, messageUID, null,
-                null, null, fileRecord);
-    }
-
-    /**
-     * Creates a <tt>ChatMessageImpl</tt> by specifying all parameters of the message.
-     *
-     * @param contactName the name of the contact
-     * @param date the date and time
-     * @param messageType the type (INCOMING or OUTGOING)
-     * @param messageTitle the title of the message
-     * @param message the content
-     * @param encType the content type (e.g. "text", "text/html", etc.)
-     */
-    public ChatMessageImpl(String contactName, Date date, int messageType, String messageTitle,
-            String message, int encType)
-    {
-        this(contactName, null, date, messageType, messageTitle, message, encType, null, null,
-                null, null, null);
+        this(contactName, null, date, messageType, mimeType, message, ChatMessage.ENCRYPTION_NONE,
+                messageUID, null, null, null, fileRecord);
     }
 
     /**
@@ -163,20 +152,19 @@ public class ChatMessageImpl implements ChatMessage
      * @param date the date and time
      * @param messageType the type (INCOMING or OUTGOING)
      * @param message the content
-     * @param encType the content type (e.g. "text", "text/html", etc.)
+     * @param encryptionType the content type (e.g. "text", "text/html", etc.)
      */
-    public ChatMessageImpl(String contactName, String contactDisplayName, Date date,
-            int messageType, String message, int encType)
+    public ChatMessageImpl(String contactName, String contactDisplayName, Date date, int messageType, int mimeType,
+            String message, int encryptionType)
     {
-        this(contactName, contactDisplayName, date, messageType, null, message, encType, null,
-                null, null, null, null);
+        this(contactName, contactDisplayName, date, messageType, mimeType, message, encryptionType,
+                null, null, null, null, null);
     }
 
-    public ChatMessageImpl(String contactName, String contactDisplayName, Date date,
-            int messageType, String messageTitle, String message, int encType,
-            String messageUID, String correctedMessageUID)
+    public ChatMessageImpl(String contactName, String contactDisplayName, Date date, int messageType,
+            int mimeType, String message, int encryptionType, String messageUID, String correctedMessageUID)
     {
-        this(contactName, contactDisplayName, date, messageType, null, message, encType,
+        this(contactName, contactDisplayName, date, messageType, mimeType, message, encryptionType,
                 messageUID, correctedMessageUID, null, null, null);
     }
 
@@ -185,26 +173,26 @@ public class ChatMessageImpl implements ChatMessage
      *
      * @param contactName the name of the contact
      * @param contactDisplayName the contact display name
-     * @param date the date and time
+     * @param date the DateTimeStamp
      * @param messageType the type (INCOMING or OUTGOING)
-     * @param messageTitle the title of the message
-     * @param message the content
-     * @param encType the content type (e.g. "text", "text/html", etc.)
+     * @param mimeType the content type of the message
+     * @param message the message content
+     * @param encryptionType the message original encryption type
      * @param messageUID The ID of the message.
      * @param correctedMessageUID The ID of the message being replaced.
      */
 
-    public ChatMessageImpl(String contactName, String contactDisplayName, Date date,
-            int messageType, String messageTitle, String message, int encType,
-            String messageUID, String correctedMessageUID, OperationSetFileTransfer opSet,
-            IncomingFileTransferRequest request, FileRecord fileRecord)
+    public ChatMessageImpl(String contactName, String contactDisplayName, Date date, int messageType, int mimeType,
+            String message, int encryptionType, String messageUID, String correctedMessageUID,
+            OperationSetFileTransfer opSet, IncomingFileTransferRequest request, FileRecord fileRecord)
     {
         this.contactName = contactName;
         this.contactDisplayName = contactDisplayName;
         this.date = date;
         this.messageType = messageType;
+        this.mimeType = mimeType;
         this.message = message;
-        this.encType = encType;
+        this.encryptionType = encryptionType;
         this.messageUID = messageUID;
         this.correctedMessageUID = correctedMessageUID;
         this.fileRecord = fileRecord;
@@ -269,6 +257,18 @@ public class ChatMessageImpl implements ChatMessage
         this.messageType = messageType;
     }
 
+
+    /**
+     * Returns the mime type of the content type (e.g. "text", "text/html", etc.).
+     *
+     * @return the mimeType
+     */
+    @Override
+    public int getMimeType()
+    {
+        return mimeType;
+    }
+
     /**
      * Returns the content of the message.
      *
@@ -284,8 +284,8 @@ public class ChatMessageImpl implements ChatMessage
             return null;
 
         String output = message;
-        // Escape HTML content (getEncType() can be null)
-        if (ChatMessage.ENCODE_HTML != getEncType()) {
+        // Escape HTML content (getMimeType() can be null)
+        if (ChatMessage.ENCODE_HTML != getMimeType()) {
             output = Html.escapeHtml(output);
         }
 
@@ -303,14 +303,14 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
-     * Returns the content type (e.g. "text", "text/html", etc.).
+     * Returns the encryption type of the original received message.
      *
-     * @return the content type
+     * @return the encryption type
      */
     @Override
-    public int getEncType()
+    public int getEncryptionType()
     {
-        return encType;
+        return encryptionType;
     }
 
     /**
@@ -430,10 +430,12 @@ public class ChatMessageImpl implements ChatMessage
         boolean mTypeJidEqual = ((contactName != null)
                 && (messageType == nextMsg.getMessageType())
                 && contactName.equals(nextMsg.getContactName()));
+        // same message encryption type
+        boolean encTypeSame =  (encryptionType == nextMsg.getEncryptionType());
         // true if the new message is within a minute from the last one
         boolean inElapseTime = ((nextMsg.getDate().getTime() - getDate().getTime()) < 60000);
 
-        return (nonFTMsg && nonSystemMsg && nonLatLng
+        return (nonFTMsg && nonSystemMsg && nonLatLng && encTypeSame
                 && (uidEqual || (mTypeJidEqual && inElapseTime)));
     }
 
@@ -469,8 +471,8 @@ public class ChatMessageImpl implements ChatMessage
 
         return new ChatMessageImpl(contact.getProtocolProvider().getAccountID().getAccountJid(),
                 getAccountDisplayName(contact.getProtocolProvider()),
-                evt.getTimestamp(), ChatMessage.MESSAGE_OUT, null,
-                msg.getContent(), msg.getEncType(), msg.getMessageUID(),
+                evt.getTimestamp(), ChatMessage.MESSAGE_OUT, msg.getMimeType(),
+                msg.getContent(), msg.getEncryptionType(), msg.getMessageUID(),
                 evt.getCorrectedMessageUID(), null, null, null);
     }
 
@@ -482,8 +484,8 @@ public class ChatMessageImpl implements ChatMessage
                 = AndroidGUIActivator.getContactListService().findMetaContactByContact(protocolContact);
 
         return new ChatMessageImpl(protocolContact.getAddress(), metaContact.getDisplayName(),
-                evt.getTimestamp(), getMessageType(evt), null,
-                message.getContent(), message.getEncType(), message.getMessageUID(),
+                evt.getTimestamp(), getMessageType(evt), message.getMimeType(),
+                message.getContent(), message.getEncryptionType(), message.getMessageUID(),
                 evt.getCorrectedMessageUID(), null, null, null);
     }
 
@@ -493,8 +495,8 @@ public class ChatMessageImpl implements ChatMessage
         final Message message = evt.getMessage();
 
         return new ChatMessageImpl(chatRoom.toString(), chatRoom.getName(),
-                evt.getTimestamp(), ChatMessage.MESSAGE_OUT, null,
-                message.getContent(), message.getEncType(), message.getMessageUID(),
+                evt.getTimestamp(), ChatMessage.MESSAGE_OUT, message.getMimeType(),
+                message.getContent(), message.getEncryptionType(), message.getMessageUID(),
                 null, null, null, null);
     }
 
@@ -504,7 +506,7 @@ public class ChatMessageImpl implements ChatMessage
 
         final Message message = evt.getMessage();
         return new ChatMessageImpl(nickName, nickName, evt.getTimestamp(),
-                ChatMessage.MESSAGE_IN, null, message.getContent(), message.getEncType(),
+                ChatMessage.MESSAGE_IN, message.getMimeType(), message.getContent(), message.getMimeType(),
                 message.getMessageUID(), null, null, null, null);
     }
 
@@ -513,7 +515,7 @@ public class ChatMessageImpl implements ChatMessage
         Contact protocolContact = fileRecord.getContact();
 
         return new ChatMessageImpl(protocolContact.getAddress(), fileRecord.getDate(),
-                ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY, null, ChatMessage.ENCODE_PLAIN,
+                ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY, ChatMessage.ENCODE_PLAIN, null,
                 fileRecord.getID(), fileRecord);
     }
 

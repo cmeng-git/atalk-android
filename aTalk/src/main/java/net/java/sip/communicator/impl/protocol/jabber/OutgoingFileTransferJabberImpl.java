@@ -23,6 +23,7 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smackx.bob.packet.BoB;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
@@ -50,10 +51,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     /*
      * Thumbnail request StanzaFilter for handling the request
      */
-//    private static final StanzaFilter THUMBNAIL_REQUEST = new AndFilter(new StanzaTypeFilter(IQ.class),
-//            IQTypeFilter.GET, new StanzaExtensionFilter(ThumbnailIQ.ELEMENT, ThumbnailIQ.NAMESPACE));
-    private static final StanzaFilter THUMBNAIL_REQUEST = new AndFilter(new StanzaTypeFilter(IQ.class),
-            IQTypeFilter.GET);
+    private static final StanzaFilter THUMBNAIL_REQUEST = new AndFilter(StanzaTypeFilter.IQ, IQTypeFilter.GET);
 
     /**
      * The jabber outgoing file transfer.
@@ -71,8 +69,8 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      * @param jabberTransfer the Jabber transfer object, containing all transfer information
      * @param protocolProvider the parent protocol provider
      */
-    public OutgoingFileTransferJabberImpl(Contact receiver, File file,
-            OutgoingFileTransfer jabberTransfer, ProtocolProviderServiceJabberImpl protocolProvider)
+    public OutgoingFileTransferJabberImpl(Contact receiver, File file, OutgoingFileTransfer jabberTransfer,
+            ProtocolProviderServiceJabberImpl protocolProvider)
     {
         this.receiver = receiver;
         this.file = file;
@@ -87,7 +85,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
         if (file instanceof ThumbnailedFile && ((ThumbnailedFile) file).getThumbnailData() != null
                 && ((ThumbnailedFile) file).getThumbnailData().length > 0) {
             if (protocolProvider.isFeatureListSupported(protocolProvider.getFullJidIfPossible(receiver),
-                    "urn:xmpp:thumbs:0", "urn:xmpp:bob")) {
+                    ThumbnailElement.NAMESPACE, BoB.NAMESPACE)) {
                 protocolProvider.getConnection().addStanzaInterceptor(this, IQTypeFilter.SET);
             }
         }
@@ -178,7 +176,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
             return;
 
         if (logger.isDebugEnabled())
-            logger.debug("File transfer packet intercepted" + " in order to add thumbnail.");
+            logger.debug("File transfer packet intercepted in order to add thumbnail.");
 
         XMPPTCPConnection connection = protocolProvider.getConnection();
         StreamInitiation fileTransferPacket = (StreamInitiation) packet;

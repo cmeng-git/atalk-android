@@ -27,8 +27,8 @@ project.ext {
     minSdkVersion = 15
     compileSdkVersion = 26
     buildToolsVersion = '27.0.3'
-    supportLibraryVersion = '27.1.0'
-    gmsPlayServicesVersion = '12.0.1'
+    supportLibraryVersion = '27.1.1'
+    gmsPlayServicesVersion = '15.0.0'
 }
 task clean(type: Delete) {
     delete rootProject.buildDir

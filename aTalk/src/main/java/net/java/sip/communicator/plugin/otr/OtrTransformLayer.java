@@ -7,6 +7,7 @@
 package net.java.sip.communicator.plugin.otr;
 
 import net.java.otr4j.io.SerializationConstants;
+import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.Message;
@@ -70,10 +71,10 @@ public class OtrTransformLayer implements TransformLayer {
 		for (int i = 0; i < processedMessageContent.length; i++) {
 			final String fragmentContent = processedMessageContent[i];
 			// Forge a new message based on the new contents.
-			OperationSetBasicInstantMessaging imOpSet = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
+			OperationSetBasicInstantMessaging imOpSet
+                    = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
 			Message processedMessage = imOpSet.createMessage(fragmentContent,
-					evt.getSourceMessage().getEncType(),
-					evt.getSourceMessage().getSubject());
+                    ((MessageJabberImpl) evt.getSourceMessage()).getEncType(), evt.getSourceMessage().getSubject());
 
 			// Create a new event and return.
 			final MessageDeliveredEvent processedEvent = new MessageDeliveredEvent(processedMessage, contact, evt.getTimestamp());
@@ -104,16 +105,14 @@ public class OtrTransformLayer implements TransformLayer {
 			return evt;
 
 		// Forge a new message based on the new contents.
-		OperationSetBasicInstantMessaging imOpSet = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
-		Message processedMessage = imOpSet.createMessageWithUID( processedMessageContent,
-				evt.getSourceMessage().getEncType(),
-				evt.getSourceMessage().getMessageUID());
+		OperationSetBasicInstantMessaging imOpSet
+                = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
+		Message processedMessage = imOpSet.createMessageWithUID(processedMessageContent,
+                ((MessageJabberImpl) evt.getSourceMessage()).getEncType(), evt.getSourceMessage().getMessageUID());
 
 		// Create a new event and return.
 		MessageReceivedEvent processedEvent = new MessageReceivedEvent(processedMessage, contact,
-				evt.getContactResource(), evt.getTimestamp(),
-				evt.getCorrectedMessageUID());
-
+				evt.getContactResource(), evt.getTimestamp(), evt.getCorrectedMessageUID());
 		return processedEvent;
 	}
 }

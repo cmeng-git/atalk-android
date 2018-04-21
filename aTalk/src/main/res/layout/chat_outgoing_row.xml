@@ -68,14 +68,27 @@
             android:textAllCaps="false"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/outgoingTimeView"
-            style="@style/SmallFont"
+        <LinearLayout
+            android:id="@+id/msg_info_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/chat_text_margin"
-            android:layout_marginRight="@dimen/chat_text_margin"
-            android:textColor="@color/grey" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/outgoingTimeView"
+                style="@style/SmallFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/chat_text_margin"
+                android:layout_marginRight="@dimen/chat_text_margin"
+                android:textColor="@color/grey" />
+
+            <ImageView
+                android:id="@+id/encStateView"
+                android:layout_width="18dip"
+                android:layout_height="18dip"
+                android:src="@drawable/crypto_omemo_verified" />
+        </LinearLayout>
     </LinearLayout>
 
     <ImageView

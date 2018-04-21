@@ -580,8 +580,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 		String[] args = {accountUid, entityJid};
 
 		mDB.update(MessageSourceService.TABLE_NAME, contentValues,
-				MessageSourceService.ACCOUNT_UID + "=? AND "
-						+ MessageSourceService.ENTITY_JID + "=?", args);
+				MessageSourceService.ACCOUNT_UID + "=? AND " + MessageSourceService.ENTITY_JID + "=?", args);
 	}
 
 	// ================ Message events handlers =======================
@@ -592,8 +591,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 		if (isSMSEnabled && (evt.getEventType() != MessageReceivedEvent.SMS_MESSAGE_RECEIVED)) {
 			return;
 		}
-		handle(evt, evt.getSourceContact().getProtocolProvider(),
-				evt.getSourceContact().getAddress());
+		handle(evt, evt.getSourceContact().getProtocolProvider(), evt.getSourceContact().getAddress());
 	}
 
 	@Override
@@ -627,8 +625,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 		if (evt.getEventType() != ChatRoomMessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED)
 			return;
 
-		handle(evt, evt.getSourceChatRoom().getParentProvider(),
-				evt.getSourceChatRoom().getName());
+		handle(evt, evt.getSourceChatRoom().getParentProvider(), evt.getSourceChatRoom().getName());
 	}
 
 	@Override
@@ -637,8 +634,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 		if (isSMSEnabled)
 			return;
 
-		handle(evt, evt.getSourceChatRoom().getParentProvider(),
-				evt.getSourceChatRoom().getName());
+		handle(evt, evt.getSourceChatRoom().getParentProvider(), evt.getSourceChatRoom().getName());
 	}
 
 	/**

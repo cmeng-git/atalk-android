@@ -96,8 +96,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * The maximum number of unread threads that we'd be notifying the user of.
      */
-    private static final String PNAME_MAX_GMAIL_THREADS_PER_NOTIFICATION
-            = "protocol.jabber.MAX_GMAIL_THREADS_PER_NOTIFICATION";
+    private static final String PNAME_MAX_GMAIL_THREADS_PER_NOTIFICATION = "protocol.jabber.MAX_GMAIL_THREADS_PER_NOTIFICATION";
 
     /**
      * A table mapping contact addresses to message threads that can be used to target a specific
@@ -253,29 +252,29 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * Determines whether the protocol supports the supplied content type
      *
-     * @param encType the encryption type we want to check
+     * @param mimeType the encryption type we want to check
      * @return <tt>true</tt> if the protocol supports it and <tt>false</tt> otherwise.
      */
-    public boolean isContentTypeSupported(int encType)
+    public boolean isContentTypeSupported(int mimeType)
     {
-        return ((encType == ChatMessage.ENCODE_PLAIN) || (encType == ChatMessage.ENCODE_HTML));
+        return ((ChatMessage.ENCODE_PLAIN == mimeType) || (ChatMessage.ENCODE_HTML == mimeType));
     }
 
     /**
      * Determines whether the protocol supports the supplied content type for the given contact.
      *
-     * @param encType the encryption type we want to check
+     * @param mimeType the encryption type we want to check
      * @param contact contact which is checked for supported encType
      * @return <tt>true</tt> if the contact supports it and <tt>false</tt> otherwise.
      */
     @Override
-    public boolean isContentTypeSupported(int encType, Contact contact)
+    public boolean isContentTypeSupported(int mimeType, Contact contact)
     {
         // by default we support default mime type, for other mime types method must be overridden
-        if (encType == ChatMessage.ENCODE_PLAIN) {
+        if (ChatMessage.ENCODE_PLAIN == mimeType) {
             return true;
         }
-        else if (encType == ChatMessage.ENCODE_HTML) {
+        else if (ChatMessage.ENCODE_HTML == mimeType) {
             Jid toJid = getRecentFullJidForContactIfPossible(contact);
             return jabberProvider.isFeatureListSupported(toJid, HTML_NAMESPACE);
         }
@@ -422,7 +421,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         for (MessageDeliveredEvent event : transformedEvents) {
             String content = event.getSourceMessage().getContent();
 
-            if (message.getEncType() == ChatMessage.ENCODE_HTML) {
+            if (ChatMessage.ENCODE_HTML == message.getMimeType()) {
                 msg.setBody(Html2Text.extractText(content));
 
                 // Check if the other user supports XHTML messages make sure we use our discovery
@@ -503,7 +502,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param message The new message.
      * @param correctedMessageUID The ID of the message being replaced.
      */
-    public void correctMessage(Contact to, ContactResource resource, Message message, String correctedMessageUID)
+    public void sendInstantMessage(Contact to, ContactResource resource, Message message, String correctedMessageUID)
     {
         ExtensionElement[] exts = new ExtensionElement[1];
         exts[0] = new MessageCorrectExtension(correctedMessageUID);
@@ -614,7 +613,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                     }
                 }
                 if (mChatManager != null) {
-                    mChatManager.removeListener(OperationSetBasicInstantMessagingJabberImpl.this);
+                    mChatManager.removeIncomingListener(OperationSetBasicInstantMessagingJabberImpl.this);
                     mChatManager = null;
                 }
 
@@ -696,8 +695,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
         boolean isPrivateMessaging = false;
         ChatRoom privateContactRoom = null;
-        OperationSetMultiUserChatJabberImpl mucOpSet = (OperationSetMultiUserChatJabberImpl)
-                jabberProvider.getOperationSet(OperationSetMultiUserChat.class);
+        OperationSetMultiUserChatJabberImpl mucOpSet
+                = (OperationSetMultiUserChatJabberImpl) jabberProvider.getOperationSet(OperationSetMultiUserChat.class);
         if (mucOpSet != null) {
             privateContactRoom = mucOpSet.getChatRoom(userBareID);
             if (privateContactRoom != null) {
@@ -710,7 +709,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
         String msgID = message.getStanzaId();
         String correctedMessageUID = getCorrectionMessageId(message);
-        Message newMessage = createMessageWithUID(message.getBody(), ChatMessage.ENCODE_PLAIN, msgID);
+
+        // Get the message type i.e. OTR or NONE for incoming message encryption state display
+        String msg = message.getBody();
+        int encryption = msg.startsWith("?OTR")? ChatMessage.ENCRYPTION_OTR : ChatMessage.ENCRYPTION_NONE;
+        int encType = encryption | ChatMessage.ENCODE_PLAIN;
+        Message newMessage = createMessageWithUID(message.getBody(), encType, msgID);
 
         // check if the message is available in xhtml
         ExtensionElement ext = message.getExtension("http://jabber.org/protocol/xhtml-im");
@@ -736,7 +740,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 // for some reason &apos; is not rendered correctly from our ui, lets use its
                 // equivalent. Other similar chars(< > & ") seem ok.
                 receivedMessage = receivedMessage.replaceAll("&apos;", "&#39;");
-                newMessage = createMessageWithUID(receivedMessage, ChatMessage.ENCODE_HTML, msgID);
+                encType = encryption | ChatMessage.ENCODE_HTML;
+                newMessage = createMessageWithUID(receivedMessage, encType, msgID);
             }
         }
 
@@ -935,7 +940,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
         String msgID = encryptedMessage.getStanzaId();
         String correctedMsgID = getCorrectionMessageId(encryptedMessage);
-        Message newMessage = createMessageWithUID(decryptedMessage.getBody(), ChatMessage.ENCODE_PLAIN, msgID);
+        int encType = ChatMessage.ENCRYPTION_OMEMO | ChatMessage.ENCODE_PLAIN;
+        Message newMessage = createMessageWithUID(decryptedMessage.getBody(), encType, msgID);
 
         EventObject msgEvt;
         if (isForwardedSentOmemoMessage)

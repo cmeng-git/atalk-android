@@ -16,8 +16,8 @@ apply plugin: 'org.anarres.jarjar' // jarjar.repackage tool
 repositories {
     jcenter()
     maven {
-       // SNAPSHOT repository - need manual cleanup for new SNAPSHOT update if same name with date change only:
-       url 'https://oss.sonatype.org/content/repositories/snapshots'
+        // SNAPSHOT repository smack - need manual cleanup for new SNAPSHOT update if same name with date change only:
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
     }
     maven {
         url 'https://jitpack.io'

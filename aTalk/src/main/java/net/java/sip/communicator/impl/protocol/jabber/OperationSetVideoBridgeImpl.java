@@ -62,7 +62,7 @@ public class OperationSetVideoBridgeImpl implements OperationSetVideoBridge, Sta
      */
 //    private static final StanzaFilter COLIBRI_EXT = new AndFilter(new StanzaTypeFilter(IQ.class),
 //            IQTypeFilter.GET, new StanzaExtensionFilter(ColibriConferenceIQ.ELEMENT, ColibriConferenceIQ.NAMESPACE));
-    private static final StanzaFilter COLIBRI_FILTER = new AndFilter(new StanzaTypeFilter(IQ.class),
+    private static final StanzaFilter COLIBRI_FILTER = new AndFilter(StanzaTypeFilter.IQ,
             new StanzaExtensionFilter(ColibriConferenceIQ.ELEMENT, ColibriConferenceIQ.NAMESPACE));
 
     /**

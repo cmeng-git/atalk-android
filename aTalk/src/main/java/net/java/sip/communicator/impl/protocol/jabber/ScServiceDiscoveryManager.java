@@ -80,7 +80,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      */
     private final EntityCapsManager mEntityCapsManager;
 
-    private static final StanzaFilter PRESENCES_WITH_CAPS = new AndFilter(new StanzaTypeFilter(Presence.class),
+    private static final StanzaFilter PRESENCES_WITH_CAPS = new AndFilter(StanzaTypeFilter.PRESENCE,
             new StanzaExtensionFilter(CapsExtension.ELEMENT, CapsExtension.NAMESPACE));
 
     /**
@@ -149,8 +149,8 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * and to the <tt>ServiceDiscoveryManager</tt> of the specified <tt>connection</tt> which
      * is to be wrapped by the new instance
      */
-    public ScServiceDiscoveryManager(ProtocolProviderServiceJabberImpl parentProvider,
-            XMPPTCPConnection connection, String[] featuresToRemove, String[] featuresToAdd, boolean cacheNonCaps)
+    public ScServiceDiscoveryManager(ProtocolProviderServiceJabberImpl parentProvider, XMPPTCPConnection connection,
+            String[] featuresToRemove, String[] featuresToAdd, boolean cacheNonCaps)
     {
         this.parentProvider = parentProvider;
         this.connection = connection;

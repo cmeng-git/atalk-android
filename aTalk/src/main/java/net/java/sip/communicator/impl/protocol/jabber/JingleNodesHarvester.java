@@ -157,16 +157,16 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
 	protected JingleNodesCandidate createJingleNodesCandidate(TransportAddress transportAddress,
 			Component component, TransportAddress localEndPoint)
 	{
-		JingleNodesCandidate jnCandidate = null;
+		JingleNodesCandidate candidate = null;
 		try {
-			jnCandidate = new JingleNodesCandidate(transportAddress, component, localEndPoint);
-			IceSocketWrapper stunSocket = jnCandidate.getStunSocket(null);
-			jnCandidate.getStunStack().addSocket(stunSocket);
-            // cmeng: component.getComponentSocket().add(jnCandidate.getCandidateIceSocketWrapper());
+			candidate = new JingleNodesCandidate(transportAddress, component, localEndPoint);
+			IceSocketWrapper stunSocket = candidate.getStunSocket(null);
+			candidate.getStunStack().addSocket(stunSocket);
+            // cmeng v2.0 - component.getComponentSocket().add(candidate.getCandidateIceSocketWrapper());
 		}
 		catch (Throwable e) {
 			logger.debug("Exception occurred when creating JingleNodesCandidate: " + e);
 		}
-		return jnCandidate;
+		return candidate;
 	}
 }

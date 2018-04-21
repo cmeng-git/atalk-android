@@ -20,6 +20,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.filehistory.FileRecord;
@@ -37,7 +38,6 @@ import org.atalk.android.gui.chat.*;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
-import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.*;
 
 import java.beans.*;
@@ -113,8 +113,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		this.bundleContext = bc;
 		mDB = DatabaseBackend.getWritableDB();
 
-		ServiceReference refConfig
-				= bundleContext.getServiceReference(ConfigurationService.class.getName());
+		ServiceReference refConfig = bundleContext.getServiceReference(ConfigurationService.class.getName());
 		configService = (ConfigurationService) bundleContext.getService(refConfig);
 
 		// Check if the message history is enabled in the configuration
@@ -135,8 +134,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 						MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED)));
 
 		configService.addPropertyChangeListener(
-				MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED,
-				msgHistoryPropListener);
+				MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED, msgHistoryPropListener);
 
 		if (isMessageHistoryEnabled) {
 			if (logger.isDebugEnabled())
@@ -201,8 +199,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 			logger.debug("Adding protocol provider " + provider.getProtocolDisplayName());
 
 		// check whether the provider has a basic im operation set
-		OperationSetBasicInstantMessaging opSetIm
-				= provider.getOperationSet(OperationSetBasicInstantMessaging.class);
+		OperationSetBasicInstantMessaging opSetIm = provider.getOperationSet(OperationSetBasicInstantMessaging.class);
 		if (opSetIm != null) {
 			opSetIm.addMessageListener(this);
 
@@ -214,8 +211,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 				logger.trace("Service did not have OperationSet BasicInstantMessaging.");
 		}
 
-		OperationSetSmsMessaging opSetSMS
-				= provider.getOperationSet(OperationSetSmsMessaging.class);
+		OperationSetSmsMessaging opSetSMS = provider.getOperationSet(OperationSetSmsMessaging.class);
 		if (opSetSMS != null) {
 			opSetSMS.addMessageListener(this);
 
@@ -227,8 +223,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 				logger.trace("Service did not have OperationSet SmsMessaging.");
 		}
 
-		OperationSetMultiUserChat opSetMultiUChat
-				= provider.getOperationSet(OperationSetMultiUserChat.class);
+		OperationSetMultiUserChat opSetMultiUChat = provider.getOperationSet(OperationSetMultiUserChat.class);
 		if (opSetMultiUChat != null) {
 			for (ChatRoom room : opSetMultiUChat.getCurrentlyJoinedChatRooms()) {
 				room.addMessageListener(this);
@@ -244,8 +239,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		}
 
 		if (messageSourceService != null) {
-			OperationSetPresence opSetPresence
-					= provider.getOperationSet(OperationSetPresence.class);
+			OperationSetPresence opSetPresence = provider.getOperationSet(OperationSetPresence.class);
 			if (opSetPresence != null) {
 				opSetPresence.addContactPresenceStatusListener(messageSourceService);
 				opSetPresence.addProviderPresenceStatusListener(messageSourceService);
@@ -258,8 +252,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 			*/
 			// messageSourceService.handleProviderAdded(provider, false);
 
-			OperationSetContactCapabilities capOpSet
-					= provider.getOperationSet(OperationSetContactCapabilities.class);
+			OperationSetContactCapabilities capOpSet = provider.getOperationSet(OperationSetContactCapabilities.class);
 			if (capOpSet != null) {
 				capOpSet.addContactCapabilitiesListener(messageSourceService);
 			}
@@ -275,8 +268,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	 */
 	private void handleProviderRemoved(ProtocolProviderService provider)
 	{
-		OperationSetBasicInstantMessaging opSetIm
-				= provider.getOperationSet(OperationSetBasicInstantMessaging.class);
+		OperationSetBasicInstantMessaging opSetIm = provider.getOperationSet(OperationSetBasicInstantMessaging.class);
 		if (opSetIm != null) {
 			opSetIm.removeMessageListener(this);
 
@@ -284,8 +276,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 				opSetIm.removeMessageListener(messageSourceService);
 		}
 
-		OperationSetSmsMessaging opSetSMS
-				= provider.getOperationSet(OperationSetSmsMessaging.class);
+		OperationSetSmsMessaging opSetSMS = provider.getOperationSet(OperationSetSmsMessaging.class);
 		if (opSetSMS != null) {
 			opSetSMS.removeMessageListener(this);
 
@@ -293,8 +284,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 				opSetSMS.removeMessageListener(messageSourceService);
 		}
 
-		OperationSetMultiUserChat opSetMultiUChat
-				= provider.getOperationSet(OperationSetMultiUserChat.class);
+		OperationSetMultiUserChat opSetMultiUChat = provider.getOperationSet(OperationSetMultiUserChat.class);
 		if (opSetMultiUChat != null) {
 			for (ChatRoom room : opSetMultiUChat.getCurrentlyJoinedChatRooms()) {
 				room.removeMessageListener(this);
@@ -306,8 +296,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		}
 
 		if (messageSourceService != null) {
-			OperationSetPresence opSetPresence
-					= provider.getOperationSet(OperationSetPresence.class);
+			OperationSetPresence opSetPresence = provider.getOperationSet(OperationSetPresence.class);
 			if (opSetPresence != null) {
 				opSetPresence.removeContactPresenceStatusListener(messageSourceService);
 				opSetPresence.removeProviderPresenceStatusListener(messageSourceService);
@@ -315,8 +304,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 			}
 
 			messageSourceService.handleProviderRemoved(provider);
-			OperationSetContactCapabilities capOpSet
-					= provider.getOperationSet(OperationSetContactCapabilities.class);
+			OperationSetContactCapabilities capOpSet = provider.getOperationSet(OperationSetContactCapabilities.class);
 			if (capOpSet != null) {
 				capOpSet.removeContactCapabilitiesListener(messageSourceService);
 			}
@@ -419,8 +407,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	 * 		Date the end date of the conversations
 	 * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
 	 */
-	public Collection<EventObject> findByPeriod(MetaContact metaContact, Date startDate,
-			Date endDate)
+	public Collection<EventObject> findByPeriod(MetaContact metaContact, Date startDate, Date endDate)
 	{
 		HashSet<EventObject> result = new HashSet<>();
 		String startTimeStamp = String.valueOf(startDate.getTime());
@@ -454,8 +441,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	 * 		array of keywords
 	 * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
 	 */
-	public Collection<EventObject> findByPeriod(MetaContact metaContact, Date startDate,
-			Date endDate, String[] keywords)
+	public Collection<EventObject> findByPeriod(MetaContact metaContact, Date startDate, Date endDate, String[] keywords)
 	{
 		return findByPeriod(metaContact, startDate, endDate, keywords, false);
 	}
@@ -532,8 +518,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	 * 		messages count
 	 * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
 	 */
-	public Collection<EventObject> findFirstMessagesAfter(MetaContact metaContact, Date startDate,
-			int count)
+	public Collection<EventObject> findFirstMessagesAfter(MetaContact metaContact, Date startDate, int count)
 	{
 		LinkedList<EventObject> result = new LinkedList<>();
 		String startTimeStamp = String.valueOf(startDate.getTime());
@@ -569,8 +554,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	 * 		messages count
 	 * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
 	 */
-	public Collection<EventObject> findLastMessagesBefore(MetaContact metaContact, Date endDate,
-			int count)
+	public Collection<EventObject> findLastMessagesBefore(MetaContact metaContact, Date endDate, int count)
 	{
 		LinkedList<EventObject> result = new LinkedList<>();
 		String endTimeStamp = String.valueOf(endDate.getTime());
@@ -662,8 +646,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 				argList.clear();
 				argList.add(sessionUuid);
 				if (isSMSEnabled) {
-					whereCondition += " AND (" + ChatMessage.MSG_TYPE + "=? OR "
-							+ ChatMessage.MSG_TYPE + "=?)";
+					whereCondition += " AND (" + ChatMessage.MSG_TYPE + "=? OR " + ChatMessage.MSG_TYPE + "=?)";
 					argList.add(String.valueOf(ChatMessage.MESSAGE_SMS_IN));
 					argList.add(String.valueOf(ChatMessage.MESSAGE_SMS_OUT));
 				}
@@ -675,13 +658,11 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
 				while (cursorMsg.moveToNext()) {
 					if (descriptor instanceof Contact) {
-						EventObject o = convertHistoryRecordToMessageEvent(cursorMsg,
-								(Contact) descriptor);
+						EventObject o = convertHistoryRecordToMessageEvent(cursorMsg, (Contact) descriptor);
 						result.add(o);
 					}
 					if (descriptor instanceof ChatRoom) {
-						EventObject o = convertHistoryRecordToMessageEvent(cursorMsg,
-								(ChatRoom) descriptor);
+						EventObject o = convertHistoryRecordToMessageEvent(cursorMsg, (ChatRoom) descriptor);
 						result.add(o);
 					}
 				}
@@ -864,8 +845,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		if (mode == ChatSession.MODE_SINGLE) {
 			columns = new String[]{MetaContactGroup.MC_UID};
 			cursor = mDB.query(MetaContactGroup.TBL_CHILD_CONTACTS, columns,
-					MetaContactGroup.ACCOUNT_UUID + "=? AND " + MetaContactGroup.CONTACT_JID +
-							"=?",
+					MetaContactGroup.ACCOUNT_UUID + "=? AND " + MetaContactGroup.CONTACT_JID + "=?",
 					args, null, null, null);
 			while (cursor.moveToNext()) {
 				sessionUuid = cursor.getString(0);
@@ -991,8 +971,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	private MessageImpl createMessageFromProperties(Map<String, String> mProperties)
 	{
 		String messageUID = mProperties.get(ChatMessage.UUID);
-		Date messageReceivedDate
-				= new Date(Long.parseLong(mProperties.get(ChatMessage.TIME_STAMP)));
+		Date messageReceivedDate = new Date(Long.parseLong(mProperties.get(ChatMessage.TIME_STAMP)));
 		String entityJid = mProperties.get(ChatMessage.ENTITY_JID);
 		String msgBody = mProperties.get(ChatMessage.MSG_BODY);
 		int encType = Integer.parseInt(mProperties.get(ChatMessage.ENC_TYPE));
@@ -1003,8 +982,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		if ((msgType == ChatMessage.MESSAGE_SMS_OUT) || (msgType == ChatMessage.MESSAGE_SMS_IN))
 			msgSubType = MSG_SUBTYPE_SMS;
 
-		return new MessageImpl(msgBody, encType, entityJid, messageUID, isOutgoing,
-				messageReceivedDate, msgSubType);
+		return new MessageImpl(msgBody, encType, entityJid, messageUID, isOutgoing, messageReceivedDate, msgSubType);
 	}
 
 	/**
@@ -1035,8 +1013,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		this.messageSourceService = new MessageSourceService(this);
 		messageSourceServiceReg = bundleContext.registerService(
 				ContactSourceService.class.getName(), messageSourceService, null);
-		MessageHistoryActivator.getContactListService()
-				.addMetaContactListListener(this.messageSourceService);
+		MessageHistoryActivator.getContactListService().addMetaContactListListener(this.messageSourceService);
 	}
 
 	/**
@@ -1045,8 +1022,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	private void stopRecentMessages()
 	{
 		if (messageSourceServiceReg != null) {
-			MessageHistoryActivator.getContactListService()
-					.removeMetaContactListListener(this.messageSourceService);
+			MessageHistoryActivator.getContactListService().removeMetaContactListListener(this.messageSourceService);
 
 			messageSourceServiceReg.unregister();
 			messageSourceServiceReg = null;
@@ -1061,8 +1037,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	public void messageReceived(MessageReceivedEvent evt)
 	{
 		Contact entityJid = evt.getSourceContact();
-		MetaContact metaContact = MessageHistoryActivator.getContactListService()
-				.findMetaContactByContact(entityJid);
+		MetaContact metaContact = MessageHistoryActivator.getContactListService().findMetaContactByContact(entityJid);
 		// return if logging is switched off for this particular contact
 		if (metaContact != null && !isHistoryLoggingEnabled(metaContact.getMetaUID())) {
 			return;
@@ -1076,8 +1051,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	public void messageDelivered(MessageDeliveredEvent evt)
 	{
 		Contact entityJid = evt.getDestinationContact();
-		MetaContact metaContact = MessageHistoryActivator.getContactListService()
-				.findMetaContactByContact(entityJid);
+		MetaContact metaContact = MessageHistoryActivator.getContactListService().findMetaContactByContact(entityJid);
 		// return if logging is switched off for this particular contact
 		if (metaContact != null && !isHistoryLoggingEnabled(metaContact.getMetaUID())) {
 			return;
@@ -1220,8 +1194,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		}
 
 		String sessionUuid = getSessionUuidByJid(evt.getSourceChatRoom());
-		writeMessage(sessionUuid, ChatMessage.DIR_OUT, room, evt.getMessage(), evt.getTimestamp(),
-				evt.getEventType());
+		writeMessage(sessionUuid, ChatMessage.DIR_OUT, room, evt.getMessage(), evt.getTimestamp(), evt.getEventType());
 	}
 
 	public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt)
@@ -1390,10 +1363,9 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	 */
 	private void writeMessageToDB(Message message, String direction)
 	{
-
 		contentValues.put(ChatMessage.UUID, message.getMessageUID());
 		contentValues.put(ChatMessage.MSG_BODY, message.getContent());
-		contentValues.put(ChatMessage.ENC_TYPE, message.getEncType());
+		contentValues.put(ChatMessage.ENC_TYPE, ((MessageJabberImpl) message).getEncType());
 		contentValues.put(ChatMessage.DIRECTION, direction);
 		contentValues.put(ChatMessage.STATUS, ChatMessage.DIR_OUT.equals(direction) ? 0 : 1);
 
@@ -1510,8 +1482,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
 			Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, null,
 					ChatMessage.SESSION_UUID + "=? AND " + ChatMessage.TIME_STAMP + ">=? AND "
-							+ ChatMessage.TIME_STAMP + "<? AND " + filterLike, args, null,
-					null, ORDER_ASC);
+							+ ChatMessage.TIME_STAMP + "<? AND " + filterLike, args, null, null, ORDER_ASC);
 
 			while (cursor.moveToNext()) {
 				result.add(convertHistoryRecordToMessageEvent(cursor, contact));
@@ -1545,8 +1516,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 			String[] args = {sessionUuid};
 
 			Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, null,
-					ChatMessage.SESSION_UUID + "=? AND " + filterLike, args, null, null,
-					ORDER_ASC);
+					ChatMessage.SESSION_UUID + "=? AND " + filterLike, args, null, null, ORDER_ASC);
 
 			while (cursor.moveToNext()) {
 				result.add(convertHistoryRecordToMessageEvent(cursor, contact));
@@ -1584,8 +1554,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 			String[] args = {sessionUuid};
 
 			Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, null,
-					ChatMessage.SESSION_UUID + "=? AND " + filterLike, args, null, null,
-					ORDER_ASC);
+					ChatMessage.SESSION_UUID + "=? AND " + filterLike, args, null, null, ORDER_ASC);
 
 			while (cursor.moveToNext()) {
 				result.add(convertHistoryRecordToMessageEvent(cursor, contact));
@@ -1727,8 +1696,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
 		Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, null,
 				ChatMessage.SESSION_UUID + "=? AND " + ChatMessage.TIME_STAMP + ">=? AND "
-						+ ChatMessage.TIME_STAMP + "<? AND " + filterLike, args, null, null,
-				ORDER_ASC);
+						+ ChatMessage.TIME_STAMP + "<? AND " + filterLike, args, null, null, ORDER_ASC);
 
 		while (cursor.moveToNext()) {
 			result.add(convertHistoryRecordToMessageEvent(cursor, room));
@@ -1922,8 +1890,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	private void loadMessageHistoryService()
 	{
 		configService.addPropertyChangeListener(
-				MessageHistoryService.PNAME_IS_RECENT_MESSAGES_DISABLED,
-				msgHistoryPropListener);
+				MessageHistoryService.PNAME_IS_RECENT_MESSAGES_DISABLED, msgHistoryPropListener);
 
 		boolean isRecentMessagesDisabled = configService.getBoolean(
 				MessageHistoryService.PNAME_IS_RECENT_MESSAGES_DISABLED, false);
@@ -1950,8 +1917,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
 		ServiceReference[] protocolProviderRefs;
 		try {
-			protocolProviderRefs = bundleContext.getServiceReferences(
-					ProtocolProviderService.class.getName(), null);
+			protocolProviderRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
 		}
 		catch (InvalidSyntaxException ex) {
 			// this shouldn't happen since we're providing no parameter string but let's log just
@@ -1963,11 +1929,9 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		// in case we found any
 		if (protocolProviderRefs != null) {
 			if (logger.isDebugEnabled())
-				logger.debug("Found " + protocolProviderRefs.length
-						+ " already installed providers.");
+				logger.debug("Found " + protocolProviderRefs.length + " already installed providers.");
 			for (ServiceReference protocolProviderRef : protocolProviderRefs) {
-				ProtocolProviderService provider = (ProtocolProviderService)
-						bundleContext.getService(protocolProviderRef);
+				ProtocolProviderService provider = (ProtocolProviderService) bundleContext.getService(protocolProviderRef);
 				res.add(provider);
 			}
 		}
@@ -1984,8 +1948,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
 		ServiceReference[] protocolProviderRefs;
 		try {
-			protocolProviderRefs = bundleContext
-					.getServiceReferences(ProtocolProviderService.class.getName(), null);
+			protocolProviderRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
 		}
 		catch (InvalidSyntaxException ex) {
 			// this shouldn't happen since we're providing no parameter string but let's log just
@@ -1997,8 +1960,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		// in case we found any
 		if (protocolProviderRefs != null) {
 			for (ServiceReference protocolProviderRef : protocolProviderRefs) {
-				ProtocolProviderService provider = (ProtocolProviderService)
-						bundleContext.getService(protocolProviderRef);
+				ProtocolProviderService provider = (ProtocolProviderService) bundleContext.getService(protocolProviderRef);
 				this.handleProviderRemoved(provider);
 			}
 		}
@@ -2014,8 +1976,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	 */
 	public void localUserAdHocPresenceChanged(LocalUserAdHocChatRoomPresenceChangeEvent evt)
 	{
-		if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_JOINED
-				.equals(evt.getEventType())) {
+		if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_JOINED.equals(evt.getEventType())) {
 			evt.getAdHocChatRoom().addMessageListener(this);
 		}
 		else {
@@ -2171,7 +2132,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 				boolean isOutgoing, Date messageReceivedDate, String msgSubType)
 		{
 			super(content, encType, subject, messageUID);
-
 			this.isOutgoing = isOutgoing;
 			this.messageReceivedDate = messageReceivedDate;
 			this.msgSubType = msgSubType;
@@ -2382,8 +2342,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
 		private void setCurrentValues(HistoryReader currentReader, int allRecords)
 		{
-			currentReaderProgressRatio
-					= (double) currentReader.countRecords() / allRecords * raiser;
+			currentReaderProgressRatio = (double) currentReader.countRecords() / allRecords * raiser;
 			accumulatedRatio += currentReaderProgressRatio;
 		}
 
@@ -2414,8 +2373,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 				// this is the last one and the last event fire the max there will be looses in
 				// currentProgress due to the deviation
 				if ((int) accumulatedRatio == raiser)
-					currentProgress
-							= raiser * MessageHistorySearchProgressListener.PROGRESS_MAXIMUM_VALUE;
+					currentProgress = raiser * MessageHistorySearchProgressListener.PROGRESS_MAXIMUM_VALUE;
 			}
 			else
 				lastHistoryProgress = tmpHistoryProgress;
@@ -2441,8 +2399,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	{
 		public void propertyChange(PropertyChangeEvent evt)
 		{
-			if (evt.getPropertyName()
-					.equals(MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED)) {
+			if (evt.getPropertyName().equals(MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED)) {
 				String newPropertyValue = (String) evt.getNewValue();
 				isHistoryLoggingEnabled = Boolean.valueOf(newPropertyValue);
 
@@ -2452,8 +2409,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 				else
 					stop(bundleContext);
 			}
-			else if (evt.getPropertyName()
-					.equals(MessageHistoryService.PNAME_IS_RECENT_MESSAGES_DISABLED)) {
+			else if (evt.getPropertyName().equals(MessageHistoryService.PNAME_IS_RECENT_MESSAGES_DISABLED)) {
 				String newPropertyValue = (String) evt.getNewValue();
 				boolean isDisabled = Boolean.valueOf(newPropertyValue);
 

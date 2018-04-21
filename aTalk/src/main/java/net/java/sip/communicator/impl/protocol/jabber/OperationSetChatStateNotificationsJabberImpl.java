@@ -99,7 +99,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
     /*
      * ChatState StanzaFilter for the listener
      */
-    private static final StanzaFilter CHATSTATE = new AndFilter(new StanzaTypeFilter(Message.class),
+    private static final StanzaFilter CHATSTATE = new AndFilter(StanzaTypeFilter.MESSAGE,
             new StanzaExtensionFilter(ChatStateExtension.NAMESPACE));
 
     /**

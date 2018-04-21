@@ -39,8 +39,7 @@ public class JingleNodesServiceDiscovery implements Runnable
 	/**
 	 * Property containing jingle nodes prefix to search for.
 	 */
-	private static final String JINGLE_NODES_SEARCH_PREFIX_PROP
-			= "protocol.jabber.JINGLE_NODES_SEARCH_PREFIXES";
+	private static final String JINGLE_NODES_SEARCH_PREFIX_PROP = "protocol.jabber.JINGLE_NODES_SEARCH_PREFIXES";
 
 	/**
 	 * Property containing jingle nodes prefix to search for.
@@ -104,8 +103,7 @@ public class JingleNodesServiceDiscovery implements Runnable
 			String searchNodesWithPrefix = JabberActivator.getResources().getSettingsString(
 					JINGLE_NODES_SEARCH_PREFIX_PROP);
 			if (searchNodesWithPrefix == null || searchNodesWithPrefix.length() == 0)
-				searchNodesWithPrefix = JabberActivator.getConfigurationService().getString(
-						JINGLE_NODES_SEARCH_PREFIX_PROP);
+				searchNodesWithPrefix = JabberActivator.getConfigurationService().getString(JINGLE_NODES_SEARCH_PREFIX_PROP);
 
 			// if there are no default prefix settings or this option is turned off, just process
 			// with default service discovery making list empty.

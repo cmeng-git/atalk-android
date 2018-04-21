@@ -17,11 +17,16 @@ package net.java.sip.communicator.service.netaddr;
 
 import net.java.sip.communicator.service.netaddr.event.NetworkConfigurationChangeListener;
 
-import org.ice4j.ice.*;
+import org.ice4j.ice.Agent;
+import org.ice4j.ice.IceMediaStream;
 import org.ice4j.ice.harvest.StunCandidateHarvester;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.BindException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 
 /**
  * The NetworkAddressManagerService takes care of problems such as
@@ -47,30 +52,30 @@ public interface NetworkAddressManagerService
     /**
      * Returns an InetAddress instance that represents the localhost, and that a socket can bind
      * upon or distribute to peers as a contact address.
-     * <p>
+     *
      * This method tries to make for the ambiguity in the implementation of the InetAddress
      * .getLocalHost() method.
      * (see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4665037).
-     * <p>
+     *
      * To put it briefly, the issue is about choosing a local source address to bind to or to
      * distribute to peers. It is possible and even quite probable to expect that a machine may
      * dispose with multiple addresses and each of them may be valid for a specific destination.
      * Example cases include:
-     * <p>
+     *
      * 1) A dual stack IPv6/IPv4 box. <br>
      * 2) A double NIC box with a leg on the Internet and another one in a private LAN <br>
      * 3) In the presence of a virtual interface over a VPN or a MobileIP(v6) tunnel.
-     * <p>
+     *
      * In all such cases a source local address needs to be chosen according to the intended
      * destination and after consulting the local routing table.
-     * <p>
+     *
+     *
      * @param intendedDestination the address of the destination that we'd like to access through
      * the local address that we are requesting.
-     *
      * @return an InetAddress instance representing the local host, and that a socket can bind
      * upon or distribute to peers as a contact address.
      */
-    public InetAddress getLocalHost(InetAddress intendedDestination);
+    InetAddress getLocalHost(InetAddress intendedDestination);
 
     /**
      * Tries to obtain a mapped/public address for the specified port. If the STUN lib fails,
@@ -78,15 +83,13 @@ public interface NetworkAddressManagerService
      *
      * @param intendedDestination the destination that we'd like to use this address with.
      * @param port the port whose mapping we are interested in.
-     *
      * @return a public address corresponding to the specified port or null if all attempts to
      * retrieve such an address have failed.
-     *
      * @throws IOException if an error occurs while the underlying resolver lib is using sockets.
      * @throws BindException if the port is already in use.
      */
-    public InetSocketAddress getPublicAddressFor(InetAddress intendedDestination, int port)
-        throws IOException, BindException;
+    InetSocketAddress getPublicAddressFor(InetAddress intendedDestination, int port)
+            throws IOException, BindException;
 
     /**
      * Returns the hardware address (i.e. MAC address) of the specified interface name.
@@ -94,7 +97,7 @@ public interface NetworkAddressManagerService
      * @param iface the <tt>NetworkInterface</tt>
      * @return array of bytes representing the layer 2 address
      */
-    public byte[] getHardwareAddress(NetworkInterface iface);
+    byte[] getHardwareAddress(NetworkInterface iface);
 
     /**
      * Creates a <tt>DatagramSocket</tt> and binds it to on the specified <tt>localAddress</tt>
@@ -110,32 +113,30 @@ public interface NetworkAddressManagerService
      * one (i.e. <tt>minPort + 1</tt>)
      * @param maxPort the maximum port number where we should try binding before giving up and
      * throwing an exception.
-     *
      * @return the newly created <tt>DatagramSocket</tt>.
-     *
      * @throws IllegalArgumentException if either <tt>minPort</tt> or <tt>maxPort</tt> is not a
      * valid port number.
      * @throws IOException if an error occurs while the underlying resolver lib is using sockets.
      * @throws BindException if we couldn't find a free port between <tt>minPort</tt> and
      * <tt>maxPort</tt> before reaching the maximum allowed number of retries.
      */
-    public DatagramSocket createDatagramSocket(InetAddress laddr, int preferredPort, int minPort,
-            int maxPort)
-        throws IllegalArgumentException, IOException, BindException;
+    DatagramSocket createDatagramSocket(InetAddress laddr, int preferredPort, int minPort, int maxPort)
+            throws IllegalArgumentException, IOException, BindException;
 
     /**
      * Adds new <tt>NetworkConfigurationChangeListener</tt> which will be informed for network
      * configuration changes.
+     *
      * @param listener the listener.
      */
-    public void addNetworkConfigurationChangeListener(NetworkConfigurationChangeListener listener);
+    void addNetworkConfigurationChangeListener(NetworkConfigurationChangeListener listener);
 
     /**
      * Remove <tt>NetworkConfigurationChangeListener</tt>.
+     *
      * @param listener the listener.
      */
-    public void removeNetworkConfigurationChangeListener(
-            NetworkConfigurationChangeListener listener);
+    void removeNetworkConfigurationChangeListener(NetworkConfigurationChangeListener listener);
 
     /**
      * Creates and returns an ICE agent that a protocol could use for the negotiation of media
@@ -143,7 +144,7 @@ public interface NetworkAddressManagerService
      *
      * @return the newly created ICE Agent.
      */
-    public Agent createIceAgent();
+    Agent createIceAgent();
 
     /**
      * Tries to discover a TURN or a STUN server for the specified <tt>domainName</tt>. The
@@ -155,13 +156,11 @@ public interface NetworkAddressManagerService
      * won't be using credentials in case we only have a STUN server).
      * @param password the password that we'd like to try when connecting to a TURN server (we
      * won't be using credentials in case we only have a STUN server).
-     *
      * @return A {@link StunCandidateHarvester} corresponding to the TURN or STUN server we
      * discovered or <tt>null</tt> if there were no such records for the specified
      * <tt>domainName</tt>
      */
-    public StunCandidateHarvester discoverStunServer(String domainName, byte[] userName,
-            byte[] password);
+    StunCandidateHarvester discoverStunServer(String domainName, byte[] userName, byte[] password);
 
     /**
      * Creates an <tt>IceMediaStream</tt> and adds to it an RTP and and RTCP component, which
@@ -171,16 +170,15 @@ public interface NetworkAddressManagerService
      * would automatically go to rtpPort + 1)
      * @param streamName the name of the stream to create
      * @param agent the <tt>Agent</tt> that should create the stream.
-     *
-     *@return the newly created <tt>IceMediaStream</tt>.
-     *
+     * @return the newly created <tt>IceMediaStream</tt>.
      * @throws IllegalArgumentException if <tt>rtpPort</tt> is not a valid port number.
      * @throws IOException if an error occurs while the underlying resolver is using sockets.
      * @throws BindException if we couldn't find a free port between within the default number of
      * retries.
      */
-    public IceMediaStream createIceStream(int rtpPort, String streamName, Agent agent)
-        throws IllegalArgumentException, IOException, BindException;
+    IceMediaStream createIceStream(int rtpPort, String streamName, Agent agent)
+            throws IllegalArgumentException, IOException, BindException;
+
     /**
      * Creates an <tt>IceMediaStream</tt> and adds to it one or two components, which also
      * implies running the currently installed harvesters.
@@ -189,17 +187,13 @@ public interface NetworkAddressManagerService
      * would automatically go to portBase + 1)
      * @param streamName the name of the stream to create
      * @param agent the <tt>Agent</tt> that should create the stream.
-     *
      * @return the newly created <tt>IceMediaStream</tt>.
-     *
      * @throws IllegalArgumentException if <tt>portBase</tt> is not a valid port number. If
      * <tt>numComponents</tt> is neither 1 nor 2.
      * @throws IOException if an error occurs while the underlying resolver is using sockets.
      * @throws BindException if we couldn't find a free port between within the default number of
      * retries.
-     *
      */
-    public IceMediaStream createIceStream(int numComponents, int portBase, String streamName,
-            Agent agent)
-        throws IllegalArgumentException, IOException, BindException;
+    IceMediaStream createIceStream(int numComponents, int portBase, String streamName, Agent agent)
+            throws IllegalArgumentException, IOException, BindException;
 }

@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.impl.protocol.jabber;
@@ -17,34 +17,28 @@ import net.java.sip.communicator.service.protocol.AbstractMessage;
  */
 public class MessageJabberImpl extends AbstractMessage
 {
-	/**
-	 * Creates an instance of this Message with the specified parameters.
-	 *
-	 * @param content
-	 *        the text content of the message.
-	 * @param encType
-	 *        an int value indicating the content type of the <tt>content</tt> String.
-	 * @param subject
-	 *        the subject of the message or null for empty.
-	 */
-	public MessageJabberImpl(String content, int encType, String subject)
-	{
-		super(content, encType, subject);
-	}
+    /**
+     * Creates an instance of this Message with the specified parameters.
+     *
+     * @param content the text content of the message.
+     * @param encType contains both mime and encryption types @see ChatMessage.ENC_TYPE definition
+     * @param subject the subject of the message or null for empty.
+     */
+    public MessageJabberImpl(String content, int encType, String subject)
+    {
+        super(content, encType, subject);
+    }
 
-	/**
-	 * Creates an instance of this Message with the specified parameters.
-	 *
-	 * @param content
-	 *        the text content of the message.
-	 * @param encType
-	 *        an int value indicating the content type of the <tt>content</tt> String.
-	 * @param subject
-	 *        the subject of the message or null for empty.
-	 * @param
-	 */
-	public MessageJabberImpl(String content, int encType, String subject, String messageUID)
-	{
-		super(content, encType, subject, messageUID);
-	}
+    /**
+     * Creates an instance of this Message with the specified parameters.
+     *
+     * @param content the text content of the message.
+     * @param encType contains both mime and encryption types @see ChatMessage.ENC_TYPE definition
+     * @param subject the subject of the message or null for empty.
+     * @param messageUID @see net.java.sip.communicator.service.protocol.Message#getMessageUID()
+     */
+    public MessageJabberImpl(String content, int encType, String subject, String messageUID)
+    {
+        super(content, encType, subject, messageUID);
+    }
 }

@@ -407,16 +407,15 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     /**
      * Create a Message instance for sending arbitrary MIME-encoding content.
      *
-     * @param content content value
-     * @param encType the MIME-type for <tt>content</tt>
-     * @param contentEncoding encoding used for <tt>content</tt>
+     * @param content message content value
+     * @param encryptionType encryption used for <tt>content</tt>
+     * @param mimeType the MIME-type for <tt>content</tt>
      * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
      * @return the newly created message.
      */
-    public Message createMessage(byte[] content, int encType, String contentEncoding,
-            String subject)
+    public Message createMessage(String content, int encryptionType, int mimeType, String subject)
     {
-        return new MessageJabberImpl(new String(content), encType, contentEncoding, subject);
+        return new MessageJabberImpl(content, encryptionType | mimeType, subject);
     }
 
     /**
@@ -735,8 +734,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         OperationSetBasicTelephonyJabberImpl basicTelephony
                 = (OperationSetBasicTelephonyJabberImpl) mProvider.getOperationSet(OperationSetBasicTelephony.class);
         if (basicTelephony != null && this.publishedConference != null) {
-            ActiveCallsRepositoryJabberGTalkImpl<CallJabberImpl, CallPeerJabberImpl>
-                    activeRepository = basicTelephony.getActiveCallsRepository();
+            ActiveCallsRepositoryJabberGTalkImpl<CallJabberImpl, CallPeerJabberImpl> activeRepository
+                    = basicTelephony.getActiveCallsRepository();
 
             String callId = publishedConference.getCallId();
             if (callId != null) {
@@ -837,12 +836,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             aTalkApp.showToastMessage(msg);
         }
 
-        // message delivered for own display
-        Message newMessage = createMessage(msgContent);
+        // message delivered for own outgoing message view display
         Date timeStamp = new Date();
-        ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(
-                ChatRoomJabberImpl.this, timeStamp, newMessage,
-                ChatRoomMessageDeliveredEvent.CONVERSATION_MESSAGE_DELIVERED);
+        ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent( ChatRoomJabberImpl.this,
+                timeStamp, message, ChatRoomMessageDeliveredEvent.CONVERSATION_MESSAGE_DELIVERED);
         fireMessageEvent(msgDeliveredEvt);
     }
 
@@ -1541,8 +1538,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * one.
      * @param namespace the namespace of <tt>ExtensionElement</tt>.
      */
-    private static void setPacketExtension(Stanza packet, ExtensionElement extension,
-            String namespace)
+    private static void setPacketExtension(Stanza packet, ExtensionElement extension, String namespace)
     {
         if (StringUtils.isNullOrEmpty(namespace)) {
             return;
@@ -1997,8 +1993,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * @param newRole the new mRole the local user gets
      * @param isInitial if <tt>true</tt> this is initial mRole set.
      */
-    private void fireLocalUserRoleEvent(ChatRoomMemberRole previousRole,
-            ChatRoomMemberRole newRole, boolean isInitial)
+    private void fireLocalUserRoleEvent(ChatRoomMemberRole previousRole, ChatRoomMemberRole newRole, boolean isInitial)
     {
         ChatRoomLocalUserRoleChangeEvent evt
                 = new ChatRoomLocalUserRoleChangeEvent(this, previousRole, newRole, isInitial);
