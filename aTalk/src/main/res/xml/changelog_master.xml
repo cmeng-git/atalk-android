@@ -6,6 +6,13 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.2.2 (04/22/2018)" versioncode="1022">
+        <change>Hide audio sending option if permission.RECORD_AUDIO is not granted</change>
+        <change>Add encryption indication for incoming and outgoing messages</change>
+        <change>Apply current selected encryption to location messages sending</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.2.1 (04/16/2018)" versioncode="1021">
         <change>Use XMPP service name when creating the TLS socket (smack 4.2.4)</change>
         <change>Update libjitsi to dated 04/13/2018</change>
