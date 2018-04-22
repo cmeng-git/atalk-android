@@ -19,6 +19,7 @@ package org.atalk.android.gui.menu;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,6 +47,7 @@ import org.atalk.android.gui.contactlist.AddContactActivity;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.android.plugin.geolocation.GeoLocation;
 import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -304,6 +306,11 @@ public class MainMenuActivity extends ExitMenuActivity
                     globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
                 else
                     globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
+                break;
+            case R.id.show_location:
+                Intent intent = new Intent(this, GeoLocation.class);
+                intent.putExtra(GeoLocation.SEND_LOCATION, false);
+                startActivity(intent);
                 break;
             case R.id.about:
                 startActivity(About.class);

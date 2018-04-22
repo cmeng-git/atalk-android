@@ -16,21 +16,36 @@
 
 package org.atalk.android.plugin.geolocation;
 
-import android.hardware.*;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Surface;
 
-import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
+import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanorama.OnStreetViewPanoramaChangeListener;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.SupportStreetViewPanoramaFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
+import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
-import org.atalk.android.*;
+import org.atalk.android.aTalkApp;
 
 import java.util.ArrayList;
 
@@ -40,269 +55,258 @@ import static org.atalk.android.R.id.map;
  * This shows how to create a simple activity with streetView and a map
  */
 public class SplitStreetViewPanoramaAndMapActivity extends FragmentActivity
-		implements OnMarkerDragListener, OnStreetViewPanoramaChangeListener,
-		SensorEventListener
+        implements OnMarkerDragListener, OnStreetViewPanoramaChangeListener, SensorEventListener
 {
-	/**
-	 * The logger
-	 */
-	private static final Logger logger
-			= Logger.getLogger(SplitStreetViewPanoramaAndMapActivity.class);
+    /**
+     * The logger
+     */
+    private static final Logger logger = Logger.getLogger(SplitStreetViewPanoramaAndMapActivity.class);
 
-	public static final String MARKER_POSITION_KEY = "MarkerPosition";
-	public static final String MARKER_LIST = "MarkerList";
+    public static final String MARKER_POSITION_KEY = "MarkerPosition";
+    public static final String MARKER_LIST = "MarkerList";
 
-	private Marker mMarker;
-	private StreetViewPanorama mStreetViewPanorama;
-	private GoogleMap mMap;
+    private Marker mMarker;
+    private StreetViewPanorama mStreetViewPanorama;
+    private GoogleMap mMap;
 
-	private SensorManager mSensorManager;
-	private double mAngle;
-	private ArrayList<LatLng> markerList = new ArrayList<>();
-	private Thread mThread = null;
+    private SensorManager mSensorManager;
+    private double mAngle;
+    private ArrayList<LatLng> markerList = new ArrayList<>();
+    private Thread mThread = null;
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.split_street_view_panorama_and_map);
+    @Override
+    protected void onCreate(final Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.split_street_view_panorama_and_map);
 
-		final LatLng markerPosition;
-		if (savedInstanceState == null) {
-			markerPosition = getIntent().getParcelableExtra(MARKER_POSITION_KEY);
-			if (getIntent().hasExtra(MARKER_LIST))
-				markerList = getIntent().getParcelableArrayListExtra(MARKER_LIST);
-		}
-		else {
-			markerPosition = savedInstanceState.getParcelable(MARKER_POSITION_KEY);
-			markerList = savedInstanceState.getParcelableArrayList(MARKER_LIST);
-		}
+        final LatLng markerPosition;
+        if (savedInstanceState == null) {
+            markerPosition = getIntent().getParcelableExtra(MARKER_POSITION_KEY);
+            if (getIntent().hasExtra(MARKER_LIST))
+                markerList = getIntent().getParcelableArrayListExtra(MARKER_LIST);
+        }
+        else {
+            markerPosition = savedInstanceState.getParcelable(MARKER_POSITION_KEY);
+            markerList = savedInstanceState.getParcelableArrayList(MARKER_LIST);
+        }
 
-		SupportStreetViewPanoramaFragment streetViewPanoramaFragment =
-				(SupportStreetViewPanoramaFragment) getSupportFragmentManager()
-						.findFragmentById(R.id.streetviewpanorama);
-		streetViewPanoramaFragment.getStreetViewPanoramaAsync(
-				new OnStreetViewPanoramaReadyCallback()
-				{
-					@Override
-					public void onStreetViewPanoramaReady(StreetViewPanorama panorama)
-					{
-						mStreetViewPanorama = panorama;
-						mStreetViewPanorama.setOnStreetViewPanoramaChangeListener(
-								SplitStreetViewPanoramaAndMapActivity.this);
-						// Only need to set the position once as the streetView fragment will
-						// maintain its state.
-						mStreetViewPanorama.setPosition(markerPosition);
-					}
-				});
+        SupportStreetViewPanoramaFragment streetViewPanoramaFragment =
+                (SupportStreetViewPanoramaFragment) getSupportFragmentManager().findFragmentById(R.id.streetviewpanorama);
+        streetViewPanoramaFragment.getStreetViewPanoramaAsync(
+                new OnStreetViewPanoramaReadyCallback()
+                {
+                    @Override
+                    public void onStreetViewPanoramaReady(StreetViewPanorama panorama)
+                    {
+                        mStreetViewPanorama = panorama;
+                        mStreetViewPanorama.setOnStreetViewPanoramaChangeListener(
+                                SplitStreetViewPanoramaAndMapActivity.this);
+                        // Only need to set the position once as the streetView fragment will
+                        // maintain its state.
+                        mStreetViewPanorama.setPosition(markerPosition);
+                    }
+                });
 
-		SupportMapFragment mapFragment =
-				(SupportMapFragment) getSupportFragmentManager().findFragmentById(map);
-		mapFragment.getMapAsync(new OnMapReadyCallback()
-		{
-			@Override
-			public void onMapReady(GoogleMap map)
-			{
-				mMap = map;
-				map.setOnMarkerDragListener(SplitStreetViewPanoramaAndMapActivity.this);
-				// Creates a draggable marker. Long press to drag.
-				mMarker = map.addMarker(new MarkerOptions()
-						.position(markerPosition)
-						.icon(BitmapDescriptorFactory.fromResource(R.drawable.pegman))
-						.draggable(true));
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(map);
+        mapFragment.getMapAsync(new OnMapReadyCallback()
+        {
+            @Override
+            public void onMapReady(GoogleMap map)
+            {
+                mMap = map;
+                map.setOnMarkerDragListener(SplitStreetViewPanoramaAndMapActivity.this);
+                // Creates a draggable marker. Long press to drag.
+                mMarker = map.addMarker(new MarkerOptions()
+                        .position(markerPosition)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pegman))
+                        .draggable(true));
 
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15.5f));
-				if (markerList != null && !markerList.isEmpty()) {
-					startLocationUpdate(markerList);
-				}
-			}
-		});
-	}
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15.5f));
+                if (markerList != null && !markerList.isEmpty()) {
+                    startLocationUpdate(markerList);
+                }
+            }
+        });
+    }
 
-	@Override
-	protected void onSaveInstanceState(Bundle outState)
-	{
-		super.onSaveInstanceState(outState);
-		outState.putParcelable(MARKER_POSITION_KEY, mMarker.getPosition());
-		outState.putParcelableArrayList(MARKER_LIST, markerList);
-	}
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(MARKER_POSITION_KEY, mMarker.getPosition());
+        outState.putParcelableArrayList(MARKER_LIST, markerList);
+    }
 
-	@Override
-	protected void onResume()
-	{
-		super.onResume();
-		mSensorManager = aTalkApp.getSensorManager();
-		if (mSensorManager != null)
-			mSensorManager.registerListener(this,
-					mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-					SensorManager.SENSOR_DELAY_GAME);
-		aTalkApp.setCurrentActivity(this);
-	}
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        mSensorManager = aTalkApp.getSensorManager();
+        if (mSensorManager != null)
+            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+                    SensorManager.SENSOR_DELAY_GAME);
+        aTalkApp.setCurrentActivity(this);
+    }
 
-	@Override
-	protected void onPause()
-	{
-		super.onPause();
-		if (mSensorManager != null)
-			mSensorManager.unregisterListener(this);
-		markerList = null;
-		if (mThread != null) {
-			mThread.interrupt();
-			mThread = null;
-		}
-	}
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        if (mSensorManager != null)
+            mSensorManager.unregisterListener(this);
+        markerList = null;
+        if (mThread != null) {
+            mThread.interrupt();
+            mThread = null;
+        }
+    }
 
-	@Override
-	public void onStreetViewPanoramaChange(StreetViewPanoramaLocation location)
-	{
-		if (location != null) {
-			mMarker.setPosition(location.position);
-		}
-	}
+    @Override
+    public void onStreetViewPanoramaChange(StreetViewPanoramaLocation location)
+    {
+        if (location != null) {
+            mMarker.setPosition(location.position);
+        }
+    }
 
-	@Override
-	public void onMarkerDragStart(Marker marker)
-	{
-	}
+    @Override
+    public void onMarkerDragStart(Marker marker)
+    {
+    }
 
-	@Override
-	public void onMarkerDragEnd(Marker marker)
-	{
-		mStreetViewPanorama.setPosition(marker.getPosition(), 150);
-	}
+    @Override
+    public void onMarkerDragEnd(Marker marker)
+    {
+        mStreetViewPanorama.setPosition(marker.getPosition(), 150);
+    }
 
-	@Override
-	public void onMarkerDrag(Marker marker)
-	{
-	}
+    @Override
+    public void onMarkerDrag(Marker marker)
+    {
+    }
 
-	/**
-	 * Extract the actual device orientation relative to earth magnetic north and make adjustment
-	 * for the display rotation when in landscape mode.
-	 * The orientation (change > 1.0deg> is used as bearing for positioning the StreetView and Map
-	 * camera to the actual direction from user view point
-	 *
-	 * @param event
-	 * 		the Rotation Sensor triggered event
-	 */
-	@Override
-	public void onSensorChanged(SensorEvent event)
-	{
-		if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
-			float bearing = Math.round(event.values[0]);
+    /**
+     * Extract the actual device orientation relative to earth magnetic north and make adjustment
+     * for the display rotation when in landscape mode.
+     * The orientation (change > 1.0deg> is used as bearing for positioning the StreetView and Map
+     * camera to the actual direction from user view point
+     *
+     * @param event the Rotation Sensor triggered event
+     */
+    @Override
+    public void onSensorChanged(SensorEvent event)
+    {
+        if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
+            float bearing = Math.round(event.values[0]);
 
-			// Realign bearing direction if system is in landscape mode
-			int rotation = getWindowManager().getDefaultDisplay().getRotation();
-			if (rotation == Surface.ROTATION_90)
-				bearing += 90.0f;
-			else if (rotation == Surface.ROTATION_270)
-				bearing -= 90.0f;
+            // Realign bearing direction if system is in landscape mode
+            int rotation = getWindowManager().getDefaultDisplay().getRotation();
+            if (rotation == Surface.ROTATION_90)
+                bearing += 90.0f;
+            else if (rotation == Surface.ROTATION_270)
+                bearing -= 90.0f;
 
-			if (Math.abs(bearing - mAngle) > 1.0) {
-				updateMapCamera(bearing);
-				updateSVPCamera(bearing);
-				mAngle = bearing;
-			}
-		}
-	}
+            if (Math.abs(bearing - mAngle) > 1.0) {
+                updateMapCamera(bearing);
+                updateSVPCamera(bearing);
+                mAngle = bearing;
+            }
+        }
+    }
 
-	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy)
-	{
-	}
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy)
+    {
+    }
 
-	/**
-	 * Rotate the map camera to the actual bearing direction from user view point
-	 *
-	 * @param bearing
-	 * 		the bearing direction in angle deg
-	 */
-	private void updateMapCamera(float bearing)
-	{
-		if (mMap != null) {
-			CameraPosition oldPos = mMap.getCameraPosition();
+    /**
+     * Rotate the map camera to the actual bearing direction from user view point
+     *
+     * @param bearing the bearing direction in angle deg
+     */
+    private void updateMapCamera(float bearing)
+    {
+        if (mMap != null) {
+            CameraPosition oldPos = mMap.getCameraPosition();
 
-			CameraPosition pos = CameraPosition.builder(oldPos)
-					.bearing(bearing)
-					.build();
-			mMap.moveCamera(CameraUpdateFactory.newCameraPosition(pos));
-		}
-	}
+            CameraPosition pos = CameraPosition.builder(oldPos)
+                    .bearing(bearing)
+                    .build();
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(pos));
+        }
+    }
 
-	/**
-	 * Rotate the StreetView camera to the actual bearing direction from user view point
-	 *
-	 * @param bearing
-	 * 		the bearing direction in angle deg
-	 */
-	private void updateSVPCamera(float bearing)
-	{
-		if (mStreetViewPanorama != null) {
-			StreetViewPanoramaCamera previous = mStreetViewPanorama.getPanoramaCamera();
+    /**
+     * Rotate the StreetView camera to the actual bearing direction from user view point
+     *
+     * @param bearing the bearing direction in angle deg
+     */
+    private void updateSVPCamera(float bearing)
+    {
+        if (mStreetViewPanorama != null) {
+            StreetViewPanoramaCamera previous = mStreetViewPanorama.getPanoramaCamera();
 
-			StreetViewPanoramaCamera camera = new StreetViewPanoramaCamera.Builder(previous)
-					.bearing(bearing)
-					.build();
+            StreetViewPanoramaCamera camera = new StreetViewPanoramaCamera.Builder(previous)
+                    .bearing(bearing)
+                    .build();
 
-			mStreetViewPanorama.animateTo(camera, 0);
-		}
-	}
+            mStreetViewPanorama.animateTo(camera, 0);
+        }
+    }
 
-	public void onLocationChanged(Location location)
-	{
-		onLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()));
-	}
+    public void onLocationChanged(Location location)
+    {
+        onLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()));
+    }
 
-	/**
-	 * Move the marker to the location mLatLng for both the street and map view
-	 *
-	 * @param mLatLng
-	 * 		the new LatTng location to move to
-	 */
-	public void onLocationChanged(LatLng mLatLng)
-	{
-		if (mMap != null) {
-			LatLng markerPosition = new LatLng(mLatLng.latitude, mLatLng.longitude);
-			mMarker.setPosition(markerPosition);
-			mStreetViewPanorama.setPosition(markerPosition);
-			mMap.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
-		}
-	}
+    /**
+     * Move the marker to the location mLatLng for both the street and map view
+     *
+     * @param mLatLng the new LatTng location to move to
+     */
+    public void onLocationChanged(LatLng mLatLng)
+    {
+        if (mMap != null) {
+            LatLng markerPosition = new LatLng(mLatLng.latitude, mLatLng.longitude);
+            mMarker.setPosition(markerPosition);
+            mStreetViewPanorama.setPosition(markerPosition);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
+        }
+    }
 
-	/**
-	 * Animate the location path given in an array in 3 second interval
-	 *
-	 * @param mList
-	 * 		the ArrayList<LatLng>
-	 */
-	private void startLocationUpdate(final ArrayList<LatLng> mList)
-	{
-		mThread = new Thread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				for (final LatLng mLatLng : mList) {
-					try {
-						Thread.sleep(3000);
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								onLocationChanged(mLatLng);
-							}
-						});
-					}
-					catch (InterruptedException ex) {
-						break;
-					}
-					catch (Exception ex) {
-						logger.error("Exception: ", ex);
-					}
-				}
-			}
-		});
-		mThread.start();
-	}
+    /**
+     * Animate the location path given in an array in 3 second interval
+     *
+     * @param mList the ArrayList<LatLng>
+     */
+    private void startLocationUpdate(final ArrayList<LatLng> mList)
+    {
+        mThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                for (final LatLng mLatLng : mList) {
+                    try {
+                        Thread.sleep(3000);
+                        runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                onLocationChanged(mLatLng);
+                            }
+                        });
+                    } catch (InterruptedException ex) {
+                        break;
+                    } catch (Exception ex) {
+                        logger.error("Exception: ", ex);
+                    }
+                }
+            }
+        });
+        mThread.start();
+    }
 }

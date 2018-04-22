@@ -418,6 +418,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
 
             case R.id.send_location:
                 intent = new Intent(this, GeoLocation.class);
+                intent.putExtra(GeoLocation.SEND_LOCATION, true);
                 startActivity(intent);
                 return true;
 
