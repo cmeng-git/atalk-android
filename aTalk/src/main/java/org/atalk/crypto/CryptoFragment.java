@@ -135,7 +135,7 @@ public class CryptoFragment extends OSGiFragment
     private Menu menu;
     private MenuItem mCryptoChoice;
     private MenuItem mNone;
-    private MenuItem mOmemo;
+    public MenuItem mOmemo;
     private MenuItem mOtr;
 
     private XMPPTCPConnection mConnection;

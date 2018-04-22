@@ -22,6 +22,7 @@ import net.java.sip.communicator.service.protocol.*;
  * represented in the contact list entry in the user interface.
  *
  * @author Hristo Terezov
+ * @author Eng Chong Meng
  */
 public interface ContactActionMenuItem<T>
 {
@@ -30,14 +31,14 @@ public interface ContactActionMenuItem<T>
      *
      * @param actionSource the source of the action
      */
-    public void actionPerformed(T actionSource)
+    void actionPerformed(T actionSource)
         throws OperationFailedException;
 
     /**
      * The icon used by the UI to visualize this action.
      * @return the button icon.
      */
-    public byte[] getIcon();
+    byte[] getIcon();
 
     /**
      * Returns the text of the component to create for this contact
@@ -48,7 +49,7 @@ public interface ContactActionMenuItem<T>
      * @return the tool tip text of the component to create for this contact
      * action
      */
-    public String getText(T actionSource);
+    String getText(T actionSource);
 
     /**
      * Indicates if this action is visible for the given <tt>actionSource</tt>.
@@ -58,13 +59,13 @@ public interface ContactActionMenuItem<T>
      * @return <tt>true</tt> if the action should be visible for the given
      * <tt>actionSource</tt>, <tt>false</tt> - otherwise
      */
-    public boolean isVisible(T actionSource);
+    boolean isVisible(T actionSource);
     
     /**
      * 
      * @return
      */
-    public char getMnemonics();
+    char getMnemonics();
     
     /**
      * Returns <tt>true</tt> if the item should be enabled and <tt>false</tt>
@@ -75,7 +76,7 @@ public interface ContactActionMenuItem<T>
      * @return <tt>true</tt> if the item should be enabled and <tt>false</tt>
      *  - not.
      */
-    public boolean isEnabled(T actionSource);
+    boolean isEnabled(T actionSource);
     
     /**
      * Returns <tt>true</tt> if the item should be a check box and 
@@ -84,7 +85,7 @@ public interface ContactActionMenuItem<T>
      * @return <tt>true</tt> if the item should be a check box and 
      * <tt>false</tt> if not
      */
-    public boolean isCheckBox();
+    boolean isCheckBox();
 
     /**
      * Returns the state of the item if the item is check box.
@@ -93,5 +94,5 @@ public interface ContactActionMenuItem<T>
      * action.
      * @return the state of the item.
      */
-    public boolean isSelected(T actionSource);
+    boolean isSelected(T actionSource);
 }
