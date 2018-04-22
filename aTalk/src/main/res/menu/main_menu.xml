@@ -45,6 +45,11 @@
         android:title="@string/service_gui_SIGN_OUT">
     </item>
     <item
+        android:id="@+id/show_location"
+        android:icon="@drawable/ic_location_dark"
+        android:title="@string/service_gui_GEO_SHOW">
+    </item>
+    <item
         android:id="@+id/about"
         android:icon="?attr/iconActionAbout"
         android:title="@string/About_help" >

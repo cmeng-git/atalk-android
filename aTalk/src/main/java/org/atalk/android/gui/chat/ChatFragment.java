@@ -6,6 +6,7 @@
  */
 package org.atalk.android.gui.chat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -15,6 +16,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.Spannable;
@@ -46,7 +48,6 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
-import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.gui.Chat;
@@ -139,14 +140,12 @@ public class ChatFragment extends OSGiFragment
     private View header;
 
     /**
-     * Remembers first visible view to scroll the list after new portion of history messages is
-     * added.
+     * Remembers first visible view to scroll the list after new portion of history messages is added.
      */
     public int scrollFirstVisible;
 
     /**
-     * Remembers top position to add to the scrolling offset after new portion
-     * of history messages is added.
+     * Remembers top position to add to the scrolling offset after new portion of history messages is added.
      */
     public int scrollTopOffset;
 
@@ -161,8 +160,7 @@ public class ChatFragment extends OSGiFragment
     private LoadHistoryTask loadHistoryTask;
 
     /**
-     * Stores all active file transfer requests and effective transfers with the
-     * identifier of the transfer.
+     * Stores all active file transfer requests and effective transfers with the identifier of the transfer.
      */
     private final Hashtable<String, Object> activeFileTransfers = new Hashtable<>();
 
@@ -202,8 +200,7 @@ public class ChatFragment extends OSGiFragment
     public boolean clearMsgCache = false;
 
     /**
-     * The chat controller used to handle operations like editing and sending messages associated
-     * with this fragment.
+     * The chat controller used to handle operations like editing and sending messages associated with this fragment.
      */
     private ChatController chatController;
 
@@ -218,11 +215,7 @@ public class ChatFragment extends OSGiFragment
     private ChatFragment currentChatFragment;
     private CryptoFragment cryptoFragment;
 
-    private OtrContact otrContact = null;
-
-    private static int MAX_COUNTDOWN_TIME = 20000; // ms
-    private static int COUNTDOWN_INTERVAL = 1000; // ms
-    // private static int COUNTDOWN_SHOWTIME = 5; // s
+    // private static int COUNTDOWN_INTERVAL = 1000; // ms
 
     /**
      * Flag indicates that we have loaded the history for the first time.
@@ -249,7 +242,7 @@ public class ChatFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         mCFView = inflater.inflate(R.layout.chat_conversation, container, false);
         chatListAdapter = new ChatListAdapter();
@@ -290,6 +283,7 @@ public class ChatFragment extends OSGiFragment
         return mCFView;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initListViewListeners()
     {
         chatListView.setOnScrollListener(new AbsListView.OnScrollListener()
@@ -300,8 +294,7 @@ public class ChatFragment extends OSGiFragment
                 // Proceed only if there is no active file transfer in progress
                 // Detects event when user scrolls to the top of the list
                 View childFirst = chatListView.getChildAt(0);
-                if ((activeFileTransfers.size() == 0) && (scrollState == 0)
-                        && childFirst != null) {
+                if ((activeFileTransfers.size() == 0) && (scrollState == 0) && childFirst != null) {
                     if (childFirst.getTop() == 0) {
                         // Loads some more history if there's no loading task in progress
                         if (loadHistoryTask == null) {
@@ -805,11 +798,6 @@ public class ChatFragment extends OSGiFragment
          */
         private final Html.ImageGetter imageGetter = new HtmlImageGetter();
 
-        public ChatTransport getFragmentContact()
-        {
-            return currentChatTransport;
-        }
-
         /**
          * Pass the message to the <tt>ChatListAdapter</tt> for processing; appends it at the
          * end or merge it with the last consecutive message.
@@ -843,6 +831,12 @@ public class ChatFragment extends OSGiFragment
          */
         private void addMessageImpl(ChatMessage newMessage, boolean update)
         {
+            // Auto enable to Omemo option on receive omemo encrypted messages and view is in focus
+            if (primarySelected && (ChatMessage.ENCRYPTION_OMEMO == newMessage.getEncryptionType())
+                    && !chatPanel.isOmemoChat()) {
+                cryptoFragment.onOptionsItemSelected(cryptoFragment.mOmemo);
+            }
+
             int msgIdx;
             int lastMsgIdx = getLastMessageIdx(newMessage);
             ChatMessage lastMsg = (lastMsgIdx != -1) ? chatListAdapter.getMessage(lastMsgIdx) : null;
@@ -1339,7 +1333,7 @@ public class ChatFragment extends OSGiFragment
             }
         }
 
-        // some messages are added directory without event triggered
+        // some messages are added directly without event triggered
         @Override
         public void messageAdded(ChatMessage msg)
         {
@@ -1496,8 +1490,7 @@ public class ChatFragment extends OSGiFragment
                             else
                                 sLng = sLng.replaceAll("[^0-9.]+", "");
 
-                            mLatLng = new LatLng(Double.parseDouble(sLat),
-                                    Double.parseDouble(sLng));
+                            mLatLng = new LatLng(Double.parseDouble(sLat), Double.parseDouble(sLng));
                             hasLatLng = true;
                         } catch (NumberFormatException ex) {
                             ex.printStackTrace();
@@ -1509,7 +1502,7 @@ public class ChatFragment extends OSGiFragment
             /**
              * Perform google street and map view fetch when user click the show map button
              *
-             * @param view
+             * @param view view
              */
             @Override
             public void onClick(View view)
@@ -1595,8 +1588,7 @@ public class ChatFragment extends OSGiFragment
                     try { // cannot assume null body = html message
                         body = Html.fromHtml(msg.getMessage(), imageGetter, null);
                         final int msgType = msg.getMessageType();
-                        if ((msgType == ChatMessage.MESSAGE_OUT)
-                                || (msgType == ChatMessage.MESSAGE_IN)) {
+                        if ((msgType == ChatMessage.MESSAGE_OUT) || (msgType == ChatMessage.MESSAGE_IN)) {
                             Linkify.addLinks((Spannable) body, Linkify.ALL);
                         }
                     } catch (Exception ex) {
@@ -1633,9 +1625,6 @@ public class ChatFragment extends OSGiFragment
         int viewType;
         View outgoingMessageHolder;
 
-        TextView errorView;
-        TextView msgTitleView;
-
         public ImageView arrowDir = null;
         public ImageButton imageLabel = null;
         public ProgressBar mProgressBar = null;
@@ -1650,7 +1639,6 @@ public class ChatFragment extends OSGiFragment
 
         public TextView titleLabel = null;
         public TextView fileLabel = null;
-        public TextView viewFileXferMessage = null;
         public TextView viewFileXferError = null;
         public TextView progressSpeedLabel = null;
         public TextView estimatedTimeLabel = null;
@@ -1874,19 +1862,7 @@ public class ChatFragment extends OSGiFragment
     }
 
     // ********************************************************************************************//
-    /** Routines supporting File Transfer **/
-
-    /**
-     * Returns <code>true</code> if there are active file transfers, otherwise returns
-     * <code>false</code>.
-     *
-     * @return <code>true</code> if there are active file transfers, otherwise returns
-     * <code>false</code>
-     */
-    public boolean containsActiveFileTransfers()
-    {
-        return !activeFileTransfers.isEmpty();
-    }
+    // Routines supporting File Transfer
 
     /**
      * Cancels all active file transfers.
@@ -1906,7 +1882,6 @@ public class ChatFragment extends OSGiFragment
                 }
                 else if (descriptor instanceof FileTransfer) {
                     ((FileTransfer) descriptor).cancel();
-                    descriptor = null;
                 }
             } catch (Throwable t) {
                 logger.error("Cannot initActive file transfer.", t);
@@ -1952,7 +1927,6 @@ public class ChatFragment extends OSGiFragment
 
             // if (activeFileTransfers.size() == 0) ?? is one per file transfer, so must remove
             fileTransfer.removeStatusListener(currentChatFragment);
-            fileTransfer = null;
         }
 
         synchronized (activeMsgTransfers) {
