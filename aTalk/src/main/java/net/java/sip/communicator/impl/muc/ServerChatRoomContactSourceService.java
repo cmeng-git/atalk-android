@@ -18,79 +18,76 @@ import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 
 /**
  * Contact source service for the existing chat rooms on the server.
- * 
+ *
  * @author Hristo Terezov
  */
 public class ServerChatRoomContactSourceService implements ContactSourceService
 {
-	private ChatRoomProviderWrapper provider = null;
+    private ChatRoomProviderWrapper provider;
 
-	public ServerChatRoomContactSourceService(ChatRoomProviderWrapper pps)
-	{
-		provider = pps;
-	}
+    public ServerChatRoomContactSourceService(ChatRoomProviderWrapper pps)
+    {
+        provider = pps;
+    }
 
-	/**
-	 * Returns the type of this contact source.
-	 *
-	 * @return the type of this contact source
-	 */
-	public int getType()
-	{
-		return DEFAULT_TYPE;
-	}
+    /**
+     * Returns the type of this contact source.
+     *
+     * @return the type of this contact source
+     */
+    public int getType()
+    {
+        return DEFAULT_TYPE;
+    }
 
-	/**
-	 * Returns a user-friendly string that identifies this contact source.
-	 *
-	 * @return the display name of this contact source
-	 */
-	public String getDisplayName()
-	{
-		return MUCActivator.getResources().getI18NString("service.gui.SERVER_CHAT_ROOMS");
-	}
+    /**
+     * Returns a user-friendly string that identifies this contact source.
+     *
+     * @return the display name of this contact source
+     */
+    public String getDisplayName()
+    {
+        return MUCActivator.getResources().getI18NString("service.gui.SERVER_CHAT_ROOMS");
+    }
 
-	/**
-	 * Creates query for the given <tt>queryString</tt>.
-	 *
-	 * @param queryString
-	 *        the string to search for
-	 * @return the created query
-	 */
-	@Override
-	public ContactQuery createContactQuery(String queryString)
-	{
-		return createContactQuery(queryString, -1);
-	}
+    /**
+     * Creates query for the given <tt>queryString</tt>.
+     *
+     * @param queryString the string to search for
+     * @return the created query
+     */
+    @Override
+    public ContactQuery createContactQuery(String queryString)
+    {
+        return createContactQuery(queryString, -1);
+    }
 
-	/**
-	 * Creates query for the given <tt>queryString</tt>.
-	 *
-	 * @param queryString
-	 *        the string to search for
-	 * @param contactCount
-	 *        the maximum count of result contacts
-	 * @return the created query
-	 */
-	@Override
-	public ContactQuery createContactQuery(String queryString, int contactCount)
-	{
-		if (queryString == null)
-			queryString = "";
+    /**
+     * Creates query for the given <tt>queryString</tt>.
+     *
+     * @param queryString the string to search for
+     * @param contactCount the maximum count of result contacts
+     * @return the created query
+     */
+    @Override
+    public ContactQuery createContactQuery(String queryString, int contactCount)
+    {
+        if (queryString == null)
+            queryString = "";
 
-		ServerChatRoomQuery contactQuery = new ServerChatRoomQuery(queryString, this, provider);
-		return contactQuery;
-	}
+        ServerChatRoomQuery contactQuery = new ServerChatRoomQuery(queryString, this, provider);
+        return contactQuery;
+    }
 
-	/**
-	 * Returns the index of the contact source in the result list.
-	 *
-	 * @return the index of the contact source in the result list
-	 */
-	@Override
-	public int getIndex()
-	{
-		return -1;
-	}
+    /**
+     * Returns the index of the contact source in the result list.
+     *
+     * @return the index of the contact source in the result list
+     */
+    @Override
+    public int getIndex()
+    {
+        return -1;
+    }
 
 }

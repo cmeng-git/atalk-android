@@ -1,8 +1,14 @@
 Project aTalk-Android Release Notes
 =========================================================================
-Version:		1.2.2a (1022)
+Version:		1.2.3a (1023)
 Author:         cmeng
-Upload Date:	04/18/2018
+Upload Date:	04/30/2018
+- Auto enable Omemo option on receive Omemo message and chat view is in focus
+
+=========================================================================
+Version:		1.2.2 (1022)
+Author:         cmeng
+Upload Date:	04/22/2018
 - AudiobBgService can only check for permissions, and not request permissions (removed)
 - Hide audio sending option if permission.RECORD_AUDIO is not granted
 - Change local message creation to include both encryption and mime types information
