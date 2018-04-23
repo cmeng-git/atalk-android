@@ -6,6 +6,13 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.2.3 (04/23/2018)" versioncode="1023">
+        <change>Auto enable Omemo option on receive Omemo message while chat view is in focus</change>
+        <change>Add StreetViews and Map option on main menu (see online help for more info)</change>
+        <change>Improve GPS Location UI and options handling</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.2.2 (04/22/2018)" versioncode="1022">
         <change>Hide audio sending option if permission.RECORD_AUDIO is not granted</change>
         <change>Add encryption indication for incoming and outgoing messages</change>

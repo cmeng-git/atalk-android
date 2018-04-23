@@ -85,16 +85,6 @@ public class GeoLocation extends EasyLocationActivity
         mSendCont = findViewById(R.id.requestLocationUpdatesButton);
         mSendCont.setText(String.format(getString(R.string.send_cont_location_updates), gpsMinDistance, sendTimeInterval));
         mSendCont.setOnClickListener(this);
-        mSendCont.setOnLongClickListener(new View.OnLongClickListener()
-        {
-            @Override
-            public boolean onLongClick(View v)
-            {
-                demo = true;
-                mSendCont.performClick();
-                return true;
-            }
-        });
 
         mSeekDistanceInterval = findViewById(R.id.seekDistanceInterval);
         mSeekDistanceInterval.setMax(100);
@@ -108,6 +98,21 @@ public class GeoLocation extends EasyLocationActivity
             progress = 0;
         mSeekTimeInterval.setProgress(progress);
         mSeekTimeInterval.setOnSeekBarChangeListener(this);
+
+        // Long press for demo at 0m and 2S interval
+        mSendCont.setOnLongClickListener(new View.OnLongClickListener()
+        {
+            @Override
+            public boolean onLongClick(View v)
+            {
+                demo = true;
+                mGpsTrack.setChecked(true);
+                mSeekDistanceInterval.setProgress(0);
+                sendTimeInterval = 2;
+                mSendCont.performClick();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -195,6 +200,9 @@ public class GeoLocation extends EasyLocationActivity
                 break;
 
             case R.id.requestLocationUpdatesButton:
+                if (!sendLocation)
+                    mGpsTrack.setChecked(true);
+
                 if (!sendContinuous) {
                     toggleSendButton(sendContinuous);
                     locationRequest = new LocationRequest()

@@ -159,10 +159,6 @@
             android:label="@string/app_name">
         </activity>
         <activity
-            android:name="org.atalk.android.plugin.geolocation.GPSTrackingActivity"
-            android:label="@string/app_name">
-        </activity>
-        <activity
             android:name="org.atalk.android.gui.contactlist.AddContactActivity"
             android:label="@string/app_name"/>
         <activity

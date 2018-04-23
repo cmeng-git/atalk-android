@@ -14,21 +14,16 @@
         android:title="@string/service_gui_FILE_SEND_TO">
     </item>
     <item
-        android:id="@+id/call_contact"
-        android:icon="@drawable/chatcall_dark"
-        android:showAsAction="ifRoom"
-        android:title="@string/service_gui_CALL">
-    </item>
-    <item
         android:id="@+id/send_location"
         android:icon="@drawable/ic_location_dark"
         android:showAsAction="ifRoom"
         android:title="@string/service_gui_GEO_SEND">
     </item>
     <item
-        android:id="@+id/gps_tracker"
-        android:title="@string/service_gui_GPS_TRACKER"
-        android:visible="false">
+        android:id="@+id/call_contact"
+        android:icon="@drawable/chatcall_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_CALL">
     </item>
     <item
         android:id="@+id/erase_chat_history"
