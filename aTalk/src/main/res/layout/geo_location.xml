@@ -72,29 +72,13 @@
             android:padding="8dp" />
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <Button
+        android:id="@+id/requestSingleLocationButton"
+        style="@style/ButtonTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <CheckBox
-            android:id="@+id/gps_track"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="@string/service_gui_GPS_TRACK"
-            android:layout_marginEnd="10dp" />
-
-        <Button
-            android:id="@+id/requestSingleLocationButton"
-            style="@style/ButtonTop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/send_single_location_fix"
-            android:textAllCaps="false" />
-    </LinearLayout>
+        android:text="@string/send_single_location_fix"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/requestLocationUpdatesButton"
@@ -103,6 +87,14 @@
         android:layout_height="wrap_content"
         android:text="@string/send_cont_location_updates"
         android:textAllCaps="false" />
+
+    <CheckBox
+        android:id="@+id/gps_track"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:text="@string/service_gui_GPS_TRACK" />
 
     <SeekBar
         android:id="@+id/seekDistanceInterval"

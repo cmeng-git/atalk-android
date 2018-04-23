@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.chat;
@@ -45,7 +45,6 @@ import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
-import org.atalk.android.plugin.geolocation.GPSTracker;
 import org.atalk.android.plugin.geolocation.GeoLocation;
 import org.atalk.android.util.CameraAccess;
 import org.atalk.android.util.FileAccess;
@@ -141,10 +140,9 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
      *
-     * @param savedInstanceState
-     *         If the activity is being re-initialized after previously being shut down then this
-     *         Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
-     *         Note: Otherwise it is null.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
+     * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     * Note: Otherwise it is null.
      */
 
     @Override
@@ -295,8 +293,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     /**
      * Set current chat id handled for this instance.
      *
-     * @param chatId
-     *         the id of the chat to set.
+     * @param chatId the id of the chat to set.
      */
     private void setCurrentChatId(String chatId)
     {
@@ -331,8 +328,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
      * Invoked when the options menu is created. Creates our own options menu from the
      * corresponding xml.
      *
-     * @param menu
-     *         the options menu
+     * @param menu the options menu
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -394,8 +390,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     /**
      * Invoked when an options item has been selected.
      *
-     * @param item
-     *         the item that has been selected
+     * @param item the item that has been selected
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -419,11 +414,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             case R.id.send_location:
                 intent = new Intent(this, GeoLocation.class);
                 intent.putExtra(GeoLocation.SEND_LOCATION, true);
-                startActivity(intent);
-                return true;
-
-            case R.id.gps_tracker:
-                intent = new Intent(this, GPSTracker.class);
                 startActivity(intent);
                 return true;
 
@@ -498,12 +488,9 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     /**
      * Indicates a page has been scrolled. Sets the current chat.
      *
-     * @param pos
-     *         the new selected position
-     * @param posOffset
-     *         the offset of the newly selected position
-     * @param posOffsetPixels
-     *         the offset of the newly selected position in pixels
+     * @param pos the new selected position
+     * @param posOffset the offset of the newly selected position
+     * @param posOffsetPixels the offset of the newly selected position in pixels
      */
     @Override
     public void onPageScrolled(int pos, float posOffset, int posOffsetPixels)
@@ -774,8 +761,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     /**
      * Opens the given file through the <tt>DesktopService</tt>.
      *
-     * @param file
-     *         the file to open
+     * @param file the file to open
      */
     public void openFile(File file)
     {
@@ -831,8 +817,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     /**
      * Shows the given error message in the error area of this component.
      *
-     * @param resId
-     *         the Id of the message to show
+     * @param resId the Id of the message to show
      */
     private void showToastMessage(int resId)
     {

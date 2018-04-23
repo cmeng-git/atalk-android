@@ -238,11 +238,10 @@
     <string name="service_gui_GEO_LATITUDE">Latitude:</string>
     <string name="service_gui_GEO_LONGITUDE">Longitude</string>
     <string name="service_gui_GEO_LOCATION">Location:</string>
-    <string name="service_gui_GEO_SEND">Send my GPS-Location</string>
-    <string name="service_gui_GEO_SHOW">Map &amp; Street Views</string>
-    <string name="service_gui_GPS_TRACK">GPS-SteetViews</string>
-    <string name="service_gui_GPS_TRACKER">Start GPS Tracker</string>
-    <string name="send_single_location_fix">Single Location fix</string>
+    <string name="service_gui_GEO_SEND">Send GPS-Location</string>
+    <string name="service_gui_GEO_SHOW">StreetViews &amp; Map</string>
+    <string name="service_gui_GPS_TRACK">Continuous StreetViews &amp; Map update</string>
+    <string name="send_single_location_fix">Single Location fix update</string>
     <string name="send_cont_location_updates">Cont. Location updates (%1$dm) @%2$dsec</string>
     <string name="stop_location_updates">Stop sending Location updates</string>
     <string name="apply_new_interval_setting">Click \"Send Cont. Location updates\" Button to apply the new interval setting</string>

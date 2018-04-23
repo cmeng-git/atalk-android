@@ -277,7 +277,7 @@ public class SplitStreetViewPanoramaAndMapActivity extends FragmentActivity
     }
 
     /**
-     * Animate the location path given in an array in 3 second interval
+     * Animate the location path given in an array in 2 second interval
      *
      * @param mList the ArrayList<LatLng>
      */
@@ -290,7 +290,7 @@ public class SplitStreetViewPanoramaAndMapActivity extends FragmentActivity
             {
                 for (final LatLng mLatLng : mList) {
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(2000);
                         runOnUiThread(new Runnable()
                         {
                             @Override
