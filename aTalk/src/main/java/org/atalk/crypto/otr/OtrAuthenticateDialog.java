@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.crypto.otr;
@@ -9,11 +9,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import net.java.sip.communicator.plugin.otr.OtrActivator;
+import net.java.sip.communicator.plugin.otr.*;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
-import net.java.sip.communicator.plugin.otr.ScOtrEngineImpl;
-import net.java.sip.communicator.plugin.otr.ScOtrKeyManager;
-import net.java.sip.communicator.plugin.otr.ScSessionID;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.protocol.Contact;
 
@@ -32,6 +29,7 @@ import java.util.UUID;
  * OTR buddy authenticate dialog. Takes OTR session's UUID as an extra.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class OtrAuthenticateDialog extends OSGiActivity
 {
@@ -45,7 +43,6 @@ public class OtrAuthenticateDialog extends OSGiActivity
      */
     private OtrContact otrContact;
     private String remoteFingerprint;
-
     private ScOtrKeyManager keyManager = OtrActivator.scOtrKeyManager;
 
     /**
@@ -65,8 +62,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
 
         // Local fingerprint.
         String account = contact.getProtocolProvider().getAccountID().getDisplayName();
-        String localFingerprint
-                = keyManager.getLocalFingerprint(contact.getProtocolProvider().getAccountID());
+        String localFingerprint  = keyManager.getLocalFingerprint(contact.getProtocolProvider().getAccountID());
 
         View content = findViewById(android.R.id.content);
         ViewUtil.setTextViewValue(content, R.id.localFingerprintLbl,
@@ -93,8 +89,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
     /**
      * Method fired when the ok button is clicked.
      *
-     * @param v
-     *         ok button's <tt>View</tt>.
+     * @param v ok button's <tt>View</tt>.
      */
     public void onOkClicked(View v)
     {
@@ -104,8 +99,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
             Contact contact = otrContact.contact;
             String resourceName = (otrContact.resource != null) ? "/" + otrContact.resource.getResourceName() : "";
             String sender = contact.getDisplayName();
-            String message = OtrActivator.resourceService.getI18NString("plugin.otr.activator.sessionstared",
-                    new String[]{sender + resourceName});
+            String message = getString(R.string.plugin_otr_activator_sessionstared, sender + resourceName);
             OtrActivator.uiService.getChat(contact).addMessage(sender, new Date(), Chat.SYSTEM_MESSAGE,
                     ChatMessage.ENCODE_HTML, message);
         }
@@ -118,8 +112,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
     /**
      * Method fired when the cancel button is clicked.
      *
-     * @param v
-     *         the cancel button's <tt>View</tt>
+     * @param v the cancel button's <tt>View</tt>
      */
     public void onCancelClicked(View v)
     {
@@ -129,14 +122,12 @@ public class OtrAuthenticateDialog extends OSGiActivity
     /**
      * Creates parametrized <tt>Intent</tt> of buddy authenticate dialog.
      *
-     * @param uuid
-     *         the UUID of OTR session.
+     * @param uuid the UUID of OTR session.
      * @return buddy authenticate dialog parametrized with given OTR session's UUID.
      */
     public static Intent createIntent(UUID uuid)
     {
-        Intent intent = new Intent(aTalkApp.getGlobalContext(),
-                OtrAuthenticateDialog.class);
+        Intent intent = new Intent(aTalkApp.getGlobalContext(), OtrAuthenticateDialog.class);
         intent.putExtra(EXTRA_SESSION_UUID, uuid);
 
         // Started not from Activity

@@ -1,12 +1,12 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may
  * obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the
  * License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for
@@ -15,73 +15,36 @@
  */
 package net.java.sip.communicator.impl.certificate;
 
-import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
-import net.java.sip.communicator.service.certificate.CertificateMatcher;
-import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.certificate.KeyStoreType;
-import net.java.sip.communicator.service.certificate.VerifyCertificateDialogService;
+import net.java.sip.communicator.service.certificate.*;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
 import net.java.sip.communicator.service.httputil.HttpUtils;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.OSUtils;
 import org.bouncycastle.asn1.DERIA5String;
-import org.bouncycastle.asn1.x509.AccessDescription;
-import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
+import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.x509.extension.X509ExtensionUtil;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
+import java.security.*;
 import java.security.KeyStore.Builder;
-import java.security.KeyStoreException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.Security;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.CertificateParsingException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Formatter;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.security.cert.*;
+import java.util.*;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.KeyStoreBuilderParameters;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.net.ssl.*;
+import javax.security.auth.callback.*;
 
 /**
  * Implementation of the CertificateService. It asks the user to trust a certificate when
@@ -116,8 +79,6 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     // services
     // ------------------------------------------------------------------------
     private static final Logger logger = Logger.getLogger(CertificateServiceImpl.class);
-
-    private final ResourceManagementService R = CertificateVerificationActivator.getResources();
 
     private final ConfigurationService config = CertificateVerificationActivator.getConfigurationService();
 
@@ -215,8 +176,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         String tsPassword = credService.loadPassword(PNAME_TRUSTSTORE_PASSWORD);
 
         // use the OS store as default store on Windows
-        if ((!"meta:default".equals(tsType) || (tsType == null))
-                && OSUtils.IS_WINDOWS) {
+        if ((!"meta:default".equals(tsType) || (tsType == null)) && OSUtils.IS_WINDOWS) {
             tsType = "Windows-ROOT";
             config.setProperty(PNAME_TRUSTSTORE_TYPE, tsType);
         }
@@ -338,8 +298,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         String thumbprint = getThumbprint(cert, THUMBPRINT_HASH_ALGORITHM);
         switch (trustMode) {
             case DO_NOT_TRUST:
-                throw new IllegalArgumentException(
-                        "Cannot add a certificate to trust when no trust is requested.");
+                throw new IllegalArgumentException("Cannot add a certificate to trust when no trust is requested.");
             case TRUST_ALWAYS:
                 String current = config.getString(propName);
                 String newValue = thumbprint;
@@ -426,8 +385,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                             }
                             else {
                                 AuthenticationWindowService authenticationWindowService
-                                        = CertificateVerificationActivator
-                                        .getAuthenticationWindowService();
+                                        = CertificateVerificationActivator.getAuthenticationWindowService();
 
                                 if (authenticationWindowService == null) {
                                     logger.error("No AuthenticationWindowService implementation");
@@ -520,7 +478,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     public X509TrustManager getTrustManager(String identityToTest)
             throws GeneralSecurityException
     {
-        return getTrustManager(Arrays.asList(new String[]{identityToTest}),
+        return getTrustManager(Collections.singletonList(identityToTest),
                 new EMailAddressMatcher(), new BrowserLikeHostnameMatcher());
     }
 
@@ -533,7 +491,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
             CertificateMatcher clientVerifier, CertificateMatcher serverVerifier)
             throws GeneralSecurityException
     {
-        return getTrustManager(Arrays.asList(new String[]{identityToTest}), clientVerifier, serverVerifier);
+        return getTrustManager(Collections.singletonList(identityToTest), clientVerifier, serverVerifier);
     }
 
     /**
@@ -630,14 +588,12 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                     String message;
                     List<String> propNames = new LinkedList<>();
                     List<String> storedCerts = new LinkedList<>();
-                    String appName = R.getSettingsString("service.gui.APPLICATION_NAME");
+                    String appName = aTalkApp.getResString(R.string.service_gui_APPLICATION_NAME);
 
                     if ((identitiesToTest == null) || !identitiesToTest.iterator().hasNext()) {
                         String propName = PNAME_CERT_TRUST_PREFIX + ".server." + thumbprint;
                         propNames.add(propName);
-
-                        message = R.getI18NString("service.gui.CERT_DIALOG_DESCRIPTION_TXT_NOHOST",
-                                new String[]{appName});
+                        message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST, appName);
 
                         // get the thumbprints from the permanent allowances
                         String hashes = config.getString(propName);
@@ -651,13 +607,12 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                     }
                     else {
                         if (serverCheck) {
-                            message = R.getI18NString("service.gui.CERT_DIALOG_DESCRIPTION_TXT",
-                                    new String[]{appName, identitiesToTest.toString()});
+                            message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_DESCRIPTION_TXT,
+                                    appName, identitiesToTest.toString());
                         }
                         else {
-                            message = R.getI18NString(
-                                    "service.gui.CERT_DIALOG_PEER_DESCRIPTION_TXT",
-                                    new String[]{appName, identitiesToTest.toString()});
+                            message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT,
+                                    appName, identitiesToTest.toString());
                         }
                         for (String identity : identitiesToTest) {
                             String propName = PNAME_CERT_TRUST_PREFIX + ".param." + identity;

@@ -17,18 +17,14 @@ package net.java.sip.communicator.impl.resources;
 
 import net.java.sip.communicator.impl.resources.util.SkinJarBuilder;
 import net.java.sip.communicator.service.gui.UIService;
-import net.java.sip.communicator.service.resources.AbstractResourcesService;
-import net.java.sip.communicator.service.resources.ImagePack;
-import net.java.sip.communicator.service.resources.SkinPack;
+import net.java.sip.communicator.service.resources.*;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.util.javax.swing.ImageIcon;
 import org.osgi.framework.ServiceEvent;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 
 /**
@@ -39,15 +35,13 @@ import java.net.URL;
  * @author Lubomir Marinov
  * @author Adam Netocny
  */
-public class ResourceManagementServiceImpl
-    extends AbstractResourcesService
+public class ResourceManagementServiceImpl extends AbstractResourcesService
 {
     /**
      * The <tt>Logger</tt> used by the <tt>ResourceManagementServiceImpl</tt>
      * class and its instances for logging output.
      */
-    private static final Logger logger
-        = Logger.getLogger(ResourceManagementServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(ResourceManagementServiceImpl.class);
 
     /**
      * UI Service reference.
@@ -60,10 +54,8 @@ public class ResourceManagementServiceImpl
     ResourceManagementServiceImpl()
     {
         super(ResourceManagementActivator.bundleContext);
-
         UIService serv = getUIService();
-        if (serv != null)
-        {
+        if (serv != null) {
             serv.repaintUI();
         }
     }
@@ -75,12 +67,8 @@ public class ResourceManagementServiceImpl
      */
     private UIService getUIService()
     {
-        if (uiService == null)
-        {
-            uiService
-                = ServiceUtils.getService(
-                        ResourceManagementActivator.bundleContext,
-                        UIService.class);
+        if (uiService == null) {
+            uiService = ServiceUtils.getService(ResourceManagementActivator.bundleContext, UIService.class);
         }
         return uiService;
     }
@@ -95,20 +83,16 @@ public class ResourceManagementServiceImpl
     {
         super.serviceChanged(event);
 
-        Object sService = ResourceManagementActivator.bundleContext
-                .getService(event.getServiceReference());
+        Object sService = ResourceManagementActivator.bundleContext.getService(event.getServiceReference());
 
         if (sService instanceof UIService && uiService == null
-                && event.getType() == ServiceEvent.REGISTERED)
-        {
+                && event.getType() == ServiceEvent.REGISTERED) {
             uiService = (UIService) sService;
             uiService.repaintUI();
         }
         else if (sService instanceof UIService
-                && event.getType() == ServiceEvent.UNREGISTERING)
-        {
-            if (uiService != null && uiService.equals(sService))
-            {
+                && event.getType() == ServiceEvent.UNREGISTERING) {
+            if (uiService != null && uiService.equals(sService)) {
                 uiService = null;
             }
         }
@@ -121,8 +105,7 @@ public class ResourceManagementServiceImpl
     protected void onSkinPackChanged()
     {
         UIService serv = getUIService();
-        if (serv != null)
-        {
+        if (serv != null) {
             serv.repaintUI();
         }
     }
@@ -138,11 +121,8 @@ public class ResourceManagementServiceImpl
     public int getColor(String key)
     {
         String res = getColorResources().get(key);
-
-        if(res == null)
-        {
+        if (res == null) {
             logger.error("Missing color resource for key: " + key);
-
             return 0xFFFFFF;
         }
         else
@@ -160,11 +140,8 @@ public class ResourceManagementServiceImpl
     public String getColorString(String key)
     {
         String res = getColorResources().get(key);
-
-        if(res == null)
-        {
+        if (res == null) {
             logger.error("Missing color resource for key: " + key);
-
             return "0xFFFFFF";
         }
         else
@@ -182,21 +159,15 @@ public class ResourceManagementServiceImpl
     public InputStream getImageInputStreamForPath(String path)
     {
         SkinPack skinPack = getSkinPack();
-        if(skinPack!=null)
-        {
-            if(skinPack.getClass().getClassLoader()
-                .getResourceAsStream(path)!=null)
-            {
-                return skinPack.getClass().getClassLoader()
-                        .getResourceAsStream(path);
+        if (skinPack != null) {
+            if (skinPack.getClass().getClassLoader().getResourceAsStream(path) != null) {
+                return skinPack.getClass().getClassLoader().getResourceAsStream(path);
             }
         }
 
         ImagePack imagePack = getImagePack();
         if (path != null && imagePack != null)
-            return imagePack.getClass().getClassLoader()
-                    .getResourceAsStream(path);
-
+            return imagePack.getClass().getClassLoader().getResourceAsStream(path);
         return null;
     }
 
@@ -213,12 +184,10 @@ public class ResourceManagementServiceImpl
     {
         String path = getImagePath(streamKey);
 
-        if (path == null || path.length() == 0)
-        {
+        if (path == null || path.length() == 0) {
             logger.warn("Missing resource for key: " + streamKey);
             return null;
         }
-
         return getImageInputStreamForPath(path);
     }
 
@@ -231,9 +200,7 @@ public class ResourceManagementServiceImpl
     public URL getImageURL(String urlKey)
     {
         String path = getImagePath(urlKey);
-
-        if (path == null || path.length() == 0)
-        {
+        if (path == null || path.length() == 0) {
             if (logger.isInfoEnabled())
                 logger.info("Missing resource for key: " + urlKey);
             return null;
@@ -250,14 +217,11 @@ public class ResourceManagementServiceImpl
     public URL getImageURLForPath(String path)
     {
         SkinPack skinPack = getSkinPack();
-        if(skinPack!=null)
-        {
-            if(skinPack.getClass().getClassLoader().getResource(path)!=null)
-            {
+        if (skinPack != null) {
+            if (skinPack.getClass().getClassLoader().getResource(path) != null) {
                 return skinPack.getClass().getClassLoader().getResource(path);
             }
         }
-
         ImagePack imagePack = getImagePack();
         return imagePack.getClass().getClassLoader().getResource(path);
     }
@@ -273,8 +237,7 @@ public class ResourceManagementServiceImpl
     {
         String path = getSoundPath(urlKey);
 
-        if (path == null || path.length() == 0)
-        {
+        if (path == null || path.length() == 0) {
             logger.warn("Missing resource for key: " + urlKey);
             return null;
         }
@@ -303,21 +266,17 @@ public class ResourceManagementServiceImpl
     {
         InputStream in = getImageInputStream(imageID);
 
-        if(in == null)
+        if (in == null)
             return null;
 
         byte[] image = null;
 
-        try
-        {
+        try {
             image = new byte[in.available()];
             in.read(image);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             logger.error("Failed to load image:" + imageID, e);
         }
-
         return image;
     }
 
@@ -331,7 +290,6 @@ public class ResourceManagementServiceImpl
     public ImageIcon getImage(String imageID)
     {
         URL imageURL = getImageURL(imageID);
-
         return (imageURL == null) ? null : new ImageIcon(imageURL);
     }
 
@@ -343,7 +301,7 @@ public class ResourceManagementServiceImpl
      * @throws Exception When something goes wrong.
      */
     public File prepareSkinBundleFromZip(File zipFile)
-        throws Exception
+            throws Exception
     {
         return SkinJarBuilder.createBundleFromZip(zipFile, getImagePack());
     }

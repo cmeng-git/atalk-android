@@ -15,11 +15,16 @@
  */
 package net.java.sip.communicator.impl.callhistory;
 
-import net.java.sip.communicator.service.callhistory.*;
+import net.java.sip.communicator.service.callhistory.CallPeerRecord;
+import net.java.sip.communicator.service.callhistory.CallRecord;
 import net.java.sip.communicator.service.contactsource.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.DataObject;
+import net.java.sip.communicator.util.GuiUtils;
+
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 
 import java.util.*;
 
@@ -28,21 +33,18 @@ import java.util.*;
  * <tt>SourceContact</tt> interface based on a <tt>CallRecord</tt>.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
-public class CallHistorySourceContact
-    extends DataObject
-    implements SourceContact
+public class CallHistorySourceContact extends DataObject implements SourceContact
 {
     /**
      * Whether we need to strip saved addresses to numbers. We strip everything
      * before '@', if it is absent nothing is changed from the saved address.
      */
-    private static final String STRIP_ADDRESSES_TO_NUMBERS
-            = "callhistory.STRIP_ADDRESSES_TO_NUMBERS";
+    private static final String STRIP_ADDRESSES_TO_NUMBERS = "callhistory.STRIP_ADDRESSES_TO_NUMBERS";
 
     /**
-     * The parent <tt>CallHistoryContactSource</tt>, where this contact is
-     * contained.
+     * The parent <tt>CallHistoryContactSource</tt>, where this contact is contained.
      */
     private final CallHistoryContactSource contactSource;
 
@@ -55,28 +57,24 @@ public class CallHistorySourceContact
      * The incoming call icon.
      */
     private static final byte[] incomingIcon
-        = CallHistoryActivator.getResources()
-            .getImageInBytes("gui.icons.INCOMING_CALL");
+            = CallHistoryActivator.getResources().getImageInBytes("gui.icons.INCOMING_CALL");
 
     /**
      * The outgoing call icon.
      */
     private static byte[] outgoingIcon
-        = CallHistoryActivator.getResources()
-            .getImageInBytes("gui.icons.OUTGOING_CALL");
+            = CallHistoryActivator.getResources().getImageInBytes("gui.icons.OUTGOING_CALL");
 
     /**
      * The missed call icon.
      */
     private static byte[] missedCallIcon
-        = CallHistoryActivator.getResources()
-            .getImageInBytes("gui.icons.MISSED_CALL");
+            = CallHistoryActivator.getResources().getImageInBytes("gui.icons.MISSED_CALL");
 
     /**
      * A list of all contact details.
      */
-    private final List<ContactDetail> contactDetails
-        = new LinkedList<ContactDetail>();
+    private final List<ContactDetail> contactDetails = new LinkedList<>();
 
     /**
      * The display name of this contact.
@@ -90,11 +88,11 @@ public class CallHistorySourceContact
 
     /**
      * Creates an instance of <tt>CallHistorySourceContact</tt>
+     *
      * @param contactSource the contact source
      * @param callRecord the call record
      */
-    public CallHistorySourceContact(CallHistoryContactSource contactSource,
-                                    CallRecord callRecord)
+    public CallHistorySourceContact(CallHistoryContactSource contactSource, CallRecord callRecord)
     {
         this.contactSource = contactSource;
         this.callRecord = callRecord;
@@ -102,13 +100,10 @@ public class CallHistorySourceContact
         this.initPeerDetails();
 
         this.displayDetails
-            = CallHistoryActivator.getResources()
-                .getI18NString("gui.AT") + ": "
-            + getDateString(callRecord.getStartTime().getTime())
-            + " " + CallHistoryActivator.getResources()
-                .getI18NString("gui.DURATION") + ": "
-            + GuiUtils.formatTime(
-                    callRecord.getStartTime(), callRecord.getEndTime());
+                = aTalkApp.getResString(R.string.service_gui_AT) + ": "
+                + getDateString(callRecord.getStartTime().getTime())
+                + " " + aTalkApp.getResString(R.string.service_gui_DURATION) + ": "
+                + GuiUtils.formatTime(callRecord.getStartTime(), callRecord.getEndTime());
     }
 
     /**
@@ -117,128 +112,83 @@ public class CallHistorySourceContact
     private void initPeerDetails()
     {
         boolean stripAddress = false;
-        String stripAddressProp = CallHistoryActivator.getResources()
-            .getSettingsString(STRIP_ADDRESSES_TO_NUMBERS);
+        String stripAddressProp = CallHistoryActivator.getResources().getSettingsString(STRIP_ADDRESSES_TO_NUMBERS);
 
-        if(stripAddressProp != null
-            && Boolean.parseBoolean(stripAddressProp))
+        if (stripAddressProp != null && Boolean.parseBoolean(stripAddressProp))
             stripAddress = true;
 
-        Iterator<CallPeerRecord> recordsIter
-            = callRecord.getPeerRecords().iterator();
-
-        while (recordsIter.hasNext())
-        {
-            CallPeerRecord peerRecord = recordsIter.next();
-
+        for (CallPeerRecord peerRecord : callRecord.getPeerRecords()) {
             String peerAddress = peerRecord.getPeerAddress();
             String peerSecondaryAddress = peerRecord.getPeerSecondaryAddress();
 
-            if (peerAddress != null)
-            {
-                if(stripAddress && !peerAddress.startsWith("@"))
-                {
+            if (peerAddress != null) {
+                if (stripAddress && !peerAddress.startsWith("@")) {
                     peerAddress = peerAddress.split("@")[0];
                 }
 
                 String peerRecordDisplayName = peerRecord.getDisplayName();
-
-                if(peerRecordDisplayName == null
-                    || peerRecordDisplayName.length() == 0)
+                if (peerRecordDisplayName == null || peerRecordDisplayName.length() == 0)
                     peerRecordDisplayName = peerAddress;
 
-                ContactDetail contactDetail =
-                    new ContactDetail(peerAddress, peerRecordDisplayName);
+                ContactDetail contactDetail = new ContactDetail(peerAddress, peerRecordDisplayName);
 
-                Map<Class<? extends OperationSet>, ProtocolProviderService>
-                    preferredProviders = null;
-                Map<Class<? extends OperationSet>, String>
-                    preferredProtocols = null;
+                Map<Class<? extends OperationSet>, ProtocolProviderService> preferredProviders = null;
+                Map<Class<? extends OperationSet>, String> preferredProtocols = null;
 
-                ProtocolProviderService preferredProvider
-                    = callRecord.getProtocolProvider();
+                ProtocolProviderService preferredProvider = callRecord.getProtocolProvider();
 
-                if (preferredProvider != null)
-                {
-                    preferredProviders
-                        = new Hashtable<Class<? extends OperationSet>,
-                                        ProtocolProviderService>();
+                if (preferredProvider != null) {
+                    preferredProviders = new Hashtable<>();
 
-                    OperationSetPresence opSetPres =
-                        preferredProvider.getOperationSet(
-                                OperationSetPresence.class);
+                    OperationSetPresence opSetPres = preferredProvider.getOperationSet(OperationSetPresence.class);
 
                     Contact contact = null;
-                    if(opSetPres != null)
+                    if (opSetPres != null)
                         contact = opSetPres.findContactByID(peerAddress);
 
-                    OperationSetContactCapabilities opSetCaps =
-                        preferredProvider.getOperationSet(
-                                OperationSetContactCapabilities.class);
+                    OperationSetContactCapabilities opSetCaps
+                            = preferredProvider.getOperationSet(OperationSetContactCapabilities.class);
 
-                    if(opSetCaps != null && opSetPres != null)
-                    {
-                        if(contact != null && opSetCaps.getOperationSet(
-                                contact,
-                                OperationSetBasicTelephony.class) != null)
-                        {
-                            preferredProviders.put(
-                                    OperationSetBasicTelephony.class,
-                                    preferredProvider);
+                    if (opSetCaps != null && opSetPres != null) {
+                        if (contact != null
+                                && opSetCaps.getOperationSet(contact, OperationSetBasicTelephony.class) != null) {
+                            preferredProviders.put(OperationSetBasicTelephony.class, preferredProvider);
                         }
                     }
-                    else
-                    {
-                        preferredProviders.put(OperationSetBasicTelephony.class,
-                                            preferredProvider);
+                    else {
+                        preferredProviders.put(OperationSetBasicTelephony.class, preferredProvider);
                     }
-
                     contactDetail.setPreferredProviders(preferredProviders);
                 }
                 // If there's no preferred provider set we just specify that
                 // the SIP protocol should be used for the telephony operation
                 // set. This is needed for all history records stored before
                 // the protocol provider property had been introduced.
-                else
-                {
-                    preferredProtocols
-                        = new Hashtable<Class<? extends OperationSet>,
-                                        String>();
+                else {
+                    preferredProtocols = new Hashtable<>();
 
-                    preferredProtocols.put( OperationSetBasicTelephony.class,
-                                            ProtocolNames.SIP);
+                    preferredProtocols.put(OperationSetBasicTelephony.class, ProtocolNames.SIP);
 
                     contactDetail.setPreferredProtocols(preferredProtocols);
                 }
 
-                LinkedList<Class<? extends OperationSet>> supportedOpSets
-                    = new LinkedList<Class<? extends OperationSet>>();
+                LinkedList<Class<? extends OperationSet>> supportedOpSets = new LinkedList<>();
 
                 // if the contat supports call
-                if((preferredProviders != null &&
-                        preferredProviders.containsKey(
-                                OperationSetBasicTelephony.class)) ||
-                                (preferredProtocols != null))
-                {
+                if ((preferredProviders != null
+                        && preferredProviders.containsKey(OperationSetBasicTelephony.class))
+                        || (preferredProtocols != null)) {
                     supportedOpSets.add(OperationSetBasicTelephony.class);
                 }
 
                 // can be added as contacts
                 supportedOpSets.add(OperationSetPersistentPresence.class);
-
                 contactDetail.setSupportedOpSets(supportedOpSets);
-
                 contactDetails.add(contactDetail);
 
-                if(peerSecondaryAddress != null)
-                {
-                    ContactDetail secondaryContactDetail =
-                        new ContactDetail(peerSecondaryAddress);
-
-
-                    secondaryContactDetail.addSupportedOpSet(
-                        OperationSetPersistentPresence.class);
-
+                if (peerSecondaryAddress != null) {
+                    ContactDetail secondaryContactDetail = new ContactDetail(peerSecondaryAddress);
+                    secondaryContactDetail.addSupportedOpSet(OperationSetPersistentPresence.class);
                     contactDetails.add(secondaryContactDetail);
                 }
 
@@ -250,8 +200,7 @@ public class CallHistorySourceContact
 
                 if (displayName == null || displayName.length() <= 0)
                     if (callRecord.getPeerRecords().size() > 1)
-                        displayName
-                            = "Conference " + name;
+                        displayName = "Conference " + name;
                     else
                         displayName = name;
 
@@ -261,18 +210,18 @@ public class CallHistorySourceContact
 
     /**
      * Returns a list of available contact details.
+     *
      * @return a list of available contact details
      */
     public List<ContactDetail> getContactDetails()
     {
-        return new LinkedList<ContactDetail>(contactDetails);
+        return new LinkedList<>(contactDetails);
     }
 
     /**
-     * Returns the parent <tt>ContactSourceService</tt> from which this contact
-     * came from.
-     * @return the parent <tt>ContactSourceService</tt> from which this contact
-     * came from
+     * Returns the parent <tt>ContactSourceService</tt> from which this contact came from.
+     *
+     * @return the parent <tt>ContactSourceService</tt> from which this contact came from
      */
     public ContactSourceService getContactSource()
     {
@@ -309,14 +258,12 @@ public class CallHistorySourceContact
      */
     public byte[] getImage()
     {
-        if (callRecord.getDirection().equals(CallRecord.IN))
-        {
+        if (callRecord.getDirection().equals(CallRecord.IN)) {
             // if the call record has reason for normal call clearing
             // means it was answered somewhere else and we don't
             // mark it as missed
             if (callRecord.getStartTime().equals(callRecord.getEndTime())
-                && (callRecord.getEndReason()
-                        != CallPeerChangeEvent.NORMAL_CALL_CLEARING))
+                    && (callRecord.getEndReason() != CallPeerChangeEvent.NORMAL_CALL_CLEARING))
                 return missedCallIcon;
             else
                 return incomingIcon;
@@ -330,12 +277,12 @@ public class CallHistorySourceContact
     /**
      * Returns a list of all <tt>ContactDetail</tt>s supporting the given
      * <tt>OperationSet</tt> class.
+     *
      * @param operationSet the <tt>OperationSet</tt> class we're looking for
      * @return a list of all <tt>ContactDetail</tt>s supporting the given
      * <tt>OperationSet</tt> class
      */
-    public List<ContactDetail> getContactDetails(
-                                    Class<? extends OperationSet> operationSet)
+    public List<ContactDetail> getContactDetails(Class<? extends OperationSet> operationSet)
     {
         // We support only call details
         // or persistence presence so we can add contacts.
@@ -343,35 +290,32 @@ public class CallHistorySourceContact
                 || operationSet.equals(OperationSetPersistentPresence.class)))
             return null;
 
-        return new LinkedList<ContactDetail>(contactDetails);
+        return new LinkedList<>(contactDetails);
     }
 
     /**
-     * Returns a list of all <tt>ContactDetail</tt>s corresponding to the given
-     * category.
+     * Returns a list of all <tt>ContactDetail</tt>s corresponding to the given category.
+     *
      * @param category the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ContactDetail</tt>s corresponding to the given
-     * category
+     * @return a list of all <tt>ContactDetail</tt>s corresponding to the given category
      */
-    public List<ContactDetail> getContactDetails(
-        ContactDetail.Category category)
-        throws OperationNotSupportedException
+    public List<ContactDetail> getContactDetails(ContactDetail.Category category)
+            throws OperationNotSupportedException
     {
         // We don't support category for call history details, so we return null.
-        throw new OperationNotSupportedException(
-            "Categories are not supported for call history records.");
+        throw new OperationNotSupportedException("Categories are not supported for call history records.");
     }
 
     /**
      * Returns the preferred <tt>ContactDetail</tt> for a given
      * <tt>OperationSet</tt> class.
+     *
      * @param operationSet the <tt>OperationSet</tt> class, for which we would
      * like to obtain a <tt>ContactDetail</tt>
      * @return the preferred <tt>ContactDetail</tt> for a given
      * <tt>OperationSet</tt> class
      */
-    public ContactDetail getPreferredContactDetail(
-        Class<? extends OperationSet> operationSet)
+    public ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet)
     {
         // We support only call details
         // or persistence presence so we can add contacts.
@@ -394,8 +338,7 @@ public class CallHistorySourceContact
 
         // If the current date we don't go in there and we'll return just the
         // time.
-        if (GuiUtils.compareDatesOnly(date, System.currentTimeMillis()) < 0)
-        {
+        if (GuiUtils.compareDatesOnly(date, System.currentTimeMillis()) < 0) {
             StringBuffer dateStrBuf = new StringBuffer();
 
             GuiUtils.formatDate(date, dateStrBuf);
@@ -410,6 +353,7 @@ public class CallHistorySourceContact
     /**
      * Returns the status of the source contact. And null if such information
      * is not available.
+     *
      * @return the PresenceStatus representing the state of this source contact.
      */
     public PresenceStatus getPresenceStatus()
@@ -444,7 +388,9 @@ public class CallHistorySourceContact
      * Not implemented.
      */
     @Override
-    public void setContactAddress(String contactAddress) { }
+    public void setContactAddress(String contactAddress)
+    {
+    }
 
     /**
      * Whether the current image returned by @see #getImage() is the one

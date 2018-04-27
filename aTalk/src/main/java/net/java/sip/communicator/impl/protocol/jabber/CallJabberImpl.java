@@ -13,6 +13,8 @@ import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.media.MediaHandler;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.service.neomedia.*;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -840,8 +842,7 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
 				ProtocolProviderFactory.MODE_PARANOIA, false)
 				&& callPeer.getMediaHandler().getAdvertisedEncryptionMethods().length == 0) {
 			// send an error response;
-			String reasonText = JabberActivator.getResources().getI18NString(
-					"service.gui.security.encryption.required");
+			String reasonText = aTalkApp.getResString(R.string.service_gui_security_ENCRYPTION_REQUIRED);
 			JingleIQ errResp = JinglePacketFactory.createSessionTerminate(jingleIQ.getTo(),
 					jingleIQ.getFrom(), jingleIQ.getSID(), Reason.SECURITY_ERROR, reasonText);
 

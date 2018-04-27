@@ -14,97 +14,29 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt.InputE
 import net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt.InputEvtIQProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jibri.JibriIq;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jibri.JibriIqProvider;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.IceUdpTransportPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.JingleIQ;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.JingleIQProvider;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RawUdpTransportPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RtpDescriptionPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.TransferPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ZrtpHashPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingleinfo.JingleInfoQueryIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingleinfo.JingleInfoQueryIQProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.ThumbnailElement;
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.dns.DnssecException;
-import net.java.sip.communicator.service.protocol.AbstractProtocolProviderService;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationSetAdvancedTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetAvatar;
-import net.java.sip.communicator.service.protocol.OperationSetBasicAutoAnswer;
-import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
-import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetChangePassword;
-import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
-import net.java.sip.communicator.service.protocol.OperationSetConnectionInfo;
-import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
-import net.java.sip.communicator.service.protocol.OperationSetCusaxUtils;
-import net.java.sip.communicator.service.protocol.OperationSetDTMF;
-import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizations;
-import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
-import net.java.sip.communicator.service.protocol.OperationSetIncomingDTMF;
-import net.java.sip.communicator.service.protocol.OperationSetInstantMessageTransform;
-import net.java.sip.communicator.service.protocol.OperationSetInstantMessageTransformImpl;
-import net.java.sip.communicator.service.protocol.OperationSetJitsiMeetTools;
-import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresencePermissions;
-import net.java.sip.communicator.service.protocol.OperationSetPresence;
-import net.java.sip.communicator.service.protocol.OperationSetResourceAwareTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetSecureSDesTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetSecureZrtpTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetServerStoredAccountInfo;
-import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
-import net.java.sip.communicator.service.protocol.OperationSetTLS;
-import net.java.sip.communicator.service.protocol.OperationSetTelephonyConferencing;
-import net.java.sip.communicator.service.protocol.OperationSetThumbnailedFileFactory;
-import net.java.sip.communicator.service.protocol.OperationSetUserSearch;
-import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
-import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
-import net.java.sip.communicator.service.protocol.ProtocolIcon;
-import net.java.sip.communicator.service.protocol.ProtocolNames;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.SecurityAuthority;
-import net.java.sip.communicator.service.protocol.TransportProtocol;
-import net.java.sip.communicator.service.protocol.UserCredentials;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
-import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
-import net.java.sip.communicator.util.NetworkUtils;
-import net.java.sip.communicator.util.SRVRecord;
+import net.java.sip.communicator.util.*;
 
-import org.atalk.android.BuildConfig;
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
+import org.atalk.android.*;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
 import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.StringUtils;
-import org.jivesoftware.smack.AbstractXMPPConnection;
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.ReconnectionManager;
-import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
-import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException.*;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.StreamError;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -152,43 +84,29 @@ import org.jivesoftware.smackx.ping.PingManager;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
-import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.EntityFullJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.ServiceReference;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmpp.jnodes.smack.JingleChannelIQ;
-import org.xmpp.jnodes.smack.SmackServiceNode;
-import org.xmpp.jnodes.smack.TrackerEntry;
+import org.xmpp.jnodes.smack.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import javax.net.SocketFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 
 /**
  * An implementation of the protocol provider service over the Jabber protocol
@@ -1412,7 +1330,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         /**
          * Notification that the connection has been successfully connected to the remote endpoint (e.g. the XMPP server).
-         * <p>
+         *
          * Note that the connection is likely not yet authenticated and therefore only limited operations like registering
          * an account may be possible.
          * </p>
@@ -1671,7 +1589,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Registers the ServiceDiscoveryManager wrapper
-     * <p>
+     *
      * we setup all supported features before packets are actually being sent during feature
      * registration. So we'd better do it here so that our first presence update would
      * contain a caps with the right features.
@@ -1755,7 +1673,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Defined all the entity capabilities for the EntityCapsManager to advertise in
      * disco#info query from other entities. Some features support are user selectable
-     * <p>
+     *
      * Note: Do not need to mention if there are already included in Smack Library and have been
      * activated.
      */
@@ -2241,10 +2159,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         result.clear();
         try {
             contactId = contactId.trim();
+            // no suggestion for an empty id
             if (contactId.length() == 0) {
-                result.add(JabberActivator.getResources().getI18NString(
-                        "impl.protocol.jabber.INVALID_ADDRESS", new String[]{contactId}));
-                // no suggestion for an empty id
+                result.add(aTalkApp.getResString(R.string.service_gui_INVALID_ADDRESS, contactId));
                 return false;
             }
 
@@ -2275,16 +2192,14 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 }
             }
             if (!valid) {
-                result.add(JabberActivator.getResources().getI18NString(
-                        "impl.protocol.jabber.INVALID_ADDRESS", new String[]{contactId}));
+                result.add(aTalkApp.getResString(R.string.service_gui_INVALID_ADDRESS, contactId));
                 result.add(suggestion + remainder);
                 return false;
             }
 
             return true;
         } catch (Exception ex) {
-            result.add(JabberActivator.getResources().getI18NString(
-                    "impl.protocol.jabber.INVALID_ADDRESS", new String[]{contactId}));
+            result.add(aTalkApp.getResString(R.string.service_gui_INVALID_ADDRESS, contactId));
         }
         return false;
     }
@@ -2302,10 +2217,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Determines whether a specific <tt>XMPPException</tt> signals that attempted login
      * has failed.
-     * <p>
+     *
      * Calling method will trigger a re-login dialog if the return <tt>failureMode</tt> is not
      * <tt>SecurityAuthority.REASON_UNKNOWN</tt> etc
-     * <p>
+     *
      * Add additional exMsg message if necessary to achieve this effect.
      *
      * @param ex the <tt>XMPPException</tt> which is to be determined whether it signals that attempted
@@ -2607,7 +2522,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Return the EntityFullJid associate with this protocol provider.
-     * <p>
+     *
      * Build our own EntityJid if not connected. May not be full compliant - For explanation
      *
      * @return the Jabber EntityFullJid

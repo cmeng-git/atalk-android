@@ -173,8 +173,7 @@ public class CallContactFragment extends OSGiFragment
 				}
 				catch (Throwable t) {
 					logger.error("Error creating the call: " + t.getMessage(), t);
-					AndroidUtils.showAlertDialog(getActivity(),
-							getString(R.string.service_gui_ERROR), t.getMessage());
+					AndroidUtils.showAlertDialog(getActivity(), getString(R.string.service_gui_ERROR), t.getMessage());
 				}
 			}
 		}.start();
@@ -191,10 +190,8 @@ public class CallContactFragment extends OSGiFragment
 					new String[]{Manifest.permission.GET_ACCOUNTS}, PERMISSION_GET_ACCOUNTS);
 		}
 		else {
-			android.accounts.AccountManager androidAccManager
-					= android.accounts.AccountManager.get(getActivity());
-			Account[] androidAccounts = androidAccManager.getAccountsByType(
-					getString(R.string.ACCOUNT_TYPE));
+			android.accounts.AccountManager androidAccManager = android.accounts.AccountManager.get(getActivity());
+			Account[] androidAccounts = androidAccManager.getAccountsByType(getString(R.string.ACCOUNT_TYPE));
 			for (Account account : androidAccounts) {
 				System.err.println("ACCOUNT======" + account);
 			}

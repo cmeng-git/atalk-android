@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
             android:gravity="end"
-            android:text="@string/chatRecordCancel"
+            android:text="@string/chat_RecordCancel"
             android:textColor="@color/blue"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"

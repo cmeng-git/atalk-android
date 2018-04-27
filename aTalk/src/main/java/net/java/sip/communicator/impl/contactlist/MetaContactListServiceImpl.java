@@ -22,6 +22,8 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.json.JSONObject;
 import org.osgi.framework.*;
 
@@ -113,7 +115,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 	public MetaContactListServiceImpl()
 	{
 		rootMetaGroup = new MetaContactGroupImpl(this,
-				ContactlistActivator.getResources().getI18NString("service.gui.CONTACTS"), ContactGroup.ROOT_GROUP_UID);
+                aTalkApp.getResString(R.string.service_gui_CONTACTS), ContactGroup.ROOT_GROUP_UID);
 	}
 
 	/**

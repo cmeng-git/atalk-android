@@ -15,6 +15,7 @@ import net.java.sip.communicator.service.notification.event.NotificationEventTyp
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.resources.ResourceManagementService;
@@ -35,6 +36,8 @@ import android.widget.TextView;
  */
 public class NotificationSettings extends OSGiActivity
 {
+    public static final String N_PREFIX = "plugin_notificationconfig_event_";
+
 	/**
 	 * Notifications adapter.
 	 */
@@ -125,6 +128,7 @@ public class NotificationSettings extends OSGiActivity
 		@Override
 		public Object getItem(int position)
 		{
+            // return aTalkApp.getStringResourceByName(N_PREFIX + events.get(position));
 			return rms.getI18NString("plugin.notificationconfig.event." + events.get(position));
 		}
 

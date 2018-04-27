@@ -7,107 +7,48 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.text.TextUtils;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.AvatarUrl;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.ConferenceDescriptionPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.Email;
-import net.java.sip.communicator.service.protocol.AbstractChatRoom;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ChatRoomConfigurationForm;
-import net.java.sip.communicator.service.protocol.ChatRoomMember;
-import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
-import net.java.sip.communicator.service.protocol.ConferenceDescription;
-import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.*;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.Message;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.event.ChatRoomConferencePublishedEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomLocalUserRoleChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomLocalUserRoleListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPropertyChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPropertyChangeListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMemberRoleChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMemberRoleListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomPropertyChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomPropertyChangeFailedEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomPropertyChangeListener;
-import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceChangeEvent;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.PresenceListener;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.SmackException.NotLoggedInException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException.*;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.muc.Affiliate;
-import org.jivesoftware.smackx.muc.InvitationRejectionListener;
-import org.jivesoftware.smackx.muc.MUCAffiliation;
-import org.jivesoftware.smackx.muc.MUCRole;
-import org.jivesoftware.smackx.muc.MultiUserChat;
-import org.jivesoftware.smackx.muc.MultiUserChatException;
-import org.jivesoftware.smackx.muc.Occupant;
-import org.jivesoftware.smackx.muc.ParticipantStatusListener;
-import org.jivesoftware.smackx.muc.SubjectUpdatedListener;
-import org.jivesoftware.smackx.muc.UserStatusListener;
+import org.jivesoftware.smackx.muc.*;
 import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
-import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
-import org.jivesoftware.smackx.omemo.exceptions.NoOmemoSupportException;
-import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
+import org.jivesoftware.smackx.omemo.exceptions.*;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.EntityFullJid;
-import org.jxmpp.jid.EntityJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.EventObject;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Implements chat rooms for jabber. The class encapsulates instances of the jive software
@@ -838,7 +779,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
 
         // message delivered for own outgoing message view display
         Date timeStamp = new Date();
-        ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent( ChatRoomJabberImpl.this,
+        ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(ChatRoomJabberImpl.this,
                 timeStamp, message, ChatRoomMessageDeliveredEvent.CONVERSATION_MESSAGE_DELIVERED);
         fireMessageEvent(msgDeliveredEvt);
     }
@@ -1428,8 +1369,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * @param previousRole the previous mRole that member had
      * @param newRole the new mRole the member get
      */
-    private void fireMemberRoleEvent(ChatRoomMember member, ChatRoomMemberRole previousRole,
-            ChatRoomMemberRole newRole)
+    private void fireMemberRoleEvent(ChatRoomMember member, ChatRoomMemberRole previousRole, ChatRoomMemberRole newRole)
     {
         member.setRole(newRole);
         ChatRoomMemberRoleChangeEvent evt = new ChatRoomMemberRoleChangeEvent(this, member, previousRole, newRole);
@@ -1492,8 +1432,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         else {
             String displayName;
             if (TextUtils.isEmpty(name)) {
-                displayName = JabberActivator.getResources().getI18NString(
-                        "service.gui.CHAT_CONFERENCE_ITEM_LABEL", new String[]{mNickName.toString()});
+                displayName = aTalkApp.getResString(R.string.service_gui_CHAT_CONFERENCE_ITEM_LABEL, mNickName.toString());
             }
             else {
                 displayName = name;
@@ -1619,8 +1558,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             for (Affiliate a : mMultiUserChat.getMembers()) {
                 res.add(a.getJid());
             }
-        } catch (XMPPException | NoResponseException | NotConnectedException
-                | InterruptedException e) {
+        } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException e) {
             logger.error("Cannot obtain members list", e);
         }
         return res;
@@ -2543,8 +2481,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                     }
                 }
 
-                String msgBody = JabberActivator.getResources().getI18NString("service.gui.INVITATION_REJECTED",
-                        new String[]{fromStr, mucUser.getDecline().getReason()});
+                String msgBody = aTalkApp.getResString(R.string.service_gui_INVITATION_REJECTED,
+                        fromStr, mucUser.getDecline().getReason());
 
                 ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
                         ChatRoomJabberImpl.this, member, new Date(), createMessage(msgBody), messageReceivedEventType);

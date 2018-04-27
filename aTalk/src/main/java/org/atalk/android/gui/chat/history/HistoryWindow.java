@@ -20,35 +20,19 @@ import net.java.sip.communicator.service.history.event.HistorySearchProgressList
 import net.java.sip.communicator.service.history.event.ProgressEvent;
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.Message;
-import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedEvent;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.MessageListener;
-import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.GuiUtils;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.skin.Skinnable;
 
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessageImpl;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.util.javax.swing.JProgressBar;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * The <tt>HistoryWindow</tt> is the window, where user could view or search in the message
@@ -60,8 +44,7 @@ import java.util.Vector;
  * @author Adam Netocny
  * @author Eng Chong Meng
  */
-public class HistoryWindow implements HistorySearchProgressListener, MessageListener,
-        ChatRoomMessageListener, Skinnable
+public class HistoryWindow implements HistorySearchProgressListener, MessageListener, ChatRoomMessageListener, Skinnable
 {
     private static final Logger logger = Logger.getLogger(HistoryWindow.class);
 
@@ -108,8 +91,7 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
         if (historyContact instanceof MetaContact) {
             MetaContact metaContact = (MetaContact) historyContact;
 
-            String title = AndroidGUIActivator.getResources().getI18NString(
-                    "service.gui.HISTORY_CONTACT", new String[]{metaContact.getDisplayName()});
+            String title = aTalkApp.getResString(R.string.service_gui_HISTORY_CONTACT, metaContact.getDisplayName());
             Iterator<Contact> protoContacts = metaContact.getContacts();
 
             basicInstantMessagings = new ArrayList<OperationSetBasicInstantMessaging>();
@@ -117,8 +99,7 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
                 Contact protoContact = protoContacts.next();
 
                 OperationSetBasicInstantMessaging basicInstantMessaging
-                        = protoContact.getProtocolProvider().getOperationSet(
-                        OperationSetBasicInstantMessaging.class);
+                        = protoContact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
 
                 if (basicInstantMessaging != null) {
                     basicInstantMessaging.addMessageListener(this);
@@ -226,12 +207,6 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
     }
 
     /**
-     * Implements <tt>ChatConversationContainer.getWindow</tt> method.
-     *
-     * @return this window
-     */
-
-    /**
      * Returns the next date from the history. When <tt>date</tt> is the last one, we return the
      * current date, means we are loading today messages (till now).
      *
@@ -263,8 +238,7 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
     {
         int progress = evt.getProgress();
 
-        if ((lastProgress != progress) && evt.getStartDate() == null
-                || evt.getStartDate() != ignoreProgressDate) {
+        if ((lastProgress != progress) && evt.getStartDate() == null || evt.getStartDate() != ignoreProgressDate) {
             this.progressBar.setValue(progress);
             lastProgress = progress;
         }
@@ -281,8 +255,7 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
             Collection<Object> msgList = null;
 
             if (historyContact instanceof MetaContact) {
-                msgList = history.findByEndDate(HISTORY_FILTER, historyContact,
-                        new Date(System.currentTimeMillis()));
+                msgList = history.findByEndDate(HISTORY_FILTER, historyContact, new Date(System.currentTimeMillis()));
             }
             else if (historyContact instanceof ChatRoomWrapper) {
                 ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) historyContact;
@@ -388,8 +361,7 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
                 if (chatRoomWrapper.getChatRoom() == null)
                     return;
 
-                msgList = history.findByPeriod(HISTORY_FILTER, chatRoomWrapper.getChatRoom(),
-                        startDate, endDate);
+                msgList = history.findByPeriod(HISTORY_FILTER, chatRoomWrapper.getChatRoom(), startDate, endDate);
             }
             else
                 msgList = null;
@@ -437,8 +409,7 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
                 if (chatRoomWrapper.getChatRoom() == null)
                     return;
 
-                msgList = history.findByKeyword(HISTORY_FILTER, chatRoomWrapper.getChatRoom(),
-                        keyword);
+                msgList = history.findByKeyword(HISTORY_FILTER, chatRoomWrapper.getChatRoom(), keyword);
             }
 
             if (msgList != null)
@@ -456,8 +427,7 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
 
                     long millisecondsPerDay = 24 * 60 * 60 * 1000;
                     for (Date date1 : datesDisplayed) {
-                        if (Math.floor(date1.getTime() / millisecondsPerDay)
-                                == Math.floor(date.getTime() / millisecondsPerDay)
+                        if (Math.floor(date1.getTime() / millisecondsPerDay) == Math.floor(date.getTime() / millisecondsPerDay)
                                 && !keywordDatesVector.contains(date1)) {
                             keywordDatesVector.add(date1);
                         }
@@ -558,8 +528,8 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
      * @param messageContent the content text of the message
      * @param messageEncType the encryption type of the message
      */
-    private void processMessage(Contact contact, Date timestamp, String messageType,
-            String messageContent, int messageEncType)
+    private void processMessage(Contact contact, Date timestamp, String messageType, String messageContent,
+            int messageEncType)
     {
         if (!(historyContact instanceof MetaContact))
             return;

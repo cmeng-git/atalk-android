@@ -1,17 +1,20 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.settings.notification;
 
-import android.content.*;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.*;
+import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import net.java.sip.communicator.service.notification.*;
-import net.java.sip.communicator.service.notification.event.*;
+import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
+import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
@@ -29,300 +32,304 @@ import org.atalk.service.resources.ResourceManagementService;
  */
 public class NotificationDetails extends OSGiActivity implements NotificationChangeListener, ActionBarToggleFragment.ActionBarToggleModel
 {
-	/**
-	 * Event type extra key
-	 */
-	private final static String EVENT_TYPE_EXTRA = "event_type";
+    /**
+     * Event type extra key
+     */
+    private final static String EVENT_TYPE_EXTRA = "event_type";
 
-	/**
-	 * The event type string that identifies the event
-	 */
-	private String eventType;
+    /**
+     * The event type string that identifies the event
+     */
+    private String eventType;
 
-	/**
-	 * Notification service instance
-	 */
-	private NotificationService notificationService;
+    /**
+     * Notification service instance
+     */
+    private NotificationService notificationService;
 
-	/**
-	 * Resource service instance
-	 */
-	private ResourceManagementService rms;
+    /**
+     * Resource service instance
+     */
+    private ResourceManagementService rms;
 
-	/**
-	 * The description <tt>View</tt>
-	 */
-	private TextView description;
+    /**
+     * The description <tt>View</tt>
+     */
+    private TextView description;
 
-	/**
-	 * Popup handler checkbox <tt>View</tt>
-	 */
-	private CompoundButton popup;
+    /**
+     * Popup handler checkbox <tt>View</tt>
+     */
+    private CompoundButton popup;
 
-	/**
-	 * Sound notification handler checkbox <tt>View</tt>
-	 */
-	private CompoundButton soundNotification;
+    /**
+     * Sound notification handler checkbox <tt>View</tt>
+     */
+    private CompoundButton soundNotification;
 
-	/**
-	 * Sound playback handler checkbox <tt>View</tt>
-	 */
-	private CompoundButton soundPlayback;
+    /**
+     * Sound playback handler checkbox <tt>View</tt>
+     */
+    private CompoundButton soundPlayback;
 
-	/**
-	 * Vibrate handler checkbox <tt>View</tt>
-	 */
-	private CompoundButton vibrate;
+    /**
+     * Vibrate handler checkbox <tt>View</tt>
+     */
+    private CompoundButton vibrate;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		this.eventType = getIntent().getStringExtra(EVENT_TYPE_EXTRA);
-		if (eventType == null)
-			throw new IllegalArgumentException();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        this.eventType = getIntent().getStringExtra(EVENT_TYPE_EXTRA);
+        if (eventType == null)
+            throw new IllegalArgumentException();
 
-		this.notificationService = ServiceUtils.getService(AndroidGUIActivator.bundleContext, NotificationService.class);
-		this.rms = ServiceUtils.getService(AndroidGUIActivator.bundleContext, ResourceManagementService.class);
+        this.notificationService = ServiceUtils.getService(AndroidGUIActivator.bundleContext, NotificationService.class);
+        this.rms = ServiceUtils.getService(AndroidGUIActivator.bundleContext, ResourceManagementService.class);
 
-		setContentView(R.layout.notification_details);
-		this.description = findViewById(R.id.description);
-		this.popup = findViewById(R.id.popup);
-		this.soundNotification = findViewById(R.id.soundNotification);
-		this.soundPlayback = findViewById(R.id.soundPlayback);
-		this.vibrate = findViewById(R.id.vibrate);
+        setContentView(R.layout.notification_details);
+        this.description = findViewById(R.id.description);
+        this.popup = findViewById(R.id.popup);
+        this.soundNotification = findViewById(R.id.soundNotification);
+        this.soundPlayback = findViewById(R.id.soundPlayback);
+        this.vibrate = findViewById(R.id.vibrate);
 
-		ActionBarUtil.setTitle(this, rms.getI18NString("plugin.notificationconfig.event." + eventType));
-		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction().add(ActionBarToggleFragment.create(""),
-					"action_bar_toggle").commit();
-		}
-	}
+        // ActionBarUtil.setTitle(this, aTalkApp.getStringResourceByName(NotificationSettings.N_PREFIX + eventType));
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void onResume()
-	{
-		super.onResume();
-		updateDisplay();
-		notificationService.addNotificationChangeListener(this);
-	}
+        ActionBarUtil.setTitle(this, rms.getI18NString("plugin.notificationconfig.event." + eventType));
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().add(ActionBarToggleFragment.create(""),
+                    "action_bar_toggle").commit();
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void onPause()
-	{
-		super.onPause();
-		notificationService.removeNotificationChangeListener(this);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        updateDisplay();
+        notificationService.addNotificationChangeListener(this);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	private void updateDisplay()
-	{
-		boolean enable = notificationService.isActive(eventType);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        notificationService.removeNotificationChangeListener(this);
+    }
 
-		// Description
-		description.setText(rms.getI18NString("plugin.notificationconfig.event." + eventType + ".description"));
-		description.setEnabled(enable);
+    /**
+     * {@inheritDoc}
+     */
+    private void updateDisplay()
+    {
+        boolean enable = notificationService.isActive(eventType);
 
-		// The popup
-		NotificationAction popupHandler = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_POPUP_MESSAGE);
-		popup.setEnabled(enable && popupHandler != null);
-		if (popupHandler != null)
-			popup.setChecked(popupHandler.isEnabled());
+        // Description
+        // description.setText(aTalkApp.getStringResourceByName(NotificationSettings.N_PREFIX + eventType + "_description"));
+        description.setText(rms.getI18NString("plugin.notificationconfig.event." + eventType + ".description"));
+        description.setEnabled(enable);
 
-		// The sound
-		SoundNotificationAction soundHandler = (SoundNotificationAction) notificationService.getEventNotificationAction(eventType,
-			NotificationAction.ACTION_SOUND);
+        // The popup
+        NotificationAction popupHandler
+                = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_POPUP_MESSAGE);
+        popup.setEnabled(enable && popupHandler != null);
+        if (popupHandler != null)
+            popup.setChecked(popupHandler.isEnabled());
 
-		soundNotification.setEnabled(enable && soundHandler != null);
-		soundPlayback.setEnabled(enable && soundHandler != null);
+        // The sound
+        SoundNotificationAction soundHandler = (SoundNotificationAction)
+                notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
 
-		if (soundHandler != null) {
-			soundNotification.setChecked(soundHandler.isSoundNotificationEnabled());
-			soundPlayback.setChecked(soundHandler.isSoundPlaybackEnabled());
-		}
+        soundNotification.setEnabled(enable && soundHandler != null);
+        soundPlayback.setEnabled(enable && soundHandler != null);
 
-		// Vibrate action
-		NotificationAction vibrateHandler = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_VIBRATE);
-		vibrate.setEnabled(enable && vibrateHandler != null);
-		if (vibrateHandler != null)
-			vibrate.setChecked(vibrateHandler.isEnabled());
-	}
+        if (soundHandler != null) {
+            soundNotification.setChecked(soundHandler.isSoundNotificationEnabled());
+            soundPlayback.setChecked(soundHandler.isSoundPlaybackEnabled());
+        }
 
-	/**
-	 * Fired when popup checkbox is clicked.
-	 * 
-	 * @param v
-	 *        popup checkbox <tt>View</tt>
-	 */
-	public void onPopupClicked(View v)
-	{
-		boolean enabled = ((CompoundButton) v).isChecked();
+        // Vibrate action
+        NotificationAction vibrateHandler
+                = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_VIBRATE);
+        vibrate.setEnabled(enable && vibrateHandler != null);
+        if (vibrateHandler != null)
+            vibrate.setChecked(vibrateHandler.isEnabled());
+    }
 
-		NotificationAction action = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_POPUP_MESSAGE);
-		action.setEnabled(enabled);
-	}
+    /**
+     * Fired when popup checkbox is clicked.
+     *
+     * @param v popup checkbox <tt>View</tt>
+     */
+    public void onPopupClicked(View v)
+    {
+        boolean enabled = ((CompoundButton) v).isChecked();
 
-	/**
-	 * Fired when sound notification checkbox is clicked.
-	 * 
-	 * @param v
-	 *        sound notification checkbox <tt>View</tt>
-	 */
-	public void onSoundNotificationClicked(View v)
-	{
-		boolean enabled = ((CompoundButton) v).isChecked();
+        NotificationAction action
+                = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_POPUP_MESSAGE);
+        action.setEnabled(enabled);
+    }
 
-		SoundNotificationAction action = (SoundNotificationAction) notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
-		action.setSoundNotificationEnabled(enabled);
-	}
+    /**
+     * Fired when sound notification checkbox is clicked.
+     *
+     * @param v sound notification checkbox <tt>View</tt>
+     */
+    public void onSoundNotificationClicked(View v)
+    {
+        boolean enabled = ((CompoundButton) v).isChecked();
 
-	/**
-	 * Fired when sound playback checkbox is clicked.
-	 * 
-	 * @param v
-	 *        sound playback checkbox <tt>View</tt>
-	 */
-	public void onSoundPlaybackClicked(View v)
-	{
-		boolean enabled = ((CompoundButton) v).isChecked();
+        SoundNotificationAction action = (SoundNotificationAction)
+                notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
+        action.setSoundNotificationEnabled(enabled);
+    }
 
-		SoundNotificationAction action = (SoundNotificationAction) notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
-		action.setSoundPlaybackEnabled(enabled);
-	}
+    /**
+     * Fired when sound playback checkbox is clicked.
+     *
+     * @param v sound playback checkbox <tt>View</tt>
+     */
+    public void onSoundPlaybackClicked(View v)
+    {
+        boolean enabled = ((CompoundButton) v).isChecked();
 
-	/**
-	 * Fired when vibrate notification checkbox is clicked.
-	 * 
-	 * @param v
-	 *        vibrate notification checkbox <tt>View</tt>
-	 */
-	public void onVibrateClicked(View v)
-	{
-		boolean enabled = ((CompoundButton) v).isChecked();
+        SoundNotificationAction action = (SoundNotificationAction)
+                notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
+        action.setSoundPlaybackEnabled(enabled);
+    }
 
-		NotificationAction action = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_VIBRATE);
-		action.setEnabled(enabled);
-	}
+    /**
+     * Fired when vibrate notification checkbox is clicked.
+     *
+     * @param v vibrate notification checkbox <tt>View</tt>
+     */
+    public void onVibrateClicked(View v)
+    {
+        boolean enabled = ((CompoundButton) v).isChecked();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void actionAdded(NotificationActionTypeEvent event)
-	{
-		handleActionEvent(event);
-	}
+        NotificationAction action
+                = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_VIBRATE);
+        action.setEnabled(enabled);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void actionRemoved(NotificationActionTypeEvent event)
-	{
-		handleActionEvent(event);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void actionAdded(NotificationActionTypeEvent event)
+    {
+        handleActionEvent(event);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void actionChanged(NotificationActionTypeEvent event)
-	{
-		handleActionEvent(event);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void actionRemoved(NotificationActionTypeEvent event)
+    {
+        handleActionEvent(event);
+    }
 
-	/**
-	 * Handles add/changed/removed notification action events by refreshing the display if the event is related with the
-	 * one currently displayed.
-	 * 
-	 * @param event
-	 *        the event object
-	 */
-	private void handleActionEvent(NotificationActionTypeEvent event)
-	{
-		if (event.getEventType().equals(eventType)) {
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run()
-				{
-					updateDisplay();
-				}
-			});
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void actionChanged(NotificationActionTypeEvent event)
+    {
+        handleActionEvent(event);
+    }
 
-	/**
-	 * {@inheritDoc} Not interested in type added event.
-	 */
-	@Override
-	public void eventTypeAdded(NotificationEventTypeEvent event)
-	{
-	}
+    /**
+     * Handles add/changed/removed notification action events by refreshing the display if the event
+     * is related with the one currently displayed.
+     *
+     * @param event the event object
+     */
+    private void handleActionEvent(NotificationActionTypeEvent event)
+    {
+        if (event.getEventType().equals(eventType)) {
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    updateDisplay();
+                }
+            });
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * If removed event is the one currently displayed, closes the <tt>Activity</tt>.
-	 */
-	@Override
-	public void eventTypeRemoved(NotificationEventTypeEvent event)
-	{
-		if (!event.getEventType().equals(eventType))
-			return;
+    /**
+     * {@inheritDoc} Not interested in type added event.
+     */
+    @Override
+    public void eventTypeAdded(NotificationEventTypeEvent event)
+    {
+    }
 
-		// Event no longer exists
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run()
-			{
-				finish();
-			}
-		});
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * If removed event is the one currently displayed, closes the <tt>Activity</tt>.
+     */
+    @Override
+    public void eventTypeRemoved(NotificationEventTypeEvent event)
+    {
+        if (!event.getEventType().equals(eventType))
+            return;
 
-	/**
-	 * Gets the <tt>Intent</tt> for starting <tt>NotificationDetails</tt> <tt>Activity</tt>.
-	 * 
-	 * @param ctx
-	 *        the context
-	 * @param eventType
-	 *        name of the event that will be displayed by <tt>NotificationDetails</tt>.
-	 * @return the <tt>Intent</tt> for starting <tt>NotificationDetails</tt> <tt>Activity</tt>.
-	 */
-	public static Intent getIntent(Context ctx, String eventType)
-	{
-		Intent intent = new Intent(ctx, NotificationDetails.class);
-		intent.putExtra(EVENT_TYPE_EXTRA, eventType);
-		return intent;
-	}
+        // Event no longer exists
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                finish();
+            }
+        });
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isChecked()
-	{
-		return notificationService.isActive(eventType);
-	}
+    /**
+     * Gets the <tt>Intent</tt> for starting <tt>NotificationDetails</tt> <tt>Activity</tt>.
+     *
+     * @param ctx the context
+     * @param eventType name of the event that will be displayed by <tt>NotificationDetails</tt>.
+     * @return the <tt>Intent</tt> for starting <tt>NotificationDetails</tt> <tt>Activity</tt>.
+     */
+    public static Intent getIntent(Context ctx, String eventType)
+    {
+        Intent intent = new Intent(ctx, NotificationDetails.class);
+        intent.putExtra(EVENT_TYPE_EXTRA, eventType);
+        return intent;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setChecked(boolean isChecked)
-	{
-		notificationService.setActive(eventType, isChecked);
-		updateDisplay();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isChecked()
+    {
+        return notificationService.isActive(eventType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setChecked(boolean isChecked)
+    {
+        notificationService.setActive(eventType, isChecked);
+        updateDisplay();
+    }
 }

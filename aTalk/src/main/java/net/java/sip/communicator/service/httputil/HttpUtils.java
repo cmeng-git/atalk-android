@@ -18,6 +18,8 @@ package net.java.sip.communicator.service.httputil;
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.util.StringUtils;
 
 import java.io.File;
@@ -485,8 +487,7 @@ public class HttpUtils {
 				authEx = ex;
 
 				// lets reuse credentialsProvider
-				credentialsProvider = (HTTPCredentialsProvider)
-						httpClient.getCredentialsProvider();
+				credentialsProvider = (HTTPCredentialsProvider) httpClient.getCredentialsProvider();
 				String userName = credentialsProvider.authUsername;
 
 				// clear
@@ -494,11 +495,8 @@ public class HttpUtils {
 
 				// lets show the same username
 				credentialsProvider.authUsername = userName;
-				credentialsProvider.errorMessage =
-						HttpUtilActivator.getResources().getI18NString(
-								"service.gui.AUTHENTICATION_FAILED",
-								new String[]
-										{credentialsProvider.usedScope.getHost()});
+				credentialsProvider.errorMessage = aTalkApp.getResString(R.string.service_gui_AUTHENTICATION_FAILED,
+								credentialsProvider.usedScope.getHost());
 			}
 		}
 		while (authEx != null);

@@ -18,47 +18,24 @@ import net.java.sip.communicator.service.gui.event.ChatFocusListener;
 import net.java.sip.communicator.service.gui.event.ChatMenuListener;
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
-import net.java.sip.communicator.service.protocol.Message;
-import net.java.sip.communicator.service.protocol.OperationSetAdHocMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
-import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetPresence;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedEvent;
-import net.java.sip.communicator.service.protocol.event.ChatStateNotificationsListener;
-import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.MessageListener;
-import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.chat.conference.AdHocChatRoomWrapper;
-import org.atalk.android.gui.chat.conference.ConferenceChatManager;
-import org.atalk.android.gui.chat.conference.ConferenceChatSession;
+import org.atalk.android.gui.chat.conference.*;
 import org.atalk.android.gui.util.ActionBarUtil;
 import org.atalk.android.util.javax.swing.event.CaretListener;
 import org.atalk.android.util.javax.swing.event.DocumentListener;
 import org.atalk.android.util.javax.swing.text.Highlighter;
-import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * The <tt>ChatPanel</tt>, <tt>ChatActivity</tt>, <tt>ChatController</tt> and <tt>ChatFragment</tt>
@@ -773,8 +750,8 @@ public class ChatPanel implements Chat, MessageListener
     {
         Contact sender = request.getSender();
         String senderName = sender.getAddress();
-        String message = AndroidGUIActivator.getResources().getI18NString("service.gui.FILE_TRANSFER_REQUEST_RECEIVED",
-                new String[]{date.toString(), senderName});
+        String message = aTalkApp.getResString(
+                R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, date.toString(), senderName);
 
         int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
         int mimeType = ChatMessage.ENCODE_PLAIN;
@@ -960,37 +937,34 @@ public class ChatPanel implements Chat, MessageListener
         for (MessageListener l : msgListeners) {
             l.messageDeliveryFailed(evt);
         }
-
         // Insert error message
         logger.error(evt.getReason());
 
         String errorMsg;
         Message sourceMessage = (Message) evt.getSource();
         Contact sourceContact = evt.getDestinationContact();
-
         MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(sourceContact);
-        ResourceManagementService rms = AndroidGUIActivator.getResourcesService();
 
         if (evt.getErrorCode() == MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED) {
-            errorMsg = rms.getI18NString("service.gui.MSG_DELIVERY_NOT_SUPPORTED",
-                    new String[]{sourceContact.getDisplayName()});
+            errorMsg = aTalkApp.getResString(
+                    R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED, sourceContact.getDisplayName());
         }
         else if (evt.getErrorCode() == MessageDeliveryFailedEvent.NETWORK_FAILURE) {
-            errorMsg = rms.getI18NString("service.gui.MSG_NOT_DELIVERED");
+            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_NOT_DELIVERED);
         }
         else if (evt.getErrorCode() == MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED) {
-            errorMsg = rms.getI18NString("service.gui.MSG_SEND_CONNECTION_PROBLEM");
+            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
         }
         else if (evt.getErrorCode() == MessageDeliveryFailedEvent.INTERNAL_ERROR) {
-            errorMsg = rms.getI18NString("service.gui.MSG_DELIVERY_INTERNAL_ERROR");
+            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
         }
         else {
-            errorMsg = rms.getI18NString("service.gui.MSG_DELIVERY_ERROR");
+            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_ERROR);
         }
 
         String reason = evt.getReason();
         if (reason != null)
-            errorMsg += " " + rms.getI18NString("service.gui.ERROR_WAS", new String[]{reason});
+            errorMsg += " " + aTalkApp.getResString(R.string.service_gui_ERROR_WAS, reason);
 
         addMessage(metaContact.getDisplayName(), new Date(), Chat.OUTGOING_MESSAGE,
                 sourceMessage.getMimeType(), sourceMessage.getContent());
@@ -1033,8 +1007,7 @@ public class ChatPanel implements Chat, MessageListener
         if (ConfigurationUtils.isShowStatusChangedInChat()) {
             // Show a status message to the user.
             this.addMessage(contactName, chatTransport.getName(), new Date(), Chat.STATUS_MESSAGE, ChatMessage.ENCODE_PLAIN,
-                    AndroidGUIActivator.getResources().getI18NString("service.gui.STATUS_CHANGED_CHAT_MESSAGE",
-                            new String[]{chatTransport.getStatus().getStatusName()}),
+                    aTalkApp.getResString(R.string.service_gui_STATUS_CHANGED_CHAT_MESSAGE, chatTransport.getStatus().getStatusName()),
                     ChatMessage.ENCRYPTION_NONE, null, null);
         }
     }
@@ -1072,8 +1045,7 @@ public class ChatPanel implements Chat, MessageListener
             chatSubject = subject;
 
             this.addMessage(mChatSession.getChatName(), new Date(), Chat.STATUS_MESSAGE, ChatMessage.ENCODE_PLAIN,
-                    AndroidGUIActivator.getResources().getI18NString("service.gui.CHAT_ROOM_SUBJECT_CHANGED",
-                            new String[]{mChatSession.getChatName(), subject}));
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SUBJECT_CHANGED, mChatSession.getChatName(), subject));
         }
     }
 

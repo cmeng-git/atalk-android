@@ -15,6 +15,9 @@ import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.util.DataObject;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -295,7 +298,7 @@ public class MessageSourceContact extends DataObject
 		if (this.displayName != null)
 			return this.displayName;
 		else
-			return MessageHistoryActivator.getResources().getI18NString("service.gui.UNKNOWN");
+			return aTalkApp.getResString(R.string.service_gui_UNKNOWN_USER);
 	}
 
 	/**

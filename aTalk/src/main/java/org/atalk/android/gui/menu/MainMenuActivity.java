@@ -38,6 +38,7 @@ import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.About;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AccountsListActivity;
@@ -262,8 +263,6 @@ public class MainMenuActivity extends ExitMenuActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        String itemTextKey;
-
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.search:
@@ -285,9 +284,9 @@ public class MainMenuActivity extends ExitMenuActivity
                 MetaContactListAdapter contactListAdapter = AndroidGUIActivator.getContactListAdapter();
                 contactListAdapter.filterData("");
 
-                itemTextKey = !isShowOffline
-                        ? "service.gui.HIDE_OFFLINE_CONTACTS" : "service.gui.SHOW_OFFLINE_CONTACTS";
-                mShowHideOffline.setTitle(AndroidGUIActivator.getResources().getI18NString(itemTextKey));
+                String onOffLine = aTalkApp.getResString(!isShowOffline
+                        ? R.string.service_gui_HIDE_OFFLINE_CONTACTS : R.string.service_gui_SHOW_OFFLINE_CONTACTS);
+                mShowHideOffline.setTitle(onOffLine);
                 break;
             case R.id.add_contact:
                 startActivity(AddContactActivity.class);

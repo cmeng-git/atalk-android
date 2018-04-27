@@ -27,6 +27,7 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
@@ -232,10 +233,9 @@ public class aTalk extends MainMenuActivity
 			contactListFragment.onCloseAllChats();
 		}
 		else { // failed
-			logger.error("Error removing history" + contactListFragment.getClickedContact());
-			// chatPanel.addErrorMessage("all",
-			// GuiActivator.getResources().getI18NString("service.gui.HISTORY_REMOVE_ERROR"),
-			// ex.getLocalizedMessage());
+            String errMsg = aTalkApp.getResString(R.string.service_gui_HISTORY_REMOVE_ERROR,
+                    contactListFragment.getClickedContact().getDisplayName());
+			aTalkApp.showToastMessage(errMsg);
 		}
 	}
 

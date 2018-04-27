@@ -10,53 +10,29 @@ import android.database.sqlite.SQLiteDatabase;
 
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.customavatar.CustomAvatarService;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ContactGroup;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails;
-import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ServerStoredGroupEvent;
-import net.java.sip.communicator.service.protocol.event.ServerStoredGroupListener;
-import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
-import net.java.sip.communicator.util.ConfigurationUtils;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.persistance.DatabaseBackend;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.SmackException.NotLoggedInException;
-import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException.*;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.roster.RosterEntry;
-import org.jivesoftware.smack.roster.RosterGroup;
-import org.jivesoftware.smack.roster.RosterListener;
+import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.roster.*;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.nick.packet.Nick;
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.ServiceReference;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.both;
 import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.from;
@@ -469,7 +445,8 @@ public class ServerStoredContactListJabberImpl
         String accountUuid;
         if (parent != null && parent == getRootGroup()) {
             accountUuid = rootGroupPPS.getAccountID().getAccountUuid();
-        } else {
+        }
+        else {
             accountUuid = parent.getProtocolProvider().getAccountID().getAccountUuid();
         }
         String mcGroupName = parent.getGroupName();
@@ -561,7 +538,7 @@ public class ServerStoredContactListJabberImpl
         // if the parent group is null then add necessary to create the group
         if (theVolatileGroup == null) {
             theVolatileGroup = new VolatileContactGroupJabberImpl(
-                    JabberActivator.getResources().getI18NString("service.gui.NOT_IN_CONTACT_LIST_GROUP_NAME"), this);
+                    aTalkApp.getResString(R.string.service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME), this);
 
             theVolatileGroup.addContact(newVolatileContact);
             this.rootGroup.addSubGroup(theVolatileGroup);
@@ -625,7 +602,6 @@ public class ServerStoredContactListJabberImpl
      * be added to the local contact list as any other group but when an event is received from the
      * server concerning this group, then it will be reused and only its isResolved field would be
      * updated instead of creating the whole group again.
-     *
      *
      * @param groupName the name of the group to create.
      * @return the newly created unresolved <tt>ContactGroupImpl</tt>
@@ -1046,11 +1022,9 @@ public class ServerStoredContactListJabberImpl
      */
     ContactGroupJabberImpl getNonPersistentGroup()
     {
-        String groupName = JabberActivator.getResources().getI18NString("service.gui.NOT_IN_CONTACT_LIST_GROUP_NAME");
-
+        String groupName = aTalkApp.getResString(R.string.service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME);
         for (int i = 0; i < getRootGroup().countSubgroups(); i++) {
             ContactGroupJabberImpl gr = (ContactGroupJabberImpl) getRootGroup().getGroup(i);
-
             if (!gr.isPersistent() && gr.getGroupName().equals(groupName))
                 return gr;
         }
@@ -1147,8 +1121,7 @@ public class ServerStoredContactListJabberImpl
         }
         // cmeng = entry in rootGroup does not have group attribute ???
         else if ((entry.getType() == none || entry.getType() == from)
-                && (entry.isSubscriptionPending()
-                || ((entry.getGroups() != null) && entry.getGroups().size() > 0))) {
+                && (entry.isSubscriptionPending() || ((entry.getGroups() != null) && entry.getGroups().size() > 0))) {
             return true;
         }
         return false;

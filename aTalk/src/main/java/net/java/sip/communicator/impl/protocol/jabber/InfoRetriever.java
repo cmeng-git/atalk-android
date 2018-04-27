@@ -8,6 +8,8 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
@@ -31,7 +33,7 @@ public class InfoRetriever
 	/**
 	 * A callback to the Jabber provider that created us.
 	 */
-	private ProtocolProviderServiceJabberImpl jabberProvider = null;
+	private ProtocolProviderServiceJabberImpl jabberProvider;
 
 	// A linked list between contact/user and his details retrieved so far
 	private final Map<BareJid, List<GenericDetail>> retrievedDetails = new Hashtable<>();
@@ -176,8 +178,8 @@ public class InfoRetriever
 		if (tmp != null) {
 			try {
 				Calendar birthDateCalendar = Calendar.getInstance();
-				DateFormat dateFormat = new SimpleDateFormat(JabberActivator.getResources()
-						.getI18NString("plugin.accountinfo.BDAY_FORMAT"), Locale.getDefault());
+				DateFormat dateFormat = new SimpleDateFormat(
+                        aTalkApp.getResString(R.string.plugin_accountinfo_BDAY_FORMAT), Locale.getDefault());
 				Date birthDate = dateFormat.parse(tmp);
 				birthDateCalendar.setTime(birthDate);
 				BirthDateDetail bd = new BirthDateDetail(birthDateCalendar);
