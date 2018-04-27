@@ -39,12 +39,25 @@
         android:padding="5dip">
 
         <TextView
+            android:id="@+id/xferTimeView"
+            style="@style/SmallFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingLeft="5dip"
+            android:paddingStart="5dip"
+            android:textColor="@color/grey"
+            android:visibility="gone" />
+
+        <TextView
             android:id="@+id/filexferTitleView"
             style="@style/SmallFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:padding="5dip"
+            android:paddingBottom="5dip"
+            android:paddingLeft="5dip"
+            android:paddingStart="5dip"
             android:text="{Title text}"
             android:textColor="@color/black"
             android:textStyle="bold" />
@@ -120,6 +133,8 @@
             <Button
                 android:id="@+id/button_accept"
                 style="@style/ButtonTop"
+                android:layout_marginEnd="2dp"
+                android:layout_marginRight="2dp"
                 android:drawableLeft="@drawable/ic_accept"
                 android:drawableStart="@drawable/ic_accept"
                 android:text="@string/service_gui_ACCEPT"
@@ -128,6 +143,8 @@
             <Button
                 android:id="@+id/button_reject"
                 style="@style/ButtonTop"
+                android:layout_marginEnd="2dp"
+                android:layout_marginRight="2dp"
                 android:drawableLeft="@drawable/ic_reject"
                 android:drawableStart="@drawable/ic_cancel"
                 android:text="@string/service_gui_REJECT"
@@ -136,6 +153,8 @@
             <Button
                 android:id="@+id/button_retry"
                 style="@style/ButtonTop"
+                android:layout_marginEnd="2dp"
+                android:layout_marginRight="2dp"
                 android:drawableLeft="@drawable/ic_retry"
                 android:drawableStart="@drawable/ic_retry"
                 android:text="@string/service_gui_RETRY"
@@ -144,6 +163,8 @@
             <Button
                 android:id="@+id/buttonCancel"
                 style="@style/ButtonTop"
+                android:layout_marginEnd="2dp"
+                android:layout_marginRight="2dp"
                 android:drawableLeft="@drawable/ic_cancel"
                 android:drawableStart="@drawable/ic_cancel"
                 android:text="@string/service_gui_CANCEL"
@@ -152,6 +173,8 @@
             <Button
                 android:id="@+id/button_openfile"
                 style="@style/ButtonTop"
+                android:layout_marginEnd="2dp"
+                android:layout_marginRight="2dp"
                 android:drawableLeft="@drawable/ic_file_dark"
                 android:drawableStart="@drawable/ic_file_dark"
                 android:text="@string/service_gui_OPEN"
@@ -165,18 +188,6 @@
                 android:text="@string/service_gui_OPEN_FOLDER"
                 android:visibility="gone" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/xferTimeView"
-            style="@style/SmallFont"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:paddingBottom="7dip"
-            android:paddingLeft="7dip"
-            android:paddingRight="7dip"
-            android:textColor="@color/grey"
-            android:visibility="gone" />
     </LinearLayout>
 
     <ImageView

@@ -17,6 +17,8 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.Spannable;
@@ -223,6 +225,7 @@ public class ChatFragment extends OSGiFragment
     private boolean historyLoaded = false;
 
     private Activity mActivity = null;
+    private FragmentActivity mFragmentActivity = null;
 
     private boolean mSVP_Started;
     private SplitStreetViewPanoramaAndMapActivity mSVP = null;
@@ -258,10 +261,11 @@ public class ChatFragment extends OSGiFragment
         chatListView.setSelector(R.drawable.contact_list_selector);
         initListViewListeners();
 
-        // Chat intent handling
+        // Chat intent handling - chatId should not be null
+        String chatId = null;
         Bundle arguments = getArguments();
-        String chatId = arguments.getString(ChatSessionManager.CHAT_IDENTIFIER);
-
+        if (arguments != null)
+            chatId = arguments.getString(ChatSessionManager.CHAT_IDENTIFIER);
         if (chatId == null)
             throw new IllegalArgumentException();
 
@@ -273,13 +277,15 @@ public class ChatFragment extends OSGiFragment
 
         // mChatMetaContact remains null for conference
         mChatMetaContact = chatPanel.getMetaContact();
-
         chatPanel.addMessageListener(chatListAdapter);
         currentChatTransport = chatPanel.getChatSession().getCurrentChatTransport();
         currentChatFragment = this;
 
-        cryptoFragment = (CryptoFragment) getActivity().getSupportFragmentManager()
-                .findFragmentByTag(ChatActivity.CRYPTO_FRAGMENT);
+        mFragmentActivity = getActivity();
+        if (mFragmentActivity != null) {
+            FragmentManager fragmentMgr = mFragmentActivity.getSupportFragmentManager();
+            cryptoFragment = (CryptoFragment) fragmentMgr.findFragmentByTag(ChatActivity.CRYPTO_FRAGMENT);
+        }
         return mCFView;
     }
 
@@ -350,9 +356,6 @@ public class ChatFragment extends OSGiFragment
      */
     public static ChatFragment newInstance(String chatId)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("CHAT FRAGMENT NEW INSTANCE: " + chatId);
-
         ChatFragment chatFragment = new ChatFragment();
         Bundle args = new Bundle();
         args.putString(ChatSessionManager.CHAT_IDENTIFIER, chatId);
@@ -467,11 +470,11 @@ public class ChatFragment extends OSGiFragment
     /**
      * Checks for <tt>ChatController</tt> initialization. To init/activate the controller fragment
      * must be visible and its View must be created.
-     * <p>
+     *
      * Non-focus chatFragment causing non-sync between chatFragment and chatController i.e.
      * sending & received messages sent to wrong chatFragment - resolved with initChatController()
      * passing in focus state as parameter; taking the appropriate actions pending the focus state;
-     * <p>
+     *
      */
     private void initChatController(boolean inFocus)
     {
@@ -485,7 +488,7 @@ public class ChatFragment extends OSGiFragment
             chatStateView.setVisibility(View.INVISIBLE);
             initAdapter();
 
-            // Seem mCFView change on rentry into chatFragment, so update the listener
+            // Seem mCFView changes on re-entry into chatFragment, so update the listener
             cryptoFragment.addCryptoModeListener(currentChatTransport.getDescriptor(), this);
             // initBackgroundColor();
             changeBackground(mCFView, chatPanel.getChatType());
@@ -609,22 +612,24 @@ public class ChatFragment extends OSGiFragment
 
                 case R.id.copy_to_clipboard:
                     // Get clicked message text and copy it to ClipBoard
-                    String text = "";
+                    StringBuilder text = new StringBuilder();
                     for (int i = 0; i < checkListSize; i++) {
                         if (checkedList.valueAt(i)) {
                             cPos = checkedList.keyAt(i) - headerCount;
                             chatMsg = chatListAdapter.getMessage(cPos);
                             if (chatMsg != null) {
                                 if (i > 0)
-                                    text += "\n" + chatMsg.getContentForClipboard();
+                                    text.append("\n").append(chatMsg.getContentForClipboard());
                                 else
-                                    text += chatMsg.getContentForClipboard();
+                                    text.append(chatMsg.getContentForClipboard());
                             }
                         }
                     }
-                    ClipboardManager cmgr = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                    cmgr.setPrimaryClip(ClipData.newPlainText(null, text));
-                    mode.finish(); // Action picked, so close the CAB
+                    ClipboardManager cmgr = (ClipboardManager) mFragmentActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+                    if (cmgr != null)
+                        cmgr.setPrimaryClip(ClipData.newPlainText(null, text));
+                    // Action picked, so close the CAB
+                    mode.finish();
                     return true;
 
                 case R.id.chat_message_del:
@@ -648,8 +653,10 @@ public class ChatFragment extends OSGiFragment
                             }
                         }
                     }
-                    EntityListHelper.eraseEntityChatHistory(getActivity(), chatPanel.getChatSession().getDescriptor(), msgUid);
-                    mode.finish(); // Action picked, so close the CAB
+                    EntityListHelper.eraseEntityChatHistory(mFragmentActivity,
+                            chatPanel.getChatSession().getDescriptor(), msgUid);
+                    // Action picked, so close the CAB
+                    mode.finish();
                     return true;
                 default:
                     return false;
@@ -683,7 +690,7 @@ public class ChatFragment extends OSGiFragment
         {
             // Here you can make any necessary updates to the activity when
             // the CAB is removed. By default, selected items are deselected/unchecked.
-            ActionMode mActionMode = null;
+            // ActionMode mActionMode = null;
         }
     };
 
@@ -708,16 +715,6 @@ public class ChatFragment extends OSGiFragment
     public ChatPanel getChatPanel()
     {
         return chatPanel;
-    }
-
-    /**
-     * Returns the corresponding <tt>ChatPanel</tt>.
-     *
-     * @return the corresponding <tt>ChatPanel</tt>
-     */
-    public ChatFragment getCurrentChatFragment()
-    {
-        return currentChatFragment;
     }
 
     /**
@@ -806,7 +803,7 @@ public class ChatFragment extends OSGiFragment
          * @param newMessage the message to add.
          * @param update if set to <tt>true</tt> will notify the UI about update immediately.
          */
-        public void addMessage(final ChatMessage newMessage, final boolean update)
+        private void addMessage(final ChatMessage newMessage, final boolean update)
         {
             runOnUiThread(new Runnable()
             {
@@ -825,13 +822,13 @@ public class ChatFragment extends OSGiFragment
         /**
          * This method (as well as any other that access the {@link #messages} list) must only be
          * called on the UI thread.
-         * <p>
+         *
          * It creates a new message view holder if this is first message or if this is a new
          * message received i.e. non-consecutive. NotifyDataChanged for update if <tt>true</tt>
          */
         private void addMessageImpl(ChatMessage newMessage, boolean update)
         {
-            // Auto enable to Omemo option on receive omemo encrypted messages and view is in focus
+            // Auto enable Omemo option on receive omemo encrypted messages and view is in focus
             if (primarySelected && (ChatMessage.ENCRYPTION_OMEMO == newMessage.getEncryptionType())
                     && !chatPanel.isOmemoChat()) {
                 cryptoFragment.onOptionsItemSelected(cryptoFragment.mOmemo);
@@ -931,7 +928,7 @@ public class ChatFragment extends OSGiFragment
             return messages.size();
         }
 
-        public void clearMessage()
+        private void clearMessage()
         {
             messages.clear();
         }
@@ -978,7 +975,7 @@ public class ChatFragment extends OSGiFragment
             return messages.get(pos).status;
         }
 
-        public void setFileXfer(int pos, Object mFileXfer)
+        private void setFileXfer(int pos, Object mFileXfer)
         {
             messages.get(pos).fileXfer = mFileXfer;
         }
@@ -993,7 +990,7 @@ public class ChatFragment extends OSGiFragment
             messages.get(pos).sFile = file;
         }
 
-        public Object getFileXfer(int pos)
+        private Object getFileXfer(int pos)
         {
             return messages.get(pos).fileXfer;
         }
@@ -1073,7 +1070,7 @@ public class ChatFragment extends OSGiFragment
             switch (viewType) {
                 // File Transfer convertView creation
                 case FILE_TRANSFER_MESSAGE_VIEW:
-                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    LayoutInflater inflater = mFragmentActivity.getLayoutInflater();
                     ChatMessage msg = message.getChatMessage();
                     int msgType;
                     boolean init = false;
@@ -1133,7 +1130,8 @@ public class ChatFragment extends OSGiFragment
 
                     if (init) {
                         convertView = viewTemp;
-                        convertView.setTag(messageViewHolder);
+                        if (convertView != null)
+                            convertView.setTag(messageViewHolder);
                     }
                     messageViewHolder.viewType = viewType;
                     // messageViewHolder.timeView.setText(message.getDateStr());
@@ -1197,7 +1195,7 @@ public class ChatFragment extends OSGiFragment
         private View inflateViewForType(int viewType, MessageViewHolder messageViewHolder, ViewGroup parent)
         {
             messageViewHolder.viewType = viewType;
-            LayoutInflater inflater = getActivity().getLayoutInflater();
+            LayoutInflater inflater = mFragmentActivity.getLayoutInflater();
             View convertView;
 
             if (viewType == INCOMING_MESSAGE_VIEW) {
@@ -1538,7 +1536,7 @@ public class ChatFragment extends OSGiFragment
             /**
              * @return <tt>true</tt> if the message has LatLng information
              */
-            public boolean hasLatLng()
+            private boolean hasLatLng()
             {
                 return hasLatLng;
             }
@@ -1553,7 +1551,7 @@ public class ChatFragment extends OSGiFragment
              *
              * @return formatted date string for the <tt>ChatMessage</tt>.
              */
-            public String getDateStr()
+            private String getDateStr()
             {
                 if (dateStr == null) {
                     Date date = msg.getDate();
@@ -1567,12 +1565,12 @@ public class ChatFragment extends OSGiFragment
                 return msg.getMessageType();
             }
 
-            public ChatMessage getChatMessage()
+            private ChatMessage getChatMessage()
             {
                 return this.msg;
             }
 
-            public FileRecord getFileRecord()
+            private FileRecord getFileRecord()
             {
                 return msg.getFileRecord();
             }
@@ -1615,15 +1613,15 @@ public class ChatFragment extends OSGiFragment
 
     public static class MessageViewHolder
     {
+        int viewType;
+        View outgoingMessageHolder;
+        ImageView chatStateView;
         ImageView avatarView;
         ImageView statusView;
         ImageView encStateView;
         TextView jidView;
         TextView messageView;
         public TextView timeView;
-        ImageView chatStateView;
-        int viewType;
-        View outgoingMessageHolder;
 
         public ImageView arrowDir = null;
         public ImageButton imageLabel = null;
@@ -1902,8 +1900,7 @@ public class ChatFragment extends OSGiFragment
             if (!activeFileTransfers.contains(id)) {
                 activeFileTransfers.put(id, fileTransfer);
 
-                // Add status listener for chatFragment to track when the sendFile transfer has
-                // completed.
+                // Add status listener for chatFragment to track when the sendFile transfer has completed.
                 fileTransfer.addStatusListener(currentChatFragment);
             }
         }
@@ -1954,7 +1951,7 @@ public class ChatFragment extends OSGiFragment
             // state. Currently protocol did not broadcast status change under this condition.
             if ((newStatus == FileTransferStatusChangeEvent.CANCELED)
                     && (chatListAdapter.getXferStatus(msgPos) == FileTransferStatusChangeEvent.PREPARING)) {
-                String msg = AndroidGUIActivator.getResources().getI18NString("service.gui.FILE_TRANSFER_CANCELED");
+                String msg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_CANCELED);
                 // chatPanel.sendMessage(msg);
                 try {
                     chatPanel.getChatSession().getCurrentChatTransport().sendInstantMessage(msg,
@@ -1975,15 +1972,11 @@ public class ChatFragment extends OSGiFragment
 
     /**
      * Sends the given file through the currently selected chat transport by using the given
-     * fileComponent to visualize the transfer process
-     * in the chatFragment view.
-     * <p>
-     * // @param mFile
-     * the file to send
-     * // @param SendFileConversation
-     * the send file component to use for file transfer & visualization
-     * // @param msgId
-     * the view position on chatFragment
+     * fileComponent to visualize the transfer process n the chatFragment view.
+     *
+     * // @param mFile the file to send
+     * // @param SendFileConversation he send file component to use for file transfer & visualization
+     * // @param msgId he view position on chatFragment
      */
 
     public class SendFile extends AsyncTask<Void, Void, Exception>
@@ -2006,8 +1999,8 @@ public class ChatFragment extends OSGiFragment
             long maxFileLength = currentChatTransport.getMaximumFileLength();
             if (file.length() > maxFileLength) {
                 chatPanel.addMessage(currentChatTransport.getDisplayName(), new Date(), Chat.ERROR_MESSAGE,
-                        ChatMessage.ENCODE_PLAIN, AndroidGUIActivator.getResources().getI18NString(
-                                "service.gui.FILE_TOO_BIG", new String[]{ByteFormat.format(maxFileLength)}));
+                        ChatMessage.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG,
+                                ByteFormat.format(maxFileLength)));
 
                 // stop background task to proceed and update status
                 chkMaxSize = false;
@@ -2051,13 +2044,11 @@ public class ChatFragment extends OSGiFragment
 
                 if (ex instanceof IllegalStateException) {
                     chatPanel.addMessage(currentChatTransport.getDisplayName(), new Date(), Chat.ERROR_MESSAGE,
-                            ChatMessage.ENCODE_PLAIN, AndroidGUIActivator.getResources()
-                                    .getI18NString("service.gui.MSG_SEND_CONNECTION_PROBLEM"));
+                            ChatMessage.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM));
                 }
                 else {
                     chatPanel.addMessage(currentChatTransport.getDisplayName(), new Date(), Chat.ERROR_MESSAGE,
-                            ChatMessage.ENCODE_PLAIN, AndroidGUIActivator.getResources().getI18NString(
-                                    "service.gui.FILE_DELIVERY_ERROR", new String[]{ex.getMessage()}));
+                            ChatMessage.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_DELIVERY_ERROR, ex.getMessage()));
                 }
             }
         }

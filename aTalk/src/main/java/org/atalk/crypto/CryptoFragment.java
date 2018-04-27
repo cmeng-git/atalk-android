@@ -851,15 +851,15 @@ public class CryptoFragment extends OSGiFragment
         switch (chatType) {
             case ChatFragment.MSGTYPE_OMEMO:
                 iconId = R.drawable.crypto_omemo_verified;
-                tipKey = R.string.menu_omemo_authenticated;
+                tipKey = R.string.omemo_menu_authenticated;
                 break;
             case ChatFragment.MSGTYPE_OMEMO_UA:
                 iconId = R.drawable.crypto_omemo_unverified;
-                tipKey = R.string.menu_omemo_unauthenticated;
+                tipKey = R.string.omemo_menu_unauthenticated;
                 break;
             case ChatFragment.MSGTYPE_OMEMO_UT:
                 iconId = R.drawable.crypto_omemo_untrusted;
-                tipKey = R.string.menu_omemo_untrusted;
+                tipKey = R.string.omemo_menu_untrusted;
                 break;
             case MSGTYPE_NORMAL:
             case MSGTYPE_MUC_NORMAL:

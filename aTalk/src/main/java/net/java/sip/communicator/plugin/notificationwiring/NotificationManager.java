@@ -8,69 +8,9 @@ package net.java.sip.communicator.plugin.notificationwiring;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.UIService;
-import net.java.sip.communicator.service.notification.CommandNotificationAction;
-import net.java.sip.communicator.service.notification.CommandNotificationHandler;
-import net.java.sip.communicator.service.notification.NotificationAction;
-import net.java.sip.communicator.service.notification.NotificationData;
-import net.java.sip.communicator.service.notification.NotificationService;
-import net.java.sip.communicator.service.notification.SoundNotificationAction;
-import net.java.sip.communicator.service.protocol.AdHocChatRoom;
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.CallPeerState;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ChatRoomMember;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
-import net.java.sip.communicator.service.protocol.Message;
-import net.java.sip.communicator.service.protocol.OperationSet;
-import net.java.sip.communicator.service.protocol.OperationSetAdHocMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
-import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
-import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageListener;
-import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageReceivedEvent;
-import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
-import net.java.sip.communicator.service.protocol.event.CallChangeListener;
-import net.java.sip.communicator.service.protocol.event.CallEvent;
-import net.java.sip.communicator.service.protocol.event.CallListener;
-import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerConferenceEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerConferenceListener;
-import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerListener;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityListener;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityMessageEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityNegotiationStartedEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOffEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOnEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityStatusEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedEvent;
-import net.java.sip.communicator.service.protocol.event.ChatStateNotificationEvent;
-import net.java.sip.communicator.service.protocol.event.ChatStateNotificationsListener;
-import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
-import net.java.sip.communicator.service.protocol.event.FileTransferListener;
-import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent;
-import net.java.sip.communicator.service.protocol.event.LocalUserAdHocChatRoomPresenceChangeEvent;
-import net.java.sip.communicator.service.protocol.event.LocalUserAdHocChatRoomPresenceListener;
-import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceChangeEvent;
-import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceListener;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.MessageListener;
-import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
+import net.java.sip.communicator.service.notification.*;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.resources.ImageID;
 import net.java.sip.communicator.util.Logger;
 
@@ -79,29 +19,17 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.AndroidUIServiceImpl;
-import org.atalk.android.gui.chat.ChatMessage;
-import org.atalk.android.gui.chat.ChatPanel;
-import org.atalk.android.gui.chat.MetaContactChatSession;
+import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.neomedia.recording.Recorder;
 import org.atalk.service.resources.ResourceManagementService;
 import org.jivesoftware.smackx.chatstates.ChatState;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
@@ -112,21 +40,10 @@ import java.util.concurrent.Callable;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class NotificationManager implements
-        AdHocChatRoomMessageListener,
-        CallChangeListener,
-        CallListener,
-        CallPeerConferenceListener,
-        CallPeerListener,
-        CallPeerSecurityListener,
-        ChatRoomMessageListener,
-        FileTransferListener,
-        LocalUserAdHocChatRoomPresenceListener,
-        LocalUserChatRoomPresenceListener,
-        MessageListener,
-        Recorder.Listener,
-        ServiceListener,
-        ChatStateNotificationsListener
+public class NotificationManager implements AdHocChatRoomMessageListener, CallChangeListener, CallListener,
+        CallPeerConferenceListener, CallPeerListener, CallPeerSecurityListener, ChatRoomMessageListener,
+        FileTransferListener, LocalUserAdHocChatRoomPresenceListener, LocalUserChatRoomPresenceListener,
+        MessageListener, Recorder.Listener, ServiceListener, ChatStateNotificationsListener
 {
     /**
      * Default event type for a busy call.
@@ -151,7 +68,8 @@ public class NotificationManager implements
     /**
      * The image used, when a contact has no photo specified.
      */
-    public static final ImageID DEFAULT_USER_PHOTO = new ImageID(aTalkApp.getResString(R.string.service_gui_DEFAULT_USER_PHOTO));
+    public static final ImageID DEFAULT_USER_PHOTO
+            = new ImageID(aTalkApp.getResString(R.string.service_gui_DEFAULT_USER_PHOTO));
 
     /**
      * Default event type for dialing.
@@ -190,18 +108,15 @@ public class NotificationManager implements
      */
     public static final String SECURITY_MESSAGE = "SecurityMessage";
     /**
-     * The <tt>Logger</tt> used by the <tt>NotificationManager</tt> class and its instances for
-     * logging output.
+     * The <tt>Logger</tt> used by the <tt>NotificationManager</tt> class and its instances for logging output.
      */
     private static final Logger logger = Logger.getLogger(NotificationManager.class);
     /**
-     * Stores notification references to stop them if a notification has expired (e.g. to stop the
-     * dialing sound).
+     * Stores notification references to stop them if a notification has expired (e.g. to stop the dialing sound).
      */
     private final Map<Call, NotificationData> callNotifications = new WeakHashMap<>();
     /**
-     * The pseudo timer which is used to delay multiple composing notifications before receiving
-     * the message.
+     * The pseudo timer which is used to delay multiple composing notifications before receiving the message.
      */
     private final Map<Contact, Long> proactiveTimer = new HashMap<>();
 
@@ -253,8 +168,7 @@ public class NotificationManager implements
 
         // cmeng - pop up message for MESSAGE_INCOMING & INCOMING_FILE
         if (chatPanel != null) {
-            if (chatPanel.isChatFocused() && ((eventType.equals(INCOMING_MESSAGE)
-                    || eventType.equals(INCOMING_FILE)))) {
+            if (chatPanel.isChatFocused() && ((eventType.equals(INCOMING_MESSAGE) || eventType.equals(INCOMING_FILE)))) {
                 // if (chatPanel.isChatFocused() && eventType.equals(MESSAGE_INCOMING)) {
                 popupActionHandler = notificationService.getEventNotificationAction(eventType,
                         NotificationAction.ACTION_POPUP_MESSAGE);
@@ -275,21 +189,18 @@ public class NotificationManager implements
     /**
      * Fires a notification for the given event type through the <tt>NotificationService</tt>. The
      * event type is one of the static constants defined in the <tt>NotificationManager</tt> class.
-     * <p>
+     *
      * <b>Note</b>: The uses of the method at the time of this writing do not take measures to
      * stop looping sounds if the respective notifications use them i.e. there is implicit
      * agreement that the notifications fired through the method do not loop sounds.
      * Consequently, the method passes arguments to <tt>NotificationService</tt> so that sounds
      * are played once only.
-     * </p>
      *
      * @param eventType the event type for which we want to fire a notification
      */
     private static void fireNotification(String eventType)
     {
-        NotificationService notificationService
-                = NotificationWiringActivator.getNotificationService();
-
+        NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService != null)
             notificationService.fireNotification(eventType);
     }
@@ -303,8 +214,7 @@ public class NotificationManager implements
      * notification will continue looping
      * @return a reference to the fired notification to stop it.
      */
-    private static NotificationData fireNotification(String eventType,
-            Callable<Boolean> loopCondition)
+    private static NotificationData fireNotification(String eventType, Callable<Boolean> loopCondition)
     {
         return fireNotification(eventType, null, null, null, loopCondition);
     }
@@ -312,25 +222,20 @@ public class NotificationManager implements
     /**
      * Fires a notification through the <tt>NotificationService</tt> with a specific event type, a
      * specific message title and a specific message.
-     * <p>
+     *
      * <b>Note</b>: The uses of the method at the time of this writing do not take measures to
      * stop looping sounds if the respective notifications use them i.e. there is implicit
      * agreement that the notifications fired through the method do not loop sounds. Consequently,
-     * the method passes arguments to <tt>NotificationService</tt> so that sounds
-     * are played once only.
-     * </p>
+     * the method passes arguments to <tt>NotificationService</tt> so that sounds are played once only.
      *
      * @param eventType the event type of the notification to be fired
      * @param messageTitle the title of the message to be displayed by the notification to be fired if such a
      * display is supported
-     * @param message the message to be displayed by the notification to be fired if such a display is
-     * supported
+     * @param message the message to be displayed by the notification to be fired if such a display is supported
      */
     private static void fireNotification(String eventType, String messageTitle, String message)
     {
-        NotificationService notificationService
-                = NotificationWiringActivator.getNotificationService();
-
+        NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService != null) {
             notificationService.fireNotification(eventType, messageTitle, message, null);
         }
@@ -344,8 +249,7 @@ public class NotificationManager implements
      * @param messageTitle the title of the message
      * @param message the content of the message
      * @param cmdargs the value to be provided to
-     * {@link CommandNotificationHandler#execute(CommandNotificationAction, Map)} as the
-     * <tt>cmdargs</tt> argument
+     * {@link CommandNotificationHandler#execute(CommandNotificationAction, Map)} as the <tt>cmdargs</tt> argument
      * @param loopCondition the method which will determine whether any sounds played as part of the specified
      * notification will continue looping
      * @return a reference to the fired notification to stop it.
@@ -353,23 +257,18 @@ public class NotificationManager implements
     private static NotificationData fireNotification(String eventType, String messageTitle,
             String message, Map<String, String> cmdargs, Callable<Boolean> loopCondition)
     {
-        NotificationService notificationService = NotificationWiringActivator
-                .getNotificationService();
-
+        NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService == null)
             return null;
         else {
             Map<String, Object> extras = new HashMap<>();
-
             if (cmdargs != null) {
                 extras.put(NotificationData.COMMAND_NOTIFICATION_HANDLER_CMDARGS_EXTRA, cmdargs);
             }
             if (loopCondition != null) {
-                extras.put(NotificationData.SOUND_NOTIFICATION_HANDLER_LOOP_CONDITION_EXTRA,
-                        loopCondition);
+                extras.put(NotificationData.SOUND_NOTIFICATION_HANDLER_LOOP_CONDITION_EXTRA, loopCondition);
             }
-            return notificationService.fireNotification(eventType, messageTitle, message, null,
-                    extras);
+            return notificationService.fireNotification(eventType, messageTitle, message, null, extras);
         }
     }
 
@@ -390,13 +289,11 @@ public class NotificationManager implements
         }
 
         Map<Object, ProtocolProviderFactory> providerFactoriesMap = new Hashtable<>();
-
         if (serRefs != null) {
             for (ServiceReference serRef : serRefs) {
-                ProtocolProviderFactory providerFactory = (ProtocolProviderFactory)
-                        NotificationWiringActivator.bundleContext.getService(serRef);
-                providerFactoriesMap.put(serRef.getProperty(ProtocolProviderFactory.PROTOCOL),
-                        providerFactory);
+                ProtocolProviderFactory providerFactory
+                        = (ProtocolProviderFactory) NotificationWiringActivator.bundleContext.getService(serRef);
+                providerFactoriesMap.put(serRef.getProperty(ProtocolProviderFactory.PROTOCOL), providerFactory);
             }
         }
         return providerFactoriesMap;
@@ -421,8 +318,8 @@ public class NotificationManager implements
         List<ProtocolProviderService> providersList = new ArrayList<>();
         if (serRefs != null) {
             for (ServiceReference serRef : serRefs) {
-                ProtocolProviderService pp = (ProtocolProviderService) NotificationWiringActivator
-                        .bundleContext.getService(serRef);
+                ProtocolProviderService pp
+                        = (ProtocolProviderService) NotificationWiringActivator.bundleContext.getService(serRef);
                 providersList.add(pp);
             }
         }
@@ -437,8 +334,7 @@ public class NotificationManager implements
      * if it has only one <code>ChatRoomMember</code> who is not the local user.
      *
      * @param chatRoom the <code>ChatRoom</code> to be determined as private or not
-     * @return <tt>true</tt> if the specified <code>ChatRoom</code> is private; otherwise,
-     * <tt>false</tt>
+     * @return <tt>true</tt> if the specified <code>ChatRoom</code> is private; otherwise, <tt>false</tt>
      */
     private static boolean isPrivate(ChatRoom chatRoom)
     {
@@ -456,14 +352,12 @@ public class NotificationManager implements
     }
 
     /**
-     * Determines whether the <tt>DIALING</tt> sound notification should be played for a specific
-     * <tt>CallPeer</tt>.
+     * Determines whether the <tt>DIALING</tt> sound notification should be played for a specific <tt>CallPeer</tt>.
      *
      * @param weakPeer the <tt>CallPeer</tt> for which it is to be determined whether the <tt>DIALING</tt>
      * sound notification is to be played
      * @return <tt>true</tt> if the <tt>DIALING</tt> sound notification should be played for the
-     * specified <tt>callPeer</tt>; otherwise,
-     * <tt>false</tt>
+     * specified <tt>callPeer</tt>; otherwise, tt>false</tt>
      */
     private static boolean shouldPlayDialingSound(WeakReference<CallPeer> weakPeer)
     {
@@ -487,19 +381,13 @@ public class NotificationManager implements
             while (peerIter.hasNext()) {
                 CallPeer aPeer = peerIter.next();
 
-                /*
-                 * The peer is still in a call/telephony conference so the DIALING sound may need
-                 * to be played.
-                 */
+                // The peer is still in a call/telephony conference so the DIALING sound may need to be played.
                 if (peer == aPeer)
                     play = true;
 
                 CallPeerState state = peer.getState();
-                if (CallPeerState.INITIATING_CALL.equals(state)
-                        || CallPeerState.CONNECTING.equals(state)) {
-                    /*
-                     * The DIALING sound should be played for the first CallPeer only.
-                     */
+                if (CallPeerState.INITIATING_CALL.equals(state) || CallPeerState.CONNECTING.equals(state)) {
+                    // The DIALING sound should be played for the first CallPeer only.
                     if (peer != aPeer)
                         return false;
                 }
@@ -516,8 +404,7 @@ public class NotificationManager implements
     }
 
     /**
-     * Implements CallListener.callEnded. Stops sounds that are playing at the moment if there're
-     * any.
+     * Implements CallListener.callEnded. Stops sounds that are playing at the moment if there're any.
      *
      * @param ev the <tt>CallEvent</tt>
      */
@@ -537,8 +424,7 @@ public class NotificationManager implements
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                logger.error("An error occurred while trying to notify about the end of a call.",
-                        t);
+                logger.error("An error occurred while trying to notify about the end of a call.", t);
             }
         }
     }
@@ -551,7 +437,6 @@ public class NotificationManager implements
     public void callPeerAdded(CallPeerEvent evt)
     {
         CallPeer peer = evt.getSourceCallPeer();
-
         if (peer == null)
             return;
 
@@ -568,7 +453,6 @@ public class NotificationManager implements
     public void callPeerRemoved(CallPeerEvent evt)
     {
         CallPeer peer = evt.getSourceCallPeer();
-
         if (peer == null)
             return;
 
@@ -579,7 +463,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void callStateChanged(CallChangeEvent ev)
@@ -588,7 +472,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void conferenceFocusChanged(CallPeerConferenceEvent ev)
@@ -604,10 +488,8 @@ public class NotificationManager implements
     {
         try {
             CallPeer peer = conferenceEvent.getConferenceMember().getConferenceFocusCallPeer();
-
             if (peer.getConferenceMemberCount() > 0) {
                 CallPeerSecurityStatusEvent securityEvent = peer.getCurrentSecuritySettings();
-
                 if (securityEvent instanceof CallPeerSecurityOnEvent)
                     fireNotification(CALL_SECURITY_ON);
             }
@@ -621,7 +503,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void conferenceMemberErrorReceived(CallPeerConferenceEvent ev)
@@ -630,7 +512,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void conferenceMemberRemoved(CallPeerConferenceEvent ev)
@@ -639,7 +521,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void fileTransferCreated(FileTransferCreatedEvent ev)
@@ -648,7 +530,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void fileTransferRequestCanceled(FileTransferRequestEvent ev)
@@ -665,15 +547,12 @@ public class NotificationManager implements
     {
         try {
             IncomingFileTransferRequest request = event.getRequest();
-            String message = request.getFileName()
-                    + "  (size: " + String.valueOf(request.getFileSize()) + ")";
+            String message = request.getFileName() + "  (size: " + String.valueOf(request.getFileSize()) + ")";
             Contact sourceContact = request.getSender();
 
             // Fire notification
-            String title = NotificationWiringActivator.getResources()
-                    .getI18NString("service.gui.FILE_RECEIVING_FROM",
-                            new String[]{sourceContact.getDisplayName()});
-
+            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM,
+                    sourceContact.getDisplayName());
             fireChatNotification(sourceContact, INCOMING_FILE, title, message, request.getID());
         } catch (Throwable t) {
             logger.error("Error notifying for file transfer request received", t);
@@ -682,7 +561,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void fileTransferRequestRejected(FileTransferRequestEvent ev)
@@ -704,8 +583,8 @@ public class NotificationManager implements
         // Obtain the basic instant messaging operation set.
         String imOpSetClassName = OperationSetBasicInstantMessaging.class.getName();
         if (supportedOperationSets.containsKey(imOpSetClassName)) {
-            OperationSetBasicInstantMessaging im = (OperationSetBasicInstantMessaging)
-                    supportedOperationSets.get(imOpSetClassName);
+            OperationSetBasicInstantMessaging im
+                    = (OperationSetBasicInstantMessaging) supportedOperationSets.get(imOpSetClassName);
 
             // Add to all instant messaging operation sets the Message listener which handles all
             // received messages.
@@ -722,8 +601,8 @@ public class NotificationManager implements
         // Obtain the chat state notifications operation set.
         String tnOpSetClassName = OperationSetChatStateNotifications.class.getName();
         if (supportedOperationSets.containsKey(tnOpSetClassName)) {
-            OperationSetChatStateNotifications tn = (OperationSetChatStateNotifications)
-                    supportedOperationSets.get(tnOpSetClassName);
+            OperationSetChatStateNotifications tn
+                    = (OperationSetChatStateNotifications) supportedOperationSets.get(tnOpSetClassName);
 
             // Add to all chat state notification operation sets the Message listener implemented in
             // the ContactListPanel, which handles all received messages.
@@ -744,7 +623,6 @@ public class NotificationManager implements
             OperationSetMultiUserChat multiChatOpSet = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
             if (multiChatOpSet != null) {
                 multiChatOpSet.addPresenceListener(this);
-
                 multiChatOpSet.addInvitationListener(conferenceChatManager);
                 multiChatOpSet.addInvitationRejectionListener(conferenceChatManager);
                 multiChatOpSet.addPresenceListener(conferenceChatManager);
@@ -755,7 +633,6 @@ public class NotificationManager implements
                     = protocolProvider.getOperationSet(OperationSetAdHocMultiUserChat.class);
             if (adHocMultiChatOpSet != null) {
                 adHocMultiChatOpSet.addPresenceListener(this);
-
                 adHocMultiChatOpSet.addInvitationListener(conferenceChatManager);
                 adHocMultiChatOpSet.addInvitationRejectionListener(conferenceChatManager);
                 adHocMultiChatOpSet.addPresenceListener(conferenceChatManager);
@@ -776,14 +653,13 @@ public class NotificationManager implements
      */
     private void handleProviderRemoved(ProtocolProviderService protocolProvider)
     {
-        Map<String, OperationSet> supportedOperationSets
-                = protocolProvider.getSupportedOperationSets();
+        Map<String, OperationSet> supportedOperationSets = protocolProvider.getSupportedOperationSets();
 
         // Obtain the basic instant messaging operation set.
         String imOpSetClassName = OperationSetBasicInstantMessaging.class.getName();
         if (supportedOperationSets.containsKey(imOpSetClassName)) {
-            OperationSetBasicInstantMessaging im = (OperationSetBasicInstantMessaging)
-                    supportedOperationSets.get(imOpSetClassName);
+            OperationSetBasicInstantMessaging im
+                    = (OperationSetBasicInstantMessaging) supportedOperationSets.get(imOpSetClassName);
 
             // Add to all instant messaging operation sets the Message listener which handles all
             // received messages.
@@ -793,8 +669,8 @@ public class NotificationManager implements
         // Obtain the chat state notifications operation set.
         String tnOpSetClassName = OperationSetChatStateNotifications.class.getName();
         if (supportedOperationSets.containsKey(tnOpSetClassName)) {
-            OperationSetChatStateNotifications tn = (OperationSetChatStateNotifications)
-                    supportedOperationSets.get(tnOpSetClassName);
+            OperationSetChatStateNotifications tn
+                    = (OperationSetChatStateNotifications) supportedOperationSets.get(tnOpSetClassName);
 
             // Add to all chat state notification operation sets the Message listener implemented in
             // the ContactListPanel, which handles all received messages.
@@ -802,8 +678,7 @@ public class NotificationManager implements
         }
 
         // Obtain file transfer operation set.
-        OperationSetFileTransfer fileTransferOpSet
-                = protocolProvider.getOperationSet(OperationSetFileTransfer.class);
+        OperationSetFileTransfer fileTransferOpSet = protocolProvider.getOperationSet(OperationSetFileTransfer.class);
         if (fileTransferOpSet != null) {
             fileTransferOpSet.removeFileTransferListener(this);
         }
@@ -812,29 +687,26 @@ public class NotificationManager implements
         AndroidUIServiceImpl uiService = AndroidGUIActivator.getUIService();
         ConferenceChatManager conferenceChatManager = uiService.getConferenceChatManager();
 
-        OperationSetMultiUserChat multiChatOpSet
-                = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
+        OperationSetMultiUserChat multiChatOpSet = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
         if (multiChatOpSet != null) {
             multiChatOpSet.removePresenceListener(this);
-
             multiChatOpSet.removeInvitationListener(conferenceChatManager);
             multiChatOpSet.removeInvitationRejectionListener(conferenceChatManager);
             multiChatOpSet.removePresenceListener(conferenceChatManager);
         }
 
-        OperationSetAdHocMultiUserChat multiAdHocChatOpSet = protocolProvider
-                .getOperationSet(OperationSetAdHocMultiUserChat.class);
+        OperationSetAdHocMultiUserChat multiAdHocChatOpSet
+                = protocolProvider.getOperationSet(OperationSetAdHocMultiUserChat.class);
         if (multiAdHocChatOpSet != null) {
             multiAdHocChatOpSet.removePresenceListener(this);
-
             multiAdHocChatOpSet.removeInvitationListener(conferenceChatManager);
             multiAdHocChatOpSet.removeInvitationRejectionListener(conferenceChatManager);
             multiAdHocChatOpSet.removePresenceListener(conferenceChatManager);
         }
 
         // Obtain the basic telephony operation set.
-        OperationSetBasicTelephony<?> basicTelephonyOpSet = protocolProvider
-                .getOperationSet(OperationSetBasicTelephony.class);
+        OperationSetBasicTelephony<?> basicTelephonyOpSet
+                = protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
         if (basicTelephonyOpSet != null) {
             basicTelephonyOpSet.removeCallListener(this);
         }
@@ -863,15 +735,12 @@ public class NotificationManager implements
 
             /*
              * The loopCondition will stay with the notification sound until the latter is stopped.
-             * If by any chance the sound fails to stop by the time the call is no longer
-             * referenced, do try to stop it then. That's why the loopCondition will weakly
-             * reference the call.
+             * If by any chance the sound fails to stop by the time the call is no longer referenced, do try
+              * to stop it then. That's why the loopCondition will weakly reference the call.
              */
             final WeakReference<Call> weakCall = new WeakReference<>(call);
             NotificationData notification = fireNotification(INCOMING_CALL, "",
-                    NotificationWiringActivator.getResources()
-                            .getI18NString("service.gui.INCOMING_CALL",
-                                    new String[]{peerName}), peerInfo,
+                    aTalkApp.getResString(R.string.service_gui_INCOMING_CALL, peerName), peerInfo,
                     new Callable<Boolean>()
                     {
                         public Boolean call()
@@ -888,7 +757,6 @@ public class NotificationManager implements
                             boolean loop = false;
                             while (peerIter.hasNext()) {
                                 CallPeer peer = peerIter.next();
-
                                 if (CallPeerState.INCOMING_CALL.equals(peer.getState())) {
                                     loop = true;
                                     break;
@@ -937,8 +805,7 @@ public class NotificationManager implements
      * Checks if the contained call is a conference call.
      *
      * @param call the call to check
-     * @return <code>true</code> if the contained <tt>Call</tt> is a conference call, otherwise -
-     * returns <code>false</code>.
+     * @return <code>true</code> if the contained <tt>Call</tt> is a conference call, otherwise returns <code>false</code>.
      */
     public boolean isConference(Call call)
     {
@@ -951,7 +818,6 @@ public class NotificationManager implements
 
         while (callPeers.hasNext()) {
             CallPeer callPeer = callPeers.next();
-
             if (callPeer.isConferenceFocus())
                 return true;
         }
@@ -965,11 +831,9 @@ public class NotificationManager implements
     }
 
     /**
-     * Implements the <tt>LocalUserAdHocChatRoomPresenceListener.localUserPresenceChanged</tt>
-     * method
+     * Implements the <tt>LocalUserAdHocChatRoomPresenceListener.localUserPresenceChanged</tt> method
      *
-     * @param evt the <tt>LocalUserAdHocChatRoomPresenceChangeEvent</tt> that notified us of a presence
-     * change
+     * @param evt the <tt>LocalUserAdHocChatRoomPresenceChangeEvent</tt> that notified us of a presence change
      */
     public void localUserAdHocPresenceChanged(LocalUserAdHocChatRoomPresenceChangeEvent evt)
     {
@@ -978,8 +842,7 @@ public class NotificationManager implements
             evt.getAdHocChatRoom().addMessageListener(this);
         }
         else if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
-                || LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED.equals
-                (eventType)) {
+                || LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED.equals(eventType)) {
             evt.getAdHocChatRoom().removeMessageListener(this);
         }
     }
@@ -1006,7 +869,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void messageDelivered(AdHocChatRoomMessageDeliveredEvent ev)
@@ -1015,7 +878,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void messageDelivered(ChatRoomMessageDeliveredEvent ev)
@@ -1024,7 +887,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used
      */
     public void messageDelivered(MessageDeliveredEvent ev)
@@ -1033,7 +896,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent ev)
@@ -1042,7 +905,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent ev)
@@ -1051,7 +914,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void messageDeliveryFailed(MessageDeliveryFailedEvent ev)
@@ -1073,11 +936,10 @@ public class NotificationManager implements
             String nickname = sourceChatRoom.getName();
             String messageContent = evt.getMessage().getContent();
 
-            fireChatNotification = (nickname == null)
-                    || messageContent.toLowerCase().contains(nickname.toLowerCase());
+            fireChatNotification = (nickname == null) || messageContent.toLowerCase().contains(nickname.toLowerCase());
             if (fireChatNotification) {
-                String title = NotificationWiringActivator.getResources().getI18NString("service.gui.MSG_RECEIVED",
-                        new String[]{sourceParticipant.getDisplayName()});
+                String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED,
+                        sourceParticipant.getDisplayName());
                 final String htmlContent;
                 if (ChatMessage.ENCODE_HTML == evt.getMessage().getMimeType()) {
                     htmlContent = messageContent;
@@ -1121,15 +983,12 @@ public class NotificationManager implements
 //				String nickname = sourceChatRoom.getUserNickname().toString();
 //				int atIx = nickname.indexOf("@");
 
-//				fireChatNotification =
-//						messageContent.toLowerCase().contains(nickname.toLowerCase())
-//						|| ((atIx != -1) && messageContent.toLowerCase().contains(
-//								nickname.substring(0, atIx).toLowerCase()));
+//				fireChatNotification = messageContent.toLowerCase().contains(nickname.toLowerCase())
+//						|| ((atIx != -1) && messageContent.toLowerCase().contains(nickname.substring(0, atIx).toLowerCase()));
             }
 
             if (fireChatNotification) {
-                String title = NotificationWiringActivator.getResources().getI18NString("service.gui.MSG_RECEIVED",
-                        new String[]{sourceMember.getNickName()});
+                String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, sourceMember.getNickName());
                 final String htmlContent;
                 if (ChatMessage.ENCODE_HTML == sourceMsg.getMimeType()) {
                     htmlContent = messageContent;
@@ -1153,8 +1012,7 @@ public class NotificationManager implements
     {
         try {
             // Fire notification
-            String title = NotificationWiringActivator.getResources().getI18NString("service.gui.MSG_RECEIVED",
-                    new String[]{evt.getSourceContact().getDisplayName()});
+            String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, evt.getSourceContact().getDisplayName());
 
             final Message sourceMsg = evt.getSourceMessage();
             final String htmlContent;
@@ -1190,7 +1048,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void peerAddressChanged(CallPeerChangeEvent ev)
@@ -1199,7 +1057,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void peerDisplayNameChanged(CallPeerChangeEvent ev)
@@ -1208,7 +1066,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void peerImageChanged(CallPeerChangeEvent ev)
@@ -1263,9 +1121,8 @@ public class NotificationManager implements
             }
 
             if (newState == CallPeerState.ALERTING_REMOTE_SIDE
-                    // if we were already in state CONNECTING_WITH_EARLY_MEDIA the server is
-                    // already taking care of playing the notifications so we don't need to fire
-                    // a notification here.
+                    // if we were already in state CONNECTING_WITH_EARLY_MEDIA the server is already taking care
+                    // of playing the notifications so we don't need to fire a notification here.
                     && oldState != CallPeerState.CONNECTING_WITH_EARLY_MEDIA) {
                 final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
                 NotificationData notification = fireNotification(OUTGOING_CALL,
@@ -1274,9 +1131,7 @@ public class NotificationManager implements
                             public Boolean call()
                             {
                                 CallPeer peer = weakPeer.get();
-                                return (peer != null)
-                                        && CallPeerState.ALERTING_REMOTE_SIDE.equals(
-                                        peer.getState());
+                                return (peer != null) && CallPeerState.ALERTING_REMOTE_SIDE.equals(peer.getState());
                             }
                         });
 
@@ -1287,8 +1142,7 @@ public class NotificationManager implements
                 // We start the busy sound only if we're in a simple call.
                 if (!isConference(call)) {
                     final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
-                    NotificationData notification
-                            = fireNotification(BUSY_CALL, new Callable<Boolean>()
+                    NotificationData notification = fireNotification(BUSY_CALL, new Callable<Boolean>()
                     {
                         public Boolean call()
                         {
@@ -1300,8 +1154,7 @@ public class NotificationManager implements
                         callNotifications.put(call, notification);
                 }
             }
-            else if ((newState == CallPeerState.DISCONNECTED)
-                    || (newState == CallPeerState.FAILED)) {
+            else if ((newState == CallPeerState.DISCONNECTED) || (newState == CallPeerState.FAILED)) {
                 fireNotification(HANG_UP);
             }
         } catch (Throwable t) {
@@ -1315,7 +1168,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void peerTransportAddressChanged(CallPeerChangeEvent ev)
@@ -1333,15 +1186,13 @@ public class NotificationManager implements
         try {
             ResourceManagementService resources = NotificationWiringActivator.getResources();
             fireNotification(CALL_SAVED,
-                    resources.getI18NString("plugin.callrecordingconfig.CALL_SAVED"),
-                    resources.getI18NString("plugin.callrecordingconfig.CALL_SAVED_TO",
-                            new String[]{recorder.getFilename()}));
+                    aTalkApp.getResString(R.string.plugin_callrecordingconfig_CALL_SAVED),
+                    aTalkApp.getResString(R.string.plugin_callrecordingconfig_CALL_SAVED_TO, recorder.getFilename()));
         } catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                logger.error("An error occurred while trying to notify that"
-                        + " the recording of a call has stopped.", t);
+                logger.error("An error occurred while trying to notify that the recording of a call has stopped.", t);
             }
         }
     }
@@ -1445,30 +1296,25 @@ public class NotificationManager implements
                     break;
 
                 default:
-                    /*
-                     * Whatever other severity there is or will be, we do not how to react to it
-                     * yet.
-                     */
+                     // Whatever other severity there is or will be, we do not how to react to it yet.
                     messageTitleKey = null;
             }
-
             if (messageTitleKey != null) {
-                fireNotification(SECURITY_MESSAGE, NotificationWiringActivator.getResources()
-                        .getI18NString(messageTitleKey), ev.getI18nMessage());
+                fireNotification(SECURITY_MESSAGE,
+                        NotificationWiringActivator.getResources().getI18NString(messageTitleKey), ev.getI18nMessage());
             }
         } catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                logger.error("An error occurred while trying to notify"
-                        + " about a security message", t);
+                logger.error("An error occurred while trying to notify about a security message", t);
             }
         }
     }
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void securityNegotiationStarted(CallPeerSecurityNegotiationStartedEvent ev)
@@ -1477,7 +1323,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void securityOff(CallPeerSecurityOffEvent ev)
@@ -1512,7 +1358,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void securityTimeout(CallPeerSecurityTimeoutEvent ev)
@@ -1586,7 +1432,7 @@ public class NotificationManager implements
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Not used.
      */
     public void chatStateNotificationDeliveryFailed(ChatStateNotificationEvent ev)
@@ -1619,8 +1465,7 @@ public class NotificationManager implements
                 if ((chat != null) && (((ChatPanel) chat)
                         .getChatSession() instanceof MetaContactChatSession)) {
                     MetaContact metaContact = uiService.getChatContact(chat);
-                    if ((metaContact != null) && metaContact.containsContact(contact)
-                            && chat.isChatFocused()) {
+                    if ((metaContact != null) && metaContact.containsContact(contact) && chat.isChatFocused()) {
                         return;
                     }
                 }
@@ -1651,8 +1496,7 @@ public class NotificationManager implements
 
             proactiveTimer.put(contact, currentTime);
             fireChatNotification(contact, PROACTIVE_NOTIFICATION, contact.getDisplayName(),
-                    NotificationWiringActivator.getResources()
-                            .getI18NString("service.gui.PROACTIVE_NOTIFICATION"), null);
+                    aTalkApp.getResString(R.string.service_gui_PROACTIVE_NOTIFICATION), null);
         } catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;

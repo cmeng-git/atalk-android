@@ -20,7 +20,8 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.Logger;
 
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatPanel;
+import org.atalk.android.gui.chat.ChatSessionManager;
 import org.osgi.framework.*;
 
 import java.util.Date;
@@ -37,195 +38,173 @@ import java.util.Date;
  */
 public class FileTransferActivator implements BundleActivator, ServiceListener, FileTransferListener
 {
-	/**
-	 * The logger for this class.
-	 */
-	private static final Logger logger = Logger.getLogger(FileTransferActivator.class);
+    /**
+     * The logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(FileTransferActivator.class);
 
-	/**
-	 * The BundleContext that we got from the OSGI bus.
-	 */
-	private BundleContext bundleContext;
+    /**
+     * The BundleContext that we got from the OSGI bus.
+     */
+    private BundleContext bundleContext;
 
-	/**
-	 * Starts the service. Check the current registered protocol providers which supports
-	 * FileTransfer and adds a listener to them.
-	 *
-	 * @param bc
-	 * 		BundleContext
-	 */
-	public void start(BundleContext bc)
-			throws Exception
-	{
-		bundleContext = bc;
-		bundleContext.addServiceListener(this);
+    /**
+     * Starts the service. Check the current registered protocol providers which supports
+     * FileTransfer and adds a listener to them.
+     *
+     * @param bc BundleContext
+     */
+    public void start(BundleContext bc)
+            throws Exception
+    {
+        bundleContext = bc;
+        bundleContext.addServiceListener(this);
 
-		ServiceReference[] ppsRefs = null;
-		try {
-			ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(),
-					null);
-		}
-		catch (InvalidSyntaxException ex) {
-			ex.printStackTrace();
-		}
+        ServiceReference[] ppsRefs = null;
+        try {
+            ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
+        } catch (InvalidSyntaxException ex) {
+            ex.printStackTrace();
+        }
+        if ((ppsRefs != null) && (ppsRefs.length != 0)) {
+            for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {
+                ProtocolProviderService pps = bundleContext.getService(ppsRef);
+                handleProviderAdded(pps);
+            }
+        }
+    }
 
-		if ((ppsRefs != null) && (ppsRefs.length != 0)) {
-			for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {
-				ProtocolProviderService pps = bundleContext.getService(ppsRef);
-				handleProviderAdded(pps);
-			}
-		}
-	}
+    /**
+     * Stops the service.
+     *
+     * @param bc BundleContext
+     */
+    public void stop(BundleContext bc)
+            throws Exception
+    {
+        bundleContext = bc;
+        bundleContext.removeServiceListener(this);
 
-	/**
-	 * Stops the service.
-	 *
-	 * @param bc
-	 * 		BundleContext
-	 */
-	public void stop(BundleContext bc)
-			throws Exception
-	{
-		bundleContext = bc;
-		bundleContext.removeServiceListener(this);
+        ServiceReference[] ppsRefs = null;
+        try {
+            ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
 
-		ServiceReference[] ppsRefs = null;
-		try {
-			ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(),
-					null);
-		}
-		catch (InvalidSyntaxException e) {
-			e.printStackTrace();
-		}
+        if ((ppsRefs != null) && (ppsRefs.length != 0)) {
+            for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {
+                ProtocolProviderService pps = bundleContext.getService(ppsRef);
+                handleProviderRemoved(pps);
+            }
+        }
+    }
 
-		if ((ppsRefs != null) && (ppsRefs.length != 0)) {
-			for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {
-				ProtocolProviderService pps = bundleContext.getService(ppsRef);
-				handleProviderRemoved(pps);
-			}
-		}
-	}
+    /**
+     * When new protocol provider is registered we check if it does supports FileTransfer and
+     * add a listener to it if so.
+     *
+     * @param event ServiceEvent received when there is a service changed
+     */
+    public void serviceChanged(ServiceEvent event)
+    {
+        ServiceReference serviceRef = event.getServiceReference();
+        // if the event is caused by a bundle being stopped, we don't want to know
+        if (serviceRef.getBundle().getState() == Bundle.STOPPING)
+            return;
 
-	/**
-	 * When new protocol provider is registered we check if it does supports FileTransfer and
-	 * add a listener to it if so.
-	 *
-	 * @param event
-	 * 		ServiceEvent received when there is a service changed
-	 */
-	public void serviceChanged(ServiceEvent event)
-	{
-		ServiceReference serviceRef = event.getServiceReference();
+        Object sService = bundleContext.getService(serviceRef);
+        // we don't care if the source service is not a protocol provider
+        if (sService instanceof ProtocolProviderService) {
+            switch (event.getType()) {
+                case ServiceEvent.REGISTERED:
+                    this.handleProviderAdded((ProtocolProviderService) sService);
+                    break;
 
-		// if the event is caused by a bundle being stopped, we don't want to know
-		if (serviceRef.getBundle().getState() == Bundle.STOPPING)
-			return;
+                case ServiceEvent.UNREGISTERING:
+                    this.handleProviderRemoved((ProtocolProviderService) sService);
+                    break;
+            }
+        }
+    }
 
-		Object sService = bundleContext.getService(serviceRef);
-		// we don't care if the source service is not a protocol provider
-		if (sService instanceof ProtocolProviderService) {
-			switch (event.getType()) {
-				case ServiceEvent.REGISTERED:
-					this.handleProviderAdded((ProtocolProviderService) sService);
-					break;
+    /**
+     * Used to attach the File Transfer Service to existing or just registered protocol provider.
+     * Checks if the provider has implementation of OperationSetFileTransfer
+     *
+     * @param provider ProtocolProviderService
+     */
+    private void handleProviderAdded(ProtocolProviderService provider)
+    {
+        OperationSetFileTransfer opSetFileTransfer = provider.getOperationSet(OperationSetFileTransfer.class);
 
-				case ServiceEvent.UNREGISTERING:
-					this.handleProviderRemoved((ProtocolProviderService) sService);
-					break;
-			}
-		}
-	}
+        if (opSetFileTransfer != null) {
+            opSetFileTransfer.addFileTransferListener(this);
+        }
+        else {
+            if (logger.isTraceEnabled())
+                logger.trace("Service did not have a file transfer op. set: " + provider.toString());
+        }
+    }
 
-	/**
-	 * Used to attach the File Transfer Service to existing or just registered protocol provider.
-	 * Checks if the provider
-	 * has implementation of OperationSetFileTransfer
-	 *
-	 * @param provider
-	 * 		ProtocolProviderService
-	 */
-	private void handleProviderAdded(ProtocolProviderService provider)
-	{
-		OperationSetFileTransfer opSetFileTransfer = provider.getOperationSet(
-				OperationSetFileTransfer.class);
+    /**
+     * Removes the specified provider from the list of currently known providers
+     *
+     * @param provider the ProtocolProviderService that has been unregistered.
+     */
+    private void handleProviderRemoved(ProtocolProviderService provider)
+    {
+        OperationSetFileTransfer opSetFileTransfer = provider.getOperationSet(OperationSetFileTransfer.class);
 
-		if (opSetFileTransfer != null) {
-			opSetFileTransfer.addFileTransferListener(this);
-		}
-		else {
-			if (logger.isTraceEnabled())
-				logger.trace("Service did not have a file transfer op. set: "
-						+ provider.toString());
-		}
-	}
+        if (opSetFileTransfer != null) {
+            opSetFileTransfer.removeFileTransferListener(this);
+        }
+    }
 
-	/**
-	 * Removes the specified provider from the list of currently known providers
-	 *
-	 * @param provider
-	 * 		the ProtocolProviderService that has been unregistered.
-	 */
-	private void handleProviderRemoved(ProtocolProviderService provider)
-	{
-		OperationSetFileTransfer opSetFileTransfer = provider.getOperationSet(
-				OperationSetFileTransfer.class);
+    /**
+     * Called when a new <tt>IncomingFileTransferRequest</tt> has been received.
+     *
+     * @param event the <tt>FileTransferRequestEvent</tt> containing the newly received request and other details.
+     */
+    @Override
+    public void fileTransferRequestReceived(FileTransferRequestEvent event)
+    {
+        IncomingFileTransferRequest request = event.getRequest();
+        OperationSetFileTransfer opSet = event.getFileTransferOperationSet();
 
-		if (opSetFileTransfer != null) {
-			opSetFileTransfer.removeFileTransferListener(this);
-		}
-	}
+        Contact sender = request.getSender();
+        Date date = event.getTimestamp();
+        ChatPanel chatPanel = ChatSessionManager.createChatForContact(sender);
+        if (chatPanel != null)
+            chatPanel.addFTRequest(opSet, request, date);
+    }
 
-	/**
-	 * Called when a new <tt>IncomingFileTransferRequest</tt> has been received.
-	 *
-	 * @param event
-	 * 		the <tt>FileTransferRequestEvent</tt> containing the newly received request and
-	 * 		other details.
-	 */
-	@Override
-	public void fileTransferRequestReceived(FileTransferRequestEvent event)
-	{
-		IncomingFileTransferRequest request = event.getRequest();
-		OperationSetFileTransfer opSet = event.getFileTransferOperationSet();
+    /**
+     * Nothing to do here, because we already know when a file transfer is created.
+     *
+     * @param event the <tt>FileTransferCreatedEvent</tt> that notified us
+     */
+    public void fileTransferCreated(FileTransferCreatedEvent event)
+    {
+    }
 
-		Contact sender = request.getSender();
-		Date date = event.getTimestamp();
-		ChatPanel chatPanel = ChatSessionManager.createChatForContact(sender);
-		if (chatPanel != null)
-			chatPanel.addFTRequest(opSet, request, date);
-	}
+    /**
+     * Called when a new <tt>IncomingFileTransferRequest</tt> has been rejected. Nothing to do
+     * here, because we are the
+     * one who rejects the request.
+     *
+     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
+     */
+    public void fileTransferRequestRejected(FileTransferRequestEvent event)
+    {
+    }
 
-	/**
-	 * Nothing to do here, because we already know when a file transfer is created.
-	 *
-	 * @param event
-	 * 		the <tt>FileTransferCreatedEvent</tt> that notified us
-	 */
-	public void fileTransferCreated(FileTransferCreatedEvent event)
-	{
-	}
-
-	/**
-	 * Called when a new <tt>IncomingFileTransferRequest</tt> has been rejected. Nothing to do
-	 * here, because we are the
-	 * one who rejects the request.
-	 *
-	 * @param event
-	 * 		the <tt>FileTransferRequestEvent</tt> containing the received request which was
-	 * 		rejected.
-	 */
-	public void fileTransferRequestRejected(FileTransferRequestEvent event)
-	{
-	}
-
-	/**
-	 * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who
-	 * sent it.
-	 *
-	 * @param event
-	 * 		the <tt>FileTransferRequestEvent</tt> containing the request which was canceled.
-	 */
-	public void fileTransferRequestCanceled(FileTransferRequestEvent event)
-	{
-	}
+    /**
+     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who sent it.
+     *
+     * @param event the <tt>FileTransferRequestEvent</tt> containing the request which was canceled.
+     */
+    public void fileTransferRequestCanceled(FileTransferRequestEvent event)
+    {
+    }
 }

@@ -5,41 +5,23 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CandidatePacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CandidateType;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.IceUdpTransportPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RtpDescriptionPacketExtension;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
-import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.SecurityAuthority;
-import net.java.sip.communicator.service.protocol.StunServerDescriptor;
-import net.java.sip.communicator.service.protocol.UserCredentials;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.PortTracker;
 
-import org.atalk.service.neomedia.DefaultStreamConnector;
-import org.atalk.service.neomedia.MediaStreamTarget;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.StreamConnector;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.service.neomedia.*;
 import org.atalk.util.StringUtils;
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
-import org.ice4j.ice.Agent;
-import org.ice4j.ice.Candidate;
-import org.ice4j.ice.CandidatePair;
-import org.ice4j.ice.Component;
-import org.ice4j.ice.IceMediaStream;
-import org.ice4j.ice.IceProcessingState;
-import org.ice4j.ice.LocalCandidate;
-import org.ice4j.ice.RemoteCandidate;
-import org.ice4j.ice.harvest.StunCandidateHarvester;
-import org.ice4j.ice.harvest.TurnCandidateHarvester;
-import org.ice4j.ice.harvest.UPNPHarvester;
+import org.ice4j.ice.*;
+import org.ice4j.ice.harvest.*;
 import org.ice4j.security.LongTermCredential;
-import org.ice4j.socket.IceSocketWrapper;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.xmpp.jnodes.smack.SmackServiceNode;
 
@@ -47,12 +29,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A {@link TransportManagerJabberImpl} implementation that would use ICE for candidate management.
@@ -133,8 +110,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         JabberAccountIDImpl accID = (JabberAccountIDImpl) provider.getAccountID();
 
         if (accID.isStunServerDiscoveryEnabled()) {
-            // the default server is supposed to use the same user name and
-            // password as the account itself.
+            // the default server is supposed to use the same user name and password as the account itself.
             String username = accID.getBareJid().toString();
             String password = JabberActivator.getProtocolProviderFactory().loadPassword(accID);
             UserCredentials credentials = provider.getUserCredentials();
@@ -196,8 +172,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             StunCandidateHarvester harvester;
             if (desc.isTurnSupported()) {
                 // Yay! a TURN server
-                harvester = new TurnCandidateHarvester(addr, new LongTermCredential(
-                        desc.getUsername(), desc.getPassword()));
+                harvester = new TurnCandidateHarvester(addr, new LongTermCredential(desc.getUsername(), desc.getPassword()));
             }
             else {
                 // this is a STUN only server
@@ -254,8 +229,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
          * Videobridge server-side technology that is organized by the local peer, then there is a
          * single MediaStream (of the specified mediaType) shared among multiple TransportManagers
          * and its StreamConnector may be determined only by the TransportManager which is
-         * establishing the connectivity with the Jitsi Videobridge server (as opposed to a
-         * CallPeer).
+         * establishing the connectivity with the Jitsi Videobridge server (as opposed to a CallPeer).
          */
         TransportManagerJabberImpl delegate = findTransportManagerEstablishingConnectivityWithJitsiVideobridge();
 
@@ -374,8 +348,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
          * Videobridge server-side technology that is organized by the local peer, then there is a
          * single MediaStream (of the specified mediaType) shared among multiple TransportManagers
          * and its MediaStreamTarget may be determined only by the TransportManager which is
-         * establishing the connectivity with the Jitsi Videobridge server (as opposed to a
-         * CallPeer).
+         * establishing the connectivity with the Jitsi Videobridge server (as opposed to a CallPeer).
          */
         TransportManagerJabberImpl delegate = findTransportManagerEstablishingConnectivityWithJitsiVideobridge();
 
@@ -615,10 +588,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         // configured min port. When maxPort is reached, allocation will begin
         // from minPort again, so we don't have to worry about wraps.
         try {
-            int maxAllocatedPort = getMaxAllocatedPort(
-                    stream,
-                    portTracker.getMinPort(),
-                    portTracker.getMaxPort());
+            int maxAllocatedPort = getMaxAllocatedPort(stream, portTracker.getMinPort(), portTracker.getMaxPort());
 
             if (maxAllocatedPort > 0) {
                 int nextPort = 1 + maxAllocatedPort;
@@ -640,12 +610,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     private int getMaxAllocatedPort(IceMediaStream iceStream, int min, int max)
     {
         return Math.max(
-                getMaxAllocatedPort(
-                        iceStream.getComponent(Component.RTP),
-                        min, max),
-                getMaxAllocatedPort(
-                        iceStream.getComponent(Component.RTCP),
-                        min, max));
+                getMaxAllocatedPort(iceStream.getComponent(Component.RTP), min, max),
+                getMaxAllocatedPort(iceStream.getComponent(Component.RTCP), min, max));
     }
 
     /**
@@ -660,9 +626,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             for (LocalCandidate candidate : component.getLocalCandidates()) {
                 int candidatePort = candidate.getTransportAddress().getPort();
 
-                if ((min <= candidatePort)
-                        && (candidatePort <= max)
-                        && (maxAllocatedPort < candidatePort)) {
+                if ((min <= candidatePort)  && (candidatePort <= max)  && (maxAllocatedPort < candidatePort)) {
                     maxAllocatedPort = candidatePort;
                 }
             }
@@ -707,7 +671,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     public synchronized boolean startConnectivityEstablishment(Iterable<ContentPacketExtension> remote)
     {
         Map<String, IceUdpTransportPacketExtension> map = new LinkedHashMap<>();
-
         for (ContentPacketExtension content : remote) {
             IceUdpTransportPacketExtension transport = content.getFirstChildOfType(IceUdpTransportPacketExtension.class);
             /*
@@ -817,8 +780,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
 
                 RemoteCandidate relatedCandidate = component.findRemoteCandidate(relatedAddress);
                 RemoteCandidate remoteCandidate = new RemoteCandidate(new TransportAddress(
-                        candidate.getIP(), candidate.getPort(),
-                        Transport.parse(candidate.getProtocol())), component,
+                        candidate.getIP(), candidate.getPort(), Transport.parse(candidate.getProtocol())), component,
                         org.ice4j.ice.CandidateType.parse(candidate.getType().toString()),
                         candidate.getFoundation(), candidate.getPriority(), relatedCandidate);
 
@@ -930,7 +892,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
 
             /* check the state of ICE processing and throw exception if failed */
             if (IceProcessingState.FAILED.equals(iceAgent.getState())) {
-                String msg = JabberActivator.getResources().getI18NString("service.protocol.ICE_FAILED");
+                String msg = aTalkApp.getResString(R.string.service_protocol_ICE_FAILED);
                 throw new OperationFailedException(msg, OperationFailedException.GENERAL_ERROR);
             }
         }
@@ -1057,7 +1019,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     {
         if (iceAgent != null) {
             RemoteCandidate remoteCandidate = iceAgent.getSelectedRemoteCandidate(streamName);
-
             if (remoteCandidate != null)
                 return remoteCandidate.getHostAddress();
         }

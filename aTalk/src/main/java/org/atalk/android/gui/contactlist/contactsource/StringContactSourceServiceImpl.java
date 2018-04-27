@@ -15,22 +15,23 @@
  */
 package org.atalk.android.gui.contactlist.contactsource;
 
-import java.util.*;
-
-import org.atalk.android.gui.AndroidGUIActivator;
-
 import net.java.sip.communicator.service.contactsource.*;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+
+import java.util.*;
 
 /**
  * The <tt>StringContactSourceServiceImpl</tt> is an implementation of the
- * <tt>ContactSourceService</tt> that returns the searched string as a result
- * contact.
+ * <tt>ContactSourceService</tt> that returns the searched string as a result contact.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
-public class StringContactSourceServiceImpl
-    implements ContactSourceService
+public class StringContactSourceServiceImpl implements ContactSourceService
 {
     /**
      * The protocol provider to be used with this string contact source.
@@ -79,8 +80,7 @@ public class StringContactSourceServiceImpl
      */
     public String getDisplayName()
     {
-        return AndroidGUIActivator.getResources().getI18NString(
-            "service.gui.SEARCH_STRING_CONTACT_SOURCE");
+        return aTalkApp.getResString(R.string.service_gui_SEARCH_STRING_CONTACT_SOURCE);
     }
 
     /**
@@ -101,8 +101,7 @@ public class StringContactSourceServiceImpl
      * @param contactCount the maximum count of result contacts
      * @return the created query
      */
-    public ContactQuery createContactQuery( String queryString,
-                                            int contactCount)
+    public ContactQuery createContactQuery( String queryString, int contactCount)
     {
         return new StringQuery(queryString);
     }
@@ -123,41 +122,28 @@ public class StringContactSourceServiceImpl
      */
     public SourceContact createSourceContact(String queryString)
     {
-        ArrayList<ContactDetail> contactDetails
-            = new ArrayList<ContactDetail>();
+        ArrayList<ContactDetail> contactDetails = new ArrayList<>();
 
         ContactDetail contactDetail = new ContactDetail(queryString);
 
         // Init supported operation sets.
-        ArrayList<Class<? extends OperationSet>>
-            supportedOpSets
-            = new ArrayList<Class<? extends OperationSet>>();
+        ArrayList<Class<? extends OperationSet>> supportedOpSets = new ArrayList<>();
         supportedOpSets.add(opSetClass);
         contactDetail.setSupportedOpSets(supportedOpSets);
 
         // Init preferred protocol providers.
-        Map<Class<? extends OperationSet>,ProtocolProviderService>
-            providers = new HashMap<Class<? extends OperationSet>,
-            ProtocolProviderService>();
+        Map<Class<? extends OperationSet>,ProtocolProviderService> providers = new HashMap<>();
 
         providers.put(opSetClass, protocolProvider);
-
         contactDetail.setPreferredProviders(providers);
-
         contactDetails.add(contactDetail);
-
         GenericSourceContact sourceContact
-            = new GenericSourceContact( StringContactSourceServiceImpl.this,
-            queryString,
-            contactDetails);
+            = new GenericSourceContact( StringContactSourceServiceImpl.this, queryString, contactDetails);
 
         if(disableDisplayDetails)
         {
-            sourceContact.setDisplayDetails(
-            	AndroidGUIActivator.getResources().getI18NString(
-                    "service.gui.CALL_VIA")
-                    + " "
-                    + protocolProvider.getAccountID().getDisplayName());
+            sourceContact.setDisplayDetails(aTalkApp.getResString(
+                    R.string.service_gui_CALL_VIA, protocolProvider.getAccountID().getDisplayName()));
         }
 
         return sourceContact;
@@ -187,9 +173,8 @@ public class StringContactSourceServiceImpl
         public StringQuery(String queryString)
         {
             super(StringContactSourceServiceImpl.this);
-
             this.queryString = queryString;
-            this.results = new ArrayList<SourceContact>();
+            this.results = new ArrayList<>();
 
         }
 

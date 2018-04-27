@@ -225,7 +225,7 @@ public class AndroidLoginRenderer implements LoginRenderer
 		AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
 				aTalkApp.getResString(R.string.service_gui_ERROR),
 				aTalkApp.getResString(R.string.service_gui_CONNECTION_FAILED_MSG,
-						accountID.getUserID(), accountID.getService()),
+                        accountID.getUserID(), accountID.getService()),
 				aTalkApp.getResString(R.string.service_gui_RETRY),
 				new DialogActivity.DialogListener()
 				{

@@ -7,42 +7,19 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriConferenceIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.SourcePacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension.SendersEnum;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.DtlsFingerprintPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.IceUdpTransportPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.InputEvtPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ParameterPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.PayloadTypePacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RtpDescriptionPacketExtension;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.CallPeerState;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.media.CallPeerMediaHandler;
-import net.java.sip.communicator.service.protocol.media.MediaAwareCallConference;
-import net.java.sip.communicator.service.protocol.media.SrtpControls;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.media.*;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.util.java.awt.Component;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.DtlsControl;
-import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.MediaStreamTarget;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.QualityControl;
-import org.atalk.service.neomedia.QualityPreset;
-import org.atalk.service.neomedia.RTPExtension;
-import org.atalk.service.neomedia.SrtpControl;
-import org.atalk.service.neomedia.SrtpControlType;
-import org.atalk.service.neomedia.StreamConnector;
-import org.atalk.service.neomedia.VideoMediaStream;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -50,15 +27,7 @@ import org.jxmpp.jid.Jid;
 
 import java.beans.PropertyChangeEvent;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * An XMPP specific extension of the generic media handler.
@@ -252,9 +221,8 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
             receiveQualityPreset = qualityControls.getRemoteSendMaxPreset();
         }
         if (direction != MediaDirection.INACTIVE) {
-            ContentPacketExtension content = createContentForOffer(
-                    getLocallySupportedFormats(dev, sendQualityPreset, receiveQualityPreset),
-                    direction, dev.getSupportedExtensions());
+            ContentPacketExtension content = createContentForOffer(getLocallySupportedFormats(dev, sendQualityPreset,
+                    receiveQualityPreset), direction, dev.getSupportedExtensions());
             RtpDescriptionPacketExtension description = JingleUtils.getRtpDescription(content);
 
             // DTLS-SRTP
@@ -391,7 +359,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
         // Fail if no media is described (e.g. all devices are inactive).
         if (mediaDescs.isEmpty()) {
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
-                    AndroidGUIActivator.getResources().getI18NString("service.gui.CALL_NO_ACTIVE_DEVICE"),
+                    aTalkApp.getResString(R.string.service_gui_CALL_NO_ACTIVE_DEVICE),
                     OperationFailedException.GENERAL_ERROR, null, logger);
         }
         // Describe the transport(s).
@@ -424,7 +392,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
         // Fail if no media is described (e.g. all devices are inactive).
         if (mediaDescs.isEmpty()) {
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
-                    AndroidGUIActivator.getResources().getI18NString("service.gui.CALL_NO_ACTIVE_DEVICE"),
+                    aTalkApp.getResString(R.string.service_gui_CALL_NO_ACTIVE_DEVICE),
                     OperationFailedException.GENERAL_ERROR, null, logger);
         }
         // Describe the transport(s).
@@ -434,8 +402,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
     /**
      * Overrides to give access to the transport manager to send events about ICE state changes.
      *
-     * @param property the name of the property of this <tt>PropertyChangeNotifier</tt> which had its value
-     * changed
+     * @param property the name of the property of this <tt>PropertyChangeNotifier</tt> which had its value changed
      * @param oldValue the value of the property with the specified name before the change
      * @param newValue the value of the property with the specified name after
      */
@@ -514,8 +481,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
                     break;
             }
             if (format == null) {
-                ProtocolProviderServiceJabberImpl.throwOperationFailedException(
-                        "No matching codec.",
+                ProtocolProviderServiceJabberImpl.throwOperationFailedException("No matching codec.",
                         OperationFailedException.ILLEGAL_ARGUMENT, null, logger);
             }
 
@@ -794,8 +760,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
                                     && !protocolProvider.isFeatureSupported(jitsiVideobridge,
                                     ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_ICE_UDP_1)) {
                                 for (int i = transports.length - 1; i >= 0; i--) {
-                                    if (ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_ICE_UDP_1
-                                            .equals(transports[i])) {
+                                    if (ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_ICE_UDP_1.equals(transports[i])) {
                                         transports[i] = null;
                                     }
                                 }
@@ -945,7 +910,6 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
 
                 if (channel != null) {
                     IceUdpTransportPacketExtension transport = channel.getTransport();
-
                     if (transport != null)
                         map.put(mediaType.toString(), transport);
                 }
@@ -1359,10 +1323,8 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
 
         if (!atLeastOneValidDescription) {
             // don't just throw exception. Must inform user to take action
-            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
-                    AndroidGUIActivator.getResources().getI18NString("service.gui.CALL"),
-                    AndroidGUIActivator.getResources().getI18NString("service.gui.CALL_NO_MATCHING_FORMAT_H",
-                            new String[]{remoteFormats.toString()})
+            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), aTalkApp.getResString(R.string.service_gui_CALL),
+                    aTalkApp.getResString(R.string.service_gui_CALL_NO_MATCHING_FORMAT_H, remoteFormats.toString())
             );
 
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
@@ -1790,8 +1752,8 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
         boolean b = false;
 
         if (remoteTransport != null) {
-            List<DtlsFingerprintPacketExtension> remoteFingerpintPEs = remoteTransport
-                    .getChildExtensionsOfType(DtlsFingerprintPacketExtension.class);
+            List<DtlsFingerprintPacketExtension> remoteFingerpintPEs
+                    = remoteTransport.getChildExtensionsOfType(DtlsFingerprintPacketExtension.class);
 
             if (!remoteFingerpintPEs.isEmpty()) {
                 AccountID accountID = getPeer().getProtocolProvider().getAccountID();

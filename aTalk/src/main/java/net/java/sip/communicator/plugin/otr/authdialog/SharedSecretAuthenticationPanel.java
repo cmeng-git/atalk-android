@@ -9,83 +9,74 @@ package net.java.sip.communicator.plugin.otr.authdialog;
 import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 
-import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.android.util.java.awt.GridBagConstraints;
-import org.atalk.android.util.java.awt.GridBagLayout;
-import org.atalk.android.util.java.awt.Insets;
-import org.atalk.android.util.javax.swing.BorderFactory;
-import org.atalk.android.util.javax.swing.Box;
-import org.atalk.android.util.javax.swing.BoxLayout;
-import org.atalk.android.util.javax.swing.JLabel;
-import org.atalk.android.util.javax.swing.JPanel;
-import org.atalk.android.util.javax.swing.JTextArea;
-import org.atalk.android.util.javax.swing.JTextField;
+import org.atalk.android.util.java.awt.*;
+import org.atalk.android.util.javax.swing.*;
 
 
 /**
  * @author Marin Dzhigarov
  */
 @SuppressWarnings("serial")
-public class SharedSecretAuthenticationPanel extends TransparentPanel {
-	/**
-	 * The text field where the authentication initiator will type his answer.
-	 */
-	private final JTextField secret = new JTextField();
+public class SharedSecretAuthenticationPanel extends TransparentPanel
+{
+    /**
+     * The text field where the authentication initiator will type his answer.
+     */
+    private final JTextField secret = new JTextField();
 
-	/**
-	 * Creates an instance SecretQuestionAuthenticationPanel.
-	 */
-	SharedSecretAuthenticationPanel() {
-		initComponents();
-	}
+    /**
+     * Creates an instance SecretQuestionAuthenticationPanel.
+     */
+    SharedSecretAuthenticationPanel()
+    {
+        initComponents();
+    }
 
-	/**
-	 * Initializes the {@link SecretQuestionAuthenticationPanel} components.
-	 */
-	private void initComponents() {
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    /**
+     * Initializes the {@link SecretQuestionAuthenticationPanel} components.
+     */
+    private void initComponents()
+    {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		JTextArea generalInformation = new CustomTextArea();
-		generalInformation.setText(
-				OtrActivator.resourceService.getI18NString(
-						"plugin.otr.authbuddydialog.AUTH_BY_SECRET_INFO_INIT"));
-		this.add(generalInformation);
+        JTextArea generalInformation = new CustomTextArea();
+        generalInformation.setText(OtrActivator.resourceService.getI18NString("plugin.otr.authbuddydialog.AUTH_BY_SECRET_INFO_INIT"));
+        this.add(generalInformation);
 
-		this.add(Box.createVerticalStrut(10));
+        this.add(Box.createVerticalStrut(10));
 
-		JPanel questionAnswerPanel = new JPanel(new GridBagLayout());
-		questionAnswerPanel.setBorder(BorderFactory.createEtchedBorder());
+        JPanel questionAnswerPanel = new JPanel(new GridBagLayout());
+        questionAnswerPanel.setBorder(BorderFactory.createEtchedBorder());
 
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(5, 5, 0, 5);
-		c.weightx = 1;
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5, 5, 0, 5);
+        c.weightx = 1;
 
-		JLabel questionLabel =
-				new JLabel(
-						OtrActivator.resourceService.getI18NString(
-								"plugin.otr.authbuddydialog.SHARED_SECRET"));
-		questionAnswerPanel.add(questionLabel, c);
+        JLabel questionLabel =
+                new JLabel(OtrActivator.resourceService.getI18NString("plugin.otr.authbuddydialog.SHARED_SECRET"));
+        questionAnswerPanel.add(questionLabel, c);
 
-		c.gridy = 1;
-		c.insets = new Insets(0, 5, 5, 5);
-		questionAnswerPanel.add(secret, c);
+        c.gridy = 1;
+        c.insets = new Insets(0, 5, 5, 5);
+        questionAnswerPanel.add(secret, c);
 
-		this.add(questionAnswerPanel);
-		this.add(new Box.Filler(
-				new Dimension(300, 150),
-				new Dimension(300, 150),
-				new Dimension(300, 150)));
-	}
+        this.add(questionAnswerPanel);
+        this.add(new Box.Filler(
+                new Dimension(300, 150),
+                new Dimension(300, 150),
+                new Dimension(300, 150)));
+    }
 
-	/**
-	 * Returns the shared secret text.
-	 *
-	 * @return The shared secret text.
-	 */
-	String getSecret() {
-		return secret.getText();
-	}
+    /**
+     * Returns the shared secret text.
+     *
+     * @return The shared secret text.
+     */
+    String getSecret()
+    {
+        return secret.getText();
+    }
 }

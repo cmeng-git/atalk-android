@@ -504,11 +504,8 @@ public class ProvisioningServiceImpl implements ProvisioningService
 					else
 						errorMsg = "";
 
-//					ErrorDialog ed = new ErrorDialog(null, ProvisioningActivator
-// 						.getResourceService().getI18NString("plugin.provisioning.PROV_FAILED"),
-//						ProvisioningActivator.getResourceService().getI18NString("plugin
-// 						.provisioning.PROV_FAILED_MSG", new String[] { errorMsg }),
-//						errorWhileProvisioning);
+//					ErrorDialog ed = new ErrorDialog(null, aTalkApp.getResString(R.string.plugin_provisioning_PROV_FAILED),
+//						aTalkApp.getResString(R.string.plugin_provisioning_PROV_FAILED_MSG, errorMsg), errorWhileProvisioning);
 //					ed.setModal(true);
 //					ed.showDialog();
 

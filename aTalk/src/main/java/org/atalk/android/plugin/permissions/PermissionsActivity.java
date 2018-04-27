@@ -30,13 +30,10 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
@@ -376,7 +373,7 @@ public class PermissionsActivity extends Activity
         dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
                 .withTitle(R.string.location_permission_denied_dialog_title)
-                .withMessage(R.string.location_permission_denied_dialog_feedback)
+                .withMessage(R.string.location_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();
@@ -386,7 +383,7 @@ public class PermissionsActivity extends Activity
         dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
                 .withTitle(R.string.audio_permission_denied_dialog_title)
-                .withMessage(R.string.audio_permission_denied_dialog_feedback)
+                .withMessage(R.string.audio_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();
@@ -396,7 +393,7 @@ public class PermissionsActivity extends Activity
         dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
                 .withTitle(R.string.phone_permission_denied_dialog_title)
-                .withMessage(R.string.phone_permission_denied_dialog_feedback)
+                .withMessage(R.string.phone_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();
@@ -406,7 +403,7 @@ public class PermissionsActivity extends Activity
         dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
                 .withTitle(R.string.storage_permission_denied_dialog_title)
-                .withMessage(R.string.storage_permission_denied_dialog_feedback)
+                .withMessage(R.string.storage_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();

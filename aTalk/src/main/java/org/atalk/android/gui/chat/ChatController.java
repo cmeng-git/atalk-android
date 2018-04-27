@@ -6,11 +6,9 @@
 package org.atalk.android.gui.chat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v4.content.ContextCompat;
@@ -22,16 +20,12 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.audioservice.SoundMeter;
 import org.atalk.util.Logger;
@@ -118,7 +112,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     private boolean isAudioAllowed;
     private boolean isRecording;
-    private static int animDuration = 1000;
 
     private View msgRecordView;
     private TextView mRecordTimer;
@@ -131,7 +124,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
     // Constant to detect slide left to cancel audio recording
     private static final int min_distance = 100;
-    private float downX, upX;
+    private float downX;
 
     /**
      * Creates new instance of <tt>ChatController</tt>.
@@ -217,6 +210,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      * Otherwise the non-focus chatFragment will cause out-of-sync between chatFragment and
      * chatController i.e. entered msg display in wrong chatFragment
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void initChatController()
     {
         if (!chatFragment.isVisible()) {
@@ -287,7 +281,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             try {
                 mChatTransport.sendInstantMessage(content, encryption, ChatMessage.ENCODE_PLAIN);
             } catch (Exception ex) {
-                logger.warn("Send message failed: " + ex.getMessage());
+                logger.warn(R.string.service_gui_SEND_MESSAGE_FAIL, ex);
+                aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_FAIL, ex.getMessage());
             }
         }
         // Last message correction
@@ -354,9 +349,10 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             msgEdit.setFocusableInTouchMode(true);
             msgEdit.requestFocus();
 
-            InputMethodManager inputMethodManager
-                    = (InputMethodManager) parent.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.showSoftInput(msgEdit, InputMethodManager.SHOW_IMPLICIT);
+            InputMethodManager inputMethodManager = (InputMethodManager) parent.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (inputMethodManager != null)
+                inputMethodManager.showSoftInput(msgEdit, InputMethodManager.SHOW_IMPLICIT);
+
             // Select corrected message
             // TODO: it doesn't work when keyboard is displayed for the first time
             adapter.setSelection(position);
@@ -401,7 +397,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             case R.id.audioRecordButton:
                 logger.warn("Current Chat Transport for audio: " + mChatTransport.toString());
                 if (!mChatTransport.getStatus().isOnline()) {
-                    Toast.makeText(parent, R.string.chat_noaudio_buddyOffline, Toast.LENGTH_SHORT).show();
+                    aTalkApp.showToastMessage(R.string.chat_noaudio_buddyOffline);
                 }
                 else {
                     logger.info("Audio recording started!!!");
@@ -430,6 +426,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     /**
      * onTouch is disabled if permission.RECORD_AUDIO is denied
      */
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
@@ -441,7 +438,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             }
 
             case MotionEvent.ACTION_UP: {
-                upX = event.getX();
+                float upX = event.getX();
                 float deltaX = downX - upX;
 
                 //Swipe horizontal detected
@@ -514,7 +511,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         }).start();
     }
 
-    public void startAudioService(String mAction)
+    private void startAudioService(String mAction)
     {
         Intent intent = new Intent(parent, AudioBgService.class);
         intent.setAction(mAction);

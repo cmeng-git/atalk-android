@@ -375,8 +375,8 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
             else if (detail.getClass().equals(BirthDateDetail.class)) {
                 if (detail.getDetailValue() != null) {
                     Calendar c = ((BirthDateDetail) detail).getCalendar();
-                    DateFormat dateFormat = new SimpleDateFormat(JabberActivator.getResources()
-                            .getI18NString("plugin.accountinfo.BDAY_FORMAT"), Locale.US);
+                    DateFormat dateFormat = new SimpleDateFormat(
+                            aTalkApp.getResString(R.string.plugin_accountinfo_BDAY_FORMAT), Locale.US);
                     String strdate = dateFormat.format(c.getTime());
                     vCard.setField("BDAY", strdate);
                 }

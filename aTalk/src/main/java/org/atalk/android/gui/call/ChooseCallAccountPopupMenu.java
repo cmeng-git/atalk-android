@@ -21,14 +21,20 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.AccountUtils;
 import net.java.sip.communicator.util.skin.Skinnable;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatTransport;
-import org.atalk.android.gui.contactlist.*;
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.java.awt.event.*;
+import org.atalk.android.gui.contactlist.UIContactDetailImpl;
+import org.atalk.android.gui.contactlist.UIContactImpl;
+import org.atalk.android.util.java.awt.Component;
+import org.atalk.android.util.java.awt.Point;
+import org.atalk.android.util.java.awt.event.ActionEvent;
+import org.atalk.android.util.java.awt.event.ActionListener;
 import org.atalk.android.util.javax.swing.*;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * The <tt>ChooseCallAccountDialog</tt> is the dialog shown when calling a
@@ -37,10 +43,9 @@ import java.util.*;
  *
  * @author Yana Stamcheva
  * @author Adam Netocny
+ * @author Eng Chong Meng
  */
-public class ChooseCallAccountPopupMenu
-    // extends SIPCommPopupMenu
-    implements Skinnable
+public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implements Skinnable
 {
     /**
      * Serial version UID.
@@ -53,8 +58,7 @@ public class ChooseCallAccountPopupMenu
     protected final JComponent invoker;
 
     /**
-     * The call interface listener, which would be notified once the call
-     * interface is created.
+     * The call interface listener, which would be notified once the call interface is created.
      */
     private CallInterfaceListener callInterfaceListener;
 
@@ -71,12 +75,11 @@ public class ChooseCallAccountPopupMenu
      * @param telephonyProviders a list of all possible telephony providers
      */
     public ChooseCallAccountPopupMenu(
-        JComponent invoker,
-        final String contactToCall,
-        List<ProtocolProviderService> telephonyProviders)
+            JComponent invoker,
+            final String contactToCall,
+            List<ProtocolProviderService> telephonyProviders)
     {
-        this(invoker, contactToCall, telephonyProviders,
-            OperationSetBasicTelephony.class);
+        this(invoker, contactToCall, telephonyProviders, OperationSetBasicTelephony.class);
     }
 
     /**
@@ -88,14 +91,12 @@ public class ChooseCallAccountPopupMenu
      * @param l <tt>CallInterfaceListener</tt> instance
      */
     public ChooseCallAccountPopupMenu(
-        JComponent invoker,
-        final String contactToCall,
-        List<ProtocolProviderService> telephonyProviders,
-        CallInterfaceListener l)
+            JComponent invoker,
+            final String contactToCall,
+            List<ProtocolProviderService> telephonyProviders,
+            CallInterfaceListener l)
     {
-        this(invoker, contactToCall, telephonyProviders,
-            OperationSetBasicTelephony.class);
-
+        this(invoker, contactToCall, telephonyProviders, OperationSetBasicTelephony.class);
         callInterfaceListener = l;
     }
 
@@ -109,17 +110,15 @@ public class ChooseCallAccountPopupMenu
      * would be performed when a given item is selected from the menu
      */
     public ChooseCallAccountPopupMenu(
-        JComponent invoker,
-        final String contactToCall,
-        List<ProtocolProviderService> telephonyProviders,
-        Class<? extends OperationSet> opSetClass)
+            JComponent invoker,
+            final String contactToCall,
+            List<ProtocolProviderService> telephonyProviders,
+            Class<? extends OperationSet> opSetClass)
     {
         this.invoker = invoker;
-        this.init(AndroidGUIActivator.getResources()
-                    .getI18NString(getI18NKeyCallVia()));
+        this.init(AndroidGUIActivator.getResources().getI18NString(getI18NKeyCallVia()));
 
-        for (ProtocolProviderService provider : telephonyProviders)
-        {
+        for (ProtocolProviderService provider : telephonyProviders) {
             this.addTelephonyProviderItem(provider, contactToCall, opSetClass);
         }
     }
@@ -131,12 +130,9 @@ public class ChooseCallAccountPopupMenu
      * @param invoker the invoker of this pop up
      * @param telephonyObjects the list of telephony contacts to select through
      */
-    public ChooseCallAccountPopupMenu(  JComponent invoker,
-                                        List<?> telephonyObjects)
+    public ChooseCallAccountPopupMenu(JComponent invoker, List<?> telephonyObjects)
     {
-        this(   invoker,
-                telephonyObjects,
-                OperationSetBasicTelephony.class);
+        this(invoker, telephonyObjects, OperationSetBasicTelephony.class);
     }
 
     /**
@@ -148,28 +144,23 @@ public class ChooseCallAccountPopupMenu
      * @param opSetClass the operation class, which indicates what action would
      * be performed if an item is selected from the list
      */
-    public ChooseCallAccountPopupMenu(JComponent invoker,
-                                      List<?> telephonyObjects,
-                                      Class<? extends OperationSet> opSetClass)
+    public ChooseCallAccountPopupMenu(JComponent invoker, List<?> telephonyObjects, Class<? extends OperationSet> opSetClass)
     {
         this.invoker = invoker;
-        this.init(AndroidGUIActivator.getResources()
-                    .getI18NString(getI18NKeyChooseContact()));
+        this.init(AndroidGUIActivator.getResources().getI18NString(getI18NKeyChooseContact()));
 
-        for (Object o : telephonyObjects)
-        {
+        for (Object o : telephonyObjects) {
             if (o instanceof UIContactDetailImpl)
-                this.addTelephonyContactItem(
-                    (UIContactDetailImpl) o, opSetClass);
+                this.addTelephonyContactItem((UIContactDetailImpl) o, opSetClass);
             else if (o instanceof ChatTransport)
-                this.addTelephonyChatTransportItem((ChatTransport) o,
-                        opSetClass);
+                this.addTelephonyChatTransportItem((ChatTransport) o, opSetClass);
         }
     }
 
     /**
      * Returns the key to use for choose contact string. Can be overridden
      * by extenders.
+     *
      * @return the key to use for choose contact string.
      */
     protected String getI18NKeyChooseContact()
@@ -180,6 +171,7 @@ public class ChooseCallAccountPopupMenu
     /**
      * Returns the key to use for choose contact string. Can be overridden
      * by extenders.
+     *
      * @return the key to use for choose contact string.
      */
     protected String getI18NKeyCallVia()
@@ -211,28 +203,20 @@ public class ChooseCallAccountPopupMenu
      * be performed when an item is selected
      */
     private void addTelephonyProviderItem(
-        final ProtocolProviderService telephonyProvider,
-        final String contactString,
-        final Class<? extends OperationSet> opSetClass)
+            final ProtocolProviderService telephonyProvider,
+            final String contactString,
+            final Class<? extends OperationSet> opSetClass)
     {
-        final ProviderMenuItem providerItem
-            = new ProviderMenuItem(telephonyProvider);
+        final ProviderMenuItem providerItem = new ProviderMenuItem(telephonyProvider);
 
         providerItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
                 if (uiContact != null)
-                    itemSelected(
-                        opSetClass,
-                        providerItem.getProtocolProvider(),
-                        contactString,
-                        uiContact);
+                    itemSelected(opSetClass, providerItem.getProtocolProvider(), contactString, uiContact);
                 else
-                    itemSelected(
-                        opSetClass,
-                        providerItem.getProtocolProvider(),
-                        contactString);
+                    itemSelected(opSetClass, providerItem.getProtocolProvider(), contactString);
 
                 if (callInterfaceListener != null)
                     callInterfaceListener.callInterfaceStarted();
@@ -252,37 +236,26 @@ public class ChooseCallAccountPopupMenu
      * @param opSetClass the operation set class, that indicates the action that
      * would be performed when an item is selected
      */
-    private void addTelephonyContactItem(
-        final UIContactDetailImpl telephonyContact,
-        final Class<? extends OperationSet> opSetClass)
+    private void addTelephonyContactItem(final UIContactDetailImpl telephonyContact,
+            final Class<? extends OperationSet> opSetClass)
     {
-        final ContactMenuItem contactItem
-            = new ContactMenuItem(telephonyContact);
+        final ContactMenuItem contactItem = new ContactMenuItem(telephonyContact);
 
         contactItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
-                List<ProtocolProviderService> providers
-                    = AccountUtils.getOpSetRegisteredProviders(
-                        opSetClass,
+                List<ProtocolProviderService> providers = AccountUtils.getOpSetRegisteredProviders(opSetClass,
                         telephonyContact.getPreferredProtocolProvider(opSetClass),
                         telephonyContact.getPreferredProtocol(opSetClass));
 
-                if (providers == null || providers.size() <= 0)
-                {
-                    new ErrorDialog(null,
-                        AndroidGUIActivator.getResources().getI18NString(
-                            "service.gui.CALL_FAILED"),
-                            AndroidGUIActivator.getResources().getI18NString(
-                            "service.gui.NO_ONLINE_TELEPHONY_ACCOUNT"))
-                        .showDialog();
+                if (providers == null || providers.size() <= 0) {
+                    new ErrorDialog(null, aTalkApp.getResString(R.string.service_gui_CALL_FAILED),
+                            aTalkApp.getResString(R.string.service_gui_NO_ONLINE_TELEPHONY_ACCOUNT)).showDialog();
                     return;
                 }
-                else if (providers.size() > 1)
-                {
-                    itemSelected(
-                        opSetClass, providers, telephonyContact.getAddress());
+                else if (providers.size() > 1) {
+                    itemSelected(opSetClass, providers, telephonyContact.getAddress());
                 }
                 else // providersCount == 1
                 {
@@ -290,34 +263,24 @@ public class ChooseCallAccountPopupMenu
                     String contactAddress = telephonyContact.getAddress();
 
                     if (uiContact != null)
-                        itemSelected(
-                            opSetClass,
-                            provider,
-                            contactAddress,
-                            uiContact);
+                        itemSelected(opSetClass, provider, contactAddress, uiContact);
                     else
-                        itemSelected(
-                            opSetClass,
-                            provider,
-                            contactAddress);
+                        itemSelected(opSetClass, provider, contactAddress);
                 }
-
                 // ChooseCallAccountPopupMenu.this.setVisible(false);
             }
         });
 
         String category = telephonyContact.getCategory();
 
-        if (category != null && category.equals(ContactDetail.Category.Phone))
-        {
+        if (category != null && category.equals(ContactDetail.Category.Phone)) {
             int index = findPhoneItemIndex();
 //            if (index < 0)
 //                add(contactItem);
 //            else
 //                insert(contactItem, findPhoneItemIndex());
         }
-        else
-        {
+        else {
 //            Component lastComp = getComponent(getComponentCount() - 1);
 //            if (lastComp instanceof ContactMenuItem)
 //                category = ((ContactMenuItem) lastComp).getCategory();
@@ -365,9 +328,8 @@ public class ChooseCallAccountPopupMenu
      * @param opSetClass the class of the operation set indicating the operation
      * to be executed in the item is selected
      */
-    private void addTelephonyChatTransportItem(
-        final ChatTransport telTransport,
-        final Class<? extends OperationSet> opSetClass)
+    private void addTelephonyChatTransportItem(final ChatTransport telTransport,
+            final Class<? extends OperationSet> opSetClass)
     {
 //        final ChatTransportMenuItem transportItem
 //            = new ChatTransportMenuItem(telTransport);
@@ -411,8 +373,7 @@ public class ChooseCallAccountPopupMenu
      */
     public void showPopupMenu()
     {
-        Point location = new Point(invoker.getX(),
-            invoker.getY() + invoker.getHeight());
+        Point location = new Point(invoker.getX(), invoker.getY() + invoker.getHeight());
 
 //        SwingUtilities
 //            .convertPointToScreen(location, invoker.getParent());
@@ -443,9 +404,7 @@ public class ChooseCallAccountPopupMenu
 
         infoLabel.setEnabled(false);
         // infoLabel.setFocusable(false);
-
         infoLabel.setText("<html><b>" + infoString + "</b></html>");
-
         return null; //infoLabel;
     }
 
@@ -455,13 +414,10 @@ public class ChooseCallAccountPopupMenu
      * @param opSetClass the operation set to use.
      * @param protocolProviderService the protocol provider
      * @param contact the contact address
-     *  @param uiContact the <tt>MetaContact</tt> selected
+     * @param uiContact the <tt>MetaContact</tt> selected
      */
-    protected void itemSelected(
-                    Class<? extends OperationSet> opSetClass,
-                    ProtocolProviderService protocolProviderService,
-                    String contact,
-                    UIContactImpl uiContact)
+    protected void itemSelected(Class<? extends OperationSet> opSetClass,
+            ProtocolProviderService protocolProviderService, String contact, UIContactImpl uiContact)
     {
 //        CallManager.createCall(
 //            opSetClass,
@@ -478,8 +434,7 @@ public class ChooseCallAccountPopupMenu
      * @param contact the contact address selected
      */
     protected void itemSelected(Class<? extends OperationSet> opSetClass,
-                    ProtocolProviderService protocolProviderService,
-                    String contact)
+            ProtocolProviderService protocolProviderService, String contact)
     {
 //        CallManager.createCall(
 //            opSetClass,
@@ -495,8 +450,7 @@ public class ChooseCallAccountPopupMenu
      * @param contact the contact address selected
      */
     protected void itemSelected(Class<? extends OperationSet> opSetClass,
-                                List<ProtocolProviderService> providers,
-                                String contact)
+            List<ProtocolProviderService> providers, String contact)
     {
 //        ChooseCallAccountDialog callAccountDialog = new ChooseCallAccountDialog(contact, opSetClass, providers);
 //
@@ -509,22 +463,18 @@ public class ChooseCallAccountPopupMenu
      * A custom menu item corresponding to a specific
      * <tt>ProtocolProviderService</tt>.
      */
-    private class ProviderMenuItem
-        extends JMenuItem
-        implements Skinnable
+    private class ProviderMenuItem extends JMenuItem implements Skinnable
     {
         /**
          * Serial version UID.
          */
         private static final long serialVersionUID = 0L;
-
         private final ProtocolProviderService protocolProvider;
 
         public ProviderMenuItem(ProtocolProviderService protocolProvider)
         {
             this.protocolProvider = protocolProvider;
             this.setText(protocolProvider.getAccountID().getDisplayName());
-
             loadSkin();
         }
 
@@ -538,9 +488,7 @@ public class ChooseCallAccountPopupMenu
          */
         public void loadSkin()
         {
-            byte[] protocolIcon
-                = protocolProvider.getProtocolIcon()
-                    .getIcon(ProtocolIcon.ICON_SIZE_16x16);
+            byte[] protocolIcon = protocolProvider.getProtocolIcon().getIcon(ProtocolIcon.ICON_SIZE_16x16);
 
 //            if (protocolIcon != null)
 //                this.setIcon(ImageLoader.getIndexedProtocolIcon(
@@ -552,15 +500,12 @@ public class ChooseCallAccountPopupMenu
     /**
      * A custom menu item corresponding to a specific protocol <tt>Contact</tt>.
      */
-    private class ContactMenuItem
-        extends JMenuItem
-        implements Skinnable
+    private class ContactMenuItem extends JMenuItem implements Skinnable
     {
         /**
          * Serial version UID.
          */
         private static final long serialVersionUID = 0L;
-
         private final UIContactDetailImpl contact;
 
         public ContactMenuItem(UIContactDetailImpl contact)
@@ -573,7 +518,7 @@ public class ChooseCallAccountPopupMenu
             if (labels != null && labels.hasNext())
                 while (labels.hasNext())
                     itemName += "<b style=\"color: gray\">"
-                                + labels.next().toLowerCase() + "</b> ";
+                            + labels.next().toLowerCase() + "</b> ";
 
             itemName += contact.getAddress() + "</html>";
 
@@ -594,8 +539,8 @@ public class ChooseCallAccountPopupMenu
         /**
          * Reloads contact icon.
          */
-       public void loadSkin()
-       {
+        public void loadSkin()
+        {
 //            ImageIcon contactIcon = contact.getStatusIcon();
 //
 //            if (contactIcon == null)
@@ -623,8 +568,8 @@ public class ChooseCallAccountPopupMenu
      * A custom menu item corresponding to a specific <tt>ChatTransport</tt>.
      */
     private class ChatTransportMenuItem
-        extends JMenuItem
-        implements Skinnable
+            extends JMenuItem
+            implements Skinnable
     {
         /**
          * Serial version UID.
@@ -650,8 +595,7 @@ public class ChooseCallAccountPopupMenu
             byte[] statusIconBytes = status.getStatusIcon();
 
             Icon statusIcon = null;
-            if (statusIconBytes != null && statusIconBytes.length > 0)
-            {
+            if (statusIconBytes != null && statusIconBytes.length > 0) {
 //                statusIcon = ImageLoader.getIndexedProtocolIcon(
 //                    ImageUtils.getBytesInImage(statusIconBytes),
 //                    chatTransport.getProtocolProvider());

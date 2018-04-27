@@ -101,12 +101,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     private int lastSelectedIdx = -1;
 
     /**
-     * mContactSession is true when it is a MetaContactChatSession
-     * Flag to enable/disable certain menu items
-     */
-    private static boolean mContactSession = false;
-
-    /**
      * ChatActivity menu & menuItem
      */
     private Menu mMenu;
@@ -165,8 +159,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         }
 
         // Add fragment for crypto padLock for OTR and OMEMO before start pager
-        getSupportFragmentManager().beginTransaction()
-                .add(new CryptoFragment(), CRYPTO_FRAGMENT).commit();
+        getSupportFragmentManager().beginTransaction().add(new CryptoFragment(), CRYPTO_FRAGMENT).commit();
 
         // Instantiate a ViewPager and a PagerAdapter.
         chatPager = findViewById(R.id.chatPager);
@@ -199,10 +192,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         }
         else {
             chatId = intent.getStringExtra(ChatSessionManager.CHAT_IDENTIFIER);
-            currentChatMode = intent.getIntExtra(ChatSessionManager.CHAT_MODE,
-                    ChatSessionManager.MC_CHAT);
-            mCurrentChatType = intent.getIntExtra(ChatSessionManager.CHAT_MSGTYPE,
-                    ChatFragment.MSGTYPE_NORMAL);
+            currentChatMode = intent.getIntExtra(ChatSessionManager.CHAT_MODE, ChatSessionManager.MC_CHAT);
+            mCurrentChatType = intent.getIntExtra(ChatSessionManager.CHAT_MSGTYPE, ChatFragment.MSGTYPE_NORMAL);
         }
         if (chatId == null)
             throw new RuntimeException("Missing chat identifier extra");
@@ -220,11 +211,9 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
 
     /**
      * Called when the fragment is visible to the user and actively running. This is generally
-     * tied to {@link android.app.Activity#onResume() Activity.onResume} of the containing
-     * Activity's lifecycle.
-     * <p>
-     * Set lastSelectedIdx = -1 so {@link #updateSelectedChatInfo(int)} is always executed on
-     * onResume
+     * tied to {@link android.app.Activity#onResume() Activity.onResume} of the containing Activity's lifecycle.
+     *
+     * Set lastSelectedIdx = -1 so {@link #updateSelectedChatInfo(int)} is always executed on onResume
      */
     @Override
     public void onResume()
@@ -353,9 +342,10 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     {
         if ((mMenu != null) && (selectedChatPanel != null)) {
             ChatSession chatSession = selectedChatPanel.getChatSession();
-            mContactSession = (chatSession instanceof MetaContactChatSession);
 
-            if (mContactSession) {
+            // Enable/disable certain menu items based on current transport type
+            boolean contactSession = (chatSession instanceof MetaContactChatSession);
+            if (contactSession) {
                 mDestroyChatRoom.setVisible(false);
                 mHistoryErase.setTitle(R.string.service_gui_HISTORY_ERASE_PER_CONTACT);
 
@@ -382,7 +372,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
 
             MenuItem mPadlock = mMenu.findItem(R.id.otr_padlock);
             if (mPadlock != null) {
-                mPadlock.setVisible(mContactSession);
+                mPadlock.setVisible(contactSession);
             }
         }
     }
@@ -396,8 +386,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     public boolean onOptionsItemSelected(MenuItem item)
     {
         Intent intent;
-        String selectedChat = chatPagerAdapter.getChatId(chatPager.getCurrentItem());
-
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.muc_invite:
@@ -449,14 +437,18 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 object = selectedChatPanel.getChatSession().getDescriptor();
                 if (object instanceof ChatRoomWrapper) {
                     ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
-                    String memberList = "";
+                    StringBuilder memberList = new StringBuilder();
                     List<ChatRoomMember> occupants = chatRoomWrapper.getChatRoom().getMembers();
                     for (ChatRoomMember member : occupants) {
                         ChatRoomMemberJabberImpl occupant = (ChatRoomMemberJabberImpl) member;
-                        memberList += occupant.getNickName() + " - " + occupant.getJabberID() + "<br/>";
+                        memberList.append(occupant.getNickName())
+                                .append(" - ")
+                                .append(occupant.getJabberID())
+                                .append("<br/>");
                     }
                     String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
-                    selectedChatPanel.addMessage(user, new Date(), Chat.SYSTEM_MESSAGE, ChatMessage.ENCODE_HTML, memberList);
+                    selectedChatPanel.addMessage(user, new Date(), Chat.SYSTEM_MESSAGE, ChatMessage.ENCODE_HTML,
+                            memberList.toString());
                 }
                 return true;
 
@@ -543,12 +535,12 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 ActionBarUtil.setStatus(this, ccSession.getChatStatusIcon());
 
                 // mSubTitle = ccSession.getChatSubject();
-                String mSubTitle = "";
+                StringBuilder mSubTitle = new StringBuilder();
                 Iterator<ChatContact<?>> mParticipants = ccSession.getParticipants();
                 while (mParticipants.hasNext()) {
-                    mSubTitle += mParticipants.next().getName() + ", ";
+                    mSubTitle.append(mParticipants.next().getName()).append(", ");
                 }
-                ActionBarUtil.setSubtitle(this, mSubTitle);
+                ActionBarUtil.setSubtitle(this, mSubTitle.toString());
             }
         }
     }
@@ -564,12 +556,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 case SELECT_PHOTO:
                 case SELECT_VIDEO:
                     Uri selectedImage = data.getData();
-                    try {
-                        filePath = FileAccess.getPath(this, selectedImage);
-                        if (!StringUtils.isNullOrEmpty(filePath))
-                            sendFile(filePath);
-                    } catch (URISyntaxException e) {
-                        logger.error("Choose attachment error: " + e.getMessage());
+                    if (selectedImage != null) {
+                        try {
+                            filePath = FileAccess.getPath(this, selectedImage);
+                            if (!StringUtils.isNullOrEmpty(filePath))
+                                sendFile(filePath);
+                        } catch (URISyntaxException e) {
+                            logger.error("Choose attachment error: " + e.getMessage());
+                        }
                     }
                     break;
 
@@ -587,12 +581,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 case CHOOSE_FILE_ACTIVITY_REQUEST_CODE:
                     if (data != null) {
                         Uri uri = data.getData();
-                        try {
-                            filePath = FileAccess.getPath(this, uri);
-                            if (!StringUtils.isNullOrEmpty(filePath))
-                                sendFile(filePath);
-                        } catch (URISyntaxException e) {
-                            logger.error("Choose file error: " + e.getMessage());
+                        if (uri != null) {
+                            try {
+                                filePath = FileAccess.getPath(this, uri);
+                                if (!StringUtils.isNullOrEmpty(filePath))
+                                    sendFile(filePath);
+                            } catch (URISyntaxException e) {
+                                logger.error("Choose file error: " + e.getMessage());
+                            }
                         }
                     }
                     break;
@@ -600,12 +596,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 case OPEN_FILE_REQUEST_CODE:
                     if (data != null) {
                         Uri uri = data.getData();
-                        try {
-                            filePath = FileAccess.getPath(this, uri);
-                            if (!StringUtils.isNullOrEmpty(filePath))
-                                openFile(new File(filePath));
-                        } catch (URISyntaxException e) {
-                            logger.error("File open error: " + e.getMessage());
+                        if (uri != null) {
+                            try {
+                                filePath = FileAccess.getPath(this, uri);
+                                if (!StringUtils.isNullOrEmpty(filePath))
+                                    openFile(new File(filePath));
+                            } catch (URISyntaxException e) {
+                                logger.error("File open error: " + e.getMessage());
+                            }
                         }
                     }
                     break;
@@ -618,10 +616,9 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         final ChatPanel chatPanel;
         Date date = Calendar.getInstance().getTime();
         UIService uiService = AndroidGUIActivator.getUIService();
-        String sendTo = mRecipient.getAddress();
-
-        if ((mRecipient != null) && mRecipient instanceof Contact) {
-            if (uiService != null) {
+        if (uiService != null) {
+            String sendTo = mRecipient.getAddress();
+            if ((mRecipient != null) && mRecipient instanceof Contact) {
                 chatPanel = (ChatPanel) uiService.getChat(mRecipient);
                 if (chatPanel != null) {
                     chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, ChatMessage.ENCODE_PLAIN, filePath);
@@ -634,10 +631,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     {
         final ChatPanel chatPanel;
         UIService uiService = AndroidGUIActivator.getUIService();
-        String sendTo = mRecipient.getAddress();
-
-        if (mRecipient instanceof Contact) {
-            if (uiService != null) {
+        if (uiService != null) {
+            if (mRecipient != null) {
                 chatPanel = (ChatPanel) uiService.getChat(mRecipient);
                 if (chatPanel != null) {
                     int encryption = ChatMessage.ENCRYPTION_NONE;
@@ -668,16 +663,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"),
-                        SELECT_PHOTO);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PHOTO);
                 break;
 
             case camera:
                 // create Intent to take a picture and return control to the calling application
                 intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 // create a file to save the image
-                mCameraFilePath = CameraAccess.getOutputMediaFilePath(
-                        CameraAccess.MEDIA_TYPE_IMAGE);
+                mCameraFilePath = CameraAccess.getOutputMediaFilePath(CameraAccess.MEDIA_TYPE_IMAGE);
                 fileUri = Uri.fromFile(new File(mCameraFilePath));
                 // set the image file name for camera service to save file
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
@@ -695,8 +688,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 // create Intent to take a picture and return control to the calling application
                 intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                 // create a file to save the image
-                mCameraFilePath = CameraAccess.getOutputMediaFilePath(
-                        CameraAccess.MEDIA_TYPE_VIDEO);
+                mCameraFilePath = CameraAccess.getOutputMediaFilePath(CameraAccess.MEDIA_TYPE_VIDEO);
                 fileUri = Uri.fromFile(new File(mCameraFilePath));
                 // set the image file name
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
@@ -710,12 +702,10 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 chooseFile.setType("*/*");
                 chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
                 try {
-                    intent = Intent.createChooser(chooseFile,
-                            getString(R.string.choose_file_activity_title));
+                    intent = Intent.createChooser(chooseFile, getString(R.string.choose_file_activity_title));
                     startActivityForResult(intent, CHOOSE_FILE_ACTIVITY_REQUEST_CODE);
                 } catch (android.content.ActivityNotFoundException ex) {
-                    // Potentially direct the user to the Market with a Dialog
-                    showToastMessage("Please install a File Manager.");
+                    showToastMessage(R.string.service_gui_FOLDER_OPEN_NO_APPLICATION);
                 }
                 break;
         }
@@ -733,27 +723,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
 
         } catch (android.content.ActivityNotFoundException ex) {
-            // Potentially direct the user to the Market with a Dialog
-            showToastMessage("Please install a File Manager.");
+            showToastMessage(R.string.service_gui_FOLDER_OPEN_NO_APPLICATION);
         } catch (IllegalArgumentException | NullPointerException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Unable to open folder.", e);
-
             showToastMessage(R.string.service_gui_FOLDER_DOES_NOT_EXIST);
         } catch (UnsupportedOperationException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Unable to open folder.", e);
-
             showToastMessage(R.string.service_gui_FILE_OPEN_NOT_SUPPORTED);
         } catch (SecurityException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Unable to open folder.", e);
-
             showToastMessage(R.string.service_gui_FOLDER_OPEN_NO_PERMISSION);
         } catch (Exception e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Unable to open file.", e);
-
             showToastMessage(R.string.service_gui_FOLDER_OPEN_FAILED);
         }
     }
@@ -790,26 +767,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         } catch (IllegalStateException e) {
             if (logger.isDebugEnabled())
                 logger.debug("Fragment ReceiveFileConversation not attached to Activity.", e);
+            showToastMessage(R.string.service_gui_FILE_OPEN_FAILED);
         } catch (IllegalArgumentException | NullPointerException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Unable to open file.", e);
-
             showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
         } catch (UnsupportedOperationException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Unable to open file.", e);
-
             showToastMessage(R.string.service_gui_FILE_OPEN_NOT_SUPPORTED);
         } catch (SecurityException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Unable to open file.", e);
-
             showToastMessage(R.string.service_gui_FILE_OPEN_NO_PERMISSION);
         } catch (Exception e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Unable to open file.", e);
-
-            // showErrorMessage(R.string.service_gui_FILE_OPEN_FAILED);
             showToastMessage(R.string.service_gui_FILE_OPEN_FAILED);
         }
     }
@@ -822,10 +787,5 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     private void showToastMessage(int resId)
     {
         Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
-    }
-
-    private void showToastMessage(String message)
-    {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

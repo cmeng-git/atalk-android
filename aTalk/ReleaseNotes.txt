@@ -1,5 +1,12 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.2.4a (1024)
+Author:         cmeng
+Upload Date:	04/27/2018
+- Use android resource tool getString() in place of getI18NString()
+- clean up source and string.xml files
+
+=========================================================================
 Version:		1.2.3 (1023)
 Author:         cmeng
 Upload Date:	04/23/2018
@@ -7,7 +14,6 @@ Upload Date:	04/23/2018
 - Add StreetViews and Map option on main menu (without sending location message)
 - Improve GPS Location UI and options handling
 - Remove GPSTracker and GPSTrackingActivity class - not use
-
 =========================================================================
 Version:		1.2.2 (1022)
 Author:         cmeng

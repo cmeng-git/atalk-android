@@ -11,6 +11,8 @@ import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.util.java.awt.Color;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.android.util.java.awt.GridBagConstraints;
@@ -30,6 +32,7 @@ import java.security.PublicKey;
 /**
  * @author George Politis
  * @author Marin Dzhigarov
+ * @author Eng Chong Meng
  */
 @SuppressWarnings("serial")
 
@@ -80,7 +83,8 @@ public class FingerprintAuthenticationPanel extends TransparentPanel implements 
 		setPreferredSize(new Dimension(350, 300));
 
 		JTextArea generalInformation = new CustomTextArea();
-		generalInformation.setText(OtrActivator.resourceService.getI18NString("plugin.otr.authbuddydialog.AUTHENTICATION_FINGERPRINT"));
+		generalInformation.setText(
+		        OtrActivator.resourceService.getI18NString("plugin.otr.authbuddydialog.AUTHENTICATION_FINGERPRINT"));
 		add(generalInformation);
 
 		add(Box.createVerticalStrut(10));
@@ -123,8 +127,8 @@ public class FingerprintAuthenticationPanel extends TransparentPanel implements 
 		String resourceName = otrContact.resource != null ? "/" + otrContact.resource.getResourceName() : "";
 
 		txtRemoteFingerprintComparison = new SIPCommTextField(
-				OtrActivator.resourceService.getI18NString("plugin.otr.authbuddydialog.FINGERPRINT_CHECK",
-						new String[]{otrContact.contact.getDisplayName() + resourceName}));
+                aTalkApp.getResString(R.string.plugin_otr_authbuddydialog_FINGERPRINT_CHECK,
+						otrContact.contact.getDisplayName() + resourceName));
 		txtRemoteFingerprintComparison.getDocument().addDocumentListener(this);
 
 		c.gridwidth = 2;
@@ -146,7 +150,8 @@ public class FingerprintAuthenticationPanel extends TransparentPanel implements 
 		// Local fingerprint.
 		String account = otrContact.contact.getProtocolProvider().getAccountID().getDisplayName();
 		String localFingerprint = OtrActivator.scOtrKeyManager.getLocalFingerprint(otrContact.contact.getProtocolProvider().getAccountID());
-		txtLocalFingerprint.setText(OtrActivator.resourceService.getI18NString("plugin.otr.authbuddydialog.LOCAL_FINGERPRINT", new String[]{account, localFingerprint}));
+		txtLocalFingerprint.setText( OtrActivator.resourceService.getI18NString(
+		        "plugin.otr.authbuddydialog.LOCAL_FINGERPRINT", new String[]{account, localFingerprint}));
 
 		// Remote fingerprint.
 		String user = otrContact.contact.getDisplayName();

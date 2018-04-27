@@ -30,6 +30,8 @@ import net.java.sip.communicator.service.muc.ChatRoomPresenceStatus;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.*;
@@ -146,7 +148,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 			sourceServiceType = HISTORY_TYPE;
 		}
 
-		MESSAGE_HISTORY_NAME = MessageHistoryActivator.getResources().getI18NString("service.gui.RECENT_MESSAGES");
+		MESSAGE_HISTORY_NAME = aTalkApp.getResString(R.string.service_gui_RECENT_MESSAGES);
 		numberOfMessages = conf.getInt(NUMBER_OF_RECENT_MSGS_PROP, numberOfMessages);
 		isSMSEnabled = conf.getBoolean(IS_MESSAGE_SUBTYPE_SMS_PROP, isSMSEnabled);
 		RECENT_MSGS_VER = conf.getString(VER_OF_RECENT_MSGS_PROP, RECENT_MSGS_VER);

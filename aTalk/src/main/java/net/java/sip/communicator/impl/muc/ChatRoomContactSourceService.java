@@ -15,10 +15,14 @@ package net.java.sip.communicator.impl.muc;
 import net.java.sip.communicator.service.contactsource.ContactQuery;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+
 /**
  * Contact source service for chat rooms.
  *
  * @author Hristo Terezov
+ * @author Eng Chong Meng
  */
 public class ChatRoomContactSourceService implements ContactSourceService
 {
@@ -39,7 +43,7 @@ public class ChatRoomContactSourceService implements ContactSourceService
      */
     public String getDisplayName()
     {
-        return MUCActivator.getResources().getI18NString("service.gui.CHAT_ROOMS");
+        return aTalkApp.getResString(R.string.service_gui_CHAT_ROOMS);
     }
 
     /**

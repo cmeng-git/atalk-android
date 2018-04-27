@@ -26,6 +26,8 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.service.resources.ResourceManagementService;
@@ -140,10 +142,8 @@ public class MUCServiceImpl extends MUCService
     {
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if (chatRoom == null) {
-            MUCActivator.getAlertUIService().showAlertDialog(
-                    MUCActivator.getResources().getI18NString("service.gui.WARNING"),
-                    MUCActivator.getResources().getI18NString("service.gui.CHAT_ROOM_NOT_CONNECTED",
-                            new String[]{chatRoomWrapper.getChatRoomName()}));
+            MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_WARNING),
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, chatRoomWrapper.getChatRoomName()));
             return;
         }
         new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, nickName, password,
@@ -169,9 +169,8 @@ public class MUCServiceImpl extends MUCService
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if (chatRoom == null) {
             MUCActivator.getAlertUIService().showAlertDialog(
-                    MUCActivator.getResources().getI18NString("service.gui.WARNING"),
-                    MUCActivator.getResources().getI18NString("service.gui.CHAT_ROOM_NOT_CONNECTED",
-                            new String[]{chatRoomWrapper.getChatRoomName()}));
+                    aTalkApp.getResString(R.string.service_gui_WARNING),
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, chatRoomWrapper.getChatRoomName()));
             return;
         }
         new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, nickName, password).start();
@@ -186,8 +185,7 @@ public class MUCServiceImpl extends MUCService
      * @param password the password.
      * @param subject the subject which will be set to the room after the user join successful.
      */
-    public void joinChatRoom(ChatRoomWrapper chatRoomWrapper, String nickName, byte[] password,
-            String subject)
+    public void joinChatRoom(ChatRoomWrapper chatRoomWrapper, String nickName, byte[] password, String subject)
     {
         if (chatRoomWrapper.getChatRoom() == null) {
             chatRoomWrapper = createChatRoom(chatRoomWrapper.getChatRoomName(),
@@ -198,9 +196,8 @@ public class MUCServiceImpl extends MUCService
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if (chatRoom == null) {
             MUCActivator.getAlertUIService().showAlertDialog(
-                    MUCActivator.getResources().getI18NString("service.gui.WARNING"),
-                    MUCActivator.getResources().getI18NString("service.gui.CHAT_ROOM_NOT_CONNECTED",
-                            new String[]{chatRoomWrapper.getChatRoomName()}));
+                    aTalkApp.getResString(R.string.service_gui_WARNING),
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, chatRoomWrapper.getChatRoomName()));
         }
         // join chatRoom if not a current participant
         else if (!chatRoom.isJoined())
@@ -223,9 +220,8 @@ public class MUCServiceImpl extends MUCService
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if (chatRoom == null) {
             MUCActivator.getAlertUIService().showAlertDialog(
-                    MUCActivator.getResources().getI18NString("service.gui.WARNING"),
-                    MUCActivator.getResources().getI18NString("service.gui.CHAT_ROOM_NOT_CONNECTED",
-                            new String[]{chatRoomWrapper.getChatRoomName()}));
+                    aTalkApp.getResString(R.string.service_gui_WARNING),
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, chatRoomWrapper.getChatRoomName()));
             return;
         }
         new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, null, null).start();
@@ -278,9 +274,9 @@ public class MUCServiceImpl extends MUCService
         }
         else
             MUCActivator.getAlertUIService().showAlertDialog(
-                    MUCActivator.getResources().getI18NString("service.gui.ERROR"),
-                    MUCActivator.getResources().getI18NString("service.gui.CHAT_ROOM_NOT_EXIST",
-                            new String[]{chatRoomName, chatRoomProvider.getProtocolProvider().getAccountID().getService()}));
+                    aTalkApp.getResString(R.string.service_gui_ERROR),
+                            aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_EXIST,
+                            chatRoomName, chatRoomProvider.getProtocolProvider().getAccountID().getService()));
     }
 
     /**
@@ -357,9 +353,9 @@ public class MUCServiceImpl extends MUCService
                 | SmackException.NotConnectedException | InterruptedException ex) {
             logger.error("Failed to create chat room.", ex);
             MUCActivator.getAlertUIService().showAlertDialog(
-                    MUCActivator.getResources().getI18NString("service.gui.ERROR"),
-                    MUCActivator.getResources().getI18NString("service.gui.CREATE_CHAT_ROOM_ERROR",
-                            new String[]{protocolProvider.getProtocolDisplayName()}), ex);
+                    aTalkApp.getResString(R.string.service_gui_ERROR),
+                    aTalkApp.getResString(R.string.service_gui_CREATE_CHAT_ROOM_ERROR,
+                            protocolProvider.getProtocolDisplayName()), ex);
         }
 
         if (chatRoom != null) {
@@ -407,8 +403,7 @@ public class MUCServiceImpl extends MUCService
         if (protocolProvider == null)
             return null;
 
-        OperationSetMultiUserChat groupChatOpSet
-                = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
+        OperationSetMultiUserChat groupChatOpSet = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
         if (groupChatOpSet == null)
             return null;
 
@@ -461,8 +456,8 @@ public class MUCServiceImpl extends MUCService
             ResourceManagementService resources = MUCActivator.getResources();
 
             MUCActivator.getAlertUIService().showAlertDialog(
-                    resources.getI18NString("service.gui.WARNING"),
-                    resources.getI18NString("service.gui.CHAT_ROOM_LEAVE_NOT_CONNECTED"));
+                    aTalkApp.getResString(R.string.service_gui_WARNING),
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED));
             return null;
         }
         if (chatRoom.isJoined())
@@ -522,8 +517,7 @@ public class MUCServiceImpl extends MUCService
             this(chatRoomWrapper, nickName, password, false, true, null);
         }
 
-        JoinChatRoomTask(ChatRoomWrapperImpl chatRoomWrapper, String nickName, byte[] password,
-                String subject)
+        JoinChatRoomTask(ChatRoomWrapperImpl chatRoomWrapper, String nickName, byte[] password, String subject)
         {
             this(chatRoomWrapper, nickName, password, false, true, subject);
         }
@@ -595,13 +589,11 @@ public class MUCServiceImpl extends MUCService
                             // cmeng - icon not implemented in Android
                             // AuthenticationWindow.getAuthenticationWindowIcon(chatRoomWrapper
                             // .getParentProvider().getProtocolProvider()),
-                            null,
-                            resources.getI18NString("service.gui.AUTHENTICATION_WINDOW_TITLE",
-                                    new String[]{chatRoomWrapper.getParentProvider().getName()}),
-                            resources.getI18NString("service.gui.CHAT_ROOM_REQUIRES_PASSWORD",
-                                    new String[]{chatRoomId}), "", null,
-                            isFirstAttempt ? null : resources.getI18NString("service.gui.AUTHENTICATION_FAILED",
-                                    new String[]{chatRoomId}), null);
+                            null, aTalkApp.getResString(R.string.service_gui_AUTHENTICATION_WINDOW_TITLE,
+                                    chatRoomWrapper.getParentProvider().getName()),
+                            aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_REQUIRES_PASSWORD, chatRoomId), "", null,
+                            isFirstAttempt ? null : aTalkApp.getResString(R.string.service_gui_AUTHENTICATION_FAILED,
+                                    chatRoomId), null);
 
                     authWindow.setVisible(true);
                     if (!authWindow.isCanceled()) {
@@ -611,20 +603,16 @@ public class MUCServiceImpl extends MUCService
                     break;
 
                 case JOIN_REGISTRATION_REQUIRED_PROP:
-                    errorMessage = resources.getI18NString("service.gui.CHAT_ROOM_REGISTRATION_REQUIRED",
-                            new String[]{chatRoomId});
+                    errorMessage = aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_REGISTRATION_REQUIRED, chatRoomId);
                     break;
                 case JOIN_PROVIDER_NOT_REGISTERED_PROP:
-                    errorMessage = resources.getI18NString("service.gui.CHAT_ROOM_NOT_CONNECTED",
-                            new String[]{chatRoomId});
+                    errorMessage = aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, chatRoomId);
                     break;
                 case JOIN_SUBSCRIPTION_ALREADY_EXISTS_PROP:
-                    errorMessage = resources.getI18NString("service.gui.CHAT_ROOM_ALREADY_JOINED",
-                            new String[]{chatRoomId});
+                    errorMessage = aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_ALREADY_JOINED, chatRoomId);
                     break;
                 case JOIN_UNKNOWN_ERROR_PROP:
-                    errorMessage = resources.getI18NString("service.gui.FAILED_TO_JOIN_CHAT_ROOM",
-                            new String[]{chatRoomId});
+                    errorMessage = aTalkApp.getResString(R.string.service_gui_FAILED_TO_JOIN_CHAT_ROOM, chatRoomId);
                     break;
                 case JOIN_SUCCESS_PROP:
                     if (rememberPassword) {
@@ -641,8 +629,8 @@ public class MUCServiceImpl extends MUCService
             }
 
             if (errorMessage != null) {
-                MUCActivator.getAlertUIService().showAlertPopup(resources
-                        .getI18NString("service.gui.ERROR"), errorMessage);
+                MUCActivator.getAlertUIService().showAlertPopup(
+                        aTalkApp.getResString(R.string.service_gui_ERROR), errorMessage);
             }
             chatRoomWrapper.firePropertyChange(returnCode);
         }
@@ -670,8 +658,7 @@ public class MUCServiceImpl extends MUCService
      * @param pps the provider of the chat room.
      * @return the <tt>ChatRoomWrapper</tt> instance.
      */
-    public ChatRoomWrapper findChatRoomWrapperFromChatRoomID(String chatRoomID,
-            ProtocolProviderService pps)
+    public ChatRoomWrapper findChatRoomWrapperFromChatRoomID(String chatRoomID, ProtocolProviderService pps)
     {
         return chatRoomList.findChatRoomWrapperFromChatRoomID(chatRoomID, pps);
     }
@@ -688,9 +675,7 @@ public class MUCServiceImpl extends MUCService
     {
         ChatRoomWrapper chatRoomWrapper = chatRoomList.findChatRoomWrapperFromChatRoom(chatRoom);
         if ((chatRoomWrapper == null) && create) {
-            ChatRoomProviderWrapper parentProvider
-                    = chatRoomList.findServerWrapperFromProvider(chatRoom.getParentProvider());
-
+            ChatRoomProviderWrapper parentProvider = chatRoomList.findServerWrapperFromProvider(chatRoom.getParentProvider());
             chatRoomWrapper = new ChatRoomWrapperImpl(parentProvider, chatRoom);
             chatRoomList.addChatRoom(chatRoomWrapper);
         }
@@ -744,8 +729,7 @@ public class MUCServiceImpl extends MUCService
      * @param reason the reason for destroying.
      * @param alternateAddress the entityBareJid of the chatRoom.
      */
-    public void destroyChatRoom(ChatRoomWrapper chatRoomWrapper, String reason,
-            EntityBareJid alternateAddress)
+    public void destroyChatRoom(ChatRoomWrapper chatRoomWrapper, String reason, EntityBareJid alternateAddress)
     {
         if (chatRoomWrapper.getChatRoom().destroy(reason, alternateAddress)) {
             MUCActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
@@ -754,8 +738,7 @@ public class MUCServiceImpl extends MUCService
         else {
             // If we leave a chat room which is not persistent, the room can be destroyed on the
             // server; and error is returned when we try to destroy it not-authorized(401)
-            if (!chatRoomWrapper.getChatRoom().isPersistent()
-                    && !chatRoomWrapper.getChatRoom().isJoined()) {
+            if (!chatRoomWrapper.getChatRoom().isPersistent() && !chatRoomWrapper.getChatRoom().isJoined()) {
                 chatRoomList.removeChatRoom(chatRoomWrapper);
             }
         }
@@ -784,8 +767,7 @@ public class MUCServiceImpl extends MUCService
 
     /**
      * Returns the <tt>ChatRoomProviderWrapper</tt> that correspond to the given
-     * <tt>ProtocolProviderService</tt>. If the list doesn't contain a corresponding wrapper
-     * - returns null.
+     * <tt>ProtocolProviderService</tt>. If the list doesn't contain a corresponding wrapper - returns null.
      *
      * @param protocolProvider the protocol provider that we're looking for
      * @return the <tt>ChatRoomProvider</tt> object corresponding to the given
