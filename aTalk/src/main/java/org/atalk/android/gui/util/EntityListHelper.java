@@ -69,7 +69,7 @@ public class EntityListHelper
         }
         else if (desc instanceof ChatRoomWrapper) {
             ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) desc;
-            title = ctx.getString(R.string.service_gui_DESTROY_CHATROOM);
+            title = ctx.getString(R.string.service_gui_DESTROY_CHATROOM_TITLE);
             message = ctx.getString(R.string.service_gui_DESTROY_CHATROOM_TEXT,
                     chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID(),
                     chatRoomWrapper.getChatRoomID());

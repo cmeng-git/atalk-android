@@ -16,6 +16,8 @@ import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatTransport;
@@ -165,8 +167,10 @@ public class ConferenceChatTransport implements ChatTransport
 			throws Exception
     {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage())
+        if (!allowsInstantMessage()) {
+            aTalkApp.showToastMessage(R.string.service_gui_CHAT_ROOM_NOT_JOINED);
             return;
+        }
 
         Message message = chatRoom.createMessage(messageText, encryptionType, mimeType, null);
         if (ChatMessage.ENCRYPTION_OMEMO == encryptionType) {

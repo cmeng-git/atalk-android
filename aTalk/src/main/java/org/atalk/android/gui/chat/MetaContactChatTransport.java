@@ -30,6 +30,8 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.FileUtils;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jxmpp.jid.EntityBareJid;
@@ -253,8 +255,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     public boolean allowsInstantMessage()
     {
         // First try to ask the capabilities operation set if such is available.
-        OperationSetContactCapabilities capOpSet
-                = getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
+        OperationSetContactCapabilities capOpSet = mPPS.getOperationSet(OperationSetContactCapabilities.class);
         if (capOpSet != null) {
             if (capOpSet.getOperationSet(contact, OperationSetBasicInstantMessaging.class) != null) {
                 return true;
@@ -354,8 +355,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     public void sendInstantMessage(String message, int encryptionType, int mimeType)
     {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage())
+        if (!allowsInstantMessage()) {
+            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED);
             return;
+        }
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
         int encType = encryptionType |

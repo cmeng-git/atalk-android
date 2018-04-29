@@ -281,8 +281,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             try {
                 mChatTransport.sendInstantMessage(content, encryption, ChatMessage.ENCODE_PLAIN);
             } catch (Exception ex) {
-                logger.warn(R.string.service_gui_SEND_MESSAGE_FAIL, ex);
-                aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_FAIL, ex.getMessage());
+                aTalkApp.showToastMessage(ex.getMessage());
             }
         }
         // Last message correction

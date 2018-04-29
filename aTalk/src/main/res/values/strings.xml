@@ -162,7 +162,7 @@
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Change remote video quality</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%s\'s conference</string>
 	<string name="service_gui_CHAT_CONFERENCE_LABEL">Conferences</string>
-    <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">The %s chat room is already joined.</string>
+    <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">You have already joined the %s chat room.</string>
 	<string name="service_gui_CHAT_ROOM_CONFIGURATION">{0} chat room configuration</string>
 	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Failed to obtain the {0} chat room configuration form.</string>
 	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Could not obtain the {0} chat room configuration form. Only owners of the chat room can see and change the configuration form.</string>
@@ -182,9 +182,8 @@
 	<string name="service_gui_CHAT_ROOM_NOT_EXIST">The %1$s room was not found in the %2$s server. Please verify if the name you typed is correct.</string>
 	<string name="service_gui_CHAT_ROOM_NOT_CONNECTED">You need to be online in order to join the %s chat room.</string>
 	<string name="service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED">You need to be online in order to leave a chat room.</string>
-	<string name="service_gui_CHAT_ROOM_NOT_JOINED">You need to be joined to the chat room in order to do further operations with it.</string>
+	<string name="service_gui_CHAT_ROOM_NOT_JOINED">You need to have joined the chat room in order to do further operations with it.</string>
 	<string name="service_gui_CHAT_ROOM_OPTIONS">Chat room options</string>
-	<string name="service_gui_CHAT_ROOM_REGISTRATION_REQUIRED">The %s chat room requires registration to be joined.</string>
 	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">The %s chat room has requested a password.</string>
 	<string name="service_gui_CHAT_ROOMS">Chat rooms</string>
 	<string name="service_gui_CHAT_ROOM">Chat Room</string>
@@ -340,7 +339,7 @@
     <string name="service_gui_FILE_OPEN_FAILED">Failed to open file. It may be deleted or moved</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">You don\'t have enough permissions to open this file. Please check your read permissions and try again</string>
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">We couldn\'t find the application associated with this type of file</string>
-    <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">We are sorry, the open file operation is not supported by the current platform</string>
+    <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">The open file operation is not supported by your device current platform</string>
     <string name="service_gui_FILE_RECEIVE_COMPLETED">File has been received from %s</string>
     <string name="service_gui_FILE_RECEIVE_FAILED">An error occurred while transferring file from %s</string>
     <string name="service_gui_FILE_RECEIVING_FROM">Receiving file from %s</string>
@@ -378,15 +377,17 @@
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Error removing locally stored messages for %s.</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Chat room occupants</string>
-    <string name="service_gui_CHATROOM_DESTROY">Destroy this chatRoom</string>
-    <string name="service_gui_CHATROOM_DESTROYED">\'%s\' has been removed Successfully!</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Erase this chatRoom history</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Erase all chatRooms history</string>
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Turn off history for this chatRoom</string>
     <string name="service_gui_CHATROOM_INFO">ChatRoom info</string>
 
-    <string name="service_gui_DESTROY_CHATROOM">Destroy chatRoom</string>
-    <string name="service_gui_DESTROY_CHATROOM_TEXT">ChatRoom owner: %1$s.\n\nAre you sure you want to destroy \'%2$s\' and all its chat history?</string>
+    <string name="service_gui_DESTROY_CHATROOM">Destroy this chatRoom</string>
+    <string name="service_gui_DESTROY_CHATROOM_TITLE">Destroy chatRoom</string>
+    <string name="service_gui_DESTROY_CHATROOM_TEXT">Account owner: %1$s.\n\nAre you sure you want to destroy \'%2$s\' and all its chat history?</string>
+    <string name="service_gui_DESTROY_CHATROOM_ERROR">Error occurred while destroying chat room:\n\nError: %s </string>
+    <string name="service_gui_DESTROYED_CHATROOM">\'%s\' has been removed Successfully!</string>
+
     <string name="service_gui_IM">IM</string>
     <string name="service_gui_INSTANT_MESSAGINGS">IMs</string>
 
@@ -396,7 +397,7 @@
 	<string name="service_gui_INVITATION">Invitation text:</string>
 	<string name="service_gui_INVITATION_RECEIVED">Invitation received</string>
 	<string name="service_gui_INVITATION_RECEIVED_MSG">%1$s has invited you to join %2$s chat room. You could accept, reject or ignore this invitation.</string>
-	<string name="service_gui_INVITATION_REJECTED">%1$s has rejected your invite to join chat room. Reason: %2$s.</string>
+	<string name="service_gui_INVITATION_REJECTED">%1$s has rejected your invitation to join chat room. Reason: %2$s.</string>
 	<string name="service_gui_INVITE">Invite</string>
 	<string name="service_gui_INVITE_CONTACT_MSG">Select the names of the contacts you would like to add to this conversation and then click Invite.</string>
 	<string name="service_gui_INVITE_CONTACT_TO_CALL">Invite contacts to call</string>
@@ -425,7 +426,10 @@
 	<string name="service_gui_JOIN_VIDEO">Join video</string>
 	<string name="service_gui_JOB_TITLE">Job title</string>
 	<string name="service_gui_JOIN_CHAT_ROOM">Join chat room&#8230;</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_TITLE">Join chat room</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Failed to join room %1$s with nickname: %2$s.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD"> The chat room requests a password.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION"> The chat room requires registration.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Join chat room</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Please enter the name of the chat room you would like to join.</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Join chat room wizard</string>
 	<string name="service_gui_JOIN_AUTOMATICALLY">Join automatically</string>
@@ -439,6 +443,7 @@
     <string name="service_gui_LAST_MSG_CORRECTION">Last message correction</string>
 	<string name="service_gui_LAST_NAME">Last name</string>
 	<string name="service_gui_LEAVE">Leave</string>
+    <string name="service_gui_LEAVE_ROOM">Leave chatRoom</string>
     <string name="service_gui_LOADING">Loading</string>
     <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Locally on hold</string>
     <string name="service_gui_LOGIN_CREDENTIAL">Login User Credentials</string>
@@ -549,6 +554,7 @@
 
     <string name="service_gui_SEND_MESSAGE">Send a message</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Failed to send message: %s</string>
+    <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">The entity you have selected doesn\'t support instant chat messaging</string>
 	<string name="service_gui_SEND_AS_SMS">Send as SMS</string>
 	<string name="service_gui_SEND_PRIVATE_MESSAGE">Send private message</string>
     <string name="service_gui_SEND_VIA">Send via</string>

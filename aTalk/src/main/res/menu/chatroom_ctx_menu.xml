@@ -19,7 +19,7 @@
     </item>
     <item
         android:id="@+id/destroy_chatroom"
-        android:title="@string/service_gui_CHATROOM_DESTROY">
+        android:title="@string/service_gui_DESTROY_CHATROOM">
     </item>
     <item
         android:id="@+id/send_chatroom_file"

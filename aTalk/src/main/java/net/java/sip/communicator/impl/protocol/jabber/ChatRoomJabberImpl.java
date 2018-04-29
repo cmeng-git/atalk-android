@@ -7,6 +7,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.text.TextUtils;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.Message;
@@ -51,8 +52,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.*;
 
 /**
- * Implements chat rooms for jabber. The class encapsulates instances of the jive software
- * <tt>MultiUserChat</tt>.
+ * Implements chat rooms for jabber. The class encapsulates instances of the jive software <tt>MultiUserChat</tt>.
  *
  * @author Emil Ivov
  * @author Yana Stamcheva
@@ -153,9 +153,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     private ConferenceDescription publishedConference = null;
 
     /**
-     * The <tt>ConferenceAnnouncementPacketExtension</tt> corresponding to
-     * <tt>publishedConference</tt> which we add to all our presence updates. This MUST be
-     * kept in sync with <tt>publishedConference</tt>
+     * The <tt>ConferenceAnnouncementPacketExtension</tt> corresponding to <tt>publishedConference</tt> which we
+     * add to all our presence updates. This MUST be kept in sync with <tt>publishedConference</tt>
      */
     private ConferenceDescriptionPacketExtension publishedConferenceExt = null;
 
@@ -226,8 +225,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     /**
-     * Removes <tt>listener</tt> from the list of listeners current registered for chat room
-     * modification events.
+     * Removes <tt>listener</tt> from the list of listeners current registered for chat room modification events.
      *
      * @param listener the <tt>ChatRoomChangeListener</tt> to remove.
      */
@@ -282,8 +280,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     /**
-     * Removes <tt>listener</tt> so that it won't receive any further message events from this
-     * room.
+     * Removes <tt>listener</tt> so that it won't receive any further message events from this room.
      *
      * @param listener the <tt>MessageListener</tt> to remove from this room
      */
@@ -322,8 +319,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     /**
-     * Adds a <tt>CallJabberImpl</tt> instance to the list of conference calls associated with the
-     * room.
+     * Adds a <tt>CallJabberImpl</tt> instance to the list of conference calls associated with the room.
      *
      * @param call the call to add
      */
@@ -334,8 +330,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     /**
-     * Removes a <tt>CallJabberImpl</tt> instance from the list of conference calls associated with
-     * the room.
+     * Removes a <tt>CallJabberImpl</tt> instance from the list of conference calls associated with the room.
      *
      * @param call the call to remove.
      */
@@ -372,8 +367,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     /**
-     * Returns a <tt>List</tt> of <tt>Member</tt>s corresponding to all members currently
-     * participating in this room.
+     * Returns a <tt>List</tt> of <tt>Member</tt>s corresponding to all members currently participating in this room.
      *
      * @return a <tt>List</tt> of <tt>Member</tt> corresponding to all room members.
      */
@@ -415,8 +409,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     /**
-     * Returns the local user's nickname in the context of this chat room or <tt>null</tt> if not
-     * currently joined.
+     * Returns the local user's nickname in the context of this chat room or <tt>null</tt> if not currently joined.
      *
      * @return the nickname currently being used by the local user in the context of the local
      * chat room.
@@ -433,8 +426,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     /**
-     * Finds private messaging contact by nickname. If the contact doesn't exists a new volatile
-     * contact is created.
+     * Finds private messaging contact by nickname. If the contact doesn't exists a new volatile contact is created.
      *
      * @param nickname the nickname of the contact.
      * @return the contact instance.
@@ -476,8 +468,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      *
      * @param userAddress the address of the user to invite to the room.(one may also invite users not on their
      * contact list).
-     * @param reason a reason, subject, or welcome message that would tell the the user why they are being
-     * invited.
+     * @param reason a reason, subject, or welcome message that would tell the the user why they are being invited.
      */
     public void invite(EntityBareJid userAddress, String reason)
             throws NotConnectedException, InterruptedException
@@ -532,11 +523,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             throws OperationFailedException
     {
         assertConnected();
+        String errorMessage = aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED, getName(), nickname);
 
         // parseLocalPart or take nickname as it to join chatRoom
         String sNickname = nickname.split("@")[0];
-
-        String errorMessage = "Failed to join room " + getName() + " with nickname: " + nickname;
         try {
             mNickName = Resourcepart.from(sNickname);
             if (mMultiUserChat.isJoined()) {
@@ -549,28 +539,28 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                 else
                     mMultiUserChat.join(mNickName, new String(password));
             }
-
-            ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(this, mNickName,
-                    mProvider.getAccountID().getBareJid());
+            // update members list only on successful joining chatRoom
+            ChatRoomMemberJabberImpl member
+                    = new ChatRoomMemberJabberImpl(this, mNickName, mProvider.getAccountID().getBareJid());
             synchronized (members) {
                 final EntityFullJid entityFullJid = JidCreate.fullFrom(mMultiUserChat.getRoom(), mNickName);
                 members.put(entityFullJid, member);
             }
             // We don't specify a reason.
-            opSetMuc.fireLocalUserPresenceEvent(this,
-                    LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED, null);
+            opSetMuc.fireLocalUserPresenceEvent(this, LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED, null);
+
         } catch (XMPPErrorException ex) {
             if (ex.getXMPPError() == null) {
                 logger.error(errorMessage, ex);
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
             }
             else if (ex.getXMPPError().getCondition().equals(XMPPError.Condition.not_authorized)) {
-                errorMessage += ". The chat room requests a password.";
+                errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD);
                 logger.error(errorMessage, ex);
                 throw new OperationFailedException(errorMessage, OperationFailedException.AUTHENTICATION_FAILED, ex);
             }
             else if (ex.getXMPPError().getCondition().equals(XMPPError.Condition.registration_required)) {
-                errorMessage += ". The chat room requires registration.";
+                errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION);;
                 logger.error(errorMessage, ex);
                 throw new OperationFailedException(errorMessage, OperationFailedException.REGISTRATION_REQUIRED, ex);
             }
@@ -652,7 +642,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         try {
             mMultiUserChat.destroy(reason, roomName);
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException e) {
-            logger.warn("Error occurred while destroying chat room: " + roomName.toString(), e);
+            MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_ERROR),
+                    aTalkApp.getResString(R.string.service_gui_DESTROY_CHATROOM_ERROR, e.getMessage()));
             return false;
         }
         return true;
@@ -719,7 +710,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
 
         // connection can be null if we are leaving due to connection failed
         if ((connection != null) && (mMultiUserChat != null)) {
-            // mMultiUserChat.removePresenceInterceptor(presenceInterceptor);
+            if (presenceInterceptor != null) {
+                mMultiUserChat.removePresenceInterceptor(presenceInterceptor);
+                presenceInterceptor = null;
+            }
             mMultiUserChat.removeParticipantListener(participantListener);
             mMultiUserChat.removeInvitationRejectionListener(invitationRejectionListeners);
         }
@@ -747,7 +741,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             mMultiUserChat.sendMessage(msg);
         } catch (NotConnectedException | InterruptedException e) {
             logger.error("Failed to send message " + message, e);
-            throw new OperationFailedException("Failed to send message " + message,
+            throw new OperationFailedException( aTalkApp.getResString(R.string.service_gui_SEND_MESSAGE_FAIL, message),
                     OperationFailedException.GENERAL_ERROR, e);
         }
     }
@@ -999,8 +993,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
 
         /**
          * Called when an owner revokes a user ownership on the room. This means that the user will
-         * no longer be able to change defining room features as well as perform all administrative
-         * functions.
+         * no longer be able to change defining room features as well as perform all administrative functions.
          *
          * @param participant the participant that was revoked ownership on the room (e.g.
          * room@conference.jabber.org/nick).
@@ -1016,8 +1009,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
          * Called when a room participant has been kicked from the room. This means that the kicked
          * participant is no longer participating in the room.
          *
-         * @param participant the participant that was kicked from the room (e.g.
-         * room@conference.jabber.org/nick).
+         * @param participant the participant that was kicked from the room (e.g. room@conference.jabber.org/nick).
          * @param actor the moderator that kicked the occupant from the room (e.g. user@host.org).
          * @param reason the reason provided by the actor to kick the occupant from the room.
          */
@@ -1054,8 +1046,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
          * participant in the room was able to speak and now is a visitor that can't send
          * messages to the room occupants.
          *
-         * @param participant the participant that was revoked voice from the room (e.g.
-         * room@conference.jabber.org/nick).
+         * @param participant the participant that was revoked voice from the room e.g. room@conference.jabber.org/nick
          */
         public void voiceRevoked(EntityFullJid participant)
         {
@@ -1068,8 +1059,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
          * Called when an administrator grants a user membership to the room. This means that the
          * user will be able to join the members-only room.
          *
-         * @param participant the participant that was granted membership in the room (e.g.
-         * room@conference.jabber.org/nick).
+         * @param participant the participant that was granted membership in the room e.g. room@conference.jabber.org/nick
          */
         public void membershipGranted(EntityFullJid participant)
         {
@@ -1123,8 +1113,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
 
         /**
          * Called when an owner grants a user ownership on the room. This means that the user will
-         * be able to change defining room features as well as perform all administrative
-         * functions.
+         * be able to change defining room features as well as perform all administrative functions.
          *
          * @param participant the participant that was granted ownership on the room (e.g.
          * room@conference.jabber.org/nick).
@@ -1165,8 +1154,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     /**
-     * Adds a listener that will be notified of changes of a member mRole in the room such as being
-     * granted operator.
+     * Adds a listener that will be notified of changes of a member mRole in the room such as being granted operator.
      *
      * @param listener a member mRole listener.
      */
@@ -1343,8 +1331,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * @param eventID the identifier of the event
      * @param eventReason the reason of this event
      */
-    private void fireMemberPresenceEvent(ChatRoomMember member, ChatRoomMember actor,
-            String eventID, String eventReason)
+    private void fireMemberPresenceEvent(ChatRoomMember member, ChatRoomMember actor, String eventID, String eventReason)
     {
         ChatRoomMemberPresenceChangeEvent evt = new ChatRoomMemberPresenceChangeEvent(this, member,
                 actor, eventID, eventReason);
@@ -1362,8 +1349,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
 
     /**
      * Creates the corresponding ChatRoomMemberRoleChangeEvent and notifies all
-     * <tt>ChatRoomMemberRoleListener</tt>s that a ChatRoomMember has changed its mRole in this
-     * <tt>ChatRoom</tt>.
+     * <tt>ChatRoomMemberRoleListener</tt>s that a ChatRoomMember has changed its mRole in this <tt>ChatRoom</tt>.
      *
      * @param member the <tt>ChatRoomMember</tt> that has changed its mRole
      * @param previousRole the previous mRole that member had
@@ -1473,8 +1459,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * <tt>namespace</tt> of the <tt>packet</tt>.
      *
      * @param packet the <tt>Packet<tt> to be modified.
-     * @param extension the <tt>ConferenceDescriptionPacketExtension<tt> to set, or <tt>null</tt> to not set
-     * one.
+     * @param extension the <tt>ConferenceDescriptionPacketExtension<tt> to set, or <tt>null</tt> to not set one.
      * @param namespace the namespace of <tt>ExtensionElement</tt>.
      */
     private static void setPacketExtension(Stanza packet, ExtensionElement extension, String namespace)
@@ -1530,8 +1515,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     /**
      * Removes given <tt>PacketExtension</tt> from the MUC presence and publishes it immediately.
      *
-     * @param extension the <tt>PacketExtension</tt> to be removed from the MUC
-     * presence.
+     * @param extension the <tt>PacketExtension</tt> to be removed from the MUC presence.
      */
     public void removePresenceExtension(ExtensionElement extension)
     {
@@ -1787,9 +1771,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         }
 
         /**
-         * Called when a moderator grants voice to your user. This means that you were a visitor in
-         * the moderated room before and now you can participate in the room by sending messages to
-         * all occupants.
+         * Called when a moderator grants voice to your user. This means that you were a visitor in the
+         * moderated room before and now you can participate in the room by sending messages to all occupants.
          */
         @Override
         public void voiceGranted()
@@ -1798,9 +1781,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         }
 
         /**
-         * Called when a moderator revokes voice from your user. This means that you were a
-         * participant in the room able to speak and now you are a visitor that can't send messages
-         * to the room occupants.
+         * Called when a moderator revokes voice from your user. This means that you were a participant in the
+         * room able to speak and now you are a visitor that can't send messages to the room occupants.
          */
         @Override
         public void voiceRevoked()
@@ -2007,8 +1989,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * this chat room. If the user doesn't have permissions to see and change chat room
      * configuration an <tt>OperationFailedException</tt> is thrown.
      *
-     * @return the <tt>ChatRoomConfigurationForm</tt> containing all configuration properties for
-     * this chat room
+     * @return the <tt>ChatRoomConfigurationForm</tt> containing all configuration properties for this chat room
      * @throws OperationFailedException if the user doesn't have permissions to see and change chat room configuration
      */
     public ChatRoomConfigurationForm getConfigurationForm()
@@ -2022,8 +2003,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         } catch (XMPPErrorException e) {
             if (e.getXMPPError().getCondition().equals(XMPPError.Condition.forbidden))
                 throw new OperationFailedException(
-                        "Failed to obtain smack multi user chat config form."
-                                + " User doesn't have enough privileges to see the form.",
+                        "Failed to obtain smack multi user chat config form. User doesn't have enough privileges to see the form.",
                         OperationFailedException.NOT_ENOUGH_PRIVILEGES, e);
             else
                 throw new OperationFailedException(
@@ -2048,8 +2028,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     /**
      * Determines whether this chat room should be stored in the configuration file or not. If the
      * chat room is persistent it still will be shown after a restart in the chat room list. A
-     * non-persistent chat room will be only in the chat room list until the the program is
-     * running.
+     * non-persistent chat room will be only in the chat room list until the the program is running.
      *
      * @return true if this chat room is persistent, false otherwise
      */
@@ -2107,8 +2086,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * becomes a room member will be able to enter a room of type Members-Only (i.e. a room that a
      * user cannot enter without being on the member list).
      *
-     * @param jid the bare XMPP user ID of the user to grant membership privileges (e.g.
-     * "user@host.org").
+     * @param jid the bare XMPP user ID of the user to grant membership privileges (e.g. "user@host.org").
      */
     public void grantMembership(Jid jid)
     {
@@ -2141,11 +2119,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     /**
      * Grants ownership privileges to another user. Room owners may grant ownership privileges.
      * Some room implementations will not allow to grant ownership privileges to other users. An
-     * owner is allowed to change defining room features as well as perform all administrative
-     * functions.
+     * owner is allowed to change defining room features as well as perform all administrative functions.
      *
-     * @param jid the bare XMPP user ID of the user to grant ownership privileges (e.g.
-     * "user@host.org").
+     * @param jid the bare XMPP user ID of the user to grant ownership privileges (e.g. "user@host.org").
      */
     public void grantOwnership(String jid)
     {
@@ -2163,7 +2139,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * able to send messages to the room occupants.
      *
      * @param nickname the nickname of the visitor to grant voice in the room (e.g. "john").
-     * <p/>
+     *
      * XMPPException if an error occurs granting voice to a visitor. In particular, a 403
      * error can occur if the occupant that intended to grant voice is not a moderator in
      * this room (i.e. Forbidden error); or a 400 error can occur if the provided nickname is
@@ -2184,8 +2160,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * privileges will become a member. Room owners may revoke administrator privileges from a
      * member or unaffiliated user.
      *
-     * @param jid the bare XMPP user ID of the user to grant administrator privileges (e.g.
-     * "user@host.org").
+     * @param jid the bare XMPP user ID of the user to grant administrator privileges (e.g. "user@host.org").
      */
     public void revokeAdmin(String jid)
     {
@@ -2256,7 +2231,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * able to send messages to the room occupants.
      *
      * @param nickname the nickname of the participant to revoke voice (e.g. "john").
-     * <p/>
+     *
      * XMPPException if an error occurs revoking voice from a participant. In particular, a
      * 405 error can occur if a moderator or a user with an affiliation of "owner" or "admin"
      * was tried to revoke his voice (i.e. Not Allowed error); or a 400 error can occur if
@@ -2310,7 +2285,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     {
         /**
          * {@inheritDoc}
-         * <p/>
+         *
          * Adds <tt>this.publishedConferenceExt</tt> as the only
          * <tt>ConferenceAnnouncementPacketExtension</tt> of <tt>packet</tt>.
          */

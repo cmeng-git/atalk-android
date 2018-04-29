@@ -1957,7 +1957,7 @@ public class ChatFragment extends OSGiFragment
                     chatPanel.getChatSession().getCurrentChatTransport().sendInstantMessage(msg,
                             ChatMessage.ENCRYPTION_NONE, ChatMessage.ENCODE_PLAIN);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    aTalkApp.showToastMessage(e.getMessage());
                 }
             }
             chatListAdapter.setXferStatus(msgPos, newStatus);
