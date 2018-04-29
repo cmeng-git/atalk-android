@@ -30,8 +30,13 @@
         android:title="@string/service_gui_HISTORY_ERASE_PER_CONTACT">
     </item>
     <item
+        android:id="@+id/leave_chat_room"
+        android:title="@string/service_gui_LEAVE_ROOM"
+        android:visible="false">
+    </item>
+    <item
         android:id="@+id/destroy_chat_room"
-        android:title="@string/service_gui_DESTROY_CHATROOM"
+        android:title="@string/service_gui_DESTROY_CHATROOM_TITLE"
         android:visible="false">
     </item>
     <item

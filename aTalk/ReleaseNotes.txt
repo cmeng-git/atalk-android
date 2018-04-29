@@ -1,10 +1,13 @@
 Project aTalk-Android Release Notes
 =========================================================================
-Version:		1.2.4a (1024)
+Version:		1.2.4 (1024)
 Author:         cmeng
-Upload Date:	04/27/2018
+Upload Date:	04/29/2018
 - Use android resource tool getString() in place of getI18NString()
 - clean up source and string.xml files
+- Add user option to leave chatRoom in muc chat session menu
+- Implement dialog error message when user failed to join or attempt to destroy chatRoom
+- Implement toast message when user failed to send message
 
 =========================================================================
 Version:		1.2.3 (1023)

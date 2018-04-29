@@ -12,22 +12,15 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.Surface;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.Toast;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ChatRoomMember;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
@@ -38,11 +31,7 @@ import org.atalk.android.gui.chat.conference.ConferenceChatSession;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
-import org.atalk.android.gui.util.ActionBarUtil;
-import org.atalk.android.gui.util.AndroidCallUtil;
-import org.atalk.android.gui.util.AndroidImageUtil;
-import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.gui.util.EntityListHelper;
+import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.geolocation.GeoLocation;
@@ -54,10 +43,7 @@ import org.atalk.util.StringUtils;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static org.atalk.android.util.FileAccess.getMimeType;
 
@@ -89,8 +75,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
 
     /**
      * Set the number of pages that should be retained to either side of the current page in the
-     * view hierarchy in an idle state. Pages beyond this limit will be recreated from the
-     * adapter when needed.
+     * view hierarchy in an idle state. Pages beyond this limit will be recreated from the adapter when needed.
      * Note: this is not the max fragments that user is allowed to have
      */
     private final int CHAT_PAGER_SIZE = 4;
@@ -108,6 +93,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     private MenuItem mCallContact;
     private MenuItem mSendFile;
     private MenuItem mSendLocation;
+    private MenuItem mLeaveChatRoom;
     private MenuItem mDestroyChatRoom;
     private MenuItem mChatRoomMember;
 
@@ -135,8 +121,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
      * Called when the activity is starting. Initializes the corresponding call interface.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
-     * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
-     * Note: Otherwise it is null.
+     * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
      */
 
     @Override
@@ -314,8 +299,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     }
 
     /**
-     * Invoked when the options menu is created. Creates our own options menu from the
-     * corresponding xml.
+     * Invoked when the options menu is created. Creates our own options menu from the corresponding xml.
      *
      * @param menu the options menu
      */
@@ -330,6 +314,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         mSendFile = mMenu.findItem(R.id.send_file);
         mSendLocation = mMenu.findItem(R.id.send_location);
         mHistoryErase = mMenu.findItem(R.id.erase_chat_history);
+        mLeaveChatRoom = mMenu.findItem(R.id.leave_chat_room);
         mDestroyChatRoom = mMenu.findItem(R.id.destroy_chat_room);
         mChatRoomMember = mMenu.findItem(R.id.show_chat_room_occupant);
 
@@ -346,6 +331,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             // Enable/disable certain menu items based on current transport type
             boolean contactSession = (chatSession instanceof MetaContactChatSession);
             if (contactSession) {
+                mLeaveChatRoom.setVisible(false);
                 mDestroyChatRoom.setVisible(false);
                 mHistoryErase.setTitle(R.string.service_gui_HISTORY_ERASE_PER_CONTACT);
 
@@ -362,6 +348,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mChatRoomMember.setVisible(false);
             }
             else {
+                mLeaveChatRoom.setVisible(true);
                 mDestroyChatRoom.setVisible(true);
                 mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
                 mChatRoomMember.setVisible(true);
@@ -386,6 +373,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     public boolean onOptionsItemSelected(MenuItem item)
     {
         Intent intent;
+        Object object;
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.muc_invite:
@@ -410,8 +398,26 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                         selectedChatPanel.getChatSession().getDescriptor(), null);
                 return true;
 
+            case R.id.leave_chat_room:
+                object = selectedChatPanel.getChatSession().getDescriptor();
+                if (object instanceof ChatRoomWrapper) {
+                    ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
+                    ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
+                    if (chatRoom != null) {
+                        ChatRoomWrapper leavedRoomWrapped = MUCActivator.getMUCService().leaveChatRoom(chatRoomWrapper);
+                        if (leavedRoomWrapped != null) {
+                            MUCActivator.getUIService().closeChatRoomWindow(leavedRoomWrapped);
+                        }
+                    }
+                    // MUCActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
+                    ChatSessionManager.removeActiveChat(selectedChatPanel);
+                    MUCActivator.getMUCService().removeChatRoom(chatRoomWrapper);
+                    finish();
+                }
+                return true;
+
             case R.id.destroy_chat_room:
-                Object object = selectedChatPanel.getChatSession().getDescriptor();
+                object = selectedChatPanel.getChatSession().getDescriptor();
                 if (object instanceof ChatRoomWrapper) {
                     ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
                     ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
@@ -420,8 +426,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     // MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
                     // mhs.eraseLocallyStoredHistory(chatRoom, null);
 
-                    AndroidGUIActivator.getMUCService().destroyChatRoom(chatRoomWrapper,
-                            "User requested", chatRoom.getIdentifier());
+                    MUCActivator.getMUCService().destroyChatRoom(chatRoomWrapper, "User requested",
+                            chatRoom.getIdentifier());
                     ChatSessionManager.removeActiveChat(selectedChatPanel);
                     // It is safer to just finish. see case R.id.close_chat:
                     finish();
@@ -645,7 +651,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     try {
                         mChatTransport.sendInstantMessage(location, encryption, ChatMessage.ENCODE_PLAIN);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        aTalkApp.showToastMessage(e.getMessage());
                     }
                 }
             }

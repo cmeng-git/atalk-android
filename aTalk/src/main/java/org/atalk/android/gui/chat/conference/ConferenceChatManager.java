@@ -477,8 +477,7 @@ public class ConferenceChatManager
      * @param multiUserChatOpSet the operation set for chat conferencing
      * @throws OperationFailedException if the accept fails
      */
-    public void acceptInvitation(AdHocChatRoomInvitation invitation,
-            OperationSetAdHocMultiUserChat multiUserChatOpSet)
+    public void acceptInvitation(AdHocChatRoomInvitation invitation, OperationSetAdHocMultiUserChat multiUserChatOpSet)
             throws OperationFailedException
     {
         AdHocChatRoom chatRoom = invitation.getTargetAdHocChatRoom();

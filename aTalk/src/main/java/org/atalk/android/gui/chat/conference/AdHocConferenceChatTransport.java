@@ -15,6 +15,8 @@ import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatTransport;
@@ -157,13 +159,13 @@ public class AdHocConferenceChatTransport implements ChatTransport
     public void sendInstantMessage(String messageText, int encryptionType, int mimeType)
     {
         // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage())
+        if (!allowsInstantMessage()) {
+            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED);
             return;
-
+        }
         Message message = adHocChatRoom.createMessage(messageText);
         adHocChatRoom.sendMessage(message);
     }
-
 
     /**
      * Sends <tt>message</tt> as a message correction through this transport, specifying the
@@ -285,8 +287,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
      */
     public void addInstantMessageListener(MessageListener l)
     {
-        // If this chat transport does not support instant messaging we do
-        // nothing here.
+        // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage())
             return;
 
@@ -301,8 +302,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
      */
     public void removeSmsMessageListener(MessageListener l)
     {
-        // If this chat transport does not support sms messaging we do
-        // nothing here.
+        // If this chat transport does not support sms messaging we do nothing here.
         if (!allowsSmsMessage())
             return;
 
@@ -317,8 +317,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
      */
     public void removeInstantMessageListener(MessageListener l)
     {
-        // If this chat transport does not support instant messaging we do
-        // nothing here.
+        // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage())
             return;
 

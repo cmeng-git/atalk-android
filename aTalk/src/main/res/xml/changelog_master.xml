@@ -6,6 +6,13 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.2.4 (04/29/2018)" versioncode="1024">
+        <change>Add user option to leave chatRoom in muc chat session menu (see online help on other MUC features)</change>
+        <change>Implement dialog error message when user failed to join or attempt to destroy chatRoom</change>
+        <change>Implement toast message when user failed to send message</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.2.3 (04/23/2018)" versioncode="1023">
         <change>Auto enable Omemo option on receive Omemo message while chat view is in focus</change>
         <change>Add StreetViews and Map option on main menu (see online help for more info)</change>
