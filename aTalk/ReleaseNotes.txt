@@ -1,5 +1,15 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.2.5 (1025)
+Author:         cmeng
+Upload Date:	05/01/2018
+- Implement multi-language UI support
+- Add Spanish (Español) language UI support
+- Implementation for android N and above to take care FileUriExposed Exceptions, fix openFile, camera media attachments and send log etc
+- Add RealPathUtil to take care for all android version realPath access
+- ShowToast when selected file path cannot be found or open
+
+=========================================================================
 Version:		1.2.4 (1024)
 Author:         cmeng
 Upload Date:	04/29/2018

@@ -19,7 +19,10 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.MetaContactChatTransport;
 import org.atalk.android.util.java.awt.Color;
@@ -82,6 +85,12 @@ public class ConfigurationUtils
      * The send message command. ENTER or Ctrl-ENTER
      */
     private static String sendMessageCommand;
+
+
+    /**
+     * The aTalk UI language
+     */
+    private static String mLanguage;
 
     /**
      * Indicates if the call panel is shown.
@@ -439,6 +448,10 @@ public class ConfigurationUtils
         configService.addPropertyChangeListener(new ConfigurationChangeListener());
         mDB = DatabaseBackend.getWritableDB();
 
+        // Load the UI language last selected by user or default to system language i.e. ""
+        mLanguage = configService.getString(aTalkApp.getResString(R.string.pref_key_locale, ""));
+        aTalk.setATLanguage(mLanguage);
+
         // Load the "auPopupNewMessage" property.
         String autoPopup = configService.getString(pAutoPopupNewMessage);
         if (StringUtils.isNullOrEmpty(autoPopup))
@@ -469,7 +482,6 @@ public class ConfigurationUtils
 
         // Load the "sendTypingNotifications" property.
         String isSendTypingNotification = configService.getString(pTypingNotification);
-
         if (StringUtils.isNullOrEmpty(isSendTypingNotification))
             isSendTypingNotification = UtilActivator.getResources().getSettingsString(pTypingNotification);
 
@@ -502,7 +514,6 @@ public class ConfigurationUtils
 
         // Load the "isLeaveChatroomOnWindowCloseEnabled" property.
         String isLeaveChatRoomOnWindowCloseEnabledString = configService.getString(pLeaveChatRoomOnWindowClose);
-
         if (StringUtils.isNullOrEmpty(isLeaveChatRoomOnWindowCloseEnabledString)) {
             isLeaveChatRoomOnWindowCloseEnabledString
                     = UtilActivator.getResources().getSettingsString(pLeaveChatRoomOnWindowClose);
@@ -514,7 +525,6 @@ public class ConfigurationUtils
 
         // Load the "isHistoryShown" property.
         String isHistoryShownString = configService.getString(pMessageHistoryShown);
-
         if (StringUtils.isNullOrEmpty(isHistoryShownString))
             isHistoryShownString = UtilActivator.getResources().getSettingsString(pMessageHistoryShown);
 
@@ -528,7 +538,6 @@ public class ConfigurationUtils
 
         // Load the "chatHistorySize" property.
         String chatHistorySizeString = configService.getString(pChatHistorySize);
-
         if (StringUtils.isNullOrEmpty(chatHistorySizeString))
             chatHistorySizeString = UtilActivator.getResources().getSettingsString(pChatHistorySize);
 
@@ -538,7 +547,6 @@ public class ConfigurationUtils
 
         // Load the "CHAT_WRITE_AREA_SIZE" property.
         String chatWriteAreaSizeString = configService.getString(pChatWriteAreaSize);
-
         if (StringUtils.isNullOrEmpty(chatWriteAreaSizeString))
             chatWriteAreaSizeString = UtilActivator.getResources().getSettingsString(pChatWriteAreaSize);
 
@@ -548,7 +556,6 @@ public class ConfigurationUtils
 
         // Load the "isTransparentWindowEnabled" property.
         String isTransparentWindowEnabledString = configService.getString(pTransparentWindowEnabled);
-
         if (StringUtils.isNullOrEmpty(isTransparentWindowEnabledString))
             isTransparentWindowEnabledString = UtilActivator.getResources().getSettingsString(pTransparentWindowEnabled);
 
@@ -558,7 +565,6 @@ public class ConfigurationUtils
 
         // Load the "windowTransparency" property.
         String windowTransparencyString = configService.getString(pWindowTransparency);
-
         if (StringUtils.isNullOrEmpty(windowTransparencyString))
             windowTransparencyString = UtilActivator.getResources().getSettingsString(pWindowTransparency);
 

@@ -11,19 +11,13 @@
             android:summaryOn="@string/service_gui_settings_SHOW_ICON_SUMMARY_ON"
             android:title="@string/service_gui_settings_SHOW_ICON" />
 
-        <!--
-            <ListPreference
-			android:title="@string/service_gui_settings_LOCALE"
-			android:key="@string/pref_key_locale" />
-
-            <ListPreference
-                android:persistent="false"
-                android:key="language"
-                android:title="@string/settings_language_label"
-                android:entries="@array/settings_language_entries"
-                android:entryValues="@array/settings_language_values"
-                android:dialogTitle="@string/settings_language_label" />
-        -->
+        <ListPreference
+            android:dialogTitle="@string/service_gui_settings_LOCALE"
+            android:entries="@array/settings_language_entries"
+            android:entryValues="@array/settings_language_values"
+            android:key="@string/pref_key_locale"
+            android:persistent="false"
+            android:title="@string/service_gui_settings_LOCALE" />
 
         <!--ListPreference
             android:persistent="false"

@@ -97,6 +97,15 @@
 			android:name="org.atalk.data.ChatProvider"
 			android:authorities="org.atalk.provider.Chats" />
         -->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="org.atalk.android.file.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_path"/>
+        </provider>
 
         <activity
             android:name="org.atalk.android.gui.LauncherActivity"
