@@ -8,8 +8,10 @@ package org.atalk.android.gui.chat;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.*;
@@ -26,6 +28,7 @@ import net.java.sip.communicator.util.Logger;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
@@ -35,14 +38,12 @@ import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.geolocation.GeoLocation;
-import org.atalk.android.util.CameraAccess;
-import org.atalk.android.util.FileAccess;
+import org.atalk.android.util.*;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.StringUtils;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.*;
 
 import static org.atalk.android.util.FileAccess.getMimeType;
@@ -563,13 +564,11 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 case SELECT_VIDEO:
                     Uri selectedImage = data.getData();
                     if (selectedImage != null) {
-                        try {
-                            filePath = FileAccess.getPath(this, selectedImage);
-                            if (!StringUtils.isNullOrEmpty(filePath))
-                                sendFile(filePath);
-                        } catch (URISyntaxException e) {
-                            logger.error("Choose attachment error: " + e.getMessage());
-                        }
+                        filePath = RealPathUtil.getRealPath(this, selectedImage);
+                        if (!StringUtils.isNullOrEmpty(filePath))
+                            sendFile(filePath);
+                        else
+                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                     }
                     break;
 
@@ -581,6 +580,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                             mCameraFilePath = "";
                             sendFile(filePath);
                         }
+                        else
+                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                     }
                     break;
 
@@ -588,13 +589,11 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     if (data != null) {
                         Uri uri = data.getData();
                         if (uri != null) {
-                            try {
-                                filePath = FileAccess.getPath(this, uri);
-                                if (!StringUtils.isNullOrEmpty(filePath))
-                                    sendFile(filePath);
-                            } catch (URISyntaxException e) {
-                                logger.error("Choose file error: " + e.getMessage());
-                            }
+                            filePath = RealPathUtil.getRealPath(this, uri);
+                            if (!StringUtils.isNullOrEmpty(filePath))
+                                sendFile(filePath);
+                            else
+                                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                         }
                     }
                     break;
@@ -603,13 +602,11 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     if (data != null) {
                         Uri uri = data.getData();
                         if (uri != null) {
-                            try {
-                                filePath = FileAccess.getPath(this, uri);
-                                if (!StringUtils.isNullOrEmpty(filePath))
-                                    openFile(new File(filePath));
-                            } catch (URISyntaxException e) {
-                                logger.error("File open error: " + e.getMessage());
-                            }
+                            filePath = RealPathUtil.getRealPath(this, uri);
+                            if (!StringUtils.isNullOrEmpty(filePath))
+                                openFile(new File(filePath));
+                            else
+                                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                         }
                     }
                     break;
@@ -677,7 +674,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 // create a file to save the image
                 mCameraFilePath = CameraAccess.getOutputMediaFilePath(CameraAccess.MEDIA_TYPE_IMAGE);
-                fileUri = Uri.fromFile(new File(mCameraFilePath));
+
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    fileUri = FileProvider.getUriForFile(this, aTalk.APP_FILE_PROVIDER, new File(mCameraFilePath));
+                }
+                else {
+                    fileUri = Uri.fromFile(new File(mCameraFilePath));
+                }
+
                 // set the image file name for camera service to save file
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 // start the image capture Intent
@@ -695,7 +699,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                 // create a file to save the image
                 mCameraFilePath = CameraAccess.getOutputMediaFilePath(CameraAccess.MEDIA_TYPE_VIDEO);
-                fileUri = Uri.fromFile(new File(mCameraFilePath));
+
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    fileUri = FileProvider.getUriForFile(this, aTalk.APP_FILE_PROVIDER, new File(mCameraFilePath));
+                }
+                else {
+                    fileUri = Uri.fromFile(new File(mCameraFilePath));
+                }
+
                 // set the image file name
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 // start the image capture Intent
@@ -749,8 +760,13 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     public void openFile(File file)
     {
         try {
+            Uri uri;
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                uri = FileProvider.getUriForFile(aTalkApp.getGlobalContext(), aTalk.APP_FILE_PROVIDER, file);
+            }
+            else
+                uri = Uri.fromFile(file);
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri uri = Uri.fromFile(file);
 
             // use uri.toString to take care of filename with space
             String mimeType = getMimeType(uri.toString());

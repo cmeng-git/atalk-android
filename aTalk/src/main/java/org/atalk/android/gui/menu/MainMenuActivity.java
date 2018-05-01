@@ -20,15 +20,13 @@ package org.atalk.android.gui.menu;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.text.TextUtils;
+import android.view.*;
 
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
@@ -50,12 +48,9 @@ import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.ActionBarUtil;
 import org.atalk.android.plugin.geolocation.GeoLocation;
 import org.atalk.service.osgi.OSGiActivity;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * The main options menu. Every <tt>Activity</tt> that desires to have the general options menu
@@ -75,6 +70,9 @@ public class MainMenuActivity extends ExitMenuActivity
 
     private MenuItem mShowHideOffline;
     private MenuItem mOnOffLine;
+
+    // Default to system locale language
+    private static String mLanguage = "";
 
     /**
      * Video bridge conference call menu. In the case of more than one account.
@@ -98,16 +96,17 @@ public class MainMenuActivity extends ExitMenuActivity
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
      *
-     * @param savedInstanceState
-     *         If the activity is being re-initialized after previously being shut down then this
-     *         Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
-     *         Note: Otherwise it is null.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
+     * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     * Note: Otherwise it is null.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         mContext = this;
+        setLanguage(mContext, mLanguage);
+
         // cmeng - not implemented yet, do not set
         // setTheme(aTalkApp.getAppThemeResourceId());
     }
@@ -133,8 +132,7 @@ public class MainMenuActivity extends ExitMenuActivity
      * Invoked when the options menu is created. Creates our own options menu from the
      * corresponding xml.
      *
-     * @param menu
-     *         the options menu
+     * @param menu the options menu
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -162,6 +160,35 @@ public class MainMenuActivity extends ExitMenuActivity
         // Adds exit option from super class
         super.onCreateOptionsMenu(menu);
         return true;
+    }
+
+    public static void setLanguage(Context context, String language)
+    {
+        Locale locale;
+        if (TextUtils.isEmpty(language)) {
+            locale = Resources.getSystem().getConfiguration().locale;
+        }
+        else if (language.length() == 5 && language.charAt(2) == '_') {
+            // language is in the form: en_US
+            locale = new Locale(language.substring(0, 2), language.substring(3));
+        }
+        else {
+            locale = new Locale(language);
+        }
+        Resources resources = context.getResources();
+        Configuration config = resources.getConfiguration();
+        config.locale = locale;
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+    }
+
+    public static String getATLanguage()
+    {
+        return mLanguage;
+    }
+
+    public static void setATLanguage(String language)
+    {
+        mLanguage = language;
     }
 
     /**
@@ -257,8 +284,7 @@ public class MainMenuActivity extends ExitMenuActivity
     /**
      * Invoked when an options item has been selected.
      *
-     * @param item
-     *         the item that has been selected
+     * @param item the item that has been selected
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -394,8 +420,7 @@ public class MainMenuActivity extends ExitMenuActivity
      * Implements the <tt>ServiceListener</tt> method. Verifies whether the passed event concerns
      * a <tt>ProtocolProviderService</tt> and adds the corresponding UI controls in the menu.
      *
-     * @param event
-     *         The <tt>ServiceEvent</tt> object.
+     * @param event The <tt>ServiceEvent</tt> object.
      */
     public void serviceChanged(ServiceEvent event)
     {

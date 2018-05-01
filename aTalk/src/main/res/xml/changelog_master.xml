@@ -6,6 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.2.5 (05/01/2018)" versioncode="1025">
+        <change>Implement multi-language UI support</change>
+        <change>Add Spanish (Español) language UI support</change>
+        <change>Implementation for android N and above to take care FileUriExposed Exceptions, fix openFile, camera media attachments and send log etc</change>
+        <change>ShowToast when selected file path cannot be found or open</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.2.4 (04/29/2018)" versioncode="1024">
         <change>Add user option to leave chatRoom in muc chat session menu (see online help on other MUC features)</change>
         <change>Implement dialog error message when user failed to join or attempt to destroy chatRoom</change>

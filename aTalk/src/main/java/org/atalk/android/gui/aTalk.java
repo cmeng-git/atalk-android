@@ -59,6 +59,8 @@ public class aTalk extends MainMenuActivity
 	 */
 	public static final String ACTION_SHOW_CONTACTS = "org.atalk.show_contacts";
 
+    public static final String APP_FILE_PROVIDER = "org.atalk.android.file.provider";
+
     final boolean isAndroidM = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
 	private static boolean permissionRequest = true;
 
@@ -159,7 +161,7 @@ public class aTalk extends MainMenuActivity
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			logger.warn("Search intent not handled for query: " + query);
 		}
-	}
+    }
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState)

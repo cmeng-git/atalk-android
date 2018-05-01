@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 # aTalk, the OpenSource Java VoIP and Instant Messaging client.
-# cmeng - migrated to use android resource getString() hence use %1$s, %2$s etc instead
-#
+
 # Distributable under LGPL license.
 # See terms of license at gnu.org.
 #
-# Translation files are automatically generated from:
-#        http://translate.jitsi.org/
-#
 # Note to translators:
-# - do not edit the resources_xx.properties files directly. Your changes may be lost. Go to http://translate.jitsi.org/ instead.
-# - {0}, {1}... are parameters which will be replaced by the actual text at runtime, place them as you wish
-# - \ at the end of a line means that the translation is continued in the next line
-# - you cannot use single quotes when a parameter is used in the sentence.
-#   For example, <You can't move contact {0}>, <Contact {0} doesn't exist>,
-#   or <Accept '{0}'> does not display correctly. In such cases, you need
-#   to use double quotes (''):
-#   <You can''t move contact {0}>, <Contact {0} doesn''t exist>, or
-#   <Accept ''{0}''>
+# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by getI8NString()
+# - ensure the number of parameters and their designation are correctly specified.
 #
-# To start aTalk with a language that is different from your system's language, pass the language code to ant:
-# ant -Duser.language=xx run
+# Do Not translate string values containing the patterns below. They are used internally only by code/source as key index etc
+# - with dot joining words xxx.xxx.xxx e.g. pref.cat.settings.notifications
+# - contains underscore e.g. auto_join_on
+# - Words joined without any spaces e.g. connectionProxyAddress
+# - Do not translate any style format string e.g MMM dd, yyyy - otherwise system abort on execution
+# - Omit those require no translation e.g. IP link, OMEMO,  640x480 etc.
+#   Android will always fallback to use the string from main string.xml if not found in other languages files
+#
+# Note: Avoid copy/duplicate the above defined strings in the other languages string.xml files to prevent
+# accidentally values change. Any delta in the parameter will cause system problem when one switch between different languages.
+# string with {0}, {1} means the string is still not being used/implemented in aTalk. They are kept for reference and may use later;
+# you can proceed to translate these string replacing {0}, {1} with %1$s, %2$s etc
+#
 -->
 
 <resources>
-
     <string name="app_name">aTalk</string>
     <string name="accept_call_video">Answer call with video</string>
     <string name="account_setup_basics_show_password">Show password</string>
@@ -96,21 +95,21 @@
     <string name="service_gui_ACCOUNT">Account</string>
     <string name="service_gui_ACCOUNT_ME">Me</string>
     <string name="service_gui_ACCOUNT_SETTINGS">Account settings&#8230;</string>
-    <string name="service_gui_ACCOUNT_UNREGISTERED">%s is not registered</string>
+    <string name="service_gui_ACCOUNT_UNREGISTERED">%1$s is not registered</string>
     <string name="service_gui_ADD">Add</string>
     <string name="service_gui_ADD_CONTACT">Add contact</string>
-    <string name="service_gui_ADD_AUTHORIZED_CONTACT">Add %s to your contact list</string>
+    <string name="service_gui_ADD_AUTHORIZED_CONTACT">Add %1$s to your contact list</string>
     <string name="service_gui_ADD_CONTACT_TO">Add contact to</string>
-    <string name="service_gui_ADD_CONTACT_ERROR">Failed to add contact with id: %s</string>
+    <string name="service_gui_ADD_CONTACT_ERROR">Failed to add contact with id: %1$s</string>
     <string name="service_gui_ADD_CONTACT_ERROR_TITLE">Add Contact Error</string>
-    <string name="service_gui_ADD_CONTACT_EXIST_ERROR">The contact %s already exists in your contact list.</string>
-    <string name="service_gui_ADD_CONTACT_NETWORK_ERROR">Server did not respond to our request adding contact with jid: %s.</string>
-    <string name="service_gui_ADD_CONTACT_NOT_SUPPORTED">Failed to add contact with id: %s. Operation not supported.</string>
+    <string name="service_gui_ADD_CONTACT_EXIST_ERROR">The contact %1$s already exists in your contact list.</string>
+    <string name="service_gui_ADD_CONTACT_NETWORK_ERROR">Server did not respond to our request adding contact with jid: %1$s.</string>
+    <string name="service_gui_ADD_CONTACT_NOT_SUPPORTED">Failed to add contact with id: %1$s. Operation not supported.</string>
     <string name="service_gui_ADD_CONTACT_NOT_CONNECTED">You need to be connected in order to add a contact. Please sign in to the selected provider and try again.</string>
-    <string name="service_gui_ADD_GROUP_LOCAL_ERROR">Failed to add group with name: %s. The problem occurred during a local IO operation.</string>
-    <string name="service_gui_ADD_GROUP_EXIST_ERROR">The group %s already exists in your contact list. Please choose another name.</string>
-    <string name="service_gui_ADD_GROUP_NET_ERROR">Failed to add group with name: %s. The problem occurred due to a network failure. Please check your network connection and try again.</string>
-    <string name="service_gui_ADD_GROUP_ERROR">Failed to add group with name: %s.</string>
+    <string name="service_gui_ADD_GROUP_LOCAL_ERROR">Failed to add group with name: %1$s. The problem occurred during a local IO operation.</string>
+    <string name="service_gui_ADD_GROUP_EXIST_ERROR">The group %1$s already exists in your contact list. Please choose another name.</string>
+    <string name="service_gui_ADD_GROUP_NET_ERROR">Failed to add group with name: %1$s. The problem occurred due to a network failure. Please check your network connection and try again.</string>
+    <string name="service_gui_ADD_GROUP_ERROR">Failed to add group with name: %1$s.</string>
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">The group name must not be empty.</string>
     <string name="service_gui_ADD_GROUP">Create group</string>
     <string name="service_gui_ADD_GROUP_HINT">Enter group name</string>
@@ -120,17 +119,17 @@
     <string name="service_gui_APPLY_CHANGES">Applying account changes&#8230;</string>
     <string name="service_gui_AUTHORIZE">Authorize</string>
     <string name="service_gui_AUTHORIZATION_ACCEPTED">contact has accepted your authorization request.</string>
-    <string name="service_gui_AUTHENTICATION_FAILED">Authentication failed for %s. The password you entered is not valid.</string>
+    <string name="service_gui_AUTHENTICATION_FAILED">Authentication failed for %1$s. The password you entered is not valid.</string>
     <string name="service_gui_AUTHENTICATION_REQUESTED">Authentication requested</string>
-    <string name="service_gui_AUTHENTICATION_REQUESTED_SERVER">The %s server has requested your authentication.</string>
+    <string name="service_gui_AUTHENTICATION_REQUESTED_SERVER">The %1$s server has requested your authentication.</string>
     <string name="service_gui_AUTHENTICATION_REJECTED">contact has rejected your authorization request.</string>
-    <string name="service_gui_AUTHENTICATION_WINDOW_TITLE">%s authentication</string>
+    <string name="service_gui_AUTHENTICATION_WINDOW_TITLE">%1$s authentication</string>
     <string name="service_gui_AUTHORIZATION_REQUESTED">Authorization requested</string>
-    <string name="service_gui_AUTHORIZATION_REQUESTED_INFO">The %s contact requests your authorization.</string>
+    <string name="service_gui_AUTHORIZATION_REQUESTED_INFO">The %1$s contact requests your authorization.</string>
     <string name="service_gui_AUTHORIZATION_REQUEST">Authorization Request</string>
     <string name="service_gui_AVATAR_HINT">Icon recommended: 64*64 (96*96 px square max)</string>
     <string name="service_gui_AWAY_STATUS">Away</string>
-    <string name="service_gui_AVATAR_SET_ERROR">Failed to set avatar for %s</string>
+    <string name="service_gui_AVATAR_SET_ERROR">Failed to set avatar for %1$s</string>
 
     <string name="service_gui_BUSY_STATUS">Busy</string>
     <string name="service_gui_CALL">Make/Receive Call</string>
@@ -140,10 +139,10 @@
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">We could not find any active Audio/Video devices hence unable to create the call.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">No audio device configured.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">No audio codec enabled.</string>
-    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">The %s device or codec is not fully configured in \'Settings…\'. Please check and setup.</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">The %1$s device or codec is not fully configured in \'Settings…\'. Please check and setup.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Would you like to continue the call?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">No matching media formats found against offer %1$s to receive call. Please verify device and codec setup in \'Settings…\'.</string>
-    <string name="service_gui_CALL_VIA">Call via: %s</string>
+    <string name="service_gui_CALL_VIA">Call via: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Make video call</string>
     <string name="service_gui_CANCEL">Cancel</string>
     <string name="service_gui_Contacts">Contacts</string>
@@ -160,9 +159,9 @@
     <string name="service_gui_CHANGE_ROOM_SUBJECT">Change room\'s subject&#8230;</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">In the field below, you can enter the new subject for this room.</string>
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Change remote video quality</string>
-    <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%s\'s conference</string>
+    <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s conference</string>
 	<string name="service_gui_CHAT_CONFERENCE_LABEL">Conferences</string>
-    <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">You have already joined the %s chat room.</string>
+    <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">You have already joined the %1$s chat room.</string>
 	<string name="service_gui_CHAT_ROOM_CONFIGURATION">{0} chat room configuration</string>
 	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Failed to obtain the {0} chat room configuration form.</string>
 	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Could not obtain the {0} chat room configuration form. Only owners of the chat room can see and change the configuration form.</string>
@@ -173,75 +172,75 @@
     <string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Removes the selected room from the list of saved rooms</string>
     <string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Saves the chat room for future use</string>
     <string name="service_gui_CHAT_ROOM_SEND_MSG_FORBIDDEN">Message sending is forbidden (voice revoked)</string>
-	<string name="service_gui_CHAT_ROOM_USER_JOINED">has joined %s</string>
-    <string name="service_gui_CHAT_ROOM_USER_KICKED">has been kicked from %s</string>
-	<string name="service_gui_CHAT_ROOM_USER_LEFT">has left %s</string>
-	<string name="service_gui_CHAT_ROOM_USER_QUIT">has quit %s</string>
+	<string name="service_gui_CHAT_ROOM_USER_JOINED">has joined %1$s</string>
+    <string name="service_gui_CHAT_ROOM_USER_KICKED">has been kicked from %1$s</string>
+	<string name="service_gui_CHAT_ROOM_USER_LEFT">has left %1$s</string>
+	<string name="service_gui_CHAT_ROOM_USER_QUIT">has quit %1$s</string>
 	<string name="service_gui_CHAT_ROOM_NAME">Chat room name</string>
 	<string name="service_gui_CHAT_ROOM_NAME_INFO">In the field below enter the name of the chat room that you would like to create.</string>
 	<string name="service_gui_CHAT_ROOM_NOT_EXIST">The %1$s room was not found in the %2$s server. Please verify if the name you typed is correct.</string>
-	<string name="service_gui_CHAT_ROOM_NOT_CONNECTED">You need to be online in order to join the %s chat room.</string>
+	<string name="service_gui_CHAT_ROOM_NOT_CONNECTED">You need to be online in order to join the %1$s chat room.</string>
 	<string name="service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED">You need to be online in order to leave a chat room.</string>
 	<string name="service_gui_CHAT_ROOM_NOT_JOINED">You need to have joined the chat room in order to do further operations with it.</string>
 	<string name="service_gui_CHAT_ROOM_OPTIONS">Chat room options</string>
-	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">The %s chat room has requested a password.</string>
-	<string name="service_gui_CHAT_ROOMS">Chat rooms</string>
+	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">The %1$s chat room has requested a password.</string>
 	<string name="service_gui_CHAT_ROOM">Chat Room</string>
 	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">{0} has changed the subject to {1}</string>
-	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">You can continue the conversation in the following chat room: %s</string>
+	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">You can continue the conversation in the following chat room: %1$s</string>
+	<string name="service_gui_CHAT_ROOMS">Chat rooms</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">{0} is now known as {1}</string>
-    <string name="service_gui_ROOM_NAME">chatroom</string>
     <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Clear custom messages</string>
     <string name="service_gui_CLOSE">Close</string>
     <string name="service_gui_CLOSE_ALL_CHATS">Close all active chats</string>
     <string name="service_gui_CLOSE_CHAT">Close current chat session</string>
     <string name="service_gui_CONNECTED_STATUS">Connected</string>
-    <string name="service_gui_CONNECTING_ACCOUNT">Connecting %s</string>
+    <string name="service_gui_CONNECTING_ACCOUNT">Connecting %1$s</string>
     <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Connecting*</string>
     <string name="service_gui_CONNECTION_FAILED_MSG">Account connection login failed: User name: %1$s\n
         Server name: %2$s\nPlease check your network connection OR contact your network administrator for more information.</string>
     <string name="service_gui_CONNECTING_STATUS">Connecting</string>
-    <string name="service_gui_CONTACTS">Contacts</string>
-    <string name="service_gui_CONTACT_ACTIVE">** %s is active in chat session</string>
-    <string name="service_gui_CONTACT_COMPOSING">** %s is composing a message</string>
-    <string name="service_gui_CONTACT_INACTIVE">** %s is temporary away</string>
-    <string name="service_gui_CONTACT_GONE">** %s has left the chat session</string>
+    <string name="service_gui_CONTACT_ACTIVE">** %1$s is active in chat session</string>
+    <string name="service_gui_CONTACT_COMPOSING">** %1$s is composing a message</string>
+    <string name="service_gui_CONTACT_INACTIVE">** %1$s is temporary away</string>
+    <string name="service_gui_CONTACT_GONE">** %1$s has left the chat session</string>
     <string name="service_gui_CONTACT_INFO">Contact info</string>
     <string name="service_gui_CONTACT_NAME">Contact JID or Number</string>
     <string name="service_gui_CONTACT_NAME_EMPTY">The contact displayName must not be empty.</string>
-    <string name="service_gui_CONTACT_OWNER">Contact Owner: %s</string>
-    <string name="service_gui_CONTACT_PAUSED_TYPING">** %s has paused typing</string>
+    <string name="service_gui_CONTACT_OWNER">Contact Owner: %1$s</string>
+    <string name="service_gui_CONTACT_PAUSED_TYPING">** %1$s has paused typing</string>
     <string name="service_gui_CONTACT_RENAME">Contact new Name:</string>
     <string name="service_gui_CONTACT_RENAME_HINT">Enter new contact Name</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Change Contact Name</string>
+    <string name="service_gui_CONTACTS">Contacts</string>
     <string name="service_gui_COPY_MESSAGE_TEXT">Copy text</string>
 
     <string name="service_gui_CREATE">Create</string>
     <string name="service_gui_CREATE_CALL_FAILED">Failed to create the call.</string>
     <string name="service_gui_CREATE_CHAT_ROOM">Create chat room&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Failed to create %s chat room.</string>
+    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Failed to create %1$s chat room.</string>
     <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Create chat room wizard</string>
     <string name="service_gui_CREATE_CONFERENCE_CALL">Create a conference call&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Create a conference chat&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Create group&#8230;</string>
     <string name="service_gui_CREATE_GROUP_NAME">In the field below enter the name of the group you would like to create.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Your contact list does not contain any groups. Please create a group first (File/Create group).</string>
+    <string name="service_gui_ROOM_NAME">chatroom</string>
 
     <!-- About Dialog -->
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nAll rights reserved.</string>
     <string name="AboutDialog_help"><a herf="http://atalk.sytes.net">Online Help</a></string>
     <string name="AboutDialog_Link">http://atalk.sytes.net</string>
     <string name="AboutDialog_title">About</string>
-    <string name="AboutDialog_Version">Version %s</string>
+    <string name="AboutDialog_Version">Version %1$s</string>
     <string name="About_action">About</string>
     <string name="About_help">Help</string>
     <string name="check_new_version">Check Update</string>
     <string name="show_history_log">History Logs</string>
 
-    <string name="app_authors_fmt">Authors: %s</string>
-    <string name="app_libraries">aTalk uses the following third-party libraries: %s</string>
-    <string name="app_revision_fmt">Revision Information: %s</string>
-    <string name="app_xeps">aTalk supports the following XEPs: %s</string>
+    <string name="app_authors_fmt">Authors: %1$s</string>
+    <string name="app_libraries">aTalk uses the following third-party libraries: %1$s</string>
+    <string name="app_revision_fmt">Revision Information: %1$s</string>
+    <string name="app_xeps">aTalk supports the following XEPs: %1$s</string>
     <string name="PoweredBy">Powered By atalk.org</string>
 
     <!-- PTT Chat -->
@@ -292,14 +291,14 @@
     <string name="service_gui_REFRESH_STORES_ROSTER">XEP-0237: Roster</string>
     <string name="service_gui_REFRESH_STORES_OMEMO">XEP-0384: OMEMO Encryption</string>
 
-    <string name="service_gui_UNREGISTERED_MESSAGE">Account connection login failed:\nUser Name: %1$s\nServer Name: %2$s{1}\nThe account is offline.</string>
+    <string name="service_gui_UNREGISTERED_MESSAGE">Account connection login failed:\nUser Name: %1$s\nServer Name: %2$s\nThe account is offline.</string>
     <string name="service_gui_CREATE_VIDEO_BRIDGE">Create a video bridge&#8230;</string>
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Create a video bridge</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Create / Join video conference</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Create a new video conference for this chat room</string>
     <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">You device camera seems not supporting landscape preview in landscape display. Please use landscape display orientation for video call.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Disconnected</string>
-    <string name="service_gui_DISCONNECTING_ACCOUNT">Disconnecting %s</string>
+    <string name="service_gui_DISCONNECTING_ACCOUNT">Disconnecting %1$s</string>
     <string name="service_gui_DEFAULT_USER_PHOTO">personphoto</string>
     <string name="service_gui_DENY">Deny</string>
     <string name="service_gui_DISPLAY_NAME">Contact Display Name</string>
@@ -307,55 +306,55 @@
     <string name="service_gui_DURATION">duration</string>
 
     <string name="service_gui_EDIT_STATUS_MSG_TIP">Set status message</string>
-    <string name="service_gui_EDITED_AT">edited at %s</string>
+    <string name="service_gui_EDITED_AT">edited at %1$s</string>
     <string name="service_gui_ENTER_NAME_OR_NUMBER">Enter name or number</string>
     <string name="service_gui_ERROR">Error</string>
-    <string name="service_gui_ERROR_WAS">Error was: %s</string>
+    <string name="service_gui_ERROR_WAS">Error was: %1$s</string>
 	<string name="service_gui_EXIT">Exit</string>
     <string name="service_gui_FAILED_STATUS">Call failed</string>
-	<string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Failed to join chat room with name: %s.</string>
+	<string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Failed to join chat room with name: %1$s.</string>
     <string name="service_gui_FFC_STATUS">Free for chat</string>
 
     <!-- File Transfer (xFile prefix with date) -->
-    <string name="xFile_FILE_BYTE_SENT">%s sent</string>
-    <string name="xFile_FILE_RECEIVE_COMPLETED">File has been received from %1$s</string>
-    <string name="xFile_FILE_RECEIVE_FAILED">An error occurred while transferring file from %1$s</string>
+    <string name="xFile_FILE_BYTE_SENT">%1$s sent</string>
+    <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nFile has been received from %2$s</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\nAn error occurred while transferring file from %2$s</string>
     <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nReceiving file from %2$s</string>
     <string name="xFile_FILE_SEND_COMPLETED">%1$s:\nFile has been successfully sent to %2$s</string>
     <string name="xFile_FILE_SEND_REFUSED">%1$s:\n%2$s has rejected this file</string>
     <string name="xFile_FILE_SENDING_TO">%1$s:\nSending file to %2$s</string>
     <string name="xFile_FILE_TRANSFER_CANCELED">%1$s:\nFile transfer has been canceled</string>
     <string name="xFile_FILE_TRANSFER_PREPARING">%1$s:\nPreparing file transfer with %2$s. Please wait&#8230;</string>
-    <string name="xFile_FILE_TRANSFER_REFUSED">%s:\nFile transfer has been rejected</string>
+    <string name="xFile_FILE_TRANSFER_REFUSED">%1$s:\nFile transfer has been rejected</string>
     <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s:\n%2$s is sharing a file with you</string>
     <string name="xFile_FILE_UNABLE_TO_SEND">%1$s:\nAn error occurred while sending file to %2$s</string>
     <string name="xFile_FILE_WAITING_TO_ACCEPT">%1$s:\nWaiting for %2$s to accept your file</string>
 
     <string name="service_gui_PURGE">Purge</string>
-	<string name="service_gui_ESTIMATED_TIME">Estimated time: %s</string>
+	<string name="service_gui_ESTIMATED_TIME">Estimated time: %1$s</string>
     <string name="service_gui_FILE">File</string>
-    <string name="service_gui_FILE_DELIVERY_ERROR">Failed to send the selected file. %s</string>
+    <string name="service_gui_FILE_DELIVERY_ERROR">Failed to send the selected file. %1$s</string>
     <string name="service_gui_FILE_DOES_NOT_EXIST">The specified file could not be found. It was either deleted or moved</string>
     <string name="service_gui_FILE_OPEN_FAILED">Failed to open file. It may be deleted or moved</string>
-    <string name="service_gui_FILE_OPEN_NO_PERMISSION">You don\'t have enough permissions to open this file. Please check your read permissions and try again</string>
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">We couldn\'t find the application associated with this type of file</string>
+    <string name="service_gui_FILE_OPEN_NO_PERMISSION">You don\'t have enough permissions to open this file. Please check your read permissions and try again</string>
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">The open file operation is not supported by your device current platform</string>
-    <string name="service_gui_FILE_RECEIVE_COMPLETED">File has been received from %s</string>
-    <string name="service_gui_FILE_RECEIVE_FAILED">An error occurred while transferring file from %s</string>
-    <string name="service_gui_FILE_RECEIVING_FROM">Receiving file from %s</string>
-    <string name="service_gui_FILE_SEND_COMPLETED">File has been successfully sent to %s</string>
-    <string name="service_gui_FILE_SEND_FAILED">Failed to send file: %s</string>
-    <string name="service_gui_FILE_SEND_REFUSED">%s has rejected this file</string>
+    <string name="service_gui_FILE_RECEIVE_COMPLETED">File has been received from %1$s</string>
+    <string name="service_gui_FILE_RECEIVE_FAILED">An error occurred while transferring file from %1$s</string>
+    <string name="service_gui_FILE_RECEIVING_FROM">Receiving file from %1$s</string>
+    <string name="service_gui_FILE_SEND_COMPLETED">File has been successfully sent to %1$s</string>
+    <string name="service_gui_FILE_SEND_FAILED">Failed to send file: %1$s</string>
+    <string name="service_gui_FILE_SEND_REFUSED">%1$s has rejected this file</string>
     <string name="service_gui_FILE_SEND_TO">Send Attachment</string>
-    <string name="service_gui_FILE_SENDING_TO">Sending file to %s</string>
-    <string name="service_gui_FILE_TOO_BIG">File size exceeds the maximum allowed for this protocol: %s</string>
+    <string name="service_gui_FILE_SENDING_TO">Sending file to %1$s</string>
+    <string name="service_gui_FILE_TOO_BIG">File size exceeds the maximum allowed for this protocol: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">File transfer in progress was being interrupted. Status tracking lost!</string>
     <string name="service_gui_FILE_TRANSFER_CANCELED">File transfer has been canceled</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">The contact you have selected doesn\'t support file transfers</string>
-    <string name="service_gui_FILE_TRANSFER_PREPARING">Preparing file transfer with %s. Please wait&#8230;</string>
-    <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%s is sharing a file with you</string>
+    <string name="service_gui_FILE_TRANSFER_PREPARING">Preparing file transfer with %1$s. Please wait&#8230;</string>
+    <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s is sharing a file with you</string>
     <string name="service_gui_FILE_TRANSFER_REFUSED">File transfer has been rejected</string>
-	<string name="service_gui_FILE_UNABLE_TO_SEND">An error occurred while sending file to %s</string>
+	<string name="service_gui_FILE_UNABLE_TO_SEND">An error occurred while sending file to %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Waiting for %1$s to accept your file</string>
 
 	<string name="service_gui_FINISH">Finish</string>
@@ -367,14 +366,14 @@
 	<string name="service_gui_HIDE">Hide</string>
 	<string name="service_gui_HIDE_OFFLINE_CONTACTS">Hide offline contacts</string>
 	<string name="service_gui_HISTORY">History</string>
-	<string name="service_gui_HISTORY_CONTACT">History - %s</string>
+	<string name="service_gui_HISTORY_CONTACT">History - %1$s</string>
 	<string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Turn off history for this contact</string>
 	<string name="service_gui_HISTORY_TOGGLE_ALL">Turn off history for all chats and contacts</string>
 	<string name="service_gui_HISTORY_ERASE_PER_CONTACT">Erase this contact history</string>
 	<string name="service_gui_HISTORY_ERASE_ALL">Erase all contacts chat history</string>
-	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Are you sure you want to purge all messages for %s?</string>
+	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Are you sure you want to purge all messages for %1$s?</string>
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Are you sure you want to purge all messages for all contacts?</string>
-	<string name="service_gui_HISTORY_REMOVE_ERROR">Error removing locally stored messages for %s.</string>
+	<string name="service_gui_HISTORY_REMOVE_ERROR">Error removing locally stored messages for %1$s.</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Chat room occupants</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Erase this chatRoom history</string>
@@ -383,15 +382,15 @@
     <string name="service_gui_CHATROOM_INFO">ChatRoom info</string>
 
     <string name="service_gui_DESTROY_CHATROOM">Destroy this chatRoom</string>
-    <string name="service_gui_DESTROY_CHATROOM_TITLE">Destroy chatRoom</string>
+    <string name="service_gui_DESTROY_CHATROOM_ERROR">Error occurred while destroying chat room:\n\nError: %1$s </string>
     <string name="service_gui_DESTROY_CHATROOM_TEXT">Account owner: %1$s.\n\nAre you sure you want to destroy \'%2$s\' and all its chat history?</string>
-    <string name="service_gui_DESTROY_CHATROOM_ERROR">Error occurred while destroying chat room:\n\nError: %s </string>
-    <string name="service_gui_DESTROYED_CHATROOM">\'%s\' has been removed Successfully!</string>
+    <string name="service_gui_DESTROY_CHATROOM_TITLE">Destroy chatRoom</string>
+    <string name="service_gui_DESTROYED_CHATROOM">\'%1$s\' has been removed Successfully!</string>
 
     <string name="service_gui_IM">IM</string>
     <string name="service_gui_INSTANT_MESSAGINGS">IMs</string>
 
-    <string name="service_gui_INCOMING_CALL">Incoming call received from: %s</string>
+    <string name="service_gui_INCOMING_CALL">Incoming call received from: %1$s</string>
     <string name="service_gui_INCOMING_CALL_STATUS">Incoming call</string>
     <string name="service_gui_INITIATING_CALL_STATUS">Initiating call</string>
 	<string name="service_gui_INVITATION">Invitation text:</string>
@@ -419,7 +418,7 @@
     <string name="service_gui_FAX">Fax</string>
     <string name="service_gui_HOME">Home</string>
     <string name="service_gui_HOME_PAGE">Home page</string>
-    <string name="service_gui_INVALID_ADDRESS">Invalid address: %s</string>
+    <string name="service_gui_INVALID_ADDRESS">Invalid address: %1$s</string>
 	<string name="service_gui_JOIN">Join</string>
 	<string name="service_gui_JOIN_AS">Join as</string>
 	<string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">Join an existing video conference</string>
@@ -470,11 +469,11 @@
     <string name="service_gui_MSG_DELIVERY_FAILURE">The above message could not be delivered</string>
     <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">An internal error occurred. This is most probably a bug. Please report it here: https://jitsi.org/Development/BugsAndIssues.</string>
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">The protocol you are using does not support offline messages.
-        You could try to reach %s through another protocol or wait until he/she becomes online.</string>
+        You could try to reach %1$s through another protocol or wait until he/she becomes online.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Unknown error has occurred while delivering your message.</string>
     <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Unsupported operation.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">A network problem occurred. Please check your network configuration and try again.</string>
-    <string name="service_gui_MSG_RECEIVED">%s wrote</string>
+    <string name="service_gui_MSG_RECEIVED">%1$s wrote</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">You must login first to send message.</string>
 
     <string name="service_gui_MISSED_CALLS_TOOL_TIP">Missed calls from:</string>
@@ -512,11 +511,11 @@
     <string name="service_gui_MIC_CONTROL_TITLE">Microphone gain level</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Adjust microphone sound</string>
     <string name="service_gui_OUTGOING_CALL">Outgoing call</string>
-    <string name="service_gui_OUTGOING_CALL_MSG">Making call with %s…</string>
-    <string name="service_gui_PRESENCE_NOT_SUPPORTED">Presence is not supported by %s</string>
+    <string name="service_gui_OUTGOING_CALL_MSG">Making call with %1$s…</string>
+    <string name="service_gui_PRESENCE_NOT_SUPPORTED">Presence is not supported by %1$s</string>
     <string name="service_gui_PROACTIVE_NOTIFICATION">is writing a message</string>
     <string name="service_gui_RECENT_MESSAGES">Recent conversations</string>
-	<string name="service_gui_RECEIVED">%s received</string>
+	<string name="service_gui_RECEIVED">%1$s received</string>
     <string name="service_gui_REFERRED_STATUS">Referred</string>
     <string name="service_gui_RESTORING">Restoring&#8230;</string>
 
@@ -524,12 +523,12 @@
     <string name="service_gui_REJECT">Reject</string>
     <string name="service_gui_REMOVE">Remove</string>
     <string name="service_gui_REMOVE_ACCOUNT">Remove account</string>
-    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Are you sure you want to remove the account: \'%s\'?</string>
+    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Are you sure you want to remove the account: \'%1$s\'?</string>
     <string name="service_gui_REMOVE_CONTACT">Remove contact</string>
     <string name="service_gui_REMOVE_CONTACT_TEXT">Contact owner: %1$s.\n\nAre you sure you want to remove the contact: \'%2$s\' from your contact list?</string>
     <string name="service_gui_REMOVE_CONTACT_NOT_CONNECTED">You need to be connected in order to remove this contact. Please sign in and try again.</string>
     <string name="service_gui_REMOVE_GROUP">Remove group</string>
-    <string name="service_gui_REMOVE_GROUP_TEXT">Are you sure you want to remove the group: \'%s\' and all its associated contacts from your contact list?</string>
+    <string name="service_gui_REMOVE_GROUP_TEXT">Are you sure you want to remove the group: \'%1$s\' and all its associated contacts from your contact list?</string>
     <string name="service_gui_REMOTELY_ON_HOLD_STATUS">Remotely on hold</string>
     <string name="service_gui_RENAME_CONTACT">Change Contact Name</string>
 
@@ -553,7 +552,7 @@
     <string name="service_gui_SEND_LOGS_TITLE">aTalk bugs report via email</string>
 
     <string name="service_gui_SEND_MESSAGE">Send a message</string>
-    <string name="service_gui_SEND_MESSAGE_FAIL">Failed to send message: %s</string>
+    <string name="service_gui_SEND_MESSAGE_FAIL">Failed to send message: %1$s</string>
     <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">The entity you have selected doesn\'t support instant chat messaging</string>
 	<string name="service_gui_SEND_AS_SMS">Send as SMS</string>
 	<string name="service_gui_SEND_PRIVATE_MESSAGE">Send private message</string>
@@ -571,12 +570,13 @@
     <string name="service_gui_VIDEO_CALL">Video call</string>
     <string name="service_gui_VOLUME_CONTROL_TITLE">Output volume gain level</string>
     <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">Adjust volume</string>
-    <string name="service_gui_VOLUME_GAIN_LEVEL">Volume gain level: %s%%</string>
+    <string name="service_gui_VOLUME_GAIN_LEVEL">Volume gain level: %1$s%%</string>
     <string name="service_gui_WAITING_AUTHORIZATION">Waiting for authorization</string>
     <string name="service_gui_WARNING">Warning</string>
     <string name="service_gui_WARN_CALL_IN_PROGRESS">Can\'t do this during a call</string>	
     <string name="service_gui_YES">Yes</string>
 
+    <!-- Conferenc constants - no translation -->
     <string name="service_gui_icons_AUTOJOIN">auto_join_on</string>
     <string name="service_gui_icons_AUTOJOIN_OFF_ICON_BUTTON">auto_join_off</string>
     <string name="service_gui_icons_AUTOJOIN_OFF_ICON_PRESSED_BUTTON">auto_join_off_pressed</string>
@@ -614,7 +614,7 @@
     <string name="service_gui_SPECIFY_SERVER">Please complete the server part of your account.</string>
 	<string name="service_gui_SPEED">Speed: %1$s/sec (%2$s)</string>
     <string name="service_gui_STATUS_CHANGE_GENERAL_ERROR">Failed to change status for account: User name: %1$s, Server name: %2$s, due to a general error.</string>
-	<string name="service_gui_STATUS_CHANGED_CHAT_MESSAGE">has become %s</string>
+	<string name="service_gui_STATUS_CHANGED_CHAT_MESSAGE">has become %1$s</string>
     <string name="service_gui_STATUS_CHANGE_NETWORK_FAILURE">Failed to change status for account: User name: %1$s, Server name: %2$s, due to a network problem.</string>
     <string name="service_gui_SECURITY_ERROR">Security error</string>
     <string name="service_gui_SECURITY_INFO">Security information</string>
@@ -635,10 +635,8 @@
     <string name="service_gui_NOVEMBER">Nov</string>
     <string name="service_gui_DECEMBER">Dec</string>
 
-    <!-- ICE info -->
-    <string name="service.protocol.ICE_FAILED">Could not establish connection (ICE failed and no relay found)</string>
-
     <!-- Call info -->
+    <string name="service.protocol.ICE_FAILED">Could not establish connection (ICE failed and no relay found)</string>
     <string name="service_gui_callinfo_AUDIO_INFO">Audio info</string>
     <string name="service_gui_callinfo_BANDWITH">Bandwidth:</string>
     <string name="service_gui_callinfo_CALL_DURATION">Call duration:</string>
@@ -671,6 +669,8 @@
     <string name="service_gui_callinfo_DECODED_WITH_FEC">Packets decoded with FEC:</string>
     <string name="service_gui_callinfo_DISCARDED_PERCENT">Packets currently being discarded:</string>
     <string name="service_gui_callinfo_DISCARDED_TOTAL">Number of discarded packets:</string>
+	
+    <!-- ICE info -->
     <string name="service_gui_callinfo_HARVESTING_DATA">%1$d ms (for %2$d harvests)</string>
     <string name="service_gui_callinfo_HARVESTING_TIME">Harvesting time:</string>
     <string name="service_gui_callinfo_ICE_CANDIDATE_EXTENDED_TYPE">ICE candidate extended type:</string>
@@ -696,7 +696,7 @@
         identity cannot be automatically verified.&lt;br/>&lt;br/>
         Proceed with connection for this instance only?&lt;br/>
         For more option and info, click "Show Certificate".&lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%s cannot verify the
+    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%1$s cannot verify the
         identity of the server\'\'s certificate.&lt;br/>&lt;br/>
         The certificate is not trusted (a self-signed certificate), which means that the server\'\'s
         identity cannot be automatically verified.&lt;br/>&lt;br/>
@@ -736,7 +736,7 @@
     <string name="service_gui_CERT_INFO_ALG">Algorithm:</string>
     <string name="service_gui_CERT_INFO_PUB_KEY">Public Key:</string>
     <string name="service_gui_CERT_INFO_KEY_BYTES_PRINT">%1$s bytes: %2$s</string>
-    <string name="service_gui_CERT_INFO_KEY_BITS_PRINT">%s bits</string>
+    <string name="service_gui_CERT_INFO_KEY_BITS_PRINT">%1$s bits</string>
     <string name="service_gui_CERT_INFO_EXP">Exponent:</string>
     <string name="service_gui_CERT_INFO_KEY_SIZE">Key Size:</string>
     <string name="service_gui_CERT_INFO_SIGN">Signature:</string>
@@ -781,13 +781,13 @@
     <string name="plugin_updatechecker_DIALOG_NOUPDATE_TITLE">No new version</string>
     <string name="plugin_updatechecker_DIALOG_TITLE">Install Updates</string>
     <string name="plugin_updatechecker_UPDATE_MENU_ENTRY">Check for updates</string>
-    <string name="plugin_newsoftware_DIALOG_MESSAGE">A new software version (%s) is available.</string>
+    <string name="plugin_newsoftware_DIALOG_MESSAGE">A new software version (%1$s) is available.</string>
 
     <!-- account info -->
-    <string name="plugin_accountinfo_AGE">Age:</string>
     <string name="plugin_accountinfo_ABOUT_ME">About Me:</string>
     <string name="plugin_accountinfo_ABOUT_ME_HINT">Enter a brief description of yourself in this box</string>
     <string name="plugin_accountinfo_ABOUT_ME_MAX_CHARACTERS">200</string>
+    <string name="plugin_accountinfo_AGE">Age:</string>
     <string name="plugin_accountinfo_BDAY">Birth Date:</string>
     <string name="plugin_accountinfo_BDAY_FORMAT">MMM dd, yyyy</string>
     <string name="plugin_accountinfo_CHANGE">Change</string>
@@ -801,14 +801,15 @@
     <string name="plugin_accountinfo_GENDER">Gender:</string>
     <string name="plugin_accountinfo_GLOBAL_ICON">Use global icon</string>
     <string name="plugin_accountinfo_JOB_TITLE">Job Title:</string>
-    <string name="plugin_accountinfo_NO_REGISTERED_MESSAGE">Account is offline - must be online to change account info.</string>
-    <string name="plugin_accountinfo_NOT_SUPPORTED">Account info not available.</string>
     <string name="plugin_accountinfo_LAST_NAME">Last Name:</string>
     <string name="plugin_accountinfo_LOCAL_ICON">Use this icon:</string>
     <string name="plugin_accountinfo_MIDDLE_NAME">Middle Name:</string>
     <string name="plugin_accountinfo_MOBILE_PHONE">Mobile Phone:</string>
     <string name="plugin_accountinfo_NICKNAME">Nickname:</string>
+    <string name="plugin_accountinfo_NO_REGISTERED_MESSAGE">Account is offline - must be online to change account info.</string>
+    <string name="plugin_accountinfo_NOT_SUPPORTED">Account info not available.</string>
     <string name="plugin_accountinfo_ONLY_MESSAGE">Only messages</string>
+    <string name="plugin_accountinfo_ORGANIZATION">Organization Name:</string>
     <string name="plugin_accountinfo_PHONE">Phone:</string>
     <string name="plugin_accountinfo_POST">Postal code:</string>
     <string name="plugin_accountinfo_REGION">Region:</string>
@@ -819,7 +820,6 @@
     <string name="plugin_accountinfo_USER_PICTURES">User Pictures</string>
     <string name="plugin_accountinfo_WORK_EMAIL">Work E-mail:</string>
     <string name="plugin_accountinfo_WORK_PHONE">Work Phone:</string>
-    <string name="plugin_accountinfo_ORGANIZATION">Organization Name:</string>
 
     <!-- connection info -->
     <string name="plugin_connectioninfo_TITLE">Connection Info</string>
@@ -865,22 +865,23 @@
 
     <!-- call recordingconfig -->
     <string name="plugin.callrecordingconfig.CALL_SAVED">Call saved successfully</string>
-    <string name="plugin.callrecordingconfig.CALL_SAVED_TO">Save to: %s</string>
+    <string name="plugin.callrecordingconfig.CALL_SAVED_TO">Save to: %1$s</string>
 
     <!-- ZRTP Securing -->
     <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_CHANGED">Audio device configuration changed</string>
     <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Click here for device management</string>
     <string name="impl_media_configform_NO_PREVIEW">Preview</string>
     <string name="impl_media_security_CHECKSUM_MISMATCH">&lt;html>Internal ZRTP packet checksum mismatch.&lt;br/>If you see this message often this may mean a denial-of-service attack!&lt;/html></string>
-    <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>Failed to send encryption data. Internet data connection or peer is down.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %s&lt;/html></string>
-    <string name="impl_media_security_RETRY_RATE_EXCEEDED">&lt;html>Too much retries during security negotiation. This may mean that the other party has internet connection problems.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %s&lt;/html></string>
+    <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>Failed to send encryption data. Internet data connection or peer is down.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
+    <string name="impl_media_security_RETRY_RATE_EXCEEDED">&lt;html>Too much retries during security negotiation. This may mean that the other party has internet connection problems.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
+    <string name="impl_media_security_INTERNAL_PROTOCOL_ERROR">&lt;html>Internal protocol error occurred.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
     <string name="impl_media_security_SECURITY_OFF">Call encryption support off</string>
     <string name="impl_media_security_SECURITY_ON">Call encryption support on</string>
     <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>A severe security problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: {0}&lt;/html></string>
-    <string name="impl_media_security_INTERNAL_PROTOCOL_ERROR">&lt;html>Internal protocol error occurred.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %s&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>No retained shared secret available.&lt;br/>&lt;b>SAS verification is recommended&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>An expected retained shared secret is missing.&lt;br/>&lt;b>SAS verification is required&lt;/b>&lt;br/>If SAS codes do not match then hangup and try again&lt;/html></string>
-    <string name="impl.media.security.ZRTP_GENERIC_MSG">&lt;html>A severe ZRTP problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %s&lt;/html></string>
+    <string name="impl.media.security.ZRTP_GENERIC_MSG">&lt;html>A severe ZRTP problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
+
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Authenticate buddy</string>
     <string name="plugin_otr_menu_CB_AUTO">Automatically initiate private messaging</string>
@@ -895,9 +896,9 @@
     <string name="plugin_otr_menu_OTR_Finish">OTR Ended</string>
     <string name="plugin_otr_menu_OTR_HANDSHAKE">OTR Handshake</string>
     <string name="plugin_otr_menu_OTR_NON_AUTHETICATED">OTR Non-Authenticated</string>
+    <string name="plugin_otr_menu_OTR_PLAINTTEXT">Plain Text</string>
     <string name="plugin_otr_menu_OTR_TIMEOUT">OTR Handshake_TimeOut</string>
     <string name="plugin_otr_menu_OTR_TOOLTIP">Encrypt chats with OTR</string>
-    <string name="plugin_otr_menu_OTR_PLAINTTEXT">Plain Text</string>
     <string name="plugin_otr_menu_REFRESH_OTR">Refresh private conversation</string>
     <string name="plugin_otr_menu_START_OTR">Start private conversation</string>
     <string name="plugin_otr_menu_TITLE">Secure chat</string>
@@ -908,7 +909,7 @@
     some other authenticated channel, such as the telephone or GPG-signed email. Each of you should tell your fingerprint to the
     other. If everything matches up, you should indicate in the following dialog that *I have* verified the fingerprint.</string>
     <string name="plugin_otr_authbuddydialog_CANCEL">Cancel</string>
-    <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Please enter the fingerprint you received from %s.</string>
+    <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Please enter the fingerprint you received from %1$s.</string>
     <string name="plugin_otr_authbuddydialog_HELP">Help</string>
     <string name="plugin_otr_authbuddydialog_HELP_URI">https://atalk.sytes.net/faq.html</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE">I have</string>
@@ -928,43 +929,43 @@
     <string name="plugin_otr_configform_KNOWN_FINGERPRINTS">Known Fingerprints</string>
     <string name="plugin_otr_configform_MY_PRIVATE_KEYS">My Private Keys</string>
     <string name="plugin_otr_configform_REGENERATE">Re-generate</string>
-    <string name="plugin_otr_configform_VERIFY_STATUS">Verified: %s</string>
+    <string name="plugin_otr_configform_VERIFY_STATUS">Verified: %1$s</string>
 
-    <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">%s is trying to initiate an encrypted
+    <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">%1$s is trying to initiate an encrypted
         &lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
         Off-The-Record conversation&lt;/a>with you. However your software does not support
         Off-The-Record messaging. For more information see &lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
         http://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
-    <string name="plugin_otr_activator_historyon">%1$s is recording this conversation on your device. You can &lt;a href=\"atalk://%2$s/%3$s\">turn off chat history here&lt;/a>.</string>
     <string name="plugin_otr_activator_historyoff">%1$s is NOT recording this conversation. You can &lt;a href=\"atalk://%2$s/%3$s\">activate chat history here&lt;/a>.</string>
-    <string name="plugin_otr_activator_msgfromanotherinstance">Received message from another OTR conversation instances with %s detected.</string>
-    <string name="plugin_otr_activator_multipleinstancesdetected">Multiple private OTR conversation instances with %s detected.</string>
+    <string name="plugin_otr_activator_historyon">%1$s is recording this conversation on your device. You can &lt;a href=\"atalk://%2$s/%3$s\">turn off chat history here&lt;/a>.</string>
+    <string name="plugin_otr_activator_msgfromanotherinstance">Received message from another OTR conversation instances with %1$s detected.</string>
+    <string name="plugin_otr_activator_multipleinstancesdetected">Multiple private OTR conversation instances with %1$s detected.</string>
     <string name="plugin_otr_activator_requireencryption">Your message was not sent. Private messaging is required.</string>
-    <string name="plugin_otr_activator_sessionfinished">%s has ended his/her private OTR conversation with you; you should do the same.</string>
-    <string name="plugin_otr_activator_sessionfinishederror">Your message was not sent. Please end your private OTR conversation with %s.</string>
-    <string name="plugin_otr_activator_sessionstared">Private OTR conversation with %s has started.</string>
-    <string name="plugin_otr_activator_sessionlost">Private OTR conversation with %s has ended.</string>
-    <string name="plugin_otr_activator_smpaborted">%s has aborted the OTR authentication process.</string>
+    <string name="plugin_otr_activator_sessionfinished">%1$s has ended his/her private OTR conversation with you; you should do the same.</string>
+    <string name="plugin_otr_activator_sessionfinishederror">Your message was not sent. Please end your private OTR conversation with %1$s.</string>
+    <string name="plugin_otr_activator_sessionlost">Private OTR conversation with %1$s has ended.</string>
+    <string name="plugin_otr_activator_sessionstared">Private OTR conversation with %1$s has started.</string>
+    <string name="plugin_otr_activator_smpaborted">%1$s has aborted the OTR authentication process.</string>
     <string name="plugin_otr_activator_smperror">An error occurred in the OTR authentication process.</string>
     <string name="plugin_otr_activator_unencryptedmsgreceived">The message was received unencrypted.</string>
-    <string name="plugin_otr_activator_unreadablemsgreceived">%s sent you an unreadable encrypted message.</string>
+    <string name="plugin_otr_activator_unreadablemsgreceived">%1$s sent you an unreadable encrypted message.</string>
     <string name="plugin_otr_activator_unreadablemsgreply">You sent %1$s an unreadable encrypted message. Please end your private conversation with %2$s or refresh it.</string>
-    <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Unverified&lt;/b> private conversation with %s started.</string>
+    <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Unverified&lt;/b> private conversation with %1$s started.</string>
     <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s has not been authenticated yet. You should &lt;a href="atalk://%2$s/%3$s?%4$s">&lt;b>authenticate&lt;/b>&lt;/a> this buddy.</string>
 
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">Plain Text</string>
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Authenticate Buddy</string>
-    <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">You have unauthenticated buddies. Unverified buddies cannot receive OMEMO message. Check to authenticate.</string>
-    <string name="omemo_init_failed_title">OmemoManager init failed</string>
-    <string name="omemo_init_failed_noresponse">Initialize OmemoManager has failed and omemo messaging may not work properly.</string>
+    <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
     <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs is missing for: %1$s</string>
-    <string name="omemo_identity_keypairs_invalid">Invalid IdentityKeyPairs for omemoDevice: %1$s.\nException: %2$s.</string>
-    <string name="omemo_identity_key_missing">OMEMO IdentityKey is missing for: %1$s</string>
     <string name="omemo_identity_key_invalid">Invalid IdentityKey for omemoDevice: %1$s.\nException: %2$s.</string>
+    <string name="omemo_identity_key_missing">OMEMO IdentityKey is missing for: %1$s</string>
+    <string name="omemo_identity_keypairs_invalid">Invalid IdentityKeyPairs for omemoDevice: %1$s.\nException: %2$s.</string>
     <string name="omemo_init_failed_CorruptedOmemoKeyException">Initialize OmemoManager has failed and omemo messaging is not working. If problem persists
         after restart, please proceed to "Regnerate OMEMO identities" for the failed omomoDevice: %1$s.\n\nException: %2$s.</string>
+    <string name="omemo_init_failed_noresponse">Initialize OmemoManager has failed and omemo messaging may not work properly.</string>
+    <string name="omemo_init_failed_title">OmemoManager init failed</string>
     <string name="omemo_menu_authenticated">OMEMO Authenticated</string>
     <string name="omemo_menu_unauthenticated">OMEMO unAuthenticated</string>
     <string name="omemo_menu_untrusted">OMEMO Un-Trusted</string>
@@ -996,34 +997,34 @@
     <string name="plugin_provisioning_CLIPBOARD_FAILED">Failed to copy UUID to clipboard</string>
     <string name="plugin_provisioning_COPYTOCLIPBOARD">Copy UUID to clipboard</string>
     <string name="plugin_provisioning_CREDENTIALS">Last stored provisioning credentials</string>
-    <string name="plugin_provisioning_EXIT_ON_FAIL">Exit the application if the provisioning fails</string>
-    <string name="plugin_provisioning_FORGET_PASSWORD">Forget password</string>
     <string name="plugin_provisioning_DHCP">DHCP</string>
     <string name="plugin_provisioning_DNS">DNS</string>
     <string name="plugin_provisioning_ENABLE_DISABLE">Enable provisioning</string>
+    <string name="plugin_provisioning_EXIT_ON_FAIL">Exit the application if the provisioning fails</string>
+    <string name="plugin_provisioning_FORGET_PASSWORD">Forget password</string>
     <string name="plugin_provisioning_MANUAL">Manually specify a provisioning URI</string>
     <string name="plugin_provisioning_METHOD">Provisioning method</string>
     <string name="plugin_provisioning_PROV_FAILED">Provisioning failed</string>
-    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Provisioning failed. %s! <br />Please, try again later or contact your administrator.</html></string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Provisioning failed. %1$s! <br />Please, try again later or contact your administrator.</html></string>
     <string name="plugin_provisioning_PROVISIONING">Provisioning</string>
     <string name="plugin_provisioning_PROVISIONING_SUMMARY">Configure provisioning settings</string>
     <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Are you sure you want to remove provisioning password?</string>
     <string name="plugin_provisioning_RESTART_WARNING">Note that your changes will only take effect next time you start aTalk!</string>
-    <string name="plugin_provisioning_UUID">UUID</string>
     <string name="plugin_provisioning_URI">URI</string>
+    <string name="plugin_provisioning_UUID">UUID</string>
 
     <!-- DNS config -->
     <string name="service_gui_settings_DNS">DNS</string>
     <string name="service_gui_settings_DNS_SUMMARY">Configure DNS settings</string>
     <string name="plugin_dnsconfig_DNSSEC">DNS Security (DNSSEC)</string>
     <string name="plugin_dnsconfig_PARALLEL_DNS">Parallel DNS</string>
+    <string name="plugin_dnsconfig_chkBackupDnsEnabled_text">Enable parallel DNS resolving</string>
     <string name="plugin_dnsconfig_dnssec_DOMAIN_NAME">Domain</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">State change failed</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Change of the DNSSEC enabled state has failed.</string>
     <string name="plugin_dnsconfig_dnssec_MODE">Behavior</string>
     <string name="plugin_dnsconfig_dnssec_RESTART_WARNING"><html>Note that enabling or disabling DNSSEC disables the parallel resolver and will only take effect the next time you start aTalk.</html></string>
     <string name="plugin_dnsconfig_border_TITLE">Backup resolver</string>
-    <string name="plugin_dnsconfig_chkBackupDnsEnabled_text">Enable parallel DNS resolving</string>
     <string name="plugin_dnsconfig_dnssec_chkAbsolute">Treat all domain names as absolute</string>
     <string name="plugin_dnsconfig_dnssec_chkEnabled">Enable DNSSEC resolver</string>
     <string name="plugin_dnsconfig_dnssec_lblDefault">Default behavior</string>
@@ -1038,7 +1039,7 @@
     <string name="plugin_dnsconfig_lblRedemption_description"><html>the number of prompt responses that the primary resolver needs to provide before we turn that backup off again</html></string>
 
     <string name="util_dns_INSECURE_ANSWER_TITLE">DNSSEC failure</string>
-    <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">DNS answer for %s is insecure.</string>
+    <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">DNS answer for %1$s is insecure.</string>
     <string name="util_dns_INSECURE_ANSWER_MESSAGE_REASON">DNS answer for %1$s is insecure.\nReason: %2$s</string>
     <string name="util_dns_DNSSEC_ADVANCED_OPTIONS">Show advanced options</string>
     <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>DNSSEC signed zone %1$s returned invalid data.&lt;br>%2$s&lt;/html></string>
@@ -1055,7 +1056,7 @@
 
     <!-- SSL Certificates -->
     <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">SSL Certificate Deletion</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Please confirm to delete SSL certificate for: %s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Please confirm to delete SSL certificate for: %1$s</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">SSL Certificate Manager</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Manage SSL Certificates</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">SSL Certificate</string>
@@ -1190,8 +1191,8 @@
     <string name="service_gui_JBR_JINGLE_NODES">Jingle Nodes</string>
     <string name="service_gui_JBR_JINGLE_SUMMARY">Use jingle nodes</string>
     <string name="service_gui_JBR_KEEP_ALIVE">Keep alive</string>
-    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Enable if experiencing frequent network disconnection</string>
     <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Enable Keep Alive option</string>
+    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Enable if experiencing frequent network disconnection</string>
     <string name="service_gui_JBR_OVERRIDE_SERVER">Override server default options</string>
     <string name="service_gui_JBR_PASSWORD">Enter Password</string>
     <string name="service_gui_JBR_PING_INTERVAL">Ping interval (1~3600 seconds)</string>
@@ -1210,12 +1211,12 @@
     <string name="service_gui_JBR_TELE_DOMAIN">Telephony domain</string>
     <string name="service_gui_JBR_TELEPHONY">Telephony</string>
     <string name="service_gui_JBR_TELEPHONY_SUMMARY">Configure telephony options&#8230;</string>
+    <string name="service_gui_JBR_USE_DEFAULT_STUN">Use Jitsi STUN server (fallback)</string>
     <string name="service_gui_JBR_USE_ICE">Use ICE</string>
     <string name="service_gui_JBR_USE_GOOGLE_ICE">Use Google\'s Jingle/ICE(experimental)</string>
     <string name="service_gui_JBR_USE_UPNP">Use UPnP</string>
     <string name="service_gui_JBR_USER">USER ID</string>
     <string name="service_gui_JBR_USER_CATEGORY">User name and password</string>
-    <string name="service_gui_JBR_USE_DEFAULT_STUN">Use Jitsi STUN server (fallback)</string>
 
     <!-- Account preference categories -->
     <string name="pref_cat_account">pref_cat_account</string>
@@ -1320,8 +1321,8 @@
 
     <!-- General settings -->
     <string name="pref_cat_settings_general">pref.cat.settings.general</string>
-    <string name="service_gui_settings_ENABLED_STR">Enabled</string>
     <string name="service_gui_settings_DISABLED_STR">Disabled</string>
+    <string name="service_gui_settings_ENABLED_STR">Enabled</string>
     <string name="service_gui_settings_GENERAL">General</string>
 
     <!-- Message settings -->
@@ -1394,13 +1395,13 @@
 
     <!-- Locale -->
     <string name="pref_key_locale">pref.key.locale</string>
-    <string name="service_gui_settings_LOCALE">Interface language</string>
-    <string name="settings_language_label">Language</string>
+    <string name="service_gui_settings_LOCALE">Language</string>
+    <string name="settings_language_system">System default</string>
 
     <!-- Theme -->
     <string name="pref_key_theme">pref.key.theme</string>
-    <string name="setting_theme_dark">Dark</string>
-    <string name="setting_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_theme_light">Light</string>
     <string name="settings_theme_label">Theme</string>
 
     <!-- Remove special characters from phone number -->
@@ -1451,14 +1452,14 @@
 
     <!-- Camera used -->
     <string name="pref_key_video_camera">pref.key.video.camera</string>
-    <string name="service_gui_settings_CAMERA">Camera</string>
     <string name="service_gui_settings_BACK_CAMERA">Back camera</string>
+    <string name="service_gui_settings_CAMERA">Camera</string>
     <string name="service_gui_settings_FRONT_CAMERA">Front camera</string>
     <string name="service_gui_settings_NO_CAMERA">No camera device found</string>
     <string name="service_gui_settings_USE_BACK_CAMERA">Use back camera</string>
     <string name="service_gui_settings_USE_FRONT_CAMERA">Use front camera</string>
 
-    <!-- Hardware codecs -->
+    <!-- Video codecs -->
     <string name="pref_key_video_media_codec_list">pref.key.video.media_codec_list</string>
     <string name="pref_key_video_hw_decode">neomedia.android.hw_decode</string>
     <string name="pref_key_video_hw_encode">neomedia.android.hw_encode</string>
@@ -1471,7 +1472,6 @@
     <string name="service_gui_settings_MEDIA_CODEC_LIST">MediaCodecs</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST_SUMMARY">List of built-in media encoders/decoders</string>
     <string name="service_gui_settings_Restart_Hint">Require to restart aTalk</string>
-    <!-- Video encodings -->
     <string name="service_gui_settings_VIDEO_CODECS_SUMMARY">Select and define priority for video codecs</string>
     <string name="service_gui_settings_VIDEO_CODECS_TITLE">Video codecs</string>
     <!-- Video resolution -->
@@ -1543,8 +1543,8 @@
 
     <!-- Crypto contextMenu, dialog, message and toast -->
     <string name="crypto_dialog_KEY_GENERATE_QUESTION">Do you want to generate new key for %1$s%2$s</string>
-    <string name="crypto_dialog_KEY_REGENERATE_QUESTION">Do you want to regenerate key for %1$s\n\n%2$s</string>
     <string name="crypto_dialog_KEY_GENERATE_TITLE">Private key generation</string>
+    <string name="crypto_dialog_KEY_REGENERATE_QUESTION">Do you want to regenerate key for %1$s\n\n%2$s</string>
 
     <string name="crypto_dialog_button_DELETE">Delete Selected</string>
     <string name="crypto_dialog_button_OMEMO_REGENERATE">Regenerate Selected</string>
@@ -1565,13 +1565,13 @@
     <string name="crypto_msg_OMEMO_SESSION_VERIFIED">*** All buddies have been authenticated! ***</string>
 
     <string name="crypto_FINGERPRINT_NOT_VERIFIED">No</string>
-    <string name="crypto_FINGERPRINT_STATUS">Verified: %s</string>
+    <string name="crypto_FINGERPRINT_STATUS">Verified: %1$s</string>
     <string name="crypto_FINGERPRINT_VERIFIED">Yes</string>
     <string name="crypto_NO_KEY_PRESENT">No key present</string>
 
     <string name="crypto_toast_FINGERPRINT_COPY">Fingerprint copied to clipboard!</string>
-    <string name="crypto_toast_OMEMO_DISTRUST_MESSAGE_STOP">Stop further sending OMEMO message to buddy: %s</string>
-    <string name="crypto_toast_OMEMO_TRUST_MESSAGE_RESUME">Resume sending OMEMO message to buddy: %s</string>
+    <string name="crypto_toast_OMEMO_DISTRUST_MESSAGE_STOP">Stop further sending OMEMO message to buddy: %1$s</string>
+    <string name="crypto_toast_OMEMO_TRUST_MESSAGE_RESUME">Resume sending OMEMO message to buddy: %1$s</string>
 
     <!-- Advanced settings category -->
     <string name="pref_cat_settings_advanced">pref.cat.settings.advanced</string>
@@ -1587,9 +1587,9 @@
     <string name="service_gui_settings_LOGGING_ENABLE_TITLE">Packet logging</string>
 
     <!-- RTP -->
+    <string name="pref_key_logging_rtp">pref.key.logging.rtp</string>
     <string name="service_gui_settings_LOGGING_RTP">RTP</string>
     <string name="service_gui_settings_LOGGING_RTP_SUMMARY">stores 1 packet out of every 5000</string>
-    <string name="pref_key_logging_rtp">pref.key.logging.rtp</string>
     <!-- ICE4J -->
     <string name="pref_key_logging_ice4j">pref.key.logging.ice4j</string>
     <string name="service_gui_settings_LOGGING_ICE4J">ice4j.org</string>
@@ -1630,16 +1630,16 @@
     <string name="service_gui_settings_OPUS_USE_FEC">Use inband FEC</string>
 
     <!-- Silk -->
+    <string name="pref_key_silk_fec">neomedia.codec.audio.silk.encoder.USE_FEC</string>
+    <string name="pref_key_silk_assume_pl">neomedia.codec.audio.silk.encoder.AWLAYS_ASSUME_PACKET_LOSS</string>
+    <string name="pref_key_silk_fec_sat">neomedia.codec.audio.silk.encoder.SPEECH_ACTIVITY_THRESHOLD</string>
+    <string name="pref_key_silk_advertise_FEC">neomedia.codec.audio.silk.ADVERTISE_FEC</string>
     <string name="service_gui_settings_SILK">Silk</string>
     <string name="service_gui_settings_SILK_SUMMARY">Configure Silk encoder settings</string>
     <string name="service_gui_settings_SILK_FEC">Use inband FEC</string>
     <string name="service_gui_settings_SILK_ASSUME_PL">Always assume packet loss</string>
     <string name="service_gui_settings_SILK_FEC_SAT">Speech activity threshold (0–1)</string>
     <string name="service_gui_settings_SILK_ADVERTISE_FEC">Advertise FEC support in SDP</string>
-    <string name="pref_key_silk_fec">neomedia.codec.audio.silk.encoder.USE_FEC</string>
-    <string name="pref_key_silk_assume_pl">neomedia.codec.audio.silk.encoder.AWLAYS_ASSUME_PACKET_LOSS</string>
-    <string name="pref_key_silk_fec_sat">neomedia.codec.audio.silk.encoder.SPEECH_ACTIVITY_THRESHOLD</string>
-    <string name="pref_key_silk_advertise_FEC">neomedia.codec.audio.silk.ADVERTISE_FEC</string>
 
     <!-- Global proxy -->
     <string name="pref_key_conn_proxy_address">connectionProxyAddress</string>

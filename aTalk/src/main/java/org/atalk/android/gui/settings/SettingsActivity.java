@@ -7,30 +7,23 @@ package org.atalk.android.gui.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
+import android.preference.*;
+import android.preference.Preference.OnPreferenceChangeListener;
 
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.systray.PopupMessageHandler;
 import net.java.sip.communicator.service.systray.SystrayService;
-import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
-import net.java.sip.communicator.util.ServiceUtils;
+import net.java.sip.communicator.util.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
-import org.atalk.android.gui.util.AndroidCallUtil;
-import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.gui.util.PreferenceUtil;
+import org.atalk.android.gui.util.*;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaActivator;
-import org.atalk.impl.neomedia.device.AudioSystem;
-import org.atalk.impl.neomedia.device.DeviceConfiguration;
-import org.atalk.impl.neomedia.device.DeviceSystem;
-import org.atalk.impl.neomedia.device.MediaRecorderSystem;
+import org.atalk.impl.neomedia.device.*;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.service.configuration.ConfigurationService;
@@ -40,9 +33,7 @@ import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Locale;
+import java.util.*;
 
 import javax.media.MediaLocator;
 
@@ -59,7 +50,7 @@ public class SettingsActivity extends OSGiActivity
      */
     private static final Logger logger = Logger.getLogger(SettingsActivity.class);
 
-    // Display settings
+    // Interface Display settings
     static private final String P_KEY_LOCALE = aTalkApp.getResString(R.string.pref_key_locale);
     static public final String P_KEY_THEME = aTalkApp.getResString(R.string.pref_key_theme);
 
@@ -70,10 +61,12 @@ public class SettingsActivity extends OSGiActivity
     static private final String P_KEY_CHAT_STATE_NOTIFICATIONS = aTalkApp.getResString(R.string.pref_key_chat_state_notifications);
     static private final String P_KEY_PRESENCE_SUBSCRIBE_MODE = aTalkApp.getResString(R.string.pref_key_presence_subscribe_mode);
 
-    // static private final String P_KEY_AUTO_UPDATE_CHECK_ENABLE = aTalkApp.getResString(R.string.pref_key_auto_update_check_enable);
+    // static private final String P_KEY_AUTO_UPDATE_CHECK_ENABLE
+    //      = aTalkApp.getResString(R.string.pref_key_auto_update_check_enable);
+
     /*
-     * Chat alerter is not implemented on Android static private final String P_KEY_CHAT_ALERTS =
-     * aTalkApp.getResString(R.string.pref_key_chat_alerts);
+     * Chat alerter is not implemented on Android
+     * static private final String P_KEY_CHAT_ALERTS = aTalkApp.getResString(R.string.pref_key_chat_alerts);
      */
 
     // Notifications
@@ -162,10 +155,10 @@ public class SettingsActivity extends OSGiActivity
             super.onStart();
 
             // init display locale
-            // initLocale();
+            initLocale();
 
-            // Init display theme
-            aTalkApp.initTheme();
+            // Init display theme - not implemented
+            // aTalkApp.initTheme();
 
             // Messages section
             initMessagesPreferences();
@@ -183,7 +176,6 @@ public class SettingsActivity extends OSGiActivity
             initVideoPreferences();
 
             SharedPreferences shPrefs = getPreferenceManager().getSharedPreferences();
-
             shPrefs.registerOnSharedPreferenceChangeListener(this);
             shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
         }
@@ -202,24 +194,50 @@ public class SettingsActivity extends OSGiActivity
         }
 
         /**
-         * Initialize display locale
+         * Initialize interface locale
          */
-        private void initLocale()
+        protected void initLocale()
         {
-            ListPreference localePreference = (ListPreference) findPreference(P_KEY_LOCALE);
-            ResourceManagementService resources = ServiceUtils.getService(osgiContext, ResourceManagementService.class);
+            // Immutable empty {@link CharSequence} array
+            CharSequence[] EMPTY_CHAR_SEQUENCE_ARRAY = new CharSequence[0];
+            final ListPreference localePreference = (ListPreference) findPreference(P_KEY_LOCALE);
 
-            ArrayList<CharSequence> localeStrs = new ArrayList<CharSequence>();
-            Iterator<Locale> iter = resources.getAvailableLocales();
-            while (iter.hasNext()) {
-                Locale locale = iter.next();
-                localeStrs.add(locale.getDisplayLanguage(locale));
+            List<CharSequence> entryVector = new ArrayList<>(Arrays.asList(localePreference.getEntries()));
+            List<CharSequence> entryValueVector = new ArrayList<>(Arrays.asList(localePreference.getEntryValues()));
+            String supportedLanguages[] = getResources().getStringArray(R.array.supported_languages);
+            Set<String> supportedLanguageSet = new HashSet<>(Arrays.asList(supportedLanguages));
+            for (int i = entryVector.size() - 1; i > -1; --i) {
+                if (!supportedLanguageSet.contains(entryValueVector.get(i).toString())) {
+                    entryVector.remove(i);
+                    entryValueVector.remove(i);
+                }
             }
-            CharSequence[] locales = localeStrs.toArray(new CharSequence[localeStrs.size()]);
-            localePreference.setEntries(locales);
-            localePreference.setEntryValues(locales);
-            Locale currLocale = ConfigurationUtils.getCurrentLanguage();
-            localePreference.setValue(currLocale.getDisplayLanguage());
+
+            CharSequence[] entries = entryVector.toArray(EMPTY_CHAR_SEQUENCE_ARRAY);
+            CharSequence[] entryValues = entryValueVector.toArray(EMPTY_CHAR_SEQUENCE_ARRAY);
+            String language = aTalk.getATLanguage();
+
+            localePreference.setEntries(entries);
+            localePreference.setEntryValues(entryValues);
+            localePreference.setValue(language);
+            localePreference.setSummary(localePreference.getEntry());
+
+            // summaryMapper not working for initLocal ?? so use this instead
+            localePreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object value)
+                {
+                    String language = value.toString();
+                    localePreference.setValue(language);
+                    localePreference.setSummary(localePreference.getEntry());
+
+                    AndroidGUIActivator.getConfigurationService().setProperty(P_KEY_LOCALE, language);
+                    aTalk.setATLanguage(language);
+                    aTalk.setLanguage(aTalkApp.getGlobalContext(), language);
+                    return true;
+                }
+            });
         }
 
         /**
@@ -242,10 +260,7 @@ public class SettingsActivity extends OSGiActivity
             PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_PRESENCE_SUBSCRIBE_MODE,
                     ConfigurationUtils.isPresenceSubscribeAuto());
 
-            /*
-             * PreferenceUtil.setCheckboxVal( this, P_KEY_CHAT_ALERTS,
-             * ConfigurationUtils.isAlerterEnabled());
-             */
+            // PreferenceUtil.setCheckboxVal(this, P_KEY_CHAT_ALERTS, ConfigurationUtils.isAlerterEnabled());
         }
 
         /**
@@ -254,9 +269,8 @@ public class SettingsActivity extends OSGiActivity
         private void updateHistorySizeSummary()
         {
             EditTextPreference historySizePref = (EditTextPreference) findPreference(P_KEY_HISTORY_SIZE);
-            historySizePref.setSummary(
-                    getString(R.string.service_gui_settings_CHAT_HISTORY_SUMMARY,
-                            ConfigurationUtils.getChatHistorySize()));
+            historySizePref.setSummary(getString(R.string.service_gui_settings_CHAT_HISTORY_SUMMARY,
+                    ConfigurationUtils.getChatHistorySize()));
         }
 
         /**
@@ -265,8 +279,10 @@ public class SettingsActivity extends OSGiActivity
         private void initNotificationPreferences()
         {
             ConfigurationService cfg = AndroidGUIActivator.getConfigurationService();
-//			PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_AUTO_UPDATE_CHECK_ENABLE,
-//					cfg.getBoolean(AUTO_UPDATE_CHECK_ENABLE, true));
+
+            // Remove for android play store release
+            // PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_AUTO_UPDATE_CHECK_ENABLE,
+            //		cfg.getBoolean(AUTO_UPDATE_CHECK_ENABLE, true));
 
             BundleContext bc = AndroidGUIActivator.bundleContext;
             ServiceReference<PopupMessageHandler>[] handlerRefs
@@ -280,13 +296,12 @@ public class SettingsActivity extends OSGiActivity
             String[] values = new String[handlerRefs.length + 1];
             names[0] = "Auto";
             values[0] = "Auto";
-            int selectedIdx = 0;// Auto by default
+            int selectedIdx = 0; // Auto by default
 
-            String configuredHandler
-                    = (String) AndroidGUIActivator.getConfigurationService().getProperty("systray.POPUP_HANDLER");
+            String configuredHandler = (String) cfg.getProperty("systray.POPUP_HANDLER");
             int idx = 1;
             for (ServiceReference<PopupMessageHandler> ref : handlerRefs) {
-                PopupMessageHandler handler = (PopupMessageHandler) bc.getService(ref);
+                PopupMessageHandler handler = bc.getService(ref);
 
                 names[idx] = handler.toString();
                 values[idx] = handler.getClass().getName();
@@ -360,8 +375,8 @@ public class SettingsActivity extends OSGiActivity
 
             // Init current resolution
             Dimension currentResDim = deviceConfig.getVideoSize();
-            Dimension autoResDim = new Dimension(DeviceConfiguration.DEFAULT_VIDEO_WIDTH,
-                    DeviceConfiguration.DEFAULT_VIDEO_HEIGHT);
+            Dimension autoResDim
+                    = new Dimension(DeviceConfiguration.DEFAULT_VIDEO_WIDTH, DeviceConfiguration.DEFAULT_VIDEO_HEIGHT);
             if (currentResDim.equals(autoResDim)) {
                 resList.setValue(autoResStr);
             }
@@ -385,8 +400,8 @@ public class SettingsActivity extends OSGiActivity
             // configurations that have been set to a number larger than the advised maximum value.
             videoMaxBandwith = ((videoMaxBandwith > 999) ? 999 : videoMaxBandwith);
 
-            EditTextPreference maxBandwidthPref = (EditTextPreference) findPreference(P_KEY_VIDEO_MAX_BANDWIDTH);
-            maxBandwidthPref.setText(Integer.toString(videoMaxBandwith));
+            EditTextPreference maxBWPref = (EditTextPreference) findPreference(P_KEY_VIDEO_MAX_BANDWIDTH);
+            maxBWPref.setText(Integer.toString(videoMaxBandwith));
 
             // Video bitrate
             int bitrate = deviceConfig.getVideoBitrate();
@@ -397,8 +412,8 @@ public class SettingsActivity extends OSGiActivity
             summaryMapper.includePreference(cameraList, getString(R.string.service_gui_settings_NO_CAMERA));
             summaryMapper.includePreference(resList, getString(R.string.service_gui_settings_AUTO_RESOLUTION));
             summaryMapper.includePreference(targetFpsPref, defaultFpsStr);
-            summaryMapper.includePreference(maxBandwidthPref, DeviceConfiguration.DEFAULT_VIDEO_RTP_PACING_THRESHOLD + "");
-            summaryMapper.includePreference(bitratePref, DeviceConfiguration.DEFAULT_VIDEO_BITRATE + "");
+            summaryMapper.includePreference(maxBWPref, Integer.toString(DeviceConfiguration.DEFAULT_VIDEO_RTP_PACING_THRESHOLD));
+            summaryMapper.includePreference(bitratePref, Integer.toString(DeviceConfiguration.DEFAULT_VIDEO_BITRATE));
         }
 
         /**
@@ -416,8 +431,7 @@ public class SettingsActivity extends OSGiActivity
          * Selects resolution from supported resolutions list for given string.
          *
          * @param resStr resolution string created with method {@link #resToStr(Dimension)}.
-         * @return resolution <tt>Dimension</tt> for given string representation created with
-         * method
+         * @return resolution <tt>Dimension</tt> for given string representation created with method
          * {@link #resToStr(Dimension)}
          */
         private static Dimension resolutionForStr(String resStr)
@@ -509,7 +523,6 @@ public class SettingsActivity extends OSGiActivity
         {
             if (key.equals(P_KEY_LOG_CHAT_HISTORY)) {
                 MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
-
                 mhs.setHistoryLoggingEnabled(shPreferences.getBoolean(P_KEY_LOG_CHAT_HISTORY,
                         mhs.isHistoryLoggingEnabled()));
             }
@@ -518,8 +531,8 @@ public class SettingsActivity extends OSGiActivity
                         ConfigurationUtils.isHistoryShown()));
             }
             else if (key.equals(P_KEY_HISTORY_SIZE)) {
-                String intStr = shPreferences.getString(P_KEY_HISTORY_SIZE, ""
-                        + ConfigurationUtils.getChatHistorySize());
+                String intStr = shPreferences.getString(P_KEY_HISTORY_SIZE,
+                        Integer.toString(ConfigurationUtils.getChatHistorySize()));
                 ConfigurationUtils.setChatHistorySize(Integer.parseInt(intStr));
                 updateHistorySizeSummary();
             }
@@ -532,31 +545,32 @@ public class SettingsActivity extends OSGiActivity
                         P_KEY_PRESENCE_SUBSCRIBE_MODE, ConfigurationUtils.isPresenceSubscribeAuto()));
             }
 
-//			else if (key.equals(P_KEY_AUTO_UPDATE_CHECK_ENABLE)) {
-//				Boolean isEnable = shPreferences.getBoolean(P_KEY_AUTO_UPDATE_CHECK_ENABLE, true);
-//				AndroidGUIActivator.getConfigurationService()
-//						.setProperty(AUTO_UPDATE_CHECK_ENABLE, isEnable);
-//
-//				// Perform software version update check on first launch
-//				Intent intent = new Intent(this.getActivity(), OnlineUpdateService.class);
-//				if (isEnable)
-//					intent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_START);
-//				else
-//					intent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_STOP);
-//				this.getActivity().startService(intent);
-//			}
+            // Disable for android play store
+            /* else if (key.equals(P_KEY_AUTO_UPDATE_CHECK_ENABLE)) {
+				Boolean isEnable = shPreferences.getBoolean(P_KEY_AUTO_UPDATE_CHECK_ENABLE, true);
+				AndroidGUIActivator.getConfigurationService().setProperty(AUTO_UPDATE_CHECK_ENABLE, isEnable);
+
+				// Perform software version update check on first launch
+				Intent intent = new Intent(this.getActivity(), OnlineUpdateService.class);
+				if (isEnable)
+					intent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_START);
+				else
+					intent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_STOP);
+				this.getActivity().startService(intent);
+			}*/
 
             /*
-             * Chat alerter is not implemented on Android else if(key.equals(P_KEY_CHAT_ALERTS)) {
-             * ConfigurationUtils.setAlerterEnabled( shPreferences.getBoolean( P_KEY_CHAT_ALERTS,
-             * ConfigurationUtils.isAlerterEnabled())); }
+             * Chat alerter is not implemented on Android
+             * else if(key.equals(P_KEY_CHAT_ALERTS)) {
+             *  ConfigurationUtils.setAlerterEnabled( shPreferences.getBoolean( P_KEY_CHAT_ALERTS,
+             *  ConfigurationUtils.isAlerterEnabled()));
+             * }
              */
             else if (key.equals(P_KEY_POPUP_HANDLER)) {
                 String handler = shPreferences.getString(P_KEY_POPUP_HANDLER, "Auto");
                 SystrayService systray = AndroidGUIActivator.getSystrayService();
                 if (handler.equals("Auto")) {
-                    // "Auto" selected. Delete the user's preference and
-                    // select the best available handler.
+                    // "Auto" selected. Delete the user's preference and select the best available handler.
                     ConfigurationUtils.setPopupHandlerConfig(null);
                     systray.selectBestPopupMessageHandler();
                 }
@@ -571,43 +585,40 @@ public class SettingsActivity extends OSGiActivity
                     }
                 }
             }
+            // Normalize phone number
             else if (key.equals(P_KEY_NORMALIZE_PNUMBER)) {
-                // Normalize phone number
-                ConfigurationUtils.setNormalizePhoneNumber(
-                        shPreferences.getBoolean(P_KEY_NORMALIZE_PNUMBER, true));
+                ConfigurationUtils.setNormalizePhoneNumber(shPreferences.getBoolean(P_KEY_NORMALIZE_PNUMBER, true));
             }
             else if (key.equals(P_KEY_ACCEPT_ALPHA_PNUMBERS)) {
                 // Accept alphanumeric characters in phone number
                 ConfigurationUtils.setAcceptPhoneNumberWithAlphaChars(
                         shPreferences.getBoolean(P_KEY_ACCEPT_ALPHA_PNUMBERS, true));
             }
+            // Echo cancellation
             else if (key.equals(P_KEY_AUDIO_ECHO_CANCEL)) {
-                // Echo cancellation
-                audioSystem.setEchoCancel(shPreferences.getBoolean(
-                        P_KEY_AUDIO_ECHO_CANCEL, true));
+                audioSystem.setEchoCancel(shPreferences.getBoolean(P_KEY_AUDIO_ECHO_CANCEL, true));
             }
+            // Auto gain control
             else if (key.equals(P_KEY_AUDIO_ECHO_CANCEL)) {
-                // Auto gain control
-                audioSystem.setAutomaticGainControl(
-                        shPreferences.getBoolean(P_KEY_AUDIO_AGC, true));
+                audioSystem.setAutomaticGainControl(shPreferences.getBoolean(P_KEY_AUDIO_AGC, true));
             }
+            // Noise reduction
             else if (key.equals(P_KEY_AUDIO_DENOISE)) {
-                // Noise reduction
                 audioSystem.setDenoise(shPreferences.getBoolean(P_KEY_AUDIO_DENOISE, true));
             }
+            // Camera
             else if (key.equals(P_KEY_VIDEO_CAMERA)) {
-                // Camera
                 String cameraName = shPreferences.getString(P_KEY_VIDEO_CAMERA, null);
                 updateHwCodecStatus(AndroidCamera.setSelectedCamera(new MediaLocator(cameraName)));
             }
+            // Video resolution
             else if (key.equals(P_KEY_VIDEO_RES)) {
-                // Video resolution
                 String resStr = shPreferences.getString(P_KEY_VIDEO_RES, null);
                 Dimension videoRes = resolutionForStr(resStr);
                 deviceConfig.setVideoSize(videoRes);
             }
+            // Frame rate
             else if (key.equals(P_KEY_VIDEO_LIMIT_FPS) || key.equals(P_KEY_VIDEO_TARGET_FPS)) {
-                // Frame rate
                 boolean isLimitOn = shPreferences.getBoolean(P_KEY_VIDEO_LIMIT_FPS, false);
                 if (isLimitOn) {
                     EditTextPreference fpsPref = (EditTextPreference) findPreference(P_KEY_VIDEO_TARGET_FPS);
@@ -628,8 +639,8 @@ public class SettingsActivity extends OSGiActivity
                     deviceConfig.setFrameRate(DeviceConfiguration.DEFAULT_VIDEO_FRAMERATE);
                 }
             }
+            // Max bandwidth
             else if (key.equals(P_KEY_VIDEO_MAX_BANDWIDTH)) {
-                // Max bandwidth
                 String resStr = shPreferences.getString(P_KEY_VIDEO_MAX_BANDWIDTH, null);
                 if (resStr != null && !resStr.isEmpty()) {
                     int maxBw = Integer.parseInt(resStr);
@@ -644,10 +655,10 @@ public class SettingsActivity extends OSGiActivity
                 else {
                     deviceConfig.setVideoRTPPacingThreshold(DeviceConfiguration.DEFAULT_VIDEO_RTP_PACING_THRESHOLD);
                 }
-
                 ((EditTextPreference) findPreference(P_KEY_VIDEO_MAX_BANDWIDTH))
-                        .setText(deviceConfig.getVideoRTPPacingThreshold() + "");
+                        .setText(Integer.toString(deviceConfig.getVideoRTPPacingThreshold()));
             }
+            // Video bit rate
             else if (key.equals(P_KEY_VIDEO_BITRATE)) {
                 String bitrateStr = shPreferences.getString(P_KEY_VIDEO_BITRATE, "");
                 int bitrate = !bitrateStr.isEmpty()
@@ -656,8 +667,9 @@ public class SettingsActivity extends OSGiActivity
                     bitrate = 1;
                 }
                 deviceConfig.setVideoBitrate(bitrate);
-                ((EditTextPreference) findPreference(P_KEY_VIDEO_BITRATE)).setText(bitrate + "");
+                ((EditTextPreference) findPreference(P_KEY_VIDEO_BITRATE)).setText(Integer.toString(bitrate));
             }
+            // Interface Display Theme
             else if (key.equals(P_KEY_THEME)) {
                 int theme = shPreferences.getInt(P_KEY_THEME, aTalkApp.mTheme.ordinal());
                 AndroidGUIActivator.getConfigurationService().setProperty(P_KEY_THEME, theme);

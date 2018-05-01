@@ -98,5 +98,4 @@
         <attr name="TextSizeBody" format="dimension" />
         <attr name="TextSizeHeadline" format="dimension" />
     </declare-styleable>
-
 </resources>
