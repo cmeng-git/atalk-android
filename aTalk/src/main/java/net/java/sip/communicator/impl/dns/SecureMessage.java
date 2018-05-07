@@ -12,7 +12,7 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package net.java.sip.communicator.impl.dns;
 
-import org.atalk.dnssec.validator.ValidatingResolver;
+import org.jitsi.dnssec.validator.ValidatingResolver;
 import org.xbill.DNS.Flags;
 import org.xbill.DNS.Message;
 import org.xbill.DNS.Name;

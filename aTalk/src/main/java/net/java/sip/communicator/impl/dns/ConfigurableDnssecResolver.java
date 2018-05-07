@@ -25,10 +25,10 @@ import org.atalk.android.util.java.awt.BorderLayout;
 import org.atalk.android.util.java.awt.event.ActionEvent;
 import org.atalk.android.util.java.awt.event.ActionListener;
 import org.atalk.android.util.javax.swing.*;
-import org.atalk.dnssec.validator.ValidatingResolver;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.StringUtils;
+import org.jitsi.dnssec.validator.ValidatingResolver;
 import org.xbill.DNS.*;
 
 import java.io.ByteArrayInputStream;

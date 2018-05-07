@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+    <domain-config>
+        <domain includeSubdomains="true">atalk.org</domain>
+        <domain includeSubdomains="true">atalk.sytes.net</domain>
+        <trust-anchors>
+            <certificates src="@raw/atalk_sytes_net_pem"/>
+        </trust-anchors>
+    </domain-config>
+</network-security-config>

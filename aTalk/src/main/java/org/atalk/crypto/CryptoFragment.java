@@ -18,15 +18,22 @@ package org.atalk.crypto;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import net.java.otr4j.OtrPolicy;
-import net.java.sip.communicator.plugin.otr.*;
+import net.java.sip.communicator.plugin.otr.OtrContactManager;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
+import net.java.sip.communicator.plugin.otr.ScOtrEngineListener;
+import net.java.sip.communicator.plugin.otr.ScOtrKeyManagerListener;
+import net.java.sip.communicator.plugin.otr.ScSessionStatus;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
 import net.java.sip.communicator.util.Logger;
@@ -34,7 +41,12 @@ import net.java.sip.communicator.util.Logger;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatFragment;
+import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.gui.chat.ChatPanel;
+import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.gui.chat.ChatTransport;
+import org.atalk.android.gui.chat.MetaContactChatSession;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.crypto.listener.CryptoModeChangeListener;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
@@ -44,18 +56,33 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
-import org.jivesoftware.smackx.omemo.*;
-import org.jivesoftware.smackx.omemo.exceptions.*;
+import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.OmemoService;
+import org.jivesoftware.smackx.omemo.OmemoStore;
+import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
+import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
+import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
+import org.jivesoftware.smackx.omemo.exceptions.NoOmemoSupportException;
+import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.pubsub.PubSubException;
-import org.jxmpp.jid.*;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.net.URI;
 import java.security.PublicKey;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static net.java.sip.communicator.plugin.otr.OtrActivator.scOtrEngine;
 import static net.java.sip.communicator.plugin.otr.OtrActivator.scOtrKeyManager;
@@ -86,11 +113,7 @@ public class CryptoFragment extends OSGiFragment
     private static final Map<String, Integer> encryptionChoice = new LinkedHashMap<>();
 
     /**
-     * A cache map of the Descriptor and its OmemoSupport capability. The information is to speed
-     * up decision making when a chat page is scrolled in view. Otherwise user page scroll may
-     * sometimes hang for 10 seconds for server to response. The Descriptor can be ChatRoom
-     * or Contact
-     * #TODO: find a way to clear when session is closed in case it was invalid
+     * A cache map of the Descriptor and its OmemoSupport capability. The Descriptor can be ChatRoom or Contact
      */
     private static final Map<Object, Boolean> omemoCapable = new LinkedHashMap<>();
 
@@ -170,6 +193,7 @@ public class CryptoFragment extends OSGiFragment
             logger.error("OSGi service probably not initialized");
             return;
         }
+        mOmemoStore = OmemoService.getInstance().getOmemoStoreBackend();
 
         // Insert chat encryption choices if not found
         this.menu = menu;
@@ -196,6 +220,11 @@ public class CryptoFragment extends OSGiFragment
 
         switch (item.getItemId()) {
             case R.id.crypto_choice:
+                if (omemoCapable.containsKey(mDescriptor))
+                    mOmemo.setEnabled(omemoCapable.get(mDescriptor));
+                else
+                    mOmemo.setEnabled(false);
+
                 // sync button check to current chatType
                 checkCryptoButton(activeChat.getChatType());
                 return true;
@@ -646,7 +675,7 @@ public class CryptoFragment extends OSGiFragment
         int mSelectedChoice = encryptionChoice.get(chatSessionId);
         MenuItem mItem = menu.findItem(mSelectedChoice);
         mItem.setChecked(true);
-        mOmemo.setEnabled(isOmemoSupport());
+        isOmemoSupport();
 
         // need to handle crypto state icon if it is not OTR - need to handle for all in Note 8???
         if (mItem != mOtr) {
@@ -854,65 +883,71 @@ public class CryptoFragment extends OSGiFragment
                 mCryptoChoice.setTitle(tipKey);
             }
         });
-
         // logger.warn("Omemo CryptMode change to: " + chatType + " for " + mDescriptor);
         notifyCryptoModeChanged(mChatType);
     }
 
     /**
-     * Check if OMEMO is supported by current chatTransport
-     *
-     * @return <tt>true</tt> if OMEMO is supported on current chatTransport
+     * Check and cache result of OMEMO is supported by current chatTransport;
      */
-    private boolean isOmemoSupport()
+    private void isOmemoSupport()
     {
-        boolean serverCan = false;
-        boolean entityCan = true; // default to support
-
-        // Following 5 variables must be initialized in isOmemoSupport()
+        // Following few parameters must get initialized while in isOmemoSupport()
         // Do not proceed if account is not log in, otherwise system crash
         ChatTransport mChatTransport = activeChat.getChatSession().getCurrentChatTransport();
-        mConnection = mChatTransport.getProtocolProvider().getConnection();
-        if (mConnection == null)
-            return false;
+        if (mChatTransport == null)
+            return;
 
         mDescriptor = mChatTransport.getDescriptor();
-        mOmemoManager = OmemoManager.getInstanceFor(mConnection);
-        mOmemoStore = OmemoService.getInstance().getOmemoStoreBackend();
-
-        // read from cache if available for speed
-        if (omemoCapable.containsKey(mDescriptor))
-            return omemoCapable.get(mDescriptor);
-
-        try {
-            DomainBareJid serverJid = mConnection.getServiceName();
-            serverCan = OmemoManager.serverSupportsOmemo(mConnection, serverJid);
-
-            if (mDescriptor instanceof ChatRoom) {
-                MultiUserChat muc = ((ChatRoom) mDescriptor).getMultiUserChat();
-                entityCan = mOmemoManager.multiUserChatSupportsOmemo(muc);
-            }
-            else {
-                // online check may sometimes experience reply timeout
-                Jid contactJId = ((Contact) mDescriptor).getJid();
-                // not a good idea to include PEP_NODE_DEVICE_LIST_NOTIFY as some siblings may
-                // support omemo encryption.
-//				boolean support = ServiceDiscoveryManager.getInstanceFor(connection)
-//						.discoverInfo(contactJId).containsFeature(PEP_NODE_DEVICE_LIST_NOTIFY);
-                entityCan = mOmemoManager.contactSupportsOmemo(contactJId.asBareJid());
-
-                // cmeng - check from backend database entities table instead
-//				String usrID = ((Contact) mDescriptor).getAddress();
-//				entityCan = ((SQLiteOmemoStore) mOmemoStore).getContactNumTrustedKeys(usrID) > 0;
-            }
-        } catch (XMPPException.XMPPErrorException | SmackException.NoResponseException
-                | InterruptedException | SmackException.NotConnectedException e) {
-            entityCan = false;
-        } catch (PubSubException.NotALeafNodeException e) {
-            e.printStackTrace();
+        mConnection = mChatTransport.getProtocolProvider().getConnection();
+        if (mConnection == null) {
+            omemoCapable.put(mDescriptor, false);
+            return;
         }
-        omemoCapable.put(mDescriptor, serverCan && entityCan);
-        return serverCan && entityCan;
+        mOmemoManager = OmemoManager.getInstanceFor(mConnection);
+
+        // Execute in new thread to avoid ANR with black screen when chat window is opened
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                boolean serverCan = false;
+                boolean entityCan = false;
+
+                try {
+                    DomainBareJid serverJid = mConnection.getServiceName();
+                    serverCan = OmemoManager.serverSupportsOmemo(mConnection, serverJid);
+
+                    if (mDescriptor instanceof ChatRoom) {
+                        MultiUserChat muc = ((ChatRoom) mDescriptor).getMultiUserChat();
+                        entityCan = mOmemoManager.multiUserChatSupportsOmemo(muc);
+                    }
+                    else {
+                        // buddy online check may sometimes experience reply timeout
+                        // not a good idea to include PEP_NODE_DEVICE_LIST_NOTIFY as some siblings may
+                        // support omemo encryption.
+                        // boolean support = ServiceDiscoveryManager.getInstanceFor(connection)
+                        //      .discoverInfo(contactJId).containsFeature(PEP_NODE_DEVICE_LIST_NOTIFY);
+
+                        // Check based on present of keys on server - may have problem if buddy has old axolotf data
+                        Jid contactJId = ((Contact) mDescriptor).getJid();
+                        entityCan = mOmemoManager.contactSupportsOmemo(contactJId.asBareJid());
+
+                        // cmeng - what about check from backend database entities table instead
+                        // String usrID = ((Contact) mDescriptor).getAddress();
+                        // entityCan = ((SQLiteOmemoStore) mOmemoStore).getContactNumTrustedKeys(usrID) > 0;
+                    }
+                } catch (XMPPException.XMPPErrorException | SmackException.NoResponseException
+                        | InterruptedException | SmackException.NotConnectedException e) {
+                    entityCan = false;
+                } catch (PubSubException.NotALeafNodeException e) {
+                    e.printStackTrace();
+                }
+                // update the result in cache
+                omemoCapable.put(mDescriptor, serverCan && entityCan);
+            }
+        }.start();
     }
 
     /**

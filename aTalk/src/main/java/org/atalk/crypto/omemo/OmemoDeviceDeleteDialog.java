@@ -27,9 +27,8 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiActivity;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 
@@ -40,9 +39,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * In case your device list gets filled with old unused identities, you can clean it up. This
- * will remove all active devices from the device list and only publish the device you are using
- * right now.
+ * In case your device list gets filled with old unused identities, you can clean it up. This will remove
+ * all inactive devices from the device list and only publish the device that you are using right now.
  *
  * @author Eng Chong Meng
  */
@@ -108,17 +106,13 @@ public class OmemoDeviceDeleteDialog extends OSGiActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
+                        SQLiteOmemoStore mOmemoStore = (SQLiteOmemoStore) OmemoService.getInstance().getOmemoStoreBackend();
                         for (int i = 0; i < checkedItems.length; ++i) {
                             if (checkedItems[i]) {
                                 ProtocolProviderService pps = accountMap.get(accounts.get(i).toString());
                                 if (pps != null) {
                                     OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
-                                    try {
-                                        omemoManager.purgeDeviceList();
-                                    } catch (SmackException | InterruptedException
-                                            | XMPPException.XMPPErrorException e) {
-                                        e.printStackTrace();
-                                    }
+                                    mOmemoStore.purgeInactiveUserDevices(omemoManager);
                                 }
                             }
                         }

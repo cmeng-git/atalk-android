@@ -32,142 +32,129 @@ import javax.jmdns.ServiceInfo;
  *
  * @author Sebastien Vincent
  */
-public class MDNSProvisioningDiscover
-		implements Runnable {
-	/**
-	 * Logger.
-	 */
-	private final Logger logger
-			= Logger.getLogger(MDNSProvisioningDiscover.class);
+public class MDNSProvisioningDiscover implements Runnable
+{
+    /**
+     * Logger.
+     */
+    private final Logger logger = Logger.getLogger(MDNSProvisioningDiscover.class);
 
-	/**
-	 * MDNS timeout (in milliseconds).
-	 */
-	private static final int MDNS_TIMEOUT = 2000;
+    /**
+     * MDNS timeout (in milliseconds).
+     */
+    private static final int MDNS_TIMEOUT = 2000;
 
-	/**
-	 * List of <tt>ProvisioningListener</tt> that will be notified when
-	 * a provisioning URL is retrieved.
-	 */
-	private List<DiscoveryListener> listeners =
-			new ArrayList<DiscoveryListener>();
+    /**
+     * List of <tt>ProvisioningListener</tt> that will be notified when a provisioning URL is retrieved.
+     */
+    private List<DiscoveryListener> listeners = new ArrayList<>();
 
-	/**
-	 * Reference to JmDNS singleton.
-	 */
-	private JmDNS jmdns = null;
+    /**
+     * Reference to JmDNS singleton.
+     */
+    private JmDNS jmdns = null;
 
-	/**
-	 * Constructor.
-	 */
-	public MDNSProvisioningDiscover() {
-	}
+    /**
+     * Constructor.
+     */
+    public MDNSProvisioningDiscover()
+    {
+    }
 
-	/**
-	 * Thread entry point. It runs <tt>discoverProvisioningURL</tt> in a
-	 * separate thread.
-	 */
-	public void run() {
-		String url = discoverProvisioningURL();
+    /**
+     * Thread entry point. It runs <tt>discoverProvisioningURL</tt> in a separate thread.
+     */
+    public void run()
+    {
+        String url = discoverProvisioningURL();
 
-		if (url != null) {
-			/* as we run in an asynchronous manner, notify the listener */
-			DiscoveryEvent evt = new DiscoveryEvent(this, url);
+        if (url != null) {
+            /* as we run in an asynchronous manner, notify the listener */
+            DiscoveryEvent evt = new DiscoveryEvent(this, url);
 
-			for (DiscoveryListener listener : listeners) {
-				listener.notifyProvisioningURL(evt);
-			}
-		}
-	}
+            for (DiscoveryListener listener : listeners) {
+                listener.notifyProvisioningURL(evt);
+            }
+        }
+    }
 
-	/**
-	 * It sends a mDNS to retrieve provisioning URL and wait for a response.
-	 * Thread stops after first successful answer that contains the provisioning
-	 * URL.
-	 *
-	 * @return provisioning URL or null if no provisioning URL was discovered
-	 */
-	public String discoverProvisioningURL() {
-		StringBuffer url = new StringBuffer();
+    /**
+     * It sends a mDNS to retrieve provisioning URL and wait for a response.
+     * Thread stops after first successful answer that contains the provisioning URL.
+     *
+     * @return provisioning URL or null if no provisioning URL was discovered
+     */
+    public String discoverProvisioningURL()
+    {
+        StringBuffer url = new StringBuffer();
+        try {
+            jmdns = JmDNS.create();
+        } catch (IOException e) {
+            logger.info("Failed to create JmDNS", e);
+            return null;
+        }
 
-		try {
-			jmdns = JmDNS.create();
-		} catch (IOException e) {
-			logger.info("Failed to create JmDNS", e);
-			return null;
-		}
-
-		ServiceInfo info = jmdns.getServiceInfo("_https._tcp.local",
-				"Provisioning URL", MDNS_TIMEOUT);
-
-		if (info == null) {
+        ServiceInfo info = jmdns.getServiceInfo("_https._tcp.local", "Provisioning URL", MDNS_TIMEOUT);
+        if (info == null) {
             /* try HTTP */
-			info = jmdns.getServiceInfo("_http._tcp.local", "Provisioning URL",
-					MDNS_TIMEOUT);
-		}
+            info = jmdns.getServiceInfo("_http._tcp.local", "Provisioning URL", MDNS_TIMEOUT);
+        }
 
-		if (info != null && info.getName().equals("Provisioning URL")) {
-			String protocol = info.getApplication();
-
-			url.append(info.getURL(protocol));
-
-			Enumeration<String> en = info.getPropertyNames();
-
-			if (en.hasMoreElements()) {
-				url.append("?");
-			}
+        if (info != null && info.getName().equals("Provisioning URL")) {
+            String protocol = info.getApplication();
+            url.append(info.getURL(protocol));
+            Enumeration<String> en = info.getPropertyNames();
+            if (en.hasMoreElements()) {
+                url.append("?");
+            }
 
             /* add the parameters */
-			while (en.hasMoreElements()) {
-				String tmp = en.nextElement();
-
+            while (en.hasMoreElements()) {
+                String tmp = en.nextElement();
                 /* take all other parameters except "path" */
-				if (tmp.equals("path")) {
-					continue;
-				}
+                if (tmp.equals("path")) {
+                    continue;
+                }
+                url.append(tmp);
+                url.append("=");
+                url.append(info.getPropertyString(tmp));
 
-				url.append(tmp);
-				url.append("=");
-				url.append(info.getPropertyString(tmp));
-
-				if (en.hasMoreElements()) {
-					url.append("&");
-				}
-			}
-		}
-
+                if (en.hasMoreElements()) {
+                    url.append("&");
+                }
+            }
+        }
         /* close jmdns */
-		try {
-			jmdns.close();
-			jmdns = null;
-		} catch (Exception e) {
-			logger.warn("Failed to close JmDNS", e);
-		}
+        try {
+            jmdns.close();
+            jmdns = null;
+        } catch (Exception e) {
+            logger.warn("Failed to close JmDNS", e);
+        }
+        return (url.toString().length() > 0) ? url.toString() : null;
+    }
 
-		return (url.toString().length() > 0) ? url.toString() : null;
-	}
+    /**
+     * Add a listener that will be notified when the <tt>discoverProvisioningURL</tt> has finished.
+     *
+     * @param listener <tt>ProvisioningListener</tt> to add
+     */
+    public void addDiscoveryListener(DiscoveryListener listener)
+    {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
 
-	/**
-	 * Add a listener that will be notified when the
-	 * <tt>discoverProvisioningURL</tt> has finished.
-	 *
-	 * @param listener <tt>ProvisioningListener</tt> to add
-	 */
-	public void addDiscoveryListener(DiscoveryListener listener) {
-		if (!listeners.contains(listener)) {
-			listeners.add(listener);
-		}
-	}
-
-	/**
-	 * Add a listener that will be notified when the
-	 * <tt>discoverProvisioningURL</tt> has finished.
-	 *
-	 * @param listener <tt>ProvisioningListener</tt> to add
-	 */
-	public void removeDiscoveryListener(DiscoveryListener listener) {
-		if (listeners.contains(listener)) {
-			listeners.remove(listener);
-		}
-	}
+    /**
+     * Add a listener that will be notified when the <tt>discoverProvisioningURL</tt> has finished.
+     *
+     * @param listener <tt>ProvisioningListener</tt> to add
+     */
+    public void removeDiscoveryListener(DiscoveryListener listener)
+    {
+        if (listeners.contains(listener)) {
+            listeners.remove(listener);
+        }
+    }
 }

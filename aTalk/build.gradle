@@ -43,8 +43,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1025
-        versionName "1.2.5" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1026
+        versionName "1.2.6" // no alphabet allowed (e.g. 0.8.7.a)
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true
@@ -117,13 +117,12 @@ android {
 ext {
     // Need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
-    smackVersion = '4.2.4-SNAPSHOT'
+    smackVersion = '4.2.4'
 }
 
 dependencies {
     jarjar2 'com.googlecode.jarjar:jarjar:1.3'
 
-    implementation project(':plugins:dnsjava')
     implementation project(':plugins:ews-android-api')
     implementation project(':plugins:easylocation')
 
@@ -156,11 +155,19 @@ dependencies {
     // when targeting Android API 23 and newer - class obsoleted
     implementation 'cz.msebera.android:httpclient:4.4.1.2' // duplicate class
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
-    implementation 'org.apache.commons:commons-lang3:3.6'
+    implementation 'dnsjava:dnsjava:2.1.8'
 
+    // User from conversation instead
+    // implementation 'de.measite.minidns:minidns-android21:0.2.3'
+
+    implementation 'org.apache.commons:commons-lang3:3.6'
     implementation 'org.bitlet:weupnp:0.1.4'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.57'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.58'
     // (dependencies = core + prov)
+
+    // Use by provisioning Discover
+    implementation 'org.jitsi:dnssecjava:1.1.3'
+
     implementation 'org.jmdns:jmdns:3.5.3'
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
@@ -188,7 +195,7 @@ dependencies {
     //        classDelete 'org.jivesoftware.smackx.omemo.OmemoManager'
     //    }
 
-    implementation 'org.jxmpp:jxmpp-jid:0.6.0'
+    implementation 'org.jxmpp:jxmpp-jid:0.6.2'
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
 
     implementation 'org.jetbrains:annotations-java5:15.0'
@@ -229,12 +236,6 @@ task jarRepackage(type: Copy, description: 'Repackage jar to avoid conflict') {
     project.ant {
         taskdef name: "jarjar2", classname: 'com.tonicsystems.jarjar.JarJarTask',
                 classpath: configurations.jarjar2.asPath
-
-        jarjar2(jarfile: 'libs/dnssecjava-1.1.jar') {
-            zipfileset(src: 'lib/bundles/dnssecjava-1.1.jar')
-            rule pattern: 'org.jitsi.**',
-                    result: 'org.atalk.@1'
-        }
 
         jarjar2(jarfile: 'libs/fmj-1.0.jar') {
             zipfileset(src: 'lib/bundles/fmj-1.0.jar')

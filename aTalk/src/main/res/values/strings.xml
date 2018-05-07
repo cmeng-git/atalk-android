@@ -432,7 +432,7 @@
 	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Please enter the name of the chat room you would like to join.</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Join chat room wizard</string>
 	<string name="service_gui_JOIN_AUTOMATICALLY">Join automatically</string>
-	<string name="service_gui_JOIN_AUTOMATICALLY_NO">Don\'t join automatically</string>
+	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Don\'t join automatically</string>
 	<string name="service_gui_KICK">Kick</string>
 	<string name="service_gui_KICK_FAILED">Kick failed</string>
 	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Failed to kick {0}. A general server error occurred.</string>
@@ -970,6 +970,7 @@
     <string name="omemo_menu_unauthenticated">OMEMO unAuthenticated</string>
     <string name="omemo_menu_untrusted">OMEMO Un-Trusted</string>
     <string name="omemo_rebuild_session">Rebuild new session for missing: %1$s</string>
+    <string name="omemo_purge_inactive_device_error">Failed to remove inactive omemo device for: %1$s.</string>
 
     <!-- Global proxy plugin -->
     <string name="service_gui_settings_PROXY">Global proxy</string>
@@ -1526,7 +1527,7 @@
     <string name="pref_omemo_regenerate_identities_title">Regenerate OMEMO identities</string>
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">OMEMO Identities Refresh</string>
     <!-- OMEMO purge device screen -->
-    <string name="pref_omemo_purge_devices_summary">Remove all other active devices; only publish the current device that you are using.</string>
+    <string name="pref_omemo_purge_devices_summary">Remove all inactive devices; only publish the current active device that you are using.</string>
     <string name="pref_omemo_purge_devices_title">Purge unused identities</string>
     <string name="service_gui_settings_OMEMO_PURGE_DEVICE_TITLE">OMEMO Devices Delete</string>
 
@@ -1688,6 +1689,13 @@
     <string name="profile_child_camera">Take a photo</string>
     <string name="profile_child_delete">Delete photo</string>
     <string name="profile_child_gallery">Choose from gallery</string>
+
+    <!-- Android Battery Usage Optimization -->
+    <string name="battery_optimizations">Battery Optimization</string>
+    <string name="battery_optimizations_dialog">Your device has battery usage optimization on aTalk; this may lead to delayed notifications or message lost.\n\nIt is recommended that you disable this optimization for aTalk.</string>
+    <string name="device_does_not_support_battery_op">Your device does not support opting out of battery optimization</string>
+    <string name="disable">Disable</string>
+    <string name="next">Next</string>
 
     <!-- Android Permissions -->
     <string name="app_info_permissions_button">App Info</string>

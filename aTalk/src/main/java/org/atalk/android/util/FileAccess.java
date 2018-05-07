@@ -1,23 +1,32 @@
 package org.atalk.android.util;
 
 import android.os.Environment;
+import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
-import org.atalk.util.StringUtils;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * File access utilities
+ *
  * @author Eng Chong Meng
-*/
+ */
 public class FileAccess
 {
     public static boolean CreateFolder(String folderPath)
             throws IOException
     {
         // String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
-        if (StringUtils.isNullOrEmpty(folderPath))
+        if (TextUtils.isEmpty(folderPath))
             return false;
 
         File myNewFolder = new File(folderPath);
@@ -26,7 +35,7 @@ public class FileAccess
 
     public static boolean CreateFile(String FilePath)
     {
-        if (StringUtils.isNullOrEmpty(FilePath))
+        if (TextUtils.isEmpty(FilePath))
             return false;
 
         try {
@@ -42,7 +51,7 @@ public class FileAccess
 
     public static boolean IsFileExist(String FilePath)
     {
-        if (StringUtils.isNullOrEmpty(FilePath))
+        if (TextUtils.isEmpty(FilePath))
             return false;
 
         try {
@@ -56,7 +65,7 @@ public class FileAccess
 
     public static boolean SaveData2File(String FilePath, byte[] src)
     {
-        if (StringUtils.isNullOrEmpty(FilePath))
+        if (TextUtils.isEmpty(FilePath))
             return false;
 
         boolean result = false;
@@ -91,7 +100,7 @@ public class FileAccess
 
     public static int GetFileSize(String FilePath)
     {
-        if (StringUtils.isNullOrEmpty(FilePath))
+        if (TextUtils.isEmpty(FilePath))
             return 0;
 
         int fileSize = 0;
@@ -132,7 +141,7 @@ public class FileAccess
 
     public static byte[] GetDataFromFile(String FilePath)
     {
-        if (StringUtils.isNullOrEmpty(FilePath))
+        if (TextUtils.isEmpty(FilePath))
             return null;
 
         InputStream in = null;
@@ -188,7 +197,7 @@ public class FileAccess
     public static void DeleteFile(String FilePath)
             throws IOException
     {
-        if (StringUtils.isNullOrEmpty(FilePath))
+        if (TextUtils.isEmpty(FilePath))
             return;
 
         File fc = new File(FilePath);
