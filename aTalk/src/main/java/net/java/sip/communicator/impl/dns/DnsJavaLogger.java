@@ -12,15 +12,15 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package net.java.sip.communicator.impl.dns;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.service.packetlogging.PacketLoggingService;
 import org.xbill.DNS.PacketLogger;
+
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 /**
  * Custom logger that will log packages using packet logging service.
@@ -29,91 +29,87 @@ import org.xbill.DNS.PacketLogger;
  */
 public class DnsJavaLogger implements PacketLogger
 {
-	/**
-	 * The logger.
-	 */
-	private static final Logger logger = Logger.getLogger(DnsJavaLogger.class);
+    /**
+     * The logger.
+     */
+    private static final Logger logger = Logger.getLogger(DnsJavaLogger.class);
 
-	/**
-	 * The packet logging service.
-	 */
-	private PacketLoggingService packetLoggingService = null;
+    /**
+     * The packet logging service.
+     */
+    private PacketLoggingService packetLoggingService = null;
 
-	/**
-	 * Obtain packet logging service.
-	 * 
-	 * @return
-	 */
-	private PacketLoggingService getPacketLoggingService()
-	{
-		if (packetLoggingService == null && UtilActivator.bundleContext != null) {
-			packetLoggingService = ServiceUtils.getService(UtilActivator.bundleContext, PacketLoggingService.class);
-		}
+    /**
+     * Obtain packet logging service.
+     *
+     * @return
+     */
+    private PacketLoggingService getPacketLoggingService()
+    {
+        if (packetLoggingService == null && UtilActivator.bundleContext != null) {
+            packetLoggingService = ServiceUtils.getService(UtilActivator.bundleContext, PacketLoggingService.class);
+        }
 
-		return packetLoggingService;
-	}
+        return packetLoggingService;
+    }
 
-	@Override
-	public void log(String prefix, SocketAddress local, SocketAddress remote, byte[] data)
-	{
-		// make sure that error here will not stop further processing
-		try {
-			logInternal(local, remote, prefix, data);
-		}
-		catch (Throwable t) {
-			logger.error("Error saving packet", t);
-		}
-	}
+    @Override
+    public void log(String prefix, SocketAddress local, SocketAddress remote, byte[] data)
+    {
+        // make sure that error here will not stop further processing
+        try {
+            logInternal(local, remote, prefix, data);
+        } catch (Throwable t) {
+            logger.error("Error saving packet", t);
+        }
+    }
 
-	/**
-	 * Logs the dns packet, checking its prefix message to distinguish incoming and outgoing messages and the transport used TCP or UDP.
-	 *
-	 * @param local
-	 *        the local address
-	 * @param remote
-	 *        the remote address
-	 * @param prefix
-	 *        the prefix used by the dns lib
-	 * @param data
-	 *        the data that is send or received through the wire
-	 */
-	private void logInternal(SocketAddress local, SocketAddress remote, String prefix, byte[] data)
-	{
-		if (getPacketLoggingService() == null || !(local instanceof InetSocketAddress && remote instanceof InetSocketAddress)) {
-			return;
-		}
+    /**
+     * Logs the dns packet, checking its prefix message to distinguish incoming and outgoing messages and the
+     * transport used TCP or UDP.
+     *
+     * @param local the local address
+     * @param remote the remote address
+     * @param prefix the prefix used by the dns lib
+     * @param data the data that is send or received through the wire
+     */
+    private void logInternal(SocketAddress local, SocketAddress remote, String prefix, byte[] data)
+    {
+        if (getPacketLoggingService() == null || !(local instanceof InetSocketAddress && remote instanceof InetSocketAddress)) {
+            return;
+        }
 
-		InetSocketAddress localAddress = (InetSocketAddress) local;
-		InetSocketAddress remoteAddress = (InetSocketAddress) remote;
+        InetSocketAddress localAddress = (InetSocketAddress) local;
+        InetSocketAddress remoteAddress = (InetSocketAddress) remote;
 
-		PacketLoggingService.TransportName transportName = PacketLoggingService.TransportName.UDP;
+        PacketLoggingService.TransportName transportName = PacketLoggingService.TransportName.UDP;
 
-		if (prefix.contains("TCP"))
-			transportName = PacketLoggingService.TransportName.TCP;
+        if (prefix.contains("TCP"))
+            transportName = PacketLoggingService.TransportName.TCP;
 
-		boolean isSender = true;
-		if (prefix.contains("read"))
-			isSender = false;
+        boolean isSender = true;
+        if (prefix.contains("read"))
+            isSender = false;
 
-		byte[] srcAddr;
-		int srcPort;
-		byte[] dstAddr;
-		int dstPort;
+        byte[] srcAddr;
+        int srcPort;
+        byte[] dstAddr;
+        int dstPort;
 
-		if (isSender) {
-			srcAddr = localAddress.getAddress().getAddress();
-			srcPort = localAddress.getPort();
-			dstAddr = remoteAddress.getAddress().getAddress();
-			dstPort = remoteAddress.getPort();
-		}
-		else {
-			dstAddr = localAddress.getAddress().getAddress();
-			dstPort = localAddress.getPort();
-			srcAddr = remoteAddress.getAddress().getAddress();
-			srcPort = remoteAddress.getPort();
-		}
+        if (isSender) {
+            srcAddr = localAddress.getAddress().getAddress();
+            srcPort = localAddress.getPort();
+            dstAddr = remoteAddress.getAddress().getAddress();
+            dstPort = remoteAddress.getPort();
+        }
+        else {
+            dstAddr = localAddress.getAddress().getAddress();
+            dstPort = localAddress.getPort();
+            srcAddr = remoteAddress.getAddress().getAddress();
+            srcPort = remoteAddress.getPort();
+        }
 
-		getPacketLoggingService().logPacket(PacketLoggingService.ProtocolName.DNS, srcAddr, srcPort, dstAddr, dstPort, transportName, isSender, data, 0,
-			data.length);
-	}
+        getPacketLoggingService().logPacket(PacketLoggingService.ProtocolName.DNS, srcAddr, srcPort, dstAddr,
+                dstPort, transportName, isSender, data, 0, data.length);
+    }
 }

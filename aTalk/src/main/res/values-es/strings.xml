@@ -92,28 +92,28 @@
     <string name="title_activity_attach_option_dialog">Enviar archivo adjunto</string>
     <string name="title_activity_activation_view">Activación</string>
     <!-- General -->
-    <string name="service_gui_ACCEPT">Accept</string>
-    <string name="service_gui_ACCOUNT">Account</string>
+    <string name="service_gui_ACCEPT">Aceptar</string>
+    <string name="service_gui_ACCOUNT">Cuenta</string>
     <string name="service_gui_ACCOUNT_ME">Me</string>
     <string name="service_gui_ACCOUNT_SETTINGS">Configuraciones de la cuenta&#8230;</string>
-    <string name="service_gui_ACCOUNT_UNREGISTERED">%1$s is not registered</string>
-    <string name="service_gui_ADD">Add</string>
+    <string name="service_gui_ACCOUNT_UNREGISTERED">%1$s no está registrado</string>
+    <string name="service_gui_ADD">Añadir</string>
     <string name="service_gui_ADD_CONTACT">Agregar contacto</string>
-    <string name="service_gui_ADD_AUTHORIZED_CONTACT">Add %1$s to your contact list</string>
-    <string name="service_gui_ADD_CONTACT_TO">Add contact to</string>
-    <string name="service_gui_ADD_CONTACT_ERROR">Failed to add contact with id: %1$s</string>
-    <string name="service_gui_ADD_CONTACT_ERROR_TITLE">Add Contact Error</string>
-    <string name="service_gui_ADD_CONTACT_EXIST_ERROR">The contact %1$s already exists in your contact list.</string>
-    <string name="service_gui_ADD_CONTACT_NETWORK_ERROR">Server did not respond to our request adding contact with jid: %1$s.</string>
-    <string name="service_gui_ADD_CONTACT_NOT_SUPPORTED">Failed to add contact with id: %1$s. Operation not supported.</string>
-    <string name="service_gui_ADD_CONTACT_NOT_CONNECTED">You need to be connected in order to add a contact. Please sign in to the selected provider and try again.</string>
-    <string name="service_gui_ADD_GROUP_LOCAL_ERROR">Failed to add group with name: %1$s. The problem occurred during a local IO operation.</string>
-    <string name="service_gui_ADD_GROUP_EXIST_ERROR">The group %1$s already exists in your contact list. Please choose another name.</string>
-    <string name="service_gui_ADD_GROUP_NET_ERROR">Failed to add group with name: %1$s. The problem occurred due to a network failure. Please check your network connection and try again.</string>
-    <string name="service_gui_ADD_GROUP_ERROR">Failed to add group with name: %1$s.</string>
-    <string name="service_gui_ADD_GROUP_EMPTY_NAME">The group name must not be empty.</string>
-    <string name="service_gui_ADD_GROUP">Create group</string>
-    <string name="service_gui_ADD_GROUP_HINT">Enter group name</string>
+    <string name="service_gui_ADD_AUTHORIZED_CONTACT">Añadir a %1$s a la lista de contactos</string>
+    <string name="service_gui_ADD_CONTACT_TO">Añadir</string>
+    <string name="service_gui_ADD_CONTACT_ERROR">No se pudo añadir contacto con id: %1$s</string>
+    <string name="service_gui_ADD_CONTACT_ERROR_TITLE">Error al añadir el contacto</string>
+    <string name="service_gui_ADD_CONTACT_EXIST_ERROR">El contacto %1$s ya existe en la lista de contactos.</string>
+    <string name="service_gui_ADD_CONTACT_NETWORK_ERROR">El servidor no respondió a la petición de añadir el contacto con jid: %1$s.</string>
+    <string name="service_gui_ADD_CONTACT_NOT_SUPPORTED">No se pudo agregar contacto con id: %1$s. Operación no soportada.</string>
+    <string name="service_gui_ADD_CONTACT_NOT_CONNECTED">Se necesita estar conectado para poder añadir un contacto. Iniciar sesión en el proveedor seleccionado e intentarlo de nuevo.</string>
+    <string name="service_gui_ADD_GROUP_LOCAL_ERROR">No se pudo agregar un grupo con nombre: %1$s. El problema ocurrió durante una operación local de IO.</string>
+    <string name="service_gui_ADD_GROUP_EXIST_ERROR">El grupo %1$s ya existe en la lista de contactos. Por favor, elijir otro nombre.</string>
+    <string name="service_gui_ADD_GROUP_NET_ERROR">No se pudo agregar un grupo con nombre: %1$s. El problema es debido a un fallo en la red. Compruebar la conexión de red e intentarlo de nuevo.</string>
+    <string name="service_gui_ADD_GROUP_ERROR">No se ha podido añadir un grupo con nombre: %1$s.</string>
+    <string name="service_gui_ADD_GROUP_EMPTY_NAME">El nombre del grupo no debe estar vacío.</string>
+    <string name="service_gui_ADD_GROUP">Crear un grupo</string>
+    <string name="service_gui_ADD_GROUP_HINT">Introducir el nombre del grupo</string>
     <string name="service_gui_APPLICATION_NAME">aTalk</string>
     <string name="service_gui_AT">at</string>
     <string name="service_gui_APPLY">Aplicar</string>
@@ -353,7 +353,7 @@
 	<string name="service_gui_FILE_UNABLE_TO_SEND">Se ha producido un error al enviar el archivo a %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Esperando %1$s para aceptar tu archivo</string>
 
-	<string name="service_gui_FINISH">Finish</string>
+	<string name="service_gui_FINISH">Finalizar</string>
 	<string name="service_gui_FOLDER_DOES_NOT_EXIST">No se ha podido encontrar la carpeta que contiene este archivo. Se ha borrado o movido</string>
 	<string name="service_gui_FOLDER_OPEN_FAILED">No se pudo abrir la carpeta</string>
 	<string name="service_gui_FOLDER_OPEN_NO_PERMISSION">No tiene suficientes permisos para abrir esta carpeta. Por favor, compruebe sus permisos de lectura e inténtelo de nuevo</string>
@@ -412,7 +412,7 @@
 	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Por favor, introduce el nombre de la sala de chat a la que te gustaría unirte.</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Unirse con el asistente de la sala de charla</string>
 	<string name="service_gui_JOIN_AUTOMATICALLY">Unirse automáticamente</string>
-	<string name="service_gui_JOIN_AUTOMATICALLY_NO">No unirse automáticamente</string>
+	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">No unirse automáticamente</string>
 	<string name="service_gui_KICK">Toque de atención</string>
 	<string name="service_gui_KICK_FAILED">Toque de atención fallida</string>
 	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Error al dar un toque de atención %1$s. Se ha producido un error general del servidor.</string>
@@ -437,7 +437,7 @@
     <string name="service_gui_MOVE_SUBCONTACT_MSG">Seleccionar el contacto o el grupo al que deseas mover el contacto seleccionado.</string>
     <string name="service_gui_MOVE_SUBCONTACT_FAILED">El contacto que has elegido es el mismo que \nel de la fuente. Por favor, elejir otro contacto!</string>
     <string name="service_gui_MOVE_SUBCONTACT_QUESTION">¿Seguro que se quiere mover %1$s a %2$s?</string>
-    <string name="service_gui_MOVE_TO_GROUP">Mover al groupo</string>
+    <string name="service_gui_MOVE_TO_GROUP">Mover al grupo</string>
 	<string name="service_gui_NICKNAME_LABEL">Apodo</string>
 	<string name="service_gui_OPEN_AUTOMATICALLY">Abrir esta sala automáticamente cuando</string>
 
@@ -879,8 +879,8 @@
 
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">Texto plano</string>
-    <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Authentificar al amigo</string>
-    <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">No se tienen amigos no autentificados. Los amigos no verificados no pueden recibir el mensajes OMEMO. Compruébarlo para autenticar.</string>
+    <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Authentificar amigo</string>
+    <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">Hay amigos no autentificados. Los amigos no verificados no pueden recibir el mensajes OMEMO. Comprobar para autenticar.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Huella digital local %1$s:\n%2$s</string>
     <string name="omemo_identity_keypairs_missing">Faltan IdentityKeyPairs de OMEMO para: %1$s</string>
     <string name="omemo_identity_key_invalid">IdentityKey inválido para el dispositivo omemo: %1$s.\nExcepción: %2$s.</string>
@@ -1295,7 +1295,7 @@
     <string name="pref_omemo_regenerate_identities_title">Regenerar las identidades OMEMO</string>
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">Refrescar Identidades OMEMO</string>
     <!-- OMEMO purge device screen -->
-    <string name="pref_omemo_purge_devices_summary">Eliminar todos los demás dispositivos activos; sólo publicar el dispositivo actual que se esté utilizando.</string>
+    <string name="pref_omemo_purge_devices_summary">Eliminar todos los dispositivos inactivos; solo publique el dispositivo activo actual que está utilizando.</string>
     <string name="pref_omemo_purge_devices_title">Purgar identidades no utilizadas</string>
     <string name="service_gui_settings_OMEMO_PURGE_DEVICE_TITLE">Eliminar dispositivos OMEMO</string>
 
@@ -1402,6 +1402,13 @@
     <string name="profile_child_camera">Hacer una foto</string>
     <string name="profile_child_delete">Borrar foto</string>
     <string name="profile_child_gallery">Escoger de la galería</string>
+
+    <!-- Android Battery Usage Optimization -->
+    <string name="battery_optimizations">Optimización de la batería</string>
+    <string name="battery_optimizations_dialog">Su dispositivo tiene una optimización del uso de la batería en un Talk; esto puede ocasionar que se pierdan las notificaciones o que se pierda el mensaje.\n\nSe recomienda deshabilitar esta optimización para aTalk.</string>
+    <string name="device_does_not_support_battery_op">Su dispositivo no admite optar por la optimización de la batería</string>
+    <string name="disable">Inhabilitar</string>
+    <string name="next">Siguiente</string>
 
     <!-- Android Permissions -->
     <string name="app_info_permissions_button">Información de la App</string>

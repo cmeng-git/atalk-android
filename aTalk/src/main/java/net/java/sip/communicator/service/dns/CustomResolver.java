@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.dns;
 
-import org.xbill.DNS.*;
+import org.xbill.DNS.Resolver;
 
 /**
  * The purpose of this class is to help avoid the significant delays that occur
@@ -36,8 +36,7 @@ import org.xbill.DNS.*;
  *
  * @author Emil Ivov
  */
-public interface CustomResolver
-    extends Resolver
+public interface CustomResolver extends Resolver
 {
     /**
      * The default number of milliseconds it takes us to get into redundant

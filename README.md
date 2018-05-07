@@ -16,15 +16,16 @@
 ## Features
 aTalk is an xmpp client designed for android and supports the following features:
 * Instant messaging in plain text and End-to-End encryption with [OMEMO](http://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
-* Omemo encryption is available during multi-user group chat session, giving users' maximum privacy and security
+* Omemo encryption is available during multi-user-chat session, giving users' maximum privacy and security
 * Supports both voice and video call with ZRTP encryption
-* Send and receive files for all document types and images. For image file, a thumb nail is first sent for preview and acceptance before the actual file is sent
-* Unique feature to send GPS locations to chosen buddy, requesting real-time guidance to reach desired destination
+* Send and receive files for all document types and images. Image thumb nail is first sent for preview and acceptance before the actual file is sent
+* Unique GPS-Location implemention use as standalone tool, or sending locations to your chosen buddy for real-time tracking or playback animation.
+* Built-in demo for GPS-Location features
 * A 360° street view of your current location, may use for self-guided tour. The street view tracks and follows your direction of sight.
 * Integrated photo editor with zooming and cropping, user can update his/her avatar with ease
 * Last message correction, message carbons and offline messages (omemo)
 * Multiple accounts support
-
+* Multi-language UI support (English and Spanish - contributions requires for others). 
 
 ### XMPP Features
 

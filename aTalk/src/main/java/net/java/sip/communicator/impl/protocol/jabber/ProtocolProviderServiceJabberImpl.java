@@ -27,6 +27,7 @@ import net.java.sip.communicator.util.*;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
+
 import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;

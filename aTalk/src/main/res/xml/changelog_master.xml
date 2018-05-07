@@ -6,6 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.2.6 (05/07/2018)" versioncode="1026">
+        <change>Fix ANR black screen that happen occasionally when opening a chat session</change>
+        <change>Use android ConnectivityManager to getDnsServerAddresses for improved platform privacy</change>
+        <change>Prompt user action for android battery usage optimization on aTalk to avoid message lost during device doze</change>
+        <change>Purge user unused omemo devices now cleanup data on both the server and local database</change>
+        <change>Apply user selected language on preference screen exit</change>
+        <change>Update Spanish language translation</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.2.5 (05/01/2018)" versioncode="1025">
         <change>Implement multi-language UI support</change>
         <change>Add Spanish (Español) language UI support</change>

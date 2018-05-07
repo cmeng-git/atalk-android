@@ -54,8 +54,8 @@ public class SRVRecord
      */
     public String getTarget()
     {
-        String hostName= record.getTarget().toString();
-        return hostName.substring(0, hostName.length()-1);
+        String hostName = record.getTarget().toString();
+        return hostName.substring(0, hostName.length() - 1);
     }
 
     /**
@@ -99,11 +99,9 @@ public class SRVRecord
     }
 
     /**
-     * Returns the toString of the org.xbill.DNS.SRVRecord that was passed to
-     * the constructor.
+     * Returns the toString of the org.xbill.DNS.SRVRecord that was passed to the constructor.
      *
-     * @return the toString of the org.xbill.DNS.SRVRecord that was passed to
-     *         the constructor.
+     * @return the toString of the org.xbill.DNS.SRVRecord that was passed to the constructor.
      */
     @Override
     public String toString()

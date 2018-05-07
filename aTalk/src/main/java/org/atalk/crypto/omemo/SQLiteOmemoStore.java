@@ -32,6 +32,8 @@ import org.atalk.android.gui.account.Account;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
@@ -55,6 +57,7 @@ import org.whispersystems.libsignal.state.SignedPreKeyRecord;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
@@ -823,6 +826,33 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     {
         mDB.purgeOmemoDb(userDevice);
         trustCache.evictAll();
+    }
+
+    /**
+     * Purge owner old unused devices for pushlished server deviceList and local database
+     * 1. perKeyPairs
+     * 2. signed prekeys
+     * 3. identities tables entries
+     * 4. session table entries
+     *
+     * @param omemoManager OmemoManager instance for our OmemoDevice.
+     */
+    public void purgeInactiveUserDevices(OmemoManager omemoManager)
+    {
+        BareJid userJid = omemoManager.getOwnDevice().getJid();
+        OmemoDevice userDevice = null;
+        try {
+            omemoManager.purgeDeviceList();
+            OmemoCachedDeviceList deviceList = mDB.loadCachedDeviceList(userJid);
+            for (int deviceId : deviceList.getInactiveDevices()) {
+                userDevice = new OmemoDevice(userJid, deviceId);
+                logger.info("Purge inactive device for: " +  userDevice);
+                purgeOwnDeviceKeys(userDevice);
+            }
+        } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
+            aTalkApp.showToastMessage(R.string.omemo_purge_inactive_device_error, userDevice);
+            e.printStackTrace();
+        }
     }
 
     /**

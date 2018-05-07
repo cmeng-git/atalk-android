@@ -235,6 +235,7 @@ public class SettingsActivity extends OSGiActivity
                     AndroidGUIActivator.getConfigurationService().setProperty(P_KEY_LOCALE, language);
                     aTalk.setATLanguage(language);
                     aTalk.setLanguage(aTalkApp.getGlobalContext(), language);
+                    aTalk.setPrefChange(true);
                     return true;
                 }
             });
