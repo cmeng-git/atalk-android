@@ -28,22 +28,15 @@ import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
 import net.java.sip.communicator.impl.msghistory.MessageSourceService;
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.Logger;
 
-import org.atalk.android.BuildConfig;
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
+import org.atalk.android.*;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.crypto.omemo.FingerprintStatus;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
-import org.atalk.persistance.migrations.MigrationToSqlDB;
-import org.atalk.persistance.migrations.Migrations;
-import org.atalk.persistance.migrations.MigrationsHelper;
+import org.atalk.persistance.migrations.*;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
@@ -51,28 +44,14 @@ import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jxmpp.jid.BareJid;
-import org.whispersystems.libsignal.IdentityKey;
-import org.whispersystems.libsignal.IdentityKeyPair;
-import org.whispersystems.libsignal.InvalidKeyException;
-import org.whispersystems.libsignal.state.PreKeyRecord;
-import org.whispersystems.libsignal.state.SessionRecord;
-import org.whispersystems.libsignal.state.SignedPreKeyRecord;
+import org.whispersystems.libsignal.*;
+import org.whispersystems.libsignal.state.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
- * The <tt>DatabaseBackend</tt> uses SQLite to store all the aTalk application data in the
- * database "dbRecords.db"
+ * The <tt>DatabaseBackend</tt> uses SQLite to store all the aTalk application data in the database "dbRecords.db"
  *
  * @author Eng Chong Meng
  */

@@ -3,7 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-            android:title="Jitsi Preferences" />
+            android:title="aTalk Preferences" />
 
     <PreferenceScreen
         android:key="general_settings"

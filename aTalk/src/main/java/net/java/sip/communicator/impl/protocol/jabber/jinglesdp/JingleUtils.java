@@ -6,39 +6,20 @@
 package net.java.sip.communicator.impl.protocol.jabber.jinglesdp;
 
 import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CandidatePacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension.CreatorEnum;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension.SendersEnum;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.IceUdpTransportPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ParameterPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.PayloadTypePacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RTPHdrExtPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RemoteCandidatePacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RtpDescriptionPacketExtension;
 import net.java.sip.communicator.service.protocol.media.DynamicPayloadTypeRegistry;
 import net.java.sip.communicator.service.protocol.media.DynamicRTPExtensionsRegistry;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.NetworkUtils;
 
-import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaService;
-import org.atalk.service.neomedia.MediaStreamTarget;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.RTPExtension;
-import org.atalk.service.neomedia.format.AudioMediaFormat;
-import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.service.neomedia.format.MediaFormatFactory;
+import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.format.*;
 import org.atalk.util.StringUtils;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.*;
+import java.util.*;
 
 /**
  * The class contains a number of utility methods that are meant to facilitate creating and parsing
@@ -46,6 +27,7 @@ import java.util.Map;
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class JingleUtils {
 	/**
@@ -77,8 +59,7 @@ public class JingleUtils {
 	 * none of them or if all these we support are not enabled in the <tt>MediaService</tt>
 	 * configuration form.
 	 *
-	 * @param description the <tt>MediaDescription</tt> that we'd like to probe for a list of
-	 * <tt>MediaFormat</tt>s
+	 * @param description the <tt>MediaDescription</tt> that we'd like to probe for a list of <tt>MediaFormat</tt>s
 	 * @param ptRegistry a reference to the <tt>DynamycPayloadTypeRegistry</tt> where we should be registering
 	 * newly added payload type number to format mappings.
 	 * @return an ordered list of <tt>MediaFormat</tt>s that are both advertised in the
@@ -93,7 +74,6 @@ public class JingleUtils {
 		}
 
 		List<PayloadTypePacketExtension> payloadTypes = description.getPayloadTypes();
-
 		for (PayloadTypePacketExtension ptExt : payloadTypes) {
 			MediaFormat format = payloadTypeToMediaFormat(ptExt, ptRegistry);
 
@@ -120,21 +100,16 @@ public class JingleUtils {
 	 * @return the {@link MediaFormat} described in the <tt>payloadType</tt> extension or
 	 * <tt>null</tt> if we don't recognize the format.
 	 */
-    public static MediaFormat payloadTypeToMediaFormat(
-            PayloadTypePacketExtension payloadType,
+    public static MediaFormat payloadTypeToMediaFormat(PayloadTypePacketExtension payloadType,
             DynamicPayloadTypeRegistry ptRegistry) {
-        return payloadTypeToMediaFormat(
-                payloadType,
-                JabberActivator.getMediaService(),
-                ptRegistry);
+        return payloadTypeToMediaFormat(payloadType, JabberActivator.getMediaService(), ptRegistry);
 	}
 
 	/**
 	 * Returns the {@link MediaFormat} described in the <tt>payloadType</tt> extension or
 	 * <tt>null</tt> if we don't recognize the format.
 	 *
-	 * @param payloadType the {@link PayloadTypePacketExtension} which is to be parsed into a
-	 * {@link MediaFormat}.
+	 * @param payloadType the {@link PayloadTypePacketExtension} which is to be parsed into a {@link MediaFormat}.
 	 * @param mediaService the <tt>MediaService</tt> implementation which is to be used for <tt>MediaFormat</tt>
 	 * -related factory methods
 	 * @param ptRegistry the {@link DynamicPayloadTypeRegistry} that we would use for the registration of
@@ -155,7 +130,6 @@ public class JingleUtils {
 
 		for (ParameterPacketExtension param : params) {
 			String paramName = param.getName();
-
 			if ("imageattr".equals(paramName))
 				advancedMap.put(paramName, param.getValue());
 			else
@@ -169,20 +143,14 @@ public class JingleUtils {
 
 			//update ptime with the actual value from the payload
 			if (attr.equals(PayloadTypePacketExtension.PTIME_ATTR_NAME))
-				advancedMap.put(PayloadTypePacketExtension.PTIME_ATTR_NAME,
-						Integer.toString(payloadType.getPtime()));
+				advancedMap.put(PayloadTypePacketExtension.PTIME_ATTR_NAME, Integer.toString(payloadType.getPtime()));
 		}
 
 		// now create the format.
 		MediaFormatFactory formatFactory = mediaService.getFormatFactory();
 		MediaFormat format = formatFactory.createMediaFormat(
-				pt,
-				payloadType.getName(),
-				payloadType.getClockrate(),
-				payloadType.getChannels(),
-				-1,
-				paramsMap,
-				advancedMap);
+				pt, payloadType.getName(), payloadType.getClockrate(), payloadType.getChannels(),
+				-1, paramsMap, advancedMap);
 
 		// we don't seem to know anything about this format
 		if (format == null) {
@@ -297,8 +265,7 @@ public class JingleUtils {
 	 * @return one of the <tt>MediaDirection</tt> values indicating the direction of the media steam
 	 * described by <tt>content</tt>.
 	 */
-	public static MediaDirection getDirection(ContentPacketExtension content,
-			boolean initiatorPerspective) {
+	public static MediaDirection getDirection(ContentPacketExtension content, boolean initiatorPerspective) {
 		SendersEnum senders = content.getSenders();
 
 		return getDirection(senders, initiatorPerspective);
@@ -347,27 +314,21 @@ public class JingleUtils {
 	 * before we've discovered the one that ICE would pick.
 	 *
 	 * @param content the stream whose default candidate we are looking for.
-	 * @return a {@link MediaStreamTarget} containing the default <tt>candidate</tt>s for the stream
-	 * described in <tt>content</tt> or <tt>null</tt>, if for some reason, the packet does
-	 * not contain any candidates.
+	 * @return a {@link MediaStreamTarget} containing the default <tt>candidate</tt>s for the stream described in
+     * <tt>content</tt> or <tt>null</tt>, if for some reason, the packet does not contain any candidates.
 	 */
 	public static MediaStreamTarget extractDefaultTarget(ContentPacketExtension content) {
-		IceUdpTransportPacketExtension transport = content
-				.getFirstChildOfType(IceUdpTransportPacketExtension.class);
-
+		IceUdpTransportPacketExtension transport = content.getFirstChildOfType(IceUdpTransportPacketExtension.class);
 		return (transport == null) ? null : extractDefaultTarget(transport);
 	}
 
 	public static MediaStreamTarget extractDefaultTarget(IceUdpTransportPacketExtension transport) {
 		// extract the default rtp candidate:
-		CandidatePacketExtension rtpCand = getFirstCandidate(transport,
-				CandidatePacketExtension.RTP_COMPONENT_ID);
-
+		CandidatePacketExtension rtpCand = getFirstCandidate(transport, CandidatePacketExtension.RTP_COMPONENT_ID);
 		if (rtpCand == null)
 			return null;
 
 		InetAddress rtpAddress = null;
-
 		try {
 			rtpAddress = NetworkUtils.getInetAddress(rtpCand.getIP());
 		} catch (UnknownHostException exc) {
@@ -379,8 +340,7 @@ public class JingleUtils {
 		InetSocketAddress rtpTarget = new InetSocketAddress(rtpAddress, rtpPort);
 
 		// extract the RTCP candidate
-		CandidatePacketExtension rtcpCand = getFirstCandidate(transport,
-				CandidatePacketExtension.RTCP_COMPONENT_ID);
+		CandidatePacketExtension rtcpCand = getFirstCandidate(transport, CandidatePacketExtension.RTCP_COMPONENT_ID);
 		InetSocketAddress rtcpTarget;
 
 		if (rtcpCand == null) {
@@ -388,7 +348,6 @@ public class JingleUtils {
 		}
 		else {
 			InetAddress rtcpAddress = null;
-
 			try {
 				rtcpAddress = NetworkUtils.getInetAddress(rtcpCand.getIP());
 			} catch (UnknownHostException exc) {
@@ -402,30 +361,22 @@ public class JingleUtils {
 	}
 
 	/**
-	 * Returns the first candidate for the specified <tt>componentID</tt> or null if no such
-	 * component exists.
+	 * Returns the first candidate for the specified <tt>componentID</tt> or null if no such component exists.
 	 *
 	 * @param content the {@link ContentPacketExtension} that we'll be searching for a component.
 	 * @param componentID the id of the component that we are looking for (e.g. 1 for RTP, 2 for RTCP);
-	 * @return the first candidate for the specified <tt>componentID</tt> or null if no such
-	 * component exists.
+	 * @return the first candidate for the specified <tt>componentID</tt> or null if no such component exists.
 	 */
-	public static CandidatePacketExtension getFirstCandidate(ContentPacketExtension content,
-			int componentID) {
-		// passing IceUdp would also return RawUdp transports as one extends
-		// the other.
-		IceUdpTransportPacketExtension transport = content
-				.getFirstChildOfType(IceUdpTransportPacketExtension.class);
-
+	public static CandidatePacketExtension getFirstCandidate(ContentPacketExtension content, int componentID) {
+		// passing IceUdp would also return RawUdp transports as one extends the other.
+		IceUdpTransportPacketExtension transport = content.getFirstChildOfType(IceUdpTransportPacketExtension.class);
 		return (transport == null) ? null : getFirstCandidate(transport, componentID);
 	}
 
-	public static CandidatePacketExtension getFirstCandidate(
-			IceUdpTransportPacketExtension transport, int componentID) {
+	public static CandidatePacketExtension getFirstCandidate(IceUdpTransportPacketExtension transport, int componentID) {
 		for (CandidatePacketExtension cand : transport.getCandidateList()) {
 			// we don't care about remote candidates!
-			if (!(cand instanceof RemoteCandidatePacketExtension)
-					&& (cand.getComponent() == componentID)) {
+			if (!(cand instanceof RemoteCandidatePacketExtension) && (cand.getComponent() == componentID)) {
 				return cand;
 			}
 		}
@@ -453,13 +404,8 @@ public class JingleUtils {
 	 * lookup and register URN to ID mappings.
 	 * @return the newly create SDP <tt>MediaDescription</tt>.
 	 */
-	public static ContentPacketExtension createDescription(
-			CreatorEnum creator,
-			String contentName,
-			SendersEnum senders,
-			List<MediaFormat> formats,
-			List<RTPExtension> rtpExtensions,
-			DynamicPayloadTypeRegistry dynamicPayloadTypes,
+	public static ContentPacketExtension createDescription(CreatorEnum creator, String contentName, SendersEnum senders,
+			List<MediaFormat> formats, List<RTPExtension> rtpExtensions, DynamicPayloadTypeRegistry dynamicPayloadTypes,
 			DynamicRTPExtensionsRegistry rtpExtensionsRegistry) {
 		ContentPacketExtension content = new ContentPacketExtension();
 		RtpDescriptionPacketExtension description = new RtpDescriptionPacketExtension();
@@ -494,7 +440,6 @@ public class JingleUtils {
 				ext.setSenders(sendersEnum);
 				ext.setID(Byte.toString(extID));
 				ext.setAttributes(attributes);
-
 				description.addChildExtension(ext);
 			}
 		}
@@ -502,14 +447,11 @@ public class JingleUtils {
 	}
 
 	/**
-	 * Converts a specific {@link MediaFormat} into a new {@link PayloadTypePacketExtension}
-	 * instance.
+	 * Converts a specific {@link MediaFormat} into a new {@link PayloadTypePacketExtension} instance.
 	 *
 	 * @param format the <tt>MediaFormat</tt> we'd like to convert.
-	 * @param ptRegistry the {@link DynamicPayloadTypeRegistry} to use for formats that don't have a static pt
-	 * number.
-	 * @return the new <tt>PayloadTypePacketExtension</tt> which contains <tt>format</tt>'s
-	 * parameters.
+	 * @param ptRegistry the {@link DynamicPayloadTypeRegistry} to use for formats that don't have a static pt number.
+	 * @return the new <tt>PayloadTypePacketExtension</tt> which contains <tt>format</tt>'s parameters.
 	 */
 	public static PayloadTypePacketExtension formatToPayloadType(MediaFormat format,
 			DynamicPayloadTypeRegistry ptRegistry) {

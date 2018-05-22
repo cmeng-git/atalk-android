@@ -19,7 +19,6 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaService;
-import org.atalk.service.packetlogging.PacketLoggingService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.*;
 
@@ -107,12 +106,6 @@ public class NeomediaActivator implements BundleActivator
      * the resources such as internationalized and localized text and images used by the neomedia bundle.
      */
     private static ResourceManagementService resources;
-
-    /**
-     * The OSGi <tt>PacketLoggingService</tt> of {@link #mediaServiceImpl} in {@link #bundleContext}
-     * and used for debugging.
-     */
-    private static PacketLoggingService packetLoggingService = null;
 
     /**
      * A listener to the click on the popup message concerning device configuration changes.
@@ -313,21 +306,6 @@ public class NeomediaActivator implements BundleActivator
             resources = ResourceManagementServiceUtils.getService(bundleContext);
         }
         return resources;
-    }
-
-    /**
-     * Returns a reference to the <tt>PacketLoggingService</tt> implementation currently registered
-     * in the bundle context or null if no such implementation was found.
-     *
-     * @return a reference to a <tt>PacketLoggingService</tt> implementation currently registered in
-     * the bundle context or null if no such implementation was found.
-     */
-    public static PacketLoggingService getPacketLogging()
-    {
-        if (packetLoggingService == null) {
-            packetLoggingService = ServiceUtils.getService(bundleContext, PacketLoggingService.class);
-        }
-        return packetLoggingService;
     }
 
     /**

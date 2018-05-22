@@ -296,11 +296,9 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param call the <tt>CallJabberImpl</tt> that will be used to initiate the call
      * @param calleeAddress the address of the callee that we'd like to connect with.
-     * @param fullCalleeURI the full Jid address, which if specified would explicitly initiate a call to this full
-     * address
-     * @param sessionInitiateExtensions a collection of additional and optional <tt>ExtensionElement</tt>s to be added to the
-     * <tt>session-initiate</tt> {@link JingleIQ} which is to init the specified
-     * <tt>call</tt>
+     * @param fullCalleeURI the full Jid address, which if specified would explicitly initiate a call to this full address
+     * @param sessionInitiateExtensions a collection of additional and optional <tt>ExtensionElement</tt>s to be
+     * added to the <tt>session-initiate</tt> {@link JingleIQ} which is to init the specified <tt>call</tt>
      * @return the <tt>CallPeer</tt> that represented by the specified uri. All following state
      * change events will be delivered through that call peer. The <tt>Call</tt> that this
      * peer is a member of could be retrieved from the <tt>CallPeer</tt> instance with the

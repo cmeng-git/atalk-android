@@ -95,6 +95,6 @@ public class AnonymousLoginStrategy implements JabberLoginStrategy
 		X509TrustManager trustManager)
 		throws GeneralSecurityException
 	{
-		return null;
+        return certificateService.getSSLContext(trustManager);
 	}
 }

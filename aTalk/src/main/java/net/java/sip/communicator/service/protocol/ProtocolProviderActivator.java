@@ -80,8 +80,7 @@ public class ProtocolProviderActivator implements BundleActivator
 	public static ConfigurationService getConfigurationService()
 	{
 		if ((configurationService == null) && (bundleContext != null)) {
-			ServiceReference<?> svrReference
-					= bundleContext.getServiceReference(ConfigurationService.class.getName());
+			ServiceReference<?> svrReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
 			configurationService = (ConfigurationService) bundleContext.getService(svrReference);
 		}
 		return configurationService;

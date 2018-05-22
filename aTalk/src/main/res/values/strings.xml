@@ -155,7 +155,6 @@
     <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">Nickname already exists</string>
 	<string name="service_gui_CHANGE_NICKNAME_ERROR">Error changing nickname</string>
     <string name="service_gui_CHANGE_NICKNAME_LABEL">In the field below, you can enter your new nickname.</string>
-    <string name="service_gui_CHANGE_PASSWORD">Change password</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT">Change room\'s subject&#8230;</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">In the field below, you can enter the new subject for this room.</string>
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Change remote video quality</string>
@@ -846,6 +845,7 @@
     <string name="plugin_notificationconfig_event_HangUp_description">Hang up description</string>
     <string name="plugin_notificationconfig_event_IncomingCall">Incoming Call</string>
     <string name="plugin_notificationconfig_event_IncomingCall_description">Incoming call description.</string>
+    <string name="plugin_notificationconfig_event_IncomingFile">Incoming File</string>
     <string name="plugin_notificationconfig_event_IncomingMessage">Incoming Message</string>
     <string name="plugin_notificationconfig_event_IncomingMessage_description">Incoming message description</string>
     <string name="plugin_notificationconfig_event_LogFilesArchived">Log Files Archived</string>
@@ -1018,8 +1018,6 @@
     <string name="service_gui_settings_DNS">DNS</string>
     <string name="service_gui_settings_DNS_SUMMARY">Configure DNS settings</string>
     <string name="plugin_dnsconfig_DNSSEC">DNS Security (DNSSEC)</string>
-    <string name="plugin_dnsconfig_PARALLEL_DNS">Parallel DNS</string>
-    <string name="plugin_dnsconfig_chkBackupDnsEnabled_text">Enable parallel DNS resolving</string>
     <string name="plugin_dnsconfig_dnssec_DOMAIN_NAME">Domain</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">State change failed</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Change of the DNSSEC enabled state has failed.</string>
@@ -1031,13 +1029,6 @@
     <string name="plugin_dnsconfig_dnssec_lblDefault">Default behavior</string>
     <string name="plugin_dnsconfig_dnssec_lblNameservers">Custom name servers</string>
     <string name="plugin_dnsconfig_dnssec_lblNameserversHint"><html>Multiple servers can be delimited with a comma, e.g. 149.20.64.20, 149.20.64.21 (OARC\'s Open DNSSEC Validating Resolver)</html></string>
-    <string name="plugin_dnsconfig_lblPatience_text">Start backup resolver after</string>
-    <string name="plugin_dnsconfig_lblPatience_description"><html>number of ms to wait for a response from primary DNS before starting the backup resolver</html></string>
-    <string name="plugin_dnsconfig_lblBackupPort_text">Port</string>
-    <string name="plugin_dnsconfig_lblBackupResolver_text">Hostname</string>
-    <string name="plugin_dnsconfig_lblBackupResolverFallbackIP_text">Fallback IP</string>
-    <string name="plugin_dnsconfig_lblRedemption_text">Back to primary resolver</string>
-    <string name="plugin_dnsconfig_lblRedemption_description"><html>the number of prompt responses that the primary resolver needs to provide before we turn that backup off again</html></string>
 
     <string name="util_dns_INSECURE_ANSWER_TITLE">DNSSEC failure</string>
     <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">DNS answer for %1$s is insecure.</string>
@@ -1296,7 +1287,7 @@
     <string name="pref_key_proxy_username">pref_key_ProxyUsername</string>
 
     <!-- XMPP ICE -->
-    <string name="pref_key_auto_discover_jingle">pref_key_auto_discover_jingle</string>
+    <string name="pref_key_auto_discover_stun">pref_key_auto_discover_stun</string>
     <string name="pref_key_auto_relay_dicovery">pref_key_auto_relay_discovery</string>
     <string name="pref_key_ice_enabled">pref_key_ice_enabled</string>
     <string name="pref_key_jingle_node_list">pref_key_jingle_node_list</string>
@@ -1578,41 +1569,10 @@
     <string name="pref_cat_settings_advanced">pref.cat.settings.advanced</string>
     <string name="service_gui_settings_ADVANCED">Advanced</string>
 
-    <!-- Packet logging Service -->
-    <string name="service_gui_settings_LOGGING_SUMMARY">Adjust logging properties</string>
-    <string name="service_gui_settings_LOGGING_TITLE">Logging</string>
-    <!-- Enable packet logging -->
-    <string name="pref_key_logging_enable">pref.key.logging.enable</string>
-    <string name="service_gui_settings_LOGGING_ENABLE_SUMMARY_OFF">No packets will be logged</string>
-    <string name="service_gui_settings_LOGGING_ENABLE_SUMMARY_ON">Logs debug packets of various protocols</string>
-    <string name="service_gui_settings_LOGGING_ENABLE_TITLE">Packet logging</string>
-
-    <!-- RTP -->
-    <string name="pref_key_logging_rtp">pref.key.logging.rtp</string>
-    <string name="service_gui_settings_LOGGING_RTP">RTP</string>
-    <string name="service_gui_settings_LOGGING_RTP_SUMMARY">stores 1 packet out of every 5000</string>
-    <!-- ICE4J -->
-    <string name="pref_key_logging_ice4j">pref.key.logging.ice4j</string>
-    <string name="service_gui_settings_LOGGING_ICE4J">ice4j.org</string>
     <!-- Protocol category -->
-    <string name="pref_cat_settings_logging_protocol">pref.cat.settings.logging.protocol</string>
     <string name="service_gui_settings_ADDRESS">Address</string>
     <string name="service_gui_settings_PORT">Port</string>
     <string name="service_gui_settings_PROTOCOL">Protocol</string>
-    <!-- SIP -->
-    <string name="pref_key_logging_sip">pref.key.logging.sip</string>
-    <string name="service_gui_settings_LOGGING_SIP">SIP</string>
-    <!-- XMPP -->
-    <string name="pref_key_logging_xmpp">pref.key.logging.xmpp</string>
-    <string name="service_gui_settings_LOGGING_XMPP">XMPP</string>
-    <!-- Logging advanced -->
-    <string name="pref_cat_settings_logging_advanced">pref.cat.settings.logging.advanced</string>
-    <!-- File count -->
-    <string name="pref_key_logging_file_count">pref.key.logging.file_count</string>
-    <string name="service_gui_settings_LOGGING_FILE_COUNT">Number of log files</string>
-    <!-- File size limit -->
-    <string name="pref_key_logging_limit">pref.key.logging.limit</string>
-    <string name="service_gui_settings_LOGGING_LIMIT">Maximum file size (in KB)</string>
 
     <!-- Opus -->
     <string name="pref_key_opus_audio_bandwidth">neomedia.codec.audio.opus.encoder.AUDIO_BANDWIDTH</string>
@@ -1660,13 +1620,6 @@
     <string name="service_gui_settings_SIP_SUMMARY">Configure SIP protocol settings</string>
 
     <!-- DNS config -->
-    <string name="pref_cat_dns_parallel_dns">pref.cat.dns.parallel_dns</string>
-    <string name="pref_key_dns_backup_dns_enabled">dns.BACKUP_RESOLVER_ENABLED</string>
-    <string name="pref_key_dns_backup_patience">dns.DNS_PATIENCE</string>
-    <string name="pref_key_dns_backup_port">dns.BACKUP_RESOLVER_PORT</string>
-    <string name="pref_key_dns_backup_redemption">dns.DNS_REDEMPTION</string>
-    <string name="pref_key_dns_backup_resolver">dns.BACKUP_RESOLVER</string>
-    <string name="pref_key_dns_backup_resolver_fallback_ip">dns.BACKUP_RESOLVER_FALLBACK_IP</string>
     <string name="pref_cat_dns_dnssec">pref.cat.dns.dnssec</string>
     <string name="pref_key_dns_dnssec_absolute">dns.DNSSEC_ALWAYS_ABSOLUTE</string>
     <string name="pref_key_dns_dnssec_default_behaviour">dns.DNSSEC_VALIDATION_MODE</string>

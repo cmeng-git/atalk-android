@@ -192,8 +192,7 @@ public class ProvisioningActivator implements BundleActivator
 	public static ConfigurationService getConfigurationService()
 	{
 		if (configurationService == null) {
-			ServiceReference confReference
-					= bundleContext.getServiceReference(ConfigurationService.class.getName());
+			ServiceReference confReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
 			configurationService = (ConfigurationService) bundleContext.getService(confReference);
 		}
 		return configurationService;

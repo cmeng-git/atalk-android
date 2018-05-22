@@ -51,15 +51,14 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
      * <tt>ScServiceDiscoveryManager</tt> (may be referred to as the local peer) and a specific
      * <tt>DiscoverInfo</tt> (may be thought of as the remote peer).
      *
-     * @param discoveryManager the <tt>ScServiceDiscoveryManager</tt> to be checked whether it includes the specified feature
+     * @param discoveryManager the <tt>ScServiceDiscoveryManager</tt> to be checked whether it includes
+     * the specified feature
      * @param discoverInfo the <tt>DiscoveryInfo</tt> which is to be checked whether it contains the specified
-     * feature. If <tt>discoverInfo</tt> is <tt>null</tt>, it is considered to contain the
-     * specified feature.
+     * feature. If <tt>discoverInfo</tt> is <tt>null</tt>, it is considered to contain the specified feature.
      * @param feature the feature to be determined whether it is supported by both the specified
      * <tt>discoveryManager</tt> and the specified <tt>discoverInfo</tt>
      * @return <tt>true</tt> if the specified <tt>feature</tt> is supported by both the specified
-     * <tt>discoveryManager</tt> and the specified <tt>discoverInfo</tt>; otherwise,
-     * <tt>false</tt>
+     * <tt>discoveryManager</tt> and the specified <tt>discoverInfo</tt>; otherwise, <tt>false</tt>
      */
     private static boolean isFeatureSupported(ScServiceDiscoveryManager discoveryManager,
             DiscoverInfo discoverInfo, String feature)
@@ -70,8 +69,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
 
     /**
      * The current description of the streams that we have going toward the remote side. We use
-     * {@link LinkedHashMap}s to make sure that we preserve the order of the individual content
-     * extensions.
+     * {@link LinkedHashMap}s to make sure that we preserve the order of the individual content extensions.
      */
     private final Map<String, ContentPacketExtension> localContentMap = new LinkedHashMap<>();
 
@@ -137,8 +135,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
      * (i.e. it is still sending media), this method simply returns its current direction.
      *
      * @param stream the {@link MediaStreamTarget} whose post-hold direction we'd like to determine.
-     * @return the {@link MediaDirection} that we need to set on <tt>stream</tt> once it is
-     * reactivate.
+     * @return the {@link MediaDirection} that we need to set on <tt>stream</tt> once it is reactivate.
      */
     private MediaDirection calculatePostHoldDirection(MediaStream stream)
     {
@@ -294,8 +291,8 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
      *
      * @return a {@link List} containing the {@link ContentPacketExtension}s of streams that this
      * handler is prepared to initiate.
-     * @throws OperationFailedException if we fail to create the descriptions for reasons like problems with device
-     * interaction, allocating ports, etc.
+     * @throws OperationFailedException if we fail to create the descriptions for reasons like problems
+     * with device interaction, allocating ports, etc.
      */
     public List<ContentPacketExtension> createContentList()
             throws OperationFailedException
@@ -612,7 +609,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * In the case of a telephony conference organized by the local peer/user via the Jitsi
      * Videobridge server-side technology, returns an SSRC reported by the server as received on
      * the channel allocated by the local peer/user for the purposes of communicating with the
@@ -678,8 +675,8 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
     }
 
     /**
-     * Gets the <tt>TransportManager</tt> implementation handling our address management.
-     * <p/>
+     * Get the <tt>TransportManager</tt> implementation handling our address management.
+     *
      * TODO: this method can and should be simplified.
      *
      * @return the <tt>TransportManager</tt> implementation handling our address management
@@ -808,7 +805,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * In the case of utilization of the Jitsi Videobridge server-side technology, returns the
      * visual <tt>Component</tt> s which display RTP video streams reported by the server to be
      * sent by the remote peer represented by this instance.
@@ -868,8 +865,8 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
      * @return the media descriptions of the local peer after the local candidate addresses have
      * been gathered as returned by
      * {@link TransportManagerJabberImpl#wrapupCandidateHarvest()}
-     * @throws OperationFailedException if anything goes wrong while starting or wrapping up the gathering of local candidate
-     * addresses
+     * @throws OperationFailedException if anything goes wrong while starting or wrapping up the gathering
+     * of local candidate addresses
      */
     private List<ContentPacketExtension> harvestCandidates(List<ContentPacketExtension> remote,
             List<ContentPacketExtension> local, TransportInfoSender transportInfoSender)
@@ -944,8 +941,8 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
      * @param rtpExtensions the list of <tt>RTPExtension</tt>s that should be enabled for this stream.
      * @param masterStream whether the stream to be used as master if secured
      * @return the newly created <tt>MediaStream</tt>.
-     * @throws OperationFailedException if creating the stream fails for any reason (like for example accessing the device or
-     * setting the format).
+     * @throws OperationFailedException if creating the stream fails for any reason (like for example accessing
+     * the device or setting the format).
      */
     protected MediaStream initStream(String streamName, StreamConnector connector,
             MediaDevice device, MediaFormat format, MediaStreamTarget target,
@@ -961,7 +958,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * In the case of a telephony conference organized by the local peer/user and utilizing the
      * Jitsi Videobridge server-side technology, a single <tt>MediaHandler</tt> is shared by
      * multiple <tt>CallPeerMediaHandler</tt>s in order to have a single <tt>AudioMediaStream</tt>
@@ -1420,13 +1417,12 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
      * @param name name of the Jingle content
      * @param content media content
      * @param modify if it correspond to a content-modify for resolution change
-     * @throws OperationFailedException if we fail to handle <tt>content</tt> for reasons like failing to initialize media
-     * devices or streams.
-     * @throws IllegalArgumentException if there's a problem with the syntax or the semantics of <tt>content</tt>. Method is
-     * synchronized in order to avoid closing mediaHandler when we are currently in process
-     * of initializing, configuring and starting streams and anybody interested in this
-     * operation can synchronize to the mediaHandler instance to wait processing to stop
-     * (method setState in CallPeer).
+     * @throws OperationFailedException if we fail to handle <tt>content</tt> for reasons like failing to
+     * initialize media devices or streams.
+     * @throws IllegalArgumentException if there's a problem with the syntax or the semantics of <tt>content</tt>.
+     * Method is synchronized in order to avoid closing mediaHandler when we are currently in process of initializing,
+     * configuring and starting streams and anybody interested in this operation can synchronize to the mediaHandler
+     * instance to wait processing to stop (method setState in CallPeer).
      */
     public void reinitContent(String name, ContentPacketExtension content, boolean modify)
             throws OperationFailedException, IllegalArgumentException
@@ -1484,8 +1480,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
     }
 
     /**
-     * Acts upon a notification received from the remote party indicating that they've put us
-     * on/off hold.
+     * Acts upon a notification received from the remote party indicating that they've put us on/off hold.
      *
      * @param onHold <tt>true</tt> if the remote party has put us on hold and <tt>false</tt> if they've
      * just put us off hold.
@@ -1536,8 +1531,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
     }
 
     /**
-     * Sometimes as initiating a call with custom preset can set and we force that quality
-     * controls is supported.
+     * Sometimes as initiating a call with custom preset can set and we force that quality controls is supported.
      *
      * @param value whether quality controls is supported..
      */
@@ -1569,8 +1563,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
         }
 
         /*
-         * TODO The transportManager is going to be changed so it may need to be disposed of prior
-         * to the change.
+         * TODO The transportManager is going to be changed so it may need to be disposed of prior to the change.
          */
 
         switch (xmlns) {
@@ -1672,7 +1665,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * The super implementation relies on the direction of the streams and is therefore not
      * accurate when we use a Videobridge.
      */
@@ -1684,7 +1677,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Handles the case when a Videobridge is in use.
      *
      * @param locallyOnHold <tt>true</tt> if we are to make our streams stop transmitting and <tt>false</tt> if we
@@ -1919,7 +1912,6 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
         IceUdpTransportPacketExtension localTransport
                 = localContent.getFirstChildOfType(IceUdpTransportPacketExtension.class);
         boolean b = false;
-
         if (localTransport == null)
             return b;
 
@@ -2027,7 +2019,7 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
      * Sets the jingle transports that this <tt>CallPeerMediaHandlerJabberImpl</tt> supports.
      * Unknown transports are ignored, and the <tt>transports</tt> <tt>Collection</tt> is put into
      * order depending on local preference.
-     * <p/>
+     *
      * Currently only ice and raw-udp are recognized, with ice being preferred over raw-udp
      *
      * @param transports A <tt>Collection</tt> of XML namespaces of jingle transport elements to be set as the

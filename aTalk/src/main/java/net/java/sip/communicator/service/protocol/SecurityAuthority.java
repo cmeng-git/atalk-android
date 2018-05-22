@@ -81,6 +81,11 @@ public interface SecurityAuthority
 	 */
 	public static final int POLICY_VIOLATION = 10;
 
+    /**
+     * Indicates that reason for login failure is due to a policy violation.
+     */
+    public static final int DNSSEC_NOT_ALLOWED = 11;
+
 	/**
 	 * Returns a UserCredentials object associated with the specified realm, by specifying the
 	 * reason of this operation.

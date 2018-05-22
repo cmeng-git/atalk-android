@@ -1,52 +1,39 @@
 /*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
  *
- * Distributable under LGPL license.
- * See terms of license at gnu.org.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package net.java.sip.communicator.util;
 
-import net.java.sip.communicator.service.dns.DnssecException;
-import net.java.sip.communicator.service.dns.DnssecRuntimeException;
+import android.text.TextUtils;
 
-import org.xbill.DNS.AAAARecord;
-import org.xbill.DNS.ARecord;
-import org.xbill.DNS.Cache;
-import org.xbill.DNS.DClass;
-import org.xbill.DNS.Lookup;
-import org.xbill.DNS.NAPTRRecord;
-import org.xbill.DNS.Name;
-import org.xbill.DNS.Record;
-import org.xbill.DNS.ResolverConfig;
-import org.xbill.DNS.TextParseException;
-import org.xbill.DNS.Type;
+import java.io.IOException;
+import java.net.*;
+import java.util.*;
 
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import de.measite.minidns.DNSMessage;
+import de.measite.minidns.Record;
+import de.measite.minidns.Record.TYPE;
+import de.measite.minidns.hla.ResolverApi;
+import de.measite.minidns.hla.ResolverResult;
+import de.measite.minidns.record.*;
+import de.measite.minidns.util.InetAddressUtil;
 
 /**
  * Utility methods and fields to use when working with network addresses.
- * <p>
- * TODO: there is a lot of duplication between this class and
- * org.ice4j.ice.NetworkUtils
  *
- * @author Emil Ivov
- * @author Damian Minkov
- * @author Vincent Lucas
- * @author Alan Kelly
  * @author Eng Chong Meng
  */
 public class NetworkUtils
@@ -161,507 +148,132 @@ public class NetworkUtils
     }
 
     /**
-     * Verifies whether <tt>address</tt> could be an IPv4 address string.
-     *
-     * @param address the String that we'd like to determine as an IPv4 address.
-     * @return true if the address contained by <tt>address</tt> is an IPv4 address and false otherwise.
-     */
-    public static boolean isIPv4Address(String address)
-    {
-        return strToIPv4(address) != null;
-    }
-
-    /**
-     * Verifies whether <tt>address</tt> could be an IPv6 address string.
-     *
-     * @param address the String that we'd like to determine as an IPv6 address.
-     * @return true if the address contained by <tt>address</tt> is an IPv6 address and false otherwise.
-     */
-    public static boolean isIPv6Address(String address)
-    {
-        return strToIPv6(address) != null;
-    }
-
-    /**
-     * Checks whether <tt>address</tt> is a valid IP address string.
-     *
-     * @param address the address that we'd like to check
-     * @return true if address is an IPv4 or IPv6 address and false otherwise.
-     */
-    public static boolean isValidIPAddress(String address)
-    {
-        // empty string
-        if (address == null || address.length() == 0) {
-            return false;
-        }
-
-        // look for IPv6 brackets and remove brackets for parsing
-        boolean ipv6Expected = false;
-        if (address.charAt(0) == '[') {
-            // This is supposed to be an IPv6 literal
-            if ((address.length() > 2) && (address.charAt(address.length() - 1) == ']')) {
-                // remove brackets from IPv6
-                address = address.substring(1, address.length() - 1);
-                ipv6Expected = true;
-            }
-            else {
-                return false;
-            }
-        }
-
-        // look for IP addresses
-        if (Character.digit(address.charAt(0), 16) != -1 || (address.charAt(0) == ':')) {
-            byte[] addr = null;
-            // see if it is IPv4 address; if not, see if it is IPv6 address
-            addr = strToIPv4(address);
-            if (addr == null) {
-                addr = strToIPv6(address);
-            }
-            // if IPv4 is found when IPv6 is expected
-            else if (ipv6Expected) {
-                // invalid address: IPv4 address surrounded with brackets!
-                return false;
-            }
-            // if an IPv4 or IPv6 address is found
-            if (addr != null) {
-                // is an IP address
-                return true;
-            }
-        }
-        // no matches found
-        return false;
-    }
-
-    /**
-     * Creates a byte array containing the specified <tt>ipv4AddStr</tt>.
-     *
-     * @param ipv4AddrStr a <tt>String</tt> containing an IPv4 address.
-     * @return a byte array containing the four bytes of the address represented by ipv4AddrStr
-     * or <tt>null</tt> if <tt>ipv4AddrStr</tt> does not contain a valid IPv4 address string.
-     */
-    public static byte[] strToIPv4(String ipv4AddrStr)
-    {
-        if (ipv4AddrStr == null || ipv4AddrStr.length() == 0)
-            return null;
-
-        byte[] address = new byte[IN4_ADDR_SIZE];
-        String[] tokens = ipv4AddrStr.split("\\.", -1);
-        long currentTkn;
-        try {
-            switch (tokens.length) {
-                case 1:
-                    //If the address was specified as a single String we can directly copy it
-                    // into the byte array.
-                    currentTkn = Long.parseLong(tokens[0]);
-                    if (currentTkn < 0 || currentTkn > 0xffffffffL)
-                        return null;
-                    address[0] = (byte) ((currentTkn >> 24) & 0xff);
-                    address[1] = (byte) (((currentTkn & 0xffffff) >> 16) & 0xff);
-                    address[2] = (byte) (((currentTkn & 0xffff) >> 8) & 0xff);
-                    address[3] = (byte) (currentTkn & 0xff);
-                    break;
-                case 2:
-                    // If the address was passed in two parts (e.g. when dealing with a Class A
-                    // address representation), we place the first one in the leftmost byte and
-                    // the rest in the three remaining bytes of the address array.
-                    currentTkn = Integer.parseInt(tokens[0]);
-                    if (currentTkn < 0 || currentTkn > 0xff)
-                        return null;
-
-                    address[0] = (byte) (currentTkn & 0xff);
-                    currentTkn = Integer.parseInt(tokens[1]);
-                    if (currentTkn < 0 || currentTkn > 0xffffff)
-                        return null;
-
-                    address[1] = (byte) ((currentTkn >> 16) & 0xff);
-                    address[2] = (byte) (((currentTkn & 0xffff) >> 8) & 0xff);
-                    address[3] = (byte) (currentTkn & 0xff);
-                    break;
-                case 3:
-                    // If the address was passed in three parts (e.g. when dealing with a Class B address
-                    // representation), we place the first two parts in the two leftmost bytes and the
-                    // rest in the two remaining bytes of the address array.
-                    for (int i = 0; i < 2; i++) {
-                        currentTkn = Integer.parseInt(tokens[i]);
-                        if (currentTkn < 0 || currentTkn > 0xff)
-                            return null;
-                        address[i] = (byte) (currentTkn & 0xff);
-                    }
-                    currentTkn = Integer.parseInt(tokens[2]);
-                    if (currentTkn < 0 || currentTkn > 0xffff)
-                        return null;
-
-                    address[2] = (byte) ((currentTkn >> 8) & 0xff);
-                    address[3] = (byte) (currentTkn & 0xff);
-                    break;
-                case 4:
-                    // And now for the most common - four part case. This time
-                    // there's a byte for every part :). Yuppiee! :)
-                    for (int i = 0; i < 4; i++) {
-                        currentTkn = Integer.parseInt(tokens[i]);
-                        if (currentTkn < 0 || currentTkn > 0xff)
-                            return null;
-                        address[i] = (byte) (currentTkn & 0xff);
-                    }
-                    break;
-                default:
-                    return null;
-            }
-        } catch (NumberFormatException e) {
-            return null;
-        }
-        return address;
-    }
-
-    /**
-     * Creates a byte array containing the specified <tt>ipv6AddStr</tt>.
-     *
-     * @param ipv6AddrStr a <tt>String</tt> containing an IPv6 address.
-     * @return a byte array containing the four bytes of the address represented
-     * by <tt>ipv6AddrStr</tt> or <tt>null</tt> if <tt>ipv6AddrStr</tt> does
-     * not contain a valid IPv6 address string.
-     */
-    public static byte[] strToIPv6(String ipv6AddrStr)
-    {
-        // Bail out if the string is shorter than "::"
-        if (ipv6AddrStr == null || ipv6AddrStr.length() < 2) {
-            return null;
-        }
-
-        char[] addrBuff = ipv6AddrStr.toCharArray();
-        byte[] dst = new byte[IN6_ADDR_SIZE];
-
-        int srcb_length = addrBuff.length;
-        int scopeID = ipv6AddrStr.indexOf("%");
-
-        if (scopeID == srcb_length - 1) {
-            return null;
-        }
-        if (scopeID != -1) {
-            srcb_length = scopeID;
-        }
-        int colonIndex = -1;
-        int i = 0, j = 0;
-
-        // Can be wrapped in []
-        if (addrBuff[i] == '[') {
-            ++i;
-            if (scopeID == -1)
-                --srcb_length;
-        }
-
-        // Starting : mean we need to have at least one more.
-        if ((addrBuff[i] == ':') && (addrBuff[++i] != ':')) {
-            return null;
-        }
-
-        int curtok = i;
-        boolean sawtDigit = false;
-        int currentTkn = 0;
-        while (i < srcb_length) {
-            char currentChar = addrBuff[i++];
-            int chval = Character.digit(currentChar, 16);
-            if (chval != -1) {
-                currentTkn <<= 4;
-                currentTkn |= chval;
-                if (currentTkn > 0xffff)
-                    return null;
-                sawtDigit = true;
-            }
-
-            else if (currentChar == ':') {
-                curtok = i;
-                if (!sawtDigit) {
-                    if (colonIndex != -1) {
-                        return null;
-                    }
-                    colonIndex = j;
-                }
-                else {
-                    if (i == srcb_length) {
-                        return null;
-                    }
-
-                    if (j + IN6_ADDR_TOKEN_SIZE > IN6_ADDR_SIZE) {
-                        return null;
-                    }
-
-                    dst[j++] = (byte) ((currentTkn >> 8) & 0xff);
-                    dst[j++] = (byte) (currentTkn & 0xff);
-                    sawtDigit = false;
-                    currentTkn = 0;
-                }
-            }
-            else if (currentChar == '.' && ((j + IN4_ADDR_SIZE) <= IN6_ADDR_SIZE)) {
-                String ia4 = ipv6AddrStr.substring(curtok, srcb_length);
-                // check this IPv4 address has 3 dots, ie. A.B.C.D
-                int dot_count = 0, index = 0;
-                while ((index = ia4.indexOf('.', index)) != -1) {
-                    dot_count++;
-                    index++;
-                }
-
-                if (dot_count != 3)
-                    return null;
-
-                byte[] v4addr = strToIPv4(ia4);
-                if (v4addr == null) {
-                    return null;
-                }
-                for (int k = 0; k < IN4_ADDR_SIZE; k++) {
-                    dst[j++] = v4addr[k];
-                }
-                sawtDigit = false;
-            }
-            else {
-                return null;
-            }
-        }
-
-        if (sawtDigit) {
-            if (j + IN6_ADDR_TOKEN_SIZE > IN6_ADDR_SIZE) {
-                return null;
-            }
-            dst[j++] = (byte) ((currentTkn >> 8) & 0xff);
-            dst[j++] = (byte) (currentTkn & 0xff);
-        }
-
-        if (colonIndex != -1) {
-            int n = j - colonIndex;
-
-            if (j == IN6_ADDR_SIZE) {
-                return null;
-            }
-            for (i = 1; i <= n; i++) {
-                dst[IN6_ADDR_SIZE - i] = dst[colonIndex + n - i];
-                dst[colonIndex + n - i] = 0;
-            }
-            j = IN6_ADDR_SIZE;
-        }
-
-        if (j != IN6_ADDR_SIZE)
-            return null;
-
-        byte[] newdst = mappedIPv4ToRealIPv4(dst);
-        if (newdst != null) {
-            return newdst;
-        }
-        return dst;
-    }
-
-    /**
      * Returns array of hosts from the SRV record of the specified domain.
      * The records are ordered against the SRV record priority
      *
      * @param domain the name of the domain we'd like to resolve (_proto._tcp included).
-     * @return an array of SRVRecord containing records returned by the DNS
-     * server - address and port .
-     * @throws ParseException if <tt>domain</tt> is not a valid domain name.
-     * @throws DnssecException when a DNSSEC validation failure occurred.
+     * @return an array of SRV containing records returned by the DNS server - address and port .
+     * @throws IOException if an IO error occurs.
      */
-    public static SRVRecord[] getSRVRecords(String domain)
-            throws ParseException, DnssecException
+    public static SRV[] getSRVRecords(String domain)
+            throws IOException
     {
-        return getSRVRecords(domain, true);
-    }
-
-    /**
-     * Returns array of hosts from the SRV record of the specified domain.
-     * The records are ordered against the SRV record priority
-     *
-     * @param domain the name of the domain we'd like to resolve (_proto._tcp
-     * included).
-     * @param useDNSCache Tells the lookup to use (or not) the DNS cache to resolve the domain requested. i.e. it
-     * is useful to disable the DNS cache when doing requests for testing DNS connectivity.
-     * @return an array of SRVRecord containing records returned by the DNS erver - address and port .
-     * @throws ParseException if <tt>domain</tt> is not a valid domain name.
-     * @throws DnssecException when a DNSSEC validation failure occurred.
-     */
-    public static SRVRecord[] getSRVRecords(String domain, boolean useDNSCache)
-            throws ParseException, DnssecException
-    {
-        Record[] records;
         try {
-            Lookup lookup = createLookup(domain, Type.SRV);
-            // Disables the DNS cache: i.e. useful when testing DNS connectivity.
-            if (!useDNSCache) {
-                lookup.setCache(new Cache());
+            ResolverResult<SRV> result = ResolverApi.INSTANCE.resolve(domain, SRV.class);
+            Set<SRV> records = result.getAnswersOrEmptySet();
+            if (!records.isEmpty()) {
+                SRV[] srvRecords = records.toArray(new SRV[records.size()]);
+                // Sort the SRV RRs by priority (lower is preferred) and weight.
+                sortSrvRecord(srvRecords);
+                return srvRecords;
             }
-            records = lookup.run();
-        } catch (TextParseException tpe) {
-            logger.error("Failed to parse domain=" + domain, tpe);
-            throw new ParseException(tpe.getMessage(), 0);
-        } catch (DnssecRuntimeException e) {
-            throw new DnssecException(e);
-        }
-        if (records == null) {
-            return null;
-        }
-
-        //String[][] pvhn = new String[records.length][4];
-        SRVRecord srvRecords[] = new SRVRecord[records.length];
-
-        for (int i = 0; i < records.length; i++) {
-            org.xbill.DNS.SRVRecord srvRecord = (org.xbill.DNS.SRVRecord) records[i];
-            srvRecords[i] = new SRVRecord(srvRecord);
-        }
-        // Sort the SRV RRs by priority (lower is preferred) and weight.
-        sortSrvRecord(srvRecords);
-
-        if (logger.isTraceEnabled()) {
-            logger.trace("DNS SRV query for domain " + domain + " returned:");
-            for (SRVRecord srvRecord : srvRecords) {
-                if (logger.isTraceEnabled())
-                    logger.trace(srvRecord);
+            else {
+                return null;
             }
+        } catch (IOException e) {
+            logger.error("No SRV record found for " + domain + ": " + e.getMessage());
+            throw new IOException(e);
         }
-        return srvRecords;
     }
 
     /**
-     * Returns an <tt>InetSocketAddress</tt> representing the first SRV record available for the specified domain
-     * or <tt>null</tt> if there are not SRV records for <tt>domain</tt>.
+     * Returns array of SRV Record for the specified (service, proto and domain).
+     * or <tt>null</tt> if the specified domain is of unknown host or there are no SRV records for <tt>domain</tt>.
      *
-     * @param domain the name of the domain we'd like to resolve.
-     * @param service the service that we are trying to get a record for.
-     * @param proto the protocol that we'd like <tt>service</tt> on.
-     * @return the first InetSocketAddress containing records returned by the DNS server - address and port .
-     * @throws ParseException if <tt>domain</tt> is not a valid domain name.
-     * @throws DnssecException when a DNSSEC validation failure occurred.
+     * @param service the service that we are trying to get a record for e.g. xmpp.
+     * @param proto the protocol that we'd like <tt>service</tt> on i.e. tcp or udp.
+     * @param domain the name of the domain we'd like to resolve i.e. example.org.
+     * @return an array of SRV containing records returned by the DNS server - address and port .
+     * @throws IOException if an IO error occurs.
      */
-    public static SRVRecord getSRVRecord(String service, String proto, String domain)
-            throws ParseException, DnssecException
+    public static SRV[] getSRVRecords(String service, String proto, String domain)
+            throws IOException
     {
-        SRVRecord[] records = getSRVRecords("_" + service + "._" + proto + "." + domain, true);
-        if (records == null || records.length == 0)
+        // verify the domain is knownHost and reachable before proceed
+        try {
+            InetAddress inetAddress = InetAddress.getByName(domain);
+        } catch (UnknownHostException e) {
+            new Exception("_" + service + "._" + proto + "." + domain).printStackTrace();
             return null;
-
-        return records[0];
+        }
+        return getSRVRecords("_" + service + "._" + proto + "." + domain);
     }
 
     /**
-     * Returns an <tt>InetSocketAddress</tt> representing the first SRV record available for the specified domain
-     * or <tt>null</tt> if there are not SRV records for <tt>domain</tt>.
-     *
-     * @param domain the name of the domain we'd like to resolve.
-     * @param service the service that we are trying to get a record for.
-     * @param proto the protocol that we'd like <tt>service</tt> on.
-     * @return the InetSocketAddress[] containing records returned by the DNS server - address and port .
-     * @throws ParseException if <tt>domain</tt> is not a valid domain name.
-     * @throws DnssecException when a DNSSEC validation failure occurred.
-     */
-    public static SRVRecord[] getSRVRecords(String service, String proto, String domain)
-            throws ParseException, DnssecException
-    {
-        return getSRVRecords(service, proto, domain, true);
-    }
-
-    /**
-     * Returns an <tt>InetSocketAddress</tt> representing the first SRV record available for the specified domain
-     * or <tt>null</tt> if there are not SRV records for <tt>domain</tt>.
-     *
-     * @param domain the name of the domain we'd like to resolve.
-     * @param service the service that we are trying to get a record for.
-     * @param proto the protocol that we'd like <tt>service</tt> on.
-     * @param useDNSCache Tells the lookup to use (or not) the DNS cache to resolve the domain requested.
-     * i.e. it is useful to disable the DNS cache when doing requests for testing DNS connectivity.
-     * @return the InetSocketAddress[] containing records returned by the DNS server - address and port .
-     * @throws ParseException if <tt>domain</tt> is not a valid domain name.
-     * @throws DnssecException when a DNSSEC validation failure occurred.
-     */
-    public static SRVRecord[] getSRVRecords(String service, String proto, String domain, boolean useDNSCache)
-            throws ParseException, DnssecException
-    {
-        SRVRecord[] records = getSRVRecords("_" + service + "._" + proto + "." + domain, useDNSCache);
-        if (records == null || records.length == 0)
-            return null;
-
-        return records;
-    }
-
-    /**
+     * Not use : not implemented by miniDNS
      * Makes a NAPTR query and returns the result. The returned records are an array of [Order, Service(Transport)
      * and Replacement (the srv to query for servers and ports)] this all for supplied <tt>domain</tt>.
      *
      * @param domain the name of the domain we'd like to resolve.
      * @return an array with the values or null if no records found.
-     * @throws ParseException if <tt>domain</tt> is not a valid domain name.
-     * @throws DnssecException when a DNSSEC validation failure occurred.
      */
     public static String[][] getNAPTRRecords(String domain)
-            throws ParseException, DnssecException
     {
-        Record[] records = null;
+        List<Record<? extends Data>> records = null;
         try {
-            Lookup lookup = createLookup(domain, Type.NAPTR);
-            records = lookup.run();
-        } catch (TextParseException tpe) {
-            logger.error("Failed to parse domain=" + domain, tpe);
-            throw new ParseException(tpe.getMessage(), 0);
-        } catch (DnssecRuntimeException e) {
-            throw new DnssecException(e);
-        }
-        if (records == null) {
-            if (logger.isTraceEnabled())
-                logger.trace("No NAPTRs found for " + domain);
+            DNSMessage dnsMessage = ResolverApi.INSTANCE.getClient().query(domain, TYPE.NAPTR);
+            records = dnsMessage.answerSection;
+        } catch (IOException tpe) {
+            logger.trace("No A record found for " + domain);
+            // throw new ParseException(tpe.getMessage(), 0);
             return null;
         }
 
-        List<String[]> recVals = new ArrayList<>(records.length);
-        for (int i = 0; i < records.length; i++) {
-            String[] recVal = new String[4];
-            NAPTRRecord r = (NAPTRRecord) records[i];
-
-            // todo - check here for broken records as missing transport
-            recVal[0] = "" + r.getOrder();
-            recVal[1] = getProtocolFromNAPTRRecords(r.getService());
-            if (recVal[1] == null) {
-                // we don't understand this NAPTR, maybe it's not for SIP?
-                continue;
+        if (records != null) {
+            List<String[]> recVals = new ArrayList<>(records.size());
+            for (int i = 0; i < records.size(); i++) {
+                String[] recVal = new String[4];
+//                NAPTR r = (NAPTR) records.get(i).getPayload();
+//
+//                // todo - check here for broken records as missing transport
+//                recVal[0] = "" + r.getOrder();
+//                recVal[1] = getProtocolFromNAPTRRecords(r.getService());
+//                // we don't understand this NAPTR, maybe it's not for SIP?
+//                if (recVal[1] == null) {
+//                    continue;
+//                }
+//
+//                String replacement = r.getReplacement().toString();
+//                if (replacement.endsWith(".")) {
+//                    recVal[2] = replacement.substring(0, replacement.length() - 1);
+//                }
+//                else {
+//                    recVal[2] = replacement;
+//                }
+//                recVal[3] = "" + r.getPreference();
+//                recVals.add(recVal);
             }
 
-            String replacement = r.getReplacement().toString();
-
-            if (replacement.endsWith(".")) {
-                recVal[2] = replacement.substring(0, replacement.length() - 1);
-            }
-            else {
-                recVal[2] = replacement;
-            }
-            recVal[3] = "" + r.getPreference();
-            recVals.add(recVal);
-        }
-
-        // sort the SRV RRs by RR value (lower is preferred)
-        Collections.sort(recVals, new Comparator<String[]>()
-        {
-            // Sorts NAPTR records by ORDER (low number first), PREFERENCE (low number first) and
-            // PROTOCOL (0-TLS, 1-TCP, 2-UDP).
-            public int compare(String array1[], String array2[])
+            // sort the SRV RRs by RR value (lower is preferred)
+            Collections.sort(recVals, new Comparator<String[]>()
             {
-                // First tries to define the priority with the NAPTR order.
-                int order = Integer.parseInt(array1[0]) - Integer.parseInt(array2[0]);
-                if (order != 0) {
-                    return order;
+                // Sorts NAPTR records by ORDER (low number first), PREFERENCE (low number first) and
+                // PROTOCOL (0-TLS, 1-TCP, 2-UDP).
+                public int compare(String array1[], String array2[])
+                {
+                    // First tries to define the priority with the NAPTR order.
+                    int order = Integer.parseInt(array1[0]) - Integer.parseInt(array2[0]);
+                    if (order != 0) {
+                        return order;
+                    }
+                    // Second tries to define the priority with the NAPTR preference.
+                    int preference = Integer.parseInt(array1[3]) - Integer.parseInt(array2[3]);
+                    if (preference != 0) {
+                        return preference;
+                    }
+                    // Finally defines the priority with the NAPTR protocol.
+                    int protocol = getProtocolPriority(array1[1]) - getProtocolPriority(array2[1]);
+                    return protocol;
                 }
+            });
 
-                // Second tries to define the priority with the NAPTR preference.
-                int preference = Integer.parseInt(array1[3]) - Integer.parseInt(array2[3]);
-                if (preference != 0) {
-                    return preference;
-                }
-
-                // Finally defines the priority with the NAPTR protocol.
-                int protocol = getProtocolPriority(array1[1]) - getProtocolPriority(array2[1]);
-                return protocol;
-            }
-        });
-
-        String[][] arrayResult = new String[recVals.size()][4];
-        arrayResult = recVals.toArray(arrayResult);
-        if (logger.isTraceEnabled())
-            logger.trace("NAPTRs for " + domain + " = " + Arrays.toString(arrayResult));
-        return arrayResult;
+            String[][] arrayResult = new String[recVals.size()][4];
+            arrayResult = recVals.toArray(arrayResult);
+            if (logger.isTraceEnabled())
+                logger.trace("NAPTRs for " + domain + " = " + Arrays.toString(arrayResult));
+            return arrayResult;
+        }
+        return null;
     }
 
     /**
@@ -698,29 +310,27 @@ public class NetworkUtils
     }
 
     /**
-     * Creates an InetAddress from the specified <tt>hostAddress</tt>. The point
-     * of using the method rather than creating the address by yourself is that
-     * it would first check whether the specified <tt>hostAddress</tt> is indeed
-     * a valid ip address. It this is the case, the method would create the
-     * <tt>InetAddress</tt> using the <tt>InetAddress.getByAddress()</tt>
-     * method so that no DNS resolution is attempted by the JRE. Otherwise
-     * it would simply use <tt>InetAddress.getByName()</tt> so that we would an
-     * <tt>InetAddress</tt> instance even at the cost of a potential DNS resolution.
+     * Creates an InetAddress from the specified <tt>hostAddress</tt>. The point of using the method rather than
+     * creating the address by yourself is that it would first check whether the specified <tt>hostAddress</tt>
+     * is indeed a valid ip address. It this is the case, the method would create the <tt>InetAddress</tt> using
+     * the <tt>InetAddress.getByAddress()</tt> method so that no DNS resolution is attempted by the JRE. Otherwise
+     * it would simply use <tt>InetAddress.getByName()</tt> so that we would an <tt>InetAddress</tt> instance
+     * even at the cost of a potential DNS resolution.
      *
      * @param hostAddress the <tt>String</tt> representation of the address
      * that we would like to create an <tt>InetAddress</tt> instance for.
      * @return an <tt>InetAddress</tt> instance corresponding to the specified <tt>hostAddress</tt>.
      * @throws UnknownHostException if any of the <tt>InetAddress</tt> methods we are using throw an exception.
+     * @throws IllegalArgumentException if the given hostAddress is not an ip4 or ip6 address.
      */
     public static InetAddress getInetAddress(String hostAddress)
-            throws UnknownHostException
+            throws UnknownHostException, IllegalArgumentException
     {
-        //is null
-        if (hostAddress == null || hostAddress.length() == 0) {
+        if (TextUtils.isEmpty(hostAddress)) {
             throw new UnknownHostException(hostAddress + " is not a valid host address");
         }
 
-        //transform IPv6 literals into normal addresses
+        // transform IPv6 literals into normal addresses
         if (hostAddress.charAt(0) == '[') {
             // This is supposed to be an IPv6 literal
             if (hostAddress.length() > 2 && hostAddress.charAt(hostAddress.length() - 1) == ']') {
@@ -732,86 +342,73 @@ public class NetworkUtils
             }
         }
 
-        if (NetworkUtils.isValidIPAddress(hostAddress)) {
-            byte[] addr;
-
-            // attempt parse as IPv4 address
-            addr = strToIPv4(hostAddress);
-
-            // if not IPv4, parse as IPv6 address
-            if (addr == null) {
-                addr = strToIPv6(hostAddress);
-            }
-            return InetAddress.getByAddress(hostAddress, addr);
+        // if not IPv6, then parse as IPv4 address else throws
+        InetAddress inetAddress = null;
+        try {
+            inetAddress = InetAddressUtil.ipv6From(hostAddress);
+        } catch (IllegalArgumentException e) {
+            inetAddress = InetAddressUtil.ipv4From(hostAddress);
         }
-        else {
-            return InetAddress.getByName(hostAddress);
-        }
+        return InetAddress.getByAddress(hostAddress, inetAddress.getAddress());
     }
 
     /**
-     * Returns array of hosts from the A and AAAA records of the specified
-     * domain. The records are ordered against the IPv4/IPv6 protocol priority
+     * Returns array of hosts from the A and AAAA records of the specified domain. The records are
+     * ordered against the IPv4/IPv6 protocol priority
      *
      * @param domain the name of the domain we'd like to resolve.
      * @param port the port number of the returned <tt>InetSocketAddress</tt>
      * @return an array of InetSocketAddress containing records returned by the DNS server - address and port .
-     * @throws ParseException if <tt>domain</tt> is not a valid domain name.
-     * @throws DnssecException when a DNSSEC validation failure occurred.
+     * @throws UnknownHostException if IP address is of illegal length
+     * @throws IOException if an IO error occurs.
      */
-    public static InetSocketAddress[] getAandAAAARecords(String domain, int port)
-            throws ParseException, DnssecException
+    public static List<InetSocketAddress> getAandAAAARecords(String domain, int port)
+            throws IOException
     {
         byte[] address;
-        if ((address = strToIPv4(domain)) != null
-                || (address = strToIPv6(domain)) != null) {
-            try {
-                return new InetSocketAddress[]{
-                        new InetSocketAddress(InetAddress.getByAddress(domain, address), port)
-                };
-            } catch (UnknownHostException e) {
-                //should not happen
-                logger.error("Unable to create InetAddress for <" + domain + ">", e);
-                return null;
-            }
+        List<InetSocketAddress> inetSocketAddresses = new ArrayList<>();
+        try {
+            address = InetAddressUtil.ipv4From(domain).getAddress();
+        } catch (IllegalArgumentException e) {
+            address = InetAddressUtil.ipv6From(domain).getAddress();
         }
+        if (address != null) {
+            inetSocketAddresses.add(new InetSocketAddress(InetAddress.getByAddress(domain, address), port));
+            return inetSocketAddresses;
+        }
+        else
+            logger.info("Unable to create InetAddress for <" + domain + ">; Try using A/AAAA RR.");
 
-        List<InetSocketAddress> addresses = new LinkedList<>();
+        ResolverResult<A> resultA = null;
+        ResolverResult<AAAA> resultAAAA = null;
         boolean v6lookup = Boolean.getBoolean("java.net.preferIPv6Addresses");
 
         for (int i = 0; i < 2; i++) {
-            Lookup lookup;
-            try {
-                lookup = createLookup(domain, v6lookup ? Type.AAAA : Type.A);
-            } catch (TextParseException tpe) {
-                logger.error("Failed to parse domain <" + domain + ">", tpe);
-                throw new ParseException(tpe.getMessage(), 0);
+            if (v6lookup) {
+                resultAAAA = ResolverApi.INSTANCE.resolve(domain, AAAA.class);
+                if (!resultAAAA.wasSuccessful()) {
+                    continue;
+                }
+                Set<AAAA> answers = resultAAAA.getAnswers();
+                for (AAAA aaaa : answers) {
+                    InetAddress inetAddress = aaaa.getInetAddress();
+                    inetSocketAddresses.add(new InetSocketAddress(inetAddress, port));
+                }
             }
-            Record[] records = null;
-            try {
-                records = lookup.run();
-            } catch (DnssecRuntimeException e) {
-                throw new DnssecException(e);
-            }
-            if (records != null) {
-                for (Record r : records) {
-                    try {
-                        // create a new InetAddress filled with the // domain name to avoid PTR
-                        // queries
-                        addresses.add(new InetSocketAddress(InetAddress.getByAddress(domain, v6lookup
-                                ? ((AAAARecord) r).getAddress().getAddress()
-                                : ((ARecord) r).getAddress().getAddress()), port)
-                        );
-                    } catch (UnknownHostException e) {
-                        logger.error("Invalid record returned from DNS", e);
-                    }
+            else {
+                resultA = ResolverApi.INSTANCE.resolve(domain, A.class);
+                if (!resultA.wasSuccessful()) {
+                    continue;
+                }
+                Set<A> answers = resultA.getAnswers();
+                for (A a : answers) {
+                    InetAddress inetAddress = a.getInetAddress();
+                    inetSocketAddresses.add(new InetSocketAddress(inetAddress, port));
                 }
             }
             v6lookup = !v6lookup;
         }
-        if (logger.isTraceEnabled())
-            logger.trace("A or AAAA addresses: " + addresses);
-        return addresses.toArray(new InetSocketAddress[0]);
+        return inetSocketAddresses;
     }
 
     /**
@@ -821,51 +418,30 @@ public class NetworkUtils
      * @param domain the name of the domain we'd like to resolve.
      * @param port the port number of the returned <tt>InetSocketAddress</tt>
      * @return an array of InetSocketAddress containing records returned by the DNS server - address and port .
-     * @throws ParseException if <tt>domain</tt> is not a valid domain name.
-     * @throws DnssecException when a DNSSEC validation failure occurred.
      */
-    public static InetSocketAddress getARecord(String domain, int port)
-            throws ParseException, DnssecException
+    public static List<InetSocketAddress> getARecords(String domain, int port)
+            throws IOException
     {
-        byte[] address;
-        if ((address = strToIPv4(domain)) != null) {
-            try {
-                return new InetSocketAddress(InetAddress.getByAddress(domain, address), port);
-            } catch (UnknownHostException e) {
-                //should not happen
-                logger.error("Unable to create InetAddress for <" + domain + ">", e);
-                return null;
-            }
-        }
-        Record[] records;
+        List<InetSocketAddress> inetSocketAddresses = new ArrayList<>();
         try {
-            //note that we intentionally do not use our parallel resolver here.
-            //for starters we'd like to make sure that it works well enough
-            //with SRV and NAPTR queries. We may then also adopt it for As
-            //and AAAAs once it proves to be reliable (posted on: 2010-11-24)
-            Lookup lookup = createLookup(domain, Type.A);
-            records = lookup.run();
-        } catch (TextParseException tpe) {
-            logger.error("Failed to parse domain=" + domain, tpe);
-            throw new ParseException(tpe.getMessage(), 0);
-        } catch (DnssecRuntimeException e) {
-            throw new DnssecException(e);
+            byte[] address = InetAddressUtil.ipv4From(domain).getAddress();
+            inetSocketAddresses.add(new InetSocketAddress(InetAddress.getByAddress(domain, address), port));
+            return inetSocketAddresses;
+        } catch (IllegalArgumentException e) {
+            logger.error("Unable to create InetAddress for <" + domain + ">", e);
         }
-        if (records != null && records.length > 0) {
-            if (logger.isTraceEnabled())
-                logger.trace("A record for " + domain + "=" + ((ARecord) records[0]).getAddress());
-            try {
-                return new InetSocketAddress(
-                        InetAddress.getByAddress(domain, ((ARecord) records[0]).getAddress().getAddress()), port);
-            } catch (UnknownHostException e) {
-                return null;
-            }
-        }
-        else {
-            if (logger.isTraceEnabled())
-                logger.trace("No A record found for " + domain);
+
+        ResolverResult<A> result = ResolverApi.INSTANCE.resolve(domain, A.class);
+        if (!result.wasSuccessful()) {
             return null;
         }
+
+        Set<A> answers = result.getAnswers();
+        for (A a : answers) {
+            InetAddress inetAddress = a.getInetAddress();
+            inetSocketAddresses.add(new InetSocketAddress(inetAddress, port));
+        }
+        return inetSocketAddresses;
     }
 
     /**
@@ -874,54 +450,32 @@ public class NetworkUtils
      *
      * @param domain the name of the domain we'd like to resolve.
      * @param port the port number of the returned <tt>InetSocketAddress</tt>
-     * @return an array of InetSocketAddress containing records returned by the
-     * DNS server - address and port .
-     * @throws ParseException if <tt>domain</tt> is not a valid domain name.
-     * @throws DnssecException
+     * @return an array of InetSocketAddress containing records returned by the DNS server - address and port .
+     * @throws IOException if an IO error occurs.
      */
-    public static InetSocketAddress getAAAARecord(String domain, int port)
-            throws ParseException, DnssecException
+    public static List<InetSocketAddress> getAAAARecords(String domain, int port)
+            throws IOException
     {
-        byte[] address;
-        if ((address = strToIPv6(domain)) != null) {
-            try {
-                return new InetSocketAddress(InetAddress.getByAddress(domain, address), port);
-            } catch (UnknownHostException e) {
-                //should not happen
-                logger.error("Unable to create InetAddress for <" + domain + ">", e);
-                return null;
-            }
+        List<InetSocketAddress> inetSocketAddresses = new ArrayList<>();
+        try {
+            byte[] address = InetAddressUtil.ipv6From(domain).getAddress();
+            inetSocketAddresses.add(new InetSocketAddress(InetAddress.getByAddress(domain, address), port));
+            return inetSocketAddresses;
+        } catch (IllegalArgumentException e) {
+            logger.error("Unable to create InetAddress for <" + domain + ">", e);
         }
 
-        Record[] records;
-        try {
-            //note that we intentionally do not use our parallel resolver here.
-            //for starters we'd like to make sure that it works well enough
-            //with SRV and NAPTR queries. We may then also adopt it for As
-            //and AAAAs once it proves to be reliable (posted on: 2010-11-24)
-            Lookup lookup = createLookup(domain, Type.AAAA);
-            records = lookup.run();
-        } catch (TextParseException tpe) {
-            logger.error("Failed to parse domain=" + domain, tpe);
-            throw new ParseException(tpe.getMessage(), 0);
-        } catch (DnssecRuntimeException e) {
-            throw new DnssecException(e);
-        }
-        if (records != null && records.length > 0) {
-            if (logger.isTraceEnabled())
-                logger.trace("AAAA record for " + domain + " = " + ((AAAARecord) records[0]).getAddress());
-            try {
-                return new InetSocketAddress(InetAddress.getByAddress(domain,
-                        ((AAAARecord) records[0]).getAddress().getAddress()), port);
-            } catch (UnknownHostException e) {
-                return null;
-            }
-        }
-        else {
-            if (logger.isTraceEnabled())
-                logger.trace("No AAAA record found for " + domain);
+        ResolverResult<AAAA> result = ResolverApi.INSTANCE.resolve(domain, AAAA.class);
+        if (!result.wasSuccessful()) {
             return null;
         }
+
+        Set<AAAA> answers = result.getAnswers();
+        for (AAAA aaaa : answers) {
+            InetAddress inetAddress = aaaa.getInetAddress();
+            inetSocketAddresses.add(new InetSocketAddress(inetAddress, port));
+        }
+        return inetSocketAddresses;
     }
 
     /**
@@ -933,8 +487,7 @@ public class NetworkUtils
      * it deaf to IPv6 traffic. Binding on ::0 does the trick but that would
      * fail on hosts that have no IPv6 support. Using the result of this method
      * provides an easy way to bind sockets in cases where we simply want any
-     * IP packets coming on the port we are listening on (regardless of IP
-     * version).
+     * IP packets coming on the port we are listening on (regardless of IP version).
      *
      * @return IN6_ADDR_ANY or IN4_ADDR_ANY if this host supports or not IPv6.
      */
@@ -957,6 +510,50 @@ public class NetworkUtils
             }
         }
         return IN4_ADDR_ANY;
+    }
+
+    /**
+     * Checks whether <tt>address</tt> is a valid IP address string.
+     *
+     * @param address the address that we'd like to check
+     * @return true if address is an IPv4 or IPv6 address and false otherwise.
+     */
+    public static boolean isValidIPAddress(String address)
+    {
+        if (TextUtils.isEmpty(address)) {
+            return false;
+        }
+        // look for IPv6 brackets and remove brackets for parsing
+        if (address.charAt(0) == '[') {
+            // This is supposed to be an IPv6 literal
+            if ((address.length() > 2) && (address.charAt(address.length() - 1) == ']')) {
+                // remove brackets from IPv6
+                address = address.substring(1, address.length() - 1);
+            }
+            else {
+                return false;
+            }
+        }
+
+        // look for IP addresses valid pattern i.e. start with digit or ":"
+        if (Character.digit(address.charAt(0), 16) != -1 || (address.charAt(0) == ':')) {
+            // see if it is IPv4 address; if not, see if it is IPv6 address
+            InetAddress inetAddress;
+            try {
+                // if IPv6is found as expected
+                inetAddress = InetAddressUtil.ipv6From(address);
+                return (inetAddress != null);
+            } catch (IllegalArgumentException e6) {
+                try {
+                    inetAddress = InetAddressUtil.ipv4From(address);
+                    return (inetAddress != null);
+                } catch (IllegalArgumentException e4) {
+                    logger.warn("The given IP address is an unkownHost: " + address);
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -989,13 +586,10 @@ public class NetworkUtils
     }
 
     /**
-     * Utility method to check if the specified <tt>address</tt> is an IPv4
-     * mapped IPv6 address.
+     * Utility method to check if the specified <tt>address</tt> is an IPv4 mapped IPv6 address.
      *
-     * @param address the address that we'd like to determine as an IPv4 mapped
-     * one or not.
-     * @return <tt>true</tt> if address is an IPv4 mapped IPv6 address and
-     * <tt>false</tt> otherwise.
+     * @param address the address that we'd like to determine as an IPv4 mapped one or not.
+     * @return <tt>true</tt> if address is an IPv4 mapped IPv6 address and <tt>false</tt> otherwise.
      */
     private static boolean isMappedIPv4Addr(byte[] address)
     {
@@ -1016,70 +610,18 @@ public class NetworkUtils
     }
 
     /**
-     * Creates a new {@link Lookup} instance.
-     *
-     * @param domain the domain we will be resolving
-     * @param type the type of the record we will be trying to obtain.
-     * @return the newly created {@link Lookup} instance.
-     * @throws TextParseException if <tt>domain</tt> is not a valid domain name.
-     */
-    private static Lookup createLookup(String domain, int type)
-            throws TextParseException
-    {
-        // make domain name absolute if requested
-        if (UtilActivator.getConfigurationService().getBoolean(PNAME_DNS_ALWAYS_ABSOLUTE, PDEFAULT_DNS_ALWAYS_ABSOLUTE)) {
-            if (!Name.fromString(domain).isAbsolute())
-                domain = domain + ".";
-        }
-
-        Lookup lookup = new Lookup(domain, type);
-        if (logger.isTraceEnabled()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Active DNS servers in default resolver: ");
-            for (String s : ResolverConfig.getCurrentConfig().servers()) {
-                sb.append(s);
-                sb.append(", ");
-            }
-            logger.trace(sb.toString());
-        }
-        return lookup;
-    }
-
-    /**
-     * Compares two DNS names against each other. Helper method to avoid the
-     * export of DNSJava.
-     *
-     * @param dns1 The first DNS name
-     * @param dns2 The DNS name that is compared against dns1
-     * @return The value 0 if dns2 is a name equivalent to dns1;
-     * a value less than 0 if dns2 is less than dns1 in the canonical ordering,
-     * and a value greater than 0 if dns2 is greater than dns1 in the canonical
-     * ordering.
-     * @throws ParseException if the dns1 or dns2 is not a DNS Name
-     */
-    public static int compareDnsNames(String dns1, String dns2)
-            throws ParseException
-    {
-        try {
-            return Name.fromString(dns1).compareTo(Name.fromString(dns2));
-        } catch (TextParseException e) {
-            throw new ParseException(e.getMessage(), 0);
-        }
-    }
-
-    /**
      * Sorts the SRV record list by priority and weight.
      *
      * @param srvRecords The list of SRV records.
      */
-    private static void sortSrvRecord(SRVRecord[] srvRecords)
+    private static void sortSrvRecord(SRV[] srvRecords)
     {
         // Sort the SRV RRs by priority (lower is preferred).
-        Arrays.sort(srvRecords, new Comparator<SRVRecord>()
+        Arrays.sort(srvRecords, new Comparator<SRV>()
         {
-            public int compare(SRVRecord obj1, SRVRecord obj2)
+            public int compare(SRV obj1, SRV obj2)
             {
-                return (obj1.getPriority() - obj2.getPriority());
+                return (obj1.priority - obj2.priority);
             }
         });
 
@@ -1089,22 +631,22 @@ public class NetworkUtils
 
     /**
      * Sorts each priority of the SRV record list. Each priority is sorted with
-     * the probabilty given by the weight attribute.
+     * the probability given by the weight attribute.
      *
      * @param srvRecords The list of SRV records already sorted by priority.
      */
-    private static void sortSrvRecordByWeight(SRVRecord[] srvRecords)
+    private static void sortSrvRecordByWeight(SRV[] srvRecords)
     {
-        int currentPriority = srvRecords[0].getPriority();
+        int currentPriority = srvRecords[0].priority;
         int startIndex = 0;
 
         for (int i = 0; i < srvRecords.length; ++i) {
-            if (currentPriority != srvRecords[i].getPriority()) {
+            if (currentPriority != srvRecords[i].priority) {
                 // Sort the current priority.
                 sortSrvRecordPriorityByWeight(srvRecords, startIndex, i);
                 // Reinit variables for the next priority.
                 startIndex = i;
-                currentPriority = srvRecords[i].getPriority();
+                currentPriority = srvRecords[i].priority;
             }
         }
     }
@@ -1117,8 +659,7 @@ public class NetworkUtils
      * @param startIndex The first index (included) for the current priority.
      * @param endIndex The last index (excluded) for the current priority.
      */
-    private static void sortSrvRecordPriorityByWeight(SRVRecord[] srvRecords, int startIndex, int
-            endIndex)
+    private static void sortSrvRecordPriorityByWeight(SRV[] srvRecords, int startIndex, int endIndex)
     {
         int randomWeight;
 
@@ -1145,13 +686,13 @@ public class NetworkUtils
      * @return A random number in [0...totalPriorityWeight] with
      * totalPriorityWeight the sum of all weight for the current priority.
      */
-    private static int getRandomWeight(SRVRecord[] srvRecords, int startIndex, int endIndex)
+    private static int getRandomWeight(SRV[] srvRecords, int startIndex, int endIndex)
     {
         int totalPriorityWeight = 0;
 
         // Compute the max born.
         for (int i = startIndex; i < endIndex; ++i) {
-            totalPriorityWeight += srvRecords[i].getWeight();
+            totalPriorityWeight += srvRecords[i].weight;
         }
         // Compute a random number in [0...totalPriorityWeight].
         return random.nextInt(totalPriorityWeight + 1);
@@ -1165,13 +706,13 @@ public class NetworkUtils
      * @param endIndex The last unsorted index (excluded) for the current priority.
      * @param selectedWeight The selected weight used to design the selected item to move.
      */
-    private static void moveSelectedSRVRecord(SRVRecord[] srvRecords, int startIndex, int endIndex, int selectedWeight)
+    private static void moveSelectedSRVRecord(SRV[] srvRecords, int startIndex, int endIndex, int selectedWeight)
     {
-        SRVRecord tmpSrvRecord;
+        SRV tmpSrvRecord;
         int totalPriorityWeight = 0;
 
         for (int i = startIndex; i < endIndex; ++i) {
-            totalPriorityWeight += srvRecords[i].getWeight();
+            totalPriorityWeight += srvRecords[i].weight;
 
             // If we found the selecting record.
             if (totalPriorityWeight >= selectedWeight) {
@@ -1183,14 +724,5 @@ public class NetworkUtils
                 return;
             }
         }
-    }
-
-    /**
-     * Clears the default DNS cache.
-     */
-    public static void clearDefaultDNSCache()
-    {
-        Cache defaultCache = Lookup.getDefaultCache(DClass.IN);
-        defaultCache.clearCache();
     }
 }

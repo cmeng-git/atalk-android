@@ -1111,11 +1111,9 @@ public class AccountID
     }
 
     /**
-     * Determines whether this account's provider is supposed to auto discover STUN and TURN
-     * servers.
+     * Determines whether this account's provider is supposed to auto discover STUN and TURN servers.
      *
-     * @return <tt>true</tt> if this provider would need to discover STUN/TURN servers and false
-     * otherwise.
+     * @return <tt>true</tt> if this provider would need to discover STUN/TURN servers and false otherwise.
      */
     public boolean isStunServerDiscoveryEnabled()
     {

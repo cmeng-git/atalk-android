@@ -1,5 +1,23 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.3.0 (1030)
+Author:         cmeng
+Upload Date:	05/22/2018
+- Change login using smack connectUsingConfiguration->populateHostAddresses mechanism and enhance overall login performance
+- Optimize initializeConnectAndLogin(SecurityAuthority authority, int reasonCode, String loginReason, Boolean isShowAlways)
+- Optimize connectAndLogin(InetSocketAddress address, DomainBareJid serviceName, String userName, JabberLoginStrategy loginStrategy)
+- Delete obsoleted connectUsingSRVRecords(String domain, DomainBareJid serviceName, boolean[] dnssecState, JabberLoginStrategy loginStrategy)
+- Delete connectAndLogin(InetSocketAddress currentAddress, DomainBareJid serviceName, JabberLoginStrategy loginStrategy) - merged.
+- Remove DNS ParallelResolver user option, replacing it with ResolverApi and ReliableDNSClient
+- Port to use miniDNS, remove libraries: 'dnsjava:dnsjava:2.1.8' and 'org.jitsi:dnssecjava:1.1.3',
+- Remove obsoleted classes: ConfigurableDnssecResolver, FailoverConnectionMonitor, ParallelResolverImpl, SecureMessage, SecureResolverMode
+- Remove Interface: CustomResolver
+- Remove Packet Logging option and strip off all supporting codes and classes to conserve android resource
+- Remove 'com.google.guava:guava:23.6-android' used by packetLogging
+- Fix PREF_KEY_AUTO_DISCOVER_STUN and PREF_KEY_AUTO_RELAY_DISCOVERY inconsistent settings handlering in preference
+- Update Jibri source from jistsi-smack-4.2 (May, 2018)
+
+=========================================================================
 Version:		1.2.6 (1026)
 Author:         cmeng
 Upload Date:	05/07/2018

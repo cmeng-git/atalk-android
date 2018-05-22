@@ -265,11 +265,6 @@
             <intent android:action=".android.gui.settings.SipSettings" />
         </PreferenceScreen>
         <PreferenceScreen
-            android:summary="@string/service_gui_settings_LOGGING_SUMMARY"
-            android:title="@string/service_gui_settings_LOGGING_TITLE">
-            <intent android:action=".android.gui.settings.LoggingSettings" />
-        </PreferenceScreen>
-        <PreferenceScreen
             android:summary="@string/service_gui_settings_DNS_SUMMARY"
             android:title="@string/service_gui_settings_DNS">
             <intent android:action=".android.gui.settings.DnsSettings" />

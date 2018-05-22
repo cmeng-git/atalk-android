@@ -68,10 +68,7 @@ public class DesktopUtilActivator
 	 */
 	public static ConfigurationService getConfigurationService() {
 		if (configurationService == null) {
-			configurationService
-					= ServiceUtils.getService(
-					bundleContext,
-					ConfigurationService.class);
+			configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
 		}
 		return configurationService;
 	}
@@ -83,8 +80,7 @@ public class DesktopUtilActivator
 	 */
 	public static ResourceManagementService getResources() {
 		if (resourceService == null) {
-			resourceService
-					= ResourceManagementServiceUtils.getService(bundleContext);
+			resourceService = ResourceManagementServiceUtils.getService(bundleContext);
 		}
 		return resourceService;
 	}

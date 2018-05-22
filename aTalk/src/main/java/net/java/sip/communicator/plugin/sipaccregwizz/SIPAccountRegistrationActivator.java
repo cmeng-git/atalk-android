@@ -114,11 +114,8 @@ public class SIPAccountRegistrationActivator
     {
         if (configService == null)
         {
-            ServiceReference<?> serviceReference = bundleContext
-                .getServiceReference(ConfigurationService.class.getName());
-
-            configService = (ConfigurationService)bundleContext
-                .getService(serviceReference);
+            ServiceReference<?> serviceReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
+            configService = (ConfigurationService)bundleContext.getService(serviceReference);
         }
 
         return configService;

@@ -47,23 +47,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     private static final Logger logger = Logger.getLogger(IceUdpTransportManager.class);
 
     /**
-     * The ICE <tt>Component</tt> IDs in their common order used, for example, by
-     * <tt>DefaultStreamConnector</tt>, <tt>MediaStreamTarget</tt>.
-     */
-    private static final int[] COMPONENT_IDS = new int[]{Component.RTP, Component.RTCP};
-
-    /**
-     * This is where we keep our answer between the time we get the offer and are ready with the
-     * answer.
-     */
-    protected List<ContentPacketExtension> cpeList;
-
-    /**
-     * The ICE agent that this transport manager would be using for ICE negotiation.
-     */
-    protected final Agent iceAgent;
-
-    /**
      * Default STUN server address.
      */
     protected static final String DEFAULT_STUN_SERVER_ADDRESS = "stun.jitsi.net";
@@ -72,6 +55,22 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Default STUN server port.
      */
     protected static final int DEFAULT_STUN_SERVER_PORT = 3478;
+    /**
+     * The ICE <tt>Component</tt> IDs in their common order used, for example, by
+     * <tt>DefaultStreamConnector</tt>, <tt>MediaStreamTarget</tt>.
+     */
+    private static final int[] COMPONENT_IDS = new int[]{Component.RTP, Component.RTCP};
+
+    /**
+     * This is where we keep our answer between the time we get the offer and are ready with the answer.
+     */
+    protected List<ContentPacketExtension> cpeList;
+
+    /**
+     * The ICE agent that this transport manager would be using for ICE negotiation.
+     */
+    protected final Agent iceAgent;
+
 
     /**
      * Creates a new instance of this transport manager, binding it to the specified peer.
@@ -158,8 +157,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 agent.addCandidateHarvester(autoHarvester);
             }
         }
-        // now create stun server descriptors for whatever other STUN/TURN servers
-        // the user may have set.
+        // now create stun server descriptors for whatever other STUN/TURN servers the user may have set.
         for (StunServerDescriptor desc : accID.getStunServers()) {
             TransportAddress addr = new TransportAddress(desc.getAddress(), desc.getPort(), Transport.UDP);
 
@@ -186,8 +184,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
 
         if (!atLeastOneStunServer && accID.isUseDefaultStunServer()) {
             /*
-             * we have no configured or discovered STUN server so takes
-             * the default provided by us if user allows it
+             * we have no configured or discovered STUN server so takes the default provided by us if user allows it
              */
             TransportAddress addr
                     = new TransportAddress(DEFAULT_STUN_SERVER_ADDRESS, DEFAULT_STUN_SERVER_PORT, Transport.UDP);
@@ -255,8 +252,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @return the <tt>StreamConnector</tt> to be used as the <tt>connector</tt> of the
      * <tt>MediaStream</tt> with the specified <tt>MediaType</tt>
      * @throws OperationFailedException if anything goes wrong while initializing the requested <tt>StreamConnector</tt>
-     * @see net.java.sip.communicator.service.protocol.media.TransportManager#
-     * getStreamConnector(MediaType)
+     * @see net.java.sip.communicator.service.protocol.media.TransportManager#getStreamConnector(MediaType)
      */
     @Override
     public StreamConnector getStreamConnector(MediaType mediaType)
@@ -265,8 +261,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         StreamConnector streamConnector = super.getStreamConnector(mediaType);
 
         /*
-         * Since the super caches the StreamConnectors, make sure that the returned one is
-         * up-to-date with the iceAgent.
+         * Since the super caches the StreamConnectors, make sure that the returned one is up-to-date with the iceAgent.
          */
         if (streamConnector != null) {
             DatagramSocket[] streamConnectorSockets = getStreamConnectorSockets(mediaType);
@@ -330,9 +325,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     }
 
     /**
-     * Implements {@link TransportManagerJabberImpl#getStreamTarget(MediaType)}. Gets the
-     * <tt>MediaStreamTarget</tt> to be used as the <tt>target</tt> of the <tt>MediaStream</tt> with
-     * a specific <tt>MediaType</tt>.
+     * Implements {@link TransportManagerJabberImpl#getStreamTarget(MediaType)}. Gets the <tt>MediaStreamTarget</tt>
+     * to be used as the <tt>target</tt> of the <tt>MediaStream</tt> with a specific <tt>MediaType</tt>.
      *
      * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> which is to have its
      * <tt>target</tt> set to the returned <tt>MediaStreamTarget</tt>
@@ -459,11 +453,10 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     }
 
     /**
-     * Starts transport candidate harvest. This method should complete rapidly and, in case of
-     * lengthy procedures like STUN/TURN/UPnP candidate harvests are necessary, they should be
-     * executed in a separate thread. Candidate harvest would then need to be concluded in the
-     * {@link #wrapupCandidateHarvest()} method which would be called once we absolutely need the
-     * candidates.
+     * Starts transport candidate harvest. This method should complete rapidly and, in case of lengthy procedures
+     * like STUN/TURN/UPnP candidate harvests are necessary, they should be executed in a separate thread.
+     * Candidate harvest would then need to be concluded in the {@link #wrapupCandidateHarvest()} method which
+     * would be called once we absolutely need the candidates.
      *
      * @param theirOffer a media description offer that we've received from the remote party and that we should
      * use in case we need to know what transports our peer is using.
@@ -626,7 +619,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             for (LocalCandidate candidate : component.getLocalCandidates()) {
                 int candidatePort = candidate.getTransportAddress().getPort();
 
-                if ((min <= candidatePort)  && (candidatePort <= max)  && (maxAllocatedPort < candidatePort)) {
+                if ((min <= candidatePort) && (candidatePort <= max) && (maxAllocatedPort < candidatePort)) {
                     maxAllocatedPort = candidatePort;
                 }
             }
@@ -875,7 +868,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             synchronized (iceProcessingStateSyncRoot) {
                 while (IceProcessingState.RUNNING.equals(iceAgent.getState())) {
                     try {
-                        iceProcessingStateSyncRoot.wait();
+                        iceProcessingStateSyncRoot.wait(1000);
                     } catch (InterruptedException ie) {
                         interrupted = true;
                     }
@@ -939,7 +932,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     public void removeContent(String name)
     {
         ContentPacketExtension content = removeContent(cpeList, name);
-
         if (content != null) {
             RtpDescriptionPacketExtension rtpDescription
                     = content.getFirstChildOfType(RtpDescriptionPacketExtension.class);
@@ -993,8 +985,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Returns the ICE local host address.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
-     * @return the ICE local host address if this transport manager is using ICE. Otherwise, returns
-     * null.
+     * @return the ICE local host address if this transport manager is using ICE. Otherwise, returns null.
      */
     @Override
     public InetSocketAddress getICELocalHostAddress(String streamName)
@@ -1114,8 +1105,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * @param harvesterName The class name if the harvester.
      * @return The harvesting time (in ms) for the harvester given in parameter. 0 if this harvester
-     * does not exists, if the ICE agent is null, or if the agent has never harvested with
-     * this harvester.
+     * does not exists, if the ICE agent is null, or if the agent has never harvested with this harvester.
      */
     @Override
     public long getHarvestingTime(String harvesterName)

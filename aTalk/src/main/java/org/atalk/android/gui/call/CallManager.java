@@ -19,6 +19,7 @@ import org.atalk.android.gui.contactlist.UIContactImpl;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.util.java.awt.Component;
 import org.atalk.android.util.javax.swing.JComponent;
+import net.java.sip.communicator.util.NetworkUtils;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
@@ -306,8 +307,7 @@ public class CallManager
         callString = callString.trim();
 
         // Removes special characters from phone numbers.
-        if (ConfigurationUtils.isNormalizePhoneNumber()
-                && !NetworkUtils.isValidIPAddress(callString)) {
+        if (ConfigurationUtils.isNormalizePhoneNumber() && !NetworkUtils.isValidIPAddress(callString)) {
             callString = AndroidGUIActivator.getPhoneNumberI18nService().normalize(callString);
         }
 
@@ -846,10 +846,10 @@ public class CallManager
          * Initializes a new <tt>CreateCallThread</tt> instance which is to create a new
          * <tt>Call</tt> to a contact specified either as a <tt>Contact</tt> instance or as a
          * <tt>String</tt> contact address/identifier.
-         * <p>
+         *
          * The constructor is private because it relies on its arguments being validated prior to
          * its invocation.
-         * </p>
+         *
          *
          * @param protocolProvider the <tt>ProtocolProviderService</tt> which is to perform the establishment of the
          * new <tt>Call</tt>
@@ -857,8 +857,7 @@ public class CallManager
          * @param contactResource the specific contact resource to call
          * @param uiContact the ui contact we're calling
          * @param stringContact the string to call
-         * @param video <tt>true</tt> if this instance is to create a new video (as opposed to audio-only)
-         * <tt>Call</tt>
+         * @param video <tt>true</tt> if this instance is to create a new video (as opposed to audio-only) <tt>Call</tt>
          * @param conferenceDescription the description of a conference to call
          * @param chatRoom the chat room associated with the call.
          */
@@ -880,8 +879,7 @@ public class CallManager
         public void run()
         {
             if (!video) {
-                // if it is not video let's check for available audio codec and available audio
-                // devices
+                // if it is not video let's check for available audio codec and available audio devices
                 MediaService mediaService = AndroidGUIActivator.getMediaService();
                 MediaDevice dev = mediaService.getDefaultDevice(MediaType.AUDIO, MediaUseCase.CALL);
 
@@ -901,9 +899,9 @@ public class CallManager
                     return;
                 }
             }
+
             Contact contact = this.contact;
             String stringContact = this.stringContact;
-
             if (ConfigurationUtils.isNormalizePhoneNumber()
                     && !NetworkUtils.isValidIPAddress(stringContact)) {
                 if (contact != null) {
@@ -959,7 +957,6 @@ public class CallManager
             throws OperationFailedException, ParseException
     {
         OperationSetVideoTelephony telephony = protocolProvider.getOperationSet(OperationSetVideoTelephony.class);
-
         Call createdCall = null;
         if (telephony != null) {
             if (contact != null) {
@@ -1087,7 +1084,7 @@ public class CallManager
         /**
          * Whether user has selected sharing full screen or region.
          */
-        private boolean fullscreen = false;
+        private boolean fullscreen;
 
         /**
          * Creates a desktop sharing session thread.

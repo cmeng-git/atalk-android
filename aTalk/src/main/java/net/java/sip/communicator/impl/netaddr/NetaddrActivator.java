@@ -15,32 +15,31 @@
  */
 package net.java.sip.communicator.impl.netaddr;
 
-import net.java.sip.communicator.service.netaddr.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
+import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.packetlogging.PacketLoggingService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
- * The activator manage the the bundles between OSGi framework and the
- * Network address manager
+ * The activator manage the the bundles between OSGi framework and the Network address manager
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
-public class NetaddrActivator
-    implements BundleActivator
+public class NetaddrActivator implements BundleActivator
 {
     /**
      * The logger for this class.
      */
-    private static Logger logger =
-        Logger.getLogger(NetworkAddressManagerServiceImpl.class);
+    private static Logger logger = Logger.getLogger(NetworkAddressManagerServiceImpl.class);
 
     /**
      * The OSGi bundle context.
      */
-    private static BundleContext        bundleContext         = null;
+    private static BundleContext bundleContext = null;
 
     /**
      * The network address manager implementation.
@@ -53,21 +52,15 @@ public class NetaddrActivator
     private static ConfigurationService configurationService = null;
 
     /**
-     * The OSGi <tt>PacketLoggingService</tt> in
-     * {@link #bundleContext} and used for debugging.
-     */
-    private static PacketLoggingService packetLoggingService  = null;
-
-    /**
-     * Creates a NetworkAddressManager, starts it, and registers it as a
-     * NetworkAddressManagerService.
+     * Creates a NetworkAddressManager, starts it, and registers it as a NetworkAddressManagerService.
      *
-     * @param bundleContext  OSGI bundle context
+     * @param bundleContext OSGI bundle context
      * @throws Exception if starting the NetworkAddressManagerFails.
      */
-    public void start(BundleContext bundleContext) throws Exception
+    public void start(BundleContext bundleContext)
+            throws Exception
     {
-        try{
+        try {
 
             logger.logEntry();
 
@@ -80,8 +73,7 @@ public class NetaddrActivator
             NetaddrActivator.bundleContext = bundleContext;
 
             //Create and start the network address manager.
-            networkAMS =
-                new NetworkAddressManagerServiceImpl();
+            networkAMS = new NetworkAddressManagerServiceImpl();
 
             // give references to the NetworkAddressManager implementation
             networkAMS.start();
@@ -90,13 +82,11 @@ public class NetaddrActivator
                 logger.info("Network Address Manager         ...[  STARTED ]");
 
             bundleContext.registerService(
-                NetworkAddressManagerService.class.getName(), networkAMS, null);
+                    NetworkAddressManagerService.class.getName(), networkAMS, null);
 
             if (logger.isInfoEnabled())
                 logger.info("Network Address Manager Service ...[REGISTERED]");
-        }
-        finally
-        {
+        } finally {
             logger.logExit();
         }
     }
@@ -110,52 +100,25 @@ public class NetaddrActivator
      */
     public static ConfigurationService getConfigurationService()
     {
-        if (configurationService == null)
-        {
-            configurationService
-                = ServiceUtils.getService(
-                        bundleContext,
-                        ConfigurationService.class);
+        if (configurationService == null) {
+            configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }
         return configurationService;
     }
 
     /**
-     * Returns a reference to the <tt>PacketLoggingService</tt> implementation
-     * currently registered in the bundle context or null if no such
-     * implementation was found.
-     *
-     * @return a reference to a <tt>PacketLoggingService</tt> implementation
-     * currently registered in the bundle context or null if no such
-     * implementation was found.
-     */
-    public static PacketLoggingService getPacketLogging()
-    {
-        if (packetLoggingService == null)
-        {
-            packetLoggingService
-                = ServiceUtils.getService(
-                        bundleContext,
-                        PacketLoggingService.class);
-        }
-        return packetLoggingService;
-    }
-
-    /**
      * Stops the Network Address Manager bundle
      *
-     * @param bundleContext  the OSGI bundle context
-     *
+     * @param bundleContext the OSGI bundle context
      */
     public void stop(BundleContext bundleContext)
     {
-        if(networkAMS != null)
+        if (networkAMS != null)
             networkAMS.stop();
         if (logger.isInfoEnabled())
             logger.info("Network Address Manager Service ...[STOPPED]");
 
         configurationService = null;
-        packetLoggingService = null;
     }
 
     /**

@@ -29,6 +29,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
@@ -409,14 +410,6 @@
         </activity>
 
         <!-- Logging settings -->
-        <activity
-            android:name="org.atalk.android.gui.settings.LoggingSettings"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name=".android.gui.settings.LoggingSettings"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
         <!-- Provisioning settings -->
         <activity
             android:name="org.atalk.android.gui.settings.ProvisioningSettings"
