@@ -19,75 +19,79 @@ import android.annotation.TargetApi;
 import android.os.Build;
 
 import org.atalk.android.util.ApiLib;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XMPPError;
 
 /**
  * Wraps Smack's <tt>XMPPError</tt> into <tt>PacketExtension</tt>, so that it
  * can be easily inserted into {@link RecordingStatus}.
  *
- *  * @author Eng Chong Meng
+ * * @author Eng Chong Meng
  */
-public class XMPPErrorPE implements ExtensionElement {
-	/**
-	 * <tt>XMPPError</tt> wrapped into this <tt>XMPPErrorPE</tt>.
-	 */
-	private XMPPError error;
+public class XMPPErrorPE implements ExtensionElement
+{
+    /**
+     * <tt>XMPPError</tt> wrapped into this <tt>XMPPErrorPE</tt>.
+     */
+    private XMPPError error;
 
-	/**
-	 * Creates new instance of <tt>XMPPErrorPE</tt>.
-	 *
-	 * @param xmppError
-	 * 		the instance of <tt>XMPPError</tt> that will be wrapped
-	 * 		by the newly created <tt>XMPPErrorPE</tt>.
-	 */
-	public XMPPErrorPE(XMPPError xmppError) {
-		setError(xmppError);
-	}
+    /**
+     * Creates new instance of <tt>XMPPErrorPE</tt>.
+     *
+     * @param xmppError the instance of <tt>XMPPError</tt> that will be wrapped
+     * by the newly created <tt>XMPPErrorPE</tt>.
+     */
+    public XMPPErrorPE(XMPPError xmppError)
+    {
+        setError(xmppError);
+    }
 
-	/**
-	 * Returns the underlying instance of <tt>XMPPError</tt>.
-	 */
-	public XMPPError getError() {
-		return error;
-	}
+    /**
+     * Returns the underlying instance of <tt>XMPPError</tt>.
+     */
+    public XMPPError getError()
+    {
+        return error;
+    }
 
-	/**
-	 * Sets new instance of <tt>XMPPError</tt> to be wrapped by this
-	 * <tt>XMPPErrorPE</tt>.
-	 *
-	 * @param error
-	 * 		<tt>XMPPError</tt> that will be wrapped by this
-	 * 		<TT>XMPPErrorPE</TT>.
-	 */
+    /**
+     * Sets new instance of <tt>XMPPError</tt> to be wrapped by this <tt>XMPPErrorPE</tt>.
+     *
+     * @param error <tt>XMPPError</tt> that will be wrapped by this <TT>XMPPErrorPE</TT>.
+     */
 
-	@TargetApi(Build.VERSION_CODES.KITKAT)
-	public void setError(XMPPError error) {
-		ApiLib.requireNonNull(error, "error");
-		this.error = error;
-	}
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public void setError(XMPPError error)
+    {
+        ApiLib.requireNonNull(error, "error");
+        this.error = error;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getElementName() {
-		return "error";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getElementName()
+    {
+        return "error";
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getNamespace() {
-		return "";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getNamespace()
+    {
+        return "";
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CharSequence toXML() {
-		return error.toString();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CharSequence toXML()
+    {
+        return error.toXML().toString();
+    }
 }

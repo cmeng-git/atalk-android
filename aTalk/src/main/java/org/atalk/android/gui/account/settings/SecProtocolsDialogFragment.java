@@ -80,8 +80,8 @@ public class SecProtocolsDialogFragment extends DialogFragment
 	{
 
 		if (savedInstanceState == null) {
-			this.protocolsAdapter = new ProtocolsAdapter((Map<String, Integer>) getArguments().get(ARG_ENCRYPTIONS), (Map<String, Boolean>) getArguments().get(
-				ARG_STATUS_MAP));
+			this.protocolsAdapter = new ProtocolsAdapter((Map<String, Integer>) getArguments().get(ARG_ENCRYPTIONS),
+                    (Map<String, Boolean>) getArguments().get(ARG_STATUS_MAP));
 		}
 		else {
 			this.protocolsAdapter = new ProtocolsAdapter(savedInstanceState.getStringArray(STATE_ENCRYPTIONS),

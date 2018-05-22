@@ -408,6 +408,9 @@
 	<string name="service_gui_JOIN_VIDEO">Unirse al video</string>
 	<string name="service_gui_JOB_TITLE">Cargo</string>
 	<string name="service_gui_JOIN_CHAT_ROOM">Unirse a una sala de charla&#8230;</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Error al unirse a la sala %1$s con apodo: %2$s.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD"> La sala de chat solicita una contraseña.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION"> La sala de chat requiere registro.</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_TITLE">Unirse a una sala de charla</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Por favor, introduce el nombre de la sala de chat a la que te gustaría unirte.</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Unirse con el asistente de la sala de charla</string>
@@ -422,6 +425,7 @@
     <string name="service_gui_LAST_MSG_CORRECTION">Correción del último mensaje</string>
 	<string name="service_gui_LAST_NAME">Último nombre</string>
 	<string name="service_gui_LEAVE">Salir</string>
+    <string name="service_gui_LEAVE_ROOM">Dejar chatRoom</string>
     <string name="service_gui_LOADING">Cargando</string>
     <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Localmente en espera</string>
     <string name="service_gui_LOGIN_CREDENTIAL">Credenciales de usuario de inicio de sesión</string>
@@ -430,6 +434,7 @@
     <string name="service_gui_LOGIN_INTERNAL_ERROR">Se ha producido un error al iniciar sesión con la cuenta: Usuario: %1$s, Servidor: %2$s. Lo más probable es que se trate de un error interno de la aplicación. Por favor reporte el problema a nuestra lista de correo de desarrolladores.</string>
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">No se puede iniciar la sesión con la cuenta: Usuario: %1$s, Servidor: %2$s, debido a un problema de configuración de la cuenta. Por favor, comprueba la configuración de su cuenta.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">No se puede iniciar sesión con la cuenta:\nUsuario: %1$s\nServidor: %2$s\ndebido a un fallo en la red. Por favor, compruebe su conexión de red.</string>
+    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Se produjo un error al cerrar la sesión con la siguiente cuenta: Nombre de usuario: %1$s, Nombre del servidor: %2$2.</string>
     <string name="service_gui_MOVE">Mover</string>
     <string name="service_gui_MOVE_CONTACT">Mover Contacto</string>
     <string name="service_gui_MOVE_CONTACT_ERROR">El contacto no se puede mover</string>
@@ -447,6 +452,7 @@
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">El protocolo que estás utilizando no admite mensajes sin conexión.
         Se puede intentar llegar a %1$s a través de otro protocolo o esperar hasta que se conecte.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Se ha producido un error desconocido al enviar el mensaje.</string>
+    <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Operación no admitida.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">Se ha producido un problema en la red. Compruebar la configuración de su red e inténtarlo de nuevo.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s escrito</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Se debes iniciar la sesión primero para enviar el mensaje.</string>
@@ -503,6 +509,7 @@
     <string name="service_gui_REQUEST_AUTHORIZATION_MSG">Contacto propietario: %1$sSe necesita autorización de\'%2$s\' para agregarlo a la lista de contactos. Por favor, introducir su solicitud de nuevo.</string>
     <string name="service_gui_RETRY">Reintentar</string>
     <string name="service_gui_SEARCH">Buscar</string>
+    <string name="service_gui_SEARCH_STRING_CONTACT_SOURCE">Buscar contacto</string>>
     <string name="service_gui_PHONEBOOK">Agenda telefónica</string>
     <string name="service_gui_settings_SECURITY">Seguridad</string>
     <string name="service_gui_SELECT_ACCOUNT">Selecciona el propietario de la cuenta</string>
@@ -516,6 +523,8 @@
     <string name="service_gui_SEND_LOGS_TITLE">Reportar bugs a aTalk vía email</string>
 
     <string name="service_gui_SEND_MESSAGE">Enviar un mensaje</string>
+    <string name="service_gui_SEND_MESSAGE_FAIL">Error al enviar el mensaje: %1$s</string>
+    <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">La entidad que has seleccionado no admite mensajes de chat instantáneos</string>
 	<string name="service_gui_SEND_AS_SMS">Enviar como SMS</string>
 	<string name="service_gui_SEND_PRIVATE_MESSAGE">Enviar un mensaje privado</string>
     <string name="service_gui_SEND_VIA">enviar vía</string>
@@ -526,6 +535,7 @@
 	<string name="service_gui_STATUS">Estado</string>
     <string name="service_gui_TYPE_YOUR_REQUEST">Escribe el motivo de tu solicitud</string>
     <string name="service_gui_UNKNOWN">Desconocido</string>
+    <string name="service_gui_UNKNOWN_USER">Usuario desconocido</string>
     <string name="service_gui_UNKNOWN_STATUS">Estado desconocido</string>
     <string name="service_gui_URL_HINT">http://www.ejemplo.com</string>
     <string name="service_gui_VIDEO_CALL">Video llamada</string>
@@ -540,13 +550,18 @@
     <!-- Sign in -->
     <string name="service_gui_ACCOUNT_CREATION_FAILED">No se pudo crear una cuenta nueva debido a un error: %1$s</string>
     <string name="service_gui_CREATE_ACCOUNT">Crar una cuenta</string>
+    <string name="service_gui_GENERAL_ERROR">Error general</string>
+    <string name="service_gui_NETWORK_FAILURE">Falla de red</string>
     <string name="service_gui_SELECT_AVATAR">Seleccionar una nueva imagen de avatar</string>
     <string name="service_gui_SET_STATUS">Cambiar el estado</string>
     <string name="service_gui_SIGN_IN">Iniciar sesión</string>
     <string name="service_gui_SIGN_OUT">Cerrar la sesión</string>
     <string name="service_gui_SPECIFY_SERVER">Por favor completar la parte del servidor de su cuenta.</string>
 	<string name="service_gui_SPEED">Velocidad: %1$s/sec (%2$s)</string>
+    <string name="service_gui_STATUS_CHANGE_GENERAL_ERROR">Error al cambiar el estado de la cuenta: Nombre de usuario: %1$s, Nombre del servidor: %2$s, debido a un error general.</string>
 	<string name="service_gui_STATUS_CHANGED_CHAT_MESSAGE">se ha convertido %1$s</string>
+    <string name="service_gui_STATUS_CHANGE_NETWORK_FAILURE">Error al cambiar el estado de la cuenta: Nombre de usuario: %1$s, Nombre del servidor: %2$s, debido a un problema de red.</string>
+    <string name="service_gui_SECURITY_ERROR">Security error</string>
     <string name="service_gui_SECURITY_INFO">Información de seguridad</string>
     <string name="service_gui_SECURITY_WARNING">Alerta de seguridad</string>
     <string name="service_gui_USERNAME_NULL">Por favor, introducir tu nombre de usuario y contraseña.</string>
@@ -566,6 +581,7 @@
     <string name="service_gui_DECEMBER">Dic</string>
 
     <!-- Call info -->
+    <string name="service.protocol.ICE_FAILED">No se pudo establecer la conexión (el ICE falló y no se encontró el relevador)</string>
     <string name="service_gui_callinfo_AUDIO_INFO">Información del audio</string>
     <string name="service_gui_callinfo_BANDWITH">Ancho de banda:</string>
     <string name="service_gui_callinfo_CALL_DURATION">Duración de la llamada:</string>
@@ -687,6 +703,7 @@
     <string name="service_gui_security_CLEAR">Borrar</string>
     <string name="service_gui_security_COMPARE_WITH_PARTNER_SHORT">Comparar con el interlocutor:</string>
     <string name="service_gui_security_CONFIRM">Confirmar</string>
+    <string name="service_gui_security_ENCRYPTION_REQUIRED">Cifrado requerido!</string>
     <string name="service_gui_security_NO_VIDEO">Sin vídeo</string>
     <string name="service_gui_security_SECURE_AUDIO">Audio seguro</string>
     <string name="service_gui_security_SECURE_VIDEO">Vídeo seguro</string>
@@ -791,7 +808,14 @@
     <string name="plugin_notificationconfig_popup_notification">Notificación emergente</string>
     <string name="plugin_notificationconfig_vibration">Vibración</string>
 
+    <!-- call recordingconfig -->
+    <string name="plugin.callrecordingconfig.CALL_SAVED">Llamada guardada exitosamente</string>
+    <string name="plugin.callrecordingconfig.CALL_SAVED_TO">Guardar en: %1$s</string>
+
     <!-- ZRTP Securing -->
+    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_CHANGED">La configuración del dispositivo de audio ha cambiado</string>
+    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Haga clic aquí para la administración del dispositivo</string>
+    <string name="impl_media_configform_NO_PREVIEW">Avance</string>
     <string name="impl_media_security_CHECKSUM_MISMATCH">&lt;html>Desajuste interno de la suma de comprobación de paquetes ZRTP.&lt;br/>Si ves este mensaje con frecuencia, puede significar un ataque de denegación de servicio.!&lt;/html></string>
     <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>No se enviaron los datos de encriptación. La conexión de datos de Internet o el par están caídos.&lt;br/>&lt;b>Tu llamada no es segura&lt;/b>&lt;br/>Código de error: %1$s&lt;/html></string>
     <string name="impl_media_security_RETRY_RATE_EXCEEDED">&lt;html>Demasiados reintentos durante la negociación de seguridad. Esto puede significar que la otra parte tiene problemas de conexión a Internet.&lt;br/>&lt;b>Tu llamada no es segura&lt;/b>&lt;br/>Código de error: %1$s&lt;/html></string>
@@ -801,6 +825,7 @@
     <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Se detectó un grave problema de seguridad.&lt;br/>&lt;b>Tu llamada no es segura&lt;/b>&lt;br/>Código de error: %1$s&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Ningún secreto compartido retenido disponible.&lt;br/>&lt;b>Se recomienda la verificación SAS&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Falta un secreto compartido que se espera que se conserve.&lt;br/>&lt;b>Se requiere verificación SAS&lt;/b>&lt;br/>Si los códigos SAS no coinciden, cuelga y vuelva a intentarlo.&lt;/html></string>
+    <string name="impl.media.security.ZRTP_GENERIC_MSG">&lt;html>Se detectó un problema grave de ZRTP. &lt;br/>&lt;b>Su llamada no es segura &lt;/b>&lt;br/>Código de error: %1$s&lt;/html></string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Autentificar amigo</string>
@@ -812,7 +837,7 @@
     <string name="plugin_otr_menu_CRYPTO_Finish">CRYPTO Acabado</string>
     <string name="plugin_otr_menu_CRYPTO_NON_AUTHETICATED">CRYPTO No-Authenticado</string>
     <string name="plugin_otr_menu_END_OTR">Finalizar la conversación privada</string>
-    <string name="plugin_otr_menu_OTR_AUTHETICATED">OTR Authenticated</string>
+    <string name="plugin_otr_menu_OTR_AUTHETICATED">OTR autenticado</string>
     <string name="plugin_otr_menu_OTR_Finish">OTR Finalizado</string>
     <string name="plugin_otr_menu_OTR_HANDSHAKE">Cacheo OTR</string>
     <string name="plugin_otr_menu_OTR_NON_AUTHETICATED">OTR No-Authenticado</string>
@@ -916,10 +941,6 @@
     <string name="plugin_proxy_PROXY_TYPE">Tipo de proxy</string>
     <string name="plugin_proxy_PROXY_USERNAME">Nombre de usuario para el proxy</string>
 
-    <!-- Plugin reconnect -->
-    <string name="plugin_reconnectplugin_CONNECTION_FAILED_MSG">Error de reconexión en el inicio de sesión de la cuenta:\nNombre de uauario: %1$s\nServidor: %2$s\nComprueba la configuración de la cuenta o\ncontacta con el administrador de red para obtener más información..</string>
-    <string name="plugin_reconnectplugin_NETWORK_DOWN">Pérdida de conectividad de red!</string>
-
     <!-- Provisioning Plugin-->
     <string name="plugin_provisioning_AUTO">Descubrir automáticamente una URI de aprovisionamiento</string>
     <string name="plugin_provisioning_BONJOUR">Bonjour</string>
@@ -946,8 +967,6 @@
     <string name="service_gui_settings_DNS">DNS</string>
     <string name="service_gui_settings_DNS_SUMMARY">Configurar los ajustes de DNS</string>
     <string name="plugin_dnsconfig_DNSSEC">Seguridad en DNS (DNSSEC)</string>
-    <string name="plugin_dnsconfig_PARALLEL_DNS">DNS paralelo</string>
-    <string name="plugin_dnsconfig_chkBackupDnsEnabled_text">Habilitar la resolución paralela de DNS</string>
     <string name="plugin_dnsconfig_dnssec_DOMAIN_NAME">Dominio</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">Falló el cambio de estado</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Ha fallado el cambio del estado en la habilitación de DNSSEC.</string>
@@ -959,13 +978,22 @@
     <string name="plugin_dnsconfig_dnssec_lblDefault">Comportamiento predeterminado</string>
     <string name="plugin_dnsconfig_dnssec_lblNameservers">Nombres de Servidores personalizados</string>
     <string name="plugin_dnsconfig_dnssec_lblNameserversHint"><html>Se pueden delimitar múltiples servidores con una coma, e.j. 149.20.64.20, 149.20.64.21 (OARC\'s Abrir resolución de validación de DNSSEC)</html></string>
-    <string name="plugin_dnsconfig_lblPatience_text">Iniciar el resolvedor de reserva después</string>
-    <string name="plugin_dnsconfig_lblPatience_description"><html>número de ms para esperar una respuesta del DNS primario antes de iniciar el resolvedor de reserva</html></string>
-    <string name="plugin_dnsconfig_lblBackupPort_text">Puerto</string>
-    <string name="plugin_dnsconfig_lblBackupResolver_text">Nombre del Host</string>
-    <string name="plugin_dnsconfig_lblBackupResolverFallbackIP_text">IP de respaldo</string>
-    <string name="plugin_dnsconfig_lblRedemption_text">Volver al resolutor primario</string>
-    <string name="plugin_dnsconfig_lblRedemption_description"><html>el número de respuestas rápidas que debe proporcionar el resolvedor primario antes de volver a desactivar el de reserva</html></string>
+
+    <string name="util_dns_INSECURE_ANSWER_TITLE">Fallo DNSSEC</string>
+    <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">La respuesta DNS para %1$s es insegura.</string>
+    <string name="util_dns_INSECURE_ANSWER_MESSAGE_REASON">La respuesta DNS para %1$s es insegura.\nRecaudación: %2$s</string>
+    <string name="util_dns_DNSSEC_ADVANCED_OPTIONS">Mostrar opciones avanzadas</string>
+    <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>Zona firmada con DNSSEC %1$s devolvió datos no válidos.&lt;br>%2$s&lt;/ html></string>
+    <string name="util_dns_DNSSEC_ADVANCED_REASON_UNSIGNED">La consulta de %1$s para %2$s no está firmada.</string>
+    <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s ha intentado conectarse al servidor en&lt;b>%2$s%lt;&lt;/ b>,
+        que es un dominio que lleva una protección fuerte llamada DNSSEC. La información que %1$s ha obtenido
+        desde el servidor DNS no está de acuerdo con la información que proporciona DNSSEC sobre este dominio. &lt;br>&lt;br>&lt;b>
+        Esto no debería suceder a menos que se cometieran errores muy graves en %2$s. Por lo tanto, es una indicación muy fuerte de que algo es
+        muy mal con la confiabilidad de su conexión de red.&lt;/b>&lt;br>&lt;br>
+        Si estás en la conexión a Internet de otra persona (como un punto de acceso WiFi) o si hay circunstancias especiales que te hacen desconfiar
+        su proveedor habitual de Internet, le recomendamos que deje de usarlo inmediatamente y busque un punto de acceso a Internet alternativo.
+        Cuando esté conectado de manera segura a otra red, el problema debe resolverse automáticamente. Si este no es el caso, contáctese con su
+        proveedor de servicios para informarles sobre el problema.&lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
     <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Borrado de certificados SSL</string>
@@ -1159,6 +1187,10 @@
     <!-- Tell others when we are writing to them -->
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Enviar notificaciones del estado de la charla</string>
 
+    <!-- Tell others when we are writing to them -->
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presencia Suscribir aprobación</string>
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Suscribir aprobación - aceptar automáticamente todo</string>
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Suscribir aprobación - manual</string>
     <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
     <!-- Use task bar / dock alerts on incoming calls and chats -->
     <string name="service_gui_settings_CHAT_ALERTS">Mostrar notificaciones de la barra de estado</string>
@@ -1344,32 +1376,10 @@
     <!-- Advanced settings category -->
     <string name="service_gui_settings_ADVANCED">Advanzado</string>
 
-    <!-- Packet logging Service -->
-    <string name="service_gui_settings_LOGGING_SUMMARY">Ajustar las propiedades de registro</string>
-    <string name="service_gui_settings_LOGGING_TITLE">Registro</string>
-    <!-- Enable packet logging -->
-    <string name="service_gui_settings_LOGGING_ENABLE_SUMMARY_OFF">No se registrará ningún paquete</string>
-    <string name="service_gui_settings_LOGGING_ENABLE_SUMMARY_ON">Registro paquetes de depuración de varios protocolos</string>
-    <string name="service_gui_settings_LOGGING_ENABLE_TITLE">Registro de paquetes</string>
-
-    <!-- RTP -->
-    <string name="service_gui_settings_LOGGING_RTP">RTP</string>
-    <string name="service_gui_settings_LOGGING_RTP_SUMMARY">almacena 1 paquete de cada 5000</string>
-    <!-- ICE4J -->
-    <string name="service_gui_settings_LOGGING_ICE4J">ice4j.org</string>
     <!-- Protocol category -->
     <string name="service_gui_settings_ADDRESS">Dirección</string>
     <string name="service_gui_settings_PORT">Puerto</string>
     <string name="service_gui_settings_PROTOCOL">Protocolo</string>
-    <!-- SIP -->
-    <string name="service_gui_settings_LOGGING_SIP">SIP</string>
-    <!-- XMPP -->
-    <string name="service_gui_settings_LOGGING_XMPP">XMPP</string>
-    <!-- Logging advanced -->
-    <!-- File count -->	
-    <string name="service_gui_settings_LOGGING_FILE_COUNT">Número de archivos de registro</string>
-    <!-- File size limit -->
-    <string name="service_gui_settings_LOGGING_LIMIT">Tamaño máximo de archivo (in KB)</string>
 
     <!-- Opus -->
     <string name="service_gui_settings_OPUS">Opus</string>

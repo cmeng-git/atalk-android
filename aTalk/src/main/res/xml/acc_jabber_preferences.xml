@@ -167,7 +167,7 @@
                     android:title="@string/service_gui_JBR_USE_UPNP"
                     />
                 <CheckBoxPreference
-                    android:key="@string/pref_key_auto_discover_jingle"
+                    android:key="@string/pref_key_auto_discover_stun"
                     android:title="@string/service_gui_JBR_AUTO_STUN_DICOVERY"
                     />
                 <Preference

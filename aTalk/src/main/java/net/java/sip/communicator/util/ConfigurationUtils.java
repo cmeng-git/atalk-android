@@ -1452,11 +1452,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if phone numbers should be normalized, <code>false</code>
-     * otherwise.
+     * Returns <code>true</code> if phone numbers should be normalized, <code>false</code> otherwise.
      *
-     * @return <code>true</code> if phone numbers should be normalized, <code>false</code>
-     * otherwise.
+     * @return <code>true</code> if phone numbers should be normalized, <code>false</code> otherwise.
      */
     public static boolean isNormalizePhoneNumber()
     {

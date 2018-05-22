@@ -23,7 +23,6 @@ import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
 import org.atalk.impl.neomedia.stats.MediaStreamStats2Impl;
 import org.atalk.impl.neomedia.transform.AbsSendTimeEngine;
 import org.atalk.impl.neomedia.transform.CachingTransformer;
-import org.atalk.impl.neomedia.transform.DebugTransformEngine;
 import org.atalk.impl.neomedia.transform.DiscardTransformEngine;
 import org.atalk.impl.neomedia.transform.OriginalHeaderBlockTransformEngine;
 import org.atalk.impl.neomedia.transform.PacketTransformer;
@@ -225,14 +224,13 @@ public class MediaStreamImpl extends AbstractMediaStream
     private final Map<Byte, MediaFormat> dynamicRTPPayloadTypes = new HashMap<>();
 
     /**
-     * The list of CSRC IDs contributing to the media that this <tt>MediaStream</tt> is sending to
-     * its remote party.
+     * The list of CSRC IDs contributing to the media that this <tt>MediaStream</tt> is sending to its remote party.
      */
     private long[] localContributingSourceIDs;
 
     /**
      * Our own SSRC identifier.
-     * <p/>
+     *
      * XXX(gp) how about taking the local source ID directly from {@link this.rtpManager}, given
      * that it offers this information with its getLocalSSRC() method?
      * TAG(cat4-local-ssrc-hurricane)
@@ -280,7 +278,7 @@ public class MediaStreamImpl extends AbstractMediaStream
 
     /**
      * The SSRC identifiers of the party that we are exchanging media with.
-     * <p/>
+     *
      * XXX(gp) I'm sure there's a reason why we do it the way we do it, but we might want to
      * re-think about how we manage receive SSRCs. We keep track of the receive SSRC in at least 3
      * places, in the MediaStreamImpl (we have a remoteSourceIDs vector), in
@@ -311,8 +309,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * The indicator which determines whether {@link #createSendStreams()} has been executed for
      * {@link #rtpManager}. If <tt>true</tt>, the <tt>SendStream</tt>s have to be recreated when
-     * the <tt>MediaDevice</tt>, respectively the <tt>MediaDeviceSession</tt>, of this instance is
-     * changed.
+     * the <tt>MediaDevice</tt>, respectively the <tt>MediaDeviceSession</tt>, of this instance is changed.
      */
     protected boolean sendStreamsAreCreated = false;
 
@@ -345,12 +342,6 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Engine chain reading sent RTCP sender reports and stores/prints statistics.
      */
     private StatisticsEngine statisticsEngine = null;
-
-    /**
-     * The <tt>TransformEngine</tt> instance that logs packets going in and out of this
-     * <tt>MediaStream</tt>.
-     */
-    private DebugTransformEngine debugTransformEngine;
 
     /**
      * The <tt>TransformEngine</tt> instance registered in the
@@ -496,7 +487,6 @@ public class MediaStreamImpl extends AbstractMediaStream
         }
 
         String encoding = format.getEncoding();
-
         if (Constants.RED.equals(encoding)) {
             REDTransformEngine redTransformEngine = getRedTransformEngine();
             if (redTransformEngine != null) {
@@ -525,7 +515,7 @@ public class MediaStreamImpl extends AbstractMediaStream
                 logger.info("Creating FlexFEC-03 transform engine with payload type " + rtpPayloadType);
                 FECTransformEngine flexFecTransformEngine
                         = new FECTransformEngine(FECTransformEngine.FecType.FLEXFEC_03,
-                                rtpPayloadType, rtpPayloadType, this);
+                        rtpPayloadType, rtpPayloadType, this);
                 setFecTransformEngine(flexFecTransformEngine);
             }
         }
@@ -569,9 +559,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * support the RFC3264 case where the answerer has the right to declare what payload type
      * mappings it wants to receive RTP packets with even if they are different from those in the
      * offer. RFC3264 claims this is for support of legacy protocols such as H.323 but we've been
-     * bumping with a number of cases where multi-component pure SIP systems also need to behave
-     * this way.
-     * <p/>
+     * bumping with a number of cases where multi-component pure SIP systems also need to behave this way.
+     *
      *
      * @param originalPt the payload type that we are overriding
      * @param overloadPt the payload type that we are overriding it with
@@ -598,10 +587,9 @@ public class MediaStreamImpl extends AbstractMediaStream
 
         writeLock.lock();
         try {
+            // Downgrade the write lock to a read lock in order to allow readers during the invocation of
+            // MediaDeviceSession.addReceiveStream(ReceiveStream) (and disallow writers, of course).
             if (!receiveStreams.contains(receiveStream) && receiveStreams.add(receiveStream)) {
-                // Downgrade the write lock to a read lock in order to allow readers during the
-                // invocation of MediaDeviceSession.addReceiveStream(ReceiveStream) (and
-                // disallow writers, of course).
                 readLock.lock();
                 added = true;
             }
@@ -1109,11 +1097,6 @@ public class MediaStreamImpl extends AbstractMediaStream
         if (transportCCEngine != null) {
             engineChain.add(transportCCEngine.getEgressEngine());
         }
-
-        // Debug
-        debugTransformEngine = DebugTransformEngine.createDebugTransformEngine(this);
-        if (debugTransformEngine != null)
-            engineChain.add(debugTransformEngine);
 
         // OHB
         engineChain.add(ohbEngine);
@@ -1758,7 +1741,7 @@ public class MediaStreamImpl extends AbstractMediaStream
 
     /**
      * {@inheritDoc}
-     * <p/>
+     *
      * Returns the last element of {@link #getRemoteSourceIDs()} which may or may not always be
      * appropriate.
      *
@@ -1928,8 +1911,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * and to be used for the playback of <tt>ReceiveStream</tt>s. The <tt>Format</tt>s in
      * {@link #dynamicRTPPayloadTypes} will likely represent the view of the local peer while the
      * <tt>Format</tt> set on this <tt>MediaStream</tt> instance will likely represent the view of
-     * the remote peer. The view of the remote peer matters for the playback of
-     * <tt>ReceiveStream</tt>s.
+     * the remote peer. The view of the remote peer matters for the playback of <tt>ReceiveStream</tt>s.
      *
      * @param rtpManager the <tt>StreamRTPManager</tt> to update the registered FMJ <tt>Format</tt>s of. If
      * <tt>null</tt>, the method uses {@link #rtpManager}.
@@ -1947,8 +1929,7 @@ public class MediaStreamImpl extends AbstractMediaStream
             return;
 
         @SuppressWarnings("unchecked")
-        MediaFormatImpl<? extends Format> mediaFormatImpl
-                = (MediaFormatImpl<? extends Format>) mediaFormat;
+        MediaFormatImpl<? extends Format> mediaFormatImpl = (MediaFormatImpl<? extends Format>) mediaFormat;
         Format format = mediaFormatImpl.getFormat();
 
         if (!(format instanceof ParameterizedVideoFormat))
@@ -2143,9 +2124,8 @@ public class MediaStreamImpl extends AbstractMediaStream
         try {
             if (receiveStreams.remove(receiveStream)) {
                 /*
-                 * Downgrade the write lock to a read lock in order to allow readers during the
-                 * invocation of MediaDeviceSession#removeReceiveStream(ReceiveStream) (and
-                 * disallow writers, of course).
+                 * Downgrade the write lock to a read lock in order to allow readers during the invocation of
+                  * MediaDeviceSession#removeReceiveStream(ReceiveStream) (and disallow writers, of course).
                  */
                 readLock.lock();
                 removed = true;
@@ -2186,8 +2166,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      *
      * @param oldValue the <tt>RTPConnector</tt> of this <tt>MediaStream</tt> implementation before it got
      * changed to <tt>newValue</tt>
-     * @param newValue the current <tt>RTPConnector</tt> of this <tt>MediaStream</tt> which replaced
-     * <tt>oldValue</tt>
+     * @param newValue the current <tt>RTPConnector</tt> of this <tt>MediaStream</tt> which replaced <tt>oldValue</tt>
      */
     protected void rtpConnectorChanged(AbstractRTPConnector oldValue, AbstractRTPConnector newValue)
     {
@@ -2355,11 +2334,10 @@ public class MediaStreamImpl extends AbstractMediaStream
 
     /**
      * Sets the <tt>MediaDevice</tt> that this stream should use to play back and capture media.
-     * <p>
+     *
      * <b>Note</b>: Also resets any previous direction set with
      * {@link #setDirection(MediaDirection)} to the direction of the specified
      * <tt>MediaDevice</tt>.
-     * </p>
      *
      * @param device the <tt>MediaDevice</tt> that this stream should use to play back and capture media
      * @see MediaStream#setDevice(MediaDevice)
@@ -3253,7 +3231,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      *
      * @param pkt the packet from which to get the temporal layer id
      * @return the TID of the packet, -1 otherwise.
-     * <p>
+     *
      * FIXME(gp) conceptually this belongs to the {@link VideoMediaStreamImpl},
      * but I don't want to be obliged to cast to use this method.
      */
@@ -3302,7 +3280,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      *
      * @param pkt the RTP packet.
      * @return the SID of the packet, -1 otherwise.
-     * <p>
+     *
      * FIXME(gp) conceptually this belongs to the {@link VideoMediaStreamImpl},
      * but I don't want to be obliged to cast to use this method.
      */
@@ -3371,7 +3349,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      *
      * @param pkt raw rtp packet.
      * @return true if the packet is the start of a frame, false otherwise.
-     * <p>
+     *
      * FIXME(gp) conceptually this belongs to the {@link VideoMediaStreamImpl},
      * but I don't want to be obliged to cast to use this method.
      */
@@ -3417,7 +3395,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      *
      * @param pkt raw rtp packet.
      * @return true if the packet is the end of a frame, false otherwise.
-     * <p>
+     *
      * FIXME(gp) conceptually this belongs to the {@link VideoMediaStreamImpl},
      * but I don't want to be obliged to cast to use this method.
      */
@@ -3454,7 +3432,7 @@ public class MediaStreamImpl extends AbstractMediaStream
 
     /**
      * {@inheritDoc}
-     * </p>
+     *
      * This is absolutely terrible, but we need a RawPacket and the method is
      * used from RTPTranslator, which doesn't work with RawPacket.
      */

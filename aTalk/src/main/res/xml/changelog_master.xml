@@ -6,6 +6,15 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.3.0 (05/22/2018)" versioncode="1030">
+        <change>Improve user login algorithm, speed and error handling</change>
+        <change>Port to use android optimized miniDNS and drop dnsjava library. To fulfil android 8 ConnectivityManager requirements</change>
+        <change>Remove ParallelDNS option, replacing it with miniDNS ResolverApi and ReliableDNSClient</change>
+        <change>Remove Data Packet Logging option, strip off all supporting codes and classes to conserve android resources</change>
+        <change>Fix TURN/STUN and Jingle inconsistency in account preference settings</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.2.6 (05/07/2018)" versioncode="1026">
         <change>Fix ANR black screen that happen occasionally when opening a chat session</change>
         <change>Use android ConnectivityManager to getDnsServerAddresses for improved platform privacy</change>

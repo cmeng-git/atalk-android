@@ -210,7 +210,6 @@ public class RTCPTCCPacket extends RTCPFBPacket
                 if (includeNotReceived) {
                     for (int i = 0; i < packetsInChunk; i++) {
                         int seq = (currentSeq + i) % 0xffff;
-                        logPacket(seq, NEGATIVE_ONE, -1, SYMBOL_NOT_RECEIVED);
                         packets.put(seq, NEGATIVE_ONE);
                     }
                 }
@@ -254,7 +253,6 @@ public class RTCPTCCPacket extends RTCPFBPacket
                         // but we push the packet in the map to indicate that it was
                         // marked as not received.
                         if (includeNotReceived) {
-                            logPacket(currentSeq, NEGATIVE_ONE, delta, symbol);
                             packets.put(currentSeq, NEGATIVE_ONE);
                         }
                     }
@@ -264,7 +262,6 @@ public class RTCPTCCPacket extends RTCPFBPacket
                         // behavior so that every packet for which there is a
                         // delta updates the reference (even if the delta is negative).
                         referenceTime += delta;
-                        logPacket(currentSeq, referenceTime, delta, symbol);
                         packets.put(currentSeq, referenceTime);
                     }
                     currentSeq = (currentSeq + 1) & 0xffff;
@@ -699,18 +696,6 @@ public class RTCPTCCPacket extends RTCPFBPacket
     public String toString()
     {
         return "RTCP transport-cc feedback";
-    }
-
-    /**
-     * Logs a message message about a packet in debug level (if debug logging
-     * is enabled).
-     */
-    private static void logPacket(
-            int seq, long referenceTime, int delta, int symbol)
-    {
-        if (logger.isDebugEnabled()) {
-            logger.debug("seq=" + seq + ",reference_time=" + referenceTime + ",delta=" + delta + ",symbol=" + symbol);
-        }
     }
 
     /**

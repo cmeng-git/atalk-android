@@ -10,7 +10,6 @@ import net.sf.fmj.media.util.MediaThread;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.packetlogging.PacketLoggingService;
 import org.atalk.util.ConfigUtils;
 import org.atalk.util.Logger;
 import org.ice4j.util.QueueStatistics;
@@ -144,24 +143,6 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     }
 
     /**
-     * Determines whether a <tt>RawPacket</tt> which has a specific number in the total number of
-     * sent <tt>RawPacket</tt>s is to be logged by {@link PacketLoggingService}.
-     *
-     * @param numOfPacket
-     *         the number of the <tt>RawPacket</tt> in the total number of sent <tt>RawPacket</tt>s
-     * @return <tt>true</tt> if the <tt>RawPacket</tt> with the specified <tt>numOfPacket</tt> is to
-     * be logged by <tt>PacketLoggingService</tt>; otherwise, <tt>false</tt>
-     */
-    static boolean logPacket(long numOfPacket)
-    {
-        return (numOfPacket == 1)
-                || (numOfPacket == 300)
-                || (numOfPacket == 500)
-                || (numOfPacket == 1000)
-                || ((numOfPacket % 5000) == 0);
-    }
-
-    /**
      * Whether this <tt>RTPConnectorOutputStream</tt> is enabled or disabled. While the stream is
      * disabled, it suppresses actually sending any packets via {@link #write(byte[], int, int)}.
      */
@@ -182,12 +163,6 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
      * The number of packets dropped because a packet was inserted while {@link #queue} was full.
      */
     private int numDroppedPackets = 0;
-
-    /**
-     * The {@code PacketLoggingService} instance (to be) utilized by this instance. Cached for the
-     * sake of performance because fetching OSGi services is not inexpensive.
-     */
-    private PacketLoggingService pktLogging;
 
     /**
      * The pool of <tt>RawPacket</tt> instances which reduces the number of allocations performed by
@@ -317,16 +292,6 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     }
 
     /**
-     * Logs a specific <tt>RawPacket</tt> associated with a specific remote address.
-     *
-     * @param packet
-     *         packet to log
-     * @param target
-     *         the remote address associated with the <tt>packet</tt>
-     */
-    protected abstract void doLogPacket(RawPacket packet, InetSocketAddress target);
-
-    /**
      * Returns the number of bytes sent trough this stream
      *
      * @return the number of bytes sent
@@ -334,18 +299,6 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     public long getNumberOfBytesSent()
     {
         return numberOfBytesSent;
-    }
-
-    /**
-     * Gets the {@code PacketLoggingService} (to be) utilized by this instance.
-     *
-     * @return the {@code PacketLoggingService} (to be) utilized by this instance
-     */
-    protected PacketLoggingService getPacketLoggingService()
-    {
-        if (pktLogging == null)
-            pktLogging = LibJitsi.getPacketLoggingService();
-        return pktLogging;
     }
 
     /**
@@ -412,17 +365,6 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         for (InetSocketAddress target : targets) {
             try {
                 sendToTarget(packet, target);
-
-                numberOfBytesSent += (long) packet.getLength();
-
-                if (logPacket(numberOfPackets)) {
-                    PacketLoggingService pktLogging = getPacketLoggingService();
-
-                    if (pktLogging != null
-                            && pktLogging.isLoggingEnabled(PacketLoggingService.ProtocolName.RTP)) {
-                        doLogPacket(packet, target);
-                    }
-                }
             } catch (IOException ioe) {
                 rawPacketPool.offer(packet);
                 // too many msg hangs the system, show only 1 in 50

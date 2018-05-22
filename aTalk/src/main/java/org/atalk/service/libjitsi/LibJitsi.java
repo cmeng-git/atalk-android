@@ -9,7 +9,6 @@ import org.atalk.service.audionotifier.AudioNotifierService;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.neomedia.MediaService;
-import org.atalk.service.packetlogging.PacketLoggingService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.Logger;
 
@@ -110,21 +109,6 @@ public abstract class LibJitsi
 	public static MediaService getMediaService()
 	{
 		return invokeGetServiceOnImpl(MediaService.class);
-	}
-
-	/**
-	 * Gets the <tt>PacketLoggingService</tt> instance. If no existing
-	 * <tt>PacketLoggingService</tt> instance is known to the library, tries to
-	 * initialize a new one. (Such a try to initialize a new instance is
-	 * performed just once while the library is initialized.)
-	 *
-	 * @return the <tt>PacketLoggingService</tt> instance known to the library
-	 * or <tt>null</tt> if no <tt>PacketLoggingService</tt> instance is known to
-	 * the library
-	 */
-	public static PacketLoggingService getPacketLoggingService()
-	{
-		return invokeGetServiceOnImpl(PacketLoggingService.class);
 	}
 
 	/**

@@ -99,8 +99,8 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
 			= aTalkApp.getAppResources().getString(R.string.pref_key_ice_enabled);
 	private static final String PREF_KEY_UPNP_ENABLED
 			= aTalkApp.getAppResources().getString(R.string.pref_key_upnp_enabled);
-	private static final String PREF_KEY_AUTO_DISCOVERY_JINGLE
-			= aTalkApp.getAppResources().getString(R.string.pref_key_auto_discover_jingle);
+	private static final String PREF_KEY_AUTO_DISCOVER_STUN
+			= aTalkApp.getAppResources().getString(R.string.pref_key_auto_discover_stun);
 	private static final String PREF_KEY_STUN_TURN_SERVERS
 			= aTalkApp.getAppResources().getString(R.string.pref_key_stun_turn_servers);
 
@@ -216,11 +216,11 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
 		// ICE options
 		editor.putBoolean(PREF_KEY_ICE_ENABLED, registration.isUseIce());
 		editor.putBoolean(PREF_KEY_UPNP_ENABLED, registration.isUseUPNP());
+        editor.putBoolean(PREF_KEY_AUTO_DISCOVER_STUN, registration.isAutoDiscoverStun());
 
 		// Jingle Nodes
 		editor.putBoolean(PREF_KEY_USE_JINGLE_NODES, registration.isUseJingleNodes());
-		editor.putBoolean(PREF_KEY_AUTO_DISCOVERY_JINGLE, registration.isAutoDiscoverJingleNodes());
-		editor.putBoolean(PREF_KEY_AUTO_RELAY_DISCOVERY, registration.isAutoDiscoverStun());
+		editor.putBoolean(PREF_KEY_AUTO_RELAY_DISCOVERY, registration.isAutoDiscoverJingleNodes());
 
 		// Telephony
 		editor.putBoolean(PREF_KEY_CALLING_DISABLED, registration.isJingleDisabled());
@@ -434,14 +434,14 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
 		else if (key.equals(PREF_KEY_UPNP_ENABLED)) {
 			reg.setUseUPNP(shPrefs.getBoolean(PREF_KEY_UPNP_ENABLED, true));
 		}
-		else if (key.equals(PREF_KEY_AUTO_DISCOVERY_JINGLE)) {
-			reg.setAutoDiscoverJingleNodes(shPrefs.getBoolean(PREF_KEY_AUTO_DISCOVERY_JINGLE, true));
+		else if (key.equals(PREF_KEY_AUTO_DISCOVER_STUN)) {
+            reg.setAutoDiscoverStun(shPrefs.getBoolean(PREF_KEY_AUTO_DISCOVER_STUN, true));
 		}
 		else if (key.equals(PREF_KEY_USE_JINGLE_NODES)) {
 			reg.setUseJingleNodes(shPrefs.getBoolean(PREF_KEY_USE_JINGLE_NODES, true));
 		}
 		else if (key.equals(PREF_KEY_AUTO_RELAY_DISCOVERY)) {
-			reg.setAutoDiscoverStun(shPrefs.getBoolean(PREF_KEY_AUTO_RELAY_DISCOVERY, true));
+            reg.setAutoDiscoverJingleNodes(shPrefs.getBoolean(PREF_KEY_AUTO_RELAY_DISCOVERY, true));
 		}
 		else if (key.equals(PREF_KEY_CALLING_DISABLED)) {
 			reg.setDisableJingle(shPrefs.getBoolean(PREF_KEY_CALLING_DISABLED, false));

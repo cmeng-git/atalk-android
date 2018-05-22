@@ -84,10 +84,7 @@ public class BrowserLauncherActivator
     {
         if (configService == null && bundleContext != null)
         {
-            configService
-                = ServiceUtils.getService(
-                        bundleContext,
-                        ConfigurationService.class);
+            configService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }
 
         return configService;

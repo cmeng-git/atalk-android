@@ -76,8 +76,7 @@ public class JabberAccountRegistrationActivator implements BundleActivator
 	public static ConfigurationService getConfigurationService()
 	{
 		if (configService == null) {
-			ServiceReference<?> serviceReference
-					= bundleContext.getServiceReference(ConfigurationService.class.getName());
+			ServiceReference<?> serviceReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
 			configService = (ConfigurationService) bundleContext.getService(serviceReference);
 		}
 		return configService;

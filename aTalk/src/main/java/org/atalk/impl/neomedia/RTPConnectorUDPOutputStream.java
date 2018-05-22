@@ -5,10 +5,7 @@
  */
 package org.atalk.impl.neomedia;
 
-import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.packetlogging.PacketLoggingService;
-import org.ice4j.socket.MultiplexingDatagramSocket;
 
 import java.io.IOException;
 import java.net.*;
@@ -56,32 +53,6 @@ public class RTPConnectorUDPOutputStream extends RTPConnectorOutputStream
 	{
 		socket.send(new DatagramPacket(packet.getBuffer(), packet.getOffset(), packet.getLength(),
 			target.getAddress(), target.getPort()));
-	}
-
-	/**
-	 * Log the packet.
-	 *
-	 * @param packet
-	 *        packet to log
-	 */
-	@Override
-	protected void doLogPacket(RawPacket packet, InetSocketAddress target)
-	{
-		if (socket == null || packet == null || target == null)
-			return;
-
-		// Do not log the packet if this one has been processed (and already
-		// logged) by the ice4j stack.
-		if (socket instanceof MultiplexingDatagramSocket)
-			return;
-
-		PacketLoggingService packetLogging = LibJitsi.getPacketLoggingService();
-
-		if (packetLogging != null)
-			packetLogging.logPacket(PacketLoggingService.ProtocolName.RTP, socket.getLocalAddress()
-				.getAddress(), socket.getLocalPort(), target.getAddress().getAddress(), target
-				.getPort(), PacketLoggingService.TransportName.UDP, true, packet.getBuffer(),
-				packet.getOffset(), packet.getLength());
 	}
 
 	/**

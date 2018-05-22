@@ -119,8 +119,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
 	public static ConfigurationService getConfigurationService()
 	{
 		if (configurationService == null) {
-			configurationService = ServiceUtils.getService(bundleContext,
-					ConfigurationService.class);
+			configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
 		}
 		return configurationService;
 	}

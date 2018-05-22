@@ -15,12 +15,10 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package net.java.sip.communicator.impl.netaddr;
 
-import net.java.sip.communicator.service.dns.DnssecException;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.netaddr.event.NetworkConfigurationChangeListener;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.NetworkUtils;
-import net.java.sip.communicator.util.SRVRecord;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.OSUtils;
@@ -31,7 +29,6 @@ import org.ice4j.ice.IceMediaStream;
 import org.ice4j.ice.harvest.StunCandidateHarvester;
 import org.ice4j.ice.harvest.TurnCandidateHarvester;
 import org.ice4j.security.LongTermCredential;
-import org.ice4j.stack.StunStack;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
@@ -45,8 +42,9 @@ import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.text.ParseException;
 import java.util.Enumeration;
+
+import de.measite.minidns.record.SRV;
 
 /**
  * This implementation of the Network Address Manager allows you to intelligently retrieve the
@@ -101,9 +99,6 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
     public void start()
     {
         this.localHostFinderSocket = initRandomPortSocket();
-
-        // set packet logging to ice4j stack
-        StunStack.setPacketLogger(new Ice4jPacketLogger());
     }
 
     /**
@@ -292,7 +287,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
      * @throws BindException if the port is already in use.
      */
     public InetSocketAddress getPublicAddressFor(InetAddress dst, int port)
-        throws IOException, BindException
+            throws IOException, BindException
     {
         // we'll try to bind so that we could notify the caller if the port has been taken already.
         DatagramSocket bindTestSocket = new DatagramSocket(port);
@@ -482,33 +477,36 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
      */
     public StunCandidateHarvester discoverStunServer(String domainName, byte[] userName, byte[] password)
     {
+        // cmeng - Do not proceed to check further if the domainName is not reachable, just return null
+        try {
+            InetAddress inetAddress = InetAddress.getByName(domainName);
+        } catch (UnknownHostException e) {
+            logger.warn("Unreachable host for TURN/STUN discovery: " + domainName);
+            return null;
+        }
+
         String srvrAddress = null;
         int port = 0;
-
         try {
-            SRVRecord srvRecord = NetworkUtils.getSRVRecord(TURN_SRV_NAME, Transport.UDP.toString(), domainName);
-            if (srvRecord != null) {
-                srvrAddress = srvRecord.getTarget();
+            SRV[] srvRecords = NetworkUtils.getSRVRecords(TURN_SRV_NAME, Transport.UDP.toString(), domainName);
+            if (srvRecords != null) {
+                srvrAddress = srvRecords[0].name.toString();
             }
 
+            // Seem to have a TURN server, so we'll be using it for both TURN and STUN harvesting.
             if (srvrAddress != null) {
-                // yay! we seem to have a TURN server, so we'll be using it for both TURN and STUN
-                // harvesting.
-                return new TurnCandidateHarvester(new TransportAddress(srvrAddress, srvRecord.getPort(), Transport.UDP),
+                return new TurnCandidateHarvester(new TransportAddress(srvrAddress, srvRecords[0].port, Transport.UDP),
                         new LongTermCredential(userName, password));
             }
 
-            // srvrAddres was null. try for a STUN only server.
-            srvRecord = NetworkUtils.getSRVRecord(STUN_SRV_NAME, Transport.UDP.toString(), domainName);
-            if (srvRecord != null) {
-                srvrAddress = srvRecord.getTarget();
-                port = srvRecord.getPort();
+            // srvrAddress was null. try for a STUN only server.
+            srvRecords = NetworkUtils.getSRVRecords(STUN_SRV_NAME, Transport.UDP.toString(), domainName);
+            if (srvRecords != null) {
+                srvrAddress = srvRecords[0].name.toString();
+                port = srvRecords[0].port;
             }
-        } catch (ParseException e) {
-            logger.info(domainName + " seems to be causing parse problems", e);
-            srvrAddress = null;
-        } catch (DnssecException e) {
-            logger.warn("DNSSEC validation for " + domainName + " STUN/TURN failed.", e);
+        } catch (IOException e) {
+            logger.warn("Failed to fetch STUN/TURN SRV RR for " + domainName + ": " + e.getMessage());
         }
 
         if (srvrAddress != null) {
@@ -516,7 +514,6 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
         }
         // srvrAddress was still null. sigh ...
         return null;
-
     }
 
     /**
@@ -524,8 +521,8 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
      * implies running the currently installed harvesters so that they would.
      *
      * @param rtpPort the port that we should try to bind the RTP component on (the RTCP one would
-     * automatically go to rtpPort +
-     * 1)
+     * automatically go to rtpPort + 1)
+     *
      * @param streamName the name of the stream to create
      * @param agent the <tt>Agent</tt> that should create the stream.
      * @return the newly created <tt>IceMediaStream</tt>.
