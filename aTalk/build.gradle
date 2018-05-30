@@ -35,6 +35,7 @@ configurations {
     // conflict with android internal classes
     all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     all*.exclude group: 'xpp3', module: 'xpp3'
+    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
 }
 
 android {
@@ -43,8 +44,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1030
-        versionName "1.3.0" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1031
+        versionName "1.3.1" // no alphabet allowed (e.g. 0.8.7.a)
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true
@@ -151,17 +152,10 @@ dependencies {
     implementation 'com.karumi:dexter:4.2.0'
     implementation 'com.github.yalantis:ucrop:2.2.1'
 
-    // Used by packetLogging
-    // implementation 'com.google.guava:guava:23.6-android'
-
     implementation 'com.googlecode.libphonenumber:libphonenumber:7.5.1'
     // when targeting Android API 23 and newer - class obsoleted
     implementation 'cz.msebera.android:httpclient:4.4.1.2' // duplicate class
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
-    // implementation 'dnsjava:dnsjava:2.1.8'
-
-    // User from conversation instead
-    // implementation 'de.measite.minidns:minidns-android21:0.2.3'
 
     implementation 'org.apache.commons:commons-lang3:3.6'
     implementation 'org.bitlet:weupnp:0.1.4'
@@ -177,6 +171,7 @@ dependencies {
     implementation files('lib/smack/smack-omemo-4.2.3-SNAPSHOT.jar')
     implementation files('lib/smack/smack-omemo-signal-4.2.3-SNAPSHOT.jar')
     implementation 'org.whispersystems:signal-protocol-java:2.6.2'
+    implementation files('lib/smack/smack-core-4.2.5-SNAPSHOT.jar')
 
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
     implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"

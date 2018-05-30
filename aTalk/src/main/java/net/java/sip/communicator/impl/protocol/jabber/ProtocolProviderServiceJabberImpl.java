@@ -27,13 +27,13 @@ import net.java.sip.communicator.util.*;
 import org.atalk.android.*;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
 import org.atalk.crypto.omemo.AndroidOmemoService;
-import net.java.sip.communicator.util.NetworkUtils;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
+import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackException.*;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -49,6 +49,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jivesoftware.smack.util.dns.minidns.MiniDnsDane;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarData;
@@ -109,6 +110,7 @@ import java.util.*;
 import javax.net.SocketFactory;
 import javax.net.ssl.*;
 
+import de.measite.minidns.dnssec.DNSSECValidationFailedException;
 import de.measite.minidns.record.SRV;
 
 /**
@@ -206,6 +208,24 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * URN for XEP-0077 inband registration
      */
     public static final String URN_REGISTER = "jabber:iq:register";
+
+    /*
+     * Determines the requested DNSSEC security mode.
+     * <b>Note that Smack's support for DNSSEC/DANE is experimental!</b>
+     * <p>
+     * The default '{@link #disabled}' means that neither DNSSEC nor DANE verification will be performed. When
+     * '{@link #needsDnssec}' is used, then the connection will not be established if the resource records used
+     * to connect to the XMPP service are not authenticated by DNSSEC. Additionally, if '{@link #needsDnssecAndDane}'
+     * is used, then the XMPP service's TLS certificate is verified using DANE.
+     */
+    // Do not perform any DNSSEC authentication or DANE verification.
+    private static final String DNSSEC_DISABLE = "disabled";
+
+    // Require all DNS information to be authenticated by DNSSEC.
+    private static final String DNSSEC_ONLY = "needsDnssec";
+
+    // Require all DNS information to be authenticated by DNSSEC and require the XMPP service's TLS certificate to be verified using DANE.
+    private static final String DNSSEC_AND_DANE = "needsDnssecAndDane";
 
     /**
      * The name of the property under which the user may specify if the desktop streaming or sharing should be disabled.
@@ -437,9 +457,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * See {@link #initSmackDefaultSettings()}
      */
     private static int defaultPingInterval = 60 * 30;  // 30 minutes
-
-    // Default DnssecMode for connection
-    private DnssecMode mDdnssecMode = DnssecMode.disabled;
 
     /**
      * Set to success if protocol provider has successfully connected to the server.
@@ -829,13 +846,18 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             }
             // connect using overridden server name defined by user
             else if (isServerOverridden) {
-                String host
-                        = mAccountID.getAccountPropertyString(ProtocolProviderFactory.SERVER_ADDRESS, serviceName.toString());
+                String host = mAccountID.getAccountPropertyString(ProtocolProviderFactory.SERVER_ADDRESS,
+                        serviceName.toString());
                 int port = mAccountID.getAccountPropertyInt(ProtocolProviderFactory.SERVER_PORT, DEFAULT_PORT);
                 inetAddresses = Arrays.asList(InetAddress.getAllByName(host));
                 mHostAddress = new HostAddress(host, port, inetAddresses);
                 logger.info("Connect using server override: " + mHostAddress);
 
+                // For host given as ip address, then no DNSSEC authentication support
+                if (Character.digit(host.charAt(0), 16) != -1) {
+                    config.setHostAddress(inetAddresses.get(0));
+                }
+                // setHostAddress will take priority over setHost in smack populateHostAddresses() implementation
                 config.setHost(host);
                 config.setPort(port);
             }
@@ -863,38 +885,52 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         if (OpSetPP != null)
             config.setSendPresence(false);
 
-        // user have the possibility to disable TLS but in this case, it will not be able to
-        // connect to a server which requires TLS
-        boolean tlsRequired = loginStrategy.isTlsRequired();
-        config.setSecurityMode(tlsRequired
-                ? ConnectionConfiguration.SecurityMode.required : ConnectionConfiguration.SecurityMode.ifpossible);
-        TLSUtils.setSSLv3AndTLSOnly(config);
-
         if (mConnection != null && mConnection.isConnected()) {
             logger.warn("Attempt on connection that is not null and isConnected " + mAccountID.getAccountJid());
             disconnectAndCleanConnection();
         }
+        config.setSocketFactory(SocketFactory.getDefault());
+        TLSUtils.setSSLv3AndTLSOnly(config);
 
         // Cannot use a custom SSL context with DNSSEC enabled
-        // config.setDnssecMode(ConnectionConfiguration.DnssecMode.needsDnssec);
+        String dnssecMode = mAccountID.getDnssMode();
+        if (DNSSEC_DISABLE.equals(dnssecMode)) {
+            config.setDnssecMode(DnssecMode.disabled);
 
-        config.setSocketFactory(SocketFactory.getDefault());
-        CertificateService cvs = getCertificateVerificationService();
-        if (cvs != null) {
-            SSLContext sslContext;
-            try {
-                X509TrustManager sslTrustManager = getTrustManager(cvs, serviceName);
-                sslContext = loginStrategy.createSslContext(cvs, sslTrustManager);
-                config.setCustomSSLContext(sslContext);
-            } catch (GeneralSecurityException e) {
-                logger.error("Error creating custom trust manager", e);
+            // user have the possibility to disable TLS but in this case, it will not be able to
+            // connect to a server which requires TLS
+            boolean tlsRequired = loginStrategy.isTlsRequired();
+            config.setSecurityMode(tlsRequired ? SecurityMode.required : SecurityMode.ifpossible);
+
+            CertificateService cvs = getCertificateVerificationService();
+            if (cvs != null) {
+                SSLContext sslContext;
+                try {
+                    X509TrustManager sslTrustManager = getTrustManager(cvs, serviceName);
+                    sslContext = loginStrategy.createSslContext(cvs, sslTrustManager);
+                    config.setCustomSSLContext(sslContext);
+                    // config.setHostnameVerifier() => use smack default
+
+                } catch (GeneralSecurityException e) {
+                    logger.error("Error creating custom trust manager", e);
+                    XMPPError xmppError = XMPPError.getBuilder(Condition.service_unavailable).build();
+                    throw new XMPPException.XMPPErrorException(null, xmppError);
+                }
+            }
+            else if (tlsRequired) {
                 XMPPError xmppError = XMPPError.getBuilder(Condition.service_unavailable).build();
                 throw new XMPPException.XMPPErrorException(null, xmppError);
             }
         }
-        else if (tlsRequired) {
-            XMPPError xmppError = XMPPError.getBuilder(Condition.service_unavailable).build();
-            throw new XMPPException.XMPPErrorException(null, xmppError);
+        else {
+            if (DNSSEC_ONLY.equals(dnssecMode)) {
+                config.setDnssecMode(DnssecMode.needsDnssec);
+            }
+            else if (DNSSEC_AND_DANE.equals(dnssecMode)) {
+                // override user SecurityMode setting for DNSSEC & DANE option
+                config.setDnssecMode(DnssecMode.needsDnssecAndDane);
+                config.setSecurityMode(ConnectionConfiguration.SecurityMode.required);
+            }
         }
 
         // String userJid = userName + "@" + serviceName;
@@ -906,7 +942,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             mConnection = new XMPPTCPConnection(config.build());
         } catch (IllegalStateException ex) {
             // Cannot use a custom SSL context with DNSSEC enabled
-            String errMsg = ex.getMessage() + "\n Please change DNSSEC security option etc accordingly.";
+            String errMsg = ex.getMessage() + "\n Please change DNSSEC security option accordingly.";
             XMPPError xmppError = XMPPError.from(Condition.not_allowed, errMsg).build();
             throw new XMPPException.XMPPErrorException(null, xmppError);
         }
@@ -932,6 +968,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             logger.error("Encounter problem during XMPPConnection: " + errMsg);
             XMPPError xmppError = XMPPError.from(Condition.policy_violation, errMsg).build();
             throw new XMPPException.XMPPErrorException(null, xmppError);
+        } catch (DNSSECValidationFailedException ex) {
+            String errMsg = ex.getMessage();
+            XMPPError xmppError = XMPPError.from(Condition.not_acceptable, errMsg).build();
+            throw new XMPPException.XMPPErrorException(null, xmppError);
         } catch (SecurityRequiredByServerException ex) {
             // "SSL/TLS required by server but disabled in client"
             String errMsg = ex.getMessage();
@@ -943,6 +983,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             XMPPError xmppError = XMPPError.from(Condition.service_unavailable, errMsg).build();
             throw new XMPPException.XMPPErrorException(null, xmppError);
         } catch (XMPPException | SmackException | IOException | InterruptedException ex) {
+//            if (ex.getCause() instanceof SSLHandshakeException) {
+//                logger.error(ex.getCause());
+//            }
             String errMsg = "Encounter problem during XMPPConnection: " + ex.getMessage();
             logger.error(errMsg);
             XMPPError xmppError = XMPPError.from(Condition.remote_server_timeout, errMsg).build();
@@ -1207,7 +1250,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         /**
          * Notification that the connection has been successfully connected to the remote endpoint (e.g. the XMPP server).
-         *
+         * <p>
          * Note that the connection is likely not yet authenticated and therefore only limited operations like registering
          * an account may be possible.
          * </p>
@@ -1301,8 +1344,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private X509TrustManager getTrustManager(CertificateService cvs, DomainBareJid serviceName)
             throws GeneralSecurityException
     {
-        return new HostTrustManager(cvs.getTrustManager(
-                Arrays.asList(serviceName.toString(), "_xmpp-client." + serviceName)));
+        return new HostTrustManager(
+                cvs.getTrustManager(Arrays.asList(serviceName.toString(), "_xmpp-client." + serviceName)));
     }
 
     /**
@@ -1466,7 +1509,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Registers the ServiceDiscoveryManager wrapper
-     *
+     * <p>
      * we setup all supported features before packets are actually being sent during feature
      * registration. So we'd better do it here so that our first presence update would
      * contain a caps with the right features.
@@ -1501,7 +1544,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Setup all the Smack Service Discovery and other features that can only be performed during
      * actual account registration stage (mConnection). For initial setup see:
      * {@link #initSmackDefaultSettings()} and {@link #initialize(EntityBareJid, AccountID)}
-     *
+     * <p>
      * Note: For convenience, many of the OperationSets when supported will handle state and events changes on its own.
      */
     private void initServicesAndFeatures()
@@ -1549,7 +1592,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Defined all the entity capabilities for the EntityCapsManager to advertise in
      * disco#info query from other entities. Some features support are user selectable
-     *
+     * <p>
      * Note: Do not need to mention if there are already included in Smack Library and have been
      * activated.
      */
@@ -1747,6 +1790,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         SmackConfiguration.addDisabledSmackClass("org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager");
 
         XMPPTCPConnection.setUseStreamManagementDefault(true);
+
+        // setup Dane provider
+        MiniDnsDane.setup();
 
         // Enable XEP-0054 User Avatar mode to disable avatar photo update via <presence/><photo/>
         AvatarManager.setUserAvatar(true);
@@ -2093,10 +2139,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Determines whether a specific <tt>XMPPException</tt> signals that attempted login has failed.
-     *
+     * <p>
      * Calling method will trigger a re-login dialog if the return <tt>failureMode</tt> is not
      * <tt>SecurityAuthority.REASON_UNKNOWN</tt> etc
-     *
+     * <p>
      * Add additional exMsg message if necessary to achieve this effect.
      *
      * @param ex the <tt>XMPPException</tt> which is to be determined whether it signals that attempted
@@ -2297,7 +2343,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * The trust manager which asks the client whether to trust particular certificate which is not
-     * globally trusted.
+     * android root's CA trusted.
      */
     private class HostTrustManager implements X509TrustManager
     {
@@ -2401,7 +2447,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Return the EntityFullJid associate with this protocol provider.
-     *
+     * <p>
      * Build our own EntityJid if not connected. May not be full compliant - For explanation
      *
      * @return the Jabber EntityFullJid

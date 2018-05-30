@@ -219,6 +219,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
             // else
             cachedCredentials = credentials;
 
+            accountID.setDnssMode(credentials.getDnssecMode());
             accountID.setServerOverridden(credentials.isServerOverridden());
             accountID.setServerAddress(credentials.getServerAddress());
             accountID.setServerPort(credentials.getServerPort());

@@ -18,12 +18,13 @@ package org.atalk.android.gui.login;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.*;
+import android.text.InputType;
 import android.view.*;
 import android.widget.*;
-
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
+
+import java.util.Arrays;
 
 /**
  * The credentials fragment can be used to retrieve username, password, the "store password" option status, login
@@ -42,154 +43,166 @@ import org.atalk.android.gui.util.ViewUtil;
  *
  * @author Eng Chong Meng
  */
-public class CredentialsFragment extends Fragment
-{
-	/**
-	 * Pre-entered login argument.
-	 */
-	public static final String ARG_LOGIN = "login";
+public class CredentialsFragment extends Fragment {
+    /**
+     * Pre-entered login argument.
+     */
+    public static final String ARG_LOGIN = "login";
 
-	/**
-	 * Pre-entered password argument.
-	 */
-	public static final String ARG_PASSWORD = "password";
+    /**
+     * Pre-entered password argument.
+     */
+    public static final String ARG_PASSWORD = "password";
 
-	/**
-	 * Argument indicating whether the login can be edited.
-	 */
-	public static final String ARG_LOGIN_EDITABLE = "login_editable";
+    /**
+     * Pre-entered dnssecMode argument.
+     */
+    public static final String ARG_DNSSEC_MODE = "dnssec_mode";
 
-	/**
-	 * Pre-entered "store password" <tt>boolean</tt> value.
-	 */
-	public static final String ARG_STORE_PASSWORD = "store_pass";
+    /**
+     * Argument indicating whether the login can be edited.
+     */
+    public static final String ARG_LOGIN_EDITABLE = "login_editable";
 
-	/**
-	 * Pre-entered "store password" <tt>boolean</tt> value.
-	 */
-	public static final String ARG_IB_REGISTRATION = "ib_registration";
+    /**
+     * Pre-entered "store password" <tt>boolean</tt> value.
+     */
+    public static final String ARG_STORE_PASSWORD = "store_pass";
 
-	/**
-	 * Show server option for user entry if true " <tt>boolean</tt> value.
-	 */
-	public static final String ARG_IS_SHOWN_SERVER_OPTION = "is_shown_server_option";
+    /**
+     * Pre-entered "store password" <tt>boolean</tt> value.
+     */
+    public static final String ARG_IB_REGISTRATION = "ib_registration";
 
-	/**
-	 * Pre-entered "is server overridden" <tt>boolean</tt> value.
-	 */
-	public static final String ARG_IS_SERVER_OVERRIDDEN = "is_server_overridden";
+    /**
+     * Show server option for user entry if true " <tt>boolean</tt> value.
+     */
+    public static final String ARG_IS_SHOWN_SERVER_OPTION = "is_shown_server_option";
 
-	/**
-	 * Pre-entered "store server address".
-	 */
-	public static final String ARG_SERVER_ADDRESS = "server_address";
+    /**
+     * Pre-entered "is server overridden" <tt>boolean</tt> value.
+     */
+    public static final String ARG_IS_SERVER_OVERRIDDEN = "is_server_overridden";
 
-	/**
-	 * Pre-entered "store server port".
-	 */
-	public static final String ARG_SERVER_PORT = "server_port";
+    /**
+     * Pre-entered "store server address".
+     */
+    public static final String ARG_SERVER_ADDRESS = "server_address";
 
-	/**
-	 * Reason for the login / reLogin.
-	 */
-	public static final String ARG_LOGIN_REASON = "login_reason";
+    /**
+     * Pre-entered "store server port".
+     */
+    public static final String ARG_SERVER_PORT = "server_port";
 
-	private CheckBox mServerOverrideCheckBox;
-	private EditText mServerIpField;
-	private EditText mServerPortField;
+    /**
+     * Reason for the login / reLogin.
+     */
+    public static final String ARG_LOGIN_REASON = "login_reason";
 
-	private EditText mPasswordField;
-	private CheckBox mShowPasswordCheckBox;
-	private ImageView mShowPasswordImage;
+    private CheckBox mServerOverrideCheckBox;
+    private EditText mServerIpField;
+    private EditText mServerPortField;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		Bundle args = getArguments();
-		View content = inflater.inflate(R.layout.credentials, container, false);
+    private EditText mPasswordField;
+    private CheckBox mShowPasswordCheckBox;
+    private ImageView mShowPasswordImage;
+    private Spinner spinnerDM;
 
-		ViewUtil.setTextViewValue(content, R.id.username, args.getString(ARG_LOGIN));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Bundle args = getArguments();
+        View content = inflater.inflate(R.layout.credentials, container, false);
 
-		boolean loginEditable = args.getBoolean(ARG_LOGIN_EDITABLE, true);
-		content.findViewById(R.id.username).setEnabled(loginEditable);
+        spinnerDM = content.findViewById(R.id.dnssecModeSpinner);
+        ArrayAdapter<CharSequence> adapterDM = ArrayAdapter.createFromResource(getActivity(),
+                R.array.dnssec_Mode_name, R.layout.simple_spinner_item);
+        adapterDM.setDropDownViewResource(R.layout.dropdown_spinner_item);
+        spinnerDM.setAdapter(adapterDM);
 
-		mShowPasswordCheckBox = content.findViewById(R.id.show_password);
-		mShowPasswordImage = content.findViewById(R.id.pwdviewImage);
+        String dnssecMode = args.getString(ARG_DNSSEC_MODE);
+        String[] dnssecModeValues = getResources().getStringArray(R.array.dnssec_Mode_value);
+        int sPos = Arrays.asList(dnssecModeValues).indexOf(dnssecMode);
+        spinnerDM.setSelection(sPos);
 
-		mPasswordField = content.findViewById(R.id.password);
-		mPasswordField.setText(args.getString(ARG_PASSWORD));
-		// ViewUtil.setTextViewValue(content, R.id.password, args.getString(ARG_PASSWORD));
+        ViewUtil.setTextViewValue(content, R.id.username, args.getString(ARG_LOGIN));
+        boolean loginEditable = args.getBoolean(ARG_LOGIN_EDITABLE, true);
+        content.findViewById(R.id.username).setEnabled(loginEditable);
 
-		ViewUtil.setCompoundChecked(content, R.id.store_password, args.getBoolean(ARG_STORE_PASSWORD, true));
+        mShowPasswordCheckBox = content.findViewById(R.id.show_password);
+        mShowPasswordImage = content.findViewById(R.id.pwdviewImage);
 
-		ViewUtil.setCompoundChecked(content, R.id.ib_registration, args.getBoolean(ARG_IB_REGISTRATION, false));
+        mPasswordField = content.findViewById(R.id.password);
+        mPasswordField.setText(args.getString(ARG_PASSWORD));
+        // ViewUtil.setTextViewValue(content, R.id.password, args.getString(ARG_PASSWORD));
 
-		Boolean isShownServerOption = args.getBoolean(ARG_IS_SHOWN_SERVER_OPTION, false);
-		if (isShownServerOption) {
-			Boolean isServerOverridden = args.getBoolean(ARG_IS_SERVER_OVERRIDDEN, false);
-			mServerOverrideCheckBox = content.findViewById(R.id.serverOverridden);
-			ViewUtil.setCompoundChecked(content, R.id.serverOverridden, isServerOverridden);
+        ViewUtil.setCompoundChecked(content, R.id.store_password, args.getBoolean(ARG_STORE_PASSWORD, true));
+        ViewUtil.setCompoundChecked(content, R.id.ib_registration, args.getBoolean(ARG_IB_REGISTRATION, false));
 
-			mServerIpField = content.findViewById(R.id.serverIpField);
-			mServerIpField.setText(args.getString(ARG_SERVER_ADDRESS));
+        Boolean isShownServerOption = args.getBoolean(ARG_IS_SHOWN_SERVER_OPTION, false);
+        if (isShownServerOption) {
+            Boolean isServerOverridden = args.getBoolean(ARG_IS_SERVER_OVERRIDDEN, false);
+            mServerOverrideCheckBox = content.findViewById(R.id.serverOverridden);
+            ViewUtil.setCompoundChecked(content, R.id.serverOverridden, isServerOverridden);
 
-			mServerPortField = content.findViewById(R.id.serverPortField);
-			mServerPortField.setText(args.getString(ARG_SERVER_PORT));
-			updateViewVisibility(isServerOverridden);
-		}
-		else {
-			content.findViewById(R.id.serverOverridden).setVisibility(View.GONE);
-			content.findViewById(R.id.serverField).setVisibility(View.GONE);
-		}
+            mServerIpField = content.findViewById(R.id.serverIpField);
+            mServerIpField.setText(args.getString(ARG_SERVER_ADDRESS));
 
-		String loginReason = args.getString(ARG_LOGIN_REASON);
-		TextView reasonField = content.findViewById(R.id.reason_field);
-		reasonField.setText(loginReason);
+            mServerPortField = content.findViewById(R.id.serverPortField);
+            mServerPortField.setText(args.getString(ARG_SERVER_PORT));
+            updateViewVisibility(isServerOverridden);
+        } else {
+            content.findViewById(R.id.serverOverridden).setVisibility(View.GONE);
+            content.findViewById(R.id.serverField).setVisibility(View.GONE);
+        }
 
-		initializeViewListeners();
-		return content;
-	}
+        String loginReason = args.getString(ARG_LOGIN_REASON);
+        TextView reasonField = content.findViewById(R.id.reason_field);
+        reasonField.setText(loginReason);
 
-	private void initializeViewListeners() {
-		mShowPasswordCheckBox.setOnCheckedChangeListener(
-				new CompoundButton.OnCheckedChangeListener() {
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-						showPassword(isChecked);
-					}
-				});
+        initializeViewListeners();
+        return content;
+    }
 
-		mServerOverrideCheckBox.setOnCheckedChangeListener(
-				new CompoundButton.OnCheckedChangeListener() {
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-						updateViewVisibility(isChecked);
-					}
-				});
-	}
+    private void initializeViewListeners() {
+        mShowPasswordCheckBox.setOnCheckedChangeListener(
+                new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        showPassword(isChecked);
+                    }
+                });
 
-	private void showPassword(boolean show) {
-		int cursorPosition = mPasswordField.getSelectionStart();
-		if (show) {
-			mShowPasswordImage.setAlpha(1.0f);
-			mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-		} else {
-			mShowPasswordImage.setAlpha(0.3f);
-			mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-		}
-		mPasswordField.setSelection(cursorPosition);
-	}
+        mServerOverrideCheckBox.setOnCheckedChangeListener(
+                new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        updateViewVisibility(isChecked);
+                    }
+                });
+    }
 
-	private void updateViewVisibility(boolean IsServerOverridden) {
-		if (IsServerOverridden) {
-			mServerIpField.setVisibility(View.VISIBLE);
-			mServerPortField.setVisibility(View.VISIBLE);
-		} else {
-			mServerIpField.setVisibility(View.GONE);
-			mServerPortField.setVisibility(View.GONE);
-		}
-	}
+    private void showPassword(boolean show) {
+        int cursorPosition = mPasswordField.getSelectionStart();
+        if (show) {
+            mShowPasswordImage.setAlpha(1.0f);
+            mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        } else {
+            mShowPasswordImage.setAlpha(0.3f);
+            mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
+        mPasswordField.setSelection(cursorPosition);
+    }
+
+    private void updateViewVisibility(boolean IsServerOverridden) {
+        if (IsServerOverridden) {
+            mServerIpField.setVisibility(View.VISIBLE);
+            mServerPortField.setVisibility(View.VISIBLE);
+        } else {
+            mServerIpField.setVisibility(View.GONE);
+            mServerPortField.setVisibility(View.GONE);
+        }
+    }
 }

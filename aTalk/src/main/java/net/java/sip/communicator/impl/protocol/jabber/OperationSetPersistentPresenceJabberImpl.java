@@ -982,17 +982,26 @@ public class OperationSetPersistentPresenceJabberImpl
                 PresenceStatus oldStatus = currentStatus;
                 PresenceStatus currentStatus = parentProvider.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE);
                 clearLocalContactResources();
+
+                OperationSetServerStoredAccountInfo accountInfoOpSet
+                        = parentProvider.getOperationSet(OperationSetServerStoredAccountInfo.class);
+                if (accountInfoOpSet != null) {
+                    accountInfoOpSet.clearDetails();
+                }
+
                 updateAllStatus = true;
                 fireProviderStatusChangeEvent(oldStatus, currentStatus);
                 ssContactList.cleanup();
 
                 if (xmppConnection != null) {
                     // Remove all subscription listeners upon de-registration
-                    mRoster.removeSubscribeListener(OperationSetPersistentPresenceJabberImpl.this);
-                    mRoster.removePresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
-                    mRoster.removeRosterListener(contactChangesListener);
-                    mRoster = null;
-                    logger.info("SubscribeListener and PresenceEventListener removed");
+                    if (mRoster != null) {
+                        mRoster.removeSubscribeListener(OperationSetPersistentPresenceJabberImpl.this);
+                        mRoster.removePresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
+                        mRoster.removeRosterListener(contactChangesListener);
+                        mRoster = null;
+                        logger.info("SubscribeListener and PresenceEventListener removed");
+                    }
 
                     // vCardAvatarManager can be null for unRegistered account
                     if (vCardAvatarManager != null) {

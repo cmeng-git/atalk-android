@@ -106,7 +106,7 @@ public class NotificationSettings extends OSGiActivity
 		 */
 		NotificationsAdapter() {
 			Iterator<String> eventsIter = notificationService.getRegisteredEvents().iterator();
-			this.events = new ArrayList<String>();
+			this.events = new ArrayList<>();
 			while (eventsIter.hasNext()) {
 				events.add(eventsIter.next());
 			}

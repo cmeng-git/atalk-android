@@ -60,7 +60,12 @@ public class UserCredentials
 	 */
 	private String loginReason = null;
 
-	/**
+    /**
+     * Reason for login / reLogin.
+     */
+    private String dnssecMode = null;
+
+    /**
 	 * Sets the name of the user that this credentials relate to.
 	 *
 	 * @param userName
@@ -230,7 +235,28 @@ public class UserCredentials
 		return this.serverPort;
 	}
 
-	/**
+    /**
+     * Sets the dnssecMode that user has selected.
+     *
+     * @param dnssecMode
+     * 		the dnssecMode of the user that this credentials relate to.
+     */
+    public void setDnssecMode(String dnssecMode)
+    {
+        this.dnssecMode = dnssecMode;
+    }
+
+    /**
+     * Returns the dnssecMode of the user that this credentials relate to.
+     *
+     * @return the dnssecMode.
+     */
+    public String getDnssecMode()
+    {
+        return this.dnssecMode;
+    }
+
+    /**
 	 * Sets the reason for the login / reLogin.
 	 *
 	 * @param reason

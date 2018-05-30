@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.service.configuration.ConfigurationService;
 
 /**
  * Class that handles common attributes and operations for all configuration widgets.
@@ -101,13 +102,14 @@ class ConfigWidgetUtil
     void handlePersistValue(final Object value)
     {
         updateSummary(value);
-
         Thread store = new Thread()
         {
             @Override
             public void run()
             {
-                AndroidGUIActivator.getConfigurationService().setProperty(parent.getKey(), value);
+                ConfigurationService confService = AndroidGUIActivator.getConfigurationService();
+                if (confService != null)
+                    confService.setProperty(parent.getKey(), value);
             }
         };
 

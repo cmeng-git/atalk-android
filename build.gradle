@@ -26,7 +26,7 @@ project.ext {
     testCoverage = project.hasProperty('testCoverage')
 
     minSdkVersion = 15
-    compileSdkVersion = 26
+    compileSdkVersion = 27
     buildToolsVersion = '27.0.3'
     supportLibraryVersion = '27.1.1'
     gmsPlayServicesVersion = '15.0.1'

@@ -264,11 +264,11 @@
             android:title="@string/service_gui_settings_SIP">
             <intent android:action=".android.gui.settings.SipSettings" />
         </PreferenceScreen>
-        <PreferenceScreen
+        <!--PreferenceScreen
             android:summary="@string/service_gui_settings_DNS_SUMMARY"
             android:title="@string/service_gui_settings_DNS">
             <intent android:action=".android.gui.settings.DnsSettings" />
-        </PreferenceScreen>
+        </PreferenceScreen-->
         <PreferenceScreen
             android:summary="@string/plugin_provisioning_PROVISIONING_SUMMARY"
             android:title="@string/plugin_provisioning_PROVISIONING">

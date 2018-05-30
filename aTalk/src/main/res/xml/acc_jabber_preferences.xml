@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:custom="http://schemas.android.com/apk/res/org.atalk.android">
+    xmlns:custom="http://schemas.android.com/apk/res/org.atalk.android">
     <PreferenceCategory
         android:key="@string/pref_cat_account"
-        android:title="@string/service_gui_JBR_USER_CATEGORY"
-        >
+        android:title="@string/service_gui_JBR_USER_CATEGORY">
         <EditTextPreference
             android:enabled="false"
             android:key="@string/pref_key_user_id"
-            android:title="@string/service_gui_JBR_USER"
-            />
+            android:title="@string/service_gui_JBR_USER" />
         <EditTextPreference
             android:inputType="textPassword"
             android:key="@string/pref_key_password"
-            android:title="@string/service_gui_JBR_PASSWORD"
-            />
+            android:title="@string/service_gui_JBR_PASSWORD" />
         <CheckBoxPreference
             android:key="@string/pref_key_store_password"
             android:summary="@string/service_gui_JBR_STORE_PASSWORD_SUMMARY"
-            android:title="@string/service_gui_JBR_STORE_PASSWORD"
-            />
+            android:title="@string/service_gui_JBR_STORE_PASSWORD" />
+        <ListPreference
+            android:entries="@array/dnssec_Mode_name"
+            android:entryValues="@array/dnssec_Mode_value"
+            android:key="@string/pref_key_dnssec_mode"
+            android:title="@string/service_gui_settings_DNSSEC_DANE" />
     </PreferenceCategory>
+
     <PreferenceCategory
         android:key="@string/pref_cat_jbr_advanced"
-        android:title="@string/service_gui_JBR_ADVANCED"
-        >
+        android:title="@string/service_gui_JBR_ADVANCED">
         <Preference
             android:key="@string/pref_key_enable_encryption"
-            android:title="@string/service_gui_PREF_ENCRYPTION"
-            />
+            android:title="@string/service_gui_PREF_ENCRYPTION" />
         <PreferenceScreen
             android:key="@string/pref_screen_jbr_conn"
             android:summary="@string/service_gui_JBR_CONN_SUMMARY"
@@ -39,20 +39,17 @@
                 android:title="@string/service_gui_JBR_CONN_GENERAL">
                 <CheckBoxPreference
                     android:key="@string/pref_key_gmail_notifications"
-                    android:title="@string/service_gui_JBR_GMAIL_NOTIFICATIONS"
-                    />
+                    android:title="@string/service_gui_JBR_GMAIL_NOTIFICATIONS" />
                 <CheckBoxPreference
                     android:key="@string/pref_key_google_contact_enabled"
-                    android:title="@string/service_gui_JBR_GOOGLE_CONTACTS_SEARCH"
-                    />
+                    android:title="@string/service_gui_JBR_GOOGLE_CONTACTS_SEARCH" />
                 <ListPreference
                     android:dialogTitle="@string/service_gui_JBR_DTMF_SUMMARY"
                     android:entries="@array/pref_jabber_dtmf_method"
                     android:entryValues="@array/pref_jabber_dtmf_method_values"
 
                     android:key="@string/pref_key_dtmf_method"
-                    android:title="@string/service_gui_JBR_DTMF_METHOD"
-                    />
+                    android:title="@string/service_gui_JBR_DTMF_METHOD" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="@string/pref_cat_jbr_server_opts"
@@ -60,35 +57,29 @@
                 <CheckBoxPreference
                     android:key="@string/pref_key_is_keep_alive_enable"
                     android:summary="@string/service_gui_JBR_KEEP_ALIVE_SUMMARY"
-                    android:title="@string/service_gui_JBR_KEEP_ALIVE_ENABLE"
-                    />
+                    android:title="@string/service_gui_JBR_KEEP_ALIVE_ENABLE" />
                 <EditTextPreference
                     android:defaultValue="1800"
                     android:dependency="@string/pref_key_is_keep_alive_enable"
                     android:inputType="number"
                     android:key="@string/pref_key_ping_interval"
-                    android:title="@string/service_gui_JBR_PING_INTERVAL"
-                    />
+                    android:title="@string/service_gui_JBR_PING_INTERVAL" />
                 <CheckBoxPreference
                     android:key="@string/pref_key_is_server_overridden"
-                    android:title="@string/service_gui_JBR_OVERRIDE_SERVER"
-                    />
+                    android:title="@string/service_gui_JBR_OVERRIDE_SERVER" />
                 <EditTextPreference
                     android:dependency="@string/pref_key_is_server_overridden"
                     android:key="@string/pref_key_server_address"
-                    android:title="@string/service_gui_JBR_SERVER"
-                    />
+                    android:title="@string/service_gui_JBR_SERVER" />
                 <EditTextPreference
                     android:dependency="@string/pref_key_is_server_overridden"
                     android:inputType="number"
                     android:key="@string/pref_key_server_port"
-                    android:title="@string/service_gui_JBR_PORT"
-                    />
+                    android:title="@string/service_gui_JBR_PORT" />
                 <CheckBoxPreference
                     android:key="@string/pref_key_allow_non_secure_conn"
                     android:summary="@string/service_gui_JBR_SSL_SUMMARY"
-                    android:title="@string/service_gui_JBR_ALLOW_NON_SECURE"
-                    />
+                    android:title="@string/service_gui_JBR_ALLOW_NON_SECURE" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="@string/pref_cat_jbr_resource"
@@ -96,59 +87,50 @@
                 <CheckBoxPreference
                     android:disableDependentsState="true"
                     android:key="@string/pref_key_auto_gen_resource"
-                    android:title="@string/service_gui_JBR_RES_AUTO_GEN"
-                    />
+                    android:title="@string/service_gui_JBR_RES_AUTO_GEN" />
                 <EditTextPreference
                     android:dependency="@string/pref_key_auto_gen_resource"
                     android:key="@string/pref_key_resource_name"
-                    android:title="@string/service_gui_JBR_RESURCE_NAME"
-                    />
+                    android:title="@string/service_gui_JBR_RESURCE_NAME" />
                 <EditTextPreference
                     android:inputType="number"
                     android:key="@string/pref_key_resource_priority"
-                    android:title="@string/service_gui_JBR_PRIORITY"
-                    />
+                    android:title="@string/service_gui_JBR_PRIORITY" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
             android:summary="@string/service_gui_settings_ACCOUNT_PROXY_SUMMARY"
             android:title="@string/service_gui_settings_ACCOUNT_PROXY">
-            <PreferenceCategory >
+            <PreferenceCategory>
                 <CheckBoxPreference
                     android:key="@string/pref_key_proxy_enable"
                     android:summary="@string/plugin_proxy_PROXY_ENABLE_SUMMARY"
-                    android:title="@string/plugin_proxy_PROXY_ENABLE"
-                    />
+                    android:title="@string/plugin_proxy_PROXY_ENABLE" />
                 <ListPreference
                     android:entries="@array/pref_proxy_type"
                     android:entryValues="@array/pref_proxy_type"
                     android:key="@string/pref_key_proxy_type"
-                    android:title="@string/plugin_proxy_PROXY_TYPE"
-                    />
+                    android:title="@string/plugin_proxy_PROXY_TYPE" />
                 <EditTextPreference
                     android:dependency="@string/pref_key_proxy_type"
                     android:key="@string/pref_key_proxy_address"
-                    android:title="@string/plugin_proxy_PROXY_ADDRESS"
-                    />
+                    android:title="@string/plugin_proxy_PROXY_ADDRESS" />
                 <org.atalk.android.gui.settings.widget.ConfigEditText
                     android:dependency="@string/pref_key_proxy_type"
                     android:inputType="number"
                     android:key="@string/pref_key_proxy_port"
                     android:title="@string/plugin_proxy_PROXY_PORT"
                     custom:intMax="65535"
-                    custom:intMin="0"
-                    />
+                    custom:intMin="0" />
                 <EditTextPreference
                     android:dependency="@string/pref_key_proxy_type"
                     android:key="@string/pref_key_proxy_username"
-                    android:title="@string/plugin_proxy_PROXY_USERNAME"
-                    />
+                    android:title="@string/plugin_proxy_PROXY_USERNAME" />
                 <EditTextPreference
                     android:dependency="@string/pref_key_proxy_type"
                     android:inputType="textPassword"
                     android:key="@string/pref_key_proxy_password"
-                    android:title="@string/plugin_proxy_PROXY_PASSWORD"
-                    />
+                    android:title="@string/plugin_proxy_PROXY_PASSWORD" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
@@ -160,38 +142,31 @@
                 android:title="@string/service_gui_JBR_ICE_GENERAL">
                 <CheckBoxPreference
                     android:key="@string/pref_key_ice_enabled"
-                    android:title="@string/service_gui_JBR_USE_ICE"
-                    />
+                    android:title="@string/service_gui_JBR_USE_ICE" />
                 <CheckBoxPreference
                     android:key="@string/pref_key_upnp_enabled"
-                    android:title="@string/service_gui_JBR_USE_UPNP"
-                    />
+                    android:title="@string/service_gui_JBR_USE_UPNP" />
                 <CheckBoxPreference
                     android:key="@string/pref_key_auto_discover_stun"
-                    android:title="@string/service_gui_JBR_AUTO_STUN_DICOVERY"
-                    />
+                    android:title="@string/service_gui_JBR_AUTO_STUN_DICOVERY" />
                 <Preference
                     android:key="@string/pref_key_stun_turn_servers"
                     android:summary="@string/service_gui_JBR_STUN_LIST_SUMMARY"
-                    android:title="@string/service_gui_JBR_STUN_LIST"
-                    />
+                    android:title="@string/service_gui_JBR_STUN_LIST" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="@string/pref_cat_jbr_jnodes"
                 android:title="@string/service_gui_JBR_JINGLE_NODES">
                 <CheckBoxPreference
                     android:key="@string/pref_key_use_jingle_nodes"
-                    android:title="@string/service_gui_JBR_JINGLE_SUMMARY"
-                    />
+                    android:title="@string/service_gui_JBR_JINGLE_SUMMARY" />
                 <CheckBoxPreference
                     android:key="@string/pref_key_auto_relay_dicovery"
-                    android:title="@string/service_gui_JBR_JINGLE_AUTO"
-                    />
+                    android:title="@string/service_gui_JBR_JINGLE_AUTO" />
                 <Preference
                     android:key="@string/pref_key_jingle_node_list"
                     android:summary="@string/service_gui_JBR_JINGLE_LIST_SUMMARY"
-                    android:title="@string/service_gui_JBR_JINGLE_LIST"
-                    />
+                    android:title="@string/service_gui_JBR_JINGLE_LIST" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
@@ -201,28 +176,22 @@
             <CheckBoxPreference
                 android:key="@string/pref_key_calling_disabled"
                 android:summary="@string/service_gui_JBR_DISABLE_JINGLE_SUMMARY"
-                android:title="@string/service_gui_JBR_DISABLE_JINGLE"
-                />
+                android:title="@string/service_gui_JBR_DISABLE_JINGLE" />
             <EditTextPreference
                 android:key="@string/pref_key_override_phone_suffix"
-                android:title="@string/service_gui_JBR_TELE_DOMAIN"
-                />
+                android:title="@string/service_gui_JBR_TELE_DOMAIN" />
             <EditTextPreference
                 android:key="@string/pref_key_tele_bypass_gtalk_caps"
-                android:title="@string/service_gui_JBR_GTALK_DOMAIN"
-                />
+                android:title="@string/service_gui_JBR_GTALK_DOMAIN" />
         </PreferenceScreen>
         <Preference
             android:key="@string/pref_cat_audio_encoding"
             android:summary="@string/service_gui_PREF_AUDIO_ENC_SUMMARY"
-            android:title="@string/service_gui_PREF_AUDIO_ENCODING">
-        </Preference>
+            android:title="@string/service_gui_PREF_AUDIO_ENCODING"></Preference>
         <Preference
             android:key="@string/pref_cat_video_encoding"
             android:summary="@string/service_gui_PREF_VIDEO_ENC_SUMMARY"
-            android:title="@string/service_gui_PREF_VIDEO_ENCODING"
-            >
-        </Preference>
+            android:title="@string/service_gui_PREF_VIDEO_ENCODING"></Preference>
     </PreferenceCategory>
 </PreferenceScreen>
 

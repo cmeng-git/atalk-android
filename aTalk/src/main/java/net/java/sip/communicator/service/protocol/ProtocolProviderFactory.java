@@ -38,8 +38,7 @@ import java.util.Map;
 public abstract class ProtocolProviderFactory
 {
     /**
-     * The <tt>Logger</tt> used by the <tt>ProtocolProviderFactory</tt> class and its instances for
-     * logging output.
+     * The <tt>Logger</tt> used by the <tt>ProtocolProviderFactory</tt> class and its instances for logging output.
      */
     private static final Logger logger = Logger.getLogger(ProtocolProviderFactory.class);
 
@@ -52,6 +51,11 @@ public abstract class ProtocolProviderFactory
      * The name of a property which indicate if password is persistent.
      */
     public static final String PASSWORD_PERSISTENT = "PASSWORD_PERSISTENT";
+
+    /**
+     * The name of a property which indicates dnssecMode i.e. disabled, needsDnssec or needsDnssecAndDane.
+     */
+    public static final String DNSSEC_MODE = "DNSSEC_MODE";
 
     /**
      * The name of a property representing the name of the protocol for an ProtocolProviderFactory.
@@ -248,8 +252,7 @@ public abstract class ProtocolProviderFactory
     public static final String DEFAULT_SIPZRTP_ATTRIBUTE = "DEFAULT_SIPZRTP_ATTRIBUTE";
 
     /**
-     * The name of the property which defines the ID of the client TLS certificate configuration
-     * entry.
+     * The name of the property which defines the ID of the client TLS certificate configuration entry.
      */
     public static final String CLIENT_TLS_CERTIFICATE = "CLIENT_TLS_CERTIFICATE";
 
@@ -313,26 +316,22 @@ public abstract class ProtocolProviderFactory
     public static final String IS_PREFERRED_PROTOCOL = "IS_PREFERRED_PROTOCOL";
 
     /**
-     * The name of the property that would indicate if a given account is currently enabled or
-     * disabled.
+     * The name of the property that would indicate if a given account is currently enabled or disabled.
      */
     public static final String IS_ACCOUNT_DISABLED = "IS_ACCOUNT_DISABLED";
 
     /**
-     * The name of the property that indicates if a given account needs InBand registration with
-     * the server
+     * The name of the property that indicates if a given account needs InBand registration with the server
      */
     public static final String IBR_REGISTRATION = "IBR_REGISTRATION";
 
     /**
-     * The name of the property that would indicate if a given account configuration form is
-     * currently hidden.
+     * The name of the property that would indicate if a given account configuration form is currently hidden.
      */
     public static final String IS_ACCOUNT_CONFIG_HIDDEN = "IS_CONFIG_HIDDEN";
 
     /**
-     * The name of the property that would indicate if a given account status menu is currently
-     * hidden.
+     * The name of the property that would indicate if a given account status menu is currently hidden.
      */
     public static final String IS_ACCOUNT_STATUS_MENU_HIDDEN = "IS_STATUS_MENU_HIDDEN";
 
@@ -437,8 +436,7 @@ public abstract class ProtocolProviderFactory
     public static final String VOICEMAIL_ENABLED = "VOICEMAIL_ENABLED";
 
     /**
-     * Address used to reach voicemail box, by services able to subscribe for voicemail new
-     * messages notifications.
+     * Address used to reach voicemail box, by services able to subscribe for voicemail new messages notifications.
      */
     public static final String VOICEMAIL_URI = "VOICEMAIL_URI";
 
@@ -520,8 +518,7 @@ public abstract class ProtocolProviderFactory
     public static final String CUSAX_PROVIDER_ACCOUNT_PROP = "cusax.XMPP_ACCOUNT_ID";
 
     /**
-     * The <code>BundleContext</code> containing (or to contain) the service registration of this
-     * factory.
+     * The <code>BundleContext</code> containing (or to contain) the service registration of this factory.
      */
     private final BundleContext bundleContext;
 
@@ -532,11 +529,15 @@ public abstract class ProtocolProviderFactory
     private final String protocolName;
 
     /**
+     * The configuration service.
+     */
+    private ConfigurationService configurationService;
+
+    /**
      * The table that we store our accounts in.
-     * <p>
+     *
      * TODO Synchronize the access to the field which may in turn be better achieved by also hiding
      * it from protected into private access.
-     * </p>
      */
     protected final Map<AccountID, ServiceRegistration<ProtocolProviderService>> registeredAccounts = new HashMap<>();
 
@@ -586,14 +587,13 @@ public abstract class ProtocolProviderFactory
     {
         this.bundleContext = bundleContext;
         this.protocolName = protocolName;
+        configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
     }
 
     /**
-     * Gets the <code>BundleContext</code> containing (or to contain) the service registration of
-     * this factory.
+     * Gets the <code>BundleContext</code> containing (or to contain) the service registration of this factory.
      *
-     * @return the <code>BundleContext</code> containing (or to contain) the service
-     * registration of this factory
+     * @return the <code>BundleContext</code> containing (or to contain) the service registration of this factory
      */
     public BundleContext getBundleContext()
     {
@@ -607,13 +607,11 @@ public abstract class ProtocolProviderFactory
      * particular sip-communicator session would be automatically reloaded during all following
      * sessions until they are removed through the removeAccount method.
      *
-     * @param userID the user identifier uniquely representing the newly created account within the
-     * protocol namespace.
+     * @param userID the user identifier uniquely representing the newly created account within the protocol namespace.
      * @param accountProperties a set of protocol (or implementation) specific properties defining the new account.
      * @return the AccountID of the newly created account.
-     * @throws java.lang.IllegalArgumentException if userID does not correspond to an identifier in the context of the underlying
-     * protocol or if accountProperties does not contain a complete set of account
-     * installation properties.
+     * @throws java.lang.IllegalArgumentException if userID does not correspond to an identifier in the context of the
+     * underlying protocol or if accountProperties does not contain a complete set of account installation properties.
      * @throws java.lang.IllegalStateException if the account has already been installed.
      * @throws java.lang.NullPointerException if any of the arguments is null.
      */
@@ -720,11 +718,10 @@ public abstract class ProtocolProviderFactory
      * The method stores the specified account in the configuration service under the package name
      * of the source factory. The restore and remove account methods are to be used to obtain
      * access to and control the stored accounts.
-     * <p>
+     *
      * In order to store all account properties, the method would create an entry in the
      * configuration service corresponding (beginning with) the <tt>sourceFactory</tt>'s package
      * name and add to it a unique identifier (e.g. the current milliseconds.)
-     * </p>
      *
      * @param accountID the AccountID corresponding to the account that we would like to store.
      */
@@ -737,11 +734,10 @@ public abstract class ProtocolProviderFactory
      * The method stores the specified account in the configuration service under the package name
      * of the source factory. The restore and remove account methods are to be used to obtain
      * access to and control the stored accounts.
-     * <p>
+     *
      * In order to store all account properties, the method would create an entry in the
      * configuration service corresponding (beginning with) the <tt>sourceFactory</tt>'s package
      * name and add to it a unique identifier (e.g. the current milliseconds.)
-     * </p>
      *
      * @param accountID the AccountID corresponding to the account that we would like to store.
      * @param isModification if <tt>false</tt> there must be no such already loaded account, it <tt>true</tt> ist
@@ -782,10 +778,9 @@ public abstract class ProtocolProviderFactory
     /**
      * Saves the password for the specified account after scrambling it a bit so that it is not
      * visible from first sight (Method remains highly insecure).
-     * <p>
+     *
      * TODO Delegate the implementation to {@link AccountManager} because it knows the format in
      * which the password (among the other account properties) is to be saved.
-     * </p>
      *
      * @param bundleContext a currently valid bundle context.
      * @param accountID the <tt>AccountID</tt> of the account whose password is to be stored
@@ -814,6 +809,53 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
+     * Saves the password for the specified account after scrambling it a bit so that it is not
+     * visible from first sight. (The method remains highly insecure).
+     *
+     * @param accountID the AccountID for the account whose password we're storing
+     * @param dnssecMode see DNSSEC_MODE definition
+     * @throws IllegalArgumentException if no account corresponding to <code>accountID</code> has been previously stored
+     */
+    public void storeDnssecMode(AccountID accountID, String dnssecMode)
+            throws IllegalArgumentException
+    {
+        try {
+            storeDnssecMode(getBundleContext(), accountID, dnssecMode);
+        } catch (OperationFailedException ofex) {
+            throw new UndeclaredThrowableException(ofex);
+        }
+    }
+
+    /**
+     * Saves the password for the specified account after scrambling it a bit so that it is not
+     * visible from first sight (Method remains highly insecure).
+     *
+     * TODO Delegate the implementation to {@link AccountManager} because it knows the format in
+     * which the password (among the other account properties) is to be saved.
+     *
+     * @param bundleContext a currently valid bundle context.
+     * @param accountID the <tt>AccountID</tt> of the account whose password is to be stored
+     * @param dnssecMode the dnssecMode to be stored
+     * @throws IllegalArgumentException if no account corresponding to <tt>accountID</tt> has been previously stored.
+     * @throws OperationFailedException if anything goes wrong while storing the specified <tt>password</tt>
+     */
+    protected void storeDnssecMode(BundleContext bundleContext, AccountID accountID, String dnssecMode)
+            throws IllegalArgumentException, OperationFailedException
+    {
+        String accountUuid = accountID.getAccountUuid();
+        if (accountUuid == null) {
+            throw new IllegalArgumentException("No previous records found for account ID: "
+                    + accountID.getAccountUniqueID());
+        }
+        configurationService.setProperty(accountUuid + "." + DNSSEC_MODE, dnssecMode);
+
+        // Update dnssecMode in the AccountID to prevent it from being removed during account reload in some cases.
+        accountID.setDnssMode(dnssecMode);
+    }
+
+    //=======================================
+
+    /**
      * Returns the password last saved for the specified account.
      *
      * @param accountID the AccountID for the account whose password we're looking for
@@ -826,10 +868,9 @@ public abstract class ProtocolProviderFactory
 
     /**
      * Returns the password last saved for the specified account.
-     * <p>
+     *
      * TODO Delegate the implementation to {@link AccountManager} because it knows the format in
      * which the password (among the other account properties) was saved.
-     * </p>
      *
      * @param bundleContext a currently valid bundle context.
      * @param accountID the AccountID for the account whose password we're looking for..
@@ -916,8 +957,7 @@ public abstract class ProtocolProviderFactory
         try {
             protocolProvider.unregister();
         } catch (OperationFailedException ex) {
-            logger.error("Failed to unregister protocol provider for account: " + accountID
-                    + " caused by: " + ex);
+            logger.error("Failed to unregister protocol provider for account: " + accountID + " caused by: " + ex);
         }
 
         ServiceRegistration<ProtocolProviderService> registration;
@@ -963,12 +1003,11 @@ public abstract class ProtocolProviderFactory
     /**
      * Creates a new <code>AccountID</code> instance with a specific user ID to represent a given
      * set of account properties.
-     * <p>
+     *
      * The method is a pure factory allowing implementers to specify the runtime type of the created
      * <code>AccountID</code> and customize the instance. The returned <code>AccountID</code> will
      * later be associated with a <code>ProtocolProviderService</code> by the caller (e.g. using
      * {@link #createService(String, AccountID)}).
-     * </p>
      *
      * @param userID the user ID of the new instance
      * @param accountProperties the set of properties to be represented by the new instance
@@ -993,11 +1032,10 @@ public abstract class ProtocolProviderFactory
     /**
      * Initializes a new <code>ProtocolProviderService</code> instance with a specific user ID to
      * represent a specific <code>AccountID</code>.
-     * <p>
+     *
      * The method is a pure factory allowing implementers to specify the runtime type of the created
      * <code>ProtocolProviderService</code> and customize the instance. The caller will later
      * register the returned service with the <code>BundleContext</code> of this factory.
-     * </p>
      *
      * @param userID the user ID to initialize the new instance with
      * @param accountID the <code>AccountID</code> to be represented by the new instance
@@ -1019,15 +1057,13 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Returns the prefix for all persistently stored properties of the account with the specified
-     * id.
+     * Returns the prefix for all persistently stored properties of the account with the specified id.
      *
      * @param bundleContext a currently valid bundle context.
      * @param accountID the AccountID of the account whose properties we're looking for.
      * @param sourcePackageName a String containing the package name of the concrete factory class that extends us.
      * @return a String indicating the ConfigurationService property name prefix under which all
-     * account properties are stored or null if no account corresponding to the specified id
-     * was found.
+     * account properties are stored or null if no account corresponding to the specified id was found.
      */
     public static String findAccountPrefix(BundleContext bundleContext, AccountID accountID, String sourcePackageName)
     {

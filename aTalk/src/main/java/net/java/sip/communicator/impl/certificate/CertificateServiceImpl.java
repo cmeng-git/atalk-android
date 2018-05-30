@@ -24,7 +24,6 @@ import net.java.sip.communicator.util.Logger;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.OSUtils;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.x509.*;
@@ -157,10 +156,8 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         setTrustStore();
         config.addPropertyChangeListener(PNAME_TRUSTSTORE_TYPE, this);
 
-        System.setProperty("com.sun.security.enableCRLDP",
-                config.getString(PNAME_REVOCATION_CHECK_ENABLED, "false"));
-        System.setProperty("com.sun.net.ssl.checkRevocation",
-                config.getString(PNAME_REVOCATION_CHECK_ENABLED, "false"));
+        System.setProperty("com.sun.security.enableCRLDP", config.getString(PNAME_REVOCATION_CHECK_ENABLED, "false"));
+        System.setProperty("com.sun.net.ssl.checkRevocation", config.getString(PNAME_REVOCATION_CHECK_ENABLED, "false"));
         Security.setProperty("ocsp.enable", config.getString(PNAME_OCSP_ENABLED, "false"));
     }
 
@@ -275,8 +272,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      */
     public void removeClientAuthCertificateConfig(String id)
     {
-        for (String p : config.getPropertyNamesByPrefix(
-                PNAME_CLIENTAUTH_CERTCONFIG_BASE + "." + id, true)) {
+        for (String p : config.getPropertyNamesByPrefix(PNAME_CLIENTAUTH_CERTCONFIG_BASE + "." + id, true)) {
             config.removeProperty(p);
         }
         config.removeProperty(PNAME_CLIENTAUTH_CERTCONFIG_BASE + "." + id);
@@ -363,8 +359,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 Provider p = (Provider) c.newInstance(new ByteArrayInputStream(config.getBytes()));
                 Security.insertProviderAt(p, 0);
             } catch (Exception e) {
-                logger.error("Tried to access the PKCS11 provider on an unsupported platform"
-                        + " or the load failed", e);
+                logger.error("Tried to access the PKCS11 provider on an unsupported platform or the load failed", e);
             }
         }
 
@@ -393,9 +388,8 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                                 }
 
                                 AuthenticationWindowService.AuthenticationWindow aw
-                                        = authenticationWindowService.create(f.getName(),
-                                        null, kt.getName(), false, false,
-                                        null, null, null, null, null, null, null);
+                                        = authenticationWindowService.create(f.getName(), null, kt.getName(), false,
+                                        false, null, null, null, null, null, null, null);
 
                                 aw.setAllowSavePassword(false);
                                 aw.setVisible(true);
@@ -506,6 +500,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         // obtain the default X509 trust manager
         X509TrustManager defaultTm = null;
         TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        // TrustManagerFactory tmFactory = TrustManagerFactory.getInstance("X509");
 
         // workaround for https://bugs.openjdk.java.net/browse/JDK-6672015
         KeyStore ks = null;
@@ -571,6 +566,8 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                     } catch (Exception e) {
                     } // don't care and take the chain as is
 
+                    // Domain specific configurations require that hostname aware checkServerTrusted(X509Certificate[],
+                    // String, String) is used") but required X509ExtenderTrustManager (API=24)
                     if (serverCheck)
                         tm.checkServerTrusted(chain, authType);
                     else
@@ -689,8 +686,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
 
                     // the AIA may contain different URLs and types, try all of them
                     for (AccessDescription ad : aia.getAccessDescriptions()) {
-                        // we are only interested in the issuer certificate, not in OCSP urls the
-                        // like
+                        // we are only interested in the issuer certificate, not in OCSP urls the like
                         if (!ad.getAccessMethod().equals(AccessDescription.id_ad_caIssuers))
                             continue;
 
@@ -724,8 +720,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                                 logger.debug("Could not download from <" + uri + ">");
                             }
                             // cache for 10mins
-                            aiaCache.put(uri, new AiaCacheEntry(new Date(new Date().getTime()
-                                    + 10 * 60 * 1000), cert));
+                            aiaCache.put(uri, new AiaCacheEntry(new Date(new Date().getTime() + 10 * 60 * 1000), cert));
                         }
                         if (cert != null) {
                             if (!cert.getIssuerDN().equals(cert.getSubjectDN())) {
@@ -811,6 +806,8 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
             return DO_NOT_TRUST;
         }
 
+        // show for proper moment, other may be obscure by others
+        aTalkApp.waitForDisplay();
         VerifyCertificateDialogService.VerifyCertificateDialog dialog
                 = CertificateVerificationActivator.getCertificateDialogService().createDialog(chain, null, message);
         dialog.setVisible(true);
@@ -824,8 +821,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     }
 
     /**
-     * Calculates the hash of the certificate known as the "thumbprint" and returns it as
-     * a string representation.
+     * Calculates the hash of the certificate known as the "thumbprint" and returns it as a string representation.
      *
      * @param cert The certificate to hash.
      * @param algorithm The hash algorithm to use.
