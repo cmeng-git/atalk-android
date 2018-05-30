@@ -28,6 +28,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -80,7 +81,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
     private static Boolean mPrefChange = false;
 
-    private static boolean permissionRequest = true;
+    private static boolean permissionFirstRequest = true;
 
     /**
      * The main pager view fragment containing the contact List
@@ -135,19 +136,34 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         mPager.setPageTransformer(true, new DepthPageTransformer());
 
         handleIntent(getIntent(), savedInstanceState);
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                new Handler().postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        // Alwasy reqeust on first launch request
+                        if (permissionFirstRequest && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
+                            // Request user to add aTalk to BatteryOptimization whitelist
+                            openBatteryOptimizationDialogIfNeeded();
 
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && permissionRequest) {
-            permissionRequest = false;
-            Intent iPermissions = new Intent(this, PermissionsActivity.class);
-            startActivity(iPermissions);
-        }
-        // Request user to add aTalk to BatteryOptimization whitelist
-        openBatteryOptimizationDialogIfNeeded();
+                            permissionFirstRequest = false;
+                            Intent iPermissions = new Intent(aTalk.this, PermissionsActivity.class);
+                            startActivity(iPermissions);
+                        }
 
-        ChangeLog cl = new ChangeLog(this);
-        if (cl.isFirstRun()) {
-            cl.getLogDialog().show();
-        }
+                        ChangeLog cl = new ChangeLog(aTalk.this);
+                        if (cl.isFirstRun()) {
+                            cl.getLogDialog().show();
+                        }
+                    }
+                }, 12000); // allow 12 seconds for first launch login to complete
+            }
+        });
     }
 
     /**
@@ -193,7 +209,8 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume()
+    {
         super.onResume();
         // Re-init aTalk to refresh the newly selected language
         if (mPrefChange) {
@@ -239,7 +256,8 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         }
     }
 
-    public static void setPrefChange(boolean state) {
+    public static void setPrefChange(boolean state)
+    {
         mPrefChange = state;
     }
 
@@ -393,15 +411,11 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     protected boolean isOptimizingBattery()
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            final PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-            return pm != null && !pm.isIgnoringBatteryOptimizations(getPackageName());
-        }
-        else {
-            return false;
-        }
+        final PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+        return pm != null && !pm.isIgnoringBatteryOptimizations(getPackageName());
     }
 
     private String getBatteryOptimizationPreferenceKey()

@@ -26,6 +26,7 @@ import org.atalk.android.gui.account.AccountsListActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.DrawableCache;
+import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
@@ -54,6 +55,8 @@ public class aTalkApp extends Application
      * The EXIT action name that is broadcast to all OSGiActivities
      */
     public static final String ACTION_EXIT = "org.atalk.android.exit";
+
+    private static boolean permissionRequest = true;
 
     /**
      * Possible values for the different theme settings.

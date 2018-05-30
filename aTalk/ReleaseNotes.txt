@@ -1,5 +1,22 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.3.1 (1031)
+Author:         cmeng
+Upload Date:	05/30/2018
+- Add user option in Account Settings to support TLS Certificate / DNSSEC / DANE security mode
+- Enhance support in overridden server address to allow either hostName or IP entry
+- Fix ANR while exit from Account Settings when user account does not have vcard info stored on server
+- Delay permission request on launch so it does not disrupt user login
+- Improve 'Show Certificate' UI so 'Always trust this certificate' and the buttons are visible at all time
+- Stop further permission prompt when user has fully decided on all permission grant status
+- WaitForDisplay in CertificateServiceImpl before showing VerifyCertDialog to avoid obscured by other contactList
+- Remove <domain-config> section from network_security_configuration.xml, otherwise CA certification authentication
+  will be rejected by rootTrustManager as mConfig=(ApplicationConfig) mConfigSource.getPerDomainConfigs() is not null.
+  public List<X509Certificate> checkServerTrusted(X509Certificate[] certs, String authType, String hostname) requires
+  X509ExtendedTrustManager and not supported by android API < 24
+- Remove main menu [Settings... | DNS] option
+
+=========================================================================
 Version:		1.3.0 (1030)
 Author:         cmeng
 Upload Date:	05/22/2018

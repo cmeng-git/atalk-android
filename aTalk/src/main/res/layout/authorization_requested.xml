@@ -53,7 +53,7 @@
             android:id="@+id/centerShim"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="5dp"
+            android:layout_margin="2dp"
             android:visibility="invisible" />
 
         <Button
@@ -66,7 +66,7 @@
             android:id="@+id/centerShim2"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="5dp"
+            android:layout_margin="2dp"
             android:visibility="invisible" />
 
         <Button

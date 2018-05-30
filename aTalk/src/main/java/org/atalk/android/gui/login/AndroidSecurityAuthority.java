@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
+import android.widget.Spinner;
 
 import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
 import net.java.sip.communicator.plugin.jabberaccregwizz.JabberAccountRegistrationActivator;
@@ -102,6 +103,9 @@ public class AndroidSecurityAuthority implements SecurityAuthority
             args.putString(CredentialsFragment.ARG_PASSWORD, credentials.getPasswordAsString());
         }
 
+        String dnssecMode = accountID.getDnssMode();
+        args.putString(CredentialsFragment.ARG_DNSSEC_MODE, dnssecMode);
+
         // Persistent password argument
         args.putBoolean(CredentialsFragment.ARG_STORE_PASSWORD, credentials.isPasswordPersistent());
 
@@ -148,6 +152,14 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                         //credentials.setIbRegistration(ibRegistration);
                         accountID.setIbRegistration(ibRegistration);
 
+                        // Translate dnssecMode label to dnssecMode value
+                        Spinner spinnerDM = dialogContent.findViewById(R.id.dnssecModeSpinner);
+                        String[] dnssecModeValues = aTalkApp.getGlobalContext().getResources()
+                                .getStringArray(R.array.dnssec_Mode_value);
+                        String selecteDnssecMode = dnssecModeValues[spinnerDM.getSelectedItemPosition()];
+                        credentials.setDnssecMode(selecteDnssecMode);
+                        accountID.setDnssMode(selecteDnssecMode);
+
                         if (isShowServerOption) {
                             boolean isServerOverridden = ViewUtil.isCompoundChecked(dialogContent,
                                     R.id.serverOverridden);
@@ -166,7 +178,6 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                                 accountID.setServerAddress(serverAddress);
                                 accountID.setServerPort(serverPort);
                             }
-                            ProtocolProviderFactory factory = JabberAccountRegistrationActivator.getJabberProtocolProviderFactory();
                         }
                         synchronized (credentialsLock) {
                             credentialsLock.notify();

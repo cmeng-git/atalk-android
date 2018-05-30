@@ -1015,6 +1015,8 @@
     <string name="plugin_provisioning_UUID">UUID</string>
 
     <!-- DNS config -->
+    <string name="service_gui_settings_DNSSEC_DANE">SSL/DNSSEC/DANE Security</string>
+
     <string name="service_gui_settings_DNS">DNS</string>
     <string name="service_gui_settings_DNS_SUMMARY">Configure DNS settings</string>
     <string name="plugin_dnsconfig_DNSSEC">DNS Security (DNSSEC)</string>
@@ -1625,6 +1627,8 @@
     <string name="pref_key_dns_dnssec_default_behaviour">dns.DNSSEC_VALIDATION_MODE</string>
     <string name="pref_key_dns_dnssec_enabled">dns.DNSSEC_ENABLED</string>
     <string name="pref_key_dns_dnssec_nameservers">dns.DNSSEC_NAMESERVERS</string>
+
+    <string name="pref_key_dnssec_mode">dns.DNSSEC_MODE</string>
 
     <!-- Provisioning -->
     <string name="pref_cat_provisioning_CREDENTIALS">pref.cat.provisioning.credentials</string>

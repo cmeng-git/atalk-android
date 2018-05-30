@@ -138,14 +138,13 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
     {
         BundleContext context = JabberActivator.getBundleContext();
         if (context == null)
-            throw new NullPointerException("The specified BundleContext was null");
+            throw new NullPointerException("The specified BundleContext is null");
 
         if (protocolProvider == null)
-            throw new NullPointerException("The specified Protocol Provider was null");
-
-        JabberAccountIDImpl accountID = (JabberAccountIDImpl) protocolProvider.getAccountID();
+            throw new NullPointerException("The specified Protocol Provider is null");
 
         // If the given accountID doesn't correspond to an existing account we return.
+        JabberAccountIDImpl accountID = (JabberAccountIDImpl) protocolProvider.getAccountID();
         if (!registeredAccounts.containsKey(accountID))
             return;
 
@@ -159,8 +158,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
                     protocolProvider.shutdown();
                 }
             } catch (Throwable e) {
-                // we don't care for this, cause we are modifying and will unregister the service
-                // and will register again
+                // don't care as we are modifying and will unregister the service and will register again
             }
             registration.unregister();
         }
@@ -182,6 +180,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
         if (!accountProperties.containsKey(PROTOCOL))
             accountProperties.put(PROTOCOL, ProtocolNames.JABBER);
 
+        // update the active accountID mAccountProperties with the modified accountProperties
         accountID.setAccountProperties(accountProperties);
 
         // First store the account and only then load it as the load generates an osgi event, the
@@ -201,8 +200,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
             throw new NullPointerException("UserID is not a valid JID");
         }
 
-        // We store again the account in order to store all properties added during the protocol
-        // provider initialization.
+        // We store again the account in order to store all properties added during the protocol provider initialization.
         this.storeAccount(accountID);
         registration = context.registerService(ProtocolProviderService.class.getName(), protocolProvider, properties);
         registeredAccounts.put(accountID, registration);

@@ -47,9 +47,6 @@
     <string name="encryption_TOOLTIP">Encriptar chat</string>
     <string name="encryption_choices">Opciones de cifrado</string>
     <string name="encryption_choice_unencrypted">No encriptado</string>
-    <string name="encryption_choice_omemo">OMEMO</string>
-    <string name="encryption_choice_otr">OTR</string>
-    <string name="encryption_choice_pgp">OpenPGP</string>
     <string name="enter_name_or_number">Introducir nombre o número</string>
     <string name="exit_app">Salir</string>
     <string name="hang_up">Llamada colgada</string>
@@ -91,6 +88,7 @@
     <string name="status_xa">No disponible</string>
     <string name="title_activity_attach_option_dialog">Enviar archivo adjunto</string>
     <string name="title_activity_activation_view">Activación</string>
+
     <!-- General -->
     <string name="service_gui_ACCEPT">Aceptar</string>
     <string name="service_gui_ACCOUNT">Cuenta</string>
@@ -313,6 +311,7 @@
     <string name="service_gui_FFC_STATUS">Libre para charlar</string>
 
     <!-- File Transfer (xFile prefix with date) -->
+    <string name="xFile_FILE_BYTE_SENT">%1$s enviado</string>
     <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nEl archivo ha sido recibido de %2$s</string>
     <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\nSe ha producido un error al transferir el archivo desde %2$s</string>
     <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nRecibiendo un archivo de %2$s</string>
@@ -378,11 +377,12 @@
     <string name="service_gui_CHATROOM_INFO">Información de la sala de charla</string>
 
     <string name="service_gui_DESTROY_CHATROOM">Destruir esta sala de charla</string>
+    <string name="service_gui_DESTROY_CHATROOM_ERROR">Se produjo un error al destruir la sala de chat: \n\nError: %1$s </string>
     <string name="service_gui_DESTROY_CHATROOM_TEXT">Propietario de la sala de charla: %1$s.\n\n¿Seguro que se quiere eliminar \'%2$s\' y todo su historial de charla?</string>
     <string name="service_gui_DESTROY_CHATROOM_TITLE">Eliminar la sala de charla</string>
     <string name="service_gui_DESTROYED_CHATROOM">\'%s\' ha sido eliminado exitosamente!</string>
 
-    <string name="service_gui_INCOMING_CALL">Llamada entrante</string>
+    <string name="service_gui_INCOMING_CALL">Llamada recibida desde: %1$s</string>
     <string name="service_gui_INCOMING_CALL_STATUS">Llamada entrante</string>
     <string name="service_gui_INITIATING_CALL_STATUS">Iniciando la llamada</string>
 	<string name="service_gui_INVITATION">Texto de invitación:</string>
@@ -402,6 +402,7 @@
     <string name="service_gui_INFO">Información</string>
 
 	<string name="service_gui_CLOSE_CHAT_ROOM_DIALOG">Cerrar</string>
+    <string name="service_gui_INVALID_ADDRESS">Dirección inválida: %1$s</string>
 	<string name="service_gui_JOIN">Unirse</string>
 	<string name="service_gui_JOIN_AS">Unirse como</string>
 	<string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">Unirse a una videoconferencia existente</string>
@@ -760,7 +761,6 @@
     <string name="plugin_accountinfo_SELECT_ACCOUNT">Por favor, selecciona una cuenta:</string>
     <string name="plugin_accountinfo_STREET">Dirección física:</string>
     <string name="plugin_accountinfo_TITLE">Información de la cuenta</string>
-    <string name="plugin_accountinfo_URL">URL:</string>
     <string name="plugin_accountinfo_USER_PICTURES">Imágenes de usuarios</string>
     <string name="plugin_accountinfo_WORK_EMAIL">E-mail del trabajo:</string>
     <string name="plugin_accountinfo_WORK_PHONE">Teléfono del trabajo:</string>
@@ -920,6 +920,7 @@
     <string name="omemo_menu_unauthenticated">OMEMO No authenticado</string>
     <string name="omemo_menu_untrusted">OMEMO Sin confianza</string>
     <string name="omemo_rebuild_session">Reiniciar una nueva sesión para que no aparezca: %1$s</string>
+    <string name="omemo_purge_inactive_device_error">Error al eliminar el dispositivo omemo inactivo para: %1$s.</string>
 
     <!-- Global proxy plugin -->
     <string name="service_gui_settings_PROXY">Proxy global</string>
@@ -947,8 +948,6 @@
     <string name="plugin_provisioning_CLIPBOARD_FAILED">Error al copiar la UUID en el portapapeles</string>
     <string name="plugin_provisioning_COPYTOCLIPBOARD">Copiar UUID en el portapapeles</string>
     <string name="plugin_provisioning_CREDENTIALS">Últimas credenciales de aprovisionamiento almacenadas</string>
-    <string name="plugin_provisioning_DHCP">DHCP</string>
-    <string name="plugin_provisioning_DNS">DNS</string>
     <string name="plugin_provisioning_ENABLE_DISABLE">Activar el aprovisionamiento</string>
     <string name="plugin_provisioning_EXIT_ON_FAIL">Salir de la aplicación si el aprovisionamiento falla</string>
     <string name="plugin_provisioning_FORGET_PASSWORD">Olvido de mi contraseña</string>
@@ -960,10 +959,10 @@
     <string name="plugin_provisioning_PROVISIONING_SUMMARY">Configurar las opciones de aprovisionamiento</string>
     <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">¿Seguro que se desea eliminar la contraseña de aprovisionamiento?</string>
     <string name="plugin_provisioning_RESTART_WARNING">Ten en cuenta que sus cambios sólo tendrán efecto la próxima vez que se reinicie aTalk!</string>
-    <string name="plugin_provisioning_URI">URI</string>
-    <string name="plugin_provisioning_UUID">UUID</string>
 
     <!-- DNS config -->
+    <string name="service_gui_settings_DNSSEC_DANE">Seguridad DNSSEC/DANE</string>
+
     <string name="service_gui_settings_DNS">DNS</string>
     <string name="service_gui_settings_DNS_SUMMARY">Configurar los ajustes de DNS</string>
     <string name="plugin_dnsconfig_DNSSEC">Seguridad en DNS (DNSSEC)</string>
@@ -1039,7 +1038,7 @@
     <string name="service_gui_STUN_EDIT_ADDRESS">Dirección IP</string>
     <string name="service_gui_STUN_EDIT_PASSWORD">Contraseña</string>
     <string name="service_gui_STUN_EDIT_PORT">Puerto del Servidor</string>
-    <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Support TURN</string>
+    <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Soporte TURN</string>
     <string name="service_gui_STUN_EDIT_TURN_USER">Nombre usuario TURN</string>
  
     <!-- Security preferences -->
@@ -1123,7 +1122,6 @@
     <string name="service_gui_JBR_GMAIL_NOTIFICATIONS">Notificaciones de Gmail para mensajes nuevos</string>
     <string name="service_gui_JBR_GOOGLE_CONTACTS_SEARCH">Búsqueda de contactos de Google</string>
     <string name="service_gui_JBR_GTALK_DOMAIN">Dominio que usará la llamada GTalk</string>
-    <string name="service_gui_JBR_ICE">ICE</string>
     <string name="service_gui_JBR_ICE_GENERAL">General</string>
     <string name="service_gui_JBR_ICE_SUMMARY">Configurar las opciones ICE&#8230;</string>
     <string name="service_gui_JBR_JINGLE_AUTO">Descubrir automáticamente los relés de los nodos de Jingle</string>
@@ -1158,7 +1156,6 @@
     <string name="service_gui_JBR_USE_UPNP">Usar UPnP</string>
     <string name="service_gui_JBR_USER">ID de USUARIO</string>
     <string name="service_gui_JBR_USER_CATEGORY">Nombre de usuario y contraseña</string>
-
 
     <!-- General settings -->
     <string name="service_gui_settings_DISABLED_STR">Desactivado</string>

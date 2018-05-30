@@ -25,9 +25,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * The <tt>IPPIAccountRegistrationWizard</tt> is an implementation of the
- * <tt>AccountRegistrationWizard</tt> for the Jabber protocol. It should allow
- * the user to create and configure a new Jabber account.
+ * The <tt>AccountRegistrationImpl</tt> is an implementation of the <tt>AccountRegistrationWizard</tt> for the
+ * Jabber protocol. It should allow the user to create and configure a new Jabber account.
+ *
+ * The method signin() is also called from JabberPreferenceFragment#doCommitChanges, with isModification set to true
+ * to update the accountProperties DB with the preference changes by user
  *
  * @author Yana Stamcheva
  * @author Grigorii Balutsel
@@ -72,7 +74,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
     }
 
     /**
-     * Creates an account for the given user and password.
+     * Creates or modifies an account for the given user, password and accountProperties.
      *
      * @param providerFactory the ProtocolProviderFactory which will create the account
      * @param userName the user identifier

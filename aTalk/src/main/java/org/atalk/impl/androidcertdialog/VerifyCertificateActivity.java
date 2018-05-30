@@ -22,6 +22,7 @@ import org.atalk.service.osgi.OSGiActivity;
  * not. It also uses <tt>CertInfoDialog</tt> to display detailed information about the certificate.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class VerifyCertificateActivity extends OSGiActivity
 		implements CertInfoDialog.CertInfoDialogListener
@@ -55,8 +56,10 @@ public class VerifyCertificateActivity extends OSGiActivity
 		super.onCreate(savedInstanceState);
 		this.requestId = getIntent().getLongExtra(REQ_ID, -1);
 
-		if (requestId == -1)
-			throw new RuntimeException("No request id supplied");
+		if (requestId == -1) {
+		    return;  // not serious enough to throw exception
+            // throw new RuntimeException("No request id supplied");
+        }
 
 		this.certDialog = CertificateDialogActivator.getDialog(requestId);
 		if (certDialog == null) {

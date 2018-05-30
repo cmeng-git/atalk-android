@@ -176,6 +176,14 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
     }
 
     /**
+     * Clear all details for account when it logoff; to allow refresh on next login
+     */
+    public void clearDetails()
+    {
+        infoRetriever.clearUserDetails(uin);
+    }
+
+    /**
      * Returns all detail Class-es that the underlying implementation supports setting. Note
      * that if you call one of the modification methods (add remove or replace) with a detail not
      * contained by the iterator returned by this method, an IllegalArgumentException will be

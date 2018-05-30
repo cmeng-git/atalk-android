@@ -15,6 +15,8 @@ import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.util.StringUtils;
@@ -607,6 +609,27 @@ public class AccountID
     public boolean isPasswordPersistent()
     {
         return getAccountPropertyBoolean(ProtocolProviderFactory.PASSWORD_PERSISTENT, true);
+    }
+
+    /**
+     * Returns the password of the account.
+     *
+     * @return the password of the account.
+     */
+    public String getDnssMode()
+    {
+        return getAccountPropertyString(ProtocolProviderFactory.DNSSEC_MODE,
+                aTalkApp.getAppResources().getStringArray(R.array.dnssec_Mode_value)[0]);
+    }
+
+    /**
+     * Sets the dnssMode of the account.
+     *
+     * @param dnssMode the dnssMode of the account.
+     */
+    public void setDnssMode(String dnssMode)
+    {
+        setOrRemoveIfEmpty(ProtocolProviderFactory.DNSSEC_MODE, dnssMode);
     }
 
     /**
@@ -1459,14 +1482,10 @@ public class AccountID
 
         Map<String, String> accountProperties = new Hashtable<>();
         accountProperties.put(ProtocolProviderFactory.ACCOUNT_UUID, accountUuid);
-        accountProperties.put(ProtocolProviderFactory.PROTOCOL,
-                cursor.getString(cursor.getColumnIndex(PROTOCOL)));
-        accountProperties.put(ProtocolProviderFactory.USER_ID,
-                cursor.getString(cursor.getColumnIndex(USER_ID)));
-        accountProperties.put(ProtocolProviderFactory.ACCOUNT_UID,
-                cursor.getString(cursor.getColumnIndex(ACCOUNT_UID)));
-        accountProperties.put(ProtocolProviderFactory.KEYS,
-                cursor.getString(cursor.getColumnIndex(KEYS)));
+        accountProperties.put(ProtocolProviderFactory.PROTOCOL, cursor.getString(cursor.getColumnIndex(PROTOCOL)));
+        accountProperties.put(ProtocolProviderFactory.USER_ID, cursor.getString(cursor.getColumnIndex(USER_ID)));
+        accountProperties.put(ProtocolProviderFactory.ACCOUNT_UID, cursor.getString(cursor.getColumnIndex(ACCOUNT_UID)));
+        accountProperties.put(ProtocolProviderFactory.KEYS, cursor.getString(cursor.getColumnIndex(KEYS)));
 
         // Retrieve the remaining account properties from table
         String args[] = {accountUuid};

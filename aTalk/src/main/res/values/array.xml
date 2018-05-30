@@ -77,6 +77,18 @@
         <item>SOCKS4</item>
         <item>SOCKS5</item>
     </string-array>
+
+    <string-array name="dnssec_Mode_name">
+        <item>SSL Certificate Authentication</item>
+        <item>DNSSEC only (experimental)</item>
+        <item>DNSSEC and DANE (experimental)</item>
+    </string-array>
+    <string-array name="dnssec_Mode_value">
+        <item>disabled</item>
+        <item>needsDnssec</item>
+        <item>needsDnssecAndDane</item>
+    </string-array>
+
     <string-array name="pref_dnssec_default_behaviour">
         <item>Ignore</item>
         <item>Required</item>

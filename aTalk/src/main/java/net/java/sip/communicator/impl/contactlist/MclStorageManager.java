@@ -756,7 +756,7 @@ public class MclStorageManager implements MetaContactListListener
         // Just logged in an internal err if none is found
         if (contactJid == null) {
             logger.warn("MetaContact not found for removal: " + evt.getSourceMetaContact());
-            new Exception("May ignore - for debug only").printStackTrace();
+            // new Exception("May ignore - for debug only").printStackTrace();
             return;
         }
 

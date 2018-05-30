@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
@@ -56,21 +57,27 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-
 /**
  * Sample activity showing the permission request process with Dexter.
  */
 public class PermissionsActivity extends Activity
 {
-    @BindView(R.id.camera_permission_feedback) TextView cameraPermissionFeedbackView;
-    @BindView(R.id.contacts_permission_feedback) TextView contactsPermissionFeedbackView;
-    @BindView(R.id.location_permission_feedback) TextView locationPermissionFeedbackView;
-    @BindView(R.id.audio_permission_feedback) TextView audioPermissionFeedbackView;
-    @BindView(R.id.phone_permission_feedback) TextView phonePermissionFeedbackView;
-    @BindView(R.id.storage_permission_feedback) TextView storagePermissionFeedbackView;
-    @BindView(R.id.app_info_permissions_button) Button button_app_info;
-    @BindView(android.R.id.content) View contentView;
+    @BindView(R.id.camera_permission_feedback)
+    TextView cameraPermissionFeedbackView;
+    @BindView(R.id.contacts_permission_feedback)
+    TextView contactsPermissionFeedbackView;
+    @BindView(R.id.location_permission_feedback)
+    TextView locationPermissionFeedbackView;
+    @BindView(R.id.audio_permission_feedback)
+    TextView audioPermissionFeedbackView;
+    @BindView(R.id.phone_permission_feedback)
+    TextView phonePermissionFeedbackView;
+    @BindView(R.id.storage_permission_feedback)
+    TextView storagePermissionFeedbackView;
+    @BindView(R.id.app_info_permissions_button)
+    Button button_app_info;
+    @BindView(android.R.id.content)
+    View contentView;
 
     private MultiplePermissionsListener allPermissionsListener;
     private MultiplePermissionsListener dialogMultiplePermissionsListener;
@@ -83,7 +90,7 @@ public class PermissionsActivity extends Activity
     private PermissionRequestErrorListener errorListener;
 
     protected static List<PermissionGrantedResponse> grantedPermissionResponses = new LinkedList<>();
-    protected static List<PermissionDeniedResponse> deniedPermissionResponses= new LinkedList<>();
+    protected static List<PermissionDeniedResponse> deniedPermissionResponses = new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -92,9 +99,7 @@ public class PermissionsActivity extends Activity
         setContentView(R.layout.permissions_activity);
         ButterKnife.bind(this);
         createPermissionListeners();
-        getPackagePermissionsStatus();
-        // no action requires from user, so exit
-        if (deniedPermissionResponses.isEmpty())
+        if (!getPackagePermissionsStatus())
             finish();
         permissionsStatusUpdate();
     }
@@ -250,33 +255,49 @@ public class PermissionsActivity extends Activity
      * Retrieve the package current default permissions status on create;
      * only if both the arrays are empty. Non-empty -> orientation change
      */
-    private void getPackagePermissionsStatus(){
-        if (!grantedPermissionResponses.isEmpty() || !deniedPermissionResponses.isEmpty())
-            return;
+    @TargetApi(23)
+    private boolean getPackagePermissionsStatus()
+    {
+        if (grantedPermissionResponses.isEmpty() && deniedPermissionResponses.isEmpty()) {
+            PackageManager pm = getPackageManager();
+            try {
+                PackageInfo packageInfo = pm.getPackageInfo(this.getPackageName(), PackageManager.GET_PERMISSIONS);
 
-        PackageManager pm = getPackageManager();
-        try {
-            PackageInfo packageInfo = pm.getPackageInfo(this.getPackageName(), PackageManager.GET_PERMISSIONS);
+                //Get Permissions
+                String[] requestedPermissions = packageInfo.requestedPermissions;
+                if (requestedPermissions != null) {
+                    for (String requestedPermission : requestedPermissions) {
+                        if (getFeedbackViewForPermission(requestedPermission) == null)
+                            continue;
 
-            //Get Permissions
-            String[] requestedPermissions = packageInfo.requestedPermissions;
-            if(requestedPermissions != null) {
-                for(String requestedPermission : requestedPermissions) {
-                    if (getFeedbackViewForPermission(requestedPermission) == null)
-                        continue;
-
-                    PermissionRequest pr = new PermissionRequest(requestedPermission);
-                    int permission = checkSelfPermission(requestedPermission);
-                    if (permission == PERMISSION_GRANTED){
-                        grantedPermissionResponses.add(new PermissionGrantedResponse(pr));
-                    } else {
-                        deniedPermissionResponses.add(new PermissionDeniedResponse(pr, false));
+                        PermissionRequest pr = new PermissionRequest(requestedPermission);
+                        //denied
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, requestedPermission)) {
+                            deniedPermissionResponses.add(new PermissionDeniedResponse(pr, false));
+                        }
+                        else {
+                            //allowed
+                            if (ActivityCompat.checkSelfPermission(this,
+                                    requestedPermission) == PackageManager.PERMISSION_GRANTED) {
+                                grantedPermissionResponses.add(new PermissionGrantedResponse(pr));
+                            }
+                            // set to never ask again
+                            else {
+                                deniedPermissionResponses.add(new PermissionDeniedResponse(pr, true));
+                            }
+                        }
                     }
                 }
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
         }
+
+        for (PermissionDeniedResponse response : deniedPermissionResponses) {
+            if (!response.isPermanentlyDenied())
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -288,7 +309,6 @@ public class PermissionsActivity extends Activity
         for (PermissionGrantedResponse response : grantedPermissionResponses) {
             showPermissionGranted(response.getPermissionName());
         }
-
         for (PermissionDeniedResponse response : deniedPermissionResponses) {
             showPermissionDenied(response.getPermissionName(), response.isPermanentlyDenied());
         }
@@ -296,6 +316,7 @@ public class PermissionsActivity extends Activity
 
     /**
      * Update the granted permissions for the package
+     *
      * @param permission permission view to be updated
      */
     public void showPermissionGranted(String permission)
@@ -309,6 +330,7 @@ public class PermissionsActivity extends Activity
 
     /**
      * Update the denied permissions for the package
+     *
      * @param permission permission view to be updated
      */
     public void showPermissionDenied(String permission, boolean isPermanentlyDenied)
@@ -415,8 +437,8 @@ public class PermissionsActivity extends Activity
 
     /**
      * Get the view of the permission for update, null if view does not exist
-     * @param name permission name
      *
+     * @param name permission name
      * @return the textView for the request permission
      */
     private TextView getFeedbackViewForPermission(String name)
