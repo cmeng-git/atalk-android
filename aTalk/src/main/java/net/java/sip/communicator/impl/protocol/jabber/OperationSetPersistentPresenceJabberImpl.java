@@ -5,46 +5,23 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.AbstractOperationSetPersistentPresence;
-import net.java.sip.communicator.service.protocol.AuthorizationHandler;
-import net.java.sip.communicator.service.protocol.AuthorizationRequest;
-import net.java.sip.communicator.service.protocol.AuthorizationResponse;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ContactGroup;
-import net.java.sip.communicator.service.protocol.ContactResource;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetServerStoredAccountInfo;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetail;
-import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
-import net.java.sip.communicator.service.protocol.event.ServerStoredGroupListener;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.util.StringUtils;
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.roster.AbstractRosterListener;
-import org.jivesoftware.smack.roster.PresenceEventListener;
-import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.roster.RosterEntry;
-import org.jivesoftware.smack.roster.RosterLoadedListener;
-import org.jivesoftware.smack.roster.RosterUtil;
-import org.jivesoftware.smack.roster.SubscribeListener;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.roster.*;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.listener.UserAvatarListener;
@@ -53,24 +30,12 @@ import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.listener.VCardAvatarListener;
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.FullJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * The Jabber implementation of a Persistent Presence Operation set. This class manages our own
@@ -577,10 +542,9 @@ public class OperationSetPersistentPresenceJabberImpl
                 presence.setStatus(statusMessage);
 
             try {
-                logger.info("Smack: sending <presence:available/>");
                 parentProvider.getConnection().sendStanza(presence);
             } catch (NotConnectedException | InterruptedException e) {
-                e.printStackTrace();
+                logger.error("Could not send new presense status", e);
             }
             if (localContact != null)
                 updateResource(localContact, parentProvider.getOurJID(), presence);
@@ -599,18 +563,16 @@ public class OperationSetPersistentPresenceJabberImpl
      * Gets the <tt>PresenceStatus</tt> of a contact with a specific <tt>String</tt> identifier.
      *
      * @param contactIdentifier the identifier of the contact whose status we're interested in.
-     * @return the <tt>PresenceStatus</tt> of the contact with the specified
-     * <tt>contactIdentifier</tt>
-     * @throws IllegalArgumentException if the specified <tt>contactIdentifier</tt> does not identify a contact known to the
-     * underlying protocol provider
+     * @return the <tt>PresenceStatus</tt> of the contact with the specified <tt>contactIdentifier</tt>
+     * @throws IllegalArgumentException if the specified <tt>contactIdentifier</tt> does not identify a contact
+     * known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service
      */
     public PresenceStatus queryContactStatus(BareJid contactIdentifier)
             throws IllegalArgumentException, IllegalStateException
     {
         /*
-         * As stated by the javadoc, IllegalStateException signals that the ProtocolProviderService
-         * is not registered.
+         * As stated by the javadoc, IllegalStateException signals that the ProtocolProviderService is not registered.
          */
         assertConnected();
         XMPPConnection xmppConnection = parentProvider.getConnection();
@@ -689,10 +651,9 @@ public class OperationSetPersistentPresenceJabberImpl
      * the server stored contact list.
      *
      * @param parent the parent group of the server stored contact list where the contact should be added.
-     * <p>
      * @param contactIdentifier the contact whose status updates we are subscribing for.
-     * @throws IllegalArgumentException if <tt>contact</tt> or <tt>parent</tt> are not a contact known to the underlying
-     * protocol provider.
+     * @throws IllegalArgumentException if <tt>contact</tt> or <tt>parent</tt> are not a contact known to the
+     * underlying protocol provider.
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.
      * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors experienced during
      * network communication
@@ -712,7 +673,6 @@ public class OperationSetPersistentPresenceJabberImpl
      *
      * @param contactIdentifier the identifier of the contact whose status updates we are subscribing for.
      * @param pps the owner of the contact to be added to RootGroup.
-     * <p>
      * @throws IllegalArgumentException if <tt>contact</tt> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.
      * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors experienced during
@@ -745,8 +705,7 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Converts the specified jabber status to one of the status fields of the JabberStatusEnum
-     * class.
+     * Converts the specified jabber status to one of the status fields of the JabberStatusEnum class.
      *
      * @param presence the Jabber Status
      * @param jabberProvider the parent provider.
@@ -757,13 +716,12 @@ public class OperationSetPersistentPresenceJabberImpl
             ProtocolProviderServiceJabberImpl jabberProvider)
     {
         JabberStatusEnum jabberStatusEnum = jabberProvider.getJabberStatusEnum();
-        if (presence.getType() == Presence.Type.unavailable)
+        if (presence.getType() == Presence.Type.unavailable) {
             return jabberStatusEnum.getStatus(JabberStatusEnum.OFFLINE);
-
-            // Check status mode when user is available
+        }
+        // Check status mode when user is available
         else if (presence.isAvailable()) {
             Presence.Mode mode = presence.getMode();
-
             if (mode == Presence.Mode.available)
                 return jabberStatusEnum.getStatus(JabberStatusEnum.AVAILABLE);
             else if (mode == Presence.Mode.away) {
@@ -857,7 +815,6 @@ public class OperationSetPersistentPresenceJabberImpl
                             updateContactStatus(contact, offlineStatus);
                         }
                     }
-
                     // do the same for all contacts in the root group
                     Iterator<Contact> contactsIter = getServerStoredContactListRoot().contacts();
                     while (contactsIter.hasNext()) {
@@ -871,7 +828,6 @@ public class OperationSetPersistentPresenceJabberImpl
 
     /**
      * Sets the display name for <tt>contact</tt> to be <tt>newName</tt>.
-     * <p>
      *
      * @param contact the <tt>Contact</tt> that we are renaming
      * @param newName a <tt>String</tt> containing the new display name for <tt>metaContact</tt>.
@@ -1179,9 +1135,10 @@ public class OperationSetPersistentPresenceJabberImpl
         }
 
         contact.updatePresenceStatus(newStatus);
-        if (logger.isDebugEnabled())
-            logger.debug("Will Dispatch the contact status event.");
-
+        if (logger.isDebugEnabled()) {
+            logger.debug("Dispatching contact status update event for " + contact.getJid()
+                    + ": " + newStatus.getStatusName());
+        }
         fireContactPresenceStatusChangeEvent(contact, contact.getParentContactGroup(),
                 oldStatus, newStatus, resourceUpdated);
     }
@@ -1212,10 +1169,8 @@ public class OperationSetPersistentPresenceJabberImpl
          * @param presence presence that has changed
          */
         @Override
-        public void presenceChanged(Presence presence)
+        public void presenceChanged(final Presence presence)
         {
-            Jid userJid = presence.getFrom();
-            logger.info("Received presence status update for: " + userJid + "; Presence: " + presence.getStatus());
             firePresenceStatusChanged(presence);
         }
 
@@ -1264,98 +1219,119 @@ public class OperationSetPersistentPresenceJabberImpl
          *
          * @param presence the presence changed.
          */
-        void firePresenceStatusChanged(Presence presence)
+        void firePresenceStatusChanged(final Presence presence)
         {
+            /*
+             * Smack block sending of presence update while roster loading is in progress.
+             *
+             * cmeng - just ignore and return to see if there is any side effect while process roster is in progress
+             * seem to keep double copies and all unavailable triggered from roster - need to process??
+             */
             if (storeEvents && storedPresences != null) {
                 storedPresences.add(presence);
                 return;
             }
 
-            try {
-                Jid userJid = presence.getFrom();
-                OperationSetMultiUserChat mucOpSet = parentProvider.getOperationSet(OperationSetMultiUserChat.class);
-                if (mucOpSet != null) {
-                    List<ChatRoom> chatRooms = mucOpSet.getCurrentlyJoinedChatRooms();
-                    for (ChatRoom chatRoom : chatRooms) {
-                        if (userJid.equals(chatRoom.getIdentifier())) {
-                            userJid = presence.getFrom();
-                            break;
+            // Execute in new thread to avoid loading on Smack
+            new Thread(new Runnable()
+            {
+                public void run()
+                {
+                    try {
+                        Jid userJid = presence.getFrom();
+
+                        // Update resource from own presence instance and localContact is not null - need to verified!!!
+                        Jid ownJid = parentProvider.getOurJID();
+                        if (userJid.isParentOf(ownJid) && (localContact != null) && (userJid != null)) {
+                            if (Presence.Type.available == presence.getType()) {
+                                logger.info("Smack presence update own: " + userJid + " - " + presence.getType());
+                                updateResource(localContact, userJid, presence);
+                                return;
+                            }
                         }
-                    }
-                }
 
-                if (logger.isDebugEnabled())
-                    logger.debug("Received presence status update for buddy: " + userJid);
-
-                // all contact statuses that are received from all its resources ordered by priority (higher first)
-                // and those with equal priorities order with the one that is most connected as first
-                TreeSet<Presence> userStats = statuses.get(userJid);
-                if (userStats == null) {
-                    userStats = new TreeSet<>(new Comparator<Presence>()
-                    {
-                        public int compare(Presence o1, Presence o2)
-                        {
-                            int res = o2.getPriority() - o1.getPriority();
-
-                            // if statuses are with same priorities return which one is more
-                            // available counts the JabberStatusEnum order
-                            if (res == 0) {
-                                res = jabberStatusToPresenceStatus(o2, parentProvider).getStatus()
-                                        - jabberStatusToPresenceStatus(o1, parentProvider).getStatus();
-                                // We have run out of "logical" ways to order the presences inside
-                                // the TreeSet. We have make sure we are consistent with equals.
-                                // We do this by comparing the unique resource names. If this
-                                // evaluates to 0 again, then we can safely assume this presence
-                                // object represents the same resource and by that the same client.
-                                if (res == 0) {
-                                    res = o1.getFrom().compareTo(o2.getFrom());
+                        OperationSetMultiUserChat mucOpSet = parentProvider.getOperationSet(OperationSetMultiUserChat.class);
+                        if (mucOpSet != null) {
+                            List<ChatRoom> chatRooms = mucOpSet.getCurrentlyJoinedChatRooms();
+                            for (ChatRoom chatRoom : chatRooms) {
+                                if (userJid.equals(chatRoom.getIdentifier())) {
+                                    userJid = presence.getFrom();
+                                    break;
                                 }
                             }
-                            return res;
                         }
-                    });
-                    statuses.put(userJid, userStats);
-                }
-                else {
-                    // remove the status for this resource if we are online we will update its value with the new status
-                    Resourcepart resource = presence.getFrom().getResourceOrEmpty();
-                    for (Iterator<Presence> iter = userStats.iterator(); iter.hasNext(); ) {
-                        Presence p = iter.next();
-                        if (resource.equals(p.getFrom().getResourceOrEmpty()))
-                            iter.remove();
+                        logger.info("Smack presence update for: " + userJid + " - " + presence.getType());
+
+                        // all contact statuses that are received from all its resources ordered by priority (higher first)
+                        // and those with equal priorities order with the one that is most connected as first
+                        TreeSet<Presence> userStats = statuses.get(userJid);
+                        if (userStats == null) {
+                            userStats = new TreeSet<>(new Comparator<Presence>()
+                            {
+                                public int compare(Presence o1, Presence o2)
+                                {
+                                    int res = o2.getPriority() - o1.getPriority();
+
+                                    // if statuses are with same priorities return which one is more
+                                    // available counts the JabberStatusEnum order
+                                    if (res == 0) {
+                                        res = jabberStatusToPresenceStatus(o2, parentProvider).getStatus()
+                                                - jabberStatusToPresenceStatus(o1, parentProvider).getStatus();
+                                        // We have run out of "logical" ways to order the presences inside
+                                        // the TreeSet. We have make sure we are consistent with equals.
+                                        // We do this by comparing the unique resource names. If this
+                                        // evaluates to 0 again, then we can safely assume this presence
+                                        // object represents the same resource and by that the same client.
+                                        if (res == 0) {
+                                            res = o1.getFrom().compareTo(o2.getFrom());
+                                        }
+                                    }
+                                    return res;
+                                }
+                            });
+                            statuses.put(userJid, userStats);
+                        }
+                        else {
+                            // remove the status for this resource if we are online we will update its value with the new status
+                            Resourcepart resource = presence.getFrom().getResourceOrEmpty();
+                            for (Iterator<Presence> iter = userStats.iterator(); iter.hasNext(); ) {
+                                Presence p = iter.next();
+                                if (resource.equals(p.getFrom().getResourceOrEmpty()))
+                                    iter.remove();
+                            }
+                        }
+                        if (!jabberStatusToPresenceStatus(presence, parentProvider)
+                                .equals(parentProvider.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE))) {
+                            userStats.add(presence);
+                        }
+
+                        Presence currentPresence;
+                        if (userStats.size() == 0) {
+                            currentPresence = presence;
+                            /*
+                             * We no longer have statuses for userID so it doesn't make sense to retain
+                             * (1) the TreeSet and
+                             * (2) its slot in the statuses Map.
+                             */
+                            statuses.remove(userJid);
+                        }
+                        else
+                            currentPresence = userStats.first();
+
+                        ContactJabberImpl sourceContact = ssContactList.findContactById(userJid);
+                        if (sourceContact == null) {
+                            logger.warn("No source contact found for id = " + userJid);
+                            return;
+                        }
+
+                        // statuses may be the same and only change in status message
+                        sourceContact.setStatusMessage(currentPresence.getStatus());
+                        updateContactStatus(sourceContact, jabberStatusToPresenceStatus(currentPresence, parentProvider));
+                    } catch (IllegalStateException | IllegalArgumentException ex) {
+                        logger.error("Failed changing status", ex);
                     }
                 }
-
-                if (!jabberStatusToPresenceStatus(presence, parentProvider)
-                        .equals(parentProvider.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE))) {
-                    userStats.add(presence);
-                }
-
-                Presence currentPresence;
-                if (userStats.size() == 0) {
-                    currentPresence = presence;
-                    /*
-                     * We no longer have statuses for userID so it doesn't make sense to retain
-                     * (1) the TreeSet and
-                     * (2) its slot in the statuses Map.
-                     */
-                    statuses.remove(userJid);
-                }
-                else
-                    currentPresence = userStats.first();
-
-                ContactJabberImpl sourceContact = ssContactList.findContactById(userJid);
-                if (sourceContact == null) {
-                    logger.warn("No source contact found for id = " + userJid);
-                    return;
-                }
-
-                // statuses may be the same and only change in status message
-                sourceContact.setStatusMessage(currentPresence.getStatus());
-                updateContactStatus(sourceContact, jabberStatusToPresenceStatus(currentPresence, parentProvider));
-            } catch (IllegalStateException | IllegalArgumentException ex) {
-                logger.error("Failed changing status", ex);
-            }
+            }).start();
         }
     }
 
@@ -1505,26 +1481,32 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Handler for presence available events return from smack
+     * Handler own presence available events return from smack.
      *
      * @param address FullJid of own or the buddy subscribe to (sender)
      * @param availablePresence presence with available state
      */
     @Override
-    public void presenceAvailable(FullJid address, Presence availablePresence)
+    public void presenceAvailable(final FullJid address, final Presence availablePresence)
     {
-        logger.info("Received presence status available for buddy = " + address);
-
-        // Keep a copy in storedPresences for later processing if isStoringPresenceEvents().
-        if ((contactChangesListener != null) && contactChangesListener.isStoringPresenceEvents()) {
-            contactChangesListener.addPresenceEvent(availablePresence);
-        }
-
-        // Update resource if receive from own presence and localContact is not null
-        Jid jid = parentProvider.getOurJID();
-        if ((localContact != null) && (address != null) && address.isParentOf(jid)) {
-            updateResource(localContact, address, availablePresence);
-        }
+//        new Thread(new Runnable()
+//        {
+//            public void run()
+//            {
+//                // Keep own copy in storedPresences for later processing if isStoringPresenceEvents()
+//                // - never get call or happen.
+//                if ((contactChangesListener != null) && contactChangesListener.isStoringPresenceEvents()) {
+//                    contactChangesListener.addPresenceEvent(availablePresence);
+//                }
+//
+//                // Update resource if receive from other own presence instance and localContact is not null
+//                Jid jid = parentProvider.getOurJID();
+//                if ((localContact != null) && (address != null) && address.isParentOf(jid)) {
+//                    logger.info("Smack presence update for own: = " + address);
+//                    updateResource(localContact, address, availablePresence);
+//                }
+//            }
+//        }).start();
     }
 
     @Override
@@ -1552,7 +1534,7 @@ public class OperationSetPersistentPresenceJabberImpl
             return;
         }
 
-        logger.info("Presence subscription request accepted by: " + address);
+        logger.info("Smack presence subscription accepted by: " + address);
         ContactJabberImpl contact = ssContactList.findContactById(fromID);
         AuthorizationResponse response = new AuthorizationResponse(AuthorizationResponse.ACCEPT, "");
         handler.processAuthorizationResponse(response, contact);
@@ -1568,7 +1550,7 @@ public class OperationSetPersistentPresenceJabberImpl
     public void presenceUnsubscribed(BareJid address, Presence unsubscribedPresence)
     {
         Jid fromID = unsubscribedPresence.getFrom();
-        logger.info(address + " rejected your presence subscription");
+        logger.info("Smack presence subscription rejected by: " + address);
 
         if (handler == null) {
             logger.warn("No unsubscribed Authorization Handler for " + address);
@@ -1590,7 +1572,7 @@ public class OperationSetPersistentPresenceJabberImpl
 
     /**
      * Runnable that resolves local contact list against the server side roster. This thread is the
-     * one which will call getRoster for the first time. The thread wait until the roaster
+     * one which will call getRoster for the first time. The thread wait until the roster
      * is loaded by the Smack Roster class
      */
     private class ServerStoredListInit implements Runnable, RosterLoadedListener
@@ -1654,7 +1636,7 @@ public class OperationSetPersistentPresenceJabberImpl
 
     /**
      * Event is fired when a contact change avatar via XEP-0153: vCard-Based Avatars protocol.
-     * <p>
+     *
      * onAvatarChange event is triggered if a change in the VCard Avatar is detected via
      * <present/> in its update <x xmlns='vcard-temp:x:update'/><photo/> element imageHash value.
      * A new SHA-1 avatar contained in the photo tag represents a new avatar for this contact.

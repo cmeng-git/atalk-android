@@ -29,7 +29,6 @@ import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
-import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -59,6 +58,7 @@ public class SettingsActivity extends OSGiActivity
     static private final String P_KEY_SHOW_HISTORY = aTalkApp.getResString(R.string.pref_key_show_history);
     static private final String P_KEY_HISTORY_SIZE = aTalkApp.getResString(R.string.pref_key_chat_history_size);
     static private final String P_KEY_CHAT_STATE_NOTIFICATIONS = aTalkApp.getResString(R.string.pref_key_chat_state_notifications);
+    static private final String P_KEY_XFER_THUMBNAIL_PREVIEW = aTalkApp.getResString(R.string.pref_key_send_thumbnail);
     static private final String P_KEY_PRESENCE_SUBSCRIBE_MODE = aTalkApp.getResString(R.string.pref_key_presence_subscribe_mode);
 
     // static private final String P_KEY_AUTO_UPDATE_CHECK_ENABLE
@@ -258,6 +258,9 @@ public class SettingsActivity extends OSGiActivity
             PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_CHAT_STATE_NOTIFICATIONS,
                     ConfigurationUtils.isSendChatStateNotifications());
 
+            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_XFER_THUMBNAIL_PREVIEW,
+                    ConfigurationUtils.isSendThumbnail());
+
             PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_PRESENCE_SUBSCRIBE_MODE,
                     ConfigurationUtils.isPresenceSubscribeAuto());
 
@@ -295,7 +298,7 @@ public class SettingsActivity extends OSGiActivity
 
             String[] names = new String[handlerRefs.length + 1]; // +1 Auto
             String[] values = new String[handlerRefs.length + 1];
-            names[0] = "Auto";
+            names[0] = getString(R.string.impl_popup_auto);
             values[0] = "Auto";
             int selectedIdx = 0; // Auto by default
 
@@ -540,6 +543,10 @@ public class SettingsActivity extends OSGiActivity
             else if (key.equals(P_KEY_CHAT_STATE_NOTIFICATIONS)) {
                 ConfigurationUtils.setSendChatStateNotifications(shPreferences.getBoolean(
                         P_KEY_CHAT_STATE_NOTIFICATIONS, ConfigurationUtils.isSendChatStateNotifications()));
+            }
+            else if (key.equals(P_KEY_XFER_THUMBNAIL_PREVIEW)) {
+                ConfigurationUtils.setSendThumbnail(shPreferences.getBoolean(
+                        P_KEY_XFER_THUMBNAIL_PREVIEW, ConfigurationUtils.isSendThumbnail()));
             }
             else if (key.equals(P_KEY_PRESENCE_SUBSCRIBE_MODE)) {
                 ConfigurationUtils.setPresenceSubscribeAuto(shPreferences.getBoolean(

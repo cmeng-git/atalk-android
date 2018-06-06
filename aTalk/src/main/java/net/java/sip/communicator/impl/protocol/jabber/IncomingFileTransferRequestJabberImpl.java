@@ -6,13 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.packet.ThumbnailIQ;
-import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.FileTransfer;
-import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent;
 import net.java.sip.communicator.util.Logger;
@@ -20,11 +14,7 @@ import net.java.sip.communicator.util.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.StanzaExtensionFilter;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
 import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
@@ -47,8 +37,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     /**
      * The logger for this class.
      */
-    private static final Logger logger = Logger
-            .getLogger(IncomingFileTransferRequestJabberImpl.class);
+    private static final Logger logger = Logger.getLogger(IncomingFileTransferRequestJabberImpl.class);
 
     private String id;
 
@@ -62,7 +51,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     private String thumbnailCid;
     private byte[] thumbnail;
 
-//    private static final StanzaFilter THUMBNAIL_RESULT = new AndFilter(StanzaTypeFilter.IQ, IQTypeFilter.RESULT,
+    //    private static final StanzaFilter THUMBNAIL_RESULT = new AndFilter(StanzaTypeFilter.IQ, IQTypeFilter.RESULT,
 //            new StanzaExtensionFilter(ThumbnailIQ.ELEMENT, ThumbnailIQ.NAMESPACE));
     private static final StanzaFilter THUMBNAIL_RESULT = new AndFilter(StanzaTypeFilter.IQ, IQTypeFilter.RESULT);
 
@@ -75,30 +64,28 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      * @param fileTransferRequest the request coming from the Jabber protocol
      */
     public IncomingFileTransferRequestJabberImpl(ProtocolProviderServiceJabberImpl jabberProvider,
-            OperationSetFileTransferJabberImpl fileTransferOpSet,
-            FileTransferRequest fileTransferRequest)
+            OperationSetFileTransferJabberImpl fileTransferOpSet, FileTransferRequest fileTransferRequest)
     {
         this.jabberProvider = jabberProvider;
         this.fileTransferOpSet = fileTransferOpSet;
         this.fileTransferRequest = fileTransferRequest;
 
         Jid fromUserID = fileTransferRequest.getRequestor();
-
-        OperationSetPersistentPresenceJabberImpl opSetPersPresence = (OperationSetPersistentPresenceJabberImpl) jabberProvider
-                .getOperationSet(OperationSetPersistentPresence.class);
+        OperationSetPersistentPresenceJabberImpl opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
+                jabberProvider.getOperationSet(OperationSetPersistentPresence.class);
 
         sender = opSetPersPresence.findContactByID(fromUserID);
         if (sender == null) {
             ChatRoom privateContactRoom = null;
-            OperationSetMultiUserChatJabberImpl mucOpSet = (OperationSetMultiUserChatJabberImpl) jabberProvider
-                    .getOperationSet(OperationSetMultiUserChat.class);
+            OperationSetMultiUserChatJabberImpl mucOpSet = (OperationSetMultiUserChatJabberImpl)
+                    jabberProvider.getOperationSet(OperationSetMultiUserChat.class);
 
             if (mucOpSet != null)
                 privateContactRoom = mucOpSet.getChatRoom(fromUserID.asBareJid());
             if (privateContactRoom != null) {
-                sender = ((OperationSetPersistentPresenceJabberImpl) jabberProvider
-                        .getOperationSet(OperationSetPersistentPresence.class)).createVolatileContact(
-                        fromUserID, true);
+                sender = ((OperationSetPersistentPresenceJabberImpl)
+                        jabberProvider.getOperationSet(OperationSetPersistentPresence.class))
+                        .createVolatileContact(fromUserID, true);
                 privateContactRoom.updatePrivateContactPresenceStatus(sender);
             }
         }
@@ -157,8 +144,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
         IncomingFileTransfer jabberTransfer = fileTransferRequest.accept();
         try {
             incomingTransfer = new IncomingFileTransferJabberImpl(id, sender, file, jabberTransfer);
-            FileTransferCreatedEvent event = new FileTransferCreatedEvent(incomingTransfer,
-                    new Date());
+            FileTransferCreatedEvent event = new FileTransferCreatedEvent(incomingTransfer, new Date());
             fileTransferOpSet.fireFileTransferCreated(event);
             try {
                 jabberTransfer.recieveFile(file);
@@ -185,8 +171,8 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
         } catch (NotConnectedException | InterruptedException e) {
             e.printStackTrace();
         }
-        fileTransferOpSet.fireFileTransferRequestRejected(new FileTransferRequestEvent(
-                fileTransferOpSet, this, new Date()));
+        fileTransferOpSet.fireFileTransferRequestRejected(
+                new FileTransferRequestEvent(fileTransferOpSet, this, new Date()));
     }
 
     /**
@@ -240,8 +226,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
                 logger.debug("Thumbnail response received.");
 
             ThumbnailIQ thumbnailResponse = (ThumbnailIQ) stanza;
-            if ((thumbnailResponse.getCid() != null)
-                    && thumbnailResponse.getCid().equals(thumbnailCid)) {
+            if ((thumbnailResponse.getCid() != null) && thumbnailResponse.getCid().equals(thumbnailCid)) {
                 thumbnail = thumbnailResponse.getData();
 
                 // Create an event associated to this global request.
@@ -252,7 +237,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
                 fileTransferOpSet.fireFileTransferRequest(fileTransferRequestEvent);
             }
             else {
-                // TODO: RETURN <item-not-found/>
+                logger.warn("Item not found");
             }
             if (jabberProvider.getConnection() != null) {
                 jabberProvider.getConnection().removeAsyncStanzaListener(this);

@@ -43,29 +43,44 @@
 */
 package org.jivesoftware.smackx.avatar.useravatar.provider;
 
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarData;
-import org.xmlpull.v1.*;
-
-import java.io.IOException;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * A PacketExtensionProvider to parse the Avatar data.
  * XML namespace urn:xmpp:avatar:data
+ *
+ * <data xmlns='urn:xmpp:avatar:data'>qANQR1DBwU4DX7jmYZnncm...</data>
  */
 public class AvatarDataProvider extends ExtensionElementProvider
 {
-	@Override
-	public Element parse(XmlPullParser parser, int initialDepth)
-			throws XmlPullParserException, IOException, SmackException
-	{
-		if (AvatarData.ELEMENT.equals(parser.getName())) {
-			String data = parser.nextText();
-			AvatarData avatar = new AvatarData(data);
-			return avatar;
-		}
-		return null;
-	}
+    @Override
+    public AvatarData parse(XmlPullParser parser, int initialDepth)
+            throws Exception
+    {
+        AvatarData avatarData = null;
+        if (AvatarData.ELEMENT.equals(parser.getName())) {
+            String data = parser.nextText();
+            avatarData = new AvatarData(data);
+        }
+        return avatarData;
+
+          // cmeng - not working
+//        outerloop: while (true) {
+//            int eventType = parser.next();
+//            switch (eventType) {
+//                case XmlPullParser.TEXT:
+//                    String data = parser.nextText();
+//                    avatarData = new AvatarData(data);
+//                    break;
+//                case XmlPullParser.END_TAG:
+//                    if (parser.getDepth() == initialDepth) {
+//                        break outerloop;
+//                    }
+//                    break;
+//            }
+//        }
+//        return avatarData;
+    }
 }

@@ -115,7 +115,7 @@
     <string name="service_gui_APPLICATION_NAME">aTalk</string>
     <string name="service_gui_AT">at</string>
     <string name="service_gui_APPLY">Aplicar</string>
-    <string name="service_gui_APPLY_CHANGES">Aplicando los cambion en la cuenta&#8230;</string>
+    <string name="service_gui_APPLY_CHANGES">Aplicando los cambion en la cuenta (~60S) &#8230;</string>
     <string name="service_gui_AUTHORIZE">Autorizar</string>
     <string name="service_gui_AUTHORIZATION_ACCEPTED">El contacto ha aceptado su solicitud de autorización.</string>
     <string name="service_gui_AUTHENTICATION_FAILED">Falló la autenticación para %1$s. La contraseña introducida no es válida.</string>
@@ -131,7 +131,7 @@
     <string name="service_gui_AVATAR_SET_ERROR">Fallo al configurar el avatar para %s</string>
 
     <string name="service_gui_BUSY_STATUS">Ocupado</string>
-    <string name="service_gui_CALL">Hacer/Recibir Llamada</string>
+    <string name="service_gui_CALL">Llamada de audio</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histŕico de llamadas</string>
     <string name="service_gui_CALL_WITH">Llamar con</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">No se encontró ningún dispositivo de Audio/Video activo, por lo que no se pudo hacer la llamada..</string>
@@ -140,7 +140,7 @@
     <string name="service_gui_CALL_NO_DEVICE_CODEC_H">El dispositivo %1$s o el códec no está totalmente configurado en \'Ajustes…\'. Por favor, compruébese y configúrese.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">¿Continuar la llamada?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">No hay formatos de medios que coincidan con la oferta %1$s para recibir llamadas. Por favor, compruebar la configuración del dispositivo y el códec en \'Ajustes…\'.</string>
-    <string name="service_gui_CALL_VIDEO">Realizar una llamada de vídeo</string>
+    <string name="service_gui_CALL_VIDEO">Video llamada</string>
     <string name="service_gui_CANCEL">Cancelar</string>
     <string name="service_gui_Contacts">Contactos</string>
     <string name="service_gui_DONE">¡Hecho!</string>
@@ -224,7 +224,7 @@
 
     <!-- About Dialog -->
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nTodos los derechos reservados.</string>
-    <string name="AboutDialog_help"><a herf="http://atalk.sytes.net">Ayuda on-line</a></string>
+    <string name="AboutDialog_help"><a href="http://atalk.sytes.net">Ayuda on-line</a></string>
     <string name="AboutDialog_title">Sobre</string>
     <string name="AboutDialog_Version">Versión %s</string>
     <string name="About_action">Sobre</string>
@@ -241,7 +241,7 @@
     <!-- PTT Chat -->
     <string name="chat_dbZero">00.00dB</string>
     <string name="chat_noaudio_buddyOffline">No se permite el chat de audio con un destinatario que está fuera de línea.</string>
-    <string name="chat_RecordCancel">&lt; portaobjetos de la izquierda\npara cancelar</string>
+    <string name="chat_RecordCancel">&lt;portaobjetos de la izquierda\npara cancelar</string>
     <string name="chat_soundRecordCancelButton">Cancelar</string>
     <string name="chat_soundRecordStartButton">Comenzar la grabación</string>
     <string name="chat_soundRecordStopButton">Hecho</string>
@@ -435,7 +435,7 @@
     <string name="service_gui_LOGIN_INTERNAL_ERROR">Se ha producido un error al iniciar sesión con la cuenta: Usuario: %1$s, Servidor: %2$s. Lo más probable es que se trate de un error interno de la aplicación. Por favor reporte el problema a nuestra lista de correo de desarrolladores.</string>
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">No se puede iniciar la sesión con la cuenta: Usuario: %1$s, Servidor: %2$s, debido a un problema de configuración de la cuenta. Por favor, comprueba la configuración de su cuenta.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">No se puede iniciar sesión con la cuenta:\nUsuario: %1$s\nServidor: %2$s\ndebido a un fallo en la red. Por favor, compruebe su conexión de red.</string>
-    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Se produjo un error al cerrar la sesión con la siguiente cuenta: Nombre de usuario: %1$s, Nombre del servidor: %2$2.</string>
+    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Se produjo un error al cerrar la sesión con la siguiente cuenta: Nombre de usuario: %1$s, Nombre del servidor: %2$S.</string>
     <string name="service_gui_MOVE">Mover</string>
     <string name="service_gui_MOVE_CONTACT">Mover Contacto</string>
     <string name="service_gui_MOVE_CONTACT_ERROR">El contacto no se puede mover</string>
@@ -525,7 +525,7 @@
 
     <string name="service_gui_SEND_MESSAGE">Enviar un mensaje</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Error al enviar el mensaje: %1$s</string>
-    <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">La entidad que has seleccionado no admite mensajes de chat instantáneos</string>
+    <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">La entidad que has seleccionado no admite mensajes de chat instantáneos: %1$s</string>
 	<string name="service_gui_SEND_AS_SMS">Enviar como SMS</string>
 	<string name="service_gui_SEND_PRIVATE_MESSAGE">Enviar un mensaje privado</string>
     <string name="service_gui_SEND_VIA">enviar vía</string>
@@ -539,7 +539,6 @@
     <string name="service_gui_UNKNOWN_USER">Usuario desconocido</string>
     <string name="service_gui_UNKNOWN_STATUS">Estado desconocido</string>
     <string name="service_gui_URL_HINT">http://www.ejemplo.com</string>
-    <string name="service_gui_VIDEO_CALL">Video llamada</string>
     <string name="service_gui_VOLUME_CONTROL_TITLE">Nivel de ganancia de volumen de salida</string>
     <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">Ajustar el volumen</string>
     <string name="service_gui_VOLUME_GAIN_LEVEL">Nivel de ganancia de volumen: %1$s%%</string>
@@ -984,7 +983,7 @@
     <string name="util_dns_DNSSEC_ADVANCED_OPTIONS">Mostrar opciones avanzadas</string>
     <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>Zona firmada con DNSSEC %1$s devolvió datos no válidos.&lt;br>%2$s&lt;/ html></string>
     <string name="util_dns_DNSSEC_ADVANCED_REASON_UNSIGNED">La consulta de %1$s para %2$s no está firmada.</string>
-    <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s ha intentado conectarse al servidor en&lt;b>%2$s%lt;&lt;/ b>,
+    <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s ha intentado conectarse al servidor en&lt;b>%2$s&lt;&lt;/ b>,
         que es un dominio que lleva una protección fuerte llamada DNSSEC. La información que %1$s ha obtenido
         desde el servidor DNS no está de acuerdo con la información que proporciona DNSSEC sobre este dominio. &lt;br>&lt;br>&lt;b>
         Esto no debería suceder a menos que se cometieran errores muy graves en %2$s. Por lo tanto, es una indicación muy fuerte de que algo es
@@ -1184,7 +1183,10 @@
     <!-- Tell others when we are writing to them -->
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Enviar notificaciones del estado de la charla</string>
 
-    <!-- Tell others when we are writing to them -->
+    <!-- Enable option to send thumnail preview for image file sending -->
+    <string name="service_gui_settings_SEND_THUMBNAIL">Enviar miniatura de archivo</string>
+
+    <!-- Setup substription Mode: auto or manual approval -->
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presencia Suscribir aprobación</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Suscribir aprobación - aceptar automáticamente todo</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Suscribir aprobación - manual</string>
@@ -1206,6 +1208,7 @@
     <string name="service_gui_settings_POPUP_HANDLER">Tipo de notificaciones emergentes</string>
 
     <!-- Status bar notifications handler -->
+    <string name="impl_popup_auto">Automático</string>
     <string name="impl_popup_status_bar">Notificaciones de la barra de estado</string>
 
     <!-- Events -->
@@ -1334,8 +1337,7 @@
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">Gestionar huellas digitales criptográficas privadas</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">Claves privadas de cifrado</string>
     <!-- Crypto fingerprints screen -->
-    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY">Gestionar todas las huellas dactilares de los dispositivos conocidos\n
-        color: azul=dispositivo propio; gris=inactivo</string>
+    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY">Gestionar todas las huellas dactilares de los dispositivos conocidos\ncolor: azul=dispositivo propio; gris=inactivo</string>
     <string name="service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">Huellas digitales de dispositivos criptográficos</string>
 
     <!-- Crypto contextMenu, dialog, message and toast -->

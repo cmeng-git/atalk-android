@@ -43,36 +43,38 @@
 */
 package org.jivesoftware.smackx.avatar.vcardavatar.provider;
 
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
-import org.xmlpull.v1.*;
-
-import java.io.IOException;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
- * An ExtensionElementProvider to parse the VcardTempXUpdate photo data.
- * XML namespace "vcard-temp:x:update"
+ * An ExtensionElementProvider to parse the VcardTempXUpdate photo data. XML namespace "vcard-temp:x:update"
+ * <x xmlns='vcard-temp:x:update'><photo>186f39da130310dbc59002608c56d1bd26abd72d</photo></x>
  */
 public class VCardTempXUpdateProvider extends ExtensionElementProvider
 {
-	@Override
-	public Element parse(XmlPullParser parser, int initialDepth)
-			throws XmlPullParserException, IOException, SmackException
-	{
-		boolean done = false;
-		while (!done) {
-			int eventType = parser.getEventType();
-			if (eventType == XmlPullParser.START_TAG) {
-				if (VCardTempXUpdate.ELEMENT_PHOTO.equals(parser.getName())) {
-					String data = parser.nextText();
-					VCardTempXUpdate avatar = new VCardTempXUpdate(data);
-					return avatar;
-				}
-			}
-			parser.next();
-		}
-		return null;
-	}
+    @Override
+    public VCardTempXUpdate parse(XmlPullParser parser, int initialDepth)
+            throws Exception
+    {
+        VCardTempXUpdate avatar = null;
+        outerloop: while (true) {
+            int eventType = parser.next();
+            switch (eventType) {
+                case XmlPullParser.START_TAG:
+                    String name = parser.getName();
+                    if (VCardTempXUpdate.ELEMENT_PHOTO.equals(name)) {
+                        String data = parser.nextText();
+                        avatar = new VCardTempXUpdate(data);
+                    }
+                    break;
+                case XmlPullParser.END_TAG:
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
+                    }
+                    break;
+            }
+        }
+        return avatar;
+    }
 }

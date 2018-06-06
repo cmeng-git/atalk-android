@@ -23,8 +23,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -34,10 +32,7 @@ import android.widget.TextView;
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.BuildConfig;
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
-import org.atalk.android.util.java.awt.Color;
+import org.atalk.android.*;
 
 import de.cketti.library.changelog.ChangeLog;
 
@@ -46,7 +41,7 @@ import de.cketti.library.changelog.ChangeLog;
  */
 public class About extends Activity implements OnClickListener, View.OnLongClickListener
 {
-     private static String[][] USED_LIBRARIES = new String[][]{
+    private static String[][] USED_LIBRARIES = new String[][]{
             new String[]{"Android Support Library", "https://developer.android.com/topic/libraries/support-library/index.html"},
             new String[]{"android-betterpickers", "https://github.com/code-troopers/android-betterpickers"},
             new String[]{"Android-EasyLocation", "https://github.com/akhgupta/Android-EasyLocation"},
@@ -57,12 +52,9 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"commons-lang", "http://commons.apache.org/proper/commons-lang/"},
             new String[]{"Dexter", "https://github.com/Karumi/Dexter"},
             new String[]{"dhcp4java", "https://github.com/ggrandes-clones/dhcp4java"},
-            new String[]{"dnsjava", "https://github.com/dnsjava/dnsjava"},
-            new String[]{"dnssecjava", "https://github.com/ibauersachs/dnssecjava"},
             new String[]{"ews-android-api", "https://github.com/alipov/ews-android-api"},
             new String[]{"FFmpeg", "https://github.com/FFmpeg/FFmpeg"},
             new String[]{"Google Play Services", "https://developers.google.com/android/guides/overview"},
-            new String[]{"guava", "// https://mvnrepository.com/artifact/com.google.guava/guava"},
             new String[]{"httpclient-android", "https://github.com/smarek/httpclient-android"},
             new String[]{"ice4j", "https://github.com/jitsi/ice4j"},
             new String[]{"jitsi", "https://github.com/jitsi/jitsi"},
@@ -73,6 +65,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"libjitsi", "https://github.com/jitsi/libjitsi"},
             new String[]{"libphonenumber", "https://github.com/googlei18n/libphonenumber"},
             new String[]{"libvpx", "https://github.com/webmproject/libvpx"},
+            new String[]{"miniDNS", "https://github.com/MiniDNS/minidns"},
             new String[]{"otr4j", "https://github.com/jitsi/otr4j"},
             new String[]{"opensles", "https://github.com/openssl/openssl "},
             new String[]{"osgi.core", "http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0"},
@@ -222,7 +215,8 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
         }
     }
 
-    private void atalkUrlAccess(){
+    private void atalkUrlAccess()
+    {
         String url = getString(R.string.AboutDialog_Link);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));

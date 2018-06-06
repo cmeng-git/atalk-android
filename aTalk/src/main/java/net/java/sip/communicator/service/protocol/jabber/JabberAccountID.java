@@ -378,34 +378,34 @@ public class JabberAccountID extends AccountID
     /**
      * Sets the <tt>autoDiscoverStun</tt> property.
      *
-     * @param isAutoDiscover <tt>true</tt> to indicate that stun server should be auto-discovered, <tt>false</tt> -
+     * @param autoDiscoverStun <tt>true</tt> to indicate that stun server should be auto-discovered, <tt>false</tt> -
      * otherwise.
      */
-    public void setAutoDiscoverStun(boolean isAutoDiscover)
+    public void setAutoDiscoverStun(boolean autoDiscoverStun)
     {
-        putAccountProperty(ProtocolProviderFactory.AUTO_DISCOVER_STUN, isAutoDiscover);
+        putAccountProperty(ProtocolProviderFactory.AUTO_DISCOVER_STUN, autoDiscoverStun);
     }
 
     /**
      * Sets the <tt>useDefaultStunServer</tt> property.
      *
-     * @param isUseDefaultStunServer <tt>true</tt> to indicate that default stun server should be used if no others are
+     * @param useDefaultStunServer <tt>true</tt> to indicate that default stun server should be used if no others are
      * available, <tt>false</tt> otherwise.
      */
-    public void setUseDefaultStunServer(boolean isUseDefaultStunServer)
+    public void setUseDefaultStunServer(boolean useDefaultStunServer)
     {
-        putAccountProperty(ProtocolProviderFactory.USE_DEFAULT_STUN_SERVER, isUseDefaultStunServer);
+        putAccountProperty(ProtocolProviderFactory.USE_DEFAULT_STUN_SERVER, useDefaultStunServer);
     }
 
     /**
      * Sets the <tt>autoDiscoverJingleNodes</tt> property.
      *
-     * @param isAutoDiscover <tt>true</tt> to indicate that relay server should be auto-discovered, <tt>false</tt>
-     * - otherwise.
+     * @param autoDiscoverJingleNodes <tt>true</tt> to indicate that relay server should be auto-discovered,
+     * <tt>false</tt> - otherwise.
      */
-    public void setAutoDiscoverJingleNodes(boolean isAutoDiscover)
+    public void setAutoDiscoverJingleNodes(boolean autoDiscoverJingleNodes)
     {
-        putAccountProperty(ProtocolProviderFactory.AUTO_DISCOVER_JINGLE_NODES, isAutoDiscover);
+        putAccountProperty(ProtocolProviderFactory.AUTO_DISCOVER_JINGLE_NODES, autoDiscoverJingleNodes);
     }
 
     /**

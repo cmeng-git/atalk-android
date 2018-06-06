@@ -157,7 +157,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 
         Collection<ContactPresenceStatusListener> listeners;
         synchronized (contactPresenceStatusListeners) {
-            listeners = new ArrayList<ContactPresenceStatusListener>(contactPresenceStatusListeners);
+            listeners = new ArrayList<>(contactPresenceStatusListeners);
         }
 
         if (logger.isDebugEnabled())

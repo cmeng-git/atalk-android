@@ -770,7 +770,7 @@ public class ServerStoredContactListJabberImpl
 
         // create the entry with the new group so it can be removed from other groups if any.
         // modify our reply timeout because some XMPP may send "result" IQ late (> 5 seconds).
-        xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT);
+        xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
         try {
             mRoster.createEntry(contact.getSourceEntry().getJid(), contact.getDisplayName(),
@@ -783,8 +783,8 @@ public class ServerStoredContactListJabberImpl
             e.printStackTrace();
         }
 
-        // Reset to SMACK_PACKET_REPLY_SET_TIMEOUT
-        xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_SET_TIMEOUT);
+        // Reset to SMACK_PACKET_REPLY_TIMEOUT_10
+        xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
     }
 
     /**
@@ -917,12 +917,16 @@ public class ServerStoredContactListJabberImpl
                     // fire an event saying that the non-filed contact has been resolved
                     fireContactResolved(rootGroup, contact);
                 }
-                // process status if any that was received while the roster reply packet was
-                // received and added our presence listener Fixes a problem where Presence
-                // packets can be received before the roster items packet, and we miss it,
-                // cause we add our listener after roster is received and smack don't allow
-                // to add our listener earlier
-                parentOperationSet.firePresenceStatusChanged(mRoster.getPresence(item.getJid()));
+
+                /*
+                 * process status if any that was received while the roster reply packet was received and added
+                 * our presence listener. Fixes a problem where Presence packets can be received before the roster
+                 * items packet, and we miss it, cause we add our listener after roster is received and smack
+                 * don't allow to add our listener earlier
+                 */
+                // cmeng - already done in either fireContactAdded() or fireContactResolved() method
+                // Duplicated entry in storedPresences if allow to be executed.
+                // parentOperationSet.firePresenceStatusChanged(mRoster.getPresence(item.getJid()));
             }
         }
 
@@ -1073,8 +1077,7 @@ public class ServerStoredContactListJabberImpl
         }
 
         // if we are already registered(roster != null) and we are currently creating the contact
-        // list, presences maybe already received before we have created the contacts, so lets
-        // check
+        // list, presences maybe already received before we have created the contacts, so lets check
         if (mRoster != null) {
             parentOperationSet.firePresenceStatusChanged(mRoster.getPresence(contact.getJid().asBareJid()));
         }

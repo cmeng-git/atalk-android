@@ -116,7 +116,7 @@
     <string name="service_gui_APPLICATION_NAME">aTalk</string>
     <string name="service_gui_AT">at</string>
     <string name="service_gui_APPLY">Apply</string>
-    <string name="service_gui_APPLY_CHANGES">Applying account changes&#8230;</string>
+    <string name="service_gui_APPLY_CHANGES">Applying account changes (~60S) &#8230;</string>
     <string name="service_gui_AUTHORIZE">Authorize</string>
     <string name="service_gui_AUTHORIZATION_ACCEPTED">contact has accepted your authorization request.</string>
     <string name="service_gui_AUTHENTICATION_FAILED">Authentication failed for %1$s. The password you entered is not valid.</string>
@@ -132,7 +132,7 @@
     <string name="service_gui_AVATAR_SET_ERROR">Failed to set avatar for %1$s</string>
 
     <string name="service_gui_BUSY_STATUS">Busy</string>
-    <string name="service_gui_CALL">Make/Receive Call</string>
+    <string name="service_gui_CALL">Audio call</string>
     <string name="service_gui_CALL_FAILED">Call failed</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Call history</string>
     <string name="service_gui_CALL_WITH">Call with</string>
@@ -143,7 +143,7 @@
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Would you like to continue the call?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">No matching media formats found against offer %1$s to receive call. Please verify device and codec setup in \'Settings…\'.</string>
     <string name="service_gui_CALL_VIA">Call via: %1$s</string>
-    <string name="service_gui_CALL_VIDEO">Make video call</string>
+    <string name="service_gui_CALL_VIDEO">Video call</string>
     <string name="service_gui_CANCEL">Cancel</string>
     <string name="service_gui_Contacts">Contacts</string>
     <string name="service_gui_DONE">Done</string>
@@ -227,7 +227,7 @@
 
     <!-- About Dialog -->
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nAll rights reserved.</string>
-    <string name="AboutDialog_help"><a herf="http://atalk.sytes.net">Online Help</a></string>
+    <string name="AboutDialog_help"><a href="http://atalk.sytes.net">Online Help</a></string>
     <string name="AboutDialog_Link">http://atalk.sytes.net</string>
     <string name="AboutDialog_title">About</string>
     <string name="AboutDialog_Version">Version %1$s</string>
@@ -450,7 +450,7 @@
     <string name="service_gui_LOGIN_INTERNAL_ERROR">An error occurred while logging in with account: User name: {0}, Server name: {1}. This is most probably an internal application error. Please report the problem to our developers mailing list.</string>
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Unable to log in with account: User name: {0}, Server name: {1}, due to an account configuration problem. Please check your account configuration.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">Unable to log in with account:\nUser name: {0}\nServer name: {1}\ndue to a network failure. Please check your network connection.</string>
-    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">An error occurred while logging off with the following account: User name: %1$s, Server name: %2$2.</string>
+    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">An error occurred while logging off with the following account: User name: %1$s, Server name: %2$S.</string>
     <string name="service_gui_MOBILE_PHONE">Mobile</string>
     <string name="service_gui_MOVE">Move</string>
     <string name="service_gui_MOVE_CONTACT">Move Contact</string>
@@ -552,7 +552,7 @@
 
     <string name="service_gui_SEND_MESSAGE">Send a message</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Failed to send message: %1$s</string>
-    <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">The entity you have selected doesn\'t support instant chat messaging</string>
+    <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">The entity you have selected doesn\'t support instant chat messaging: %1$s</string>
 	<string name="service_gui_SEND_AS_SMS">Send as SMS</string>
 	<string name="service_gui_SEND_PRIVATE_MESSAGE">Send private message</string>
     <string name="service_gui_SEND_VIA">Send via</string>
@@ -566,7 +566,6 @@
     <string name="service_gui_UNKNOWN_USER">Unknown user</string>
     <string name="service_gui_UNKNOWN_STATUS">Unknown state</string>
     <string name="service_gui_URL_HINT">http://www.example.com</string>
-    <string name="service_gui_VIDEO_CALL">Video call</string>
     <string name="service_gui_VOLUME_CONTROL_TITLE">Output volume gain level</string>
     <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">Adjust volume</string>
     <string name="service_gui_VOLUME_GAIN_LEVEL">Volume gain level: %1$s%%</string>
@@ -1038,7 +1037,7 @@
     <string name="util_dns_DNSSEC_ADVANCED_OPTIONS">Show advanced options</string>
     <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>DNSSEC signed zone %1$s returned invalid data.&lt;br>%2$s&lt;/html></string>
     <string name="util_dns_DNSSEC_ADVANCED_REASON_UNSIGNED">%1$s query for %2$s is unsigned.</string>
-    <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s has tried to connect to the server at &lt;b>%2$s%lt;&lt;/b>,
+    <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s has tried to connect to the server at &lt;b>%2$s&lt;&lt;/b>,
         which is a domain that carries a strong protection called DNSSEC. The information that %1$s has obtained
         from the DNS server is not in accordance with the information DNSSEC provides about this domain. &lt;br>&lt;br>&lt;b>
         This should not happen unless very serious mistakes were made at %2$s. It therefore is a very strong indication that something is
@@ -1347,7 +1346,11 @@
     <string name="pref_key_chat_state_notifications">pref.key.msg.chat_state_notifications</string>
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Send chat state notifications</string>
 
-    <!-- Tell others when we are writing to them -->
+    <!-- Enable option to send thumnail preview for image file sending -->
+    <string name="pref_key_send_thumbnail">pref.key.send.thumbnail</string>
+    <string name="service_gui_settings_SEND_THUMBNAIL">Send file thumbnail preview</string>
+
+    <!-- Setup substription Mode: auto or manual approval -->
     <string name="pref_key_presence_subscribe_mode">pref.key.presence.subscribe_mode</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presence subscribe approval</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Subscribe approval - auto accept all</string>
@@ -1359,7 +1362,6 @@
     <string name="service_gui_settings_CHAT_ALERTS">Show status bar notifications</string>
 
     <!-- Leave chat rooms when closing window(omitted on Android for now) -->
-    <!-- ... -->
 
     <!-- Auto away -->
     <!-- Not sure how to implement it on android - leave for now -->
@@ -1375,6 +1377,7 @@
     <string name="service_gui_settings_POPUP_HANDLER">Popup notifications type</string>
 
     <!-- Status bar notifications handler -->
+    <string name="impl_popup_auto">Auto</string>
     <string name="impl_popup_status_bar">Status bar notifications</string>
 
     <!-- Events -->

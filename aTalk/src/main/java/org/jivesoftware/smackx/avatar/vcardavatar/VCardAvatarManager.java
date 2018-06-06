@@ -41,9 +41,7 @@ import org.jivesoftware.smackx.avatar.vcardavatar.listener.VCardAvatarListener;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -265,19 +263,21 @@ public class VCardAvatarManager extends AvatarManager
      * Parses a contact presence stanza with the element name "x" and the namespace
      * "vcard-temp:x:update". If new avatarHash received, Download if autoDownload is
      * enabled and/or fireListeners registered with this event if change detected.
-     * <p>
+     *
+     * Note: to attributes is missing from <presence/> send from old jabber server
      *
      * @param stanza The stanza received to parse.
      */
     private void processContactPhotoPresence(Stanza stanza)
     {
-        // Do not process if received own <presence/> from server
-        Jid userId = stanza.getFrom();
-        if (userId.isParentOf(stanza.getTo()))
+        // Do not process if received own <presence/> from server or from system service entity
+        Jid jidFrom = stanza.getFrom();
+        if (!jidFrom.isEntityFullJid() || (mAccount != null && jidFrom.isParentOf(mAccount))) {
             return;
+        }
 
         // Retrieves the user current avatarHash
-        String currentAvatarHash = getAvatarHashByJid(userId.asBareJid());
+        String currentAvatarHash = getAvatarHashByJid(jidFrom.asBareJid());
 
         // Get the stanza extension which contains the photo tag.
         VCardTempXUpdate vCardXExtension = stanza.getExtension(ELEMENT, NAMESPACE);
@@ -297,16 +297,20 @@ public class VCardAvatarManager extends AvatarManager
                  * relevant avatar information if download is successful
                  */
                 if (mAutoDownload) {
-                    mVCard = downloadVCard(userId.asBareJid());
+                    mVCard = downloadVCard(jidFrom.asBareJid());
                 }
                 else {
                     // Invalid mVcard on new avatarHash received
                     mVCard = null;
                 }
 
-                LOGGER.log(Level.INFO, "Presence with new avatarHash received (old => new) from: "
-                        + userId + "\n" + currentAvatarHash + "\n" + avatarHash);
-                fireListeners(userId, avatarHash);
+                if (mVCard.getAvatar() != null) {
+                    LOGGER.log(Level.INFO, "Presence with new avatarHash received (old => new) from: "
+                            + jidFrom + "\n" + currentAvatarHash + "\n" + avatarHash);
+                    fireListeners(jidFrom, avatarHash);
+                } else {
+                    LOGGER.warning("vCard contains no avatar information!");
+                }
             }
         }
     }

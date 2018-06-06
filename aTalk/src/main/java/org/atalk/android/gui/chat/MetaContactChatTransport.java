@@ -135,7 +135,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         presenceOpSet = mPPS.getOperationSet(OperationSetPresence.class);
         if (presenceOpSet != null)
             presenceOpSet.addContactPresenceStatusListener(this);
-
         isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
 
         // checking this can be slow so make sure its out of our way
@@ -257,6 +256,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         // First try to ask the capabilities operation set if such is available.
         OperationSetContactCapabilities capOpSet = mPPS.getOperationSet(OperationSetContactCapabilities.class);
         if (capOpSet != null) {
+            if (contact.getJid().asEntityBareJidIfPossible() == null) {
+                isChatStateSupported = false;
+                return false;
+            }
             if (capOpSet.getOperationSet(contact, OperationSetBasicInstantMessaging.class) != null) {
                 return true;
             }
@@ -356,7 +359,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
-            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED);
+            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, getName());
             return;
         }
 
@@ -513,7 +516,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     private FileTransfer sendFile(File file, boolean isMultimediaMessage)
             throws Exception
     {
-        // If this chat transport does not support instant messaging we do nothing here.
+        // If this chat transport does not support file transfer we do nothing and just return.
         if (!allowsFileTransfer())
             return null;
 

@@ -23,6 +23,7 @@ import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringPrepUtil;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.*;
@@ -321,8 +322,13 @@ public class MUCServiceImpl extends MUCService
 
             if (join) {
                 chatRoom.join();
-                for (String contact : contacts)
+                for (String contact : contacts) {
+                    if (XmppStringPrepUtil.localprep(contact) == null) {
+                        aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, contact);
+                        continue;
+                    }
                     chatRoom.invite(JidCreate.entityBareFrom(contact), reason);
+                }
             }
         } catch (OperationFailedException | OperationNotSupportedException | XmppStringprepException
                 | SmackException.NotConnectedException | InterruptedException ex) {

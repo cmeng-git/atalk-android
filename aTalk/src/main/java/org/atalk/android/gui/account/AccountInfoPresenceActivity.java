@@ -1065,7 +1065,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             //mainScrollPane.getVerticalScrollBar().setValue(0);
             accountInfoOpSet.save();
         } catch (OperationFailedException e1) {
-            logger.debug("Failed to update account details: ", e1);
+            showAvatarChangeError();
         }
     }
 
@@ -1138,7 +1138,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
     {
         super.onCreateContextMenu(menu, v, menuInfo);
-
         if (v.getId() == R.id.accountAvatar) {
             getMenuInflater().inflate(R.menu.avatar_menu, menu);
         }
@@ -1328,8 +1327,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             PresenceStatus selectedStatus = (PresenceStatus) statusSpinner.getSelectedItem();
             String statusMessageText = statusMessageEdit.getText().toString();
 
-            if ((selectedStatus.getStatus() == PresenceStatus.OFFLINE)
-                    && (hasChanges)) {
+            if ((selectedStatus.getStatus() == PresenceStatus.OFFLINE) && (hasChanges)) {
                 // abort all account info changes if user goes offline
                 hasChanges = false;
 

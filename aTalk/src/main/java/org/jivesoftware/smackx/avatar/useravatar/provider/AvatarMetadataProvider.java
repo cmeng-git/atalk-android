@@ -43,14 +43,10 @@
 */
 package org.jivesoftware.smackx.avatar.useravatar.provider;
 
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarMetadata;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarMetadata.Info;
-import org.xmlpull.v1.*;
-
-import java.io.IOException;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * A PacketExtensionProvider to parse the Avatar metadata.
@@ -58,69 +54,63 @@ import java.io.IOException;
  */
 public class AvatarMetadataProvider extends ExtensionElementProvider
 {
-	@Override
-	public Element parse(XmlPullParser parser, int initialDepth)
-			throws XmlPullParserException, IOException, SmackException
-	{
-		AvatarMetadata metadata = new AvatarMetadata();
-		boolean done = false;
-		while (!done) {
-			int eventType = parser.next();
-			if (eventType == XmlPullParser.START_TAG) {
-				if (AvatarMetadata.Info.ELEMENT_INFO.equals(parser.getName())) {
-					String id = parser.getAttributeValue(null,
-							AvatarMetadata.Info.ATTR_ID);
-					String type = parser.getAttributeValue(null,
-							AvatarMetadata.Info.ATTR_TYPE);
-					String sBytes = parser.getAttributeValue(null,
-							AvatarMetadata.Info.ATTR_BYTES);
-					String sWidth = parser.getAttributeValue(null,
-							AvatarMetadata.Info.ATTR_WIDTH);
-					String sHeight = parser.getAttributeValue(null,
-							AvatarMetadata.Info.ATTR_HEIGHT);
+    @Override
+    public AvatarMetadata parse(XmlPullParser parser, int initialDepth)
+            throws Exception
+    {
+        AvatarMetadata metadata = new AvatarMetadata();
+        outerloop:
+        while (true) {
+            int eventType = parser.next();
+            switch (eventType) {
+                case XmlPullParser.START_TAG:
+                    String name = parser.getName();
+                    if (AvatarMetadata.Info.ELEMENT_INFO.equals(name)) {
+                        String id = parser.getAttributeValue(null, AvatarMetadata.Info.ATTR_ID);
+                        String type = parser.getAttributeValue(null, AvatarMetadata.Info.ATTR_TYPE);
+                        String sBytes = parser.getAttributeValue(null, AvatarMetadata.Info.ATTR_BYTES);
+                        String sWidth = parser.getAttributeValue(null, AvatarMetadata.Info.ATTR_WIDTH);
+                        String sHeight = parser.getAttributeValue(null, AvatarMetadata.Info.ATTR_HEIGHT);
 
-					int bytes = 0;
-					Info info;
-					try {
-						if (sBytes != null)
-							bytes = Integer.parseInt(sBytes);
-					}
-					catch (NumberFormatException e) {
-						e.printStackTrace();
-					}
+                        int bytes = 0;
+                        Info info;
+                        try {
+                            if (sBytes != null)
+                                bytes = Integer.parseInt(sBytes);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
 
-					if ((id != null) && (type != null) && (bytes != 0))
-						info = new Info(id, type, bytes);
-					else // invalid info
-						continue;
+                        if ((id != null) && (type != null) && (bytes != 0))
+                            info = new Info(id, type, bytes);
+                        else // invalid info
+                            continue;
 
-					String url = parser.getAttributeValue(null, Info.ATTR_URL);
-					info.setUrl(url);
+                        String url = parser.getAttributeValue(null, Info.ATTR_URL);
+                        info.setUrl(url);
 
-					try {
-						int width = 0;
-						int height = 0;
-						if (sWidth != null)
-							width = Integer.parseInt(parser.getAttributeValue(null,
-									Info.ATTR_WIDTH));
-						if (sHeight != null)
-							height = Integer.parseInt(parser.getAttributeValue(null,
-									Info.ATTR_HEIGHT));
-						info.setHeight(height);
-						info.setWidth(width);
-					}
-					catch (NumberFormatException e) {
-						e.printStackTrace();
-					}
-					metadata.addInfo(info);
-				}
-			}
-			else if (eventType == XmlPullParser.END_TAG) {
-				if (AvatarMetadata.ELEMENT.equals(parser.getName())) {
-					done = true;
-				}
-			}
-		}
-		return metadata;
-	}
+                        try {
+                            int width = 0;
+                            int height = 0;
+                            if (sWidth != null)
+                                width = Integer.parseInt(parser.getAttributeValue(null, Info.ATTR_WIDTH));
+                            if (sHeight != null)
+                                height = Integer.parseInt(parser.getAttributeValue(null, Info.ATTR_HEIGHT));
+                            info.setHeight(height);
+                            info.setWidth(width);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        metadata.addInfo(info);
+                    }
+                    break;
+                case XmlPullParser.END_TAG:
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
+                    }
+                    break;
+            }
+        }
+        return metadata;
+    }
 }

@@ -160,7 +160,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
     {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
-            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED);
+            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, getName());
             return;
         }
         Message message = adHocChatRoom.createMessage(messageText);

@@ -20,10 +20,14 @@
         android:title="@string/service_gui_GEO_SEND">
     </item>
     <item
-        android:id="@+id/call_contact"
+        android:id="@+id/call_contact_audio"
         android:icon="@drawable/chatcall_dark"
-        android:showAsAction="ifRoom"
         android:title="@string/service_gui_CALL">
+    </item>
+    <item
+        android:id="@+id/call_contact_video"
+        android:icon="@drawable/chatcall_dark"
+        android:title="@string/service_gui_CALL_VIDEO">
     </item>
     <item
         android:id="@+id/erase_chat_history"

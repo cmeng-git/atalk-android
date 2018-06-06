@@ -16,20 +16,21 @@
 ## Features
 aTalk is an xmpp client designed for android and supports the following features:
 * Instant messaging in plain text and End-to-End encryption with [OMEMO](http://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
+* SSL Certificate authentication, experimental DNSSEC and DANE Security Implementation for secure Connection Establishment
 * Omemo encryption is available during multi-user-chat session, giving users' maximum privacy and security
-* Supports both voice and video call with ZRTP encryption
-* Send and receive files for all document types and images. Image thumb nail is first sent for preview and acceptance before the actual file is sent
-* Unique GPS-Location implemention use as standalone tool, or sending locations to your chosen buddy for real-time tracking or playback animation.
+* Supports both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
+* Send and receive files for all document types and images. Support Image thumb nail preview for acceptance before the actual file is sent
+* Unique GPS-Location implementation standalone tool, or sending locations to your chosen buddy for real-time tracking or playback animation.
 * Built-in demo for GPS-Location features
 * A 360° street view of your current location, may use for self-guided tour. The street view tracks and follows your direction of sight.
 * Integrated photo editor with zooming and cropping, user can update his/her avatar with ease
 * Last message correction, message carbons and offline messages (omemo)
 * Multiple accounts support
-* Multi-language UI support (English and Spanish - contributions requires for others). 
+* Multi-language UI support (Bahasa Indonesia, English, German, Russian, and Spanish). 
 
 ### XMPP Features
 
-aTalk works seemlessly with almost every XMPP servers availabe on network, limited only by servers features supported.
+aTalk works seamlessly with almost every XMPP servers available on network, limited only by servers features supported.
 It supports the following XEP's, standards for XMPP client devices.
 
 * [XEP-0030: Service Discovery](https://xmpp.org/extensions/xep-0030.html)
@@ -80,7 +81,6 @@ It supports the following XEP's, standards for XMPP client devices.
 Libraries used in this project
 ------------------------------
 * [XEP-0384: OMEMO Encryption](https://xmpp.org/extensions/xep-0384.html)
-
 * [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html)
 * [android-betterpickers](https://github.com/code-troopers/android-betterpickers)
 * [Android-EasyLocation](https://github.com/akhgupta/Android-EasyLocation)
@@ -91,12 +91,9 @@ Libraries used in this project
 * [commons-lang](http://commons.apache.org/proper/commons-lang/)
 * [Dexter](https://github.com/Karumi/Dexter)
 * [dhcp4java](https://github.com/ggrandes-clones/dhcp4java)
-* [dnsjava](https://github.com/dnsjava/dnsjava)
-* [dnssecjava](https://github.com/ibauersachs/dnssecjava)
 * [ews-android-api](https://github.com/alipov/ews-android-api)
 * [FFmpeg](https://github.com/FFmpeg/FFmpeg)
 * [Google Play Services](https://developers.google.com/android/guides/overview)
-* [guava](https://mvnrepository.com/artifact/com.google.guava/guava")
 * [httpclient-android](https://github.com/smarek/httpclient-android)
 * [ice4j](https://github.com/jitsi/ice4j)
 * [jitsi](https://github.com/jitsi/jitsi)
@@ -107,6 +104,7 @@ Libraries used in this project
 * [libjitsi](https://github.com/jitsi/libjitsi)
 * [libphonenumber](https://github.com/googlei18n/libphonenumber)
 * [libvpx](https://github.com/webmproject/libvpx)
+* [miniDNS](https://github.com/MiniDNS/minidns)
 * [otr4j](https://github.com/jitsi/otr4j)
 * [opensles](https://github.com/openssl/openssl )
 * [osgi.core](http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0)

@@ -25,6 +25,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.MetaContactChatTransport;
+import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.atalk.android.util.java.awt.Color;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
@@ -116,6 +117,11 @@ public class ConfigurationUtils
      * Indicates if chat state notifications should be sent.
      */
     private static boolean isSendChatStateNotifications = true;
+
+    /**
+     * Indicates if is send thumbnail option is offer during image file transfer.
+     */
+    private static boolean isSendThumbnail = true;
 
     /**
      * Indicates if presence subscription mode is auto approval.
@@ -397,6 +403,7 @@ public class ConfigurationUtils
     private static String pAutoPopupNewMessage = "gui.AUTO_POPUP_NEW_MESSAGE";
     private static String pMsgCommand = "gui.SEND_MESSAGE_COMMAND";
     private static String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
+    private static String pSendThumbnail = "gui.sendThumbnail";
     private static String pPresenceSubscribeAuto = "gui.PRESENCE_SUBSCRIBE_MODE_AUTO";
     private static String pMultiChatWindowEnabled = "gui.IS_MULTI_CHAT_WINDOW_ENABLED";
     private static String pLeaveChatRoomOnWindowClose = "gui.LEAVE_CHATROOM_ON_WINDOW_CLOSE";
@@ -487,6 +494,13 @@ public class ConfigurationUtils
 
         if (!StringUtils.isNullOrEmpty(isSendTypingNotification))
             isSendChatStateNotifications = Boolean.parseBoolean(isSendTypingNotification);
+
+        // Load the "sendThumbnail" property.
+        String sendThumbNail = configService.getString(pSendThumbnail);
+        if (!StringUtils.isNullOrEmpty(sendThumbNail)) {
+            isSendThumbnail = Boolean.parseBoolean(sendThumbNail);
+            FileTransferConversation.FT_THUMBNAIL_ENABLE = isSendThumbnail;
+        }
 
         // Load the "isPresenceSubscribeMode" property.
         isPresenceSubscribeAuto = configService.getBoolean(pPresenceSubscribeAuto, isPresenceSubscribeAuto);
@@ -858,6 +872,30 @@ public class ConfigurationUtils
         isSendChatStateNotifications = isChatStateNotification;
         configService.setProperty(pTypingNotification, Boolean.toString(isChatStateNotification));
         updateChatStateCapsFeature(isChatStateNotification);
+    }
+
+    /**
+     * Return TRUE if "sendChatStateNotifications" property is true, otherwise - return FALSE.
+     * Indicates to the user interface whether chat state notifications are enabled or disabled.
+     *
+     * @return TRUE if "sendTypingNotifications" property is true, otherwise - return FALSE.
+     */
+    public static boolean isSendThumbnail()
+    {
+        return isSendThumbnail;
+    }
+
+    /**
+     * Updates the "sendChatStateNotifications" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param sendThumbnail <code>true</code> to indicate that chat state notifications are enabled,
+     * <code>false</code> otherwise.
+     */
+    public static void setSendThumbnail(boolean sendThumbnail)
+    {
+        isSendThumbnail = sendThumbnail;
+        configService.setProperty(pSendThumbnail, Boolean.toString(isSendThumbnail));
+        FileTransferConversation.FT_THUMBNAIL_ENABLE = sendThumbnail;
     }
 
     /**
