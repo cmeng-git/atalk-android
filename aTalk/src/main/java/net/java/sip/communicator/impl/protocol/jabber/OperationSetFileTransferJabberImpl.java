@@ -27,6 +27,7 @@ import net.java.sip.communicator.service.protocol.event.FileTransferStatusChange
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
+import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
@@ -376,6 +377,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             org.jivesoftware.smackx.si.packet.StreamInitiation.File file = streamInitiation.getFile();
 
             boolean isThumbnailFile = false;
+
             if ((file instanceof FileElement) && FileTransferConversation.FT_THUMBNAIL_ENABLE) {
                 ThumbnailElement thumbnailElement = ((FileElement) file).getThumbnailElement();
 
@@ -390,6 +392,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                     try {
                         jabberProvider.getConnection().sendStanza(thumbnailRequest);
                     } catch (NotConnectedException | InterruptedException e) {
+                        isThumbnailFile = false;
                         e.printStackTrace();
                     }
                 }

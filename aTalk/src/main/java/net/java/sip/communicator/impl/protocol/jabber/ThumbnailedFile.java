@@ -43,8 +43,7 @@ public class ThumbnailedFile extends File
 	 * @param thumbnail
 	 *        the thumbnail
 	 */
-	public ThumbnailedFile(File file, int thumbnailWidth, int thumbnailHeight,
-		String thumbnailMimeType, byte[] thumbnail)
+	public ThumbnailedFile(File file, int thumbnailWidth, int thumbnailHeight, String thumbnailMimeType, byte[] thumbnail)
 	{
 		super(file.getPath());
 

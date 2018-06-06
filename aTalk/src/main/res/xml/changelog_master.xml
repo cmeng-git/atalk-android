@@ -6,6 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.3.2 (06/06/2018)" versioncode="1032">
+        <change>Add new UI languages support for Bahasa Indonesia, German and Russian</change>
+        <change>Add user option to send file thumbnail preview in Setting...</change>
+        <change>Add option items for audio and video call in chat window menu</change>
+        <change>Block sending instant message, chatState or joining conference for service entity causing system crash</change>
+        <change>Ensure presence status is properly updated even for malformed presence stanza</change>
+        <change>Provide error alert feedback to user when update vCard failed</change>
+        <change>Add support to allow user to retrieve avatar from old jabber server</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.3.1 (05/30/2018)" versioncode="1031">
         <change>Add user option in Account Settings to support SSL Certificate Authentication / DNSSEC / DANE security mode (see online help)</change>
         <change>Enhance support in overridden server address to allow either hostname or IP address entry</change>

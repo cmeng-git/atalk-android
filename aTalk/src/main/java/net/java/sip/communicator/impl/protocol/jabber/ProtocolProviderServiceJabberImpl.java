@@ -39,6 +39,7 @@ import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.proxy.ProxyInfo;
@@ -243,26 +244,17 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * e.g. disco#info (30 seconds). Also on some slow client e.g. Samsung S3 takes up to 30
      * Sec to response to sasl authentication challenge on first login
      */
-    // 50sec causing too long black screen so reduce it to 10S
-    public static final int SMACK_PACKET_REPLY_EXTENDED_TIMEOUT = 10000;  // 10 seconds
+    public static final int SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30 = 30000;  // 30 seconds
+
+    // vCard save takes about 29 seconds on Note 8
+    public static final int SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_40 = 40000;  // 40 seconds
 
     /**
      * aTalk Smack packet reply default timeout.
      */
-    public static final int SMACK_PACKET_REPLY_SET_TIMEOUT = 10000;
-
-    /**
-     * Smack packet reply default timeout.
-     */
-    public static final int SMACK_PACKET_REPLY_DEFAULT_TIMEOUT = 5000;
+    public static final int SMACK_PACKET_REPLY_TIMEOUT_10 = 10000;
 
     public static final int DEFAULT_PORT = 5222;
-
-    /**
-     * Property for vcard reply timeout. Time to wait before we think vcard retrieving has
-     * timeout, default value of smack is 5000 (5 sec.).
-     */
-    public static final String VCARD_REPLY_TIMEOUT_PROPERTY = "protocol.jabber.VCARD_REPLY_TIMEOUT";
 
     /**
      * XMPP signaling DSCP configuration property name.
@@ -953,7 +945,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         }
 
         // Allow longer timeout during login for slow client device
-        mConnection.setReplyTimeout(SMACK_PACKET_REPLY_EXTENDED_TIMEOUT);
+        mConnection.setReplyTimeout(SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
         // Init the connection SynchronizedPoints
         xmppConnected = new LoginSynchronizationPoint<>(this, "connection connected");
@@ -1096,7 +1088,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         }
 
         // Reset back to Smack default - may not reach here if exception
-        mConnection.setReplyTimeout(SMACK_PACKET_REPLY_SET_TIMEOUT);
+        mConnection.setReplyTimeout(SMACK_PACKET_REPLY_TIMEOUT_10);
 
         if (!success) {
             disconnectAndCleanConnection();
@@ -1356,7 +1348,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         if (mConnection == null)
             return;
 
-        mConnection.setReplyTimeout(SMACK_PACKET_REPLY_SET_TIMEOUT);
+        mConnection.setReplyTimeout(SMACK_PACKET_REPLY_TIMEOUT_10);
 
         /*
          * Must stop any reconnection timer if any; disconnect does not kill the timer. It continuous
@@ -1788,6 +1780,34 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         // Disables unused class, throwing some errors on login (disco-info)
         SmackConfiguration.addDisabledSmackClass("org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager");
+
+        // Just ignore UnparseableStanza to avoid connection abort
+        SmackConfiguration.setDefaultParsingExceptionCallback(
+                new ParsingExceptionCallback()
+                {
+                    @Override
+                    public void handleUnparsableStanza(UnparseableStanza packetData)
+                            throws Exception
+                    {
+                        String errMsg = packetData.getContent().toString();
+//                        XMPPErrorException xmppException = null;
+//                        if (errMsg.contains("403")) {
+//                            XMPPError xmppError = XMPPError.from(Condition.forbidden, errMsg).build();
+//                            xmppException = new XMPPErrorException(null, xmppError);
+//
+//                        }
+//                        else if (errMsg.contains("503")) {
+//                            XMPPError xmppError = XMPPError.from(Condition.service_unavailable, errMsg).build();
+//                            xmppException = new XMPPErrorException(null, xmppError);
+//                        }
+//
+//                        if (xmppException != null)
+//                            throw xmppException;
+//                        else
+                          logger.warn("UnparseableStanza Error: " + errMsg, packetData.getParsingException());
+                    }
+                }
+        );
 
         XMPPTCPConnection.setUseStreamManagementDefault(true);
 

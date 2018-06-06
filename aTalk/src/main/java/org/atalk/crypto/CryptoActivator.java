@@ -21,7 +21,6 @@ import net.java.sip.communicator.plugin.otr.OtrActionHandler;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.crypto.otr.AndroidOtrActionHandler;
 import org.jivesoftware.smackx.omemo.OmemoConfiguration;
-import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 import org.osgi.framework.BundleActivator;
@@ -36,15 +35,16 @@ public class CryptoActivator implements BundleActivator
 {
     @Override
     public void start(BundleContext bundleContext)
-            throws Exception {
-        bundleContext.registerService(OtrActionHandler.class.getName(),
-                new AndroidOtrActionHandler(), null);
+            throws Exception
+    {
+        bundleContext.registerService(OtrActionHandler.class.getName(), new AndroidOtrActionHandler(), null);
         setupOmemoConfigStore();
     }
 
     @Override
     public void stop(BundleContext bundleContext)
-            throws Exception {
+            throws Exception
+    {
     }
 
     /**
@@ -53,7 +53,8 @@ public class CryptoActivator implements BundleActivator
      * - Initialize the OMEMO configuration settings
      * - Setup OMEMO default data storage
      */
-    private void setupOmemoConfigStore() {
+    private void setupOmemoConfigStore()
+    {
         SignalOmemoService.acknowledgeLicense();
         SignalOmemoService.setup();
 

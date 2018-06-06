@@ -1,5 +1,22 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.3.2 (1032)
+Author:         cmeng
+Upload Date:	06/06/2018
+- Add new UI languages support for Bahasa Indonesia, German and Russian
+- Add user option to Send file thumbnail preview in Setting...
+- Add option items for Audio and Video call in chat window menu
+- Fix VCardTempXUpdateProvider to handle non-standard <presence/> stanza with missing <photo/> element
+- Provide error alert feedback to user when failed to update vCard
+- Add support to allow user to retrieve avatar from old jabber server with missing "to" attribute
+- Block sending instant message and chatState (MetaChontactChatTransport) to service entity => system crash
+- Filter selected service entity from joining conference to avoid system crash (ChatInviteDialog)
+- Clean up all smack packet delay timing
+- Execute OperationSetPersistentPresenceJabberImpl#firePresenceStatusChanged() in new thread to avoid loading on Smack
+- Remove initRoster()#parentOperationSet.firePresenceStatusChanged(mRoster.getPresence(item.getJid())) in ServerStoredContactListJabberImpl to avoid duplicate <presence/> sending
+- Use ParsingExceptionCallback to handle Unparsable Stanza error return by Smack to avoid connection abort
+
+=========================================================================
 Version:		1.3.1 (1031)
 Author:         cmeng
 Upload Date:	05/30/2018

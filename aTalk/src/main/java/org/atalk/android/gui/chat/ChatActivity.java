@@ -91,7 +91,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
      */
     private Menu mMenu;
     private MenuItem mHistoryErase;
-    private MenuItem mCallContact;
+    private MenuItem mCallAudioContact;
+    private MenuItem mCallVideoContact;
     private MenuItem mSendFile;
     private MenuItem mSendLocation;
     private MenuItem mLeaveChatRoom;
@@ -311,7 +312,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.chat_menu, menu);
 
-        mCallContact = mMenu.findItem(R.id.call_contact);
+        mCallAudioContact = mMenu.findItem(R.id.call_contact_audio);
+        mCallVideoContact = mMenu.findItem(R.id.call_contact_video);
         mSendFile = mMenu.findItem(R.id.send_file);
         mSendLocation = mMenu.findItem(R.id.send_location);
         mHistoryErase = mMenu.findItem(R.id.erase_chat_history);
@@ -341,7 +343,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 MetaContactRenderer contactRenderer = new MetaContactRenderer();
                 boolean isShowCall = contactRenderer.isShowCallBtn(metaContact);
                 boolean isShowVideoCall = contactRenderer.isShowVideoCallBtn(metaContact);
-                mCallContact.setVisible(isShowVideoCall || isShowCall);
+                mCallAudioContact.setEnabled(isShowCall);
+                mCallVideoContact.setEnabled(isShowVideoCall);
 
                 boolean isShowFileSend = contactRenderer.isShowFileSendBtn(metaContact);
                 mSendFile.setVisible(isShowFileSend);
@@ -353,7 +356,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mDestroyChatRoom.setVisible(true);
                 mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
                 mChatRoomMember.setVisible(true);
-                mCallContact.setVisible(false);
+                mCallAudioContact.setEnabled(false);
+                mCallVideoContact.setEnabled(false);
                 mSendFile.setVisible(false);
                 mSendLocation.setVisible(false);
             }
@@ -382,10 +386,16 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 inviteDialog.show();
                 return true;
 
-            case R.id.call_contact: // start with voice call
+            case R.id.call_contact_audio: // start voice call
                 if (mRecipient != null)
                     AndroidCallUtil.createCall(this, mRecipient.getAddress(),
                             mRecipient.getProtocolProvider(), false);
+                return true;
+
+            case R.id.call_contact_video: // start video call
+                if (mRecipient != null)
+                    AndroidCallUtil.createCall(this, mRecipient.getAddress(),
+                            mRecipient.getProtocolProvider(), true);
                 return true;
 
             case R.id.send_location:

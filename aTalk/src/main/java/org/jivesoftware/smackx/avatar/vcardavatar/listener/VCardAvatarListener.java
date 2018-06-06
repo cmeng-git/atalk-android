@@ -24,19 +24,15 @@ import org.jxmpp.jid.Jid;
  * A listener for avatar changes event.
  *
  * @author Eng Chong Meng
- *
  */
 public interface VCardAvatarListener
 {
-	/**
-	 * Event which is fired when a contact change avatar.
-	 *
-	 * @param from
-	 * 		the contact fullJid who changes his avatar
-	 * @param avatarId
-	 * 		the new avatar id, may be null if the contact set no avatar
-	 * @param vCardInfo
-	 * 		the VCard info, may be empty if the no VCard is retrieved
-	 */
-	void onAvatarChange(Jid from, String avatarId, VCard vCardInfo);
+    /**
+     * Event which is fired when a contact change avatar.
+     *
+     * @param from the contact fullJid who changes his avatar
+     * @param avatarId the new avatar id, may be null if the contact set no avatar
+     * @param vCardInfo the VCard info, may be empty if the no VCard is retrieved
+     */
+    void onAvatarChange(Jid from, String avatarId, VCard vCardInfo);
 }

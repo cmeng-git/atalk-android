@@ -1,0 +1,1477 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+# aTalk, the OpenSource Java VoIP and Instant Messaging client.
+
+# Distributable under LGPL license.
+# See terms of license at gnu.org.
+#
+# Note to translators:
+# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by getI8NString()
+# - ensure the number of parameters and their designation are correctly specified.
+#
+# Do Not translate string values containing the patterns below. They are used internally only by code/source as key index etc
+# - with dot joining words xxx.xxx.xxx e.g. pref.cat.settings.notifications
+# - contains underscore e.g. auto_join_on
+# - Words joined without any spaces e.g. connectionProxyAddress
+# - Do not translate any style format string e.g MMM dd, yyyy - otherwise system abort on execution
+# - Omit those require no translation e.g. IP link, OMEMO,  640x480 etc.
+#   Android will always fallback to use the string from main string.xml if not found in other languages files
+#
+# Note: Avoid copy/duplicate the above defined strings in the other languages string.xml files to prevent
+# accidentally values change. Any delta in the parameter will cause system problem when one switch between different languages.
+# string with {0}, {1} means the string is still not being used/implemented in aTalk. They are kept for reference and may use later;
+# you can proceed to translate these string replacing {0}, {1} with %1$s, %2$s etc
+#
+-->
+
+<resources>
+<string name="app_name">aTalk</string>
+    <string name="accept_call_video">Отвечать на вызов с видео</string>
+    <string name="account_setup_basics_show_password">Показать пароль</string>
+    <string name="account_override_server">Отменить настройку сервера</string>
+    <string name="account_registration">Зарегистрировать новую учетную запись на сервере</string>
+    <string name="account_server_ip">Подключить сервер IP</string>
+    <string name="ibr_registration">Регистрация IB</string>
+    <string name="captcha_registration_request">Регистрация-Captcha</string>
+    <string name="captcha_registration_fail">Ошибка регистрации-Captcha!\n%1$s</string>
+    <string name="captcha_registration_success">Регистрация-Captcha успешно.\nВы можете перейти к регистрации!</string>
+    <string name="captcha_registration_reason">Inband регистрация, запрошенная пользователем</string>
+    <string name="captcha_registration_pwd_empty">Ошибка: поле пароля пуст!</string>
+    <string name="captcha_hint">Введите текст, указанный на картинке выше</string>
+    <string name="choose_network">Выберите сеть</string>
+    <string name="encryption_TOOLTIP">Шифровать чат</string>
+    <string name="encryption_choices">EncryptChoices</string>
+    <string name="encryption_choice_unencrypted">Unencrypted</string>
+    <string name="enter_name_or_number">Введите имя или номер</string>
+    <string name="exit_app">Выход</string>
+    <string name="hang_up">Повесьте вызов</string>
+    <string name="hold">Удерживать вызов</string>
+    <string name="in_call_with">При вызове</string>
+    <string name="network">Сеть</string>
+    <string name="password">пароль</string>
+    <string name="password_label">Пароль:</string>
+    <string name="reason_label">Причина:</string>
+    <string name="send_process_signal">Отправить сигнал процесса</string>
+    <string name="show_call_info">Информация о вызове</string>
+    <string name="show_call_zrtp_info">"Вызов информации ZRTP</string>
+    <string name="stop_osgi_framework">Остановить OSGi Framework</string>
+    <string name="store_password">Сохранить пароль</string>
+    <string name="system_settings">Настройки&#8230;</string>
+    <string name="username_hint">username@example.com</string>
+    <string name="username_label">Имя пользователя:</string>
+    <string name="video_resolution">Разрешение видео</string>
+
+    <string name="attachOptionDialog_picture">Картинки</string>
+    <string name="attachOptionDialog_camera">Захват изображения</string>
+    <string name="attachOptionDialog_Videos">Видео</string>
+    <string name="attachOptionDialog_videoRecord">Захват видео</string>
+    <string name="attachOptionDialog_shareFile">Поделиться файлом</string>
+    <string name="chat_fileTransferButton">Открыть</string>
+    <string name="chat_message_del">Удалить текст</string>
+    <string name="chat_message_edit">Изменить</string>
+    <string name="chat_message_long_press_hint">Избегайте нажатия в области сообщений для операции выбора нескольких элементов</string>
+    <string name="chat_message_select_all">Выбрать все</string>
+    <string name="chatRoom_Subject">Тема</string>
+    <string name="choose_file_activity_title">Выберите файл</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="status_available">Онлайн</string>
+    <string name="status_away">Далеко</string>
+    <string name="status_chat">Бесплатно для чата</string>
+    <string name="status_dnd">Не беспокоить</string>
+    <string name="status_offline">Offline</string>
+    <string name="status_xa">Недоступно</string>
+    <string name="title_activity_attach_option_dialog">Отправить вложение</string>
+    <string name="title_activity_activation_view">Активация</string>
+
+    <!-- General -->
+    <string name="service_gui_ACCEPT">Принять</string>
+    <string name="service_gui_ACCOUNT">Аккаунт</string>
+    <string name="service_gui_ACCOUNT_ME">Me</string>
+    <string name="service_gui_ACCOUNT_SETTINGS">Настройки учетной записи&#8230;</string>
+    <string name="service_gui_ACCOUNT_UNREGISTERED">%1$s не зарегистрировано</string>
+    <string name="service_gui_ADD">Добавить</string>
+    <string name="service_gui_ADD_CONTACT">Добавить контакт</string>
+    <string name="service_gui_ADD_AUTHORIZED_CONTACT">Добавить %1$s в список контактов</string>
+    <string name="service_gui_ADD_CONTACT_TO">Добавить контакт в</string>
+    <string name="service_gui_ADD_CONTACT_ERROR">Не удалось добавить контакт с id: %1$s</string>
+    <string name="service_gui_ADD_CONTACT_ERROR_TITLE">Добавить ошибку контакта</string>
+    <string name="service_gui_ADD_CONTACT_EXIST_ERROR">Контакт %1$s уже существует в вашем списке контактов.</string>
+    <string name="service_gui_ADD_CONTACT_NETWORK_ERROR">Сервер не ответил на наш запрос, добавив контакт с jid: %1$s.</string>
+    <string name="service_gui_ADD_CONTACT_NOT_SUPPORTED">Не удалось добавить контакт с id: %1$s. Операция не поддерживается.</string>
+    <string name="service_gui_ADD_CONTACT_NOT_CONNECTED">Чтобы добавить контакт, вам необходимо подключиться. Войдите в систему с выбранным поставщиком и повторите попытку.</string>
+	<string name="service_gui_ADD_GROUP_LOCAL_ERROR">Не удалось добавить группу с именем: %1$s. Проблема возникла во время локальной операции ввода-вывода.</string>
+    <string name="service_gui_ADD_GROUP_EXIST_ERROR">Группа %1$s уже существует в вашем списке контактов. Выберите другое имя.</string>
+    <string name="service_gui_ADD_GROUP_NET_ERROR">Не удалось добавить группу с именем: %1$s. Проблема возникла из-за сбоя сети. Проверьте сетевое подключение и повторите попытку.</string>
+    <string name="service_gui_ADD_GROUP_ERROR">Не удалось добавить группу с именем: %1$s.</string>
+    <string name="service_gui_ADD_GROUP_EMPTY_NAME">Имя группы не должно быть пустым.</string>
+    <string name="service_gui_ADD_GROUP">Создать группу</string>
+    <string name="service_gui_ADD_GROUP_HINT">Введите имя группы</string>
+    <string name="service_gui_APPLY">Применить</string>
+    <string name="service_gui_APPLY_CHANGES">Применение изменений учетной записи (~60S) &#8230;</string>
+    <string name="service_gui_AUTHORIZE">Авторизовать</string>
+    <string name="service_gui_AUTHORIZATION_ACCEPTED">контакт принял ваш запрос авторизации.</string>
+    <string name="service_gui_AUTHENTICATION_FAILED">Ошибка аутентификации для %1$s. Введенный пароль недействителен.</string>
+    <string name="service_gui_AUTHENTICATION_REQUESTED">Запрошенная аутентификация</string>
+    <string name="service_gui_AUTHENTICATION_REQUESTED_SERVER">Сервер %1$s запросил вашу аутентификацию.</string>
+    <string name="service_gui_AUTHENTICATION_REJECTED">контакт отклонил ваш запрос авторизации.</string>
+    <string name="service_gui_AUTHENTICATION_WINDOW_TITLE">%1$s аутентификация</string>
+    <string name="service_gui_AUTHORIZATION_REQUESTED">Запрошенная авторизация</string>
+    <string name="service_gui_AUTHORIZATION_REQUESTED_INFO">Контакт %1$s запрашивает ваше разрешение.</string>
+    <string name="service_gui_AUTHORIZATION_REQUEST">Запрос авторизации</string>
+    <string name="service_gui_AVATAR_HINT">Значок рекомендуется: 64 * 64 (96 * 96 пикселей квадратный максимум)</string>
+    <string name="service_gui_AWAY_STATUS">Away</string>
+    <string name="service_gui_AVATAR_SET_ERROR">Не удалось установить аватар для %1$s</string>
+
+    <string name="service_gui_BUSY_STATUS">Занято</string>
+    <string name="service_gui_CALL">Аудиозвонок</string>
+    <string name="service_gui_CALL_FAILED">Не удалось выполнить вызов</string>
+    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Журнал вызовов</string>
+    <string name="service_gui_CALL_WITH">Вызов с</string>
+    <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Мы не смогли найти никаких активных аудио/видео устройств, следовательно, не смогли создать вызов.</string>
+    <string name="service_gui_CALL_NO_AUDIO_DEVICE">Нет настроенного аудиоустройства.</string>
+    <string name="service_gui_CALL_NO_AUDIO_CODEC">Отсутствует аудиокодек.</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Устройство или кодек %1$s не полностью сконфигурирован в «Настройки&#8230;». Проверьте и настройте.</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Вы хотите продолжить вызов?</string>
+    <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">Не найдено подходящих форматов медиа против предложения %1$s для приема вызова. Проверьте настройки устройства и кодека в «Настройки&#8230;».</string>
+    <string name="service_gui_CALL_VIA">Вызов через: %1$s</string>
+    <string name="service_gui_CALL_VIDEO">Видеозвонок</string>
+    <string name="service_gui_CANCEL">Отменить</string>
+    <string name="service_gui_Contacts">Контакты</string>
+    <string name="service_gui_DONE">Готово</string>
+
+	<!-- Conference Chat -->
+    <string name="service_gui_AUTOJOIN">Автосоединение</string>
+	<string name="service_gui_CHANGE_NICK">Изменить псевдоним</string>
+	<string name="service_gui_CHANGE_NICKNAME">Изменить псевдоним&#8230;</string>
+    <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">Ник уже существует</string>
+	<string name="service_gui_CHANGE_NICKNAME_ERROR">Ошибка при изменении псевдонима</string>
+    <string name="service_gui_CHANGE_NICKNAME_LABEL">В поле ниже вы можете ввести новый псевдоним.</string>
+    <string name="service_gui_CHANGE_ROOM_SUBJECT">Изменить тему помещения&#8230;</string>
+    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">В поле ниже вы можете ввести новый объект для этой комнаты.</string>
+	<string name="service_gui_CHANGE_VIDEO_QUALITY">Изменить качество удаленного видео</string>
+    <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s конференция</string>
+	<string name="service_gui_CHAT_CONFERENCE_LABEL">Конференции</string>
+    <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">Вы уже вошли в чат-комнату %1$s.</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION">{0} настройка чата</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Не удалось получить конфигурационную форму в чате {0}.</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Не удалось получить форму конфигурации комнаты чата {0}. Только владельцы чата могут видеть и изменять конфигурационную форму.</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Список справа содержит пользователей, которые имеют роль участника в этом чате. Когда в чате есть «Только члены», это будут пользователи, которым разрешено присоединиться.</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Редактировать список участников</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">Произошла ошибка при попытке отправить конфигурационную форму для комнаты чата {0}.</string>
+    <string name="service_gui_CHAT_ROOM_JOIN">Присоединиться к чату</string>
+    <string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Удаляет выбранную комнату из списка сохраненных комнат</string>
+    <string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Сохраняет чат для будущего использования</string>
+    <string name="service_gui_CHAT_ROOM_SEND_MSG_FORBIDDEN">Передача сообщений запрещена (голос отменен)</string>
+	<string name="service_gui_CHAT_ROOM_USER_JOINED">присоединился к %1$s</string>
+    <string name="service_gui_CHAT_ROOM_USER_KICKED">был удален из %1$s</string>
+	<string name="service_gui_CHAT_ROOM_USER_LEFT">оставил %1$s</string>
+	<string name="service_gui_CHAT_ROOM_USER_QUIT">имеет quit %1$s</string>
+	<string name="service_gui_CHAT_ROOM_NAME">Имя в чате</string>
+	<string name="service_gui_CHAT_ROOM_NAME_INFO">В поле ниже введите имя комнаты для чата, которую вы хотите создать.</string>
+	<string name="service_gui_CHAT_ROOM_NOT_EXIST">Комната %1$s не найдена на сервере %2$s. Проверьте правильность введенного имени.</string>
+	<string name="service_gui_CHAT_ROOM_NOT_CONNECTED">Вам нужно быть в сети, чтобы присоединиться к чат-комнате %1$s.</string>
+	<string name="service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED">Вам нужно быть в сети, чтобы выйти из чата.</string>
+	<string name="service_gui_CHAT_ROOM_NOT_JOINED">Вам нужно войти в комнату чата, чтобы выполнить дальнейшие операции с ним.</string>
+	<string name="service_gui_CHAT_ROOM_OPTIONS">Параметры чата</string>
+	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">Чат чата %1$s запросил пароль.</string>
+	<string name="service_gui_CHAT_ROOM">Чат</string>
+	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">{0} изменил объект на {1}</string>
+	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Вы можете продолжить разговор в следующем чате: %1$s</string>
+	<string name="service_gui_CHAT_ROOMS">Чаты</string>
+	<string name="service_gui_CHAT_NICKNAME_CHANGE">{0} теперь известен как {1}</string>
+    <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Очистить пользовательские сообщения</string>
+    <string name="service_gui_CLOSE">Закрыть</string>
+    <string name="service_gui_CLOSE_ALL_CHATS">Закрыть все активные чаты</string>
+    <string name="service_gui_CLOSE_CHAT">Закрыть текущий сеанс чата</string>
+    <string name="service_gui_CONNECTED_STATUS">Подключено</string>
+    <string name="service_gui_CONNECTING_ACCOUNT">Соединение %1$s</string>
+    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Подключение *</string>
+    <string name="service_gui_CONNECTION_FAILED_MSG">Ошибка подключения к учетной записи: Имя пользователя: %1$s\n
+        Имя сервера: %2$s\nПожалуйста, проверьте свое сетевое подключение или обратитесь к сетевому администратору за дополнительной информацией.</string>
+    <string name="service_gui_CONNECTING_STATUS">Подключение</string>
+    <string name="service_gui_CONTACT_ACTIVE">** %1$s активен в сеансе чата</string>
+    <string name="service_gui_CONTACT_COMPOSING">** %1$s формирует сообщение</string>
+    <string name="service_gui_CONTACT_INACTIVE">** %1$s временно отсутствует</string>
+    <string name="service_gui_CONTACT_GONE">** %1$s покинул сеанс чата</string>
+    <string name="service_gui_CONTACT_INFO">Контактная информация</string>
+    <string name="service_gui_CONTACT_NAME">Контакт JID или Number</string>
+    <string name="service_gui_CONTACT_NAME_EMPTY">Имя контакта nameName не должно быть пустым.</string>
+    <string name="service_gui_CONTACT_OWNER">Связаться с владельцем: %1$s</string>
+    <string name="service_gui_CONTACT_PAUSED_TYPING">** %1$s приостановил ввод</string>
+    <string name="service_gui_CONTACT_RENAME">Связаться с новым именем:</string>
+    <string name="service_gui_CONTACT_RENAME_HINT">Введите новый контакт Имя</string>
+    <string name="service_gui_CONTACT_RENAME_TITLE">Изменить имя контакта</string>
+    <string name="service_gui_CONTACTS">Контакты</string>
+    <string name="service_gui_COPY_MESSAGE_TEXT">Копировать текст</string>
+
+<string name="service_gui_CREATE">Создать</string>
+    <string name="service_gui_CREATE_CALL_FAILED">Не удалось создать вызов.</string>
+    <string name="service_gui_CREATE_CHAT_ROOM">Создать чат-комнату&#8230;</string>
+    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Не удалось создать чат-комнату %1$s.</string>
+    <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Создать мастер чата</string>
+    <string name="service_gui_CREATE_CONFERENCE_CALL">Создать конференцию&#8230;</string>
+    <string name="service_gui_CREATE_CONFERENCE_CHAT">Создать чат конференции&#8230;</string>
+    <string name="service_gui_CREATE_GROUP">Создать группу&#8230;</string>
+    <string name="service_gui_CREATE_GROUP_NAME">В поле ниже введите имя группы, которую вы хотите создать.</string>
+    <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Ваш список контактов не содержит групп. Сначала создайте группу (File/Create group).</string>
+    <string name="service_gui_ROOM_NAME">chatroom</string>
+
+    <!-- About Dialog -->
+    <string name="AboutDialog_Copyright">Copyright @ 2014, atalk.org\nВсе права защищены.</string>
+    <string name="AboutDialog_help"><a href="http://atalk.sytes.net">Онлайн-справка </a></string>
+    <string name="AboutDialog_title">О</string>
+    <string name="AboutDialog_Version">Версия %1$s</string>
+    <string name="About_action">О</string>
+    <string name="About_help">Справка</string>
+    <string name="check_new_version">Проверить обновление</string>
+    <string name="show_history_log">История журналов</string>
+
+    <string name="app_authors_fmt">Авторы: %1$s</string>
+    <string name="app_libraries">aTalk использует следующие сторонние библиотеки: %1$s</string>
+    <string name="app_revision_fmt">Информация о пересмотре: %1$s</string>
+    <string name="app_xeps">aTalk поддерживает следующие XEP: %1$s</string>
+    <string name="PoweredBy">Работает на atalk.org</string>
+
+    <!-- PTT Chat -->
+    <string name="chat_dbZero">00.00dB</string>
+    <string name="chat_noaudio_buddyOffline">Аудио-чат с автономным получателем не разрешен.</string>
+    <string name="chat_RecordCancel">&lt;сдвинуть влево\nчтобы отменить</string>
+    <string name="chat_soundRecordCancelButton">Отменить</string>
+    <string name="chat_soundRecordStartButton">Начать запись</string>
+    <string name="chat_soundRecordStopButton">Готово</string>
+    <string name="chat_timeZero">00:00</string>
+
+    <!-- GPS Location -->
+    <string name="service_gui_GEO_LATITUDE">Широта:</string>
+    <string name="service_gui_GEO_LOCATION">Местоположение:</string>
+    <string name="service_gui_GEO_LONGITUDE">Долгота</string>
+    <string name="service_gui_GEO_SEND">Отправить GPS-местоположение</string>
+    <string name="service_gui_GEO_SHOW">StreetViews &amp; Карта</string>
+    <string name="service_gui_GPS_TRACK">Continuous StreetViews &amp; Обновление карты</string>
+    <string name="apply_new_interval_setting">Нажмите кнопку \"Отправить Cont. Обновления местоположения \", чтобы применить новую настройку интервала</string>
+    <string name="send_cont_location_updates">Продолжить. Обновления местоположения (%1$dm) @%2$dsec</string>
+    <string name="send_single_location_fix">Обновление исправления одного местоположения</string>
+    <string name="show_google_map">StreetView &amp; Карта</string>
+    <string name="stop_location_updates">Остановить отправку обновлений местоположения</string>
+
+    <!-- Google Map -->
+    <string name="gmap_name">GoogleMap</string>
+    <string name="legal_info">Юридическая информация</string>
+    <string name="play_services_not_installed">Службы Google Play не установлены на этом устройстве.</string>
+    <string name="split_street_view_panorama_and_map_description">Демонстрирует, как показать панораму и карту уличного просмотра.</string>
+    <string name="split_street_view_panorama_and_map_label">Просмотр панорамы и карты</string>
+    <string name="title_activity_maps">Карта</string>
+
+    <!-- Location Permissions -->
+    <string name="permission_rationale_location">Доступ к службе определения местоположения необходим для демонстрации функции «мое местоположение»,
+        которая показывает ваше текущее местоположение на карте.</string>
+    <string name="location_permission_denied">Для этого примера требуется разрешение на размещение, чтобы включить слой «мое местоположение». Повторите попытку
+        и предоставите доступ для использования этого местоположения.\nЕсли разрешение было окончательно отклонено, его можно включить с помощью Системных
+        настроек &gt; Приложения &gt; «Демоки Google Maps API».</string>
+    <string name="permission_required_toast">Для этой демонстрации требуется разрешение на размещение.</string>
+
+    <!--    Persistent Store    -->
+	<string name="service_gui_EXPORT_SQL_DB">Экспорт базы данных aTalk SQL</string>
+    <string name="service_gui_PURGE_DEBUG_LOG">Очистить файл журнала отладки aTalk</string>
+    <string name="service_gui_PURGE_SQL_DB">Очистить базу данных ATalk SQL - Опасность!</string>
+    <string name="service_gui_REFRESH_APPLY">Применить</string>
+    <string name="service_gui_REFRESH_STORES">Обновить постоянные хранилища&#8230;</string>
+    <string name="service_gui_REFRESH_STORES_AVATAR">XEP-0084/XEP-0153: Аватар</string>
+    <string name="service_gui_REFRESH_STORES_CAPS">XEP-0115: возможности сущности</string>
+    <string name="service_gui_REFRESH_STORES_DISCINFO">XEP-0030: Обнаружение служб</string>
+    <string name="service_gui_REFRESH_STORES_HINT">Проверить, что элемент для его постоянного хранилища должен быть очищен и обновлен; Выполняйте только при необходимости!\n</string>
+    <string name="service_gui_REFRESH_STORES_ROSTER">XEP-0237: Реестр</string>
+    <string name="service_gui_REFRESH_STORES_OMEMO">XEP-0384: шифрование OMEMO</string>
+
+    <string name="service_gui_UNREGISTERED_MESSAGE">Не удалось подключиться к учетной записи:\nИмя пользователя: %1$s\nServer Name: %2$s\nСохрана отключена.</string>
+    <string name="service_gui_CREATE_VIDEO_BRIDGE">Создать видеомост&#8230;</string>
+    <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Создать видеомост</string>
+    <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Создать/Присоединиться к видеоконференции</string>
+    <string name="service_gui_CREATE_VIDEO_CONFERENCE">Создать новую видеоконференцию для этого чата</string>
+    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Камера устройства, похоже, не поддерживает предварительный просмотр в ландшафтном режиме. Для видеовызова используйте ориентацию ландшафтного дисплея.</string>
+    <string name="service_gui_DISCONNECTED_STATUS">Отключено</string>
+    <string name="service_gui_DISCONNECTING_ACCOUNT">Отключение %1$s</string>
+    <string name="service_gui_DEFAULT_USER_PHOTO">personphoto</string>
+    <string name="service_gui_DENY">Запретить</string>
+    <string name="service_gui_DISPLAY_NAME">Контактное отображаемое имя</string>
+    <string name="service_gui_DND_STATUS">Не беспокоить</string>
+    <string name="service_gui_DURATION">duration</string>
+
+    <string name="service_gui_EDIT_STATUS_MSG_TIP">Установить сообщение о статусе</string>
+    <string name="service_gui_EDITED_AT">отредактировано в %1$s</string>
+    <string name="service_gui_ENTER_NAME_OR_NUMBER">Введите имя или номер</string>
+    <string name="service_gui_ERROR">Ошибка</string>
+    <string name="service_gui_ERROR_WAS">Ошибка: %1$s</string>
+	<string name="service_gui_EXIT">Выход</string>
+    <string name="service_gui_FAILED_STATUS">Не удалось выполнить вызов</string>
+	<string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Не удалось присоединиться к чату с именем: %1$s.</string>
+    <string name="service_gui_FFC_STATUS">Бесплатно для чата</string>
+
+    <!-- File Transfer (xFile prefix with date) -->
+    <string name="xFile_FILE_BYTE_SENT">отправлено %1$s</string>
+    <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nFile получен из %2$s</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\nПроизошла ошибка при передаче файла из %2$s</string>
+    <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nПолучить файл из %2$s</string>
+    <string name="xFile_FILE_SEND_COMPLETED">%1$s:\nFile успешно отправлен в %2$s</string>
+    <string name="xFile_FILE_SEND_REFUSED">%1$s:\n%2$s отклонил этот файл</string>
+    <string name="xFile_FILE_SENDING_TO">%1$s:\nОтправка файла %2$s</string>
+    <string name="xFile_FILE_TRANSFER_CANCELED">%1$s:\nFile передача отменена</string>
+    <string name="xFile_FILE_TRANSFER_PREPARING">%1$s:\nПреобразование передачи файлов с %2$s. Подождите&#8230;</string>
+    <string name="xFile_FILE_TRANSFER_REFUSED">%1$s:\nПерегрузка передачи отклонено</string>
+    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s:\n%2$s делится файлом с вами</string>
+    <string name="xFile_FILE_UNABLE_TO_SEND">%1$s:\nПроизошла ошибка при отправке файла в %2$s</string>
+    <string name="xFile_FILE_WAITING_TO_ACCEPT">%1$s:\nВыйти для %2$s, чтобы принять ваш файл</string>
+
+	<string name="service_gui_PURGE">Очистить</string>
+	<string name="service_gui_ESTIMATED_TIME">Предполагаемое время: %1$s</string>
+    <string name="service_gui_FILE">Файл</string>
+    <string name="service_gui_FILE_DELIVERY_ERROR">Не удалось отправить выбранный файл. %1$s</string>
+    <string name="service_gui_FILE_DOES_NOT_EXIST">Указанный файл не найден. Он был удален или перемещен</string>
+    <string name="service_gui_FILE_OPEN_FAILED">Не удалось открыть файл. Он может быть удален или перемещен</string>
+    <string name="service_gui_FILE_OPEN_NO_APPLICATION">Мы не смогли найти приложение, связанное с этим типом файла</string>
+    <string name="service_gui_FILE_OPEN_NO_PERMISSION">У вас недостаточно прав для открытия этого файла. Проверьте разрешения на чтение и повторите попытку</string>
+    <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Операция открытого файла не поддерживается текущей платформой вашего устройства</string>
+    <string name="service_gui_FILE_RECEIVE_COMPLETED">Файл получен из %1$s</string>
+    <string name="service_gui_FILE_RECEIVE_FAILED">Произошла ошибка при передаче файла из %1$s</string>
+    <string name="service_gui_FILE_RECEIVING_FROM">Получение файла из %1$s</string>
+    <string name="service_gui_FILE_SEND_COMPLETED">Файл успешно отправлен в %1$s</string>
+    <string name="service_gui_FILE_SEND_FAILED">Не удалось отправить файл: %1$s</string>
+    <string name="service_gui_FILE_SEND_REFUSED">%1$s отклонил этот файл</string>
+    <string name="service_gui_FILE_SEND_TO">Отправить вложение</string>
+    <string name="service_gui_FILE_SENDING_TO">Отправка файла в %1$s</string>
+    <string name="service_gui_FILE_TOO_BIG">Размер файла превышает максимально допустимый для этого протокола: %1$s</string>
+    <string name="service_gui_FILE_TRANSFER_ACTIVE">Прерывание передачи файлов прерывается. Отслеживание состояния потеряно!</string>
+    <string name="service_gui_FILE_TRANSFER_CANCELED">Передача файлов отменена</string>
+    <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Контакт, который вы выбрали, не поддерживает передачу файлов</string>
+    <string name="service_gui_FILE_TRANSFER_PREPARING">Подготовка передачи файлов с %1$s. Подождите&#8230;</string>
+    <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s делится файлом с вами</string>
+    <string name="service_gui_FILE_TRANSFER_REFUSED">Отказано в передаче файлов</string>
+	<string name="service_gui_FILE_UNABLE_TO_SEND">Произошла ошибка при отправке файла в %1$s</string>
+    <string name="service_gui_FILE_WAITING_TO_ACCEPT">Ожидание %1$s, чтобы принять ваш файл</string>
+
+	<string name="service_gui_FINISH">Закончить</string>
+	<string name="service_gui_FOLDER_DOES_NOT_EXIST">Не удалось найти папку, содержащую этот файл. Он был удален или перемещен</string>
+	<string name="service_gui_FOLDER_OPEN_FAILED">Не удалось открыть папку</string>
+	<string name="service_gui_FOLDER_OPEN_NO_PERMISSION">У вас недостаточно прав для открытия этой папки. Проверьте разрешения на чтение и повторите попытку</string>
+	<string name="service_gui_FOLDER_OPEN_NO_APPLICATION">Мы не смогли найти приложение для открытия этой папки</string>
+    <string name="service_gui_GROUP_CHAT">Групповой чат</string>
+	<string name="service_gui_HIDE">Скрыть</string>
+	<string name="service_gui_HIDE_OFFLINE_CONTACTS">Скрыть автономные контакты</string>
+	<string name="service_gui_HISTORY">История</string>
+	<string name="service_gui_HISTORY_CONTACT">История - %1$s</string>
+	<string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Отключить историю для этого контакта</string>
+	<string name="service_gui_HISTORY_TOGGLE_ALL">Отключить историю для всех чатов и контактов</string>
+	<string name="service_gui_HISTORY_ERASE_PER_CONTACT">Удалить эту историю контактов</string>
+	<string name="service_gui_HISTORY_ERASE_ALL">Удалить все истории чатов контактов</string>
+	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Вы действительно хотите очистить все сообщения для %1$s?</string>
+	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Вы действительно хотите очистить все сообщения для всех контактов?</string>
+	<string name="service_gui_HISTORY_REMOVE_ERROR">Ошибка удаления локально сохраненных сообщений для %1$s.</string>
+
+    <string name="service_gui_CHATROOM_OCCUPANT">Жители чатов</string>
+    <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Удалить эту историю чата</string>
+    <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Стереть всю историю чатов.</string>
+    <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Отключить историю для этого чатаRoom</string>
+    <string name="service_gui_CHATROOM_INFO">Информация о ChatRoom</string>
+
+    <string name="service_gui_DESTROY_CHATROOM">Уничтожить этот chatRoom</string>
+    <string name="service_gui_DESTROY_CHATROOM_ERROR">Произошла ошибка при уничтожении комнаты чата:\n\nError: %1$s</string>
+	<string name="service_gui_DESTROY_CHATROOM_TEXT">Владелец учетной записи: %1$s.\n\nВы уверены, что хотите уничтожить \'%2$s\' и всю историю чатов?</string>
+    <string name="service_gui_DESTROY_CHATROOM_TITLE">Уничтожить chatRoom</string>
+    <string name="service_gui_DESTROYED_CHATROOM">\'%1$s\' удалено успешно!</string>
+
+    <string name="service_gui_INCOMING_CALL">Входящий вызов, полученный от: %1$s</string>
+    <string name="service_gui_INCOMING_CALL_STATUS">Входящий вызов</string>
+    <string name="service_gui_INITIATING_CALL_STATUS">Инициирующий вызов</string>
+	<string name="service_gui_INVITATION">Текст приглашения:</string>
+	<string name="service_gui_INVITATION_RECEIVED">Приглашение получено</string>
+	<string name="service_gui_INVITATION_RECEIVED_MSG">%1$s приглашает вас войти в чат-комнату %2$S. Вы можете принять, отклонить или проигнорировать это приглашение.</string>
+	<string name="service_gui_INVITATION_REJECTED">%1$s отклонил ваше приглашение присоединиться к чату. Причина: %2$s.</string>
+	<string name="service_gui_INVITE">Пригласить</string>
+	<string name="service_gui_INVITE_CONTACT_MSG">Выберите имена контактов, которые вы хотите добавить в этот разговор, и нажмите «Пригласить».</string>
+	<string name="service_gui_INVITE_CONTACT_TO_CALL">Приглашать контакты для вызова</string>
+    <string name="service_gui_INVITE_CONTACT_TO_CHAT">Приглашение контактов в чат</string>
+	<string name="service_gui_INVITE_CONTACT_TO_VIDEO_BRIDGE">Пригласить контакты (видеобридж)</string>
+    <string name="service_gui_INVITE_REASON">Приглашение в групповое чат</string>
+    <string name="service_gui_INVITE_REASON_INVITE">Пригласить Причина:</string>
+    <string name="service_gui_INVITE_REASON_REJECT">Причина (при отклонении):</string>
+    <string name="service_gui_INVITE_REJECT_REASON">Занято</string>
+    <string name="service_gui_IGNORE">Игнорировать</string>
+    <string name="service_gui_INFO">Информация</string>
+	<string name="service_gui_ADDRESS">Адрес</string>
+    <string name="service_gui_CITY">Город</string>
+    <string name="service_gui_CLOSE_CHAT_ROOM_DIALOG">Закрыть</string>
+    <string name="service_gui_COUNTRY">Страна</string>
+    <string name="service_gui_EMAIL">Email</string>
+    <string name="service_gui_EMAILS">Письма</string>
+    <string name="service_gui_FAX">Факс</string>
+    <string name="service_gui_HOME">Главная</string>
+    <string name="service_gui_HOME_PAGE">Домашняя страница</string>
+    <string name="service_gui_INVALID_ADDRESS">Недействительный адрес: %1$s</string>
+	<string name="service_gui_JOIN">Присоединить</string>
+	<string name="service_gui_JOIN_AS">Присоединиться как</string>
+	<string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">Присоединиться к существующей видеоконференции</string>
+	<string name="service_gui_JOIN_VIDEO">Присоединить видео</string>
+	<string name="service_gui_JOB_TITLE">Название работы</string>
+	<string name="service_gui_JOIN_CHAT_ROOM">Вступить в чат&#8230;</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Не удалось присоединиться к комнате %1$s с псевдонимом: %2$s.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD">Комната чата запрашивает пароль.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION">Требуется регистрация в чате.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Вступить в чат</string>
+	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Введите имя комнаты для чата, к которой вы хотели бы присоединиться.</string>
+	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Вступить в мастер чата</string>
+	<string name="service_gui_JOIN_AUTOMATICALLY">Автоматически присоединяться</string>
+	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Не присоединяться автоматически</string>
+	<string name="service_gui_KICK">Kick</string>
+	<string name="service_gui_KICK_FAILED">Ошибка отказа</string>
+	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Не удалось нажать {0}. Произошла общая ошибка сервера.</string>
+	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Не удалось нажать {0}. Владельца и администратора комнаты нельзя было пинать.</string>
+	<string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Не удалось нажать {0}. У вас недостаточно прав для этого.</string>
+	<string name="service_gui_LAST">Последняя</string>
+    <string name="service_gui_LAST_MSG_CORRECTION">Коррекция последнего сообщения</string>
+	<string name="service_gui_LAST_NAME">Фамилия</string>
+	<string name="service_gui_LEAVE">Оставить</string>
+    <string name="service_gui_LEAVE_ROOM">оставить chatRoom</string>
+    <string name="service_gui_LOADING">Загрузка</string>
+    <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Локально в режиме ожидания</string>
+    <string name="service_gui_LOGIN_CREDENTIAL">Пользовательские учетные данные пользователя</string>
+    <string name="service_gui_LOGIN_FAILED">Ошибка входа</string>
+    <string name="service_gui_LOGIN_GENERAL_ERROR">Произошла ошибка при входе в учетную запись: Имя пользователя: {0}, Имя сервера: {1}: {2}.</string>
+    <string name="service_gui_LOGIN_INTERNAL_ERROR">Произошла ошибка при входе в учетную запись: Имя пользователя: {0}, Имя сервера: {1}. Это, скорее всего, внутренняя ошибка приложения. Сообщите о проблеме в список рассылки разработчиков.</string>
+    <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Невозможно войти в систему с учетной записью: Имя пользователя: {0}, Имя сервера: {1}, из-за проблемы с настройкой учетной записи. Проверьте конфигурацию своей учетной записи.</string>
+    <string name="service_gui_LOGIN_NETWORK_ERROR">Невозможно войти в систему с учетной записью:\nИмя пользователя: {0}\nServer name: {1}\ndue к сбою сети. Проверьте сетевое подключение.</string>
+    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Произошла ошибка при выходе из системы со следующей учетной записью: Имя пользователя: %1$s, Имя сервера: %2$S.</string>
+    <string name="service_gui_MOBILE_PHONE">Мобильный</string>
+    <string name="service_gui_MOVE">Переместить</string>
+    <string name="service_gui_MOVE_CONTACT">Переместить контакт</string>
+    <string name="service_gui_MOVE_CONTACT_ERROR">Контакт не может быть перемещен</string>
+    <string name="service_gui_MOVE_SUBCONTACT">Переместить контакт</string>
+    <string name="service_gui_MOVE_SUBCONTACT_MSG">Выберите контакт или группу, в которую вы хотите переместить выбранный контакт.</string>
+    <string name="service_gui_MOVE_SUBCONTACT_FAILED">Контакт, который вы выбрали, совпадает с\nthe исходным. Выберите другой контакт!</string>
+    <string name="service_gui_MOVE_SUBCONTACT_QUESTION">Вы действительно хотите переместить %1$s в %2$s?</string>
+    <string name="service_gui_MOVE_TO_GROUP">Переместить в группу</string>
+    <string name="service_gui_NICKNAME_LABEL">Ник Имя</string>
+    <string name="service_gui_OPEN_AUTOMATICALLY">Откройте эту комнату автоматически, когда</string>
+    <string name="service_gui_PERSONAL">Личный</string>
+
+	<string name="service_gui_MSG_DELIVERY_ERROR">Не удалось доставить сообщение.</string>
+    <string name="service_gui_MSG_DELIVERY_FAILURE">Приведенное выше сообщение не может быть доставлено</string>
+    <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Произошла внутренняя ошибка. Скорее всего, это ошибка. Сообщите об этом здесь: https://jitsi.org/Development/BugsAndIssues.</string>
+    <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Используемый протокол не поддерживает автономные сообщения.
+        Вы можете попытаться достигнуть %1$s через другой протокол или подождать, пока он/она не станет онлайн.</string>
+    <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Неизвестная ошибка произошла при доставке вашего сообщения.</string>
+    <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Неподдерживаемая операция.</string>
+    <string name="service_gui_MSG_NOT_DELIVERED">Произошла сетевая проблема. Проверьте конфигурацию сети и повторите попытку.</string>
+    <string name="service_gui_MSG_RECEIVED">%1$s написал</string>
+    <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Вы должны сначала войти в систему, чтобы отправить сообщение.</string>
+
+    <string name="service_gui_MISSED_CALLS_TOOL_TIP">Пропущенные вызовы:</string>
+    <string name="service_gui_MULTIPLE_LOGIN">Несколько моментов входа не разрешены. Следующая учетная запись: Имя пользователя: %1$s, Имя сервера: %2$s отключено.</string>
+    <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Взаимное удержание</string>
+    <string name="service_gui_NAME">Имя</string>
+    <string name="service_gui_NEW_ACCOUNT">Добавить новую учетную запись</string>
+    <string name="service_gui_NETOWRK_ASSERTION_ERROR">Поставщик Jabber должен быть подписан, прежде чем сможет общаться.</string>
+    <string name="service_gui_NICKNAME">Ник</string>
+    <string name="service_gui_NO">Нет</string>
+    <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Для совершения звонка необходима хотя бы одна учетная запись онлайн-телефонии. Войдите в одну из своих учетных записей и повторите попытку.</string>
+    <string name="service_gui_NOT_AUTHORIZED">Не разрешено</string>
+    <string name="service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME">NotInContactList</string>
+    <string name="service_gui_OFF">Выкл</string>
+    <string name="service_gui_OFFLINE">Offline</string>
+    <string name="service_gui_OK">OK</string>
+    <string name="service_gui_ON">Вкл</string>
+    <string name="service_gui_ONLINE">Онлайн</string>
+    <string name="service_gui_OPEN">Открыть</string>
+	<string name="service_gui_OPEN_FILE_FROM_IMAGE">Нажмите, чтобы открыть файл.</string>
+    <string name="service_gui_OPEN_FOLDER">Папка</string>
+    <string name="service_gui_OTHER">Другое</string>
+    <string name="service_gui_ORGANIZATION">Организация</string>
+    <string name="service_gui_PHONE">Телефон</string>
+    <string name="service_gui_PHONES">Телефоны</string>
+    <string name="service_gui_POSTAL_CODE">Почтовый код</string>
+    <string name="service_gui_RENAME">Переименовать</string>
+    <string name="service_gui_SHOW_STACK_TRACE">Показать трассировку стека</string>
+    <string name="service_gui_STREET">Улица</string>
+    <string name="service_gui_SUBMIT">Отправить</string>
+    <string name="service_gui_WORK_PHONE">Работа</string>
+
+    <!-- Call -->
+	<string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Переключить видео</string>
+    <string name="service_gui_MIC_CONTROL_TITLE">Уровень усиления микрофона</string>
+    <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Отрегулировать звук микрофона</string>
+    <string name="service_gui_OUTGOING_CALL">Исходящий вызов</string>
+    <string name="service_gui_OUTGOING_CALL_MSG">Выполнение вызова с помощью %1$s&#8230;</string>
+    <string name="service_gui_PRESENCE_NOT_SUPPORTED">Присутствие не поддерживается %1$s</string>
+    <string name="service_gui_PROACTIVE_NOTIFICATION">записывает сообщение</string>
+    <string name="service_gui_RECENT_MESSAGES">Недавние разговоры</string>
+	<string name="service_gui_RECEIVED">%1$s получено</string>
+    <string name="service_gui_REFERRED_STATUS">Отправлено</string>
+    <string name="service_gui_RESTORING">Восстановление&#8230;</string>
+
+    <string name="service_gui_RE_REQUEST_AUTHORIZATION">Запрос авторизации</string>
+    <string name="service_gui_REJECT">Отклонить</string>
+    <string name="service_gui_REMOVE">Удалить</string>
+    <string name="service_gui_REMOVE_ACCOUNT">Удалить учетную запись</string>
+    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Вы действительно хотите удалить учетную запись: \'%1$s\'?</string>
+    <string name="service_gui_REMOVE_CONTACT">Удалить контакт</string>
+    <string name="service_gui_REMOVE_CONTACT_TEXT">Связаться с владельцем: %1$s.\n\nВы уверены, что хотите удалить контакт:\'%2$s\' из списка контактов?</string>
+    <string name="service_gui_REMOVE_CONTACT_NOT_CONNECTED">Чтобы удалить этот контакт, необходимо подключиться. Войдите в систему и повторите попытку.</string>
+    <string name="service_gui_REMOVE_GROUP">Удалить группу</string>
+    <string name="service_gui_REMOVE_GROUP_TEXT">Вы действительно хотите удалить группу: \'%1$s\' и все связанные с ней контакты из списка контактов?</string>
+    <string name="service_gui_REMOTELY_ON_HOLD_STATUS">Удаленное удержание</string>
+    <string name="service_gui_RENAME_CONTACT">Изменить контактное имя</string>
+
+    <string name="service_gui_RINGING_STATUS">Звонок</string>
+    <string name="service_gui_REQUEST">Запрос</string>
+    <string name="service_gui_REQUEST_AUTHORIZATION">Запрос авторизации</string>
+    <string name="service_gui_REQUEST_AUTHORIZATION_MSG">Связаться с владельцем: %1$s\n\nУдалить авторизацию от \'%2$s\', чтобы добавить его/ее в список контактов. Повторите запрос.</string>
+    <string name="service_gui_RETRY">Повторить</string>
+    <string name="service_gui_SEARCH">Поиск</string>
+    <string name="service_gui_SEARCH_STRING_CONTACT_SOURCE">Поиск контакта</string >>
+    <string name="service_gui_PHONEBOOK">Телефонная книга</string>
+    <string name="service_gui_settings_SECURITY">Безопасность</string>
+    <string name="service_gui_SELECT_ACCOUNT">Выбрать владельца учетной записи</string>
+    <string name="service_gui_SELECT_GROUP">Contact Assigned Group:</string>
+    <string name="service_gui_SELECT_NO_GROUP">Нет группы</string>
+
+    <!-- Logs -->
+	<string name="service_gui_SEND_LOGS">Сообщить об ошибках</string>
+    <string name="service_gui_SEND_LOGS_QUESTION">aTalk только что восстановился после серьезного сбоя. Вы хотите сообщить об ошибках?</string>
+    <string name="service_gui_SEND_LOGS_SUBJECT">отчет об ошибках aTalk</string>
+    <string name="service_gui_SEND_LOGS_TITLE">отчет об ошибках aTalk по электронной почте</string>
+
+    <string name="service_gui_SEND_MESSAGE">Отправить сообщение</string>
+    <string name="service_gui_SEND_MESSAGE_FAIL">Не удалось отправить сообщение: %1$s</string>
+    <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">Объект, который вы выбрали, не поддерживает мгновенный обмен сообщениями чата: %1$s</string>
+	<string name="service_gui_SEND_AS_SMS">Отправить как SMS</string>
+	<string name="service_gui_SEND_PRIVATE_MESSAGE">Отправить личное сообщение</string>
+    <string name="service_gui_SEND_VIA">Отправить через</string>
+	<string name="service_gui_SENT">отправлено</string>
+	<string name="service_gui_SERVER_CHAT_ROOMS">Серверные чаты</string>
+	<string name="service_gui_SHOW_OFFLINE_CONTACTS">Показать автономные контакты</string>
+    <string name="service_gui_SHUTDOWN_IN_PROGRESS">shuting down&#8230;</string>
+	<string name="service_gui_STATUS">Статус</string>
+    <string name="service_gui_TYPE_YOUR_REQUEST">Введите причину запроса</string>
+    <string name="service_gui_UNKNOWN">Неизвестно</string>
+    <string name="service_gui_UNKNOWN_USER">Неизвестный пользователь</string>
+    <string name="service_gui_UNKNOWN_STATUS">Неизвестное состояние</string>
+    <string name="service_gui_URL_HINT">http://www.example.com</string>
+    <string name="service_gui_VOLUME_CONTROL_TITLE">Уровень усиления выходного объема</string>
+    <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">Отрегулировать громкость</string>
+    <string name="service_gui_VOLUME_GAIN_LEVEL">Уровень усиления уровня: %1$s%%</string>
+    <string name="service_gui_WAITING_AUTHORIZATION">Ожидание авторизации</string>
+    <string name="service_gui_WARNING">Предупреждение</string>
+    <string name="service_gui_WARN_CALL_IN_PROGRESS">Невозможно выполнить это во время вызова</string>
+    <string name="service_gui_YES">Да</string>
+
+    <!-- Sign in -->
+    <string name="service_gui_ACCOUNT_CREATION_FAILED">Не удалось создать новую учетную запись из-за ошибки: %1$s</string>
+    <string name="service_gui_CREATE_ACCOUNT">Создать учетную запись</string>
+    <string name="service_gui_GENERAL_ERROR">Общая ошибка</string>
+    <string name="service_gui_NETWORK_FAILURE">Сбой сети</string>
+    <string name="service_gui_SELECT_AVATAR">Выберите новое изображение аватара</string>
+    <string name="service_gui_SET_STATUS">Изменить статус</string>
+    <string name="service_gui_SIGN_IN">Войти</string>
+    <string name="service_gui_SIGN_OUT">Выйти</string>
+    <string name="service_gui_SPECIFY_SERVER">Заполните серверную часть своей учетной записи.</string>
+	<string name="service_gui_SPEED">Скорость: %1$s/sec (%2$s)</string>
+    <string name="service_gui_STATUS_CHANGE_GENERAL_ERROR">Не удалось изменить статус учетной записи: Имя пользователя: %1$s, Имя сервера: %2$s, из-за общей ошибки.</string>
+	<string name="service_gui_STATUS_CHANGED_CHAT_MESSAGE">стал%1$s</string>
+    <string name="service_gui_STATUS_CHANGE_NETWORK_FAILURE">Не удалось изменить статус учетной записи: Имя пользователя: %1$s, Имя сервера: %2$s, из-за сетевой проблемы.</string>
+    <string name="service_gui_SECURITY_ERROR">Ошибка безопасности</string>
+    <string name="service_gui_SECURITY_INFO">Сведения о безопасности</string>
+    <string name="service_gui_SECURITY_WARNING">Предупреждение о безопасности</string>
+    <string name="service_gui_USERNAME_NULL">Пожалуйста, заполните свое имя пользователя и пароль.</string>
+    <string name="service_gui_USER_EXISTS_ERROR">Этот пользователь уже существует в выбранной сети. Выберите другого пользователя или сеть.</string>
+
+    <string name="service_gui_JANUARY">Jan</string>
+    <string name="service_gui_FEBRUARY">Feb</string>
+    <string name="service_gui_MARCH">Мар</string>
+    <string name="service_gui_APRIL">Apr</string>
+    <string name="service_gui_MAY">May</string>
+    <string name="service_gui_JUNE">Jun</string>
+    <string name="service_gui_JULY">Jul</string>
+    <string name="service_gui_AUGUST">Aug</string>
+    <string name="service_gui_SEPTEMBER">Sep</string>
+    <string name="service_gui_OCTOBER">Oct</string>
+    <string name="service_gui_NOVEMBER">Nov</string>
+    <string name="service_gui_DECEMBER">Dec</string>
+
+    <!-- Call info -->
+	<string name="service.protocol.ICE_FAILED">Не удалось установить соединение (ICE не удалось и не найдено)</string>
+    <string name="service_gui_callinfo_AUDIO_INFO">Аудиоинформация</string>
+    <string name="service_gui_callinfo_BANDWITH">Полоса пропускания:</string>
+    <string name="service_gui_callinfo_CALL_DURATION">Длительность звонка:</string>
+    <string name="service_gui_callinfo_CALL_IDENTITY">Идентификатор:</string>
+    <string name="service_gui_callinfo_CALL_INFORMATION">Информация о вызове</string>
+    <string name="service_gui_callinfo_CALL_TRANSPORT">Транзакция вызова сигнализации:</string>
+    <string name="service_gui_callinfo_CODEC">Кодек/Частота:</string>
+    <string name="service_gui_callinfo_IS_CONFERENCE_FOCUS">Фокус конференции:</string>
+    <string name="service_gui_callinfo_IS_DEFAULT_ENCRYPTED">Включено шифрование:</string>
+    <string name="service_gui_callinfo_JITTER">Джиттер:</string>
+    <string name="service_gui_callinfo_KEY_EXCHANGE_PROTOCOL">Протокол обмена ключами</string>
+    <string name="service_gui_callinfo_LOCAL_IP">Локальный IP/Порт:</string>
+    <string name="service_gui_callinfo_LOSS_RATE">Коэффициент потерь:</string>
+    <string name="service_gui_callinfo_MEDIA_STREAM_RTP">RTP:</string>
+    <string name="service_gui_callinfo_MEDIA_STREAM_SRTP">SRTP:</string>
+    <string name="service_gui_callinfo_MEDIA_STREAM_TRANSPORT_PROTOCOL">Протокол передачи медиапотоков:</string>
+    <string name="service_gui_callinfo_NA">N.A.</string>
+    <string name="service_gui_callinfo_PEER_COUNT">Количество участников:</string>
+    <string name="service_gui_callinfo_REMOTE_IP">Удаленный IP/Порт:</string>
+    <string name="service_gui_callinfo_RTT">RTT:</string>
+    <string name="service_gui_callinfo_TECHNICAL_CALL_INFO">Информация о запросе вызовов</string>
+    <string name="service_gui_callinfo_TLS_CIPHER_SUITE">Шифрованный набор TLS:</string>
+    <string name="service_gui_callinfo_TLS_CERTIFICATE_CONTENT">Содержимое сертификата сервера TLS отображается ниже.</string>
+    <string name="service_gui_callinfo_TLS_PROTOCOL">Протокол TLS:</string>
+    <string name="service_gui_callinfo_VIEW_CERTIFICATE">Просмотреть сертификат</string>
+    <string name="service_gui_callinfo_VIDEO_SIZE">Размер видео</string>
+    <string name="service_gui_callinfo_VIDEO_INFO">Информация о видео</string>
+
+    <string name="service_gui_callinfo_ADAPTIVE_JITTER_BUFFER">Адаптивный буфер дрожания:</string>
+    <string name="service_gui_callinfo_DECODED_WITH_FEC">Пакеты, декодированные с помощью FEC:</string>
+    <string name="service_gui_callinfo_DISCARDED_PERCENT">Отбрасываемые пакеты:</string>
+    <string name="service_gui_callinfo_DISCARDED_TOTAL">Число отброшенных пакетов:</string>
+
+    <!-- ICE info -->
+    <string name="service_gui_callinfo_HARVESTING_DATA">%1$s d ms (для %2$d урожаев)</string>
+    <string name="service_gui_callinfo_HARVESTING_TIME">Время сбора урожая:</string>
+    <string name="service_gui_callinfo_ICE_CANDIDATE_EXTENDED_TYPE">ICE кандидат расширенный тип:</string>
+    <string name="service_gui_callinfo_ICE_LOCAL_HOST_ADDRESS">Локальный IP-адрес/порт:</string>
+    <string name="service_gui_callinfo_ICE_LOCAL_REFLEXIVE_ADDRESS">Локальный рефлексивный IP/порт:</string>
+    <string name="service_gui_callinfo_ICE_LOCAL_RELAYED_ADDRESS">Локальный ретранслируемый IP/порт:</string>
+    <string name="service_gui_callinfo_ICE_REMOTE_HOST_ADDRESS">Удаленный хост IP/Порт:</string>
+    <string name="service_gui_callinfo_ICE_REMOTE_REFLEXIVE_ADDRESS">Удаленный рефлексивный IP/порт:</string>
+    <string name="service_gui_callinfo_ICE_REMOTE_RELAYED_ADDRESS">Удаленный ретранслируемый IP/порт:</string>
+    <string name="service_gui_callinfo_ICE_STATE">Состояние обработки ICE:</string>
+    <string name="service_gui_callinfo_ICE_STATE_COMPLETED">Завершено</string>
+    <string name="service_gui_callinfo_ICE_STATE_FAILED">Ошибка</string>
+    <string name="service_gui_callinfo_ICE_STATE_RUNNING">Проверки соединений</string>
+    <string name="service_gui_callinfo_ICE_STATE_WAITING">Собирать кандидатов</string>
+    <string name="service_gui_callinfo_JITTER_BUFFER_DELAY">Буфер дрожания:</string>
+    <string name="service_gui_callinfo_TOTAL_HARVESTING_TIME">Общее время уборки:</string>
+
+    <!-- Security certificates -->
+	<string name="service_gui_ALWAYS_TRUST">Всегда доверяйте этому сертификату</string>
+    <string name="service_gui_CERT_DIALOG_TITLE">Проверка сертификата</string>
+    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>%1$s не может проверить личность сервера при подключении к &lt;br/>&lt;b>%2$s &lt;/b>&lt;br/>&lt;br/>
+        Сертификату не доверяют (самозаверяющий сертификат), что означает, что сервер
+        идентификация не может быть автоматически проверена. &lt;br/>&lt;br/>
+        Продолжить подключение только для этого экземпляра? &lt;br/>
+        Для получения дополнительной информации и информации нажмите «Показать сертификат». &lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%1$s не может проверить
+        идентификатор сертификата сервера. &lt;br/>&lt;br/>
+        Сертификату не доверяют (самозаверяющий сертификат), что означает, что сервер
+        идентификация не может быть автоматически проверена. &lt;br/>&lt;br/>
+        Продолжить подключение только для этого экземпляра? &lt;br/>
+        Для получения дополнительной информации и информации нажмите «Показать сертификат». &lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>{0} не может проверить
+        идентичность соединительного клиента. &lt;br/>&lt;br/
+        Сертификату не доверяют (самозаверяющий сертификат), что означает, что клиентский
+        идентификация не может быть автоматически проверена. &lt;br/>&lt;br/>
+        Продолжить подключение только для этого экземпляра? &lt;br/>
+        Для получения дополнительной информации и информации нажмите «Показать сертификат». &lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT">&lt;html>%1$s не может проверить
+        идентичность равного %2$s. &lt;br/>&lt;br/>
+        Сертификату не доверяют (самозаверяющий сертификат), что означает, что сверстник
+        идентификация не может быть автоматически проверена. &lt;br/>&lt;br/>
+        Продолжить подключение только для этого экземпляра? &lt;br/>
+        Для получения дополнительной информации и информации нажмите «Показать сертификат». &lt;/html></string>
+   <string name="service_gui_PROCEED">Продолжить</string>
+    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;html>&lt;b>Выдан To &lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_CHAIN">Цепочка сертификатов:</string>
+    <string name="service_gui_CERT_INFO_CN">Общее имя:</string>
+    <string name="service_gui_CERT_INFO_O">Организация:</string>
+    <string name="service_gui_CERT_INFO_C">Название страны:</string>
+    <string name="service_gui_CERT_INFO_ST">Название штата или провинции:</string>
+    <string name="service_gui_CERT_INFO_L">Локальное имя:</string>
+    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;html>&lt;b>Выдано по &lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_OU">Организационное подразделение:</string>
+    <string name="service_gui_CERT_INFO_VALIDITY">&lt;html>&lt;b>Validity &lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_ON">Выпущено:</string>
+    <string name="service_gui_CERT_INFO_EXPIRES_ON">Срок действия:</string>
+    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;html>&lt;b>Отпечатки пальцев &lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;html>&lt;b>Информация о сертификате &lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_SER_NUM">Серийный номер:</string>
+    <string name="service_gui_CERT_INFO_VER">Версия:</string>
+    <string name="service_gui_CERT_INFO_SIGN_ALG">Алгоритм подписи:</string>
+    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;html>&lt;b>Информация открытого ключа &lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ALG">Алгоритм:</string>
+    <string name="service_gui_CERT_INFO_PUB_KEY">Открытый ключ:</string>
+    <string name="service_gui_CERT_INFO_KEY_BYTES_PRINT">%1$s bytes: %2$s</string>
+    <string name="service_gui_CERT_INFO_KEY_BITS_PRINT">%1$S бит $</string>
+    <string name="service_gui_CERT_INFO_EXP">Экспонента:</string>
+    <string name="service_gui_CERT_INFO_KEY_SIZE">Размер ключа:</string>
+    <string name="service_gui_CERT_INFO_SIGN">Подпись:</string>
+    <string name="service_gui_CONTINUE">Продолжить</string>
+    <string name="service_gui_SHOW_CERT">Показать сертификат</string>
+    <string name="service_gui_HIDE_CERT">Скрыть сертификат</string>
+    <string name="service_gui_UNSAVED_CHANGES">У вас есть несохраненные изменения. Отменить изменения и выйти?</string>
+    <string name="service_gui_UNSAVED_CHANGES_TITLE">UnSaved Changes</string>
+    <string name="service_gui_WAITING">Подождите&#8230;</string>
+    <string name="service_gui_SERVER_INFO_FETCH">Извлечение объявленных функций/информации&#8230;</string>
+
+    <!-- Security info -->
+	<string name="service_gui_security_AUDIO_NOT_SECURED">Аудио не защищено</string>
+    <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">Вызов не защищен.</string>
+    <string name="service_gui_security_CALL_SECURED_COMPARE_TOOLTIP">Нажмите здесь, чтобы сравнить секрет секретности с вашим партнером.</string>
+    <string name="service_gui_security_CALL_SECURED_TOOLTIP">Звонок защищен. Для получения дополнительной информации нажмите здесь.</string>
+    <string name="service_gui_security_CIPHER">Cipher: {0}</string>
+    <string name="service_gui_security_CLEAR">Очистить</string>
+    <string name="service_gui_security_COMPARE_WITH_PARTNER_SHORT">Сравнить с партнером:</string>
+    <string name="service_gui_security_CONFIRM">Подтвердить</string>
+    <string name="service_gui_security_ENCRYPTION_REQUIRED">Требуется шифрование!</string>
+    <string name="service_gui_security_NO_VIDEO">Нет видео</string>
+    <string name="service_gui_security_SECURE_AUDIO">Защищенный звук</string>
+    <string name="service_gui_security_SECURE_VIDEO">Защищенное видео</string>
+    <string name="service_gui_security_SECURITY_ALERT">Попытка обеспечить безопасный вызов. Отключится в</string>
+    <string name="service_gui_security_STRING_COMPARED">String сравнивается!</string>
+    <string name="service_gui_security_VERIFY_TOAST">Включена защита звонков! Нажмите, чтобы сравнить строку безопасности сейчас или используйте меню позже.</string>
+    <string name="service_gui_security_VIDEO_NOT_SECURED">Видео не защищено</string>
+
+    <string name="service_gui_avatar_CHOOSE_ICON">Выберите изображение</string>
+    <string name="service_gui_avatar_REMOVE_ICON">Удалить текущее изображение</string>
+
+    <!-- Update checker -->
+    <string name="plugin_updatechecker_BUTTON_DOWNLOAD">Загрузить</string>
+    <string name="plugin_updatechecker_BUTTON_INSTALL">Установить</string>
+    <string name="plugin_updatechecker_DIALOG_DOWNLOADED_TITLE">Загрузить готовый</string>
+    <string name="plugin_updatechecker_DIALOG_DOWNLOADED">Обновление загружается и готово к установке.</string>
+    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS_TITLE">Выполняется</string>
+    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS">Выполняется обновление загрузки.</string>
+    <string name="plugin_updatechecker_DIALOG_MESSAGE">Доступна новая версия (%1$s-%2$s) для %3$s.</string>
+    <string name="plugin_updatechecker_DIALOG_NOUPDATE">Текущая установленная версия: (%1$s-%2$s) обновлена.</string>
+    <string name="plugin_updatechecker_DIALOG_NOUPDATE_TITLE">Нет новой версии</string>
+    <string name="plugin_updatechecker_DIALOG_TITLE">Установить обновления</string>
+    <string name="plugin_updatechecker_UPDATE_MENU_ENTRY">Проверить наличие обновлений</string>
+    <string name="plugin_newsoftware_DIALOG_MESSAGE">Доступна новая версия программного обеспечения (%1$s).</string>
+
+    <!-- account info -->
+    <string name="plugin_accountinfo_ABOUT_ME">Обо мне:</string>
+    <string name="plugin_accountinfo_ABOUT_ME_HINT">Введите краткое описание себя в этом поле</string>
+    <string name="plugin_accountinfo_ABOUT_ME_MAX_CHARACTERS">200</string>
+    <string name="plugin_accountinfo_AGE">Возраст:</string>
+    <string name="plugin_accountinfo_BDAY">Дата рождения:</string>
+    <string name="plugin_accountinfo_CHANGE">Изменить</string>
+    <string name="plugin_accountinfo_CITY">Город:</string>
+    <string name="plugin_accountinfo_COUNTRY">Страна:</string>
+    <string name="plugin_accountinfo_DISCARD_CHANGE">Пользователь переходит в автономный режим - Отбрасывает все изменения учетной записи.</string>
+    <string name="plugin_accountinfo_DISPLAY_NAME">Отображаемое имя:</string>
+    <string name="plugin_accountinfo_EMAIL">E-mail:</string>
+    <string name="plugin_accountinfo_EXTENDED">Расширенные</string>
+    <string name="plugin_accountinfo_FIRST_NAME">Имя:</string>
+    <string name="plugin_accountinfo_GENDER">Пол:</string>
+    <string name="plugin_accountinfo_GLOBAL_ICON">Использовать глобальный значок</string>
+    <string name="plugin_accountinfo_JOB_TITLE">Название задания:</string>
+    <string name="plugin_accountinfo_LAST_NAME">Фамилия:</string>
+    <string name="plugin_accountinfo_LOCAL_ICON">Используйте этот значок:</string>
+    <string name="plugin_accountinfo_MIDDLE_NAME">Среднее имя:</string>
+    <string name="plugin_accountinfo_MOBILE_PHONE">Мобильный телефон:</string>
+    <string name="plugin_accountinfo_NICKNAME">Псевдоним:</string>
+    <string name="plugin_accountinfo_NO_REGISTERED_MESSAGE">Аккаунт отключен - он должен быть онлайн для изменения информации об учетной записи.</string>
+    <string name="plugin_accountinfo_NOT_SUPPORTED">Информация об учетной записи недоступна.</string>
+    <string name="plugin_accountinfo_ONLY_MESSAGE">Только сообщения</string>
+    <string name="plugin_accountinfo_ORGANIZATION">Название организации:</string>
+    <string name="plugin_accountinfo_PHONE">Телефон:</string>
+    <string name="plugin_accountinfo_POST">Почтовый индекс:</string>
+
+	<string name="plugin_accountinfo_REGION">Регион:</string>
+    <string name="plugin_accountinfo_SELECT_ACCOUNT">Выберите учетную запись:</string>
+    <string name="plugin_accountinfo_STREET">Улица:</string>
+    <string name="plugin_accountinfo_TITLE">Информация об учетной записи</string>
+    <string name="plugin_accountinfo_USER_PICTURES">Пользовательские изображения</string>
+    <string name="plugin_accountinfo_WORK_EMAIL">Работа E-mail:</string>
+    <string name="plugin_accountinfo_WORK_PHONE">Рабочий телефон:</string>
+
+    <!-- connection info -->
+    <string name="plugin_connectioninfo_TITLE">Информация о подключении</string>
+
+    <!-- contact info -->
+	<string name="plugin_contactinfo_TITLE">Контактная информация</string>
+    <string name="plugin_contactinfo_CONTACT_SUMMARY_DESCRIPTION">Резюме контактной информации для</string>
+    <string name="plugin_contactinfo_CONTACT_EXTENDED_DESCRIPTION">Расширенная контактная информация для</string>
+    <string name="plugin_contactinfo_NOT_SPECIFIED">[Не указано]</string>
+    <string name="plugin_contactinfo_USER_PICTURES">Пользовательские изображения</string>
+    <string name="plugin_contactinfo_USER_STATUS_MESSAGE">Сообщение о статусе</string>
+
+    <!-- Notification strings -->
+    <string name="plugin_notificationconfig_event_BusyCall">Занятый вызов</string>
+    <string name="plugin_notificationconfig_event_BusyCall_description">Описание занятого вызова</string>
+    <string name="plugin_notificationconfig_event_CallSaved">Сохраненный вызов</string>
+    <string name="plugin_notificationconfig_event_CallSecurityError">Ошибка безопасности вызовов</string>
+    <string name="plugin_notificationconfig_event_CallSecurityError_description">Описание ошибки безопасности вызова</string>
+    <string name="plugin_notificationconfig_event_CallSecurityOn">Безопасность вызовов в</string>
+    <string name="plugin_notificationconfig_event_CallSecurityOn_description">Безопасность вызовов при описании</string>
+    <string name="plugin_notificationconfig_event_Dialing">Набор номера</string>
+    <string name="plugin_notificationconfig_event_Dialing_description">Описание набора</string>
+    <string name="plugin_notificationconfig_event_HangUp">Hang Up</string>
+    <string name="plugin_notificationconfig_event_HangUp_description">Развернуть описание</string>
+    <string name="plugin_notificationconfig_event_IncomingCall">Входящий вызов</string>
+    <string name="plugin_notificationconfig_event_IncomingCall_description">Описание входящих вызовов.</string>
+    <string name="plugin_notificationconfig_event_IncomingFile">Входящий файл</string>
+    <string name="plugin_notificationconfig_event_IncomingMessage">Входящее сообщение</string>
+    <string name="plugin_notificationconfig_event_IncomingMessage_description">Описание входящих сообщений</string>
+    <string name="plugin_notificationconfig_event_LogFilesArchived">Файлы журнала Архивированные</string>
+    <string name="plugin_notificationconfig_event_missed_call">Пропущенный вызов</string>
+    <string name="plugin_notificationconfig_event_NetworkNotifications">Сетевые уведомления</string>
+    <string name="plugin_notificationconfig_event_NetworkNotifications_description">Описание сетевого уведомления</string>
+    <string name="plugin_notificationconfig_event_ProactiveNotification">Ввод уведомлений</string>
+    <string name="plugin_notificationconfig_event_ProactiveNotification_description">Проактивное описание уведомления о состоянии чата</string>
+    <string name="plugin_notificationconfig_event_OutgoingCall">Исходящий вызов</string>
+    <string name="plugin_notificationconfig_event_OutgoingCall_description">Исходящее описание вызова</string>
+    <string name="plugin_notificationconfig_event_SecurityMessage">Сообщение безопасности</string>
+    <string name="plugin_notificationconfig_event_SecurityMessage_description">Описание сообщения безопасности</string>
+    <string name="plugin_notificationconfig_notification_sound">​​Звук на устройстве уведомлений</string>
+    <string name="plugin_notificationconfig_playback_sound">​​Звук на устройстве воспроизведения</string>
+    <string name="plugin_notificationconfig_popup_notification">Всплывающее уведомление</string>
+    <string name="plugin_notificationconfig_vibration">Вибрация</string>
+
+    <!-- call recordingconfig -->
+	<string name="plugin.callrecordingconfig.CALL_SAVED">Вызов успешно сохранен</string>
+    <string name="plugin.callrecordingconfig.CALL_SAVED_TO">Сохранить в: %1$s</string>
+
+    <!-- ZRTP Securing -->
+    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_CHANGED">Изменена конфигурация аудиоустройства</string>
+    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Нажмите здесь для управления устройством</string>
+    <string name="impl_media_configform_NO_PREVIEW">Предварительный просмотр</string>
+    <string name="impl_media_security_CHECKSUM_MISMATCH">&lt;html>Внутренняя несоответствие контрольной суммы пакета ZRTP. &lt;br/>Если вы часто видите это сообщение, это может означать атаку отказа в обслуживании! &lt;/html></string>
+    <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>Не удалось отправить данные шифрования. Интернет-соединение для передачи данных или одноранговое соединение отключено. &lt;br/>&lt;b>Ваш вызов не является безопасным &lt;/b>&lt;br/>Код ошибки: %1$s &lt;/html></string>
+    <string name="impl_media_security_RETRY_RATE_EXCEEDED">&lt;html>Слишком много попыток во время переговоров по безопасности. Это может означать, что у другой стороны проблемы с подключением к Интернету. &lt;br/>&lt;b>Ваш вызов не является безопасным &lt;/b>&lt;br/>Код ошибки: %1$s &lt;/html></string>
+    <string name="impl_media_security_INTERNAL_PROTOCOL_ERROR">&lt;html>Произошла ошибка внутреннего протокола. &lt;br/>&lt;b>Ваш вызов не защищен &lt;/b>&lt;br/>Код ошибки: %1$s &lt;/html ></string>
+    <string name="impl_media_security_SECURITY_OFF">Поддержка шифрования вызовов</string>
+    <string name="impl_media_security_SECURITY_ON">Поддержка шифрования вызовов в</string>
+    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Была обнаружена серьезная проблема безопасности. &lt;br/>&lt;b>Ваш вызов не защищен &lt;/b>&lt;br/>Код ошибки: {0} &lt;/html></string>
+    <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Недоступен сохраненный общий секрет. &lt;br/>&lt;b>Рекомендуется проверка SAS &lt;/b>&lt;/html></string>
+    <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Отсутствует ожидаемый сохраненный общий секрет. &lt;br/>&lt;b>Требуется проверка SAS &lt;/b>&lt;br/>Если коды SAS не совпадают, то зависание и повторите попытку &lt;/html></string>
+    <string name="impl.media.security.ZRTP_GENERIC_MSG">&lt;html>Была обнаружена серьезная проблема ZRTP. &lt;br/>&lt;b>Ваш вызов не является безопасным &lt;/b>&lt;br/>Код ошибки : %1$s &lt;/html></string>
+
+    <!-- OTR plugin -->
+    <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Аутентификация приятеля</string>
+    <string name="plugin_otr_menu_CB_AUTO">Автоматически запускать личные сообщения</string>
+    <string name="plugin_otr_menu_CB_ENABLE">Включить личный обмен сообщениями</string>
+    <string name="plugin_otr_menu_CB_REQUIRE">Требовать личные сообщения</string>
+    <string name="plugin_otr_menu_CB_RESET">Сброс</string>
+    <string name="plugin_otr_menu_CRYPTO_AUTHETICATED">CRYPTO Authenticated</string>
+    <string name="plugin_otr_menu_CRYPTO_Finish">CRYPTO Закончено</string>
+    <string name="plugin_otr_menu_CRYPTO_NON_AUTHETICATED">CRYPTO Non-Authenticated</string>
+    <string name="plugin_otr_menu_END_OTR">Завершить закрытый разговор</string>
+    <string name="plugin_otr_menu_OTR_AUTHETICATED">OTR Authenticated</string>
+    <string name="plugin_otr_menu_OTR_Finish">OTR Ended</string>
+    <string name="plugin_otr_menu_OTR_HANDSHAKE">Рукопожатие OTR</string>
+    <string name="plugin_otr_menu_OTR_NON_AUTHETICATED">OTR Non-Authenticated</string>
+    <string name="plugin_otr_menu_OTR_PLAINTTEXT">Обычный текст</string>
+    <string name="plugin_otr_menu_OTR_TIMEOUT">OTR Handshake_TimeOut</string>
+    <string name="plugin_otr_menu_OTR_TOOLTIP">Шифровать чаты с OTR</string>
+    <string name="plugin_otr_menu_REFRESH_OTR">Обновить частный разговор</string>
+    <string name="plugin_otr_menu_START_OTR">Запустить приватный разговор</string>
+    <string name="plugin_otr_menu_TITLE">Защищенный чат</string>
+    <string name="plugin_otr_menu_WHATS_THIS">Что это за</string>
+
+    <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">Аутентификация приятеля помогает
+    убедитесь, что человек, с которым вы разговариваете, является тем, кем он или она является. Чтобы проверить отпечаток пальца, обратитесь к своему собеседнику через
+    какой-либо другой аутентифицированный канал, например, телефон или адрес электронной почты, подписанный GPG. Каждый из вас должен указать ваш отпечаток пальца на
+    Другие. Если все соответствует, вы должны указать в следующем диалоговом окне, что * Я * проверил отпечаток пальца.</string>
+    <string name="plugin_otr_authbuddydialog_CANCEL">Отменить</string>
+
+	<string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Введите отпечаток, полученный от %1$s.</string>
+    <string name="plugin_otr_authbuddydialog_HELP">Справка</string>
+    <string name="plugin_otr_authbuddydialog_HELP_URI">https://atalk.sytes.net/faq.html</string>
+    <string name="plugin_otr_authbuddydialog_I_HAVE">У меня</string>
+    <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">У меня нет</string>
+    <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Мой отпечаток для %1$s: %2$s</string>
+    <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Удаленный отпечаток для %1$s: %2$s</string>
+    <string name="plugin_otr_authbuddydialog_TITLE">Аутентификация друзей</string>
+    <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">Verify Buddy</string>
+    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">подтвердил, что это действительно правильный отпечаток для %1$s.</string>
+    <string name="plugin_otr_configform_CB_AUTO">Автоматически запускать личные сообщения</string>
+    <string name="plugin_otr_configform_CB_ENABLE">Включить личный обмен сообщениями</string>
+    <string name="plugin_otr_configform_CB_REQUIRE">Требовать личные сообщения</string>
+    <string name="plugin_otr_configform_COLUMN_NAME_CONTACT">Контакт</string>
+    <string name="plugin_otr_configform_COLUMN_NAME_VERIFIED_STATUS">Verified</string>
+    <string name="plugin_otr_configform_FINGERPRINT">Отпечаток</string>
+    <string name="plugin_otr_configform_GENERATE">Сгенерировать</string>
+    <string name="plugin_otr_configform_KNOWN_FINGERPRINTS">Известные отпечатки пальцев</string>
+    <string name="plugin_otr_configform_MY_PRIVATE_KEYS">Мои личные ключи</string>
+    <string name="plugin_otr_configform_REGENERATE">Сгенерировать</string>
+    <string name="plugin_otr_configform_VERIFY_STATUS">Проверено: %1$s</string>
+
+    <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight:bold;">%1$s пытается инициировать зашифрованный
+        &lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        Отключить запись и&lt;/a>с вами. Однако ваше программное обеспечение не поддерживает
+        Off-The-Record. Для получения дополнительной информации см.&lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        http://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
+    <string name="plugin_otr_activator_historyoff">%1$s НЕ записывает этот разговор. Вы можете &lt;a href=\"atalk://%2$s/%3$s\">активировать историю чатов здесь &lt;/a>.</string>
+    <string name="plugin_otr_activator_historyon">%1$s записывает этот разговор на вашем устройстве. Вы можете &lt;a href=\"atalk://%2$s/%3$s\">отключить историю чата здесь &lt;/a>.</string>
+    <string name="plugin_otr_activator_msgfromanotherinstance">Получено сообщение из других экземпляров разговора OTR с обнаруженными %1$s.</string>
+    <string name="plugin_otr_activator_multipleinstancesdetected">Обнаружено несколько частных экземпляров разговора OTR с обнаруженными %1$s.</string>
+    <string name="plugin_otr_activator_requireencryption">Ваше сообщение не отправлено. Частная передача сообщений требуется.</string>
+    <string name="plugin_otr_activator_sessionfinished">%1$s закончил вашу личную беседу OTR с вами; вы должны сделать то же самое.</string>
+    <string name="plugin_otr_activator_sessionfinishederror">Ваше сообщение не отправлено. Завершите свой приватный разговор OTR с помощью %1$s.</string>
+    <string name="plugin_otr_activator_sessionlost">Закрыт закрытый сеанс OTR с %1$s.</string>
+    <string name="plugin_otr_activator_sessionstared">Запущен частный сеанс OTR с %1$s.</string>
+    <string name="plugin_otr_activator_smpaborted">%1$s прервал процесс аутентификации OTR.</string>
+    <string name="plugin_otr_activator_smperror">Произошла ошибка в процессе аутентификации OTR.</string>
+    <string name="plugin_otr_activator_unencryptedmsgreceived">Сообщение было получено незашифрованным.</string>
+    <string name="plugin_otr_activator_unreadablemsgreceived">%1$s отправил вам нечитаемое зашифрованное сообщение.</string>
+    <string name="plugin_otr_activator_unreadablemsgreply">Вы отправили %1$s нечитаемое зашифрованное сообщение. Завершите свой приватный разговор %2$s или обновите его.</string>
+    <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Неверный &lt;/b>закрытый разговор с %1$s.</string>
+    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s еще не завершена. Вы должны &lt;a href="atalk://%2$s/%3$s?%4$s">&lt;b>authenticate &lt;/b>&lt;/a>этот приятель.</string>
+
+    <!-- Crypto OMEMO -->
+	<string name="menu_crypto_plain_text">Обычный текст</string>
+    <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Аутентифицировать друзей</string>
+    <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">У вас есть неаутентифицированные друзья. Непроверенные друзья не могут получать сообщение OMEMO. Проверить подлинность.</string>
+    <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
+    <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs отсутствует для: %1$s</string>
+    <string name="omemo_identity_key_invalid">Недопустимый IdentityKey для omemoDevice: %1$s.\nException: %2$s.</string>
+    <string name="omemo_identity_key_missing">OMEMO IdentityKey отсутствует для: %1$s</string>
+    <string name="omemo_identity_keypairs_invalid">Недопустимый IdentityKeyPairs для omemoDevice: %1$s.\nException: %2$s.</string>
+    <string name="omemo_init_failed_CorruptedOmemoKeyException">Инициализировать OmemoManager не удалось, и omemo обмен сообщениями не работает. Если проблема сохраняется
+        после перезагрузки, перейдите к разделу «Зарегистрировать идентификаторы OMEMO» для отказавшего omomoDevice: %1$s.\n\nException: %2$s.</string>
+    <string name="omemo_init_failed_noresponse">Инициализировать OmemoManager не удалось, и omemo обмен сообщениями может не работать должным образом.</string>
+    <string name="omemo_init_failed_title">Ошибка initemoManager</string>
+    <string name="omemo_menu_authenticated">OMEMO Authenticated</string>
+    <string name="omemo_menu_unauthenticated">OMEMO unAuthenticated</string>
+    <string name="omemo_menu_untrusted">OMEMO Un-Trusted</string>
+    <string name="omemo_rebuild_session">Перестроить новый сеанс для отсутствия: %1$s</string>
+
+    <!-- Global proxy plugin -->
+    <string name="service_gui_settings_PROXY">Глобальный прокси</string>
+    <string name="service_gui_settings_PROXY_SUMMARY">Настроить параметры прокси-сервера&#8230;</string>
+    <string name="plugin_globalproxy_PROXY_ADDRESS">Прокси-сервер</string>
+    <string name="plugin_globalproxy_PROXY_PASSWORD">Пароль прокси</string>
+    <string name="plugin_globalproxy_PROXY_PORT">Порт прокси</string>
+    <string name="plugin_globalproxy_PROXY_TYPE">Тип прокси</string>
+
+    <!-- Account proxy plugin -->
+    <string name="service_gui_settings_ACCOUNT_PROXY">Конфигурация прокси-сервера</string>
+    <string name="service_gui_settings_ACCOUNT_PROXY_SUMMARY">Настроить параметры прокси-сервера&#8230;</string>
+    <string name="plugin_proxy_PROXY_ADDRESS">Прокси-сервер</string>
+    <string name="plugin_proxy_PROXY_ENABLE">Использовать прокси</string>
+    <string name="plugin_proxy_PROXY_ENABLE_SUMMARY">Включить подключение через прокси для учетной записи</string>
+    <string name="plugin_proxy_PROXY_PASSWORD">Пароль прокси</string>
+    <string name="plugin_proxy_PROXY_PORT">Порт прокси</string>
+    <string name="plugin_proxy_PROXY_TYPE">Тип прокси-сервера</string>
+    <string name="plugin_proxy_PROXY_USERNAME">Имя пользователя прокси</string>
+
+    <!-- Provisioning Plugin-->
+	<string name="plugin_provisioning_AUTO">Автоматическое обнаружение URI инициализации</string>
+    <string name="plugin_provisioning_BONJOUR">Bonjour</string>
+    <string name="plugin_provisioning_CLIPBOARD_FAILED">Не удалось скопировать UUID в буфер обмена</string>
+    <string name="plugin_provisioning_COPYTOCLIPBOARD">Скопировать UUID в буфер обмена</string>
+    <string name="plugin_provisioning_CREDENTIALS">Последние сохраненные учетные данные для обеспечения</string>
+    <string name="plugin_provisioning_ENABLE_DISABLE">Включить предоставление</string>
+    <string name="plugin_provisioning_EXIT_ON_FAIL">Выход из приложения, если сбой обеспечения</string>
+    <string name="plugin_provisioning_FORGET_PASSWORD">Забыть пароль</string>
+    <string name="plugin_provisioning_MANUAL">Вручную укажите URI инициализации</string>
+    <string name="plugin_provisioning_METHOD">Метод предоставления</string>
+    <string name="plugin_provisioning_PROV_FAILED">Ошибка предоставления</string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Произошла неудача. %1$s! <br/>Повторите попытку позже или обратитесь к своему администратору.</html></string>
+    <string name="plugin_provisioning_PROVISIONING">Предоставление</string>
+    <string name="plugin_provisioning_PROVISIONING_SUMMARY">Настроить параметры настройки</string>
+    <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Вы действительно хотите удалить пароль для обеспечения безопасности?</string>
+    <string name="plugin_provisioning_RESTART_WARNING">Обратите внимание, что ваши изменения вступят в силу при следующем запуске aTalk!</string>
+
+    <!-- DNS config -->
+    <string name="service_gui_settings_DNSSEC_DANE">Безопасность SSL/DNSSEC/DANE</string>
+
+    <string name="service_gui_settings_DNS">DNS</string>
+    <string name="service_gui_settings_DNS_SUMMARY">Настройка параметров DNS</string>
+    <string name="plugin_dnsconfig_DNSSEC">Безопасность DNS (DNSSEC)</string>
+    <string name="plugin_dnsconfig_dnssec_DOMAIN_NAME">Домен</string>
+    <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">Ошибка состояния</string>
+    <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Сбой состояния включенного DNSSEC.</string>
+    <string name="plugin_dnsconfig_dnssec_MODE">Поведение</string>
+    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING"><html>Обратите внимание, что включение или отключение DNSSEC отключает параллельный распознаватель и вступает в силу при следующем запуске aTalk.</html></string>
+    <string name="plugin_dnsconfig_border_TITLE">Резервное копирование</string>
+    <string name="plugin_dnsconfig_dnssec_chkAbsolute">Рассматривать все доменные имена как абсолютные</string>
+    <string name="plugin_dnsconfig_dnssec_chkEnabled">Включить распознаватель DNSSEC</string>
+    <string name="plugin_dnsconfig_dnssec_lblDefault">Поведение по умолчанию</string>
+    <string name="plugin_dnsconfig_dnssec_lblNameservers">Пользовательские серверы имен</string>
+    <string name="plugin_dnsconfig_dnssec_lblNameserversHint"><html>Несколько серверов могут быть разделены запятой, например. 149.20.64.20, 149.20.64.21 (Открытый DSSEC-реестр для проверки подлинности DNSSEC)</html></string>
+
+    <string name="util_dns_INSECURE_ANSWER_TITLE">Ошибка DNSSEC</string>
+    <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">DNS-ответ для %1$s небезопасен.</string>
+    <string name="util_dns_INSECURE_ANSWER_MESSAGE_REASON">DNS-ответ для %1$s небезопасен.\nReason: %2$s</string>
+    <string name="util_dns_DNSSEC_ADVANCED_OPTIONS">Показать дополнительные параметры</string>
+    <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>Подписанная DNSSEC зона %1$s возвращает недопустимые данные. &lt;br>%2$s &lt;/html></string>
+    <string name="util_dns_DNSSEC_ADVANCED_REASON_UNSIGNED">%1$s запрос для %2$s без знака.</string>
+    <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s попытался подключиться к серверу с &lt;b>%2$s&lt;&lt;/b>,
+        который является областью, которая обладает сильной защитой, называемой DNSSEC. Информация, полученная %1$s
+        с DNS-сервера не соответствует информации, предоставляемой DNSSEC об этом домене. &lt;br>&lt;br>&lt;b>
+        Этого не должно произойти, если не были сделаны серьезные ошибки в %2$s. Поэтому это очень сильный признак того, что что-то есть
+        серьезно ошибаются в отношении надежности вашего сетевого соединения. &lt;/b>&lt;br>&lt;br>
+        Если вы находитесь на чужом интернет-соединении (например, в точке доступа WiFi) или если есть особые обстоятельства, которые заставляют вас не доверять
+        ваш обычный интернет-провайдер, мы настоятельно рекомендуем вам немедленно прекратить его использование и искать альтернативную точку доступа в Интернет.
+        Если вы безопасно подключены к другой сети, проблема должна быть решена автоматически. Если это не так, обратитесь к своему
+        поставщика услуг, чтобы сообщить им об этой проблеме. &lt;/DIV>&lt;/HTML></string>
+
+    <!-- SSL Certificates -->
+	<string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Удаление SSL-сертификата</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Пожалуйста, подтвердите удаление сертификата SSL для: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Менеджер сертификатов SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Управление сертификатами SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Сертификат SSL</string>
+
+    <!-- Settings -->
+    <string name="service_gui_COMMIT_PROGRESS_MSG">Сохранение изменений учетной записи, подождите&#8230;</string>
+    <string name="service_gui_COMMIT_PROGRESS_TITLE">"Committing&#8230;"</string>
+    <string name="service_gui_SETTINGS_NOT_SET">(Не задано)</string>
+    
+    <!-- Connection settings -->
+    <string name="service_gui_CONN_NO_CERT">None</string>
+    <!-- Encoding settings -->
+    <string name="service_gui_ENC_AUDIO_TITLE">Кодировка аудио</string>
+    <string name="service_gui_ENC_OVERRIDE_GLOBAL">Переопределить глобальную</string>
+	<string name="service_gui_ENC_VIDEO_TITLE">Кодирование видео</string>
+    
+    <!-- Security protocols dialog -->
+    <string name="service_gui_LIST_EMPTY">None</string>
+    <string name="service_gui_SEC_ENABLE_ENCRYPTION">Шифрование</string>
+    <string name="service_gui_SEC_PROTOCOLS_TITLE">Протоколы безопасности</string>
+    <string name="service_gui_SEC_PROTOCOLS_MSG">Выберите нужные протоколы в порядке</string>
+    <string name="service_gui_SEC_PROTOCOLS_OK">Сохранить</string>
+    <string name="service_gui_SEC_PROTOCOLS_CANCEL">Отменить</string>
+    <string name="service_gui_SEC_ZRTP_SIGNALING_ON">ZRTP будет рекламироваться по протоколу сигнализации</string>
+    <string name="service_gui_SEC_ZRTP_SIGNALING_OFF">Не будет рекламы ZRTP</string>
+
+    <!-- STUN/Jingle Nodes list -->
+    <string name="service_gui_SERVERS_LIST_ADD_SERVER">Добавить сервер</string>
+    <string name="service_gui_SERVERS_LIST_CANCEL">Отменить</string>
+    <string name="service_gui_SERVERS_LIST_EMPTY">Список пуст. Нажмите, чтобы добавить новую запись&#8230;</string>
+    <string name="service_gui_SERVERS_LIST_REMOVE">Удалить</string>
+    <string name="service_gui_SERVERS_LIST_SAVE">Сохранить</string>
+    
+    <!-- Jingle Nodes edit -->
+    <string name="service_gui_JINGLE_EDIT_JID">Адрес JID</string>
+    <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Реле поддержки</string>
+    
+    <!-- STUN edit -->
+    <string name="service_gui_STUN_EDIT_ADDRESS">IP-адрес</string>
+    <string name="service_gui_STUN_EDIT_PASSWORD">Пароль</string>
+    <string name="service_gui_STUN_EDIT_PORT">Порт сервера</string>
+    <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Поддержка TURN</string>
+    <string name="service_gui_STUN_EDIT_TURN_USER">TURN username</string>
+ 
+    <!-- Security preferences -->
+    <string name="service_gui_PREF_SECURITY_ENCRYPTION">Включить шифрование вызовов</string>
+    <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Протоколы шифрования</string>
+    <string name="service_gui_PREF_SECURITY_GENERAL">Общие</string>
+    <string name="service_gui_PREF_SECURITY_RTP_SAVP">Индикация RTP/SAVP</string>
+    <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">Метод индикации RTP/SAVP</string>
+	<string name="service_gui_PREF_SECURITY_SDES">Параметры SDes</string>
+    <string name="service_gui_PREF_SECURITY_SDES_DLG_TITLE">Выберите нужный набор шифров</string>
+    <string name="service_gui_PREF_SECURITY_SDES_TITLE">Набор шифров SDES</string>
+    <string name="service_gui_PREF_SECURITY_ZRTP">Параметры ZRTP</string>
+    <string name="service_gui_PREF_SECURITY_ZRTP_SIGNALING">Передача сигналов ZRTP</string>
+
+    <!-- SIP preferences -->
+    <string name="service_gui_CRYPTOSIP_REGISTRAR">Crypto Registrar</string>
+    <string name="service_gui_SIP_ADVANCED">Дополнительно</string>
+    <string name="service_gui_SIP_AUTH_NAME">Имя авторизации</string>
+    <string name="service_gui_SIP_AUTO_SIGNIN">Подключиться при запуске</string>
+    <string name="service_gui_SIP_CLIST_PASS">Пароль</string>
+    <string name="service_gui_SIP_CLIST_TYPE">Тип</string>
+    <string name="service_gui_SIP_CLIST_TYPE_DLG_TITLE">Выбор типа списка контактов</string>
+    <string name="service_gui_SIP_CLIST_URI">URI-адрес/адрес сервера контактов</string>
+    <string name="service_gui_SIP_CLIST_SIP_CREDENTIALS">Использовать учетные данные SIP</string>
+    <string name="service_gui_SIP_CLIST_USER">Пользователь</string>
+    <string name="service_gui_SIP_CONNECTION">Соединение</string>
+    <string name="service_gui_SIP_CONNECTION_DESC">Установить сведения о соединении&#8230;</string>
+    <string name="service_gui_SIP_CONN_GENERAL">Общие</string>
+    <string name="service_gui_SIP_CONTACTLIST_OPTIONS">Параметры контактного списка</string>
+    <string name="service_gui_SIP_CONTACTS_POLLING">Период опроса автономных контактов (в с.)</string>
+    <string name="service_gui_SIP_DISPLAYNAME">Отображаемое имя</string>
+    <string name="service_gui_SIP_DTMF">Метод DTMF</string>
+    <string name="service_gui_SIP_DTMF_TITLE">Выбор метода DTMF</string>
+    <string name="service_gui_SIP_ENABLE_SIMPLE">Включить присутствие (SIMPLE)</string>
+    <string name="service_gui_SIP_FORCE_P2P">Использовать режим наличия одноранговой сети</string>
+    <string name="service_gui_SIP_GENERAL">Имя пользователя и пароль</string>
+    <string name="service_gui_SIP_KEEP_ALIVE">Сохранить живой метод</string>
+    <string name="service_gui_SIP_KEEP_ALIVE_CAT">Сохранить вживую</string>
+    <string name="service_gui_SIP_KEEP_ALIVE_TITLE">Сохранять выбор метода</string>
+    <string name="service_gui_SIP_PING_INTERVAL">Интервал Ping</string>
+    <string name="service_gui_SIP_PASSWORD">Введите пароль</string>
+    <string name="service_gui_SIP_PORT">Порт сервера</string>
+    <string name="service_gui_SIP_PREF_TRANSPORT">Предпочтительный транспорт</string>
+    <string name="service_gui_SIP_PREF_TRANS_TITLE">Предпочитаемый транспортный выбор прокси</string>
+    <string name="service_gui_SIP_PRESENCE">Присутствие</string>
+    <string name="service_gui_SIP_PRESENCE_DESC">Настроить параметры присутствия&#8230;</string>
+    <string name="service_gui_SIP_PRESENCE_OPTIONS">Параметры присутствия</string>
+    <string name="service_gui_SIP_PROXY">Параметры прокси</string>
+    <string name="service_gui_SIP_PROXY_AUTO">Автоматически настроить прокси</string>
+    <string name="service_gui_SIP_PROXY_ADDR">Адрес прокси</string>
+    <string name="service_gui_SIP_PROXY_PORT">Порт прокси</string>
+    <string name="service_gui_SIP_REGISTRAR">Регистратор</string>
+    <string name="service_gui_SIP_TLS_CERT">Клиентский сертификат TLS</string>
+    <string name="service_gui_SIP_TLS_CERT_PROMPT">Выберите сертификат TLS</string>
+    <string name="service_gui_SIP_SUBSCRIPTION_DUR">Продолжительность подписки по умолчанию (в с.)</string>
+    <string name="service_gui_SIP_USER">CRYPTO ID</string>
+    <string name="service_gui_SIP_VOICEMAIL">Голосовая почта</string>
+    <string name="service_gui_SIP_VMAIL_URI">URI подписки на голосовую почту</string>
+    <string name="service_gui_SIP_VMAIL_CHECK_URI">URI проверки голосовой почты</string>
+    <string name="service_gui_SIP_WMI">Ожидание сообщения (MWI)</string>
+
+    <!-- Common preferences -->
+    <string name="service_gui_PREF_AUDIO_ENCODING">Кодировка аудио</string>
+    <string name="service_gui_PREF_AUDIO_ENC_SUMMARY">Переопределить звуковые форматы для этой учетной записи</string>
+    <string name="service_gui_PREF_ENCRYPTION">Настройки шифрования вызовов</string>
+    <string name="service_gui_PREF_VIDEO_ENCODING">Кодирование видео</string>
+    <string name="service_gui_PREF_VIDEO_ENC_SUMMARY">Переопределить глобальные определенные видеоформаты для этой учетной записи</string>
+
+    <!-- Jabber preferences -->
+    <string name="service_gui_JBR_ADVANCED">Дополнительно</string>
+    <string name="service_gui_JBR_ALLOW_NON_SECURE">Разрешить незащищенные соединения</string>
+    <string name="service_gui_JBR_AUTO_SIGNIN">Подключиться при запуске</string>
+    <string name="service_gui_JBR_AUTO_STUN_DICOVERY">Автоматическое открытие серверов STUN/TURN</string>
+    <string name="service_gui_JBR_CONN_GENERAL">Общие</string>
+    <string name="service_gui_JBR_CONN_SUMMARY">Установить сведения о подключении&#8230;</string>
+    <string name="service_gui_JBR_CONNECTION">Параметры подключения</string>
+    <string name="service_gui_JBR_DISABLE_JINGLE">Отключить Jingle</string>
+    <string name="service_gui_JBR_DISABLE_JINGLE_SUMMARY">(аудио и видеозвонки с XMPP)</string>
+    <string name="service_gui_JBR_DTMF_METHOD">Метод DTMF</string>
+    <string name="service_gui_JBR_DTMF_SUMMARY">Выбор метода DTMF</string>
+    <string name="service_gui_JBR_GMAIL_NOTIFICATIONS">Уведомления Gmail для новых сообщений</string>
+    <string name="service_gui_JBR_GOOGLE_CONTACTS_SEARCH">Поиск контактов Google</string>
+	<string name="service_gui_JBR_GTALK_DOMAIN">Домен, который будет использовать вызов GTalk</string>
+    <string name="service_gui_JBR_ICE_GENERAL">Общие</string>
+    <string name="service_gui_JBR_ICE_SUMMARY">Настроить параметры ICE&#8230;</string>
+    <string name="service_gui_JBR_JINGLE_AUTO">Автоматическое обнаружение реле узлов Jingle</string>
+    <string name="service_gui_JBR_JINGLE_LIST">Дополнительные узлы звонка&#8230;</string>
+    <string name="service_gui_JBR_JINGLE_LIST_SUMMARY">Пользовательские дополнительные узлы Jingle для использования</string>
+    <string name="service_gui_JBR_JINGLE_NODES">Jingle Nodes</string>
+    <string name="service_gui_JBR_JINGLE_SUMMARY">Использовать jingle-узлы</string>
+    <string name="service_gui_JBR_KEEP_ALIVE">Сохранить вживую</string>
+    <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Включить опцию Keep Alive</string>
+    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Включить, если наблюдается частая отключение сети</string>
+    <string name="service_gui_JBR_OVERRIDE_SERVER">Изменить параметры сервера по умолчанию</string>
+    <string name="service_gui_JBR_PASSWORD">Введите пароль</string>
+    <string name="service_gui_JBR_PING_INTERVAL">Интервал Ping (1~3600 секунд)</string>
+    <string name="service_gui_JBR_PORT">Порт сервера</string>
+    <string name="service_gui_JBR_PRIORITY">Приоритет (диапазон: -128~127)</string>
+    <string name="service_gui_JBR_RES_AUTO_GEN">Автоматическое создание ресурса</string>
+    <string name="service_gui_JBR_RESOURCE">Ресурс идентификатора Jabber</string>
+    <string name="service_gui_JBR_RESURCE_NAME">Имя ресурса</string>
+    <string name="service_gui_JBR_SERVER">Подключение IP-адреса сервера</string>
+    <string name="service_gui_JBR_SERVER_OPTIONS">Параметры сервера</string>
+    <string name="service_gui_JBR_SSL_SUMMARY">Отключить шифрование соединения с сервером SSL/TLS</string>
+    <string name="service_gui_JBR_STORE_PASSWORD">Запомнить пароль</string>
+    <string name="service_gui_JBR_STORE_PASSWORD_SUMMARY">Сохранить пароль для автоматического входа в систему при запуске приложения</string>
+    <string name="service_gui_JBR_STUN_LIST">Дополнительные серверы STUN/TURN&#8230;</string>
+    <string name="service_gui_JBR_STUN_LIST_SUMMARY">Пользовательские дополнительные серверы STUN/TURN для использования</string>
+    <string name="service_gui_JBR_TELE_DOMAIN">Домен телефонии</string>
+    <string name="service_gui_JBR_TELEPHONY">Телефония</string>
+    <string name="service_gui_JBR_TELEPHONY_SUMMARY">Настроить параметры телефонии&#8230;</string>
+    <string name="service_gui_JBR_USE_DEFAULT_STUN">Использовать сервер Jitsi STUN (резервный)</string>
+    <string name="service_gui_JBR_USE_ICE">Использовать ICE</string>
+    <string name="service_gui_JBR_USE_GOOGLE_ICE">Использовать Google Jingle/ICE (экспериментальный)</string>
+    <string name="service_gui_JBR_USE_UPNP">Использовать UPnP</string>
+    <string name="service_gui_JBR_USER">ИД пользователя</string>
+    <string name="service_gui_JBR_USER_CATEGORY">Имя пользователя и пароль</string>
+
+    <!-- General settings -->
+    <string name="service_gui_settings_DISABLED_STR">Отключено</string>
+    <string name="service_gui_settings_ENABLED_STR">Включено</string>
+    <string name="service_gui_settings_GENERAL">Общие</string>
+
+    <!-- Message settings -->
+    <string name="service_gui_settings_MSG">Сообщение</string>
+
+    <!-- Group messages in one window -->
+    <string name="service_gui_settings_MULTICHAT_OFF">Отдельное окно для ech-беседы</string>
+    <string name="service_gui_settings_MULTICHAT_ON">Сообщения группового чата в одном окне</string>
+    <string name="service_gui_settings_MULTICHAT_WINDOW">Многострочное окно</string>
+
+    <!-- Log chat history -->
+    <string name="service_gui_settings_HISTORY_LOG_OFF">отключена история чата</string>
+    <string name="service_gui_settings_HISTORY_LOG_ON">Журнал журнала чата</string>
+    <string name="service_gui_settings_HISTORY_LOGGING">Журнал регистрации чатов</string>
+
+    <!-- Show x recent messages in new chats -->
+    <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">Сколько последних сообщений должно отображаться?</string>
+    <string name="service_gui_settings_CHAT_HISTORY_SIZE">Показать последние сообщения</string>
+    <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d последние сообщения в новых чатах</string>
+    <string name="service_gui_settings_SHOW_HISTORY">Показать историю</string>
+
+    <!-- Tell others when we are writing to them -->
+<string name="service_gui_settings_TYPING_NOTIFICATIONS">Отправить уведомления о состоянии чата</string>
+
+    <!-- Enable option to send thumnail preview for image file sending -->
+    <string name="service_gui_settings_SEND_THUMBNAIL">Отправить миниатюру файла</string>
+
+    <!-- Setup substription Mode: auto or manual approval -->
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Утверждение подписки на доступность</string>
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Подтвердить утверждение - автоматически принять все</string>
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Подтвердить утверждение - руководство</string>
+
+    <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
+    <!-- Use task bar/dock alerts on incoming calls and chats -->
+    <string name="service_gui_settings_CHAT_ALERTS">Показать сообщения о статусной строке</string>
+
+    <!-- Leave chat rooms when closing window(omitted on Android for now) -->
+
+    <!-- Auto away -->
+    <!-- Not sure how to implement it on android - leave for now -->
+
+    <!-- Notifications -->
+    <string name="service_gui_settings_NOTIFICATIONS">Уведомления</string>
+
+    <!-- Popup notifications type -->
+    <string name="service_gui_settings_auto_update_check_status">Включить проверку обновлений автоматического SW</string>
+    <string name="service_gui_settings_POPUP_HANDLER">Тип всплывающих уведомлений</string>
+
+    <!-- Status bar notifications handler -->
+    <string name="impl_popup_auto">Авто</string>
+    <string name="impl_popup_status_bar">Уведомления строки состояния</string>
+
+    <!-- Events -->
+    <string name="service_gui_settings_EVENTS_SUMMARY">Настройка индивидуальных уведомлений</string>
+    <string name="service_gui_settings_EVENTS_TITLE">События</string>
+
+    <!-- aTalk icon -->
+    <string name="pref_key_show_jitsi_icon">org.atalk.android.show_icon</string>
+    <string name="service_gui_settings_SHOW_ICON">Показать значок aTalk</string>
+    <string name="service_gui_settings_SHOW_ICON_SUMMARY_OFF">Скрыть активный индикатор aTalk в уведомлении</string>
+    <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">Показать активный индикатор aTalk в уведомлении</string>
+
+    <!-- Locale -->
+    <string name="service_gui_settings_LOCALE">Язык</string>
+    <string name="settings_language_system">По умолчанию система</string>
+
+    <!-- Theme -->
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_theme_light">Свет</string>
+    <string name="settings_theme_label">Тема</string>
+
+    <!-- Remove special characters from phone number -->
+    <string name="service_gui_settings_NORMALIZE_NUMBER">Специальные символы в телефонных номерах</string>
+    <string name="service_gui_settings_NORMALIZE_OFF">Нет изменений номера телефона</string>
+    <string name="service_gui_settings_NORMALIZE_ON">Специальные символы будут удалены из числа</string>
+    <!-- Convert letters in phone numbers -->
+    <string name="service_gui_settings_ALLOW_ALPHA_OFF">Нет изменений номера телефона</string>
+    <string name="service_gui_settings_ALLOW_ALPHA_ON"><![CDATA[*e.g. +1–800–MYPHONE –>+1–800–694663]]></string>
+    <string name="service_gui_settings_ALLOW_ALPHA_PNUMBER">Письма в телефонных номерах</string>
+
+    <!-- Call settings -->
+    <string name="service_gui_settings_CALL">Вызов</string>
+
+    <!-- Audio settings -->
+    <string name="service_gui_settings_AUDIO">Аудио</string>
+    <!-- Echo cancellation -->
+    <string name="service_gui_settings_ECHO_CANCEL">Отмена эха</string>
+    <string name="service_gui_settings_ECHO_CANCEL_OFF">Отключено</string>
+    <string name="service_gui_settings_ECHO_CANCEL_ON">Включено</string>
+    <!-- Auto gain control -->
+    <string name="service_gui_settings_AGC">Автоматическое управление усилением</string>
+    <string name="service_gui_settings_AGC_OFF">Отключено</string>
+    <string name="service_gui_settings_AGC_ON">Включено</string>
+    <!-- Denoise -->
+    <string name="service_gui_settings_DENOISE">Подавление шума</string>
+    <string name="service_gui_settings_DENOISE_OFF">Отключено</string>
+    <string name="service_gui_settings_DENOISE_ON">Включено</string>
+    <!-- Audio encodings -->
+    <string name="service_gui_settings_AUDIO_CODECS_SUMMARY">Выбрать и определить приоритет для аудиокодеков</string>
+    <string name="service_gui_settings_AUDIO_CODECS_TITLE">Аудиокодеки</string>
+
+    <!-- Video settings -->
+	<string name="service_gui_settings_VIDEO">Видео</string>
+
+    <!-- Video system -->
+    <string name="service_gui_settings_SYSTEM_ANDROIDCAMERA">AndroidCamera</string>
+    <string name="service_gui_settings_SYSTEM_MEDIARECORDER">MediaRecorder</string>
+
+    <!-- Camera used -->
+    <string name="service_gui_settings_BACK_CAMERA">Задняя камера</string>
+    <string name="service_gui_settings_CAMERA">Камера</string>
+    <string name="service_gui_settings_FRONT_CAMERA">Передняя камера</string>
+    <string name="service_gui_settings_NO_CAMERA">Не найдено ни одного устройства камеры</string>
+    <string name="service_gui_settings_USE_BACK_CAMERA">Использовать обратную камеру</string>
+    <string name="service_gui_settings_USE_FRONT_CAMERA">Использовать переднюю камеру</string>
+
+    <!-- Video codecs -->
+    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Использовать прямое кодирование (требуется перезагрузка)</string>
+    <string name="service_gui_settings_HW_DECODE">Использовать аппаратное декодирование (требуется перезагрузка)</string>
+    <string name="service_gui_settings_HW_ENCODE">Использовать аппаратное кодирование</string>
+    <string name="service_gui_settings_MEDIA_CODEC_LIST">MediaCodecs</string>
+    <string name="service_gui_settings_MEDIA_CODEC_LIST_SUMMARY">Список встроенных медиакодеров/декодеров</string>
+    <string name="service_gui_settings_Restart_Hint">Требовать перезапустить aTalk</string>
+    <string name="service_gui_settings_VIDEO_CODECS_SUMMARY">Выбрать и определить приоритет для видеокодеков</string>
+    <string name="service_gui_settings_VIDEO_CODECS_TITLE">Видеокодеки</string>
+    <!-- Video resolution -->
+    <string name="service_gui_settings_AUTO_RESOLUTION">Авто</string>
+    <string name="service_gui_settings_VIDEO_RESOLUTION">Разрешение видео</string>
+    <!-- Frame rate -->
+    <string name="service_gui_settings_LIMIT_FPS_OFF">Неограниченный</string>
+    <string name="service_gui_settings_LIMIT_FPS_ON">Скорректированная частота кадров</string>
+    <string name="service_gui_settings_VIDEO_BITRATE">Битрейт видео (килобит/с)</string>
+    <string name="service_gui_settings_VIDEO_FRAME_RATE">Частота кадров видео</string>
+    <string name="service_gui_settings_VIDEO_FPS_DESC">Значения, принятые между 5 и 30 кадрами в секунду</string>
+    <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">порог стимуляции RTP (kBytes/s)</string>
+    <string name="service_gui_settings_VIDEO_TARGET_FPS">Целевая частота кадров (в секунду)</string>
+
+    <!-- Security settings -->
+    <!-- Chat security -->
+    <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">Настройки безопасности шифрования сообщений</string>
+    <string name="service_gui_settings_MESSAGING_SECURITY_TITLE">Безопасность сообщений</string>
+
+    <!-- Messaging security options -->
+    <string name="pref_cat_MESSAGING_SECURITY_OPTIONS">OTR Messaging Security</string>
+    <!-- Crypto Messaging Enable -->
+    <string name="service_gui_settings_CRYPTO_ENABLE_OFF">Нет шифрования сообщений</string>
+    <string name="service_gui_settings_CRYPTO_ENABLE_ON">Включено шифрование сообщений</string>
+    <string name="service_gui_settings_CRYPTO_ENABLE_TITLE">Частные сообщения</string>
+    <!-- Crypto Messaging Auto -->
+    <string name="service_gui_settings_CRYPTO_AUTO_OFF">Запустить сеанс шифрования сообщений вручную</string>
+    <string name="service_gui_settings_CRTOTI_AUTO_ON">Автоматически запускать сеанс шифрования сообщений</string>
+    <string name="service_gui_settings_CRYPTO_AUTO_TITLE">Автоматическое инициирование личных сообщений</string>
+    <!-- Crypto Messaging Required -->
+    <string name="service_gui_settings_CRYPTO_REQUIRE_OFF">Защищенный обмен сообщениями будет использоваться, если поддерживается</string>
+    <string name="service_gui_settings_CRYPTO_REQUIRE_ON">Принимаются только защищенные сеансы</string>
+    <string name="service_gui_settings_CRYPTO_REQUIRE_TITLE">Требовать личные сообщения</string>
+
+
+    <!-- OMEMO security category-->
+	<string name="pref_cat_OMEMO_SECURITY_SETTINGS">OMEMO Messaging Security</string>
+    <!-- OMEMO device screen -->
+    <string name="pref_omemo_blind_trust_before_verification">Слепое доверие перед проверкой</string>
+    <string name="pref_omemo_blind_trust_before_verification_summary">Автоматическое доверие ко всем новым устройствам контактов,
+        которые ранее не были проверены; запрос на подтверждение вручную, когда подтвержденный контакт добавляет новые устройства.</string>
+    <!-- OMEMO regenerate screen -->
+    <string name="pref_omemo_regenerate_identities_summary">После восстановления вашей идентичности OMEMO все ваши контакты получат новый
+        отпечаток пальца и должны будут повторно подтвердить вас. Перезапустите aTalk после регенерации. Выполняйте только при наличии проблемы установки omemo.</string>
+    <string name="pref_omemo_regenerate_identities_title">Регенерировать идентификаторы OMEMO</string>
+    <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">Оповещения OMEMO Обновить</string>
+    <!-- OMEMO purge device screen -->
+    <string name="pref_omemo_purge_devices_summary">Удалить все неактивные устройства; только опубликовать текущее активное устройство, которое вы используете.</string>
+    <string name="pref_omemo_purge_devices_title">Очистить неиспользуемые идентификаторы</string>
+    <string name="service_gui_settings_OMEMO_PURGE_DEVICE_TITLE">Устройства OMEMO Удалить</string>
+
+    <!-- Key & FingerPrint security category -->
+    <string name="pref_cat_KEY_FINGERPRINT_SECURITY">Key &amp; Безопасность FingerPrint</string>
+    <!-- Crypto private Keys screen -->
+    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">Управление секретными отпечатками crypto</string>
+    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">Закрытые ключи Crypto</string>
+    <!-- Crypto fingerprints screen -->
+    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY">Управление всеми известными отпечатками устройств\n\цвет: циан=собственное устройство; серый=неактивный</string>
+    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">Отпечатки пальцев криптографических устройств</string>
+
+    <!-- Crypto contextMenu, dialog, message and toast -->
+    <string name="crypto_dialog_KEY_GENERATE_QUESTION">Вы хотите создать новый ключ для %1$s%2$s</string>
+    <string name="crypto_dialog_KEY_GENERATE_TITLE">Генерация секретного ключа</string>
+    <string name="crypto_dialog_KEY_REGENERATE_QUESTION">Вы хотите восстановить ключ для %1$s\n\n%2$s</string>
+
+    <string name="crypto_dialog_button_DELETE">Удалить выбранные</string>
+    <string name="crypto_dialog_button_OMEMO_REGENERATE">Восстановить выбранный</string>
+
+    <string name="crypto_menu_KEY_GENERATE">Создать новый ключ</string>
+    <string name="crypto_menu_KEY_REGENERATE">Восстановить ключ</string>
+
+    <string name="crypto_menu_COPY_FINGERPRINT">Копировать фингерпринт</string>
+    <string name="crypto_menu_DISTRUST_FINGERPRINT">Недопустимый отпечаток</string>
+    <string name="crypto_menu_TRUST_FINGERPRINT">Trust Fingerprint</string>
+
+    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">Запрос сеанса OTR от вашего собеседника был отклонен во время сеанса OMEMO. Вы можете включить сеанс OTR вручную!</string>
+    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">Ваш запрос сеанса OTR был отклонен во время сеанса omemo!</string>
+    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">Настройка сеанса OMEMO не удалась!</string>
+    <string name="crypto_msg_OMEMO_SESSION_UNTRUSTED">Найден доверенный приятель ZERO для получения сообщений OMEMO!</string>
+    <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED">Отправка сообщений OMEMO некоторым неизвестным друзьям с непроверенными отпечатками пальцев!</string>
+    <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED_UNTRUSTED">MultiUserChat с некоторыми друзьями не доверенными или с непроверенными отпечатками пальцев!</string>
+    <string name="crypto_msg_OMEMO_SESSION_VERIFIED">*** Все приятели прошли проверку подлинности! ***</string>
+
+    <string name="crypto_FINGERPRINT_NOT_VERIFIED">Нет</string>
+    <string name="crypto_FINGERPRINT_STATUS">Проверено: %1$s</string>
+    <string name="crypto_FINGERPRINT_VERIFIED">Да</string>
+    <string name="crypto_NO_KEY_PRESENT">Отсутствует ключ</string>
+
+    <string name="crypto_toast_FINGERPRINT_COPY">Фингерпринт скопирован в буфер обмена!</string>
+    <string name="crypto_toast_OMEMO_DISTRUST_MESSAGE_STOP">Остановить дальнейшую отправку сообщения OMEMO другу: %1$s</string>
+    <string name="crypto_toast_OMEMO_TRUST_MESSAGE_RESUME">Возобновить отправку сообщения OMEMO собеседнику: %1$s</string>
+
+    <!-- Advanced settings category -->
+	<string name="service_gui_settings_ADVANCED">Дополнительно</string>
+
+    <!-- Protocol category -->
+    <string name="service_gui_settings_ADDRESS">Адрес</string>
+    <string name="service_gui_settings_PORT">Порт</string>
+    <string name="service_gui_settings_PROTOCOL">Протокол</string>
+
+    <!-- Opus -->
+    <string name="service_gui_settings_OPUS">Opus</string>
+    <string name="service_gui_settings_OPUS_AUDIO_BANDWIDTH">Частота дискретизации</string>
+    <string name="service_gui_settings_OPUS_BITRATE">Средний битрейт кодировщика (kbps)</string>
+    <string name="service_gui_settings_OPUS_COMPLEXITY">сложность кодирования</string>
+    <string name="service_gui_settings_OPUS_MIN_EXPECTED_PACKET_LOSS">Минимальная ожидаемая потеря пакетов (%)</string>
+    <string name="service_gui_settings_OPUS_SUMMARY">Настроить настройки энкодера Opus</string>
+    <string name="service_gui_settings_OPUS_USE_DTX">Использовать DTX</string>
+    <string name="service_gui_settings_OPUS_USE_FEC">Использовать inband FEC</string>
+
+    <!-- Silk -->
+    <string name="service_gui_settings_SILK">Silk</string>
+    <string name="service_gui_settings_SILK_SUMMARY">Настройка параметров Silk encoder</string>
+    <string name="service_gui_settings_SILK_FEC">Использовать inband FEC</string>
+    <string name="service_gui_settings_SILK_ASSUME_PL">Всегда предполагать потерю пакетов</string>
+    <string name="service_gui_settings_SILK_FEC_SAT">Порог активности речи (0–1)</string>
+    <string name="service_gui_settings_SILK_ADVERTISE_FEC">Рекламировать поддержку FEC в SDP</string>
+
+    <!-- SIP config -->
+    <string name="plugin_generalconfig_SIP_CLIENT_PORT">Порт клиента SIP</string>
+    <string name="plugin_generalconfig_SIP_CLIENT_SECURE_PORT">безопасный порт клиента SIP</string>
+    <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">Включенные протоколы SSL/TLS</string>
+    <string name="service_gui_settings_SIP">SIP</string>
+    <string name="service_gui_settings_SIP_SUMMARY">Настройка параметров протокола SIP</string>
+
+    <!-- group chat menu -->
+    <string name="menu_invite">Пригласить</string>
+    <string name="profile_child_camera">Сделайте снимок</string>
+    <string name="profile_child_delete">Удалить фотографию</string>
+    <string name="profile_child_gallery">Выберите из галереи</string>
+
+    <!-- Android Battery Usage Optimization -->
+    <string name="battery_optimizations">Оптимизация аккумулятора</string>
+    <string name="battery_optimizations_dialog">У вашего устройства оптимизация использования аккумулятора на aTalk; это может
+        привести к задержке уведомлений или потерям сообщения.\n\nРекомендуется отключить эту оптимизацию для aTalk.</string>
+    <string name="device_does_not_support_battery_op">Ваше устройство не поддерживает отказ от оптимизации батареи</string>
+    <string name="disable">Отключить</string>
+    <string name="next">Далее</string>
+
+    <!-- Android Permissions -->
+	<string name="app_info_permissions_button">Информация о приложении</string>
+    <string name="app_name2">Dexter</string>
+    <string name="ask_for_all_permissions_button">Запрос всех</string>
+    <string name="ask_for_audio_permission_button">Аудио</string>
+    <string name="ask_for_camera_permission_button">Камера</string>
+    <string name="ask_for_contacts_permission_button">Контакты</string>
+    <string name="ask_for_location_permission_button">Местоположение</string>
+    <string name="ask_for_phone_permission_button">Телефон</string>
+    <string name="ask_for_storage_permission_button">Хранение</string>
+    <string name="permission_hint">Для максимальной производительности и полной поддержки приложений, aTalk требует предоставления разрешений для следующих служб. Без них aTalk может не работать или может иметь неожиданное поведение!</string>
+
+    <string name="permission_denied_feedback">DENIED</string>
+    <string name="permission_granted_feedback">GRANTED</string>
+    <string name="permission_permanently_denied_feedback">ПОСТОЯННО ЗАЩИЩЕН</string>
+    <string name="permission_unknown_feedback">UNKNOWN</string>
+
+    <string name="audio_permission_denied_dialog_title">Запрос разрешения звука</string>
+    <string name="audio_permission_denied_feedback">Звуковой вызов не будет доступен, пока вы не предоставите запрос на разрешение</string>
+
+    <string name="camera_permission_denied_dialog_title">Запрос разрешения камеры</string>
+    <string name="camera_permission_denied_feedback">Разрешение камеры требуется для настройки видеовызова. Видеовызов не будет доступен, пока вы не предоставите запрос на разрешение</string>
+
+    <string name="contacts_permission_denied_dialog_title">Запрос на доступ к контактам</string>
+    <string name="contacts_permission_denied_feedback">Требуется разрешение для доступа к телефону и настройки вызова</string>
+
+    <string name="location_permission_denied_dialog_title">Запрос разрешения на размещение</string>
+    <string name="location_permission_denied_feedback">Функции GPS-Location не будут доступны, пока вы не предоставите запрос на разрешение</string>
+
+    <string name="phone_permission_denied_dialog_title">Прочитать запрос разрешения состояния телефона</string>
+    <string name="phone_permission_denied_feedback">Функции телефона не будут доступны, пока вы не предоставите запрос на разрешение</string>
+
+    <string name="storage_permission_denied_dialog_title">Запрос разрешения на хранение</string>
+    <string name="storage_permission_denied_feedback">Сохранение полученного содержимого во внешнем хранилище не будет разрешено, пока вы не предоставите запрос на разрешение</string>
+
+    <string name="all_permission_denied_dialog_title">Запрос всех разрешений</string>
+    <string name="all_permissions_denied_feedback">aTalk может работать некорректно или может иметь неожиданное поведение, поскольку некоторые службы были отклонены!\nЕсли вы выбрали опцию «Не разрешаете повторно», вам нужно перейти в Настройки Android - >APP INFO для aTalk, чтобы разрешить доступ к ресурсу</string>
+
+    <string name="permission_rationale_message">Вам предоставляется каждая услуга, необходимая для aTalk; разрешите aTalk получить доступ к этим службам для поддержки всех поддерживаемых функций</string>
+    <string name="permission_rationale_settings_button_text">НАСТРОЙКИ</string>
+    <string name="permission_rationale_title">aTalk требует разрешений</string>
+
+</resources>

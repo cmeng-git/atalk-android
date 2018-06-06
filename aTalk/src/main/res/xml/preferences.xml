@@ -91,6 +91,13 @@
             android:summaryOn="@string/service_gui_settings_ENABLED_STR"
             android:title="@string/service_gui_settings_TYPING_NOTIFICATIONS" />
 
+        <!-- Send file transfer thumbnail preview -->
+        <CheckBoxPreference
+            android:key="@string/pref_key_send_thumbnail"
+            android:summaryOff="@string/service_gui_settings_DISABLED_STR"
+            android:summaryOn="@string/service_gui_settings_ENABLED_STR"
+            android:title="@string/service_gui_settings_SEND_THUMBNAIL" />
+
         <!-- Prersence Subcription Mode - Auto or Manual -->
         <CheckBoxPreference
             android:key="@string/pref_key_presence_subscribe_mode"

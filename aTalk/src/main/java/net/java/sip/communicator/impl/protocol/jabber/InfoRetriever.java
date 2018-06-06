@@ -7,9 +7,9 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
 import net.java.sip.communicator.util.Logger;
+
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
@@ -27,7 +27,8 @@ import java.util.*;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class InfoRetriever {
+public class InfoRetriever
+{
     private static final Logger logger = Logger.getLogger(InfoRetriever.class);
 
     /**
@@ -41,16 +42,9 @@ public class InfoRetriever {
     private static final String TAG_FN_OPEN = "<FN>";
     private static final String TAG_FN_CLOSE = "</FN>";
 
-    /**
-     * The timeout to wait before considering vcard has time outed.
-     */
-    private final long vcardTimeoutReply;
-
-    protected InfoRetriever(ProtocolProviderServiceJabberImpl jabberProvider, EntityBareJid ownerUin) {
+    protected InfoRetriever(ProtocolProviderServiceJabberImpl jabberProvider, EntityBareJid ownerUin)
+    {
         this.jabberProvider = jabberProvider;
-        vcardTimeoutReply = JabberActivator.getConfigurationService().getLong(
-                ProtocolProviderServiceJabberImpl.VCARD_REPLY_TIMEOUT_PROPERTY,
-                ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT);
     }
 
     /**
@@ -58,12 +52,12 @@ public class InfoRetriever {
      * the net.java.sip.communicator.service.protocol.ServerStoredDetails or implemented one in the
      * operation set for the user info
      *
-     * @param uin         String
+     * @param uin String
      * @param detailClass Class
      * @return Iterator
      */
-    <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(BareJid uin,
-                                                                   Class<T> detailClass) {
+    <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(BareJid uin, Class<T> detailClass)
+    {
         List<GenericDetail> details = getUserDetails(uin);
         List<T> result = new LinkedList<>();
 
@@ -79,18 +73,20 @@ public class InfoRetriever {
     /**
      * returns the user details from the specified class exactly that class not its descendants
      *
-     * @param uin         String
+     * @param uin String
      * @param detailClass Class
      * @return Iterator
      */
-    Iterator<GenericDetail> getDetails(BareJid uin, Class<? extends GenericDetail> detailClass) {
+    Iterator<GenericDetail> getDetails(BareJid uin, Class<? extends GenericDetail> detailClass)
+    {
         List<GenericDetail> details = getUserDetails(uin);
         List<GenericDetail> result = new LinkedList<>();
 
         // stop further retrieve from server if the details is empty to prevent ANR when return from Account Settings
         if (details.isEmpty()) {
             retrievedDetails.put(uin, result);
-        } else {
+        }
+        else {
             for (GenericDetail item : details)
                 if (detailClass.equals(item.getClass()))
                     result.add(item);
@@ -104,7 +100,8 @@ public class InfoRetriever {
      * @param bareJid String
      * @return Vector the details
      */
-    List<GenericDetail> clearUserDetails(BareJid bareJid) {
+    List<GenericDetail> clearUserDetails(BareJid bareJid)
+    {
         return retrievedDetails.remove(bareJid);
     }
 
@@ -114,7 +111,8 @@ public class InfoRetriever {
      * @param bareJid String
      * @return Vector the details
      */
-    List<GenericDetail> getUserDetails(BareJid bareJid) {
+    List<GenericDetail> getUserDetails(BareJid bareJid)
+    {
         List<GenericDetail> result = getCachedUserDetails(bareJid);
         if (result == null) {
             return retrieveDetails(bareJid);
@@ -131,23 +129,22 @@ public class InfoRetriever {
      * @param bareJid the address to search for.
      * @return the details or empty list.
      */
-    protected synchronized List<GenericDetail> retrieveDetails(BareJid bareJid) {
+    protected synchronized List<GenericDetail> retrieveDetails(BareJid bareJid)
+    {
         List<GenericDetail> result = new LinkedList<>();
         XMPPConnection connection = jabberProvider.getConnection();
         if (connection == null || !connection.isAuthenticated())
             return null;
 
-        // Change Smack Packet reply time if the vcardTimeoutReply value is higher than the
-        // Smack default value
-        if (vcardTimeoutReply > SmackConfiguration.getDefaultReplyTimeout())
-            connection.setReplyTimeout(vcardTimeoutReply);
+        // Set the timeout to wait before considering vCard has time out
+        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
         logger.info("Start loading VCard information for: " + bareJid);
         VCardAvatarManager vCardAvatarManager = VCardAvatarManager.getInstanceFor(connection);
         VCard card = vCardAvatarManager.downloadVCard(bareJid);
 
-        // Reset back to Smack default
-        connection.setReplyTimeout(SmackConfiguration.getDefaultReplyTimeout());
+        // Reset back to aTalk default
+        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
 
         // cmeng - vCard can be null due to smack request response timeout (2017/11/29)
         // return an empty list if VCard fetching from server failed
@@ -339,7 +336,8 @@ public class InfoRetriever {
      * @param bareJid to search for
      * @return list of the details if any.
      */
-    List<GenericDetail> getCachedUserDetails(BareJid bareJid) {
+    List<GenericDetail> getCachedUserDetails(BareJid bareJid)
+    {
         return retrievedDetails.get(bareJid);
     }
 
@@ -349,7 +347,8 @@ public class InfoRetriever {
      * @param bareJid the contact address
      * @param details the details to add
      */
-    void addCachedUserDetails(BareJid bareJid, List<GenericDetail> details) {
+    void addCachedUserDetails(BareJid bareJid, List<GenericDetail> details)
+    {
         retrievedDetails.put(bareJid, details);
     }
 
@@ -359,7 +358,8 @@ public class InfoRetriever {
      * @param card the card to check.
      * @return the Full name if existing, null otherwise.
      */
-    String checkForFullName(VCard card) {
+    String checkForFullName(VCard card)
+    {
         String vcardXml = card.toXML().toString();
         int indexOpen = vcardXml.indexOf(TAG_FN_OPEN);
 
@@ -377,13 +377,15 @@ public class InfoRetriever {
     /**
      * Work department
      */
-    public static class WorkDepartmentNameDetail extends NameDetail {
+    public static class WorkDepartmentNameDetail extends NameDetail
+    {
         /**
          * Constructor.
          *
          * @param workDepartmentName name of the work department
          */
-        public WorkDepartmentNameDetail(String workDepartmentName) {
+        public WorkDepartmentNameDetail(String workDepartmentName)
+        {
             super("Work Department Name", workDepartmentName);
         }
     }
@@ -391,13 +393,15 @@ public class InfoRetriever {
     /**
      * Fax at work
      */
-    public static class WorkFaxDetail extends FaxDetail {
+    public static class WorkFaxDetail extends FaxDetail
+    {
         /**
          * Constructor.
          *
          * @param number work fax number
          */
-        public WorkFaxDetail(String number) {
+        public WorkFaxDetail(String number)
+        {
             super(number);
             super.detailDisplayName = "WorkFax";
         }
@@ -406,13 +410,15 @@ public class InfoRetriever {
     /**
      * Pager at work
      */
-    public static class WorkPagerDetail extends PhoneNumberDetail {
+    public static class WorkPagerDetail extends PhoneNumberDetail
+    {
         /**
          * Constructor.
          *
          * @param number work pager number
          */
-        public WorkPagerDetail(String number) {
+        public WorkPagerDetail(String number)
+        {
             super(number);
             super.detailDisplayName = "WorkPager";
         }

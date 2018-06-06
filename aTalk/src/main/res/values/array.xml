@@ -143,8 +143,8 @@
         <item>@string/settings_language_system</item>
         <item>Afrikaans</item>
         <item>Azərbaycan</item>
-        <item>Bahasa indonesia</item>
-        <item>Bahasa melayu</item>
+        <item>Bahasa Indonesia</item>
+        <item>Bahasa Melayu</item>
         <item>Bamanankan</item>
         <item>Brezhoneg</item>
         <item>Català</item>
@@ -355,8 +355,11 @@
 
     <string-array name="supported_languages" translatable="false">
         <item></item>
+        <item>in</item>
+        <item>de</item>
         <item>en</item>
         <item>es</item>
+        <item>ru</item>
     </string-array>
 
 </resources>

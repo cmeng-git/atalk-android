@@ -12,14 +12,11 @@ import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.StanzaExtensionFilter;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
@@ -168,10 +165,10 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     @Override
     public void processStanza(Stanza packet)
     {
-        if (!(packet instanceof StreamInitiation))
+        if (!FileTransferConversation.FT_THUMBNAIL_ENABLE || !(packet instanceof StreamInitiation))
             return;
 
-        // If our file is not a thumbnailed file we have nothing to do here.
+        // If our file is not a thumbnail file we have nothing to do here.
         if (!(file instanceof ThumbnailedFile))
             return;
 

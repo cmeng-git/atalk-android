@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -24,442 +24,419 @@ import android.widget.ExpandableListView.OnChildClickListener;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.ContactList;
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.OperationSet;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetTelephonyConferencing;
-import net.java.sip.communicator.service.protocol.ProtocolProviderActivator;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.contactlist.model.MetaGroupExpandHandler;
-import org.atalk.android.gui.contactlist.model.BaseContactListAdapter;
-import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
+import org.atalk.android.gui.contactlist.model.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * The invite dialog is the one shown when the user clicks on the conference button in the chat
- * toolbar.
+ * The invite dialog is the one shown when the user clicks on the conference button in the chat toolbar.
  *
  * @author Eng Chong Meng
  */
-public class ConferenceInviteDialog extends Dialog implements OnChildClickListener,
-		DialogInterface.OnShowListener {
-	private static boolean MUC_OFFLINE_ALLOW = true;
+public class ConferenceInviteDialog extends Dialog implements OnChildClickListener, DialogInterface.OnShowListener
+{
+    private static boolean MUC_OFFLINE_ALLOW = true;
 
-	private Button mInviteButton;
-	private Button mCancelButton;
+    private Button mInviteButton;
+    private Button mCancelButton;
 
-	/**
-	 * Contact list data model.
-	 */
-	protected MetaContactListAdapter contactListAdapter;
+    /**
+     * Contact list data model.
+     */
+    protected MetaContactListAdapter contactListAdapter;
 
-	/**
-	 * Meta contact groups expand memory.
-	 */
-	private MetaGroupExpandHandler listExpandHandler;
+    /**
+     * Meta contact groups expand memory.
+     */
+    private MetaGroupExpandHandler listExpandHandler;
 
-	/**
-	 * The contact list view.
-	 */
-	protected ExpandableListView contactListView;
+    /**
+     * The contact list view.
+     */
+    protected ExpandableListView contactListView;
 
-	/**
-	 * Stores last clicked <tt>MetaContact</tt>.
-	 */
-	public MetaContact clickedContact;
+    /**
+     * Stores last clicked <tt>MetaContact</tt>.
+     */
+    public MetaContact clickedContact;
 
-	/**
-	 * The source contact list.
-	 */
-	protected ContactList srcContactList;
+    /**
+     * The source contact list.
+     */
+    protected ContactList srcContactList;
 
-	/**
-	 * The destination contact list.
-	 */
-	protected ContactList destContactList;
+    /**
+     * The destination contact list.
+     */
+    protected ContactList destContactList;
 
-	/**
-	 * A map of all active chats i.e. metaContactChat, MUC etc.
-	 */
-	private static final Map<String, MetaContact> mucContactList = new LinkedHashMap<>();
+    /**
+     * A map of all active chats i.e. metaContactChat, MUC etc.
+     */
+    private static final Map<String, MetaContact> mucContactList = new LinkedHashMap<>();
 
-	/**
-	 * The last selected account.
-	 */
-	// private Object lastSelectedAccount;
+    /**
+     * The telephony conference into which this instance is to invite participants.
+     */
+    private final CallConference conference;
 
-	/**
-	 * The telephony conference into which this instance is to invite participants.
-	 */
-	private final CallConference conference;
+    /**
+     * The previously selected protocol provider, with which this dialog has been instantiated.
+     */
+    private ProtocolProviderService preselectedProtocolProvider;
 
-	/**
-	 * The previously selected protocol provider, with which this dialog has been instantiated.
-	 */
-	private ProtocolProviderService preselectedProtocolProvider;
+    /**
+     * Indicates whether this conference invite dialog is associated with a Jitsi Videobridge invite.
+     */
+    private final boolean isJitsiVideobridge;
 
-	/**
-	 * Indicates whether this conference invite dialog is associated with a Jitsi Videobridge invite.
-	 */
-	private final boolean isJitsiVideobridge;
+    /**
+     * Initializes a new <tt>ConferenceInviteDialog</tt> instance which is to invite
+     * contacts/participants in a specific telephony conference.
+     *
+     * @param conference the telephony conference in which the new instance is to invite contacts/participants
+     * @param preselectedProvider the preselected protocol provider
+     * @param protocolProviders the protocol providers list
+     * @param isJitsiVideobridge <tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
+     * otherwise, <tt>false</tt>
+     */
+    public ConferenceInviteDialog(Context mContext, CallConference conference, ProtocolProviderService preselectedProvider,
+            List<ProtocolProviderService> protocolProviders, final boolean isJitsiVideobridge)
+    {
+        super(mContext);
 
-	/**
-	 * Currently selected protocol provider.
-	 */
-	// private ProtocolProviderService currentProvider;
+        this.conference = conference;
+        this.preselectedProtocolProvider = preselectedProvider;
+        this.isJitsiVideobridge = isJitsiVideobridge;
 
-	/**
-	 * Initializes a new <tt>ConferenceInviteDialog</tt> instance which is to invite
-	 * contacts/participants in a specific telephony conference.
-	 *
-	 * @param conference
-	 * 		the telephony conference in which the new instance is to invite contacts/participants
-	 * @param preselectedProvider
-	 * 		the preselected protocol provider
-	 * @param protocolProviders
-	 * 		the protocol providers list
-	 * @param isJitsiVideobridge
-	 * 		<tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
-	 * 		otherwise, <tt>false</tt>
-	 */
-	public ConferenceInviteDialog(Context mContext, CallConference conference,
-			ProtocolProviderService preselectedProvider,
-			List<ProtocolProviderService> protocolProviders, final boolean isJitsiVideobridge) {
-		super(mContext);
+        if (preselectedProtocolProvider == null)
+            initAccountSelectorPanel(protocolProviders);
+        setOnShowListener(this);
+    }
 
-		this.conference = conference;
-		this.preselectedProtocolProvider = preselectedProvider;
-		this.isJitsiVideobridge = isJitsiVideobridge;
+    /**
+     * Constructs the <tt>ConferenceInviteDialog</tt>.
+     */
+    public ConferenceInviteDialog(Context mContext)
+    {
+        this(mContext, null, null, null, false);
+    }
 
-		if (preselectedProtocolProvider == null)
-			initAccountSelectorPanel(protocolProviders);
-		setOnShowListener(this);
-	}
+    /**
+     * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying an already created
+     * conference. To use when inviting contacts to an existing conference is needed.
+     *
+     * @param conference the existing <tt>CallConference</tt>
+     */
+    public ConferenceInviteDialog(Context mContext, CallConference conference)
+    {
+        this(mContext, conference, null, null, false);
+    }
 
-	/**
-	 * Constructs the <tt>ConferenceInviteDialog</tt>.
-	 */
-	public ConferenceInviteDialog(Context mContext) {
-		this(mContext, null, null, null, false);
-	}
+    /**
+     * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying an already created
+     * conference. To use when inviting contacts to an existing conference is needed.
+     *
+     * @param conference the existing <tt>CallConference</tt>
+     */
+    public ConferenceInviteDialog(Context mContext, CallConference conference,
+            ProtocolProviderService preselectedProtocolProvider, boolean isJitsiVideobridge)
+    {
+        this(mContext, conference, preselectedProtocolProvider, null, isJitsiVideobridge);
+    }
 
-	/**
-	 * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying an already created
-	 * conference. To use when inviting contacts to an existing conference is needed.
-	 *
-	 * @param conference
-	 * 		the existing <tt>CallConference</tt>
-	 */
-	public ConferenceInviteDialog(Context mContext, CallConference conference) {
-		this(mContext, conference, null, null, false);
-	}
+    /**
+     * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying a preselected protocol
+     * provider to be used and if this is an invite for a video bridge conference.
+     *
+     * @param protocolProviders the protocol providers list
+     * @param isJitsiVideobridge <tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
+     * otherwise, <tt>false</tt>
+     */
+    public ConferenceInviteDialog(Context mContext,
+            List<ProtocolProviderService> protocolProviders, boolean isJitsiVideobridge)
+    {
+        this(mContext, null, null, protocolProviders, isJitsiVideobridge);
+    }
 
-	/**
-	 * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying an already created
-	 * conference. To use when inviting contacts to an existing conference is needed.
-	 *
-	 * @param conference
-	 * 		the existing <tt>CallConference</tt>
-	 */
-	public ConferenceInviteDialog(Context mContext, CallConference conference,
-			ProtocolProviderService preselectedProtocolProvider, boolean isJitsiVideobridge) {
-		this(mContext, conference, preselectedProtocolProvider, null, isJitsiVideobridge);
-	}
+    /**
+     * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying a preselected protocol
+     * provider to be used and if this is an invite for a video bridge conference.
+     *
+     * @param selectedConfProvider the preselected protocol provider
+     * @param isJitsiVideobridge <tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
+     * otherwise, <tt>false</tt>
+     */
+    public ConferenceInviteDialog(Context mContext, ProtocolProviderService selectedConfProvider,
+            boolean isJitsiVideobridge)
+    {
+        this(mContext, null, selectedConfProvider, null, isJitsiVideobridge);
+    }
 
-	/**
-	 * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying a preselected protocol
-	 * provider to be used and if this is an invite for a video bridge conference.
-	 *
-	 * @param protocolProviders
-	 * 		the protocol providers list
-	 * @param isJitsiVideobridge
-	 * 		<tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
-	 * 		otherwise, <tt>false</tt>
-	 */
-	public ConferenceInviteDialog(Context mContext,
-			List<ProtocolProviderService> protocolProviders, boolean isJitsiVideobridge) {
-		this(mContext, null, null, protocolProviders, isJitsiVideobridge);
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setTitle(R.string.service_gui_INVITE_CONTACT_TO_VIDEO_BRIDGE);
 
-	/**
-	 * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying a preselected protocol
-	 * provider to be used and if this is an invite for a video bridge conference.
-	 *
-	 * @param selectedConfProvider
-	 * 		the preselected protocol provider
-	 * @param isJitsiVideobridge
-	 * 		<tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
-	 * 		otherwise, <tt>false</tt>
-	 */
-	public ConferenceInviteDialog(Context mContext, ProtocolProviderService selectedConfProvider,
-			boolean isJitsiVideobridge) {
-		this(mContext, null, selectedConfProvider, null, isJitsiVideobridge);
-	}
+        this.setContentView(R.layout.videobridge_invite_dialog);
+        contactListView = this.findViewById(R.id.ContactListView);
+        contactListView.setSelector(R.drawable.contact_list_selector);
+        contactListView.setOnChildClickListener(this);
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setTitle(R.string.service_gui_INVITE_CONTACT_TO_VIDEO_BRIDGE);
+        // Adds context menu for contact list items
+        registerForContextMenu(contactListView);
+        initListAdapter();
 
-		this.setContentView(R.layout.videobridge_invite_dialog);
+        mInviteButton = this.findViewById(R.id.button_invite);
+        if (mucContactList.isEmpty()) {
+            mInviteButton.setEnabled(false);
+            mInviteButton.setAlpha(.3f);
+        }
+        else {
+            mInviteButton.setEnabled(true);
+            mInviteButton.setAlpha(1.0f);
+        }
 
-		contactListView =  this.findViewById(R.id.ContactListView);
-		contactListView.setSelector(R.drawable.contact_list_selector);
-		contactListView.setOnChildClickListener(this);
+        mInviteButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
+                if (mContacts.size() != 0) {
+                    if (isJitsiVideobridge)
+                        inviteJitsiVideobridgeContacts(preselectedProtocolProvider, mContacts);
+                    else
+                        inviteContacts(mContacts);
 
-		// Adds context menu for contact list items
-		registerForContextMenu(contactListView);
-		initListAdapter();
+                    // Store the last used account in order to pre-select it next time.
+                    ConfigurationUtils.setLastCallConferenceProvider(preselectedProtocolProvider);
+                    closeDialog();
+                }
+            }
+        });
 
-		mInviteButton = this.findViewById(R.id.button_invite);
-		if (mucContactList.isEmpty()) {
-			mInviteButton.setEnabled(false);
-			mInviteButton.setAlpha(.3f);
-		}
-		else {
-			mInviteButton.setEnabled(true);
-			mInviteButton.setAlpha(1.0f);
-		}
+        mCancelButton = this.findViewById(R.id.buttonCancel);
+        mCancelButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                closeDialog();
+            }
+        });
+        // this.initContactListData();
+    }
 
-		mInviteButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
-				if (mContacts.size() != 0) {
-					if (isJitsiVideobridge)
-						inviteJitsiVideobridgeContacts(preselectedProtocolProvider, mContacts);
-					else
-						inviteContacts(mContacts);
+    private void initListAdapter()
+    {
+        contactListView.setAdapter(getContactListAdapter());
 
-					// Store the last used account in order to pre-select it next time.
-					ConfigurationUtils.setLastCallConferenceProvider(preselectedProtocolProvider);
-					closeDialog();
-				}
-			}
-		});
+        // Attach contact groups expand memory
+        listExpandHandler = new MetaGroupExpandHandler(contactListAdapter, contactListView);
+        listExpandHandler.bindAndRestore();
 
-		mCancelButton = this.findViewById(R.id.buttonCancel);
-		mCancelButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				closeDialog();
-			}
-		});
-		// this.initContactListData();
-	}
+        // setDialogMode to true to avoid contacts being filtered
+        contactListAdapter.setDialogMode(true);
 
-	private void initListAdapter() {
-		contactListView.setAdapter(getContactListAdapter());
+        // Update ExpandedList View
+        contactListAdapter.invalidateViews();
+    }
 
-		// Attach contact groups expand memory
-		listExpandHandler = new MetaGroupExpandHandler(contactListAdapter, contactListView);
-		listExpandHandler.bindAndRestore();
+    public void chkSelectedContact()
+    {
+        List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
+        int indexes = contactListAdapter.getGroupCount();
+        for (MetaContact mContact : mContacts) {
+            int childIdx;
+            for (int gIdx = 0; gIdx < indexes; gIdx++) {
+                childIdx = contactListAdapter.getChildIndex(gIdx, mContact);
+                if (childIdx != -1) {
+                    contactListView.setItemChecked(childIdx, true);
+                    break;
+                }
+            }
+        }
+    }
 
-		// setDialogMode to true to avoid contacts being filtered
-		contactListAdapter.setDialogMode(true);
+    public void closeDialog()
+    {
+        // must clear dialogMode on exit dialog
+        contactListAdapter.setDialogMode(false);
+        this.cancel();
+    }
 
-		// Update ExpandedList View
-		contactListAdapter.invalidateViews();
-	}
+    private MetaContactListAdapter getContactListAdapter()
+    {
+        ContactListFragment clf = AndroidGUIActivator.getContactListFragment();
+        if (contactListAdapter == null) {
+            // Disable call button options
+            contactListAdapter = new MetaContactListAdapter(clf, false);
+            contactListAdapter.initModelData();
+        }
+        contactListAdapter.nonZeroContactGroupList();
+        return contactListAdapter;
+    }
 
-	public void chkSelectedContact() {
-		List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
-		int indexes = contactListAdapter.getGroupCount();
-		for (MetaContact mContact : mContacts) {
-			int childIdx;
-			for (int gIdx = 0; gIdx < indexes; gIdx++) {
-				childIdx = contactListAdapter.getChildIndex(gIdx, mContact);
-				if (childIdx != -1) {
-					contactListView.setItemChecked(childIdx, true);
-					break;
-				}
-			}
-		}
-	}
+    /**
+     *
+     */
+    @Override
+    public boolean onChildClick(ExpandableListView listView, View v, int groupPosition,
+            int childPosition, long id)
+    {
+        BaseContactListAdapter adapter
+                = (BaseContactListAdapter) listView.getExpandableListAdapter();
+        int position = adapter.getListIndex(groupPosition, childPosition);
+        contactListView.setSelection(position);
+        // adapter.invalidateViews();
 
-	public void closeDialog() {
-		// must clear dialogMode on exit dialog
-		contactListAdapter.setDialogMode(false);
+        // Get v index for multiple selection highlight
+        int index = listView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(
+                groupPosition, childPosition));
 
-		this.cancel();
-	}
+        Object clicked = adapter.getChild(groupPosition, childPosition);
+        if ((clicked instanceof MetaContact)) {
+            MetaContact metaContact = (MetaContact) clicked;
+            if (MUC_OFFLINE_ALLOW
+                    || !metaContact.getContactsForOperationSet(OperationSetMultiUserChat.class)
+                    .isEmpty()) {
+                // Toggle muc Contact Selection
+                String key = metaContact.getMetaUID();
+                if (mucContactList.containsKey(key)) {
+                    mucContactList.remove(key);
+                    listView.setItemChecked(index, false);
+                    // v.setSelected(false);
+                }
+                else {
+                    mucContactList.put(key, metaContact);
+                    listView.setItemChecked(index, true);
+                    // v.setSelected(true); for single item selection only
+                }
 
-	private MetaContactListAdapter getContactListAdapter() {
-		ContactListFragment clf = AndroidGUIActivator.getContactListFragment();
-		if (contactListAdapter == null) {
-			// Disable call button options
-			contactListAdapter = new MetaContactListAdapter(clf, false);
-			contactListAdapter.initModelData();
-		}
-		contactListAdapter.nonZeroContactGroupList();
-		return contactListAdapter;
-	}
+                if (mucContactList.isEmpty()) {
+                    mInviteButton.setEnabled(false);
+                    mInviteButton.setAlpha(.3f);
+                }
+                else {
+                    mInviteButton.setEnabled(true);
+                    mInviteButton.setAlpha(1.0f);
+                }
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
 
-	/**
-	 *
-	 */
-	@Override
-	public boolean onChildClick(ExpandableListView listView, View v, int groupPosition,
-			int childPosition, long id) {
-		BaseContactListAdapter adapter
-				= (BaseContactListAdapter) listView.getExpandableListAdapter();
-		int position = adapter.getListIndex(groupPosition, childPosition);
-		contactListView.setSelection(position);
-		// adapter.invalidateViews();
+    /**
+     * Initializes the account selector panel.
+     *
+     * @param protocolProviders the list of protocol providers we'd like to show in the account selector box
+     */
+    private void initAccountSelectorPanel(List<ProtocolProviderService> protocolProviders)
+    {
+        // Initialize the account selector box.
+        if (protocolProviders != null && protocolProviders.size() > 0)
+            this.initAccountListData(protocolProviders);
+        else
+            this.initAccountListData();
+    }
 
-		// Get v index for multiple selection highlight
-		int index = listView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(
-				groupPosition, childPosition));
+    /**
+     * Initializes the account selector box with the given list of <tt>ProtocolProviderService</tt>
+     * -s.
+     *
+     * @param protocolProviders the list of <tt>ProtocolProviderService</tt>-s we'd like to show in the account
+     * selector box
+     */
+    private void initAccountListData(List<ProtocolProviderService> protocolProviders)
+    {
+        for (ProtocolProviderService protocolProvider : protocolProviders) {
+            // accountSelectorBox.addItem(protocolProvider);
+        }
 
-		Object clicked = adapter.getChild(groupPosition, childPosition);
-		if ((clicked instanceof MetaContact)) {
-			MetaContact metaContact = (MetaContact) clicked;
-			if (MUC_OFFLINE_ALLOW
-					|| !metaContact.getContactsForOperationSet(OperationSetMultiUserChat.class)
-					.isEmpty()) {
-				// Toggle muc Contact Selection
-				String key = metaContact.getMetaUID();
-				if (mucContactList.containsKey(key)) {
-					mucContactList.remove(key);
-					listView.setItemChecked(index, false);
-					// v.setSelected(false);
-				}
-				else {
-					mucContactList.put(key, metaContact);
-					listView.setItemChecked(index, true);
-					// v.setSelected(true); for single item selection only
-				}
+        // if (accountSelectorBox.getItemCount() > 0)
+        // accountSelectorBox.setSelectedIndex(0);
+    }
 
-				if (mucContactList.isEmpty()) {
-					mInviteButton.setEnabled(false);
-					mInviteButton.setAlpha(.3f);
-				}
-				else {
-					mInviteButton.setEnabled(true);
-					mInviteButton.setAlpha(1.0f);
-				}
-				return true;
-			}
-			return false;
-		}
-		return false;
-	}
+    /**
+     * Initializes the account list.
+     */
+    private void initAccountListData()
+    {
+        List<ProtocolProviderService> protocolProviders = ProtocolProviderActivator.getProtocolProviders();
+        for (ProtocolProviderService protocolProvider : protocolProviders) {
+            OperationSet opSet = protocolProvider.getOperationSet(OperationSetTelephonyConferencing.class);
 
-	/**
-	 * Initializes the account selector panel.
-	 *
-	 * @param protocolProviders
-	 * 		the list of protocol providers we'd like to show in the account selector box
-	 */
-	private void initAccountSelectorPanel(List<ProtocolProviderService> protocolProviders) {
-		// Initialize the account selector box.
-		if (protocolProviders != null && protocolProviders.size() > 0)
-			this.initAccountListData(protocolProviders);
-		else
-			this.initAccountListData();
-	}
+            if ((opSet != null) && protocolProvider.isRegistered()) {
+                // accountSelectorBox.addItem(protocolProvider);
+            }
+        }
 
-	/**
-	 * Initializes the account selector box with the given list of <tt>ProtocolProviderService</tt>
-	 * -s.
-	 *
-	 * @param protocolProviders
-	 * 		the list of <tt>ProtocolProviderService</tt>-s we'd like to show in the account
-	 * 		selector box
-	 */
-	private void initAccountListData(List<ProtocolProviderService> protocolProviders) {
+        // Try to select the last used account if available.
+        ProtocolProviderService pps = ConfigurationUtils.getLastCallConferenceProvider();
 
-		for (ProtocolProviderService protocolProvider : protocolProviders) {
-			// accountSelectorBox.addItem(protocolProvider);
-		}
+        if (pps == null && conference != null) {
+            /*
+             * Pick up the first account from the ones participating in the associated telephony
+             * conference which supports OperationSetTelephonyConferencing.
+             */
+            for (Call call : conference.getCalls()) {
+                ProtocolProviderService callPps = call.getProtocolProvider();
 
-		// if (accountSelectorBox.getItemCount() > 0)
-		// accountSelectorBox.setSelectedIndex(0);
-	}
+                if (callPps.getOperationSet(OperationSetTelephonyConferencing.class) != null) {
+                    pps = callPps;
+                    break;
+                }
+            }
+        }
+        // if (pps != null)
+        // accountSelectorBox.setSelectedItem(pps);
+        // else if (accountSelectorBox.getItemCount() > 0)
+        // accountSelectorBox.setSelectedIndex(0);
+    }
 
-	/**
-	 * Initializes the account list.
-	 */
-	private void initAccountListData() {
-		List<ProtocolProviderService> protocolProviders = ProtocolProviderActivator
-				.getProtocolProviders();
+    /**
+     * Invites the contacts to the chat conference.
+     */
+    private void inviteContacts(List<MetaContact> mContacts)
+    {
+        Map<ProtocolProviderService, List<String>> selectedProviderCallees = new HashMap<>();
+        List<String> callees = new ArrayList<>();
 
-		for (ProtocolProviderService protocolProvider : protocolProviders) {
-			OperationSet opSet = protocolProvider
-					.getOperationSet(OperationSetTelephonyConferencing.class);
+        // Collection<String> selectedContactAddresses = new ArrayList<String>();
 
-			if ((opSet != null) && protocolProvider.isRegistered()) {
-				// accountSelectorBox.addItem(protocolProvider);
-			}
-		}
+        for (MetaContact mContact : mContacts) {
+            String mAddress = mContact.getDefaultContact().getAddress();
+            callees.add(mAddress);
+        }
 
-		// Try to select the last used account if available.
-		ProtocolProviderService pps = ConfigurationUtils.getLastCallConferenceProvider();
+        // Invite all selected.
+        if (callees.size() > 0) {
+            selectedProviderCallees.put(preselectedProtocolProvider, callees);
 
-		if (pps == null && conference != null) {
-			/*
-			 * Pick up the first account from the ones participating in the associated telephony
-			 * conference which supports OperationSetTelephonyConferencing.
-			 */
-			for (Call call : conference.getCalls()) {
-				ProtocolProviderService callPps = call.getProtocolProvider();
+            if (conference != null) {
+                CallManager.inviteToConferenceCall(selectedProviderCallees, conference);
+            }
+            else {
+                CallManager.createConferenceCall(selectedProviderCallees);
+            }
+        }
+    }
 
-				if (callPps.getOperationSet(OperationSetTelephonyConferencing.class) != null) {
-					pps = callPps;
-					break;
-				}
-			}
-		}
-		// if (pps != null)
-		// accountSelectorBox.setSelectedItem(pps);
-		// else if (accountSelectorBox.getItemCount() > 0)
-		// accountSelectorBox.setSelectedIndex(0);
-	}
-
-	/**
-	 * Invites the contacts to the chat conference.
-	 */
-	private void inviteContacts(List<MetaContact> mContacts) {
-		Map<ProtocolProviderService, List<String>> selectedProviderCallees = new HashMap<>();
-		List<String> callees = new ArrayList<>();
-
-		// Collection<String> selectedContactAddresses = new ArrayList<String>();
-
-		for (MetaContact mContact : mContacts) {
-			String mAddress = mContact.getDefaultContact().getAddress();
-			callees.add(mAddress);
-		}
-
-		// Invite all selected.
-		if (callees.size() > 0) {
-			selectedProviderCallees.put(preselectedProtocolProvider, callees);
-
-			if (conference != null) {
-				CallManager.inviteToConferenceCall(selectedProviderCallees, conference);
-			}
-			else {
-				CallManager.createConferenceCall(selectedProviderCallees);
-			}
-		}
-	}
-
-	/**
-	 * Invites the contacts to the chat conference.
-	 *
-	 * @param contacts
-	 *        the list of contacts to invite
-	 */
+    /**
+     * Invites the contacts to the chat conference.
+     *
+     * @param contacts
+     *        the list of contacts to invite
+     */
 //	private void inviteContacts(Collection<UIContact> contacts)
 //	{
 //		ProtocolProviderService selectedProvider;
@@ -506,33 +483,33 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
 //		}
 //	}
 
-	/**
-	 * Invites the contacts to the chat conference.
-	 *
-	 * @param mContacts
-	 * 		the list of contacts to invite
-	 */
-	private void inviteJitsiVideobridgeContacts(ProtocolProviderService preselectedProvider,
-			List<MetaContact> mContacts) {
-		List<String> callees = new ArrayList<>();
+    /**
+     * Invites the contacts to the chat conference.
+     *
+     * @param mContacts the list of contacts to invite
+     */
+    private void inviteJitsiVideobridgeContacts(ProtocolProviderService preselectedProvider,
+            List<MetaContact> mContacts)
+    {
+        List<String> callees = new ArrayList<>();
 
-		for (MetaContact mContact : mContacts) {
-			String mAddress = mContact.getDefaultContact().getAddress();
-			callees.add(mAddress);
-		}
+        for (MetaContact mContact : mContacts) {
+            String mAddress = mContact.getDefaultContact().getAddress();
+            callees.add(mAddress);
+        }
 
-		// Invite all selected.
-		if (callees.size() > 0) {
-			if (conference != null) {
-				CallManager.inviteToJitsiVideobridgeConfCall(
-						callees.toArray(new String[callees.size()]), conference.getCalls().get(0));
-			}
-			else {
-				CallManager.createJitsiVideobridgeConfCall(preselectedProvider,
-						callees.toArray(new String[callees.size()]));
-			}
-		}
-	}
+        // Invite all selected.
+        if (callees.size() > 0) {
+            if (conference != null) {
+                CallManager.inviteToJitsiVideobridgeConfCall(
+                        callees.toArray(new String[callees.size()]), conference.getCalls().get(0));
+            }
+            else {
+                CallManager.createJitsiVideobridgeConfCall(preselectedProvider,
+                        callees.toArray(new String[callees.size()]));
+            }
+        }
+    }
 
 //	/**
 //	 * Invites the contacts to the chat conference.
@@ -569,20 +546,21 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
 //		}
 //	}
 
-	@Override
-	public void onShow(DialogInterface arg0) {
-		List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
-		int indexes = contactListAdapter.getGroupCount();
-		for (MetaContact mContact : mContacts) {
-			int childIdx;
-			for (int gIdx = 0; gIdx < indexes; gIdx++) {
-				childIdx = contactListAdapter.getChildIndex(gIdx, mContact);
-				if (childIdx != -1) {
-					childIdx += gIdx + 1;
-					contactListView.setItemChecked(childIdx, true);
-					break;
-				}
-			}
-		}
-	}
+    @Override
+    public void onShow(DialogInterface arg0)
+    {
+        List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
+        int indexes = contactListAdapter.getGroupCount();
+        for (MetaContact mContact : mContacts) {
+            int childIdx;
+            for (int gIdx = 0; gIdx < indexes; gIdx++) {
+                childIdx = contactListAdapter.getChildIndex(gIdx, mContact);
+                if (childIdx != -1) {
+                    childIdx += gIdx + 1;
+                    contactListView.setItemChecked(childIdx, true);
+                    break;
+                }
+            }
+        }
+    }
 }
