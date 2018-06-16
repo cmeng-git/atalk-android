@@ -75,8 +75,7 @@ public class JabberAccountIDImpl extends JabberAccountID
 		String accountPrefix = ProtocolProviderFactory.findAccountPrefix(
 				JabberActivator.bundleContext, this, packageSourceName);
 
-		CredentialsStorageService credentialsService
-				= JabberActivator.getCredentialsStorageService();
+		CredentialsStorageService credentialsService = JabberActivator.getCredentialsStorageService();
 		try {
 			password = credentialsService.loadPassword(accountPrefix + "." + namePrefix);
 		}

@@ -195,8 +195,7 @@ public class VCardAvatarManager extends AvatarManager
             mVCard = vCardMgr.loadVCard((EntityBareJid) userId);
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
                 | SmackException.NotConnectedException | InterruptedException e) {
-            LOGGER.log(Level.WARNING, "Error while downloading VCard for: '" + userId
-                    + "'. Exception: " + e.getMessage());
+            LOGGER.log(Level.WARNING, "Error while downloading VCard for: '" + userId + "'. " + e.getMessage());
         }
 
         if (mVCard != null) {

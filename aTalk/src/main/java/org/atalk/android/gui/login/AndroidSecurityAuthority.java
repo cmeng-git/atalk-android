@@ -11,8 +11,6 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.Spinner;
 
-import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
-import net.java.sip.communicator.plugin.jabberaccregwizz.JabberAccountRegistrationActivator;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.Logger;
 
@@ -143,14 +141,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                         credentials.setUserName(userName);
                         credentials.setPassword(password.toCharArray());
                         credentials.setPasswordPersistent(storePassword);
-
-                        accountID.setPasswordPersistent(storePassword);
-                        if (storePassword) {
-                            accountID.setPassword(password);
-                            JabberActivator.getProtocolProviderFactory().storePassword(accountID, password);
-                        }
-                        //credentials.setIbRegistration(ibRegistration);
-                        accountID.setIbRegistration(ibRegistration);
+                        credentials.setIbRegistration(ibRegistration);
 
                         // Translate dnssecMode label to dnssecMode value
                         Spinner spinnerDM = dialogContent.findViewById(R.id.dnssecModeSpinner);
@@ -158,7 +149,6 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                                 .getStringArray(R.array.dnssec_Mode_value);
                         String selecteDnssecMode = dnssecModeValues[spinnerDM.getSelectedItemPosition()];
                         credentials.setDnssecMode(selecteDnssecMode);
-                        accountID.setDnssMode(selecteDnssecMode);
 
                         if (isShowServerOption) {
                             boolean isServerOverridden = ViewUtil.isCompoundChecked(dialogContent,
@@ -172,12 +162,6 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                             credentials.setServerAddress(serverAddress);
                             credentials.setServerPort(serverPort);
                             credentials.setUserCancel(false);
-
-                            accountID.setServerOverridden(isServerOverridden);
-                            if (isServerOverridden) {
-                                accountID.setServerAddress(serverAddress);
-                                accountID.setServerPort(serverPort);
-                            }
                         }
                         synchronized (credentialsLock) {
                             credentialsLock.notify();

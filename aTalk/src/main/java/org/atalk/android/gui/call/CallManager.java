@@ -933,11 +933,10 @@ public class CallManager
                 String message = aTalkApp.getResString(R.string.service_gui_CREATE_CALL_FAILED);
 
                 if (t.getMessage() != null)
-                    message += " " + t.getMessage();
+                    message += "\n" + t.getMessage();
 
                 // new ErrorDialog(null, aTalkApp.getResString(R.string.service_gui_ERROR), message, t).showDialog();
-                AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
-                        aTalkApp.getResString(R.string.service_gui_ERROR), message);
+                AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), aTalkApp.getResString(R.string.service_gui_ERROR), message);
             }
         }
     }
@@ -988,7 +987,6 @@ public class CallManager
             throws OperationFailedException, ParseException
     {
         OperationSetBasicTelephony<?> telephony = protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
-
         OperationSetResourceAwareTelephony resourceTelephony
                 = protocolProvider.getOperationSet(OperationSetResourceAwareTelephony.class);
 

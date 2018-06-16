@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
@@ -9,13 +9,11 @@ import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.os.Build;
-import android.widget.Toast;
 
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.aTalk;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
@@ -36,6 +34,7 @@ import javax.media.format.VideoFormat;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
+
 @SuppressWarnings("deprecation")
 abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
 {
@@ -79,10 +78,8 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     /**
      * Creates new instance of <tt>CameraStreamBase</tt>.
      *
-     * @param parent
-     *         parent <tt>DataSource</tt>.
-     * @param formatControl
-     *         format control used by this stream.
+     * @param parent parent <tt>DataSource</tt>.
+     * @param formatControl format control used by this stream.
      */
     CameraStreamBase(DataSource parent, FormatControl formatControl)
     {
@@ -107,7 +104,6 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     protected void startImpl()
             throws IOException
     {
-        Exception error = null;
         try {
             mCamera = Camera.open(mCameraId);
             mRotation = CameraUtils.getCameraDisplayRotation(mCameraId);
@@ -124,9 +120,8 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
             // note8 cannot support rotated landscape preview dimension
             if (Build.MODEL.contains("N950F") && swap) {
                 videoSize = new Dimension(736, 736);
-                // Can't create handler inside thread that has not called Looper.prepare()
-//                Toast.makeText(aTalkApp.getCurrentActivity(),
-//                        R.string.service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED, Toast.LENGTH_SHORT).show();
+                // aTalkApp.showAlertDialogOnUI(aTalkApp.getResString(R.string.service_gui_ERROR),
+                //        R.string.service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED, videoSize.width, videoSize.height);
             }
 
             // Find optimised video resolution with user selected against device support formats
@@ -156,23 +151,24 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
             onInitPreview();
             mCamera.startPreview();
         } catch (Exception e) {
-            logger.error(e, e);
-            error = e;
-        }
-        // Close camera on error
-        if ((error != null) && (mCamera != null)) {
-            mCamera.reconnect();
-            mCamera.release();
-            mCamera = null;
-            throw new IOException(error);
+            logger.error("Set camera preview failed: ", e);
+            aTalkApp.showAlertDialogOnUI(aTalkApp.getResString(R.string.service_gui_ERROR),
+                    R.string.service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED, mPreviewSize.width, mPreviewSize.height);
+
+            // Close camera on error
+            if (mCamera != null) {
+                mCamera.reconnect();
+                mCamera.release();
+                mCamera = null;
+            }
+            // throw new IOException(error);
         }
     }
 
     /**
-     * Method called before camera preview is started. Extending classes should configure preview at
-     * this point.
+     * Method called before camera preview is started. Extending classes should configure preview at this point.
      *
-     * @throws IOException
+     * @throws IOException ioException on error
      */
     protected abstract void onInitPreview()
             throws IOException;

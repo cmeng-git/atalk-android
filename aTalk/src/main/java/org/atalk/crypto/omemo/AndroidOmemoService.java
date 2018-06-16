@@ -133,7 +133,7 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
                 DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);
             }
             else {
-                aTalkApp.showToastMessage(R.string.omemo_init_failed_noresponse);
+                aTalkApp.showToastMessage(R.string.omemo_init_failed_noresponse, mOmemoManager.getOwnDevice());
             }
         }
     }

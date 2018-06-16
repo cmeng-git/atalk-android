@@ -16,6 +16,7 @@
 ## Features
 aTalk is an xmpp client designed for android and supports the following features:
 * Instant messaging in plain text and End-to-End encryption with [OMEMO](http://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
+* Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway (experimental)
 * SSL Certificate authentication, experimental DNSSEC and DANE Security Implementation for secure Connection Establishment
 * Omemo encryption is available during multi-user-chat session, giving users' maximum privacy and security
 * Supports both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
@@ -104,6 +105,7 @@ Libraries used in this project
 * [libjitsi](https://github.com/jitsi/libjitsi)
 * [libphonenumber](https://github.com/googlei18n/libphonenumber)
 * [libvpx](https://github.com/webmproject/libvpx)
+* [Mime4j](https://james.apache.org/mime4j/)
 * [miniDNS](https://github.com/MiniDNS/minidns)
 * [otr4j](https://github.com/jitsi/otr4j)
 * [opensles](https://github.com/openssl/openssl )
@@ -112,6 +114,7 @@ Libraries used in this project
 * [sdp-api](https://mvnrepository.com/artifact/org.opentelecoms.sdp/sdp-api)
 * [Smack](https://github.com/igniterealtime/Smack)
 * [speex](https://github.com/xiph/speex)
+* [TokenAutoComplete](https://github.com/splitwise/TokenAutoComplete)
 * [uCrop](https://github.com/Yalantis/uCrop)
 * [weupnp](https://github.com/bitletorg/weupnp)
 * [x264](http://git.videolan.org/git/x264.git)

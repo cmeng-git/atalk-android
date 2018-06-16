@@ -582,7 +582,11 @@ public class CallPeerJabberImpl
         List<ContentPacketExtension> answer = sessionInitIQ.getContentList();
 
         try {
-            mediaHandler.getTransportManager().wrapupConnectivityEstablishment();
+            TransportManagerJabberImpl transportManager = mediaHandler.getTransportManager();
+            if (transportManager == null)
+                throw new Exception("No available transport manager to process session-accept!");
+
+            transportManager.wrapupConnectivityEstablishment();
             mediaHandler.processAnswer(answer);
             for (ContentPacketExtension c : answer)
                 setSenders(getMediaType(c), c.getSenders());

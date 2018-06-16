@@ -6,6 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.4.0 (06/16/2018)" versioncode="1040">
+        <change>Implement Jabber VoIP-PBX gateway Telephony option, allowing pbx phone call via service gateway (experimental). See online help</change>
+        <change>Return to login screen when user cancel IBR registration on server error, avoiding loop in IBR</change>
+        <change>Save or remove persistent password based on user selected option</change>
+        <change>Add save password option in new account creation</change>
+        <change>Resolve Additional STUN/TURN servers and Additional Jingle Nodes parameters not properly save to database</change>
+        <change>Prompt user to place phone in landscape orientation if camera cannot support preview in portrait mode during video call</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.3.2 (06/06/2018)" versioncode="1032">
         <change>Add new UI languages support for Bahasa Indonesia, German and Russian</change>
         <change>Add user option to send file thumbnail preview in Setting...</change>
@@ -365,7 +375,7 @@
 
     <release version="0.7.5 (01/20/2017)" versioncode="750">
         <change>Fix file sending problem - chat window must get refreshed after returning from file pick operation</change>
-        <change>Add option to Send Present Geo-Location to recipient during chat session for direction guide</change>
+        <change>Add option to Send Present Geo-Location to address during chat session for direction guide</change>
         <change>Latest version check uses versionCode only and will not failed if versionName has alphabet exception</change>
         <change>Clean and purge all the old log files after each Send Log operation</change>
         <change>Port and replace jitsi GeoLocation Extension and Provider with Smack GeoLocation and Provider</change>

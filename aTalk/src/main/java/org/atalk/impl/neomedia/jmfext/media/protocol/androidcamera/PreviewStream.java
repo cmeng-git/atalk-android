@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
@@ -46,10 +46,8 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     /**
      * Creates new instance of <tt>PreviewStream</tt>.
      *
-     * @param dataSource
-     *         parent <tt>DataSource</tt>.
-     * @param formatControl
-     *         format control used by this instance.
+     * @param dataSource parent <tt>DataSource</tt>.
+     * @param formatControl format control used by this instance.
      */
     public PreviewStream(DataSource dataSource, FormatControl formatControl)
     {
@@ -161,16 +159,11 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
      * ## Flip: means mirroring the image for a 180-degree rotation.
      * Note: Android does have condition with Swap && Flip in display orientation
      *
-     * @param input
-     *         input buffer - YV12 frame image bytes.
-     * @param output
-     *         output buffer - YUV420 frame format.
-     * @param width
-     *         final output stream image width.
-     * @param height
-     *         final output stream image height.
-     * @param rotation
-     *         camera/preview rotation: 270 = phone rotated clockwise 90 degree (portrait mode)
+     * @param input input buffer - YV12 frame image bytes.
+     * @param output output buffer - YUV420 frame format.
+     * @param width final output stream image width.
+     * @param height final output stream image height.
+     * @param rotation camera/preview rotation: 270 = phone rotated clockwise 90 degree (portrait mode)
      */
     private static void YV12toYUV420PlanarRotate(byte[] input, byte[] output, int width, int height, int rotation)
     {
@@ -249,10 +242,8 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     /**
      * Calculates YV12 image data size in bytes.
      *
-     * @param width
-     *         image width.
-     * @param height
-     *         image height.
+     * @param width image width.
+     * @param height image height.
      * @return YV12 image data size in bytes.
      */
     private static int calcYV12Size(int width, int height)

@@ -151,7 +151,6 @@ public class AccountLoginActivity extends ExitMenuActivity
     public void onLoginPerformed(String userName, String password, String network, Map<String, String> accountProperties)
     {
         ProtocolProviderService pps = createAccount(userName, password, network, accountProperties);
-
         if (pps != null) {
             Intent showContactsIntent = new Intent(aTalk.ACTION_SHOW_CONTACTS);
             startActivity(showContactsIntent);

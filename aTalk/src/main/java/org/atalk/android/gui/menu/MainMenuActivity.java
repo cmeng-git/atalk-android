@@ -24,9 +24,14 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.CallConference;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
@@ -40,6 +45,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.About;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AccountsListActivity;
+import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.call.conference.ConferenceInviteDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomCreateDialog;
 import org.atalk.android.gui.contactlist.AddContactActivity;
@@ -48,9 +54,13 @@ import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.ActionBarUtil;
 import org.atalk.android.plugin.geolocation.GeoLocation;
 import org.atalk.service.osgi.OSGiActivity;
-import org.osgi.framework.*;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * The main options menu. Every <tt>Activity</tt> that desires to have the general options menu
@@ -317,6 +327,15 @@ public class MainMenuActivity extends ExitMenuActivity
             case R.id.add_contact:
                 startActivity(AddContactActivity.class);
                 break;
+            case R.id.telephony:
+                TelephonyFragment extPhone = new TelephonyFragment();
+                getSupportFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
+                break;
+            case R.id.show_location:
+                Intent intent = new Intent(this, GeoLocation.class);
+                intent.putExtra(GeoLocation.SEND_LOCATION, false);
+                startActivity(intent);
+                break;
             case R.id.main_settings:
                 startActivity(SettingsActivity.class);
                 break;
@@ -331,11 +350,6 @@ public class MainMenuActivity extends ExitMenuActivity
                     globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
                 else
                     globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
-                break;
-            case R.id.show_location:
-                Intent intent = new Intent(this, GeoLocation.class);
-                intent.putExtra(GeoLocation.SEND_LOCATION, false);
-                startActivity(intent);
                 break;
             case R.id.about:
                 startActivity(About.class);

@@ -284,7 +284,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Buat jembatan video</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Buat/Gabung konferensi video</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Buat konferensi video baru untuk ruang obrolan ini</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Kamera perangkat Anda tampaknya tidak mendukung pratinjau lanskap dalam tampilan lansekap. Harap gunakan orientasi tampilan lanskap untuk panggilan video.</string>
+    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Kamera perangkat tidak dapat mendukung resolusi video yang dipilih saat mode potret. Silakan letakkan ponsel dalam orientasi lanskap untuk panggilan video:\n[lebar=%1$s; tinggi=%2$s]</string>
     <string name="service_gui_DISCONNECTED_STATUS">Terputus</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Memutuskan sambungan %1$s</string>
     <string name="service_gui_DEFAULT_USER_PHOTO">personphoto</string>
@@ -917,7 +917,7 @@
     <string name="omemo_identity_keypairs_invalid">IdentitasKeyPairs Tidak Valid untuk omemoDevice: %1$s.\nEksepsi: %2$s.</string>
     <string name="omemo_init_failed_CorruptedOmemoKeyException">Inisialisasi OmemoManager telah gagal dan pesan omemo tidak berfungsi. Jika masalah berlanjut
         setelah memulai ulang, lanjutkan ke "Regungkan identitas OMEMO" untuk omomoDevice yang gagal: %1$s.\n\nPersepsi: %2$s.</string>
-    <string name="omemo_init_failed_noresponse">Inisialisasi OmemoManager telah gagal dan pesan omemo mungkin tidak berfungsi dengan baik.</string>
+    <string name="omemo_init_failed_noresponse">Inisialisasi OmemoManager telah gagal dan pesan omemo mungkin tidak berfungsi dengan baik: %1$s</string>
     <string name="omemo_init_failed_title">OmemoManager init gagal</string>
     <string name="omemo_menu_authenticated">OMEMO Autentikasi</string>
     <string name="omemo_menu_unauthenticated">OMEMO unAuthenticated</string>
@@ -1150,7 +1150,7 @@
     <string name="service_gui_JBR_STUN_LIST">Server STUN/TURN tambahan&#8230;</string>
     <string name="service_gui_JBR_STUN_LIST_SUMMARY">Server STUN/TURN tambahan yang ditetapkan pengguna untuk digunakan</string>
     <string name="service_gui_JBR_TELE_DOMAIN">Domain telepon</string>
-    <string name="service_gui_JBR_TELEPHONY">Telephony</string>
+    <string name="service_gui_JBR_TELEPHONY">Telephony (percobaan)</string>
     <string name="service_gui_JBR_TELEPHONY_SUMMARY">Konfigurasikan opsi telephony&#8230;</string>
     <string name="service_gui_JBR_USE_DEFAULT_STUN">Gunakan server Jitsi STUN (fallback)</string>
     <string name="service_gui_JBR_USE_ICE">Gunakan ICE</string>
@@ -1158,6 +1158,17 @@
     <string name="service_gui_JBR_USE_UPNP">Gunakan UPnP</string>
     <string name="service_gui_JBR_USER">USER ID</string>
     <string name="service_gui_JBR_USER_CATEGORY">Nama pengguna dan kata sandi</string>
+
+    <!-- Telephony -->
+    <string name="service_gui_CONTACT_PHONE_NUMBER">Nama/Telepon/Jid Kontak:</string>
+    <string name="service_gui_EXT_CALL_VIA">Panggilan melalui:</string>
+    <string name="service_gui_NO_CONTACT_PHONE">Nomor telepon kontak tidak boleh kosong!</string>
+    <string name="recipient_error_non_ascii">Karakter khusus saat ini tidak didukung!</string>
+    <string name="service_gui_NOT_IN_ROSTER">Domain Telephony yang ditentukan \'%1$s\' bukan anggota daftar kontak</string>
+    <string name="service_gui_NOT_IN_CALLGROUP">%1$s bukan milik grup panggilan yang ditentukan</string>
+    <string name="service_gui_NO_JINGLE_SUPPORT">%1$s\ntidak mendukung protokol Jingle</string>
+    <string name="recipient_error_parse_failed">Galat menguraikan alamat!</string>
+    <string name="unknown_recipient"><![CDATA[<Penerima Tidak Dikenal>]]></string>
 
     <!-- General settings -->
     <string name="service_gui_settings_DISABLED_STR">Nonaktif</string>
@@ -1456,7 +1467,7 @@
 
     <string name="all_permission_denied_dialog_title">Semua permintaan izin</string>
     <string name="all_permissions_denied_feedback">aTalk mungkin tidak berfungsi dengan benar atau mungkin memiliki perilaku tidak terduga karena beberapa layanan telah ditolak!\nJika anda telah memilih \"Jangan tanyakan lagi \" pilihan, anda harus pergi ke Pengaturan Android - >INFO APP untuk aTalk untuk mengaktifkan izin akses sumber daya</string>
-
+    <string name="permission_denied_all_alert">aTalk tidak akan berfungsi dengan baik. Anda telah menolak aTalk dari semua izin!</string>
     <string name="permission_rationale_message">Anda disajikan dengan setiap layanan yang dibutuhkan olehTalk;izinkan aTalk mengakses layanan ini untuk fitur lengkap yang didukung</string>
     <string name="permission_rationale_settings_button_text">SETTINGS</string>
     <string name="permission_rationale_title">aTalk memerlukan izin</string>

@@ -283,7 +283,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Eine Videobrücke erstellen</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Videokonferenzschaltung erzeugen/beitreten.</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Eine neue Videokonferenz für diesen Chatraum einrichten.</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Ihre Gerätekamera unterstützt keine Vorschau in der Querformatanzeige. Bitte verwenden Sie für Videoanrufe die Querformat-Ausrichtung.</string>
+    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Die Gerätekamera kann die ausgewählte Videoauflösung im Hochformat nicht unterstützen. Bitte platzieren Sie das Telefon im Querformat für den Videoanruf:\n[width=%1$s; Höhe=%2$s]</string>
     <string name="service_gui_DISCONNECTED_STATUS">Beendet</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Beende %1$s</string>
     <string name="service_gui_DEFAULT_USER_PHOTO">Personenfoto</string>
@@ -911,7 +911,7 @@
     <string name="omemo_identity_key_missing">OMEMO IdentityKey fehlt für: %1$s</string>
     <string name="omemo_identity_keypairs_invalid">Ungültige IdentityKeyPairs für OMEMO-Gerät: %1$s.\nException:%2$s.</string>
     <string name="omemo_init_failed_CorruptedOmemoKeyException">OMEMO-Manager konnte nicht gestartet werden, Verschlüsselung ist nicht aktiv. Starten Sie bitte das Programm neu. Wenn der Fehler weiterhin besteht fahren Sie mit dem Registrieren von OMEMO-Identitäten für das Gerät %1$s fort.\n\nException: %2$s.</string>
-    <string name="omemo_init_failed_noresponse">OMEMO-Manager konnte nicht gestartet werden. Die OMEMO-Verschlüsselung funktioniert möglicherweise nicht richtig.</string>
+    <string name="omemo_init_failed_noresponse">OMEMO-Manager konnte nicht gestartet werden. Die OMEMO-Verschlüsselung funktioniert möglicherweise nicht richtig: %1$s</string>
     <string name="omemo_init_failed_title">OMEMO-Manager-Initialisierung fehlgeschlagen</string>
     <string name="omemo_menu_authenticated">OMEMO authentifiziert</string>
     <string name="omemo_menu_unauthenticated">OMEMO nicht-authentifiziert</string>
@@ -1138,7 +1138,7 @@
     <string name="service_gui_JBR_STUN_LIST">Zusätzliche STUN/TURN-Server&#8230;</string>
     <string name="service_gui_JBR_STUN_LIST_SUMMARY">Benutzerdefinierte zusätzliche STUN/TURN-Server</string>
     <string name="service_gui_JBR_TELE_DOMAIN">Telefon-Domain</string>
-    <string name="service_gui_JBR_TELEPHONY">Telefonie</string>
+    <string name="service_gui_JBR_TELEPHONY">Telefonie (experimentell)</string>
     <string name="service_gui_JBR_TELEPHONY_SUMMARY">Telefonie-Optionen einstellen&#8230;</string>
     <string name="service_gui_JBR_USE_DEFAULT_STUN">Jitsi STUN-Server verwenden (Fallback)</string>
     <string name="service_gui_JBR_USE_ICE">ICE verwenden</string>
@@ -1146,6 +1146,17 @@
     <string name="service_gui_JBR_USE_UPNP">UPnP verwenden</string>
     <string name="service_gui_JBR_USER">BENUTZER-ID</string>
     <string name="service_gui_JBR_USER_CATEGORY">Benutzername und Passwort</string>
+
+    <!-- Telephony -->
+    <string name="service_gui_CONTACT_PHONE_NUMBER">Kontakt Name/Telefon/Jid:</string>
+    <string name="service_gui_EXT_CALL_VIA">Anruf über:</string>
+    <string name="service_gui_NO_CONTACT_PHONE">Kontakttelefonnummer kann nicht leer sein!</string>
+    <string name="recipient_error_non_ascii">Sonderzeichen werden derzeit nicht unterstützt!</string>
+    <string name="service_gui_NOT_IN_ROSTER">Die angegebene Telefoniedomäne \'%1$s\' ist kein Mitglied der Kontaktliste</string>
+    <string name="service_gui_NOT_IN_CALLGROUP">%1$s gehört nicht zur definierten Anrufgruppe</string>
+    <string name="service_gui_NO_JINGLE_SUPPORT">%1$s\nunterstützt kein Jingle-Protokoll</string>
+    <string name="recipient_error_parse_failed">Fehler beim Parsen der Adresse!</string>
+    <string name="unknown_recipient"><![CDATA[<Unbekannter Empfänger>]]></string>
 
     <!-- General settings -->
     <string name="service_gui_settings_DISABLED_STR">Deaktiviert</string>
@@ -1445,6 +1456,7 @@
 
     <string name="all_permission_denied_dialog_title">Alle Berechtigungsanforderungen</string>
     <string name="all_permissions_denied_feedback">aTalk funktioniert möglicherweise nicht richtig oder zeigt ein unsachgemäßes Verhalten da einige Dienste abgelehnt wurden.\nWenn Sie die Option\"Nicht erneut nachfragen\" gewählt haben, müssen Sie sich zu den Android-Einstellungen begeben: -> APP INFO für aTalk, zum Aktivieren der Ressourcenzugriffsberechtigungen</string>
+    <string name="permission_denied_all_alert">aTalk würde nicht richtig funktionieren. Sie haben aTalk aller Berechtigungen verweigert!</string>
 
     <string name="permission_rational_message">Sie werden nun nach jedem von aTalk benötigten Dienst gefragt; Bitte erlauben Sie aTalk auf diese Dienste zuzugreifen um alle unterstützten Funktionalitäten nutzen zu können.</string>
     <string name="permission_rational_settings_button_text">EINSTELLUNGEN</string>

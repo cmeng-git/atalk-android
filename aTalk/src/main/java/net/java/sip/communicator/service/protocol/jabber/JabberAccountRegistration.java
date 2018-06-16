@@ -7,6 +7,7 @@ package net.java.sip.communicator.service.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ServiceUtils;
+
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.util.StringUtils;
@@ -24,7 +25,8 @@ import java.util.*;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class JabberAccountRegistration extends JabberAccountID implements Serializable {
+public class JabberAccountRegistration extends JabberAccountID implements Serializable
+{
     private static final long serialVersionUID = 1L;
 
     /**
@@ -60,12 +62,14 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     /**
      * The security registration object
      */
-    private SecurityAccountRegistration securityRegistration = new SecurityAccountRegistration() {
+    private SecurityAccountRegistration securityRegistration = new SecurityAccountRegistration()
+    {
         /**
          * Sets the method used for RTP/SAVP indication.
          */
         @Override
-        public void setSavpOption(int savpOption) {
+        public void setSavpOption(int savpOption)
+        {
             // SAVP option is not useful for XMPP account. Thereby, do nothing.
         }
 
@@ -75,7 +79,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
          * @return Always <tt>ProtocolProviderFactory.SAVP_OFF</tt>.
          */
         @Override
-        public int getSavpOption() {
+        public int getSavpOption()
+        {
             return ProtocolProviderFactory.SAVP_OFF;
         }
     };
@@ -83,7 +88,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     /**
      * Initializes a new JabberAccountRegistration.
      */
-    public JabberAccountRegistration() {
+    public JabberAccountRegistration()
+    {
         super(null, new HashMap<String, String>());
     }
 
@@ -92,7 +98,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      *
      * @return UID of edited account.
      */
-    public String getAccountUniqueID() {
+    public String getAccountUniqueID()
+    {
         return editedAccUID;
     }
 
@@ -101,14 +108,16 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      *
      * @param userID the identifier of the jabber registration account.
      */
-    public void setUserID(String userID) {
+    public void setUserID(String userID)
+    {
         setOrRemoveIfEmpty(ProtocolProviderFactory.USER_ID, userID);
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getUserID() {
+    public String getUserID()
+    {
         return getAccountPropertyString(ProtocolProviderFactory.USER_ID);
     }
 
@@ -117,7 +126,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      *
      * @return TRUE if password has to remembered, FALSE otherwise
      */
-    public boolean isRememberPassword() {
+    public boolean isRememberPassword()
+    {
         return rememberPassword;
     }
 
@@ -126,7 +136,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      *
      * @param rememberPassword TRUE if password has to remembered, FALSE otherwise
      */
-    public void setRememberPassword(boolean rememberPassword) {
+    public void setRememberPassword(boolean rememberPassword)
+    {
         this.rememberPassword = rememberPassword;
     }
 
@@ -135,7 +146,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      *
      * @param stunServer the <tt>StunServer</tt> to add
      */
-    public void addStunServer(StunServerDescriptor stunServer) {
+    public void addStunServer(StunServerDescriptor stunServer)
+    {
         additionalStunServers.add(stunServer);
     }
 
@@ -145,7 +157,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      *
      * @return the <tt>List</tt> of all additional stun servers entered by the user.
      */
-    public List<StunServerDescriptor> getAdditionalStunServers() {
+    public List<StunServerDescriptor> getAdditionalStunServers()
+    {
         return additionalStunServers;
     }
 
@@ -154,7 +167,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      *
      * @param node the <tt>node</tt> to add
      */
-    public void addJingleNodes(JingleNodeDescriptor node) {
+    public void addJingleNodes(JingleNodeDescriptor node)
+    {
         additionalJingleNodes.add(node);
     }
 
@@ -164,7 +178,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      *
      * @return the <tt>List</tt> of all additional stun servers entered by the user.
      */
-    public List<JingleNodeDescriptor> getAdditionalJingleNodes() {
+    public List<JingleNodeDescriptor> getAdditionalJingleNodes()
+    {
         return additionalJingleNodes;
     }
 
@@ -173,7 +188,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      *
      * @return <tt>EncodingsRegistrationUtil</tt> object which stores encodings configuration.
      */
-    public EncodingsRegistrationUtil getEncodingsRegistration() {
+    public EncodingsRegistrationUtil getEncodingsRegistration()
+    {
         return encodingsRegistration;
     }
 
@@ -182,28 +198,31 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      *
      * @return <tt>SecurityAccountRegistration</tt> object which stores security settings.
      */
-    public SecurityAccountRegistration getSecurityRegistration() {
+    public SecurityAccountRegistration getSecurityRegistration()
+    {
         return securityRegistration;
     }
 
     /**
-     * Stores Jabber account configuration held by this registration object into given
-     * <tt>accountProperties</tt> map.
+     * Merge Jabber account configuration held by this registration account (after cleanup and updated with
+     * new STUN/JN, Security and Encoding settings into the given <tt>accountProperties</tt> map.
      *
-     * @param userName          the user name that will be used.
-     * @param passWord          the password for this account.
-     * @param protocolIconPath  the path to protocol icon if used, or <tt>null</tt> otherwise.
-     * @param accountIconPath   the path to account icon if used, or <tt>null</tt> otherwise.
+     * @param userName the user name that will be used.
+     * @param passWord the password for this account.
+     * @param protocolIconPath the path to protocol icon if used, or <tt>null</tt> otherwise.
+     * @param accountIconPath the path to account icon if used, or <tt>null</tt> otherwise.
      * @param accountProperties the map used for storing account properties.
      * @throws OperationFailedException if properties are invalid.
      */
     public void storeProperties(ProtocolProviderFactory factory, String userName, String passWord,
-                                String protocolIconPath, String accountIconPath, Map<String, String> accountProperties)
-            throws OperationFailedException {
+            String protocolIconPath, String accountIconPath, Map<String, String> accountProperties)
+            throws OperationFailedException
+    {
 
         if (rememberPassword) {
             setPassword(passWord);
-        } else {
+        }
+        else {
             setPassword(null);
         }
 
@@ -214,7 +233,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
             accountUuid = accManager.getStoredAccountUUID(factory, editedAccUID);
         }
 
-        // If it is existing account stored in database - then clean up some old stuffs
+        // If it is an existing account - need to clean up all the STUN/JN old settings stored in database (always true)
         if (accountUuid != null) {
             ConfigurationService configSrvc = ProtocolProviderActivator.getConfigurationService();
             List<String> allProperties = configSrvc.getAllPropertyNames(accountUuid);
@@ -225,8 +244,9 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
                 }
             }
 
-            // Also from this instance
-            String[] accKeys = mAccountProperties.keySet().toArray(new String[accountProperties.size()]);
+            // Also remove old mAccountProperties settings from this instance of account for merging later.
+            // Duplicate a copy of mAccountProperties (avoid concurrent access) and iterate to remove STUN/JN
+            String[] accKeys = mAccountProperties.keySet().toArray(new String[mAccountProperties.size()]);
             for (String property : accKeys) {
                 if (property.startsWith(ProtocolProviderFactory.STUN_PREFIX)
                         || property.startsWith(JingleNodeDescriptor.JN_PREFIX)) {
@@ -250,7 +270,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
         }
         mAccountProperties.put(JingleNodeDescriptor.JN_IS_RELAY_SUPPORTED, "false");
 
-        // Add in all other jabber account default properties
+        // Add in all other jabber account default properties into AccountID mAccountProperties
         securityRegistration.storeProperties(mAccountProperties);
         encodingsRegistration.storeProperties(mAccountProperties);
         super.storeProperties(protocolIconPath, accountIconPath, accountProperties);
@@ -259,10 +279,11 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     /**
      * Fills this registration object with configuration properties from given <tt>account</tt>.
      *
-     * @param account       the account object that will be used.
+     * @param account the account object that will be used.
      * @param bundleContext the OSGi bundle context required for some operations.
      */
-    public void loadAccount(AccountID account, BundleContext bundleContext) {
+    public void loadAccount(AccountID account, BundleContext bundleContext)
+    {
         // cmeng - both same ???
         mergeProperties(account.getAccountProperties(), mAccountProperties);
 
@@ -271,7 +292,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
         setUserID(account.getUserID());
         editedAccUID = account.getAccountUniqueID();
         setPassword(password);
-        rememberPassword = (password != null);
+        // rememberPassword = (password != null);
+        rememberPassword = account.isPasswordPersistent();
 
         // Security properties
         securityRegistration.loadAccount(account);
@@ -317,7 +339,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      * @param userName the full JID that we'd like to parse.
      * @return returns the server part of a full JID
      */
-    protected String getServerFromUserName(String userName) {
+    protected String getServerFromUserName(String userName)
+    {
         String newServerAddr = XmppStringUtils.parseDomain(userName);
         if (!StringUtils.isNullOrEmpty(newServerAddr)) {
             return newServerAddr.equals(GOOGLE_USER_SUFFIX) ? GOOGLE_CONNECT_SRV : newServerAddr;

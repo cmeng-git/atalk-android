@@ -44,7 +44,6 @@
 * XEP-0364: Off-the-Record Messaging (V2/3)
 * XEP-0384: OMEMO Encryption
 
-
 * XEP-0128:	Service Discovery Extensions
 * XEP-0180: Jingle Video via RTP
 * XEP-0313: Message Archive Management (NI)
@@ -52,3 +51,55 @@
 * XEP-0357: Push Notifications (NI)
 * XEP-0363: HTTP File Upload (NI)
 * XEP-0368: SRV records for XMPP over TLS
+
+======================================
+<query xmlns='http://jabber.org/protocol/disco#info'>
+<identity category='client' name='aTalk' type='android'/>
+
+<feature var='eu.siacs.conversations.axolotl.devicelist+notify'/>
+
+<feature var='http://jabber.org/protocol/bytestreams'/>
+<feature var='http://jabber.org/protocol/caps'/>
+<feature var='http://jabber.org/protocol/chatstates'/>
+<feature var='http://jabber.org/protocol/disco#info'/>
+<feature var='http://jabber.org/protocol/disco#items'/>
+<feature var='http://jabber.org/protocol/ibb'/>
+<feature var='http://jabber.org/protocol/jinglenodes'/>
+<feature var='http://jabber.org/protocol/muc'/>
+<feature var='http://jabber.org/protocol/muc#rooms'/>
+<feature var='http://jabber.org/protocol/muc#traffic'/>
+<feature var='http://jabber.org/protocol/si'/>
+<feature var='http://jabber.org/protocol/si/profile/file-transfer'/>
+<feature var='http://jabber.org/protocol/xhtml-im'/>
+<feature var='http://jabber.org/protocol/xdata-layout'/>
+<feature var='http://jabber.org/protocol/xdata-validate'/>
+
+<feature var='jabber:x:data'/>
+<feature var='jabber:iq:last'/>
+<feature var='jabber:iq:privacy'/>
+<feature var='jabber:iq:version'/>
+
+<feature var='urn:xmpp:avatar:metadata+notify'/>
+<feature var='urn:xmpp:avatar:data'/>
+<feature var='urn:xmpp:bob'/>
+<feature var='urn:xmpp:carbons:2'/>
+<feature var='urn:xmpp:coin'/></query></iq>
+<feature var='urn:xmpp:eme:0'/>
+<feature var='urn:xmpp:jingle:1'/>
+<feature var='urn:xmpp:jingle:apps:rtp:1'/>
+<feature var='urn:xmpp:jingle:apps:rtp:audio'/>
+<feature var='urn:xmpp:jingle:apps:rtp:video'/>
+<feature var='urn:xmpp:jingle:apps:rtp:rtp-hdrext:0'/>
+<feature var='urn:xmpp:jingle:apps:rtp:zrtp:1'/>
+<feature var='urn:xmpp:jingle:transports:ice-udp:1'/>
+<feature var='urn:xmpp:jingle:transports:raw-udp:1'/>
+<feature var='urn:xmpp:jingle:transfer:0'/>
+<feature var='urn:xmpp:ping'/>
+<feature var='urn:xmpp:http'/>
+<feature var='urn:xmpp:message-correct:0'/>
+<feature var='urn:xmpp:receipts'/>
+<feature var='urn:xmpp:sid:0'/>
+<feature var='urn:xmpp:thumbs:0'/>
+<feature var='urn:xmpp:time'/>
+<feature var='vcard-temp'/>
+

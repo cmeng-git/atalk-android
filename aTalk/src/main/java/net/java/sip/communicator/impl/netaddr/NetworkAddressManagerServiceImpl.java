@@ -33,15 +33,7 @@ import org.ice4j.security.LongTermCredential;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.BindException;
-import java.net.DatagramSocket;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Enumeration;
 
 import de.measite.minidns.record.SRV;
@@ -103,8 +95,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
 
     /**
      * Kills all threads/processes launched by this thread (if any) and prepares it for shutdown.
-     * You may use this method as a reinitialization technique (you'll have to call start
-     * afterwards)
+     * You may use this method as a reinitialization technique (you'll have to call start afterwards)
      */
     public void stop()
     {
@@ -472,8 +463,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
      * @param password the password that we'd like to try when connecting to a TURN server (we won't be using
      * credentials in case we only have a STUN server).
      * @return A {@link StunCandidateHarvester} corresponding to the TURN or STUN server we
-     * discovered or <tt>null</tt> if there were no such records for the specified
-     * <tt>domainName</tt>
+     * discovered or <tt>null</tt> if there were no such records for the specified <tt>domainName</tt>
      */
     public StunCandidateHarvester discoverStunServer(String domainName, byte[] userName, byte[] password)
     {
@@ -522,7 +512,6 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
      *
      * @param rtpPort the port that we should try to bind the RTP component on (the RTCP one would
      * automatically go to rtpPort + 1)
-     *
      * @param streamName the name of the stream to create
      * @param agent the <tt>Agent</tt> that should create the stream.
      * @return the newly created <tt>IceMediaStream</tt>.

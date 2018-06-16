@@ -291,7 +291,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Crear una pasarela de vídeo</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Crear / Ingresar en una videoconferencia</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Crear una nueva videoconferencia para esta sala de chat</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">La cámara de su dispositivo parece no ser compatible con la vista previa panorámica en la pantalla panorámica. Por favor, utilice la orientación de la pantalla apaisada para la videollamada.</string>
+    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">La cámara del dispositivo no puede admitir la resolución de video seleccionada mientras está en modo vertical. Coloque el teléfono en orientación horizontal para la videollamada:\n[ancho=%1$s; altura=%2$s]</string>
     <string name="service_gui_DISCONNECTED_STATUS">Desconectado</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Desconectando %1$s</string>
     <string name="service_gui_DEFAULT_USER_PHOTO">Foto de persona</string>
@@ -913,7 +913,7 @@
     <string name="omemo_init_failed_CorruptedOmemoKeyException">Falló el inicio de OmemoManager y la mensajería omemo no funciona. Si el problema continúa
         después de reiniciar, procede a "Regenerar las identidades OMEMO" para el dispositivo Omemo que ha fallado.: %1$s.\n\nExcepción: %2$s.</string>
     <string name="omemo_init_failed_noresponse">Falló el inicio de OmemoManager y es posible que la mensajería omemo no funcione.\n\n
-        No se ha recibido respuesta dentro del tiempo límite de respuesta.</string>
+        No se ha recibido respuesta dentro del tiempo límite de respuesta: %1$s</string>
     <string name="omemo_init_failed_title">Error en el inicio de OmemoManager</string>
     <string name="omemo_menu_authenticated">OMEMO Authenticado</string>
     <string name="omemo_menu_unauthenticated">OMEMO No authenticado</string>
@@ -1147,7 +1147,7 @@
     <string name="service_gui_JBR_STUN_LIST">Servidor STUN/TURN adicionales&#8230;</string>
     <string name="service_gui_JBR_STUN_LIST_SUMMARY">Servidores STUN/TURN adicionales definidos por el usuario para su uso</string>
     <string name="service_gui_JBR_TELE_DOMAIN">Dominio de telefonía</string>
-    <string name="service_gui_JBR_TELEPHONY">Telefonía</string>
+    <string name="service_gui_JBR_TELEPHONY">Telefonía (experimental)</string>
     <string name="service_gui_JBR_TELEPHONY_SUMMARY">Configurar las opciones de telefonía&#8230;</string>
     <string name="service_gui_JBR_USE_DEFAULT_STUN">Usar el servidor STUN de Jitsi (alternativo)</string>
     <string name="service_gui_JBR_USE_ICE">Usar ICE</string>
@@ -1155,6 +1155,17 @@
     <string name="service_gui_JBR_USE_UPNP">Usar UPnP</string>
     <string name="service_gui_JBR_USER">ID de USUARIO</string>
     <string name="service_gui_JBR_USER_CATEGORY">Nombre de usuario y contraseña</string>
+
+    <!-- Telephony -->
+    <string name="service_gui_CONTACT_PHONE_NUMBER">Nombre/teléfono/Jid de contacto:</string>
+    <string name="service_gui_EXT_CALL_VIA">Llamar por:</string>
+    <string name="service_gui_NO_CONTACT_PHONE">¡El número de teléfono de contacto no puede estar vacío!</string>
+    <string name="recipient_error_non_ascii">¡Los caracteres especiales no son compatibles actualmente!</string>
+    <string name="service_gui_NOT_IN_ROSTER">El dominio de telefonía especificado \'%1$s\' no es miembro de la lista de contactos</string>
+    <string name="service_gui_NOT_IN_CALLGROUP">%1$s no pertenece al grupo de llamadas definido</string>
+    <string name="service_gui_NO_JINGLE_SUPPORT">%1$s\nno es compatible con el protocolo Jingle</string>
+    <string name="recipient_error_parse_failed">Error al analizar la dirección</string>
+    <string name="unknown_recipient"><![CDATA[<Destinatario desconocido>]]></string>
 
     <!-- General settings -->
     <string name="service_gui_settings_DISABLED_STR">Desactivado</string>
@@ -1456,6 +1467,7 @@
 
     <string name="all_permission_denied_dialog_title">Solicitar todos los permisos</string>
     <string name="all_permissions_denied_feedback">aTalk puede no funcionar correctamente o puede tener un comportamiento inesperado ya que algunos servicios han sido denegados! Si has seleccionado la opción "Don't ask again" (No preguntar de nuevo), debes ir a android Ajustes -> APP INFO para aTalk para habilitar el permiso de acceso a los recursos.</string>
+    <string name="permission_denied_all_alert">aTalk no funcionaría correctamente. ¡Has negado un timbre de todos los permisos!</string>
 
     <string name="permission_rationale_message">Se presenta cada servicio que necesita aTalk; por favor permite que aTalk acceda a estos servicios para obtener todas las funciones soportadas.</string>
     <string name="permission_rationale_settings_button_text">AJUSTES</string>

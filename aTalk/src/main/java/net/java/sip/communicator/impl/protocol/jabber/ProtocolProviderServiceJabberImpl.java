@@ -2603,7 +2603,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     public boolean isGmailOrGoogleAppsAccount()
     {
         String domain = mAccountID.getService();
-        if (mAccountID.getAccountPropertyBoolean(ProtocolProviderFactory.IS_SERVER_OVERRIDDEN, false)) {
+        if (mAccountID.isServerOverridden()) {
             domain = mAccountID.getAccountPropertyString(ProtocolProviderFactory.SERVER_ADDRESS, domain);
         }
         return isGmailOrGoogleAppsAccount(domain);

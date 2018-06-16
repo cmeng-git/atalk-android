@@ -119,7 +119,7 @@ public class JingleNodeDescriptor implements Serializable
     public void storeDescriptor(Map<String, String> props, String namePrefix)
     {
         if (namePrefix == null)
-            namePrefix = "";
+            namePrefix = JingleNodeDescriptor.JN_PREFIX;
 
         props.put(namePrefix + JN_ADDRESS, getJID().toString());
         props.put(namePrefix + JN_IS_RELAY_SUPPORTED, Boolean.toString(isRelaySupported()));
@@ -137,7 +137,7 @@ public class JingleNodeDescriptor implements Serializable
     public static JingleNodeDescriptor loadDescriptor(Map<String, String> props, String namePrefix)
     {
         if (namePrefix == null)
-            namePrefix = "";
+            namePrefix = JingleNodeDescriptor.JN_PREFIX;
 
         String relayAddress = props.get(namePrefix + JN_ADDRESS);
         if (relayAddress == null)

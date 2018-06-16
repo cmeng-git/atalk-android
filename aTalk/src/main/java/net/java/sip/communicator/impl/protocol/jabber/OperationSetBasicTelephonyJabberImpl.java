@@ -9,65 +9,33 @@ import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.CallIdPacketExtension;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.ConferenceDescriptionPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CoinPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.JingleAction;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.JingleIQ;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.Reason;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ReasonPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RtpDescriptionPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.SessionInfoPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.TransferPacketExtension;
-import net.java.sip.communicator.service.protocol.AbstractCallPeer;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.CallPeerState;
-import net.java.sip.communicator.service.protocol.CallState;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ConferenceDescription;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationSetAdvancedTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetSecureSDesTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetSecureZrtpTelephony;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.TransferAuthority;
-import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
-import net.java.sip.communicator.service.protocol.event.CallChangeListener;
-import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 import net.java.sip.communicator.service.protocol.media.AbstractOperationSetBasicTelephony;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Implements all call management logic and exports basic telephony support by implementing
@@ -112,7 +80,7 @@ public class OperationSetBasicTelephonyJabberImpl
     /**
      * Google Voice domain.
      */
-    private static final String GOOGLE_VOICE_DOMAIN = "voice.google.com";
+    public static final String GOOGLE_VOICE_DOMAIN = "voice.google.com";
 
     /**
      * Creates a new instance.
@@ -126,9 +94,8 @@ public class OperationSetBasicTelephonyJabberImpl
     }
 
     /**
-     * Implementation of method <tt>registrationStateChange</tt> from interface
-     * RegistrationStateChangeListener for setting up (or down) our <tt>JingleManager</tt> when an
-     * <tt>XMPPConnection</tt> is available
+     * Implementation of method <tt>registrationStateChange</tt> from interface RegistrationStateChangeListener
+     * for setting up (or down) our <tt>JingleManager</tt> when an <tt>XMPPConnection</tt> is available
      *
      * @param evt the event received
      */
@@ -149,8 +116,7 @@ public class OperationSetBasicTelephonyJabberImpl
     }
 
     /**
-     * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> to it given by her
-     * <tt>String</tt> URI.
+     * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> to it given by her <tt>String</tt> URI.
      *
      * @param callee the address of the callee who we should invite to a new <tt>Call</tt>
      * @param conference the <tt>CallConference</tt> in which the newly-created <tt>Call</tt> is to participate
@@ -167,7 +133,6 @@ public class OperationSetBasicTelephonyJabberImpl
             call.setConference(conference);
 
         CallPeer callPeer = createOutgoingCall(call, callee);
-
         if (callPeer == null) {
             throw new OperationFailedException("Failed to create outgoing call because no peer was created",
                     OperationFailedException.INTERNAL_ERROR);
@@ -175,7 +140,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
         Call callOfCallPeer = callPeer.getCall();
         // We may have a Google Talk call here.
-        if ((callOfCallPeer != call) && (conference != null))
+        if ((callOfCallPeer != null) && (call != callOfCallPeer) && (conference != null))
             callOfCallPeer.setConference(conference);
 
         return callOfCallPeer;
@@ -183,13 +148,12 @@ public class OperationSetBasicTelephonyJabberImpl
 
     /**
      * {@inheritDoc}
-     * <p>
+     *
      * Creates a new <tt>CallJabberImpl</tt> and initiates a jingle session to the JID obtained
      * from the <tt>uri</tt> of <tt>cd</tt>.
-     * <p>
-     * If <tt>cd</tt> contains a <tt>callid</tt>, adds the "callid" element as an extension to the
-     * session-initiate IQ.
-     * <p>
+     *
+     * If <tt>cd</tt> contains a <tt>callid</tt>, adds the "callid" element as an extension to the session-initiate IQ.
+     *
      * Uses the supported transports of <tt>cd</tt>
      */
     @Override
@@ -267,9 +231,8 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param call the <tt>CallJabberImpl</tt> that will be used to initiate the call
      * @param calleeAddress the address of the callee that we'd like to connect with.
-     * @param sessionInitiateExtensions a collection of additional and optional <tt>ExtensionElement</tt>s to be added to the
-     * <tt>session-initiate</tt> {@link JingleIQ} which is to init the specified
-     * <tt>call</tt>
+     * @param sessionInitiateExtensions a collection of additional and optional <tt>ExtensionElement</tt>s to be
+     * added to the <tt>session-initiate</tt> {@link JingleIQ} which is to init the specified <tt>call</tt>
      * @return the <tt>CallPeer</tt> that represented by the specified uri. All following state
      * change events will be delivered through that call peer. The <tt>Call</tt> that this
      * peer is a member of could be retrieved from the <tt>CallPeer</tt> instance with the
@@ -312,35 +275,31 @@ public class OperationSetBasicTelephonyJabberImpl
         if (logger.isInfoEnabled())
             logger.info("Creating outgoing call to " + calleeAddress);
         if (mConnection == null || call == null) {
-            throw new OperationFailedException("Failed to create OutgoingJingleSession."
-                    + " We don't have a valid XMPPConnection.", OperationFailedException.INTERNAL_ERROR);
+            throw new OperationFailedException("Failed to create Outgoing Jingle Session - NO valid XMPPConnection.",
+                    OperationFailedException.INTERNAL_ERROR);
         }
 
         boolean isGoogle = protocolProvider.isGmailOrGoogleAppsAccount();
-        boolean isGoogleVoice = false;
-
-        if (isGoogle) {
-            if (!calleeAddress.contains("@")) {
-                calleeAddress += "@" + GOOGLE_VOICE_DOMAIN;
-                isGoogleVoice = true;
-            }
-            else if (calleeAddress.endsWith(GOOGLE_VOICE_DOMAIN)) {
-                isGoogleVoice = true;
-            }
+        boolean isGoogleVoice = calleeAddress.endsWith(GOOGLE_VOICE_DOMAIN);
+        if (isGoogle && !calleeAddress.contains("@")) {
+            calleeAddress += "@" + GOOGLE_VOICE_DOMAIN;
+            isGoogleVoice = true;
         }
 
-        // if address is not suffixed by @domain, add the default domain corresponding to account
-        // domain or via the OVERRIDE_PHONE_SUFFIX property if defined
-        AccountID accountID = getProtocolProvider().getAccountID();
-
+        // if address is not suffixed by @domain, append address with the domain corresponding
+        // to the OVERRIDE_PHONE_SUFFIX property if defined or user account service domain
+        JabberAccountID accountJID = (JabberAccountID) getProtocolProvider().getAccountID();
+        String telephonyDomain = accountJID.getOverridePhoneSuffix();
         if (!calleeAddress.contains("@")) {
-            String serviceName = accountID.getAccountPropertyString("OVERRIDE_PHONE_SUFFIX");
+            String serviceName = telephonyDomain;
             if (TextUtils.isEmpty(serviceName))
-                serviceName = XmppStringUtils.parseDomain(accountID.getUserID());
+                serviceName = XmppStringUtils.parseDomain(accountJID.getUserID());
             calleeAddress += "@" + serviceName;
         }
+        boolean isTelephonyCall = ((telephonyDomain != null) && calleeAddress.endsWith(telephonyDomain));
 
-        String bypassDomain = accountID.getAccountPropertyString(JabberAccountID.TELEPHONY_BYPASS_GTALK_CAPS);
+        // getAccountPropertyString(JabberAccountID.TELEPHONY_BYPASS_GTALK_CAPS);
+        String bypassDomain = accountJID.getTelephonyDomainBypassCaps();
         boolean alwaysCallGtalk = ((bypassDomain != null)
                 && bypassDomain.equals(XmppStringUtils.parseDomain(calleeAddress))) || isGoogleVoice;
 
@@ -356,40 +315,68 @@ public class OperationSetBasicTelephonyJabberImpl
             e.printStackTrace();
         }
 
+        // Throw exception if the call is none of the above criteria check
         if ((!Roster.getInstanceFor(mConnection).contains(calleeJid.asBareJid())
-                && !isPrivateMessagingContact) && !alwaysCallGtalk) {
-            throw new OperationFailedException(calleeAddress
-                    + " does not belong to our contact list", OperationFailedException.NOT_FOUND);
+                && !isPrivateMessagingContact) && !alwaysCallGtalk && !isTelephonyCall) {
+            throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_NOT_IN_CALLGROUP, calleeAddress),
+                    OperationFailedException.FORBIDDEN);
         }
-
-        // If there's no fullCalleeURI specified we'll discover the most connected one with highest priority.
-        if (fullCalleeURI == null)
-            fullCalleeURI = discoverFullJid(calleeJid);
-
-        if (fullCalleeURI == null)
-            throw new OperationFailedException("Failed to create outgoing call to " + calleeAddress
-                    + ". Could not find a resource which supports Jingle",
-                    OperationFailedException.INTERNAL_ERROR);
-        DiscoverInfo di = null;
 
         Jid fullCalleeAddress = fullCalleeURI;
+        Jid discoInfoJid = fullCalleeURI;
+        if (fullCalleeURI == null) {
+            /*
+             * @ see XEP-0100: Gateway Interaction - must also confirm to XEP-0115 for smack to accept disco#info
+             * 1. use calleeJid for fullCalleeURI
+             * 2. use gateway Jid to get disco#info from server
+             */
+            if (isTelephonyCall) {
+                fullCalleeAddress = calleeJid;
+
+                // pbx gateway has only the domain part and without resource being specified.
+                try {
+                    discoInfoJid = JidCreate.domainBareFrom(telephonyDomain);
+                } catch (XmppStringprepException e) {
+                    logger.warn("DomainJid creation failed for :" + telephonyDomain);
+                }
+
+                if (discoInfoJid == null) {
+                    throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_NOT_IN_ROSTER,
+                            telephonyDomain), OperationFailedException.ILLEGAL_ARGUMENT);
+                }
+            }
+            // If there's no fullCalleeURI specified we'll discover the most connected one with highest priority.
+            else {
+                fullCalleeURI = discoverFullJid(calleeJid);
+                if (fullCalleeURI != null) {
+                    fullCalleeAddress = fullCalleeURI;
+                    discoInfoJid = fullCalleeURI;
+                }
+                else {
+                    if (telephonyDomain != null)
+                        throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_NOT_IN_ROSTER,
+                                telephonyDomain), OperationFailedException.ILLEGAL_ARGUMENT);
+                    else
+                        throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_INVALID_ADDRESS,
+                                fullCalleeAddress), OperationFailedException.ILLEGAL_ARGUMENT);
+                }
+            }
+        }
+
+        DiscoverInfo di = null;
         try {
             // check if the remote client supports telephony.
-            di = protocolProvider.getDiscoveryManager().discoverInfo(fullCalleeURI);
+            di = protocolProvider.getDiscoveryManager().discoverInfo(discoInfoJid);
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
-            logger.warn("could not retrieve info for " + fullCalleeAddress, ex);
+            logger.warn("could not retrieve info for " + discoInfoJid, ex);
         }
 
-        if (di != null) {
+        if (di == null) {
             if (logger.isInfoEnabled())
-                logger.info(fullCalleeAddress + ": jingle supported ");
-        }
-        else {
-            if (logger.isInfoEnabled())
-                logger.info(fullCalleeAddress + ": jingle not supported?");
+                logger.info(discoInfoJid + ": jingle not supported?");
 
-            throw new OperationFailedException("Failed to create an outgoing call.\n"
-                    + fullCalleeAddress + " does not support jingle", OperationFailedException.INTERNAL_ERROR);
+            throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_NO_JINGLE_SUPPORT,
+                    discoInfoJid), OperationFailedException.NOT_SUPPORTED_OPERATION);
         }
 
         /*
@@ -401,7 +388,6 @@ public class OperationSetBasicTelephonyJabberImpl
          */
 
         AbstractCallPeer<?, ?> peer = null;
-
         // initiate call
         try {
             if (di != null) {
@@ -415,9 +401,12 @@ public class OperationSetBasicTelephonyJabberImpl
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                ProtocolProviderServiceJabberImpl.throwOperationFailedException(
-                        "Failed to create a call to " + fullCalleeAddress,
-                        OperationFailedException.INTERNAL_ERROR, t, logger);
+                if (telephonyDomain != null)
+                    throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_NOT_IN_ROSTER,
+                            telephonyDomain), OperationFailedException.ILLEGAL_ARGUMENT);
+                else
+                    throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_INVALID_ADDRESS,
+                            fullCalleeAddress), OperationFailedException.ILLEGAL_ARGUMENT);
             }
         }
         return peer;
@@ -438,19 +427,15 @@ public class OperationSetBasicTelephonyJabberImpl
         Jid calleeURI = null;
         Jid fullCalleeURI = null;
 
-        List<Presence> it = Roster.getInstanceFor(mConnection)
-                .getPresences(calleeAddress.asBareJid());
+        List<Presence> it = Roster.getInstanceFor(mConnection).getPresences(calleeAddress.asBareJid());
         for (Presence presence : it) {
-            int priority = (presence.getPriority() == Integer.MIN_VALUE)
-                    ? 0 : presence.getPriority();
+            int priority = (presence.getPriority() == Integer.MIN_VALUE) ? 0 : presence.getPriority();
             calleeURI = presence.getFrom();
-
             try {
                 // check if the remote client supports telephony.
                 discoverInfo = protocolProvider.getDiscoveryManager().discoverInfo(calleeURI);
-            } catch (XMPPException | NoResponseException | NotConnectedException
-                    | InterruptedException ex) {
-                logger.warn("could not retrieve info for " + fullCalleeURI.toString(), ex);
+            } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
+                logger.warn("could not retrieve info for: " + fullCalleeURI, ex);
             }
 
             if ((discoverInfo != null) && discoverInfo.containsFeature(
@@ -472,9 +457,7 @@ public class OperationSetBasicTelephonyJabberImpl
             }
         }
         if (logger.isInfoEnabled())
-            logger.info("Full JID for outgoing call: " + fullCalleeURI.toString() + ", priority "
-                    + bestPriority);
-
+            logger.info("Full JID for outgoing call: " + fullCalleeURI + ", priority " + bestPriority);
         return fullCalleeURI;
     }
 
@@ -584,7 +567,6 @@ public class OperationSetBasicTelephonyJabberImpl
 
         if (failed && (reasonText != null)) {
             Reason reason = convertReasonCodeToSIPCode(reasonCode);
-
             if (reason != null) {
                 reasonPacketExt = new ReasonPacketExtension(reason, reasonText, null);
             }
@@ -684,8 +666,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * Tests whether or not the specified packet should be handled by this operation set. This
      * method is called by smack prior to packet delivery and it would only accept
      * <tt>JingleIQ</tt>s that are either session initiations with RTP content or belong to
-     * sessions that are
-     * already handled by this operation set.
+     * sessions that are already handled by this operation set.
      *
      * @param packet the packet to test.
      * @return true if and only if <tt>packet</tt> passes the filter.
@@ -695,8 +676,7 @@ public class OperationSetBasicTelephonyJabberImpl
         // We handle JingleIQ and SessionIQ.
         if (!(packet instanceof JingleIQ)) {
             String packetID = packet.getStanzaId();
-            AbstractCallPeer<?, ?> callPeer
-                    = activeCallsRepository.findCallPeerBySessInitPacketID(packetID);
+            AbstractCallPeer<?, ?> callPeer = activeCallsRepository.findCallPeerBySessInitPacketID(packetID);
 
             if (callPeer != null) {
                 /*
@@ -706,8 +686,7 @@ public class OperationSetBasicTelephonyJabberImpl
                 XMPPError error = packet.getError();
                 if (error != null) {
                     String errorMessage = error.getConditionText();
-                    logger.error("Received an error: code=" + error.getCondition() + " message="
-                            + errorMessage);
+                    logger.error("Received an error: code=" + error.getCondition() + " message=" + errorMessage);
 
                     String message;
                     if (errorMessage == null) {
@@ -716,8 +695,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
                         message = "Service unavailable";
                         if (!roster.contains(packetFrom)) {
-                            message += ": try adding the contact " + packetFrom.toString()
-                                    + " to your contact list first.";
+                            message += ": try adding the contact " + packetFrom.toString() + " to your contact list first.";
                         }
                     }
                     else
@@ -738,19 +716,16 @@ public class OperationSetBasicTelephonyJabberImpl
 
             String sid = jingleIQ.getSID();
 
-            // if this is not a session-initiate we'll only take it if we've already seen its
-            // session ID.
+            // if this is not a session-initiate we'll only take it if we've already seen its session ID.
             return (activeCallsRepository.findSID(sid) != null);
         }
         return false;
     }
 
     /**
-     * Handles incoming jingle packets and passes them to the corresponding method based on their
-     * action.
+     * Handles incoming jingle packets and passes them to the corresponding method based on their action.
      *
-     * @param packet
-     *        the packet to process.
+     * @param packet the packet to process.
      */
 
     /**
@@ -761,8 +736,7 @@ public class OperationSetBasicTelephonyJabberImpl
         // setup for Si FileTransferRequest event
         protected IQRequestHandler()
         {
-            super(JingleIQ.ELEMENT_NAME, JingleIQ.NAMESPACE, IQ.Type.set,
-                    IQRequestHandler.Mode.async);
+            super(JingleIQ.ELEMENT_NAME, JingleIQ.NAMESPACE, IQ.Type.set, IQRequestHandler.Mode.async);
         }
 
         @Override
@@ -788,8 +762,7 @@ public class OperationSetBasicTelephonyJabberImpl
             } catch (Throwable t) {
                 if (logger.isInfoEnabled()) {
                     String packetClass = iq.getClass().getSimpleName();
-                    logger.error("Error while handling incoming " + packetClass
-                            + " packet. Exception: ", t);
+                    logger.error("Error while handling incoming " + packetClass + " packet. Exception: ", t);
                     logger.error("On IQ: " + iq);
                 }
 
@@ -923,8 +896,7 @@ public class OperationSetBasicTelephonyJabberImpl
                     }
                 }
 
-                packetExtension = jingleIQ.getExtension(CoinPacketExtension.ELEMENT_NAME,
-                        CoinPacketExtension.NAMESPACE);
+                packetExtension = jingleIQ.getExtension(CoinPacketExtension.ELEMENT_NAME, CoinPacketExtension.NAMESPACE);
 
                 if (packetExtension instanceof CoinPacketExtension) {
                     CoinPacketExtension coinExt = (CoinPacketExtension) packetExtension;
@@ -960,14 +932,11 @@ public class OperationSetBasicTelephonyJabberImpl
     }
 
     /**
-     * Returns a reference to the {@link ActiveCallsRepositoryJabberGTalkImpl} that we are
-     * currently using.
+     * Returns a reference to the {@link ActiveCallsRepositoryJabberGTalkImpl} that we are currently using.
      *
-     * @return a reference to the {@link ActiveCallsRepositoryJabberGTalkImpl} that we are
-     * currently using.
+     * @return a reference to the {@link ActiveCallsRepositoryJabberGTalkImpl} that we are currently using.
      */
-    protected ActiveCallsRepositoryJabberGTalkImpl<CallJabberImpl,
-            CallPeerJabberImpl> getActiveCallsRepository()
+    protected ActiveCallsRepositoryJabberGTalkImpl<CallJabberImpl, CallPeerJabberImpl> getActiveCallsRepository()
     {
         return activeCallsRepository;
     }
@@ -996,22 +965,19 @@ public class OperationSetBasicTelephonyJabberImpl
     /**
      * Transfers (in the sense of call transfer) a specific <tt>CallPeer</tt> to a specific callee
      * address which already participates in an active <tt>Call</tt>.
-     * <p>
+     *
      * The method is suitable for providing the implementation of attended call transfer (though no
      * such requirement is imposed).
-     * </p>
      *
      * @param peer the <tt>CallPeer</tt> to be transferred to the specified callee address
-     * @param target the address in the form of <tt>CallPeer</tt> of the callee to transfer <tt>peer</tt>
-     * to
+     * @param target the address in the form of <tt>CallPeer</tt> of the callee to transfer <tt>peer</tt> to
      * @throws OperationFailedException if something goes wrong
      * @see OperationSetAdvancedTelephony#transfer(CallPeer, CallPeer)
      */
     public void transfer(CallPeer peer, CallPeer target)
             throws OperationFailedException
     {
-        AbstractCallPeerJabberGTalkImpl<?, ?, ?> targetJabberGTalkImpl
-                = (AbstractCallPeerJabberGTalkImpl<?, ?, ?>) target;
+        AbstractCallPeerJabberGTalkImpl<?, ?, ?> targetJabberGTalkImpl = (AbstractCallPeerJabberGTalkImpl<?, ?, ?>) target;
         Jid to = getFullCalleeURI(targetJabberGTalkImpl.getPeerJid());
 
         /*
@@ -1029,8 +995,7 @@ public class OperationSetBasicTelephonyJabberImpl
             if (!discoverInfo.containsFeature(
                     ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_TRANSFER_0)) {
                 throw new OperationFailedException("Callee " + to + " does not support"
-                        + " XEP-0251: Jingle Session Transfer",
-                        OperationFailedException.INTERNAL_ERROR);
+                        + " XEP-0251: Jingle Session Transfer", OperationFailedException.INTERNAL_ERROR);
             }
         } catch (XMPPException xmppe) {
             logger.warn("Failed to retrieve DiscoverInfo for " + to, xmppe);
@@ -1042,10 +1007,9 @@ public class OperationSetBasicTelephonyJabberImpl
     /**
      * Transfers (in the sense of call transfer) a specific <tt>CallPeer</tt> to a specific callee
      * address which may or may not already be participating in an active <tt>Call</tt>.
-     * <p>
+     *
      * The method is suitable for providing the implementation of unattended call transfer (though
      * no such requirement is imposed).
-     * </p>
      *
      * @param peer the <tt>CallPeer</tt> to be transferred to the specified callee address
      * @param target the address of the callee to transfer <tt>peer</tt> to
@@ -1071,8 +1035,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @param peer the <tt>CallPeer</tt> to be transferred to the specified callee address
      * @param to the address of the callee to transfer <tt>peer</tt> to
      * @param sid the Jingle session ID of the active <tt>Call</tt> between the local peer and the
-     * callee in the case of attended transfer; <tt>null</tt> in the case of unattended
-     * transfer
+     * callee in the case of attended transfer; <tt>null</tt> in the case of unattended transfer
      * @throws OperationFailedException if something goes wrong
      */
     private void transfer(CallPeer peer, Jid to, String sid)
@@ -1096,19 +1059,16 @@ public class OperationSetBasicTelephonyJabberImpl
             if (!discoverInfo.containsFeature(
                     ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_TRANSFER_0)) {
                 throw new OperationFailedException("Caller " + caller + " does not support"
-                        + " XEP-0251: Jingle Session Transfer",
-                        OperationFailedException.INTERNAL_ERROR);
+                        + " XEP-0251: Jingle Session Transfer", OperationFailedException.INTERNAL_ERROR);
             }
         } catch (XMPPException xmppe) {
             logger.warn("Failed to retrieve DiscoverInfo for " + to, xmppe);
         }
-
         ((CallPeerJabberImpl) peer).transfer(getFullCalleeURI(to), sid);
     }
 
     /**
-     * Transfer authority used for interacting with user for unknown calls and the requests for
-     * transfer.
+     * Transfer authority used for interacting with user for unknown calls and the requests for transfer.
      *
      * @param authority transfer authority.
      */

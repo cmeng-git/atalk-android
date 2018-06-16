@@ -148,9 +148,9 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
                     {
                         // Alwasy reqeust on first launch request
                         if (permissionFirstRequest && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
+                            logger.info("Launching user permission request for aTalk.");
                             // Request user to add aTalk to BatteryOptimization whitelist
                             openBatteryOptimizationDialogIfNeeded();
-
                             permissionFirstRequest = false;
                             Intent iPermissions = new Intent(aTalk.this, PermissionsActivity.class);
                             startActivity(iPermissions);

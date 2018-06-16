@@ -47,7 +47,7 @@ public class AndroidCameraSystem extends DeviceSystem
 	 */
 	private static final String LOCATOR_PROTOCOL = DeviceSystem.LOCATOR_PROTOCOL_ANDROIDCAMERA;
 
-	/**
+	/*
 	 * Array of supported video sizes.
 	 */
 	// private static Dimension[] SUPPORTED_SIZES;
@@ -105,7 +105,7 @@ public class AndroidCameraSystem extends DeviceSystem
 				+ CameraUtils.cameraSizesToString(previewSizes));
 
 			// Selects only compatible dimensions
-			List<Dimension> sizes = new ArrayList<Dimension>();
+			List<Dimension> sizes = new ArrayList<>();
 			for (Camera.Size s : previewSizes) {
 				Dimension candidate = new Dimension(s.width, s.height);
 				if (CameraUtils.isPreferredSize(candidate)) {
@@ -121,7 +121,7 @@ public class AndroidCameraSystem extends DeviceSystem
 			List<Integer> camFormats = params.getSupportedPreviewFormats();
 			logger.info("Image formats supported by " + locator.toString() + ": "
 				+ CameraUtils.cameraImgFormatsToString(camFormats));
-			List<Format> formats = new ArrayList<Format>();
+			List<Format> formats = new ArrayList<>();
 
 			// Surface format
 			if (AndroidEncoder.isDirectSurfaceEnabled()) {
