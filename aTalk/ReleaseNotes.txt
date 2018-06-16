@@ -1,5 +1,21 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.4.0 (1040)
+Author:         cmeng
+Upload Date:	06/16/2018
+- Implement Jabber VoIP-PBX gateway Telephony option in main menu, allowing PBX phone call via service gateway installed on server - experimented
+- IBR registration server error - update default given value, and clear IBR flag on user cancel to avoid loop in IBR.
+- Fix password persistent saving process problem not as per option selected by user
+- Must do accountID.setPassword in LoginByPasswrodStrategy#UserCredentials when user sign in on initial launch. Otherwise user registration change will clear ENCRYPTED_PASSOWORD in DB.
+- Add save password option on new account creation
+- Fix "Additional STUN/TURN servers" and "Additional Jingle Nodes..." parameters improper saving to database due to AccountID#storeProperties incorrect merge.
+- Show alert dialog to user to place phone in landscape orientation for video call when device camera cannot support landscape preview when phone in portrait mode.
+- Show alert when user has denied aTalk of all permissions.
+- Cleanup ProtocolProviderFactoryJabberimpl for installAccount() and modifyAccount() methods
+- Confirm the presence subscription is resolved with the fix for VCardTempXUpdateProvider <presence/> with missing <photo/> element
+- Remove layout-v14 provision for android API-14
+
+=========================================================================
 Version:		1.3.2 (1032)
 Author:         cmeng
 Upload Date:	06/06/2018

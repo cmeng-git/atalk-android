@@ -65,14 +65,18 @@
                 android:layout_alignStart="@id/show_password"
                 android:alpha="0.3"
                 android:src="@drawable/pwdview" />
-
         </RelativeLayout>
+
+        <CheckBox
+            android:id="@+id/store_password"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/store_password" />
 
         <CheckBox
             android:id="@+id/ibRegistration"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:text="@string/account_registration" />
 
         <CheckBox

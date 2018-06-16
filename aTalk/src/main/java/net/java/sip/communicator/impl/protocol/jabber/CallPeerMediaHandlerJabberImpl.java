@@ -783,8 +783,8 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
                                 break;
                         }
                     }
-                    if ((transportManager == null) && logger.isDebugEnabled()) {
-                        logger.debug("No known Jingle transport supported by Jabber call peer " + peer);
+                    if (transportManager == null) {
+                        aTalkApp.showToastMessage("No known Jingle transport supported by Jabber call peer " + peer);
                     }
                 }
             }
@@ -874,6 +874,9 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
     {
         long startCandidateHarvestTime = System.currentTimeMillis();
         TransportManagerJabberImpl transportManager = getTransportManager();
+        // Do not proceed if transport is null => NPE
+        if (transportManager == null)
+            return Collections.emptyList();
 
         if (remote == null) {
             /*
@@ -890,15 +893,12 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
         }
 
         long stopCandidateHarvestTime = System.currentTimeMillis();
-
         if (logger.isInfoEnabled()) {
             long candidateHarvestTime = stopCandidateHarvestTime - startCandidateHarvestTime;
-
             logger.info("End candidate harvest within " + candidateHarvestTime + " ms");
         }
 
         setDtlsEncryptionOnTransports(remote, local);
-
         if (transportManager.startConnectivityEstablishmentWithJitsiVideobridge) {
             Map<String, IceUdpTransportPacketExtension> map = new LinkedHashMap<>();
 
@@ -1358,17 +1358,21 @@ public class CallPeerMediaHandlerJabberImpl extends AbstractCallPeerMediaHandler
      *
      * @param contents the <tt>ContentPacketExtenion</tt>s provided by the remote <tt>peer</tt> and
      * containing the transport-related information to be processed
-     * @throws OperationFailedException if anything goes wrong while processing the transport-related information provided by
-     * the remote <tt>peer</tt> in the specified set of <tt>ContentPacketExtension</tt>s
+     * @throws OperationFailedException if anything goes wrong while processing the transport-related information
+     * provided by the remote <tt>peer</tt> in the specified set of <tt>ContentPacketExtension</tt>s
      */
     public void processTransportInfo(Iterable<ContentPacketExtension> contents)
             throws OperationFailedException
     {
-        if (getTransportManager().startConnectivityEstablishment(contents)) {
-            // cmeng: cannot use transport-info to signify end
-            // Emil: why the hack is this here and why is it commented?
-            // wrapupConnectivityEstablishment();
-        }
+        transportManager = getTransportManager();
+        if (transportManager != null)
+            getTransportManager().startConnectivityEstablishment(contents);
+
+//        if (getTransportManager().startConnectivityEstablishment(contents)) {
+//            // cmeng: cannot use transport-info to signify end
+//            // Emil: why the hack is this here and why is it commented?
+//            // wrapupConnectivityEstablishment();
+//        }
     }
 
     /**

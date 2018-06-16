@@ -15,13 +15,8 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.StanzaExtensionFilter;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.filter.*;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.caps.EntityCapsManager.NodeVerHash;
@@ -36,18 +31,13 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.util.cache.LruCache;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * An wrapper to smack's default {@link ServiceDiscoveryManager} that adds support for
  * XEP-0030: Service Discovery.
  * XEP-0115: Entity Capabilities
- * <p>
+ *
  * This work is based on Jonas Adahl's smack fork.
  *
  * @author Emil Ivov
@@ -57,8 +47,7 @@ import java.util.Map;
 public class ScServiceDiscoveryManager implements NodeInformationProvider
 {
     /**
-     * The <tt>Logger</tt> used by the <tt>ScServiceDiscoveryManager</tt> class and its instances
-     * for logging output.
+     * The <tt>Logger</tt> used by the <tt>ScServiceDiscoveryManager</tt> class and its instances for logging output.
      */
     private static final Logger logger = Logger.getLogger(ScServiceDiscoveryManager.class);
 
@@ -198,7 +187,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     /**
      * Registers that a new feature is supported by this XMPP entity. When this client is queried
      * for its information the registered features will be answered.
-     * <p>
+     *
      * Since no packet is actually sent to the server it is safe to perform this operation before
      * logging to the server. In fact, you may want to configure the supported features before
      * logging to the server so that the information is already available if it is required upon
@@ -224,10 +213,9 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     }
 
     /**
-     * Removes the specified feature from the supported features by the encapsulated
-     * ServiceDiscoveryManager.
-     * <p>
-     * <p>
+     * Removes the specified feature from the supported features by the encapsulated ServiceDiscoveryManager.
+     *
+     *
      * Since no packet is actually sent to the server it is safe to perform this operation before
      * logging to the server.
      *
@@ -241,7 +229,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     /**
      * ============================================
      * NodeInformationProvider implementation for getNode....()
-     * <p>
+     *
      * Returns a list of the Items {@link org.jivesoftware.smackx.disco.packet.DiscoverItems.Item}
      * defined in the node or in other words <tt>null</tt> since we don't support any.
      *
@@ -255,8 +243,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 
     /**
      * Returns a list of the features defined in the node. For example, the entity caps protocol
-     * specifies that an XMPP client should answer with each feature supported by the client
-     * version or extension.
+     * specifies that an XMPP client should answer with each feature supported by the client version or extension.
      *
      * @return a list of the feature strings defined in the node.
      */
@@ -525,6 +512,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     }
 
     // =========================================================
+
     /**
      * Adds a specific <tt>UserCapsNodeListener</tt> to the list of <tt>UserCapsNodeListener</tt>s
      * interested in events notifying about changes in the list of user caps nodes of the
@@ -764,13 +752,12 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         {
             try {
                 DiscoverInfo discoverInfo = discoverInfo(entityID, (nvh == null) ? null : nvh.getNodeVer());
-
                 if ((nvh != null)
-                        && !EntityCapsManager.verifyDiscoverInfoVersion(nvh.getVer(),
-                        nvh.getHash(), discoverInfo)) {
-                    logger.error("Invalid DiscoverInfo for " + nvh.getNodeVer() + ": "
-                            + discoverInfo + " OR Item-Not-Found");
-                    nvh = null;
+                        && !EntityCapsManager.verifyDiscoverInfoVersion(nvh.getVer(), nvh.getHash(), discoverInfo)) {
+                    logger.error("Invalid DiscoverInfo NodeVersion for " + nvh.getNodeVer());
+                    //  temporary fix for asterisk pbx testing only
+                    // Force nvh to null if nodeVersion is invalid
+                    //  nvh = null;
                 }
 
                 // (discoverInfo = null) if iq result with "item-not-found"
@@ -783,13 +770,9 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
                             fireEvent = true;
                         }
                     }
-                    else { // If the node version is known, store the new entry.
-                        if (EntityCapsManager.verifyDiscoverInfoVersion(nvh.getVer(),
-                                nvh.getHash(), discoverInfo)) {
-                            EntityCapsManager.addDiscoverInfoByNode(nvh.getNodeVer(),
-                                    discoverInfo);
-                            fireEvent = true;
-                        }
+                    else { // If the node version is known and verified, store the new entry.
+                        EntityCapsManager.addDiscoverInfoByNode(nvh.getNodeVer(), discoverInfo);
+                        fireEvent = true;
                     }
                     // fire the event
                     if (fireEvent && capabilitiesOpSet != null) {

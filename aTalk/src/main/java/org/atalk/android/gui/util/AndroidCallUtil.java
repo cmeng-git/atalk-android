@@ -110,8 +110,10 @@ public class AndroidCallUtil
             final ProtocolProviderService provider, final boolean isVideoCall)
     {
         if (createCallThread != null) {
-            aTalkApp.showToastMessage("Another call is already being created!");
-            return;
+            // force to null assuming user is making a call seeing no call in progress,
+            // otherwise cannot make call at all
+            createCallThread = null;
+            aTalkApp.showToastMessage("Another call is already being created. End and restart!");
         }
         else if (CallManager.getActiveCallsCount() > 0) {
             aTalkApp.showToastMessage("Another call is in progress!");

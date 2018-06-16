@@ -173,8 +173,9 @@ public class IBRCaptchaProcessDialog extends Dialog
             mConnection.addConnectionListener(connectionListener);
         }
 
+        UpdateDialogContent();
         if (initIBRRegistration()) {
-            UpdateDialogContent();
+            showCaptchaContent();
             initializeViewListeners();
         } else { // unable to start IBR registration on server
             onIBRServerFailure();
@@ -182,7 +183,7 @@ public class IBRCaptchaProcessDialog extends Dialog
     }
 
     /*
-     * Update dialog content with the received captcha information for form presentation.
+     * Update dialog content with the supplied information.
      */
     private void UpdateDialogContent()
     {
@@ -193,7 +194,13 @@ public class IBRCaptchaProcessDialog extends Dialog
         mServerIpField.setText(mAccountId.getServerAddress());
         mServerPortField.setText(mAccountId.getServerPort());
         updateViewVisibility(isServerOverridden);
+    }
 
+    /*
+     * Update dialog content with the received captcha information for form presentation.
+     */
+    private void showCaptchaContent()
+    {
         // Scale the captcha to the display resolution
         DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
         Bitmap captcha = Bitmap.createScaledBitmap(mCaptcha,
@@ -265,9 +272,10 @@ public class IBRCaptchaProcessDialog extends Dialog
 
         mCancelButton.setOnClickListener(new View.OnClickListener()
         {
-            // Just exit if user cancel
+            // Set IBR to false on user cancel. Otherwise may loop in IBR if server returns error
             public void onClick(View v)
             {
+                mAccountId.setIbRegistration(false);
                 String errMsg = "InBand registration cancelled by user!";
                 XMPPError xmppError = XMPPError.from(XMPPError.Condition.registration_required, errMsg).build();
                 mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));

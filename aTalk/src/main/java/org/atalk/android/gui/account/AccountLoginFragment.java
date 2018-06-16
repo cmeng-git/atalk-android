@@ -57,7 +57,9 @@ public class AccountLoginFragment extends OSGiFragment {
     private EditText mPasswordField;
     private EditText mServerIpField;
     private EditText mServerPortField;
+
     private CheckBox mShowPasswordCheckBox;
+    private CheckBox mSavePasswordCheckBox;
     private CheckBox mServerOverrideCheckBox;
     private CheckBox mIBRegistrationCheckBox;
     private ImageView mShowPasswordImage;
@@ -108,10 +110,12 @@ public class AccountLoginFragment extends OSGiFragment {
         mPasswordField = content.findViewById(R.id.passwordField);
         mShowPasswordImage = content.findViewById(R.id.pwdviewImage);
         mShowPasswordCheckBox = content.findViewById(R.id.show_password);
+        mSavePasswordCheckBox  = content.findViewById(R.id.store_password);
         mIBRegistrationCheckBox = content.findViewById(R.id.ibRegistration);
         mServerOverrideCheckBox = content.findViewById(R.id.serverOverridden);
         mServerIpField = content.findViewById(R.id.serverIpField);
         mServerPortField = content.findViewById(R.id.serverPortField);
+
         // Hide ip and port fields on first create
         updateViewVisibility(false);
         initializeViewListeners();
@@ -177,6 +181,9 @@ public class AccountLoginFragment extends OSGiFragment {
 
                 String serverAddress = mServerIpField.getText().toString().replaceAll("\\s", "");
                 String serverPort = mServerPortField.getText().toString().replaceAll("\\s", "");
+
+                String savePassword = Boolean.toString(mSavePasswordCheckBox.isChecked());
+                accountProperties.put(ProtocolProviderFactory.PASSWORD_PERSISTENT, savePassword);
 
                 String ibRegistration = Boolean.toString(mIBRegistrationCheckBox.isChecked());
                 accountProperties.put(ProtocolProviderFactory.IBR_REGISTRATION, ibRegistration);

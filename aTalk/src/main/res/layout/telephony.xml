@@ -9,12 +9,52 @@
     android:padding="@dimen/screen_padding">
 
     <TextView
-        android:id="@+id/selectAccountTxt"
+        android:id="@+id/contactPhoneName"
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/service_gui_SELECT_ACCOUNT" />
+        android:text="@string/service_gui_CONTACT_PHONE_NUMBER" />
+
+    <org.atalk.android.gui.call.telephony.RecipientSelectView
+        android:id="@+id/address"
+        style="@style/EntryTextView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_height"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:dropDownAnchor="@id/address"
+        android:dropDownWidth="wrap_content"
+        android:imeOptions="actionNext"
+        android:inputType="textNoSuggestions"
+        android:paddingBottom="@dimen/label_padding"
+        android:paddingLeft="@dimen/between_padding"
+        android:paddingRight="@dimen/between_padding"
+        android:paddingStart="@dimen/between_padding"
+        android:paddingTop="@dimen/label_padding" />
+
+    <TextView
+        android:id="@+id/telephony"
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/label_padding"
+        android:text="@string/service_gui_JBR_TELE_DOMAIN" />
+
+    <TextView
+        android:id="@+id/telephonyDomain"
+        style="@style/EntryTextView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_height"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/contactService"
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/label_padding"
+        android:text="@string/service_gui_EXT_CALL_VIA" />
 
     <Spinner
         android:id="@+id/selectAccountSpinner"
@@ -22,55 +62,6 @@
         android:layout_height="@dimen/item_height"
         android:layout_marginBottom="@dimen/between_padding"
         android:background="@drawable/spinner_dark" />
-
-    <TextView
-        android:id="@+id/contactNameTxt"
-        style="@style/MediumFont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/service_gui_CONTACT_NAME" />
-
-    <EditText
-        android:id="@+id/editContactName"
-        style="@style/EntryTextView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginBottom="@dimen/between_padding"
-        android:inputType="textNoSuggestions"
-        android:padding="8dp" />
-
-    <TextView
-        android:id="@+id/selectGroupTxt"
-        style="@style/MediumFont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/service_gui_SELECT_GROUP" />
-
-    <Spinner
-        android:id="@+id/selectGroupSpinner"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginBottom="@dimen/between_padding"
-        android:background="@drawable/spinner_dark" />
-
-    <TextView
-        android:id="@+id/displayNameText"
-        style="@style/MediumFont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/label_padding"
-        android:text="@string/service_gui_DISPLAY_NAME" />
-
-    <EditText
-        android:id="@+id/editDisplayName"
-        style="@style/EntryTextView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginBottom="@dimen/between_padding"
-        android:inputType="textNoSuggestions"
-        android:padding="8dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -80,20 +71,21 @@
         <Button
             android:id="@+id/button_cancel"
             style="@style/ButtonTop"
-            android:onClick="onCancelClicked"
+            android:layout_marginEnd="2dp"
+            android:layout_marginRight="2dp"
             android:text="@string/service_gui_CANCEL" />
 
-        <View
-            android:id="@+id/centerShim"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="2dp"
-            android:visibility="invisible" />
+        <Button
+            android:id="@+id/button_video"
+            style="@style/ButtonTop"
+            android:layout_marginEnd="2dp"
+            android:layout_marginRight="2dp"
+            android:text="@string/service_gui_CALL_VIDEO" />
 
         <Button
-            android:id="@+id/button_add"
+            android:id="@+id/button_audio"
             style="@style/ButtonTop"
-            android:onClick="onAddClicked"
-            android:text="@string/service_gui_ADD" />
+            android:text="@string/service_gui_CALL" />
     </LinearLayout>
+
 </LinearLayout>

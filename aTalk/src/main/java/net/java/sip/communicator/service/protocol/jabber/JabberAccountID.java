@@ -86,6 +86,7 @@ public class JabberAccountID extends AccountID
      * Indicates if Google Contacts should be enabled.
      */
     public static final String GOOGLE_CONTACTS_ENABLED = "GOOGLE_CONTACTS_ENABLED";
+    
     /**
      * Domain name that will bypass GTalk caps.
      */

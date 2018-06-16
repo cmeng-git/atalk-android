@@ -5,13 +5,19 @@
  */
 package org.atalk.android;
 
-import android.app.*;
+import android.app.Activity;
+import android.app.Application;
+import android.app.DownloadManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.os.*;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.PowerManager;
 import android.support.multidex.MultiDex;
 import android.widget.Toast;
 
@@ -19,14 +25,15 @@ import net.java.sip.communicator.service.protocol.AccountManager;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.gui.*;
+import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.LauncherActivity;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.account.AccountsListActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.DrawableCache;
-import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
@@ -285,6 +292,33 @@ public class aTalkApp extends Application
     {
         showToastMessage(getAppResources().getString(id, arg));
     }
+
+
+    public static void showToastMessageOnUI(final int id, final Object... arg)
+    {
+        currentActivity.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                showToastMessage(getAppResources().getString(id, arg));
+            }
+        });
+    }
+
+    public static void showAlertDialogOnUI(final String title, final int id, final Object... arg)
+    {
+        currentActivity.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                String msg = getResString(id, arg);
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);
+            }
+        });
+    }
+
 
     /**
      * Returns home <tt>Activity</tt> class.

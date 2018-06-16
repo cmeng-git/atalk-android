@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/search"
         android:actionViewClass="android.widget.SearchView"
@@ -15,22 +15,23 @@
         android:title="@string/service_gui_CHAT_ROOM_JOIN">
     </item>
     <item
+        android:id="@+id/show_location"
+        android:icon="@drawable/ic_location_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_GEO_SHOW" >
+    </item>
+    <item
+        android:id="@+id/telephony"
+        android:icon="@drawable/ic_external_phone_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_JBR_TELEPHONY">
+    </item>
+    <item
         android:id="@+id/create_videobridge"
         android:icon="@drawable/ic_videobridge"
         android:showAsAction="ifRoom"
         android:title="@string/service_gui_CREATE_VIDEO_BRIDGE"
         android:visible="false">
-    </item>
-    <item
-        android:id="@+id/show_hide_offline"
-        android:icon="@drawable/show_hide_offline_light"
-        android:title="@string/service_gui_HIDE_OFFLINE_CONTACTS">
-    </item>
-    <item
-        android:id="@+id/show_location"
-        android:icon="@drawable/ic_location_dark"
-        android:showAsAction="ifRoom"
-        android:title="@string/service_gui_GEO_SHOW">
     </item>
     <item
         android:id="@+id/add_contact"
@@ -45,6 +46,11 @@
     <item
         android:id="@+id/account_settings"
         android:title="@string/service_gui_ACCOUNT_SETTINGS">
+    </item>
+    <item
+        android:id="@+id/show_hide_offline"
+        android:icon="@drawable/show_hide_offline_light"
+        android:title="@string/service_gui_HIDE_OFFLINE_CONTACTS">
     </item>
     <item
         android:id="@+id/sign_in_off"

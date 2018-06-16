@@ -11,45 +11,25 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.si.provider.SiT
 import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.ThumbnailElement;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.packet.ThumbnailIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.provider.ThumbnailProvider;
-import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
-import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.FileTransfer;
-import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
-import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.event.FileTransferListener;
-import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent;
-import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
-import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
-import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.filetransfer.FileTransfer.Status;
-import org.jivesoftware.smackx.filetransfer.FileTransferManager;
-import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator;
-import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
-import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
+import org.jivesoftware.smackx.filetransfer.*;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer.NegotiationProgress;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jxmpp.jid.EntityFullJid;
@@ -60,11 +40,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * The Jabber implementation of the <tt>OperationSetFileTransfer</tt> interface.
@@ -182,13 +158,12 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                 if (jabberProvider.isFeatureListSupported(presence.getFrom(),
                         StreamInitiation.NAMESPACE, StreamInitiation.NAMESPACE + "/profile/file-transfer")) {
 
-                    int priority = (presence.getPriority() == Integer.MIN_VALUE)
-                            ? 0 : presence.getPriority();
+                    int priority = (presence.getPriority() == Integer.MIN_VALUE) ? 0 : presence.getPriority();
                     if (priority > bestPriority) {
                         bestPriority = priority;
                         fullJid = presence.getFrom();
-                        jabberStatus = OperationSetPersistentPresenceJabberImpl
-                                .jabberStatusToPresenceStatus(presence, jabberProvider);
+                        jabberStatus = OperationSetPersistentPresenceJabberImpl.jabberStatusToPresenceStatus(presence,
+                                jabberProvider);
                     }
                     else if (priority == bestPriority && jabberStatus != null) {
                         PresenceStatus tempStatus = OperationSetPersistentPresenceJabberImpl

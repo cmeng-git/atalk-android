@@ -55,7 +55,8 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
     }
 
     /**
-     * Installs the account with the given user name and password.
+     * Install new or modify an account with the given user name and password;
+     * pending on the flag isModification setting.
      *
      * @param userName the account user name
      * @param password the password
@@ -74,7 +75,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
     }
 
     /**
-     * Creates or modifies an account for the given user, password and accountProperties.
+     * Create or modify an account for the given user, password and accountProperties pending isModification()
      *
      * @param providerFactory the ProtocolProviderFactory which will create the account
      * @param userName the user identifier
@@ -95,7 +96,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
         accountProperties.put(ProtocolProviderFactory.IS_PREFERRED_PROTOCOL, Boolean.toString(isPreferredProtocol()));
         accountProperties.put(ProtocolProviderFactory.PROTOCOL, getProtocol());
 
-        // if server address is null, we must extract it from userID
+        // if server address is null, just extract it from userID even for when server override option is set
         if (accountProperties.get(ProtocolProviderFactory.SERVER_ADDRESS) == null) {
             String serverAddress = XmppStringUtils.parseDomain(userName);
             if (!StringUtils.isNullOrEmpty(serverAddress))
@@ -111,24 +112,25 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
 
         String protocolIconPath = getProtocolIconPath();
         String accountIconPath = getAccountIconPath();
+
+        // process of merging existing mAccountProperties with STUN/JN cleannup into accountProperties for update
         registration.storeProperties(providerFactory, userName, password, protocolIconPath,
                 accountIconPath, accountProperties);
 
+        // Process account modification and return with the existing protocolProvider
         if (isModification()) {
             providerFactory.modifyAccount(protocolProvider, accountProperties);
             setModification(false);
             return protocolProvider;
         }
 
-        /* Process to create new account */
+        /* Process to create new account and return the newly created protocolProvider */
         try {
             if (logger.isTraceEnabled()) {
                 logger.trace("Will install account for user " + userName
                         + " with the following properties." + accountProperties);
             }
 
-            // Retrieve the newly created AccountID accountProperties
-            accountProperties = registration.getAccountProperties();
             AccountID accountID = providerFactory.installAccount(userName, accountProperties);
             ServiceReference serRef = providerFactory.getProviderForAccount(accountID);
             protocolProvider
@@ -149,8 +151,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
     }
 
     /**
-     * Returns the protocol name as listed in "ProtocolNames" or just the name
-     * of the service.
+     * Returns the protocol name as listed in "ProtocolNames" or just the name of the service.
      *
      * @return the protocol name
      */
@@ -160,7 +161,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
     }
 
     /**
-     * Indicates if this wizard is for the preferred protocol.
+     * Indicates if this wizard is for the preferred protocol. Currently on support XMPP, so always true
      *
      * @return <tt>true</tt> if this wizard corresponds to the preferred protocol, otherwise
      * returns <tt>false</tt>

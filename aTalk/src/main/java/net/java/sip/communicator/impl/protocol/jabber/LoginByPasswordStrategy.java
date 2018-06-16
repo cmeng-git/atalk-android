@@ -10,12 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.protocol.AbstractProtocolProviderService;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.SecurityAuthority;
-import net.java.sip.communicator.service.protocol.UserCredentials;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.util.Logger;
 
@@ -25,7 +20,6 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
 import java.io.IOException;
@@ -178,7 +172,6 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
      */
     private UserCredentials loadPassword(SecurityAuthority authority, int reasonCode, String loginReason, boolean isShowAlways)
     {
-        UserCredentials cachedCredentials = null;
         // verify whether a password has already been stored for this account
         password = JabberActivator.getProtocolProviderFactory().loadPassword(accountID);
 
@@ -187,6 +180,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
             UserCredentials credentials = new UserCredentials();
             credentials.setUserName(accountID.getUserID());
             credentials.setLoginReason(loginReason);
+            // Update password is found in DB else leave password field empty
             if (password != null) {
                 credentials.setPassword(password.toCharArray());
             }
@@ -194,7 +188,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
             // request account settings from the user and also show user default server option
             credentials = authority.obtainCredentials(accountID, credentials, reasonCode, true);
 
-            // in case user has canceled the login window
+            // just return the bare credential in case user has canceled the login window
             if (credentials.isUserCancel()) {
                 protocolProvider.fireRegistrationStateChanged(
                         protocolProvider.getRegistrationState(), RegistrationState.UNREGISTERED,
@@ -202,8 +196,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
                 return credentials;
             }
 
-            // Extract the password the user entered. If no password specified, then canceled the
-            // operation
+            // Extract the password the user entered. If no password specified, then canceled the operation
             char[] pass = credentials.getPassword();
             if (pass == null) {
                 protocolProvider.fireRegistrationStateChanged(
@@ -212,19 +205,30 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
                 return null;
             }
 
-            password = new String(pass);
-            if (credentials.isPasswordPersistent()) {
-                JabberActivator.getProtocolProviderFactory().storePassword(accountID, password);
-            }
-            // else
-            cachedCredentials = credentials;
+            // save the password for later use by login()
+            accountID.setPassword(new String(pass));
+            boolean passwordPersistent = credentials.isPasswordPersistent();
+            accountID.setPasswordPersistent(passwordPersistent);
 
-            accountID.setDnssMode(credentials.getDnssecMode());
+            accountID.setIbRegistration(credentials.isIbRegistration());
             accountID.setServerOverridden(credentials.isServerOverridden());
             accountID.setServerAddress(credentials.getServerAddress());
-            accountID.setServerPort(credentials.getServerPort());
+            if (credentials.isServerOverridden()) {
+                accountID.setServerPort(credentials.getServerPort());
+                accountID.setDnssMode(credentials.getDnssecMode());
+            }
+
+            // must save to DB in case user makes changes
             JabberActivator.getProtocolProviderFactory().storeAccount(accountID);
+            return credentials;
         }
-        return cachedCredentials;
+        /*
+         * Must always keep a copy of password in accountID.PASSWORD. Otherwise mAccountProperty.PASSWORD is null
+         * when user changes the user registration state; This will clear the DB accountProperties ENCRYPTED_PASSWORD
+         */
+        else {
+            accountID.setPassword(password);
+        }
+        return null;
     }
 }

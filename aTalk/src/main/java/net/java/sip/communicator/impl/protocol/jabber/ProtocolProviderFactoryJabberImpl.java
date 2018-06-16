@@ -12,6 +12,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.util.Logger;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.BundleContext;
@@ -44,7 +45,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
     }
 
     /**
-     * Overrides the original in order give access to protocol implementation.
+     * Overrides the original in order give access to specific protocol implementation.
      *
      * @param accountID the account identifier.
      */
@@ -66,19 +67,29 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
      */
     @Override
     public AccountID installAccount(String userID, Map<String, String> accountProperties)
+            throws IllegalArgumentException, NullPointerException
     {
         BundleContext context = JabberActivator.getBundleContext();
         if (context == null)
-            throw new NullPointerException("The specified BundleContext was null");
+            throw new NullPointerException("The specified BundleContext is null");
 
         if (userID == null)
-            throw new NullPointerException("The specified AccountID was null");
+            throw new IllegalArgumentException("The specified AccountID is null");
 
         if (accountProperties == null)
-            throw new NullPointerException("The specified property map was null");
+            throw new IllegalArgumentException("The specified property map is null");
 
+        // Generate a new accountUuid for new account creation
         String accountUuid = AccountID.ACCOUNT_UUID_PREFIX + Long.toString(System.currentTimeMillis());
         accountProperties.put(ACCOUNT_UUID, accountUuid);
+
+        /* Verify that the specified userID is a valid Jid */
+        Jid jid;
+        try {
+            jid = JidCreate.from(userID);
+        } catch (XmppStringprepException e) {
+            throw new IllegalArgumentException("User ID is not a valid xmpp Jid");
+        }
 
         String accountUID = getProtocolName() + ":" + userID;
         accountProperties.put(ACCOUNT_UID, accountUID);
@@ -134,24 +145,26 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
      */
     @Override
     public void modifyAccount(ProtocolProviderService protocolProvider, Map<String, String> accountProperties)
-            throws NullPointerException
+            throws IllegalArgumentException, NullPointerException
     {
         BundleContext context = JabberActivator.getBundleContext();
         if (context == null)
             throw new NullPointerException("The specified BundleContext is null");
 
         if (protocolProvider == null)
-            throw new NullPointerException("The specified Protocol Provider is null");
+            throw new IllegalArgumentException("The specified Protocol Provider is null");
 
-        // If the given accountID doesn't correspond to an existing account we return.
+        // If the given accountID must be an existing account to modify, else return.
         JabberAccountIDImpl accountID = (JabberAccountIDImpl) protocolProvider.getAccountID();
         if (!registeredAccounts.containsKey(accountID))
             return;
 
+        /*
+         * Need to kill the service prior to making and account properties updates
+         */
         ServiceRegistration registration = registeredAccounts.get(accountID);
-        // kill the service
+        // unregister provider before removing it.
         if (registration != null) {
-            // unregister provider before removing it.
             try {
                 if (protocolProvider.isRegistered()) {
                     protocolProvider.unregister();
@@ -162,21 +175,10 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
             }
             registration.unregister();
         }
-
         if (accountProperties == null)
-            throw new NullPointerException("The specified property map was null");
+            throw new IllegalArgumentException("The specified property map is null");
 
         accountProperties.put(USER_ID, accountID.getUserID());
-        String serverAddress = accountProperties.get(SERVER_ADDRESS);
-
-        if (serverAddress == null)
-            throw new NullPointerException("null is not a valid ServerAddress");
-
-        // if server port is null, we will set default value
-        if (accountProperties.get(SERVER_PORT) == null) {
-            accountProperties.put(SERVER_PORT, "5222");
-        }
-
         if (!accountProperties.containsKey(PROTOCOL))
             accountProperties.put(PROTOCOL, ProtocolNames.JABBER);
 
@@ -197,7 +199,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
             ((ProtocolProviderServiceJabberImpl) protocolProvider).initialize(jid, accountID);
         } catch (XmppStringprepException e) {
             logger.error(accountID.getUserID() + " is not a valid JID", e);
-            throw new NullPointerException("UserID is not a valid JID");
+            throw new IllegalArgumentException("UserID is not a valid JID");
         }
 
         // We store again the account in order to store all properties added during the protocol provider initialization.

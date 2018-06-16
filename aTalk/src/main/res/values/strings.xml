@@ -41,7 +41,7 @@
     <string name="captcha_hint">Enter text seen in image above</string>
     <string name="choose_network">Choose a network</string>
     <string name="encryption_TOOLTIP">Encrypt chat</string>
-    <string name="encryption_choices">EncryptChoices</string>
+    <string name="encryption_choices">Encrypt Choices</string>
     <string name="encryption_choice_unencrypted">Unencrypted</string>
     <string name="encryption_choice_omemo">OMEMO</string>
     <string name="encryption_choice_otr">OTR</string>
@@ -148,46 +148,46 @@
     <string name="service_gui_Contacts">Contacts</string>
     <string name="service_gui_DONE">Done</string>
 
-	<!-- Conference Chat -->
+    <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Autojoin</string>
-	<string name="service_gui_CHANGE_NICK">Change nickname</string>
-	<string name="service_gui_CHANGE_NICKNAME">Change nickname&#8230;</string>
+    <string name="service_gui_CHANGE_NICK">Change nickname</string>
+    <string name="service_gui_CHANGE_NICKNAME">Change nickname&#8230;</string>
     <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">Nickname already exists</string>
-	<string name="service_gui_CHANGE_NICKNAME_ERROR">Error changing nickname</string>
+    <string name="service_gui_CHANGE_NICKNAME_ERROR">Error changing nickname</string>
     <string name="service_gui_CHANGE_NICKNAME_LABEL">In the field below, you can enter your new nickname.</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT">Change room\'s subject&#8230;</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">In the field below, you can enter the new subject for this room.</string>
-	<string name="service_gui_CHANGE_VIDEO_QUALITY">Change remote video quality</string>
+    <string name="service_gui_CHANGE_VIDEO_QUALITY">Change remote video quality</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s conference</string>
-	<string name="service_gui_CHAT_CONFERENCE_LABEL">Conferences</string>
+    <string name="service_gui_CHAT_CONFERENCE_LABEL">Conferences</string>
     <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">You have already joined the %1$s chat room.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION">{0} chat room configuration</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Failed to obtain the {0} chat room configuration form.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Could not obtain the {0} chat room configuration form. Only owners of the chat room can see and change the configuration form.</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION">{0} chat room configuration</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Failed to obtain the {0} chat room configuration form.</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Could not obtain the {0} chat room configuration form. Only owners of the chat room can see and change the configuration form.</string>
     <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">List on the right contains users that have member role in this chat room. When chat room is \'Members-only\' those will be the users that are allowed to join.</string>
     <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Edit Members List</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">An error occurred while trying to submit the configuration form for chat room {0}.</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">An error occurred while trying to submit the configuration form for chat room {0}.</string>
     <string name="service_gui_CHAT_ROOM_JOIN">Join Chat Room</string>
     <string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Removes the selected room from the list of saved rooms</string>
     <string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Saves the chat room for future use</string>
     <string name="service_gui_CHAT_ROOM_SEND_MSG_FORBIDDEN">Message sending is forbidden (voice revoked)</string>
-	<string name="service_gui_CHAT_ROOM_USER_JOINED">has joined %1$s</string>
+    <string name="service_gui_CHAT_ROOM_USER_JOINED">has joined %1$s</string>
     <string name="service_gui_CHAT_ROOM_USER_KICKED">has been kicked from %1$s</string>
-	<string name="service_gui_CHAT_ROOM_USER_LEFT">has left %1$s</string>
-	<string name="service_gui_CHAT_ROOM_USER_QUIT">has quit %1$s</string>
-	<string name="service_gui_CHAT_ROOM_NAME">Chat room name</string>
-	<string name="service_gui_CHAT_ROOM_NAME_INFO">In the field below enter the name of the chat room that you would like to create.</string>
-	<string name="service_gui_CHAT_ROOM_NOT_EXIST">The %1$s room was not found in the %2$s server. Please verify if the name you typed is correct.</string>
-	<string name="service_gui_CHAT_ROOM_NOT_CONNECTED">You need to be online in order to join the %1$s chat room.</string>
-	<string name="service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED">You need to be online in order to leave a chat room.</string>
-	<string name="service_gui_CHAT_ROOM_NOT_JOINED">You need to have joined the chat room in order to do further operations with it.</string>
-	<string name="service_gui_CHAT_ROOM_OPTIONS">Chat room options</string>
-	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">The %1$s chat room has requested a password.</string>
-	<string name="service_gui_CHAT_ROOM">Chat Room</string>
-	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">{0} has changed the subject to {1}</string>
-	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">You can continue the conversation in the following chat room: %1$s</string>
-	<string name="service_gui_CHAT_ROOMS">Chat rooms</string>
-	<string name="service_gui_CHAT_NICKNAME_CHANGE">{0} is now known as {1}</string>
+    <string name="service_gui_CHAT_ROOM_USER_LEFT">has left %1$s</string>
+    <string name="service_gui_CHAT_ROOM_USER_QUIT">has quit %1$s</string>
+    <string name="service_gui_CHAT_ROOM_NAME">Chat room name</string>
+    <string name="service_gui_CHAT_ROOM_NAME_INFO">In the field below enter the name of the chat room that you would like to create.</string>
+    <string name="service_gui_CHAT_ROOM_NOT_EXIST">The %1$s room was not found in the %2$s server. Please verify if the name you typed is correct.</string>
+    <string name="service_gui_CHAT_ROOM_NOT_CONNECTED">You need to be online in order to join the %1$s chat room.</string>
+    <string name="service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED">You need to be online in order to leave a chat room.</string>
+    <string name="service_gui_CHAT_ROOM_NOT_JOINED">You need to have joined the chat room in order to do further operations with it.</string>
+    <string name="service_gui_CHAT_ROOM_OPTIONS">Chat room options</string>
+    <string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">The %1$s chat room has requested a password.</string>
+    <string name="service_gui_CHAT_ROOM">Chat Room</string>
+    <string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">{0} has changed the subject to {1}</string>
+    <string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">You can continue the conversation in the following chat room: %1$s</string>
+    <string name="service_gui_CHAT_ROOMS">Chat rooms</string>
+    <string name="service_gui_CHAT_NICKNAME_CHANGE">{0} is now known as {1}</string>
     <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Clear custom messages</string>
     <string name="service_gui_CLOSE">Close</string>
     <string name="service_gui_CLOSE_ALL_CHATS">Close all active chats</string>
@@ -277,7 +277,7 @@
     <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
     <string name="permission_required_toast">Location permission is required for this demo.</string>
 
-    <!--    Persistent Store    -->
+    <!-- Persistent Store -->
     <string name="service_gui_EXPORT_SQL_DB">Export aTalk SQL Database</string>
     <string name="service_gui_PURGE_DEBUG_LOG">Purge aTalk Debug Log File</string>
     <string name="service_gui_PURGE_SQL_DB">Purge aTalk SQL DataBase - Danger!</string>
@@ -295,7 +295,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Create a video bridge</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Create / Join video conference</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Create a new video conference for this chat room</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">You device camera seems not supporting landscape preview in landscape display. Please use landscape display orientation for video call.</string>
+    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">The device camera cannot support selected video resolution while in portrait mode. Please place phone in landscape orientation for video call:\n[width=%1$s; height=%2$s]</string>
     <string name="service_gui_DISCONNECTED_STATUS">Disconnected</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Disconnecting %1$s</string>
     <string name="service_gui_DEFAULT_USER_PHOTO">personphoto</string>
@@ -309,9 +309,9 @@
     <string name="service_gui_ENTER_NAME_OR_NUMBER">Enter name or number</string>
     <string name="service_gui_ERROR">Error</string>
     <string name="service_gui_ERROR_WAS">Error was: %1$s</string>
-	<string name="service_gui_EXIT">Exit</string>
+    <string name="service_gui_EXIT">Exit</string>
     <string name="service_gui_FAILED_STATUS">Call failed</string>
-	<string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Failed to join chat room with name: %1$s.</string>
+    <string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Failed to join chat room with name: %1$s.</string>
     <string name="service_gui_FFC_STATUS">Free for chat</string>
 
     <!-- File Transfer (xFile prefix with date) -->
@@ -330,7 +330,7 @@
     <string name="xFile_FILE_WAITING_TO_ACCEPT">%1$s:\nWaiting for %2$s to accept your file</string>
 
     <string name="service_gui_PURGE">Purge</string>
-	<string name="service_gui_ESTIMATED_TIME">Estimated time: %1$s</string>
+    <string name="service_gui_ESTIMATED_TIME">Estimated time: %1$s</string>
     <string name="service_gui_FILE">File</string>
     <string name="service_gui_FILE_DELIVERY_ERROR">Failed to send the selected file. %1$s</string>
     <string name="service_gui_FILE_DOES_NOT_EXIST">The specified file could not be found. It was either deleted or moved</string>
@@ -353,26 +353,26 @@
     <string name="service_gui_FILE_TRANSFER_PREPARING">Preparing file transfer with %1$s. Please wait&#8230;</string>
     <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s is sharing a file with you</string>
     <string name="service_gui_FILE_TRANSFER_REFUSED">File transfer has been rejected</string>
-	<string name="service_gui_FILE_UNABLE_TO_SEND">An error occurred while sending file to %1$s</string>
+    <string name="service_gui_FILE_UNABLE_TO_SEND">An error occurred while sending file to %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Waiting for %1$s to accept your file</string>
 
-	<string name="service_gui_FINISH">Finish</string>
-	<string name="service_gui_FOLDER_DOES_NOT_EXIST">The folder containing this file could not be found. It was either deleted or moved</string>
-	<string name="service_gui_FOLDER_OPEN_FAILED">Failed to open folder</string>
-	<string name="service_gui_FOLDER_OPEN_NO_PERMISSION">You don\'t have enough permissions to open this folder. Please check your read permissions and try again</string>
-	<string name="service_gui_FOLDER_OPEN_NO_APPLICATION">We couldn\'t find an application to open this folder</string>
+    <string name="service_gui_FINISH">Finish</string>
+    <string name="service_gui_FOLDER_DOES_NOT_EXIST">The folder containing this file could not be found. It was either deleted or moved</string>
+    <string name="service_gui_FOLDER_OPEN_FAILED">Failed to open folder</string>
+    <string name="service_gui_FOLDER_OPEN_NO_PERMISSION">You don\'t have enough permissions to open this folder. Please check your read permissions and try again</string>
+    <string name="service_gui_FOLDER_OPEN_NO_APPLICATION">We couldn\'t find an application to open this folder</string>
     <string name="service_gui_GROUP_CHAT">Group Chat</string>
-	<string name="service_gui_HIDE">Hide</string>
-	<string name="service_gui_HIDE_OFFLINE_CONTACTS">Hide offline contacts</string>
-	<string name="service_gui_HISTORY">History</string>
-	<string name="service_gui_HISTORY_CONTACT">History - %1$s</string>
-	<string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Turn off history for this contact</string>
-	<string name="service_gui_HISTORY_TOGGLE_ALL">Turn off history for all chats and contacts</string>
-	<string name="service_gui_HISTORY_ERASE_PER_CONTACT">Erase this contact history</string>
-	<string name="service_gui_HISTORY_ERASE_ALL">Erase all contacts chat history</string>
-	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Are you sure you want to purge all messages for %1$s?</string>
-	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Are you sure you want to purge all messages for all contacts?</string>
-	<string name="service_gui_HISTORY_REMOVE_ERROR">Error removing locally stored messages for %1$s.</string>
+    <string name="service_gui_HIDE">Hide</string>
+    <string name="service_gui_HIDE_OFFLINE_CONTACTS">Hide offline contacts</string>
+    <string name="service_gui_HISTORY">History</string>
+    <string name="service_gui_HISTORY_CONTACT">History - %1$s</string>
+    <string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Turn off history for this contact</string>
+    <string name="service_gui_HISTORY_TOGGLE_ALL">Turn off history for all chats and contacts</string>
+    <string name="service_gui_HISTORY_ERASE_PER_CONTACT">Erase this contact history</string>
+    <string name="service_gui_HISTORY_ERASE_ALL">Erase all contacts chat history</string>
+    <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Are you sure you want to purge all messages for %1$s?</string>
+    <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Are you sure you want to purge all messages for all contacts?</string>
+    <string name="service_gui_HISTORY_REMOVE_ERROR">Error removing locally stored messages for %1$s.</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Chat room occupants</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Erase this chatRoom history</string>
@@ -392,15 +392,15 @@
     <string name="service_gui_INCOMING_CALL">Incoming call received from: %1$s</string>
     <string name="service_gui_INCOMING_CALL_STATUS">Incoming call</string>
     <string name="service_gui_INITIATING_CALL_STATUS">Initiating call</string>
-	<string name="service_gui_INVITATION">Invitation text:</string>
-	<string name="service_gui_INVITATION_RECEIVED">Invitation received</string>
-	<string name="service_gui_INVITATION_RECEIVED_MSG">%1$s has invited you to join %2$s chat room. You could accept, reject or ignore this invitation.</string>
-	<string name="service_gui_INVITATION_REJECTED">%1$s has rejected your invitation to join chat room. Reason: %2$s.</string>
-	<string name="service_gui_INVITE">Invite</string>
-	<string name="service_gui_INVITE_CONTACT_MSG">Select the names of the contacts you would like to add to this conversation and then click Invite.</string>
-	<string name="service_gui_INVITE_CONTACT_TO_CALL">Invite contacts to call</string>
+    <string name="service_gui_INVITATION">Invitation text:</string>
+    <string name="service_gui_INVITATION_RECEIVED">Invitation received</string>
+    <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s has invited you to join %2$s chat room. You could accept, reject or ignore this invitation.</string>
+    <string name="service_gui_INVITATION_REJECTED">%1$s has rejected your invitation to join chat room. Reason: %2$s.</string>
+    <string name="service_gui_INVITE">Invite</string>
+    <string name="service_gui_INVITE_CONTACT_MSG">Select the names of the contacts you would like to add to this conversation and then click Invite.</string>
+    <string name="service_gui_INVITE_CONTACT_TO_CALL">Invite contacts to call</string>
     <string name="service_gui_INVITE_CONTACT_TO_CHAT">Invite contacts to chat</string>
-	<string name="service_gui_INVITE_CONTACT_TO_VIDEO_BRIDGE">Invite contacts (videobridge)</string>
+    <string name="service_gui_INVITE_CONTACT_TO_VIDEO_BRIDGE">Invite contacts (videobridge)</string>
     <string name="service_gui_INVITE_REASON">Group chat invitation</string>
     <string name="service_gui_INVITE_REASON_INVITE">Invite Reason:</string>
     <string name="service_gui_INVITE_REASON_REJECT">Reason (on reject):</string>
@@ -418,29 +418,29 @@
     <string name="service_gui_HOME">Home</string>
     <string name="service_gui_HOME_PAGE">Home page</string>
     <string name="service_gui_INVALID_ADDRESS">Invalid address: %1$s</string>
-	<string name="service_gui_JOIN">Join</string>
-	<string name="service_gui_JOIN_AS">Join as</string>
-	<string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">Join an existing video conference</string>
-	<string name="service_gui_JOIN_VIDEO">Join video</string>
-	<string name="service_gui_JOB_TITLE">Job title</string>
-	<string name="service_gui_JOIN_CHAT_ROOM">Join chat room&#8230;</string>
+    <string name="service_gui_JOIN">Join</string>
+    <string name="service_gui_JOIN_AS">Join as</string>
+    <string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">Join an existing video conference</string>
+    <string name="service_gui_JOIN_VIDEO">Join video</string>
+    <string name="service_gui_JOB_TITLE">Job title</string>
+    <string name="service_gui_JOIN_CHAT_ROOM">Join chat room&#8230;</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Failed to join room %1$s with nickname: %2$s.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD"> The chat room requests a password.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION"> The chat room requires registration.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Join chat room</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Please enter the name of the chat room you would like to join.</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Join chat room wizard</string>
-	<string name="service_gui_JOIN_AUTOMATICALLY">Join automatically</string>
-	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Don\'t join automatically</string>
-	<string name="service_gui_KICK">Kick</string>
-	<string name="service_gui_KICK_FAILED">Kick failed</string>
-	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Failed to kick {0}. A general server error occurred.</string>
-	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Failed to kick {0}. The owner and the administrator of the room could not be kicked.</string>
-	<string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Failed to kick {0}. You do not have enough privileges to do that.</string>
-	<string name="service_gui_LAST">Last</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_NAME">Please enter the name of the chat room you would like to join.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Join chat room wizard</string>
+    <string name="service_gui_JOIN_AUTOMATICALLY">Join automatically</string>
+    <string name="service_gui_DONT_JOIN_AUTOMATICALLY">Don\'t join automatically</string>
+    <string name="service_gui_KICK">Kick</string>
+    <string name="service_gui_KICK_FAILED">Kick failed</string>
+    <string name="service_gui_KICK_FAILED_GENERAL_ERROR">Failed to kick {0}. A general server error occurred.</string>
+    <string name="service_gui_KICK_FAILED_NOT_ALLOWED">Failed to kick {0}. The owner and the administrator of the room could not be kicked.</string>
+    <string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Failed to kick {0}. You do not have enough privileges to do that.</string>
+    <string name="service_gui_LAST">Last</string>
     <string name="service_gui_LAST_MSG_CORRECTION">Last message correction</string>
-	<string name="service_gui_LAST_NAME">Last name</string>
-	<string name="service_gui_LEAVE">Leave</string>
+    <string name="service_gui_LAST_NAME">Last name</string>
+    <string name="service_gui_LEAVE">Leave</string>
     <string name="service_gui_LEAVE_ROOM">Leave chatRoom</string>
     <string name="service_gui_LOADING">Loading</string>
     <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Locally on hold</string>
@@ -450,7 +450,7 @@
     <string name="service_gui_LOGIN_INTERNAL_ERROR">An error occurred while logging in with account: User name: {0}, Server name: {1}. This is most probably an internal application error. Please report the problem to our developers mailing list.</string>
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Unable to log in with account: User name: {0}, Server name: {1}, due to an account configuration problem. Please check your account configuration.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">Unable to log in with account:\nUser name: {0}\nServer name: {1}\ndue to a network failure. Please check your network connection.</string>
-    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">An error occurred while logging off with the following account: User name: %1$s, Server name: %2$S.</string>
+    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">An error occurred while logging off with the following account: User name: %1$s, Server name: %2$s.</string>
     <string name="service_gui_MOBILE_PHONE">Mobile</string>
     <string name="service_gui_MOVE">Move</string>
     <string name="service_gui_MOVE_CONTACT">Move Contact</string>
@@ -492,7 +492,7 @@
     <string name="service_gui_ON">On</string>
     <string name="service_gui_ONLINE">Online</string>
     <string name="service_gui_OPEN">Open</string>
-	<string name="service_gui_OPEN_FILE_FROM_IMAGE">Click to open file.</string>
+    <string name="service_gui_OPEN_FILE_FROM_IMAGE">Click to open file.</string>
     <string name="service_gui_OPEN_FOLDER">Folder</string>
     <string name="service_gui_OTHER">Other</string>
     <string name="service_gui_ORGANIZATION">Organization</string>
@@ -514,7 +514,7 @@
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">Presence is not supported by %1$s</string>
     <string name="service_gui_PROACTIVE_NOTIFICATION">is writing a message</string>
     <string name="service_gui_RECENT_MESSAGES">Recent conversations</string>
-	<string name="service_gui_RECEIVED">%1$s received</string>
+    <string name="service_gui_RECEIVED">%1$s received</string>
     <string name="service_gui_REFERRED_STATUS">Referred</string>
     <string name="service_gui_RESTORING">Restoring&#8230;</string>
 
@@ -553,14 +553,14 @@
     <string name="service_gui_SEND_MESSAGE">Send a message</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Failed to send message: %1$s</string>
     <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">The entity you have selected doesn\'t support instant chat messaging: %1$s</string>
-	<string name="service_gui_SEND_AS_SMS">Send as SMS</string>
-	<string name="service_gui_SEND_PRIVATE_MESSAGE">Send private message</string>
+    <string name="service_gui_SEND_AS_SMS">Send as SMS</string>
+    <string name="service_gui_SEND_PRIVATE_MESSAGE">Send private message</string>
     <string name="service_gui_SEND_VIA">Send via</string>
-	<string name="service_gui_SENT">sent</string>
-	<string name="service_gui_SERVER_CHAT_ROOMS">Server Chat Rooms</string>
-	<string name="service_gui_SHOW_OFFLINE_CONTACTS">Show offline contacts</string>
+    <string name="service_gui_SENT">sent</string>
+    <string name="service_gui_SERVER_CHAT_ROOMS">Server Chat Rooms</string>
+    <string name="service_gui_SHOW_OFFLINE_CONTACTS">Show offline contacts</string>
     <string name="service_gui_SHUTDOWN_IN_PROGRESS">shuting down&#8230;</string>
-	<string name="service_gui_STATUS">Status</string>
+    <string name="service_gui_STATUS">Status</string>
     <string name="service_gui_TYPE_YOUR_REQUEST">Type your request reason</string>
     <string name="service_gui_UNKNOWN">Unknown</string>
     <string name="service_gui_UNKNOWN_USER">Unknown user</string>
@@ -571,7 +571,7 @@
     <string name="service_gui_VOLUME_GAIN_LEVEL">Volume gain level: %1$s%%</string>
     <string name="service_gui_WAITING_AUTHORIZATION">Waiting for authorization</string>
     <string name="service_gui_WARNING">Warning</string>
-    <string name="service_gui_WARN_CALL_IN_PROGRESS">Can\'t do this during a call</string>	
+    <string name="service_gui_WARN_CALL_IN_PROGRESS">Can\'t do this during a call</string>    
     <string name="service_gui_YES">Yes</string>
 
     <!-- Conferenc constants - no translation -->
@@ -610,9 +610,9 @@
     <string name="service_gui_SIGN_IN">Sign in</string>
     <string name="service_gui_SIGN_OUT">Sign out</string>
     <string name="service_gui_SPECIFY_SERVER">Please complete the server part of your account.</string>
-	<string name="service_gui_SPEED">Speed: %1$s/sec (%2$s)</string>
+    <string name="service_gui_SPEED">Speed: %1$s/sec (%2$s)</string>
     <string name="service_gui_STATUS_CHANGE_GENERAL_ERROR">Failed to change status for account: User name: %1$s, Server name: %2$s, due to a general error.</string>
-	<string name="service_gui_STATUS_CHANGED_CHAT_MESSAGE">has become %1$s</string>
+    <string name="service_gui_STATUS_CHANGED_CHAT_MESSAGE">has become %1$s</string>
     <string name="service_gui_STATUS_CHANGE_NETWORK_FAILURE">Failed to change status for account: User name: %1$s, Server name: %2$s, due to a network problem.</string>
     <string name="service_gui_SECURITY_ERROR">Security error</string>
     <string name="service_gui_SECURITY_INFO">Security information</string>
@@ -667,7 +667,7 @@
     <string name="service_gui_callinfo_DECODED_WITH_FEC">Packets decoded with FEC:</string>
     <string name="service_gui_callinfo_DISCARDED_PERCENT">Packets currently being discarded:</string>
     <string name="service_gui_callinfo_DISCARDED_TOTAL">Number of discarded packets:</string>
-	
+
     <!-- ICE info -->
     <string name="service_gui_callinfo_HARVESTING_DATA">%1$d ms (for %2$d harvests)</string>
     <string name="service_gui_callinfo_HARVESTING_TIME">Harvesting time:</string>
@@ -745,7 +745,7 @@
     <string name="service_gui_UNSAVED_CHANGES_TITLE">UnSaved Changes</string>
     <string name="service_gui_WAITING">Please wait&#8230;</string>
     <string name="service_gui_SERVER_INFO_FETCH">Fetching server advertised features/info&#8230;</string>
-    
+
     <!-- Security info -->
     <string name="service_gui_security_AUDIO_NOT_SECURED">Audio not secure</string>
     <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">Call not secure.</string>
@@ -763,7 +763,6 @@
     <string name="service_gui_security_STRING_COMPARED">String compared!</string>
     <string name="service_gui_security_VERIFY_TOAST">Call security enabled! Tap to compare security string now or use the menu later.</string>
     <string name="service_gui_security_VIDEO_NOT_SECURED">Video not secure</string>
-
     <string name="service_gui_avatar_CHOOSE_ICON">Choose picture</string>
     <string name="service_gui_avatar_REMOVE_ICON">Remove current picture</string>
 
@@ -823,7 +822,7 @@
     <string name="plugin_connectioninfo_TITLE">Connection Info</string>
 
     <!-- contact info -->
-	<string name="plugin_contactinfo_TITLE">Contact details</string>
+    <string name="plugin_contactinfo_TITLE">Contact details</string>
     <string name="plugin_contactinfo_CONTACT_SUMMARY_DESCRIPTION">Summary of contact info for</string>
     <string name="plugin_contactinfo_CONTACT_EXTENDED_DESCRIPTION">Extended contact info for</string>
     <string name="plugin_contactinfo_NOT_SPECIFIED">[Not specified]</string>
@@ -963,7 +962,7 @@
     <string name="omemo_identity_keypairs_invalid">Invalid IdentityKeyPairs for omemoDevice: %1$s.\nException: %2$s.</string>
     <string name="omemo_init_failed_CorruptedOmemoKeyException">Initialize OmemoManager has failed and omemo messaging is not working. If problem persists
         after restart, please proceed to "Regnerate OMEMO identities" for the failed omomoDevice: %1$s.\n\nException: %2$s.</string>
-    <string name="omemo_init_failed_noresponse">Initialize OmemoManager has failed and omemo messaging may not work properly.</string>
+    <string name="omemo_init_failed_noresponse">Initialize OmemoManager has failed and omemo messaging may not work properly: %1$s</string>
     <string name="omemo_init_failed_title">OmemoManager init failed</string>
     <string name="omemo_menu_authenticated">OMEMO Authenticated</string>
     <string name="omemo_menu_unauthenticated">OMEMO unAuthenticated</string>
@@ -1015,7 +1014,6 @@
 
     <!-- DNS config -->
     <string name="service_gui_settings_DNSSEC_DANE">SSL/DNSSEC/DANE Security</string>
-
     <string name="service_gui_settings_DNS">DNS</string>
     <string name="service_gui_settings_DNS_SUMMARY">Configure DNS settings</string>
     <string name="plugin_dnsconfig_DNSSEC">DNS Security (DNSSEC)</string>
@@ -1064,7 +1062,7 @@
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Audio encoding</string>
     <string name="service_gui_ENC_OVERRIDE_GLOBAL">Override global</string>
-	<string name="service_gui_ENC_VIDEO_TITLE">Video encoding</string>
+    <string name="service_gui_ENC_VIDEO_TITLE">Video encoding</string>
     
     <!-- Security protocols dialog -->
     <string name="service_gui_LIST_EMPTY">None</string>
@@ -1100,7 +1098,7 @@
     <string name="service_gui_PREF_SECURITY_GENERAL">General</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP">RTP/SAVP indication</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">RTP/SAVP indication method</string>
-	<string name="service_gui_PREF_SECURITY_SDES">SDes options</string>
+    <string name="service_gui_PREF_SECURITY_SDES">SDes options</string>
     <string name="service_gui_PREF_SECURITY_SDES_DLG_TITLE">Select desired cipher suites</string>
     <string name="service_gui_PREF_SECURITY_SDES_TITLE">SDES cipher suites</string>
     <string name="service_gui_PREF_SECURITY_ZRTP">ZRTP options</string>
@@ -1202,7 +1200,7 @@
     <string name="service_gui_JBR_STUN_LIST">Additional STUN/TURN servers&#8230;</string>
     <string name="service_gui_JBR_STUN_LIST_SUMMARY">User defined additional STUN/TURN servers for use</string>
     <string name="service_gui_JBR_TELE_DOMAIN">Telephony domain</string>
-    <string name="service_gui_JBR_TELEPHONY">Telephony</string>
+    <string name="service_gui_JBR_TELEPHONY">Telephony (experimental)</string>
     <string name="service_gui_JBR_TELEPHONY_SUMMARY">Configure telephony options&#8230;</string>
     <string name="service_gui_JBR_USE_DEFAULT_STUN">Use Jitsi STUN server (fallback)</string>
     <string name="service_gui_JBR_USE_ICE">Use ICE</string>
@@ -1210,6 +1208,17 @@
     <string name="service_gui_JBR_USE_UPNP">Use UPnP</string>
     <string name="service_gui_JBR_USER">USER ID</string>
     <string name="service_gui_JBR_USER_CATEGORY">User name and password</string>
+
+    <!-- Telephony -->
+    <string name="service_gui_CONTACT_PHONE_NUMBER">Contact Name/Phone/Jid:</string>
+    <string name="service_gui_EXT_CALL_VIA">Call via:</string>
+    <string name="service_gui_NO_CONTACT_PHONE">Contact phone number cannot be empty!</string>
+    <string name="recipient_error_non_ascii">Special characters are currently not supported!</string>
+    <string name="service_gui_NOT_IN_ROSTER">The specified Telephony Domain \'%1$s\' is not a member of the contact list</string>
+    <string name="service_gui_NOT_IN_CALLGROUP">%1$s does not belong to the defined call group</string>
+    <string name="service_gui_NO_JINGLE_SUPPORT">%1$s\ndoes not support Jingle protocol</string>
+    <string name="recipient_error_parse_failed">Error parsing address!</string>
+    <string name="unknown_recipient"><![CDATA[<Unknown Recipient>]]></string>
 
     <!-- Account preference categories -->
     <string name="pref_cat_account">pref_cat_account</string>
@@ -1694,6 +1703,7 @@
 
     <string name="all_permission_denied_dialog_title">All permissions request</string>
     <string name="all_permissions_denied_feedback">aTalk may not work properly or may have unexpected behavior as some services have been denied!\nIf you have selected \"Don\'t ask again\" option, you need to go to android Settings -> APP INFO for aTalk to enable the resource access permission</string>
+    <string name="permission_denied_all_alert">aTalk would not work properly. You have denied aTalk of all permissions!</string>
 
     <string name="permission_rationale_message">You are presented with each service needed by aTalk; please allow aTalk to access these services for full features supported</string>
     <string name="permission_rationale_settings_button_text">SETTINGS</string>

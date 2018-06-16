@@ -26,13 +26,7 @@ import org.json.JSONObject;
 import org.jxmpp.jid.BareJid;
 import org.osgi.framework.BundleContext;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The AccountID is an account identifier that, uniquely represents a specific user account over a
@@ -40,12 +34,12 @@ import java.util.Map;
  * protected constructor. The reason why this constructor is protected is mostly avoiding confusion
  * and letting people (using the protocol provider service) believe that they are the ones who are
  * supposed to instantiate the AccountID class.
- * <p>
+ *
  * Every instance of the <tt>ProtocolProviderService</tt>, created through the
  * ProtocolProviderFactory is assigned an AccountID instance, that uniquely represents it and whose
  * string representation (obtained through the getAccountUniqueID() method) can be used for
  * identification of persistently stored account details.
- * <p>
+ *
  * Account id's are guaranteed to be different for different accounts and in the same time are bound
  * to be equal for multiple installations of the same account.
  *
@@ -167,7 +161,7 @@ public class AccountID
      * @param protocolName the protocol name implemented by the provider that this id is meant for e.g. Jabber
      * @param serviceName the name of the service (e.g. iptel.org, jabber.org, icq.com) that this account is
      * registered with.
-     * <p>
+     *
      * Note: parameters userID is null and new empty accountProperties when called from
      * @see net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration or
      * @see net.java.sip.communicator.service.protocol.sip.SIPAccountRegistration constructor
@@ -205,13 +199,12 @@ public class AccountID
      * Allows a specific set of account properties to override a given default protocol name (e.g.
      * account registration wizards which want to present a well-known protocol name associated
      * with the account that is different from the name of the effective protocol).
-     * <p>
+     *
      * Note: The logic of the SIP protocol implementation at the time of this writing modifies
      * <tt>accountProperties</tt> to contain the default protocol name if an override hasn't been
      * defined. Since the desire is to enable all account registration wizards to override the
      * protocol name, the current implementation places the specified <tt>defaultProtocolName</tt>
      * in a similar fashion.
-     * </p>
      *
      * @param accountProperties a Map containing any other protocol and implementation specific account initialization
      * properties
@@ -316,8 +309,7 @@ public class AccountID
     /**
      * Gets the ProtocolProviderService for mAccountID
      *
-     * @return the ProtocolProviderService if currently registered for the AccountID or
-     * <tt>null</tt> otherwise
+     * @return the ProtocolProviderService if currently registered for the AccountID or <tt>null</tt> otherwise
      */
     public ProtocolProviderService getProtocolProvider()
     {
@@ -363,8 +355,7 @@ public class AccountID
      * key is associated with a value in this <tt>AccountID</tt>, the string representation of the
      * value is parsed into a signed decimal integer according to the rules of
      * {@link Integer#parseInt(String)}. If parsing the value as a signed decimal integer fails or
-     * there is no value associated with the specified property key, <tt>defaultValue</tt> is
-     * returned.
+     * there is no value associated with the specified property key, <tt>defaultValue</tt> is returned.
      *
      * @param key the key of the property to get the value of as a signed decimal integer
      * @param defaultValue the value to be returned if parsing the value of the specified property key as a
@@ -468,7 +459,6 @@ public class AccountID
     /**
      * Returns a hash code value for the object. This method is supported for the benefit of
      * HashTables such as those provided by <tt>java.util.Hashtable</tt>.
-     * <p>
      *
      * @return a hash code value for this object.
      * @see java.lang.Object#equals(java.lang.Object)
@@ -482,7 +472,6 @@ public class AccountID
 
     /**
      * Indicates whether some other object is "equal to" this account id.
-     * <p>
      *
      * @param obj the reference object with which to compare.
      * @return <tt>true</tt> if this object is the same as the obj argument; <tt>false</tt>
@@ -513,7 +502,6 @@ public class AccountID
      * would be an FQDN or even an ipAddress but this would not always be the case (e.g. p2p
      * providers may return a name that does not directly correspond to an IP address or host
      * name).
-     * <p>
      *
      * @return the name of the service that defines the context for this account.
      */
@@ -588,7 +576,6 @@ public class AccountID
 
     /**
      * Specifies whether or not the passWord is to be stored persistently (insecure!) or not.
-     * <p>
      *
      * @param storePassword indicates whether password is to be stored persistently.
      */
@@ -599,7 +586,6 @@ public class AccountID
 
     /**
      * Determines whether or not the passWord is to be stored persistently (insecure!) or not.
-     * <p>
      *
      * @return true if the underlying protocol provider is to persistently (and possibly
      * insecurely) store the passWord and false otherwise.
@@ -1236,20 +1222,18 @@ public class AccountID
      * selected. Depending on the value of the <tt>exactPrefixMatch</tt> parameter the method will
      * (when false) or will not (when exactPrefixMatch is true) include property names that have
      * prefixes longer than the specified <tt>prefix</tt> param.
-     * <p>
+     *
      * Example:
-     * <p>
      * Imagine a configuration service instance containing 2 properties only:<br>
      * <code>
      * net.java.sip.communicator.PROP1=value1<br>
      * net.java.sip.communicator.service.protocol.PROP1=value2
      * </code>
-     * <p>
+     *
      * A call to this method with a prefix="net.java.sip.communicator" and exactPrefixMatch=true
      * would only return the first property - net.java.sip.communicator.PROP1, whereas the same
      * call with exactPrefixMatch=false would return both properties as the second prefix includes
      * the requested prefix string.
-     * <p>
      *
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
@@ -1278,20 +1262,18 @@ public class AccountID
      * selected. Depending on the value of the <tt>exactPrefixMatch</tt> parameter the method will
      * (when false) or will not (when exactPrefixMatch is true) include property names that have
      * prefixes longer than the specified <tt>prefix</tt> param.
-     * <p>
+     *
      * Example:
-     * <p>
      * Imagine a configuration service instance containing 2 properties only:<br>
      * <code>
      * net.java.sip.communicator.PROP1=value1<br>
      * net.java.sip.communicator.service.protocol.PROP1=value2
      * </code>
-     * <p>
+     *
      * A call to this method with a prefix="net.java.sip.communicator" and exactPrefixMatch=true
      * would only return the first property - net.java.sip.communicator.PROP1, whereas the same
      * call with exactPrefixMatch=false would return both properties as the second prefix includes
      * the requested prefix string.
-     * <p>
      *
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
@@ -1317,20 +1299,18 @@ public class AccountID
      * have the specified prefix. Depending on the value of the <tt>exactPrefixMatch</tt> parameter
      * the method will (when false) or will not (when exactPrefixMatch is true) include property
      * names that have prefixes longer than the specified <tt>prefix</tt> param.
-     * <p>
+     *
      * Example:
-     * <p>
      * Imagine a configuration service instance containing 2 properties only:<br>
      * <code>
      * net.java.sip.communicator.PROP1=value1<br>
      * net.java.sip.communicator.service.protocol.PROP1=value2
      * </code>
-     * <p>
+     *
      * A call to this method with a prefix="net.java.sip.communicator" and exactPrefixMatch=true
      * would only return the first property - net.java.sip.communicator.PROP1, whereas the same call
      * with exactPrefixMatch=false would return both properties as the second prefix includes the
      * requested prefix string.
-     * <p>
      *
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
@@ -1422,11 +1402,10 @@ public class AccountID
         if (accountIconPath != null)
             setAccountIconPath(accountIconPath);
 
-        // cmeng - mergeProperties(mAccountProperties, accountProperties);
-        mergeProperties(accountProperties, mAccountProperties);
+        // cmeng - mergeProperties mAccountProperties into accountProperties and later save accountProperties to database
+        mergeProperties(mAccountProperties, accountProperties);
 
         // Removes encrypted password property, as it will be restored during account storage.
-        // Otherwise the encrypted password will not get updated from PASSWORD during storeAccount().
         accountProperties.remove("ENCRYPTED_PASSWORD");
     }
 
@@ -1453,7 +1432,7 @@ public class AccountID
     }
 
     /**
-     * Copies all properties from <tt>input</tt> map to <tt>output</tt> map.
+     * Copies all properties from <tt>input</tt> map to <tt>output</tt> map if not exist in output.
      *
      * @param input source properties map
      * @param output destination properties map
@@ -1461,7 +1440,8 @@ public class AccountID
     public static void mergeProperties(Map<String, String> input, Map<String, String> output)
     {
         for (String key : input.keySet()) {
-            output.put(key, input.get(key));
+            if (!output.containsKey(key))
+                output.put(key, input.get(key));
         }
     }
 

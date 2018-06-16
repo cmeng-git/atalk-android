@@ -162,8 +162,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      * {@inheritDoc}
      */
     @Override
-    protected View getView(boolean isDropDown, Account account, ViewGroup parent,
-                           LayoutInflater inflater) {
+    protected View getView(boolean isDropDown, Account account, ViewGroup parent, LayoutInflater inflater) {
         int rowResID = listRowResourceID;
 
         if (isDropDown && dropDownRowResourceID != -1) {

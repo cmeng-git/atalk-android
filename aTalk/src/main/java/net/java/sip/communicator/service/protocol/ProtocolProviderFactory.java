@@ -625,10 +625,12 @@ public abstract class ProtocolProviderFactory
      *
      * @param protocolProvider the protocol provider service corresponding to the modified account.
      * @param accountProperties a set of protocol (or implementation) specific properties defining the new account.
+     * @throws java.lang.IllegalArgumentException if userID does not correspond to an identifier in the context of the
+     * underlying protocol or if accountProperties does not contain a complete set of account installation properties.
      * @throws java.lang.NullPointerException if any of the arguments is null.
      */
     public abstract void modifyAccount(ProtocolProviderService protocolProvider, Map<String, String> accountProperties)
-            throws NullPointerException;
+            throws IllegalArgumentException, NullPointerException;
 
     /**
      * Returns a copy of the list containing the <tt>AccountID</tt>s of all accounts currently

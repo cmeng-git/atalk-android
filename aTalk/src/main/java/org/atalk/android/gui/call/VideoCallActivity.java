@@ -258,7 +258,11 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             public void onClick(View v)
             {
                 // Start the hang up Thread, Activity will be closed later on call ended event
-                CallManager.hangupCall(call);
+                if (call != null)
+                    CallManager.hangupCall(call);
+                // if call thread is null, then just exit the activity
+                else
+                    finish();
             }
         });
     }
@@ -675,7 +679,9 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     public void onHoldButtonClicked(View holdButtonView)
     {
-        CallManager.putOnHold(call, !isOnHold());
+        // call == null if call setup failed
+        if (call != null)
+            CallManager.putOnHold(call, !isOnHold());
     }
 
     private boolean isOnHold()
