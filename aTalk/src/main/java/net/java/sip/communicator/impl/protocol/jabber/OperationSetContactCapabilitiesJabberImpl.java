@@ -1,26 +1,13 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.caps.UserCapsNodeListener;
-import net.java.sip.communicator.service.protocol.AbstractOperationSetContactCapabilities;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.OperationSet;
-import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
-import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
-import net.java.sip.communicator.service.protocol.OperationSetDesktopSharingServer;
-import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
-import net.java.sip.communicator.service.protocol.OperationSetPresence;
-import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
-import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.event.ContactCapabilitiesEvent;
-import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
@@ -30,10 +17,7 @@ import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jxmpp.jid.Jid;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Represents an <tt>OperationSet</tt> to query the <tt>OperationSet</tt>s supported for a specific
@@ -110,7 +94,6 @@ public class OperationSetContactCapabilitiesJabberImpl
 
         if (presenceOpSet != null)
             presenceOpSet.addContactPresenceStatusListener(this);
-
         setOperationSetChatStateFeatures(ConfigurationUtils.isSendChatStateNotifications());
     }
 
@@ -178,8 +161,7 @@ public class OperationSetContactCapabilitiesJabberImpl
      * <tt>OperationSet</tt>s are considered by the associated protocol provider to capabilities
      * possessed by the specified <tt>contact</tt>.
      *
-     * @param jid the <tt>Contact</tt> for which the supported <tt>OperationSet</tt> capabilities are to
-     * be retrieved
+     * @param jid the <tt>Contact</tt> for which the supported <tt>OperationSet</tt> capabilities are to be retrieved
      * @param online <tt>true</tt> if <tt>contact</tt> is online; otherwise, <tt>false</tt>
      * @return a <tt>Map</tt> listing the <tt>OperationSet</tt>s considered by the associated
      * protocol provider to be supported by the specified <tt>contact</tt> (i.e. to be
@@ -241,26 +223,24 @@ public class OperationSetContactCapabilitiesJabberImpl
         U opset = parentProvider.getOperationSet(opsetClass);
         if (opset == null)
             return null;
-
-		/*
+        /*
          * If the specified contact is offline, don't query its features (they should fail anyway).
-		 */
+         */
         if (!online)
             return OFFLINE_OPERATION_SETS.contains(opsetClass) ? opset : null;
-
-		/*
-		 * If we know the features required for the support of opsetClass, check whether the
-		 * contact supports them. Otherwise, presume the contact possesses the opsetClass
-		 * capability in light of the fact that we miss any knowledge of the opsetClass whatsoever.
-		 */
+        /*
+         * If we know the features required for the support of opsetClass, check whether the
+         * contact supports them. Otherwise, presume the contact possesses the opsetClass
+         * capability in light of the fact that we miss any knowledge of the opsetClass whatsoever.
+         */
         if (OPERATION_SETS_TO_FEATURES.containsKey(opsetClass)) {
             String[] features = OPERATION_SETS_TO_FEATURES.get(opsetClass);
 
-			/*
-			 * Either we've completely disabled the opsetClass capability by mapping it to the null
-			 * list of features or we've mapped it to an actual list of features which are to be
-			 * checked whether the contact supports them.
-			 */
+            /*
+             * Either we've completely disabled the opsetClass capability by mapping it to the null
+             * list of features or we've mapped it to an actual list of features which are to be
+             * checked whether the contact supports them.
+             */
             if ((features == null) || ((features.length != 0)
                     && !parentProvider.isFeatureListSupported(jid, features))) {
                 opset = null;
@@ -270,8 +250,7 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * Sets the <tt>ScServiceDiscoveryManager</tt> which is the <tt>discoveryManager</tt> of
-     * {@link #parentProvider}.
+     * Sets the <tt>ScServiceDiscoveryManager</tt> which is the <tt>discoveryManager</tt> of {@link #parentProvider}.
      * Remove the existing one before replaced with the new request
      *
      * @param discManager the <tt>ScServiceDiscoveryManager</tt> which is the <tt>discoveryManager</tt> of
@@ -298,10 +277,10 @@ public class OperationSetContactCapabilitiesJabberImpl
      */
     public void userCapsNodeNotify(Jid user, boolean online)
     {
-		/*
-		 * It doesn't matter to us whether a caps node has been added or removed for the specified
-		 * user because we report all changes.
-		 */
+        /*
+         * It doesn't matter to us whether a caps node has been added or removed for the specified
+         * user because we report all changes.
+         */
         OperationSetPresence opsetPresence = parentProvider.getOperationSet(OperationSetPresence.class);
 
         if (opsetPresence != null) {

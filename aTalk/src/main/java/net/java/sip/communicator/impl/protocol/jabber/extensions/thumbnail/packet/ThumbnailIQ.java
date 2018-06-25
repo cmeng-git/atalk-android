@@ -57,8 +57,7 @@ public class ThumbnailIQ extends IQ
 
     /**
      * Creates a <tt>BoB</tt> packet, by specifying the source, the destination, the
-     * content-ID and the type of this packet. The type could be one of the types defined in
-     * <tt>IQ.Type</tt>.
+     * content-ID and the type of this packet. The type could be one of the types defined in <tt>IQ.Type</tt>.
      *
      * @param from the source of the packet
      * @param to the destination of the packet
@@ -76,9 +75,8 @@ public class ThumbnailIQ extends IQ
     }
 
     /**
-     * Creates a <tt>BoB</tt> packet, by specifying the source, the destination, the
-     * content-ID, the type of data and the data of the thumbnail. We also precise the type of the
-     * packet to create.
+     * Creates a <tt>BoB</tt> packet, by specifying the source, the destination, the content-ID,
+     * the type of data and the data of the thumbnail. We also precise the type of the packet to create.
      *
      * @param from the source of the packet
      * @param to the destination of the packet
@@ -90,7 +88,6 @@ public class ThumbnailIQ extends IQ
     public ThumbnailIQ(Jid from, Jid to, String cid, String mimeType, byte[] data, Type type)
     {
         this(from, to, cid, type);
-
         this.data = data;
         this.mimeType = mimeType;
     }
@@ -99,8 +96,7 @@ public class ThumbnailIQ extends IQ
      * Returns the xml representing the data element in this <tt>IQ</tt> packet.
      */
     @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(
-            IQChildElementXmlStringBuilder xml)
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
     {
         xml.attribute(CID, cid);
         xml.optAttribute(TYPE, mimeType);

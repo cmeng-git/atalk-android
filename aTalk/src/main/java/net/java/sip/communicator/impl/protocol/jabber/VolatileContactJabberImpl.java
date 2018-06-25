@@ -103,13 +103,12 @@ public class VolatileContactJabberImpl extends ContactJabberImpl
     {
         return contactId;
     }
+
     /**
      * Returns a String that could be used by any user interacting modules for referring to this
-     * contact. An alias is not necessarily unique but is often more human readable than an address
-     * (or id).
+     * contact. An alias is not necessarily unique but is often more human readable than an address (or id).
      *
-     * @return a String that can be used for referring to this contact when interacting with the
-     * user.
+     * @return a String that can be used for referring to this contact when interacting with the user.
      */
     @Override
     public String getDisplayName()
@@ -118,8 +117,7 @@ public class VolatileContactJabberImpl extends ContactJabberImpl
     }
 
     /**
-     * Returns a string representation of this contact, containing most of its representative
-     * details.
+     * Returns a string representation of this contact, containing most of its representative details.
      *
      * @return a string representation of this contact.
      */

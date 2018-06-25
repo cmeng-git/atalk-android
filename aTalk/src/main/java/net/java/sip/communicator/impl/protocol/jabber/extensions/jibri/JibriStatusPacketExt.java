@@ -61,7 +61,6 @@ public class JibriStatusPacketExt extends AbstractPacketExtension
         IDLE("idle"),
         BUSY("busy"),
         UNDEFINED("undefined");
-
         private String name;
 
         Status(String name)

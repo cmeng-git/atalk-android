@@ -14,13 +14,12 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.util.StringUtils;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.*;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
@@ -39,9 +38,8 @@ import java.util.*;
 
 /**
  * The Jabber implementation of a Persistent Presence Operation set. This class manages our own
- * presence status as well as subscriptions for the presence status of our buddies. It also offers
- * methods for retrieving and modifying the buddy contact list and adding listeners for changes in
- * its layout.
+ * presence status as well as subscriptions for the presence status of our buddies. It also offers methods
+ * for retrieving and modifying the buddy contact list and adding listeners for changes in its layout.
  *
  * @author Damian Minkov
  * @author Lyubomir Marinov
@@ -246,11 +244,11 @@ public class OperationSetPersistentPresenceJabberImpl
      *
      * @param id the address of the contact to create.
      * @param isPrivateMessagingContact indicates whether the contact should be private messaging contact or not.
-     * // @param displayName
-     * the display name of the contact.
+     * @param displayName the display name of the contact.
      * @return the newly created volatile <tt>ContactImpl</tt>
      */
-    public synchronized ContactJabberImpl createVolatileContact(Jid id, boolean isPrivateMessagingContact, String displayName)
+    public synchronized ContactJabberImpl createVolatileContact(Jid id, boolean isPrivateMessagingContact,
+            String displayName)
     {
         // first check for already created one.
         ContactGroupJabberImpl notInContactListGroup = ssContactList.getNonPersistentGroup();
@@ -271,15 +269,13 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Creates and returns a unresolved contact from the specified <tt>address</tt> and
-     * <tt>persistentData</tt>.
+     * Creates and returns a unresolved contact from the specified <tt>address</tt> and <tt>persistentData</tt>.
      *
      * @param address an identifier of the contact that we'll be creating.
      * @param persistentData a String returned Contact's getPersistentData() method during a previous run and that
      * has been persistently stored locally.
      * @param parentGroup the group where the unresolved contact is supposed to belong to.
-     * @return the unresolved <tt>Contact</tt> created from the specified <tt>address</tt> and
-     * <tt>persistentData</tt>
+     * @return the unresolved <tt>Contact</tt> created from the specified <tt>address</tt> and <tt>persistentData</tt>
      */
     public Contact createUnresolvedContact(String address, String persistentData, ContactGroup parentGroup)
     {
@@ -295,14 +291,12 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Creates and returns a unresolved contact from the specified <tt>address</tt> and
-     * <tt>persistentData</tt>.
+     * Creates and returns a unresolved contact from the specified <tt>address</tt> and <tt>persistentData</tt>.
      *
      * @param address an identifier of the contact that we'll be creating.
      * @param persistentData a String returned Contact's getPersistentData() method during a previous run and that
      * has been persistently stored locally.
-     * @return the unresolved <tt>Contact</tt> created from the specified <tt>address</tt> and
-     * <tt>persistentData</tt>
+     * @return the unresolved <tt>Contact</tt> created from the specified <tt>address</tt> and <tt>persistentData</tt>
      */
     public Contact createUnresolvedContact(String address, String persistentData)
     {
@@ -310,8 +304,7 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Creates and returns a unresolved contact group from the specified <tt>address</tt> and
-     * <tt>persistentData</tt>.
+     * Creates and returns a unresolved contact group from the specified <tt>address</tt> and <tt>persistentData</tt>.
      *
      * @param groupUID an identifier, returned by ContactGroup's getGroupUID, that the protocol provider may
      * use in order to create the group.
@@ -319,8 +312,7 @@ public class OperationSetPersistentPresenceJabberImpl
      * that has been persistently stored locally.
      * @param parentGroup the group under which the new group is to be created or null if this is group directly
      * underneath the root.
-     * @return the unresolved <tt>ContactGroup</tt> created from the specified <tt>uid</tt> and
-     * <tt>persistentData</tt>
+     * @return the unresolved <tt>ContactGroup</tt> created from the specified <tt>uid</tt> and <tt>persistentData</tt>
      */
     public ContactGroup createUnresolvedContactGroup(String groupUID, String persistentData, ContactGroup parentGroup)
     {
@@ -364,28 +356,27 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * Returns the protocol specific contact instance representing the local user.
      *
-     * @return the Contact (address, phone number, or uid) that the Provider implementation is
-     * communicating on behalf of.
+     * @return the Contact (address, phone number, or uid) that the Provider implementation is communicating on behalf of.
      */
     public Contact getLocalContact()
     {
         if (localContact != null)
             return localContact;
 
-        final Jid jid = parentProvider.getOurJID();
+        final FullJid ourJID = parentProvider.getOurJID();
         localContact = new ContactJabberImpl(null, ssContactList, false, true);
         localContact.setLocal(true);
         localContact.updatePresenceStatus(currentStatus);
-        localContact.setJid(jid);
+        localContact.setJid(ourJID);
 
-        Map<Jid, ContactResourceJabberImpl> rs = localContact.getResourcesMap();
+        Map<FullJid, ContactResourceJabberImpl> rs = localContact.getResourcesMap();
         if (currentPresence != null)
-            rs.put(jid, createResource(currentPresence, parentProvider.getOurJID(), localContact));
+            rs.put(ourJID, createResource(currentPresence, ourJID, localContact));
 
-        List<Presence> presenceIterator = ssContactList.getPresences(jid.asBareJid());
-        for (Presence p : presenceIterator) {
-            Jid fullJid = p.getFrom();
-            rs.put(fullJid, createResource(p, p.getFrom(), localContact));
+        List<Presence> presenceList = ssContactList.getPresences(ourJID.asBareJid());
+        for (Presence p : presenceList) {
+            FullJid fullJid = p.getFrom().asFullJidIfPossible();
+            rs.put(fullJid, createResource(p, fullJid, localContact));
         }
         return localContact;
     }
@@ -398,28 +389,20 @@ public class OperationSetPersistentPresenceJabberImpl
      * @param contact the contact.
      * @return the newly created resource.
      */
-    private ContactResourceJabberImpl createResource(Presence presence, Jid fullJid, Contact contact)
+    private ContactResourceJabberImpl createResource(Presence presence, FullJid fullJid, Contact contact)
     {
-        String resource = fullJid.getResourceOrNull().toString();
-
-        return new ContactResourceJabberImpl(fullJid, contact, resource,
-                jabberStatusToPresenceStatus(presence, parentProvider), presence.getPriority(),
-                mobileIndicator.isMobileResource(fullJid));
+        return new ContactResourceJabberImpl(fullJid, contact, jabberStatusToPresenceStatus(presence, parentProvider),
+                presence.getPriority(), mobileIndicator.isMobileResource(fullJid));
     }
 
     /**
-     * Clear resources used for local contact and before that update its resources in order to fire
-     * the needed events.
+     * Clear resources used for local contact and before that update its resources in order to fire the needed events.
      */
     private void clearLocalContactResources()
     {
-        if (localContact != null)
-            try {
-                removeResource(localContact, JidCreate.fullFrom(localContact.getAddress()));
-            } catch (XmppStringprepException e) {
-                e.printStackTrace();
-            }
-
+        if (localContact != null) {
+            removeResource(localContact, localContact.getJid().asFullJidIfPossible());
+        }
         currentPresence = null;
         localContact = null;
     }
@@ -530,8 +513,7 @@ public class OperationSetPersistentPresenceJabberImpl
             presence.setMode(presenceStatusToJabberMode(status));
             presence.setPriority(getPriorityForPresenceStatus(status.getStatusName()));
 
-            // On the phone or in meeting has a special status which is different from custom
-            // status message
+            // On the phone or in meeting has a special status which is different from custom status message
             if (status.equals(jabberStatusEnum.getStatus(JabberStatusEnum.ON_THE_PHONE))) {
                 presence.setStatus(JabberStatusEnum.ON_THE_PHONE);
             }
@@ -562,13 +544,13 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * Gets the <tt>PresenceStatus</tt> of a contact with a specific <tt>String</tt> identifier.
      *
-     * @param contactIdentifier the identifier of the contact whose status we're interested in.
+     * @param contactJid the jid of the contact whose status we're interested in.
      * @return the <tt>PresenceStatus</tt> of the contact with the specified <tt>contactIdentifier</tt>
      * @throws IllegalArgumentException if the specified <tt>contactIdentifier</tt> does not identify a contact
      * known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service
      */
-    public PresenceStatus queryContactStatus(BareJid contactIdentifier)
+    public PresenceStatus queryContactStatus(BareJid contactJid)
             throws IllegalArgumentException, IllegalStateException
     {
         /*
@@ -582,12 +564,8 @@ public class OperationSetPersistentPresenceJabberImpl
         }
 
         Roster roster = Roster.getInstanceFor(xmppConnection);
-        Presence presence = roster.getPresence(contactIdentifier);
-        if (presence != null)
-            return jabberStatusToPresenceStatus(presence, parentProvider);
-        else {
-            return parentProvider.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE);
-        }
+        Presence presence = roster.getPresence(contactJid);
+        return jabberStatusToPresenceStatus(presence, parentProvider);
     }
 
     /**
@@ -625,7 +603,6 @@ public class OperationSetPersistentPresenceJabberImpl
     public void renameServerStoredContactGroup(ContactGroup group, String newName)
     {
         assertConnected();
-
         if (!(group instanceof ContactGroupJabberImpl))
             throw new IllegalArgumentException("The specified group is not an jabber contact group: " + group);
         ssContactList.renameGroup((ContactGroupJabberImpl) group, newName);
@@ -655,8 +632,8 @@ public class OperationSetPersistentPresenceJabberImpl
      * @throws IllegalArgumentException if <tt>contact</tt> or <tt>parent</tt> are not a contact known to the
      * underlying protocol provider.
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.
-     * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors experienced during
-     * network communication
+     * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors experienced
+     * during network communication
      */
     public void subscribe(ContactGroup parent, String contactIdentifier)
             throws IllegalArgumentException, IllegalStateException, OperationFailedException
@@ -675,8 +652,8 @@ public class OperationSetPersistentPresenceJabberImpl
      * @param pps the owner of the contact to be added to RootGroup.
      * @throws IllegalArgumentException if <tt>contact</tt> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.
-     * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors experienced during
-     * network communication
+     * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors experienced
+     * during network communication
      */
     public void subscribe(ProtocolProviderService pps, String contactIdentifier)
             throws IllegalArgumentException, IllegalStateException, OperationFailedException
@@ -716,15 +693,16 @@ public class OperationSetPersistentPresenceJabberImpl
             ProtocolProviderServiceJabberImpl jabberProvider)
     {
         JabberStatusEnum jabberStatusEnum = jabberProvider.getJabberStatusEnum();
-        if (presence.getType() == Presence.Type.unavailable) {
+        if (!presence.isAvailable()) {
             return jabberStatusEnum.getStatus(JabberStatusEnum.OFFLINE);
         }
+
         // Check status mode when user is available
-        else if (presence.isAvailable()) {
-            Presence.Mode mode = presence.getMode();
-            if (mode == Presence.Mode.available)
+        Presence.Mode mode = presence.getMode();
+        switch (mode) {
+            case available:
                 return jabberStatusEnum.getStatus(JabberStatusEnum.AVAILABLE);
-            else if (mode == Presence.Mode.away) {
+            case away:
                 // on the phone a special status which is away with custom status message
                 if (presence.getStatus() != null && presence.getStatus().contains(JabberStatusEnum.ON_THE_PHONE))
                     return jabberStatusEnum.getStatus(JabberStatusEnum.ON_THE_PHONE);
@@ -732,20 +710,19 @@ public class OperationSetPersistentPresenceJabberImpl
                     return jabberStatusEnum.getStatus(JabberStatusEnum.IN_A_MEETING);
                 else
                     return jabberStatusEnum.getStatus(JabberStatusEnum.AWAY);
-            }
-            else if (mode == Presence.Mode.chat)
+            case chat:
                 return jabberStatusEnum.getStatus(JabberStatusEnum.FREE_FOR_CHAT);
-            else if (mode == Presence.Mode.dnd)
+            case dnd:
                 return jabberStatusEnum.getStatus(JabberStatusEnum.DO_NOT_DISTURB);
-            else if (mode == Presence.Mode.xa)
+            case xa:
                 return jabberStatusEnum.getStatus(JabberStatusEnum.EXTENDED_AWAY);
-            else {
+            default:
                 //unknown status
                 if (presence.isAway())
                     return jabberStatusEnum.getStatus(JabberStatusEnum.AWAY);
                 if (presence.isAvailable())
                     return jabberStatusEnum.getStatus(JabberStatusEnum.AVAILABLE);
-            }
+                break;
         }
         return jabberStatusEnum.getStatus(JabberStatusEnum.OFFLINE);
     }
@@ -846,7 +823,7 @@ public class OperationSetPersistentPresenceJabberImpl
             try {
                 entry.setName(newName);
             } catch (NotConnectedException | NoResponseException | XMPPErrorException | InterruptedException e) {
-                e.printStackTrace();
+                throw new IllegalArgumentException("Could not update name", e);
             }
     }
 
@@ -932,9 +909,8 @@ public class OperationSetPersistentPresenceJabberImpl
             else if (eventNew == RegistrationState.UNREGISTERED
                     || eventNew == RegistrationState.AUTHENTICATION_FAILED
                     || eventNew == RegistrationState.CONNECTION_FAILED) {
-                // since we are disconnected, we won't receive any further status updates so we
-                // need to change by ourselves our own status as well as set to offline all
-                // contacts in our contact list that were online
+                // since we are disconnected, we won't receive any further status updates so we need to change by
+                // ourselves our own status as well as set to offline all contacts in our contact list that were online
                 PresenceStatus oldStatus = currentStatus;
                 PresenceStatus currentStatus = parentProvider.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE);
                 clearLocalContactResources();
@@ -987,7 +963,7 @@ public class OperationSetPersistentPresenceJabberImpl
             return false;
 
         boolean eventFired = false;
-        Map<Jid, ContactResourceJabberImpl> resources = contact.getResourcesMap();
+        Map<FullJid, ContactResourceJabberImpl> resources = contact.getResourcesMap();
 
         // Do not obtain getRoster if we are not connected, or new Roster will be created, all the resources
         // that will be returned will be unavailable. As we are not connected if set remove all resources
@@ -995,9 +971,9 @@ public class OperationSetPersistentPresenceJabberImpl
         XMPPConnection xmppConnection = parentProvider.getConnection();
         if (xmppConnection == null || !xmppConnection.isConnected()) {
             if (removeUnavailable) {
-                Iterator<Map.Entry<Jid, ContactResourceJabberImpl>> iter = resources.entrySet().iterator();
+                Iterator<Map.Entry<FullJid, ContactResourceJabberImpl>> iter = resources.entrySet().iterator();
                 while (iter.hasNext()) {
-                    Map.Entry<Jid, ContactResourceJabberImpl> entry = iter.next();
+                    Map.Entry<FullJid, ContactResourceJabberImpl> entry = iter.next();
                     iter.remove();
                     contact.fireContactResourceEvent(new ContactResourceEvent(contact,
                             entry.getValue(), ContactResourceEvent.RESOURCE_REMOVED));
@@ -1017,9 +993,9 @@ public class OperationSetPersistentPresenceJabberImpl
         if (!removeUnavailable)
             return eventFired;
 
-        Set<Jid> resourceKeys = resources.keySet();
-        for (Jid fullJid : resourceKeys) {
-            if (!mRoster.getPresenceResource(fullJid.asFullJidIfPossible()).isAvailable()) {
+        Set<FullJid> resourceKeys = resources.keySet();
+        for (FullJid fullJid : resourceKeys) {
+            if (!mRoster.getPresenceResource(fullJid).isAvailable()) {
                 eventFired = removeResource(contact, fullJid) || eventFired;
             }
         }
@@ -1034,17 +1010,17 @@ public class OperationSetPersistentPresenceJabberImpl
      * @param presence the presence stanza to use to get info.
      * @return whether resource has been updated
      */
-    private boolean updateResource(ContactJabberImpl contact, Jid fullJid, Presence presence)
+    private boolean updateResource(ContactJabberImpl contact, FullJid fullJid, Presence presence)
     {
         if (fullJid == null)
-            fullJid = presence.getFrom();
+            fullJid = presence.getFrom().asFullJidIfPossible();
 
         if (fullJid == null)
             return false;
 
         Resourcepart resource = fullJid.getResourceOrNull();
-        if (resource != null) {
-            Map<Jid, ContactResourceJabberImpl> resources = contact.getResourcesMap();
+        if (resource != null && resource.length() > 0) {
+            Map<FullJid, ContactResourceJabberImpl> resources = contact.getResourcesMap();
             ContactResourceJabberImpl contactResource = resources.get(fullJid);
             PresenceStatus newPresenceStatus
                     = OperationSetPersistentPresenceJabberImpl.jabberStatusToPresenceStatus(presence, parentProvider);
@@ -1092,9 +1068,9 @@ public class OperationSetPersistentPresenceJabberImpl
      * @param fullJid the full jid.
      * @return whether resource has been updated
      */
-    private boolean removeResource(ContactJabberImpl contact, Jid fullJid)
+    private boolean removeResource(ContactJabberImpl contact, FullJid fullJid)
     {
-        Map<Jid, ContactResourceJabberImpl> resources = contact.getResourcesMap();
+        Map<FullJid, ContactResourceJabberImpl> resources = contact.getResourcesMap();
         if (resources.containsKey(fullJid)) {
             ContactResource removedResource = resources.remove(fullJid);
             contact.fireContactResourceEvent(new ContactResourceEvent(contact, removedResource,
@@ -1169,7 +1145,7 @@ public class OperationSetPersistentPresenceJabberImpl
          * @param presence presence that has changed
          */
         @Override
-        public void presenceChanged(final Presence presence)
+        public void presenceChanged(Presence presence)
         {
             firePresenceStatusChanged(presence);
         }
@@ -1232,6 +1208,7 @@ public class OperationSetPersistentPresenceJabberImpl
                 return;
             }
 
+            // Update resource from own presence instance and localContact if it is not null
             // Execute in new thread to avoid loading on Smack
             new Thread(new Runnable()
             {
@@ -1240,18 +1217,18 @@ public class OperationSetPersistentPresenceJabberImpl
                     try {
                         Jid userJid = presence.getFrom();
 
-                        // Update resource from own presence instance and localContact is not null - need to verified!!!
-                        Jid ownJid = parentProvider.getOurJID();
-                        if (userJid.isParentOf(ownJid) && (localContact != null) && (userJid != null)) {
-                            if (Presence.Type.available == presence.getType()) {
+                        FullJid ownJid = parentProvider.getOurJID();
+                        if ((userJid != null) && userJid.isParentOf(ownJid) && (localContact != null)) {
+                            // seems never get executed - need to verified!!!
+                            if (presence.isAvailable()) {
                                 logger.info("Smack presence update own: " + userJid + " - " + presence.getType());
-                                updateResource(localContact, userJid, presence);
+                                updateResource(localContact, userJid.asFullJidIfPossible(), presence);
                                 return;
                             }
                         }
 
                         OperationSetMultiUserChat mucOpSet = parentProvider.getOperationSet(OperationSetMultiUserChat.class);
-                        if (mucOpSet != null) {
+                        if ((userJid != null) && (mucOpSet != null)) {
                             List<ChatRoom> chatRooms = mucOpSet.getCurrentlyJoinedChatRooms();
                             for (ChatRoom chatRoom : chatRooms) {
                                 if (userJid.equals(chatRoom.getIdentifier())) {

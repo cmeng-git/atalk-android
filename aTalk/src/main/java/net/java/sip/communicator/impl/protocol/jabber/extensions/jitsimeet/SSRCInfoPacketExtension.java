@@ -14,9 +14,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Packet extension is used to signal owner of media SSRC in jitsi-meet. Owner attribute stores MUC
- * JID of the user to whom it belongs. This extension is inserted as a child of
- * {@link SourcePacketExtension} in 'session-initiate', 'source-add' and 'source-remove' Jingle IQs
- * sent by the focus(Jicofo).
+ * JID of the user to whom it belongs. This extension is inserted as a child of {@link SourcePacketExtension}
+ * in 'session-initiate', 'source-add' and 'source-remove' Jingle IQs sent by the focus(Jicofo).
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -83,8 +82,6 @@ public class SSRCInfoPacketExtension extends AbstractPacketExtension
      */
     public void setOwner(Jid owner)
     {
-       // setAttribute(OWNER_ATTR_NAME, owner.toString());
-
         setAttribute(OWNER_ATTR_NAME, owner);
     }
 

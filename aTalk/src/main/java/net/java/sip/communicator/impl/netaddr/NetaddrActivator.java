@@ -20,6 +20,7 @@ import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
+import org.ice4j.ice.harvest.MappingCandidateHarvesters;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -64,9 +65,12 @@ public class NetaddrActivator implements BundleActivator
 
             logger.logEntry();
 
-            //in here we load stati properties that should be else where
+            //in here we load static properties that should be else where
             //System.setProperty("java.net.preferIPv4Stack", "false");
             //System.setProperty("java.net.preferIPv6Addresses", "true");
+
+            // cmeng: ice4j 2.0.0 settings for aTalk - must set this to true otherwise ice4j hangs
+            System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true");
             //end ugly property set
 
             //keep a reference to the bundle context for later usage.

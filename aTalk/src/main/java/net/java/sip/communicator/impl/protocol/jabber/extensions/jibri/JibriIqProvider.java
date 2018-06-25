@@ -35,7 +35,7 @@ public class JibriIqProvider extends IQProvider<JibriIq>
         }
 
         String rootElement = parser.getName();
-        JibriIq iq;
+        JibriIq iq = null;
 
         if (JibriIq.ELEMENT_NAME.equals(rootElement)) {
             iq = new JibriIq();
@@ -81,9 +81,6 @@ public class JibriIqProvider extends IQProvider<JibriIq>
             String sipAddress = parser.getAttributeValue("", JibriIq.SIP_ADDRESS_ATTR_NAME);
             if (!StringUtils.isNullOrEmpty(sipAddress))
                 iq.setSipAddress(sipAddress);
-        }
-        else {
-            return null;
         }
         return iq;
     }

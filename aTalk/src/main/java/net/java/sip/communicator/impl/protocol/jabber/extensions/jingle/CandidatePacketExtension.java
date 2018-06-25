@@ -388,14 +388,15 @@ public class CandidatePacketExtension extends AbstractPacketExtension implements
                     CandidateType.prflx,
                     CandidateType.srflx,
                     CandidateType.stun,
-                    CandidateType.relay};
-            for (int i = 0; i < types.length; ++i) {
+                    CandidateType.relay
+            };
+            for (CandidateType type : types) {
                 // this object is preferred.
-                if (types[i] == this.getType()) {
+                if (type == this.getType()) {
                     return -1;
                 }
                 // the candidatePacketExtension is preferred.
-                else if (types[i] == candidatePacketExtension.getType()) {
+                else if (type == candidatePacketExtension.getType()) {
                     return 1;
                 }
             }

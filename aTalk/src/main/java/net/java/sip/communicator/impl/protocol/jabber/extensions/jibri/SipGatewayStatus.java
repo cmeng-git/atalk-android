@@ -30,8 +30,7 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.*;
  * <tt>{@link JibriIq.Status#BUSY}</tt> - all Jibri instances are busy and are
  * unable to handle any new sessions
  */
-public class SipGatewayStatus
-    extends AbstractPacketExtension
+public class SipGatewayStatus extends AbstractPacketExtension
 {
     /**
      * The namespace of this packet extension.
@@ -58,8 +57,7 @@ public class SipGatewayStatus
     }
 
     /**
-     * Returns the value of current Jibri SIP gateway status stored in it's
-     * {@link #STATUS_ATTRIBUTE}.
+     * Returns the value of current Jibri SIP gateway status stored in it's {@link #STATUS_ATTRIBUTE}.
      * @return see {@link SipGatewayStatus} description for status explanation.
      */
     public JibriIq.Status getStatus()
@@ -71,8 +69,7 @@ public class SipGatewayStatus
 
     /**
      * Sets new value for the Jibri SIP gateway status.
-     * @param status see {@link SipGatewayStatus} description for status
-     * explanation.
+     * @param status see {@link SipGatewayStatus} description for status explanation.
      */
     public void setStatus(JibriIq.Status status)
     {

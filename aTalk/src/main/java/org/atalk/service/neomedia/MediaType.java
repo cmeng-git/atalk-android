@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.service.neomedia;
@@ -11,16 +11,17 @@ package org.atalk.service.neomedia;
  *
  * @author Emil Ivov
  */
-public enum MediaType {
-	/**
-	 * Represents an AUDIO media type.
-	 */
-	AUDIO("audio"),
+public enum MediaType
+{
+    /**
+     * Represents an AUDIO media type.
+     */
+    AUDIO("audio"),
 
-	/**
-	 * Represents a VIDEO media type.
-	 */
-	VIDEO("video"),
+    /**
+     * Represents a VIDEO media type.
+     */
+    VIDEO("video"),
 
     /**
      * Represents a TEXT media type. See RFC4103.
@@ -44,6 +45,7 @@ public enum MediaType {
 
     /**
      * Represents a DATA media type.
+     *
      * @deprecated In RFC4566. Still defined to avoid parsing errors.
      */
     @Deprecated
@@ -51,78 +53,74 @@ public enum MediaType {
 
     /**
      * Represents a DATA media type.
+     *
      * @deprecated In RFC4566. Still defined to avoid parsing errors.
      */
     @Deprecated
     DATA("data");
 
-	/**
-	 * The name of this <tt>MediaType</tt>.
-	 */
-	private final String mediaTypeName;
+    /**
+     * The name of this <tt>MediaType</tt>.
+     */
+    private final String mediaTypeName;
 
-	/**
-	 * Creates a <tt>MediaType</tt> instance with the specified name.
-	 *
-	 * @param mediaTypeName
-	 *        the name of the <tt>MediaType</tt> we'd like to create.
-	 */
-	private MediaType(String mediaTypeName)
-	{
-		this.mediaTypeName = mediaTypeName;
-	}
+    /**
+     * Creates a <tt>MediaType</tt> instance with the specified name.
+     *
+     * @param mediaTypeName the name of the <tt>MediaType</tt> we'd like to create.
+     */
+    private MediaType(String mediaTypeName)
+    {
+        this.mediaTypeName = mediaTypeName;
+    }
 
-	/**
-	 * Returns the name of this MediaType (e.g. "audio" or "video"). The name returned by this
-	 * method is meant for use by session description mechanisms such as SIP/SDP or XMPP/Jingle.
-	 *
-	 * @return the name of this MediaType (e.g. "audio" or "video").
-	 */
-	@Override
-	public String toString()
-	{
-		return mediaTypeName;
-	}
+    /**
+     * Returns the name of this MediaType (e.g. "audio" or "video"). The name returned by this
+     * method is meant for use by session description mechanisms such as SIP/SDP or XMPP/Jingle.
+     *
+     * @return the name of this MediaType (e.g. "audio" or "video").
+     */
+    @Override
+    public String toString()
+    {
+        return mediaTypeName;
+    }
 
-	/**
-	 * Returns a <tt>MediaType</tt> value corresponding to the specified <tt>mediaTypeName</tt> or
-	 * in other words <tt>MediaType.AUDIO</tt> for "audio" and <tt>MediaType.VIDEO</tt> for "video".
-	 *
-	 * @param mediaTypeName
-	 *        the name that we'd like to parse.
-	 * @return a <tt>MediaType</tt> value corresponding to the specified <tt>mediaTypeName</tt>.
-	 *
-	 * @throws IllegalArgumentException
-	 *         in case <tt>mediaTypeName</tt> is not a valid or currently supported media type.
-	 */
-	public static MediaType parseString(String mediaTypeName)
-		throws IllegalArgumentException
-	{
-        if(AUDIO.toString().equalsIgnoreCase(mediaTypeName))
-			return AUDIO;
+    /**
+     * Returns a <tt>MediaType</tt> value corresponding to the specified <tt>mediaTypeName</tt> or
+     * in other words <tt>MediaType.AUDIO</tt> for "audio" and <tt>MediaType.VIDEO</tt> for "video".
+     *
+     * @param mediaTypeName the name that we'd like to parse.
+     * @return a <tt>MediaType</tt> value corresponding to the specified <tt>mediaTypeName</tt>.
+     * @throws IllegalArgumentException in case <tt>mediaTypeName</tt> is not a valid or currently supported media type.
+     */
+    public static MediaType parseString(String mediaTypeName)
+            throws IllegalArgumentException
+    {
+        if (AUDIO.toString().equalsIgnoreCase(mediaTypeName))
+            return AUDIO;
 
-        if(VIDEO.toString().equalsIgnoreCase(mediaTypeName))
-			return VIDEO;
+        if (VIDEO.toString().equalsIgnoreCase(mediaTypeName))
+            return VIDEO;
 
-        if(TEXT.toString().equalsIgnoreCase(mediaTypeName))
+        if (TEXT.toString().equalsIgnoreCase(mediaTypeName))
             return TEXT;
 
-        if(APPLICATION.toString().equalsIgnoreCase(mediaTypeName))
+        if (APPLICATION.toString().equalsIgnoreCase(mediaTypeName))
             return APPLICATION;
 
-        if(MESSAGE.toString().equalsIgnoreCase(mediaTypeName))
+        if (MESSAGE.toString().equalsIgnoreCase(mediaTypeName))
             return MESSAGE;
 
-        if(IMAGE.toString().equalsIgnoreCase(mediaTypeName))
+        if (IMAGE.toString().equalsIgnoreCase(mediaTypeName))
             return IMAGE;
 
-        if(CONTROL.toString().equalsIgnoreCase(mediaTypeName))
+        if (CONTROL.toString().equalsIgnoreCase(mediaTypeName))
             return CONTROL;
 
-        if(DATA.toString().equalsIgnoreCase(mediaTypeName))
+        if (DATA.toString().equalsIgnoreCase(mediaTypeName))
             return DATA;
 
-		throw new IllegalArgumentException(mediaTypeName
-			+ " is not a currently supported MediaType");
-	}
+        throw new IllegalArgumentException(mediaTypeName + " is not a currently supported MediaType");
+    }
 }

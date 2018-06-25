@@ -11,7 +11,6 @@ import net.java.sip.communicator.service.protocol.CallConference;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.CallState;
 import net.java.sip.communicator.service.protocol.ConferenceMember;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
 import net.java.sip.communicator.service.protocol.event.CallPeerConferenceEvent;
@@ -54,17 +53,17 @@ import java.util.Map;
  * <tt>CallPeerMediaHandlerJabberImpl</tt>
  * @param <V> the provider extension class like for example <tt>ProtocolProviderServiceSipImpl</tt> or
  * <tt>ProtocolProviderServiceJabberImpl</tt>
+ * 
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Boris Grozev
  */
-public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U extends CallPeerMediaHandler<?>, V extends ProtocolProviderService>
-        extends AbstractCallPeer<T, V> implements SrtpListener, CallPeerConferenceListener,
-        CsrcAudioLevelListener, SimpleAudioLevelListener
+public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U extends CallPeerMediaHandler<?>,
+        V extends ProtocolProviderService> extends AbstractCallPeer<T, V>
+        implements SrtpListener, CallPeerConferenceListener, CsrcAudioLevelListener, SimpleAudioLevelListener
 {
     /**
-     * The <tt>Logger</tt> used by the <tt>MediaAwareCallPeer</tt> class and its instances for
-     * logging output.
+     * The <tt>Logger</tt> used by the <tt>MediaAwareCallPeer</tt> class and its instances for logging output.
      */
     private static final Logger logger = Logger.getLogger(MediaAwareCallPeer.class);
 
@@ -113,12 +112,11 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     /**
      * The list of <tt>SoundLevelListener</tt>s interested in level changes in the audio we are
      * getting from the remote peer.
-     * <p>
+     *
      * It is implemented as a copy-on-write storage because the number of additions and removals of
      * <tt>SoundLevelListener</tt>s is expected to be far smaller than the number of audio level
      * changes. The access to it is to be synchronized using
      * {@link #streamSoundLevelListenersSyncRoot}.
-     * </p>
      */
     private List<SoundLevelListener> streamSoundLevelListeners;
 
@@ -135,8 +133,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
 
     /**
      * Represents the last Conference Information (RFC4575) document sent to this <tt>CallPeer</tt>.
-     * This is always a document with state "full", even if the last document actually sent was a
-     * "partial"
+     * This is always a document with state "full", even if the last document actually sent was a "partial"
      */
     private ConferenceInfoDocument lastConferenceInfoSent = null;
 
@@ -148,8 +145,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
 
     /**
      * The last Conference Information (RFC4575) document sent to us by this <tt>CallPeer</tt>. This
-     * is always a document with state "full", which is only gets updated by "partial" or "deleted"
-     * documents.
+     * is always a document with state "full", which is only gets updated by "partial" or "deleted" documents.
      */
     private ConferenceInfoDocument lastConferenceInfoReceived = null;
 
@@ -242,7 +238,6 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
                     mediaHandler.setStreamAudioLevelListener(this);
                 }
             }
-
             /*
              * Implement streamAudioLevelListeners as a copy-on-write storage so that iterators over
              * it can iterate without ConcurrentModificationExceptions.
@@ -314,8 +309,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
          *
          * We may end up in a conference call with 0 members if the server for some reason doesn't
          * support sip conference (our subscribes doesn't go to the focus of the conference) and so
-         * we must pass the sound levels measured on the stream so we can see the stream activity of
-         * the call.
+         * we must pass the sound levels measured on the stream so we can see the stream activity of the call.
          */
         int conferenceMemberCount = getConferenceMemberCount();
 
@@ -327,14 +321,12 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
                 return;
             }
         }
-
         fireStreamSoundLevelChanged(newLevel);
     }
 
     /**
      * Implements {@link CsrcAudioLevelListener#audioLevelsReceived(long[])}. Delivers the received
-     * audio levels to the {@link ConferenceMembersSoundLevelListener}s registered with this
-     * <tt>MediaAwareCallPeer</tt>..
+     * audio levels to the {@link ConferenceMembersSoundLevelListener}s registered with this <tt>MediaAwareCallPeer</tt>..
      *
      * @param audioLevels the levels that we need to dispatch to all registered
      * <tt>ConferenceMemberSoundLevelListeners</tt>.
@@ -343,8 +335,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     {
         /*
          * When the local user/peer has organized a telephony conference utilizing the Jitsi
-         * Videobridge server-side technology, the server will calculate the audio levels and not
-         * the client.
+         * Videobridge server-side technology, the server will calculate the audio levels and not the client.
          */
         if (isJitsiVideobridge()) {
             long audioRemoteSSRC = getMediaHandler().getRemoteSSRC(MediaType.AUDIO);
@@ -358,26 +349,21 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
                 }
             }
         }
-
         if (getConferenceMemberCount() == 0)
             return;
 
         Map<ConferenceMember, Integer> levelsMap = new HashMap<>();
-
         for (int i = 0; i < audioLevels.length; i += 2) {
             ConferenceMember mmbr = findConferenceMember(audioLevels[i]);
-
             if (mmbr != null)
                 levelsMap.put(mmbr, (int) audioLevels[i + 1]);
         }
 
         synchronized (conferenceMembersSoundLevelListeners) {
-            int conferenceMemberSoundLevelListenerCount = conferenceMembersSoundLevelListeners
-                    .size();
+            int conferenceMemberSoundLevelListenerCount = conferenceMembersSoundLevelListeners.size();
 
             if (conferenceMemberSoundLevelListenerCount > 0) {
-                ConferenceMembersSoundLevelEvent ev = new ConferenceMembersSoundLevelEvent(this,
-                        levelsMap);
+                ConferenceMembersSoundLevelEvent ev = new ConferenceMembersSoundLevelEvent(this, levelsMap);
 
                 for (int i = 0; i < conferenceMemberSoundLevelListenerCount; i++) {
                     conferenceMembersSoundLevelListeners.get(i).soundLevelChanged(ev);
@@ -416,9 +402,8 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
 
     /**
      * Called when this peer becomes a mixer. The method add removes this class as the stream audio
-     * level listener for the media coming from this peer because the levels it delivers no longer
-     * represent the level of a particular member. The method also adds this class as a member
-     * (CSRC) audio level listener.
+     * level listener for the media coming from this peer because the levels it delivers no longer represent the
+     * level of a particular member. The method also adds this class as a member (CSRC) audio level listener.
      *
      * @param conferenceEvent the event containing information (that we don't really use) on the newly add member.
      */
@@ -573,10 +558,8 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     public final boolean isJitsiVideobridge()
     {
         Call call = getCall();
-
         if (call != null) {
             CallConference conference = call.getConference();
-
             if (conference != null)
                 return conference.isJitsiVideobridge();
         }
@@ -647,8 +630,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Updates the state of this <tt>CallPeer</tt> to match the remotely-on-hold status of our media
-     * handler.
+     * Updates the state of this <tt>CallPeer</tt> to match the remotely-on-hold status of our media handler.
      */
     public void reevalRemoteHoldStatus()
     {
@@ -784,8 +766,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
      */
     public void securityTimeout(MediaType mediaType)
     {
-        fireCallPeerSecurityTimeoutEvent(new CallPeerSecurityTimeoutEvent(this,
-                toSessionType(mediaType)));
+        fireCallPeerSecurityTimeoutEvent(new CallPeerSecurityTimeoutEvent(this, toSessionType(mediaType)));
     }
 
     /**
@@ -796,11 +777,9 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     public void securityTurnedOff(MediaType mediaType)
     {
         // If this event has been triggered because of a call end event and the
-        // call is already ended we don't need to alert the user for
-        // security off.
+        // call is already ended we don't need to alert the user for security off.
         if ((call != null) && !call.getCallState().equals(CallState.CALL_ENDED)) {
-            fireCallPeerSecurityOffEvent(new CallPeerSecurityOffEvent(this,
-                    toSessionType(mediaType)));
+            fireCallPeerSecurityOffEvent(new CallPeerSecurityOffEvent(this, toSessionType(mediaType)));
         }
     }
 
@@ -814,8 +793,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     public void securityTurnedOn(MediaType mediaType, String cipher, SrtpControl sender)
     {
         getMediaHandler().startSrtpMultistream(sender);
-        fireCallPeerSecurityOnEvent(new CallPeerSecurityOnEvent(this, toSessionType(mediaType),
-                cipher, sender));
+        fireCallPeerSecurityOnEvent(new CallPeerSecurityOnEvent(this, toSessionType(mediaType), cipher, sender));
     }
 
     /**
@@ -844,8 +822,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
 
     /**
      * Modifies the local media setup to reflect the requested setting for the streaming of the
-     * local video and then re-invites the peer represented by this class using a corresponding SDP
-     * description..
+     * local video and then re-invites the peer represented by this class using a corresponding SDP description..
      *
      * @param allowed <tt>true</tt> if local video transmission is allowed and <tt>false</tt> otherwise.
      */
@@ -901,8 +878,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
      * Overrides the parent set state method in order to make sure that we close our media handler
      * whenever we enter a disconnected state.
      *
-     * @param newState the <tt>CallPeerState</tt> that we are about to enter and that we pass to our
-     * predecessor.
+     * @param newState the <tt>CallPeerState</tt> that we are about to enter and that we pass to our predecessor.
      * @param reason a reason phrase explaining the state (e.g. if newState indicates a failure) and that
      * we pass to our predecessor.
      * @param reasonCode the code for the reason of the state change.
@@ -986,8 +962,6 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
 
     /**
      * Gets the last <tt>ConferenceInfoDocument</tt> sent to us by this <tt>CallPeer</tt>.
-     *
-     * @return the last <tt>ConferenceInfoDocument</tt> sent to us by this <tt>CallPeer</tt>.
      */
     public void setLastConferenceInfoReceived(ConferenceInfoDocument confInfo)
     {
@@ -995,11 +969,10 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Gets the <tt>version</tt> of the last <tt>ConferenceInfoDocument</tt> sent to us by this
-     * <tt>CallPeer</tt>, or -1 if we haven't (yet) received a
-     * <tt>ConferenceInformationDocument</tt> from this <tt>CallPeer</tt>.
+     * Gets the <tt>version</tt> of the last <tt>ConferenceInfoDocument</tt> sent to us by this <tt>CallPeer</tt>,
+     * or -1 if we haven't (yet) received a <tt>ConferenceInformationDocument</tt> from this <tt>CallPeer</tt>.
      *
-     * @return
+     * @return the last <tt>ConferenceInfoDocument</tt> sent to us by this <tt>CallPeer</tt>.
      */
     public int getLastConferenceInfoReceivedVersion()
     {
@@ -1090,8 +1063,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
      *
      * @param mediaType the <tt>MediaType</tt> to be converted
      * @return the <tt>sessionType</tt> value in the terms of the
-     * <tt>CallPeerSecurityStatusEvent</tt> class that is equivalent to the specified
-     * <tt>mediaType</tt>
+     * <tt>CallPeerSecurityStatusEvent</tt> class that is equivalent to the specified <tt>mediaType</tt>
      */
     private static int toSessionType(MediaType mediaType)
     {

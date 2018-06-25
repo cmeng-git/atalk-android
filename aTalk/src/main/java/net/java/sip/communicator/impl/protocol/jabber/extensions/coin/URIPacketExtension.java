@@ -26,9 +26,9 @@ public class URIPacketExtension extends AbstractPacketExtension
     public static final String ELEMENT_NAME = "uri";
 
     /**
-     * The namespace that URI belongs to.
+     * The namespace that URI belongs to. (cmeng added 20180618)
      */
-    public static final String NAMESPACE = "uri";
+    public static final String NAMESPACE = "urn:xmpp:jingle:transports:http:0";
 
     /**
      * Display text element name.
@@ -123,7 +123,6 @@ public class URIPacketExtension extends AbstractPacketExtension
         for (ExtensionElement ext : getChildExtensions()) {
             xml.append(ext.toXML());
         }
-
         xml.closeElement(getElementName());
         return xml;
     }

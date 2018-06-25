@@ -33,7 +33,7 @@ public class DescriptionProvider extends ExtensionElementProvider<DescriptionPac
 
     @Override
     public DescriptionPacketExtension parse(XmlPullParser parser, int initialDepth)
-            throws XmlPullParserException, IOException, SmackException
+            throws Exception
     {
         boolean done = false;
         int eventType;
@@ -44,20 +44,17 @@ public class DescriptionProvider extends ExtensionElementProvider<DescriptionPac
             eventType = parser.next();
             elementName = parser.getName();
             if (eventType == XmlPullParser.START_TAG) {
-                try {
-                    if (elementName.equals(DescriptionPacketExtension.ELEMENT_SUBJECT)) {
-                        ext.setSubject(CoinIQProvider.parseText(parser));
+                    switch (elementName) {
+                        case DescriptionPacketExtension.ELEMENT_SUBJECT:
+                            ext.setSubject(CoinIQProvider.parseText(parser));
+                            break;
+                        case DescriptionPacketExtension.ELEMENT_FREE_TEXT:
+                            ext.setFreeText(CoinIQProvider.parseText(parser));
+                            break;
+                        case DescriptionPacketExtension.ELEMENT_DISPLAY_TEXT:
+                            ext.setDisplayText(CoinIQProvider.parseText(parser));
+                            break;
                     }
-                    else if (elementName.equals(DescriptionPacketExtension.ELEMENT_FREE_TEXT)) {
-                        ext.setFreeText(CoinIQProvider.parseText(parser));
-                    }
-                    else if (elementName.equals(DescriptionPacketExtension.ELEMENT_DISPLAY_TEXT)) {
-                        ext.setDisplayText(CoinIQProvider.parseText(parser));
-                    }
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
             }
             else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals(DescriptionPacketExtension.ELEMENT_NAME)) {

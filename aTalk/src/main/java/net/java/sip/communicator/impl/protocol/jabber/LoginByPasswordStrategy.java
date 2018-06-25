@@ -8,9 +8,15 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AbstractProtocolProviderService;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.protocol.SecurityAuthority;
+import net.java.sip.communicator.service.protocol.UserCredentials;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.util.Logger;
 
@@ -172,8 +178,14 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
      */
     private UserCredentials loadPassword(SecurityAuthority authority, int reasonCode, String loginReason, boolean isShowAlways)
     {
-        // verify whether a password has already been stored for this account
-        password = JabberActivator.getProtocolProviderFactory().loadPassword(accountID);
+        /*
+         * Get the persistent password from the database if unavailable from accountID
+         * Note: the last password entered by user is only available in accountID i.e mAccountProperties until
+         * it is save in persistent database if enabled.
+         */
+        password = accountID.getPassword();
+        if (TextUtils.isEmpty(password))
+            password = JabberActivator.getProtocolProviderFactory().loadPassword(accountID);
 
         if ((password == null) || isShowAlways) {
             // create a default credentials object
@@ -205,11 +217,12 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
                 return null;
             }
 
-            // save the password for later use by login()
-            accountID.setPassword(new String(pass));
+            // update password for this instance and save the password in accountID for later use by login()
+            password = new String(pass);
+            accountID.setPassword(password);
+
             boolean passwordPersistent = credentials.isPasswordPersistent();
             accountID.setPasswordPersistent(passwordPersistent);
-
             accountID.setIbRegistration(credentials.isIbRegistration());
             accountID.setServerOverridden(credentials.isServerOverridden());
             accountID.setServerAddress(credentials.getServerAddress());

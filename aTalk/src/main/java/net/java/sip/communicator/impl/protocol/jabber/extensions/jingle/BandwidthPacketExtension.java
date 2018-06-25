@@ -36,9 +36,7 @@ public class BandwidthPacketExtension extends AbstractPacketExtension
 	/**
 	 * Sets the value of the optional <tt>type</tt> argument in the <tt>bandwidth</tt> element.
 	 *
-	 * @param type
-	 *        a <tt>String</tt> value which would often be one of the <tt>bwtype</tt> values
-	 *        specified by SDP
+	 * @param type a <tt>String</tt> value which would often be one of the <tt>bwtype</tt> values specified by SDP
 	 */
 	public void setType(String type)
 	{
@@ -48,8 +46,7 @@ public class BandwidthPacketExtension extends AbstractPacketExtension
 	/**
 	 * Returns the value of the optional <tt>type</tt> argument in the <tt>bandwidth</tt> element.
 	 *
-	 * @return a <tt>String</tt> value which would often be one of the <tt>bwtype</tt> values
-	 *         specified by SDP
+	 * @return a <tt>String</tt> value which would often be one of the <tt>bwtype</tt> values specified by SDP
 	 */
 	public String getType()
 	{
@@ -59,8 +56,7 @@ public class BandwidthPacketExtension extends AbstractPacketExtension
 	/**
 	 * Sets the value of this bandwidth extension.
 	 *
-	 * @param bw
-	 *        the value of this bandwidth extension.
+	 * @param bw the value of this bandwidth extension.
 	 */
 	public void setBandwidth(String bw)
 	{

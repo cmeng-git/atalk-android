@@ -164,12 +164,11 @@ public class ExecutionPacketExtension extends AbstractPacketExtension
 
         xml.optElement(ELEMENT_BY, by);
         xml.optElement(ELEMENT_WHEN, when);
-        xml.optElement(ELEMENT_WHEN, reason);
+        xml.optElement(ELEMENT_REASON, reason);
 
         for (ExtensionElement ext : getChildExtensions()) {
             xml.append(ext.toXML());
         }
-
         xml.closeElement(getElementName());
         return xml;
     }

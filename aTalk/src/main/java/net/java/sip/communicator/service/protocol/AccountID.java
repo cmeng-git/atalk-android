@@ -26,7 +26,13 @@ import org.json.JSONObject;
 import org.jxmpp.jid.BareJid;
 import org.osgi.framework.BundleContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The AccountID is an account identifier that, uniquely represents a specific user account over a
@@ -500,8 +506,7 @@ public class AccountID
     /**
      * Returns the name of the service that defines the context for this account. Often this name
      * would be an FQDN or even an ipAddress but this would not always be the case (e.g. p2p
-     * providers may return a name that does not directly correspond to an IP address or host
-     * name).
+     * providers may return a name that does not directly correspond to an IP address or host name).
      *
      * @return the name of the service that defines the context for this account.
      */
@@ -1432,7 +1437,7 @@ public class AccountID
     }
 
     /**
-     * Copies all properties from <tt>input</tt> map to <tt>output</tt> map if not exist in output.
+     * Copies all properties from <tt>input</tt> map to <tt>output</tt> map overwritten any value in output.
      *
      * @param input source properties map
      * @param output destination properties map
@@ -1440,8 +1445,7 @@ public class AccountID
     public static void mergeProperties(Map<String, String> input, Map<String, String> output)
     {
         for (String key : input.keySet()) {
-            if (!output.containsKey(key))
-                output.put(key, input.get(key));
+            output.put(key, input.get(key));
         }
     }
 

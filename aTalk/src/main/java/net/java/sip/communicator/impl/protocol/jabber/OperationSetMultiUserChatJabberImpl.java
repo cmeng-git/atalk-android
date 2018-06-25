@@ -5,45 +5,21 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.AbstractOperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ChatRoomInvitation;
-import net.java.sip.communicator.service.protocol.ChatRoomMember;
-import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
-import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedEvent;
-import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
-import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
-import net.java.sip.communicator.service.protocol.event.SubscriptionListener;
-import net.java.sip.communicator.service.protocol.event.SubscriptionMovedEvent;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.ChatMessage;
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
-import org.jivesoftware.smackx.muc.HostedRoom;
-import org.jivesoftware.smackx.muc.InvitationListener;
-import org.jivesoftware.smackx.muc.InvitationRejectionListener;
-import org.jivesoftware.smackx.muc.MultiUserChat;
-import org.jivesoftware.smackx.muc.MultiUserChatException;
-import org.jivesoftware.smackx.muc.MultiUserChatManager;
+import org.jivesoftware.smackx.muc.*;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
@@ -51,25 +27,13 @@ import org.jivesoftware.smackx.omemo.listener.OmemoMucMessageListener;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.EntityFullJid;
-import org.jxmpp.jid.EntityJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A jabber implementation of the multi user chat operation set.
@@ -99,8 +63,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     private final Hashtable<BareJid, ChatRoomJabberImpl> chatRoomCache = new Hashtable<>();
 
     /**
-     * The registration listener that would get notified when the underlying Jabber provider gets
-     * registered.
+     * The registration listener that would get notified when the underlying Jabber provider gets registered.
      */
     private final RegistrationStateListener providerRegListener = new RegistrationStateListener();
 
@@ -120,8 +83,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     private XMPPTCPConnection mConnection = null;
 
     /**
-     * Instantiates the user operation set with a currently valid instance of the Jabber protocol
-     * provider.
+     * Instantiates the user operation set with a currently valid instance of the Jabber protocol provider.
      * Note: the xmpp connection is not established yet.
      *
      * @param jabberProvider a currently valid instance of ProtocolProviderServiceJabberImpl.
@@ -137,8 +99,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     }
 
     /**
-     * Add SmackInvitationRejectionListener to <tt>MultiUserChat</tt> instance which will dispatch
-     * all rejection events.
+     * Add SmackInvitationRejectionListener to <tt>MultiUserChat</tt> instance which will dispatch all rejection events.
      *
      * @param muc the smack MultiUserChat instance that we're going to wrap our chat room around.
      * @param chatRoom the associated chat room instance
@@ -235,8 +196,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                     logger.error("Failed to send config form.", e);
                 }
                 room = createLocalChatRoomInstance(muc);
-                // as we are creating the room we are the owner of it at least that's what
-                // MultiUserChat.create says
+                // as we are creating the room we are the owner of it at least that's what MultiUserChat.create says
                 room.setLocalUserRole(ChatRoomMemberRole.OWNER);
             }
         }
@@ -299,9 +259,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     {
         synchronized (chatRoomCache) {
             List<ChatRoom> joinedRooms = new LinkedList<>();
-            for (ChatRoom cr : this.chatRoomCache.values()) {
-                joinedRooms.add(cr);
-            }
+            joinedRooms.addAll(this.chatRoomCache.values());
             Iterator<ChatRoom> joinedRoomsIter = joinedRooms.iterator();
 
             while (joinedRoomsIter.hasNext()) {
@@ -409,8 +367,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * Checks if the contact address is associated with private messaging contact or not.
      *
      * @return <tt>true</tt> if the contact address is associated with private messaging contact
-     * and
-     * <tt>false</tt> if not.
+     * and <tt>false</tt> if not.
      */
     public boolean isPrivateMessagingContact(String contactAddress)
     {
@@ -475,8 +432,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * In case <tt>roomName</tt> does not represent a complete room id, the method returns a
      * canonical chat room name in the following form: roomName@muc-servicename.jabserver.com. In
      * case <tt>roomName</tt> is already a canonical room name, the method simply returns it
-     * without
-     * changing it.
+     * without changing it.
      *
      * @param roomName the name of the room that we'd like to "canonize".
      * @return the canonical name of the room (which might be equal to roomName in case it was
@@ -519,11 +475,9 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     }
 
     /*
-     * Returns a reference to the chat room named <tt>chatRoomName</tt> or null if the room hasn't
-     * been cached yet.
+     * Returns a reference to the chat room named <tt>chatRoomName</tt> or null if the room hasn't been cached yet.
      *
-     * @param chatRoomName
-     *         the name of the room we're looking for.
+     * @param chatRoomName the name of the room we're looking for.
      * @return the <tt>ChatRoomJabberImpl</tt> instance that has been cached for
      * <tt>chatRoomName</tt> or null if no such room has been cached so far.
      */
@@ -544,13 +498,12 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             throws OperationFailedException, OperationNotSupportedException
     {
         assertSupportedAndConnected();
-
-        List<String> joinedRooms = null;
+        List<String> joinedRooms = new ArrayList<>();
         if (mMucMgr != null) {
             try {
-                for (EntityBareJid joinedRoom : mMucMgr.getJoinedRooms(
-                        JidCreate.entityFullFrom(chatRoomMember.getContactAddress()))) {
-                    joinedRooms.add(joinedRoom.toString());
+                for (EntityBareJid joinedRoom
+                        : mMucMgr.getJoinedRooms(JidCreate.entityFullFrom(chatRoomMember.getContactAddress()))) {
+                        joinedRooms.add(joinedRoom.toString());
                 }
             } catch (NoResponseException | XMPPErrorException | NotConnectedException
                     | XmppStringprepException | InterruptedException e) {
@@ -583,11 +536,9 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     {
         /**
          * Called when the an invitation to join a MUC room is received.
-         * <p>
-         * <p>
+         *
          * If the room is password-protected, the invitee will receive a password to use to join
-         * the
-         * room. If the room is members-only, then the invitee may be added to the member list.
+         * the room. If the room is members-only, then the invitee may be added to the member list.
          *
          * @param conn the XMPPConnection that received the invitation.
          * @param muc the multi user chatRoom that invitation refers to.
@@ -646,6 +597,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
          * @param invitee the invitee that declined the invitation. (e.g. hecate@shakespeare.lit).
          * @param reason the reason why the invitee declined the invitation.
          */
+        @Override
         public void invitationDeclined(EntityBareJid invitee, String reason, Message message, MUCUser.Decline rejection)
         {
             fireInvitationRejectedEvent(chatRoom, invitee, reason);
@@ -654,8 +606,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
 
     /**
      * Our listener that will tell us when we're registered to Jabber and the smack
-     * MultiUserChat is
-     * ready to accept us as a listener.
+     * MultiUserChat is ready to accept us as a listener.
      */
     private class RegistrationStateListener implements RegistrationStateChangeListener
     {
@@ -698,8 +649,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     }
 
     /**
-     * Updates corresponding chat room members when a contact has been modified in our contact
-     * list.
+     * Updates corresponding chat room members when a contact has been modified in our contact list.
      *
      * @param evt the <tt>SubscriptionEvent</tt> that notified us
      */
@@ -739,8 +689,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     }
 
     /**
-     * Updates corresponding chat room members when a contact has been removed from our contact
-     * list.
+     * Updates corresponding chat room members when a contact has been removed from our contact list.
      *
      * @param evt the <tt>SubscriptionEvent</tt> that notified us
      */

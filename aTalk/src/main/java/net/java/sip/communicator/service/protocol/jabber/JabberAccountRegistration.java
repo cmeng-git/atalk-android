@@ -5,17 +5,30 @@
  */
 package net.java.sip.communicator.service.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.AccountManager;
+import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
+import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.ProtocolNames;
+import net.java.sip.communicator.service.protocol.ProtocolProviderActivator;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
+import net.java.sip.communicator.service.protocol.StunServerDescriptor;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
+import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.BundleContext;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The <tt>JabberAccountRegistration</tt> is used to store all user input data through the
@@ -27,6 +40,8 @@ import java.util.*;
  */
 public class JabberAccountRegistration extends JabberAccountID implements Serializable
 {
+    private static final Logger logger = Logger.getLogger(JabberAccountRegistration.class);
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -207,18 +222,18 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      * Merge Jabber account configuration held by this registration account (after cleanup and updated with
      * new STUN/JN, Security and Encoding settings into the given <tt>accountProperties</tt> map.
      *
-     * @param userName the user name that will be used.
      * @param passWord the password for this account.
      * @param protocolIconPath the path to protocol icon if used, or <tt>null</tt> otherwise.
      * @param accountIconPath the path to account icon if used, or <tt>null</tt> otherwise.
      * @param accountProperties the map used for storing account properties.
      * @throws OperationFailedException if properties are invalid.
      */
-    public void storeProperties(ProtocolProviderFactory factory, String userName, String passWord,
-            String protocolIconPath, String accountIconPath, Map<String, String> accountProperties)
+    public void storeProperties(ProtocolProviderFactory factory, String passWord, String protocolIconPath,
+            String accountIconPath, Boolean isModification, Map<String, String> accountProperties)
             throws OperationFailedException
     {
-
+        // Remove all the old account properties value before populating with modified or new default settings
+        mAccountProperties.clear();
         if (rememberPassword) {
             setPassword(passWord);
         }
@@ -226,53 +241,56 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
             setPassword(null);
         }
 
-        String accountUuid = null;
-        // cmeng - editedAccUID will be null if this is a new account
-        if (!StringUtils.isNullOrEmpty(editedAccUID)) {
-            AccountManager accManager = ProtocolProviderActivator.getAccountManager();
-            accountUuid = accManager.getStoredAccountUUID(factory, editedAccUID);
-        }
-
-        // If it is an existing account - need to clean up all the STUN/JN old settings stored in database (always true)
-        if (accountUuid != null) {
-            ConfigurationService configSrvc = ProtocolProviderActivator.getConfigurationService();
-            List<String> allProperties = configSrvc.getAllPropertyNames(accountUuid);
-            for (String property : allProperties) {
-                if (property.startsWith(ProtocolProviderFactory.STUN_PREFIX)
-                        || property.startsWith(JingleNodeDescriptor.JN_PREFIX)) {
-                    configSrvc.removeProperty(property);
-                }
+        // aTalk STUN/JN implementation can only be added/modified via account modification
+        if (isModification) {
+            String accountUuid = null;
+            // cmeng - editedAccUID contains the last edited account.
+            if (!StringUtils.isNullOrEmpty(editedAccUID)) {
+                AccountManager accManager = ProtocolProviderActivator.getAccountManager();
+                accountUuid = accManager.getStoredAccountUUID(factory, editedAccUID);
             }
 
-            // Also remove old mAccountProperties settings from this instance of account for merging later.
-            // Duplicate a copy of mAccountProperties (avoid concurrent access) and iterate to remove STUN/JN
-            String[] accKeys = mAccountProperties.keySet().toArray(new String[mAccountProperties.size()]);
-            for (String property : accKeys) {
-                if (property.startsWith(ProtocolProviderFactory.STUN_PREFIX)
-                        || property.startsWith(JingleNodeDescriptor.JN_PREFIX)) {
-                    mAccountProperties.remove(property);
+            if (accountUuid != null) {
+                // Must remove all the old STUN/JN settings in database and old copies in accountProperties
+                ConfigurationService configSrvc = ProtocolProviderActivator.getConfigurationService();
+                List<String> allProperties = configSrvc.getAllPropertyNames(accountUuid);
+                for (String property : allProperties) {
+                    if (property.startsWith(ProtocolProviderFactory.STUN_PREFIX)
+                            || property.startsWith(JingleNodeDescriptor.JN_PREFIX)) {
+                        configSrvc.setProperty(accountUuid + "." + property, null);
+                    }
+                }
+
+                // Also must remove STUN/JN settings from this instance of accountProperties - otherwise remove will not work
+                String[] accKeys = accountProperties.keySet().toArray(
+                        new String[accountProperties.size()]);
+                for (String property : accKeys) {
+                    if (property.startsWith(ProtocolProviderFactory.STUN_PREFIX)
+                            || property.startsWith(JingleNodeDescriptor.JN_PREFIX)) {
+                        accountProperties.remove(property);
+                    }
+                }
+
+                List<StunServerDescriptor> stunServers = getAdditionalStunServers();
+                int serverIndex = -1;
+                for (StunServerDescriptor stunServer : stunServers) {
+                    serverIndex++;
+                    stunServer.storeDescriptor(mAccountProperties, ProtocolProviderFactory.STUN_PREFIX + serverIndex);
+                }
+
+                List<JingleNodeDescriptor> jnRelays = getAdditionalJingleNodes();
+                serverIndex = -1;
+                for (JingleNodeDescriptor jnRelay : jnRelays) {
+                    serverIndex++;
+                    jnRelay.storeDescriptor(mAccountProperties, JingleNodeDescriptor.JN_PREFIX + serverIndex);
                 }
             }
         }
-
-        List<StunServerDescriptor> stunServers = getAdditionalStunServers();
-        int serverIndex = -1;
-        for (StunServerDescriptor stunServer : stunServers) {
-            serverIndex++;
-            stunServer.storeDescriptor(mAccountProperties, ProtocolProviderFactory.STUN_PREFIX + serverIndex);
+        // Populate other jabber account default properties for new Account creation
+        else {
+            securityRegistration.storeProperties(mAccountProperties);
+            encodingsRegistration.storeProperties(mAccountProperties);
         }
-
-        List<JingleNodeDescriptor> jnRelays = getAdditionalJingleNodes();
-        serverIndex = -1;
-        for (JingleNodeDescriptor jnRelay : jnRelays) {
-            serverIndex++;
-            jnRelay.storeDescriptor(mAccountProperties, JingleNodeDescriptor.JN_PREFIX + serverIndex);
-        }
-        mAccountProperties.put(JingleNodeDescriptor.JN_IS_RELAY_SUPPORTED, "false");
-
-        // Add in all other jabber account default properties into AccountID mAccountProperties
-        securityRegistration.storeProperties(mAccountProperties);
-        encodingsRegistration.storeProperties(mAccountProperties);
         super.storeProperties(protocolIconPath, accountIconPath, accountProperties);
     }
 

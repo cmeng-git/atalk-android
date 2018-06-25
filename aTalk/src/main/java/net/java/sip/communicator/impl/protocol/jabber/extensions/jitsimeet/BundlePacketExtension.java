@@ -26,8 +26,7 @@ public class BundlePacketExtension extends AbstractPacketExtension
 	public static final String NAMESPACE = "http://estos.de/ns/bundle";
 
 	/**
-	 * Creates an {@link BundlePacketExtension} instance for the specified <tt>namespace</tt> and
-	 * <tt>elementName</tt>.
+	 * Creates an {@link BundlePacketExtension} instance for the specified <tt>namespace</tt> and <tt>elementName</tt>.
 	 *
 	 */
 	public BundlePacketExtension()

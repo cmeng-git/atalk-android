@@ -5,20 +5,13 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ContactGroup;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A dummy ContactGroup implementation representing the ContactList root for Jabber contact lists.
@@ -37,15 +30,15 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     private List<ContactGroup> subGroups = new LinkedList<>();
 
     /**
+     * Root group is always assumed resolved to avoid accidentally removal.
+     */
+    private boolean isResolved = true;
+
+    /**
      * Maps all JIDs in our roster to the actual contacts - not applicable to rootGroup
      * An empty list that we use when returning an iterator.
      */
     private Map<Jid, Contact> contacts = new Hashtable<>();
-
-    /**
-     * Root group is always assumed resolved to avoid accidentally removal.
-     */
-    private boolean isResolved = true;
 
     /**
      * The provider.
@@ -61,11 +54,9 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns the number, which is always 0, of <tt>Contact</tt> members of this
-     * <tt>ContactGroup</tt>
+     * Returns the number, which is always 0, of <tt>Contact</tt> members of this <tt>ContactGroup</tt>
      *
-     * @return an int indicating the number of <tt>Contact</tt>s, members of this
-     * <tt>ContactGroup</tt>.
+     * @return an int indicating the number of <tt>Contact</tt>s, members of this <tt>ContactGroup</tt>.
      */
     public int countContacts()
     {
@@ -105,8 +96,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     /**
      * Returns an iterator over the sub groups that this <tt>ContactGroup</tt> contains.
      *
-     * @return a java.util.Iterator over the <tt>ContactGroup</tt> children of this group
-     * (i.e. subgroups).
+     * @return a java.util.Iterator over the <tt>ContactGroup</tt> children of this group (i.e. subgroups).
      */
     public Iterator<ContactGroup> subgroups()
     {
@@ -231,8 +221,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     /**
      * Returns the protocol provider that this group belongs to.
      *
-     * @return a reference to the ProtocolProviderService instance that this ContactGroup belongs
-     * to.
+     * @return a reference to the ProtocolProviderService instance that this ContactGroup belongs to.
      */
     public ProtocolProviderService getProtocolProvider()
     {
@@ -240,8 +229,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns a string representation of the root contact group that contains all subGroups and
-     * subContacts of this group.
+     * Returns a string representation of the root contact group that contains all subGroups and subContacts of this group.
      *
      * @return a string representation of this root contact group.
      */
@@ -273,12 +261,10 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
 
 
     /**
-     * Returns the contact encapsulating with the specified name or null if no such contact was
-     * found.
+     * Returns the contact encapsulating with the specified name or null if no such contact was found.
      *
      * @param id the id for the contact we're looking for.
-     * @return the <tt>ContactJabberImpl</tt> corresponding to the specified jid or null if no such
-     * contact existed.
+     * @return the <tt>ContactJabberImpl</tt> corresponding to the specified jid or null if no such contact existed.
      */
     ContactJabberImpl findContact(Jid id)
     {
@@ -298,9 +284,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns null as no persistent data is required and the group name is sufficient for
-     * restoring the contact.
-     * <p>
+     * Returns null as no persistent data is required and the group name is sufficient for restoring the contact.
      *
      * @return null as no such data is needed.
      */
@@ -314,7 +298,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      * are used when initially loading a contact list that has been stored in a local file until
      * the presence operation set has managed to retrieve all the contact list from the server
      * and has properly mapped groups to their on-line buddies.
-     * <p>
+     *
      * The root group must always be resolved to avoid any un-intention removal.
      *
      * @return true if the group has been resolved (mapped against a buddy) and false otherwise.

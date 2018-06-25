@@ -43,27 +43,18 @@ public class UserProvider extends ExtensionElementProvider<UserPacketExtension>
         }
 
         if (entity == null) {
-            try {
-                throw new Exception("Coin user element must contain entity attribute");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            throw new Exception("Coin user element must contain entity attribute");
         }
 
         UserPacketExtension ext = new UserPacketExtension(entity);
         ext.setAttribute(UserPacketExtension.STATE_ATTR_NAME, state);
-
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
 
             if (eventType == XmlPullParser.START_TAG) {
                 if (elementName.equals(UserPacketExtension.ELEMENT_DISPLAY_TEXT)) {
-                    try {
                         ext.setDisplayText(CoinIQProvider.parseText(parser));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
                 else if (elementName.equals(EndpointPacketExtension.ELEMENT_NAME)) {
                     EndpointProvider provider = new EndpointProvider();

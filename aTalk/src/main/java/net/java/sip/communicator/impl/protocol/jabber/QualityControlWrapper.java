@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.impl.protocol.jabber;
@@ -9,6 +9,8 @@ import net.java.sip.communicator.service.protocol.media.AbstractQualityControlWr
 
 import org.atalk.service.neomedia.QualityControl;
 import org.atalk.service.neomedia.QualityPreset;
+import org.atalk.util.Logger;
+import org.jivesoftware.smack.SmackException;
 
 /**
  * A wrapper of media quality control.
@@ -19,34 +21,38 @@ import org.atalk.service.neomedia.QualityPreset;
  */
 public class QualityControlWrapper extends AbstractQualityControlWrapper<CallPeerJabberImpl>
 {
-	/**
-	 * Creates quality control for peer.
-	 * 
-	 * @param peer
-	 *        peer
-	 */
-	QualityControlWrapper(CallPeerJabberImpl peer)
-	{
-		super(peer);
-	}
+    private final static Logger logger = Logger.getLogger(QualityControlWrapper.class);
 
-	/**
-	 * Changes the current video settings for the peer with the desired quality settings and inform
-	 * the peer to stream the video with those settings.
-	 *
-	 * @param preset
-	 *        the desired video settings
-	 */
-	@Override
-	public void setPreferredRemoteSendMaxPreset(QualityPreset preset)
-	{
-		QualityControl qControls = getMediaQualityControl();
+    /**
+     * Creates quality control for peer.
+     *
+     * @param peer peer
+     */
+    QualityControlWrapper(CallPeerJabberImpl peer)
+    {
+        super(peer);
+    }
 
-		if (qControls != null) {
-			qControls.setRemoteSendMaxPreset(preset);
+    /**
+     * Changes the current video settings for the peer with the desired quality settings and inform
+     * the peer to stream the video with those settings.
+     *
+     * @param preset the desired video settings
+     */
+    @Override
+    public void setPreferredRemoteSendMaxPreset(QualityPreset preset)
+    {
+        QualityControl qControls = getMediaQualityControl();
 
-			// re-invites the peer with the new settings
-			peer.sendModifyVideoResolutionContent();
-		}
-	}
+        if (qControls != null) {
+            qControls.setRemoteSendMaxPreset(preset);
+
+            // re-invites the peer with the new settings
+            try {
+                peer.sendModifyVideoResolutionContent();
+            } catch (SmackException.NotConnectedException | InterruptedException e) {
+                logger.error("Could not send modify video resolution of peer", e);
+            }
+        }
+    }
 }

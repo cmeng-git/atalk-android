@@ -11,12 +11,7 @@ import org.ice4j.TransportAddress;
 import org.ice4j.socket.StunDatagramPacketFilter;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.net.SocketException;
+import java.net.*;
 
 /**
  * Represents an application-purposed (as opposed to an ICE-specific) <tt>DatagramSocket</tt> for a
@@ -77,8 +72,7 @@ public class JingleNodesCandidateDatagramSocket extends DatagramSocket
             if (newNbLost < 0x00ff) {
                 return newNbLost - 1;
             }
-            // Else the paquet is desequenced, then count it as a
-            // single loss.
+            // Else the paquet is desequenced, then count it as a single loss.
             else {
                 return 1;
             }
@@ -203,7 +197,6 @@ public class JingleNodesCandidateDatagramSocket extends DatagramSocket
      *
      * If there is a security manager, its <tt>checkConnect</tt> method is first called with the
      * host address and <tt>-1</tt> as its arguments to see if the operation is allowed.
-     *
      *
      * @return the local address to which the socket is bound, or an <tt>InetAddress</tt>
      * representing any local address if either the socket is not bound, or the security

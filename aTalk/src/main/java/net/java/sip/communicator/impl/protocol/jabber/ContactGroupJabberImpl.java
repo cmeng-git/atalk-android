@@ -5,9 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ContactGroup;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
@@ -15,12 +13,7 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The Jabber implementation of the ContactGroup interface. Instances of this class (contrary to
@@ -43,12 +36,12 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      * existing contacts. Note that we only store lower case strings in the left column because JIDs
      * in XMPP are not case sensitive.
      */
-    private Map<Jid, Contact> contacts = new Hashtable<>();
+    private Map<Jid, Contact> buddies = new Hashtable<>();
 
     /**
      * Whether or not this contact group has been resolved against the server.
      */
-    private boolean isResolved = false;
+    private boolean isResolved;
 
     /**
      * The Jabber Group id(the name), corresponding to this contact group. Used to resolve the
@@ -140,7 +133,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      */
     public int countContacts()
     {
-        return contacts.size();
+        return buddies.size();
     }
 
     /**
@@ -161,7 +154,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      */
     public void addContact(ContactJabberImpl contact)
     {
-        contacts.put(contact.getJid(), contact);
+        buddies.put(contact.getJid(), contact);
     }
 
     /**
@@ -171,7 +164,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      */
     void removeContact(ContactJabberImpl contact)
     {
-        contacts.remove(contact.getJid());
+        buddies.remove(contact.getJid());
     }
 
     /**
@@ -182,7 +175,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      */
     public Iterator<Contact> contacts()
     {
-        return contacts.values().iterator();
+        return buddies.values().iterator();
     }
 
     /**
@@ -226,8 +219,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns the subgroup with the specified index (i.e. always null since this group may not
-     * contain subgroups).
+     * Returns the subgroup with the specified index (i.e. always null since this group may not contain subgroups).
      *
      * @param index the index of the <tt>ContactGroup</tt> to retrieve.
      * @return always null
@@ -270,8 +262,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns a hash code value for the object, which is actually the hashcode value of the
-     * groupName.
+     * Returns a hash code value for the object, which is actually the hashcode value of the groupName.
      *
      * @return a hash code value for this ContactGroup.
      */
@@ -285,8 +276,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      * Indicates whether some other object is "equal to" this group.
      *
      * @param obj the reference object with which to compare.
-     * @return <tt>true</tt> if this object is the same as the obj argument; <tt>false</tt>
-     * otherwise.
+     * @return <tt>true</tt> if this object is the same as the obj argument; <tt>false</tt> otherwise.
      */
     @Override
     public boolean equals(Object obj)
@@ -299,14 +289,17 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
 
         if (!((ContactGroup) obj).getGroupName().equals(getGroupName()))
             return false;
+
+        //since Jabber does not support having two groups with the same name
+        // at this point we could bravely state that the groups are the same
+        // and not bother to compare buddies. (gotta check that though)
         return (getProtocolProvider() == ((ContactGroup) obj).getProtocolProvider());
     }
 
     /**
      * Returns the protocol provider that this group belongs to.
      *
-     * @return a reference to the ProtocolProviderService instance that this ContactGroup belongs
-     * to.
+     * @return a reference to the ProtocolProviderService instance that this ContactGroup belongs to.
      */
     public ProtocolProviderService getProtocolProvider()
     {
@@ -322,7 +315,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     @Override
     public String toString()
     {
-        StringBuffer buff = new StringBuffer("JabberGroup.");
+        StringBuilder buff = new StringBuilder("JabberGroup.");
         buff.append(getGroupName()).append(", childContacts=").append(countContacts()).append(":[");
 
         Iterator<Contact> contacts = contacts();
@@ -336,8 +329,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns the contact encapsulating with the specified name or null if no such contact was
-     * found.
+     * Returns the contact encapsulating with the specified name or null if no such contact was found.
      *
      * @param id the id for the contact we're looking for.
      * @return the <tt>ContactJabberImpl</tt> corresponding to the specified screenName or null
@@ -347,7 +339,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     {
         if (id == null)
             return null;
-        return (ContactJabberImpl) contacts.get(id);
+        return (ContactJabberImpl) buddies.get(id);
     }
 
     /**
@@ -383,8 +375,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns null as no persistent data is required and the contact address is sufficient for
-     * restoring the contact.
+     * Returns null as no persistent data is required and the contact address is sufficient for restoring the contact.
      * <p>
      *
      * @return null as no such data is needed.
@@ -431,7 +422,6 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
                     removeContact(contact);
                     ssclCallback.fireContactRemoved(this, contact);
                 }
-
                 continue;
             }
 

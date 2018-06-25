@@ -30,7 +30,7 @@ public class HealthCheckIQProvider extends IQProvider<HealthCheckIQ>
 	/**
 	 * Registers <tt>HealthCheckIQProvider</tt> as an <tt>IQProvider</tt>
 	 */
-	public void registerIQProvider()
+	public static void registerIQProvider()
 	{
 		// ColibriStatsIQ
 		ProviderManager.addIQProvider(HealthCheckIQ.ELEMENT_NAME, HealthCheckIQ.NAMESPACE, new HealthCheckIQProvider());
@@ -43,7 +43,7 @@ public class HealthCheckIQProvider extends IQProvider<HealthCheckIQ>
 	 */
 	@Override
 	public HealthCheckIQ parse(XmlPullParser parser, int depth)
-		throws XmlPullParserException, IOException, SmackException
+        throws Exception
 	{
 		String namespace = parser.getNamespace();
 		HealthCheckIQ iq = null;

@@ -38,19 +38,9 @@ public class JingleInfoQueryIQ extends IQ
 	 * @return the child element section of the IQ XML.
 	 */
 	@Override
-	protected IQChildElementXmlStringBuilder getIQChildElementBuilder(
-			IQChildElementXmlStringBuilder xml)
+	protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
 	{
-		if (getExtensions().size() == 0) {
-			xml.append("/>");
-		}
-		else {
-			xml.append(">");
-			for (ExtensionElement pe : getExtensions()) {
-				xml.append(pe.toXML());
-			}
-			xml.closeElement(ELEMENT_NAME);
-		}
+        xml.setEmptyElement();
 		return xml;
 	}
 }

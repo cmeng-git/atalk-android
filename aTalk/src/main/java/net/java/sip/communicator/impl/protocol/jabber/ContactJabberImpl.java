@@ -37,7 +37,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ContactJabberImpl extends AbstractContact
 {
     /**
-     * Contains either the bareJid of contact as retrieved from the Roster Entry Or The VolatileContact Jid
+     * Contains either the bareJid as retrieved from the Roster Entry, FullJid of ownJId OR
+     * the VolatileContact BareJid/FullJid
      */
     private Jid contactJid = null;
 
@@ -84,7 +85,7 @@ public class ContactJabberImpl extends AbstractContact
     /**
      * The contact resources list.
      */
-    private Map<Jid, ContactResourceJabberImpl> resources = null;
+    private Map<FullJid, ContactResourceJabberImpl> resources = null;
 
     /**
      * Whether this contact is a mobile one.
@@ -167,12 +168,10 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Either return the bareJid of contact as retrieved from the Roster Entry
-     * Or The VolatileContact Jid. VolatileContact jid may not have been resolved before it is
-     * being requested.
+     * Either return the bareJid of contact as retrieved from the Roster Entry Or The VolatileContact Jid.
+     * VolatileContact jid may not have been resolved before it is being requested.
      *
-     * @return Either return the bareJid of contact as retrieved from the Roster Entry
-     * Or The VolatileContact Jid
+     * @return Either return the bareJid of contact as retrieved from the Roster Entry Or The VolatileContact Jid
      */
     public Jid getJid()
     {
@@ -209,8 +208,7 @@ public class ContactJabberImpl extends AbstractContact
      * Returns a reference to the image assigned to this contact. If no image is present and the
      * retrieveIfNecessary flag is true, we schedule the image for retrieval from the server.
      *
-     * @param retrieveIfNecessary specifies whether the method should queue this contact for avatar update from the
-     * server.
+     * @param retrieveIfNecessary specifies whether the method should queue this contact for avatar update from the server.
      * @return a reference to the image currently stored by this contact.
      */
     public byte[] getImage(boolean retrieveIfNecessary)
@@ -231,8 +229,7 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Returns a hashCode for this contact. The returned hashcode is actually that of the Contact's
-     * Address
+     * Returns a hashCode for this contact. The returned hashcode is actually that of the Contact's Address
      *
      * @return the hashcode of this Contact
      */
@@ -244,11 +241,9 @@ public class ContactJabberImpl extends AbstractContact
 
     /**
      * Indicates whether some other object is "equal to" this one.
-     * <p>
      *
      * @param obj the reference object with which to compare.
-     * @return <tt>true</tt> if this object is the same as the obj argument; <tt>false</tt>
-     * otherwise.
+     * @return <tt>true</tt> if this object is the same as the obj argument; <tt>false</tt> otherwise.
      */
     @Override
     public boolean equals(Object obj)
@@ -275,8 +270,7 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Returns a string representation of this contact, containing most of its representative
-     * details.
+     * Returns a string representation of this contact, containing most of its representative details.
      *
      * @return a string representation of this contact.
      */
@@ -305,8 +299,7 @@ public class ContactJabberImpl extends AbstractContact
      * Returns the status of the contact as per the last status update we've received for it. Note
      * that this method is not to perform any network operations and will simply return the status
      * received in the last status update message. If you want a reliable way of retrieving
-     * someone's status, you should use the <tt>queryContactStatus()</tt> method in
-     * <tt>OperationSetPresence</tt>.
+     * someone's status, you should use the <tt>queryContactStatus()</tt> method in <tt>OperationSetPresence</tt>.
      *
      * @return the PresenceStatus that we've received in the last status update pertaining to this
      * contact.
@@ -317,12 +310,10 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Returns a String that could be used by any user interacting modules for referring to this
-     * contact. An alias is not necessarily unique but is often more human readable than an address
-     * (or id).
+     * Returns a String that could be used by any user interacting modules for referring to this contact.
+     * An alias is not necessarily unique but is often more human readable than an address (or id).
      *
-     * @return a String that can be used for referring to this contact when interacting with the
-     * user.
+     * @return a String that can be used for referring to this contact when interacting with the user.
      */
     public String getDisplayName()
     {
@@ -361,12 +352,10 @@ public class ContactJabberImpl extends AbstractContact
 
     /**
      * Returns a reference to the contact group that this contact is currently a child of or
-     * null if
-     * the underlying protocol does not support persistent presence.
+     * null if the underlying protocol does not support persistent presence.
      *
      * @return a reference to the contact group that this contact is currently a child of or
-     * null if
-     * the underlying protocol does not support persistent presence.
+     * null if the underlying protocol does not support persistent presence.
      */
     public ContactGroup getParentContactGroup()
     {
@@ -384,15 +373,12 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Determines whether or not this contact is being stored by the server. Non persistent
-     * contacts
+     * Determines whether or not this contact is being stored by the server. Non persistent contacts
      * are common in the case of simple, non-persistent presence operation sets. They could however
-     * also be seen in persistent presence operation sets when for example we have received an
-     * event
+     * also be seen in persistent presence operation sets when for example we have received an event
      * from someone not on our contact list. Non persistent contacts are volatile even when coming
      * from a persistent presence op. set. They would only exist until the application is closed
-     * and
-     * will not be there next time it is loaded.
+     * and will not be there next time it is loaded.
      *
      * @return true if the contact is persistent and false otherwise.
      */
@@ -443,8 +429,7 @@ public class ContactJabberImpl extends AbstractContact
      * Determines whether or not this contact has been resolved against the server. Unresolved
      * contacts are used when initially loading a contact list that has been stored in a local file
      * until the presence operation set has managed to retrieve all the contact list from the
-     * server
-     * and has properly mapped contacts to their on-line buddies.
+     * server and has properly mapped contacts to their on-line buddies.
      *
      * @return true if the contact has been resolved (mapped against a buddy) and false otherwise.
      */
@@ -504,8 +489,7 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Returns an iterator over the resources supported by this contact or null if it doesn't
-     * support resources.
+     * Returns an iterator over the resources supported by this contact or null if it doesn't support resources.
      *
      * @return null, as this contact doesn't support resources
      */
@@ -528,7 +512,7 @@ public class ContactJabberImpl extends AbstractContact
         return (resources == null) ? null : resources.get(jid);
     }
 
-    Map<Jid, ContactResourceJabberImpl> getResourcesMap()
+    Map<FullJid, ContactResourceJabberImpl> getResourcesMap()
     {
         if (resources == null) {
             resources = new ConcurrentHashMap<>();

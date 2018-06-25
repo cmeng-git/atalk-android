@@ -5,12 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.coin;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 
 /**
  * Parser for MediaPacketExtension.
@@ -31,7 +27,7 @@ public class MediaProvider extends ExtensionElementProvider<MediaPacketExtension
      */
     @Override
     public MediaPacketExtension parse(XmlPullParser parser, int depth)
-            throws XmlPullParserException, IOException, SmackException
+            throws Exception
     {
         boolean done = false;
         int eventType;
@@ -39,46 +35,36 @@ public class MediaProvider extends ExtensionElementProvider<MediaPacketExtension
         String id = parser.getAttributeValue("", MediaPacketExtension.ID_ATTR_NAME);
 
         if (id == null) {
-            try {
-                throw new Exception("Coin media must contains src-id element");
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            throw new Exception("Coin media must contains src-id element");
         }
 
         MediaPacketExtension ext = new MediaPacketExtension(id);
-
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
-            try {
-                if (eventType == XmlPullParser.START_TAG) {
-                    switch (elementName) {
-                        case MediaPacketExtension.ELEMENT_DISPLAY_TEXT:
-                            ext.setDisplayText(CoinIQProvider.parseText(parser));
-                            break;
-                        case MediaPacketExtension.ELEMENT_LABEL:
-                            ext.setLabel(CoinIQProvider.parseText(parser));
-                            break;
-                        case MediaPacketExtension.ELEMENT_SRC_ID:
-                            ext.setSrcID(CoinIQProvider.parseText(parser));
-                            break;
-                        case MediaPacketExtension.ELEMENT_STATUS:
-                            ext.setStatus(CoinIQProvider.parseText(parser));
-                            break;
-                        case MediaPacketExtension.ELEMENT_TYPE:
-                            ext.setType(CoinIQProvider.parseText(parser));
-                            break;
-                    }
+            if (eventType == XmlPullParser.START_TAG) {
+                switch (elementName) {
+                    case MediaPacketExtension.ELEMENT_DISPLAY_TEXT:
+                        ext.setDisplayText(CoinIQProvider.parseText(parser));
+                        break;
+                    case MediaPacketExtension.ELEMENT_LABEL:
+                        ext.setLabel(CoinIQProvider.parseText(parser));
+                        break;
+                    case MediaPacketExtension.ELEMENT_SRC_ID:
+                        ext.setSrcID(CoinIQProvider.parseText(parser));
+                        break;
+                    case MediaPacketExtension.ELEMENT_STATUS:
+                        ext.setStatus(CoinIQProvider.parseText(parser));
+                        break;
+                    case MediaPacketExtension.ELEMENT_TYPE:
+                        ext.setType(CoinIQProvider.parseText(parser));
+                        break;
                 }
-                else if (eventType == XmlPullParser.END_TAG) {
-                    if (parser.getName().equals(MediaPacketExtension.ELEMENT_NAME)) {
-                        done = true;
-                    }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals(MediaPacketExtension.ELEMENT_NAME)) {
+                    done = true;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         return ext;

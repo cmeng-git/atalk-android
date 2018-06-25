@@ -7,18 +7,12 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.SecurityAuthority;
-import net.java.sip.communicator.service.protocol.UserCredentials;
+import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.util.Logger;
-import org.jivesoftware.smack.SASLAuthentication;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.sasl.provided.SASLExternalMechanism;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
 import java.io.IOException;
@@ -55,8 +49,7 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
      * @param reasonCode unused
      * @return always <tt>null</tt>
      */
-    public UserCredentials prepareLogin(SecurityAuthority authority, int reasonCode, String reason,
-            Boolean isShowAlways)
+    public UserCredentials prepareLogin(SecurityAuthority authority, int reasonCode, String reason, Boolean isShowAlways)
     {
         // password is retrieved later when opening the key store.
         return null;

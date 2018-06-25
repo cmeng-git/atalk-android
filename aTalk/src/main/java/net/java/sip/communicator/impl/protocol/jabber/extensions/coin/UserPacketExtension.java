@@ -103,7 +103,6 @@ public class UserPacketExtension extends AbstractPacketExtension
         for (ExtensionElement ext : getChildExtensions()) {
             xml.append(ext.toXML());
         }
-
         xml.closeElement(getElementName());
         return xml;
     }

@@ -6,14 +6,11 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.SecurityAuthority;
-import net.java.sip.communicator.service.protocol.UserCredentials;
+import net.java.sip.communicator.service.protocol.*;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
 import java.security.GeneralSecurityException;
@@ -36,15 +33,13 @@ interface JabberLoginStrategy
      * @param reasonCode reason why we're preparing for login
      * @param reason the reason descriptive text why we're preparing for login
      * @param isShowAlways <tt>true</tt> always show the credential prompt for user entry
-     * @return UserCredentials in case they need to be cached for this session
-     * (i.e. password is not persistent)
+     * @return UserCredentials in case they need to be cached for this session (i.e. password is not persistent)
      * @see SecurityAuthority
      */
     UserCredentials prepareLogin(SecurityAuthority authority, int reasonCode, String reason, Boolean isShowAlways);
 
     /**
-     * Determines whether the login preparation was successful and the strategy is ready to start
-     * connecting.
+     * Determines whether the login preparation was successful and the strategy is ready to start connecting.
      *
      * @return true if prepareLogin was successful.
      */

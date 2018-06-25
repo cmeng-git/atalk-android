@@ -43,7 +43,6 @@ public class UsersProvider extends ExtensionElementProvider<UsersPacketExtension
 
         UsersPacketExtension ext = new UsersPacketExtension();
         ext.setAttribute(UsersPacketExtension.STATE_ATTR_NAME, state);
-
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();

@@ -60,7 +60,6 @@ public class XMPPErrorPE implements ExtensionElement
      * @param error <tt>XMPPError</tt> that will be wrapped by this <TT>XMPPErrorPE</TT>.
      */
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     public void setError(XMPPError error)
     {
         ApiLib.requireNonNull(error, "error");

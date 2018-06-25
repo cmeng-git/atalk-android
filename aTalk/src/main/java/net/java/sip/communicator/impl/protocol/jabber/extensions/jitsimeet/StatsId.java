@@ -15,54 +15,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.java.sip.communicator.impl.protocol.jabber.extensions;
+package net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * A implementation of a {@link ExtensionElement} for the jitsi-meet "avatar-url" element.
+ * A implementation of a {@link ExtensionElement} for the jitsi-meet "stats-id" element.
  *
- * @author Boris Grozev
+ * @author Damian Minkov
  */
-public class AvatarUrl implements ExtensionElement
+public class StatsId implements ExtensionElement
 {
-    public static final String ELEMENT_NAME = "avatar-url";
     public static final String NAMESPACE = "jabber:client";
 
-    private String avatarUrl = null;
+    public static final String ELEMENT_NAME = "stats-id";
+
+    private String statsId = null;
 
     /**
-     * Initializes an {@link AvatarUrl} instance with a given string value.
-     * @param avatarUrl the string value.
-     */
-    public AvatarUrl(String avatarUrl)
-    {
-        this.avatarUrl = avatarUrl;
-    }
-
-    /**
-     * @return the value of the avatar-url element as a string.
-     */
-    public String getAvatarUrl()
-    {
-        return avatarUrl;
-    }
-
-    /**
-     * Sets the value of this avatar-url element.
+     * Initializes an {@link StatsId} instance with a given string value.
      *
-     * @param avatarUrl the value to set.
+     * @param id the string value.
      */
-    public void setAvatarUrl(String avatarUrl)
+    public StatsId(String id)
     {
-        this.avatarUrl = avatarUrl;
+        this.statsId = id;
+    }
+
+    /**
+     * @return the value of the stats-id element as a string.
+     */
+    public String getStatsId()
+    {
+        return statsId;
+    }
+
+    /**
+     * Sets the value of this stats-id element.
+     *
+     * @param value the value to set.
+     */
+    public void setStatsId(String value)
+    {
+        this.statsId = value;
     }
 
     /**
      * Element name.
+     *
      * @return element name for this extension.
      */
     public String getElementName()
@@ -72,6 +74,7 @@ public class AvatarUrl implements ExtensionElement
 
     /**
      * Returns the namespace for this extension.
+     *
      * @return the namespace for this extension.
      */
     public String getNamespace()
@@ -83,31 +86,33 @@ public class AvatarUrl implements ExtensionElement
      * Returns xml representation of this extension.
      * @return xml representation of this extension.
      */
-    @Override
-    public XmlStringBuilder toXML()
+    public String toXML()
     {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.element(ELEMENT_NAME, getAvatarUrl());
-        return xml;
+        final StringBuilder buf = new StringBuilder();
+        buf.append("<").append(ELEMENT_NAME).append(">");
+        buf.append(getStatsId());
+        buf.append("</").append(ELEMENT_NAME).append('>');
+
+        return buf.toString();
     }
 
     /**
      * The provider.
      */
-    public static class AvatarUrlProvider extends ExtensionElementProvider<AvatarUrl>
+    public static class Provider extends ExtensionElementProvider<StatsId>
     {
-        public AvatarUrl parse(XmlPullParser parser, int initialDepth)
-            throws Exception
+        @Override
+        public StatsId parse(XmlPullParser parser, int depth)
+                throws Exception
         {
             parser.next();
             final String address = parser.getText();
 
             // Advance to end of extension.
-            while(parser.getEventType() != XmlPullParser.END_TAG)
-            {
+            while (parser.getEventType() != XmlPullParser.END_TAG) {
                 parser.next();
             }
-            return new AvatarUrl(address);
+            return new StatsId(address);
         }
     }
 }

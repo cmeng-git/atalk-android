@@ -165,7 +165,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
     private void setCurrentState(ChatState chatState, Jid jid)
             throws NotConnectedException, InterruptedException
     {
-        String threadID = opSetBasicIM.getThreadIDForAddress(jid, true);
+        String threadID = opSetBasicIM.getThreadIDForAddress(jid.asBareJid(), true);
 
         Message message = new Message();
         ChatStateExtension extension = new ChatStateExtension(chatState);
@@ -178,7 +178,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         mConnection.sendStanza(message);
 
         if (chatState == ChatState.gone)
-            opSetBasicIM.purgeGoneJidThreads(jid);
+            opSetBasicIM.purgeGoneJidThreads(jid.asBareJid());
     }
 
     /**
@@ -375,7 +375,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         else {
             // Invalid the last thread associated with the contact when he is gone
             if (state == ChatState.gone)
-                opSetBasicIM.purgeGoneJidThreads(message.getFrom());
+                opSetBasicIM.purgeGoneJidThreads(message.getFrom().asBareJid());
             else if (state == ChatState.active)
                 MetaContactChatTransport.setChatStateSupport(true);
 

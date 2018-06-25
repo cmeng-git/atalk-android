@@ -11,6 +11,7 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.media.MediaAwareCall;
 import net.java.sip.communicator.service.protocol.media.MediaHandler;
 import net.java.sip.communicator.util.Logger;
 
@@ -19,7 +20,6 @@ import org.atalk.android.aTalkApp;
 import org.atalk.service.neomedia.*;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.Jid;
@@ -35,7 +35,8 @@ import java.util.*;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberImpl>
+public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
+        OperationSetBasicTelephonyJabberImpl, ProtocolProviderServiceJabberImpl>
 {
     /**
      * The <tt>Logger</tt> used by the <tt>CallJabberImpl</tt> class and its instances for logging output.
@@ -62,9 +63,15 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
      * The entity ID of the Jitsi Videobridge to be utilized by this <tt>Call</tt> for the purposes
      * of establishing a server-assisted telephony conference.
      */
-    private Jid jitsiVideobridge;
+    private Jid mJitsiVideobridge;
 
     private CallPeerMediaHandlerJabberImpl mMediaHandler;
+
+    /**
+     * Indicates if the <tt>CallPeer</tt> will support <tt>inputevt</tt>
+     * extension (i.e. will be able to be remote-controlled).
+     */
+    private boolean localInputEvtAware = false;
 
     /**
      * Initializes a new <tt>CallJabberImpl</tt> instance.
@@ -124,6 +131,8 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
                 if (callPeer.getState() == CallPeerState.CONNECTED)
                     callPeer.sendCoinSessionInfo();
             }
+        } catch (NotConnectedException | InterruptedException e) {
+            e.printStackTrace();
         } finally {
             super.conferenceFocusChanged(oldValue, newValue);
         }
@@ -168,9 +177,8 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
         }
 
         /*
-         * The specified CallPeer will participate in the colibri conference organized by this Call
-         * so it must use the shared CallPeerMediaHandler state of all CallPeers in the same
-         * colibri conference.
+         * The specified CallPeer will participate in the colibri conference organized by this Call so it
+         * must use the shared CallPeerMediaHandler state of all CallPeers in the same colibri conference.
          */
         if (colibriMediaHandler == null)
             colibriMediaHandler = new MediaHandler();
@@ -209,7 +217,7 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
                     localChannelRequest.addPayloadType(ptpe);
                 setTransportOnChannel(peer, media, localChannelRequest);
                 // DTLS-SRTP
-                setDtlsEncryptionOnChannel(jvb, peer, mediaType, localChannelRequest);
+                setDtlsEncryptionOnChannel(mJitsiVideobridge, peer, mediaType, localChannelRequest);
                 /*
                  * Since Jitsi Videobridge supports multiple Jingle transports, it is a good
                  * idea to indicate which one is expected on a channel.
@@ -235,36 +243,25 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
             contentRequest.addChannel(remoteChannelRequest);
         }
 
-        XMPPConnection connection = protocolProvider.getConnection();
-        StanzaCollector packetCollector
-                = connection.createStanzaCollector(new StanzaIdFilter(conferenceRequest.getStanzaId()));
-
-        conferenceRequest.setTo(jitsiVideobridge);
+        conferenceRequest.setTo(mJitsiVideobridge);
         conferenceRequest.setType(IQ.Type.get);
-        try {
-            connection.sendStanza(conferenceRequest);
-        } catch (NotConnectedException | InterruptedException e1) {
-            logger.error("Could not handle conferenceRequest type: " + jitsiVideobridge.toString()
-                    + "; RequestIQ: " + conferenceRequest);
-        }
-
+        XMPPConnection connection = protocolProvider.getConnection();
         Stanza response = null;
         try {
-            response = packetCollector.nextResult(SmackConfiguration.getDefaultReplyTimeout());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        packetCollector.cancel();
-        if (response == null) {
-            logger.error("Failed to allocate colibri channels: response is null. Maybe the response timed out.");
+            StanzaCollector packetCollector = connection.createStanzaCollectorAndSend(conferenceRequest);
+            try {
+                response = packetCollector.nextResultOrThrow();
+            } finally {
+                packetCollector.cancel();
+            }
+        } catch (NotConnectedException | InterruptedException e1) {
+            throw new OperationFailedException("Could not send the conference request",
+                    OperationFailedException.REGISTRATION_REQUIRED, e1);
+        } catch (XMPPException.XMPPErrorException e) {
+            logger.error("Failed to allocate colibri channel: " + e.getMessage());
             return null;
-        }
-        else if (response.getError() != null) {
-            logger.error("Failed to allocate colibri channels: " + response.getError());
-            return null;
-        }
-        else if (!(response instanceof ColibriConferenceIQ)) {
-            logger.error("Failed to allocate colibri channels: response is not a colibri conference");
+        } catch (SmackException.NoResponseException e) {
+            logger.error("Failed to allocate colibri channels: " + e.getMessage());
             return null;
         }
 
@@ -325,13 +322,7 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
             ContentPacketExtension localContent = e.getKey();
             ContentPacketExtension remoteContent = e.getValue();
             ContentPacketExtension cpe = (remoteContent == null) ? localContent : remoteContent;
-
-            // jisti-android original code
-            // RtpDescriptionPacketExtension rdpe = cpe.getFirstChildOfType
-            // (RtpDescriptionPacketExtension.class);
-            // MediaType mediaType = MediaType.parseString(rdpe.getMedia());
             MediaType mediaType = JingleUtils.getMediaType(cpe);
-
             ColibriConferenceIQ.Content contentResponse = conferenceResponse.getContent(mediaType.toString());
             if (contentResponse != null) {
                 String contentName = contentResponse.getName();
@@ -420,6 +411,7 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
      * @param conference a <tt>ColibriConferenceIQ</tt> which specifies the (colibri) conference channels to be expired
      */
     public void expireColibriChannels(CallPeerJabberImpl peer, ColibriConferenceIQ conference)
+            throws SmackException.NotConnectedException, InterruptedException
     {
         // Formulate the ColibriConferenceIQ request which is to be sent.
         if (colibri != null) {
@@ -430,7 +422,7 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
                 conferenceRequest.setID(conferenceID);
 
                 for (ColibriConferenceIQ.Content content : conference.getContents()) {
-                    ColibriConferenceIQ.Content colibriContent  = colibri.getContent(content.getName());
+                    ColibriConferenceIQ.Content colibriContent = colibri.getContent(content.getName());
                     if (colibriContent != null) {
                         ColibriConferenceIQ.Content contentRequest
                                 = conferenceRequest.getOrCreateContent(colibriContent.getName());
@@ -484,11 +476,7 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
                  */
                 conferenceRequest.setTo(colibri.getFrom());
                 conferenceRequest.setType(IQ.Type.set);
-                try {
-                    getProtocolProvider().getConnection().sendStanza(conferenceRequest);
-                } catch (NotConnectedException | InterruptedException e) {
-                    e.printStackTrace();
-                }
+                getProtocolProvider().getConnection().sendStanza(conferenceRequest);
             }
         }
     }
@@ -504,6 +492,7 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
      * @param direction the <tt>MediaDirection</tt> to set.
      */
     public void setChannelDirection(String channelID, MediaType mediaType, MediaDirection direction)
+            throws SmackException.NotConnectedException, InterruptedException
     {
         if ((colibri != null) && (channelID != null)) {
             ColibriConferenceIQ.Content content = colibri.getContent(mediaType.toString());
@@ -535,11 +524,7 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
                     conferenceRequest.setType(IQ.Type.set);
                     conferenceRequest.addContent(requestContent);
 
-                    try {
-                        getProtocolProvider().getConnection().sendStanza(conferenceRequest);
-                    } catch (NotConnectedException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    getProtocolProvider().getConnection().sendStanza(conferenceRequest);
                 }
             }
         }
@@ -581,8 +566,9 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
 
         /* enable video if it is a video call */
         mMediaHandler.setLocalVideoTransmissionEnabled(localVideoAllowed);
-        /* enable remote-control if it is a desktop sharing session */
-        mMediaHandler.setLocalInputEvtAware(getLocalInputEvtAware());
+
+        /* enable remote-control if it is a desktop sharing session - cmeng get and set back???*/
+        //  mMediaHandler.setLocalInputEvtAware(mMediaHandler.getLocalInputEvtAware());
 
         /*
          * Set call state to connecting so that the user interface would start playing the tones.
@@ -612,7 +598,6 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
      *
      * @throws OperationFailedException if a problem occurred during message generation or there was a network problem
      */
-    @Override
     public void modifyVideoContent()
             throws OperationFailedException
     {
@@ -620,11 +605,15 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
             logger.debug("Updating video content for " + this);
 
         boolean change = false;
-        for (CallPeerJabberImpl peer : getCallPeerList())
-            // cmeng (2016/09/14): Never send 'sendModifyVideoContent' before it is connected => Smack Exception
-            if (peer.getState() == CallPeerState.CONNECTED)
-                change |= peer.sendModifyVideoContent();
-
+        for (CallPeerJabberImpl peer : getCallPeerList()) {
+            try {
+                // cmeng (2016/09/14): Never send 'sendModifyVideoContent' before it is connected => Smack Exception
+                if (peer.getState() == CallPeerState.CONNECTED)
+                    change |= peer.sendModifyVideoContent();
+            } catch (SmackException.NotConnectedException | InterruptedException e) {
+                throw new OperationFailedException("Could send modify video content to " + peer.getAddress(), 0, e);
+            }
+        }
         if (change)
             fireCallChangeEvent(CallChangeEvent.CALL_PARTICIPANTS_CHANGE, null, null);
     }
@@ -749,9 +738,13 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
             boolean b = Boolean.parseBoolean((String) coin.getAttribute(CoinPacketExtension.ISFOCUS_ATTR_NAME));
             callPeer.setConferenceFocus(b);
         }
-
         // before notifying about this call, make sure that it looks alright
-        callPeer.processSessionInitiate(jingleIQ);
+        try {
+            callPeer.processSessionInitiate(jingleIQ);
+        } catch (SmackException.NotConnectedException | InterruptedException e) {
+            callPeer.setState(CallPeerState.INCOMING_CALL);
+            return null;
+        }
 
         // if paranoia is set, to accept the call we need to know that the other party has support
         // for media encryption
@@ -767,7 +760,8 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
             try {
                 getProtocolProvider().getConnection().sendStanza(errResp);
             } catch (NotConnectedException | InterruptedException e) {
-                e.printStackTrace();
+                logger.error("Could not send session terminate", e);
+                return null;
             }
             return null;
         }
@@ -845,8 +839,8 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
             ColibriConferenceIQ.Channel channel, MediaType mediaType)
     {
         CallPeerMediaHandlerJabberImpl peerMediaHandler = peer.getMediaHandler();
-        DtlsControl dtlsControl = (DtlsControl) peerMediaHandler.getSrtpControls()
-                .get(mediaType, SrtpControlType.DTLS_SRTP);
+        DtlsControl dtlsControl
+                = (DtlsControl) peerMediaHandler.getSrtpControls().get(mediaType, SrtpControlType.DTLS_SRTP);
 
         if (dtlsControl != null) {
             dtlsControl.setSetup(peer.isInitiator() ? DtlsControl.Setup.ACTIVE : DtlsControl.Setup.PASSIVE);
@@ -888,8 +882,8 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
                     = remoteContent.getFirstChildOfType(IceUdpTransportPacketExtension.class);
 
             if (remoteTransport != null) {
-                List<DtlsFingerprintPacketExtension> remoteFingerprints = remoteTransport
-                        .getChildExtensionsOfType(DtlsFingerprintPacketExtension.class);
+                List<DtlsFingerprintPacketExtension> remoteFingerprints
+                        = remoteTransport.getChildExtensionsOfType(DtlsFingerprintPacketExtension.class);
 
                 if (!remoteFingerprints.isEmpty()) {
                     IceUdpTransportPacketExtension localTransport = ensureTransportOnChannel(channel, peer);
@@ -1027,13 +1021,13 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
      */
     public Jid getJitsiVideobridge()
     {
-        if ((jitsiVideobridge == null) && getConference().isJitsiVideobridge()) {
+        if ((mJitsiVideobridge == null) && getConference().isJitsiVideobridge()) {
             Jid jvb = getProtocolProvider().getJitsiVideobridge();
 
             if (jvb != null)
-                jitsiVideobridge = jvb;
+                mJitsiVideobridge = jvb;
         }
-        return jitsiVideobridge;
+        return mJitsiVideobridge;
     }
 
     /**
@@ -1049,11 +1043,82 @@ public class CallJabberImpl extends AbstractCallJabberGTalkImpl<CallPeerJabberIm
     public void toneReceived(DTMFReceivedEvent evt)
     {
         OperationSetIncomingDTMF opSet = getProtocolProvider().getOperationSet(OperationSetIncomingDTMF.class);
-
         if (opSet != null && opSet instanceof OperationSetIncomingDTMFJabberImpl) {
             // Re-fire the event using this Call as the source.
             ((OperationSetIncomingDTMFJabberImpl) opSet).toneReceived(new DTMFReceivedEvent(this,
                     evt.getValue(), evt.getDuration(), evt.getStart()));
         }
+    }
+
+    /**
+     * Enable or disable <tt>inputevt</tt> support (remote control).
+     *
+     * @param enable new state of inputevt support
+     */
+    public void setLocalInputEvtAware(boolean enable)
+    {
+        localInputEvtAware = enable;
+    }
+
+    /**
+     * Returns if the call support <tt>inputevt</tt> (remote control).
+     *
+     * @return true if the call support <tt>inputevt</tt>, false otherwise
+     */
+    public boolean getLocalInputEvtAware()
+    {
+        return localInputEvtAware;
+    }
+
+    /**
+     * Returns the peer whose corresponding session has the specified
+     * <tt>sid</tt>.
+     *
+     * @param sid the ID of the session whose peer we are looking for.
+     * @return the {@link CallPeerJabberImpl} with the specified jingle
+     * <tt>sid</tt> and <tt>null</tt> if no such peer exists in this call.
+     */
+    public CallPeerJabberImpl getPeer(String sid)
+    {
+        if (sid == null)
+            return null;
+
+        for (CallPeerJabberImpl peer : getCallPeerList()) {
+            if (sid.equals(peer.getSID()))
+                return peer;
+        }
+        return null;
+    }
+
+    /**
+     * Determines if this call contains a peer whose corresponding session has
+     * the specified <tt>sid</tt>.
+     *
+     * @param sid the ID of the session whose peer we are looking for.
+     * @return <tt>true</tt> if this call contains a peer with the specified jingle <tt>sid</tt> and false otherwise.
+     */
+    public boolean containsSID(String sid)
+    {
+        return (getPeer(sid) != null);
+    }
+
+    /**
+     * Returns the peer whose corresponding session-init ID has the specified
+     * <tt>id</tt>.
+     *
+     * @param id the ID of the session-init IQ whose peer we are looking for.
+     * @return the {@link CallPeerJabberImpl} with the specified IQ
+     * <tt>id</tt> and <tt>null</tt> if no such peer exists in this call.
+     */
+    public CallPeerJabberImpl getPeerBySessInitPacketID(String id)
+    {
+        if (id == null)
+            return null;
+
+        for (CallPeerJabberImpl peer : getCallPeerList()) {
+            if (id.equals(peer.getSessInitID()))
+                return peer;
+        }
+        return null;
     }
 }

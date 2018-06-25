@@ -45,8 +45,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1040
-        versionName "1.4.0" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1041
+        versionName "1.4.1" // no alphabet allowed (e.g. 0.8.7.a)
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true
@@ -134,8 +134,9 @@ dependencies {
 
     // direct import from local lib/bundles/*.jar
     implementation files('lib/bundles/dhcp4java-1.00.jar')
-    // maven ice4j-2.0 not working for atalk - unable to get candidates and call won't connect
-    implementation files('lib/bundles/ice4j-1.1.jar')
+    // ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
+    // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
+    implementation files('lib/bundles/ice4j-2.0.0.jar')
     // must use local json-simple-1.1.1.jar - otherwise dependency conflict
     implementation files('lib/bundles/json-simple-1.1.1.jar')
 

@@ -5,15 +5,11 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ChatRoomMember;
-import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.jabber.JabberChatRoomMember;
 
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.muc.Occupant;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
@@ -60,6 +56,11 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
     private String avatarUrl;
 
     /**
+     * The statistics id of this member.
+     */
+    private String statisticsID;
+
+    /*
      * The mContact from our server stored mContact list corresponding to this member.
      */
     private Contact mContact;
@@ -73,6 +74,12 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      * The display name of this {@link ChatRoomMember}.
      */
     private String displayName;
+
+    /**
+     * Store the last {@link Presence} which was used to cause a
+     * {@link ChatRoomMemberPresenceChangeEvent#MEMBER_UPDATED}
+     */
+    private Presence lastPresence = null;
 
     private OperationSetPersistentPresenceJabberImpl presenceOpSet = null;
 
@@ -237,8 +244,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
     /**
      * Returns the protocol mContact corresponding to this member in our mContact list. The mContact
      * returned here could be used by the user interface to check if this member is contained in our
-     * mContact list and in function of this to show additional information add additional
-     * functionality.
+     * mContact list and in function of this to show additional information add additional functionality.
      * Note: Use nick to retrieve mContact if null to take care the old history messages;
      *
      * @return the protocol mContact corresponding to this member in our mContact list.
@@ -323,5 +329,44 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
     void setAvatarUrl(String avatarUrl)
     {
         this.avatarUrl = avatarUrl;
+    }
+
+    /**
+     * @return the statistics ID of this {@link ChatRoomMember}.
+     */
+    public String getStatisticsID()
+    {
+        return this.statisticsID;
+    }
+
+    /**
+     * Sets the avatar URL of this {@link ChatRoomMember}.
+     * @param id the value to set.
+     */
+    void setStatisticsID(String id)
+    {
+        this.statisticsID = id;
+    }
+
+    /**
+     * Set the {@link Presence} which is going to cause a
+     * {@link ChatRoomMemberPresenceChangeEvent#MEMBER_UPDATED}
+     *
+     * @param presence the presence
+     */
+    public void setLastPresence(Presence presence)
+    {
+        lastPresence = presence;
+    }
+
+    /**
+     * Get the {@link Presence} which has caused a
+     * {@link ChatRoomMemberPresenceChangeEvent#MEMBER_UPDATED} event
+     *
+     * @return the presence
+     */
+    public Presence getLastPresence()
+    {
+        return lastPresence;
     }
 }

@@ -42,8 +42,7 @@ public class HealthCheckIQ extends IQ
 	 * /** {@inheritDoc}
 	 */
 	@Override
-	protected IQChildElementXmlStringBuilder getIQChildElementBuilder(
-		IQChildElementXmlStringBuilder xml)
+	protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
 	{
 		xml.setEmptyElement();
 		return xml;

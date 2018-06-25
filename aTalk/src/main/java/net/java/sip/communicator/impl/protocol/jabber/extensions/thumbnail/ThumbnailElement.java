@@ -71,8 +71,7 @@ public class ThumbnailElement
      * @param width the width of the thumbnail
      * @param height the height of the thumbnail
      */
-    public ThumbnailElement(String serverAddress, byte[] thumbnailData, String mimeType, int width,
-            int height)
+    public ThumbnailElement(String serverAddress, byte[] thumbnailData, String mimeType, int width, int height)
     {
         this.cid = createCid(serverAddress, thumbnailData);
         this.mimeType = mimeType;
@@ -83,7 +82,7 @@ public class ThumbnailElement
     /**
      * Creates a <tt>ThumbnailElement</tt> by parsing the given <tt>xml</tt>.
      * <thumbnail xmlns="urn:xmpp:thumbs:0" cid="sha1+2845ad11024a99dc61fe2bad3c59c5fb0a23cd1c@atalk.org"
-     *      mime-type="image/png" width="64" height="64"/>
+     * mime-type="image/png" width="64" height="64"/>
      *
      * @param parser the XML from which we obtain the needed information to create this <tt>ThumbnailElement</tt>
      */

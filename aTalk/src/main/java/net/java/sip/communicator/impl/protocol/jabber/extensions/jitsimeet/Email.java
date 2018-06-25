@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.java.sip.communicator.impl.protocol.jabber.extensions;
+package net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -62,6 +62,7 @@ public class Email implements ExtensionElement
 
     /**
      * Element name.
+     *
      * @return element name for this extension.
      */
     public String getElementName()
@@ -71,6 +72,7 @@ public class Email implements ExtensionElement
 
     /**
      * Returns the namespace for this extension.
+     *
      * @return the namespace for this extension.
      */
     public String getNamespace()
@@ -80,6 +82,7 @@ public class Email implements ExtensionElement
 
     /**
      * Returns xml representation of this extension.
+     *
      * @return xml representation of this extension.
      */
     @Override
@@ -96,14 +99,13 @@ public class Email implements ExtensionElement
     public static class EmailProvider extends ExtensionElementProvider<Email>
     {
         public Email parse(XmlPullParser parser, int initialDepth)
-            throws Exception
+                throws Exception
         {
             parser.next();
             final String address = parser.getText();
 
             // Advance to end of extension.
-            while(parser.getEventType() != XmlPullParser.END_TAG)
-            {
+            while (parser.getEventType() != XmlPullParser.END_TAG) {
                 parser.next();
             }
 

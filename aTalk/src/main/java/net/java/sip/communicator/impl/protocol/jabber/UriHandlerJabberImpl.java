@@ -17,24 +17,8 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.argdelegation.UriHandler;
 import net.java.sip.communicator.service.gui.ExportedWindow;
 import net.java.sip.communicator.service.gui.PopupDialog;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.AccountManager;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
-import net.java.sip.communicator.service.protocol.OperationSetPresence;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.event.AccountManagerEvent;
-import net.java.sip.communicator.service.protocol.event.AccountManagerListener;
-import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusListener;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
@@ -42,18 +26,10 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.*;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -88,28 +64,25 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
 
     /**
      * The <code>AccountManager</code> which loads the stored accounts of {@link #protoFactory} and
-     * to be monitored when the mentioned loading is complete so that any pending {@link #uris} can
-     * be handled
+     * to be monitored when the mentioned loading is complete so that any pending {@link #uris} can be handled
      */
     private AccountManager accountManager;
 
     /**
      * The indicator (and its synchronization lock) which determines whether the stored accounts of
      * {@link #protoFactory} have already been loaded.
-     * <p>
+     *
      * Before the loading of the stored accounts (even if there're none) of the
      * <code>protoFactory</code> is completed, no handling of URIs is to be performed because
      * there's neither information which account to handle the URI in case there're stored accounts
      * available nor ground for warning the user a registered account is necessary to handle
      * URIs at all in case there're no stored accounts.
-     * </p>
      */
     private final boolean[] storedAccountsAreLoaded = new boolean[1];
 
     /**
      * The list of URIs which have received requests for handling before the stored accounts of the
-     * {@link #protoFactory} have been loaded. They will be handled as soon as the mentioned
-     * loading completes.
+     * {@link #protoFactory} have been loaded. They will be handled as soon as the mentioned loading completes.
      */
     private List<String> uris;
 
@@ -136,9 +109,9 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
         hookStoredAccounts();
         this.protoFactory.getBundleContext().addServiceListener(this);
         /*
-		 * Registering the UriHandler isn't strictly necessary if the requirement to register the
-		 * protoFactory after creating this instance is met.
-		 */
+         * Registering the UriHandler isn't strictly necessary if the requirement to register the
+         * protoFactory after creating this instance is met.
+         */
         registerHandlerService();
     }
 
@@ -155,8 +128,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
 
     /**
      * Sets up (if not set up already) listening for the loading of the stored accounts of
-     * {@link #protoFactory} in order to make it possible to discover when the prerequisites for
-     * handling URIs are met.
+     * {@link #protoFactory} in order to make it possible to discover when the prerequisites for handling URIs are met.
      */
     private void hookStoredAccounts()
     {
@@ -170,8 +142,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
     }
 
     /**
-     * Reverts (if not reverted already) the setup performed by a previous chat to
-     * {@link #hookStoredAccounts()}.
+     * Reverts (if not reverted already) the setup performed by a previous chat to {@link #hookStoredAccounts()}.
      */
     private void unhookStoredAccounts()
     {
@@ -184,17 +155,16 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
     /*
      * (non-Javadoc)
      *
-     * @see net.java.sip.communicator.service.protocol.event.AccountManagerListener
-     * #handleAccountManagerEvent
+     * @see net.java.sip.communicator.service.protocol.event.AccountManagerListener#handleAccountManagerEvent
      * (net.java.sip.communicator.service.protocol.event.AccountManagerEvent)
      */
     public void handleAccountManagerEvent(AccountManagerEvent event)
     {
-		/*
-		 * When the loading of the stored accounts of protoFactory is complete, the prerequisites
-		 * for handling URIs have been met so it's time to load any handling requests which have
-		 * come before the loading and were thus delayed in uris.
-		 */
+        /*
+         * When the loading of the stored accounts of protoFactory is complete, the prerequisites
+         * for handling URIs have been met so it's time to load any handling requests which have
+         * come before the loading and were thus delayed in uris.
+         */
         if ((AccountManagerEvent.STORED_ACCOUNTS_LOADED == event.getType())
                 && (protoFactory == event.getFactory())) {
             List<String> uris = null;
@@ -207,12 +177,10 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
                     this.uris = null;
                 }
             }
-
             unhookStoredAccounts();
-
             if (uris != null) {
-                for (Iterator<String> uriIter = uris.iterator(); uriIter.hasNext(); ) {
-                    handleUri(uriIter.next());
+                for (String uri : uris) {
+                    handleUri(uri);
                 }
             }
         }
@@ -228,9 +196,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
                 // ... we are already registered (this is probably happening during startup)
                 return;
             }
-
-            Hashtable<String, String> registrationProperties = new Hashtable<String, String>();
-
+            Hashtable<String, String> registrationProperties = new Hashtable<>();
             for (String protocol : getProtocol()) {
                 registrationProperties.put(UriHandler.PROTOCOL_PROPERTY, protocol);
             }
@@ -238,7 +204,6 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
             ourServiceRegistration = JabberActivator.bundleContext.registerService(
                     UriHandler.class.getName(), this, registrationProperties);
         }
-
     }
 
     /**
@@ -270,10 +235,10 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
      */
     public void handleUri(String uri)
     {
-		/*
-		 * TODO If the requirement to register the factory service after creating this instance is
-		 * broken, we'll end up not handling the URIs.
-		 */
+        /*
+         * TODO If the requirement to register the factory service after creating this instance is
+         * broken, we'll end up not handling the URIs.
+         */
         synchronized (storedAccountsAreLoaded) {
             if (!storedAccountsAreLoaded[0]) {
                 if (uris == null) {
@@ -367,46 +332,6 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
     }
 
     /**
-     * Informs the user that they need to be registered before chatting and asks them whether they
-     * would like us to do it for them.
-     *
-     * @param uri the uri that the user would like us to chat with after registering.
-     * @param provider the provider that we may have to re-register.
-     */
-    private void promptForRegistration(final String uri, final ProtocolProviderService provider)
-    {
-        String msg = "You need to be online in order to chat and your account is currently "
-                + "offline. Do you want to connect now?";
-        String title = "Account is currently offline";
-
-//		int answer = JabberActivator.getUIService().getPopupDialog()
-//				.showConfirmPopupDialog("You need to be online in order to chat and your account" +
-//								" is currently offline. Do you want to connect now?",
-//						"Account is currently offline", PopupDialog.YES_NO_OPTION);
-//
-//		if (answer == PopupDialog.YES_OPTION)
-//			new ProtocolRegistrationThread(uri, provider).start();
-
-        AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
-                title, msg, aTalkApp.getResString(R.string.service_gui_YES),
-                new DialogActivity.DialogListener()
-                {
-                    @Override
-                    public boolean onConfirmClicked(DialogActivity dialog)
-                    {
-                        new ProtocolRegistrationThread(uri, provider).start();
-                        return true;
-                    }
-
-                    @Override
-                    public void onDialogCancelled(DialogActivity dialog)
-                    {
-                    }
-                }
-        );
-    }
-
-    /**
      * The point of implementing a service listener here is so that we would only register our own
      * uri handling service and thus only handle URIs while the factory is available as an OSGi
      * service. We remove ourselves when our factory unregisters its service reference.
@@ -438,8 +363,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
     }
 
     /**
-     * Uses the <tt>UIService</tt> to show an error <tt>message</tt> and log and
-     * <tt>exception</tt>.
+     * Uses the <tt>UIService</tt> to show an error <tt>message</tt> and log and <tt>exception</tt>.
      *
      * @param message the message that we'd like to show to the user.
      * @param exc the exception that we'd like to log
@@ -454,85 +378,6 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
         logger.error(message, exc);
     }
 
-    /**
-     * We use this class when launching a provider registration by ourselves in order to track for
-     * provider registration states and retry uri handling, once the provider is registered.
-     */
-    private class ProtocolRegistrationThread extends Thread
-            implements RegistrationStateChangeListener
-    {
-        private ProtocolProviderService handlerProvider = null;
-
-        /**
-         * The URI that we'd need to chat.
-         */
-        private String uri = null;
-
-        /**
-         * Configures this thread register our parent provider and re-attempt connection to the
-         * specified <tt>uri</tt>.
-         *
-         * @param uri the uri that we need to handle.
-         * @param handlerProvider the provider that we are going to make register and that we are going to use to
-         * handle the <tt>uri</tt>.
-         */
-        public ProtocolRegistrationThread(String uri, ProtocolProviderService handlerProvider)
-        {
-            super("UriHandlerProviderRegistrationThread:uri=" + uri);
-            this.uri = uri;
-            this.handlerProvider = handlerProvider;
-        }
-
-        /**
-         * Starts the registration process, ads this class as a registration listener and then
-         * tries to re-handle the uri this thread was initiated with.
-         */
-        @Override
-        public void run()
-        {
-            handlerProvider.addRegistrationStateChangeListener(this);
-
-            try {
-                handlerProvider.register(JabberActivator.getUIService().getDefaultSecurityAuthority(handlerProvider));
-            } catch (OperationFailedException exc) {
-                logger.error("Failed to manually register provider.");
-                logger.warn(exc.getMessage(), exc);
-            }
-        }
-
-        /**
-         * If the parent provider passes into the registration state, the method re-handles the URI
-         * that this thread was initiated with. The method would only re-handle the uri if the
-         * event shows successful registration. It would ignore intermediate states such as
-         * REGISTERING. Disconnection and failure events would simply cause this listener to
-         * remove itself from the list of registration listeners.
-         *
-         * @param evt the <tt>RegistrationStateChangeEvent</tt> that this thread was initiated with.
-         */
-        public void registrationStateChanged(RegistrationStateChangeEvent evt)
-        {
-            if (evt.getNewState() == RegistrationState.REGISTERED) {
-                Thread uriRehandleThread = new Thread()
-                {
-                    @Override
-                    public void run()
-                    {
-                        handleUri(uri);
-                    }
-                };
-
-                uriRehandleThread.setName("UriRehandleThread:uri=" + uri);
-                uriRehandleThread.start();
-            }
-
-            // we're only interested in a single event so we stop listening (unless this was a
-            // REGISTERING notification)
-            if (evt.getNewState() == RegistrationState.REGISTERING)
-                return;
-
-            handlerProvider.removeRegistrationStateChangeListener(this);
-        }
-    }
 
     /**
      * Returns the default provider that we are supposed to handle URIs through or null if there
@@ -556,11 +401,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
         // if we only have one provider - select it
         if (registeredAccounts.size() == 1) {
             ServiceReference providerReference = protoFactory.getProviderForAccount(registeredAccounts.get(0));
-
-            ProtocolProviderService provider
-                    = (ProtocolProviderService) JabberActivator.bundleContext.getService(providerReference);
-
-            return provider;
+            return (ProtocolProviderService) JabberActivator.bundleContext.getService(providerReference);
         }
 
         // otherwise - ask the user.
@@ -570,7 +411,6 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
 
             ProtocolProviderService provider
                     = (ProtocolProviderService) JabberActivator.bundleContext.getService(providerReference);
-
             providers.add(new ProviderComboBoxEntry(provider));
         }
 
@@ -583,23 +423,6 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
         if (result == null) {
             throw new OperationFailedException("Operation cancelled", OperationFailedException.OPERATION_CANCELED);
         }
-
-//		AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
-//				title, msg, aTalkApp.getResString(service_gui_YES),
-//				new DialogActivity.DialogListener()
-//				{
-//					@Override
-//					public boolean onConfirmClicked(DialogActivity dialog)
-//					{
-//						return true;
-//					}
-//
-//					@Override
-//					public void onDialogCancelled(DialogActivity dialog)
-//					{
-//					}
-//				}
-//		);
         return ((ProviderComboBoxEntry) result).provider;
     }
 
@@ -610,7 +433,6 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
     private static class ProviderComboBoxEntry
     {
         public final ProtocolProviderService provider;
-
         public ProviderComboBoxEntry(ProtocolProviderService provider)
         {
             this.provider = provider;
