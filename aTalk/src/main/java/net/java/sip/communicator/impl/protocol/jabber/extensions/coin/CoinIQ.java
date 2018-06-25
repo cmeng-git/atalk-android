@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.coin;
@@ -16,182 +16,175 @@ import org.jivesoftware.smack.packet.IQ;
  */
 public class CoinIQ extends IQ
 {
-	/**
-	 * The name of the element that contains the coin data.
-	 */
-	public static final String ELEMENT_NAME = "conference-info";
+    /**
+     * The name of the element that contains the coin data.
+     */
+    public static final String ELEMENT_NAME = "conference-info";
 
-	/**
-	 * The namespace that coin belongs to.
-	 */
-	public static final String NAMESPACE = "urn:ietf:params:xml:ns:conference-info";
+    /**
+     * The namespace that coin belongs to.
+     */
+    public static final String NAMESPACE = "urn:ietf:params:xml:ns:conference-info";
 
-	/**
-	 * Entity attribute name.
-	 */
-	public static final String ENTITY_ATTR_NAME = "entity";
+    /**
+     * Entity attribute name.
+     */
+    public static final String ENTITY_ATTR_NAME = "entity";
 
-	/**
-	 * Jingle session ID attribute name.
-	 */
-	public static final String SID_ATTR_NAME = "sid";
+    /**
+     * Jingle session ID attribute name.
+     */
+    public static final String SID_ATTR_NAME = "sid";
 
-	/**
-	 * Version attribute name.
-	 */
-	public static final String STATE_ATTR_NAME = "state";
+    /**
+     * Version attribute name.
+     */
+    public static final String STATE_ATTR_NAME = "state";
 
-	/**
-	 * Version attribute name.
-	 */
-	public static final String VERSION_ATTR_NAME = "version";
+    /**
+     * Version attribute name.
+     */
+    public static final String VERSION_ATTR_NAME = "version";
 
-	/**
-	 * Entity name.
-	 */
-	private String entity = null;
+    /**
+     * Entity name.
+     */
+    private String entity = null;
 
-	/**
-	 * Jingle session ID.
-	 */
-	private String sid = null;
+    /**
+     * Jingle session ID.
+     */
+    private String sid = null;
 
-	/**
-	 * State.
-	 */
-	private StateType state = StateType.full;
+    /**
+     * State.
+     */
+    private StateType state = StateType.full;
 
-	/**
-	 * Version.
-	 */
-	private int version = 0;
+    /**
+     * Version.
+     */
+    private Integer version = 0;
 
-	public CoinIQ()
-	{
-		super(ELEMENT_NAME, NAMESPACE);
-	}
+    public CoinIQ()
+    {
+        super(ELEMENT_NAME, NAMESPACE);
+    }
 
-	/**
-	 * Returns the XML string of this Jingle IQ's "section" sub-element.
-	 *
-	 * Extensions of this class must override this method.
-	 *
-	 * @return the child element section of the IQ XML.
-	 */
+    /**
+     * Returns the XML string of this Jingle IQ's "section" sub-element.
+     *
+     * Extensions of this class must override this method.
+     *
+     * @return the child element section of the IQ XML.
+     */
 
-	// <iq to='abc123@atalk.org/jitsi-15b488a' id='WikRS-116' type='set'>
-	// <conference-info xmlns='urn:ietf:params:xml:ns:conference-info' version="1" entity="xmpp:leopard@atalk.org/atalk" sid="8bhihsq6md3g2">
-	// <conference-description/>
-	// <conference-state><user-count>2</user-count></conference-state>
-	// <users>
-	// <user entity="xmpp:leopard@atalk.org/atalk">
-	// <endpoint entity="xmpp:leopard@atalk.org/atalk">
-	// <status>connected</status>
-	// <media id="audio"><type>audio</type><status>sendonly</status></media>
-	// </endpoint></user>
-	// <user entity="abc123@atalk.org/jitsi-15b488a">
-	// <display-text>abc123@atalk.org</display-text>
-	// <endpoint entity="abc123@atalk.org/jitsi-15b488a"><status>alerting</status></endpoint>
-	// </user></users>
-	// </conference-info></iq>
+    // <iq to='abc123@atalk.org/jitsi-15b488a' id='WikRS-116' type='set'>
+    // <conference-info xmlns='urn:ietf:params:xml:ns:conference-info' version="1" entity="xmpp:leopard@atalk.org/atalk" sid="8bhihsq6md3g2">
+    // <conference-description/>
+    // <conference-state><user-count>2</user-count></conference-state>
+    // <users>
+    // <user entity="xmpp:leopard@atalk.org/atalk">
+    // <endpoint entity="xmpp:leopard@atalk.org/atalk">
+    // <status>connected</status>
+    // <media id="audio"><type>audio</type><status>sendonly</status></media>
+    // </endpoint></user>
+    // <user entity="abc123@atalk.org/jitsi-15b488a">
+    // <display-text>abc123@atalk.org</display-text>
+    // <endpoint entity="abc123@atalk.org/jitsi-15b488a"><status>alerting</status></endpoint>
+    // </user></users>
+    // </conference-info></iq>
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
+    {
+        xml.attribute(STATE_ATTR_NAME, state);
+        xml.attribute(ENTITY_ATTR_NAME, entity);
+        xml.attribute(VERSION_ATTR_NAME, version);
 
-	@Override
-	protected IQChildElementXmlStringBuilder getIQChildElementBuilder(
-		IQChildElementXmlStringBuilder xml)
-	{
+        // cmeng (2016/09/14): sid should not be null; Otherwise Smack Exception
+        xml.attribute(SID_ATTR_NAME, sid);
+        //xml.append('>');
+        xml.setEmptyElement();
+        return xml;
+    }
 
-		xml.optAttribute(VERSION_ATTR_NAME, Integer.toString(version));
-		xml.optAttribute(ENTITY_ATTR_NAME, entity);
-		xml.optAttribute(STATE_ATTR_NAME, state);
+    /**
+     * Get entity.
+     *
+     * @return entity
+     */
+    public String getEntity()
+    {
+        return entity;
+    }
 
-		// cmeng (2016/09/14): sid should not be null; Otherwise Smack Exception
-		xml.optAttribute(SID_ATTR_NAME, sid);
+    /**
+     * Get session ID.
+     *
+     * @return session ID
+     */
+    public String getSID()
+    {
+        return sid;
+    }
 
-		xml.append('>');
-		return xml;
-	}
+    /**
+     * Get state.
+     *
+     * @return state
+     */
+    public StateType getState()
+    {
+        return state;
+    }
 
-	/**
-	 * Get entity.
-	 *
-	 * @return entity
-	 */
-	public String getEntity()
-	{
-		return entity;
-	}
+    /**
+     * Get version.
+     *
+     * @return version
+     */
+    public int getVersion()
+    {
+        return version;
+    }
 
-	/**
-	 * Get session ID.
-	 *
-	 * @return session ID
-	 */
-	public String getSID()
-	{
-		return sid;
-	}
+    /**
+     * Set entity.
+     *
+     * @param entity entity
+     */
+    public void setEntity(String entity)
+    {
+        this.entity = entity;
+    }
 
-	/**
-	 * Get state.
-	 *
-	 * @return state
-	 */
-	public StateType getState()
-	{
-		return state;
-	}
+    /**
+     * Set session ID.
+     *
+     * @param sid session ID to set
+     */
+    public void setSID(String sid)
+    {
+        this.sid = sid;
+    }
 
-	/**
-	 * Get version.
-	 *
-	 * @return version
-	 */
-	public int getVersion()
-	{
-		return version;
-	}
+    /**
+     * Set state.
+     *
+     * @param state state to set
+     */
+    public void setState(StateType state)
+    {
+        this.state = state;
+    }
 
-	/**
-	 * Set entity.
-	 *
-	 * @param entity
-	 *        entity
-	 */
-	public void setEntity(String entity)
-	{
-		this.entity = entity;
-	}
-
-	/**
-	 * Set session ID.
-	 *
-	 * @param sid
-	 *        session ID to set
-	 */
-	public void setSID(String sid)
-	{
-		this.sid = sid;
-	}
-
-	/**
-	 * Set state.
-	 *
-	 * @param state
-	 *        state to set
-	 */
-	public void setState(StateType state)
-	{
-		this.state = state;
-	}
-
-	/**
-	 * Set version.
-	 *
-	 * @param version
-	 *        version
-	 */
-	public void setVersion(int version)
-	{
-		this.version = version;
-	}
+    /**
+     * Set version.
+     *
+     * @param version version
+     */
+    public void setVersion(int version)
+    {
+        this.version = version;
+    }
 }

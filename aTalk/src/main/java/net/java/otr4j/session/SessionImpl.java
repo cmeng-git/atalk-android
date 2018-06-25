@@ -6,6 +6,8 @@
 
 package net.java.otr4j.session;
 
+import android.text.TextUtils;
+
 import net.java.otr4j.*;
 import net.java.otr4j.crypto.OtrCryptoEngine;
 import net.java.otr4j.crypto.OtrCryptoEngineImpl;
@@ -306,6 +308,9 @@ public class SessionImpl implements Session
     public String transformReceiving(String msgText)
             throws OtrException
     {
+        if (TextUtils.isEmpty(msgText))
+            return null;
+
         OtrPolicy policy = getSessionPolicy();
         if (!policy.getAllowV1() && !policy.getAllowV2() && !policy.getAllowV3()) {
             logger.finest("Policy does not allow neither V1 nor V2 & V3, ignoring message.");

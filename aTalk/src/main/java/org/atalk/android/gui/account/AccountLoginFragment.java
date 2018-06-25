@@ -46,7 +46,6 @@ public class AccountLoginFragment extends OSGiFragment {
      * Contains all implementation specific properties that define the account.
      */
     protected Map<String, String> accountProperties = new HashMap<>();
-    ;
 
     /**
      * The listener parent Activity that will be notified when user enters login, password,

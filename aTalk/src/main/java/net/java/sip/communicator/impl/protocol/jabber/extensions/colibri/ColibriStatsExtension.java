@@ -7,6 +7,7 @@ package net.java.sip.communicator.impl.protocol.jabber.extensions.colibri;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketExtension;
 
+import org.atalk.util.Logger;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -23,15 +24,57 @@ import java.util.List;
 public class ColibriStatsExtension extends AbstractPacketExtension
 {
     /**
+     * The logger instance used by this class.
+     */
+    private final static Logger logger = Logger.getLogger(ColibriConferenceIQ.class);
+
+    /**
      * The XML element name of the Jitsi Videobridge <tt>stats</tt> extension.
      */
     public static final String ELEMENT_NAME = "stats";
 
     /**
-     * The XML COnferencing with LIghtweight BRIdging namespace of the Jitsi Videobridge
-     * <tt>stats</tt> extension.
+     * The XML COnferencing with LIghtweight BRIdging namespace of the Jitsi Videobridge <tt>stats</tt> extension.
      */
     public static final String NAMESPACE = "http://jitsi.org/protocol/colibri";
+
+    /**
+     * Tries to parse an object as an integer, returns null on failure.
+     *
+     * @param obj the object to parse.
+     */
+    private static Integer getInt(Object obj)
+    {
+        if (obj == null) {
+            return null;
+        }
+        if (obj instanceof Integer) {
+            return (Integer) obj;
+        }
+
+        String str = obj.toString();
+        try {
+            return Integer.valueOf(str);
+        } catch (NumberFormatException e) {
+            logger.error("Error parsing an int: " + obj);
+        }
+        return null;
+    }
+
+    /**
+     * Creates a deep copy of a {@link ColibriStatsExtension}.
+     *
+     * @param source the {@link ColibriStatsExtension} to copy.
+     * @return the copy.
+     */
+    public static ColibriStatsExtension clone(ColibriStatsExtension source)
+    {
+        ColibriStatsExtension destination = AbstractPacketExtension.clone(source);
+        for (Stat stat : source.getChildExtensionsOfType(Stat.class)) {
+            destination.addStat(Stat.clone(stat));
+        }
+        return destination;
+    }
 
     /**
      * Constructs new <tt>ColibriStatsExtension</tt>
@@ -42,13 +85,79 @@ public class ColibriStatsExtension extends AbstractPacketExtension
     }
 
     /**
-     * Adds stat extension.
+     * Adds a specific {@link Stat} instance to the list of stats.
      *
-     * @param stat the stat to be added
+     * @param stat the {@link Stat} instance to add.
      */
     public void addStat(Stat stat)
     {
         addChildExtension(stat);
+    }
+
+    /**
+     * Adds a new {@link Stat} instance with a specific name and a specific value to the list of stats.
+     *
+     * @param name the name.
+     * @param value the value.
+     */
+    public void addStat(String name, Object value)
+    {
+        addStat(new Stat(name, value));
+    }
+
+    /**
+     * @param name the name of the stat to match.
+     * @return the first {@link Stat}, if any, with a specific name.
+     */
+    public Stat getStat(String name)
+    {
+        for (Stat stat : getChildExtensionsOfType(Stat.class)) {
+            if (stat.getName().equals(name)) {
+                return stat;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param name the name of the stat to match.
+     * @return the value of the first {@link Stat}, if any, with a specific name.
+     */
+    public Object getValue(String name)
+    {
+        Stat stat = getStat(name);
+        return stat == null ? null : stat.getValue();
+    }
+
+    /**
+     * Tries to get the value of the stat with the given {@code name} as a {@link String}. If there is no stat
+     * with the given name, or it has no value, returns {@code null}. Otherwise, it returns the {@link String}
+     * representation of the value.
+     *
+     * @param name the name of the stat.
+     * @return a {@link String} which represents the value of the stat with the given {@code name}, or {@code null}.
+     */
+    public String getValueAsString(String name)
+    {
+        Object o = getValue(name);
+        if (o != null) {
+            return (o instanceof String) ? (String) o : o.toString();
+        }
+        return null;
+    }
+
+    /**
+     * Tries to get the value of the stat with the given {@code name} as an
+     * {@link Integer}. If there is no stat with the given name, or it has no
+     * value, returns {@code null}. Otherwise, it tries to parse the value as
+     * an {@link Integer} and returns the result (or {@code null} if parsing fails).
+     *
+     * @param name the name of the stat.
+     * @return an {@link Integer} representation of the value of the stat with the given {@code name}, or {@code null}.
+     */
+    public Integer getValueAsInt(String name)
+    {
+        return getInt(getValue(name));
     }
 
     @Override
@@ -142,7 +251,6 @@ public class ColibriStatsExtension extends AbstractPacketExtension
         public XmlStringBuilder toXML()
         {
             XmlStringBuilder xml = new XmlStringBuilder();
-
             String name = getName();
             Object value = getValue();
 

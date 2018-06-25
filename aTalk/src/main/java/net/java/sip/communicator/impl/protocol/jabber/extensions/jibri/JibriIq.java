@@ -205,8 +205,7 @@ public class JibriIq extends IQ
     /**
      * Returns the value of {@link #STREAM_ID_ATTR_NAME} attribute.
      *
-     * @return a <tt>String</tt> which contains the value of "stream id" attribute or <tt>null</tt>
-     * if empty.
+     * @return a <tt>String</tt> which contains the value of "stream id" attribute or <tt>null</tt> if empty.
      */
     public String getStreamId()
     {
@@ -227,8 +226,7 @@ public class JibriIq extends IQ
     /**
      * Sets the value for {@link #STREAM_ID_ATTR_NAME} attribute.
      *
-     * @param streamId a <tt>String</tt> for the stream id attribute or
-     * <tt>null</tt> to remove it from XML element.
+     * @param streamId a <tt>String</tt> for the stream id attribute or <tt>null</tt> to remove it from XML element.
      */
     public void setStreamId(String streamId)
     {
@@ -269,8 +267,7 @@ public class JibriIq extends IQ
     /**
      * Returns the value of {@link #ROOM_ATTR_NAME} attribute.
      *
-     * @return a <tt>String</tt> which contains the value of the room attribute
-     * or <tt>null</tt> if empty.
+     * @return a <tt>String</tt> which contains the value of the room attribute or <tt>null</tt> if empty.
      * @see #room
      */
     public EntityBareJid getRoom()
@@ -518,7 +515,6 @@ public class JibriIq extends IQ
         BUSY("busy"),
         ERROR("error"),
         UNDEFINED("undefined");
-
         private String name;
 
         FailureReason(String name)

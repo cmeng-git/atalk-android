@@ -173,7 +173,6 @@ public class StatePacketExtension extends AbstractPacketExtension
         for (ExtensionElement ext : getChildExtensions()) {
             xml.append(ext.toXML());
         }
-
         xml.closeElement(getElementName());
         return xml;
     }

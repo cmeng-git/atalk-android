@@ -18,7 +18,7 @@ public class StunPacketExtension extends AbstractPacketExtension
 	/**
 	 * The namespace.
 	 */
-	public static final String NAMESPACE = "stun";
+    public static final String NAMESPACE = "google:jingleinfo";
 
 	/**
 	 * The element name.

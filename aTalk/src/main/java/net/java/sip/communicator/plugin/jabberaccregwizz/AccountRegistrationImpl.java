@@ -6,6 +6,8 @@
  */
 package net.java.sip.communicator.plugin.jabberaccregwizz;
 
+import android.text.TextUtils;
+
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
 import net.java.sip.communicator.service.gui.WizardPage;
 import net.java.sip.communicator.service.protocol.AccountID;
@@ -16,7 +18,6 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
 import net.java.sip.communicator.util.Logger;
 
-import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.ServiceReference;
 
@@ -92,14 +93,10 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
             logger.trace("Preparing to install account for user " + userName);
         }
 
-        // Add additional parameters to accountProperties
-        accountProperties.put(ProtocolProviderFactory.IS_PREFERRED_PROTOCOL, Boolean.toString(isPreferredProtocol()));
-        accountProperties.put(ProtocolProviderFactory.PROTOCOL, getProtocol());
-
         // if server address is null, just extract it from userID even for when server override option is set
         if (accountProperties.get(ProtocolProviderFactory.SERVER_ADDRESS) == null) {
             String serverAddress = XmppStringUtils.parseDomain(userName);
-            if (!StringUtils.isNullOrEmpty(serverAddress))
+            if (!TextUtils.isEmpty(serverAddress))
                 accountProperties.put(ProtocolProviderFactory.SERVER_ADDRESS, XmppStringUtils.parseDomain(userName));
             else
                 throw new OperationFailedException("Should specify a server for user name "
@@ -110,12 +107,15 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
             accountProperties.put(ProtocolProviderFactory.SERVER_PORT, "5222");
         }
 
+        // Add additional parameters to accountProperties
+        accountProperties.put(ProtocolProviderFactory.IS_PREFERRED_PROTOCOL, Boolean.toString(isPreferredProtocol()));
+        accountProperties.put(ProtocolProviderFactory.PROTOCOL, getProtocol());
+
         String protocolIconPath = getProtocolIconPath();
         String accountIconPath = getAccountIconPath();
 
-        // process of merging existing mAccountProperties with STUN/JN cleannup into accountProperties for update
-        registration.storeProperties(providerFactory, userName, password, protocolIconPath,
-                accountIconPath, accountProperties);
+        registration.storeProperties(providerFactory, password, protocolIconPath, accountIconPath,
+                isModification(), accountProperties);
 
         // Process account modification and return with the existing protocolProvider
         if (isModification()) {
@@ -126,10 +126,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
 
         /* Process to create new account and return the newly created protocolProvider */
         try {
-            if (logger.isTraceEnabled()) {
-                logger.trace("Will install account for user " + userName
-                        + " with the following properties." + accountProperties);
-            }
+            logger.info("Installing new account created for user " + userName);
 
             AccountID accountID = providerFactory.installAccount(userName, accountProperties);
             ServiceReference serRef = providerFactory.getProviderForAccount(accountID);
@@ -163,8 +160,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
     /**
      * Indicates if this wizard is for the preferred protocol. Currently on support XMPP, so always true
      *
-     * @return <tt>true</tt> if this wizard corresponds to the preferred protocol, otherwise
-     * returns <tt>false</tt>
+     * @return <tt>true</tt> if this wizard corresponds to the preferred protocol, otherwise returns <tt>false</tt>
      */
     public boolean isPreferredProtocol()
     {
@@ -172,8 +168,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
 //        String prefWName = JabberAccountRegistrationActivator.getResources().
 //            getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
 //
-//        if(prefWName != null && prefWName.length() > 0
-//            && prefWName.equals(this.getClass().getName()))
+//        if(!TextUtils.isEmpty(prefWName) > 0 && prefWName.equals(this.getClass().getName()))
 //            return true;
 
         return true;

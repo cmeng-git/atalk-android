@@ -157,8 +157,7 @@ public interface NetworkAddressManagerService
      * @param password the password that we'd like to try when connecting to a TURN server (we
      * won't be using credentials in case we only have a STUN server).
      * @return A {@link StunCandidateHarvester} corresponding to the TURN or STUN server we
-     * discovered or <tt>null</tt> if there were no such records for the specified
-     * <tt>domainName</tt>
+     * discovered or <tt>null</tt> if there were no such records for the specified <tt>domainName</tt>
      */
     StunCandidateHarvester discoverStunServer(String domainName, byte[] userName, byte[] password);
 
@@ -173,8 +172,7 @@ public interface NetworkAddressManagerService
      * @return the newly created <tt>IceMediaStream</tt>.
      * @throws IllegalArgumentException if <tt>rtpPort</tt> is not a valid port number.
      * @throws IOException if an error occurs while the underlying resolver is using sockets.
-     * @throws BindException if we couldn't find a free port between within the default number of
-     * retries.
+     * @throws BindException if we couldn't find a free port between within the default number of retries.
      */
     IceMediaStream createIceStream(int rtpPort, String streamName, Agent agent)
             throws IllegalArgumentException, IOException, BindException;
@@ -191,8 +189,7 @@ public interface NetworkAddressManagerService
      * @throws IllegalArgumentException if <tt>portBase</tt> is not a valid port number. If
      * <tt>numComponents</tt> is neither 1 nor 2.
      * @throws IOException if an error occurs while the underlying resolver is using sockets.
-     * @throws BindException if we couldn't find a free port between within the default number of
-     * retries.
+     * @throws BindException if we couldn't find a free port between within the default number of retries.
      */
     IceMediaStream createIceStream(int numComponents, int portBase, String streamName, Agent agent)
             throws IllegalArgumentException, IOException, BindException;

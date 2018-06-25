@@ -31,8 +31,7 @@ import java.net.Socket;
  * <tt>TransportManager</tt>s are responsible for allocating ports, gathering local candidates and
  * managing ICE whenever we are using it.
  *
- * @param <U> the peer extension class like for example <tt>CallPeerSipImpl</tt> or
- * <tt>CallPeerJabberImpl</tt>
+ * @param <U> the peer extension class like for example <tt>CallPeerSipImpl</tt> or <tt>CallPeerJabberImpl</tt>
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
@@ -49,34 +48,27 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
      * The port tracker that we should use when binding generic media streams.
      *
      * Initialized by {@link #initializePortNumbers()}.
-     * </p>
      */
     private static final PortTracker defaultPortTracker = new PortTracker(5000, 6000);
 
     /**
      * The port tracker that we should use when binding video media streams.
      *
-     * Potentially initialized by {@link #initializePortNumbers()} if the necessary properties are
-     * set.
-     * </p>
+     * Potentially initialized by {@link #initializePortNumbers()} if the necessary properties are set.
      */
     private static PortTracker videoPortTracker;
 
     /**
      * The port tracker that we should use when binding data channels.
      *
-     * Potentially initialized by {@link #initializePortNumbers()} if the necessary properties are
-     * set.
-     * </p>
+     * Potentially initialized by {@link #initializePortNumbers()} if the necessary properties are set.
      */
     private static PortTracker dataPortTracker;
 
     /**
      * The port tracker that we should use when binding data media streams.
      *
-     * Potentially initialized by {@link #initializePortNumbers()} if the necessary properties are
-     * set.
-     * </p>
+     * Potentially initialized by {@link #initializePortNumbers()} if the necessary properties are set.
      */
     private static PortTracker audioPortTracker;
 
@@ -101,13 +93,11 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     private static final int DEFAULT_HOLE_PUNCH_PKT_COUNT = 3;
 
     /**
-     * Returns the port tracker that we are supposed to use when binding ports for the specified
-     * {@link MediaType}.
+     * Returns the port tracker that we are supposed to use when binding ports for the specified {@link MediaType}.
      *
      * @param mediaType the media type that we want to obtain the port tracker for. Use <tt>null</tt> to
      * obtain the default port tracker.
-     * @return the port tracker that we are supposed to use when binding ports for the specified
-     * {@link MediaType}.
+     * @return the port tracker that we are supposed to use when binding ports for the specified {@link MediaType}.
      */
     protected static PortTracker getPortTracker(MediaType mediaType)
     {
@@ -225,7 +215,11 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
         StreamConnector streamConnector = streamConnectors[index];
 
         if (streamConnector != null) {
-            closeStreamConnector(mediaType, streamConnector);
+            try {
+                closeStreamConnector(mediaType, streamConnector);
+            } catch (OperationFailedException e) {
+                logger.error("Failed to close stream connector for " + mediaType, e);
+            }
             streamConnectors[index] = null;
         }
     }
@@ -237,10 +231,10 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
      * the specified <tt>streamConnector</tt>.
      *
      * @param mediaType the <tt>MediaType</tt> associated with the specified <tt>streamConnector</tt>
-     * @param streamConnector the <tt>StreamConnector</tt> to be closed
-     * @see #closeStreamConnector(MediaType)
+     * @param streamConnector the <tt>StreamConnector</tt> to be closed @see #closeStreamConnector(MediaType)
      */
     protected void closeStreamConnector(MediaType mediaType, StreamConnector streamConnector)
+            throws OperationFailedException
     {
         /*
          * XXX The connected owns the sockets so it is important that it decides whether to close
@@ -253,8 +247,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
      * Creates a media <tt>StreamConnector</tt> for a stream of a specific <tt>MediaType</tt>. The
      * minimum and maximum of the media port boundaries are taken into account.
      *
-     * @param mediaType the <tt>MediaType</tt> of the stream for which a <tt>StreamConnector</tt> is to be
-     * created
+     * @param mediaType the <tt>MediaType</tt> of the stream for which a <tt>StreamConnector</tt> is to be created
      * @return a <tt>StreamConnector</tt> for the stream of the specified <tt>mediaType</tt>
      * @throws OperationFailedException if the binding of the sockets fails
      */
@@ -293,7 +286,6 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
 
         // make sure that next time we don't try to bind on occupied ports
         portTracker.setNextPort(rtcpSocket.getLocalPort() + 1);
-
         return new DefaultStreamConnector(rtpSocket, rtcpSocket);
     }
 
@@ -386,7 +378,6 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
 
         NetworkAddressManagerService nam = ProtocolMediaActivator.getNetworkAddressManagerService();
         InetAddress intendedDestination = getIntendedDestination(getCallPeer());
-
         return nam.getLocalHost(intendedDestination);
     }
 
@@ -395,8 +386,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
      * to open ports on NATs or and help RTP proxies latch onto our RTP ports.
      *
      * @param target <tt>MediaStreamTarget</tt>
-     * @param type the {@link MediaType} of the connector we'd like to send the
-     * hole punching packet through.
+     * @param type the {@link MediaType} of the connector we'd like to send the hole punching packet through.
      */
     public void sendHolePunchPacket(MediaStreamTarget target, MediaType type)
     {
@@ -501,8 +491,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Gets the SIP traffic class associated with a specific <tt>MediaType</tt> from the
-     * configuration.
+     * Gets the SIP traffic class associated with a specific <tt>MediaType</tt> from the configuration.
      *
      * @param type the <tt>MediaType</tt> to get the associated SIP traffic class of
      * @return the SIP traffic class associated with the specified <tt>MediaType</tt> or <tt>0</tt>
@@ -562,8 +551,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     /**
      * Returns the current state of ICE processing.
      *
-     * @return the current state of ICE processing if this transport manager is using ICE.
-     * Otherwise, returns null.
+     * @return the current state of ICE processing if this transport manager is using ICE. Otherwise, returns null.
      */
     public abstract String getICEState();
 
@@ -571,8 +559,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
      * Returns the ICE local host address.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
-     * @return the ICE local host address if this transport manager is using ICE. Otherwise, returns
-     * null.
+     * @return the ICE local host address if this transport manager is using ICE. Otherwise, returns null.
      */
     public abstract InetSocketAddress getICELocalHostAddress(String streamName);
 
@@ -580,8 +567,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
      * Returns the ICE remote host address.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
-     * @return the ICE remote host address if this transport manager is using ICE. Otherwise,
-     * returns null.
+     * @return the ICE remote host address if this transport manager is using ICE. Otherwise, returns null.
      */
     public abstract InetSocketAddress getICERemoteHostAddress(String streamName);
 
@@ -634,8 +620,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
      *
      * @param harvesterName The class name if the harvester.
      * @return The harvesting time (in ms) for the harvester given in parameter. 0 if this harvester
-     * does not exists, if the ICE agent is null, or if the agent has never harvested with
-     * this harvester.
+     * does not exists, if the ICE agent is null, or if the agent has never harvested with this harvester.
      */
     public abstract long getHarvestingTime(String harvesterName);
 
@@ -677,8 +662,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     /**
      * Creates the ICE agent that we would be using in this transport manager for all negotiation.
      *
-     * @return the ICE agent to use for all the ICE negotiation that this transport manager would be
-     * going through
+     * @return the ICE agent to use for all the ICE negotiation that this transport manager would be going through
      */
     protected Agent createIceAgent()
     {

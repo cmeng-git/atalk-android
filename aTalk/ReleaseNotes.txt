@@ -1,5 +1,17 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.4.1 (1041)
+Author:         cmeng
+Upload Date:	06/25/2018
+
+- Improve account login handling when persistent password saving option is not enabled
+- Fix inconsistency in STUN and JINGLE properties saving when modify or create new account
+- Fix intermittent call failure when transport-info and session-accept are received at the same time; due to binding of
+  mediaType to stream which is still being processed by transportManager.
+- Use ice4j-2.0.0-20180523.200045-9; work only with AWS disabled, otherwise hang in AWS EC2 conn.getContent()
+- Update all xmpp extension files and Cleanup protocol.jabber.impl classes files per jitsi-smack dated 20180616
+
+=========================================================================
 Version:		1.4.0 (1040)
 Author:         cmeng
 Upload Date:	06/16/2018

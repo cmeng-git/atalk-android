@@ -5,12 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.coin;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 
 /**
  * Parser for StatePacketExtension.
@@ -29,7 +25,8 @@ public class StateProvider extends ExtensionElementProvider<StatePacketExtension
      * @return a new {@link StatePacketExtension} instance.
      * @throws java.lang.Exception if an error occurs parsing the XML.
      */
-    public StatePacketExtension parseExtension(XmlPullParser parser)
+    @Override
+    public StatePacketExtension parse(XmlPullParser parser, int depth)
             throws Exception
     {
         boolean done = false;
@@ -60,13 +57,5 @@ public class StateProvider extends ExtensionElementProvider<StatePacketExtension
             }
         }
         return ext;
-    }
-
-    @Override
-    public StatePacketExtension parse(XmlPullParser paramXmlPullParser, int paramInt)
-            throws XmlPullParserException, IOException, SmackException
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

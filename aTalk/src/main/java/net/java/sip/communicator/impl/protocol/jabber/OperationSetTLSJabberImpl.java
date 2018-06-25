@@ -18,7 +18,8 @@ import net.java.sip.communicator.service.protocol.OperationSetTLS;
 
 import java.security.cert.Certificate;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSocket;
 
 /**
  * An implementation of the OperationSetTLS for the Jabber protocol.
@@ -27,66 +28,65 @@ import javax.net.ssl.*;
  */
 public class OperationSetTLSJabberImpl implements OperationSetTLS
 {
-	private final ProtocolProviderServiceJabberImpl jabberService;
+    private final ProtocolProviderServiceJabberImpl jabberService;
 
-	public OperationSetTLSJabberImpl(ProtocolProviderServiceJabberImpl jabberService)
-	{
-		this.jabberService = jabberService;
-	}
+    public OperationSetTLSJabberImpl(ProtocolProviderServiceJabberImpl jabberService)
+    {
+        this.jabberService = jabberService;
+    }
 
-	/**
-	 * @see OperationSetTLS#getCipherSuite()
-	 */
-	@Override
-	public String getCipherSuite()
-	{
-		final String result;
-		final SSLSocket socket = jabberService.getSSLSocket();
-		if (socket == null) {
-			result = null;
-		}
-		else {
-			result = socket.getSession().getCipherSuite();
-		}
-		return result;
-	}
+    /**
+     * @see OperationSetTLS#getCipherSuite()
+     */
+    @Override
+    public String getCipherSuite()
+    {
+        final String result;
+        final SSLSocket socket = jabberService.getSSLSocket();
+        if (socket == null) {
+            result = null;
+        }
+        else {
+            result = socket.getSession().getCipherSuite();
+        }
+        return result;
+    }
 
-	/**
-	 * @see OperationSetTLS#getProtocol()
-	 */
-	@Override
-	public String getProtocol()
-	{
-		final String result;
-		jabberService.getConnection();
+    /**
+     * @see OperationSetTLS#getProtocol()
+     */
+    @Override
+    public String getProtocol()
+    {
+        final String result;
+        // jabberService.getConnection();
 
-		final SSLSocket socket = jabberService.getSSLSocket();
-		if (socket == null) {
-			result = null;
-		}
-		else {
-			result = socket.getSession().getProtocol();
-		}
-		return result;
-	}
+        final SSLSocket socket = jabberService.getSSLSocket();
+        if (socket == null) {
+            result = null;
+        }
+        else {
+            result = socket.getSession().getProtocol();
+        }
+        return result;
+    }
 
-	/**
-	 * @see OperationSetTLS#getServerCertificates()
-	 */
-	@Override
-	public Certificate[] getServerCertificates()
-	{
-		Certificate[] result = null;
-		final SSLSocket socket = jabberService.getSSLSocket();
-		if (socket != null) {
-			try {
-				result = socket.getSession().getPeerCertificates();
-			}
-			catch (SSLPeerUnverifiedException ex) // NOPMD
-			{
-				ex.printStackTrace();
-			}
-		}
-		return result;
-	}
+    /**
+     * @see OperationSetTLS#getServerCertificates()
+     */
+    @Override
+    public Certificate[] getServerCertificates()
+    {
+        Certificate[] result = null;
+        final SSLSocket socket = jabberService.getSSLSocket();
+        if (socket != null) {
+            try {
+                result = socket.getSession().getPeerCertificates();
+            } catch (SSLPeerUnverifiedException ex) // NOPMD
+            {
+                ex.printStackTrace();
+            }
+        }
+        return result;
+    }
 }

@@ -6,13 +6,8 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import org.ice4j.TransportAddress;
-import org.ice4j.ice.CandidateExtendedType;
-import org.ice4j.ice.CandidateType;
-import org.ice4j.ice.Component;
-import org.ice4j.ice.LocalCandidate;
-import org.ice4j.socket.IceSocketWrapper;
-import org.ice4j.socket.IceUdpSocketWrapper;
-import org.ice4j.socket.MultiplexingDatagramSocket;
+import org.ice4j.ice.*;
+import org.ice4j.socket.*;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.net.SocketException;
@@ -58,10 +53,9 @@ public class JingleNodesCandidate extends LocalCandidate
 
     /**
      * Gets the <tt>JingleNodesCandidateDatagramSocket</tt> of this <tt>JingleNodesCandidate</tt>.
-     * <p>
+     *
      * <b>Note</b>: The method is part of the internal API of <tt>RelayedCandidate</tt> and
      * <tt>TurnCandidateHarvest</tt> and is not intended for public use.
-     * </p>
      *
      * @return the <tt>RelayedCandidateDatagramSocket</tt> of this <tt>RelayedCandidate</tt>
      */
@@ -84,8 +78,7 @@ public class JingleNodesCandidate extends LocalCandidate
      * @return the <tt>DatagramSocket</tt> associated with this <tt>Candidate</tt>
      */
     @Override
-    public IceSocketWrapper getIceSocketWrapper()
-    // protected IceSocketWrapper getCandidateIceSocketWrapper()
+    protected IceSocketWrapper getCandidateIceSocketWrapper()
     {
         if (socket == null) {
             try {

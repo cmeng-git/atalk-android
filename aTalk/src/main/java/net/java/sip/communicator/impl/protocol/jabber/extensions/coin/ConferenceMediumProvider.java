@@ -5,12 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.coin;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 
 /**
  * Parser for ConferenceMediumProvider.
@@ -33,7 +29,7 @@ public class ConferenceMediumProvider extends ExtensionElementProvider<Conferenc
      */
     @Override
     public ConferenceMediumPacketExtension parse(XmlPullParser parser, int depth)
-            throws XmlPullParserException, IOException, SmackException
+            throws Exception
     {
         boolean done = false;
         int eventType;
@@ -41,37 +37,30 @@ public class ConferenceMediumProvider extends ExtensionElementProvider<Conferenc
         String label = parser.getAttributeValue("", ConferenceMediumPacketExtension.LABEL_ATTR_NAME);
 
         if (label == null) {
-            try {
-                throw new Exception("Coin medium element must contain entity attribute");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            throw new Exception("Coin medium element must contain entity attribute");
         }
 
         ConferenceMediumPacketExtension ext = new ConferenceMediumPacketExtension("entry", label);
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
-            try {
-
-                if (eventType == XmlPullParser.START_TAG) {
-                    if (elementName.equals(MediaPacketExtension.ELEMENT_DISPLAY_TEXT)) {
+            if (eventType == XmlPullParser.START_TAG) {
+                switch (elementName) {
+                    case MediaPacketExtension.ELEMENT_DISPLAY_TEXT:
                         ext.setDisplayText(CoinIQProvider.parseText(parser));
-                    }
-                    else if (elementName.equals(MediaPacketExtension.ELEMENT_STATUS)) {
+                        break;
+                    case MediaPacketExtension.ELEMENT_STATUS:
                         ext.setStatus(CoinIQProvider.parseText(parser));
-                    }
-                    else if (elementName.equals(MediaPacketExtension.ELEMENT_TYPE)) {
+                        break;
+                    case MediaPacketExtension.ELEMENT_TYPE:
                         ext.setType(CoinIQProvider.parseText(parser));
-                    }
+                        break;
                 }
-                else if (eventType == XmlPullParser.END_TAG) {
-                    if (parser.getName().equals(ConferenceMediumPacketExtension.ELEMENT_NAME)) {
-                        done = true;
-                    }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals(ConferenceMediumPacketExtension.ELEMENT_NAME)) {
+                    done = true;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         return ext;

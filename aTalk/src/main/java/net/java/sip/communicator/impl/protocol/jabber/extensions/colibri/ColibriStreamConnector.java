@@ -58,8 +58,7 @@ public class ColibriStreamConnector extends StreamConnectorDelegate<StreamConnec
     {
         try {
             /*
-             * Close the shared StreamConnector because it is clear that no TrasportManager is using
-             * it.
+             * Close the shared StreamConnector because it is clear that no TrasportManager is using it.
              */
             super.close();
         } finally {

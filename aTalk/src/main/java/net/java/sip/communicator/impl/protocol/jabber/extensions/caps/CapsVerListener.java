@@ -13,8 +13,7 @@ package net.java.sip.communicator.impl.protocol.jabber.extensions.caps;
 public interface CapsVerListener
 {
     /**
-     * Called whenever our <tt>ver</tt> string changes and we need to regenerate our presence
-     * information.
+     * Called whenever our <tt>ver</tt> string changes and we need to regenerate our presence information.
      *
      * @param capsVer the new version value.
      */

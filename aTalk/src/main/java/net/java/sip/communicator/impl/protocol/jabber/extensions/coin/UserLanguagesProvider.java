@@ -17,6 +17,7 @@ import java.io.IOException;
  * Parser for UserLanguagesPacketExtension.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public class UserLanguagesProvider extends ExtensionElementProvider<ExtensionElement>
 {
@@ -31,7 +32,8 @@ public class UserLanguagesProvider extends ExtensionElementProvider<ExtensionEle
      * @return a new {@link UserLanguagesPacketExtension} instance.
      * @throws java.lang.Exception if an error occurs parsing the XML.
      */
-    public ExtensionElement parseExtension(XmlPullParser parser)
+    @Override
+    public ExtensionElement parse(XmlPullParser parser, int depth)
             throws Exception
     {
         boolean done = false;
@@ -55,14 +57,6 @@ public class UserLanguagesProvider extends ExtensionElementProvider<ExtensionEle
                 }
             }
         }
-
         return ext;
-    }
-
-    @Override
-    public ExtensionElement parse(XmlPullParser paramXmlPullParser, int paramInt)
-            throws XmlPullParserException, IOException, SmackException
-    {
-        return null;
     }
 }

@@ -19,20 +19,11 @@ package org.atalk.android.gui.call.telephony;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.text.*;
+import android.view.*;
+import android.widget.*;
 
-import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.OperationSet;
-import net.java.sip.communicator.service.protocol.OperationSetPresence;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.account.AccountUtils;
@@ -47,15 +38,13 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl.GOOGLE_VOICE_DOMAIN;
 
 /**
- * This activity allows user to make external phone call via a selected provider.
- * The server must support ext phone call via gateway
+ * This activity allows user to make pbx phone call via the selected service gateway.
+ * The server must support pbx phone call via gateway i.e.
  * <feature var='urn:xmpp:jingle:apps:rtp:audio'/>
  * <feature var='urn:xmpp:jingle:apps:rtp:video'/>
  *
@@ -67,13 +56,26 @@ public class TelephonyFragment extends OSGiFragment
     private final static Logger logger = Logger.getLogger(TelephonyFragment.class);
 
     private static String mLastJid = null;
+    private static String mDomainJid;
 
     private Activity mActivity;
     private Spinner accountsSpinner;
     private RecipientSelectView vRecipient;
     private TextView vTelephonyDomain;
 
-    private ProtocolProviderServiceJabberImpl mPPS;
+    private ProtocolProviderService mPPS;
+
+    public TelephonyFragment()
+    {
+        mDomainJid = null;
+    }
+
+    public static TelephonyFragment newInstance(String domainJid)
+    {
+        TelephonyFragment telephonyFragment = new TelephonyFragment();
+        mDomainJid = domainJid;
+        return telephonyFragment;
+    }
 
     @Override
     public void onAttach(Activity activity)
@@ -89,6 +91,27 @@ public class TelephonyFragment extends OSGiFragment
         View content = inflater.inflate(R.layout.telephony, container, false);
 
         vRecipient = content.findViewById(R.id.address);
+        vRecipient.addTextChangedListener(new TextWatcher()
+        {
+            public void afterTextChanged(Editable s)
+            {
+                if (!vRecipient.isEmpty()) {
+                    mLastJid = vRecipient.getAddresses()[0].getAddress();
+                }
+                // to prevent device rotate from changing it to null - not working
+                else {
+                    mLastJid = vRecipient.getText().toString();
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+            }
+        });
         if (mLastJid != null)
             vRecipient.setText(mLastJid);
 
@@ -96,12 +119,13 @@ public class TelephonyFragment extends OSGiFragment
 
         accountsSpinner = content.findViewById(R.id.selectAccountSpinner);
         accountsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+
         {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
             {
                 Account selectedAcc = (Account) accountsSpinner.getSelectedItem();
-                mPPS = (ProtocolProviderServiceJabberImpl) selectedAcc.getProtocolProvider();
+                mPPS = selectedAcc.getProtocolProvider();
                 JabberAccountID accountJID = (JabberAccountID) mPPS.getAccountID();
                 String telephonyDomain = accountJID.getOverridePhoneSuffix();
                 if (TextUtils.isEmpty(telephonyDomain)) {
@@ -118,6 +142,7 @@ public class TelephonyFragment extends OSGiFragment
                     else
                         telephonyDomain = accountJID.getService();
                 }
+                mDomainJid = telephonyDomain;
                 vTelephonyDomain.setText(telephonyDomain);
             }
 
@@ -126,10 +151,10 @@ public class TelephonyFragment extends OSGiFragment
             {
                 // your code here
             }
-
         });
 
         initAccountSpinner();
+
         initButton(content);
         return content;
     }
@@ -147,15 +172,15 @@ public class TelephonyFragment extends OSGiFragment
         for (ProtocolProviderService provider : providers) {
             OperationSet opSet = provider.getOperationSet(OperationSetPresence.class);
             if (opSet != null) {
-                AccountID account = provider.getAccountID();
-                accounts.add(account);
-                if ((selectedIdx == -1) && account.isPreferredProvider()) {
-                    selectedIdx = idx;
+                AccountID accountID = provider.getAccountID();
+                accounts.add(accountID);
+                if ((selectedIdx == -1) && (mDomainJid != null)) {
+                    if (mDomainJid.contains(accountID.getService()))
+                        selectedIdx = idx;
                 }
                 idx++;
             }
         }
-
         AccountsListAdapter accountsAdapter = new AccountsListAdapter(mActivity,
                 R.layout.select_account_row, R.layout.select_account_dropdown, accounts, true);
         accountsSpinner.setAdapter(accountsAdapter);
@@ -222,6 +247,7 @@ public class TelephonyFragment extends OSGiFragment
             return;
         }
 
+        mLastJid = recipient;
         if (recipient.contains("@")) {
             try {
                 Jid phoneJid = JidCreate.from(recipient);
@@ -235,7 +261,6 @@ public class TelephonyFragment extends OSGiFragment
             recipient += "@" + telephonyDomain;
         }
 
-        mLastJid = recipient;
         AndroidCallUtil.createCall(mActivity, recipient, mPPS, videoCall);
         closeFragment();
     }

@@ -5,22 +5,41 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CandidatePacketExtension;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CandidateType;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.IceUdpTransportPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RtpDescriptionPacketExtension;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.SecurityAuthority;
+import net.java.sip.communicator.service.protocol.StunServerDescriptor;
+import net.java.sip.communicator.service.protocol.UserCredentials;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.PortTracker;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.DefaultStreamConnector;
+import org.atalk.service.neomedia.MediaStreamTarget;
+import org.atalk.service.neomedia.MediaType;
+import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.util.StringUtils;
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
-import org.ice4j.ice.*;
-import org.ice4j.ice.harvest.*;
+import org.ice4j.ice.Agent;
+import org.ice4j.ice.Candidate;
+import org.ice4j.ice.CandidatePair;
+import org.ice4j.ice.Component;
+import org.ice4j.ice.IceMediaStream;
+import org.ice4j.ice.IceProcessingState;
+import org.ice4j.ice.LocalCandidate;
+import org.ice4j.ice.RemoteCandidate;
+import org.ice4j.ice.harvest.StunCandidateHarvester;
+import org.ice4j.ice.harvest.TurnCandidateHarvester;
+import org.ice4j.ice.harvest.UPNPHarvester;
 import org.ice4j.security.LongTermCredential;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.xmpp.jnodes.smack.SmackServiceNode;
@@ -29,7 +48,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A {@link TransportManagerJabberImpl} implementation that would use ICE for candidate management.
@@ -55,6 +79,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Default STUN server port.
      */
     protected static final int DEFAULT_STUN_SERVER_PORT = 3478;
+
     /**
      * The ICE <tt>Component</tt> IDs in their common order used, for example, by
      * <tt>DefaultStreamConnector</tt>, <tt>MediaStreamTarget</tt>.
@@ -71,7 +96,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     protected final Agent iceAgent;
 
-
     /**
      * Creates a new instance of this transport manager, binding it to the specified peer.
      *
@@ -87,8 +111,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     /**
      * Creates the ICE agent that we would be using in this transport manager for all negotiation.
      *
-     * @return the ICE agent to use for all the ICE negotiation that this transport manager would be
-     * going through
+     * @return the ICE agent to use for all the ICE negotiation that this transport manager would be going through
      */
     protected Agent createIceAgent()
     {
@@ -344,8 +367,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
          * and its MediaStreamTarget may be determined only by the TransportManager which is
          * establishing the connectivity with the Jitsi Videobridge server (as opposed to a CallPeer).
          */
-        TransportManagerJabberImpl delegate = findTransportManagerEstablishingConnectivityWithJitsiVideobridge();
 
+        TransportManagerJabberImpl delegate = findTransportManagerEstablishingConnectivityWithJitsiVideobridge();
         if ((delegate != null) && (delegate != this))
             return delegate.getStreamTarget(mediaType);
 
@@ -543,7 +566,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             packet.setRelAddr(relAddr.getHostAddress());
             packet.setRelPort(relAddr.getPort());
         }
-
         /*
          * FIXME The XML schema of XEP-0176: Jingle ICE-UDP Transport Method specifies the network
          * attribute as required.
@@ -662,6 +684,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     @Override
     public synchronized boolean startConnectivityEstablishment(Iterable<ContentPacketExtension> remote)
+            throws OperationFailedException
     {
         Map<String, IceUdpTransportPacketExtension> map = new LinkedHashMap<>();
         for (ContentPacketExtension content : remote) {
@@ -683,7 +706,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 map.put(media, transport);
             }
         }
-
         /*
          * When the local peer is organizing a telephony conference using the Jitsi Videobridge
          * server-side technology, it is establishing connectivity by using information from a
@@ -715,7 +737,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
          * this is a best effort.
          */
         boolean iceAgentStateIsRunning = IceProcessingState.RUNNING.equals(iceAgent.getState());
-
         if (iceAgentStateIsRunning && logger.isInfoEnabled())
             logger.info("Update ICE remote candidates");
 
@@ -834,22 +855,15 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             throws OperationFailedException
     {
         TransportManagerJabberImpl delegate = findTransportManagerEstablishingConnectivityWithJitsiVideobridge();
-
         if ((delegate == null) || (delegate == this)) {
             final Object iceProcessingStateSyncRoot = new Object();
             PropertyChangeListener stateChangeListener = new PropertyChangeListener()
             {
                 public void propertyChange(PropertyChangeEvent evt)
                 {
-                    Object newValue = evt.getNewValue();
-
-                    if (IceProcessingState.COMPLETED.equals(newValue)
-                            || IceProcessingState.FAILED.equals(newValue)
-                            || IceProcessingState.TERMINATED.equals(newValue)) {
-                        if (logger.isTraceEnabled())
-                            logger.trace("ICE " + newValue);
-
-                        Agent iceAgent = (Agent) evt.getSource();
+                    Agent iceAgent = (Agent) evt.getSource();
+                    if (iceAgent.isOver()) {
+                        logger.warn("Current IceProcessingState: " + evt.getNewValue());
                         iceAgent.removeStateChangeListener(this);
                         if (iceAgent == IceUdpTransportManager.this.iceAgent) {
                             synchronized (iceProcessingStateSyncRoot) {
@@ -859,30 +873,34 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                     }
                 }
             };
-
             iceAgent.addStateChangeListener(stateChangeListener);
 
-            // Wait for the connectivity checks to finish if they have been started.
+            /*
+             * Wait for the ICE connectivity checks to complete if they have started or
+             * waiting for transport info with max TOT of 5S.
+             */
             boolean interrupted = false;
-
+            int maxWaitTimer = 5; // in seconds
             synchronized (iceProcessingStateSyncRoot) {
-                while (IceProcessingState.RUNNING.equals(iceAgent.getState())) {
+                while (IceProcessingState.RUNNING.equals(iceAgent.getState())
+                        || IceProcessingState.WAITING.equals(iceAgent.getState())) {
                     try {
                         iceProcessingStateSyncRoot.wait(1000);
                     } catch (InterruptedException ie) {
                         interrupted = true;
                     }
+                    // Break the loop if maxWaitTimer timeout
+                    if (maxWaitTimer-- < 0)
+                        break;
                 }
             }
             if (interrupted)
                 Thread.currentThread().interrupt();
-
             /*
              * Make sure stateChangeListener is removed from iceAgent in case its
              * #propertyChange(PropertyChangeEvent) has never been executed.
              */
             iceAgent.removeStateChangeListener(stateChangeListener);
-
             /* check the state of ICE processing and throw exception if failed */
             if (IceProcessingState.FAILED.equals(iceAgent.getState())) {
                 String msg = aTalkApp.getResString(R.string.service_protocol_ICE_FAILED);
@@ -902,13 +920,11 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             for (ContentPacketExtension content : cpeList) {
                 IceUdpTransportPacketExtension transport
                         = content.getFirstChildOfType(IceUdpTransportPacketExtension.class);
-
                 if (transport != null) {
                     for (CandidatePacketExtension candidate : transport.getCandidateList())
                         transport.removeCandidate(candidate);
 
                     Collection<?> childExtensions = transport.getChildExtensionsOfType(CandidatePacketExtension.class);
-
                     if ((childExtensions == null) || childExtensions.isEmpty()) {
                         transport.removeAttribute(IceUdpTransportPacketExtension.UFRAG_ATTR_NAME);
                         transport.removeAttribute(IceUdpTransportPacketExtension.PWD_ATTR_NAME);

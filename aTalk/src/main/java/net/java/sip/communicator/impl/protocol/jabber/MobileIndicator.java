@@ -8,9 +8,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.protocol.ContactResource;
 import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
+import net.java.sip.communicator.service.protocol.event.*;
 
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
@@ -18,10 +16,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Handles all the logic about mobile indicator for contacts. Has to modes, the first is searching
@@ -124,7 +119,6 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
                 continue;
 
             int priority = res.getPriority();
-
             if (priority >= highestPriority) {
                 if (highestPriority != priority)
                     highestPriorityResources.clear();
@@ -209,7 +203,7 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
         int currentMostConnectedStatus = 0;
         List<ContactResource> mostAvailableResources = new ArrayList<>();
 
-        for (Map.Entry<Jid, ContactResourceJabberImpl> resEntry : contact.getResourcesMap().entrySet()) {
+        for (Map.Entry<FullJid, ContactResourceJabberImpl> resEntry : contact.getResourcesMap().entrySet()) {
             ContactResourceJabberImpl res = resEntry.getValue();
             if (!res.getPresenceStatus().isOnline())
                 continue;
@@ -225,9 +219,7 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
 
             int status = res.getPresenceStatus().getStatus();
             if (status > currentMostConnectedStatus) {
-                if (currentMostConnectedStatus != status)
-                    mostAvailableResources.clear();
-
+                mostAvailableResources.clear();
                 currentMostConnectedStatus = status;
                 mostAvailableResources.add(res);
             }

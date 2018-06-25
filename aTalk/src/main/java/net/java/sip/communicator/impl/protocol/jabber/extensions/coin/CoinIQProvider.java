@@ -7,14 +7,11 @@ package net.java.sip.communicator.impl.protocol.jabber.extensions.coin;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultPacketExtensionProvider;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 
 /**
  * An implementation of a Coin IQ provider that parses incoming Coin IQs.
@@ -86,30 +83,28 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
      *
      * @param parser XML parser
      * @return <tt>CoinIQ</tt>
-     * @throws XmlPullParserException, IOException, SmackException
-     * if something goes wrong during parsing
+     * @throws Exception if something goes wrong during parsing
      */
 
     @Override
     public CoinIQ parse(XmlPullParser parser, int initialDepth)
-            throws XmlPullParserException, IOException, SmackException
+            throws Exception
     {
         CoinIQ coinIQ = new CoinIQ();
 
         String entity = parser.getAttributeValue("", CoinIQ.ENTITY_ATTR_NAME);
-        StateType state = StateType.full;
-        // String stateStr = parser.getAttributeValue("", EndpointPacketExtension.STATE_ATTR_NAME);
-        String stateStr = parser.getAttributeValue("", CoinIQ.STATE_ATTR_NAME);
         String version = parser.getAttributeValue("", CoinIQ.VERSION_ATTR_NAME);
         String sid = parser.getAttributeValue("", CoinIQ.SID_ATTR_NAME);
 
+        StateType state = StateType.full;
+        String stateStr = parser.getAttributeValue("", CoinIQ.STATE_ATTR_NAME);
         if (stateStr != null) {
             state = StateType.parseString(stateStr);
         }
 
         coinIQ.setEntity(entity);
-        coinIQ.setState(state);
         coinIQ.setVersion(Integer.parseInt(version));
+        coinIQ.setState(state);
         coinIQ.setSID(sid);
 
         // Now go on and parse the jingle element's content.
@@ -122,37 +117,32 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
             elementName = parser.getName();
 
             if (eventType == XmlPullParser.START_TAG) {
-                try {
-                    switch (elementName) {
-                        case DescriptionPacketExtension.ELEMENT_NAME: {
-                            ExtensionElement childExtension = descriptionProvider.parse(parser);
-                            coinIQ.addExtension(childExtension);
-                            break;
-                        }
-                        case StatePacketExtension.ELEMENT_NAME: {
-                            ExtensionElement childExtension = stateProvider.parseExtension(parser);
-                            coinIQ.addExtension(childExtension);
-                            break;
-                        }
-                        case UsersPacketExtension.ELEMENT_NAME: {
-                            ExtensionElement childExtension = usersProvider.parse(parser);
-                            coinIQ.addExtension(childExtension);
-                            break;
-                        }
-                        case URIsPacketExtension.ELEMENT_NAME: {
-                            ExtensionElement childExtension = urisProvider.parse(parser);
-                            coinIQ.addExtension(childExtension);
-                            break;
-                        }
-                        case SidebarsByValPacketExtension.ELEMENT_NAME: {
-                            ExtensionElement childExtension = sidebarsByValProvider.parse(parser);
-                            coinIQ.addExtension(childExtension);
-                            break;
-                        }
+                switch (elementName) {
+                    case DescriptionPacketExtension.ELEMENT_NAME: {
+                        ExtensionElement childExtension = descriptionProvider.parse(parser);
+                        coinIQ.addExtension(childExtension);
+                        break;
                     }
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    case UsersPacketExtension.ELEMENT_NAME: {
+                        ExtensionElement childExtension = usersProvider.parse(parser);
+                        coinIQ.addExtension(childExtension);
+                        break;
+                    }
+                    case StatePacketExtension.ELEMENT_NAME: {
+                        ExtensionElement childExtension = stateProvider.parse(parser, 0);
+                        coinIQ.addExtension(childExtension);
+                        break;
+                    }
+                    case URIsPacketExtension.ELEMENT_NAME: {
+                        ExtensionElement childExtension = urisProvider.parse(parser);
+                        coinIQ.addExtension(childExtension);
+                        break;
+                    }
+                    case SidebarsByValPacketExtension.ELEMENT_NAME: {
+                        ExtensionElement childExtension = sidebarsByValProvider.parse(parser);
+                        coinIQ.addExtension(childExtension);
+                        break;
+                    }
                 }
             }
             if (eventType == XmlPullParser.END_TAG) {

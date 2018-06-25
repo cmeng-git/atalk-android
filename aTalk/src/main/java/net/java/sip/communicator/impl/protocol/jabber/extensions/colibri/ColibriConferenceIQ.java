@@ -6,26 +6,16 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.colibri;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.IceUdpTransportPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ParameterPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.PayloadTypePacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RTPHdrExtPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.SourceGroupPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 
+import org.atalk.android.util.ApiLib;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.Logger;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.packet.*;
+import org.jxmpp.jid.parts.Localpart;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implements the Jitsi Videobridge <tt>conference</tt> IQ within the COnferencing with LIghtweight
@@ -44,8 +34,7 @@ public class ColibriConferenceIQ extends IQ
     public static final String ELEMENT = "conference";
 
     /**
-     * The XML COnferencing with LIghtweight BRIdging namespace of the Jitsi Videobridge
-     * <tt>conference</tt> IQ.
+     * The XML COnferencing with LIghtweight BRIdging namespace of the Jitsi Videobridge <tt>conference</tt> IQ.
      */
     public static final String NAMESPACE = "http://jitsi.org/protocol/colibri";
 
@@ -84,9 +73,9 @@ public class ColibriConferenceIQ extends IQ
     public static final int[] NO_SSRCS = new int[0];
 
     /**
-     * The list of {@link ChannelBundle}s included into this <tt>conference</tt> IQ.
+     * The {@link ChannelBundle}s included in this {@link ColibriConferenceIQ}, mapped by their ID.
      */
-    private final List<ChannelBundle> channelBundles = new LinkedList<>();
+    private final Map<String, ChannelBundle> channelBundles = new ConcurrentHashMap<>();
 
     /**
      * The list of {@link Content}s included into this <tt>conference</tt> IQ.
@@ -94,9 +83,9 @@ public class ColibriConferenceIQ extends IQ
     private final List<Content> contents = new LinkedList<>();
 
     /**
-     * The list of <tt>Endpoint</tt>s included into this <tt>conference</tt> IQ.
+     * The {@link Endpoint}s included in this {@link ColibriConferenceIQ}, mapped by their ID.
      */
-    private final List<Endpoint> endpoints = new LinkedList<>();
+    private final Map<String, Endpoint> endpoints = new ConcurrentHashMap<>();
 
     /**
      * The ID of the conference represented by this IQ.
@@ -104,8 +93,7 @@ public class ColibriConferenceIQ extends IQ
     private String id;
 
     /**
-     * The ID of the global conference to which the conference represented by
-     * this {@link ColibriConferenceIQ} belongs.
+     * The ID of the global conference to which the conference represented by this {@link ColibriConferenceIQ} belongs.
      */
     private String gid;
 
@@ -124,7 +112,7 @@ public class ColibriConferenceIQ extends IQ
     /**
      * World readable name for the conference.
      */
-    private String name;
+    private Localpart name;
 
     /**
      * Initializes a new <tt>ColibriConferenceIQ</tt> instance.
@@ -144,16 +132,17 @@ public class ColibriConferenceIQ extends IQ
      */
     public static IQ createGracefulShutdownErrorResponse(final IQ request)
     {
-        ExtensionElement errExtension = new GracefulShutdown();
-        final XMPPError error = new XMPPError(XMPPError.Condition.service_unavailable, errExtension);
+        final XMPPError error = XMPPError.getBuilder()
+            .setCondition(XMPPError.Condition.service_unavailable)
+            .setType(XMPPError.Type.CANCEL)
+            .addExtension(new GracefulShutdown())
+            .build();
 
         final IQ result = IQ.createErrorResponse(request, error);
         result.setType(Type.error);
         result.setStanzaId(request.getStanzaId());
         result.setFrom(request.getTo());
         result.setTo(request.getFrom());
-        result.setError(error);
-
         return result;
     }
 
@@ -163,12 +152,12 @@ public class ColibriConferenceIQ extends IQ
      *
      * @param channelBundle the <tt>ChannelBundle</tt> to add.
      */
-    public boolean addChannelBundle(ChannelBundle channelBundle)
+    public ChannelBundle addChannelBundle(ChannelBundle channelBundle)
     {
-        if (channelBundle == null)
-            throw new NullPointerException("channelBundle");
+        ApiLib.requireNonNull(channelBundle, "channelBundle");
+        String id = ApiLib.requireNonNull(channelBundle.getId(), "channelBundle ID");
 
-        return !channelBundles.contains(channelBundle) && channelBundles.add(channelBundle);
+        return channelBundles.put(id, channelBundle);
     }
 
     /**
@@ -178,15 +167,12 @@ public class ColibriConferenceIQ extends IQ
      * @param content the <tt>Content</tt> instance to be added to this list of <tt>Content</tt> instances
      * included into this <tt>conference</tt> IQ
      * @return <tt>true</tt> if the list of <tt>Content</tt> instances included into this
-     * <tt>conference</tt> IQ has been modified as a result of the method call; otherwise,
-     * <tt>false</tt>
+     * <tt>conference</tt> IQ has been modified as a result of the method call; otherwise, <tt>false</tt>
      * @throws NullPointerException if the specified <tt>content</tt> is <tt>null</tt>
      */
     public boolean addContent(Content content)
     {
-        if (content == null)
-            throw new NullPointerException("content");
-
+        ApiLib.requireNonNull(content, "content");
         return !contents.contains(content) && contents.add(content);
     }
 
@@ -196,8 +182,7 @@ public class ColibriConferenceIQ extends IQ
      *
      * @param contentName the name which which the new <tt>Content</tt> instance is to be initialized
      * @return <tt>true</tt> if the list of <tt>Content</tt> instances included into this
-     * <tt>conference</tt> IQ has been modified as a result of the method call; otherwise,
-     * <tt>false</tt>
+     * <tt>conference</tt> IQ has been modified as a result of the method call; otherwise, <tt>false</tt>
      */
     public boolean addContent(String contentName)
     {
@@ -205,43 +190,51 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Add an <tt>Endpoint</tt> to this <tt>ColibriConferenceIQ</tt>.
-     *
-     * @param endpoint the <tt>Endpoint</tt> to add.
+     * Adds an {@link Endpoint} to this {@link ColibriConferenceIQ}. The
+     * endpoint must be non-null and must have a non-null ID. If an
+     * {@link Endpoint} with the same ID as the given {@link Endpoint} already
+     * exists it is replaced and the previous one is returned.
+     * @param endpoint the {@link Endpoint} to add.
+     * @return The previous {@link Endpoint} with the same ID, or {@code null}.
      */
-    public void addEndpoint(Endpoint endpoint)
+    public Endpoint addEndpoint(Endpoint endpoint)
     {
-        endpoints.add(endpoint);
+        ApiLib.requireNonNull(endpoint, "endpoint");
+        String id = ApiLib.requireNonNull(endpoint.getId(), "endpoint ID");
+
+        return endpoints.put(id, endpoint);
     }
 
     /**
-     * Returns a list of the <tt>ChannelBundle</tt>s included into this <tt>conference</tt> IQ.
-     *
-     * @return an unmodifiable <tt>List</tt> of the <tt>ChannelBundle</tt>s included into this
-     * <tt>conference</tt> IQ.
+     * @return a list which contains the {@link ChannelBundle}s of this {@link ColibriConferenceIQ}.
      */
     public List<ChannelBundle> getChannelBundles()
     {
-        return Collections.unmodifiableList(channelBundles);
+        return new LinkedList<>(channelBundles.values());
     }
 
     /**
-     * Finds {@link ChannelBundle} identified by given <tt>bundleId</tt>.
-     *
-     * @param bundleId <tt>ChannelBundle</tt> identifier.
-     * @return {@link ChannelBundle} identified by given <tt>bundleId</tt> or <tt>null</tt> if not
-     * found.
+     * @param channelBundleId The ID of the {@link ChannelBundle} to get.
+     * @return The {@link ChannelBundle} identified by {@code channelBundleId}, or {@code null}.
      */
-    public ChannelBundle getChannelBundle(String bundleId)
+    public ChannelBundle getChannelBundle(String channelBundleId)
     {
-        if (bundleId != null) {
-            for (ChannelBundle bundle : channelBundles) {
-                if (bundleId.equals(bundle.getId())) {
-                    return bundle;
-                }
-            }
+        ApiLib.requireNonNull(channelBundleId, "channelBundleId");
+        return channelBundles.get(channelBundleId);
+    }
+
+    /**
+     * Finds {@link Endpoint} identified by given <tt>endpointId</tt>.
+     *
+     * @param endpointId <tt>Endpoint</tt> identifier.
+     * @return {@link Endpoint} identified by given <tt>endpointId</tt> or <tt>null</tt> if not found.
+     */
+    public Endpoint getEndpoint(String endpointId)
+    {
+        if (endpointId == null) {
+            return null;
         }
-        return null;
+        return endpoints.get(endpointId);
     }
 
     /**
@@ -253,25 +246,31 @@ public class ColibriConferenceIQ extends IQ
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
     {
         xml.optAttribute(ID_ATTR_NAME, getID());
-        xml.append('>');
-
         xml.optAttribute(GID_ATTR_NAME, getGID());
         xml.optAttribute(NAME_ATTR_NAME, name);
 
         List<Content> contents = getContents();
         List<ChannelBundle> channelBundles = getChannelBundles();
+        List<Endpoint> endpoints = getEndpoints();
 
         boolean hasChildren = ((recording != null)
                 || (rtcpTerminationStrategy != null)
                 || (gracefulShutdown)
                 || (contents.size() > 0)
-                || (channelBundles.size() > 0));
+                || (channelBundles.size() > 0)
+                || (endpoints.size() > 0));
 
-        if (hasChildren) {
+        if (!hasChildren) {
+            xml.setEmptyElement();
+        }
+        else {
+            xml.rightAngleBracket();
             for (Content content : contents)
                 content.toXML(xml);
             for (ChannelBundle channelBundle : channelBundles)
                 channelBundle.toXML(xml);
+            for (Endpoint endpoint : endpoints)
+                endpoint.toXML(xml);
             if (recording != null)
                 recording.toXML(xml);
             if (rtcpTerminationStrategy != null)
@@ -279,8 +278,6 @@ public class ColibriConferenceIQ extends IQ
             if (gracefulShutdown)
                 xml.append(new GracefulShutdown().toXML());
         }
-
-        // closeELement(ELEMENT); // cmeng: auto closed by IQ handler
         return xml;
     }
 
@@ -296,8 +293,9 @@ public class ColibriConferenceIQ extends IQ
     public Content getContent(String contentName)
     {
         for (Content content : getContents()) {
-            if (contentName.equals(content.getName()))
+            if (contentName.equals(content.getName())) {
                 return content;
+            }
         }
         return null;
     }
@@ -305,8 +303,7 @@ public class ColibriConferenceIQ extends IQ
     /**
      * Returns a list of the <tt>Content</tt>s included into this <tt>conference</tt> IQ.
      *
-     * @return an unmodifiable <tt>List</tt> of the <tt>Content</tt>s included into this
-     * <tt>conference</tt> IQ
+     * @return an unmodifiable <tt>List</tt> of the <tt>Content</tt>s included into this <tt>conference</tt> IQ
      */
     public List<Content> getContents()
     {
@@ -320,7 +317,7 @@ public class ColibriConferenceIQ extends IQ
      */
     public List<Endpoint> getEndpoints()
     {
-        return Collections.unmodifiableList(endpoints);
+        return new LinkedList<>(endpoints.values());
     }
 
     /**
@@ -383,8 +380,7 @@ public class ColibriConferenceIQ extends IQ
      * @param content the <tt>Content</tt> instance to be removed from the list of <tt>Content</tt>
      * instances included into this <tt>conference</tt> IQ
      * @return <tt>true</tt> if the list of <tt>Content</tt> instances included into this
-     * <tt>conference</tt> IQ has been modified as a result of the method call; otherwise,
-     * <tt>false</tt>
+     * <tt>conference</tt> IQ has been modified as a result of the method call; otherwise,  <tt>false</tt>
      */
     public boolean removeContent(Content content)
     {
@@ -394,7 +390,7 @@ public class ColibriConferenceIQ extends IQ
     /**
      * Sets the ID of the conference represented by this IQ.
      *
-     * @param id the ID of the conference represented by this IQ
+     * @param id the value to set.
      */
     public void setID(String id)
     {
@@ -427,8 +423,7 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Sets whether this IQ should contain the information about graceful shutdown in progress
-     * status.
+     * Sets whether this IQ should contain the information about graceful shutdown in progress status.
      *
      * @param isGracefulShutdown <tt>true</tt> if graceful shutdown status should be indicated in this IQ.
      */
@@ -451,7 +446,7 @@ public class ColibriConferenceIQ extends IQ
      *
      * @return name of the conference.
      */
-    public String getName()
+    public Localpart getName()
     {
         return name;
     }
@@ -461,14 +456,13 @@ public class ColibriConferenceIQ extends IQ
      *
      * @param name the name to set.
      */
-    public void setName(String name)
+    public void setName(Localpart name)
     {
         this.name = name;
     }
 
     /**
-     * Represents a <tt>channel</tt> included into a <tt>content</tt> of a Jitsi Videobridge
-     * <tt>conference</tt> IQ.
+     * Represents a <tt>channel</tt> included into a <tt>content</tt> of a Jitsi Videobridge <tt>conference</tt> IQ.
      */
     public static class Channel extends ChannelCommon
     {
@@ -549,15 +543,9 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * The name of the XML element which is a child of the &lt;channel&gt; element and which
-         * identifies/specifies an (RTP) SSRC which has been seen/received on the respective
-         * <tt>Channel</tt>.
+         * identifies/specifies an (RTP) SSRC which has been seen/received on the respective <tt>Channel</tt>.
          */
         public static final String SSRC_ELEMENT_NAME = "ssrc";
-
-        /**
-         * The name of the "type" attribute.
-         */
-        public static final String TYPE_ATTR_NAME = "type";
 
         /**
          * The direction of the <tt>channel</tt> represented by this instance.
@@ -657,19 +645,16 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Adds a <tt>payload-type</tt> element defined by XEP-0167: Jingle RTP Sessions to this
-         * <tt>channel</tt>.
+         * Adds a <tt>payload-type</tt> element defined by XEP-0167: Jingle RTP Sessions to this <tt>channel</tt>.
          *
          * @param payloadType the <tt>payload-type</tt> element to be added to this <tt>channel</tt>
          * @return <tt>true</tt> if the list of <tt>payload-type</tt> elements associated with this
-         * <tt>channel</tt> has been modified as part of the method call; otherwise,
-         * <tt>false</tt>
+         * <tt>channel</tt> has been modified as part of the method call; otherwise, <tt>false</tt>
          * @throws NullPointerException if the specified <tt>payloadType</tt> is <tt>null</tt>
          */
         public boolean addPayloadType(PayloadTypePacketExtension payloadType)
         {
-            if (payloadType == null)
-                throw new NullPointerException("payloadType");
+            ApiLib.requireNonNull(payloadType, "payloadType");
 
             // Make sure that the COLIBRI namespace is used.
             payloadType.setNamespace(null);
@@ -688,15 +673,13 @@ public class ColibriConferenceIQ extends IQ
          */
         public void addRtpHeaderExtension(RTPHdrExtPacketExtension ext)
         {
-            if (ext == null)
-                throw new NullPointerException("payloadType");
+            ApiLib.requireNonNull(ext, "ext");
 
             // Create a new instance, because we are going to modify the NS
-            RTPHdrExtPacketExtension newExt = new RTPHdrExtPacketExtension(ext);
+            RTPHdrExtPacketExtension newExt = RTPHdrExtPacketExtension.clone(ext);
 
             // Make sure that the parent namespace (COLIBRI) is used.
             newExt.setNamespace(null);
-
             int id = -1;
             try {
                 id = Integer.valueOf(newExt.getID());
@@ -706,8 +689,7 @@ public class ColibriConferenceIQ extends IQ
 
             // Only accept valid extension IDs (4-bits, 0xF reserved)
             if (id < 0 || id > 14) {
-                logger.warn("Failed to add an RTP header extension element with an invalid ID: "
-                        + newExt.getID());
+                logger.warn("Failed to add an RTP header extension element with an invalid ID: " + newExt.getID());
                 return;
             }
             rtpHeaderExtensions.put(id, newExt);
@@ -722,9 +704,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public synchronized boolean addSource(SourcePacketExtension source)
         {
-            if (source == null)
-                throw new NullPointerException("source");
-
+            ApiLib.requireNonNull(source, "source");
             return !sources.contains(source) && sources.add(source);
         }
 
@@ -737,9 +717,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public synchronized boolean addSourceGroup(SourceGroupPacketExtension sourceGroup)
         {
-            if (sourceGroup == null)
-                throw new NullPointerException("sourceGroup");
-
+            ApiLib.requireNonNull(sourceGroup, "sourceGroup");
             if (sourceGroups == null)
                 sourceGroups = new LinkedList<SourceGroupPacketExtension>();
 
@@ -750,8 +728,7 @@ public class ColibriConferenceIQ extends IQ
          * Adds a specific (RTP) SSRC to the list of SSRCs seen/received on this <tt>Channel</tt>.
          * Invoked by the Jitsi Videobridge server, not its clients.
          *
-         * @param ssrc the (RTP) SSRC to be added to the list of SSRCs seen/received on this
-         * <tt>Channel</tt>
+         * @param ssrc the (RTP) SSRC to be added to the list of SSRCs seen/received on this <tt>Channel</tt>
          * @return <tt>true</tt> if the list of SSRCs seen/received on this <tt>Channel</tt> has
          * been modified as part of the method call; otherwise, <tt>false</tt>
          */
@@ -765,7 +742,6 @@ public class ColibriConferenceIQ extends IQ
 
             // add
             int[] newSSRCs = new int[ssrcs.length + 1];
-
             System.arraycopy(ssrcs, 0, newSSRCs, 0, ssrcs.length);
             newSSRCs[ssrcs.length] = ssrc;
             ssrcs = newSSRCs;
@@ -868,8 +844,7 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the port which has been allocated to this <tt>channel</tt> for the purposes of
-         * transmitting RTCP packets.
+         * Gets the port which has been allocated to this <tt>channel</tt> for the purposes of transmitting RTCP packets.
          *
          * @return the port which has been allocated to this <tt>channel</tt> for the purposes of
          * transmitting RTCP packets
@@ -910,8 +885,7 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the list of <tt>SourceGroupPacketExtensions</tt>s which represent the source groups
-         * of this channel.
+         * Gets the list of <tt>SourceGroupPacketExtensions</tt>s which represent the source groups of this channel.
          *
          * @return a <tt>List</tt> of <tt>SourceGroupPacketExtension</tt>s which represent the
          * source groups of this channel
@@ -922,11 +896,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the list of <tt>SourcePacketExtensions</tt>s which represent the sources of this
-         * channel.
+         * Gets the list of <tt>SourcePacketExtensions</tt>s which represent the sources of this channel.
          *
-         * @return a <tt>List</tt> of <tt>SourcePacketExtension</tt>s which represent the sources of
-         * this channel
+         * @return a <tt>List</tt> of <tt>SourcePacketExtension</tt>s which represent the sources of this channel
          */
         public synchronized List<SourcePacketExtension> getSources()
         {
@@ -948,7 +920,6 @@ public class ColibriConferenceIQ extends IQ
         protected boolean hasContent()
         {
             List<PayloadTypePacketExtension> payloadTypes = getPayloadTypes();
-
             if (!payloadTypes.isEmpty())
                 return true;
 
@@ -961,12 +932,11 @@ public class ColibriConferenceIQ extends IQ
                 return true;
 
             int[] ssrcs = getSSRCs();
-
             return (ssrcs.length != 0);
         }
 
         @Override
-        protected void printAttributes(XmlStringBuilder xml)
+        protected IQChildElementXmlStringBuilder printAttributes(IQChildElementXmlStringBuilder xml)
         {
             // direction
             MediaDirection direction = getDirection();
@@ -979,37 +949,43 @@ public class ColibriConferenceIQ extends IQ
 
             // lastN
             Integer lastN = getLastN();
-            if (lastN != null)
-                xml.optIntAttribute(LAST_N_ATTR_NAME, getLastN());
+            if (lastN != null) {
+                xml.attribute(LAST_N_ATTR_NAME, getLastN());
+            }
 
             // packet-delay
             Integer packetDelay = getPacketDelay();
             if (packetDelay != null) {
-                xml.optAttribute(PACKET_DELAY_ATTR_NAME, packetDelay.toString());
+                xml.attribute(PACKET_DELAY_ATTR_NAME, packetDelay);
             }
             // simulcastMode
             SimulcastMode simulcastMode = getSimulcastMode();
-            if (simulcastMode != null)
-                xml.optAttribute(SIMULCAST_MODE_ATTR_NAME, simulcastMode.toString());
+            if (simulcastMode != null) {
+                xml.attribute(SIMULCAST_MODE_ATTR_NAME, simulcastMode.toString());
+            }
 
             // rtcpPort
             int rtcpPort = getRTCPPort();
-            if (rtcpPort > 0)
-                xml.optIntAttribute(RTCP_PORT_ATTR_NAME, rtcpPort);
+            if (rtcpPort > 0) {
+                xml.attribute(RTCP_PORT_ATTR_NAME, rtcpPort);
+            }
 
             // rtpLevelRelayType
             RTPLevelRelayType rtpLevelRelayType = getRTPLevelRelayType();
-            if (rtpLevelRelayType != null)
-                xml.optAttribute(RTP_LEVEL_RELAY_TYPE_ATTR_NAME, rtpLevelRelayType.toString());
+            if (rtpLevelRelayType != null) {
+                xml.attribute(RTP_LEVEL_RELAY_TYPE_ATTR_NAME, rtpLevelRelayType.toString());
+            }
 
             // rtpPort
             int rtpPort = getRTPPort();
-            if (rtpPort > 0)
-                xml.optIntAttribute(RTP_PORT_ATTR_NAME, rtpPort);
+            if (rtpPort > 0) {
+                xml.attribute(RTP_PORT_ATTR_NAME, rtpPort);
+            }
+            return xml;
         }
 
         @Override
-        protected void printContent(XmlStringBuilder xml)
+        protected IQChildElementXmlStringBuilder printContent(IQChildElementXmlStringBuilder xml)
         {
             List<PayloadTypePacketExtension> payloadTypes = getPayloadTypes();
             Collection<RTPHdrExtPacketExtension> rtpHdrExtPacketExtensions = getRtpHeaderExtensions();
@@ -1033,18 +1009,16 @@ public class ColibriConferenceIQ extends IQ
             for (int ssrc : ssrcs) {
                 xml.openElement(SSRC_ELEMENT_NAME);
                 xml.append(Long.toString(ssrc & 0xFFFFFFFFL));
-                xml.closeElement(SSRC_ELEMENT_NAME);
             }
+            return xml;
         }
 
         /**
-         * Removes a <tt>payload-type</tt> element defined by XEP-0167: Jingle RTP Sessions from
-         * this <tt>channel</tt>.
+         * Removes a <tt>payload-type</tt> element defined by XEP-0167: Jingle RTP Sessions from this <tt>channel</tt>.
          *
          * @param payloadType the <tt>payload-type</tt> element to be removed from this <tt>channel</tt>
          * @return <tt>true</tt> if the list of <tt>payload-type</tt> elements associated with this
-         * <tt>channel</tt> has been modified as part of the method call; otherwise,
-         * <tt>false</tt>
+         * <tt>channel</tt> has been modified as part of the method call; otherwise, <tt>false</tt>
          */
         public boolean removePayloadType(PayloadTypePacketExtension payloadType)
         {
@@ -1072,8 +1046,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * Removes a <tt>SourcePacketExtension</tt> from the list of sources of this channel.
          *
-         * @param source the <tt>SourcePacketExtension</tt> to remove from the list of sources of this
-         * channel
+         * @param source the <tt>SourcePacketExtension</tt> to remove from the list of sources of this channel
          * @return <tt>true</tt> if the list of sources of this channel changed as a result of the
          * execution of the method; otherwise, <tt>false</tt>
          */
@@ -1086,8 +1059,7 @@ public class ColibriConferenceIQ extends IQ
          * Removes a specific (RTP) SSRC from the list of SSRCs seen/received on this
          * <tt>Channel</tt>. Invoked by the Jitsi Videobridge server, not its clients.
          *
-         * @param ssrc the (RTP) SSRC to be removed from the list of SSRCs seen/received on this
-         * <tt>Channel</tt>
+         * @param ssrc the (RTP) SSRC to be removed from the list of SSRCs seen/received on this <tt>Channel</tt>
          * @return <tt>true</tt> if the list of SSRCs seen/received on this <tt>Channel</tt> has
          * been modified as part of the method call; otherwise, <tt>false</tt>
          */
@@ -1105,7 +1077,6 @@ public class ColibriConferenceIQ extends IQ
                 for (int i = 0; i < ssrcs.length; i++) {
                     if (ssrcs[i] == ssrc) {
                         int[] newSSRCs = new int[ssrcs.length - 1];
-
                         if (i != 0)
                             System.arraycopy(ssrcs, 0, newSSRCs, 0, i);
                         if (i != newSSRCs.length) {
@@ -1122,8 +1093,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * Sets the <tt>direction</tt> of this <tt>Channel</tt>
          *
-         * @param direction the <tt>MediaDirection</tt> to set the <tt>direction</tt> of this <tt>Channel</tt>
-         * to.
+         * @param direction the <tt>MediaDirection</tt> to set the <tt>direction</tt> of this <tt>Channel</tt> to.
          */
         public void setDirection(MediaDirection direction)
         {
@@ -1262,8 +1232,7 @@ public class ColibriConferenceIQ extends IQ
     /**
      * Represents a {@link Channel} of type "octo".
      */
-    public static class OctoChannel
-            extends Channel
+    public static class OctoChannel extends Channel
     {
         /**
          * The value of the "type" attribute which corresponds to Octo channels.
@@ -1284,6 +1253,14 @@ public class ColibriConferenceIQ extends IQ
          * The list of relays of this {@link OctoChannel}.
          */
         private List<String> relays = new LinkedList<>();
+
+        /**
+         * Initializes a new {@link OctoChannel} instance.
+         */
+        public OctoChannel()
+        {
+            setType(TYPE);
+        }
 
         /**
          * Sets the list of relays of this {@link OctoChannel}.
@@ -1338,24 +1315,15 @@ public class ColibriConferenceIQ extends IQ
          * {@inheritDoc}
          */
         @Override
-        protected void printAttributes(XmlStringBuilder xml)
-        {
-            super.printAttributes(xml);
-            xml.attribute(TYPE_ATTR_NAME, TYPE);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected void printContent(XmlStringBuilder xml)
+        protected IQChildElementXmlStringBuilder printContent(IQChildElementXmlStringBuilder xml)
         {
             super.printContent(xml);
             for (String relay : relays) {
                 xml.halfOpenElement(RELAY_ELEMENT_NAME);
-                xml.optAttribute(ID_ATTR_NAME, relay);
-                xml.append("/>");
+                xml.attribute(ID_ATTR_NAME, relay);
+                xml.closeEmptyElement();
             }
+            return xml;
         }
     }
 
@@ -1439,19 +1407,20 @@ public class ColibriConferenceIQ extends IQ
          *
          * @param xml the <tt>StringBuilder</tt> to append to.
          */
-        public void toXML(XmlStringBuilder xml)
+        public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
             xml.halfOpenElement(ELEMENT_NAME);
-            xml.optAttribute(ID_ATTR_NAME, id);
+            xml.attribute(ID_ATTR_NAME, id);
 
             if (transport != null) {
-                xml.append('>');
+                xml.rightAngleBracket();
                 xml.append(transport.toXML());
                 xml.closeElement(ELEMENT_NAME);
             }
             else {
-                xml.append("/>");
+                xml.closeEmptyElement();
             }
+            return xml;
         }
     }
 
@@ -1503,6 +1472,11 @@ public class ColibriConferenceIQ extends IQ
         public static final String INITIATOR_ATTR_NAME = "initiator";
 
         /**
+         * The name of the "type" attribute.
+         */
+        public static final String TYPE_ATTR_NAME = "type";
+
+        /**
          * The channel-bundle-id attribute of this <tt>CommonChannel</tt>.
          */
         private String channelBundleId = null;
@@ -1513,14 +1487,18 @@ public class ColibriConferenceIQ extends IQ
         private String elementName;
 
         /**
-         * The identifier of the endpoint of the conference participant associated with this
-         * <tt>Channel</tt>.
+         * The identifier of the endpoint of the conference participant associated with this <tt>Channel</tt>.
          */
         private String endpoint;
 
         /**
-         * The number of seconds of inactivity after which the <tt>channel</tt> represented by this
-         * instance expires.
+         * The optional type of the channel.
+         */
+        private String type;
+
+        /**
+         * The number of seconds of inactivity after which the <tt>channel</tt>
+         * represented by this instance expires.
          */
         private int expire = EXPIRE_NOT_SPECIFIED;
 
@@ -1531,8 +1509,7 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * The indicator which determines whether the conference focus is the initiator/offerer (as
-         * opposed to the responder/answerer) of the media negotiation associated with this
-         * instance.
+         * opposed to the responder/answerer) of the media negotiation associated with this instance.
          */
         private Boolean initiator;
 
@@ -1562,8 +1539,7 @@ public class ColibriConferenceIQ extends IQ
          * Gets the identifier of the endpoint of the conference participant associated with this
          * <tt>Channel</tt>.
          *
-         * @return the identifier of the endpoint of the conference participant associated with this
-         * <tt>Channel</tt>
+         * @return the identifier of the endpoint of the conference participant associated with this <tt>Channel</tt>
          */
         public String getEndpoint()
         {
@@ -1571,8 +1547,16 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the number of seconds of inactivity after which the <tt>channel</tt> represented by
-         * this instance expires.
+         * @return optional type of this channel.
+         */
+        public String getType()
+        {
+            return type;
+        }
+
+        /**
+         * Gets the number of seconds of inactivity after which the
+         * <tt>channel</tt> represented by this instance expires.
          *
          * @return the number of seconds of inactivity after which the <tt>channel</tt> represented
          * by this instance expires
@@ -1598,8 +1582,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Indicates whether there are some contents that should be printed as child elements of
-         * this IQ. If <tt>true</tt> is returned {@link #printContent(XmlStringBuilder)} method will be
+         * Indicates whether there are some contents that should be printed as
+         * child elements of this IQ. If <tt>true</tt> is returned
+         * {@link #printContent(IQChildElementXmlStringBuilder)} method will be
          * called when XML representation of this IQ is being constructed.
          *
          * @return <tt>true</tt> if there are content to be printed as child elements of this IQ or
@@ -1609,8 +1594,7 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * Gets the indicator which determines whether the conference focus is the initiator/offerer
-         * (as opposed to the responder/answerer) of the media negotiation associated with this
-         * instance.
+         * (as opposed to the responder/answerer) of the media negotiation associated with this instance.
          *
          * @return {@link Boolean#TRUE} if the conference focus is the initiator/offerer of the
          * media negotiation associated with this instance, {@link Boolean#FALSE} if the
@@ -1623,13 +1607,12 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Derived class implements this method in order to print additional attributes to main XML
-         * element.
+         * Derived class implements this method in order to print additional attributes to main XML element.
          *
          * @param xml <the <tt>StringBuilder</tt> to which the XML <tt>String</tt> representation of
          * this <tt>Channel</tt> is to be appended</tt>
          */
-        protected abstract void printAttributes(XmlStringBuilder xml);
+        protected abstract IQChildElementXmlStringBuilder printAttributes(IQChildElementXmlStringBuilder xml);
 
         /**
          * Implement in order to print content child elements of this IQ using given
@@ -1639,7 +1622,7 @@ public class ColibriConferenceIQ extends IQ
          * @param xml the <tt>StringBuilder</tt> to which the XML <tt>String</tt> representation of this
          * <tt>Channel</tt> is to be appended</tt></tt>.
          */
-        protected abstract void printContent(XmlStringBuilder xml);
+        protected abstract IQChildElementXmlStringBuilder printContent(IQChildElementXmlStringBuilder xml);
 
         /**
          * Sets the channel-bundle-id attribute of this <tt>CommonChannel</tt>.
@@ -1652,8 +1635,7 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the identifier of the endpoint of the conference participant associated with this
-         * <tt>Channel</tt>.
+         * Sets the identifier of the endpoint of the conference participant associated with this <tt>Channel</tt>.
          *
          * @param endpoint the identifier of the endpoint of the conference participant associated with this
          * <tt>Channel</tt>
@@ -1664,8 +1646,17 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the number of seconds of inactivity after which the <tt>channel</tt> represented by
-         * this instance expires.
+         * Sets the optional type of this channel.
+         *
+         * @param type the value to set.
+         */
+        public void setType(String type)
+        {
+            this.type = type;
+        }
+
+        /**
+         * Sets the number of seconds of inactivity after which the <tt>channel</tt> represented by this instance expires.
          *
          * @param expire the number of seconds of activity after which the <tt>channel</tt> represented by
          * this instance expires
@@ -1676,7 +1667,6 @@ public class ColibriConferenceIQ extends IQ
         {
             if ((expire != EXPIRE_NOT_SPECIFIED) && (expire < 0))
                 throw new IllegalArgumentException("expire");
-
             this.expire = expire;
         }
 
@@ -1692,13 +1682,11 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * Sets the indicator which determines whether the conference focus is the initiator/offerer
-         * (as opposed to the responder/answerer) of the media negotiation associated with this
-         * instance.
+         * (as opposed to the responder/answerer) of the media negotiation associated with this instance.
          *
          * @param initiator {@link Boolean#TRUE} if the conference focus is the initiator/offerer of the media
          * negotiation associated with this instance, {@link Boolean#FALSE} if the conference
-         * focus is the responder/answerer or <tt>null</tt> if the <tt>initiator</tt> state
-         * is to be unspecified
+         * focus is the responder/answerer or <tt>null</tt> if the <tt>initiator</tt> state is to be unspecified
          */
         public void setInitiator(Boolean initiator)
         {
@@ -1711,13 +1699,12 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Appends the XML <tt>String</tt> representation of this <tt>Channel</tt> to a specific
-         * <tt>StringBuilder</tt>.
+         * Appends the XML <tt>String</tt> representation of this <tt>Channel</tt> to a specific <tt>StringBuilder</tt>.
          *
          * @param xml the <tt>StringBuilder</tt> to which the XML <tt>String</tt> representation of this
          * <tt>Channel</tt> is to be appended
          */
-        public void toXML(XmlStringBuilder xml)
+        public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
             xml.halfOpenElement(elementName);
 
@@ -1729,9 +1716,10 @@ public class ColibriConferenceIQ extends IQ
 
             // id
             xml.optAttribute(ID_ATTR_NAME, getID());
+            xml.optAttribute(TYPE_ATTR_NAME, getType());
 
             // initiator
-            xml.optAttribute(INITIATOR_ATTR_NAME, isInitiator().toString());
+            xml.optBooleanAttribute(INITIATOR_ATTR_NAME, isInitiator() == null ? false : isInitiator());
             xml.optAttribute(CHANNEL_BUNDLE_ID_ATTR_NAME, getChannelBundleId());
 
             // Print derived class attributes
@@ -1740,16 +1728,19 @@ public class ColibriConferenceIQ extends IQ
             IceUdpTransportPacketExtension transport = getTransport();
             boolean hasTransport = (transport != null);
             if (hasTransport || hasContent()) {
-                xml.append('>');
-                if (hasContent())
+                xml.rightAngleBracket();
+                if (hasContent()) {
                     printContent(xml);
-                if (hasTransport)
+                }
+                if (hasTransport) {
                     xml.append(transport.toXML());
+                }
                 xml.closeElement(elementName);
             }
             else {
-                xml.append(" />");
+                xml.closeEmptyElement();
             }
+            return xml;
         }
     }
 
@@ -1765,14 +1756,12 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * The XML name of the <tt>name</tt> attribute of a <tt>content</tt> of a
-         * <tt>conference</tt> IQ which represents the <tt>name</tt> property of
-         * <tt>ColibriConferenceIQ.Content</tt>.
+         * <tt>conference</tt> IQ which represents the <tt>name</tt> property of <tt>ColibriConferenceIQ.Content</tt>.
          */
         public static final String NAME_ATTR_NAME = "name";
 
         /**
-         * The list of {@link Channel}s included into this <tt>content</tt> of a <tt>conference</tt>
-         * IQ.
+         * The list of {@link Channel}s included into this <tt>content</tt> of a <tt>conference</tt> IQ.
          */
         private final List<Channel> channels = new LinkedList<>();
 
@@ -1782,8 +1771,7 @@ public class ColibriConferenceIQ extends IQ
         private String name;
 
         /**
-         * The list of {@link SctpConnection}s included into this <tt>content</tt> of a
-         * <tt>conference</tt> IQ.
+         * The list of {@link SctpConnection}s included into this <tt>content</tt> of a <tt>conference</tt> IQ.
          */
         private final List<SctpConnection> sctpConnections = new LinkedList<>();
 
@@ -1805,8 +1793,7 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Adds a specific <tt>Channel</tt> to the list of <tt>Channel</tt>s included into this
-         * <tt>Content</tt>.
+         * Adds a specific <tt>Channel</tt> to the list of <tt>Channel</tt>s included into this <tt>Content</tt>.
          *
          * @param channel the <tt>Channel</tt> to be included into this <tt>Content</tt>
          * @return <tt>true</tt> if the list of <tt>Channel</tt>s included into this
@@ -1816,17 +1803,14 @@ public class ColibriConferenceIQ extends IQ
          */
         public boolean addChannel(Channel channel)
         {
-            if (channel == null)
-                throw new NullPointerException("channel");
-
+            ApiLib.requireNonNull(channel, "channel");
             return !channels.contains(channel) && channels.add(channel);
         }
 
         /**
          * Adds <tt>ChannelCommon</tt> to this <tt>Content</tt>.
          *
-         * @param channelCommon {@link ChannelCommon} instance to be added to
-         * this content.
+         * @param channelCommon {@link ChannelCommon} instance to be added to this content.
          * @return <tt>true</tt> if given <tt>channelCommon</tt> has been
          * actually added to this <tt>Content</tt> instance.
          */
@@ -1846,15 +1830,12 @@ public class ColibriConferenceIQ extends IQ
          *
          * @param conn the <tt>SctpConnection</tt> to be included into this <tt>Content</tt>
          * @return <tt>true</tt> if the list of <tt>SctpConnection</tt>s included into this
-         * <tt>Content</tt> was modified as a result of the execution of the method;
-         * otherwise, <tt>false</tt>
+         * <tt>Content</tt> was modified as a result of the execution of the method; otherwise, <tt>false</tt>
          * @throws NullPointerException if the specified <tt>conn</tt> is <tt>null</tt>
          */
         public boolean addSctpConnection(SctpConnection conn)
         {
-            if (conn == null)
-                throw new NullPointerException("Sctp connection");
-
+            ApiLib.requireNonNull(conn, "conn");
             return !sctpConnections.contains(conn) && sctpConnections.add(conn);
         }
 
@@ -1878,8 +1859,7 @@ public class ColibriConferenceIQ extends IQ
          *
          * @param channelID the ID of the <tt>Channel</tt> included into this <tt>Content</tt> to be returned
          * @return the <tt>Channel</tt> which is included into this <tt>Content</tt> and which has
-         * the specified <tt>channelID</tt> if such a <tt>Channel</tt> exists; otherwise,
-         * <tt>null</tt>
+         * the specified <tt>channelID</tt> if such a <tt>Channel</tt> exists; otherwise, <tt>null</tt>
          */
         public Channel getChannel(String channelID)
         {
@@ -1908,8 +1888,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * Gets the number of <tt>Channel</tt>s included into/associated with this <tt>Content</tt>.
          *
-         * @return the number of <tt>Channel</tt>s included into/associated with this
-         * <tt>Content</tt>
+         * @return the number of <tt>Channel</tt>s included into/associated with this <tt>Content</tt>
          */
         public int getChannelCount()
         {
@@ -1955,8 +1934,7 @@ public class ColibriConferenceIQ extends IQ
          *
          * @param channel the <tt>Channel</tt> to be excluded from this <tt>Content</tt>
          * @return <tt>true</tt> if the list of <tt>Channel</tt>s included into this
-         * <tt>Content</tt> was modified as a result of the execution of the method;
-         * otherwise, <tt>false</tt>
+         * <tt>Content</tt> was modified as a result of the execution of the method; otherwise, <tt>false</tt>
          */
         public boolean removeChannel(Channel channel)
         {
@@ -1971,8 +1949,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public void setName(String name)
         {
-            if (name == null)
-                throw new NullPointerException("name");
+            ApiLib.requireNonNull(name, "name");
 
             this.name = name;
         }
@@ -1984,33 +1961,36 @@ public class ColibriConferenceIQ extends IQ
          * @param xml the <tt>StringBuilder</tt> to which the XML <tt>String</tt> representation of this
          * <tt>Content</tt> is to be appended
          */
-        public void toXML(XmlStringBuilder xml)
+        public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
             xml.halfOpenElement(ELEMENT_NAME);
-            xml.optAttribute(NAME_ATTR_NAME, getName());
+            xml.attribute(NAME_ATTR_NAME, getName());
 
             List<Channel> channels = getChannels();
             List<SctpConnection> connections = getSctpConnections();
 
             if (channels.size() == 0 && connections.size() == 0) {
-                xml.append("/>");
+                xml.closeEmptyElement();
             }
             else {
-                xml.append('>');
-                for (Channel channel : channels)
+                xml.rightAngleBracket();
+                for (Channel channel : channels) {
                     channel.toXML(xml);
-                for (SctpConnection conn : connections)
+                }
+
+                for (SctpConnection conn : connections) {
                     conn.toXML(xml);
+                }
                 xml.closeElement(ELEMENT_NAME);
             }
+            return xml;
         }
 
         /**
          * Removes given SCTP connection from this IQ.
          *
          * @param connection the SCTP connection instance to be removed.
-         * @return <tt>true</tt> if given <tt>connection</tt> was contained in this IQ and has been
-         * removed successfully.
+         * @return <tt>true</tt> if given <tt>connection</tt> was contained in this IQ and has been removed successfully.
          */
         public boolean removeSctpConnection(SctpConnection connection)
         {
@@ -2039,6 +2019,11 @@ public class ColibriConferenceIQ extends IQ
         public static final String ID_ATTR_NAME = "id";
 
         /**
+         * The name of the 'stats-id' attribute.
+         */
+        public static final String STATS_ID_ATTR_NAME = "stats-id";
+
+        /**
          * The 'display name' of this <tt>Endpoint</tt>.
          */
         private String displayName;
@@ -2049,14 +2034,22 @@ public class ColibriConferenceIQ extends IQ
         private String id;
 
         /**
-         * Initializes a new <tt>Endpoint</tt> with the given ID and display name.
+         * The 'stats-id' of this <tt>Endpoint</tt>.
+         */
+        private String statsId;
+
+        /**
+         * Initializes a new <tt>Endpoint</tt> with the given ID and display
+         * name.
          *
          * @param id the ID.
+         * @param statsId stats ID value
          * @param displayName the display name.
          */
-        public Endpoint(String id, String displayName)
+        public Endpoint(String id, String statsId, String displayName)
         {
             this.id = id;
+            this.statsId = statsId;
             this.displayName = displayName;
         }
 
@@ -2081,6 +2074,16 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
+         * Returns the stats ID of this <tt>Endpoint</tt>.
+         *
+         * @return the stats ID of this <tt>Endpoint</tt>.
+         */
+        public String getStatsId()
+        {
+            return statsId;
+        }
+
+        /**
          * Sets the display name of this <tt>Endpoint</tt>.
          *
          * @param displayName the display name to set.
@@ -2098,6 +2101,35 @@ public class ColibriConferenceIQ extends IQ
         public void setId(String id)
         {
             this.id = id;
+        }
+
+        /**
+         * Sets the stats ID of this <tt>Endpoint</tt>.
+         *
+         * @param statsId the stats ID to set.
+         */
+        public void setStatsId(String statsId)
+        {
+            this.statsId = statsId;
+        }
+
+        /**
+         * Appends the XML <tt>String</tt> representation of this
+         * <tt>Endpoint</tt> to <tt>xml</tt>.
+         *
+         * @param xml the <tt>StringBuilder</tt> to which the XML
+         * <tt>String</tt> representation of this <tt>Endpoint</tt> is to be appended
+         */
+        public IQChildElementXmlStringBuilder toXML(
+                IQChildElementXmlStringBuilder xml)
+        {
+            xml.halfOpenElement(ELEMENT_NAME);
+            xml.attribute(ID_ATTR_NAME, id);
+
+            xml.optAttribute(DISPLAYNAME_ATTR_NAME, displayName);
+            xml.optAttribute(STATS_ID_ATTR_NAME, statsId);
+            xml.closeEmptyElement();
+            return xml;
         }
     }
 
@@ -2181,7 +2213,6 @@ public class ColibriConferenceIQ extends IQ
         public Recording(State state, String token)
         {
             this(state);
-
             this.token = token;
         }
 
@@ -2210,13 +2241,14 @@ public class ColibriConferenceIQ extends IQ
             this.directory = directory;
         }
 
-        public void toXML(XmlStringBuilder xml)
+        public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
             xml.halfOpenElement(ELEMENT_NAME);
-            xml.optAttribute(STATE_ATTR_NAME, state);
+            xml.attribute(STATE_ATTR_NAME, state);
             xml.optAttribute(TOKEN_ATTR_NAME, token);
             xml.optAttribute(DIRECTORY_ATTR_NAME, directory);
-            xml.append("/>");
+            xml.closeEmptyElement();
+            return xml;
         }
 
         /**
@@ -2248,7 +2280,7 @@ public class ColibriConferenceIQ extends IQ
              *
              * @param name
              */
-            State(String name)
+            private State(String name)
             {
                 this.name = name;
             }
@@ -2313,11 +2345,12 @@ public class ColibriConferenceIQ extends IQ
             this.name = name;
         }
 
-        public void toXML(XmlStringBuilder xml)
+        public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
             xml.halfOpenElement(ELEMENT_NAME);
-            xml.optAttribute(NAME_ATTR_NAME, name);
-            xml.append("/>");
+            xml.attribute(NAME_ATTR_NAME, name);
+            xml.closeEmptyElement();
+            return xml;
         }
     }
 
@@ -2367,7 +2400,7 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * {@inheritDoc}
-         * <p/>
+         *
          * No content other than transport for <tt>SctpConnection</tt>.
          */
         @Override
@@ -2380,15 +2413,17 @@ public class ColibriConferenceIQ extends IQ
          * {@inheritDoc}
          */
         @Override
-        protected void printAttributes(XmlStringBuilder xml)
+        protected IQChildElementXmlStringBuilder printAttributes(IQChildElementXmlStringBuilder xml)
         {
-            xml.optIntAttribute(PORT_ATTR_NAME, getPort());
+            xml.attribute(PORT_ATTR_NAME, getPort());
+            return xml;
         }
 
         @Override
-        protected void printContent(XmlStringBuilder xml)
+        protected IQChildElementXmlStringBuilder printContent(IQChildElementXmlStringBuilder xml)
         {
             // No other content than the transport shared from ChannelCommon
+            return xml;
         }
 
         /**

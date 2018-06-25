@@ -524,6 +524,7 @@ public class AccountManager
                     OperationFailedException.GENERAL_ERROR);
         }
 
+        // Save all the account configurationProperties into the database
         if (configurationProperties.size() > 0)
             configurationService.setProperties(configurationProperties);
 

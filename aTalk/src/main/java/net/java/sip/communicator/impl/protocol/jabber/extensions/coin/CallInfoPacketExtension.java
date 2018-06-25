@@ -23,7 +23,7 @@ public class CallInfoPacketExtension extends AbstractPacketExtension
 	/**
 	 * The namespace that call info belongs to.
 	 */
-	public static final String NAMESPACE = "call-info"; // cannot be empty
+    public static final String NAMESPACE = CoinIQ.NAMESPACE;
 
 	/**
 	 * Constructor.

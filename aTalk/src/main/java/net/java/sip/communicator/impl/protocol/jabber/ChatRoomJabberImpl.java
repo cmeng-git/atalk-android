@@ -8,7 +8,8 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.*;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.condesc.ConferenceDescriptionExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -156,7 +157,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * The <tt>ConferenceAnnouncementPacketExtension</tt> corresponding to <tt>publishedConference</tt> which we
      * add to all our presence updates. This MUST be kept in sync with <tt>publishedConference</tt>
      */
-    private ConferenceDescriptionPacketExtension publishedConferenceExt = null;
+    private ConferenceDescriptionExtension publishedConferenceExt = null;
 
     /**
      * The last <tt>Presence</tt> packet we sent to the MUC.
@@ -560,7 +561,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                 throw new OperationFailedException(errorMessage, OperationFailedException.AUTHENTICATION_FAILED, ex);
             }
             else if (ex.getXMPPError().getCondition().equals(XMPPError.Condition.registration_required)) {
-                errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION);;
+                errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION);
                 logger.error(errorMessage, ex);
                 throw new OperationFailedException(errorMessage, OperationFailedException.REGISTRATION_REQUIRED, ex);
             }
@@ -666,14 +667,17 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         OperationSetBasicTelephonyJabberImpl basicTelephony
                 = (OperationSetBasicTelephonyJabberImpl) mProvider.getOperationSet(OperationSetBasicTelephony.class);
         if (basicTelephony != null && this.publishedConference != null) {
-            ActiveCallsRepositoryJabberGTalkImpl<CallJabberImpl, CallPeerJabberImpl> activeRepository
-                    = basicTelephony.getActiveCallsRepository();
+            ActiveCallsRepositoryJabberImpl activeRepository = basicTelephony.getActiveCallsRepository();
 
             String callId = publishedConference.getCallId();
             if (callId != null) {
                 CallJabberImpl call = activeRepository.findCallId(callId);
                 for (CallPeerJabberImpl peer : call.getCallPeerList()) {
-                    peer.hangup(false, null, null);
+                    try {
+                        peer.hangup(false, null, null);
+                    } catch (NotConnectedException | InterruptedException e) {
+                        logger.error("Could not hangup peer " + peer.getAddress(), e);
+                    }
                 }
             }
         }
@@ -686,7 +690,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
 
         for (CallJabberImpl call : tmpConferenceCalls) {
             for (CallPeerJabberImpl peer : call.getCallPeerList())
-                peer.hangup(false, null, null);
+                try {
+                    peer.hangup(false, null, null);
+                } catch (NotConnectedException | InterruptedException e) {
+                    logger.error("Could not hangup peer " + peer.getAddress(), e);
+                }
         }
 
         clearCachedConferenceDescriptionList();
@@ -709,7 +717,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         }
 
         // connection can be null if we are leaving due to connection failed
-        if ((connection != null) && (mMultiUserChat != null)) {
+        if ((connection != null) && (mMultiUserChat != null))
+
+        {
             if (presenceInterceptor != null) {
                 mMultiUserChat.removePresenceInterceptor(presenceInterceptor);
                 presenceInterceptor = null;
@@ -741,7 +751,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             mMultiUserChat.sendMessage(msg);
         } catch (NotConnectedException | InterruptedException e) {
             logger.error("Failed to send message " + message, e);
-            throw new OperationFailedException( aTalkApp.getResString(R.string.service_gui_SEND_MESSAGE_FAIL, message),
+            throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_SEND_MESSAGE_FAIL, message),
                     OperationFailedException.GENERAL_ERROR, e);
         }
     }
@@ -1402,7 +1412,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
 
     /**
      * Publishes a conference to the room by sending a <tt>Presence</tt> IQ which contains a
-     * <tt>ConferenceDescriptionPacketExtension</tt>
+     * <tt>ConferenceDescriptionExtension</tt>
      *
      * @param cd the description of the conference to announce
      * @param name the name of the conference
@@ -1426,9 +1436,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             cd.setDisplayName(displayName);
         }
 
-        ConferenceDescriptionPacketExtension ext = new ConferenceDescriptionPacketExtension(cd);
+        ConferenceDescriptionExtension ext = new ConferenceDescriptionExtension(cd);
         if (lastPresenceSent != null) {
-            setPacketExtension(lastPresenceSent, ext, ConferenceDescriptionPacketExtension.NAMESPACE);
+            setPacketExtension(lastPresenceSent, ext, ConferenceDescriptionExtension.NAMESPACE);
             try {
                 mProvider.getConnection().sendStanza(lastPresenceSent);
             } catch (NotConnectedException | InterruptedException e) {
@@ -2293,7 +2303,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         public void processPresence(Presence presence)
         {
             if (presence != null) {
-                setPacketExtension(presence, publishedConferenceExt, ConferenceDescriptionPacketExtension.NAMESPACE);
+                setPacketExtension(presence, publishedConferenceExt, ConferenceDescriptionExtension.NAMESPACE);
                 lastPresenceSent = presence;
             }
         }
@@ -2379,9 +2389,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             Jid from = presence.getFrom();
             ChatRoomMemberJabberImpl member = members.get(from.asEntityFullJidIfPossible());
 
-            ExtensionElement ext = presence.getExtension(ConferenceDescriptionPacketExtension.NAMESPACE);
+            ExtensionElement ext = presence.getExtension(ConferenceDescriptionExtension.NAMESPACE);
             if (presence.isAvailable() && ext != null) {
-                ConferenceDescriptionPacketExtension cdExt = (ConferenceDescriptionPacketExtension) ext;
+                ConferenceDescriptionExtension cdExt = (ConferenceDescriptionExtension) ext;
                 ConferenceDescription cd = cdExt.toConferenceDescription();
 
                 if (!processConferenceDescription(cd, from.toString()))
@@ -2398,20 +2408,34 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                 }
             }
 
+            // if member wasn't just created, we should potentially modify some elements
+            if (member == null) {
+                return;
+            }
             Nick nickExtension = presence.getExtension(Nick.ELEMENT_NAME, Nick.NAMESPACE);
-            if (member != null && nickExtension != null) {
+            if (nickExtension != null) {
                 member.setDisplayName(nickExtension.getName());
             }
 
             Email emailExtension = presence.getExtension(Email.ELEMENT_NAME, Email.NAMESPACE);
-            if (member != null && emailExtension != null) {
+            if (emailExtension != null) {
                 member.setEmail(emailExtension.getAddress());
             }
 
             AvatarUrl avatarUrl = presence.getExtension(AvatarUrl.ELEMENT_NAME, AvatarUrl.NAMESPACE);
-            if (member != null && avatarUrl != null) {
+            if (avatarUrl != null) {
                 member.setAvatarUrl(avatarUrl.getAvatarUrl());
             }
+
+            StatsId statsId = presence.getExtension(StatsId.ELEMENT_NAME, StatsId.NAMESPACE);
+            if (statsId != null) {
+                member.setStatisticsID(statsId.getStatsId());
+            }
+
+            // tell listeners the member was updated (and new information about it is available)
+            member.setLastPresence(presence);
+            fireMemberPresenceEvent(member, ChatRoomMemberPresenceChangeEvent.MEMBER_UPDATED, null);
+
         }
     }
 
@@ -2464,6 +2488,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                 fireMessageEvent(msgReceivedEvt);
             }
         }
+
     }
 
     /**

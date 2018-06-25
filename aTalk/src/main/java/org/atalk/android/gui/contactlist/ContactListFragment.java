@@ -38,6 +38,7 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.StringUtils;
+import org.jxmpp.jid.DomainJid;
 
 import java.util.List;
 
@@ -529,8 +530,9 @@ public class ContactListFragment extends OSGiFragment
 
         MetaContact metaContact = (MetaContact) clicked;
         // Default to telephony access if contact is not a valid entityJid
-        if (!metaContact.getDefaultContact().getJid().isEntityJid()) {
-            TelephonyFragment extPhone = new TelephonyFragment();
+        if (metaContact.getDefaultContact().getJid() instanceof DomainJid) {
+            String domainJid = metaContact.getDefaultContact().getJid().toString();
+            TelephonyFragment extPhone = TelephonyFragment.newInstance(domainJid);
             getActivity().getSupportFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
             return true;
         }

@@ -5,25 +5,10 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.AbstractOperationSetBasicInstantMessaging;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.Message;
-import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
-import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Html2Text;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.util.*;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
@@ -32,13 +17,9 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.chat2.Chat;
-import org.jivesoftware.smack.chat2.ChatManager;
-import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
+import org.jivesoftware.smack.chat2.*;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.StringUtils;
@@ -59,18 +40,9 @@ import org.jivesoftware.smackx.omemo.listener.OmemoMessageListener;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.EntityFullJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 
-import java.util.Date;
-import java.util.EventObject;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 
@@ -94,20 +66,15 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     private static final Logger logger = Logger.getLogger(OperationSetBasicInstantMessagingJabberImpl.class);
 
     /**
-     * The maximum number of unread threads that we'd be notifying the user of.
-     */
-    private static final String PNAME_MAX_GMAIL_THREADS_PER_NOTIFICATION = "protocol.jabber.MAX_GMAIL_THREADS_PER_NOTIFICATION";
-
-    /**
      * A table mapping contact addresses to message threads that can be used to target a specific
      * resource (rather than sending a message to all logged instances of a user).
      */
-    private final Map<Jid, StoredThreadID> jidThreads = new Hashtable<>();
+    private final Map<BareJid, StoredThreadID> jidThreads = new Hashtable<>();
 
     /**
      * The most recent FullJid used for the contact address.
      */
-    private Map<Jid, Jid> recentJidForContact = new Hashtable<>();
+    private Map<BareJid, Jid> recentJidForContact = new Hashtable<>();
 
     /**
      * CarbonManager and ChatManager instances used by OperationSetBasicInstantMessagingJabberImpl
@@ -151,12 +118,6 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * The number of milliseconds that we preserve threads with no traffic before considering them dead.
      */
     private static final long JID_INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 10 min.
-
-    /**
-     * Indicates the time of the last Mailbox report that we received from Google (if this is a
-     * Google server we are talking to). Should be included in all following mailbox queries
-     */
-    private long lastReceivedMailboxResultTime = -1;
 
     /**
      * The provider that created us.
@@ -239,8 +200,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * protocol to support these messages and yet have a particular account that does not
      * (i.e. feature not enabled on the protocol server). In cases like this it is possible for
      * this method to return true even when offline messaging is not supported, and then have the
-     * sendMessage method throw an OperationFailedException with code -
-     * OFFLINE_MESSAGES_NOT_SUPPORTED.
+     * sendMessage method throw an OperationFailedException with code - OFFLINE_MESSAGES_NOT_SUPPORTED.
      *
      * @return <tt>true</tt> if the protocol supports offline messages and <tt>false</tt> otherwise.
      */
@@ -285,15 +245,15 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Remove from our <tt>jidThreads</tt> map all entries that have not seen any activity
      * (i.e. neither outgoing nor incoming messages) for more than JID_INACTIVITY_TIMEOUT.
      * Note that this method is not synchronous and that it is only meant for use by the
-     * {@link #getThreadIDForAddress(Jid, boolean)} and {@link #putJidForAddress(Jid, String)}
+     * {@link #getThreadIDForAddress(BareJid, boolean)} and {@link #putJidForAddress(Jid, String)}
      */
     private void purgeOldJidThreads()
     {
         long currentTime = System.currentTimeMillis();
-        Iterator<Map.Entry<Jid, StoredThreadID>> entries = jidThreads.entrySet().iterator();
+        Iterator<Map.Entry<BareJid, StoredThreadID>> entries = jidThreads.entrySet().iterator();
 
         while (entries.hasNext()) {
-            Map.Entry<Jid, StoredThreadID> entry = entries.next();
+            Map.Entry<BareJid, StoredThreadID> entry = entries.next();
             StoredThreadID target = entry.getValue();
 
             if (currentTime - target.lastUpdatedTime > JID_INACTIVITY_TIMEOUT)
@@ -304,15 +264,15 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * When chat state enter ChatState.gone, existing thread should not be used again.
      *
-     * @param address the <tt>address</tt> that we'd like to remove a threadID for.
+     * @param bareJid the <tt>address</tt> that we'd like to remove a threadID for.
      */
-    public void purgeGoneJidThreads(Jid address)
+    public void purgeGoneJidThreads(BareJid bareJid)
     {
-        if (jidThreads.containsKey(address)) {
-            jidThreads.remove(address);
+        if (jidThreads.containsKey(bareJid)) {
+            jidThreads.remove(bareJid);
         }
-        else if (jidThreads.containsKey(address.asBareJid())) {
-            jidThreads.remove(address.asBareJid());
+        else if (jidThreads.containsKey(bareJid)) {
+            jidThreads.remove(bareJid);
         }
     }
 
@@ -320,27 +280,27 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Returns the threadID that the party with the specified <tt>address</tt> contacted us from or
      * <tt>new ThreadID</tt> if <tt>null</tt> and <tt>generateNewIfNoExist</tt> is true; otherwise
      * <tt>null</tt> if we don't have a jid for the specified <tt>address</tt> yet.
-     * <p>
+     *
      * The method would also purge all entries that haven't seen any activity (i.e. no one has
      * tried to get or remap it) for a delay longer than <tt>JID_INACTIVITY_TIMEOUT</tt>.
      *
-     * @param address the <tt>address</tt> that we'd like to obtain a threadID for.
+     * @param bareJid the <tt>Jid</tt> that we'd like to obtain a threadID for.
      * @param generateNewIfNoExist if <tt>true</tt> generates new threadID if null is found.
      * @return new or last threadID that the party with the specified <tt>address</tt> contacted
      * us from OR <tt>null</tt> if we don't have a jid for the specified <tt>address</tt> and
      * <tt>generateNewIfNoExist</tt> is false.
      */
-    public String getThreadIDForAddress(Jid address, boolean generateNewIfNoExist)
+    public String getThreadIDForAddress(BareJid bareJid, boolean generateNewIfNoExist)
     {
         synchronized (jidThreads) {
             purgeOldJidThreads();
-            StoredThreadID ta = jidThreads.get(address);
+            StoredThreadID ta = jidThreads.get(bareJid);
 
             if (ta == null) {
                 if (generateNewIfNoExist) {
                     ta = new StoredThreadID();
                     ta.threadID = nextThreadID();
-                    putJidForAddress(address, ta.threadID);
+                    putJidForAddress(bareJid, ta.threadID);
                 }
                 else
                     return null;
@@ -363,11 +323,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     {
         synchronized (jidThreads) {
             purgeOldJidThreads();
-            StoredThreadID ta = jidThreads.get(jid);
+            StoredThreadID ta = jidThreads.get(jid.asBareJid());
 
             if (ta == null) {
                 ta = new StoredThreadID();
-                jidThreads.put(jid, ta);
+                jidThreads.put(jid.asBareJid(), ta);
             }
             recentJidForContact.put(jid.asBareJid(), jid);
             ta.lastUpdatedTime = System.currentTimeMillis();
@@ -712,7 +672,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
         // Get the message type i.e. OTR or NONE for incoming message encryption state display
         String msg = message.getBody();
-        int encryption = msg.startsWith("?OTR")? ChatMessage.ENCRYPTION_OTR : ChatMessage.ENCRYPTION_NONE;
+        int encryption = msg.startsWith("?OTR") ? ChatMessage.ENCRYPTION_OTR : ChatMessage.ENCRYPTION_NONE;
         int encType = encryption | ChatMessage.ENCODE_PLAIN;
         Message newMessage = createMessageWithUID(message.getBody(), encType, msgID);
 
@@ -821,6 +781,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
          * @param packet the packet that we need to check.
          * @return <tt>true</tt> if <tt>packet</tt> is a <tt>Message</tt> and false otherwise.
          */
+        @Override
         public boolean accept(Stanza packet)
         {
             if (!(packet instanceof org.jivesoftware.smack.packet.Message))
@@ -856,7 +817,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @return the next thread id.
      */
-    public static synchronized String nextThreadID()
+    private static synchronized String nextThreadID()
     {
         return prefix + Long.toString(id++);
     }
@@ -902,7 +863,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         omemoManager.addOmemoMessageListener(this);
     }
 
-    public void unRegisterOmemoListener(OmemoManager omemoManager)
+    private void unRegisterOmemoListener(OmemoManager omemoManager)
     {
         omemoManager.removeOmemoMessageListener(this);
     }

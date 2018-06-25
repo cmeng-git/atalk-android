@@ -6,6 +6,13 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.4.1 (06/25/2018)" versioncode="1041">
+        <change>Improve account login handling when persistent password saving option is not enabled</change>
+        <change>Fix inconsistency in STUN and JINGLE properties saving when modify or create new account</change>
+        <change>Fix intermittent call failure when transport-info and session-accept are received at the same time</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.4.0 (06/16/2018)" versioncode="1040">
         <change>Implement Jabber VoIP-PBX gateway Telephony option, allowing pbx phone call via service gateway (experimental). See online help</change>
         <change>Return to login screen when user cancel IBR registration on server error, avoiding loop in IBR</change>

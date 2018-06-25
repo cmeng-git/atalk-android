@@ -5,11 +5,13 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.ConferenceDescriptionPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultPacketExtensionProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.coin.CoinIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.coin.CoinIQProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriConferenceIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriIQProvider;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.condesc.ConferenceDescriptionExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.condesc.ConferenceDescriptionExtensionProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt.InputEvtIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt.InputEvtIQProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jibri.JibriIq;
@@ -17,6 +19,7 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.jibri.JibriIqPr
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingleinfo.JingleInfoQueryIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingleinfo.JingleInfoQueryIQProvider;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.ThumbnailElement;
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.*;
@@ -1804,7 +1807,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 //                        if (xmppException != null)
 //                            throw xmppException;
 //                        else
-                          logger.warn("UnparseableStanza Error: " + errMsg, packetData.getParsingException());
+                        logger.warn("UnparseableStanza Error: " + errMsg, packetData.getParsingException());
                     }
                 }
         );
@@ -1848,10 +1851,26 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addIQProvider(ColibriConferenceIQ.ELEMENT, ColibriConferenceIQ.NAMESPACE,
                     new ColibriIQProvider());
 
+            ProviderManager.addIQProvider(JibriIq.ELEMENT_NAME, JibriIq.NAMESPACE, new JibriIqProvider());
+
+            ProviderManager.addExtensionProvider(
+                    ConferenceDescriptionExtension.ELEMENT_NAME, ConferenceDescriptionExtension.NAMESPACE,
+                    new ConferenceDescriptionExtensionProvider());
+
+            ProviderManager.addExtensionProvider(Nick.ELEMENT_NAME, Nick.NAMESPACE, new Nick.Provider());
+
+            ProviderManager.addExtensionProvider(AvatarUrl.ELEMENT_NAME, AvatarUrl.NAMESPACE, new AvatarUrl.Provider());
+
+            ProviderManager.addExtensionProvider(StatsId.ELEMENT_NAME, StatsId.NAMESPACE, new StatsId.Provider());
+
+            ProviderManager.addExtensionProvider(IdentityPacketExtension.ELEMENT_NAME, IdentityPacketExtension.NAMESPACE,
+                    new IdentityPacketExtension.Provider());
+
+            ProviderManager.addExtensionProvider(AvatarIdPacketExtension.ELEMENT_NAME, AvatarIdPacketExtension.NAMESPACE,
+                    new DefaultPacketExtensionProvider<>(AvatarIdPacketExtension.class));
+
             // register our input event provider
             ProviderManager.addIQProvider(InputEvtIQ.ELEMENT_NAME, InputEvtIQ.NAMESPACE, new InputEvtIQProvider());
-
-            ProviderManager.addIQProvider(JibriIq.ELEMENT_NAME, JibriIq.NAMESPACE, new JibriIqProvider());
 
             // register our JingleInfo provider
             ProviderManager.addIQProvider(JingleInfoQueryIQ.ELEMENT_NAME, JingleInfoQueryIQ.NAMESPACE,
@@ -1870,12 +1889,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             ProviderManager.addExtensionProvider(CapsExtension.ELEMENT, CapsExtension.NAMESPACE,
                     new CapsExtensionProvider());
-
-            ProviderManager.addExtensionProvider(
-                    ConferenceDescriptionPacketExtension.ELEMENT_NAME, ConferenceDescriptionPacketExtension.NAMESPACE,
-                    new ConferenceDescriptionPacketExtension.Provider());
-
-            ProviderManager.addExtensionProvider(Nick.ELEMENT_NAME, Nick.NAMESPACE, new Nick.Provider());
 
             // XEP-0231: Bits of Binary
             ProviderManager.addExtensionProvider(BoB.ELEMENT, BoB.NAMESPACE, new BoBProvider());
@@ -2021,7 +2034,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             OperationSetChangePassword opsetChangePassword = new OperationSetChangePasswordJabberImpl(this);
             addSupportedOperationSet(OperationSetChangePassword.class, opsetChangePassword);
 
-            OperationSetCusaxUtils opsetCusaxCusaxUtils = new OperationSetCusaxUtilsJabberImpl(this);
+            OperationSetCusaxUtils opsetCusaxCusaxUtils = new OperationSetCusaxUtilsJabberImpl();
             addSupportedOperationSet(OperationSetCusaxUtils.class, opsetCusaxCusaxUtils);
 
             boolean isUserSearchEnabled = accountID.getAccountPropertyBoolean(IS_USER_SEARCH_ENABLED_PROPERTY, false);

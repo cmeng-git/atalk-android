@@ -5,27 +5,51 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.CallPeerState;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.util.java.awt.Component;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.AudioMediaStream;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.MediaStreamTarget;
+import org.atalk.service.neomedia.MediaType;
+import org.atalk.service.neomedia.QualityPreset;
+import org.atalk.service.neomedia.RTPExtension;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.SrtpControl;
+import org.atalk.service.neomedia.SrtpControlType;
+import org.atalk.service.neomedia.StreamConnector;
+import org.atalk.service.neomedia.VideoMediaStream;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.device.MediaDeviceWrapper;
-import org.atalk.service.neomedia.event.*;
+import org.atalk.service.neomedia.event.CsrcAudioLevelListener;
+import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
+import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.event.*;
+import org.atalk.util.event.PropertyChangeNotifier;
+import org.atalk.util.event.VideoEvent;
+import org.atalk.util.event.VideoListener;
+import org.atalk.util.event.VideoNotifierSupport;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * A utility class implementing media control code shared between current telephony implementations.
@@ -79,8 +103,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * The initial content of a hole punch packet. It has some fields pre-set.
      * Like rtp version, sequence number and timestamp.
      */
-    private static final byte[] HOLE_PUNCH_PACKET
-            = {
+    private static final byte[] HOLE_PUNCH_PACKET = {
             (byte) 0x80, 0x00, 0x02, (byte) 0x9E, 0x00, 0x09,
             (byte) 0xD0, (byte) 0x80, 0x00, 0x00, 0x00, (byte) 0x00,
     };
@@ -214,8 +237,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
     /**
      * Determines whether or not streaming local video is currently enabled. Default is RECVONLY.
-     * We tried to have INACTIVE at one point but it was breaking incoming reINVITEs for video
-     * calls.
+     * We tried to have INACTIVE at one point but it was breaking incoming reINVITEs for video calls.
      */
     private MediaDirection videoDirectionUserPreference = MediaDirection.RECVONLY;
 
@@ -231,8 +253,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     private VideoMediaStream videoStream;
 
     /**
-     * Identifier used to group the audio stream and video stream towards the <tt>CallPeer</tt> in
-     * SDP.
+     * Identifier used to group the audio stream and video stream towards the <tt>CallPeer</tt> in SDP.
      */
     private String msLabel = UUID.randomUUID().toString();
 
@@ -249,8 +270,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
          * carries the same information as the specified <tt>ev</tt> i.e. translates the specified
          * <tt>ev</tt> into a <tt>VideoEvent</tt> fired by this <tt>CallPeerMediaHandler</tt>.
          *
-         * @param ev
-         *        the <tt>VideoEvent</tt> to notify this <tt>VideoListener</tt> about
+         * @param ev the <tt>VideoEvent</tt> to notify this <tt>VideoListener</tt> about
          */
         private void onVideoEvent(VideoEvent ev)
         {
@@ -443,8 +463,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Finds a <tt>MediaFormat</tt> in a specific list of <tt>MediaFormat</tt>s which matches a
      * specific <tt>MediaFormat</tt>.
      *
-     * @param formats the list of <tt>MediaFormat</tt>s to find the specified matching <tt>MediaFormat</tt>
-     * into
+     * @param formats the list of <tt>MediaFormat</tt>s to find the specified matching <tt>MediaFormat</tt> into
      * @param format encoding of the <tt>MediaFormat</tt> to find
      * @return the <tt>MediaFormat</tt> from <tt>formats</tt> which matches <tt>format</tt> if such
      * a match exists in <tt>formats</tt>; otherwise, <tt>null</tt>
@@ -466,13 +485,11 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * specified visual <tt>Component</tt> depicting video
      * @param visualComponent the visual <tt>Component</tt> depicting video which has been added or removed in this
      * <tt>CallPeerMediaHandler</tt>
-     * @param origin {@link VideoEvent#LOCAL} if the origin of the video is local (e.g. it is being locally
-     * captured); {@link VideoEvent#REMOTE} if the origin of the video is remote (e.g. a
-     * remote peer is streaming it)
+     * @param origin {@link VideoEvent#LOCAL} if the origin of the video is local (e.g. it is being locally captured);
+     * {@link VideoEvent#REMOTE} if the origin of the video is remote (e.g. a remote peer is streaming it)
      * @return <tt>true</tt> if this event and, more specifically, the visual <tt>Component</tt> it
-     * describes have been consumed and should be considered owned, referenced (which is
-     * important because <tt>Component</tt>s belong to a single <tt>Container</tt> at a
-     * time); otherwise, <tt>false</tt>
+     * describes have been consumed and should be considered owned, referenced (which is important because
+     * <tt>Component</tt>s belong to a single <tt>Container</tt> at a time); otherwise, <tt>false</tt>
      */
     protected boolean fireVideoEvent(int type, Component visualComponent, int origin)
     {
@@ -1352,6 +1369,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * are to start transmitting again.
      */
     public void setLocallyOnHold(boolean locallyOnHold)
+            throws OperationFailedException
     {
         if (logger.isDebugEnabled())
             logger.debug("Setting locally on hold: " + locallyOnHold);

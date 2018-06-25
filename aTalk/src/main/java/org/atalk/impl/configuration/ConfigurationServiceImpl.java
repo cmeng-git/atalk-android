@@ -1,39 +1,21 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.configuration;
 
 import org.atalk.impl.configuration.xml.XMLConfigurationStore;
-import org.atalk.service.configuration.ConfigPropertyVetoException;
-import org.atalk.service.configuration.ConfigVetoableChangeListener;
-import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.service.configuration.*;
 import org.atalk.service.fileaccess.FailSafeTransaction;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.Logger;
-import org.atalk.util.OSUtils;
-import org.atalk.util.PasswordUtil;
-import org.atalk.util.StringUtils;
+import org.atalk.util.*;
 import org.atalk.util.xml.XMLException;
 
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -140,10 +122,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
     {
         /*
          * XXX We explicitly delay the query for the FileAccessService implementation because
-		 * FileAccessServiceImpl looks for properties set by methods of ConfigurationServiceImpl
-		 * and we want to make sure that we have given the  chance to this ConfigurationServiceImpl
-		 * to set these properties before FileAccessServiceImpl looks for them.
-		 */
+         * FileAccessServiceImpl looks for properties set by methods of ConfigurationServiceImpl
+         * and we want to make sure that we have given the  chance to this ConfigurationServiceImpl
+         * to set these properties before FileAccessServiceImpl looks for them.
+         */
 
         try {
             debugPrintSystemProperties();
@@ -160,7 +142,6 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * first trigger a PropertyChangeEvent that will be dispatched to all VetoableChangeListeners.
      * In case no complaints (PropertyVetoException) have been received, the property  will be
      * actually changed and a PropertyChangeEvent will be dispatched.
-
      *
      * @param propertyName the name of the property
      * @param property the object that we'd like to be come the new value of the property.
@@ -179,7 +160,6 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * In case no complaints (PropertyVetoException) have been received, the property will be
      * actually changed and a PropertyChangeEvent will be dispatched. This method also allows the
      * caller to specify whether or not the specified property is a system one.
-
      *
      * @param propertyName the name of the property to change.
      * @param property the new value of the specified property.
@@ -296,7 +276,6 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * complaints (PropertyVetoException) have been received, the property will be actually
      * changed and a PropertyChangeEvent will be dispatched. All properties with prefix
      * propertyName will also be removed.
-
      *
      * @param propertyName the name of the property to change.
      */
@@ -322,7 +301,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * complaints (PropertyVetoException) have been received, the property will be actually
      * changed and a PropertyChangeEvent will be dispatched. All properties with prefix
      * propertyName will also be removed.
-
+     *
      * Does not store anything.
      *
      * @param propertyName the name of the property to change.
@@ -652,9 +631,9 @@ public class ConfigurationServiceImpl implements ConfigurationService
     private void storeConfiguration(File file)
             throws IOException
     {
-		/*
-		 * If the configuration file is forcibly considered read-only, do not write it.
-		 */
+        /*
+         * If the configuration file is forcibly considered read-only, do not write it.
+         */
         String readOnly = System.getProperty(PNAME_CONFIGURATION_FILE_IS_READ_ONLY);
         if ((readOnly != null) && Boolean.parseBoolean(readOnly))
             return;
@@ -732,11 +711,11 @@ public class ConfigurationServiceImpl implements ConfigurationService
     {
         if (this.configurationFile == null) {
             createConfigurationFile();
-			/*
-			 * Make sure that the properties SC_HOME_DIR_LOCATION and SC_HOME_DIR_NAME are
-			 * available in the store of this instance so that users don't have to ask the system
-			  * properties again.
-			 */
+            /*
+             * Make sure that the properties SC_HOME_DIR_LOCATION and SC_HOME_DIR_NAME are
+             * available in the store of this instance so that users don't have to ask the system
+             * properties again.
+             */
             getScHomeDirLocation();
             getScHomeDirName();
         }
@@ -750,41 +729,41 @@ public class ConfigurationServiceImpl implements ConfigurationService
     private void createConfigurationFile()
             throws IOException
     {
-		/*
-		 * Choose the format of the configuration file so with the slow and fast XML format when necessary.
-		 */
+        /*
+         * Choose the format of the configuration file so with the slow and fast XML format when necessary.
+         */
         File configurationFile = getConfigurationFile("xml", false);
         if (configurationFile == null) {
-			/*
-			 * It's strange that there's no configuration file name but let it play out as it did
-			 * when the configuration file was in XML format.
-			 */
+            /*
+             * It's strange that there's no configuration file name but let it play out as it did
+             * when the configuration file was in XML format.
+             */
             setConfigurationStore(XMLConfigurationStore.class);
         }
         else {
-			/*
-			 * Figure out the format of the configuration file by looking at its extension.
-			 */
+            /*
+             * Figure out the format of the configuration file by looking at its extension.
+             */
             String name = configurationFile.getName();
             int extensionBeginIndex = name.lastIndexOf('.');
             String extension = (extensionBeginIndex > -1) ? name.substring(extensionBeginIndex) : null;
 
-			/*
-			 * Obviously, a file with the .properties extension is in the properties format. Since
-			  * there's no file with the .xml extension, the case is simple.
-			 */
+            /*
+             * Obviously, a file with the .properties extension is in the properties format. Since
+             * there's no file with the .xml extension, the case is simple.
+             */
             if (".properties".equalsIgnoreCase(extension)) {
                 this.configurationFile = configurationFile;
                 if (!(this.store instanceof PropertyConfigurationStore))
                     this.store = new PropertyConfigurationStore();
             }
             else {
-				/*
-				 * But if we're told that the configuration file name is with the .xml extension,
-				 * we may also have a .properties file or the .xml extension may be only the
-				 * default and not forced on us so it may be fine to create a .properties file
-				 * and use the properties format anyway.
-				 */
+                /*
+                 * But if we're told that the configuration file name is with the .xml extension,
+                 * we may also have a .properties file or the .xml extension may be only the
+                 * default and not forced on us so it may be fine to create a .properties file
+                 * and use the properties format anyway.
+                 */
                 File newConfigurationFile = new File(configurationFile.getParentFile(),
                         ((extensionBeginIndex > -1) ? name.substring(0, extensionBeginIndex) : name) + ".properties");
 
@@ -808,11 +787,11 @@ public class ConfigurationServiceImpl implements ConfigurationService
                     Class<? extends ConfigurationStore> defaultConfigurationStoreClass
                             = getDefaultConfigurationStoreClass();
 
-					/*
-					 * The .xml is not forced on us so we allow ourselves to not obey the default
-					 * and use the properties format. If a configuration file in the XML format
-					 * exists already, we have to migrate it  to the properties format.
-					 */
+                    /*
+                     * The .xml is not forced on us so we allow ourselves to not obey the default
+                     * and use the properties format. If a configuration file in the XML format
+                     * exists already, we have to migrate it  to the properties format.
+                     */
                     if (configurationFile.exists()) {
                         ConfigurationStore xmlStore = new XMLConfigurationStore();
                         try {
@@ -842,10 +821,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
                     }
                 }
                 else {
-					/*
-					 * The .xml extension is forced on us so we have to assume that whoever forced
-					 * it knows what she wants to get so we have to obey and use the XML format.
-					 */
+                    /*
+                     * The .xml extension is forced on us so we have to assume that whoever forced
+                     * it knows what she wants to get so we have to obey and use the XML format.
+                     */
                     this.configurationFile = configurationFile.exists()
                             ? configurationFile : getConfigurationFile("xml", true);
                     if (!(this.store instanceof XMLConfigurationStore))
@@ -990,10 +969,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
             try {
                 in.close();
             } catch (IOException ioex) {
-				/*
-				 * Ignore it because it doesn't matter and, most importantly, it shouldn't prevent
-				  * us from using the configuration file.
-				 */
+                /*
+                 * Ignore it because it doesn't matter and, most importantly, it shouldn't prevent
+                 * us from using the configuration file.
+                 */
                 ioex.printStackTrace();
             }
         }
@@ -1402,12 +1381,16 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
             try {
                 this.store = clazz.newInstance();
-            } catch (IllegalAccessException | InstantiationException ex) {
+            } catch (IllegalAccessException ex) {
                 exception = ex;
+            } catch (InstantiationException e) {
+                exception = e;
             }
+
             if (exception != null)
                 throw new RuntimeException(exception);
         }
+
     }
 
     /**

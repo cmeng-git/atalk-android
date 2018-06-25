@@ -121,7 +121,6 @@ public class HostInfoPacketExtension extends AbstractPacketExtension
         for (ExtensionElement ext : getChildExtensions()) {
             xml.append(ext.toXML());
         }
-
         xml.closeElement(ELEMENT_NAME);
         return xml;
     }

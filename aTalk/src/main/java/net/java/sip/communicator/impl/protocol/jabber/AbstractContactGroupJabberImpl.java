@@ -15,8 +15,7 @@ import net.java.sip.communicator.service.protocol.ContactGroup;
  * list on the other hand may not directly contain buddies.
  *
  *
- * The reason for having an abstract class is only - being able to esily recognize our own (Jabber)
- * contacts.
+ * The reason for having an abstract class is only - being able to esily recognize our own (Jabber) contacts.
  * 
  * @author Damian Minkov
  */

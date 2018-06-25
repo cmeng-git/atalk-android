@@ -23,7 +23,7 @@ public class CoinPacketExtension extends AbstractPacketExtension
 	/**
 	 * Namespace.
 	 */
-	public final static String NAMESPACE = "urn:ietf:params:xml:ns:conference-info";
+    public final static String NAMESPACE = "urn:xmpp:coin:1";
 
 	/**
 	 * IsFocus attribute name.
