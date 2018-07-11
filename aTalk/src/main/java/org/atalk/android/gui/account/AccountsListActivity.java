@@ -341,8 +341,7 @@ public class AccountsListActivity extends OSGiActivity
                     accEnableThread = new AccountEnableThread(account.getAccountID(), enable);
                     String message = enable ? getString(R.string.service_gui_CONNECTING_ACCOUNT, account.getAccountName())
                             : getString(R.string.service_gui_DISCONNECTING_ACCOUNT, account.getAccountName());
-                    progressDialog
-                            = ProgressDialogFragment.showProgressDialog(getString(R.string.service_gui_INFO), message);
+                    progressDialog = ProgressDialogFragment.showProgressDialog(getString(R.string.service_gui_INFO), message);
                     accEnableThread.start();
                 }
             });
@@ -382,8 +381,9 @@ public class AccountsListActivity extends OSGiActivity
             try {
                 if (enable)
                     accountManager.loadAccount(account);
-                else
+                else {
                     accountManager.unloadAccount(account);
+                }
             } catch (OperationFailedException e) {
                 AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), getString(R.string.service_gui_ERROR),
                         "Failed to " + (enable ? "load" : "unload") + " " + account);

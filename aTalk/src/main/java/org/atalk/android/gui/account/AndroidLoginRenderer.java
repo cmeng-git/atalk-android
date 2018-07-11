@@ -64,8 +64,7 @@ public class AndroidLoginRenderer implements LoginRenderer
 	/**
 	 * The android implementation of the provider presence listener.
 	 */
-	private final ProviderPresenceStatusListener androidPresenceListener
-			= new UIProviderPresenceStatusListener();
+	private final ProviderPresenceStatusListener androidPresenceListener = new UIProviderPresenceStatusListener();
 
 	/**
 	 * The security authority used by this login renderer.
@@ -108,8 +107,7 @@ public class AndroidLoginRenderer implements LoginRenderer
 	private Drawable localStatusDrawable;
 
 	/**
-	 * Creates an instance of <tt>AndroidLoginRenderer</tt> by specifying the current
-	 * <tt>Context</tt>.
+	 * Creates an instance of <tt>AndroidLoginRenderer</tt> by specifying the current <tt>Context</tt>.
 	 *
 	 * @param defaultSecurityAuthority
 	 * 		the security authority that will be used by this login renderer

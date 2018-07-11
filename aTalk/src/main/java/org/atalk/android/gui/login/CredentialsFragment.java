@@ -119,7 +119,7 @@ public class CredentialsFragment extends Fragment {
         spinnerDM = content.findViewById(R.id.dnssecModeSpinner);
         ArrayAdapter<CharSequence> adapterDM = ArrayAdapter.createFromResource(getActivity(),
                 R.array.dnssec_Mode_name, R.layout.simple_spinner_item);
-        adapterDM.setDropDownViewResource(R.layout.dropdown_spinner_item);
+        adapterDM.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         spinnerDM.setAdapter(adapterDM);
 
         String dnssecMode = args.getString(ARG_DNSSEC_MODE);

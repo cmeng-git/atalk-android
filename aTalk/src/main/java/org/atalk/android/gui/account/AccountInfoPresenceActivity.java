@@ -284,15 +284,16 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         Spinner statusSpinner = findViewById(R.id.presenceStatusSpinner);
 
         // Create list adapter
-        Iterator<PresenceStatus> statusIter = accountPresence.getSupportedStatusSet();
-        StatusListAdapter statusAdapter = new StatusListAdapter(statusIter);
+        List<PresenceStatus> presenceStatuses = accountPresence.getSupportedStatusSet();
+        StatusListAdapter statusAdapter = new StatusListAdapter(this,
+                R.layout.account_presence_status_row, presenceStatuses);
         statusSpinner.setAdapter(statusAdapter);
 
         // Selects current status
         PresenceStatus presenceStatus = accountPresence.getPresenceStatus();
         ActionBarUtil.setStatus(this, presenceStatus.getStatusIcon());
 
-        statusSpinner.setSelection(statusAdapter.getPositionForItem(presenceStatus));
+        statusSpinner.setSelection(statusAdapter.getPosition(presenceStatus));
         statusSpinner.setOnItemSelectedListener(this);
 
         // Sets current status message
@@ -1243,7 +1244,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
             case UCrop.RESULT_ERROR:
                 final Throwable cropError = UCrop.getError(data);
-                logger.error("Image crop error:" + cropError.getMessage());
+                String errMsg = "Image crop error: ";
+                if (cropError != null)
+                    errMsg += cropError.getMessage();
+                logger.error(errMsg);
                 showAvatarChangeError();
                 break;
         }
@@ -1280,14 +1284,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                         accountPresence.publishPresenceStatus(status, text);
                 } catch (Exception e) {
                     logger.error(e);
-
-                    // TODO: fix me
-                    // This is annoying and removed for now. It is displayed for XMPP provider
-                    // even when switching from offline to any other status.
-                    /*
-                     * AndroidUtils.showAlertDialog( getBaseContext(), "Error",
-                     * "An error occurred while setting the status: " + e.getLocalizedMessage());
-                     */
                 }
             }
         }).start();
@@ -1360,56 +1356,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     public void onNothingSelected(AdapterView<?> adapterView)
     {
         // Should not happen in single selection mode
-    }
-
-    /**
-     * Class responsible for creating the Views for a given set of {@link PresenceStatus}
-     */
-    private class StatusListAdapter extends CollectionAdapter<PresenceStatus>
-    {
-        /**
-         * Creates new instance of {@link StatusListAdapter}
-         *
-         * @param objects {@link Iterator} for a set of {@link PresenceStatus}
-         */
-        private StatusListAdapter(Iterator<PresenceStatus> objects)
-        {
-            super(AccountInfoPresenceActivity.this, objects);
-        }
-
-        @Override
-        protected View getView(boolean isDropDown, PresenceStatus item, ViewGroup parent, LayoutInflater inflater)
-        {
-            // Retrieve views
-            View statusItemView = inflater.inflate(R.layout.account_presence_status_row, parent, false);
-            TextView statusNameView = (TextView) statusItemView.findViewById(R.id.presenceStatusNameView);
-            ImageView statusIconView = (ImageView) statusItemView.findViewById(R.id.presenceStatusIconView);
-
-            // Set status name
-            String statusName = item.getStatusName();
-            statusNameView.setText(statusName);
-
-            // Set status icon
-            Bitmap presenceIcon = AndroidImageUtil.bitmapFromBytes(item.getStatusIcon());
-            statusIconView.setImageBitmap(presenceIcon);
-            return statusItemView;
-        }
-
-        /**
-         * Find the position of <tt>status</tt> in adapter's list
-         *
-         * @param status the {@link PresenceStatus} for which the position is returned
-         * @return index of <tt>status</tt> in adapter's list
-         */
-        int getPositionForItem(PresenceStatus status)
-        {
-            for (int i = 0; i < getCount(); i++) {
-                PresenceStatus other = (PresenceStatus) getItem(i);
-                if (other.equals(status))
-                    return i;
-            }
-            return -1;
-        }
     }
 
     /**

@@ -29,8 +29,7 @@ public class SystemActivityNotifications
      * The <tt>Logger</tt> used by the <tt>SystemActivityNotifications</tt>
      * class to log debugging information.
      */
-    private static final Logger logger
-        = Logger.getLogger(SystemActivityNotifications.class);
+    private static final Logger logger = Logger.getLogger(SystemActivityNotifications.class);
 
     /**
      * Computer display has stand by.
@@ -48,8 +47,7 @@ public class SystemActivityNotifications
     public static final int NOTIFY_DNS_CHANGE = 10;
 
     /**
-     * All processes have been informed about ending session, now notify for
-     * the actual end session.
+     * All processes have been informed about ending session, now notify for the actual end session.
      */
     public static final int NOTIFY_ENDSESSION = 12;
 
@@ -59,8 +57,7 @@ public class SystemActivityNotifications
     public static final int NOTIFY_NETWORK_CHANGE = 9;
 
     /**
-     * Notifies for start of process of ending desktop session,
-     * logoff or shutdown.
+     * Notifies for start of process of ending desktop session, logoff or shutdown.
      */
     public static final int NOTIFY_QUERY_ENDSESSION = 11;
 
@@ -107,23 +104,17 @@ public class SystemActivityNotifications
     /**
      * Init native library.
      */
-    static
-    {
-        try
-        {
+    static {
+        try {
             // Don't load native library on Android to prevent the exception
-            if(!OSUtils.IS_ANDROID)
-            {
-//                System.loadLibrary("sysactivitynotifications",
-//                    SystemActivityNotifications.class.getClassLoader());
+            if (!OSUtils.IS_ANDROID) {
+//                System.loadLibrary("sysactivitynotifications", SystemActivityNotifications.class.getClassLoader());
 
                 ptr = allocAndInit();
                 if (ptr == -1)
                     ptr = 0;
             }
-        }
-        catch (Throwable t)
-        {
+        } catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else
@@ -136,17 +127,18 @@ public class SystemActivityNotifications
      *
      * @return
      */
-    private static long allocAndInit() {
+    private static long allocAndInit()
+    {
         return 0;
     }
 
     /**
-     * Returns the when was last input in milliseconds. The time when there was
-     * any activity on the computer.
+     * Returns the when was last input in milliseconds. The time when there was any activity on the computer.
      *
      * @return the last input in milliseconds
      */
-    public static long getLastInput(){
+    public static long getLastInput()
+    {
         return 0;
     }
 
@@ -176,9 +168,8 @@ public class SystemActivityNotifications
      * @param ptr
      * @param delegate
      */
-    public static void setDelegate(
-            long ptr,
-            NotificationsDelegate delegate){
+    public static void setDelegate(long ptr, NotificationsDelegate delegate)
+    {
 
     }
 
@@ -217,8 +208,7 @@ public class SystemActivityNotifications
      */
     public static void stop()
     {
-        if (ptr != 0)
-        {
+        if (ptr != 0) {
             stop(ptr);
             release(ptr);
             ptr = 0;
@@ -230,7 +220,8 @@ public class SystemActivityNotifications
      *
      * @param ptr
      */
-    private static void stop(long ptr) {
+    private static void stop(long ptr)
+    {
 
     }
 

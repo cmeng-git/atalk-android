@@ -18,10 +18,7 @@ package net.java.sip.communicator.impl.muc;
 import android.support.annotation.NonNull;
 
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
-import net.java.sip.communicator.service.muc.ChatRoomListChangeEvent;
-import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
-import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.muc.MUCService;
+import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.util.ConfigurationUtils;
 

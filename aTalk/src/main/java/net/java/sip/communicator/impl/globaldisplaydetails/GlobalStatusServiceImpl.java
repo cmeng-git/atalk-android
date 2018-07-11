@@ -19,8 +19,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 import static net.java.sip.communicator.util.account.AccountUtils.getRegisteredProviders;
 
@@ -154,11 +153,11 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
                 return null;
 
             // Check if there's such status in the supported presence status set.
-            Iterator<PresenceStatus> i = presence.getSupportedStatusSet();
-            while (i.hasNext()) {
-                PresenceStatus nextStatus = i.next();
-                if (nextStatus.getStatusName().equals(lastStatus))
-                    status = nextStatus;
+            for (PresenceStatus presenceStatus : presence.getSupportedStatusSet()) {
+                if (presenceStatus.getStatusName().equals(lastStatus)) {
+                    status = presenceStatus;
+                    break;
+                }
             }
 
             // If we haven't found the last status in the protocol provider supported status set,
@@ -246,8 +245,8 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      *
      * @param protocolProvider the protocol provider to which we change the status.
      * @param status the status to publish.
-     * @param dueToRegistrationStateChanged whether the publish status is invoked after registrationStateChanged for a provider,
-     * where the provider is expected to be REGISTERED, if not we do nothing
+     * @param dueToRegistrationStateChanged whether the publish status is invoked after registrationStateChanged
+     * for a provider, where the provider is expected to be REGISTERED, if not we do nothing
      * (means it has connection failed soon after firing registered).
      */
     private void publishStatusInternal(ProtocolProviderService protocolProvider, PresenceStatus status,
@@ -322,9 +321,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
                             saveStatusInformation(protocolProvider, itemName);
                         }
                         else {
-                            Iterator<PresenceStatus> statusSet = presence.getSupportedStatusSet();
-                            while (statusSet.hasNext()) {
-                                PresenceStatus status = statusSet.next();
+                            for (PresenceStatus status : presence.getSupportedStatusSet()) {
                                 if ((status.getStatus() < PresenceStatus.EAGER_TO_COMMUNICATE_THRESHOLD)
                                         && (status.getStatus() >= PresenceStatus.AVAILABLE_THRESHOLD)) {
                                     new PublishPresenceStatusThread(protocolProvider, presence, status).start();
@@ -346,9 +343,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
                             LoginManager.logoff(protocolProvider);
                         }
                         else {
-                            Iterator<PresenceStatus> statusSet = presence.getSupportedStatusSet();
-                            while (statusSet.hasNext()) {
-                                PresenceStatus status = statusSet.next();
+                            for (PresenceStatus status : presence.getSupportedStatusSet()) {
                                 if (status.getStatus() < PresenceStatus.ONLINE_THRESHOLD) {
                                     this.saveStatusInformation(protocolProvider, status.getStatusName());
                                     break;
@@ -435,9 +430,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
             return null;
 
         PresenceStatus status = null;
-        Iterator<PresenceStatus> statusSet = presence.getSupportedStatusSet();
-        while (statusSet.hasNext()) {
-            PresenceStatus currentStatus = statusSet.next();
+        for (PresenceStatus currentStatus : presence.getSupportedStatusSet()) {
             if ((status == null)
                     && (currentStatus.getStatus() < ceilStatusValue)
                     && (currentStatus.getStatus() >= floorStatusValue)) {

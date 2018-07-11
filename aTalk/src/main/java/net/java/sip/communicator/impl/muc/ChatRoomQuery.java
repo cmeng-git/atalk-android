@@ -15,31 +15,15 @@
  */
 package net.java.sip.communicator.impl.muc;
 
-import net.java.sip.communicator.service.contactsource.AsyncContactQuery;
-import net.java.sip.communicator.service.contactsource.ContactQuery;
-import net.java.sip.communicator.service.contactsource.ContactQueryListener;
-import net.java.sip.communicator.service.contactsource.ContactSourceService;
-import net.java.sip.communicator.service.muc.ChatRoomListChangeEvent;
-import net.java.sip.communicator.service.muc.ChatRoomListChangeListener;
-import net.java.sip.communicator.service.muc.ChatRoomPresenceStatus;
-import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
-import net.java.sip.communicator.service.muc.ChatRoomProviderWrapperListener;
-import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.contactsource.*;
+import net.java.sip.communicator.service.muc.*;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceListener;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -134,10 +118,8 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     @Override
     protected void run()
     {
-        Iterator<ChatRoomProviderWrapper> chatRoomProviders = mucService.getChatRoomProviders();
-
-        while (chatRoomProviders.hasNext()) {
-            ChatRoomProviderWrapper provider = chatRoomProviders.next();
+        List<ChatRoomProviderWrapper> chatRoomProviders = mucService.getChatRoomProviders();
+        for (ChatRoomProviderWrapper provider : chatRoomProviders) {
             providerAdded(provider, true);
         }
 

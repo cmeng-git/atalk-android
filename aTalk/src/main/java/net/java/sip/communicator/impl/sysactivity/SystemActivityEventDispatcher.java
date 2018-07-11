@@ -15,11 +15,11 @@
  */
 package net.java.sip.communicator.impl.sysactivity;
 
-import java.util.*;
+import net.java.sip.communicator.service.sysactivity.SystemActivityChangeListener;
+import net.java.sip.communicator.service.sysactivity.event.SystemActivityEvent;
+import net.java.sip.communicator.util.Logger;
 
-import net.java.sip.communicator.service.sysactivity.*;
-import net.java.sip.communicator.service.sysactivity.event.*;
-import net.java.sip.communicator.util.*;
+import java.util.*;
 
 /**
  * The class implements a dispatch event thread. The thread will
@@ -27,17 +27,17 @@ import net.java.sip.communicator.util.*;
  * method and would then deliver it to a registered listener if any.
  * If the event has time set we used it as a delay before dispatching the event.
  * <p>
+ *
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
 public class SystemActivityEventDispatcher
-    implements Runnable
+        implements Runnable
 {
     /**
      * Our class logger.
      */
-    private static Logger logger =
-        Logger.getLogger(SystemActivityEventDispatcher.class);
+    private static Logger logger = Logger.getLogger(SystemActivityEventDispatcher.class);
 
     /**
      * A list of listeners registered for system activity events.
@@ -67,16 +67,12 @@ public class SystemActivityEventDispatcher
      * the underlying system.
      */
     public void addSystemActivityChangeListener(
-        SystemActivityChangeListener listener)
+            SystemActivityChangeListener listener)
     {
-        synchronized(listeners)
-        {
-            if(!listeners.contains(listener))
-            {
+        synchronized (listeners) {
+            if (!listeners.contains(listener)) {
                 listeners.add(listener);
-
-                if(dispatcherThread == null)
-                {
+                if (dispatcherThread == null) {
                     dispatcherThread = new Thread(this);
                     dispatcherThread.start();
                 }
@@ -92,8 +88,7 @@ public class SystemActivityEventDispatcher
      */
     public void removeSystemActivityChangeListener(SystemActivityChangeListener listener)
     {
-        synchronized(listeners)
-        {
+        synchronized (listeners) {
             listeners.remove(listener);
         }
     }
@@ -103,8 +98,7 @@ public class SystemActivityEventDispatcher
      */
     public void stop()
     {
-        synchronized(eventsToDispatch)
-        {
+        synchronized (eventsToDispatch) {
             stopped = true;
             eventsToDispatch.notifyAll();
 
@@ -115,8 +109,7 @@ public class SystemActivityEventDispatcher
     /**
      * Delivers the specified event to all registered listeners.
      *
-     * @param evt the <tt>SystemActivityEvent</tt> that we'd like delivered to
-     * all registered message listeners.
+     * @param evt the <tt>SystemActivityEvent</tt> that we'd like delivered to all registered message listeners.
      */
     protected void fireSystemActivityEvent(SystemActivityEvent evt)
     {
@@ -133,11 +126,10 @@ public class SystemActivityEventDispatcher
     protected void fireSystemActivityEventCurrentThread(SystemActivityEvent evt)
     {
         List<SystemActivityChangeListener> listenersCopy = new ArrayList<>(listeners);
-        for (int i = 0; i < listenersCopy.size(); i++)
-        {
+        for (int i = 0; i < listenersCopy.size(); i++) {
             fireSystemActivityEvent(
-                evt,
-                listenersCopy.get(i));
+                    evt,
+                    listenersCopy.get(i));
         }
     }
 
@@ -150,14 +142,12 @@ public class SystemActivityEventDispatcher
      */
     protected void fireSystemActivityEvent(SystemActivityEvent evt, int wait)
     {
-        synchronized(eventsToDispatch)
-        {
+        synchronized (eventsToDispatch) {
             eventsToDispatch.put(evt, wait);
 
             eventsToDispatch.notifyAll();
 
-            if(dispatcherThread == null && listeners.size() > 0)
-            {
+            if (dispatcherThread == null && listeners.size() > 0) {
                 dispatcherThread = new Thread(this);
                 dispatcherThread.start();
             }
@@ -174,23 +164,17 @@ public class SystemActivityEventDispatcher
     private void fireSystemActivityEvent(SystemActivityEvent evt, SystemActivityChangeListener listener)
     {
         if (logger.isDebugEnabled())
-            logger.debug("Dispatching SystemActivityEvent Listeners="
-                + listeners.size() + " evt=" + evt);
+            logger.debug("Dispatching SystemActivityEvent Listeners=" + listeners.size() + " evt=" + evt);
 
-        if(logger.isInfoEnabled() &&
-            (evt.getEventID() == SystemActivityEvent.EVENT_NETWORK_CHANGE
-            || evt.getEventID() == SystemActivityEvent.EVENT_DNS_CHANGE))
-        {
-            logger.info("Dispatching SystemActivityEvent Listeners="
-                            + listeners.size() + " evt=" + evt);
+        if (logger.isInfoEnabled() &&
+                (evt.getEventID() == SystemActivityEvent.EVENT_NETWORK_CHANGE
+                        || evt.getEventID() == SystemActivityEvent.EVENT_DNS_CHANGE)) {
+            logger.info("Dispatching SystemActivityEvent Listeners=" + listeners.size() + " evt=" + evt);
         }
 
-        try
-        {
+        try {
             listener.activityChanged(evt);
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             logger.error("Error delivering event", e);
         }
     }
@@ -200,23 +184,19 @@ public class SystemActivityEventDispatcher
      */
     public void run()
     {
-        try
-        {
+        try {
             stopped = false;
 
-            while(!stopped)
-            {
+            while (!stopped) {
                 Map.Entry<SystemActivityEvent, Integer> eventToProcess = null;
                 List<SystemActivityChangeListener> listenersCopy;
 
-                synchronized(eventsToDispatch)
-                {
-                    if(eventsToDispatch.size() == 0)
-                    {
+                synchronized (eventsToDispatch) {
+                    if (eventsToDispatch.size() == 0) {
                         try {
                             eventsToDispatch.wait();
+                        } catch (InterruptedException iex) {
                         }
-                        catch (InterruptedException iex){}
                     }
 
                     //no point in dispatching if there's no one
@@ -228,38 +208,30 @@ public class SystemActivityEventDispatcher
                     //it before we've had a chance to notify it.
                     listenersCopy = new ArrayList<SystemActivityChangeListener>(listeners);
 
-                    Iterator<Map.Entry<SystemActivityEvent, Integer>> iter =
-                            eventsToDispatch.entrySet().iterator();
-                    if(iter.hasNext())
-                    {
+                    Iterator<Map.Entry<SystemActivityEvent, Integer>> iter = eventsToDispatch.entrySet().iterator();
+                    if (iter.hasNext()) {
                         eventToProcess = iter.next();
                         iter.remove();
                     }
                 }
 
-                if(eventToProcess != null && listenersCopy != null)
-                {
-                    if(eventToProcess.getValue() > 0)
-                        synchronized(this)
-                        {
-                            try{
+                if (eventToProcess != null && listenersCopy != null) {
+                    if (eventToProcess.getValue() > 0)
+                        synchronized (this) {
+                            try {
                                 wait(eventToProcess.getValue());
-                            }catch(Throwable t){}
+                            } catch (Throwable t) {
+                            }
                         }
 
-                    for (int i = 0; i < listenersCopy.size(); i++)
-                    {
-                        fireSystemActivityEvent(
-                            eventToProcess.getKey(),
-                            listenersCopy.get(i));
+                    for (int i = 0; i < listenersCopy.size(); i++) {
+                        fireSystemActivityEvent(eventToProcess.getKey(), listenersCopy.get(i));
                     }
                 }
-
                 eventToProcess = null;
                 listenersCopy = null;
             }
-        } catch(Throwable t)
-        {
+        } catch (Throwable t) {
             logger.error("Error dispatching thread ended unexpectedly", t);
         }
     }

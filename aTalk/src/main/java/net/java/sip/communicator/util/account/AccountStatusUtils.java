@@ -19,6 +19,7 @@ import java.util.Iterator;
  * The <tt>AccountStatusUtils</tt> provides utility methods for account status management.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class AccountStatusUtils {
 	private static GlobalStatusService globalStatusService;
@@ -88,11 +89,8 @@ public class AccountStatusUtils {
 
 		// presence can be not supported
 		if (presence != null) {
-			Iterator<PresenceStatus> statusIterator = presence.getSupportedStatusSet();
-			while (statusIterator.hasNext()) {
-				PresenceStatus status = statusIterator.next();
+            for (PresenceStatus status : presence.getSupportedStatusSet()) {
 				int connectivity = status.getStatus();
-
 				if ((onlineStatus != null && (onlineStatus.getStatus() < connectivity))
 						|| ((onlineStatus == null) && (connectivity > 50 && connectivity < 80))) {
 					onlineStatus = status;
@@ -114,11 +112,8 @@ public class AccountStatusUtils {
 		OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
 		// presence can be not supported
 		if (presence != null) {
-			Iterator<PresenceStatus> statusIterator = presence.getSupportedStatusSet();
-			while (statusIterator.hasNext()) {
-				PresenceStatus status = statusIterator.next();
+            for (PresenceStatus status : presence.getSupportedStatusSet()) {
 				int connectivity = status.getStatus();
-
 				if (connectivity < 1) {
 					offlineStatus = status;
 				}

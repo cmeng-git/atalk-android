@@ -15,21 +15,11 @@
  */
 package net.java.sip.communicator.impl.muc;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.java.sip.communicator.service.muc.ChatRoomListChangeEvent;
-import net.java.sip.communicator.service.muc.ChatRoomListChangeListener;
-import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
-import net.java.sip.communicator.service.muc.ChatRoomProviderWrapperListener;
-import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.AccountManager;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.muc.*;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
@@ -37,16 +27,9 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.persistance.DatabaseBackend;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * The <tt>ChatRoomsList</tt> is the list containing all chat rooms.
@@ -78,7 +61,6 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     private final Vector<ChatRoomListChangeListener> listChangeListeners = new Vector<>();
 
     private SQLiteDatabase mDB;
-    private ContentValues contentValues = new ContentValues();
 
     /**
      * Constructs and initializes new <tt>ChatRoomListImpl</tt> objects. Adds the created object
@@ -94,7 +76,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     /**
      * Initializes the list of chat rooms.
      */
-    public void loadList()
+    private void loadList()
     {
         try {
             ServiceReference[] serRefs
@@ -105,11 +87,10 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
                 return;
 
             for (ServiceReference serRef : serRefs) {
-                ProtocolProviderService protocolProvider
-                        = (ProtocolProviderService) MUCActivator.bundleContext.getService(serRef);
-                Object multiUserChatOpSet = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
+                ProtocolProviderService pps = (ProtocolProviderService) MUCActivator.bundleContext.getService(serRef);
+                Object multiUserChatOpSet = pps.getOperationSet(OperationSetMultiUserChat.class);
                 if (multiUserChatOpSet != null) {
-                    this.addChatProvider(protocolProvider);
+                    this.addChatProvider(pps);
                 }
             }
         } catch (InvalidSyntaxException e) {
@@ -157,7 +138,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     }
 
     /**
-     * Adds a chat server which is registered and all its existing chat rooms.
+     * Adds a chat server which is registered and all its existing chat rooms (local & on server)
      *
      * @param pps the <tt>ProtocolProviderService</tt> corresponding to the chat server
      */
@@ -166,7 +147,17 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
         ChatRoomProviderWrapper chatRoomProvider = new ChatRoomProviderWrapperImpl(pps);
         providersList.add(chatRoomProvider);
 
+        // local stored chatRooms that the user have sessions before
         List<String> chatRoomList = getExistingChatRooms(pps);
+
+        // cmeng: should not include non-joined server chatRooms in user chatRoom window
+//        MUCServiceImpl mucService = MUCActivator.getMUCService();
+//        List<String> sChatRoomList = mucService.getExistingChatRooms(chatRoomProvider);
+//        for (String sRoom : sChatRoomList) {
+//            if (!chatRoomList.contains(sRoom))
+//                chatRoomList.add(sRoom);
+//        }
+
         for (String chatRoomID : chatRoomList) {
             ChatRoomWrapper chatRoomWrapper = new ChatRoomWrapperImpl(chatRoomProvider, chatRoomID);
             chatRoomProvider.addChatRoom(chatRoomWrapper);
@@ -181,7 +172,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param pps the <tt>ProtocolProviderService</tt> corresponding to the chat server
      */
-    public void addChatProvider(ProtocolProviderService pps)
+    private void addChatProvider(ProtocolProviderService pps)
     {
         if (pps.isRegistered())
             addRegisteredChatProvider(pps);
@@ -194,7 +185,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @param pps the <tt>ProtocolProviderService</tt> corresponding to the server to remove
      */
-    public void removeChatProvider(ProtocolProviderService pps)
+    private void removeChatProvider(ProtocolProviderService pps)
     {
         ChatRoomProviderWrapper wrapper = findServerWrapperFromProvider(pps);
         if (wrapper != null)
@@ -345,12 +336,10 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
 
     /**
      * Returns the <tt>ChatRoomProviderWrapper</tt> that correspond to the given
-     * <tt>ProtocolProviderService</tt>. If the list doesn't contain a corresponding wrapper -
-     * returns null.
+     * <tt>ProtocolProviderService</tt>. If the list doesn't contain a corresponding wrapper - returns null.
      *
      * @param protocolProvider the protocol provider that we're looking for
-     * @return the <tt>ChatRoomProvider</tt> object corresponding to the given
-     * <tt>ProtocolProviderService</tt>
+     * @return the <tt>ChatRoomProvider</tt> object corresponding to the given <tt>ProtocolProviderService</tt>
      */
     public ChatRoomProviderWrapper findServerWrapperFromProvider(ProtocolProviderService protocolProvider)
     {
@@ -367,9 +356,9 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      *
      * @return an iterator to the list of chat room providers.
      */
-    public Iterator<ChatRoomProviderWrapper> getChatRoomProviders()
+    public List<ChatRoomProviderWrapper> getChatRoomProviders()
     {
-        return providersList.iterator();
+        return providersList;
     }
 
     /**
@@ -421,8 +410,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     }
 
     /**
-     * Listens for changes of providers registration state, as we can use only registered
-     * providers.
+     * Listens for changes of providers registration state, as we can use only registered providers.
      *
      * @param evt a <tt>RegistrationStateChangeEvent</tt> which describes the event that occurred.
      */
@@ -431,8 +419,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     {
         ProtocolProviderService pps = evt.getProvider();
         if (evt.getNewState() == RegistrationState.REGISTERED) {
-            // Must use MUCServiceImpl#synchronizeOpSetWithLocalContactList to avoid
-            // duplication entry
+            // Must use MUCServiceImpl#synchronizeOpSetWithLocalContactList to avoid duplication entry
         }
         else if (evt.getNewState() == RegistrationState.UNREGISTERED
                 || evt.getNewState() == RegistrationState.AUTHENTICATION_FAILED

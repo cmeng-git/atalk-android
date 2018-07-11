@@ -341,10 +341,11 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 // check if to show call buttons.
                 Object metaContact = chatSession.getDescriptor();
                 MetaContactRenderer contactRenderer = new MetaContactRenderer();
+
                 boolean isShowCall = contactRenderer.isShowCallBtn(metaContact);
                 boolean isShowVideoCall = contactRenderer.isShowVideoCallBtn(metaContact);
-                mCallAudioContact.setEnabled(isShowCall);
-                mCallVideoContact.setEnabled(isShowVideoCall);
+                mCallAudioContact.setVisible(isShowCall);
+                mCallVideoContact.setVisible(isShowVideoCall);
 
                 boolean isShowFileSend = contactRenderer.isShowFileSendBtn(metaContact);
                 mSendFile.setVisible(isShowFileSend);
@@ -356,8 +357,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mDestroyChatRoom.setVisible(true);
                 mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
                 mChatRoomMember.setVisible(true);
-                mCallAudioContact.setEnabled(false);
-                mCallVideoContact.setEnabled(false);
+                mCallAudioContact.setVisible(false);
+                mCallVideoContact.setVisible(false);
                 mSendFile.setVisible(false);
                 mSendLocation.setVisible(false);
             }

@@ -1,26 +1,32 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.fragment;
 
-import android.app.*;
+import android.app.ActionBar;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.support.v4.app.FragmentActivity;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
 import net.java.sip.communicator.service.globaldisplaydetails.event.*;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.globalstatus.*;
+import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
+import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 import net.java.sip.communicator.util.StatusUtil;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
-import org.atalk.android.gui.menu.*;
+import org.atalk.android.gui.menu.GlobalStatusMenu;
+import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.ActionBarUtil;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.gui.widgets.ActionMenuItem;
@@ -32,286 +38,292 @@ import java.util.Collection;
 /**
  * Fragment when added to Activity will display global display details like avatar, display name
  * and status. External events will also trigger a change to the contents.
- * When status is clicked a popup menu is displayed allowing user to set global
- * presence status.
+ * When status is clicked a popup menu is displayed allowing user to set global presence status.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
 public class ActionBarStatusFragment extends OSGiFragment
-		implements EventListener<PresenceStatus>, GlobalDisplayDetailsListener
+        implements EventListener<PresenceStatus>, GlobalDisplayDetailsListener
 {
-	/**
-	 * The online status.
-	 */
-	private static final int ONLINE = 1;
+    /**
+     * The online status.
+     */
+    private static final int ONLINE = 1;
 
-	/**
-	 * The offline status.
-	 */
-	private static final int OFFLINE = 2;
+    /**
+     * The offline status.
+     */
+    private static final int OFFLINE = 2;
 
-	/**
-	 * The free for chat status.
-	 */
-	private static final int FFC = 3;
+    /**
+     * The free for chat status.
+     */
+    private static final int FFC = 3;
 
-	/**
-	 * The away status.
-	 */
-	private static final int AWAY = 4;
+    /**
+     * The away status.
+     */
+    private static final int AWAY = 4;
 
-	/**
-	 * The do not disturb status.
-	 */
-	private static final int DND = 5;
+    /**
+     * The do not disturb status.
+     */
+    private static final int DND = 5;
 
-	/**
-	 * The global status menu.
-	 */
-	private GlobalStatusMenu globalStatusMenu;
-	private ActionBar actionBar;
+    private static int ACTION_ID = DND + 1;
 
-	private static GlobalDisplayDetailsService displayDetailsService;
-	private static AndroidLoginRenderer loginRenderer;
+    /**
+     * The global status menu.
+     */
+    private GlobalStatusMenu globalStatusMenu;
+    private ActionBar actionBar;
+    private FragmentActivity fragmentActivity;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
+    private static GlobalDisplayDetailsService displayDetailsService;
+    private static AndroidLoginRenderer loginRenderer;
 
-		// Create custom ActionBar View
-		actionBar = getActivity().getActionBar();
-		if (actionBar != null) {
-			actionBar.setCustomView(R.layout.action_bar);
-			actionBar.setDisplayUseLogoEnabled(true);
-		}
-		this.globalStatusMenu = createGlobalStatusMenu();
-		TextView tv = (TextView) getActivity().findViewById(R.id.actionBarStatusText);
-		tv.setSelected(true);
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        fragmentActivity = getActivity();
 
-		loginRenderer = AndroidGUIActivator.getLoginRenderer();
-		displayDetailsService = AndroidGUIActivator.getGlobalDisplayDetailsService();
+        // Create custom ActionBar View
+        actionBar = fragmentActivity.getActionBar();
+        if (actionBar != null) {
+            actionBar.setCustomView(R.layout.action_bar);
+            actionBar.setDisplayUseLogoEnabled(true);
+        }
+        this.globalStatusMenu = createGlobalStatusMenu();
+        TextView tv = fragmentActivity.findViewById(R.id.actionBarStatusText);
+        tv.setSelected(true);
 
-		final RelativeLayout actionBarView = (RelativeLayout) getActivity().findViewById(R.id.actionBarView);
-		actionBarView.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				globalStatusMenu.show(actionBarView);
-				globalStatusMenu.setAnimStyle(GlobalStatusMenu.ANIM_REFLECT);
-			}
-		});
-	}
+        loginRenderer = AndroidGUIActivator.getLoginRenderer();
+        displayDetailsService = AndroidGUIActivator.getGlobalDisplayDetailsService();
 
-	@Override
-	public void onResume()
-	{
-		super.onResume();
-		loginRenderer.addGlobalStatusListener(this);
-		onChangeEvent(loginRenderer.getGlobalStatus());
+        final RelativeLayout actionBarView = fragmentActivity.findViewById(R.id.actionBarView);
+        actionBarView.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                globalStatusMenu.show(actionBarView);
+                globalStatusMenu.setAnimStyle(GlobalStatusMenu.ANIM_REFLECT);
+            }
+        });
+    }
 
-		displayDetailsService.addGlobalDisplayDetailsListener(this);
-		setGlobalAvatar(displayDetailsService.getDisplayAvatar(null));
-		setGlobalDisplayName(displayDetailsService.getDisplayName(null));
-	}
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        loginRenderer.addGlobalStatusListener(this);
+        onChangeEvent(loginRenderer.getGlobalStatus());
 
-	@Override
-	public void onPause()
-	{
-		super.onPause();
-		loginRenderer.removeGlobalStatusListener(this);
-		displayDetailsService.removeGlobalDisplayDetailsListener(this);
-	}
+        displayDetailsService.addGlobalDisplayDetailsListener(this);
+        setGlobalAvatar(displayDetailsService.getDisplayAvatar(null));
+        setGlobalDisplayName(displayDetailsService.getDisplayName(null));
+    }
 
-	/**
-	 * Creates the <tt>GlobalStatusMenu</tt>.
-	 *
-	 * @return the newly created <tt>GlobalStatusMenu</tt>
-	 */
-	private GlobalStatusMenu createGlobalStatusMenu()
-	{
-		ActionMenuItem ffcItem = new ActionMenuItem(FFC,
-				getResources().getString(R.string.service_gui_FFC_STATUS),
-				getResources().getDrawable(R.drawable.global_ffc));
-		ActionMenuItem onlineItem = new ActionMenuItem(ONLINE,
-				getResources().getString(R.string.service_gui_ONLINE),
-				getResources().getDrawable(R.drawable.global_online));
-		ActionMenuItem offlineItem = new ActionMenuItem(OFFLINE,
-				getResources().getString(R.string.service_gui_OFFLINE),
-				getResources().getDrawable(R.drawable.global_offline));
-		ActionMenuItem awayItem = new ActionMenuItem(AWAY,
-				getResources().getString(R.string.service_gui_AWAY_STATUS),
-				getResources().getDrawable(R.drawable.global_away));
-		ActionMenuItem dndItem = new ActionMenuItem(DND,
-				getResources().getString(R.string.service_gui_DND_STATUS),
-				getResources().getDrawable(R.drawable.global_dnd));
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        loginRenderer.removeGlobalStatusListener(this);
+        displayDetailsService.removeGlobalDisplayDetailsListener(this);
+    }
 
-		final GlobalStatusMenu globalStatusMenu = new GlobalStatusMenu(getActivity());
+    /**
+     * Creates the <tt>GlobalStatusMenu</tt>.
+     *
+     * @return the newly created <tt>GlobalStatusMenu</tt>
+     */
+    private GlobalStatusMenu createGlobalStatusMenu()
+    {
+        ActionMenuItem ffcItem = new ActionMenuItem(FFC,
+                getResources().getString(R.string.service_gui_FFC_STATUS),
+                getResources().getDrawable(R.drawable.global_ffc));
+        ActionMenuItem onlineItem = new ActionMenuItem(ONLINE,
+                getResources().getString(R.string.service_gui_ONLINE),
+                getResources().getDrawable(R.drawable.global_online));
+        ActionMenuItem offlineItem = new ActionMenuItem(OFFLINE,
+                getResources().getString(R.string.service_gui_OFFLINE),
+                getResources().getDrawable(R.drawable.global_offline));
+        ActionMenuItem awayItem = new ActionMenuItem(AWAY,
+                getResources().getString(R.string.service_gui_AWAY_STATUS),
+                getResources().getDrawable(R.drawable.global_away));
+        ActionMenuItem dndItem = new ActionMenuItem(DND,
+                getResources().getString(R.string.service_gui_DND_STATUS),
+                getResources().getDrawable(R.drawable.global_dnd));
 
-		globalStatusMenu.addActionItem(ffcItem);
-		globalStatusMenu.addActionItem(onlineItem);
-		globalStatusMenu.addActionItem(offlineItem);
-		globalStatusMenu.addActionItem(awayItem);
-		globalStatusMenu.addActionItem(dndItem);
+        final GlobalStatusMenu globalStatusMenu = new GlobalStatusMenu(fragmentActivity);
 
-		globalStatusMenu.setOnActionItemClickListener(
-				new GlobalStatusMenu.OnActionItemClickListener()
-				{
-					@Override
-					public void onItemClick(GlobalStatusMenu source, int pos, int actionId)
-					{
-						publishGlobalStatus(actionId);
-					}
-				});
+        globalStatusMenu.addActionItem(ffcItem);
+        globalStatusMenu.addActionItem(onlineItem);
+        globalStatusMenu.addActionItem(offlineItem);
+        globalStatusMenu.addActionItem(awayItem);
+        globalStatusMenu.addActionItem(dndItem);
 
-		globalStatusMenu.setOnDismissListener(new GlobalStatusMenu.OnDismissListener()
-		{
-			public void onDismiss()
-			{
-				// TODO: Add a dismiss action.
-			}
-		});
-		return globalStatusMenu;
-	}
+        // Add all registered PPS to the presence status menu
+        Collection<ProtocolProviderService> registeredProviders = AccountUtils.getRegisteredProviders();
+        for (ProtocolProviderService pps : registeredProviders) {
+            AccountID accountId = pps.getAccountID();
+            String userJid = accountId.getAccountJid();
+            Drawable icon = getResources().getDrawable(R.drawable.jabber_status_online);
 
-	/**
-	 * Publishes global status on separate thread to prevent <tt>NetworkOnMainThreadException</tt>.
-	 *
-	 * @param newStatus
-	 * 		new global status to set.
-	 */
-	private void publishGlobalStatus(final int newStatus)
-	{
-		/**
-		 * Runs publish status on separate thread to prevent NetworkOnMainThreadException
-		 */
-		new Thread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				GlobalStatusService globalStatusService
-						= AndroidGUIActivator.getGlobalStatusService();
+            ActionMenuItem actionItem = new ActionMenuItem(ACTION_ID++, userJid, icon);
+            globalStatusMenu.addActionItem(actionItem, pps);
+        }
 
-				switch (newStatus) {
-					case ONLINE:
-						globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
-						break;
-					case OFFLINE:
-						globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
-						break;
-					case FFC:
-						globalStatusService.publishStatus(GlobalStatusEnum.FREE_FOR_CHAT);
-						break;
-					case AWAY:
-						globalStatusService.publishStatus(GlobalStatusEnum.AWAY);
-						break;
-					case DND:
-						globalStatusService.publishStatus(GlobalStatusEnum.DO_NOT_DISTURB);
-						break;
-				}
-			}
-		}).start();
-	}
+        globalStatusMenu.setOnActionItemClickListener(
+                new GlobalStatusMenu.OnActionItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(GlobalStatusMenu source, int pos, int actionId)
+                    {
+                        if (actionId <= DND)
+                            publishGlobalStatus(actionId);
+                    }
+                });
 
-	@Override
-	public void onChangeEvent(final PresenceStatus presenceStatus)
-	{
-		final Activity activity = getActivity();
-		if ((presenceStatus == null) || (activity == null))
-			return;
+        globalStatusMenu.setOnDismissListener(new GlobalStatusMenu.OnDismissListener()
+        {
+            public void onDismiss()
+            {
+                // TODO: Add a dismiss action.
+            }
+        });
+        return globalStatusMenu;
+    }
 
-		activity.runOnUiThread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				String mStatus = presenceStatus.getStatusName();
-				ActionBarUtil.setSubtitle(activity, mStatus);
-				ActionBarUtil.setStatus(activity, StatusUtil.getStatusIcon(presenceStatus));
-				// ActionBarUtil.setStatus(activity, StatusUtil.getContactStatusIcon(presenceStatus));
+    /**
+     * Publishes global status on separate thread to prevent <tt>NetworkOnMainThreadException</tt>.
+     *
+     * @param newStatus new global status to set.
+     */
+    private void publishGlobalStatus(final int newStatus)
+    {
+        /*
+         * Runs publish status on separate thread to prevent NetworkOnMainThreadException
+         */
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                GlobalStatusService globalStatusService = AndroidGUIActivator.getGlobalStatusService();
+                switch (newStatus) {
+                    case ONLINE:
+                        globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
+                        break;
+                    case OFFLINE:
+                        globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
+                        break;
+                    case FFC:
+                        globalStatusService.publishStatus(GlobalStatusEnum.FREE_FOR_CHAT);
+                        break;
+                    case AWAY:
+                        globalStatusService.publishStatus(GlobalStatusEnum.AWAY);
+                        break;
+                    case DND:
+                        globalStatusService.publishStatus(GlobalStatusEnum.DO_NOT_DISTURB);
+                        break;
+                }
+            }
+        }).start();
+    }
 
-				MenuItem mOnOffLine = ((MainMenuActivity) activity).getMenuItemOnOffLine();
-				// Proceed only if mOnOffLine has been initialized
-				if (mOnOffLine != null) {
-					boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(mStatus);
-					int itemId = isOffline
-							? R.string.service_gui_SIGN_IN
-							: R.string.service_gui_SIGN_OUT;
-					mOnOffLine.setTitle(getString(itemId));
-				}
-			}
-		});
-	}
+    @Override
+    public void onChangeEvent(final PresenceStatus presenceStatus)
+    {
+        if ((presenceStatus == null) || (fragmentActivity == null))
+            return;
 
-	/**
-	 * Indicates that the global avatar has been changed.
-	 */
-	@Override
-	public void globalDisplayAvatarChanged(final GlobalAvatarChangeEvent evt)
-	{
-		runOnUiThread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				setGlobalAvatar(evt.getNewAvatar());
-			}
-		});
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                String mStatus = presenceStatus.getStatusName();
+                ActionBarUtil.setSubtitle(fragmentActivity, mStatus);
+                ActionBarUtil.setStatus(fragmentActivity, StatusUtil.getStatusIcon(presenceStatus));
 
-	}
+                MenuItem mOnOffLine = ((MainMenuActivity) fragmentActivity).getMenuItemOnOffLine();
+                // Proceed only if mOnOffLine has been initialized
+                if (mOnOffLine != null) {
+                    boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(mStatus);
+                    int itemId = isOffline
+                            ? R.string.service_gui_SIGN_IN
+                            : R.string.service_gui_SIGN_OUT;
+                    mOnOffLine.setTitle(getString(itemId));
+                }
+            }
+        });
+    }
 
-	/**
-	 * Indicates that the global display name has been changed.
-	 */
-	@Override
-	public void globalDisplayNameChanged(final GlobalDisplayNameChangeEvent evt)
-	{
-		runOnUiThread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				setGlobalDisplayName(evt.getNewDisplayName());
-			}
-		});
-	}
+    /**
+     * Indicates that the global avatar has been changed.
+     */
+    @Override
+    public void globalDisplayAvatarChanged(final GlobalAvatarChangeEvent evt)
+    {
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                setGlobalAvatar(evt.getNewAvatar());
+            }
+        });
 
-	/**
-	 * Sets the global avatar in the action bar.
-	 *
-	 * @param avatar
-	 * 		the byte array representing the avatar to set
-	 */
-	private void setGlobalAvatar(final byte[] avatar)
-	{
-		if (avatar != null && avatar.length > 0) {
-			ActionBarUtil.setAvatar(getActivity(), avatar);
-		}
-		else {
-			actionBar.setLogo(R.drawable.ic_icon);
-		}
-	}
+    }
 
-	/**
-	 * Sets the global display name in the action bar.
-	 *
-	 * @param name
-	 * 		the display name to set
-	 */
-	private void setGlobalDisplayName(final String name)
-	{
-		String displayName = name;
+    /**
+     * Indicates that the global display name has been changed.
+     */
+    @Override
+    public void globalDisplayNameChanged(final GlobalDisplayNameChangeEvent evt)
+    {
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                setGlobalDisplayName(evt.getNewDisplayName());
+            }
+        });
+    }
 
-		if (StringUtils.isNullOrEmpty(displayName)) {
-			Collection<ProtocolProviderService> pProviders = AccountUtils.getRegisteredProviders();
+    /**
+     * Sets the global avatar in the action bar.
+     *
+     * @param avatar the byte array representing the avatar to set
+     */
+    private void setGlobalAvatar(final byte[] avatar)
+    {
+        if (avatar != null && avatar.length > 0) {
+            ActionBarUtil.setAvatar(fragmentActivity, avatar);
+        }
+        else {
+            actionBar.setLogo(R.drawable.ic_icon);
+        }
+    }
 
-			if (pProviders.size() == 1)
-				displayName = pProviders.iterator().next().getAccountID().getUserID();
-			else if (pProviders.size() > 1)
-				displayName = getString(R.string.service_gui_ACCOUNT_ME);
-		}
-		ActionBarUtil.setTitle(getActivity(), displayName);
-	}
+    /**
+     * Sets the global display name in the action bar as 'Me' if multiple accounts are involved, otherwise UserJid.
+     *
+     * @param name the display name to set
+     */
+    private void setGlobalDisplayName(final String name)
+    {
+        String displayName = name;
+        Collection<ProtocolProviderService> pProviders = AccountUtils.getRegisteredProviders();
+
+        if (StringUtils.isNullOrEmpty(displayName) && (pProviders.size() == 1)) {
+            displayName = pProviders.iterator().next().getAccountID().getUserID();
+        }
+        if (pProviders.size() > 1)
+            displayName = getString(R.string.service_gui_ACCOUNT_ME);
+        ActionBarUtil.setTitle(fragmentActivity, displayName);
+    }
 }

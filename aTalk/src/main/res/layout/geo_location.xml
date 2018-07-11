@@ -15,7 +15,7 @@
         <TextView
             android:id="@+id/latitude"
             style="@style/MediumFont"
-            android:layout_width="80dp"
+            android:layout_width="85dp"
             android:layout_height="wrap_content"
             android:text="@string/service_gui_GEO_LATITUDE" />
 
@@ -37,7 +37,7 @@
         <TextView
             android:id="@+id/longitude"
             style="@style/MediumFont"
-            android:layout_width="80sp"
+            android:layout_width="85dp"
             android:layout_height="wrap_content"
             android:text="@string/service_gui_GEO_LONGITUDE" />
 
@@ -60,7 +60,7 @@
         <TextView
             android:id="@+id/locationAddress"
             style="@style/MediumFont"
-            android:layout_width="80sp"
+            android:layout_width="85dp"
             android:layout_height="wrap_content"
             android:text="@string/service_gui_GEO_LOCATION" />
 

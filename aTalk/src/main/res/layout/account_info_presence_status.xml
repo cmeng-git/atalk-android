@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/accountInfo_layout"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="5dp">
+    android:id="@+id/accountInfo_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <RelativeLayout
         android:id="@+id/avatar"
@@ -22,43 +22,41 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:gravity="center_vertical|start"
-            android:text="@string/service_gui_AVATAR_HINT"/>
+            android:text="@string/service_gui_AVATAR_HINT" />
 
         <EditText
             android:id="@+id/ai_ImageUrl"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/accountAvatar"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_below="@+id/avatar_Hint"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_below="@+id/avatar_Hint"
             android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
             android:background="@color/white"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/personphoto"/>
+            android:src="@drawable/personphoto" />
 
         <Spinner
             android:id="@+id/presenceStatusSpinner"
             android:layout_width="fill_parent"
             android:layout_height="32dp"
-            android:layout_alignTop="@+id/accountAvatar"
-            android:layout_toEndOf="@+id/accountAvatar"
-            android:layout_toRightOf="@+id/accountAvatar"
             android:layout_alignEnd="@+id/statusMessage"
             android:layout_alignRight="@+id/statusMessage"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_alignTop="@+id/accountAvatar"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:spinnerMode="dropdown"/>
+            android:layout_toEndOf="@+id/accountAvatar"
+            android:layout_toRightOf="@+id/accountAvatar"
+            android:spinnerMode="dropdown" />
 
         <EditText
             android:id="@+id/statusMessage"
@@ -66,16 +64,16 @@
             android:layout_width="@dimen/status_screen_width"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/accountAvatar"
-            android:layout_toEndOf="@+id/accountAvatar"
-            android:layout_toRightOf="@+id/accountAvatar"
             android:layout_below="@+id/presenceStatusSpinner"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_vertical"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_toEndOf="@+id/accountAvatar"
+            android:layout_toRightOf="@+id/accountAvatar"
             android:focusable="true"
             android:hint="@string/service_gui_EDIT_STATUS_MSG_TIP"
-            android:inputType="textCapSentences|textMultiLine"/>
+            android:inputType="textCapSentences|textMultiLine" />
     </RelativeLayout>
 
     <ScrollView
@@ -84,10 +82,10 @@
         android:layout_weight="1">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="vertical"
-                      android:padding="5dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <LinearLayout
                 android:id="@+id/ai_DisplayName_Container"
@@ -102,14 +100,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_DISPLAY_NAME"/>
+                    android:text="@string/plugin_accountinfo_DISPLAY_NAME" />
 
                 <EditText
                     android:id="@+id/ai_DisplayNameField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -125,14 +123,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_FIRST_NAME"/>
+                    android:text="@string/plugin_accountinfo_FIRST_NAME" />
 
                 <EditText
                     android:id="@+id/ai_FirstNameField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -148,14 +146,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_MIDDLE_NAME"/>
+                    android:text="@string/plugin_accountinfo_MIDDLE_NAME" />
 
                 <EditText
                     android:id="@+id/ai_MiddleNameField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -171,14 +169,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_LAST_NAME"/>
+                    android:text="@string/plugin_accountinfo_LAST_NAME" />
 
                 <EditText
                     android:id="@+id/ai_LastNameField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -194,14 +192,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_NICKNAME"/>
+                    android:text="@string/plugin_accountinfo_NICKNAME" />
 
                 <EditText
                     android:id="@+id/ai_NickNameField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -217,16 +215,16 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_URL"/>
+                    android:text="@string/plugin_accountinfo_URL" />
 
                 <EditText
                     android:id="@+id/ai_URLField"
                     style="@style/MediumFont"
-                    android:inputType="textUri"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/service_gui_URL_HINT"
-                    android:maxLines="1"/>
+                    android:inputType="textUri"
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -242,14 +240,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_GENDER"/>
+                    android:text="@string/plugin_accountinfo_GENDER" />
 
                 <EditText
                     android:id="@+id/ai_GenderField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -266,26 +264,26 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_marginTop="10dp"
-                    android:text="@string/plugin_accountinfo_BDAY"/>
+                    android:text="@string/plugin_accountinfo_BDAY" />
 
                 <EditText
                     android:id="@+id/ai_BirthDateField"
                     style="@style/MediumFont"
-                    android:inputType="date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:maxLines="1"/>
+                    android:inputType="date"
+                    android:maxLines="1" />
 
                 <ImageView
                     android:id="@+id/datePicker"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_marginStart="5dp"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/ic_calender"/>
+                    android:src="@drawable/ic_calender" />
             </LinearLayout>
 
             <LinearLayout
@@ -301,14 +299,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_AGE"/>
+                    android:text="@string/plugin_accountinfo_AGE" />
 
                 <EditText
                     android:id="@+id/ai_AgeField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -324,14 +322,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_STREET"/>
+                    android:text="@string/plugin_accountinfo_STREET" />
 
                 <EditText
                     android:id="@+id/ai_StreetAddressField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -347,14 +345,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_CITY"/>
+                    android:text="@string/plugin_accountinfo_CITY" />
 
                 <EditText
                     android:id="@+id/ai_CityField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -370,14 +368,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_REGION"/>
+                    android:text="@string/plugin_accountinfo_REGION" />
 
                 <EditText
                     android:id="@+id/ai_RegionField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -393,14 +391,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_POST"/>
+                    android:text="@string/plugin_accountinfo_POST" />
 
                 <EditText
                     android:id="@+id/ai_PostalCodeField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -416,14 +414,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_COUNTRY"/>
+                    android:text="@string/plugin_accountinfo_COUNTRY" />
 
                 <EditText
                     android:id="@+id/ai_CountryField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -439,14 +437,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_EMAIL"/>
+                    android:text="@string/plugin_accountinfo_EMAIL" />
 
                 <EditText
                     android:id="@+id/ai_EMailField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -462,14 +460,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_WORK_EMAIL"/>
+                    android:text="@string/plugin_accountinfo_WORK_EMAIL" />
 
                 <EditText
                     android:id="@+id/ai_WorkEmailField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -485,14 +483,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_PHONE"/>
+                    android:text="@string/plugin_accountinfo_PHONE" />
 
                 <EditText
                     android:id="@+id/ai_PhoneField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -508,14 +506,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_WORK_PHONE"/>
+                    android:text="@string/plugin_accountinfo_WORK_PHONE" />
 
                 <EditText
                     android:id="@+id/ai_WorkPhoneField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -531,14 +529,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_MOBILE_PHONE"/>
+                    android:text="@string/plugin_accountinfo_MOBILE_PHONE" />
 
                 <EditText
                     android:id="@+id/ai_MobilePhoneField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -554,14 +552,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_ORGANIZATION"/>
+                    android:text="@string/plugin_accountinfo_ORGANIZATION" />
 
                 <EditText
                     android:id="@+id/ai_OrganizationNameField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -577,14 +575,14 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/plugin_accountinfo_JOB_TITLE"/>
+                    android:text="@string/plugin_accountinfo_JOB_TITLE" />
 
                 <EditText
                     android:id="@+id/ai_JobTitleField"
                     style="@style/MediumFont"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -601,7 +599,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="5dp"
-                    android:text="@string/plugin_accountinfo_ABOUT_ME"/>
+                    android:text="@string/plugin_accountinfo_ABOUT_ME" />
 
                 <EditText
                     android:id="@+id/ai_AboutMeField"
@@ -609,7 +607,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:hint="@string/plugin_accountinfo_ABOUT_ME_HINT"/>
+                    android:hint="@string/plugin_accountinfo_ABOUT_ME_HINT" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
@@ -626,20 +624,20 @@
             style="@style/ButtonTop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_CANCEL"/>
+            android:text="@string/service_gui_CANCEL" />
 
         <View
             android:id="@+id/centerShim"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="2dp"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/button_Apply"
             style="@style/ButtonTop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_APPLY"/>
+            android:text="@string/service_gui_APPLY" />
     </LinearLayout>
 </LinearLayout>

@@ -13,21 +13,15 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
 package net.java.sip.communicator.impl.muc;
 
 import net.java.sip.communicator.service.contactsource.SourceContact;
-import net.java.sip.communicator.service.customcontactactions.ContactAction;
-import net.java.sip.communicator.service.customcontactactions.ContactActionMenuItem;
-import net.java.sip.communicator.service.customcontactactions.CustomContactActionsService;
+import net.java.sip.communicator.service.customcontactactions.*;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.muc.MUCService;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.service.resources.ResourceManagementService;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Implements <tt>CustomContactActionsService</tt> for MUC contact source.
@@ -66,8 +60,7 @@ public class MUCCustomContactActionService implements CustomContactActionsServic
     /**
      * Array of icons for the custom actions.
      */
-    private String[] actionsIcons = {"leave_room", "join_room", "auto_join_on",
-            "auto_join_off", "destroy_chat"};
+    private String[] actionsIcons = {"leave_room", "join_room", "auto_join_on", "auto_join_off", "destroy_chat"};
 
     /**
      * Array of rollover icons for the custom actions.
@@ -586,8 +579,8 @@ public class MUCCustomContactActionService implements CustomContactActionsServic
     }
 
     /**
-     * Checks if the menu item should be enabled or disabled. This is default implementation. Always returns that the item should be
-     * enabled.
+     * Checks if the menu item should be enabled or disabled. This is default implementation. Always returns
+     * that the item should be enabled.
      */
     private static class EnableChecker
     {

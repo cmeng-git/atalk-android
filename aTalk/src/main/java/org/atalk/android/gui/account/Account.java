@@ -96,7 +96,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
 	 * @param activityContext
 	 * 		the {@link Context} of parent {@link android.app.Activity}
 	 */
-	Account(AccountID accountID, BundleContext context, Context activityContext)
+    public Account(AccountID accountID, BundleContext context, Context activityContext)
 	{
 		mAccountID = accountID;
 		setProtocolProvider(AccountUtils.getRegisteredProviderForAccount(accountID));
@@ -274,9 +274,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
 			OperationSetPresence presenceOpSet = protocolProvider.getOperationSet(
 					OperationSetPresence.class);
 			if (presenceOpSet == null) {
-				logger.warn(
-						protocolProvider.getProtocolDisplayName() + "does not support presence " +
-								"operations");
+				logger.warn(protocolProvider.getProtocolDisplayName() + "does not support presence operations");
 			}
 			else {
 				presenceOpSet.addProviderPresenceStatusListener(this);
@@ -349,8 +347,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
 	public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt)
 	{
 		logger.trace("Provider status notification");
-		listeners.notifyEventListeners(new AccountEvent(this, AccountEvent
-				.PRESENCE_STATUS_CHANGE));
+		listeners.notifyEventListeners(new AccountEvent(this, AccountEvent.PRESENCE_STATUS_CHANGE));
 	}
 
 	public void providerStatusMessageChanged(PropertyChangeEvent evt)

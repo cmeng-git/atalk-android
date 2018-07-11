@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.protocol.event.AccountManagerEvent;
 import net.java.sip.communicator.service.protocol.event.AccountManagerListener;
@@ -49,6 +50,8 @@ public class AccountManager
      */
     private final BundleContext bundleContext;
 
+    private final ConfigurationService configurationService;
+
     /**
      * The <tt>AccountManagerListener</tt>s currently interested in the events fired by this manager.
      */
@@ -87,6 +90,7 @@ public class AccountManager
         this.bundleContext = bundleContext;
         Context context = ServiceUtils.getService(bundleContext, OSGiService.class);
         databaseBackend = DatabaseBackend.getInstance(context);
+        configurationService = ProtocolProviderActivator.getConfigurationService();
 
         this.bundleContext.addServiceListener(new ServiceListener()
         {
@@ -222,7 +226,6 @@ public class AccountManager
         }
 
         if ((factoryRefs != null) && (factoryRefs.length > 0)) {
-            ConfigurationService configService = ProtocolProviderActivator.getConfigurationService();
             for (ServiceReference<ProtocolProviderFactory> factoryRef : factoryRefs) {
                 ProtocolProviderFactory factory = bundleContext.getService(factoryRef);
 
@@ -234,7 +237,7 @@ public class AccountManager
                         boolean hidden = false;
                         String accountUserID = key.split(":")[1];
                         if (!includeHidden || (userID != null)) {
-                            hidden = configService.getBoolean(accountUuid + "."
+                            hidden = configurationService.getBoolean(accountUuid + "."
                                     + ProtocolProviderFactory.IS_PROTOCOL_HIDDEN, false);
                         }
                         if (includeHidden || !hidden) {
@@ -474,8 +477,6 @@ public class AccountManager
                 storedAccounts.add(accountID);
         }
 
-        ConfigurationService configurationService = ProtocolProviderActivator.getConfigurationService();
-
         // Check to check if this is an existing stored account; else need to create the new
         // account in table before storing other account Properties
         String accountUid = accountID.getAccountUniqueID();
@@ -512,7 +513,6 @@ public class AccountManager
          */
         CredentialsStorageService credentialsStorage = ServiceUtils.getService(bundleContext, CredentialsStorageService.class);
         if (credentialsStorage != null) {
-            // new Exception("Store Password: " + accountProperties.get(ProtocolProviderFactory.PASSWORD)).printStackTrace();
             if (accountID.isPasswordPersistent()) {
                 String password = accountProperties.get(ProtocolProviderFactory.PASSWORD);
                 credentialsStorage.storePassword(accountUuid, password);
@@ -652,7 +652,11 @@ public class AccountManager
 
         if (providerFactory.loadAccount(accountID)) {
             accountID.putAccountProperty(ProtocolProviderFactory.IS_ACCOUNT_DISABLED, String.valueOf(false));
-            // Finally store the modified properties.
+
+            // must retrieve password before store the modified properties;
+            // otherwise password become null if it was not login on app launch.
+            String password = JabberActivator.getProtocolProviderFactory().loadPassword(accountID);
+            accountID.putAccountProperty(ProtocolProviderFactory.PASSWORD, password);
             storeAccount(providerFactory, accountID);
         }
     }
@@ -696,6 +700,11 @@ public class AccountManager
         if (!providerFactory.unloadAccount(accountID)) {
             accountID.putAccountProperty(ProtocolProviderFactory.IS_ACCOUNT_DISABLED, String.valueOf(false));
         }
+
+        // must retrieve password before store the modified properties;
+        // otherwise password may become null if it was never login on before unload.
+        String password = JabberActivator.getProtocolProviderFactory().loadPassword(accountID);
+        accountID.putAccountProperty(ProtocolProviderFactory.PASSWORD, password);
 
         // Finally store the modified properties.
         storeAccount(providerFactory, accountID);

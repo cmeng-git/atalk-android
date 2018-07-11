@@ -33,8 +33,8 @@ public interface SystemActivityManager
     public void stop();
 
     /**
-     * Whether the underlying implementation is currently connected and
-     * working.
+     * Whether the underlying implementation is currently connected and working.
+     *
      * @return whether we are connected and working.
      */
     public boolean isConnected();

@@ -39,6 +39,16 @@ public class AvatarIdPacketExtension extends AbstractPacketExtension
     public static final String ELEMENT_NAME = "avatar-id";
 
     /**
+     * Default constructor.
+     *
+     * {@inheritDoc}
+     */
+    public AvatarIdPacketExtension()
+    {
+        super(ELEMENT_NAME, NAMESPACE);
+    }
+
+    /**
      * Initializes an {@link AvatarIdPacketExtension} instance with a given string value
      *
      * @param avatarId the string value representing the avatar id

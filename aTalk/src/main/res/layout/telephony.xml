@@ -20,17 +20,11 @@
         android:id="@+id/address"
         style="@style/EntryTextView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
         android:layout_marginBottom="@dimen/between_padding"
         android:dropDownAnchor="@id/address"
         android:dropDownWidth="wrap_content"
         android:imeOptions="actionNext"
-        android:inputType="textNoSuggestions"
-        android:paddingBottom="@dimen/label_padding"
-        android:paddingLeft="@dimen/between_padding"
-        android:paddingRight="@dimen/between_padding"
-        android:paddingStart="@dimen/between_padding"
-        android:paddingTop="@dimen/label_padding" />
+        android:inputType="textNoSuggestions" />
 
     <TextView
         android:id="@+id/telephony"
@@ -44,9 +38,7 @@
         android:id="@+id/telephonyDomain"
         style="@style/EntryTextView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginBottom="@dimen/between_padding"
-        android:padding="8dp" />
+        android:layout_marginBottom="@dimen/between_padding"/>
 
     <TextView
         android:id="@+id/contactService"

@@ -250,7 +250,7 @@
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Latitud:</string>
     <string name="service_gui_GEO_LOCATION">Localización:</string>
-    <string name="service_gui_GEO_LONGITUDE">Longitud</string>
+    <string name="service_gui_GEO_LONGITUDE">Longitud:</string>
     <string name="service_gui_GEO_SEND">Enviar mi localización GPS</string>
     <string name="service_gui_GEO_SHOW">Mapas-GPS</string>
     <string name="service_gui_GPS_TRACK">Iniciar el rastreador GPS</string>

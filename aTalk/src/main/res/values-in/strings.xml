@@ -243,7 +243,7 @@
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Latitud:</string>
     <string name="service_gui_GEO_LOCATION">Lokasi:</string>
-    <string name="service_gui_GEO_LONGITUDE">Bujur</string>
+    <string name="service_gui_GEO_LONGITUDE">Bujur:</string>
     <string name="service_gui_GEO_SEND">Kirim GPS-Lokasi</string>
     <string name="service_gui_GEO_SHOW">StreetViews &amp; Petakan</string>
     <string name="service_gui_GPS_TRACK">Continuous StreetViews &amp; Pembaruan peta</string>

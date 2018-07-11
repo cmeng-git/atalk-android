@@ -17,20 +17,13 @@ package net.java.sip.communicator.impl.muc;
 
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.ProtocolIcon;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Yana Stamcheva
@@ -183,8 +176,7 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
      * with the given id.
      *
      * @param chatRoomID the id of the chat room we're looking for.
-     * @return the chat room wrapper contained in this provider that corresponds to the given chat
-     * room id.
+     * @return the chat room wrapper contained in this provider that corresponds to the given chat room id.
      */
     public ChatRoomWrapper findChatRoomWrapperForChatRoomID(String chatRoomID)
     {
@@ -352,10 +344,10 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
                         if (chatRoomWrapper.isAutoJoin()) {
                             // chat room is not existent we must create it and join
                             // it
-                            ChatRoomWrapper roomWrapper = MUCActivator.getMUCService()
-                                    .createChatRoom(chatRoomWrapper.getChatRoomName(),
-                                            chatRoomWrapper.getParentProvider().getProtocolProvider(),
-                                            new ArrayList<String>(), "", false, false, true);
+                            ChatRoomWrapper roomWrapper
+                                    = MUCActivator.getMUCService().createChatRoom(chatRoomWrapper.getChatRoomName(),
+                                    chatRoomWrapper.getParentProvider().getProtocolProvider(),
+                                    new ArrayList<String>(), "", false, false, true);
 
                             String nickName = ConfigurationUtils.getChatRoomProperty(
                                     chatRoomWrapper.getParentProvider().getProtocolProvider(),

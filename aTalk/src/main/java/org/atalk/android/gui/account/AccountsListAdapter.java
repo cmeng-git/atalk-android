@@ -9,9 +9,11 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.view.*;
 import android.widget.*;
+
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.Logger;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.CollectionAdapter;
@@ -25,10 +27,9 @@ import java.util.Collection;
 /**
  * This is a convenience class which implements an {@link Adapter} interface to put the list of
  * {@link Account}s into Android widgets.
- * <p>
+ *
  * The {@link View}s for each row are created from the layout resource id given in constructor.
- * This view should
- * contain: <br/>
+ * This view should contain: <br/>
  * - <tt>R.id.accountName</tt> for the account name text ({@link TextView}) <br/>
  * - <tt>R.id.accountProtoIcon</tt> for the protocol icon of type ({@link ImageView}) <br/>
  * - <tt>R.id.accountStatusIcon</tt> for the presence status icon ({@link ImageView}) <br/>
@@ -39,7 +40,8 @@ import java.util.Collection;
  * @author Eng Chong Meng
  */
 public class AccountsListAdapter extends CollectionAdapter<Account>
-        implements EventListener<AccountEvent>, ServiceListener {
+        implements EventListener<AccountEvent>, ServiceListener
+{
     /**
      * The logger
      */
@@ -67,13 +69,14 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
     /**
      * Creates new instance of {@link AccountsListAdapter}
      *
-     * @param parent                 the {@link Activity} running this adapter
-     * @param accounts               collection of accounts that will be displayed
-     * @param listRowResourceID      the layout resource ID see {@link AccountsListAdapter} for detailed description
+     * @param parent the {@link Activity} running this adapter
+     * @param accounts collection of accounts that will be displayed
+     * @param listRowResourceID the layout resource ID see {@link AccountsListAdapter} for detailed description
      * @param filterDisabledAccounts flag indicates if disabled accounts should be filtered out from the list
      */
     public AccountsListAdapter(Activity parent, int listRowResourceID, int dropDownRowResourceID,
-                               Collection<AccountID> accounts, boolean filterDisabledAccounts) {
+            Collection<AccountID> accounts, boolean filterDisabledAccounts)
+    {
         super(parent);
         this.filterDisabledAccounts = filterDisabledAccounts;
 
@@ -91,8 +94,9 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      *
      * @param collection set of {@link AccountID} that will be displayed
      */
-    private void initAccounts(Collection<AccountID> collection) {
-        ArrayList<Account> accounts = new ArrayList<Account>();
+    private void initAccounts(Collection<AccountID> collection)
+    {
+        ArrayList<Account> accounts = new ArrayList<>();
 
         for (AccountID acc : collection) {
             Account account = new Account(acc, bundleContext, getParentActivity());
@@ -109,7 +113,8 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
         setList(accounts);
     }
 
-    public void serviceChanged(ServiceEvent event) {
+    public void serviceChanged(ServiceEvent event)
+    {
         // if the event is caused by a bundle being stopped, we don't want to know
         if (event.getServiceReference().getBundle().getState() == Bundle.STOPPING) {
             return;
@@ -129,18 +134,21 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
             if (acc == null) {
                 addAccount(new Account(protocolProvider.getAccountID(), bundleContext,
                         getParentActivity().getBaseContext()));
-            } else {
+            }
+            else {
                 // Register for events if account exists on this list
                 acc.addAccountEventListener(this);
             }
-        } else if (event.getType() == ServiceEvent.UNREGISTERING) {
+        }
+        else if (event.getType() == ServiceEvent.UNREGISTERING) {
             Account acc = findAccountID(protocolProvider.getAccountID());
             if (acc != null && acc.isEnabled()) {
                 // Remove enabled accounts
                 if (acc.isEnabled()) {
                     // Remove the account completely
                     removeAccount(protocolProvider.getAccountID());
-                } else {
+                }
+                else {
                     // Quit from listening to updates
                     acc.removeAccountEventListener(this);
                 }
@@ -151,7 +159,8 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
     /**
      * Unregisters status update listeners for accounts
      */
-    void deinitStatusListeners() {
+    void deinitStatusListeners()
+    {
         for (int accIdx = 0; accIdx < getCount(); accIdx++) {
             Account account = getObject(accIdx);
             account.destroy();
@@ -162,7 +171,8 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      * {@inheritDoc}
      */
     @Override
-    protected View getView(boolean isDropDown, Account account, ViewGroup parent, LayoutInflater inflater) {
+    protected View getView(boolean isDropDown, Account account, ViewGroup parent, LayoutInflater inflater)
+    {
         int rowResID = listRowResourceID;
 
         if (isDropDown && dropDownRowResourceID != -1) {
@@ -170,10 +180,10 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
         }
 
         View statusItem = inflater.inflate(rowResID, parent, false);
-        TextView accountName = (TextView) statusItem.findViewById(R.id.protocolProvider);
-        ImageView accountProtocol = (ImageView) statusItem.findViewById(R.id.accountProtoIcon);
-        ImageView statusIconView = (ImageView) statusItem.findViewById(R.id.accountStatusIcon);
-        TextView accountStatus = (TextView) statusItem.findViewById(R.id.accountStatus);
+        TextView accountName = statusItem.findViewById(R.id.protocolProvider);
+        ImageView accountProtocol = statusItem.findViewById(R.id.accountProtoIcon);
+        ImageView statusIconView = statusItem.findViewById(R.id.accountStatusIcon);
+        TextView accountStatus = statusItem.findViewById(R.id.accountStatus);
 
         // Sets account's properties
         if (accountName != null)
@@ -204,7 +214,8 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      * @param account {@link AccountID} that has to be found on the list
      * @return <tt>true</tt> if account is on the list
      */
-    private Account findAccountID(AccountID account) {
+    private Account findAccountID(AccountID account)
+    {
         for (int i = 0; i < getCount(); i++) {
             Account acc = getObject(i);
             if (acc.getAccountID().equals(account))
@@ -218,7 +229,8 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      *
      * @param account {@link Account} that will be added to the list
      */
-    public void addAccount(Account account) {
+    public void addAccount(Account account)
+    {
         if (filterDisabledAccounts && !account.isEnabled())
             return;
 
@@ -235,7 +247,8 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      *
      * @param accountID the {@link AccountID} that will be removed from the list
      */
-    public void removeAccount(AccountID accountID) {
+    public void removeAccount(AccountID accountID)
+    {
         Account account = findAccountID(accountID);
         if (account != null) {
             account.removeAccountEventListener(this);
@@ -249,7 +262,8 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      *
      * @param accountEvent the {@link AccountEvent} that caused the change event
      */
-    public void onChangeEvent(AccountEvent accountEvent) {
+    public void onChangeEvent(AccountEvent accountEvent)
+    {
 //		if (logger.isTraceEnabled()) {
 //			logger.trace("Not an Error! Received accountEvent update for: "
 //					+ accountEvent.getSource().getAccountName() + " "

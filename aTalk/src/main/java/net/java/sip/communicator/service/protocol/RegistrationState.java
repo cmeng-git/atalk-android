@@ -32,16 +32,9 @@ public class RegistrationState
 	public static final RegistrationState INIT = new RegistrationState("Initial");
 
 	/**
-	 * Registration has successfully made tcp/tls connection to the server, prior to
-	 * authentication.
-	 */
-	public static final RegistrationState CONNECTION_CONNECTED
-			= new RegistrationState("Connection connected");
-
-	/**
-	 * A transition state indicating that registration has been undertaken but has not yet been
-	 * confirmed by the registrar server/service. The state generally occurs after the client has
-	 * undertaken action to completing the registration and the server is about to respond.
+	 * A transition state indicating that registration has been undertaken but has not yet been confirmed by
+     * the registrar server/service (after xmppConnection connected). The state generally occurs after the client
+	 * hs undertaken action to completing the registration and the server is about to respond.
 	 */
 	public static final RegistrationState REGISTERING = new RegistrationState("Registering");
 
@@ -66,8 +59,7 @@ public class RegistrationState
 			= new RegistrationState("Finalizing Registration");
 
 	/**
-	 * Registration has completed successfully and we are currently signed on the registration
-	 * service.
+	 * Registration has completed successfully and we are currently signed on the registration service.
 	 */
 	public static final RegistrationState REGISTERED = new RegistrationState("Registered");
 
@@ -78,8 +70,7 @@ public class RegistrationState
 	 * Note: This state must never be reported during reconnection attempted by ReconnectionManager
 	 * as all previously states setup will be destroyed.
 	 */
-	public static final RegistrationState CONNECTION_FAILED
-			= new RegistrationState("Connection Failed");
+	public static final RegistrationState CONNECTION_FAILED = new RegistrationState("Connection Failed");
 
 	/**
 	 * Connection has failed unexpectedly; ReconnectionManager is taking control to attempt sign
@@ -89,20 +80,17 @@ public class RegistrationState
 	 *
 	 * @see ReconnectionManager
 	 */
-	public static final RegistrationState RECONNECTING
-			= new RegistrationState("Reconnecting");
+	public static final RegistrationState RECONNECTING = new RegistrationState("Reconnecting");
 
 	/**
 	 * Registration has failed because of a problem with the authentication.
 	 */
-	public static final RegistrationState AUTHENTICATION_FAILED
-			= new RegistrationState("Authentication Failed");
+	public static final RegistrationState AUTHENTICATION_FAILED = new RegistrationState("Authentication Failed");
 
 	/**
 	 * Indicates that a protocol provider is currently updating its registration.
 	 */
-	public static final RegistrationState UPDATING_REGISTRATION
-			= new RegistrationState("Updating Registration");
+	public static final RegistrationState UPDATING_REGISTRATION = new RegistrationState("Updating Registration");
 
 	/**
 	 * The registration has expired.

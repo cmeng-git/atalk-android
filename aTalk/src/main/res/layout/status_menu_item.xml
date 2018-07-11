@@ -5,12 +5,12 @@
     android:clickable="true"
     android:focusable="true"
     android:orientation="horizontal"
-    android:paddingBottom="10dip">
+    android:paddingBottom="10dp">
 
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_width="20dip"
-        android:layout_height="20dip"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_gravity="center_vertical" />
 
     <TextView
@@ -19,7 +19,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:paddingLeft="5dip"
-        android:paddingStart="5dip"
+        android:paddingLeft="5dp"
+        android:paddingStart="5dp"
         android:textColor="#fff" />
+
 </LinearLayout>

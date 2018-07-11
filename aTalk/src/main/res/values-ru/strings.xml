@@ -244,7 +244,7 @@
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Широта:</string>
     <string name="service_gui_GEO_LOCATION">Местоположение:</string>
-    <string name="service_gui_GEO_LONGITUDE">Долгота</string>
+    <string name="service_gui_GEO_LONGITUDE">Долгота:</string>
     <string name="service_gui_GEO_SEND">Отправить GPS-местоположение</string>
     <string name="service_gui_GEO_SHOW">StreetViews &amp; Карта</string>
     <string name="service_gui_GPS_TRACK">Continuous StreetViews &amp; Обновление карты</string>

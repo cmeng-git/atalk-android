@@ -216,7 +216,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /*
      * Determines the requested DNSSEC security mode.
      * <b>Note that Smack's support for DNSSEC/DANE is experimental!</b>
-     * <p>
+     *
      * The default '{@link #disabled}' means that neither DNSSEC nor DANE verification will be performed. When
      * '{@link #needsDnssec}' is used, then the connection will not be established if the resource records used
      * to connect to the XMPP service are not authenticated by DNSSEC. Additionally, if '{@link #needsDnssecAndDane}'
@@ -451,7 +451,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * The default ping interval in seconds used by PingManager. The Smack default is 30 minutes.
      * See {@link #initSmackDefaultSettings()}
      */
-    private static int defaultPingInterval = 60 * 30;  // 30 minutes
+    public static int defaultPingInterval = 60 * 4;  // 4 minutes
 
     /**
      * Set to success if protocol provider has successfully connected to the server.
@@ -493,17 +493,26 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Returns the state of the account login state of this protocol provider
      * Note: RegistrationState is not inBand Registration
      *
-     * @return the <tt>RegistrationState</tt> that this provider is currently in or null in case it is in a unknown state.
+     * @return the <tt>RegistrationState</tt> ot the provider is currently in.
      */
     public RegistrationState getRegistrationState()
     {
-        if (mConnection == null)
-            return RegistrationState.UNREGISTERED;
-        else if (mConnection.isConnected() && mConnection.isAuthenticated()
-                && !mConnection.isDisconnectedButSmResumptionPossible())
-            return RegistrationState.REGISTERED;
-        else
-            return RegistrationState.UNREGISTERED;
+        if (mConnection == null) {
+            if (inConnectAndLogin)
+                return RegistrationState.REGISTERING;
+            else
+                return RegistrationState.UNREGISTERED;
+        }
+        else {
+            if (mConnection.isAuthenticated()) {
+                return RegistrationState.REGISTERED;
+            }
+            else if (mConnection.isConnected()
+                    || (mConnection.isDisconnectedButSmResumptionPossible())) {
+                return RegistrationState.REGISTERING;
+            }
+        }
+        return RegistrationState.UNREGISTERED;
     }
 
     /**
@@ -665,7 +674,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * @throws XMPPException if we cannot connect to the server - network problem
      * @throws OperationFailedException if login parameters as server port are not correct
      */
-    private void initializeConnectAndLogin(SecurityAuthority authority, int reasonCode, String loginReason, Boolean isShowAlways)
+    private void initializeConnectAndLogin(SecurityAuthority authority, int reasonCode, String
+            loginReason, Boolean isShowAlways)
             throws XMPPException, SmackException, OperationFailedException
     {
         synchronized (initializationLock) {
@@ -753,7 +763,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Sets the proxy information as per account proxy setting
      *
-     * @throws OperationFailedException
+     * @throws OperationFailedException for incorrect proxy parameters being specified
      */
     private void loadProxy()
             throws OperationFailedException
@@ -1013,7 +1023,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             return ConnectState.ABORT_CONNECTING;
         }
 
-        fireRegistrationStateChanged(getRegistrationState(), RegistrationState.REGISTERING,
+        // cmeng - leave the registering state broadcast when xmpp is connected - may be better to do it here
+        fireRegistrationStateChanged(RegistrationState.UNREGISTERED, RegistrationState.REGISTERING,
                 RegistrationStateChangeEvent.REASON_NOT_SPECIFIED, null);
 
         // Init the user authentication SynchronizedPoints
@@ -1245,10 +1256,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         /**
          * Notification that the connection has been successfully connected to the remote endpoint (e.g. the XMPP server).
-         * <p>
+         *
          * Note that the connection is likely not yet authenticated and therefore only limited operations like registering
          * an account may be possible.
-         * </p>
          *
          * @param connection the XMPPConnection which successfully connected to its endpoint.
          */
@@ -1259,8 +1269,13 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             // must initialize caps entities upon success connection to ensure it is ready for the very first <iq/> send
             initServicesAndFeatures();
-            fireRegistrationStateChanged(getRegistrationState(), RegistrationState.CONNECTION_CONNECTED,
-                    RegistrationStateChangeEvent.REASON_USER_REQUEST, "TCP Connection Successful");
+
+            /*
+             * Broadcast to all others after connection is connected but before actual account registration start.
+             * This is required by others to init their states and get ready when the user is authenticated
+             */
+            // fireRegistrationStateChanged(RegistrationState.UNREGISTERED, RegistrationState.REGISTERING,
+            //        RegistrationStateChangeEvent.REASON_USER_REQUEST, "TCP Connection Successful");
         }
 
         /**
@@ -1317,12 +1332,12 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             // Fire registration state has changed
             if (resumed) {
-                fireRegistrationStateChanged(getRegistrationState(), RegistrationState.REGISTERED,
+                fireRegistrationStateChanged(RegistrationState.REGISTERING, RegistrationState.REGISTERED,
                         RegistrationStateChangeEvent.REASON_RESUMED, msg, false);
             }
             else {
                 eventDuringLogin = null;
-                fireRegistrationStateChanged(getRegistrationState(), RegistrationState.REGISTERED,
+                fireRegistrationStateChanged(RegistrationState.REGISTERING, RegistrationState.REGISTERED,
                         RegistrationStateChangeEvent.REASON_USER_REQUEST, msg, true);
             }
         }
@@ -1438,11 +1453,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             }
 
             disconnectAndCleanConnection();
-            RegistrationState currRegState = getRegistrationState();
 
             if (fireEvent) {
                 eventDuringLogin = null;
-                fireRegistrationStateChanged(currRegState, RegistrationState.UNREGISTERED,
+                fireRegistrationStateChanged(RegistrationState.UNREGISTERING, RegistrationState.UNREGISTERED,
                         RegistrationStateChangeEvent.REASON_USER_REQUEST, null, userRequest);
             }
         }
@@ -1504,7 +1518,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Registers the ServiceDiscoveryManager wrapper
-     * <p>
+     *
      * we setup all supported features before packets are actually being sent during feature
      * registration. So we'd better do it here so that our first presence update would
      * contain a caps with the right features.
@@ -1539,7 +1553,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Setup all the Smack Service Discovery and other features that can only be performed during
      * actual account registration stage (mConnection). For initial setup see:
      * {@link #initSmackDefaultSettings()} and {@link #initialize(EntityBareJid, AccountID)}
-     * <p>
+     *
      * Note: For convenience, many of the OperationSets when supported will handle state and events changes on its own.
      */
     private void initServicesAndFeatures()
@@ -1587,7 +1601,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Defined all the entity capabilities for the EntityCapsManager to advertise in
      * disco#info query from other entities. Some features support are user selectable
-     * <p>
+     *
      * Note: Do not need to mention if there are already included in Smack Library and have been
      * activated.
      */
@@ -2172,10 +2186,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Determines whether a specific <tt>XMPPException</tt> signals that attempted login has failed.
-     * <p>
+     *
      * Calling method will trigger a re-login dialog if the return <tt>failureMode</tt> is not
      * <tt>SecurityAuthority.REASON_UNKNOWN</tt> etc
-     * <p>
+     *
      * Add additional exMsg message if necessary to achieve this effect.
      *
      * @param ex the <tt>XMPPException</tt> which is to be determined whether it signals that attempted
@@ -2189,7 +2203,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         int failureMode = SecurityAuthority.REASON_UNKNOWN;
         String exMsg = ex.getMessage().toLowerCase(Locale.US);
 
-        /**
+        /*
          * As there are no defined type or reason specified for XMPPException, we try to
          * determine the reason according to the received exception messages that are relevant
          * and found in smack 4.2.0
@@ -2440,8 +2454,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     public void run()
                     {
                         fireRegistrationStateChanged(getRegistrationState(),
-                                RegistrationState.UNREGISTERED,
-                                RegistrationStateChangeEvent.REASON_USER_REQUEST,
+                                RegistrationState.UNREGISTERED, RegistrationStateChangeEvent.REASON_USER_REQUEST,
                                 "Not trusted certificate");
                     }
                 }).start();
@@ -2480,7 +2493,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Return the EntityFullJid associate with this protocol provider.
-     * <p>
+     *
      * Build our own EntityJid if not connected. May not be full compliant - For explanation
      *
      * @return the Jabber EntityFullJid

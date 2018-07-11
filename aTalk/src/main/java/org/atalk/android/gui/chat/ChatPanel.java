@@ -173,6 +173,16 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
+     * Returns the protocolProvider of the user associated with this chat panel.
+     *
+     * @return the protocolProvider associated with this chat panel
+     */
+    public ProtocolProviderService getProtocolProvider()
+    {
+        return mCurrentChatTransport.getProtocolProvider();
+    }
+
+    /**
      * Returns the chat session associated with this chat panel.
      *
      * @return the chat session associated with this chat panel
@@ -183,8 +193,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Returns the underlying <tt>MetaContact</tt>, we're chatting with
-     * in metaContactChatSession
+     * Returns the underlying <tt>MetaContact</tt>, we're chatting with in metaContactChatSession
      *
      * @return the underlying <tt>MetaContact</tt>, we're chatting with
      */

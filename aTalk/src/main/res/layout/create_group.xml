@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:padding="@dimen/screen_padding">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
     <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/service_gui_CREATE_GROUP_NAME"
-            android:textAppearance="@style/MediumFont"
-            android:id="@+id/textView"
-            />
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/service_gui_CREATE_GROUP_NAME"
+        android:textAppearance="@style/MediumFont" />
+
     <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/service_gui_ADD_GROUP_HINT"
-            android:id="@+id/editText"/>
+        android:id="@+id/editText"
+        style="@style/EntryTextView"
+        android:layout_width="match_parent"
+        android:hint="@string/service_gui_ADD_GROUP_HINT" />
 </LinearLayout>

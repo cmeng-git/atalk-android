@@ -13,6 +13,7 @@ import android.support.v4.content.FileProvider;
 
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
@@ -60,7 +61,8 @@ public class LogUploadServiceImpl implements LogUploadService
         try {
             File storageDir = new File(storagePath);
             if (!storageDir.exists())
-                storageDir.mkdir();
+                if (!storageDir.mkdir())
+                    return;
 
             File logcatFile;
             String logcatFN = new File("log", "atalk-current-logcat.txt").toString();
@@ -83,13 +85,14 @@ public class LogUploadServiceImpl implements LogUploadService
             sendIntent.setType("application/zip");
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                Uri logsUri = FileProvider.getUriForFile(aTalkApp.getGlobalContext(), aTalk.APP_FILE_PROVIDER,
-                        externalStorageFile);
+                Uri logsUri = FileProvider.getUriForFile(aTalkApp.getGlobalContext(),
+                        aTalk.APP_FILE_PROVIDER, externalStorageFile);
                 sendIntent.putExtra(Intent.EXTRA_STREAM, logsUri);
             }
             else {
-                sendIntent.putExtra(Intent.EXTRA_STREAM, externalStorageFile);
+                sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(externalStorageFile));
             }
+            sendIntent.putExtra(Intent.EXTRA_TEXT, aTalkApp.getResString(R.string.service_gui_SEND_LOGS_INFO));
 
             // we are starting this activity from context that is most probably not from the
             // current activity and this flag is needed in this situation

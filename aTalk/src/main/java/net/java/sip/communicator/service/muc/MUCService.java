@@ -297,7 +297,7 @@ public abstract class MUCService
      *
      * @return an iterator to the list of chat room providers.
      */
-    public abstract Iterator<ChatRoomProviderWrapper> getChatRoomProviders();
+    public abstract List<ChatRoomProviderWrapper> getChatRoomProviders();
 
     /**
      * Removes the given <tt>ChatRoom</tt> from the list of all chat rooms.
