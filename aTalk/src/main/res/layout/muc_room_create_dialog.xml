@@ -9,8 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:baselineAligned="false"
         android:orientation="horizontal"
         android:paddingBottom="5dp">
 
@@ -24,18 +22,14 @@
 
         <Spinner
             android:id="@+id/jid_Accounts_Spinner"
-            style="@style/MediumFont"
+            style="@style/SpinnerView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:baselineAligned="false"
         android:orientation="horizontal"
         android:paddingBottom="5dp">
 
@@ -49,17 +43,13 @@
 
         <EditText
             android:id="@+id/NickName_Edit"
-            style="@style/MediumFont"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true" />
+            style="@style/EntryTextView"
+            android:layout_width="match_parent" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:baselineAligned="false"
         android:orientation="horizontal"
         android:paddingBottom="5dp">
 
@@ -73,10 +63,8 @@
 
         <EditText
             android:id="@+id/chatRoom_Subject_Edit"
-            style="@style/MediumFont"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true" />
+            style="@style/EntryTextView"
+            android:layout_width="match_parent" />
     </LinearLayout>
 
     <TextView
@@ -84,82 +72,12 @@
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="@string/service_gui_CHAT_ROOM" />
 
     <org.atalk.android.util.ComboBox
         android:id="@+id/chatRoom_Combo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <!--
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:baselineAligned="false"
-        android:orientation="horizontal" >
-
-        <EditText
-            android:id="@+id/chatRoom_Name_Edit"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/chatRoom_Server"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="2dp"
-        android:paddingTop="10dp"
-        android:text="@string/service_gui_SERVER_CHAT_ROOMS" />
-
-    <ListView
-        android:id="@+id/chatRoom_ListView"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:stackFromBottom="true"
-        android:transcriptMode="normal" />
-        
-    <TextView
-        android:id="@+id/chatRoom_Type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="2dp"
-        android:paddingTop="10dp"
-        android:text="@string/chatRoom_Type" />
-
-    <RadioGroup
-        android:id="@+id/chatRoom_Radiogroup"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/alpha_white_border_01"
-        android:orientation="vertical"
-        android:padding="10dp" >
-
-        <RadioButton
-            android:id="@+id/chatRoom_Normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="@string/chatRoom_Normal"
-            android:textSize="13sp" />
-
-        <RadioButton
-            android:id="@+id/chatRoom_Crypto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="@string/chatRoom_Crypto"
-            android:textSize="13sp" />
-    </RadioGroup>
-    -->
+        style="@style/SpinnerView"
+        android:layout_width="match_parent" />
 
     <LinearLayout
         android:layout_width="match_parent"

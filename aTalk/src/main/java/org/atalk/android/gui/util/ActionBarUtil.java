@@ -50,7 +50,7 @@ public class ActionBarUtil
 			if (actionBar == null)
 				return;
 
-			TextView actionBarText = (TextView) actionBar.getCustomView().findViewById(R.id.actionBarText);
+			TextView actionBarText = actionBar.getCustomView().findViewById(R.id.actionBarText);
 			actionBarText.setText(title);
 		}
 	}
@@ -107,7 +107,7 @@ public class ActionBarUtil
 			if (actionBar == null)
 				return null;
 
-			TextView actionBarText = (TextView) actionBar.getCustomView().findViewById(R.id.actionBarStatusText);
+			TextView actionBarText = actionBar.getCustomView().findViewById(R.id.actionBarStatusText);
 			return (actionBarText.getText().toString());
 		}
 		return null;

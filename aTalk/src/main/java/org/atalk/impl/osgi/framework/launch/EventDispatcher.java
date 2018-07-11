@@ -6,39 +6,28 @@
  */
 package org.atalk.impl.osgi.framework.launch;
 
+import net.java.sip.communicator.util.Logger;
+
+import org.atalk.impl.osgi.framework.AsyncExecutor;
+import org.osgi.framework.*;
+
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.concurrent.RejectedExecutionException;
 
-import net.java.sip.communicator.util.Logger;
-
-import org.atalk.impl.osgi.framework.AsyncExecutor;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleListener;
-import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-
 /**
- *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class EventDispatcher
 {
-    private static final Logger logger
-            = Logger.getLogger(EventDispatcher.class);
+    private static final Logger logger = Logger.getLogger(EventDispatcher.class);
 
-    private final AsyncExecutor<Command> executor
-        = new AsyncExecutor<Command>();
+    private final AsyncExecutor<Command> executor = new AsyncExecutor<>();
 
     private final EventListenerList listeners = new EventListenerList();
 
-    public <T extends EventListener> boolean addListener(
-            Bundle bundle,
-            Class<T> clazz,
-            T listener)
+    public <T extends EventListener> boolean addListener(Bundle bundle, Class<T> clazz, T listener)
     {
         return listeners.add(bundle, clazz, listener);
     }
@@ -48,19 +37,14 @@ public class EventDispatcher
         fireEvent(BundleListener.class, event);
     }
 
-    private <T extends EventListener> void fireEvent(
-            Class<T> clazz,
-            EventObject event)
+    private <T extends EventListener> void fireEvent(Class<T> clazz, EventObject event)
     {
         T[] listeners = this.listeners.getListeners(clazz);
 
         if (listeners.length != 0)
-            try
-            {
+            try {
                 executor.execute(new Command(clazz, event));
-            }
-            catch (RejectedExecutionException ree)
-            {
+            } catch (RejectedExecutionException ree) {
                 logger.error("Error firing event", ree);
             }
     }
@@ -70,10 +54,7 @@ public class EventDispatcher
         fireEvent(ServiceListener.class, event);
     }
 
-    public <T extends EventListener> boolean removeListener(
-            Bundle bundle,
-            Class<T> clazz,
-            T listener)
+    public <T extends EventListener> boolean removeListener(Bundle bundle, Class<T> clazz, T listener)
     {
         return listeners.remove(bundle, clazz, listener);
     }
@@ -88,16 +69,13 @@ public class EventDispatcher
         executor.shutdownNow();
     }
 
-    private class Command
-        implements Runnable
+    private class Command implements Runnable
     {
         private final Class<? extends EventListener> clazz;
 
         private final EventObject event;
 
-        public <T extends EventListener> Command(
-                Class<T> clazz,
-                EventObject event)
+        public <T extends EventListener> Command(Class<T> clazz, EventObject event)
         {
             this.clazz = clazz;
             this.event = event;
@@ -105,33 +83,20 @@ public class EventDispatcher
 
         public void run()
         {
-            // Fetches listeners before command is started
-            // to get latest version of the list
-            EventListener[] listeners
-                    = EventDispatcher.this.listeners.getListeners(clazz);
-
-            for (EventListener listener : listeners)
-            {
-                try
-                {
-                    if (BundleListener.class.equals(clazz))
-                    {
-                        ((BundleListener) listener).bundleChanged(
-                                (BundleEvent) event);
+            // Fetches listeners before command is started to get latest version of the list
+            EventListener[] listeners = EventDispatcher.this.listeners.getListeners(clazz);
+            for (EventListener listener : listeners) {
+                try {
+                    if (BundleListener.class.equals(clazz)) {
+                        ((BundleListener) listener).bundleChanged((BundleEvent) event);
                     }
-                    else if (ServiceListener.class.equals(clazz))
-                    {
-                        ((ServiceListener) listener).serviceChanged(
-                                (ServiceEvent) event);
+                    else if (ServiceListener.class.equals(clazz)) {
+                        ((ServiceListener) listener).serviceChanged((ServiceEvent) event);
                     }
-                }
-                catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     logger.error("Error dispatching event", t);
                     if (FrameworkListener.class.equals(clazz)
-                            && ((FrameworkEvent) event).getType()
-                                    != FrameworkEvent.ERROR)
-                    {
+                            && ((FrameworkEvent) event).getType() != FrameworkEvent.ERROR) {
                         // TODO Auto-generated method stub
                     }
                 }

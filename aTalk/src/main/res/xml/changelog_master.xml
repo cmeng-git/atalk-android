@@ -6,6 +6,15 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.4.2 (07/11/2018)" versioncode="1042">
+        <change>Enhance user presence status main UI to support individual user presence indication and status changes</change>
+        <change>Improve Join Chat Room menu UI and include associated server chatRooms for user selection</change>
+        <change>Fix account password lost when account is being enabled while it was offline and disabled in previous app exit</change>
+        <change>Fix main contact list window with empty item occasionally on app startup</change>
+        <change>Set Ping Interval default to 240 seconds to avoid network TCP disconnection due to inactivity. See online help</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.4.1 (06/25/2018)" versioncode="1041">
         <change>Improve account login handling when persistent password saving option is not enabled</change>
         <change>Fix inconsistency in STUN and JINGLE properties saving when modify or create new account</change>

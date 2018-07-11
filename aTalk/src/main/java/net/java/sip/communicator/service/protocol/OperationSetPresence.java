@@ -13,6 +13,7 @@ import org.jxmpp.jid.BareJid;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * OperationSetPresence offers methods that allow managing the presence status of the provider, and
@@ -38,6 +39,8 @@ public interface OperationSetPresence extends OperationSet
      */
     PresenceStatus getPresenceStatus();
 
+    PresenceStatus getPresenceStatus(String status);
+
     /**
      * Requests the provider to enter into a status corresponding to the specified parameters. Note
      * that calling this method does not necessarily imply that the requested status would be
@@ -62,7 +65,7 @@ public interface OperationSetPresence extends OperationSet
      *
      * @return Iterator a PresenceStatus array containing "enterable" status instances.
      */
-    Iterator<PresenceStatus> getSupportedStatusSet();
+    List<PresenceStatus> getSupportedStatusSet();
 
     /**
      * Get the PresenceStatus for a particular contact. This method is not meant to be used by the

@@ -23,6 +23,7 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Class takes care of setting/restoring proper presence statuses. When protocol registers for
@@ -30,6 +31,7 @@ import java.util.Iterator;
  * GlobalStatusService to restore last status set by the user.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class PresenceStatusHandler implements ServiceListener, RegistrationStateChangeListener
 {
@@ -111,17 +113,13 @@ public class PresenceStatusHandler implements ServiceListener, RegistrationState
 	 */
 	private void updateStatus(ProtocolProviderService protocolProvider)
 	{
-		OperationSetPresence presence
-				= AccountStatusUtils.getProtocolPresenceOpSet(protocolProvider);
-		Iterator<PresenceStatus> statusIterator = presence.getSupportedStatusSet();
+		OperationSetPresence presence = AccountStatusUtils.getProtocolPresenceOpSet(protocolProvider);
 
 		PresenceStatus offlineStatus = null;
 		PresenceStatus onlineStatus = null;
 
-		while (statusIterator.hasNext()) {
-			PresenceStatus status = statusIterator.next();
+        for (PresenceStatus status : presence.getSupportedStatusSet()) {
 			int connectivity = status.getStatus();
-
 			if (connectivity < 1) {
 				offlineStatus = status;
 			}

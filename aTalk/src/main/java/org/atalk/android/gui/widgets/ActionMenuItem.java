@@ -3,199 +3,151 @@ package org.atalk.android.gui.widgets;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
+import org.atalk.android.gui.account.Account;
+
 /**
  * Action item, displayed as menu with icon and text.
- * 
- * @author Lorensius. W. L. T <lorenz@londatiga.net>
- * 
- *         Contributors: - Kevin Peck <kevinwpeck@gmail.com>
  *
+ * @author Lorensius. W. L. T <lorenz@londatiga.net>
+ * Contributors: - Kevin Peck <kevinwpeck@gmail.com>
+ * @author Eng Chong Meng
  */
 public class ActionMenuItem
 {
-	private Drawable icon;
-	private Bitmap thumb;
-	private String title;
-	private int actionId = -1;
-	private boolean selected;
-	private boolean sticky;
+    private Bitmap thumb;
+    private Drawable icon;
+    private String title;
+    private int actionId = -1;
+    private boolean selected;
+    private boolean sticky;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param actionId
-	 *        Action id for case statements
-	 * @param title
-	 *        Title
-	 * @param icon
-	 *        Icon to use
-	 */
-	public ActionMenuItem(int actionId, String title, Drawable icon) {
-		this.title = title;
-		this.icon = icon;
-		this.actionId = actionId;
-	}
+    /**
+     * Constructor
+     *
+     * @param actionId Action id for case statements
+     * @param title Title
+     * @param icon Icon to use
+     */
+    public ActionMenuItem(int actionId, String title, Drawable icon)
+    {
+        this.title = title;
+        this.icon = icon;
+        this.actionId = actionId;
+    }
 
-	/**
-	 * Constructor
-	 */
-	public ActionMenuItem() {
-		this(-1, null, null);
-	}
+    /**
+     * Set action title
+     *
+     * @param title action title
+     */
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param actionId
-	 *        Action id of the item
-	 * @param title
-	 *        Text to show for the item
-	 */
-	public ActionMenuItem(int actionId, String title) {
-		this(actionId, title, null);
-	}
+    /**
+     * Get action title
+     *
+     * @return action title
+     */
+    public String getTitle()
+    {
+        return this.title;
+    }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param icon
-	 *        {@link Drawable} action icon
-	 */
-	public ActionMenuItem(Drawable icon) {
-		this(-1, null, icon);
-	}
+    /**
+     * Set action icon
+     *
+     * @param icon {@link Drawable} action icon
+     */
+    public void setIcon(Drawable icon)
+    {
+        this.icon = icon;
+    }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param actionId
-	 *        Action ID of item
-	 * @param icon
-	 *        {@link Drawable} action icon
-	 */
-	public ActionMenuItem(int actionId, Drawable icon) {
-		this(actionId, null, icon);
-	}
+    /**
+     * Get action icon
+     *
+     * @return {@link Drawable} action icon
+     */
+    public Drawable getIcon()
+    {
+        return this.icon;
+    }
 
-	/**
-	 * Set action title
-	 * 
-	 * @param title
-	 *        action title
-	 */
-	public void setTitle(String title)
-	{
-		this.title = title;
-	}
+    /**
+     * Set action id
+     *
+     * @param actionId Action id for this action
+     */
+    public void setActionId(int actionId)
+    {
+        this.actionId = actionId;
+    }
 
-	/**
-	 * Get action title
-	 * 
-	 * @return action title
-	 */
-	public String getTitle()
-	{
-		return this.title;
-	}
+    /**
+     * @return Our action id
+     */
+    public int getActionId()
+    {
+        return actionId;
+    }
 
-	/**
-	 * Set action icon
-	 * 
-	 * @param icon
-	 *        {@link Drawable} action icon
-	 */
-	public void setIcon(Drawable icon)
-	{
-		this.icon = icon;
-	}
+    /**
+     * Set sticky status of button
+     *
+     * @param sticky true for sticky, pop up sends event but does not disappear
+     */
+    public void setSticky(boolean sticky)
+    {
+        this.sticky = sticky;
+    }
 
-	/**
-	 * Get action icon
-	 * 
-	 * @return {@link Drawable} action icon
-	 */
-	public Drawable getIcon()
-	{
-		return this.icon;
-	}
+    /**
+     * @return true if button is sticky, menu stays visible after press
+     */
+    public boolean isSticky()
+    {
+        return sticky;
+    }
 
-	/**
-	 * Set action id
-	 * 
-	 * @param actionId
-	 *        Action id for this action
-	 */
-	public void setActionId(int actionId)
-	{
-		this.actionId = actionId;
-	}
+    /**
+     * Set selected flag;
+     *
+     * @param selected Flag to indicate the item is selected
+     */
+    public void setSelected(boolean selected)
+    {
+        this.selected = selected;
+    }
 
-	/**
-	 * @return Our action id
-	 */
-	public int getActionId()
-	{
-		return actionId;
-	}
+    /**
+     * Check if item is selected
+     *
+     * @return true or false
+     */
+    public boolean isSelected()
+    {
+        return this.selected;
+    }
 
-	/**
-	 * Set sticky status of button
-	 * 
-	 * @param sticky
-	 *        true for sticky, pop up sends event but does not disappear
-	 */
-	public void setSticky(boolean sticky)
-	{
-		this.sticky = sticky;
-	}
+    /**
+     * Set thumb
+     *
+     * @param thumb Thumb image
+     */
+    public void setThumb(Bitmap thumb)
+    {
+        this.thumb = thumb;
+    }
 
-	/**
-	 * @return true if button is sticky, menu stays visible after press
-	 */
-	public boolean isSticky()
-	{
-		return sticky;
-	}
-
-	/**
-	 * Set selected flag;
-	 * 
-	 * @param selected
-	 *        Flag to indicate the item is selected
-	 */
-	public void setSelected(boolean selected)
-	{
-		this.selected = selected;
-	}
-
-	/**
-	 * Check if item is selected
-	 * 
-	 * @return true or false
-	 */
-	public boolean isSelected()
-	{
-		return this.selected;
-	}
-
-	/**
-	 * Set thumb
-	 * 
-	 * @param thumb
-	 *        Thumb image
-	 */
-	public void setThumb(Bitmap thumb)
-	{
-		this.thumb = thumb;
-	}
-
-	/**
-	 * Get thumb image
-	 * 
-	 * @return Thumb image
-	 */
-	public Bitmap getThumb()
-	{
-		return this.thumb;
-	}
+    /**
+     * Get thumb image
+     *
+     * @return Thumb image
+     */
+    public Bitmap getThumb()
+    {
+        return this.thumb;
+    }
 }

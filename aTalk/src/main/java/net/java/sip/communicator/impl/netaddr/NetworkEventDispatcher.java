@@ -63,12 +63,10 @@ public class NetworkEventDispatcher
     private Thread dispatcherThread = null;
 
     /**
-     * Adds new <tt>NetworkConfigurationChangeListener</tt> which will
-     * be informed for network configuration changes.
+     * Adds new <tt>NetworkConfigurationChangeListener</tt> which will be informed for network configuration changes.
      * @param listener the listener.
      */
-    void addNetworkConfigurationChangeListener(
-        NetworkConfigurationChangeListener listener)
+    void addNetworkConfigurationChangeListener(NetworkConfigurationChangeListener listener)
     {
         synchronized(listeners)
         {
@@ -116,9 +114,7 @@ public class NetworkEventDispatcher
         synchronized(eventsToDispatch)
         {
             eventsToDispatch.put(evt, wait);
-
             eventsToDispatch.notifyAll();
-
             if(dispatcherThread == null && listeners.size() > 0)
             {
                 dispatcherThread = new Thread(this);
@@ -131,14 +127,12 @@ public class NetworkEventDispatcher
      * Fire ChangeEvent.
      * @param evt the event to fire.
      */
-    static void fireChangeEvent(ChangeEvent evt,
-                                 NetworkConfigurationChangeListener listener)
+    static void fireChangeEvent(ChangeEvent evt, NetworkConfigurationChangeListener listener)
     {
         try
         {
             if(logger.isTraceEnabled())
                 logger.trace("firing event to " + listener + " evt=" + evt);
-
             listener.configurationChanged(evt);
         } catch (Throwable e)
         {
@@ -171,8 +165,7 @@ public class NetworkEventDispatcher
                         catch (InterruptedException iex){}
                     }
 
-                    //no point in dispatching if there's no one
-                    //listening
+                    //no point in dispatching if there's no one listening
                     if (listeners.size() == 0)
                         continue;
 

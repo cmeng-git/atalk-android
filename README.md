@@ -26,6 +26,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * A 360° street view of your current location, may use for self-guided tour. The street view tracks and follows your direction of sight.
 * Integrated photo editor with zooming and cropping, user can update his/her avatar with ease
 * Last message correction, message carbons and offline messages (omemo)
+* In-Band Registration with captcha support
 * Multiple accounts support
 * Multi-language UI support (Bahasa Indonesia, English, German, Russian, and Spanish). 
 

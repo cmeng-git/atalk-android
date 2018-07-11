@@ -345,15 +345,15 @@ public class ChatSessionManager
     }
 
     /**
-     * Removes all chat session for given <tt>protocolProvider</tt>.
+     * Removes all active chat sessions for the given <tt>protocolProvider</tt>.
      *
-     * @param protocolProvider protocol provider for which all chat sessions will be removed.
+     * @param protocolProvider protocol provider for which all chat sessions to be removed.
      */
     public synchronized static void removeAllChatsForProvider(ProtocolProviderService protocolProvider)
     {
         ArrayList<ChatPanel> toBeRemoved = new ArrayList<>();
         for (ChatPanel chat : activeChats.values()) {
-            if (chat.getMetaContact().getContactsForProvider(protocolProvider) != null) {
+            if (protocolProvider == chat.getProtocolProvider()) {
                 toBeRemoved.add(chat);
             }
         }

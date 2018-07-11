@@ -197,8 +197,7 @@ public class ContactListFragment extends OSGiFragment
     }
 
     /**
-     * Invoked when the options menu is created. Creates our own options menu from the
-     * corresponding xml.
+     * Invoked when the options menu is created. Creates our own options menu from the corresponding xml.
      *
      * @param menu the options menu
      */
@@ -282,7 +281,6 @@ public class ContactListFragment extends OSGiFragment
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
     {
         super.onCreateContextMenu(menu, v, menuInfo);
-
         if (contactListView.getExpandableListAdapter() != getContactListAdapter()) {
             return;
         }

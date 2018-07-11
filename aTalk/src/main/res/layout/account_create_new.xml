@@ -24,12 +24,9 @@
             android:id="@+id/usernameField"
             style="@style/EntryTextView"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/item_height"
-            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/between_padding"
             android:hint="@string/username_hint"
-            android:inputType="textNoSuggestions"
-            android:padding="8dp" />
+            android:inputType="textNoSuggestions" />
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/pwdTypingArea"
@@ -42,12 +39,9 @@
                 android:id="@+id/passwordField"
                 style="@style/EntryTextView"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/item_height"
-                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/between_padding"
                 android:hint="@string/password"
-                android:inputType="textPassword"
-                android:padding="8dp" />
+                android:inputType="textPassword" />
 
             <CheckBox
                 android:id="@+id/show_password"
@@ -94,26 +88,21 @@
                 android:id="@+id/serverIpField"
                 style="@style/EntryTextView"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/item_height"
-                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/between_padding"
                 android:layout_weight=".70"
                 android:hint="@string/account_server_ip"
-                android:inputType="textNoSuggestions"
-                android:padding="8dp" />
+                android:inputType="textNoSuggestions" />
 
             <EditText
                 android:id="@+id/serverPortField"
                 style="@style/EntryTextView"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/item_height"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/between_padding"
                 android:layout_marginLeft="@dimen/between_padding"
                 android:layout_marginStart="@dimen/between_padding"
                 android:layout_weight=".30"
                 android:inputType="textNoSuggestions"
-                android:padding="8dp"
                 android:text="@string/account_server_port" />
         </LinearLayout>
 

@@ -13,16 +13,12 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
 package net.java.sip.communicator.impl.muc;
 
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
-import net.java.sip.communicator.service.customcontactactions.ContactAction;
-import net.java.sip.communicator.service.customcontactactions.ContactActionMenuItem;
-import net.java.sip.communicator.service.customcontactactions.CustomContactActionsService;
+import net.java.sip.communicator.service.customcontactactions.*;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 
 import org.atalk.service.resources.ResourceManagementService;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Implements <tt>CustomContactActionsService</tt> for the groups of MUC contact source.
@@ -117,6 +113,5 @@ public class MUCGroupCustomContactActionService implements CustomContactActionsS
         {
             return false;
         }
-
     }
 }

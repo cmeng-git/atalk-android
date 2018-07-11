@@ -41,22 +41,31 @@
     <color name="primary800">#ff026100</color>
     <color name="primary900">#ff024500</color>
 
+    <color name="blue">#2da8ca</color>
+    <color name="light_blue">#e4f9ff</color>
     <color name="blueA200">#ff448aff</color>
     <color name="blueA700">#ff2962ff</color>
-
     <color name="lightblueA700">#ff0091ea</color>
+
+    <color name="white">#ffffff</color>
+    <color name="white70">#b2ffffff</color>
+    <color name="white12">#1fffffff</color>
+    <color name="white900">#fff0f0f0</color>
+
+    <color name="black">#000000</color>
+    <color name="transparent_black">#50000000</color>
     <color name="black87">#de000000</color>
     <color name="black54">#8a000000</color>
     <color name="black26">#42000000</color>
     <color name="black12">#1f000000</color>
 
-    <color name="white70">#b2ffffff</color>
-    <color name="white12">#1fffffff</color>
-
+    <color name="grey">#989898</color>
+    <color name="dark_grey">#545454</color>
     <color name="grey50">#fffafafa</color>
     <color name="grey200">#ffeeeeee</color>
     <color name="grey500">#ff9e9e9e</color>
     <color name="grey800">#ff424242</color>
+    <color name="grey850">#ff303030</color>
     <color name="grey900">#ff212121</color>
 
     <color name="red500">#fffF5722</color>
@@ -69,13 +78,6 @@
     <color name="green500">#ff259b24</color>
     <color name="bubble">#ff4b9b4a</color>
 
-    <color name="blue">#2da8ca</color>
-    <color name="light_blue">#e4f9ff</color>
-    <color name="grey">#989898</color>
-    <color name="dark_grey">#545454</color>
-    <color name="white">#ffffff</color>
-    <color name="black">#000000</color>
-    <color name="transparent_black">#50000000</color>
     <color name="transparent">#00000000</color>
     <color name="red">#FF0000</color>
 

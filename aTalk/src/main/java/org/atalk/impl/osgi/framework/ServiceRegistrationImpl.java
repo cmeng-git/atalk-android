@@ -155,5 +155,11 @@ public class ServiceRegistrationImpl implements ServiceRegistration
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public Dictionary<String, Object> getProperties()
+        {
+            return null;
+        }
     }
 }

@@ -5,27 +5,42 @@
         <item name="android:src">@drawable/ic_menu_moreoverflow_dark</item>
     </style>
 
+    <style name="SpinnerView" parent="@android:style/Widget.Spinner">
+        <item name="android:radius">5dp</item>
+        <item name="android:textColor">@color/grey800</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:background">@drawable/spinner_dark</item>
+        <item name="android:layout_height">@dimen/item_height</item>
+        <item name="android:spinnerMode">dropdown</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
     <style name="SpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/grey800</item>
         <item name="android:padding">10dp</item>
     </style>
 
     <style name="SpinnerItem.DropDownItem" parent="@android:style/Widget.DropDownItem.Spinner">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/white900</item>
+        <item name="android:background">@color/grey850</item>
         <item name="android:padding">10dp</item>
     </style>
 
     <style name="EntryTextView" parent="@android:style/Widget.Holo.EditText">
         <item name="android:radius">5dp</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/grey800</item>
         <item name="android:textCursorDrawable">@null</item>
         <item name="android:background">@drawable/white_rounded</item>
+        <item name="android:layout_height">@dimen/item_height</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
         <item name="android:textSize">15sp</item>
     </style>
 
     <style name="MsgTextView" parent="@android:style/Widget.Holo.TextView">
         <item name="android:radius">5dp</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/grey800</item>
         <item name="android:textCursorDrawable">@null</item>
         <item name="android:background">@drawable/white_rounded</item>
         <item name="android:textSize">15sp</item>
@@ -51,13 +66,13 @@
 
     <style name="Button">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">#333</item>
+        <item name="android:textColor">@color/grey800</item>
         <item name="android:background">@drawable/btn_bg</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:drawablePadding">0dip</item>
-        <item name="android:layout_marginBottom">5dip</item>
-        <item name="android:layout_marginTop">5dip</item>
-        <item name="android:padding">8dip</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:padding">8dp</item>
     </style>
 
     <style name="ButtonTop" parent="@style/Button">
@@ -185,7 +200,7 @@
         <!-- <item name="android:background">@drawable/group_background_9_light</item> -->
         <!-- <item name="android:background">#FF86949E</item> -->
         <item name="android:background">#FF6B994C</item>
-        <item name="android:textColor">#FF492900</item>
+        <item name="android:textColor">@color/grey800</item>
     </style>
 
     <style name="RosterGroupItem">
@@ -203,7 +218,7 @@
     <style name="StyleErrorView">
         <item name="android:textSize">18sp</item>
         <item name="android:padding">5sp</item>
-        <item name="android:textColor">#000</item>
+        <item name="android:textColor">@color/grey800</item>
         <item name="android:background">#b44</item>
         <item name="android:shadowColor">#44000000</item>
         <item name="android:shadowRadius">3.0</item>
@@ -211,7 +226,7 @@
 
     <style name="StyleErrorView.Light">
         <item name="android:background">#f88</item>
-        <item name="android:textColor">#400</item>
+        <item name="android:textColor">@color/grey800</item>
     </style>
 
     <style name="RosterMessageCounter">
@@ -232,7 +247,7 @@
         <item name="android:lines">1</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">11sp</item>
-        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:textColor">@color/white900</item>
         <item name="android:background">@drawable/count_bcg</item>
         <item name="android:text"></item>
     </style>
@@ -255,7 +270,7 @@
         <item name="android:lines">1</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">11sp</item>
-        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:textColor">@color/white900</item>
         <item name="android:background">@drawable/count_bcg_crypto</item>
         <item name="android:text"></item>
     </style>
@@ -278,7 +293,7 @@
         <item name="android:lines">1</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">11sp</item>
-        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:textColor">@color/white900</item>
         <item name="android:background">@drawable/count_bcg_stealth</item>
         <item name="android:text"></item>
     </style>
@@ -301,7 +316,7 @@
         <item name="android:lines">1</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">11sp</item>
-        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:textColor">@color/white900</item>
         <item name="android:background">@drawable/count_bcg_crypto</item>
         <item name="android:text"></item>
     </style>
@@ -374,16 +389,16 @@
 
     <style name="chat_time.Light">
         <!-- <item name="android:textColor">#ff404040</item> -->
-        <item name="android:textColor">#ffff</item>
+        <item name="android:textColor">@color/white900</item>
     </style>
 
     <style name="chat_time.Dark">
         <!-- <item name="android:textColor">#ff404040</item> -->
-        <item name="android:textColor">#ffff</item>
+        <item name="android:textColor">@color/white900</item>
     </style>
 
     <style name="chat_from">
-        <item name="android:textColor">#ffff</item>
+        <item name="android:textColor">@color/white900</item>
         <!-- <item name="android:textSize">11sp</item> -->
         <item name="android:textSize">?attr/font_xsmall</item>
     </style>

@@ -154,10 +154,11 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
     {
         if (isCapsMobileIndicator) {
             XMPPTCPConnection xmppConnection = ssclCallback.getParentProvider().getConnection();
-
-            EntityCapsManager capsManager = EntityCapsManager.getInstanceFor(xmppConnection);
-            DiscoverInfo caps = EntityCapsManager.getDiscoveryInfoByNodeVer(capsManager.getLocalNodeVer());
-            return (caps != null && containsStrings(caps.getNode(), checkStrings));
+            if (xmppConnection != null) {
+                EntityCapsManager capsManager = EntityCapsManager.getInstanceFor(xmppConnection);
+                DiscoverInfo caps = EntityCapsManager.getDiscoveryInfoByNodeVer(capsManager.getLocalNodeVer());
+                return (caps != null && containsStrings(caps.getNode(), checkStrings));
+            }
         }
         return (startsWithStrings(fullJid.getResourceOrEmpty().toString(), checkStrings));
     }

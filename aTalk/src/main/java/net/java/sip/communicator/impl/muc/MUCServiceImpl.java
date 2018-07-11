@@ -123,7 +123,8 @@ public class MUCServiceImpl extends MUCService
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if (chatRoom == null) {
             MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_WARNING),
-                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, chatRoomWrapper.getChatRoomName()));
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED,
+                            chatRoomWrapper.getChatRoomName()));
             return;
         }
         new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, nickName, password,
@@ -149,7 +150,8 @@ public class MUCServiceImpl extends MUCService
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if (chatRoom == null) {
             MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_WARNING),
-                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, chatRoomWrapper.getChatRoomName()));
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED,
+                            chatRoomWrapper.getChatRoomName()));
             return;
         }
         new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, nickName, password).start();
@@ -175,7 +177,8 @@ public class MUCServiceImpl extends MUCService
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if (chatRoom == null) {
             MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_WARNING),
-                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, chatRoomWrapper.getChatRoomName()));
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED,
+                            chatRoomWrapper.getChatRoomName()));
         }
         // join chatRoom if not a current participant
         else if (!chatRoom.isJoined())
@@ -198,15 +201,15 @@ public class MUCServiceImpl extends MUCService
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if (chatRoom == null) {
             MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_WARNING),
-                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, chatRoomWrapper.getChatRoomName()));
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED,
+                            chatRoomWrapper.getChatRoomName()));
             return;
         }
         new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, null, null).start();
     }
 
     /**
-     * Joins the given chat room and manages all the exceptions that could occur during the join
-     * process.
+     * Joins the given chat room and manages all the exceptions that could occur during the join process.
      *
      * @param chatRoom the chat room to join
      * @param nickname the nickname we're using to join
@@ -685,7 +688,7 @@ public class MUCServiceImpl extends MUCService
      *
      * @return an iterator to the list of chat room providers.
      */
-    public Iterator<ChatRoomProviderWrapper> getChatRoomProviders()
+    public List<ChatRoomProviderWrapper> getChatRoomProviders()
     {
         return chatRoomList.getChatRoomProviders();
     }
@@ -720,7 +723,6 @@ public class MUCServiceImpl extends MUCService
                 chatRoomList.removeChatRoom(chatRoomWrapper);
             }
         }
-
     }
 
     /**

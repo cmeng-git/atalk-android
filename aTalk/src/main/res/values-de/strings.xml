@@ -242,7 +242,7 @@
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Breitengrad:</string>
     <string name="service_gui_GEO_LOCATION">Ort:</string>
-    <string name="service_gui_GEO_LONGITUDE">Längengrad</string>
+    <string name="service_gui_GEO_LONGITUDE">Längengrad:</string>
     <string name="service_gui_GEO_SEND">Sende GPS-Standort</string>
     <string name="service_gui_GEO_SHOW">StreetViews &amp; Karte</string>
     <string name="service_gui_GPS_TRACK">Permanente StreetViews &amp; Kartenaktualisierung</string>

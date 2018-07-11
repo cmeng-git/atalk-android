@@ -97,13 +97,13 @@ public class AccountLoginFragment extends OSGiFragment {
         spinnerNwk = content.findViewById(R.id.networkSpinner);
         ArrayAdapter<CharSequence> adapterNwk = ArrayAdapter.createFromResource(getActivity(),
                 R.array.networks_array, R.layout.simple_spinner_item);
-        adapterNwk.setDropDownViewResource(R.layout.dropdown_spinner_item);
+        adapterNwk.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         spinnerNwk.setAdapter(adapterNwk);
 
         spinnerDM = content.findViewById(R.id.dnssecModeSpinner);
         ArrayAdapter<CharSequence> adapterDM = ArrayAdapter.createFromResource(getActivity(),
                 R.array.dnssec_Mode_name, R.layout.simple_spinner_item);
-        adapterDM.setDropDownViewResource(R.layout.dropdown_spinner_item);
+        adapterDM.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         spinnerDM.setAdapter(adapterDM);
 
         mPasswordField = content.findViewById(R.id.passwordField);

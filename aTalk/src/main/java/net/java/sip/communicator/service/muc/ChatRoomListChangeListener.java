@@ -15,7 +15,6 @@
  */
 package net.java.sip.communicator.service.muc;
 
-
 /**
  *
  * @author Yana Stamcheva

@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.*;
 import android.preference.*;
 
+import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.plugin.jabberaccregwizz.AccountRegistrationImpl;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
@@ -360,7 +361,8 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
 			jbrReg.setKeepAliveOption(shPrefs.getBoolean(P_KEY_IS_KEEP_ALIVE_ENABLE, false));
 		}
 		else if (key.equals(P_KEY_PING_INTERVAL)) {
-			jbrReg.setPingInterval(shPrefs.getString(P_KEY_PING_INTERVAL, null));
+			jbrReg.setPingInterval(shPrefs.getString(P_KEY_PING_INTERVAL,
+                    Integer.toString(ProtocolProviderServiceJabberImpl.defaultPingInterval)));
 		}
 		else if (key.equals(P_KEY_IS_SERVER_OVERRIDDEN)) {
 			jbrReg.setServerOverridden(shPrefs.getBoolean(P_KEY_IS_SERVER_OVERRIDDEN, false));

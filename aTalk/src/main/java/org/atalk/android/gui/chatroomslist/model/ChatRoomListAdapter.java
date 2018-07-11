@@ -21,11 +21,7 @@ import android.widget.Toast;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
-import net.java.sip.communicator.service.muc.ChatRoomListChangeEvent;
-import net.java.sip.communicator.service.muc.ChatRoomListChangeListener;
-import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
-import net.java.sip.communicator.service.muc.ChatRoomProviderWrapperListener;
-import net.java.sip.communicator.service.muc.ChatRoomWrapper;
+import net.java.sip.communicator.service.muc.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -36,17 +32,12 @@ import org.atalk.android.gui.contactlist.model.UIGroupRenderer;
 import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
  * ChatRoom list model is responsible for caching current chatRoomWrapper list obtained from
- * ChatRoomProviderWrapperImpl.(It will apply source filters which result in different output
- * model).
+ * ChatRoomProviderWrapperImpl.(It will apply source filters which result in different output model).
  *
  * @author Eng Chong Meng
  */
@@ -252,10 +243,9 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
      *
      * @param providers the providers mCrpWrapperGroup, which child mCrWrapperList to add
      */
-    private void addChatRooms(Iterator<ChatRoomProviderWrapper> providers)
+    private void addChatRooms(List<ChatRoomProviderWrapper> providers)
     {
-        while (providers.hasNext()) {
-            ChatRoomProviderWrapper provider = providers.next();
+        for (ChatRoomProviderWrapper provider : providers) {
             List<ChatRoomWrapper> chatRoomWrappers = provider.getChatRooms();
             if ((chatRoomWrappers != null) && (chatRoomWrappers.size() > 0)) {
                 addGroup(provider);
@@ -348,10 +338,9 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
      *
      * @param providers the <tt>ChatRoomProviderWrapper</tt>, which content we'd like to remove
      */
-    private void removeChatRooms(Iterator<ChatRoomProviderWrapper> providers)
+    private void removeChatRooms(List<ChatRoomProviderWrapper> providers)
     {
-        while (providers.hasNext()) {
-            ChatRoomProviderWrapper provider = providers.next();
+        for (ChatRoomProviderWrapper provider : providers) {
             removeGroup(provider);
 
             List<ChatRoomWrapper> crWrapperList = provider.getChatRooms();
@@ -565,10 +554,6 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     public void chatRoomProviderWrapperAdded(ChatRoomProviderWrapper crpWrapper)
     {
         // Add the original/filtered chatRoomProvider Wrapper and its list.
-//		logger.warn("Add new ChatRoomProviderWrapper: "
-//				+ crpWrapper.getProtocolProvider().getAccountID().getUserID());
-//		new Exception().printStackTrace();
-
         if ((originalCrpWrapperGroup.indexOf(crpWrapper) < 0)
                 || (mCrpWrapperGroup.indexOf(crpWrapper) < 0)) {
 
@@ -596,7 +581,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
         if ((originalCrpWrapperGroup.indexOf(crpWrapper) >= 0)
                 || (mCrpWrapperGroup.indexOf(crpWrapper) >= 0)) {
 
-            removeChatRooms(Collections.singletonList(crpWrapper).iterator());
+            removeChatRooms(Collections.singletonList(crpWrapper));
             uiChangeUpdate();
         }
     }

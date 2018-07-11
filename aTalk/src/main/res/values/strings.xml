@@ -254,7 +254,7 @@
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Latitude:</string>
     <string name="service_gui_GEO_LOCATION">Location:</string>
-    <string name="service_gui_GEO_LONGITUDE">Longitude</string>
+    <string name="service_gui_GEO_LONGITUDE">Longitude:</string>
     <string name="service_gui_GEO_SEND">Send GPS-Location</string>
     <string name="service_gui_GEO_SHOW">StreetViews &amp; Map</string>
     <string name="service_gui_GPS_TRACK">Continuous StreetViews &amp; Map update</string>
@@ -549,6 +549,7 @@
     <string name="service_gui_SEND_LOGS_QUESTION">aTalk has just recovered after serious crash. Do you want to report the bugs to devepers?</string>
     <string name="service_gui_SEND_LOGS_SUBJECT">aTalk bugs report</string>
     <string name="service_gui_SEND_LOGS_TITLE">aTalk bugs report via email</string>
+    <string name="service_gui_SEND_LOGS_INFO">Please provide a brief description on:\nWhat was the problem and how it happened?</string>
 
     <string name="service_gui_SEND_MESSAGE">Send a message</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Failed to send message: %1$s</string>

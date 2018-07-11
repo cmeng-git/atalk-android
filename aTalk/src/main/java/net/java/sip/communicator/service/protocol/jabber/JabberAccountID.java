@@ -368,12 +368,12 @@ public class JabberAccountID extends AccountID
     /**
      * Indicates if the stun server should be automatically discovered.
      *
-     * @return <tt>true</tt> if the stun server should be automatically discovered, otherwise
-     * returns <tt>false</tt>.
+     * @return <tt>true</tt> if the stun server should be automatically discovered,
+     * otherwise false if serverOverride is enabled; serviceDomain is likely not reachable.
      */
     public boolean isAutoDiscoverStun()
     {
-        return getAccountPropertyBoolean(ProtocolProviderFactory.AUTO_DISCOVER_STUN, true);
+        return getAccountPropertyBoolean(ProtocolProviderFactory.AUTO_DISCOVER_STUN, !isServerOverridden());
     }
 
     /**

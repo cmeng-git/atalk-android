@@ -35,10 +35,8 @@
         android:id="@+id/editContactName"
         style="@style/EntryTextView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
         android:layout_marginBottom="@dimen/between_padding"
-        android:inputType="textNoSuggestions"
-        android:padding="8dp" />
+        android:inputType="textNoSuggestions" />
 
     <TextView
         android:id="@+id/selectGroupTxt"
@@ -67,10 +65,8 @@
         android:id="@+id/editDisplayName"
         style="@style/EntryTextView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
         android:layout_marginBottom="@dimen/between_padding"
-        android:inputType="textNoSuggestions"
-        android:padding="8dp" />
+        android:inputType="textNoSuggestions" />
 
     <LinearLayout
         android:layout_width="match_parent"

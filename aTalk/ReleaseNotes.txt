@@ -1,9 +1,26 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.4.2 (1042)
+Author:         cmeng
+Upload Date:	07/11/2018
+- Enhance user presence status main UI to support per user presence indication and status changes
+- Improve Join Chat Room menu UI and include associated server chatRooms for user selection
+- Fix account password lost when account is being enabled while it was offline and disabled in previous app exit
+- Fix empty contact List due to FrameworkImpl#getRegisteredServices() ArrayIndexOutOfBoundsException - Change to synchronous access
+- Fix implementation error in ChatSessionManager#removeAllChatsForProvider() - Dispose only chatSession of the specified provider
+- Set Ping Interval default to 240 seconds to avoid network TCP disconnection due to inactivity
+- Cleanup Registration state, getRegistrationState() and fireRegistrationStateChanged correctly
+- Default auto STUN/TURN discovery to false if server override option is selected - service domain is not reachable
+- Create StatusListAdapter class based on ArrayAdapter
+- Remove unused processStanza() and processJingleIQError methods in OperationSetBasicTelephonyJabberImpl
+- Use OperationSetPersistentPresenceJabberImpl#presenceAvailable() method to process own presence status.
+- Extend ice4j-2.0.0 to support android level below API-19
+- Upgrade to use osgi-core: 7.0.0
+
+=========================================================================
 Version:		1.4.1 (1041)
 Author:         cmeng
 Upload Date:	06/25/2018
-
 - Improve account login handling when persistent password saving option is not enabled
 - Fix inconsistency in STUN and JINGLE properties saving when modify or create new account
 - Fix intermittent call failure when transport-info and session-accept are received at the same time; due to binding of

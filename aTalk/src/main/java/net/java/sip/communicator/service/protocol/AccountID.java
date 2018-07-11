@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
@@ -666,17 +667,18 @@ public class AccountID
     }
 
     /**
-     * The port on the specified server
+     * Get the network Ping Interval default to aTalk default
      *
      * @return int
      */
     public String getPingInterval()
     {
-        return getAccountPropertyString(ProtocolProviderFactory.PING_INTERVAL);
+        return getAccountPropertyString(ProtocolProviderFactory.PING_INTERVAL,
+                Integer.toString(ProtocolProviderServiceJabberImpl.defaultPingInterval));
     }
 
     /**
-     * Sets the server port.
+     * Sets the network ping interval.
      *
      * @param interval Keep alive ping interval
      */
@@ -1127,11 +1129,12 @@ public class AccountID
     /**
      * Determines whether this account's provider is supposed to auto discover STUN and TURN servers.
      *
-     * @return <tt>true</tt> if this provider would need to discover STUN/TURN servers and false otherwise.
+     * @return <tt>true</tt> if this provider would need to discover STUN/TURN servers
+     * otherwise false if serverOverride is enabled; serviceDomain is likely not reachable.
      */
     public boolean isStunServerDiscoveryEnabled()
     {
-        return getAccountPropertyBoolean(ProtocolProviderFactory.AUTO_DISCOVER_STUN, true);
+        return getAccountPropertyBoolean(ProtocolProviderFactory.AUTO_DISCOVER_STUN, !isServerOverridden());
     }
 
     /**

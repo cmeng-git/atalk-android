@@ -23,11 +23,6 @@ public class ContentPacketExtension extends AbstractPacketExtension
     public static final String ELEMENT_NAME = "content";
 
     /**
-     * The namespace of the "content" element
-     */
-    public static final String NAMESPACE = "urn:xmpp:jingle:1";
-
-    /**
      * The name of the "creator" argument.
      */
     public static final String CREATOR_ATTR_NAME = "creator";
@@ -96,7 +91,7 @@ public class ContentPacketExtension extends AbstractPacketExtension
      */
     public ContentPacketExtension()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT_NAME, null);
     }
 
     /**
@@ -109,7 +104,7 @@ public class ContentPacketExtension extends AbstractPacketExtension
      */
     public ContentPacketExtension(CreatorEnum creator, String disposition, String name, SendersEnum senders)
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT_NAME, null);
         super.setAttribute(CREATOR_ATTR_NAME, creator);
         super.setAttribute(DISPOSITION_ATTR_NAME, disposition);
         super.setAttribute(NAME_ATTR_NAME, name);
@@ -124,7 +119,7 @@ public class ContentPacketExtension extends AbstractPacketExtension
      */
     public ContentPacketExtension(CreatorEnum creator, String name)
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT_NAME, null);
         super.setAttribute(CREATOR_ATTR_NAME, creator);
         super.setAttribute(NAME_ATTR_NAME, name);
     }

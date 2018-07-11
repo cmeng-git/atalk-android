@@ -8,36 +8,9 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.condesc.CallIdExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CoinPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.JingleAction;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.JingleIQ;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.Reason;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ReasonPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RtpDescriptionPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.SessionInfoPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.TransferPacketExtension;
-import net.java.sip.communicator.service.protocol.AbstractCallPeer;
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.CallPeerState;
-import net.java.sip.communicator.service.protocol.CallState;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ConferenceDescription;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationSetAdvancedTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetSecureSDesTelephony;
-import net.java.sip.communicator.service.protocol.OperationSetSecureZrtpTelephony;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.TransferAuthority;
-import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
-import net.java.sip.communicator.service.protocol.event.CallChangeListener;
-import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 import net.java.sip.communicator.service.protocol.media.AbstractOperationSetBasicTelephony;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
@@ -45,29 +18,20 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.EntityFullJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Implements all call management logic and exports basic telephony support by implementing
@@ -752,47 +716,6 @@ public class OperationSetBasicTelephonyJabberImpl
     }
 
     /**
-     * Handles incoming jingle packets and passes them to the corresponding method based on their action.
-     *
-     * @param packet the packet to process.
-     */
-    // @Override
-    public void processStanza(Stanza packet)
-    {
-        IQ iq = (IQ) packet;
-        /*
-         * To prevent hijacking sessions from other Jingle-based features such
-         * as file transfer, we should send the ack only if this is a
-         * session-initiate with RTP content or if we are the owners of the
-         * packet's SID.
-         */
-        try {
-            if (iq instanceof JingleIQ) {
-                processJingleIQError((JingleIQ) iq);
-            }
-        } catch (Throwable t) {
-            if (logger.isInfoEnabled()) {
-                String packetClass;
-
-                if (iq instanceof JingleIQ)
-                    packetClass = "Jingle";
-                else
-                    packetClass = packet.getClass().getSimpleName();
-
-                logger.info("Error while handling incoming " + packetClass + " packet: ", t);
-            }
-
-            /*
-             * The Javadoc on ThreadDeath says: If ThreadDeath is caught by
-             * a method, it is important that it be rethrown so that the
-             * thread actually dies.
-             */
-            if (t instanceof ThreadDeath)
-                throw (ThreadDeath) t;
-        }
-    }
-
-    /**
      * Handler for Jabber incoming file transfer request.
      */
     private class JingleIqSetRequestHandler extends AbstractIqRequestHandler
@@ -967,25 +890,6 @@ public class OperationSetBasicTelephonyJabberImpl
         }
     }
 
-    private void processJingleIQError(JingleIQ jingleIQ)
-    {
-        //let's first see whether we have a peer that's concerned by this IQ
-        CallPeerJabberImpl callPeer = activeCallsRepository.findCallPeer(jingleIQ.getSID());
-
-        XMPPError error = jingleIQ.getError();
-        // FIXME get from i18n
-        String message = "Remote party returned an error!";
-        if (error != null) {
-            String errorStr = "code=" + error.getCondition() + " message=" + error.getConditionText();
-
-            message += "\n" + errorStr;
-        }
-
-        logger.error(message);
-        if (callPeer != null)
-            callPeer.setState(CallPeerState.FAILED, message);
-    }
-
     /**
      * Returns a reference to the {@link ActiveCallsRepositoryJabberImpl} that we are currently using.
      *
@@ -1034,7 +938,6 @@ public class OperationSetBasicTelephonyJabberImpl
     {
         CallPeerJabberImpl jabberTarget = (CallPeerJabberImpl) target;
         EntityFullJid to = getFullCalleeURI(jabberTarget.getPeerJid());
-
         /*
          * XEP-0251: Jingle Session Transfer says: Before doing [attended transfer], the attendant
          * SHOULD verify that the callee supports Jingle session transfer.

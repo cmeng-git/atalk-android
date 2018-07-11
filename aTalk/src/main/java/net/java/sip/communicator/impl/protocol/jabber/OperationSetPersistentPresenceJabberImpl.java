@@ -418,6 +418,16 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
+     *
+     * @param status the JabberStatusEnum
+     * @return  JabberPresenceStatus#getStatus(String statusName)
+     */
+    public PresenceStatus getPresenceStatus(String status)
+    {
+        return parentProvider.getJabberStatusEnum().getStatus(status);
+    }
+
+    /**
      * Returns the root group of the server stored contact list.
      *
      * @return the root ContactGroup for the ContactList stored by this service.
@@ -428,11 +438,11 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Returns the set of PresenceStatus objects that a user of this service may request the provider to enter.
+     * Returns the list of PresenceStatus objects that a user of this service may request the provider to enter.
      *
-     * @return Iterator a PresenceStatus array containing "selectable" status instances.
+     * @return PresenceStatus ListArray containing "selectable" status instances.
      */
-    public Iterator<PresenceStatus> getSupportedStatusSet()
+    public List<PresenceStatus> getSupportedStatusSet()
     {
         return parentProvider.getJabberStatusEnum().getSupportedStatusSet();
     }
@@ -479,14 +489,9 @@ public class OperationSetPersistentPresenceJabberImpl
     {
         assertConnected();
         JabberStatusEnum jabberStatusEnum = parentProvider.getJabberStatusEnum();
-        boolean isValidStatus = false;
-        for (Iterator<PresenceStatus> supportedStatus = jabberStatusEnum.getSupportedStatusSet();
-             supportedStatus.hasNext(); ) {
-            if (supportedStatus.next().equals(status)) {
-                isValidStatus = true;
-                break;
-            }
-        }
+        List <PresenceStatus> supportedStatuses = jabberStatusEnum.getSupportedStatusSet();
+        boolean isValidStatus = supportedStatuses.contains(status);
+
         if (!isValidStatus)
             throw new IllegalArgumentException(status + " is not a valid Jabber status");
 
@@ -1216,17 +1221,6 @@ public class OperationSetPersistentPresenceJabberImpl
                 {
                     try {
                         Jid userJid = presence.getFrom();
-
-                        FullJid ownJid = parentProvider.getOurJID();
-                        if ((userJid != null) && userJid.isParentOf(ownJid) && (localContact != null)) {
-                            // seems never get executed - need to verified!!!
-                            if (presence.isAvailable()) {
-                                logger.info("Smack presence update own: " + userJid + " - " + presence.getType());
-                                updateResource(localContact, userJid.asFullJidIfPossible(), presence);
-                                return;
-                            }
-                        }
-
                         OperationSetMultiUserChat mucOpSet = parentProvider.getOperationSet(OperationSetMultiUserChat.class);
                         if ((userJid != null) && (mucOpSet != null)) {
                             List<ChatRoom> chatRooms = mucOpSet.getCurrentlyJoinedChatRooms();
@@ -1426,7 +1420,6 @@ public class OperationSetPersistentPresenceJabberImpl
     public SubscribeAnswer processSubscribe(Jid from, Presence subscribeRequest)
     {
         Jid fromJid = subscribeRequest.getFrom();
-
         /*
          * Approved presence subscription request if auto accept-all option is selected OR
          * if the contact is already persistent i.e. exist in DB
@@ -1466,24 +1459,17 @@ public class OperationSetPersistentPresenceJabberImpl
     @Override
     public void presenceAvailable(final FullJid address, final Presence availablePresence)
     {
-//        new Thread(new Runnable()
-//        {
-//            public void run()
-//            {
-//                // Keep own copy in storedPresences for later processing if isStoringPresenceEvents()
-//                // - never get call or happen.
-//                if ((contactChangesListener != null) && contactChangesListener.isStoringPresenceEvents()) {
-//                    contactChangesListener.addPresenceEvent(availablePresence);
-//                }
-//
-//                // Update resource if receive from other own presence instance and localContact is not null
-//                Jid jid = parentProvider.getOurJID();
-//                if ((localContact != null) && (address != null) && address.isParentOf(jid)) {
-//                    logger.info("Smack presence update for own: = " + address);
-//                    updateResource(localContact, address, availablePresence);
-//                }
-//            }
-//        }).start();
+        // Keep a copy in storedPresences for later processing if isStoringPresenceEvents()
+        if ((contactChangesListener != null) && contactChangesListener.isStoringPresenceEvents()) {
+            contactChangesListener.addPresenceEvent(availablePresence);
+        }
+
+        // Update resource if receive from own presence and localContact is not null
+        FullJid ownJid = parentProvider.getOurJID();
+        if ((localContact != null) && (address != null) && address.isParentOf(ownJid)) {
+            logger.info("Smack presence update own: = " + address);
+            updateResource(localContact, address, availablePresence);
+        }
     }
 
     @Override
