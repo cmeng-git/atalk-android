@@ -183,11 +183,9 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
-     * Returns <code>true</code> if the chat room is persistent, otherwise - returns
-     * <code>false</code>.
+     * Returns <code>true</code> if the chat room is persistent, otherwise - returns <code>false</code>.
      *
-     * @return <code>true</code> if the chat room is persistent, otherwise - returns
-     * <code>false</code>.
+     * @return <code>true</code> if the chat room is persistent, otherwise - returns <code>false</code>.
      */
     public boolean isPersistent()
     {

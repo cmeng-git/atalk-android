@@ -31,6 +31,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
+import org.atalk.android.gui.chatroomslist.ChatRoomInfoFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
@@ -97,6 +98,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     private MenuItem mSendLocation;
     private MenuItem mLeaveChatRoom;
     private MenuItem mDestroyChatRoom;
+    private MenuItem mChatRoomInfo;
     private MenuItem mChatRoomMember;
 
     /**
@@ -319,6 +321,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         mHistoryErase = mMenu.findItem(R.id.erase_chat_history);
         mLeaveChatRoom = mMenu.findItem(R.id.leave_chat_room);
         mDestroyChatRoom = mMenu.findItem(R.id.destroy_chat_room);
+        mChatRoomInfo = mMenu.findItem(R.id.chatroom_info);
         mChatRoomMember = mMenu.findItem(R.id.show_chat_room_occupant);
 
         setOptionItem();
@@ -350,12 +353,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 boolean isShowFileSend = contactRenderer.isShowFileSendBtn(metaContact);
                 mSendFile.setVisible(isShowFileSend);
                 mSendLocation.setVisible(true);
+                mChatRoomInfo.setVisible(false);
                 mChatRoomMember.setVisible(false);
             }
             else {
                 mLeaveChatRoom.setVisible(true);
                 mDestroyChatRoom.setVisible(true);
                 mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
+                mChatRoomInfo.setVisible(true);
                 mChatRoomMember.setVisible(true);
                 mCallAudioContact.setVisible(false);
                 mCallVideoContact.setVisible(false);
@@ -449,6 +454,16 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             case R.id.send_file:
                 AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this, mRecipient);
                 attachOptionDialog.show();
+                return true;
+
+            case R.id.chatroom_info:
+                object = selectedChatPanel.getChatSession().getDescriptor();
+                if (object instanceof ChatRoomWrapper) {
+                    ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
+                    ChatRoomInfoFragment chatRoomInfoFragment = ChatRoomInfoFragment.newInstance(chatRoomWrapper);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, chatRoomInfoFragment).commit();
+                }
                 return true;
 
             case R.id.show_chat_room_occupant:

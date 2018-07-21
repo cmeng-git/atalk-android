@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
@@ -19,16 +21,21 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.chat.CaptchaDialog;
 import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.gui.chat.conference.ConferenceChatManager;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.*;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
+import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -48,9 +55,12 @@ import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
+import org.jxmpp.util.XmppStringUtils;
 
 import java.beans.PropertyChangeEvent;
 import java.util.*;
+
+import static net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10;
 
 /**
  * Implements chat rooms for jabber. The class encapsulates instances of the jive software <tt>MultiUserChat</tt>.
@@ -63,7 +73,7 @@ import java.util.*;
  * @author Eng Chong Meng
  */
 
-public class ChatRoomJabberImpl extends AbstractChatRoom
+public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialog.CaptchaDialogListener
 {
     /**
      * The logger of this class.
@@ -184,6 +194,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      */
     private ParticipantListener participantListener;
 
+    private final MucMessageListener messageListener;
+    private org.jivesoftware.smack.packet.Message sMessage;
+    private int mCaptchaState = CaptchaDialog.unknown;
+
     /**
      * Creates an instance of a chat room that has been.
      *
@@ -200,7 +214,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         multiUserChat.addSubjectUpdatedListener(new MucSubjectUpdatedListener());
         multiUserChat.addParticipantStatusListener(new MemberListener());
         multiUserChat.addUserStatusListener(new UserListener());
-        multiUserChat.addMessageListener(new MucMessageListener());
+        messageListener = new MucMessageListener();
+        multiUserChat.addMessageListener(messageListener);
 
         presenceInterceptor = new PresenceInterceptor();
         multiUserChat.addPresenceInterceptor(presenceInterceptor);
@@ -208,6 +223,57 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
         multiUserChat.addParticipantListener(participantListener);
         invitationRejectionListeners = new InvitationRejectionListeners();
         multiUserChat.addInvitationRejectionListener(invitationRejectionListeners);
+
+        // setup message listener to receive presence captcha challenge message
+        StanzaFilter fromRoomFilter = FromMatchesFilter.create(multiUserChat.getRoom());
+        StanzaFilter fromRoomCaptchaFilter = new AndFilter(fromRoomFilter, MessageTypeFilter.NORMAL);
+
+        provider.getConnection().addAsyncStanzaListener(new StanzaListener()
+        {
+            @Override
+            public void processStanza(Stanza packet)
+            {
+                sMessage = (org.jivesoftware.smack.packet.Message) packet;
+                if (sMessage.getExtension(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE) != null) {
+                    initCaptchaProcess(sMessage);
+                }
+                // Show message to user in chat window
+                else {
+                    messageListener.processMessage(sMessage);
+                }
+
+            }
+        }, fromRoomCaptchaFilter);
+
+        ConferenceChatManager conferenceChatManager = AndroidGUIActivator.getUIService().getConferenceChatManager();
+        addMessageListener(conferenceChatManager);
+    }
+
+    /**
+     * Show captcha challenge for spam group chat if requested
+     *
+     * @param message messge containing captcha challenge info
+     */
+    private void initCaptchaProcess(final org.jivesoftware.smack.packet.Message message)
+    {
+        new Handler(Looper.getMainLooper()).post(new Runnable()
+        {
+            public void run()
+            {
+                CaptchaDialog captchaDialog = new CaptchaDialog(aTalkApp.getCurrentActivity(),
+                        mProvider, message, ChatRoomJabberImpl.this);
+                captchaDialog.show();
+            }
+        });
+    }
+
+    @Override
+    public void onResult(int state)
+    {
+        mCaptchaState = state;
+        // Give user a second chance to reply to captcha challenge via webLink
+        if (state == CaptchaDialog.cancel)
+            messageListener.processMessage(sMessage);
     }
 
     /**
@@ -465,16 +531,20 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     /**
-     * Invites another user to this room.
+     * Invites another user to this room. Block any domainJid from joining as it does not support IM
      *
-     * @param userAddress the address of the user to invite to the room.(one may also invite users not on their
-     * contact list).
+     * @param userJid jid of the user to invite to the room.(one may also invite users not on their contact list).
      * @param reason a reason, subject, or welcome message that would tell the the user why they are being invited.
      */
-    public void invite(EntityBareJid userAddress, String reason)
+    public void invite(EntityBareJid userJid, String reason)
             throws NotConnectedException, InterruptedException
     {
-        mMultiUserChat.invite(userAddress, reason);
+        if (TextUtils.isEmpty(XmppStringUtils.parseLocalpart(userJid.toString()))) {
+            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, userJid);
+        }
+        else {
+            mMultiUserChat.invite(userJid, reason);
+        }
     }
 
     /**
@@ -489,18 +559,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     }
 
     /**
-     * Joins this chat room so that the user would start receiving events and messages for it.
-     *
-     * @param password the password to use when authenticating on the chatRoom.
-     * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
-     */
-    public void join(byte[] password)
-            throws OperationFailedException
-    {
-        joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(getParentProvider()), password);
-    }
-
-    /**
      * Joins this chat room with the nickName of the local user so that the user would start
      * receiving events and messages for it.
      *
@@ -509,7 +567,32 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
     public void join()
             throws OperationFailedException
     {
-        joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(getParentProvider()));
+        joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mProvider));
+    }
+
+    /**
+     * Joins this chat room so that the user would start receiving events and messages for it.
+     *
+     * @param password the password to use when authenticating on the chatRoom.
+     * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
+     */
+    public void join(byte[] password)
+            throws OperationFailedException
+    {
+        joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mProvider), password);
+    }
+
+    /**
+     * Joins this chat room with the specified nickname as anonymous so that the user would
+     * start receiving events and messages for it.
+     *
+     * @param nickname the nickname can be jid or just nick.
+     * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
+     */
+    public void joinAs(String nickname)
+            throws OperationFailedException
+    {
+        this.joinAs(nickname, null);
     }
 
     /**
@@ -535,6 +618,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                     mMultiUserChat.changeNickname(mNickName);
             }
             else {
+                // Allow longer timeout during join chatRoom to allow time to handle any captcha challenge
+                mProvider.getConnection().setReplyTimeout(15000);
                 if (password == null)
                     mMultiUserChat.join(mNickName);
                 else
@@ -549,19 +634,40 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             }
             // We don't specify a reason.
             opSetMuc.fireLocalUserPresenceEvent(this, LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED, null);
-
         } catch (XMPPErrorException ex) {
-            if (ex.getXMPPError() == null) {
+            XMPPError xmppError = ex.getXMPPError();
+            errorMessage += "\n" + ex.getMessage() + "\n";
+            if (xmppError == null) {
                 logger.error(errorMessage, ex);
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
             }
-            else if (ex.getXMPPError().getCondition().equals(XMPPError.Condition.not_authorized)) {
-                errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD);
+            else if (xmppError.getCondition().equals(XMPPError.Condition.not_authorized)) {
                 logger.error(errorMessage, ex);
-                throw new OperationFailedException(errorMessage, OperationFailedException.AUTHENTICATION_FAILED, ex);
+                if (mCaptchaState == CaptchaDialog.unknown) {
+                    errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD);
+                    throw new OperationFailedException(errorMessage, OperationFailedException.AUTHENTICATION_FAILED, ex);
+                }
+                else {
+                    errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED);
+                    throw new OperationFailedException(errorMessage, OperationFailedException.CAPTCHA_CHALLENGE, ex);
+                }
             }
-            else if (ex.getXMPPError().getCondition().equals(XMPPError.Condition.registration_required)) {
-                errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION);
+            else if (xmppError.getCondition().equals(XMPPError.Condition.registration_required)) {
+                // The feature requested is not supported by the conference
+//                Registration iqRegister = new Registration();
+//                iqRegister.setType(IQ.Type.get);
+//                iqRegister.setTo(mMultiUserChat.getRoom());
+//                try {
+//                    mProvider.getConnection().sendStanza(iqRegister);
+//                } catch (NotConnectedException | InterruptedException e) {
+//                    logger.error(xmppError.getDescriptiveText());
+//                }
+
+                String errText = xmppError.getDescriptiveText();
+                if (TextUtils.isEmpty(errText))
+                    errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION);
+                else
+                    errorMessage += errText;
                 logger.error(errorMessage, ex);
                 throw new OperationFailedException(errorMessage, OperationFailedException.REGISTRATION_REQUIRED, ex);
             }
@@ -571,26 +677,24 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
             }
         } catch (Throwable ex) {
             logger.error(errorMessage, ex);
-            throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
+            if (mCaptchaState == CaptchaDialog.unknown) {
+                throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
+            }
+            else if (mCaptchaState != CaptchaDialog.awaiting) {
+                errorMessage += "\n" + aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED);
+                throw new OperationFailedException(errorMessage, OperationFailedException.CAPTCHA_CHALLENGE, ex);
+            }
+            else {
+                errorMessage = aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING, getName());
+                throw new OperationFailedException(errorMessage, OperationFailedException.CAPTCHA_CHALLENGE, ex);
+            }
+        } finally {
+            mProvider.getConnection().setReplyTimeout(SMACK_PACKET_REPLY_TIMEOUT_10);
         }
     }
 
     /**
-     * Joins this chat room with the specified nickname as anonymous so that the user would
-     * start receiving events and messages for it.
-     *
-     * @param nickname the nickname can be jid or just nick.
-     * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
-     */
-    public void joinAs(String nickname)
-            throws OperationFailedException
-    {
-        this.joinAs(nickname, null);
-    }
-
-    /**
-     * Returns that <tt>ChatRoomJabberRole</tt> instance corresponding to the <tt>smackRole</tt>
-     * string.
+     * Returns that <tt>ChatRoomJabberRole</tt> instance corresponding to the <tt>smackRole</tt> string.
      *
      * @param mucRole the smack mRole as returned by <tt>Occupant.getRole()</tt>.
      * @return ChatRoomMemberRole
@@ -851,7 +955,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * @param role the new mRole to be set for the local user
      * @param isInitial if <tt>true</tt> this is initial mRole set.
      */
-    public void setLocalUserRole(ChatRoomMemberRole role, boolean isInitial)
+    private void setLocalUserRole(ChatRoomMemberRole role, boolean isInitial)
     {
         fireLocalUserRoleEvent(getUserRole(), role, isInitial);
         mRole = role;
@@ -1703,9 +1807,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
                 return;
             }
 
-            // Check received message for sent message: either a delivery report or a message
-            // coming from the chaRoom server. Checking using nick OR jid in case user join
-            // with a different nick.
+            // Check received message for sent message: either a delivery report or a message coming from the
+            // chaRoom server. Checking using nick OR jid in case user join with a different nick.
             if (((getUserNickname() != null) && getUserNickname().equals(fromNick)) || ((jabberID != null)
                     && jabberID.equals(getAccountId(member.getChatRoom())))) {
                 // message delivered
@@ -1968,7 +2071,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom
      * @param evt the <tt>ChatRoomMemberPropertyChangeEvent</tt> that we'd like deliver to all
      * registered member property change listeners.
      */
-    public void fireMemberPropertyChangeEvent(ChatRoomMemberPropertyChangeEvent evt)
+    private void fireMemberPropertyChangeEvent(ChatRoomMemberPropertyChangeEvent evt)
     {
         Iterable<ChatRoomMemberPropertyChangeListener> listeners;
         synchronized (memberPropChangeListeners) {

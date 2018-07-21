@@ -30,6 +30,7 @@
     <dimen name="radian_gradient">300dp</dimen>
     <dimen name="screen_padding">20dp</dimen>
     <dimen name="screen_padding_small">10dp</dimen>
+    <dimen name="text_entry_height">32dp</dimen>
     <dimen name="item_height">40dp</dimen>
     <dimen name="screen_padding_land">40dp</dimen>
     <dimen name="status_screen_width">300dp</dimen>

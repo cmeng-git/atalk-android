@@ -54,6 +54,7 @@ import org.jxmpp.util.XmppStringUtils;
 
 import java.io.File;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * The <tt>ChatFragment</tt> working in conjunction with ChatActivity, ChatPanel, ChatController
@@ -429,7 +430,6 @@ public class ChatFragment extends OSGiFragment
      * Non-focus chatFragment causing non-sync between chatFragment and chatController i.e.
      * sending & received messages sent to wrong chatFragment - resolved with initChatController()
      * passing in focus state as parameter; taking the appropriate actions pending the focus state;
-     *
      */
     private void initChatController(boolean inFocus)
     {
@@ -1141,7 +1141,13 @@ public class ChatFragment extends OSGiFragment
                             }
                             messageViewHolder.timeView.setText(message.getDateStr());
                         }
+
+                        // Set up link movement method i.e. make all links in TextView clickable
+                        messageViewHolder.messageView.setMovementMethod(LinkMovementMethod.getInstance());
                         messageViewHolder.messageView.setText(message.getBody());
+
+                        // Set clicks adapter for re-edit last outgoing message
+                        messageViewHolder.messageView.setOnClickListener(msgClickAdapter);
                     }
                     return convertView;
             }
@@ -1185,15 +1191,6 @@ public class ChatFragment extends OSGiFragment
                         ? R.layout.chat_system_row : R.layout.chat_error_row, parent, false);
                 messageViewHolder.messageView = convertView.findViewById(R.id.messageView);
             }
-
-            // Set link movement method
-            messageViewHolder.messageView.setMovementMethod(LinkMovementMethod.getInstance());
-
-            // Set clicks adapter for re-edit last outgoing message
-            messageViewHolder.messageView.setOnClickListener(msgClickAdapter);
-//			if (messageViewHolder.outgoingMessageHolder != null) {
-//				messageViewHolder.outgoingMessageHolder.setOnClickListener(msgClickAdapter);
-//			}
             convertView.setTag(messageViewHolder);
             return convertView;
         }
@@ -1540,10 +1537,8 @@ public class ChatFragment extends OSGiFragment
                 if (body == null) {
                     try { // cannot assume null body = html message
                         body = Html.fromHtml(msg.getMessage(), imageGetter, null);
-                        final int msgType = msg.getMessageType();
-                        if ((msgType == ChatMessage.MESSAGE_OUT) || (msgType == ChatMessage.MESSAGE_IN)) {
-                            Linkify.addLinks((Spannable) body, Linkify.ALL);
-                        }
+                        Pattern urlMatcher = Pattern.compile("\\b[A-Za-z]+://[A-Za-z0-9:./?=]+\\b");
+                        Linkify.addLinks((Spannable) body, urlMatcher, null);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

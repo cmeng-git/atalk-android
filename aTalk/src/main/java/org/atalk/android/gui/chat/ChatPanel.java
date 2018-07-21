@@ -1134,7 +1134,6 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void inviteContacts(ChatTransport inviteChatTransport, Collection<String> chatContacts, String reason)
     {
-        ChatSession conferenceChatSession = null;
         ProtocolProviderService pps = inviteChatTransport.getProtocolProvider();
 
         if (mChatSession instanceof MetaContactChatSession) {
@@ -1142,12 +1141,15 @@ public class ChatPanel implements Chat, MessageListener
 
             // the chat session is set regarding to which OpSet is used for MUC
             if (pps.getOperationSet(OperationSetMultiUserChat.class) != null) {
-                ChatRoomWrapper chatRoomWrapper = AndroidGUIActivator.getMUCService()
-                        .createPrivateChatRoom(pps, chatContacts, reason, false);
-                // conferenceChatSession = new ConferenceChatSession(this, chatRoomWrapper);
-                Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
-                aTalkApp.getGlobalContext().startActivity(chatIntent);
-
+                ChatRoomWrapper chatRoomWrapper
+                        = AndroidGUIActivator.getMUCService().createPrivateChatRoom(pps, chatContacts, reason, false);
+                if (chatRoomWrapper != null) {
+                    // conferenceChatSession = new ConferenceChatSession(this, chatRoomWrapper);
+                    Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
+                    aTalkApp.getGlobalContext().startActivity(chatIntent);
+                } else {
+                    logger.error("Failed to create chatroom");
+                }
             }
             else if (pps.getOperationSet(OperationSetAdHocMultiUserChat.class) != null) {
                 AdHocChatRoomWrapper chatRoomWrapper = conferenceChatManager.createAdHocChatRoom

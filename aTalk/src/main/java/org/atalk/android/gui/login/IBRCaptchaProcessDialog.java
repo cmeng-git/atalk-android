@@ -20,20 +20,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextUtils;
+import android.os.*;
+import android.text.*;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 
 import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
@@ -45,15 +36,13 @@ import net.java.sip.communicator.util.Logger;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.bob.packet.BoB;
+import org.jivesoftware.smackx.captcha.packet.Captcha;
 import org.jivesoftware.smackx.iqregisterx.AccountManager;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -62,9 +51,7 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 
 /**
@@ -79,16 +66,6 @@ public class IBRCaptchaProcessDialog extends Dialog
      * Logger of this class
      */
     private static final Logger logger = Logger.getLogger(IBRCaptchaProcessDialog.class);
-
-    private static final String FORM_TYPE = "FORM_TYPE";
-    private static final String NS_CAPTCHA = "urn:xmpp:captcha";
-    private static final String CHALLENGE = "challenge";
-    private static final String SID = "sid";
-    private static final String ANSWER = "answers";
-
-    private static final String USER_NAME = "username";
-    private static final String PASSWORD = "password";
-    private static final String OCR = "ocr";
 
     /**
      * Listens for connection closes or errors.
@@ -145,7 +122,7 @@ public class IBRCaptchaProcessDialog extends Dialog
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        this.setContentView(R.layout.captcha_dialog);
+        this.setContentView(R.layout.captcha_ibr);
         setTitle(mContext.getString(R.string.captcha_registration_request));
 
         EditText mUserNameField = this.findViewById(R.id.username);
@@ -177,7 +154,8 @@ public class IBRCaptchaProcessDialog extends Dialog
         if (initIBRRegistration()) {
             showCaptchaContent();
             initializeViewListeners();
-        } else { // unable to start IBR registration on server
+        }
+        else { // unable to start IBR registration on server
             onIBRServerFailure();
         }
     }
@@ -285,7 +263,8 @@ public class IBRCaptchaProcessDialog extends Dialog
     }
 
     // Server failure with start of IBR registration
-    private void onIBRServerFailure() {
+    private void onIBRServerFailure()
+    {
         mReasonText = "InBand registration - Server Error!";
         mImageView.setVisibility(View.GONE);
         mReason.setText(mReasonText);
@@ -304,27 +283,27 @@ public class IBRCaptchaProcessDialog extends Dialog
     private void onAcceptClicked()
     {
         submitForm = new DataForm(DataForm.Type.submit);
-        addField(FORM_TYPE, NS_CAPTCHA);
+        addField(FormField.FORM_TYPE, Captcha.NAMESPACE);
 
-        String cl = mDataForm.getField(CHALLENGE).getValues().get(0);
-        addField(CHALLENGE, cl);
+        String cl = mDataForm.getField(Captcha.CHALLENGE).getValues().get(0);
+        addField(Captcha.CHALLENGE, cl);
 
-        String sid = mDataForm.getField(CHALLENGE).getValues().get(0);
-        addField(SID, sid);
-        addField(ANSWER, "3");
+        String sid = mDataForm.getField(Captcha.SID).getValues().get(0);
+        addField(Captcha.SID, sid);
+        addField(Captcha.ANSWER, "3");
 
         // Only localPart is required
         String userName = XmppStringUtils.parseLocalpart(mAccountId.getUserID());
-        addField(USER_NAME, userName);
+        addField(Captcha.USER_NAME, userName);
 
         Editable pwd = mPasswordField.getText();
         if (pwd != null) {
-            addField(PASSWORD, pwd.toString());
+            addField(Captcha.PASSWORD, pwd.toString());
         }
 
         Editable rc = mCaptchaText.getText();
         if (rc != null) {
-            addField(OCR, rc.toString());
+            addField(Captcha.OCR, rc.toString());
         }
 
         if ((mConnection != null) && mConnection.isConnected()) {

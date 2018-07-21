@@ -216,7 +216,7 @@
     <string name="service_gui_CREATE">Create</string>
     <string name="service_gui_CREATE_CALL_FAILED">Failed to create the call.</string>
     <string name="service_gui_CREATE_CHAT_ROOM">Create chat room&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Failed to create %1$s chat room.</string>
+    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Failed to create chat room for:\n%1$s</string>
     <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Create chat room wizard</string>
     <string name="service_gui_CREATE_CONFERENCE_CALL">Create a conference call&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Create a conference chat&#8230;</string>
@@ -378,7 +378,22 @@
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Erase this chatRoom history</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Erase all chatRooms history</string>
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Turn off history for this chatRoom</string>
+
     <string name="service_gui_CHATROOM_INFO">ChatRoom info</string>
+    <string name="service_gui_CHATROOM_INFO_NAME">Name</string>
+    <string name="service_gui_CHATROOM_INFO_SUBJECT">Subject</string>
+    <string name="service_gui_CHATROOM_INFO_DESCRIPTION">Description</string>
+    <string name="service_gui_CHATROOM_INFO_OCCUPANTS_COUNT">Occupants</string>
+    <string name="service_gui_CHATROOM_INFO_MEMBERS_ONLY">Member Only</string>
+    <string name="service_gui_CHATROOM_INFO_MODERATED">Moderated</string>
+    <string name="service_gui_CHATROOM_INFO_NON_ANANYMOUS">Non Anonymous</string>
+    <string name="service_gui_CHATROOM_INFO_PASSWORD_PROTECTED">Password Protected</string>
+    <string name="service_gui_CHATROOM_INFO_PERSISTENT">Persistent</string>
+    <string name="service_gui_CHATROOM_INFO_MAX_HISTORY_FETCH">Max History</string>
+    <string name="service_gui_CHATROOM_INFO_CONTACT_JID">Contact Jid</string>
+    <string name="service_gui_CHATROOM_INFO_SUBJECT_MODIFIABLE">Subject Modifiable</string>
+    <string name="service_gui_CHATROOM_INFO_LANGUAGE">Language</string>
+    <string name="service_gui_CHATROOM_INFO_LDAP_GROUP">LDAP Group</string>
 
     <string name="service_gui_DESTROY_CHATROOM">Destroy this chatRoom</string>
     <string name="service_gui_DESTROY_CHATROOM_ERROR">Error occurred while destroying chat room:\n\nError: %1$s </string>
@@ -430,6 +445,13 @@
     <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Join chat room</string>
     <string name="service_gui_JOIN_CHAT_ROOM_NAME">Please enter the name of the chat room you would like to join.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Join chat room wizard</string>
+
+    <string name="captcha_challenge">Captcha challenge</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">The chat room is protected with captcha challenge</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">The CAPTCHA verification is valid</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">The CAPTCHA verification has failed</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">You need to rejoin %1$s chat room after you have submitted the CAPTCHA text</string>
+
     <string name="service_gui_JOIN_AUTOMATICALLY">Join automatically</string>
     <string name="service_gui_DONT_JOIN_AUTOMATICALLY">Don\'t join automatically</string>
     <string name="service_gui_KICK">Kick</string>
@@ -575,7 +597,7 @@
     <string name="service_gui_WARN_CALL_IN_PROGRESS">Can\'t do this during a call</string>    
     <string name="service_gui_YES">Yes</string>
 
-    <!-- Conferenc constants - no translation -->
+    <!-- Conference constants - no translation -->
     <string name="service_gui_icons_AUTOJOIN">auto_join_on</string>
     <string name="service_gui_icons_AUTOJOIN_OFF_ICON_BUTTON">auto_join_off</string>
     <string name="service_gui_icons_AUTOJOIN_OFF_ICON_PRESSED_BUTTON">auto_join_off_pressed</string>
@@ -1544,8 +1566,7 @@
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">Manage crypto private fingerprints</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">Crypto private keys</string>
     <!-- Crypto fingerprints screen -->
-    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY">Manage all known devices fingerprints\n
-        color: cyan=ownDevice; gray=inactive</string>
+    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY">Manage all known devices fingerprints\ncolor: cyan=ownDevice; gray=inactive</string>
     <string name="service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">Crypto devices fingerprints</string>
 
     <!-- Crypto contextMenu, dialog, message and toast -->

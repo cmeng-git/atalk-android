@@ -25,7 +25,6 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 
 import java.util.Iterator;
 import java.util.List;
@@ -74,7 +73,6 @@ public class PresenceFilter implements ContactListFilter
 
         // Add this query to the filterQuery.
         filterQuery.addContactQuery(query);
-        MetaContactListAdapter contactListAdapter = AndroidGUIActivator.getContactListAdapter();
         List<ContactSourceService> filterSources = AndroidGUIActivator.getContactSources();
 
         int maxIndex = 0;

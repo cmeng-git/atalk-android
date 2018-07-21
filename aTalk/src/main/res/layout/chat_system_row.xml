@@ -18,5 +18,4 @@
         android:padding="5dip"
         android:text="{System message text}"
         android:textColor="@color/blue" />
-
 </LinearLayout>

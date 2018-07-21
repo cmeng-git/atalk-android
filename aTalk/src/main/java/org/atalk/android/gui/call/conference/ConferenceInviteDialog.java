@@ -28,7 +28,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.*;
@@ -274,7 +274,7 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
 
     private MetaContactListAdapter getContactListAdapter()
     {
-        ContactListFragment clf = AndroidGUIActivator.getContactListFragment();
+        ContactListFragment clf = aTalkApp.getContactListFragment();
         if (contactListAdapter == null) {
             // Disable call button options
             contactListAdapter = new MetaContactListAdapter(clf, false);

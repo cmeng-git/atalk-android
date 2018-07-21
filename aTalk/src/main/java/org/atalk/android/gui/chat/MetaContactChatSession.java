@@ -675,10 +675,10 @@ public class MetaContactChatSession extends ChatSession
      */
     private void updateChatTransports(Contact contact)
     {
-        MetaContactChatTransport currentTransport = (MetaContactChatTransport) getCurrentChatTransport();
-        boolean isSelectedContact = currentTransport.getContact().equals(contact);
-        boolean isResourceSelected = isSelectedContact && currentTransport.getResourceName() != null;
-        String resourceName = currentTransport.getResourceName();
+        boolean isSelectedContact = (currentChatTransport != null)
+                && ((MetaContactChatTransport) currentChatTransport).getContact().equals(contact);
+        boolean isResourceSelected = isSelectedContact && (currentChatTransport.getResourceName() != null);
+        String resourceName = currentChatTransport.getResourceName();
 
         removeChatTransports(contact);
         if (isResourceSelected)

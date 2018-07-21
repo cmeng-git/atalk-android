@@ -34,8 +34,6 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.account.Account;
-import org.atalk.android.gui.account.AccountInfoPresenceActivity;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chatroomslist.model.*;
@@ -239,8 +237,6 @@ public class ChatRoomListFragment extends OSGiFragment
         TextView textView = searchView.findViewById(id);
         textView.setTextColor(getResources().getColor(R.color.white));
         textView.setHintTextColor(getResources().getColor(R.color.white));
-//		textView.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-//		textView.setHintTextColor(ContextCompat.getColor(getContext(), R.color.white));
         bindSearchListener();
     }
 
@@ -379,7 +375,9 @@ public class ChatRoomListFragment extends OSGiFragment
                 EntityListHelper.removeEntity(mClickedChatRoom, chatPanel);
                 return true;
             case R.id.chatroom_info:
-//				startContactInfoActivity(mClickedChatRoom.getDefaultContact());
+                ChatRoomInfoFragment chatRoomInfoFragment = ChatRoomInfoFragment.newInstance(mClickedChatRoom);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, chatRoomInfoFragment).commit();
                 return true;
             case R.id.chatroom_ctx_menu_exit:
                 return true;
@@ -407,20 +405,6 @@ public class ChatRoomListFragment extends OSGiFragment
         ChatSessionManager.removeAllActiveChats();
         chatRoomListAdapter.notifyDataSetChanged();
     }
-
-    /**
-     * Starts the {@link AccountInfoPresenceActivity} for clicked {@link Account}
-     *
-     * @param contact
-     * 		the <tt>Contact</tt> for which info to be opened.
-     */
-//	private void startContactInfoActivity(Contact contact)
-//	{
-//		Intent statusIntent = new Intent(getActivity(), ContactInfoActivity.class);
-//		statusIntent.putExtra(ContactInfoActivity.INTENT_CONTACT_ID, contact.getAddress());
-//
-//		startActivity(statusIntent);
-//	}
 
     /**
      * Returns the chatRoom list view.
@@ -454,20 +438,20 @@ public class ChatRoomListFragment extends OSGiFragment
         adapter.invalidateViews();
 
         Object clicked = adapter.getChild(groupPosition, childPosition);
-        if (!(clicked instanceof ChatRoomWrapper)) {
-            logger.debug("No a chatRoomWrapper @: " + groupPosition + ", " + childPosition);
-            return false;
-        }
-        else {
+        if (clicked instanceof ChatRoomWrapper) {
             joinChatRoom((ChatRoomWrapper) clicked);
             return true;
+        }
+        else {
+            logger.debug("No a chatRoomWrapper @: " + groupPosition + ", " + childPosition);
+            return false;
         }
     }
 
     /**
      * Open and join chat conference for the given chatRoomWrapper.
      */
-    private void joinChatRoom(final ChatRoomWrapper chatRoomWrapper)
+    private void joinChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
         if (chatRoomWrapper != null) {
             ProtocolProviderService pps = chatRoomWrapper.getParentProvider().getProtocolProvider();
@@ -477,6 +461,7 @@ public class ChatRoomListFragment extends OSGiFragment
             // Set chatRoom openAutomatically on_activity
             MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
             AndroidGUIActivator.getMUCService().joinChatRoom(chatRoomWrapper, nickName, null, null);
+
             Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
             startActivity(chatIntent);
         }

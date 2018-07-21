@@ -213,7 +213,7 @@
     <string name="service_gui_CREATE">Crear</string>
     <string name="service_gui_CREATE_CALL_FAILED">No se ha podido realizar la llamada.</string>
     <string name="service_gui_CREATE_CHAT_ROOM">Crear Sala&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Error al crear la sala %1$s.</string>
+    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Error al crear la sala:\n%1$s.</string>
     <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Asistente para crear una sala</string>
     <string name="service_gui_CREATE_CONFERENCE_CALL">Crear una conferencia telefónica&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Crear una sala&#8230;</string>
@@ -415,6 +415,13 @@
 	<string name="service_gui_JOIN_CHAT_ROOM_TITLE">Unirse a una sala de charla</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Por favor, introduce el nombre de la sala de chat a la que te gustaría unirte.</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Unirse con el asistente de la sala de charla</string>
+
+    <string name="captcha_challenge">Desafío Captcha</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">La sala de chat está protegida con captcha challenge</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">La verificación de CAPTCHA es válida</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">La verificación de CAPTCHA ha fallado</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">Debes volver a unirte a la sala de chat de %1$s después de haber enviado el texto de CAPTCHA</string>
+
 	<string name="service_gui_JOIN_AUTOMATICALLY">Unirse automáticamente</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">No unirse automáticamente</string>
 	<string name="service_gui_KICK">Toque de atención</string>

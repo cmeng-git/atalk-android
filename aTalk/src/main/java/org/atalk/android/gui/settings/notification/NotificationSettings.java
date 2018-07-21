@@ -110,7 +110,7 @@ public class NotificationSettings extends OSGiActivity
 			while (eventsIter.hasNext()) {
 				events.add(eventsIter.next());
 			}
-			this.rms = AndroidGUIActivator.getResourcesService();
+			this.rms = AndroidGUIActivator.getResources();
 		}
 
 		/**

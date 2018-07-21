@@ -85,7 +85,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
 
         LayoutInflater inflater = getLayoutInflater();
 
-        ResourceManagementService rms = AndroidGUIActivator.getResourcesService();
+        ResourceManagementService rms = AndroidGUIActivator.getResources();
 
         for (String eventType : notificationService.getRegisteredEvents()) {
             View tableRow = inflater.inflate(R.layout.notification_row, table, false);

@@ -295,8 +295,7 @@ public class ChatSessionManager
     public static Intent getChatIntent(Object descriptor)
     {
         /*
-         * A string identifier that uniquely represents this descriptor in the containing
-         * chat session database
+         * A string identifier that uniquely represents this descriptor in the containing chat session database
          */
         String chatId;
         int chatType;

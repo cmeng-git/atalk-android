@@ -194,8 +194,13 @@ public class InvitationReceivedDialog extends Dialog
     private void onRejectClicked()
     {
         String reasonField = reasonTextArea.getText().toString().trim();
-        if (mMultiUserChatAdHocOpSet == null && mInvitationAdHoc == null)
-            AndroidGUIActivator.getMUCService().rejectInvitation(mMultiUserChatOpSet, mInvitation, reasonField);
+        if (mMultiUserChatAdHocOpSet == null && mInvitationAdHoc == null) {
+            try {
+                AndroidGUIActivator.getMUCService().rejectInvitation(mMultiUserChatOpSet, mInvitation, reasonField);
+            } catch (OperationFailedException e) {
+                e.printStackTrace();
+            }
+        }
         else {
             mMultiUserChatManager.rejectInvitation(mMultiUserChatAdHocOpSet, mInvitationAdHoc, reasonField);
         }

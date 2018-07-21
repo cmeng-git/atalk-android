@@ -122,7 +122,7 @@ public class ContactListFragment extends OSGiFragment
         }
 
         ViewGroup content = (ViewGroup) inflater.inflate(R.layout.contact_list, container, false);
-        contactListView = (ExpandableListView) content.findViewById(R.id.contactListView);
+        contactListView = content.findViewById(R.id.contactListView);
         contactListView.setSelector(R.drawable.contact_list_selector);
         contactListView.setOnChildClickListener(this);
         contactListView.setOnGroupClickListener(this);
@@ -252,7 +252,7 @@ public class ContactListFragment extends OSGiFragment
             // enable the display of call buttons
             contactListAdapter = new MetaContactListAdapter(this, true);
             contactListAdapter.initModelData();
-            AndroidGUIActivator.setContactListAdapter(contactListAdapter);
+            aTalkApp.setContactListAdapter(contactListAdapter);
         }
         return contactListAdapter;
     }
@@ -392,7 +392,7 @@ public class ContactListFragment extends OSGiFragment
                 EntityListHelper.eraseAllContactHistory(getContext());
                 return true;
             case R.id.rename_contact:
-                // Show move contact dialog
+                // Show rename contact dialog
                 ft = getFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
                 DialogFragment renameFragment = ContactRenameDialog.getInstance(clickedContact);
@@ -440,7 +440,8 @@ public class ContactListFragment extends OSGiFragment
     public void onCloseChat(ChatPanel closedChat)
     {
         ChatSessionManager.removeActiveChat(closedChat);
-        contactListAdapter.notifyDataSetChanged();
+        if (contactListAdapter != null)
+            contactListAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -449,7 +450,8 @@ public class ContactListFragment extends OSGiFragment
     public void onCloseAllChats()
     {
         ChatSessionManager.removeAllActiveChats();
-        contactListAdapter.notifyDataSetChanged();
+        if (contactListAdapter != null)
+            contactListAdapter.notifyDataSetChanged();
     }
 
     /**

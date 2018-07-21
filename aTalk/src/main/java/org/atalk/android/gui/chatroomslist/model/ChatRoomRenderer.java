@@ -20,7 +20,8 @@ import android.graphics.drawable.Drawable;
 
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 
-import org.atalk.android.*;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatSessionManager;
 
 /**
@@ -30,55 +31,52 @@ import org.atalk.android.gui.chat.ChatSessionManager;
  */
 public class ChatRoomRenderer implements UIChatRoomRenderer
 {
-	@Override
-	public boolean isSelected(Object chatRoomWrapper)
-	{
-		return ChatRoomListAdapter.isChatRoomWrapperSelected(
-				((ChatRoomWrapper)chatRoomWrapper).getChatRoomID());
-	}
+    @Override
+    public boolean isSelected(Object chatRoomWrapper)
+    {
+        return ChatRoomListAdapter.isChatRoomWrapperSelected(((ChatRoomWrapper) chatRoomWrapper).getChatRoomID());
+    }
 
-	@Override
-	public String getDisplayName(Object chatRoomWrapper)
-	{
+    @Override
+    public String getDisplayName(Object chatRoomWrapper)
+    {
 		return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomID();
-	}
+    }
 
-	@Override
-	public String getStatusMessage(Object chatRoomWrapper)
-	{
-		String displayDetails = getDisplayDetails((ChatRoomWrapper) chatRoomWrapper);
-		return (displayDetails != null) ? displayDetails : "";
-	}
+    @Override
+    public String getStatusMessage(Object chatRoomWrapper)
+    {
+        String displayDetails = getDisplayDetails((ChatRoomWrapper) chatRoomWrapper);
+        return (displayDetails != null) ? displayDetails : "";
+    }
 
-	@Override
-	public boolean isDisplayBold(Object chatRoomWrapper)
-	{
-		return ChatSessionManager
-				.getActiveChat(((ChatRoomWrapper) chatRoomWrapper).getChatRoomID()) != null;
-	}
+    @Override
+    public boolean isDisplayBold(Object chatRoomWrapper)
+    {
+        return ChatSessionManager.getActiveChat(((ChatRoomWrapper) chatRoomWrapper).getChatRoomID()) != null;
+    }
 
-	@Override
-	public Drawable getChatRoomIcon(Object chatRoomWrapper)
-	{
-		return aTalkApp.getAppResources().getDrawable(R.drawable.ic_chatroom);
-	}
+    @Override
+    public Drawable getChatRoomIcon(Object chatRoomWrapper)
+    {
+        return aTalkApp.getAppResources().getDrawable(R.drawable.ic_chatroom);
+    }
 
-	@Override
-	public String getChatRoomID(Object chatRoomWrapper)
-	{
-		return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomID();
-	}
+    @Override
+    public String getChatRoomID(Object chatRoomWrapper)
+    {
+        return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomID();
+    }
 
-	/**
-	 * Returns the display details for the underlying <tt>MetaContact</tt>.
-	 *
-	 * @param chatRoomWrapper
-	 * 		the <tt>MetaContact</tt>, which details we're looking for
-	 * @return the display details for the underlying <tt>MetaContact</tt>
-	 */
-	private static String getDisplayDetails(ChatRoomWrapper chatRoomWrapper)
-	{
-		// String displayDetails "not implement";
-		return null;
-	}
+    /**
+     * Returns the display details for the underlying <tt>MetaContact</tt>.
+     *
+     * @param chatRoomWrapper the <tt>MetaContact</tt>, which details we're looking for
+     * @return the display details for the underlying <tt>MetaContact</tt>
+     */
+    private static String getDisplayDetails(ChatRoomWrapper chatRoomWrapper)
+    {
+        // String displayDetails "not implement";
+        return null;
+    }
 }
