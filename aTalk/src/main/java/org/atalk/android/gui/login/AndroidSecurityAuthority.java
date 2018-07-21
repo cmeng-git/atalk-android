@@ -16,10 +16,8 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.service.resources.ResourceManagementService;
 
 /**
  * Android <tt>SecurityAuthority</tt> implementation.
@@ -49,7 +47,6 @@ public class AndroidSecurityAuthority implements SecurityAuthority
      * Returns a UserCredentials object associated with the specified realm (accountID), by
      * specifying the reason of this operation. Or display an error message.
      *
-     *
      * @param accountID The realm (accountID) that the credentials are needed for.
      * @param defaultValues the values to propose the user by default
      * @param reasonCode indicates the reason for which we're obtaining the credentials.
@@ -63,8 +60,6 @@ public class AndroidSecurityAuthority implements SecurityAuthority
         }
 
         Context ctx = aTalkApp.getGlobalContext();
-        ResourceManagementService resources = AndroidGUIActivator.getResourcesService();
-
         String errorMessage = aTalkApp.getResString(R.string.service_gui_CONNECTION_FAILED_MSG,
                 defaultValues.getUserName(), defaultValues.getServerAddress());
 
@@ -75,7 +70,6 @@ public class AndroidSecurityAuthority implements SecurityAuthority
     /**
      * Returns a UserCredentials object associated with the specified realm (AccountID), by
      * specifying the reason of this operation.
-     *
      *
      * @param accountID The accountId / realm that the credentials are needed for.
      * @param credentials the values to propose the user by default

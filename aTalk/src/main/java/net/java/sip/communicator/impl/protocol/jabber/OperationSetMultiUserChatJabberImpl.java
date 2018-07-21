@@ -63,11 +63,6 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     private final Hashtable<BareJid, ChatRoomJabberImpl> chatRoomCache = new Hashtable<>();
 
     /**
-     * The registration listener that would get notified when the underlying Jabber provider gets registered.
-     */
-    private final RegistrationStateListener providerRegListener = new RegistrationStateListener();
-
-    /**
      * A reference to the persistent presence operation set that we use to match incoming messages
      * to <tt>Contact</tt>s and vice versa.
      */
@@ -92,6 +87,9 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     OperationSetMultiUserChatJabberImpl(ProtocolProviderServiceJabberImpl jabberProvider)
     {
         this.jabberProvider = jabberProvider;
+
+        // The registration listener that would get notified when the underlying Jabber provider gets registered.
+        RegistrationStateListener providerRegListener = new RegistrationStateListener();
         jabberProvider.addRegistrationStateChangeListener(providerRegListener);
         opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
                 jabberProvider.getOperationSet(OperationSetPersistentPresence.class);
@@ -127,8 +125,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         assertSupportedAndConnected();
         ChatRoom room = null;
         if (roomName == null) {
-            // rooms using google servers needs special name in the form
-            // private-chat-UUID@groupchat.google.com
+            // rooms using google servers needs special name in the form private-chat-UUID@groupchat.google.com
             if ((mConnection != null) && (mConnection.getHost().toLowerCase(Locale.US).contains("google"))) {
                 roomName = "private-chat-" + UUID.randomUUID() + "@groupchat.google.com";
             }
@@ -140,7 +137,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         }
 
         if ((room == null) && (mMucMgr != null)) {
-            MultiUserChat muc = null;
+            MultiUserChat muc;
             try {
                 muc = mMucMgr.getMultiUserChat(getCanonicalRoomName(roomName));
                 Resourcepart nick = Resourcepart.from(JabberActivator.getGlobalDisplayDetailsService()
@@ -148,57 +145,59 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 muc.create(nick);
             } catch (XMPPException | SmackException | XmppStringprepException | InterruptedException ex) {
                 logger.error("Failed to create chat room.", ex);
+                throw new OperationFailedException("Failed to create chat room",
+                        OperationFailedException.GENERAL_ERROR, ex);
             }
-
-            if (muc != null) {
-                boolean isPrivate = false;
-                if (roomProperties != null) {
-                    Object isPrivateObject = roomProperties.get("isPrivate");
-                    if (isPrivateObject != null) {
-                        isPrivate = isPrivateObject.equals(true);
-                    }
+            boolean isPrivate = false;
+            if (roomProperties != null) {
+                Object isPrivateObject = roomProperties.get("isPrivate");
+                if (isPrivateObject != null) {
+                    isPrivate = isPrivateObject.equals(true);
                 }
+            }
+            try {
+                Form form;
+                if (isPrivate) {
+                    Form initForm;
+                    try {
+                        initForm = muc.getConfigurationForm();
+                    } catch (NoResponseException | NotConnectedException | InterruptedException e) {
+                        throw new OperationFailedException("Could not get config form",
+                                OperationFailedException.GENERAL_ERROR, e);
+                    }
+                    form = initForm.createAnswerForm();
+                    for (FormField initField : initForm.getFields()) {
+                        if ((initField == null) || (initField.getVariable() == null)
+                                || (initField.getType() == FormField.Type.fixed)
+                                || (initField.getType() == FormField.Type.hidden))
+                            continue;
 
-                try {
-                    Form form;
-                    if (isPrivate) {
-                        Form initForm = muc.getConfigurationForm();
-                        form = initForm.createAnswerForm();
-                        List<FormField> fieldIterator = initForm.getFields();
-                        for (FormField initField : fieldIterator) {
-                            if ((initField == null) || (initField.getVariable() == null)
-                                    || (initField.getType() == FormField.Type.fixed)
-                                    || (initField.getType() == FormField.Type.hidden))
-                                continue;
-
-                            FormField submitField = form.getField(initField.getVariable());
-                            if (submitField != null) {
-                                List<String> fValues = initField.getValues();
-                                for (String fv : fValues) {
-                                    submitField.addValue(fv);
-                                }
+                        FormField submitField = form.getField(initField.getVariable());
+                        if (submitField != null) {
+                            for (String fieldValue : initField.getValues()) {
+                                submitField.addValue(fieldValue);
                             }
                         }
-                        // cmeng - all the below fields are already in the default form.
-                        String[] fields = {"muc#roomconfig_membersonly",
-                                "muc#roomconfig_allowinvites", "muc#roomconfig_publicroom"};
-                        Boolean[] values = {true, true, false};
-                        for (int i = 0; i < fields.length; i++) {
-                            form.setAnswer(fields[i], values[i]);
-                        }
                     }
-                    else {
-                        form = new Form(DataForm.Type.submit);
+                    // cmeng - all the below fields are already in the default form.
+                    String[] fields = {"muc#roomconfig_membersonly", "muc#roomconfig_allowinvites",
+                            "muc#roomconfig_publicroom"};
+                    Boolean[] values = {true, true, false};
+                    for (int i = 0; i < fields.length; i++) {
+                        form.setAnswer(fields[i], values[i]);
                     }
-                    muc.sendConfigurationForm(form);
-                } catch (XMPPException | NoResponseException | NotConnectedException |
-                        InterruptedException e) {
-                    logger.error("Failed to send config form.", e);
                 }
-                room = createLocalChatRoomInstance(muc);
-                // as we are creating the room we are the owner of it at least that's what MultiUserChat.create says
-                room.setLocalUserRole(ChatRoomMemberRole.OWNER);
+                else {
+                    form = new Form(DataForm.Type.submit);
+                }
+                muc.sendConfigurationForm(form);
+            } catch (XMPPException | NoResponseException | NotConnectedException |
+                    InterruptedException e) {
+                logger.error("Failed to send config form.", e);
             }
+            room = createLocalChatRoomInstance(muc);
+            // as we are creating the room we are the owner of it at least that's what MultiUserChat.create says
+            room.setLocalUserRole(ChatRoomMemberRole.OWNER);
         }
         return room;
     }
@@ -224,7 +223,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
 
     /**
      * Returns a reference to a chatRoom named <tt>roomName</tt>. If the room doesn't exists in the
-     * cache it creates it.
+     * cache then creates it.
      *
      * @param roomName the name of the <tt>ChatRoom</tt> that we're looking for.
      * @return the <tt>ChatRoom</tt> named <tt>roomName</tt>
@@ -340,7 +339,6 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                         logger.error("Failed to retrieve rooms for serviceName=" + serviceName, ex);
                         continue;
                     }
-
                     // Now go through all rooms available on this service and add the room name to
                     // the list of names we are returning
                     for (HostedRoom aRoomsOnThisService : roomsOnThisService)
@@ -360,7 +358,6 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     public boolean isMultiChatSupportedByContact(Contact contact)
     {
         return contact.getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class) != null;
-
     }
 
     /**
@@ -387,13 +384,15 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * @param rejectReason the reason to reject the given invitation
      */
     public void rejectInvitation(ChatRoomInvitation invitation, String rejectReason)
+            throws OperationFailedException
     {
         if (mMucMgr != null) {
             try {
                 mMucMgr.decline(JidCreate.entityBareFrom(invitation.getTargetChatRoom().getIdentifier()),
                         invitation.getInviter().asEntityBareJidIfPossible(), rejectReason);
             } catch (NotConnectedException | InterruptedException | XmppStringprepException e) {
-                e.printStackTrace();
+                throw new OperationFailedException("Could not reject invitation",
+                        OperationFailedException.GENERAL_ERROR, e);
             }
         }
     }
@@ -407,32 +406,17 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     private void assertSupportedAndConnected()
             throws OperationFailedException, OperationNotSupportedException
     {
-        // throw an exception if the provider is not registered or the xmpp connection not
-        // connected.
+        // throw an exception if the provider is not registered or the xmpp connection not connected.
         if (!jabberProvider.isRegistered() || (mConnection == null) || !mConnection.isConnected()) {
             throw new OperationFailedException("Provider not connected to jabber server",
                     OperationFailedException.NETWORK_FAILURE);
         }
-
-        // MultiUserChat.isServiceEnabled() *always* returns false, although the functionality is
-        // implemented and advertised. Because of that, we can't rely on it. The problem has been
-        // reported to igniterealtime.org since 2006. (no such method in 4.2.1 - cmeng)
-        //
-//		 if (!MultiUserChat.isServiceEnabled(getXmppConnection(),
-//		 			jabberProvider.getAccountID().getUserID())) {
-//		 		throw new OperationNotSupportedException(
-//		 			"Chat rooms not supported on server "
-//		 				+ jabberProvider.getAccountID().getService()
-//		 				+ " for user " + jabberProvider.getAccountID().getUserID());
-//		 }
-
     }
 
     /**
-     * In case <tt>roomName</tt> does not represent a complete room id, the method returns a
-     * canonical chat room name in the following form: roomName@muc-servicename.jabserver.com. In
-     * case <tt>roomName</tt> is already a canonical room name, the method simply returns it
-     * without changing it.
+     * In case <tt>roomName</tt> does not represent a complete room id, the method returns a canonical
+     * chat room name in the following form: roomName@muc-servicename.jabserver.com. In case <tt>roomName</tt>
+     * is already a canonical room name, the method simply returns it without changing it.
      *
      * @param roomName the name of the room that we'd like to "canonize".
      * @return the canonical name of the room (which might be equal to roomName in case it was
@@ -503,11 +487,12 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             try {
                 for (EntityBareJid joinedRoom
                         : mMucMgr.getJoinedRooms(JidCreate.entityFullFrom(chatRoomMember.getContactAddress()))) {
-                        joinedRooms.add(joinedRoom.toString());
+                    joinedRooms.add(joinedRoom.toString());
                 }
             } catch (NoResponseException | XMPPErrorException | NotConnectedException
                     | XmppStringprepException | InterruptedException e) {
-                e.printStackTrace();
+                throw new OperationFailedException("Could not get list of joined rooms",
+                        OperationFailedException.GENERAL_ERROR, e);
             }
         }
         return joinedRooms;
@@ -524,8 +509,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      */
     public void fireInvitationEvent(ChatRoom targetChatRoom, EntityJid inviter, String reason, byte[] password)
     {
-        ChatRoomInvitationJabberImpl invitation = new ChatRoomInvitationJabberImpl(targetChatRoom,
-                inviter, reason, password);
+        ChatRoomInvitationJabberImpl invitation
+                = new ChatRoomInvitationJabberImpl(targetChatRoom, inviter, reason, password);
         fireInvitationReceived(invitation);
     }
 

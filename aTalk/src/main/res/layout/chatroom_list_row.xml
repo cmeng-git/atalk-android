@@ -27,7 +27,7 @@
         android:paddingStart="8dp">
 
         <TextView
-            android:id="@+id/room_name"
+            android:id="@+id/roominfo_name"
             style="@style/MediumFont"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

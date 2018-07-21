@@ -44,6 +44,11 @@
         android:visible="false">
     </item>
     <item
+        android:id="@+id/chatroom_info"
+        android:title="@string/service_gui_CHATROOM_INFO"
+        android:visible="false">
+    </item>
+    <item
         android:id="@+id/show_chat_room_occupant"
         android:title="@string/service_gui_CHATROOM_OCCUPANT"
         android:visible="false">

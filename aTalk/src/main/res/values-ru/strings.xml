@@ -207,7 +207,7 @@
 <string name="service_gui_CREATE">Создать</string>
     <string name="service_gui_CREATE_CALL_FAILED">Не удалось создать вызов.</string>
     <string name="service_gui_CREATE_CHAT_ROOM">Создать чат-комнату&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Не удалось создать чат-комнату %1$s.</string>
+    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Не удалось создать чат-комнату:\n%1$s.</string>
     <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Создать мастер чата</string>
     <string name="service_gui_CREATE_CONFERENCE_CALL">Создать конференцию&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Создать чат конференции&#8230;</string>
@@ -419,6 +419,13 @@
     <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Вступить в чат</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Введите имя комнаты для чата, к которой вы хотели бы присоединиться.</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Вступить в мастер чата</string>
+
+    <string name="captcha_challenge">Captcha вызов</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">Чат-чат защищен вызовом captcha</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">Проверка CAPTCHA действительна</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">Не удалось выполнить проверку CAPTCHA</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">После того, как вы представили текст CAPTCHA, вам нужно вернуться в комнату %1$s</string>
+
 	<string name="service_gui_JOIN_AUTOMATICALLY">Автоматически присоединяться</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Не присоединяться автоматически</string>
 	<string name="service_gui_KICK">Kick</string>

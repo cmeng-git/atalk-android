@@ -303,7 +303,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         {
             if (position == 0) {
                 contactListFragment = new ContactListFragment();
-                AndroidGUIActivator.setContactListFragment(contactListFragment);
+                aTalkApp.setContactListFragment(contactListFragment);
                 return contactListFragment;
             }
             else {

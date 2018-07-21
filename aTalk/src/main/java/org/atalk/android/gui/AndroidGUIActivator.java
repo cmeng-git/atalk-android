@@ -11,16 +11,13 @@ import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.contactsource.DemuxContactSourceService;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
-import net.java.sip.communicator.service.filehistory.FileHistoryService;
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
 import net.java.sip.communicator.service.gui.AlertUIService;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.muc.MUCService;
-import net.java.sip.communicator.service.protocol.AccountManager;
-import net.java.sip.communicator.service.protocol.PhoneNumberI18nService;
-import net.java.sip.communicator.service.protocol.SecurityAuthority;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.ConfigurationUtils;
@@ -38,13 +35,9 @@ import org.atalk.crypto.CryptoFragment;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.resources.ResourceManagementService;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Creates <tt>LoginManager</tt> and registers <tt>AlertUIService</tt>. It's moved here from
@@ -103,18 +96,10 @@ public class AndroidGUIActivator implements BundleActivator
     private static MUCService mucService;
     private static MessageHistoryService messageHistoryService;
 
-    private static ContactListFragment contactListFragment;
-
     /**
      * The registered PhoneNumberI18nService.
      */
     private static PhoneNumberI18nService phoneNumberI18nService;
-
-    /**
-     * The contact list object.
-     */
-
-    private static MetaContactListAdapter contactListAdapter;
 
     /**
      * Called when this bundle is started.
@@ -126,13 +111,15 @@ public class AndroidGUIActivator implements BundleActivator
     public void start(BundleContext bundleContext)
             throws Exception
     {
-        Context androidContext = aTalkApp.getGlobalContext();
-        SecurityAuthority securityAuthority = new AndroidSecurityAuthority();
+        AndroidGUIActivator.bundleContext = bundleContext;
 
-        loginRenderer = new AndroidLoginRenderer(securityAuthority);
-        loginManager = new LoginManager(loginRenderer);
+        // Registers UIService stub
+        SecurityAuthority securityAuthority = new AndroidSecurityAuthority();
+        uiService = new AndroidUIServiceImpl(securityAuthority);
+        bundleContext.registerService(UIService.class.getName(), uiService, null);
 
         // Register the alert service android implementation.
+        Context androidContext = aTalkApp.getGlobalContext();
         alertUIService = new AlertUIServiceImpl(androidContext);
         bundleContext.registerService(AlertUIService.class.getName(), alertUIService, null);
 
@@ -140,26 +127,26 @@ public class AndroidGUIActivator implements BundleActivator
         this.presenceStatusHandler = new PresenceStatusHandler();
         presenceStatusHandler.start(bundleContext);
 
+        loginRenderer = new AndroidLoginRenderer(securityAuthority);
+        loginManager = new LoginManager(loginRenderer);
+
         AccountManager accountManager = ServiceUtils.getService(bundleContext, AccountManager.class);
-        if (accountManager.getStoredAccounts().size() > 0) {
-            new Thread(new Runnable()
-            {
-                public void run()
+        if (accountManager != null) {
+            Collection<AccountID> storedAccounts = accountManager.getStoredAccounts();
+            if (storedAccounts != null && storedAccounts.size() > 0) {
+                new Thread(new Runnable()
                 {
-                    loginManager.runLogin();
-                }
-            }).start();
+                    public void run()
+                    {
+                        loginManager.runLogin();
+                    }
+                }).start();
+            }
         }
 
         ConfigurationUtils.loadGuiConfigurations();
-
         // Register show history settings OTR link listener
         ChatSessionManager.addChatLinkListener(new CryptoFragment.ShowHistoryLinkListener());
-
-        AndroidGUIActivator.bundleContext = bundleContext;
-        // Registers UIService stub
-        uiService = new AndroidUIServiceImpl(securityAuthority);
-        bundleContext.registerService(UIService.class.getName(), uiService, null);
     }
 
     /**
@@ -225,11 +212,6 @@ public class AndroidGUIActivator implements BundleActivator
         return metaCListService;
     }
 
-    public static FileHistoryService getFileHistoryService()
-    {
-        return ServiceUtils.getService(bundleContext, FileHistoryService.class);
-    }
-
     /**
      * Returns the <tt>GlobalStatusService</tt> obtained from the bundle context.
      *
@@ -279,16 +261,6 @@ public class AndroidGUIActivator implements BundleActivator
     }
 
     /**
-     * Returns <tt>ResourceManagementService</tt>.
-     *
-     * @return the <tt>ResourceManagementService</tt>.
-     */
-    public static ResourceManagementService getResourcesService()
-    {
-        return ServiceUtils.getService(bundleContext, ResourceManagementService.class);
-    }
-
-    /**
      * Returns the <tt>ResourceManagementService</tt>, through which we will access all resources.
      *
      * @return the <tt>ResourceManagementService</tt>, through which we will access all resources.
@@ -320,7 +292,6 @@ public class AndroidGUIActivator implements BundleActivator
     {
         return loginRenderer;
     }
-
 
     /**
      * Returns the <tt>DemuxContactSourceService</tt> obtained from the bundle context.
@@ -356,19 +327,11 @@ public class AndroidGUIActivator implements BundleActivator
     public static List<ContactSourceService> getContactSources()
     {
         List<ContactSourceService> contactSources = new Vector<>();
-        ServiceReference[] serRefs = null;
-        try {
-            serRefs = bundleContext.getServiceReferences(ContactSourceService.class.getName(), null);
-        } catch (InvalidSyntaxException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        ServiceReference[] serRefs = ServiceUtils.getServiceReferences(bundleContext, ContactSourceService.class);
 
-        if ((serRefs != null) && (serRefs.length != 0)) {
-            for (ServiceReference serRef : serRefs) {
-                ContactSourceService contactSource = (ContactSourceService) bundleContext.getService(serRef);
-                contactSources.add(contactSource);
-            }
+        for (ServiceReference serRef : serRefs) {
+            ContactSourceService contactSource = (ContactSourceService) bundleContext.getService(serRef);
+            contactSources.add(contactSource);
         }
         return contactSources;
     }
@@ -385,47 +348,6 @@ public class AndroidGUIActivator implements BundleActivator
             mediaService = ServiceUtils.getService(bundleContext, MediaService.class);
         }
         return mediaService;
-    }
-
-    /**
-     * Sets the <tt>contactListAdapter</tt> component currently used to show the contact list.
-     *
-     * @param cList the contact list object to set
-     */
-    public static void setContactListAdapter(MetaContactListAdapter cList)
-    {
-        contactListAdapter = cList;
-    }
-
-    /**
-     * Returns the component used to show the contact list.
-     *
-     * @return the component used to show the contact list
-     */
-    public static MetaContactListAdapter getContactListAdapter()
-    {
-        return contactListAdapter;
-    }
-
-
-    /**
-     * Sets the <tt>contactListFragment</tt> component currently used to show the contact list.
-     *
-     * @param cListFragment the contact list fragment object to set
-     */
-    public static void setContactListFragment(ContactListFragment cListFragment)
-    {
-        contactListFragment = cListFragment;
-    }
-
-    /**
-     * Returns the ContactListFragment that contains the contact list.
-     *
-     * @return the ContactListFragment that contains the contact lists
-     */
-    public static ContactListFragment getContactListFragment()
-    {
-        return contactListFragment;
     }
 
     /**

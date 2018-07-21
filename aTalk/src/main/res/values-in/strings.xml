@@ -207,7 +207,7 @@
     <string name="service_gui_CREATE">Buat</string>
     <string name="service_gui_CREATE_CALL_FAILED">Gagal membuat panggilan.</string>
     <string name="service_gui_CREATE_CHAT_ROOM">Bikin ruang obrolan&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Gagal membuat ruang obrolan %1$s.</string>
+    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Gagal membuat ruang obrolan:\n%1$s.</string>
     <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Bikin wizard ruang chat</string>
     <string name="service_gui_CREATE_CONFERENCE_CALL">Bikin panggilan konferensi&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Bikin obrolan konferensi&#8230;</string>
@@ -416,6 +416,13 @@
     <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Bergabung dengan ruang obrolan</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Masukkan nama ruang obrolan yang ingin Anda ikuti.</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Bergabung dengan wizard ruang chat</string>
+
+    <string name="captcha_challenge">Tantangan Captcha</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">Ruang obrolan dilindungi dengan tantangan captcha</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">Verifikasi CAPTCHA betul</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">Anda harus bergabung kembali dengan ruang obrolan %1$s setelah Anda mengirimkan teks CAPTCHA</string>
+
 	<string name="service_gui_JOIN_AUTOMATICALLY">Gabung otomatis</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Jangan bergabung secara otomatis</string>
 	<string name="service_gui_KICK">Tendang</string>

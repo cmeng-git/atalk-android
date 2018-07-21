@@ -15,7 +15,6 @@ import java.net.URISyntaxException;
  */
 public class aTalkProtocolReceiver extends OSGiActivity
 {
-
 	/**
 	 * The logger
 	 */
@@ -42,8 +41,6 @@ public class aTalkProtocolReceiver extends OSGiActivity
 		else {
 			logger.warn("No URL supplied in Jitsi link");
 		}
-
 		finish();
 	}
-
 }

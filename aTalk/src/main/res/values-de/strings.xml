@@ -207,7 +207,7 @@
     <string name="service_gui_CREATE">Erstellen</string>
     <string name="service_gui_CREATE_CALL_FAILED">Kann Anruf nicht aufbauen.</string>
     <string name="service_gui_CREATE_CHAT_ROOM">Chatraum erstellen&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Kann Chatraum %1$s nicht erstellen.</string>
+    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Kann Chatraum nicht erstellen:\n%1$s</string>
     <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Chatraum Erstellen Assistent</string>
     <string name="service_gui_CREATE_CONFERENCE_CALL">Eine Konferenzschaltung erstellen.&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Erstellen eines Konferenz-Chats&#8230;</string>
@@ -415,6 +415,13 @@
     <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Chatraum beitreten</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Bitte geben Sie den Chatraumnamen an dem Sie beitreten möchten.</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Chatraum Betreten Assistent</string>
+
+    <string name="captcha_challenge">Captcha Herausforderung</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">Der Chatraum ist mit einer Captcha-Challenge geschützt</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">Die CAPTCHA-Überprüfung ist gültig</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">Sie müssen erneut in den Chat-Raum von %1$s eintreten, nachdem Sie den CAPTCHA-Text gesendet haben</string>
+
 	<string name="service_gui_JOIN_AUTOMATICALLY">Automatisch beitreten</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Nicht automatisch beitreten</string>
 	<string name="service_gui_KICK">Herauswerfen</string>

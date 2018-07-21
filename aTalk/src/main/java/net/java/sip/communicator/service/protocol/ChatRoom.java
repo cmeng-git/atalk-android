@@ -5,13 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.ChatRoomConferencePublishedListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomLocalUserRoleListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPropertyChangeListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMemberRoleListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageListener;
-import net.java.sip.communicator.service.protocol.event.ChatRoomPropertyChangeListener;
+import net.java.sip.communicator.service.protocol.event.*;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.muc.MultiUserChat;
@@ -20,9 +14,7 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represents a chat channel/room/rendezvous point/ where multiple chat users could rally and

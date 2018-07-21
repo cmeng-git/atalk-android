@@ -18,17 +18,16 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringPrepUtil;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.*;
 
 import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_AUTHENTICATION_FAILED_PROP;
+import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_CAPTCHA_VERIFICATION_PROP;
 import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_PROVIDER_NOT_REGISTERED_PROP;
 import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_REGISTRATION_REQUIRED_PROP;
 import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_SUBSCRIPTION_ALREADY_EXISTS_PROP;
@@ -44,14 +43,14 @@ import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_UNKNOWN
 public class MUCServiceImpl extends MUCService
 {
     /**
-     * The list of persistent chat rooms.
-     */
-    private final ChatRoomListImpl chatRoomList = new ChatRoomListImpl();
-
-    /**
      * The <tt>Logger</tt> used by the <tt>MUCServiceImpl</tt> class and its instances for logging output.
      */
     private static Logger logger = Logger.getLogger(MUCServiceImpl.class);
+
+    /**
+     * The list of persistent chat rooms.
+     */
+    private final ChatRoomListImpl chatRoomList = new ChatRoomListImpl();
 
     /**
      * Called to accept an incoming invitation. Adds the invitation chat room to the list of chat rooms and joins it.
@@ -322,14 +321,10 @@ public class MUCServiceImpl extends MUCService
             HashMap<String, Object> roomProperties = new HashMap<>();
             roomProperties.put("isPrivate", isPrivate);
             chatRoom = groupChatOpSet.createChatRoom(roomName, roomProperties);
-
-            if (join) {
+            // server may reject chatRoom creation and timeout on reply
+            if ((chatRoom != null) && join) {
                 chatRoom.join();
                 for (String contact : contacts) {
-                    if (XmppStringPrepUtil.localprep(contact) == null) {
-                        aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, contact);
-                        continue;
-                    }
                     chatRoom.invite(JidCreate.entityBareFrom(contact), reason);
                 }
             }
@@ -337,8 +332,7 @@ public class MUCServiceImpl extends MUCService
                 | SmackException.NotConnectedException | InterruptedException ex) {
             logger.error("Failed to create chat room.", ex);
             MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_ERROR),
-                    aTalkApp.getResString(R.string.service_gui_CREATE_CHAT_ROOM_ERROR,
-                            protocolProvider.getProtocolDisplayName()), ex);
+                    aTalkApp.getResString(R.string.service_gui_CREATE_CHAT_ROOM_ERROR, protocolProvider.getAccountID()), ex);
         }
 
         if (chatRoom != null) {
@@ -422,6 +416,7 @@ public class MUCServiceImpl extends MUCService
      * @param reason the reason for the rejection
      */
     public void rejectInvitation(OperationSetMultiUserChat multiUserChatOpSet, ChatRoomInvitation invitation, String reason)
+            throws OperationFailedException
     {
         multiUserChatOpSet.rejectInvitation(invitation, reason);
     }
@@ -436,7 +431,6 @@ public class MUCServiceImpl extends MUCService
     {
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if (chatRoom == null) {
-            ResourceManagementService resources = MUCActivator.getResources();
             MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_WARNING),
                     aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED));
             return null;
@@ -467,7 +461,6 @@ public class MUCServiceImpl extends MUCService
         private final boolean rememberPassword;
         private final boolean isFirstAttempt;
         private final String subject;
-        private ResourceManagementService resources = MUCActivator.getResources();
 
         JoinChatRoomTask(ChatRoomWrapperImpl chatRoomWrapper, String nickName, byte[] password,
                 boolean rememberPassword, boolean isFirstAttempt, String subject)
@@ -504,15 +497,16 @@ public class MUCServiceImpl extends MUCService
         }
 
         /**
-         * {@link Thread}{@link #run()} to perform all asynchronous tasks.
+         * {@link Thread}{run()} to perform all asynchronous tasks.
          */
         @Override
         public void run()
         {
             // Must setup up chatRoom and ready to receive incoming messages before joining/sending presence to server
-            // ChatPanel chatPanel = ChatSessionManager.getMultiChat(chatRoom, true);
+            // ChatPanel chatPanel = ChatSessionManager.getMultiChat(chatRoomWrapper, true);
 
-            ContactListFragment clf = AndroidGUIActivator.getContactListFragment();
+            // clf is only used as Fragment reference to startChatActivity
+            ContactListFragment clf = aTalkApp.getContactListFragment();
             clf.startChatActivity(chatRoomWrapper);
 
             ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
@@ -531,6 +525,9 @@ public class MUCServiceImpl extends MUCService
 
                 String message = e.getMessage();
                 switch (e.getErrorCode()) {
+                    case OperationFailedException.CAPTCHA_CHALLENGE:
+                        done(JOIN_CAPTCHA_VERIFICATION_PROP, message);
+                        break;
                     case OperationFailedException.AUTHENTICATION_FAILED:
                         done(JOIN_AUTHENTICATION_FAILED_PROP, message);
                         break;
@@ -570,7 +567,8 @@ public class MUCServiceImpl extends MUCService
                     // AuthenticationWindow.getAuthenticationWindowIcon(chatRoomWrapper.getParentProvider().getProtocolProvider()),
                     AuthenticationWindow authWindow = authWindowsService.create(null, null, null,
                             false, chatRoomWrapper.isPersistent(), null,
-                            aTalkApp.getResString(R.string.service_gui_AUTHENTICATION_WINDOW_TITLE, chatRoomWrapper.getParentProvider().getName()),
+                            aTalkApp.getResString(R.string.service_gui_AUTHENTICATION_WINDOW_TITLE,
+                                    chatRoomWrapper.getParentProvider().getName()),
                             aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_REQUIRES_PASSWORD, chatRoomId), "", null,
                             isFirstAttempt ? null
                                     : aTalkApp.getResString(R.string.service_gui_AUTHENTICATION_FAILED, chatRoomId), null);
@@ -582,6 +580,9 @@ public class MUCServiceImpl extends MUCService
                     }
                     break;
 
+                case JOIN_CAPTCHA_VERIFICATION_PROP:
+                    errorMessage = msg;
+                    break;
                 case JOIN_REGISTRATION_REQUIRED_PROP:
                     errorMessage = msg + "\n" + aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_JOINED);
                     break;

@@ -5,19 +5,13 @@
  */
 package org.atalk.android;
 
-import android.app.Activity;
-import android.app.Application;
-import android.app.DownloadManager;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.PowerManager;
+import android.os.*;
 import android.support.multidex.MultiDex;
 import android.widget.Toast;
 
@@ -25,12 +19,13 @@ import net.java.sip.communicator.service.protocol.AccountManager;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.*;
 import org.atalk.android.gui.LauncherActivity;
-import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.account.AccountsListActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.gui.contactlist.ContactListFragment;
+import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.DrawableCache;
@@ -40,8 +35,7 @@ import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
 
 /**
- * <tt>aTalkApp</tt> is used, as a global context and utility class for global actions
- * (like EXIT broadcast).
+ * <tt>aTalkApp</tt> is used, as a global context and utility class for global actions (like EXIT broadcast).
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -63,14 +57,11 @@ public class aTalkApp extends Application
      */
     public static final String ACTION_EXIT = "org.atalk.android.exit";
 
-    private static boolean permissionRequest = true;
-
     /**
      * Possible values for the different theme settings.
      *
-     * <p><strong>Important:</strong>
-     * Do not change the order of the items! The ordinal value (position) is used when saving the
-     * settings.</p>
+     * <strong>Important:</strong>
+     * Do not change the order of the items! The ordinal value (position) is used when saving the settings.
      */
     public enum Theme
     {
@@ -91,6 +82,13 @@ public class aTalkApp extends Application
     private static Activity currentActivity = null;
 
     /**
+     * The contact list object.
+     */
+    private static MetaContactListAdapter contactListAdapter;
+
+    private static ContactListFragment contactListFragment;
+
+    /**
      * Bitmap cache instance.
      */
     private final DrawableCache drawableCache = new DrawableCache();
@@ -101,8 +99,7 @@ public class aTalkApp extends Application
     private static long lastGuiActivity;
 
     /**
-     * Used to track current <tt>Activity</tt>. This monitor is notified each time current
-     * <tt>Activity</tt> changes.
+     * Used to track current <tt>Activity</tt>. This monitor is notified each time current <tt>Activity</tt> changes.
      */
     private static final Object currentActivityMonitor = new Object();
 
@@ -201,8 +198,7 @@ public class aTalkApp extends Application
      */
     public static NotificationManager getNotificationManager()
     {
-        return (NotificationManager) getGlobalContext().getSystemService(
-                Context.NOTIFICATION_SERVICE);
+        return (NotificationManager) getGlobalContext().getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     /**
@@ -247,8 +243,7 @@ public class aTalkApp extends Application
     }
 
     /**
-     * Returns Android string resource for given <tt>id</tt> and format arguments that will be
-     * used for substitution.
+     * Returns Android string resource for given <tt>id</tt> and format arguments that will be used for substitution.
      *
      * @param id the string identifier.
      * @param arg the format arguments that will be used for substitution.
@@ -319,7 +314,6 @@ public class aTalkApp extends Application
         });
     }
 
-
     /**
      * Returns home <tt>Activity</tt> class.
      *
@@ -370,7 +364,6 @@ public class aTalkApp extends Application
     public static PendingIntent getAtalkIconIntent()
     {
         Intent intent = ChatSessionManager.getLastChatIntent();
-
         if (intent == null) {
             intent = getHomeIntent();
         }
@@ -395,10 +388,7 @@ public class aTalkApp extends Application
      */
     public static boolean isIconEnabled()
     {
-        if (getConfig() != null) {
-            return getConfig().getBoolean(SHOW_ICON_PROPERTY_NAME, true);
-        }
-        return true;
+        return (getConfig() == null) || getConfig().getBoolean(SHOW_ICON_PROPERTY_NAME, true);
     }
 
     /**
@@ -467,6 +457,48 @@ public class aTalkApp extends Application
         return currentActivity;
     }
 
+
+    /**
+     * Sets the <tt>contactListAdapter</tt> component currently used to show the contact list.
+     *
+     * @param cList the contact list object to set
+     */
+    public static void setContactListAdapter(MetaContactListAdapter cList)
+    {
+        contactListAdapter = cList;
+    }
+
+    /**
+     * Returns the component used to show the contact list.
+     *
+     * @return the component used to show the contact list
+     */
+    public static MetaContactListAdapter getContactListAdapter()
+    {
+        return contactListAdapter;
+    }
+
+
+    /**
+     * Sets the <tt>contactListFragment</tt> component currently used to show the contact list.
+     *
+     * @param cListFragment the contact list fragment object to set
+     */
+    public static void setContactListFragment(ContactListFragment cListFragment)
+    {
+        contactListFragment = cListFragment;
+    }
+
+    /**
+     * Returns the ContactListFragment that contains the contact list.
+     *
+     * @return the ContactListFragment that contains the contact lists
+     */
+    public static ContactListFragment getContactListFragment()
+    {
+        return contactListFragment;
+    }
+
     /**
      * Returns the time elapsed since last atalk <tt>Activity</tt> was open in milliseconds.
      *
@@ -497,8 +529,7 @@ public class aTalkApp extends Application
      */
     public static void showSendLogsDialog()
     {
-        LogUploadService logUpload = ServiceUtils.getService(AndroidGUIActivator.bundleContext,
-                LogUploadService.class);
+        LogUploadService logUpload = ServiceUtils.getService(AndroidGUIActivator.bundleContext, LogUploadService.class);
         String defaultEmail = getConfig().getString("org.atalk.android.LOG_REPORT_EMAIL");
 
         logUpload.sendLogs(new String[]{defaultEmail},

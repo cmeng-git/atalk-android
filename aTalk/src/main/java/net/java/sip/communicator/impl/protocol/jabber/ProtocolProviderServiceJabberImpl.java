@@ -72,6 +72,8 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.jivesoftware.smackx.caps.provider.CapsExtensionProvider;
+import org.jivesoftware.smackx.captcha.packet.Captcha;
+import org.jivesoftware.smackx.captcha.provider.CaptchaProvider;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
@@ -1917,6 +1919,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // XEP-0153: vCard-Based Avatars
             ProviderManager.addExtensionProvider(VCardTempXUpdate.ELEMENT, VCardTempXUpdate.NAMESPACE,
                     new VCardTempXUpdateProvider());
+
+            // XEP-0158: CAPTCHA Forms
+            ProviderManager.addExtensionProvider(Captcha.ELEMENT, Captcha.NAMESPACE, new CaptchaProvider());
 
             // in case of modified account, we clear list of supported features and all state
             // change listeners, otherwise we can have two OperationSet for same feature and it

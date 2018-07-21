@@ -26,57 +26,51 @@ import android.graphics.drawable.Drawable;
  */
 public interface UIChatRoomRenderer
 {
-	/**
-	 * Return <tt>true</tt> if given contact is considered to be currently selected.
-	 *
-	 * @param chatRoomWrapper
-	 * 		chatRoomWrapper instance.
-	 * @return <tt>true</tt> if given chatRoomWrapper is considered to be currently selected.
-	 */
-	boolean isSelected(Object chatRoomWrapper);
+    /**
+     * Return <tt>true</tt> if given contact is considered to be currently selected.
+     *
+     * @param chatRoomWrapper chatRoomWrapper instance.
+     * @return <tt>true</tt> if given chatRoomWrapper is considered to be currently selected.
+     */
+    boolean isSelected(Object chatRoomWrapper);
 
-	/**
-	 * Returns chatRoomWrapper display name.
-	 *
-	 * @param chatRoomWrapper
-	 * 		chatRoomWrapper instance.
-	 * @return chatRoomWrapper display name.
-	 */
-	String getDisplayName(Object chatRoomWrapper);
+    /**
+     * Returns chatRoomWrapper display name.
+     *
+     * @param chatRoomWrapper chatRoomWrapper instance.
+     * @return chatRoomWrapper display name.
+     */
+    String getDisplayName(Object chatRoomWrapper);
 
-	/**
-	 * Returns chatRoomWrapper status message.
-	 *
-	 * @param chatRoomWrapper
-	 * 		chatRoomWrapper instance.
-	 * @return chatRoomWrapper status message.
-	 */
-	String getStatusMessage(Object chatRoomWrapper);
+    /**
+     * Returns chatRoomWrapper status message.
+     *
+     * @param chatRoomWrapper chatRoomWrapper instance.
+     * @return chatRoomWrapper status message.
+     */
+    String getStatusMessage(Object chatRoomWrapper);
 
-	/**
-	 * Returns <tt>true</tt> if given chatRoomWrapper name should be displayed in bold.
-	 *
-	 * @param chatRoomWrapper
-	 * 		chatRoomWrapper instance.
-	 * @return <tt>true</tt> if given chatRoomWrapper name should be displayed in bold.
-	 */
-	boolean isDisplayBold(Object chatRoomWrapper);
+    /**
+     * Returns <tt>true</tt> if given chatRoomWrapper name should be displayed in bold.
+     *
+     * @param chatRoomWrapper chatRoomWrapper instance.
+     * @return <tt>true</tt> if given chatRoomWrapper name should be displayed in bold.
+     */
+    boolean isDisplayBold(Object chatRoomWrapper);
 
-	/**
-	 * Returns chatRoomWrapper Icon image.
-	 *
-	 * @param chatRoomWrapper
-	 * 		chatRoomWrapper instance.
-	 * @return chatRoomWrapper avatar image.
-	 */
-	Drawable getChatRoomIcon(Object chatRoomWrapper);
+    /**
+     * Returns chatRoomWrapper Icon image.
+     *
+     * @param chatRoomWrapper chatRoomWrapper instance.
+     * @return chatRoomWrapper avatar image.
+     */
+    Drawable getChatRoomIcon(Object chatRoomWrapper);
 
-	/**
-	 * Returns chatRoomID that can be used to establish an outgoing connection.
-	 *
-	 * @param chatRoomWrapper
-	 * 		chatRoomWrapper instance.
-	 * @return chatRoomID that can be used to establish an outgoing connection.
-	 */
-	String getChatRoomID(Object chatRoomWrapper);
+    /**
+     * Returns chatRoomID that can be used to establish an outgoing connection.
+     *
+     * @param chatRoomWrapper chatRoomWrapper instance.
+     * @return chatRoomID that can be used to establish an outgoing connection.
+     */
+    String getChatRoomID(Object chatRoomWrapper);
 }

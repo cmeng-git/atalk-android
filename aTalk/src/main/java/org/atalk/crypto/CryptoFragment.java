@@ -18,22 +18,15 @@ package org.atalk.crypto;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.*;
 
 import net.java.otr4j.OtrPolicy;
-import net.java.sip.communicator.plugin.otr.OtrContactManager;
+import net.java.sip.communicator.plugin.otr.*;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
-import net.java.sip.communicator.plugin.otr.ScOtrEngineListener;
-import net.java.sip.communicator.plugin.otr.ScOtrKeyManagerListener;
-import net.java.sip.communicator.plugin.otr.ScSessionStatus;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
 import net.java.sip.communicator.util.Logger;
@@ -41,12 +34,7 @@ import net.java.sip.communicator.util.Logger;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.chat.ChatFragment;
-import org.atalk.android.gui.chat.ChatMessage;
-import org.atalk.android.gui.chat.ChatPanel;
-import org.atalk.android.gui.chat.ChatSessionManager;
-import org.atalk.android.gui.chat.ChatTransport;
-import org.atalk.android.gui.chat.MetaContactChatSession;
+import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.crypto.listener.CryptoModeChangeListener;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
@@ -56,33 +44,18 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
-import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.OmemoService;
-import org.jivesoftware.smackx.omemo.OmemoStore;
-import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
-import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
-import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
-import org.jivesoftware.smackx.omemo.exceptions.NoOmemoSupportException;
-import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
+import org.jivesoftware.smackx.omemo.*;
+import org.jivesoftware.smackx.omemo.exceptions.*;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.pubsub.PubSubException;
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.EntityFullJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.net.URI;
 import java.security.PublicKey;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static net.java.sip.communicator.plugin.otr.OtrActivator.scOtrEngine;
 import static net.java.sip.communicator.plugin.otr.OtrActivator.scOtrKeyManager;
@@ -245,7 +218,8 @@ public class CryptoFragment extends OSGiFragment
                 doHandleOmemoPressed(true);
                 break;
             case R.id.encryption_otr:
-                hasChange = true;
+                hasChange = true; //only if it is in plain text mode +++? currently
+                // hasChange = (ScSessionStatus.PLAINTEXT == scOtrEngine.getSessionStatus(currentOtrContact));
                 doHandleOmemoPressed(false);
                 doHandleOtrPressed(true);
                 break;
@@ -275,7 +249,12 @@ public class CryptoFragment extends OSGiFragment
         switch (chatType) {
             case ChatFragment.MSGTYPE_NORMAL:
             case ChatFragment.MSGTYPE_MUC_NORMAL:
-                mItem = mNone;
+                // if offline or in plain mode
+                if ((currentOtrContact == null)
+                        || ScSessionStatus.PLAINTEXT == scOtrEngine.getSessionStatus(currentOtrContact))
+                    mItem = mNone;
+                else
+                    mItem = mOtr;
                 break;
 
             case ChatFragment.MSGTYPE_OMEMO:
@@ -414,8 +393,7 @@ public class CryptoFragment extends OSGiFragment
      * Check to see if all muc recipients are verified or trusted
      *
      * @param multiUserChat MultiUserChat
-     * @return return <tt>true</tt> if all muc recipients are verified or trusted. Otherwise
-     * <tt>false</tt>
+     * @return return <tt>true</tt> if all muc recipients are verified or trusted. Otherwise <tt>false</tt>
      */
 
     private boolean isAllTrusted(MultiUserChat multiUserChat)

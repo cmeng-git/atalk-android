@@ -109,7 +109,8 @@ public interface OperationSetMultiUserChat extends OperationSet
 	 * @param rejectReason
 	 *        the reason to reject the invitation (optional)
 	 */
-	void rejectInvitation(ChatRoomInvitation invitation, String rejectReason);
+	void rejectInvitation(ChatRoomInvitation invitation, String rejectReason)
+            throws OperationFailedException;
 
 	/**
 	 * Adds a listener to invitation notifications. The listener will be fired anytime an invitation

@@ -15,6 +15,7 @@ import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.*;
 import org.atalk.service.osgi.OSGiActivity;
@@ -36,7 +37,7 @@ import java.util.*;
  * <p>
  * The {@link #mContact} is retrieved from the {@link Intent} by direct access to
  * {@link ContactListFragment#getClickedContact()} via instance obtained from
- * {@link AndroidGUIActivator#getContactListFragment()}.
+ * {@link aTalkApp#getContactListFragment()}.
  *
  * @author Eng Chong Meng
  */
@@ -84,7 +85,7 @@ public class ContactInfoActivity extends OSGiActivity
 		// Get contact ID from intent extras - but cannot link to mContact
 		String contactId = getIntent().getStringExtra(INTENT_CONTACT_ID);
 
-		ContactListFragment clFragment = AndroidGUIActivator.getContactListFragment();
+		ContactListFragment clFragment = aTalkApp.getContactListFragment();
 		MetaContact metaContact = clFragment.getClickedContact();
 		if (metaContact == null) {
 			logger.error("Requested contact info not found: " + contactId);

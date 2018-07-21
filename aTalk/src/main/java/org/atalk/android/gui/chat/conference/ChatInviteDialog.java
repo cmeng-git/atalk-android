@@ -178,7 +178,7 @@ public class ChatInviteDialog extends Dialog
 
     private MetaContactListAdapter getContactListAdapter()
     {
-        ContactListFragment clf = AndroidGUIActivator.getContactListFragment();
+        ContactListFragment clf = aTalkApp.getContactListFragment();
         if (contactListAdapter == null) {
             contactListAdapter = new MetaContactListAdapter(clf, false);
             contactListAdapter.initModelData();

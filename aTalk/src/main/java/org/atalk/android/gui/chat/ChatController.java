@@ -141,8 +141,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     }
 
     /**
-     * Method called by the <tt>ChatFragment</tt> when it is displayed to the user and its
-     * <tt>View</tt> is created.
+     * Method called by the <tt>ChatFragment</tt> when it is displayed to the user and its <tt>View</tt> is created.
      */
     public void onShow()
     {

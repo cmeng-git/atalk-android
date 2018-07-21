@@ -95,6 +95,13 @@ public class GlobalStatusMenu extends FragmentActivity
         globalStatus = ServiceUtils.getService(AndroidGUIActivator.bundleContext, GlobalStatusService.class);
 
         // start listening for newly register or removed protocol providers
+        // cmeng: bundleContext can be null from field ??? can have problem in status update when blocked
+        // This happens when Activity is recreated by the system after OSGi service has been
+        // killed (and the whole process)
+        if (AndroidGUIActivator.bundleContext == null) {
+            logger.error("OSGi service probably not initialized");
+            return;
+        }
         AndroidGUIActivator.bundleContext.addServiceListener(this);
     }
 

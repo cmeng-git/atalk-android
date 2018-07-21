@@ -40,6 +40,11 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
     String JOIN_AUTHENTICATION_FAILED_PROP = "AuthenticationFailed";
 
     /**
+     * Property to be fired when chat room captcha verification failed.
+     */
+    String JOIN_CAPTCHA_VERIFICATION_PROP = "CaptchaVerification";
+
+    /**
      * Property to be fired when chat room requires registration and we failed while joining the chat room.
      */
     String JOIN_REGISTRATION_REQUIRED_PROP = "RegistrationRequired";

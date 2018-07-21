@@ -1,5 +1,17 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.4.3 (1043)
+Author:         cmeng
+Upload Date:	07/21/2018
+- Block domainJid from joining chatRoom as the entity does not support IM
+- Implement exception handler for server that does not support chat room creation
+- Implement handler for captcha challenge from server when joining chat room with captcha protection against SPAM
+- Support retrieval of chat room info from server
+- Implemented full support for various web links format in text view
+- Fix MUCServiceImpl#createChatRoom() improper checking for domainJid
+- Add captcha extension and captcha provider classes
+
+=========================================================================
 Version:		1.4.2 (1042)
 Author:         cmeng
 Upload Date:	07/11/2018

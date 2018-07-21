@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:background="@color/theme_background"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    style="@style/MediumFont"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/service_gui_CHATROOM_INFO_NAME" />
+
+                <TextView
+                    android:id="@+id/roominfo_name"
+                    style="@style/EntryTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_entry_height" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    style="@style/MediumFont"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/service_gui_CHATROOM_INFO_SUBJECT" />
+
+                <TextView
+                    android:id="@+id/roominfo_subject"
+                    style="@style/EntryTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/text_entry_height" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    style="@style/MediumFont"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/service_gui_CHATROOM_INFO_DESCRIPTION" />
+
+                <TextView
+                    android:id="@+id/roominfo_description"
+                    style="@style/EntryTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_entry_height" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    style="@style/MediumFont"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/service_gui_CHATROOM_INFO_OCCUPANTS_COUNT" />
+
+                <TextView
+                    android:id="@+id/roominfo_occupants"
+                    style="@style/EntryTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_entry_height" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    style="@style/MediumFont"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/service_gui_CHATROOM_INFO_MAX_HISTORY_FETCH" />
+
+                <TextView
+                    android:id="@+id/maxhistoryfetch"
+                    style="@style/EntryTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_entry_height" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    style="@style/MediumFont"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/service_gui_CHATROOM_INFO_CONTACT_JID" />
+
+                <TextView
+                    android:id="@+id/roominfo_contactjid"
+                    style="@style/EntryTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/text_entry_height" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    style="@style/MediumFont"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/service_gui_CHATROOM_INFO_LANGUAGE" />
+
+                <TextView
+                    android:id="@+id/roominfo_lang"
+                    style="@style/EntryTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_entry_height" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    style="@style/MediumFont"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/service_gui_CHATROOM_INFO_LDAP_GROUP" />
+
+                <TextView
+                    android:id="@+id/roominfo_ldapgroup"
+                    style="@style/EntryTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_entry_height" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/between_padding"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/muc_membersonly"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:clickable="false"
+                    android:text="@string/service_gui_CHATROOM_INFO_MEMBERS_ONLY" />
+
+                <View
+                    android:id="@+id/centerShim1"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="invisible" />
+
+                <CheckBox
+                    android:id="@+id/muc_nonanonymous"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:clickable="false"
+                    android:text="@string/service_gui_CHATROOM_INFO_NON_ANANYMOUS" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/between_padding"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/muc_persistent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:clickable="false"
+                    android:text="@string/service_gui_CHATROOM_INFO_PERSISTENT" />
+
+                <View
+                    android:id="@+id/centerShim2"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="invisible" />
+
+                <CheckBox
+                    android:id="@+id/muc_passwordprotected"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:clickable="false"
+                    android:text="@string/service_gui_CHATROOM_INFO_PASSWORD_PROTECTED" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/between_padding"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/muc_moderated"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:clickable="false"
+                    android:text="@string/service_gui_CHATROOM_INFO_MODERATED" />
+
+                <View
+                    android:id="@+id/centerShim3"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="invisible" />
+
+                <CheckBox
+                    android:id="@+id/room_subject_modifiable"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:clickable="false"
+                    android:text="@string/service_gui_CHATROOM_INFO_SUBJECT_MODIFIABLE" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/button_ok"
+            style="@style/ButtonTop"
+            android:layout_weight="1"
+            android:text="@string/service_gui_OK" />
+    </LinearLayout>
+
+</LinearLayout>

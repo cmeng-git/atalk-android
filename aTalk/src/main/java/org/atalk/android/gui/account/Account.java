@@ -144,7 +144,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
 	 */
 	public static byte[] loadIcon(String imagePath)
 	{
-		ResourceManagementService resources = AndroidGUIActivator.getResourcesService();
+		ResourceManagementService resources = AndroidGUIActivator.getResources();
 		byte[] icon = null;
 
 		if (resources != null) {

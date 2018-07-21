@@ -317,7 +317,7 @@ public class MainMenuActivity extends ExitMenuActivity
             case R.id.show_hide_offline:
                 boolean isShowOffline = ConfigurationUtils.isShowOffline();
                 MetaContactListAdapter.presenceFilter.setShowOffline(!isShowOffline);
-                MetaContactListAdapter contactListAdapter = AndroidGUIActivator.getContactListAdapter();
+                MetaContactListAdapter contactListAdapter = aTalkApp.getContactListAdapter();
                 contactListAdapter.filterData("");
 
                 String onOffLine = aTalkApp.getResString(!isShowOffline
