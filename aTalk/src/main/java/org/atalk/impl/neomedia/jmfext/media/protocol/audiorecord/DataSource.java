@@ -241,11 +241,8 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 		public AudioRecordStream(DataSource dataSource, FormatControl formatControl)
 		{
 			super(dataSource, formatControl);
-
 			MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
-
-			gainControl = (mediaServiceImpl == null) ? null : (GainControl) mediaServiceImpl
-				.getInputVolumeControl();
+			gainControl = (mediaServiceImpl == null) ? null : (GainControl) mediaServiceImpl.getInputVolumeControl();
 		}
 
 		/**

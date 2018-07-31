@@ -21,6 +21,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.AndroidUIServiceImpl;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
+import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.neomedia.recording.Recorder;
@@ -736,7 +737,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             /*
              * The loopCondition will stay with the notification sound until the latter is stopped.
              * If by any chance the sound fails to stop by the time the call is no longer referenced, do try
-              * to stop it then. That's why the loopCondition will weakly reference the call.
+             * to stop it then. That's why the loopCondition will weakly reference the call.
              */
             final WeakReference<Call> weakCall = new WeakReference<>(call);
             NotificationData notification = fireNotification(INCOMING_CALL, "",
@@ -789,7 +790,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     void init()
     {
         registerDefaultNotifications();
-
         // listens for new protocols
         NotificationWiringActivator.bundleContext.addServiceListener(this);
 
@@ -798,7 +798,12 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             handleProviderAdded(pp);
         }
 
-        NotificationWiringActivator.getMediaService().addRecorderListener(this);
+        MediaService mediaServiceImpl = NotificationWiringActivator.getMediaService();
+        if (mediaServiceImpl == null) {
+            logger.warn("Media Service record listener init failed - jnlibffmpeg failed to load?");
+        }
+        else
+            mediaServiceImpl.addRecorderListener(this);
     }
 
     /**
@@ -1296,7 +1301,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
                     break;
 
                 default:
-                     // Whatever other severity there is or will be, we do not how to react to it yet.
+                    // Whatever other severity there is or will be, we do not how to react to it yet.
                     messageTitleKey = null;
             }
             if (messageTitleKey != null) {

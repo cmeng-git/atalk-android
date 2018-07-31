@@ -107,11 +107,9 @@ public class AndroidSecurityAuthority implements SecurityAuthority
         args.putBoolean(CredentialsFragment.ARG_IS_SHOWN_SERVER_OPTION, isShowServerOption);
         if (isShowServerOption) {
             // Server overridden argument
-            if (accountID != null) {
-                args.putBoolean(CredentialsFragment.ARG_IS_SERVER_OVERRIDDEN, accountID.isServerOverridden());
-                args.putString(CredentialsFragment.ARG_SERVER_ADDRESS, accountID.getServerAddress());
-                args.putString(CredentialsFragment.ARG_SERVER_PORT, accountID.getServerPort());
-            }
+            args.putBoolean(CredentialsFragment.ARG_IS_SERVER_OVERRIDDEN, accountID.isServerOverridden());
+            args.putString(CredentialsFragment.ARG_SERVER_ADDRESS, accountID.getServerAddress());
+            args.putString(CredentialsFragment.ARG_SERVER_PORT, accountID.getServerPort());
         }
         args.putString(CredentialsFragment.ARG_LOGIN_REASON, credentials.getLoginReason());
         aTalkApp.waitForDisplay();

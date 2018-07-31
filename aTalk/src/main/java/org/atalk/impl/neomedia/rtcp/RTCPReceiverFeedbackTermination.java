@@ -15,37 +15,21 @@
  */
 package org.atalk.impl.neomedia.rtcp;
 
-import net.sf.fmj.media.rtp.RTCPCompoundPacket;
-import net.sf.fmj.media.rtp.RTCPPacket;
-import net.sf.fmj.media.rtp.RTCPRRPacket;
-import net.sf.fmj.media.rtp.RTCPReportBlock;
-import net.sf.fmj.media.rtp.SSRCCache;
-import net.sf.fmj.media.rtp.SSRCInfo;
+import net.sf.fmj.media.rtp.*;
 
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.RTCPPacketPredicate;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
 import org.atalk.impl.neomedia.rtp.remotebitrateestimator.RemoteBitrateEstimatorWrapper;
 import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
-import org.atalk.impl.neomedia.transform.PacketTransformer;
-import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
-import org.atalk.impl.neomedia.transform.TransformEngine;
-import org.atalk.service.neomedia.ByteArrayBuffer;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.RTPTranslator;
-import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.neomedia.TransmissionFailedException;
+import org.atalk.impl.neomedia.transform.*;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
-import org.atalk.util.ArrayUtils;
-import org.atalk.util.Logger;
-import org.atalk.util.RTCPUtils;
+import org.atalk.util.*;
 import org.atalk.util.concurrent.PeriodicRunnable;
 import org.atalk.util.function.RTCPGenerator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 import javax.media.rtp.ReceiveStream;
 
@@ -101,6 +85,8 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
     private final RTCPTransformer rtcpTransformer = new RTCPTransformer();
 
     /**
+     * Ctor.
+     *
      * @param stream the {@link MediaStream} that owns this instance.
      */
     public RTCPReceiverFeedbackTermination(MediaStreamImpl stream)
@@ -175,7 +161,6 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
         return streamRTPManager.getLocalSSRC();
     }
 
-
     /**
      * Makes <tt>RTCPRRPacket</tt>s using information in FMJ.
      *
@@ -195,8 +180,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
 
         // Since a maximum of 31 reception report blocks will fit in an SR or RR packet,
         // additional RR packets SHOULD be stacked after the initial SR or RR packet as needed to
-        // contain the reception reports for all sources heard during the interval since the last
-        // report.
+        // contain the reception reports for all sources heard during the interval since the last report.
         if (reportBlocks.length > MAX_RTCP_REPORT_BLOCKS) {
             int rrIdx = 0;
             for (int off = 0; off < reportBlocks.length; off += MAX_RTCP_REPORT_BLOCKS) {
@@ -276,7 +260,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
                 if (logger.isTraceEnabled()) {
                     logger.trace(stream.getDiagnosticContext()
                             .makeTimeSeriesPoint("created_report_block")
-                            .addKey("rtcp_termination", hashCode())
+                            .addField("rtcp_termination", hashCode())
                             .addField("ssrc", reportBlock.getSSRC())
                             .addField("num_lost", reportBlock.getNumLost())
                             .addField("fraction_lost", reportBlock.getFractionLost() / 256D)

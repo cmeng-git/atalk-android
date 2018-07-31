@@ -133,6 +133,7 @@
     <string name="service_gui_BUSY_STATUS">Ocupado</string>
     <string name="service_gui_CALL">Llamada de audio</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histŕico de llamadas</string>
+    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk no ha podido inicializar %1$s\nTodas las llamadas/servicios de medios estarán deshabilitados.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Llamar con</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">No se encontró ningún dispositivo de Audio/Video activo, por lo que no se pudo hacer la llamada..</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Ningún dispositivo de audio configurado.</string>
@@ -1121,7 +1122,7 @@
     <string name="service_gui_JBR_CONN_GENERAL">General</string>
     <string name="service_gui_JBR_CONN_SUMMARY">Ajustar detalles de la conexión&#8230;</string>
     <string name="service_gui_JBR_CONNECTION">Ajustes de Configuración</string>
-    <string name="service_gui_JBR_DISABLE_JINGLE">Desactivar Jingle</string>
+    <string name="service_gui_JBR_DISABLE_JINGLE">Desactivar llamadas (Jingle)</string>
     <string name="service_gui_JBR_DISABLE_JINGLE_SUMMARY">(audio y video llamadas con XMPP)</string>
     <string name="service_gui_JBR_DTMF_METHOD">Método DTMF</string>
     <string name="service_gui_JBR_DTMF_SUMMARY">Selección del método DTMF</string>
@@ -1474,7 +1475,7 @@
 
     <string name="all_permission_denied_dialog_title">Solicitar todos los permisos</string>
     <string name="all_permissions_denied_feedback">aTalk puede no funcionar correctamente o puede tener un comportamiento inesperado ya que algunos servicios han sido denegados! Si has seleccionado la opción "Don't ask again" (No preguntar de nuevo), debes ir a android Ajustes -> APP INFO para aTalk para habilitar el permiso de acceso a los recursos.</string>
-    <string name="permission_denied_all_alert">aTalk no funcionaría correctamente. ¡Has negado un timbre de todos los permisos!</string>
+    <string name="permission_denied_all_alert">aTalk no funcionaría correctamente. ¡Has negado un timbre de todos los permisos!\nDebes ir a android Ajustes -> APP INFO para que aTalk habilite el permiso de acceso a los recursos.</string>
 
     <string name="permission_rationale_message">Se presenta cada servicio que necesita aTalk; por favor permite que aTalk acceda a estos servicios para obtener todas las funciones soportadas.</string>
     <string name="permission_rationale_settings_button_text">AJUSTES</string>

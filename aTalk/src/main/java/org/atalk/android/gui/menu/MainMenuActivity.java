@@ -17,6 +17,7 @@
 
 package org.atalk.android.gui.menu;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -24,20 +25,14 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.*;
 
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
@@ -45,22 +40,20 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.About;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AccountsListActivity;
-import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.call.conference.ConferenceInviteDialog;
+import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chatroomslist.ChatRoomCreateDialog;
 import org.atalk.android.gui.contactlist.AddContactActivity;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.ActionBarUtil;
 import org.atalk.android.plugin.geolocation.GeoLocation;
+import org.atalk.impl.androidtray.NotificationHelper;
+import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.service.osgi.OSGiActivity;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * The main options menu. Every <tt>Activity</tt> that desires to have the general options menu
@@ -70,14 +63,11 @@ import java.util.Locale;
  *
  * @author Eng Chong Meng
  */
+
+@SuppressLint("Registered")
 public class MainMenuActivity extends ExitMenuActivity
         implements ServiceListener, ContactPresenceStatusListener
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(MainMenuActivity.class);
-
     private MenuItem mShowHideOffline;
     private MenuItem mOnOffLine;
 
@@ -90,13 +80,12 @@ public class MainMenuActivity extends ExitMenuActivity
     private MenuItem videoBridgeMenuItem = null;
     private VideoBridgeProviderMenuItem menuVbItem = null;
 
-    public static final int STARTING = 8;
-    public static final int STOPPING = 16;
-
     private static boolean done = false;
     public Context mContext;
 
-    /**
+    public static boolean disableMediaServiceOnFault = false;
+
+    /*
      * The {@link CallConference} instance depicted by this <tt>CallPanel</tt>.
      */
     // private final CallConference callConference = null;
@@ -115,6 +104,10 @@ public class MainMenuActivity extends ExitMenuActivity
     {
         super.onCreate(savedInstanceState);
         mContext = this;
+
+        // Initialize Notification channels
+        new NotificationHelper(mContext);
+
         setLanguage(mContext, mLanguage);
 
         // cmeng - not implemented yet, do not set
@@ -256,6 +249,9 @@ public class MainMenuActivity extends ExitMenuActivity
      */
     private void initVideoBridge()
     {
+        if (disableMediaServiceOnFault)
+            return;
+
         final ProgressDialog progressDialog;
         if (!done) {
             progressDialog = ProgressDialog.show(MainMenuActivity.this,
@@ -441,7 +437,7 @@ public class MainMenuActivity extends ExitMenuActivity
         ServiceReference serviceRef = event.getServiceReference();
 
         // if the event is caused by a bundle being stopped, we don't want to know
-        if (serviceRef.getBundle().getState() == STOPPING) {
+        if (serviceRef.getBundle().getState() == BundleImpl.STOPPING) {
             return;
         }
 

@@ -49,8 +49,7 @@ public class NotificationActivator implements BundleActivator
 		try {
 			logger.logEntry();
 			// Get the notification service implementation
-			ServiceReference notifyReference
-					= bundleContext.getServiceReference(NotificationService.class.getName());
+			ServiceReference notifyReference = bundleContext.getServiceReference(NotificationService.class.getName());
 
 			notificationService = (NotificationService) bundleContext.getService(notifyReference);
 			vibrateHandler = new VibrateHandlerImpl();

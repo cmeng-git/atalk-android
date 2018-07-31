@@ -126,6 +126,7 @@
     <string name="service_gui_CALL">Panggilan audio</string>
     <string name="service_gui_CALL_FAILED">Panggilan gagal</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Riwayat panggilan</string>
+    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk gagal menginisialisasi %1$s\nSemua panggilan/layanan media akan dinonaktifkan.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Panggil dengan</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Kami tidak dapat menemukan perangkat Audio/Video yang aktif sehingga tidak dapat membuat panggilan.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Tidak ada perangkat audio yang dikonfigurasi.</string>
@@ -1124,7 +1125,7 @@
     <string name="service_gui_JBR_CONN_GENERAL">Umum</string>
     <string name="service_gui_JBR_CONN_SUMMARY">Setel Detail Koneksi&#8230;</string>
     <string name="service_gui_JBR_CONNECTION">Pengaturan Koneksi</string>
-    <string name="service_gui_JBR_DISABLE_JINGLE">Nonaktifkan Jingle</string>
+    <string name="service_gui_JBR_DISABLE_JINGLE">Nonaktifkan panggilan (Jingle)</string>
     <string name="service_gui_JBR_DISABLE_JINGLE_SUMMARY">(panggilan audio dan video dengan XMPP)</string>
     <string name="service_gui_JBR_DTMF_METHOD">Metode DTMF</string>
     <string name="service_gui_JBR_DTMF_SUMMARY">pemilihan metode DTMF</string>
@@ -1473,8 +1474,8 @@
     <string name="storage_permission_denied_feedback">Menyimpan konten yang diterima di penyimpanan eksternal tidak akan diizinkan sampai anda mengabulkan permintaan izin</string>
 
     <string name="all_permission_denied_dialog_title">Semua permintaan izin</string>
-    <string name="all_permissions_denied_feedback">aTalk mungkin tidak berfungsi dengan benar atau mungkin memiliki perilaku tidak terduga karena beberapa layanan telah ditolak!\nJika anda telah memilih \"Jangan tanyakan lagi \" pilihan, anda harus pergi ke Pengaturan Android - >INFO APP untuk aTalk untuk mengaktifkan izin akses sumber daya</string>
-    <string name="permission_denied_all_alert">aTalk tidak akan berfungsi dengan baik. Anda telah menolak aTalk dari semua izin!</string>
+    <string name="all_permissions_denied_feedback">aTalk mungkin tidak berfungsi dengan benar atau mungkin memiliki perilaku tidak terduga karena beberapa layanan telah ditolak!\nJika anda telah memilih \"Jangan tanyakan lagi \" pilihan, anda harus pergi ke Pengaturan Android - >INFO APP bagi aTalk untuk mengaktifkan izin akses sumber daya</string>
+    <string name="permission_denied_all_alert">aTalk tidak akan berfungsi dengan baik. Anda telah menolak aTalk dari semua izin!\nAnda harus pergi ke Pengaturan Android -> INFO APP bagi aTalk untuk mengaktifkan izin akses sumber daya</string>
     <string name="permission_rationale_message">Anda disajikan dengan setiap layanan yang dibutuhkan olehTalk;izinkan aTalk mengakses layanan ini untuk fitur lengkap yang didukung</string>
     <string name="permission_rationale_settings_button_text">SETTINGS</string>
     <string name="permission_rationale_title">aTalk memerlukan izin</string>

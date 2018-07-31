@@ -120,9 +120,7 @@ public class AuthWindowActivity extends OSGiActivity
 			authWindow.setPassword(ViewUtil.getTextViewValue(content, R.id.password));
 			authWindow.setRememberPassword(ViewUtil.isCompoundChecked(content, R.id.store_password));
 		}
-
 		authWindow.setCanceled(cancelled);
-
 		authWindow.windowClosed();
 	}
 }

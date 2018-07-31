@@ -28,6 +28,7 @@ import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEn
 import net.java.sip.communicator.util.*;
 
 import org.atalk.android.*;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
 import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.service.configuration.ConfigurationService;
@@ -230,7 +231,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     // Require all DNS information to be authenticated by DNSSEC.
     private static final String DNSSEC_ONLY = "needsDnssec";
 
-    // Require all DNS information to be authenticated by DNSSEC and require the XMPP service's TLS certificate to be verified using DANE.
+    // Require all DNS information to be authenticated by DNSSEC and require the XMPP service's TLS certificate
+    // to be verified using DANE.
     private static final String DNSSEC_AND_DANE = "needsDnssecAndDane";
 
     /**
@@ -1519,39 +1521,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Registers the ServiceDiscoveryManager wrapper
-     *
-     * we setup all supported features before packets are actually being sent during feature
-     * registration. So we'd better do it here so that our first presence update would
-     * contain a caps with the right features.
-     */
-    private void registerServiceDiscoveryManager()
-    {
-        // Add features aTalk supports in addition to smack.
-        String[] featuresToRemove = new String[]{"http://jabber.org/protocol/commands"};
-        String[] featuresToAdd = supportedFeatures.toArray(new String[supportedFeatures.size()]);
-        // boolean cacheNonCaps = true;
-
-        discoveryManager = new ScServiceDiscoveryManager(this, mConnection, featuresToRemove, featuresToAdd, true);
-
-        boolean isCallingDisabled = JabberActivator.getConfigurationService().getBoolean(
-                "protocol.jabber.CALLING_DISABLED", false);
-
-        boolean isCallingDisabledForAccount = false;
-        if ((mAccountID != null)
-                && (mAccountID.getAccountPropertyBoolean("CALLING_DISABLED", false))) {
-            isCallingDisabled = true;
-        }
-
-        /*
-         * Expose the discoveryManager as service-public through the
-         * OperationSetContactCapabilities of this ProtocolProviderService.
-         */
-        if (opsetContactCapabilities != null)
-            opsetContactCapabilities.setDiscoveryManager(discoveryManager);
-    }
-
-    /**
      * Setup all the Smack Service Discovery and other features that can only be performed during
      * actual account registration stage (mConnection). For initial setup see:
      * {@link #initSmackDefaultSettings()} and {@link #initialize(EntityBareJid, AccountID)}
@@ -1581,10 +1550,11 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         VCardAvatarManager.getInstanceFor(mConnection);
         UserAvatarManager.getInstanceFor(mConnection);
 
-		/*
-		  Must initialize omemoManager on every new connected connection, to ensure both pps and omemoManager is referred
-		  to same instance of xmppConnection.  Perform only after connection is connected to ensure the user is defined
-		 */
+        /*
+         * Must initialize omemoManager on every new connected connection, to ensure both pps and
+         * omemoManager is referred to same instance of xmppConnection.  Perform only after connection
+         * is connected to ensure the user is defined
+         */
         androidOmemoService = new AndroidOmemoService(this); // move to authenticated stage?
 
         /*
@@ -1604,63 +1574,80 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Defined all the entity capabilities for the EntityCapsManager to advertise in
      * disco#info query from other entities. Some features support are user selectable
      *
-     * Note: Do not need to mention if there are already included in Smack Library and have been
-     * activated.
+     * Note: Do not need to mention if there are already included in Smack Library and have been activated.
      */
     private void addSupportedCapsFeatures()
     {
         String NOTIFY = "+notify";
         supportedFeatures.clear();
 
-        /*
-         * Adds Jingle related features to the supported features.
-         */
-        // XEP-0166: Jingle
-        supportedFeatures.add(URN_XMPP_JINGLE);
-        // XEP-0167: Jingle RTP Sessions
-        supportedFeatures.add(URN_XMPP_JINGLE_RTP);
-        // XEP-0177: Jingle Raw UDP Transport Method
-        supportedFeatures.add(URN_XMPP_JINGLE_RAW_UDP_0);
+        boolean isCallingDisabled = JabberActivator.getConfigurationService()
+                .getBoolean(IS_CALLING_DISABLED, aTalk.disableMediaServiceOnFault);
 
-        /*
-         * Reflect the preference of the user with respect to the use of ICE.
-         */
-        if (mAccountID.getAccountPropertyBoolean(ProtocolProviderFactory.IS_USE_ICE, true)) {
-            // XEP-0176: Jingle ICE-UDP Transport Method
-            supportedFeatures.add(URN_XMPP_JINGLE_ICE_UDP_1);
+        boolean isCallingDisabledForAccount = true;
+        boolean isVideoCallingDisabledForAccount = true;
+        if (mAccountID != null) {
+            isCallingDisabledForAccount = mAccountID.getAccountPropertyBoolean(
+                    ProtocolProviderFactory.IS_CALLING_DISABLED_FOR_ACCOUNT, aTalk.disableMediaServiceOnFault);
+
+            isVideoCallingDisabledForAccount = mAccountID.getAccountPropertyBoolean(
+                    ProtocolProviderFactory.IS_VIDEO_CALLING_DISABLED_FOR_ACCOUNT, aTalk.disableMediaServiceOnFault);
         }
 
-        // XEP-0167: Jingle RTP Sessions
-        supportedFeatures.add(URN_XMPP_JINGLE_RTP_AUDIO);
-        // XEP-0180: Jingle Video via RTP
-        supportedFeatures.add(URN_XMPP_JINGLE_RTP_VIDEO);
-        // XEP-0262: Use of ZRTP in Jingle RTP Sessions
-        supportedFeatures.add(URN_XMPP_JINGLE_RTP_ZRTP);
+        if (!aTalk.disableMediaServiceOnFault && !isCallingDisabled && !isCallingDisabledForAccount) {
+            /*
+             * Adds Jingle related features to the supported features.
+             */
+            // XEP-0166: Jingle
+            supportedFeatures.add(URN_XMPP_JINGLE);
+            // XEP-0167: Jingle RTP Sessions
+            supportedFeatures.add(URN_XMPP_JINGLE_RTP);
+            // XEP-0177: Jingle Raw UDP Transport Method
+            supportedFeatures.add(URN_XMPP_JINGLE_RAW_UDP_0);
 
-        /*
-         * Reflect the preference of the user with respect to the use of Jingle Nodes.
-         */
-        if (mAccountID.getAccountPropertyBoolean(
-                ProtocolProviderFactoryJabberImpl.IS_USE_JINGLE_NODES, true)) {
-            // XEP-0278: Jingle Relay Nodes
-            supportedFeatures.add(URN_XMPP_JINGLE_NODES);
-        }
+            /*
+             * Reflect the preference of the user with respect to the use of ICE.
+             */
+            if (mAccountID.getAccountPropertyBoolean(ProtocolProviderFactory.IS_USE_ICE, true)) {
+                // XEP-0176: Jingle ICE-UDP Transport Method
+                supportedFeatures.add(URN_XMPP_JINGLE_ICE_UDP_1);
+            }
 
-        // XEP-0251: Jingle Session Transfer
-        supportedFeatures.add(URN_XMPP_JINGLE_TRANSFER_0);
+            // XEP-0167: Jingle RTP Sessions
+            supportedFeatures.add(URN_XMPP_JINGLE_RTP_AUDIO);
+            // XEP-0262: Use of ZRTP in Jingle RTP Sessions
+            supportedFeatures.add(URN_XMPP_JINGLE_RTP_ZRTP);
 
-        if (mAccountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
-                && mAccountID.isEncryptionProtocolEnabled(SrtpControlType.DTLS_SRTP)) {
-            // XEP-0320: Use of DTLS-SRTP in Jingle Sessions
-            supportedFeatures.add(URN_XMPP_JINGLE_DTLS_SRTP);
-        }
+            if (!isVideoCallingDisabledForAccount) {
+                // XEP-0180: Jingle Video via RTP
+                supportedFeatures.add(URN_XMPP_JINGLE_RTP_VIDEO);
 
-        if (isDesktopSharingEnable) {
-            // Adds extension to support remote control as a sharing server (sharer).
-            supportedFeatures.add(InputEvtIQ.NAMESPACE_SERVER);
+                if (isDesktopSharingEnable) {
+                    // Adds extension to support remote control as a sharing server (sharer).
+                    supportedFeatures.add(InputEvtIQ.NAMESPACE_SERVER);
 
-            // Adds extension to support remote control as a sharing client (sharer).
-            supportedFeatures.add(InputEvtIQ.NAMESPACE_CLIENT);
+                    // Adds extension to support remote control as a sharing client (sharer).
+                    supportedFeatures.add(InputEvtIQ.NAMESPACE_CLIENT);
+                }
+            }
+
+            /*
+             * Reflect the preference of the user with respect to the use of Jingle Nodes.
+             */
+            if (mAccountID.getAccountPropertyBoolean(
+                    ProtocolProviderFactoryJabberImpl.IS_USE_JINGLE_NODES, true)) {
+                // XEP-0278: Jingle Relay Nodes
+                supportedFeatures.add(URN_XMPP_JINGLE_NODES);
+            }
+
+            // XEP-0251: Jingle Session Transfer
+            supportedFeatures.add(URN_XMPP_JINGLE_TRANSFER_0);
+
+            if (mAccountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
+                    && mAccountID.isEncryptionProtocolEnabled(SrtpControlType.DTLS_SRTP)) {
+                // XEP-0320: Use of DTLS-SRTP in Jingle Sessions
+                supportedFeatures.add(URN_XMPP_JINGLE_DTLS_SRTP);
+            }
         }
 
         // ===============================================
@@ -1724,6 +1711,31 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         // XEP-0092: Software Version
         supportedFeatures.add(URN_XMPP_IQ_VERSION);
+    }
+
+    /**
+     * Registers the ServiceDiscoveryManager wrapper
+     *
+     * we setup all supported features before packets are actually being sent during feature
+     * registration. So we'd better do it here so that our first presence update would
+     * contain a caps with the right features.
+     */
+    private void registerServiceDiscoveryManager()
+    {
+        // Add features aTalk supports in addition to smack.
+        String[] featuresToRemove = new String[]{"http://jabber.org/protocol/commands"};
+        String[] featuresToAdd = supportedFeatures.toArray(new String[supportedFeatures.size()]);
+        // boolean cacheNonCaps = true;
+
+        discoveryManager = new ScServiceDiscoveryManager(this, mConnection, featuresToRemove,
+                featuresToAdd, true);
+
+        /*
+         * Expose the discoveryManager as service-public through the
+         * OperationSetContactCapabilities of this ProtocolProviderService.
+         */
+        if (opsetContactCapabilities != null)
+            opsetContactCapabilities.setDiscoveryManager(discoveryManager);
     }
 
     /**
@@ -1882,6 +1894,13 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addExtensionProvider(IdentityPacketExtension.ELEMENT_NAME, IdentityPacketExtension.NAMESPACE,
                     new IdentityPacketExtension.Provider());
 
+            ProviderManager.addExtensionProvider(JsonMessageExtension.ELEMENT_NAME, JsonMessageExtension.NAMESPACE,
+                    new DefaultPacketExtensionProvider<>(JsonMessageExtension.class));
+
+            ProviderManager.addExtensionProvider(TranslationLanguageExtension.ELEMENT_NAME,
+                    TranslationLanguageExtension.NAMESPACE,
+                    new DefaultPacketExtensionProvider<>(TranslationLanguageExtension.class));
+
             ProviderManager.addExtensionProvider(AvatarIdPacketExtension.ELEMENT_NAME, AvatarIdPacketExtension.NAMESPACE,
                     new DefaultPacketExtensionProvider<>(AvatarIdPacketExtension.class));
 
@@ -2007,21 +2026,21 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             // initialize the telephony operation set
             boolean isCallingDisabled = JabberActivator.getConfigurationService()
-                    .getBoolean(IS_CALLING_DISABLED, false);
+                    .getBoolean(IS_CALLING_DISABLED, aTalk.disableMediaServiceOnFault);
             boolean isCallingDisabledForAccount = accountID.getAccountPropertyBoolean(
-                    ProtocolProviderFactory.IS_CALLING_DISABLED_FOR_ACCOUNT, false);
+                    ProtocolProviderFactory.IS_CALLING_DISABLED_FOR_ACCOUNT, aTalk.disableMediaServiceOnFault);
 
             // Check if calling is enabled.
-            if (!isCallingDisabled && !isCallingDisabledForAccount) {
-                OperationSetBasicTelephonyJabberImpl basicTelephony = new OperationSetBasicTelephonyJabberImpl(this);
+            if (!aTalk.disableMediaServiceOnFault && !isCallingDisabled && !isCallingDisabledForAccount) {
+                OperationSetBasicTelephonyJabberImpl basicTelephony
+                        = new OperationSetBasicTelephonyJabberImpl(this);
+
                 addSupportedOperationSet(OperationSetAdvancedTelephony.class, basicTelephony);
                 addSupportedOperationSet(OperationSetBasicTelephony.class, basicTelephony);
                 addSupportedOperationSet(OperationSetSecureZrtpTelephony.class, basicTelephony);
                 addSupportedOperationSet(OperationSetSecureSDesTelephony.class, basicTelephony);
 
-                // initialize video telephony OperationSet
-                addSupportedOperationSet(OperationSetVideoTelephony.class,
-                        new OperationSetVideoTelephonyJabberImpl(basicTelephony));
+                // initialize audio telephony OperationSet
                 addSupportedOperationSet(OperationSetTelephonyConferencing.class,
                         new OperationSetTelephonyConferencingJabberImpl(this));
                 addSupportedOperationSet(OperationSetBasicAutoAnswer.class,
@@ -2029,10 +2048,18 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 addSupportedOperationSet(OperationSetResourceAwareTelephony.class,
                         new OperationSetResAwareTelephonyJabberImpl(basicTelephony));
 
+                boolean isVideoCallingDisabledForAccount = accountID.getAccountPropertyBoolean(
+                        ProtocolProviderFactory.IS_VIDEO_CALLING_DISABLED_FOR_ACCOUNT, aTalk.disableMediaServiceOnFault);
+
+                if (!isVideoCallingDisabledForAccount) {
+                    // initialize video telephony OperationSet
+                    addSupportedOperationSet(OperationSetVideoTelephony.class,
+                            new OperationSetVideoTelephonyJabberImpl(basicTelephony));
+                }
+
                 // Only init video bridge if enabled
                 boolean isVideobridgeDisabled = JabberActivator.getConfigurationService()
                         .getBoolean(OperationSetVideoBridge.IS_VIDEO_BRIDGE_DISABLED, false);
-
                 if (!isVideobridgeDisabled) {
                     // init video bridge
                     addSupportedOperationSet(OperationSetVideoBridge.class, new OperationSetVideoBridgeImpl(this));

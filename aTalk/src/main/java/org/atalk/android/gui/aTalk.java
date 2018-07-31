@@ -20,21 +20,13 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.SearchManager;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.PowerManager;
+import android.os.*;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.*;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -136,6 +128,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         mPager.setPageTransformer(true, new DepthPageTransformer());
 
         handleIntent(getIntent(), savedInstanceState);
+
         runOnUiThread(new Runnable()
         {
             @Override
@@ -146,7 +139,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
                     @Override
                     public void run()
                     {
-                        // Alwasy reqeust on first launch request
+                        // Always request on first apk launch
                         if (permissionFirstRequest && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
                             logger.info("Launching user permission request for aTalk.");
                             // Request user to add aTalk to BatteryOptimization whitelist
@@ -167,8 +160,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     }
 
     /**
-     * Called when new <tt>Intent</tt> is received(this <tt>Activity</tt> is launched in
-     * <tt>singleTask</tt> mode.
+     * Called when new <tt>Intent</tt> is received(this <tt>Activity</tt> is launched in <tt>singleTask</tt> mode.
      *
      * @param intent new <tt>Intent</tt> data.
      */
@@ -372,6 +364,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
             builder.setPositiveButton(R.string.next, new DialogInterface.OnClickListener()
             {
+                @RequiresApi(api = Build.VERSION_CODES.M)
                 @Override
                 public void onClick(DialogInterface dialog, int which)
                 {

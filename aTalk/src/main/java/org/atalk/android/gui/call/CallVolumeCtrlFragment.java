@@ -54,11 +54,8 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-
 		audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-
 		MediaServiceImpl mediaService = NeomediaActivator.getMediaServiceImpl();
-
 		this.volumeControl = mediaService.getOutputVolumeControl();
 	}
 

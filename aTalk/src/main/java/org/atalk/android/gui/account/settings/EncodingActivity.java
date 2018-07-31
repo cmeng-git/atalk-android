@@ -140,27 +140,25 @@ public class EncodingActivity extends OSGiActivity
 		isOverrideEncodings = mEncReg.isOverrideEncodings();
 		Map<String, String> encodingProperties = mEncReg.getEncodingProperties();
 
-		this.encodingConfiguration
-				= NeomediaActivator.getMediaServiceImpl().createEmptyEncodingConfiguration();
-		encodingConfiguration.loadProperties(encodingProperties,
-				ProtocolProviderFactory.ENCODING_PROP_PREFIX);
-		encodingConfiguration.storeProperties(encodingProperties,
-				ProtocolProviderFactory.ENCODING_PROP_PREFIX + ".");
+        MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
+        if (mediaServiceImpl != null) {
+            this.encodingConfiguration = mediaServiceImpl.createEmptyEncodingConfiguration();
+            encodingConfiguration.loadProperties(encodingProperties, ProtocolProviderFactory.ENCODING_PROP_PREFIX);
+            encodingConfiguration.storeProperties(encodingProperties,
+                    ProtocolProviderFactory.ENCODING_PROP_PREFIX + ".");
 
-		this.mediaType = (MediaType) intent.getSerializableExtra(ENC_MEDIA_TYPE_KEY);
-
-		if (savedInstanceState == null) {
-			List<MediaFormat> encodings = getEncodings(encodingConfiguration, mediaType);
-			List<Integer> priorities = getPriorities(encodings, encodingConfiguration);
-			List<String> encodingsStrs = getEncodingsStr(encodings.iterator());
-			this.encodingsFragment = EncodingsFragment.newInstance(encodingsStrs, priorities);
-			getFragmentManager().beginTransaction().replace(android.R.id.content,
-					encodingsFragment).commit();
-		}
-		else {
-			this.encodingsFragment = (EncodingsFragment) getFragmentManager()
-					.findFragmentById(android.R.id.content);
-		}
+            this.mediaType = (MediaType) intent.getSerializableExtra(ENC_MEDIA_TYPE_KEY);
+            if (savedInstanceState == null) {
+                List<MediaFormat> encodings = getEncodings(encodingConfiguration, mediaType);
+                List<Integer> priorities = getPriorities(encodings, encodingConfiguration);
+                List<String> encodingsStrs = getEncodingsStr(encodings.iterator());
+                this.encodingsFragment = EncodingsFragment.newInstance(encodingsStrs, priorities);
+                getFragmentManager().beginTransaction().replace(android.R.id.content, encodingsFragment).commit();
+            }
+            else {
+                this.encodingsFragment = (EncodingsFragment) getFragmentManager().findFragmentById(android.R.id.content);
+            }
+        }
 	}
 
 	/**

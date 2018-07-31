@@ -22,6 +22,7 @@ import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.android.gui.util.*;
 import org.atalk.android.util.java.awt.Dimension;
+import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.*;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
@@ -48,6 +49,13 @@ public class SettingsActivity extends OSGiActivity
      * The logger
      */
     private static final Logger logger = Logger.getLogger(SettingsActivity.class);
+
+    // PreferenceScreen and PreferenceCategories
+    static private final String PC_KEY_CALL = aTalkApp.getResString(R.string.pref_cat_settings_call);
+    static private final String PC_KEY_AUDIO = aTalkApp.getResString(R.string.pref_cat_settings_audio);
+    static private final String PC_KEY_VIDEO = aTalkApp.getResString(R.string.pref_cat_settings_video);
+    static private final String PC_KEY_ADVANCED = aTalkApp.getResString(R.string.pref_cat_settings_advanced);
+
 
     // Interface Display settings
     static private final String P_KEY_LOCALE = aTalkApp.getResString(R.string.pref_key_locale);
@@ -166,14 +174,19 @@ public class SettingsActivity extends OSGiActivity
             // Notifications section
             initNotificationPreferences();
 
-            // Call section
-            initCallPreferences();
+            if (!aTalk.disableMediaServiceOnFault) {
+                // Call section
+                initCallPreferences();
 
-            // Audio section
-            initAudioPreferences();
+                // Audio section
+                initAudioPreferences();
 
-            // Video section
-            initVideoPreferences();
+                // Video section
+                initVideoPreferences();
+            }
+            else {
+                disableMediaOptions();
+            }
 
             SharedPreferences shPrefs = getPreferenceManager().getSharedPreferences();
             shPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -239,6 +252,27 @@ public class SettingsActivity extends OSGiActivity
                     return true;
                 }
             });
+        }
+
+        // Disable all media options when MediaServiceImpl is not initialized due to text-relocation in ffmpeg
+        private void disableMediaOptions()
+        {
+            PreferenceScreen preferenceScreen = getPreferenceScreen();
+            PreferenceCategory myPrefCat = (PreferenceCategory) findPreference(PC_KEY_CALL);
+            if (myPrefCat != null)
+                preferenceScreen.removePreference(myPrefCat);
+
+            myPrefCat = (PreferenceCategory) findPreference(PC_KEY_AUDIO);
+            if (myPrefCat != null)
+                preferenceScreen.removePreference(myPrefCat);
+
+            myPrefCat = (PreferenceCategory) findPreference(PC_KEY_VIDEO);
+            if (myPrefCat != null)
+                preferenceScreen.removePreference(myPrefCat);
+
+            myPrefCat = (PreferenceCategory) findPreference(PC_KEY_ADVANCED);
+            if (myPrefCat != null)
+                preferenceScreen.removePreference(myPrefCat);
         }
 
         /**
@@ -333,8 +367,12 @@ public class SettingsActivity extends OSGiActivity
                     ConfigurationUtils.isNormalizePhoneNumber());
             PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_ACCEPT_ALPHA_PNUMBERS,
                     ConfigurationUtils.acceptPhoneNumberWithAlphaChars());
-            this.deviceConfig = NeomediaActivator.getMediaServiceImpl().getDeviceConfiguration();
-            this.audioSystem = deviceConfig.getAudioSystem();
+
+            MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
+            if (mediaServiceImpl != null) {
+                this.deviceConfig = mediaServiceImpl.getDeviceConfiguration();
+                this.audioSystem = deviceConfig.getAudioSystem();
+            }
         }
 
         /**
@@ -496,12 +534,10 @@ public class SettingsActivity extends OSGiActivity
         }
 
         /**
-         * Retrieves currently registered <tt>PopupMessageHandler</tt> for given <tt>clazz</tt>
-         * name.
+         * Retrieves currently registered <tt>PopupMessageHandler</tt> for given <tt>clazz</tt> name.
          *
          * @param clazz the class name of <tt>PopupMessageHandler</tt> implementation.
-         * @return implementation of <tt>PopupMessageHandler</tt> for given class name registered
-         * in OSGI context.
+         * @return implementation of <tt>PopupMessageHandler</tt> for given class name registered in OSGI context.
          */
         private PopupMessageHandler getHandlerForClassName(String clazz)
         {

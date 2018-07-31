@@ -85,8 +85,8 @@ public class UpdateServiceImpl implements UpdateService
     /**
      * Checks for updates.
      *
-     * @param notifyAboutNewestVersion <tt>true</tt> if the user is to be notified if they have the newest version already;
-     * otherwise, <tt>false</tt>
+     * @param notifyAboutNewestVersion <tt>true</tt> if the user is to be notified if they have the
+     * newest version already; otherwise, <tt>false</tt>
      */
     @Override
     public void checkForUpdates(boolean notifyAboutNewestVersion)
@@ -129,8 +129,7 @@ public class UpdateServiceImpl implements UpdateService
             AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
                     aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_TITLE),
                     aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_MESSAGE,
-                            latestVersion, Integer.toString(latestVersionCode),
-                            aTalkApp.getResString(R.string.app_name)),
+                            latestVersion, Integer.toString(latestVersionCode), aTalkApp.getResString(R.string.app_name)),
                     aTalkApp.getResString(R.string.plugin_updatechecker_BUTTON_DOWNLOAD),
                     new DialogActivity.DialogListener()
                     {
@@ -148,9 +147,7 @@ public class UpdateServiceImpl implements UpdateService
                     }
             );
         }
-        else if (notifyAboutNewestVersion)
-
-        {
+        else if (notifyAboutNewestVersion) {
             // Notify that running version is up to date
             AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
                     aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_NOUPDATE_TITLE),
@@ -172,7 +169,6 @@ public class UpdateServiceImpl implements UpdateService
                 aTalkApp.getResString(R.string.plugin_updatechecker_BUTTON_INSTALL),
                 new DialogActivity.DialogListener()
                 {
-
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
@@ -195,8 +191,7 @@ public class UpdateServiceImpl implements UpdateService
     }
 
     /**
-     * Queries the <tt>DownloadManager</tt> for the status of download job identified by given
-     * <tt>id</tt>.
+     * Queries the <tt>DownloadManager</tt> for the status of download job identified by given <tt>id</tt>.
      *
      * @param id download identifier which status will be returned.
      * @return download status of the job identified by given id. If given job is not found
@@ -318,8 +313,7 @@ public class UpdateServiceImpl implements UpdateService
     /**
      * Determines whether we are currently running the latest version.
      *
-     * @return <tt>true</tt> if current running application is the latest version; otherwise,
-     * <tt>false</tt>
+     * @return <tt>true</tt> if current running application is the latest version; otherwise, <tt>false</tt>
      */
     @Override
     public boolean isLatestVersion()
@@ -360,7 +354,6 @@ public class UpdateServiceImpl implements UpdateService
 
                     latestVersion = props.getProperty("last_version");
                     latestVersionCode = Integer.valueOf(props.getProperty("last_version_code"));
-
                     if (BuildConfig.DEBUG) {
                         downloadLink = props.getProperty("download_link-debug");
                     }

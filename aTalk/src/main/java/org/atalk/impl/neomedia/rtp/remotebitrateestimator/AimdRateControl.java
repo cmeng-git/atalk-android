@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -203,7 +203,7 @@ class AimdRateControl
         if (logger.isTraceEnabled()) {
             logger.trace(diagnosticContext
                     .makeTimeSeriesPoint("aimd_region", nowMs)
-                    .addKey("aimd_id", hashCode())
+                    .addField("aimd_id", hashCode())
                     .addField("region", region));
         }
     }
@@ -240,7 +240,7 @@ class AimdRateControl
         if (logger.isTraceEnabled()) {
             logger.trace(diagnosticContext
                     .makeTimeSeriesPoint("aimd_state", nowMs)
-                    .addKey("aimd_id", hashCode())
+                    .addField("aimd_id", hashCode())
                     .addField("state", rateControlState));
         }
     }
@@ -272,7 +272,6 @@ class AimdRateControl
     public boolean isTimeToReduceFurther(long timeNow, long incomingBitrateBps)
     {
         long bitrateReductionInterval = Math.max(Math.min(rtt, 200L), 10L);
-
         if (timeNow - timeLastBitrateChange >= bitrateReductionInterval)
             return true;
         if (isValidEstimate()) {
@@ -348,7 +347,7 @@ class AimdRateControl
         if (logger.isTraceEnabled()) {
             logger.trace(diagnosticContext
                     .makeTimeSeriesPoint("aimd_rtt", System.currentTimeMillis())
-                    .addKey("aimd_id", hashCode())
+                    .addField("aimd_id", hashCode())
                     .addField("rtt", rtt));
         }
         this.rtt = rtt;
@@ -391,7 +390,7 @@ class AimdRateControl
         if (logger.isTraceEnabled() && isValidEstimate()) {
             logger.trace(diagnosticContext
                     .makeTimeSeriesPoint("aimd_estimate", nowMs)
-                    .addKey("aimd_id", hashCode())
+                    .addField("aimd_id", hashCode())
                     .addField("estimate_bps", currentBitrateBps)
                     .addField("incoming_bps", currentInput.incomingBitRate));
         }

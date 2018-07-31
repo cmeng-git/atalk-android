@@ -7,6 +7,7 @@ package net.java.sip.communicator.impl.protocol.jabber.extensions;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.net.URI;
@@ -176,7 +177,7 @@ public abstract class AbstractPacketExtension implements ExtensionElement
 
         // text content if any
         if ((text != null) && (text.trim().length() > 0))
-            xml.append(text);
+            xml.append(StringUtils.escapeForXml(text));
 
         xml.closeElement(getElementName());
         return xml;

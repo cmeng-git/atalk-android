@@ -1,13 +1,14 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.dialogs;
 
 import android.content.*;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.*;
+import android.support.v4.app.Fragment;
 import android.view.*;
 
 import net.java.sip.communicator.util.Logger;
@@ -33,493 +34,467 @@ import java.util.*;
  */
 public class DialogActivity extends OSGiActivity
 {
-	/**
-	 * The logger
-	 */
-	private static final Logger logger = Logger.getLogger(DialogActivity.class);
+    /**
+     * The logger
+     */
+    private static final Logger logger = Logger.getLogger(DialogActivity.class);
 
-	/**
-	 * Dialog title extra.
-	 */
-	public static final String EXTRA_TITLE = "title";
+    /**
+     * Dialog title extra.
+     */
+    public static final String EXTRA_TITLE = "title";
 
-	/**
-	 * Dialog message extra.
-	 */
-	public static final String EXTRA_MESSAGE = "message";
+    /**
+     * Dialog message extra.
+     */
+    public static final String EXTRA_MESSAGE = "message";
 
-	/**
-	 * Optional confirm button label extra.
-	 */
-	public static final String EXTRA_CONFIRM_TXT = "confirm_txt";
+    /**
+     * Optional confirm button label extra.
+     */
+    public static final String EXTRA_CONFIRM_TXT = "confirm_txt";
 
-	/**
-	 * Dialog id extra used to listen for close dialog broadcast intents.
-	 */
-	private static final String EXTRA_DIALOG_ID = "dialog_id";
+    /**
+     * Dialog id extra used to listen for close dialog broadcast intents.
+     */
+    private static final String EXTRA_DIALOG_ID = "dialog_id";
 
-	/**
-	 * Optional listener ID extra(can be supplied only using method static
-	 * <tt>showConfirmDialog</tt>.
-	 */
-	public static final String EXTRA_LISTENER_ID = "listener_id";
+    /**
+     * Optional listener ID extra(can be supplied only using method static
+     * <tt>showConfirmDialog</tt>.
+     */
+    public static final String EXTRA_LISTENER_ID = "listener_id";
 
-	/**
-	 * Optional content fragment's class name that will be used instead of text message.
-	 */
-	public static final String EXTRA_CONTENT_FRAGMENT = "fragment_class";
+    /**
+     * Optional content fragment's class name that will be used instead of text message.
+     */
+    public static final String EXTRA_CONTENT_FRAGMENT = "fragment_class";
 
-	/**
-	 * Optional content fragment's argument <tt>Bundle</tt>.
-	 */
-	public static final String EXTRA_CONTENT_ARGS = "fragment_args";
+    /**
+     * Optional content fragment's argument <tt>Bundle</tt>.
+     */
+    public static final String EXTRA_CONTENT_ARGS = "fragment_args";
 
-	/**
-	 * Prevents from closing this activity on outside touch events and blocks the back key if set
-	 * to <tt>true</tt>.
-	 */
-	public static final String EXTRA_CANCELABLE = "cancelable";
+    /**
+     * Prevents from closing this activity on outside touch events and blocks the back key if set
+     * to <tt>true</tt>.
+     */
+    public static final String EXTRA_CANCELABLE = "cancelable";
 
-	/**
-	 * Hide all buttons.
-	 */
-	public static final String EXTRA_REMOVE_BUTTONS = "remove_buttons";
+    /**
+     * Hide all buttons.
+     */
+    public static final String EXTRA_REMOVE_BUTTONS = "remove_buttons";
 
-	/**
-	 * Static map holds listeners for currently displayed dialogs.
-	 */
-	private static Map<Long, DialogListener> listenersMap = new HashMap<>();
+    /**
+     * Static map holds listeners for currently displayed dialogs.
+     */
+    private static Map<Long, DialogListener> listenersMap = new HashMap<>();
 
-	/**
-	 * Static list holds existing dialog instances (since onCreate() until onDestroy()). Only
-	 * dialogs with valid id are listed here.
-	 */
-	private final static List<Long> displayedDialogs = new ArrayList<>();
+    /**
+     * Static list holds existing dialog instances (since onCreate() until onDestroy()). Only
+     * dialogs with valid id are listed here.
+     */
+    private final static List<Long> displayedDialogs = new ArrayList<>();
 
-	/**
-	 * The dialog listener.
-	 */
-	private DialogListener listener;
+    /**
+     * The dialog listener.
+     */
+    private DialogListener listener;
 
-	/**
-	 * Dialog listener's id used to identify listener in {@link #listenersMap}.
-	 */
-	private long listenerID;
+    /**
+     * Dialog listener's id used to identify listener in {@link #listenersMap}.
+     */
+    private long listenerID;
 
-	/**
-	 * Flag remembers if the dialog was confirmed.
-	 */
-	private boolean confirmed;
+    /**
+     * Flag remembers if the dialog was confirmed.
+     */
+    private boolean confirmed;
 
-	/**
-	 * <tt>BroadcastReceiver</tt> that listens for close dialog action.
-	 */
-	private CommandDialogListener commandIntentListener;
+    /**
+     * <tt>BroadcastReceiver</tt> that listens for close dialog action.
+     */
+    private CommandDialogListener commandIntentListener;
 
-	/**
-	 * Name of the action which can be used to close dialog with given id supplied in
-	 * {@link #EXTRA_DIALOG_ID}.
-	 */
-	public static final String ACTION_CLOSE_DIALOG = "org.atalk.gui.close_dialog";
+    /**
+     * Name of the action which can be used to close dialog with given id supplied in
+     * {@link #EXTRA_DIALOG_ID}.
+     */
+    public static final String ACTION_CLOSE_DIALOG = "org.atalk.gui.close_dialog";
 
-	/**
-	 * Name of the action which can be used to focus dialog with given id supplied in
-	 * {@link #EXTRA_DIALOG_ID}.
-	 */
-	public static final String ACTION_FOCUS_DIALOG = "org.atalk.gui.focus_dialog";
+    /**
+     * Name of the action which can be used to focus dialog with given id supplied in
+     * {@link #EXTRA_DIALOG_ID}.
+     */
+    public static final String ACTION_FOCUS_DIALOG = "org.atalk.gui.focus_dialog";
 
-	private boolean cancelable;
-	private View mContent;
+    private boolean cancelable;
+    private View mContent;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		Intent intent = getIntent();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
 
-		setContentView(R.layout.alert_dialog);
-		mContent = findViewById(android.R.id.content);
+        setContentView(R.layout.alert_dialog);
+        mContent = findViewById(android.R.id.content);
 
-		// Title
-		setTitle(intent.getStringExtra(EXTRA_TITLE));
+        // Title
+        setTitle(intent.getStringExtra(EXTRA_TITLE));
 
-		// Message or custom content
-		String contentFragment = intent.getStringExtra(EXTRA_CONTENT_FRAGMENT);
-		if (contentFragment != null) {
-			// Hide alert text
-			ViewUtil.ensureVisible(mContent, R.id.alertText, false);
+        // Message or custom content
+        String contentFragment = intent.getStringExtra(EXTRA_CONTENT_FRAGMENT);
+        if (contentFragment != null) {
+            // Hide alert text
+            ViewUtil.ensureVisible(mContent, R.id.alertText, false);
 
-			// Display content fragment
-			if (savedInstanceState == null) {
-				try {
-					// Instantiate content fragment
-					Class contentClass = Class.forName(contentFragment);
-					Fragment fragment = (Fragment) contentClass.newInstance();
+            // Display content fragment
+            if (savedInstanceState == null) {
+                try {
+                    // Instantiate content fragment
+                    Class contentClass = Class.forName(contentFragment);
+                    Fragment fragment = (Fragment) contentClass.newInstance();
 
-					// Set fragment arguments
-					fragment.setArguments(intent.getBundleExtra(EXTRA_CONTENT_ARGS));
+                    // Set fragment arguments
+                    fragment.setArguments(intent.getBundleExtra(EXTRA_CONTENT_ARGS));
 
-					// Insert the fragment
-					getSupportFragmentManager().beginTransaction().replace(R.id.alertContent,
-							fragment).commit();
-				}
-				catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}
-		else {
-			ViewUtil.setTextViewValue(findViewById(android.R.id.content), R.id.alertText,
-					intent.getStringExtra(EXTRA_MESSAGE));
-		}
+                    // Insert the fragment
+                    getSupportFragmentManager().beginTransaction().replace(R.id.alertContent, fragment).commit();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        else {
+            ViewUtil.setTextViewValue(findViewById(android.R.id.content), R.id.alertText,
+                    intent.getStringExtra(EXTRA_MESSAGE));
+        }
 
-		// Confirm button text
-		String confirmTxt = intent.getStringExtra(EXTRA_CONFIRM_TXT);
-		if (confirmTxt != null) {
-			ViewUtil.setTextViewValue(mContent, R.id.okButton, confirmTxt);
-		}
+        // Confirm button text
+        String confirmTxt = intent.getStringExtra(EXTRA_CONFIRM_TXT);
+        if (confirmTxt != null) {
+            ViewUtil.setTextViewValue(mContent, R.id.okButton, confirmTxt);
+        }
 
-		// Show cancel button if confirm label is not null
-		ViewUtil.ensureVisible(mContent, R.id.cancelButton, confirmTxt != null);
+        // Show cancel button if confirm label is not null
+        ViewUtil.ensureVisible(mContent, R.id.cancelButton, confirmTxt != null);
 
-		// Sets the listener
-		this.listenerID = intent.getLongExtra(EXTRA_LISTENER_ID, -1);
-		if (listenerID != -1) {
-			this.listener = listenersMap.get(listenerID);
-		}
-		this.cancelable = intent.getBooleanExtra(EXTRA_CANCELABLE, true);
+        // Sets the listener
+        this.listenerID = intent.getLongExtra(EXTRA_LISTENER_ID, -1);
+        if (listenerID != -1) {
+            this.listener = listenersMap.get(listenerID);
+        }
+        this.cancelable = intent.getBooleanExtra(EXTRA_CANCELABLE, false);
 
-		// Prevents from closing the dialog on outside touch
-		setFinishOnTouchOutside(cancelable);
+        // Prevents from closing the dialog on outside touch
+        setFinishOnTouchOutside(cancelable);
 
-		// Removes the buttons
-		if (intent.getBooleanExtra(EXTRA_REMOVE_BUTTONS, false)) {
-			ViewUtil.ensureVisible(mContent, R.id.okButton, false);
-			ViewUtil.ensureVisible(mContent, R.id.cancelButton, false);
-		}
+        // always place window onTop
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            getWindow().setType(WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW);
+        else
+            getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
 
-		// Close this dialog on ACTION_CLOSE_DIALOG broadcast
-		long dialogId = intent.getLongExtra(EXTRA_DIALOG_ID, -1);
-		if (dialogId != -1) {
-			this.commandIntentListener = new CommandDialogListener(dialogId);
-			IntentFilter intentFilter = new IntentFilter(ACTION_CLOSE_DIALOG);
-			intentFilter.addAction(ACTION_FOCUS_DIALOG);
-			registerReceiver(commandIntentListener, intentFilter);
+        // Removes the buttons
+        if (intent.getBooleanExtra(EXTRA_REMOVE_BUTTONS, false)) {
+            ViewUtil.ensureVisible(mContent, R.id.okButton, false);
+            ViewUtil.ensureVisible(mContent, R.id.cancelButton, false);
+        }
 
-			// Adds this dialog to active dialogs list and notifies all waiting threads.
-			synchronized (displayedDialogs) {
-				displayedDialogs.add(dialogId);
-				displayedDialogs.notifyAll();
-			}
-		}
-	}
+        // Close this dialog on ACTION_CLOSE_DIALOG broadcast
+        long dialogId = intent.getLongExtra(EXTRA_DIALOG_ID, -1);
+        if (dialogId != -1) {
+            this.commandIntentListener = new CommandDialogListener(dialogId);
+            IntentFilter intentFilter = new IntentFilter(ACTION_CLOSE_DIALOG);
+            intentFilter.addAction(ACTION_FOCUS_DIALOG);
+            registerReceiver(commandIntentListener, intentFilter);
 
-	/**
-	 * Returns the content fragment. It can contain alert message or be the custom fragment class
-	 * instance.
-	 *
-	 * @return dialog content fragment.
-	 */
-	public Fragment getContentFragment()
-	{
-		return getSupportFragmentManager().findFragmentById(R.id.alertContent);
-	}
+            // Adds this dialog to active dialogs list and notifies all waiting threads.
+            synchronized (displayedDialogs) {
+                displayedDialogs.add(dialogId);
+                displayedDialogs.notifyAll();
+            }
+        }
+    }
 
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event)
-	{
-		if (!cancelable && keyCode == KeyEvent.KEYCODE_BACK) {
-			return true;
-		}
-		return super.onKeyUp(keyCode, event);
-	}
+    /**
+     * Returns the content fragment. It can contain alert message or be the custom fragment class instance.
+     *
+     * @return dialog content fragment.
+     */
+    public Fragment getContentFragment()
+    {
+        return getSupportFragmentManager().findFragmentById(R.id.alertContent);
+    }
 
-	/**
-	 * Fired when confirm button is clicked.
-	 *
-	 * @param v
-	 * 		the confirm button view.
-	 */
-	@SuppressWarnings("unused")
-	public void onOkClicked(View v)
-	{
-		if (listener != null) {
-			if (!listener.onConfirmClicked(this)) {
-				return;
-			}
-		}
-		confirmed = true;
-		finish();
-	}
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event)
+    {
+        if (!cancelable && keyCode == KeyEvent.KEYCODE_BACK) {
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
 
-	/**
-	 * Fired when cancel button is clicked.
-	 *
-	 * @param v
-	 * 		the cancel button view.
-	 */
-	@SuppressWarnings("unused")
-	public void onCancelClicked(View v)
-	{
-		finish();
-	}
+    /**
+     * Fired when confirm button is clicked.
+     *
+     * @param v the confirm button view.
+     */
+    @SuppressWarnings("unused")
+    public void onOkClicked(View v)
+    {
+        if (listener != null) {
+            if (!listener.onConfirmClicked(this)) {
+                return;
+            }
+        }
+        confirmed = true;
+        finish();
+    }
 
-	/**
-	 * Removes listener from the map.
-	 */
-	@Override
-	protected void onDestroy()
-	{
-		super.onDestroy();
-		if (commandIntentListener != null) {
-			unregisterReceiver(commandIntentListener);
-			// Notify about dialogs list change
-			synchronized (displayedDialogs) {
-				displayedDialogs.remove(listenerID);
-				displayedDialogs.notifyAll();
-			}
-		}
+    /**
+     * Fired when cancel button is clicked.
+     *
+     * @param v the cancel button view.
+     */
+    @SuppressWarnings("unused")
+    public void onCancelClicked(View v)
+    {
+        finish();
+    }
 
-		// Notify that dialog was cancelled if confirmed == false
-		if (listener != null && !confirmed) {
-			listener.onDialogCancelled(this);
-		}
+    /**
+     * Removes listener from the map.
+     */
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        if (commandIntentListener != null) {
+            unregisterReceiver(commandIntentListener);
+            // Notify about dialogs list change
+            synchronized (displayedDialogs) {
+                displayedDialogs.remove(listenerID);
+                displayedDialogs.notifyAll();
+            }
+        }
 
-		// Removes the listener from map
-		if (listenerID != -1) {
-			listenersMap.remove(listenerID);
-		}
-	}
+        // Notify that dialog was cancelled if confirmed == false
+        if (listener != null && !confirmed) {
+            listener.onDialogCancelled(this);
+        }
 
-	/**
-	 * Broadcast Receiver to act on command received in #intent.getExtra()
-	*/
-	class CommandDialogListener extends BroadcastReceiver
-	{
-		private final long dialogId;
+        // Removes the listener from map
+        if (listenerID != -1) {
+            listenersMap.remove(listenerID);
+        }
+    }
 
-		CommandDialogListener(long dialogId)
-		{
-			this.dialogId = dialogId;
-		}
+    /**
+     * Broadcast Receiver to act on command received in #intent.getExtra()
+     */
+    class CommandDialogListener extends BroadcastReceiver
+    {
+        private final long dialogId;
 
-		@Override
-		public void onReceive(Context context, Intent intent)
-		{
-			if (intent.getLongExtra(EXTRA_DIALOG_ID, -1) == dialogId) {
-				if (ACTION_CLOSE_DIALOG.equals(intent.getAction())) {
-					// Finish this activity
-					finish();
-				}
-				else if (ACTION_FOCUS_DIALOG.equals(intent.getAction())) {
-					mContent.bringToFront();
-				}
-			}
-		}
-	}
+        CommandDialogListener(long dialogId)
+        {
+            this.dialogId = dialogId;
+        }
 
-	/**
-	 * Fires {@link #ACTION_CLOSE_DIALOG} broadcast action in order to close the dialog identified
-	 * by given <tt>dialogId</tt>.
-	 *
-	 * @param ctx
-	 * 		the context.
-	 * @param dialogId
-	 * 		dialog identifier returned when the dialog was created.
-	 */
-	public static void closeDialog(Context ctx, long dialogId)
-	{
-		Intent intent = new Intent(ACTION_CLOSE_DIALOG);
-		intent.putExtra(EXTRA_DIALOG_ID, dialogId);
-		ctx.sendBroadcast(intent);
-	}
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            if (intent.getLongExtra(EXTRA_DIALOG_ID, -1) == dialogId) {
+                if (ACTION_CLOSE_DIALOG.equals(intent.getAction())) {
+                    // Finish this activity
+                    finish();
+                }
+                else if (ACTION_FOCUS_DIALOG.equals(intent.getAction())) {
+                    mContent.bringToFront();
+                }
+            }
+        }
+    }
 
-	/**
-	 * Fires {@link #ACTION_FOCUS_DIALOG} broadcast action in order to focus the dialog identified
-	 * by given <tt>dialogId</tt>.
-	 *
-	 * @param ctx
-	 * 		the context.
-	 * @param dialogId
-	 * 		dialog identifier returned when the dialog was created.
-	 */
-	public static void focusDialog(Context ctx, long dialogId)
-	{
-		Intent intent = new Intent(ACTION_FOCUS_DIALOG);
-		intent.putExtra(EXTRA_DIALOG_ID, dialogId);
-		ctx.sendBroadcast(intent);
-	}
+    /**
+     * Fires {@link #ACTION_CLOSE_DIALOG} broadcast action in order to close the dialog identified
+     * by given <tt>dialogId</tt>.
+     *
+     * @param ctx the context.
+     * @param dialogId dialog identifier returned when the dialog was created.
+     */
+    public static void closeDialog(Context ctx, long dialogId)
+    {
+        Intent intent = new Intent(ACTION_CLOSE_DIALOG);
+        intent.putExtra(EXTRA_DIALOG_ID, dialogId);
+        ctx.sendBroadcast(intent);
+    }
 
-	/**
-	 * Show simple alert that will be disposed when user presses OK button.
-	 *
-	 * @param ctx
-	 * 		Android context.
-	 * @param title
-	 * 		the dialog title that will be used.
-	 * @param message
-	 * 		the dialog message that will be used.
-	 */
-	public static void showDialog(Context ctx, String title, String message)
-	{
-		Intent alert = getDialogIntent(ctx, title, message);
-		ctx.startActivity(alert);
-	}
+    /**
+     * Fires {@link #ACTION_FOCUS_DIALOG} broadcast action in order to focus the dialog identified
+     * by given <tt>dialogId</tt>.
+     *
+     * @param ctx the context.
+     * @param dialogId dialog identifier returned when the dialog was created.
+     */
+    public static void focusDialog(Context ctx, long dialogId)
+    {
+        Intent intent = new Intent(ACTION_FOCUS_DIALOG);
+        intent.putExtra(EXTRA_DIALOG_ID, dialogId);
+        ctx.sendBroadcast(intent);
+    }
 
-	/**
-	 * Creates an <tt>Intent</tt> that will display a dialog with given <tt>title</tt> and content
-	 * <tt>message</tt>.
-	 *
-	 * @param ctx
-	 * 		Android context.
-	 * @param title
-	 * 		dialog title that will be used
-	 * @param message
-	 * 		dialog message that wil be used.
-	 * @return an <tt>Intent</tt> that will display a dialog.
-	 */
-	public static Intent getDialogIntent(Context ctx, String title, String message)
-	{
-		Intent alert = new Intent(ctx, DialogActivity.class);
-		alert.putExtra(EXTRA_TITLE, title);
-		alert.putExtra(EXTRA_MESSAGE, message);
-		alert.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		return alert;
-	}
+    /**
+     * Show simple alert that will be disposed when user presses OK button.
+     *
+     * @param ctx Android context.
+     * @param title the dialog title that will be used.
+     * @param message the dialog message that will be used.
+     */
+    public static void showDialog(Context ctx, String title, String message)
+    {
+        Intent alert = getDialogIntent(ctx, title, message);
+        ctx.startActivity(alert);
+    }
 
-	/**
-	 * Shows confirm dialog allowing to handle confirm action using supplied <tt>listener</tt>.
-	 *
-	 * @param context
-	 * 		Android context.
-	 * @param title
-	 * 		dialog title that will be used
-	 * @param message
-	 * 		dialog message that wil be used.
-	 * @param confirmTxt
-	 * 		confirm button label.
-	 * @param listener
-	 * 		the confirm action listener.
-	 */
-	public static void showConfirmDialog(Context context, String title, String message,
-			String confirmTxt, DialogListener listener)
-	{
-		Intent alert = new Intent(context, DialogActivity.class);
+    /**
+     * Creates an <tt>Intent</tt> that will display a dialog with given <tt>title</tt> and content
+     * <tt>message</tt>.
+     *
+     * @param ctx Android context.
+     * @param title dialog title that will be used
+     * @param message dialog message that wil be used.
+     * @return an <tt>Intent</tt> that will display a dialog.
+     */
+    public static Intent getDialogIntent(Context ctx, String title, String message)
+    {
+        Intent alert = new Intent(ctx, DialogActivity.class);
+        alert.putExtra(EXTRA_TITLE, title);
+        alert.putExtra(EXTRA_MESSAGE, message);
+        alert.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return alert;
+    }
 
-		if (listener != null) {
-			long listenerID = System.currentTimeMillis();
-			listenersMap.put(listenerID, listener);
-			alert.putExtra(EXTRA_LISTENER_ID, listenerID);
-		}
+    /**
+     * Shows confirm dialog allowing to handle confirm action using supplied <tt>listener</tt>.
+     *
+     * @param context Android context.
+     * @param title dialog title that will be used
+     * @param message dialog message that wil be used.
+     * @param confirmTxt confirm button label.
+     * @param listener the confirm action listener.
+     */
+    public static void showConfirmDialog(Context context, String title, String message,
+            String confirmTxt, DialogListener listener)
+    {
+        Intent alert = new Intent(context, DialogActivity.class);
 
-		alert.putExtra(EXTRA_TITLE, title);
-		alert.putExtra(EXTRA_MESSAGE, message);
-		alert.putExtra(EXTRA_CONFIRM_TXT, confirmTxt);
+        if (listener != null) {
+            long listenerID = System.currentTimeMillis();
+            listenersMap.put(listenerID, listener);
+            alert.putExtra(EXTRA_LISTENER_ID, listenerID);
+        }
 
-		alert.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		context.startActivity(alert);
-	}
+        alert.putExtra(EXTRA_TITLE, title);
+        alert.putExtra(EXTRA_MESSAGE, message);
+        alert.putExtra(EXTRA_CONFIRM_TXT, confirmTxt);
 
-	/**
-	 * Show custom dialog. Alert text will be replaced by the {@link Fragment} created from
-	 * <tt>fragmentClass</tt> name. Optional <tt>fragmentArguments</tt> <tt>Bundle</tt> will be
-	 * supplied to created instance.
-	 *
-	 * @param context
-	 * 		Android context.
-	 * @param title
-	 * 		the title that will be used.
-	 * @param fragmentClass
-	 * 		<tt>Fragment</tt>'s class name that will be used instead of text message.
-	 * @param fragmentArguments
-	 * 		optional <tt>Fragment</tt> arguments <tt>Bundle</tt>.
-	 * @param confirmTxt
-	 * 		the confirm button's label.
-	 * @param listener
-	 * 		listener that will be notified on user actions.
-	 * @param extraArguments
-	 * 		additional arguments with keys defined in {@link DialogActivity}.
-	 */
-	public static long showCustomDialog(Context context, String title, String fragmentClass,
-			Bundle fragmentArguments, String confirmTxt,
-			DialogListener listener, Map<String, Serializable> extraArguments)
-	{
-		Intent alert = new Intent(context, DialogActivity.class);
-		long dialogId = System.currentTimeMillis();
+        alert.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(alert);
+    }
 
-		alert.putExtra(EXTRA_DIALOG_ID, dialogId);
+    /**
+     * Show custom dialog. Alert text will be replaced by the {@link Fragment} created from
+     * <tt>fragmentClass</tt> name. Optional <tt>fragmentArguments</tt> <tt>Bundle</tt> will be
+     * supplied to created instance.
+     *
+     * @param context Android context.
+     * @param title the title that will be used.
+     * @param fragmentClass <tt>Fragment</tt>'s class name that will be used instead of text message.
+     * @param fragmentArguments optional <tt>Fragment</tt> arguments <tt>Bundle</tt>.
+     * @param confirmTxt the confirm button's label.
+     * @param listener listener that will be notified on user actions.
+     * @param extraArguments additional arguments with keys defined in {@link DialogActivity}.
+     */
+    public static long showCustomDialog(Context context, String title, String fragmentClass,
+            Bundle fragmentArguments, String confirmTxt,
+            DialogListener listener, Map<String, Serializable> extraArguments)
+    {
+        Intent alert = new Intent(context, DialogActivity.class);
+        long dialogId = System.currentTimeMillis();
 
-		if (listener != null) {
-			listenersMap.put(dialogId, listener);
-			alert.putExtra(EXTRA_LISTENER_ID, dialogId);
-		}
+        alert.putExtra(EXTRA_DIALOG_ID, dialogId);
 
-		alert.putExtra(EXTRA_TITLE, title);
-		alert.putExtra(EXTRA_CONFIRM_TXT, confirmTxt);
+        if (listener != null) {
+            listenersMap.put(dialogId, listener);
+            alert.putExtra(EXTRA_LISTENER_ID, dialogId);
+        }
 
-		alert.putExtra(EXTRA_CONTENT_FRAGMENT, fragmentClass);
-		alert.putExtra(EXTRA_CONTENT_ARGS, fragmentArguments);
+        alert.putExtra(EXTRA_TITLE, title);
+        alert.putExtra(EXTRA_CONFIRM_TXT, confirmTxt);
 
-		if (extraArguments != null) {
-			for (String key : extraArguments.keySet()) {
-				alert.putExtra(key, extraArguments.get(key));
-			}
-		}
-		alert.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		alert.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-		context.startActivity(alert);
-		return dialogId;
-	}
+        alert.putExtra(EXTRA_CONTENT_FRAGMENT, fragmentClass);
+        alert.putExtra(EXTRA_CONTENT_ARGS, fragmentArguments);
 
-	/**
-	 * Waits until the dialog with given <tt>dialogId</tt> is opened.
-	 *
-	 * @param dialogId
-	 * 		the id of the dialog we want to wait for.
-	 * @return <tt>true</tt> if dialog has been opened or <tt>false</tt> if the dialog had not
-	 * been opened within 10 seconds after call to this method.
-	 */
-	public static boolean waitForDialogOpened(long dialogId)
-	{
-		synchronized (displayedDialogs) {
-			if (!displayedDialogs.contains(dialogId)) {
-				try {
-					displayedDialogs.wait(10000);
-					return displayedDialogs.contains(dialogId);
-				}
-				catch (InterruptedException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			else {
-				return true;
-			}
-		}
-	}
+        if (extraArguments != null) {
+            for (String key : extraArguments.keySet()) {
+                alert.putExtra(key, extraArguments.get(key));
+            }
+        }
+        alert.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        alert.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        context.startActivity(alert);
+        return dialogId;
+    }
 
-	/**
-	 * The listener that will be notified when user clicks the confirm button or dismisses the
-	 * dialog.
-	 */
-	public interface DialogListener
-	{
-		/**
-		 * Fired when user clicks the dialog's confirm button.
-		 *
-		 * @param dialog
-		 * 		source <tt>DialogActivity</tt>.
-		 */
-		public boolean onConfirmClicked(DialogActivity dialog);
+    /**
+     * Waits until the dialog with given <tt>dialogId</tt> is opened.
+     *
+     * @param dialogId the id of the dialog we want to wait for.
+     * @return <tt>true</tt> if dialog has been opened or <tt>false</tt> if the dialog had not
+     * been opened within 10 seconds after call to this method.
+     */
+    public static boolean waitForDialogOpened(long dialogId)
+    {
+        synchronized (displayedDialogs) {
+            if (!displayedDialogs.contains(dialogId)) {
+                try {
+                    displayedDialogs.wait(10000);
+                    return displayedDialogs.contains(dialogId);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else {
+                return true;
+            }
+        }
+    }
 
-		/**
-		 * Fired when user dismisses the dialog.
-		 *
-		 * @param dialog
-		 * 		source <tt>DialogActivity</tt>
-		 */
-		public void onDialogCancelled(DialogActivity dialog);
-	}
+    /**
+     * The listener that will be notified when user clicks the confirm button or dismisses the dialog.
+     */
+    public interface DialogListener
+    {
+        /**
+         * Fired when user clicks the dialog's confirm button.
+         *
+         * @param dialog source <tt>DialogActivity</tt>.
+         */
+        public boolean onConfirmClicked(DialogActivity dialog);
+
+        /**
+         * Fired when user dismisses the dialog.
+         *
+         * @param dialog source <tt>DialogActivity</tt>
+         */
+        public void onDialogCancelled(DialogActivity dialog);
+    }
 }

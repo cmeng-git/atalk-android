@@ -16,19 +16,11 @@
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 
 import org.atalk.service.neomedia.rtp.RemoteBitrateEstimator;
-import org.atalk.util.DiagnosticContext;
-import org.atalk.util.Logger;
-import org.atalk.util.TimeSeriesLogger;
+import org.atalk.util.*;
 import org.ice4j.util.RateStatistics;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * webrtc.org abs_send_time implementation as of June 26, 2017.
@@ -48,22 +40,19 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
             = Logger.getLogger(RemoteBitrateEstimatorAbsSendTime.class);
 
     /**
-     * The {@link TimeSeriesLogger} to be used by this instance to print time
-     * series.
+     * The {@link TimeSeriesLogger} to be used by this instance to print time series.
      */
     private static final TimeSeriesLogger timeSeriesLogger
             = TimeSeriesLogger.getTimeSeriesLogger(RemoteBitrateEstimatorAbsSendTime.class);
 
     /**
-     * Defines the number of digits in the AST representation (24 bits, 6.18
-     * fixed point) after the radix.
+     * Defines the number of digits in the AST representation (24 bits, 6.18 fixed point) after the radix.
      */
     private final static int kAbsSendTimeFraction = 18;
 
     /**
      * Defines the upshift (left bit-shift) to apply to AST (24 bits, 6.18 fixed
-     * point) to make it inter-arrival compatible (expanded AST, 32 bits, 6.26
-     * fixed point).
+     * point) to make it inter-arrival compatible (expanded AST, 32 bits, 6.26 fixed point).
      */
     private final static int kAbsSendTimeInterArrivalUpshift = 8;
 
@@ -75,20 +64,17 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
     private final static int kTimestampGroupLengthMs = 5;
 
     /**
-     * Defines the number of digits in the expanded AST representation (32 bits,
-     * 6.26 fixed point) after the radix.
+     * Defines the number of digits in the expanded AST representation (32 bits, 6.26 fixed point) after the radix.
      */
     private final static int kInterArrivalShift = kAbsSendTimeFraction + kAbsSendTimeInterArrivalUpshift;
 
     /**
-     * Converts the {@link #kTimestampGroupLengthMs} into "ticks" for use with
-     * the {@link InterArrival}.
+     * Converts the {@link #kTimestampGroupLengthMs} into "ticks" for use with the {@link InterArrival}.
      */
     private static final long kTimestampGroupLengthTicks = (kTimestampGroupLengthMs << kInterArrivalShift) / 1000;
 
     /**
-     * Defines the expanded AST (32 bits) to millis conversion rate. Units are
-     * ms per timestamp
+     * Defines the expanded AST (32 bits) to millis conversion rate. Units are ms per timestamp
      */
     private static final double kTimestampToMs = (double) 1000 / (1 << kInterArrivalShift);
 
@@ -101,14 +87,12 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
 
     /**
      * Defines the minimum size of a packet to be considered a probe. We
-     * currently assume that only packets larger than 200 bytes are paced by the
-     * sender.
+     * currently assume that only packets larger than 200 bytes are paced by the sender.
      */
     private final static long kMinProbePacketSize = 200;
 
     /**
-     * Defines the initial probing period (in millis) after the first packet is
-     * received.
+     * Defines the initial probing period (in millis) after the first packet is received.
      */
     private final static int kInitialProbingIntervalMs = 2000;
 
@@ -128,8 +112,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
     private final static int kExpectedNumberOfProbes = 3;
 
     /**
-     * Reduces the effects of allocations and garbage collection of the method
-     * {@code incomingPacket}.
+     * Reduces the effects of allocations and garbage collection of the method {@code incomingPacket}.
      */
     private final long[] deltas = new long[3];
 
@@ -147,8 +130,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
      * The set of synchronization source identifiers (SSRCs) currently being
      * received. Represents an unmodifiable copy/snapshot of the current keys of
      * {@link #ssrcsMap} suitable for public access and introduced for
-     * the purposes of reducing the number of allocations and the effects of
-     * garbage collection.
+     * the purposes of reducing the number of allocations and the effects of garbage collection.
      */
     private Collection<Long> ssrcs = Collections.unmodifiableList(Collections.EMPTY_LIST);
 
@@ -168,14 +150,12 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
     private long totalProbesReceived;
 
     /**
-     * The time (in millis) when we saw the first packet. Useful to determine
-     * the probing period.
+     * The time (in millis) when we saw the first packet. Useful to determine the probing period.
      */
     private long firstPacketTimeMs;
 
     /**
-     * Keeps track of the last time (in millis) that we updated the bitrate
-     * estimate.
+     * Keeps track of the last time (in millis) that we updated the bitrate estimate.
      */
     private long lastUpdateMs;
 
@@ -186,8 +166,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
 
     /**
      * The rate control implementation based on additive increases of bitrate
-     * when no over-use is detected and multiplicative decreases when over-uses
-     * are detected.
+     * when no over-use is detected and multiplicative decreases when over-uses are detected.
      */
     private final AimdRateControl remoteRate;
 
@@ -234,8 +213,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
      * Determines whether a {@link Probe} belongs to a cluster or not, by
      * examining its send time delta distance from the cluster mean.
      *
-     * @param sendDeltaMs the send time delta of the probe we examine (probe
-     * send time - previous probe send time).
+     * @param sendDeltaMs the send time delta of the probe we examine (probe send time - previous probe send time).
      * @param clusterAggregate the {@link Cluster} that aggregates the probes.
      * @return true if the probe is within the cluster bounds, false otherwise.
      */
@@ -249,8 +227,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
     }
 
     /**
-     * Finalizes the cluster (computes the means from the sums) and adds it to
-     * the clusters list.
+     * Finalizes the cluster (computes the means from the sums) and adds it to the clusters list.
      *
      * @param clusters the clusters list to add the cluster.
      * @param cluster the cluster to finalize and add to the clusters list.
@@ -344,8 +321,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
     }
 
     /**
-     * Processes the received clusters and maybe updates the remote bitrate.
-     * It returns the processing result.
+     * Processes the received clusters and maybe updates the remote bitrate. It returns the processing result.
      *
      * @param nowMs the current time in millis.
      * @return true if the remote bitrate was updated, false otherwise.
@@ -365,8 +341,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
         Cluster bestProbe = findBestProbe(clusters);
         long probeBitrateBps = Math.min(bestProbe.getSendBitrateBps(), bestProbe.getRecvBitrateBps());
 
-        // Make sure that a probe sent on a lower bitrate than our estimate
-        // can't reduce the estimate.
+        // Make sure that a probe sent on a lower bitrate than our estimate can't reduce the estimate.
 
         if (isBitrateImproving(probeBitrateBps)) {
             logger.warn("Probe successful, sent at "
@@ -380,8 +355,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
             return true;
         }
 
-        // Not probing and received non-probe packet, or finished with current
-        // set of probes.
+        // Not probing and received non-probe packet, or finished with current set of probes.
 
         if (clusters.size() >= kExpectedNumberOfProbes) {
             probes.clear();
@@ -390,8 +364,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
     }
 
     /**
-     * Determines whether or not the specified bitrate is an improvement over
-     * our current estimate.
+     * Determines whether or not the specified bitrate is an improvement over our current estimate.
      *
      * @param newBitrateBps the new bitrate to compare with our estimate.
      * @return true if the bitrate is improving, false otherwise.
@@ -407,30 +380,27 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
      * Notifies this instance of an incoming packet.
      *
      * @param arrivalTimeMs the arrival time of the packet in millis.
-     * @param sendTime24bits the send time of the packet in AST format
-     * (24 bits, 6.18 fixed point).
+     * @param sendTime24bits the send time of the packet in AST format (24 bits, 6.18 fixed point).
      * @param payloadSize the payload size of the packet.
      * @param ssrc the SSRC of the packet.
      */
     @Override
     public void incomingPacketInfo(long arrivalTimeMs, long sendTime24bits, int payloadSize, long ssrc)
     {
-        // Shift up send time to use the full 32 bits that inter_arrival
-        // works with, so wrapping works properly.
+        // Shift up send time to use the full 32 bits that inter_arrival works with, so wrapping works properly.
         long timestamp = sendTime24bits << kAbsSendTimeInterArrivalUpshift;
 
         // Convert the expanded AST (32 bits, 6.26 fixed point) to millis.
         long sendTimeMs = (long) (timestamp * kTimestampToMs);
 
         // XXX The arrival time should be the earliest we've seen this packet,
-        // not now. In our code however, we don't have access to the arrival
-        // time.
+        // not now. In our code however, we don't have access to the arrival time.
         long nowMs = System.currentTimeMillis();
 
         if (timeSeriesLogger.isTraceEnabled()) {
             timeSeriesLogger.trace(diagnosticContext
                     .makeTimeSeriesPoint("in_pkt", nowMs)
-                    .addKey("rbe_id", hashCode())
+                    .addField("rbe_id", hashCode())
                     .addField("recv_ts_ms", arrivalTimeMs)
                     .addField("send_ts_ms", sendTimeMs)
                     .addField("pkt_sz_bytes", payloadSize)
@@ -438,8 +408,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
         }
 
         // should be broken out from  here.
-        // Check if incoming bitrate estimate is valid, and if it
-        // needs to be reset.
+        // Check if incoming bitrate estimate is valid, and if it needs to be reset.
         long incomingBitrate_ = incomingBitrate.getRate(arrivalTimeMs);
         if (incomingBitrate_ != 0) {
             incomingBitrateInitialized = true;
@@ -469,8 +438,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
                 ssrcs = Collections.unmodifiableCollection(ssrcsMap.keySet());
             }
 
-            // For now only try to detect probes while we don't have a valid
-            // estimate.
+            // For now only try to detect probes while we don't have a valid estimate.
             if (payloadSize > kMinProbePacketSize &&
                     (!remoteRate.isValidEstimate() || nowMs - firstPacketTimeMs < kInitialProbingIntervalMs)) {
                 if (totalProbesReceived < kMaxProbePackets) {
@@ -490,8 +458,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
 
                 ++totalProbesReceived;
                 // Make sure that a probe which updated the bitrate immediately
-                // has an effect by calling the
-                // OnReceiveBitrateChanged callback.
+                // has an effect by calling the OnReceiveBitrateChanged callback.
                 if (processClusters(nowMs)) {
                     updateEstimate = true;
                 }
@@ -514,9 +481,9 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
                 double tsDeltaMs = deltas[0] * kTimestampToMs;
 
                 detector.estimator.update(
-                    /* timeDelta */ deltas[1],
-                    /* timestampDelta */ tsDeltaMs,
-                    /* sizeDelta */ (int) deltas[2],
+                        /* timeDelta */ deltas[1],
+                        /* timestampDelta */ tsDeltaMs,
+                        /* sizeDelta */ (int) deltas[2],
                         detector.detector.getState(), nowMs);
 
                 detector.detector.detect(
@@ -565,8 +532,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
     }
 
     /**
-     * Timeouts SSRCs that have not received any data for
-     * kTimestampGroupLengthMs millis.
+     * Timeouts SSRCs that have not received any data for kTimestampGroupLengthMs millis.
      *
      * @param nowMs the current time in millis.
      */
@@ -589,8 +555,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
             // We can't update the estimate if we don't have any active streams.
             detector = null;
             // We deliberately don't reset the first_packet_time_ms_
-            // here for now since we only probe for bandwidth in the
-            // beginning of a call right now.
+            // here for now since we only probe for bandwidth in the beginning of a call right now.
         }
     }
 
@@ -700,8 +665,7 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
 
     /**
      * Holds the {@link InterArrival}, {@link OveruseEstimator} and
-     * {@link OveruseDetector} instances that estimate the remote bitrate of a
-     * stream.
+     * {@link OveruseDetector} instances that estimate the remote bitrate of a stream.
      */
     private class Detector
     {

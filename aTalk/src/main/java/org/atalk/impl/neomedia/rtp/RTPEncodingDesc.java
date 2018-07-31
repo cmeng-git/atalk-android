@@ -16,15 +16,11 @@
 package org.atalk.impl.neomedia.rtp;
 
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.ArrayUtils;
-import org.atalk.util.Logger;
-import org.atalk.util.RTPUtils;
+import org.atalk.service.neomedia.codec.*;
+import org.atalk.util.*;
 import org.ice4j.util.RateStatistics;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -39,8 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RTPEncodingDesc
 {
     /**
-     * The {@link Logger} used by the {@link RTPEncodingDesc} class to print
-     * debug information.
+     * The {@link Logger} used by the {@link RTPEncodingDesc} class to print debug information.
      */
     private static final Logger logger = Logger.getLogger(RTPEncodingDesc.class);
 
@@ -65,6 +60,16 @@ public class RTPEncodingDesc
      * The number of incoming frames to keep track of.
      */
     private static final int FRAMES_HISTORY_SZ = 60;
+
+    /**
+     * The maximum time interval (in millis) an encoding can be considered
+     * active without new frames. This value corresponds to 4fps + 50 millis
+     * to compensate for network noise. If the network is clogged and we don't
+     * get a new frame within 300 millis, and if the encoding is being
+     * received, then we will ask for a new key frame (this is done in the
+     * JVB in SimulcastController).
+     */
+    private static final int SUSPENSION_THRESHOLD_MS = 300;
 
     /**
      * The primary SSRC for this layering/encoding.
@@ -100,32 +105,27 @@ public class RTPEncodingDesc
 
     /**
      * The max frame rate (in fps) of the bitstream that this instance
-     * represents. The actual frame rate may be less due to bad network or
-     * system load.
+     * represents. The actual frame rate may be less due to bad network or system load.
      */
     private final double frameRate;
 
     /**
-     * The root {@link RTPEncodingDesc} of the dependencies DAG. Useful for
-     * simulcast handling.
+     * The root {@link RTPEncodingDesc} of the dependencies DAG. Useful for simulcast handling.
      */
     private final RTPEncodingDesc base;
 
     /**
-     * The {@link MediaStreamTrackDesc} that this {@link RTPEncodingDesc}
-     * belongs to.
+     * The {@link MediaStreamTrackDesc} that this {@link RTPEncodingDesc} belongs to.
      */
     private final MediaStreamTrackDesc track;
 
     /**
-     * The {@link RateStatistics} instance used to calculate the receiving
-     * bitrate of this RTP encoding.
+     * The {@link RateStatistics} instance used to calculate the receiving bitrate of this RTP encoding.
      */
     private final RateStatistics rateStatistics = new RateStatistics(AVERAGE_BITRATE_WINDOW_MS);
 
     /**
-     * The {@link TreeMap} that holds the seen {@link FrameDesc}, keyed
-     * by their RTP timestamps.
+     * The {@link TreeMap} that holds the seen {@link FrameDesc}, keyed by their RTP timestamps.
      */
     private final TreeMap<Long, FrameDesc> streamFrames = new TreeMap<Long, FrameDesc>()
     {
@@ -158,12 +158,6 @@ public class RTPEncodingDesc
     private final RTPEncodingDesc[] dependencyEncodings;
 
     /**
-     * A boolean flag that indicates whether or not this instance is streaming
-     * or if it's suspended.
-     */
-    private boolean active = false;
-
-    /**
      * The last "stable" bitrate (in bps) for this instance.
      */
     private long lastStableBitrateBps;
@@ -181,13 +175,10 @@ public class RTPEncodingDesc
     /**
      * Ctor.
      *
-     * @param track
-     *         the {@link MediaStreamTrackDesc} that this instance belongs to.
-     * @param primarySSRC
-     *         The primary SSRC for this layering/encoding.
+     * @param track the {@link MediaStreamTrackDesc} that this instance belongs to.
+     * @param primarySSRC The primary SSRC for this layering/encoding.
      */
-    public RTPEncodingDesc(
-            MediaStreamTrackDesc track, long primarySSRC)
+    public RTPEncodingDesc(MediaStreamTrackDesc track, long primarySSRC)
     {
         this(track, 0, primarySSRC, -1 /* tid */, -1 /* sid */,
                 NO_HEIGHT /* height */, NO_FRAME_RATE /* frame rate */,
@@ -197,33 +188,18 @@ public class RTPEncodingDesc
     /**
      * Ctor.
      *
-     * @param track
-     *         the {@link MediaStreamTrackDesc} that this instance belongs
-     *         to.
-     * @param idx
-     *         the subjective quality index for this
-     *         layering/encoding.
-     * @param primarySSRC
-     *         The primary SSRC for this layering/encoding.
-     * @param tid
-     *         temporal layer ID for this layering/encoding.
-     * @param sid
-     *         spatial layer ID for this layering/encoding.
-     * @param height
-     *         the max height of this encoding
-     * @param frameRate
-     *         the max frame rate (in fps) of this encoding
-     * @param dependencyEncodings
-     *         The {@link RTPEncodingDesc} on which this
-     *         layer depends.
+     * @param track the {@link MediaStreamTrackDesc} that this instance belongs to.
+     * @param idx the subjective quality index for this
+     * layering/encoding.
+     * @param primarySSRC The primary SSRC for this layering/encoding.
+     * @param tid temporal layer ID for this layering/encoding.
+     * @param sid spatial layer ID for this layering/encoding.
+     * @param height the max height of this encoding
+     * @param frameRate the max frame rate (in fps) of this encoding
+     * @param dependencyEncodings The {@link RTPEncodingDesc} on which this layer depends.
      */
-    public RTPEncodingDesc(
-            MediaStreamTrackDesc track, int idx,
-            long primarySSRC,
-            int tid, int sid,
-            int height,
-            double frameRate,
-            RTPEncodingDesc[] dependencyEncodings)
+    public RTPEncodingDesc(MediaStreamTrackDesc track, int idx, long primarySSRC, int tid, int sid,
+            int height, double frameRate, RTPEncodingDesc[] dependencyEncodings)
     {
         // XXX we should be able to snif the actual height from the RTP
         // packets.
@@ -256,14 +232,10 @@ public class RTPEncodingDesc
      * the last expected sequence number for olderFrame and/or the first
      * expected sequence number of newerFrame.
      *
-     * @param olderFrame
-     *         the {@link FrameDesc} that comes before newerFrame.
-     * @param newerFrame
-     *         the {@link FrameDesc} that comes after olderFrame.
+     * @param olderFrame the {@link FrameDesc} that comes before newerFrame.
+     * @param newerFrame the {@link FrameDesc} that comes after olderFrame.
      */
-    private static void applyFrameBoundsHeuristics(
-            FrameDesc olderFrame,
-            FrameDesc newerFrame)
+    private static void applyFrameBoundsHeuristics(FrameDesc olderFrame, FrameDesc newerFrame)
     {
         if (olderFrame.lastSequenceNumberKnown() && newerFrame.lastSequenceNumberKnown()) {
             // We already know the last sequence number of olderFrame and the first
@@ -377,8 +349,7 @@ public class RTPEncodingDesc
     /**
      * Get the secondary ssrc for this stream that corresponds to the given type
      *
-     * @param type
-     *         the type of the secondary ssrc (e.g. RTX)
+     * @param type the type of the secondary ssrc (e.g. RTX)
      * @return the ssrc for the stream that corresponds to the given type,
      * if it exists; otherwise -1
      */
@@ -398,34 +369,25 @@ public class RTPEncodingDesc
      *
      * @return true if this instance is streaming, false otherwise.
      */
-    public boolean isActive()
+    public boolean isActive(long nowMs)
     {
-        return active;
-    }
-
-    /**
-     * Gets a boolean value indicating whether or not this instance is
-     * streaming.
-     *
-     * @param performTimeoutCheck
-     *         when true, it requires fresh data and not
-     *         just the active property to be set.
-     * @return true if this instance is streaming, false otherwise.
-     */
-    public boolean isActive(boolean performTimeoutCheck)
-    {
-        if (active && performTimeoutCheck) {
-            if (lastReceivedFrame == null) {
-                return false;
-            }
-            else {
-                long timeSinceLastReceivedFrameMs = System.currentTimeMillis() - lastReceivedFrame.getReceivedMs();
-
-                return timeSinceLastReceivedFrameMs <= MediaStreamTrackDesc.SUSPENSION_THRESHOLD_MS;
-            }
+        if (lastReceivedFrame == null) {
+            return false;
         }
         else {
-            return active;
+            RTPEncodingDesc[] encodings = track.getRTPEncodings();
+            boolean nextIsActive = encodings != null
+                    && encodings.length > idx + 1
+                    && encodings[idx + 1].isActive(nowMs);
+
+            if (nextIsActive) {
+                return true;
+            }
+
+            long timeSinceLastReceivedFrameMs
+                    = nowMs - lastReceivedFrame.getReceivedMs();
+
+            return timeSinceLastReceivedFrameMs <= SUSPENSION_THRESHOLD_MS;
         }
     }
 
@@ -440,7 +402,6 @@ public class RTPEncodingDesc
                 ",secondary_ssrcs=" + secondarySsrcs +
                 ",temporal_id=" + tid +
                 ",spatial_id=" + sid +
-                ",active=" + active +
                 ",last_stable_bitrate_bps=" + lastStableBitrateBps;
     }
 
@@ -469,8 +430,7 @@ public class RTPEncodingDesc
      * {@link RTPEncodingDesc} depends on the subjective quality index that is
      * passed as an argument.
      *
-     * @param idx
-     *         the index of this instance in the track encodings array.
+     * @param idx the index of this instance in the track encodings array.
      * @return true if this {@link RTPEncodingDesc} depends on the subjective
      * quality index that is passed as an argument, false otherwise.
      */
@@ -502,8 +462,7 @@ public class RTPEncodingDesc
      * Gets a boolean indicating whether or not the specified packet matches
      * this encoding or not. Assumes that the packet is valid.
      *
-     * @param pkt
-     *         the RTP packet.
+     * @param pkt the RTP packet.
      */
     boolean matches(RawPacket pkt)
     {
@@ -530,25 +489,11 @@ public class RTPEncodingDesc
      * Gets a boolean indicating whether or not the SSRC specified in the
      * arguments matches this encoding or not.
      *
-     * @param ssrc
-     *         the SSRC to match.
+     * @param ssrc the SSRC to match.
      */
     public boolean matches(long ssrc)
     {
-        return primarySSRC == ssrc || secondarySsrcs.containsKey(ssrc);
-    }
-
-    /**
-     * Gets a boolean flag that indicates whether or not this instance is
-     * streaming or if it's suspended.
-     *
-     * @param active
-     *         true if this {@link RTPEncodingDesc} is active, otherwise
-     *         false.
-     */
-    void setActive(boolean active)
-    {
-        this.active = active;
+        return (primarySSRC == ssrc) || secondarySsrcs.containsKey(ssrc);
     }
 
     /**
@@ -603,7 +548,6 @@ public class RTPEncodingDesc
                 applyFrameBoundsHeuristics(floorEntry.getValue(), frame);
             }
         }
-        track.update(pkt, frame, isPacketOfNewFrame, nowMs);
     }
 
 
@@ -677,8 +621,7 @@ public class RTPEncodingDesc
      * Finds the {@link FrameDesc} that matches the RTP packet specified
      * in the buffer passed in as an argument.
      *
-     * @param timestamp
-     *         the timestamp of the desired {@link FrameDesc}
+     * @param timestamp the timestamp of the desired {@link FrameDesc}
      * @return the {@link FrameDesc} that matches the RTP timestamp given,
      * or null if there is no matching frame {@link FrameDesc}.
      */

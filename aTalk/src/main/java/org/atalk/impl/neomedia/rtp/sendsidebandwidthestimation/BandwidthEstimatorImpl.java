@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -13,13 +13,17 @@
  */
 package org.atalk.impl.neomedia.rtp.sendsidebandwidthestimation;
 
-import net.sf.fmj.media.rtp.*;
+import net.sf.fmj.media.rtp.RTCPFeedback;
+import net.sf.fmj.media.rtp.RTCPReport;
 
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.*;
-import org.atalk.service.neomedia.rtp.*;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.MediaStreamStats;
+import org.atalk.service.neomedia.rtp.BandwidthEstimator;
+import org.atalk.service.neomedia.rtp.RTCPReportAdapter;
+import org.atalk.util.concurrent.RecurringRunnable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,25 +36,23 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Boris Grozev
  */
 public class BandwidthEstimatorImpl extends RTCPReportAdapter
-		implements BandwidthEstimator
+        implements BandwidthEstimator, RecurringRunnable
 {
-
     /**
-     * The system property name of the initial value of the estimation, in bits
-     * per second.
+     * The system property name of the initial value of the estimation, in bits per second.
      */
     public static final String START_BITRATE_BPS_PNAME
-		= "neomedia.rtp.sendsidebandwidthestimation.BandwidthEstimatorImpl.START_BITRATE_BPS";
-		
-	/**
-	 * The minimum value to be output by this estimator, in bits per second.
-	 */
-	private final static int MIN_BITRATE_BPS = 30000;
+            = "neomedia.rtp.sendsidebandwidthestimation.BandwidthEstimatorImpl.START_BITRATE_BPS";
 
-	/**
-	 * The maximum value to be output by this estimator, in bits per second.
-	 */
-	private final static int MAX_BITRATE_BPS = 20 * 1000 * 1000;
+    /**
+     * The minimum value to be output by this estimator, in bits per second.
+     */
+    private final static int MIN_BITRATE_BPS = 30000;
+
+    /**
+     * The maximum value to be output by this estimator, in bits per second.
+     */
+    private final static int MAX_BITRATE_BPS = 20 * 1000 * 1000;
 
     /**
      * The ConfigurationService to get config values from.
@@ -61,107 +63,105 @@ public class BandwidthEstimatorImpl extends RTCPReportAdapter
      * The initial value of the estimation, in bits per second.
      */
     private static final long START_BITRATE_BPS
-        = cfg != null ? cfg.getLong(START_BITRATE_BPS_PNAME, 300000) : 300000;
+            = cfg != null ? cfg.getLong(START_BITRATE_BPS_PNAME, 300000) : 300000;
 
     /**
      * bitrate_controller_impl.h
      */
-    private Map<Long,Long> ssrc_to_last_received_extended_high_seq_num_
-        = new ConcurrentHashMap<>();
+    private Map<Long, Long> ssrc_to_last_received_extended_high_seq_num_ = new ConcurrentHashMap<>();
 
-	private long lastUpdateTime = -1;
+    private long lastUpdateTime = -1;
 
-	/**
-	 * bitrate_controller_impl.h
-	 */
-	private final SendSideBandwidthEstimation sendSideBandwidthEstimation;
+    /**
+     * bitrate_controller_impl.h
+     */
+    private final SendSideBandwidthEstimation sendSideBandwidthEstimation;
 
-	/**
-	 * Initializes a new instance which is to belong to a particular {@link MediaStream}.
-	 * 
-	 * @param stream
-	 *        the {@link MediaStream}.
-	 */
-	public BandwidthEstimatorImpl(MediaStreamImpl stream)
-	{
-		sendSideBandwidthEstimation = new SendSideBandwidthEstimation(stream, START_BITRATE_BPS);
-		sendSideBandwidthEstimation.setMinMaxBitrate(MIN_BITRATE_BPS, MAX_BITRATE_BPS);
+    /**
+     * Initializes a new instance which is to belong to a particular {@link MediaStream}.
+     *
+     * @param stream the {@link MediaStream}.
+     */
+    public BandwidthEstimatorImpl(MediaStreamImpl stream)
+    {
+        sendSideBandwidthEstimation = new SendSideBandwidthEstimation(stream, START_BITRATE_BPS);
+        sendSideBandwidthEstimation.setMinMaxBitrate(MIN_BITRATE_BPS, MAX_BITRATE_BPS);
 
-		// Hook us up to receive Report Blocks and REMBs.
-		MediaStreamStats stats = stream.getMediaStreamStats();
+        // Hook us up to receive Report Blocks and REMBs.
+        MediaStreamStats stats = stream.getMediaStreamStats();
         stats.addRTCPPacketListener(sendSideBandwidthEstimation);
-		stats.getRTCPReports().addRTCPReportListener(this);
-	}
+        stats.getRTCPReports().addRTCPReportListener(this);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * bitrate_controller_impl.cc BitrateControllerImpl::OnReceivedRtcpReceiverReport
-	 */
-	@Override
-	public void rtcpReportReceived(RTCPReport report)
-	{
-		if (report == null || report.getFeedbackReports() == null
-			|| report.getFeedbackReports().isEmpty()) {
-			return;
-		}
+    /**
+     * {@inheritDoc}
+     *
+     * bitrate_controller_impl.cc BitrateControllerImpl::OnReceivedRtcpReceiverReport
+     */
+    @Override
+    public void rtcpReportReceived(RTCPReport report)
+    {
+        if (report == null || report.getFeedbackReports() == null
+                || report.getFeedbackReports().isEmpty()) {
+            return;
+        }
 
-		long total_number_of_packets = 0;
-		long fraction_lost_aggregate = 0;
+        long total_number_of_packets = 0;
+        long fraction_lost_aggregate = 0;
 
-		// Compute the a weighted average of the fraction loss from all report
-		// blocks.
-		for (RTCPFeedback feedback : report.getFeedbackReports()) {
-			long ssrc = feedback.getSSRC();
-			long extSeqNum = feedback.getXtndSeqNum();
+        // Compute the a weighted average of the fraction loss from all report
+        // blocks.
+        for (RTCPFeedback feedback : report.getFeedbackReports()) {
+            long ssrc = feedback.getSSRC();
+            long extSeqNum = feedback.getXtndSeqNum();
 
-			Long lastEHSN = ssrc_to_last_received_extended_high_seq_num_.get(ssrc);
-			if (lastEHSN == null) {
-				lastEHSN = extSeqNum;
-			}
+            Long lastEHSN = ssrc_to_last_received_extended_high_seq_num_.get(ssrc);
+            if (lastEHSN == null) {
+                lastEHSN = extSeqNum;
+            }
 
-			ssrc_to_last_received_extended_high_seq_num_.put(ssrc, extSeqNum);
+            ssrc_to_last_received_extended_high_seq_num_.put(ssrc, extSeqNum);
 
-			if (lastEHSN >= extSeqNum) {
-				// the first report for this SSRC
-				continue;
-			}
+            if (lastEHSN >= extSeqNum) {
+                // the first report for this SSRC
+                continue;
+            }
 
-			long number_of_packets = extSeqNum - lastEHSN;
+            long number_of_packets = extSeqNum - lastEHSN;
 
-			fraction_lost_aggregate += number_of_packets * feedback.getFractionLost();
-			total_number_of_packets += number_of_packets;
-		}
+            fraction_lost_aggregate += number_of_packets * feedback.getFractionLost();
+            total_number_of_packets += number_of_packets;
+        }
 
-		if (total_number_of_packets == 0) {
-			fraction_lost_aggregate = 0;
-		}
-		else {
-			fraction_lost_aggregate = (fraction_lost_aggregate + total_number_of_packets / 2)
-				/ total_number_of_packets;
-		}
-		if (fraction_lost_aggregate > 255) {
-			return;
-		}
+        if (total_number_of_packets == 0) {
+            fraction_lost_aggregate = 0;
+        }
+        else {
+            fraction_lost_aggregate = (fraction_lost_aggregate + total_number_of_packets / 2)
+                    / total_number_of_packets;
+        }
+        if (fraction_lost_aggregate > 255) {
+            return;
+        }
 
-		synchronized (sendSideBandwidthEstimation) {
-			lastUpdateTime = System.currentTimeMillis();
-			sendSideBandwidthEstimation.updateReceiverBlock(fraction_lost_aggregate,
-				total_number_of_packets, lastUpdateTime);
-		}
-	}
+        synchronized (sendSideBandwidthEstimation) {
+            lastUpdateTime = System.currentTimeMillis();
+            sendSideBandwidthEstimation.updateReceiverBlock(fraction_lost_aggregate,
+                    total_number_of_packets, lastUpdateTime);
+        }
+    }
 
-	@Override
-	public void addListener(Listener listener)
-	{
-		sendSideBandwidthEstimation.addListener(listener);
-	}
+    @Override
+    public void addListener(Listener listener)
+    {
+        sendSideBandwidthEstimation.addListener(listener);
+    }
 
-	@Override
-	public void removeListener(Listener listener)
-	{
-		sendSideBandwidthEstimation.removeListener(listener);
-	}
+    @Override
+    public void removeListener(Listener listener)
+    {
+        sendSideBandwidthEstimation.removeListener(listener);
+    }
 
     /**
      * {@inheritDoc}
@@ -197,5 +197,30 @@ public class BandwidthEstimatorImpl extends RTCPReportAdapter
     public int getLatestFractionLoss()
     {
         return sendSideBandwidthEstimation.getLatestFractionLoss();
+    }
+
+    /**
+     * @return the send-side bwe-specific statistics.
+     */
+    @Override
+    public SendSideBandwidthEstimation.StatisticsImpl getStatistics()
+    {
+        return sendSideBandwidthEstimation.getStatistics();
+    }
+
+    @Override
+    public long getTimeUntilNextRun()
+    {
+        long timeSinceLastProcess = Math.max(System.currentTimeMillis() - lastUpdateTime, 0);
+        return Math.max(25 - timeSinceLastProcess, 0);
+    }
+
+    @Override
+    public void run()
+    {
+        synchronized (sendSideBandwidthEstimation) {
+            lastUpdateTime = System.currentTimeMillis();
+            sendSideBandwidthEstimation.updateEstimate(lastUpdateTime);
+        }
     }
 }

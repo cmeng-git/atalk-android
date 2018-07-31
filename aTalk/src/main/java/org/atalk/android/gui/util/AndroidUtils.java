@@ -22,6 +22,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 import org.atalk.service.osgi.OSGiService;
 
 import java.util.List;
@@ -135,8 +136,13 @@ public class AndroidUtils
             return;
         }
 
-        NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(context, null)
-                .setContentTitle(title)
+        NotificationCompat.Builder nBuilder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            nBuilder = new NotificationCompat.Builder(context, AndroidNotifications.DEFAULT_GROUP);
+        else
+            nBuilder = new NotificationCompat.Builder(context, null);
+
+        nBuilder.setContentTitle(title)
                 .setContentText(message)
                 .setWhen(date)
                 .setSmallIcon(R.drawable.ic_notification);

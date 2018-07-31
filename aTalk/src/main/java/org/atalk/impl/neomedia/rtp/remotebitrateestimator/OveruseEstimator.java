@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -114,7 +114,7 @@ class OveruseEstimator
         varNoise = options.initialVarNoise;
         E = clone(options.initialE);
         processNoise = options.initialProcessNoise.clone();
-        /**
+        /*
          * Initialize {@link tsDeltaHist} with {@code Double.MAX_VALUE}
          * to simplify {@link updateMinFramePeriod}
          */
@@ -231,7 +231,7 @@ class OveruseEstimator
         if (logger.isTraceEnabled()) {
             logger.trace(diagnosticContext
                     .makeTimeSeriesPoint("delay_variation_estimation", systemTimeMs)
-                    .addKey("estimator", hashCode())
+                    .addField("estimator", hashCode())
                     .addField("time_delta", tDelta)
                     .addField("ts_delta", tsDelta)
                     .addField("tts_delta", tTsDelta)
@@ -242,7 +242,7 @@ class OveruseEstimator
 
     private double updateMinFramePeriod(double tsDelta)
     {
-        /**
+        /*
          * Change from C++ version:
          * We use {@link tsDeltaHist} as a circular buffer initialized
          * with {@code Double.MAX_VALUE}, so we insert new {@link tsDelta}
@@ -269,7 +269,6 @@ class OveruseEstimator
         // the network alpha is tuned for 30 frames per second, but is scaled
         // according to tsDelta.
         double alpha = 0.01D;
-
         if (numOfDeltas > 10 * 30)
             alpha = 0.002D;
 

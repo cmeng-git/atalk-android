@@ -6,6 +6,15 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.4.4 (07/31/2018)" versioncode="1044">
+        <change>Implement new android Notification Channels support</change>
+        <change>Prevent user from cancel dialog accidentally while clicking outside the window region</change>
+        <change>Full implementation for [Telephony | Disable media calls (Jingle)] option in Account Settings</change>
+        <change>Display user warning alert when zero resource permission has been granted for aTalk operation</change>
+        <change>Disable media services when android OS aborts ffmpeg lib loading (Text-Relocation-Enforced-for-API-level-23)</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.4.3 (07/21/2018)" versioncode="1043">
         <change>Implement handler for captcha challenge from server when joining chat room with captcha protection against SPAM</change>
         <change>Implement exception handler for server that does not support chat room creation</change>

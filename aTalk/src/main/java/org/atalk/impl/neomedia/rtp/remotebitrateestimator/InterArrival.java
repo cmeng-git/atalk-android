@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -74,11 +74,8 @@ class InterArrival
      * @param timestampToMsCoeff
      * @param enableBurstGrouping
      */
-    public InterArrival(
-            long timestampGroupLengthTicks,
-            double timestampToMsCoeff,
-            boolean enableBurstGrouping,
-            @NotNull DiagnosticContext diagnosticContext)
+    public InterArrival(long timestampGroupLengthTicks, double timestampToMsCoeff,
+            boolean enableBurstGrouping, @NotNull DiagnosticContext diagnosticContext)
     {
         kTimestampGroupLengthTicks = timestampGroupLengthTicks;
         this.timestampToMsCoeff = timestampToMsCoeff;
@@ -117,19 +114,15 @@ class InterArrival
      * @param deltas {@code timestampDelta} is the computed timestamp delta, {@code arrivalTimeDeltaMs} is
      * the computed arrival-time delta, {@code packetSizeDelta} is the computed size delta.
      * @return
-     *
      * @Note: We have two {@code computeDeltas}.
      * One with a valid {@code systemTimeMs} according to webrtc
      * implementation as of June 12,2017 and a previous one
      * with a default systemTimeMs (-1L). the later may be removed or
      * deprecated.
      */
-    public boolean computeDeltas(
-            long timestamp, long arrivalTimeMs, int packetSize, long[] deltas)
+    public boolean computeDeltas(long timestamp, long arrivalTimeMs, int packetSize, long[] deltas)
     {
-
-        return computeDeltas(timestamp, arrivalTimeMs,
-                packetSize, deltas, -1L);
+        return computeDeltas(timestamp, arrivalTimeMs, packetSize, deltas, -1L);
     }
 
     public boolean computeDeltas(long timestamp, long arrivalTimeMs, int packetSize, long[] deltas, long systemTimeMs)
@@ -163,16 +156,13 @@ class InterArrival
 
                 // Check system time differences to see if we have an unproportional jump
                 // in arrival time. In that case reset the inter-arrival computations.
-                long systemTimeDeltaMs =
-                        currentTimestampGroup.lastSystemTimeMs -
-                                prevTimestampGroup.lastSystemTimeMs;
-                if (prevTimestampGroup.lastSystemTimeMs != -1L &&
-                        currentTimestampGroup.lastSystemTimeMs != -1L
+                long systemTimeDeltaMs = currentTimestampGroup.lastSystemTimeMs - prevTimestampGroup.lastSystemTimeMs;
+                if (prevTimestampGroup.lastSystemTimeMs != -1L
+                        && currentTimestampGroup.lastSystemTimeMs != -1L
                         && arrivalTimeDeltaMs - systemTimeDeltaMs >=
                         kArrivalTimeOffsetThresholdMs) {
                     logger.warn("The arrival time clock offset has changed (diff = "
-                            + String.valueOf(arrivalTimeDeltaMs - systemTimeDeltaMs)
-                            + " ms), resetting.");
+                            + String.valueOf(arrivalTimeDeltaMs - systemTimeDeltaMs) + " ms), resetting.");
                     Reset();
                     return false;
                 }
@@ -183,8 +173,7 @@ class InterArrival
                         // The group of packets has been reordered since receiving
                         // its local arrival timestamp.
                         logger.warn("Packets are being reordered on the path from the "
-                                + "socket to the bandwidth estimator. Ignoring "
-                                + "this packet for bandwidth estimation.");
+                                + "socket to the bandwidth estimator. Ignoring this packet for bandwidth estimation.");
                         Reset();
                     }
                     return false;
@@ -198,7 +187,7 @@ class InterArrival
                 if (logger.isTraceEnabled()) {
                     logger.trace(diagnosticContext
                             .makeTimeSeriesPoint("computed_deltas")
-                            .addKey("inter_arrival", hashCode())
+                            .addField("inter_arrival", hashCode())
                             .addField("arrival_time_ms", arrivalTimeMs)
                             .addField("timestamp_delta", deltas[0])
                             .addField("arrival_time_ms_delta", deltas[1])
@@ -241,9 +230,7 @@ class InterArrival
             return false;
         }
         else {
-            long timestampDiff = TimestampUtils.subtractAsUnsignedInt32(
-                    timestamp, currentTimestampGroup.firstTimestamp);
-
+            long timestampDiff = TimestampUtils.subtractAsUnsignedInt32(timestamp, currentTimestampGroup.firstTimestamp);
             return timestampDiff > kTimestampGroupLengthTicks;
         }
     }
@@ -271,7 +258,7 @@ class InterArrival
             if (!inOrder && logger.isTraceEnabled()) {
                 logger.trace(diagnosticContext
                         .makeTimeSeriesPoint("reordered_packet")
-                        .addKey("inter_arrival", hashCode())
+                        .addField("inter_arrival", hashCode())
                         .addField("ts_delta_ms", tsDeltaMs));
             }
 

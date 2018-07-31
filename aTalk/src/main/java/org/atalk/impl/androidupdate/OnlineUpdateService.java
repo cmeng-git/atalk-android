@@ -2,12 +2,14 @@ package org.atalk.impl.androidupdate;
 
 import android.app.*;
 import android.content.*;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.settings.SettingsActivity;
+import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 import org.atalk.service.configuration.ConfigurationService;
 
 import java.util.Calendar;
@@ -81,22 +83,26 @@ public class OnlineUpdateService extends IntentService {
             boolean isLatest = updateService.isLatestVersion();
 
             if (!isLatest) {
-                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+                NotificationCompat.Builder nBuilder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    nBuilder = new NotificationCompat.Builder(this, AndroidNotifications.DEFAULT_GROUP);
+                else
+                    nBuilder = new NotificationCompat.Builder(this, null);
 
                 String msgString = getString(R.string.plugin_newsoftware_DIALOG_MESSAGE,
                         updateService.getLatestVersion());
-                mBuilder.setSmallIcon(R.drawable.ic_notification);
-                mBuilder.setWhen(System.currentTimeMillis());
-                mBuilder.setAutoCancel(true);
-                mBuilder.setTicker(msgString);
-                mBuilder.setContentTitle(getString(R.string.app_name));
-                mBuilder.setContentText(msgString);
+                nBuilder.setSmallIcon(R.drawable.ic_notification);
+                nBuilder.setWhen(System.currentTimeMillis());
+                nBuilder.setAutoCancel(true);
+                nBuilder.setTicker(msgString);
+                nBuilder.setContentTitle(getString(R.string.app_name));
+                nBuilder.setContentText(msgString);
 
                 Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
                 intent.setAction(ACTION_UPDATE_AVAILABLE);
                 PendingIntent pending = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                mBuilder.setContentIntent(pending);
-                mNotificationMgr.notify(UPDATE_AVAIL_TAG, UPDATE_AVAIL_NOTIFY_ID, mBuilder.build());
+                nBuilder.setContentIntent(pending);
+                mNotificationMgr.notify(UPDATE_AVAIL_TAG, UPDATE_AVAIL_NOTIFY_ID, nBuilder.build());
             }
         }
 
