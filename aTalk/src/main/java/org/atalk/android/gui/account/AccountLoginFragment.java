@@ -268,8 +268,7 @@ public class AccountLoginFragment extends OSGiFragment {
     }
 
     /**
-     * Creates new <tt>AccountLoginFragment</tt> with optionally filled login and password
-     * fields(pass <tt>null</tt> arguments to omit).
+     * Creates new <tt>AccountLoginFragment</tt> with optionally filled login and password fields.
      *
      * @param login    optional login text that will be filled on the form.
      * @param password optional password text that will be filled on the form.

@@ -20,12 +20,10 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.xmlpull.v1.XmlPullParser;
 
-public class RegistrationStreamFeatureProvider
-        extends ExtensionElementProvider<Registration.Feature> {
+public class RegistrationStreamFeatureProvider extends ExtensionElementProvider<Registration.Feature> {
 
     @Override
     public Registration.Feature parse(XmlPullParser parser, int initialDepth) {
         return Registration.Feature.INSTANCE;
     }
-
 }

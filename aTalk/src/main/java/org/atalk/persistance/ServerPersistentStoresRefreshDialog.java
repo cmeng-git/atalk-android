@@ -39,7 +39,6 @@ import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
-import org.jivesoftware.smackx.omemo.OmemoConfiguration;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.OmemoStore;
 
@@ -97,8 +96,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
 	}
 
 	/**
-	 * Implements <tt>DialogActivity.DialogListener</tt> interface and handles refresh stores
-	 * process.
+	 * Implements <tt>DialogActivity.DialogListener</tt> interface and handles refresh stores process.
 	 */
 	static class DialogListenerImpl implements DialogActivity.DialogListener
 	{
@@ -122,14 +120,14 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
 		public boolean onConfirmClicked(DialogActivity dialog)
 		{
 			View view = dialog.getContentFragment().getView();
-			CheckBox cbRoster = (CheckBox) view.findViewById(cb_roster);
-			CheckBox cbCaps = (CheckBox) view.findViewById(cb_caps);
-			CheckBox cbDiscoInfo = (CheckBox) view.findViewById(cb_discoInfo);
-			CheckBox cbAvatar = (CheckBox) view.findViewById(cb_avatar);
-			CheckBox cbOmemo = (CheckBox) view.findViewById(cb_omemo);
-			CheckBox cbDebugLog = (CheckBox) view.findViewById(cb_debug_log);
-			CheckBox cbExportDB = (CheckBox) view.findViewById(cb_export_database);
-			CheckBox cbDeleteDB = (CheckBox) view.findViewById(cb_del_database);
+			CheckBox cbRoster = view.findViewById(cb_roster);
+			CheckBox cbCaps = view.findViewById(cb_caps);
+			CheckBox cbDiscoInfo = view.findViewById(cb_discoInfo);
+			CheckBox cbAvatar = view.findViewById(cb_avatar);
+			CheckBox cbOmemo = view.findViewById(cb_omemo);
+			CheckBox cbDebugLog = view.findViewById(cb_debug_log);
+			CheckBox cbExportDB = view.findViewById(cb_export_database);
+			CheckBox cbDeleteDB = view.findViewById(cb_del_database);
 
 			if (cbRoster.isChecked()) {
 				refreshRosterStore();

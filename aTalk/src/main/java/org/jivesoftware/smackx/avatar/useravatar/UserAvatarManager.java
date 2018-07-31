@@ -326,11 +326,10 @@ public class UserAvatarManager extends AvatarManager
 	 */
 	public boolean downloadAvatar(EntityBareJid from, String avatarId, Info info)
 	{
-		/* acts if only new avatarId is received. null => client not ready so no action */
-		if ((avatarId != null) && isAvatarNew(avatarId)) {
+		/* acts if only new avatarId is received. null => client not ready so no action; also it is still connected */
+		if ((avatarId != null) && isAvatarNew(avatarId) && (mConnection != null)) {
 			try {
 				String currentAvatarHash = getAvatarHashByJid(from);
-
 				AvatarRetriever retriever = AvatarRetrieverFactory.getRetriever(mConnection, from, info);
 				byte[] avatar = retriever.getAvatar();
 

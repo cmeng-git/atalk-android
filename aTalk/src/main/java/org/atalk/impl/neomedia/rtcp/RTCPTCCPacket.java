@@ -673,8 +673,7 @@ public class RTCPTCCPacket extends RTCPFBPacket
      * Warning: the timestamps are represented in the 250µs format used by the
      * on-the-wire format, and don't represent local time. This is different
      * than the timestamps expected as input when constructing a packet with
-     * {@link RTCPTCCPacket#RTCPTCCPacket(long, long, PacketMap, byte,
-     * DiagnosticContext)}.
+     * {@link RTCPTCCPacket#RTCPTCCPacket(long, long, PacketMap, byte, DiagnosticContext)}.
      */
     synchronized public PacketMap getPackets()
     {

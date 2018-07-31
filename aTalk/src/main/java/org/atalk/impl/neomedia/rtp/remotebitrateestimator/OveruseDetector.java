@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
@@ -45,9 +45,7 @@ class OveruseDetector
 
     private final DiagnosticContext diagnosticContext;
 
-    public OveruseDetector(
-            OverUseDetectorOptions options,
-            @NotNull DiagnosticContext diagnosticContext)
+    public OveruseDetector(OverUseDetectorOptions options, @NotNull DiagnosticContext diagnosticContext)
     {
         if (options == null)
             throw new NullPointerException("options");
@@ -78,11 +76,8 @@ class OveruseDetector
             return BandwidthUsage.kBwNormal;
 
         double prev_offset = this.prevOffset;
-
         this.prevOffset = offset;
-
         double T = Math.min(numOfDeltas, 60) * offset;
-
         boolean newHypothesis = false;
         if (T > threshold) {
             if (timeOverUsing == -1) {
@@ -118,16 +113,15 @@ class OveruseDetector
             newHypothesis = true;
         }
 
-        if (newHypothesis && logger.isTraceEnabled())
-        {
+        if (newHypothesis && logger.isTraceEnabled()) {
             logger.trace(diagnosticContext
-                .makeTimeSeriesPoint("utilization_hypothesis", nowMs)
-                .addKey("detector", hashCode())
-                .addField("offset", offset)
-                .addField("prev_offset", prev_offset)
-                .addField("T", T)
-                .addField("threshold", threshold)
-                .addField("hypothesis", hypothesis.getValue()));
+                    .makeTimeSeriesPoint("utilization_hypothesis", nowMs)
+                    .addField("detector", hashCode())
+                    .addField("offset", offset)
+                    .addField("prev_offset", prev_offset)
+                    .addField("T", T)
+                    .addField("threshold", threshold)
+                    .addField("hypothesis", hypothesis.getValue()));
         }
         updateThreshold(T, nowMs);
         return hypothesis;

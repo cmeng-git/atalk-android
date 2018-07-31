@@ -653,16 +653,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 }
             }
             else if (xmppError.getCondition().equals(XMPPError.Condition.registration_required)) {
-                // The feature requested is not supported by the conference
-//                Registration iqRegister = new Registration();
-//                iqRegister.setType(IQ.Type.get);
-//                iqRegister.setTo(mMultiUserChat.getRoom());
-//                try {
-//                    mProvider.getConnection().sendStanza(iqRegister);
-//                } catch (NotConnectedException | InterruptedException e) {
-//                    logger.error(xmppError.getDescriptiveText());
-//                }
-
                 String errText = xmppError.getDescriptiveText();
                 if (TextUtils.isEmpty(errText))
                     errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION);
@@ -845,14 +835,41 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     public void sendMessage(Message message)
             throws OperationFailedException
     {
+        org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message();
+        msg.setBody(message.getContent());
+        sendMessage(msg);
+    }
+
+    /**
+     * Sends the <tt>message</tt> with the json-message extension to the destination indicated by the <tt>to</tt> contact.
+     *
+     * @param json the json message to be sent.
+     * @throws OperationFailedException if sending the message fails for some reason.
+     */
+    public void sendJsonMessage(String json)
+            throws OperationFailedException
+    {
+        org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message();
+        msg.addExtension(new JsonMessageExtension(json));
+        sendMessage(msg);
+    }
+
+    /**
+     * Sends the <tt>message</tt> to the destination indicated by the <tt>multiUserChat</tt> contact.
+     *
+     * @param message the {@link org.jivesoftware.smack.packet.Message} to be sent.
+     * @throws OperationFailedException if sending the message fails for some reason.
+     */
+    private void sendMessage(org.jivesoftware.smack.packet.Message message)
+            throws OperationFailedException
+    {
         try {
             assertConnected();
-            org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message();
-            msg.setBody(message.getContent());
+            message.setType(org.jivesoftware.smack.packet.Message.Type.groupchat);
 
             // XEP-0022 is obsoleted
             // MessageEventManager.addNotificationsRequests(msg, true, false, false, true);
-            mMultiUserChat.sendMessage(msg);
+            mMultiUserChat.sendMessage(message);
         } catch (NotConnectedException | InterruptedException e) {
             logger.error("Failed to send message " + message, e);
             throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_SEND_MESSAGE_FAIL, message),

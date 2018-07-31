@@ -142,8 +142,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     /**
      * The <tt>PropertyChangeListener</tt> which listens to {@link #deviceConfiguration}.
      */
-    private final PropertyChangeListener deviceConfigurationPropertyChangeListener
-            = new PropertyChangeListener()
+    private final PropertyChangeListener deviceConfigurationPropertyChangeListener = new PropertyChangeListener()
     {
         public void propertyChange(PropertyChangeEvent event)
         {

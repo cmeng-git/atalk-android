@@ -135,6 +135,7 @@
     <string name="service_gui_CALL">Audio call</string>
     <string name="service_gui_CALL_FAILED">Call failed</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Call history</string>
+    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk has failed to initialize %1$s\nAll media calls/services will be disabled.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Call with</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">We could not find any active Audio/Video devices hence unable to create the call.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">No audio device configured.</string>
@@ -1189,7 +1190,7 @@
     <string name="service_gui_JBR_CONN_GENERAL">General</string>
     <string name="service_gui_JBR_CONN_SUMMARY">Set Connection details&#8230;</string>
     <string name="service_gui_JBR_CONNECTION">Connection Settings</string>
-    <string name="service_gui_JBR_DISABLE_JINGLE">Disable Jingle</string>
+    <string name="service_gui_JBR_DISABLE_JINGLE">Disable media calls (Jingle)</string>
     <string name="service_gui_JBR_DISABLE_JINGLE_SUMMARY">(audio and video calls with XMPP)</string>
     <string name="service_gui_JBR_DTMF_METHOD">DTMF method</string>
     <string name="service_gui_JBR_DTMF_SUMMARY">DTMF method selection</string>
@@ -1725,10 +1726,16 @@
 
     <string name="all_permission_denied_dialog_title">All permissions request</string>
     <string name="all_permissions_denied_feedback">aTalk may not work properly or may have unexpected behavior as some services have been denied!\nIf you have selected \"Don\'t ask again\" option, you need to go to android Settings -> APP INFO for aTalk to enable the resource access permission</string>
-    <string name="permission_denied_all_alert">aTalk would not work properly. You have denied aTalk of all permissions!</string>
+    <string name="permission_denied_all_alert">aTalk would not work properly. You have denied aTalk of all permissions!\nYou need to go to android Settings -> APP INFO for aTalk to enable the resource access permission.</string>
 
     <string name="permission_rationale_message">You are presented with each service needed by aTalk; please allow aTalk to access these services for full features supported</string>
     <string name="permission_rationale_settings_button_text">SETTINGS</string>
     <string name="permission_rationale_title">aTalk needs permissions</string>
 
+    <!-- Android Notification Channels -->
+    <string name="noti_channel_MESSAGE_GROUP">Chat Message Notification</string>
+    <string name="noti_channel_FILE_GROUP">File Transfer Notification</string>
+    <string name="noti_channel_CALL_GROUP">Call Notification</string>
+    <string name="noti_channel_MISSED_CALL">Miss Call Notification</string>
+    <string name="noti_channel_DEFAULT_GROUP">General Notification</string>
 </resources>

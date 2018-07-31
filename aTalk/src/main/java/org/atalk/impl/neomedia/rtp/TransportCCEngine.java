@@ -137,8 +137,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
     private final Object sentPacketsSyncRoot = new Object();
 
     /**
-     * The {@link DiagnosticContext} to be used by this instance when printing
-     * diagnostic information.
+     * The {@link DiagnosticContext} to be used by this instance when printing diagnostic information.
      */
     private final DiagnosticContext diagnosticContext;
 
@@ -159,8 +158,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
     /**
      * Local time to map to the reference time of the remote clock. This is used
      * to rebase the arrival times in the TCC packets to a meaningful time base
-     * (that of the sender). This is technically not necessary and it's done for
-     * convinience.
+     * (that of the sender). This is technically not necessary and it's done for convenience.
      */
     private long localReferenceTimeMs = -1;
     /**

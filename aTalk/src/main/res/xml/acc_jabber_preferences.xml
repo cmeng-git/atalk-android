@@ -30,6 +30,7 @@
         <Preference
             android:key="@string/pref_key_enable_encryption"
             android:title="@string/service_gui_PREF_ENCRYPTION" />
+
         <PreferenceScreen
             android:key="@string/pref_screen_jbr_conn"
             android:summary="@string/service_gui_JBR_CONN_SUMMARY"
@@ -187,11 +188,11 @@
         <Preference
             android:key="@string/pref_cat_audio_encoding"
             android:summary="@string/service_gui_PREF_AUDIO_ENC_SUMMARY"
-            android:title="@string/service_gui_PREF_AUDIO_ENCODING"></Preference>
+            android:title="@string/service_gui_PREF_AUDIO_ENCODING" />
         <Preference
             android:key="@string/pref_cat_video_encoding"
             android:summary="@string/service_gui_PREF_VIDEO_ENC_SUMMARY"
-            android:title="@string/service_gui_PREF_VIDEO_ENCODING"></Preference>
+            android:title="@string/service_gui_PREF_VIDEO_ENCODING" />
     </PreferenceCategory>
 </PreferenceScreen>
 

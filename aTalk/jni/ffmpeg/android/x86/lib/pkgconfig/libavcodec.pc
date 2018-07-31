@@ -1,14 +1,14 @@
-prefix=./android/x86
+prefix=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86
 exec_prefix=${prefix}
-libdir=${prefix}/lib
-includedir=${prefix}/include
+libdir=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86/lib
+includedir=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86/include
 
 Name: libavcodec
 Description: FFmpeg codec library
-Version: 54.59.100
-Requires: 
-Requires.private: libavutil = 51.73.101
+Version: 58.18.100
+Requires: libswresample >= 3.1.100, libavutil >= 56.14.100
+Requires.private: 
 Conflicts:
-Libs: -L${libdir} -lavcodec 
-Libs.private: -lx264 -lm -lz -lgcc
+Libs: -L${libdir}  -lavcodec -lvpx -lvpx -lm -lvpx -lvpx -lm -pthread -lm -lz -L/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86/lib -lx264 -lm
+Libs.private: 
 Cflags: -I${includedir}

@@ -192,8 +192,7 @@ public class JNIEncoder extends AbstractCodec
 		FFmpeg.avcodeccontext_set_size(avcontext, width, height);
 		FFmpeg.avcodeccontext_set_qcompress(avcontext, 0.6f);
 
-		int bitRate = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration()
-				.getVideoBitrate() * 1000;
+		int bitRate = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration().getVideoBitrate() * 1000;
 		int frameRate = (int) outputVideoFormat.getFrameRate();
 
 		if (frameRate == Format.NOT_SPECIFIED)
@@ -239,18 +238,14 @@ public class JNIEncoder extends AbstractCodec
 		}
 
 		encFrameLen = (width * height * 3) / 2;
-
 		rawFrameBuffer = FFmpeg.av_malloc(encFrameLen);
-
 		avFrame = FFmpeg.avcodec_alloc_frame();
-
 		int sizeInBytes = width * height;
 
 		FFmpeg.avframe_set_data(avFrame, rawFrameBuffer, sizeInBytes, sizeInBytes / 4);
 		FFmpeg.avframe_set_linesize(avFrame, width, width / 2, width / 2);
 
 		opened = true;
-
 		super.open();
 	}
 

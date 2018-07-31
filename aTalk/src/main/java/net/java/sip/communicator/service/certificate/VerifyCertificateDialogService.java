@@ -15,11 +15,10 @@
  */
 package net.java.sip.communicator.service.certificate;
 
-import java.security.cert.*;
+import java.security.cert.Certificate;
 
 /**
- * Service that creates dialog that is shown to the user when
- * a certificate verification failed.
+ * Service that creates dialog that is shown to the user when a certificate verification failed.
  *
  * @author Damian Minkov
  * @author Eng Chong Meng
@@ -34,8 +33,7 @@ public interface VerifyCertificateDialogService
      * <tt>service.gui.CERT_DIALOG_TITLE</tt> is loaded and used.
      * @param message A text that describes why the verification failed.
      */
-    VerifyCertificateDialog createDialog(
-        Certificate[] certs, String title, String message);
+    VerifyCertificateDialog createDialog(Certificate[] certs, String title, String message);
 
     /**
      * The dialog implementers should return <tt>VerifyCertificateDialog</tt>.
@@ -44,21 +42,22 @@ public interface VerifyCertificateDialogService
     {
         /**
          * Shows or hides the dialog and waits for user response.
+         *
          * @param isVisible whether we should show or hide the dialog.
          */
         void setVisible(boolean isVisible);
 
         /**
          * Whether the user has accepted the certificate or not.
+         *
          * @return whether the user has accepted the certificate or not.
          */
         boolean isTrusted();
 
         /**
-         * Whether the user has selected to note the certificate so we always
-         * trust it.
-         * @return whether the user has selected to note the certificate so
-         * we always trust it.
+         * Whether the user has selected to note the certificate so we always trust it.
+         *
+         * @return whether the user has selected to note the certificate so we always trust it.
          */
         boolean isAlwaysTrustSelected();
     }

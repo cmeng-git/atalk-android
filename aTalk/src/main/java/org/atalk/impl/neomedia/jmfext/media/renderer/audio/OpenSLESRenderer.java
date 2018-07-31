@@ -83,11 +83,9 @@ public class OpenSLESRenderer extends AbstractAudioRenderer<AudioSystem>
 	public OpenSLESRenderer(boolean enableGainControl)
 	{
 		super(AudioSystem.getAudioSystem(AudioSystem.LOCATOR_PROTOCOL_OPENSLES));
-
 		if (enableGainControl) {
 			MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
-			gainControl = (mediaServiceImpl == null)
-					? null : (GainControl) mediaServiceImpl.getOutputVolumeControl();
+			gainControl = (mediaServiceImpl == null) ? null : (GainControl) mediaServiceImpl.getOutputVolumeControl();
 		}
 		else
 			gainControl = null;

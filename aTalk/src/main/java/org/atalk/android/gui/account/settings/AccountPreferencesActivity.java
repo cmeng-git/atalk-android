@@ -63,8 +63,6 @@ public class AccountPreferencesActivity extends OSGiActivity
         if (account == null) {
             throw new RuntimeException("No account found for id: " + userUniqueID);
         }
-        logger.error("Loading account: " + account);
-
         // Gets the registration wizard service for account protocol
         String protocolName = account.getProtocolName();
 

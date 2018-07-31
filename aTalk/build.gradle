@@ -45,8 +45,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1043
-        versionName "1.4.3" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1044
+        versionName "1.4.4" // no alphabet allowed (e.g. 0.8.7.a)
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true

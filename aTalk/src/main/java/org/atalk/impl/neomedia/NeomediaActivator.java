@@ -13,6 +13,7 @@ import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.service.audionotifier.AudioNotifierService;
 import org.atalk.service.configuration.ConfigurationService;
@@ -131,12 +132,19 @@ public class NeomediaActivator implements BundleActivator
     public void start(BundleContext bundleContext)
             throws Exception
     {
+        if (aTalk.disableMediaServiceOnFault)
+            return;
+
         if (logger.isDebugEnabled())
             logger.debug("Started.");
 
-        NeomediaActivator.bundleContext = bundleContext;
         // MediaService
+        NeomediaActivator.bundleContext = bundleContext;
         mediaServiceImpl = (MediaServiceImpl) LibJitsi.getMediaService();
+        if (mediaServiceImpl == null) {
+            logger.warn("Media Service startup failed - jnlibffmpeg failed to load?");
+            return;
+        }
 
         bundleContext.registerService(MediaService.class.getName(), mediaServiceImpl, null);
         if (logger.isDebugEnabled())

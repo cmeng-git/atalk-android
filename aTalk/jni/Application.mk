@@ -11,6 +11,7 @@ APP_PLATFORM := android-15
 # We recommend setting APP_ABI := all for all targets. For specific target explicitly, use
 # armeabi: ARMv5/ARMv6  (deprecated acchitecture support from google 2017/12/01)
 # armeabi-v7a: ARMv7,
+# arm64-v8a: ARMv8 AArch64
 # x86 x86_64: Intel Atom
 # mips mips64: MIPS.
 APP_ABI := armeabi-v7a x86

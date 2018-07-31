@@ -5,18 +5,10 @@
  */
 package net.java.sip.communicator.service.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.AccountManager;
-import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
-import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.ProtocolNames;
-import net.java.sip.communicator.service.protocol.ProtocolProviderActivator;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
-import net.java.sip.communicator.service.protocol.StunServerDescriptor;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.atalk.android.gui.aTalk;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.util.Logger;
@@ -25,10 +17,7 @@ import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.BundleContext;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The <tt>JabberAccountRegistration</tt> is used to store all user input data through the
@@ -289,7 +278,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
         // Populate other jabber account default properties for new Account creation
         else {
             securityRegistration.storeProperties(mAccountProperties);
-            encodingsRegistration.storeProperties(mAccountProperties);
+            if (encodingsRegistration != null)
+                encodingsRegistration.storeProperties(mAccountProperties);
         }
         super.storeProperties(protocolIconPath, accountIconPath, accountProperties);
     }
@@ -347,7 +337,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
         }
 
         // Encodings
-        encodingsRegistration.loadAccount(account, ServiceUtils.getService(bundleContext, MediaService.class));
+        if (!aTalk.disableMediaServiceOnFault)
+            encodingsRegistration.loadAccount(account, ServiceUtils.getService(bundleContext, MediaService.class));
     }
 
     /**

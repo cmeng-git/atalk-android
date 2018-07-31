@@ -40,8 +40,7 @@ public class SystrayServiceImpl extends AbstractSystrayService
 	private final PopupListenerImpl popupMessageListener = new PopupListenerImpl();
 
 	/**
-	 * <tt>BroadcastReceiver</tt> that catches "on click" and "clear" events for displayed
-	 * notifications.
+	 * <tt>BroadcastReceiver</tt> that catches "on click" and "clear" events for displayed notifications.
 	 */
 	private final PopupClickReceiver clickReceiver;
 
@@ -50,11 +49,8 @@ public class SystrayServiceImpl extends AbstractSystrayService
 	 */
 	public SystrayServiceImpl() {
 		super(AndroidTrayActivator.bundleContext);
-
 		AndroidTrayActivator.bundleContext.registerService(PopupMessageHandler.class, trayPopupHandler, null);
-
 		initHandlers();
-
 		this.clickReceiver = new PopupClickReceiver(trayPopupHandler);
 	}
 

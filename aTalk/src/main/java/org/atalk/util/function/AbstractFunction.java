@@ -17,8 +17,7 @@ package org.atalk.util.function;
 
 /**
  * Represents a function that accepts one argument and produces a result. This
- * is a poor man's backport of the <tt>Function</tt> interface found in Java
- * 1.8.
+ * is a poor man's backport of the <tt>Function</tt> interface found in Java 1.8.
  *
  * @author George Politis
  * @deprecated Use {@link java.util.function.Function}.

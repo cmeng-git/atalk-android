@@ -21,9 +21,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.Logger;
 
-import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.*;
@@ -433,6 +431,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
     private static class ProviderComboBoxEntry
     {
         public final ProtocolProviderService provider;
+
         public ProviderComboBoxEntry(ProtocolProviderService provider)
         {
             this.provider = provider;

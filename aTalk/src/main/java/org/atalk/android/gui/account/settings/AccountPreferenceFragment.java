@@ -11,12 +11,15 @@ import android.content.*;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.AccountUtils;
+
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
@@ -30,7 +33,14 @@ import org.osgi.framework.*;
  * @author Eng Chong Meng
  */
 public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener {
+        implements SharedPreferences.OnSharedPreferenceChangeListener
+{
+
+    // PreferenceScreen and PreferenceCategories for Account Settings...
+    static private final String PC_KEY_TELEPHONY = aTalkApp.getResString(R.string.pref_screen_jbr_tele);
+    static private final String P_KEY_CALL_ENCRYPT = aTalkApp.getResString(R.string.pref_key_enable_encryption);
+    static private final String P_KEY_AUDIO_ENC = aTalkApp.getResString(R.string.pref_cat_audio_encoding);
+    static private final String P_KEY_VIDEO_ENC = aTalkApp.getResString(R.string.pref_cat_video_encoding);
     /**
      * Account unique ID extra key
      */
@@ -106,7 +116,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @param preferencesResourceId the ID of preferences xml file for current protocol
      */
-    public AccountPreferenceFragment(int preferencesResourceId) {
+    public AccountPreferenceFragment(int preferencesResourceId)
+    {
         this.preferencesResourceId = preferencesResourceId;
     }
 
@@ -133,7 +144,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @return currently used <tt>AccountRegistrationWizard</tt>.
      */
-    protected AccountRegistrationWizard getWizard() {
+    protected AccountRegistrationWizard getWizard()
+    {
         return wizard;
     }
 
@@ -142,7 +154,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @return currently edited {@link AccountID}.
      */
-    protected AccountID getAccountID() {
+    protected AccountID getAccountID()
+    {
         return mAccountID;
     }
 
@@ -151,7 +164,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @return <tt>true</tt> if preference views have been initialized with values from the registration object.
      */
-    protected boolean isInitialized() {
+    protected boolean isInitialized()
+    {
         return initialized;
     }
 
@@ -159,7 +173,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             initialized = savedInstanceState.getBoolean(STATE_INIT_FLAG);
@@ -203,7 +218,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * Method fired when OSGI context is attached, but after the <tt>View</tt> is created.
      */
     @Override
-    protected void onOSGiConnected() {
+    protected void onOSGiConnected()
+    {
         super.onOSGiConnected();
     }
 
@@ -214,7 +230,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      */
     @Override
     public void start(BundleContext bundleContext)
-            throws Exception {
+            throws Exception
+    {
         super.start(bundleContext);
     }
 
@@ -224,7 +241,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @param account the {@link AccountID} that will be edited
      */
-    public void loadAccount(AccountID account) {
+    public void loadAccount(AccountID account)
+    {
         mAccountID = account;
         wizard = findRegistrationService(account.getProtocolName());
         if (wizard == null)
@@ -251,44 +269,56 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * Method is called after preference views have been created and can be found by using
      * <tt>this.findPreference</tt> method.
      */
-    protected void onPreferencesCreated() {
+    protected void onPreferencesCreated()
+    {
         dnssecModeLP = (ListPreference) findPreference(P_KEY_DNSSEC_MODE);
 
-        // Audio,video and security are optional and should be present in settings XML to be handled
-        String audioEncCatKey = getResources().getString(R.string.pref_cat_audio_encoding);
-        Preference audioEncPreference = findPreference(audioEncCatKey);
-        if (audioEncPreference != null) {
-            audioEncPreference.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener() {
-                        public boolean onPreferenceClick(Preference preference) {
-                            startEncodingActivity(MediaType.AUDIO);
-                            return true;
-                        }
-                    });
+        if (aTalk.disableMediaServiceOnFault) {
+            findPreference(P_KEY_CALL_ENCRYPT).setEnabled(false);
+            findPreference(PC_KEY_TELEPHONY).setEnabled(false);
+            findPreference(P_KEY_AUDIO_ENC).setEnabled(false);
+            findPreference(P_KEY_VIDEO_ENC).setEnabled(false);
         }
+        else {
+            // Audio,video and security are optional and should be present in settings XML to be handled
+            Preference audioEncPreference = findPreference(P_KEY_AUDIO_ENC);
+            if (audioEncPreference != null) {
+                audioEncPreference.setOnPreferenceClickListener(
+                        new Preference.OnPreferenceClickListener()
+                        {
+                            public boolean onPreferenceClick(Preference preference)
+                            {
+                                startEncodingActivity(MediaType.AUDIO);
+                                return true;
+                            }
+                        });
+            }
 
-        String videoEncCatKey = getResources().getString(R.string.pref_cat_video_encoding);
-        Preference videoEncPreference = findPreference(videoEncCatKey);
-        if (videoEncPreference != null) {
-            videoEncPreference.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener() {
-                        public boolean onPreferenceClick(Preference preference) {
-                            startEncodingActivity(MediaType.VIDEO);
-                            return true;
-                        }
-                    });
-        }
+            Preference videoEncPreference = findPreference(P_KEY_VIDEO_ENC);
+            if (videoEncPreference != null) {
+                videoEncPreference.setOnPreferenceClickListener(
+                        new Preference.OnPreferenceClickListener()
+                        {
+                            public boolean onPreferenceClick(Preference preference)
+                            {
+                                startEncodingActivity(MediaType.VIDEO);
+                                return true;
+                            }
+                        });
+            }
 
-        String encOnOffKey = getResources().getString(R.string.pref_key_enable_encryption);
-        Preference encryptionOnOff = findPreference(encOnOffKey);
-        if (encryptionOnOff != null) {
-            encryptionOnOff.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener() {
-                        public boolean onPreferenceClick(Preference preference) {
-                            startSecurityActivity();
-                            return true;
-                        }
-                    });
+            Preference encryptionOnOff = findPreference(P_KEY_CALL_ENCRYPT);
+            if (encryptionOnOff != null) {
+                encryptionOnOff.setOnPreferenceClickListener(
+                        new Preference.OnPreferenceClickListener()
+                        {
+                            public boolean onPreferenceClick(Preference preference)
+                            {
+                                startSecurityActivity();
+                                return true;
+                            }
+                        });
+            }
         }
     }
 
@@ -296,7 +326,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * Stores <tt>initialized</tt> flag.
      */
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState)
+    {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_INIT_FLAG, initialized);
     }
@@ -307,7 +338,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * @param protocolName the name of the protocol
      * @return {@link AccountRegistrationWizard} for given <tt>protocolName</tt>
      */
-    AccountRegistrationWizard findRegistrationService(String protocolName) {
+    AccountRegistrationWizard findRegistrationService(String protocolName)
+    {
         ServiceReference[] accountWizardRefs;
         try {
             BundleContext context = AndroidGUIActivator.bundleContext;
@@ -330,7 +362,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * given <tt>summaryMapper</tt> to include it's preferences in summary mapping
      *
      * @param summaryMapper the {@link SummaryMapper} managed by this {@link AccountPreferenceFragment} that can
-     *                      be used by subclasses to map preference's values into their summaries
+     * be used by subclasses to map preference's values into their summaries
      */
     protected abstract void mapSummaries(SummaryMapper summaryMapper);
 
@@ -339,14 +371,16 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @return the string that should be used as preference summary when no value has been set.
      */
-    protected String getEmptyPreferenceStr() {
+    protected String getEmptyPreferenceStr()
+    {
         return getResources().getString(R.string.service_gui_SETTINGS_NOT_SET);
     }
 
     /**
      * Starts the {@link SecurityActivity} to edit account's security preferences
      */
-    private void startSecurityActivity() {
+    private void startSecurityActivity()
+    {
         Intent intent = new Intent(mActivity, SecurityActivity.class);
         SecurityAccountRegistration securityRegistration = getSecurityRegistration();
         if (securityRegistration == null)
@@ -361,7 +395,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      *
      * @param mediaType indicates if AUDIO or VIDEO encodings will be edited
      */
-    private void startEncodingActivity(MediaType mediaType) {
+    private void startEncodingActivity(MediaType mediaType)
+    {
         Intent intent = new Intent(mActivity, EncodingActivity.class);
         intent.putExtra(EncodingActivity.ENC_MEDIA_TYPE_KEY, mediaType);
 
@@ -375,7 +410,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     /**
      * Handles {@link EncodingActivity} and {@link SecurityActivity} results
      */
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         if (requestCode == EDIT_ENCODINGS && resultCode == Activity.RESULT_OK) {
             Boolean hasChanges = data.getBooleanExtra(EncodingActivity.EXTRA_KEY_HAS_CHANGES, false);
             if (!hasChanges)
@@ -388,7 +424,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
             myReg.setOverrideEncodings(encReg.isOverrideEncodings());
             myReg.setEncodingProperties(encReg.getEncodingProperties());
             uncommittedChanges = true;
-        } else if (requestCode == EDIT_SECURITY && resultCode == Activity.RESULT_OK) {
+        }
+        else if (requestCode == EDIT_SECURITY && resultCode == Activity.RESULT_OK) {
             Boolean hasChanges = data.getBooleanExtra(SecurityActivity.EXTR_KEY_HAS_CHANGES, false);
             if (!hasChanges)
                 return;
@@ -411,7 +448,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * Registers preference listeners.
      */
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(summaryMapper);
@@ -421,7 +459,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * Unregisters preference listeners.
      */
     @Override
-    public void onPause() {
+    public void onPause()
+    {
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(summaryMapper);
         hideOperationInProgressToast();
@@ -431,14 +470,16 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     /**
      * Should be called by subclasses to indicate that some changes has been made to the account
      */
-    protected void setUncommittedChanges() {
+    protected void setUncommittedChanges()
+    {
         uncommittedChanges = true;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void onSharedPreferenceChanged(SharedPreferences shPrefs, String key) {
+    public void onSharedPreferenceChanged(SharedPreferences shPrefs, String key)
+    {
         uncommittedChanges = true;
     }
 
@@ -450,19 +491,24 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     /**
      * Commits the changes and shows "in progress" dialog
      */
-    public void commitChanges() {
+    public void commitChanges()
+    {
         if (!uncommittedChanges)
             return;
         try {
-            mActivity.runOnUiThread(new Runnable() {
-                public void run() {
+            mActivity.runOnUiThread(new Runnable()
+            {
+                public void run()
+                {
                     displayOperationInProgressDialog();
                 }
             });
             doCommitChanges();
 
-            mActivity.runOnUiThread(new Runnable() {
-                public void run() {
+            mActivity.runOnUiThread(new Runnable()
+            {
+                public void run()
+                {
                     hideOperationInProgressToast();
                 }
             });
@@ -474,7 +520,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     /**
      * Shows the "in progress" dialog
      */
-    private void displayOperationInProgressDialog() {
+    private void displayOperationInProgressDialog()
+    {
         Context context = getView().getRootView().getContext();
         CharSequence title = getResources().getText(R.string.service_gui_COMMIT_PROGRESS_TITLE);
         CharSequence msg = getResources().getText(R.string.service_gui_COMMIT_PROGRESS_MSG);
@@ -487,7 +534,8 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     /**
      * Hides the "in progress" dialog
      */
-    private void hideOperationInProgressToast() {
+    private void hideOperationInProgressToast()
+    {
         if (progressDialog != null) {
             progressDialog.dismiss();
             progressDialog = null;

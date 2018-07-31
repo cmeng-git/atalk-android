@@ -126,6 +126,7 @@
     <string name="service_gui_CALL">Audioanruf</string>
     <string name="service_gui_CALL_FAILED">Gescheiteter Anruf</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Anrufverlauf</string>
+    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk konnte %1$s nicht initialisieren\nAlle Medienanrufe/-dienste werden deaktiviert.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Gespräch mit</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Es steht kein Audio/Video-Gerät zur Verfügung, kann Anruf nicht ausführen.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Kein Audiogerät definiert.</string>
@@ -1112,7 +1113,7 @@
     <string name="service_gui_JBR_CONN_GENERAL">Allgemein</string>
     <string name="service_gui_JBR_CONN_SUMMARY">Verbindungsdetails festlegen&#8230;</string>
     <string name="service_gui_JBR_CONNECTION">Verbindungseinstellungen</string>
-    <string name="service_gui_JBR_DISABLE_JINGLE">Jingle deaktivieren</string>
+    <string name="service_gui_JBR_DISABLE_JINGLE">Anrufe deaktivieren (Jingle)</string>
     <string name="service_gui_JBR_DISABLE_JINGLE_SUMMARY">(Audio- und Videoanrufe mit XMPP)</string>
     <string name="service_gui_JBR_DTMF_METHOD">DTMF-Methode</string>
     <string name="service_gui_JBR_DTMF_SUMMARY">DTMF-Methodenauswahl</string>
@@ -1463,7 +1464,7 @@
 
     <string name="all_permission_denied_dialog_title">Alle Berechtigungsanforderungen</string>
     <string name="all_permissions_denied_feedback">aTalk funktioniert möglicherweise nicht richtig oder zeigt ein unsachgemäßes Verhalten da einige Dienste abgelehnt wurden.\nWenn Sie die Option\"Nicht erneut nachfragen\" gewählt haben, müssen Sie sich zu den Android-Einstellungen begeben: -> APP INFO für aTalk, zum Aktivieren der Ressourcenzugriffsberechtigungen</string>
-    <string name="permission_denied_all_alert">aTalk würde nicht richtig funktionieren. Sie haben aTalk aller Berechtigungen verweigert!</string>
+    <string name="permission_denied_all_alert">aTalk würde nicht richtig funktionieren. Sie haben aTalk aller Berechtigungen verweigert!\nSie müssen zu Android-Einstellungen -> APP INFO für aTalk gehen, um die Ressourcenzugriffsberechtigung zu aktivieren.</string>
 
     <string name="permission_rational_message">Sie werden nun nach jedem von aTalk benötigten Dienst gefragt; Bitte erlauben Sie aTalk auf diese Dienste zuzugreifen um alle unterstützten Funktionalitäten nutzen zu können.</string>
     <string name="permission_rational_settings_button_text">EINSTELLUNGEN</string>

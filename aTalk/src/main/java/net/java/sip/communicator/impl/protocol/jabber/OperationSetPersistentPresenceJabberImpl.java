@@ -1291,7 +1291,7 @@ public class OperationSetPersistentPresenceJabberImpl
 
                         ContactJabberImpl sourceContact = ssContactList.findContactById(userJid);
                         if (sourceContact == null) {
-                            logger.warn("No source contact found for id = " + userJid);
+                            logger.warn("Ignore own or no source contact found for id = " + userJid);
                             return;
                         }
 

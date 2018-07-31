@@ -19,7 +19,7 @@ import org.atalk.service.osgi.OSGiActivity;
  */
 public abstract class ExitMenuActivity extends OSGiActivity
 {
-	private static Menu menu;
+    private static Menu menu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)

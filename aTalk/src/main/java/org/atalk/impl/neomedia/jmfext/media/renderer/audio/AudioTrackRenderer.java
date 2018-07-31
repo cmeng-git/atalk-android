@@ -162,20 +162,16 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
 	{
 		super(AudioSystem.getAudioSystem(AudioSystem.LOCATOR_PROTOCOL_AUDIORECORD));
 
-		/**
+		/*
 		 * Flag enableGainControl also indicates that it's a call audio stream, so we switch stream
 		 * type here to use different native volume control.
 		 */
-		streamType = enableGainControl ? AudioManager.STREAM_VOICE_CALL
-				: AudioManager.STREAM_NOTIFICATION;
-
+		streamType = enableGainControl ? AudioManager.STREAM_VOICE_CALL : AudioManager.STREAM_NOTIFICATION;
 		logger.trace("Created stream for stream: " + streamType);
 
 		if (enableGainControl) {
 			MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
-
-			gainControl = (mediaServiceImpl == null)
-					? null : (GainControl) mediaServiceImpl.getOutputVolumeControl();
+			gainControl = (mediaServiceImpl == null) ? null : (GainControl) mediaServiceImpl.getOutputVolumeControl();
 		}
 		else
 			gainControl = null;

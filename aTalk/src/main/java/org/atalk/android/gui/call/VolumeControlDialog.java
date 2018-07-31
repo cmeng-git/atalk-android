@@ -56,12 +56,10 @@ public class VolumeControlDialog extends OSGiDialogFragment implements VolumeCha
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-
 		MediaServiceImpl mediaService = NeomediaActivator.getMediaServiceImpl();
 
 		// Selects input or output volume control based on the arguments.
 		int direction = getArguments().getInt(ARG_DIRECTION, 0);
-
 		if (direction == DIRECTION_OUTPUT) {
 			this.volumeControl = mediaService.getOutputVolumeControl();
 		}

@@ -40,6 +40,8 @@ import com.karumi.dexter.listener.multi.*;
 import com.karumi.dexter.listener.single.*;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.dialogs.DialogActivity;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -285,9 +287,10 @@ public class PermissionsActivity extends Activity
             if (!response.isPermanentlyDenied())
                 return true;
         }
-        // Must warn user in none permission has been granted to aTalk - will not work in most cases
+        // Must warn user if none permission has been granted to aTalk - will not work in almost cases
         if (grantedPermissionResponses.size() == 0)
-            Toast.makeText(this, R.string.permission_denied_all_alert, Toast.LENGTH_LONG).show();
+            DialogActivity.showDialog(this, getResources().getString(R.string.service_gui_WARNING),
+                    getResources().getString(R.string.permission_denied_all_alert));
         return false;
     }
 

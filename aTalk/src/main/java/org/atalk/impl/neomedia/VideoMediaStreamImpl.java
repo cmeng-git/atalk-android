@@ -1,43 +1,23 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia;
 
-import org.atalk.android.util.java.awt.Component;
-import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.android.util.java.awt.Point;
-import org.atalk.android.util.java.awt.Rectangle;
+import org.atalk.android.util.java.awt.*;
 import org.atalk.impl.neomedia.control.ImgStreamingControl;
-import org.atalk.impl.neomedia.device.DeviceConfiguration;
-import org.atalk.impl.neomedia.device.DeviceSystem;
-import org.atalk.impl.neomedia.device.MediaDeviceImpl;
-import org.atalk.impl.neomedia.device.MediaDeviceSession;
-import org.atalk.impl.neomedia.device.ScreenDeviceImpl;
-import org.atalk.impl.neomedia.device.VideoMediaDeviceSession;
+import org.atalk.impl.neomedia.device.*;
 import org.atalk.impl.neomedia.rtcp.RTCPReceiverFeedbackTermination;
-import org.atalk.impl.neomedia.rtp.MediaStreamTrackReceiver;
-import org.atalk.impl.neomedia.rtp.RTPEncodingDesc;
-import org.atalk.impl.neomedia.rtp.StreamRTPManager;
-import org.atalk.impl.neomedia.rtp.VideoMediaStreamTrackReceiver;
+import org.atalk.impl.neomedia.rtp.*;
 import org.atalk.impl.neomedia.rtp.remotebitrateestimator.RemoteBitrateEstimatorWrapper;
 import org.atalk.impl.neomedia.rtp.remotebitrateestimator.RemoteBitrateObserver;
 import org.atalk.impl.neomedia.rtp.sendsidebandwidthestimation.BandwidthEstimatorImpl;
-import org.atalk.impl.neomedia.transform.CachingTransformer;
-import org.atalk.impl.neomedia.transform.PaddingTermination;
-import org.atalk.impl.neomedia.transform.RetransmissionRequesterImpl;
-import org.atalk.impl.neomedia.transform.RtxTransformer;
-import org.atalk.impl.neomedia.transform.TransformEngine;
-import org.atalk.impl.neomedia.transform.TransformEngineWrapper;
+import org.atalk.impl.neomedia.transform.*;
 import org.atalk.impl.neomedia.transform.fec.FECTransformEngine;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.QualityControl;
-import org.atalk.service.neomedia.QualityPreset;
-import org.atalk.service.neomedia.SrtpControl;
-import org.atalk.service.neomedia.StreamConnector;
-import org.atalk.service.neomedia.VideoMediaStream;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.control.KeyFrameControlAdapter;
 import org.atalk.service.neomedia.device.MediaDevice;
@@ -47,16 +27,9 @@ import org.atalk.service.neomedia.rtp.BandwidthEstimator;
 import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 import org.atalk.util.concurrent.RecurringRunnableExecutor;
-import org.atalk.util.event.VideoEvent;
-import org.atalk.util.event.VideoListener;
-import org.atalk.util.event.VideoNotifierSupport;
+import org.atalk.util.event.*;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,14 +50,12 @@ import javax.media.protocol.DataSource;
 public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaStream
 {
     /**
-     * The <tt>Logger</tt> used by the <tt>VideoMediaStreamImpl</tt> class and its instances for
-     * logging output.
+     * The <tt>Logger</tt> used by the <tt>VideoMediaStreamImpl</tt> class and its instances for logging output.
      */
     private static final Logger logger = Logger.getLogger(VideoMediaStreamImpl.class);
 
     /**
-     * The indicator which determines whether RTCP feedback Picture Loss Indication messages are to
-     * be used.
+     * The indicator which determines whether RTCP feedback Picture Loss Indication messages are to be used.
      */
     private static final boolean USE_RTCP_FEEDBACK_PLI = true;
 
@@ -117,18 +88,18 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
         Matcher mRange;
         Matcher m;
 
-		/*
+        /*
          * resolution (width and height) can be on four forms
-		 * 
+         *
          * - single value [x=1920,y=1200]
          * - range of values [x=[800:1024],y=[600:768]]
          * - fixed range of values [x=[800,1024],y=[600,768]]
          * - range of values with step [x=[800:32:1024],y=[600:32:768]]
          *
-		 * For the moment we only support the first two forms.
-		 */
+         * For the moment we only support the first two forms.
+         */
 
-		/* send part */
+        /* send part */
         mSingle = pSendSingle.matcher(imgattr);
         mRange = pSendRange.matcher(imgattr);
 
@@ -157,7 +128,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
             res[0] = new Dimension(val[1], val[3]);
         }
 
-		/* recv part */
+        /* recv part */
         mSingle = pRecvSingle.matcher(imgattr);
         mRange = pRecvRange.matcher(imgattr);
 
@@ -210,7 +181,6 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
             return null;
 
         FormatControl formatControl = (FormatControl) videoDS.getControl(FormatControl.class.getName());
-
         if (formatControl == null)
             return null;
 
@@ -221,7 +191,6 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
             return null;
 
         VideoFormat selectedFormat = null;
-
         if (count == 1)
             selectedFormat = (VideoFormat) formats[0];
         else {
@@ -272,7 +241,6 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
             }
 
             FormatInfo[] infos = new FormatInfo[count];
-
             for (int i = 0; i < count; i++) {
                 FormatInfo info = infos[i] = new FormatInfo((VideoFormat) formats[i]);
 
@@ -292,10 +260,10 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                 selectedFormat = infos[0].format;
             }
 
-			/*
+            /*
              * If videoDS states to support any size, use the sizes that we support which is
-			 * closest(or smaller) to the preferred one.
-			 */
+             * closest(or smaller) to the preferred one.
+             */
             if ((selectedFormat != null) && (selectedFormat.getSize() == null)) {
                 VideoFormat currentFormat = (VideoFormat) formatControl.getFormat();
                 Dimension currentSize = null;
@@ -365,8 +333,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     private KeyFrameControl keyFrameControl;
 
     /**
-     * Negotiated output size of the video stream. It may need to scale original capture device
-     * stream.
+     * Negotiated output size of the video stream. It may need to scale original capture device stream.
      */
     private Dimension outputSize;
 
@@ -381,8 +348,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     private final MediaStreamTrackReceiver mediaStreamTrackReceiver = new VideoMediaStreamTrackReceiver(this);
 
     /**
-     * The transformer which handles outgoing rtx (RFC-4588) packets for this
-     * {@link VideoMediaStreamImpl}.
+     * The transformer which handles outgoing rtx (RFC-4588) packets for this {@link VideoMediaStreamImpl}.
      */
     private final RtxTransformer rtxTransformer = new RtxTransformer(this);
 
@@ -402,8 +368,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     private final PaddingTermination paddingTermination = new PaddingTermination();
 
     /**
-     * The <tt>RemoteBitrateEstimator</tt> which computes bitrate estimates for
-     * the incoming RTP streams.
+     * The <tt>RemoteBitrateEstimator</tt> which computes bitrate estimates for the incoming RTP streams.
      */
     private final RemoteBitrateEstimatorWrapper remoteBitrateEstimator = new RemoteBitrateEstimatorWrapper(
             new RemoteBitrateObserver()
@@ -430,8 +395,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     private final VideoNotifierSupport videoNotifierSupport = new VideoNotifierSupport(this, true);
 
     /**
-     * The {@code BandwidthEstimator} which estimates the available bandwidth from this endpoint to
-     * the remote peer.
+     * The {@code BandwidthEstimator} which estimates the available bandwidth from this endpoint to the remote peer.
      */
     private BandwidthEstimatorImpl bandwidthEstimator;
 
@@ -452,9 +416,8 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     private boolean supportsPli = false;
 
     /**
-     * Initializes a new <tt>VideoMediaStreamImpl</tt> instance which will use the specified
-     * <tt>MediaDevice</tt> for both capture and playback of video exchanged via the specified
-     * <tt>StreamConnector</tt>.
+     * Initializes a new <tt>VideoMediaStreamImpl</tt> instance which will use the specified <tt>MediaDevice</tt>
+     * for both capture and playback of video exchanged via the specified <tt>StreamConnector</tt>.
      *
      * @param connector the <tt>StreamConnector</tt> the new instance is to use for sending and receiving video
      * @param device the <tt>MediaDevice</tt> the new instance is to use for both capture and playback of
@@ -497,8 +460,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Sets the value of the flag which indicates whether the remote end
-     * supports RTCP FIR or not.
+     * Sets the value of the flag which indicates whether the remote end supports RTCP FIR or not.
      *
      * @param supportsFir the value to set.
      */
@@ -508,8 +470,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Sets the value of the flag which indicates whether the remote end
-     * supports RTCP PLI or not.
+     * Sets the value of the flag which indicates whether the remote end supports RTCP PLI or not.
      *
      * @param supportsPli the value to set.
      */
@@ -519,8 +480,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Sets the value of the flag which indicates whether the remote end
-     * supports RTCP REMB or not.
+     * Sets the value of the flag which indicates whether the remote end supports RTCP REMB or not.
      *
      * @param supportsRemb the value to set.
      */
@@ -589,6 +549,10 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                 recurringRunnableExecutor.deRegisterRecurringRunnable(cachingTransformer);
             }
 
+            if (bandwidthEstimator != null) {
+                recurringRunnableExecutor.deRegisterRecurringRunnable(bandwidthEstimator);
+            }
+
             if (rtcpFeedbackTermination != null) {
                 recurringRunnableExecutor.deRegisterRecurringRunnable(rtcpFeedbackTermination);
             }
@@ -607,11 +571,11 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     {
         super.configureDataOutputStream(dataOutputStream);
 
-		/*
+        /*
          * XXX Android's current video CaptureDevice is based on MediaRecorder which gives no
-		 * control over the number and the size of the packets, frame dropping is not implemented
-		 * because it is hard since MediaRecorder generates encoded video.
-		 */
+         * control over the number and the size of the packets, frame dropping is not implemented
+         * because it is hard since MediaRecorder generates encoded video.
+         */
         if (!OSUtils.IS_ANDROID) {
             int maxBandwidth
                     = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration().getVideoRTPPacingThreshold();
@@ -631,8 +595,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
 
     /**
      * Performs any optional configuration on the <tt>BufferControl</tt> of the specified
-     * <tt>RTPManager</tt> which is to be used as the <tt>RTPManager</tt> of this
-     * <tt>MediaStreamImpl</tt>.
+     * <tt>RTPManager</tt> which is to be used as the <tt>RTPManager</tt> of this <tt>MediaStreamImpl</tt>.
      *
      * @param rtpManager the <tt>RTPManager</tt> which is to be used by this <tt>MediaStreamImpl</tt>
      * @param bufferControl the <tt>BufferControl</tt> of <tt>rtpManager</tt> on which any optional configuration
@@ -658,17 +621,13 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
      * Notifies this <tt>MediaStream</tt> that the <tt>MediaDevice</tt> (and respectively the
      * <tt>MediaDeviceSession</tt> with it) which this instance uses for capture and playback of
      * media has been changed. Makes sure that the <tt>VideoListener</tt>s of this instance get
-     * <tt>VideoEvent</tt>s for the new/current <tt>VideoMediaDeviceSession</tt> and not for the
-     * old one.
+     * <tt>VideoEvent</tt>s for the new/current <tt>VideoMediaDeviceSession</tt> and not for the old one.
      * <p/>
      * Note: this overloaded method gets executed in the <tt>MediaStreamImpl</tt> constructor. As a
-     * consequence we cannot assume proper initialization of the fields specific to
-     * <tt>VideoMediaStreamImpl</tt>.
+     * consequence we cannot assume proper initialization of the fields specific to <tt>VideoMediaStreamImpl</tt>.
      *
-     * @param oldValue the <tt>MediaDeviceSession</tt> with the <tt>MediaDevice</tt> this instance used work
-     * with
-     * @param newValue the <tt>MediaDeviceSession</tt> with the <tt>MediaDevice</tt> this instance is to work
-     * with
+     * @param oldValue the <tt>MediaDeviceSession</tt> with the <tt>MediaDevice</tt> this instance used work with
+     * @param newValue the <tt>MediaDeviceSession</tt> with the <tt>MediaDevice</tt> this instance is to work with
      * @see MediaStreamImpl#deviceSessionChanged(MediaDeviceSession, MediaDeviceSession)
      */
     @Override
@@ -681,15 +640,14 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
             if (deviceSessionVideoListener != null)
                 oldVideoMediaDeviceSession.removeVideoListener(deviceSessionVideoListener);
 
-			/*
-			 * The oldVideoMediaDeviceSession is being disconnected from this VideoMediaStreamImpl
-			 * so do not let it continue using its keyFrameControl.
-			 */
+            /*
+             * The oldVideoMediaDeviceSession is being disconnected from this VideoMediaStreamImpl
+             * so do not let it continue using its keyFrameControl.
+             */
             oldVideoMediaDeviceSession.setKeyFrameControl(null);
         }
         if (newValue instanceof VideoMediaDeviceSession) {
-            VideoMediaDeviceSession newVideoMediaDeviceSession = (VideoMediaDeviceSession)
-                    newValue;
+            VideoMediaDeviceSession newVideoMediaDeviceSession = (VideoMediaDeviceSession) newValue;
 
             if (deviceSessionVideoListener == null) {
                 deviceSessionVideoListener = new VideoListener()
@@ -737,33 +695,29 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                 newVideoMediaDeviceSession.setConnector(rtpConnector);
             newVideoMediaDeviceSession.setRTCPFeedbackPLI(USE_RTCP_FEEDBACK_PLI);
 
-			/*
-			 * The newVideoMediaDeviceSession is being connected to this VideoMediaStreamImpl so
-			 * the key frame-related logic will be controlled by the keyFrameControl of this
-			 * VideoMediaStreamImpl.
-			 */
+            /*
+             * The newVideoMediaDeviceSession is being connected to this VideoMediaStreamImpl so the key
+             * frame-related logic will be controlled by the keyFrameControl of this VideoMediaStreamImpl.
+             */
             newVideoMediaDeviceSession.setKeyFrameControl(getKeyFrameControl());
         }
     }
 
     /**
      * Notifies the <tt>VideoListener</tt>s registered with this <tt>VideoMediaStream</tt> about a
-     * specific type of change in the availability of a specific visual <tt>Component</tt>
-     * depicting video.
+     * specific type of change in the availability of a specific visual <tt>Component</tt> depicting video.
      *
      * @param type the type of change as defined by <tt>VideoEvent</tt> in the availability of the
      * specified visual <tt>Component</tt> depicting video
      * @param visualComponent the visual <tt>Component</tt> depicting video which has been added or removed in this
      * <tt>VideoMediaStream</tt>
      * @param origin {@link VideoEvent#LOCAL} if the origin of the video is local (e.g. it is being locally
-     * captured); {@link VideoEvent#REMOTE} if the origin of the video is remote (e.g. a
-     * remote peer is streaming it)
+     * captured); {@link VideoEvent#REMOTE} if the origin of the video is remote (e.g. a remote peer is streaming it)
      * @param wait <tt>true</tt> if the call is to wait till the specified <tt>VideoEvent</tt> has been
      * delivered to the <tt>VideoListener</tt>s; otherwise, <tt>false</tt>
      * @return <tt>true</tt> if this event and, more specifically, the visual <tt>Component</tt> it
-     * describes have been consumed and should be considered owned, referenced (which is
-     * important because <tt>Component</tt>s belong to a single <tt>Container</tt> at a
-     * time); otherwise, <tt>false</tt>
+     * describes have been consumed and should be considered owned, referenced (which is important because
+     * <tt>Component</tt>s belong to a single <tt>Container</tt> at a time); otherwise, <tt>false</tt>
      */
     protected boolean fireVideoEvent(int type, Component visualComponent, int origin, boolean wait)
     {
@@ -775,11 +729,9 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Notifies the <tt>VideoListener</tt>s registered with this instance about a specific
-     * <tt>VideoEvent</tt>.
+     * Notifies the <tt>VideoListener</tt>s registered with this instance about a specific <tt>VideoEvent</tt>.
      *
-     * @param event the <tt>VideoEvent</tt> to be fired to the <tt>VideoListener</tt>s registered with
-     * this instance
+     * @param event the <tt>VideoEvent</tt> to be fired to the <tt>VideoListener</tt>s registered with this instance
      * @param wait <tt>true</tt> if the call is to wait till the specified <tt>VideoEvent</tt> has been
      * delivered to the <tt>VideoListener</tt>s; otherwise, <tt>false</tt>
      */
@@ -792,6 +744,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
      * Implements {@link VideoMediaStream#getKeyFrameControl()}.
      *
      * {@inheritDoc}
+     *
      * @see VideoMediaStream#getKeyFrameControl()
      */
     public KeyFrameControl getKeyFrameControl()
@@ -802,8 +755,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Gets the visual <tt>Component</tt>, if any, depicting the video streamed from the local peer
-     * to the remote peer.
+     * Gets the visual <tt>Component</tt>, if any, depicting the video streamed from the local peer to the remote peer.
      *
      * @return the visual <tt>Component</tt> depicting the local video if local video is actually
      * being streamed from the local peer to the remote peer; otherwise, <tt>null</tt>
@@ -811,14 +763,12 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     public Component getLocalVisualComponent()
     {
         MediaDeviceSession deviceSession = getDeviceSession();
-
         return (deviceSession instanceof VideoMediaDeviceSession)
                 ? ((VideoMediaDeviceSession) deviceSession).getLocalVisualComponent() : null;
     }
 
     /**
-     * The priority of the video is 5, which is meant to be higher than other threads and lower
-     * than the audio one.
+     * The priority of the video is 5, which is meant to be higher than other threads and lower than the audio one.
      *
      * @return video priority.
      */
@@ -863,12 +813,10 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Gets the visual <tt>Component</tt>s rendering the <tt>ReceiveStream</tt> corresponding to
-     * the given ssrc.
+     * Gets the visual <tt>Component</tt>s rendering the <tt>ReceiveStream</tt> corresponding to the given ssrc.
      *
      * @param ssrc the src-id of the receive stream, which visual <tt>Component</tt> we're looking for
-     * @return the visual <tt>Component</tt> rendering the <tt>ReceiveStream</tt> corresponding to
-     * the given ssrc
+     * @return the visual <tt>Component</tt> rendering the <tt>ReceiveStream</tt> corresponding to the given ssrc
      */
     public Component getVisualComponent(long ssrc)
     {
@@ -879,11 +827,9 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Gets a list of the visual <tt>Component</tt>s where video from the remote peer is being
-     * rendered.
+     * Gets a list of the visual <tt>Component</tt>s where video from the remote peer is being rendered.
      *
-     * @return a list of the visual <tt>Component</tt>s where video from the remote peer is being
-     * rendered
+     * @return a list of the visual <tt>Component</tt>s where video from the remote peer is being rendered
      * @see VideoMediaStream#getVisualComponents()
      */
     public List<Component> getVisualComponents()
@@ -908,14 +854,14 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     @Override
     protected void handleAttributes(MediaFormat format, Map<String, String> attrs)
     {
-		/*
-		 * Iterate over the specified attributes and handle those of them which we recognize.
-		 */
+        /*
+         * Iterate over the specified attributes and handle those of them which we recognize.
+         */
         if (attrs != null) {
-			/*
-			 * The width and height attributes are separate but they have to be collected into a
-			 * Dimension in order to be handled.
-			 */
+            /*
+             * The width and height attributes are separate but they have to be collected into a
+             * Dimension in order to be handled.
+             */
             String width = null;
             String height = null;
             Dimension dim;
@@ -930,10 +876,10 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                         break;
 
                     case "imageattr":
-						/*
-						 * If the width and height attributes have been collected into
-						 * outputSize, do not override the Dimension they have specified.
-						 */
+                        /*
+                         * If the width and height attributes have been collected into
+                         * outputSize, do not override the Dimension they have specified.
+                         */
                         if ((attrs.containsKey("width") || attrs.containsKey("height")) && (outputSize != null)) {
                             continue;
                         }
@@ -1059,9 +1005,8 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Removes a specific <tt>VideoListener</tt> from this <tt>VideoMediaStream</tt> in order to
-     * have to no longer receive notifications when visual/video <tt>Component</tt>s are being
-     * added and removed.
+     * Removes a specific <tt>VideoListener</tt> from this <tt>VideoMediaStream</tt> in order to have to
+     * no longer receive notifications when visual/video <tt>Component</tt>s are being added and removed.
      *
      * @param listener the <tt>VideoListener</tt> to no longer be notified when visual/video
      * <tt>Component</tt>s are being added or removed in this <tt>VideoMediaStream</tt>
@@ -1079,15 +1024,13 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
      *
      * @param oldValue the <tt>RTPConnector</tt> of this <tt>MediaStream</tt> implementation before it got
      * changed to <tt>newValue</tt>
-     * @param newValue the current <tt>RTPConnector</tt> of this <tt>MediaStream</tt> which replaced
-     * <tt>oldValue</tt>
+     * @param newValue the current <tt>RTPConnector</tt> of this <tt>MediaStream</tt> which replaced <tt>oldValue</tt>
      * @see MediaStreamImpl#rtpConnectorChanged(AbstractRTPConnector, AbstractRTPConnector)
      */
     @Override
     protected void rtpConnectorChanged(AbstractRTPConnector oldValue, AbstractRTPConnector newValue)
     {
         super.rtpConnectorChanged(oldValue, newValue);
-
         if (newValue != null) {
             MediaDeviceSession deviceSession = getDeviceSession();
 
@@ -1193,6 +1136,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     {
         if (bandwidthEstimator == null) {
             bandwidthEstimator = new BandwidthEstimatorImpl(this);
+            recurringRunnableExecutor.registerRecurringRunnable(bandwidthEstimator);
             logger.info("Creating a BandwidthEstimator for stream " + this);
         }
         return bandwidthEstimator;
