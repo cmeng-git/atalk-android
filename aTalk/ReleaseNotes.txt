@@ -1,5 +1,14 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.4.5 (1045)
+Author:         cmeng
+Upload Date:	08/08/2018
+- Must initialize Notification channel as earlier as possible before any process using it
+- Patch x264.so.147 to allow linking with versioned shared library in Android NDK
+- Built ffmpeg-x264 using shared libraries - clean up directory
+- clean up static_library_built build scripts
+
+=========================================================================
 Version:		1.4.4 (1044)
 Author:         cmeng
 Upload Date:	07/31/2018

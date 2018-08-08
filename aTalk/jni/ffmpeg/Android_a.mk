@@ -1,10 +1,9 @@
-# The static libraries are built based on the scripts in the following site but with ffmpeg 3.3.3
+# The static libraries ffmpeg v1.0.10 are built based on the scripts in the following site (ffmpeg 3.3.3)
 # https://github.com/IljaKosynkin/FFmpeg-Development-Kit/tree/master
 # see => https://medium.com/@ilja.kosynkin/building-ffmpeg-for-android-607222677a9e
 
 LOCAL_PATH := $(call my-dir)
 LOCAL_LIB_PATH = android/$(TARGET_ARCH_ABI)
-PATH_X264:=../x264/android/$(TARGET_ARCH_ABI)
 
 # ========== libavcodec ==================
 include $(CLEAR_VARS)
@@ -71,7 +70,7 @@ include $(PREBUILT_STATIC_LIBRARY)
 # ========== libx264 ==================
 include $(CLEAR_VARS)
 LOCAL_MODULE:= libx264
-LOCAL_SRC_FILES:= $(PATH_X264)/lib/libx264.a
+LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libx264.a
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 include $(PREBUILT_STATIC_LIBRARY)
 
@@ -84,8 +83,8 @@ LOCAL_LDLIBS += -Wl,--no-warn-shared-textrel
 # Ensure each static library inter-dependencies are defined in its respective PREBUILT_STATIC_LIBRARY block
 # or setup the dependency in PREBUILT_STATIC_LIBRARY blocks
 LOCAL_STATIC_LIBRARIES := libavcodec libavdevice libavfilter libavutil libavformat libswresample libswscale libx264
-# Must use exact format prefix with $(LOCAL_PATH) below to work - $(LOCAL_LIB_PATH)/include etc not working
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/android/$(TARGET_ARCH_ABI)/include $(PATH_X264)/include
+# Must use exact format prefix with $(LOCAL_PATH) below to work - $(LOCAL_LIB_PATH)/include not working
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/android/$(TARGET_ARCH_ABI)/include
 LOCAL_SRC_FILES := ./org_atalk_impl_neomedia_codec_FFmpeg.c
 LOCAL_CFLAGS := -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H -Wdeprecated-declarations
 

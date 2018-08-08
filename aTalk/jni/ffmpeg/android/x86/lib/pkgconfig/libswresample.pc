@@ -1,14 +1,14 @@
-prefix=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86
+prefix=../android/x86
 exec_prefix=${prefix}
-libdir=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86/lib
-includedir=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86/include
+libdir=${prefix}/lib
+includedir=${prefix}/include
 
 Name: libswresample
-Description: FFmpeg audio resampling library
-Version: 3.1.100
-Requires: libavutil >= 56.14.100
-Requires.private: 
+Description: FFmpeg audio rescaling library
+Version: 0.15.100
+Requires: 
+Requires.private: libavutil = 51.73.101
 Conflicts:
-Libs: -L${libdir}  -lswresample -lm
-Libs.private: 
+Libs: -L${libdir} -lswresample 
+Libs.private: -lm
 Cflags: -I${includedir}

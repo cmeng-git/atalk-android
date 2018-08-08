@@ -1,14 +1,14 @@
-prefix=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86
+prefix=../android/x86
 exec_prefix=${prefix}
-libdir=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86/lib
-includedir=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86/include
+libdir=${prefix}/lib
+includedir=${prefix}/include
 
 Name: libavutil
 Description: FFmpeg utility library
-Version: 56.14.100
+Version: 51.73.101
 Requires: 
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavutil -pthread -lm
-Libs.private: 
+Libs: -L${libdir} -lavutil 
+Libs.private: -lm
 Cflags: -I${includedir}

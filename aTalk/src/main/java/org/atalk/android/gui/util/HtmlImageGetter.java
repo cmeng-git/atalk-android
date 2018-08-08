@@ -18,7 +18,7 @@ import org.atalk.android.aTalkApp;
  * <tt>TextView</tt> through the HTML syntax.<br/>
  * Source image URI should be formatted as follows:<br/>
  * <br/>
- * jitsi.resource://{Integer drawable id}, example: atalk.resource://2130837599 <br/>
+ * atalk.resource://{Integer drawable id}, example: atalk.resource://2130837599 <br/>
  * <br/>
  * This format is used by Android <tt>ResourceManagementService</tt> to return image URLs.
  *

@@ -1,14 +1,14 @@
-prefix=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86
+prefix=../android/x86
 exec_prefix=${prefix}
-libdir=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86/lib
-includedir=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86/include
+libdir=${prefix}/lib
+includedir=${prefix}/include
 
 Name: libavdevice
 Description: FFmpeg device handling library
-Version: 58.3.100
-Requires: libavfilter >= 7.16.100, libswscale >= 5.1.100, libpostproc >= 55.1.100, libavformat >= 58.12.100, libavcodec >= 58.18.100, libswresample >= 3.1.100, libavutil >= 56.14.100
-Requires.private: 
+Version: 54.2.101
+Requires: 
+Requires.private: libavfilter = 3.17.100, libavformat = 54.29.104
 Conflicts:
-Libs: -L${libdir}  -lavdevice -lm
-Libs.private: 
+Libs: -L${libdir} -lavdevice 
+Libs.private: -lx264 -lm -lz -lgcc
 Cflags: -I${includedir}

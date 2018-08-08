@@ -30,7 +30,8 @@ public class NotificationServiceActivator implements BundleActivator
 
 		try {
 			logger.logEntry();
-			notificationService = bundleContext.registerService(NotificationService.class.getName(), new NotificationServiceImpl(), null);
+			notificationService = bundleContext.registerService(NotificationService.class.getName(),
+                    new NotificationServiceImpl(), null);
 			logger.info("Notification Service ...[REGISTERED]");
 		}
 		finally {

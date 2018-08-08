@@ -34,10 +34,10 @@ include $(CLEAR_VARS)
 ### FFMPEG library build using static libraries (v1.0.10) pre-built on ubuntu
 include ./ffmpeg/Android_a.mk
 
-### FFMPEG library build using shared libraries - multiple .so generated (without x264)
+### FFMPEG library build using shared libraries (v1.0.10) - multiple .so generated
 #include ./ffmpeg/Android_so.mk
 
-### FFMPEG Shared Library built from source (see version.h)
+### FFMPEG Shared Library built from source (see version.h) - not working
 #include ./ffmpeg/Android.mk
 
 # ================================= Openmax-h264 ======================================
