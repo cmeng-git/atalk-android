@@ -1,25 +1,25 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui;
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.*;
-import android.view.*;
-import android.view.animation.*;
+import android.os.Bundle;
+import android.os.StrictMode;
+import android.view.View;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.atalk.android.*;
-import org.atalk.android.gui.settings.SettingsActivity;
+import org.atalk.impl.androidtray.NotificationHelper;
 import org.atalk.impl.androidupdate.OnlineUpdateService;
-import org.atalk.persistance.*;
-import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.osgi.*;
+import org.atalk.persistance.DatabaseBackend;
+import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -41,94 +41,101 @@ import org.osgi.framework.BundleContext;
  */
 public class LauncherActivity extends OSGiActivity
 {
-	/**
-	 * Argument that holds an <tt>Intent</tt> that will be started once OSGi startup is finished.
-	 */
-	public static final String ARG_RESTORE_INTENT = "ARG_RESTORE_INTENT";
+    // private final Logger logger = Logger.getLogger(LauncherActivity.class);
 
-	/**
-	 * Intent instance that will be called once OSGi startup is finished.
-	 */
-	private Intent restoreIntent;
+    /**
+     * Argument that holds an <tt>Intent</tt> that will be started once OSGi startup is finished.
+     */
+    public static final String ARG_RESTORE_INTENT = "ARG_RESTORE_INTENT";
 
-	/**
-	 * aTalk SQLite database
-	 */
-	public static DatabaseBackend databaseBackend;
+    /**
+     * Intent instance that will be called once OSGi startup is finished.
+     */
+    private Intent restoreIntent;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		setupStrictMode();
-		// Request indeterminate progress for splash screen
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		super.onCreate(savedInstanceState);
+    /**
+     * aTalk SQLite database
+     */
+    public static DatabaseBackend databaseBackend;
 
-		if (OSGiService.isShuttingDown()) {
-			switchActivity(ShutdownActivity.class);
-			return;
-		}
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        setupStrictMode();
+        // Request indeterminate progress for splash screen
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        super.onCreate(savedInstanceState);
 
-		// force delete in case system locked during testing
-		// ServerPersistentStoresRefreshDialog.deleteDB();  // purge sql database
+        if (OSGiService.isShuttingDown()) {
+            switchActivity(ShutdownActivity.class);
+            return;
+        }
 
-		// Trigger the database upgrade or creation if none exist
-		databaseBackend = DatabaseBackend.getInstance(getApplicationContext());
-		databaseBackend.getReadableDatabase();
+        // Must initialize Notification channels before any notification is being issued.
+        // logger.warn("Notification Helper initialized!");
+        new NotificationHelper(this);
 
-		setProgressBarIndeterminateVisibility(true);
-		setContentView(R.layout.splash);
+        // force delete in case system locked during testing
+        // ServerPersistentStoresRefreshDialog.deleteDB();  // purge sql database
 
-		// Starts fade in animation
-		ImageView myImageView = findViewById(R.id.loadingImage);
-		Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fadein);
-		myImageView.startAnimation(myFadeInAnimation);
+        // Trigger the database upgrade or creation if none exist
+        databaseBackend = DatabaseBackend.getInstance(getApplicationContext());
+        databaseBackend.getReadableDatabase();
 
-		// Get restore Intent and display "Restoring..." label
-		Intent intent = getIntent();
-		if (intent != null)
-			this.restoreIntent = intent.getParcelableExtra(ARG_RESTORE_INTENT);
+        setProgressBarIndeterminateVisibility(true);
+        setContentView(R.layout.splash);
 
-		View restoreView = findViewById(R.id.restoring);
-		restoreView.setVisibility(restoreIntent != null ? View.VISIBLE : View.GONE);
-	}
+        // Starts fade in animation
+        ImageView myImageView = findViewById(R.id.loadingImage);
+        Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fadein);
+        myImageView.startAnimation(myFadeInAnimation);
 
-	@Override
-	protected void start(BundleContext osgiContext)
-			throws Exception
-	{
-		super.start(osgiContext);
-		runOnUiThread(new Runnable()
-		{
-			public void run()
-			{
-				if (restoreIntent != null) {
-					// Starts restore intent
-					startActivity(restoreIntent);
-					finish();
-				}
-				else if (BuildConfig.DEBUG) {
-					// Perform software version update check on first launch - for debug version only
-					Intent dailyCheckupIntent = new Intent(getApplicationContext(), OnlineUpdateService.class);
-					dailyCheckupIntent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_START);
-					startService(dailyCheckupIntent);
-				}
+        // Get restore Intent and display "Restoring..." label
+        Intent intent = getIntent();
+        if (intent != null)
+            this.restoreIntent = intent.getParcelableExtra(ARG_RESTORE_INTENT);
+
+        View restoreView = findViewById(R.id.restoring);
+        restoreView.setVisibility(restoreIntent != null ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    protected void start(BundleContext osgiContext)
+            throws Exception
+    {
+        super.start(osgiContext);
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                if (restoreIntent != null) {
+                    // Starts restore intent
+                    startActivity(restoreIntent);
+                    finish();
+                }
+                else if (BuildConfig.DEBUG) {
+                    // Perform software version update check on first launch - for debug version only
+                    Intent dailyCheckupIntent = new Intent(getApplicationContext(), OnlineUpdateService.class);
+                    dailyCheckupIntent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_START);
+                    startService(dailyCheckupIntent);
+                }
 
                 // Start home screen Activity
                 switchActivity(aTalkApp.getHomeScreenActivityClass());
-			}
-		});
-	}
+            }
+        });
+    }
 
-	private void setupStrictMode() {
-		// #TODO - change all disk access to using thread
-		// cmeng - disable android.os.StrictMode$StrictModeDisk Access Violation
-		StrictMode.ThreadPolicy old = StrictMode.getThreadPolicy();
-		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder(old)
-				.permitDiskReads()
-				.permitDiskWrites()
-				.build());
+    private void setupStrictMode()
+    {
+        // #TODO - change all disk access to using thread
+        // cmeng - disable android.os.StrictMode$StrictModeDisk Access Violation
+        StrictMode.ThreadPolicy old = StrictMode.getThreadPolicy();
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder(old)
+                .permitDiskReads()
+                .permitDiskWrites()
+                .build());
 
-		//	StrictMode.setThreadPolicy(old);
-	}
+        //	StrictMode.setThreadPolicy(old);
+    }
 }

@@ -1,14 +1,14 @@
-prefix=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86
+prefix=../android/x86
 exec_prefix=${prefix}
-libdir=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86/lib
-includedir=/home/cmeng/workspace/ndk/ffmpeg-android/build/ffmpeg/android/x86/include
+libdir=${prefix}/lib
+includedir=${prefix}/include
 
 Name: libswscale
 Description: FFmpeg image rescaling library
-Version: 5.1.100
-Requires: libavutil >= 56.14.100
-Requires.private: 
+Version: 2.1.101
+Requires: 
+Requires.private: libavutil = 51.73.101
 Conflicts:
-Libs: -L${libdir}  -lswscale -lm
-Libs.private: 
+Libs: -L${libdir} -lswscale 
+Libs.private: -lm
 Cflags: -I${includedir}

@@ -105,9 +105,6 @@ public class MainMenuActivity extends ExitMenuActivity
         super.onCreate(savedInstanceState);
         mContext = this;
 
-        // Initialize Notification channels
-        new NotificationHelper(mContext);
-
         setLanguage(mContext, mLanguage);
 
         // cmeng - not implemented yet, do not set

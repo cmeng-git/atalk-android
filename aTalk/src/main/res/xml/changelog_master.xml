@@ -6,6 +6,11 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.4.5 (08/08/2018)" versioncode="1045">
+        <change>Initialize Notification channel as earlier as possible to avoid race condition with first use</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.4.4 (07/31/2018)" versioncode="1044">
         <change>Implement new android Notification Channels support</change>
         <change>Prevent user from cancel dialog accidentally while clicking outside the window region</change>

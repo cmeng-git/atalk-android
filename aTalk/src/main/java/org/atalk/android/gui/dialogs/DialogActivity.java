@@ -194,11 +194,11 @@ public class DialogActivity extends OSGiActivity
         // Prevents from closing the dialog on outside touch
         setFinishOnTouchOutside(cancelable);
 
-        // always place window onTop
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            getWindow().setType(WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW);
-        else
-            getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
+        // always place window onTop - no difference
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+//            getWindow().setType(WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW);
+//        else
+//            getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
 
         // Removes the buttons
         if (intent.getBooleanExtra(EXTRA_REMOVE_BUTTONS, false)) {
