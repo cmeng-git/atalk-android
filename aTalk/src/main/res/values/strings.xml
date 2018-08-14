@@ -545,7 +545,7 @@
     <string name="service_gui_REJECT">Reject</string>
     <string name="service_gui_REMOVE">Remove</string>
     <string name="service_gui_REMOVE_ACCOUNT">Remove account</string>
-    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Are you sure you want to remove the account: \'%1$s\'?</string>
+    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Are you sure you want to remove the account:\n%1$s?</string>
     <string name="service_gui_REMOVE_CONTACT">Remove contact</string>
     <string name="service_gui_REMOVE_CONTACT_TEXT">Contact owner: %1$s.\n\nAre you sure you want to remove the contact: \'%2$s\' from your contact list?</string>
     <string name="service_gui_REMOVE_CONTACT_NOT_CONNECTED">You need to be connected in order to remove this contact. Please sign in and try again.</string>

@@ -356,7 +356,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             MessageDeliveryFailedEvent msgDeliveryFailed
                     = new MessageDeliveryFailedEvent(message, to, MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED);
             fireMessageEvent(msgDeliveryFailed);
-            throw ex;
+            // throw ex; Do not throw to cause system to crash, return null instead
+            return null;
         }
 
         org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message();
@@ -375,8 +376,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         MessageDeliveredEvent msgDeliveryPendingEvt = new MessageDeliveredEvent(message, to, toResource);
         MessageDeliveredEvent[] transformedEvents = messageDeliveryPendingTransform(msgDeliveryPendingEvt);
 
-        if (transformedEvents == null || transformedEvents.length == 0)
+        if (transformedEvents == null || transformedEvents.length == 0) {
+            MessageDeliveryFailedEvent msgDeliveryFailed
+                    = new MessageDeliveryFailedEvent(message, to, MessageDeliveryFailedEvent.UNSUPPORTED_OPERATION);
+            fireMessageEvent(msgDeliveryFailed);
             return null;
+        }
 
         for (MessageDeliveredEvent event : transformedEvents) {
             String content = event.getSourceMessage().getContent();
@@ -451,7 +456,9 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     public void sendInstantMessage(Contact to, ContactResource resource, Message message)
     {
         MessageDeliveredEvent msgDelivered = sendMessage(to, resource, message, new ExtensionElement[0]);
-        fireMessageEvent(msgDelivered);
+        if (msgDelivered != null) {
+            fireMessageEvent(msgDelivered);
+        }
     }
 
     /**

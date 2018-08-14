@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.3'
+        classpath 'com.android.tools.build:gradle:3.1.4'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.0" // jarjar.repackage
     }
 }
@@ -45,8 +45,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1045
-        versionName "1.4.5" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1046
+        versionName "1.4.6" // no alphabet allowed (e.g. 0.8.7.a)
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true

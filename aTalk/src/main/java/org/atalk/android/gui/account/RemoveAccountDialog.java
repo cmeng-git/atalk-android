@@ -1,21 +1,21 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.account;
 
 import android.app.AlertDialog;
-import android.content.*;
+import android.content.Context;
+import android.content.DialogInterface;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.omemo.OmemoService;
-import org.jivesoftware.smackx.omemo.OmemoStore;
 
 import static net.java.sip.communicator.plugin.otr.OtrActivator.configService;
 
@@ -29,107 +29,89 @@ import static net.java.sip.communicator.plugin.otr.OtrActivator.configService;
  */
 public class RemoveAccountDialog
 {
-	public static AlertDialog create(Context ctx, final Account account,
-			final OnAccountRemovedListener listener)
-	{
-		AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
-		return alert.setTitle(R.string.service_gui_REMOVE_ACCOUNT)
-				.setMessage(ctx.getString(R.string.service_gui_REMOVE_ACCOUNT_MESSAGE,
-						account.getAccountID().getDisplayName()))
-				.setPositiveButton(R.string.service_gui_YES, new DialogInterface.OnClickListener()
-				{
-					@Override
-					public void onClick(DialogInterface dialog, int which)
-					{
-						onRemoveClicked(dialog, account, listener);
-					}
-				}).setNegativeButton(R.string.service_gui_NO, new DialogInterface.OnClickListener()
-				{
-					@Override
-					public void onClick(DialogInterface dialog, int which)
-					{
-						dialog.dismiss();
-					}
-				}).create();
-	}
+    public static AlertDialog create(Context ctx, final Account account, final OnAccountRemovedListener listener)
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
+        return alert.setTitle(R.string.service_gui_REMOVE_ACCOUNT)
+                .setMessage(ctx.getString(R.string.service_gui_REMOVE_ACCOUNT_MESSAGE, account.getAccountID()))
+                .setPositiveButton(R.string.service_gui_YES, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        onRemoveClicked(dialog, account, listener);
+                    }
+                }).setNegativeButton(R.string.service_gui_NO, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                }).create();
+    }
 
-	private static void onRemoveClicked(final DialogInterface dialog, final Account account,
-			final OnAccountRemovedListener l)
-	{
-        // cleanup omemo data for the deleted user account
-        SQLiteOmemoStore omemoStore = (SQLiteOmemoStore ) OmemoService.getInstance().getOmemoStoreBackend();
-        omemoStore.purgeUserOmemoData(account);
+    private static void onRemoveClicked(DialogInterface dialog, final Account account, OnAccountRemovedListener l)
+    {
+        // Fix "network on main thread"
+        final Thread removeAccountThread = new Thread()
+        {
+            @Override
+            public void run()
+            {
+                // cleanup omemo data for the deleted user account
+                SQLiteOmemoStore omemoStore = (SQLiteOmemoStore) OmemoService.getInstance().getOmemoStoreBackend();
+                omemoStore.purgeUserOmemoData(account);
 
-		// Fix "network on main thread"
-		final Thread removeAccountThread = new Thread()
-		{
-			@Override
-			public void run()
-			{
-				// purge persistent storage must happen before removeAccount action
-				AccountsListActivity.removeAccountPersistentStore(account);
-				removeAccount(account);
-			}
-		};
-		removeAccountThread.start();
+                // purge persistent storage must happen before removeAccount action
+                AccountsListActivity.removeAccountPersistentStore(account);
+                removeAccount(account);
+            }
+        };
+        removeAccountThread.start();
 
         try {
-			// Simply block UI thread as it shouldn't take too long to uninstall
-			removeAccountThread.join();
+            // Simply block UI thread as it shouldn't take too long to uninstall; ANR from field - wait on 3S timeout
+            removeAccountThread.join(3000);
             // Notify about results
-			l.onAccountRemoved(account);
-			dialog.dismiss();
-		}
-		catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-	}
+            l.onAccountRemoved(account);
+            dialog.dismiss();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	/**
-	 * Removes given <tt>AccountID</tt> from the system.
-	 * Note: accountUuid without suffix as propertyName will remove the account
-	 *
-	 * @param account
-	 * 		the account that will be uninstalled from the system.
-	 */
-	private static void removeAccount(Account account)
-	{
-		AccountID accountID = account.getAccountID();
-		ProtocolProviderFactory providerFactory
-				= AccountUtils.getProtocolProviderFactory(accountID.getProtocolName());
-		String accountUuid = accountID.getAccountUuid();
-		configService.setProperty(accountUuid, null);
+    /**
+     * Remove all the properties of the given <tt>Account</tt> from the accountProperties database.
+     * Note: accountUuid without any suffix as propertyName will remove all the properties in
+     * the accountProperties for the specified accountUuid
+     *
+     * @param account the account that will be uninstalled from the system.
+     */
+    private static void removeAccount(Account account)
+    {
+        AccountID accountID = account.getAccountID();
+        ProtocolProviderFactory providerFactory = AccountUtils.getProtocolProviderFactory(accountID.getProtocolName());
+        String accountUuid = accountID.getAccountUuid();
+        configService.setProperty(accountUuid, null);
 
-//		ConfigurationService configService = AndroidGUIActivator.getConfigurationService();
-//		String prefix = "net.java.sip.communicator.impl.gui.accounts";
-//		List<String> accounts = configService.getPropertyNamesByPrefix(prefix, true);
-//		for (String accountRootPropName : accounts) {
-//			String accountUID = configService.getString(accountRootPropName);
-//
-//			if (accountUID.equals(accountID.getAccountUniqueID())) {
-//				configService.setProperty(accountRootPropName, null);
-//				break;
-//			}
-//		}
+        boolean isUninstalled = providerFactory.uninstallAccount(accountID);
+        if (!isUninstalled)
+            throw new RuntimeException("Failed to uninstall account");
+    }
 
-		boolean isUninstalled = providerFactory.uninstallAccount(accountID);
-		if (!isUninstalled)
-			throw new RuntimeException("Failed to uninstall account");
-	}
-
-	/**
-	 * Interfaces used to notify about account removal which happens after the user confirms the action.
-	 */
+    /**
+     * Interfaces used to notify about account removal which happens after the user confirms the action.
+     */
     interface OnAccountRemovedListener
-	{
-		/**
-		 * Fired after <tt>Account</tt> is removed from the system which happens after user
-		 * confirms the action. Will not be fired when user dismisses the dialog.
-		 *
-		 * @param account
-		 * 		removed <tt>Account</tt>.
-		 */
-		void onAccountRemoved(Account account);
-	}
+    {
+        /**
+         * Fired after <tt>Account</tt> is removed from the system which happens after user
+         * confirms the action. Will not be fired when user dismisses the dialog.
+         *
+         * @param account removed <tt>Account</tt>.
+         */
+        void onAccountRemoved(Account account);
+    }
 
 }

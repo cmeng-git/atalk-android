@@ -6,6 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.4.6 (08/14/2018)" versioncode="1046">
+        <change>Add 3-second wait timeout to avoid ANR in account removal due to network connection</change>
+        <change>Block Omemo and OTR access until the user is online and authenticated</change>
+        <change>Fix IndexOutOfBoundsException and ConcurrentModificationException when dealing with large number of contact update</change>
+        <change>Prompt user for re-login on authentication security failure if any</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.4.5 (08/08/2018)" versioncode="1045">
         <change>Initialize Notification channel as earlier as possible to avoid race condition with first use</change>
         <change>Bug fixes and other enhancements</change>

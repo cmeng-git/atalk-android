@@ -684,6 +684,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
 
     /**
      * Indicates that the child contacts of a given <tt>MetaContactGroup</tt> has been reordered.
+     * Note:
+     * 1. add (insert) new before remove old data to avoid indexOutOfBound
+     * 2. synchronized LinkList access to avoid ConcurrentModificationException
      *
      * @param evt the <tt>MetaContactEvent</tt> that notified us
      */
@@ -693,7 +696,6 @@ public class MetaContactListAdapter extends BaseContactListAdapter
             logger.debug("CHILD CONTACTS REORDERED: " + evt.getSourceMetaContactGroup());
 
         MetaContactGroup group = evt.getSourceMetaContactGroup();
-
         int origGroupIndex = originalGroups.indexOf(group);
         int groupIndex = groups.indexOf(group);
 
@@ -701,8 +703,11 @@ public class MetaContactListAdapter extends BaseContactListAdapter
             TreeSet<MetaContact> contactList = getOriginalCList(origGroupIndex);
 
             if (contactList != null) {
-                originalContacts.remove(contactList);
-                originalContacts.add(origGroupIndex, new TreeSet<>(contactList));
+                // logger.warn("Modify originalGroups: " + origGroupIndex + " / " + originalGroups.size());
+                synchronized (originalContacts) {
+                    originalContacts.add(origGroupIndex, new TreeSet<>(contactList));
+                    originalContacts.remove(origGroupIndex + 1);
+                }
             }
         }
 
@@ -710,8 +715,11 @@ public class MetaContactListAdapter extends BaseContactListAdapter
             TreeSet<MetaContact> contactList = getContactList(groupIndex);
 
             if (contactList != null) {
-                contacts.remove(contactList);
-                contacts.add(groupIndex, new TreeSet<>(contactList));
+                // logger.warn("Modify groups: " + groupIndex + " / " + groups.size());
+                synchronized (contacts) {
+                    contacts.add(groupIndex, new TreeSet<>(contactList));
+                    contacts.remove(groupIndex + 1);
+                }
             }
         }
         uiChangeUpdate();

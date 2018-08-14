@@ -1,5 +1,18 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.4.6 (1046)
+Author:         cmeng
+Upload Date:	08/14/2018
+- Fix ANR in account removal with all database handling in thread and a 3S timeout wait for network connection
+- Fix IndexOutOfBoundsException and ConcurrentModificationException in MetaContactListAdapter#childContactsReordered - large number of contact update
+- Return default user role as GUEST prior to user joining the chatRoom
+- Block both doHandleOmemoPressed() and doHandleOtrPressed() access when user is not online
+- Do not throw exception causing system crash when OTR authentication message is sent before user is online
+- Add handle for invalid account in database
+- Must setTrustCallback() after identity regeneration, else aTalk crash on null pointer
+- Prompt user for re-login on authentication security failure if any
+- Fix selected dnssecMode not properly saved if server override is not selected.
+=========================================================================
 Version:		1.4.5 (1045)
 Author:         cmeng
 Upload Date:	08/08/2018

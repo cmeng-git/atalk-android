@@ -979,7 +979,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             throw new XMPPException.XMPPErrorException(null, xmppError);
         } catch (DNSSECValidationFailedException ex) {
             String errMsg = ex.getMessage();
-            XMPPError xmppError = XMPPError.from(Condition.not_acceptable, errMsg).build();
+            XMPPError xmppError = XMPPError.from(Condition.not_authorized, errMsg).build();
             throw new XMPPException.XMPPErrorException(null, xmppError);
         } catch (SecurityRequiredByServerException ex) {
             // "SSL/TLS required by server but disabled in client"

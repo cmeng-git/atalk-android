@@ -119,7 +119,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements  Oper
         fireMessageEvent(new MessageDeliveryFailedEvent(message, to, errorCode));
     }
 
-    enum MessageEventType
+    protected enum MessageEventType
     {
         None, MessageDelivered, MessageReceived, MessageDeliveryFailed, MessageDeliveryPending,
     }

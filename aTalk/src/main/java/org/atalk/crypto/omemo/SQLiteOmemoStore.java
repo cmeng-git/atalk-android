@@ -35,7 +35,7 @@ import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.*;
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
@@ -801,7 +801,13 @@ public class SQLiteOmemoStore extends SignalOmemoStore
 
                     int defaultDeviceId = OmemoManager.randomDeviceId();
                     setDefaultDeviceId(userJid, defaultDeviceId);
-                    OmemoManager.getInstanceFor(connection, defaultDeviceId);
+                    OmemoManager omemoManager = OmemoManager.getInstanceFor(connection, defaultDeviceId);
+                    try {
+                        OmemoStore mOmemoStore = OmemoService.getInstance().getOmemoStoreBackend();
+                        omemoManager.setTrustCallback(((SQLiteOmemoStore) mOmemoStore).getTrustCallBack());
+                    } catch (Exception e) {
+                        logger.warn("SetTrustCallBack Exception: " + e.getMessage());
+                    }
                 }
             }
         }

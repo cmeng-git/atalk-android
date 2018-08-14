@@ -419,7 +419,6 @@ public class AvatarManager extends Manager
 			throws XmppStringprepException
 	{
 		if ((account != null) && (persistentJidToHashIndex != null)) {
-
 			BareJid rosterFileName = JidCreate.bareFrom(account + "_roster");
 			String rosterContacts = persistentJidToHashIndex.getHashForJid(rosterFileName);
 
