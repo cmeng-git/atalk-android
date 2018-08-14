@@ -245,14 +245,14 @@ public class AccountsListActivity extends OSGiActivity
             }
 
             // Account in unRegistering so discoveryInfoManager == null
-//			ScServiceDiscoveryManager discoveryInfoManager = jabberProvider.getDiscoveryManager();
-//			File discoInfoStoreDirectory = discoveryInfoManager.getDiscoInfoPersistentStore();
+			// ScServiceDiscoveryManager discoveryInfoManager = jabberProvider.getDiscoveryManager();
+			// File discoInfoStoreDirectory = discoveryInfoManager.getDiscoInfoPersistentStore();
             File discoInfoStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir()
                     + "/discoInfoStore_" + userId);
             try {
                 FileAccess.delete(discoInfoStoreDirectory.getAbsolutePath());
             } catch (IOException e) {
-                logger.error("Failed to purchase store for: " + R.string.service_gui_REFRESH_STORES_DISCINFO);
+                logger.error("Failed to purge store for: " + R.string.service_gui_REFRESH_STORES_DISCINFO);
             }
         }
     }
@@ -262,7 +262,6 @@ public class AccountsListActivity extends OSGiActivity
      */
     class AccountStatusListAdapter extends AccountsListAdapter
     {
-
         /**
          * Toast instance
          */

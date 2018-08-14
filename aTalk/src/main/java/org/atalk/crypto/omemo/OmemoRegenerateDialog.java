@@ -27,22 +27,14 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiActivity;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
-import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * OMEMO identities deletion user interface.
+ * OMEMO identities regeneration user interface.
  *
  * @author Eng Chong Meng
  */
@@ -127,8 +119,7 @@ public class OmemoRegenerateDialog extends OSGiActivity
     /**
      * Method fired when the ok button is clicked.
      *
-     * @param v
-     *         ok button's <tt>View</tt>.
+     * @param v ok button's <tt>View</tt>.
      */
     public void onOkClicked(View v)
     {
@@ -138,8 +129,7 @@ public class OmemoRegenerateDialog extends OSGiActivity
     /**
      * Method fired when the cancel button is clicked.
      *
-     * @param v
-     *         the cancel button's <tt>View</tt>
+     * @param v the cancel button's <tt>View</tt>
      */
     public void onCancelClicked(View v)
     {

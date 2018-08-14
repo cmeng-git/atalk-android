@@ -224,11 +224,12 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
             boolean passwordPersistent = credentials.isPasswordPersistent();
             accountID.setPasswordPersistent(passwordPersistent);
             accountID.setIbRegistration(credentials.isIbRegistration());
+            accountID.setDnssMode(credentials.getDnssecMode());
+
             accountID.setServerOverridden(credentials.isServerOverridden());
             accountID.setServerAddress(credentials.getServerAddress());
             if (credentials.isServerOverridden()) {
                 accountID.setServerPort(credentials.getServerPort());
-                accountID.setDnssMode(credentials.getDnssecMode());
             }
 
             // must save to DB in case user makes changes

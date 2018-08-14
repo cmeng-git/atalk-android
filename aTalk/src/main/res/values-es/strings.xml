@@ -503,7 +503,7 @@
     <string name="service_gui_REJECT">Rechazar</string>
     <string name="service_gui_REMOVE">Eliminar</string>
     <string name="service_gui_REMOVE_ACCOUNT">Eliminar cuenta</string>
-    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">¿Seguro que se quiere eliminar la cuenta: \'%1$s\'?</string>
+    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">¿Seguro que se quiere eliminar la cuenta:\n%1$s?</string>
     <string name="service_gui_REMOVE_CONTACT">Eliminar contacto</string>
     <string name="service_gui_REMOVE_CONTACT_TEXT">Contactar con el propietario: %1$s.\n\n¿Seguro que se quiere eliminar el contacto: \'%2$s\' de la lista de contactos?</string>
     <string name="service_gui_REMOVE_CONTACT_NOT_CONNECTED">Se necesita estar conectado para eliminar este contacto. Por favor, iniciar sesión e inténtese de nuevo.</string>

@@ -519,7 +519,7 @@
     <string name="service_gui_REJECT">Отклонить</string>
     <string name="service_gui_REMOVE">Удалить</string>
     <string name="service_gui_REMOVE_ACCOUNT">Удалить учетную запись</string>
-    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Вы действительно хотите удалить учетную запись: \'%1$s\'?</string>
+    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Вы действительно хотите удалить учетную запись:\n%1$s?</string>
     <string name="service_gui_REMOVE_CONTACT">Удалить контакт</string>
     <string name="service_gui_REMOVE_CONTACT_TEXT">Связаться с владельцем: %1$s.\n\nВы уверены, что хотите удалить контакт:\'%2$s\' из списка контактов?</string>
     <string name="service_gui_REMOVE_CONTACT_NOT_CONNECTED">Чтобы удалить этот контакт, необходимо подключиться. Войдите в систему и повторите попытку.</string>

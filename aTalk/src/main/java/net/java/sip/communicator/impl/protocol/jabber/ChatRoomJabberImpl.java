@@ -944,9 +944,13 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public ChatRoomMemberRole getUserRole()
     {
-        if (mRole == null) {
-            EntityFullJid participant = JidCreate.entityFullFrom(mMultiUserChat.getRoom(), mMultiUserChat.getNickname());
+        // return role as GUEST if participant has not joined the chatRoom i.e. nickName == null
+        Resourcepart nickName = mMultiUserChat.getNickname();
+        if (nickName == null)
+            return ChatRoomMemberRole.GUEST;
 
+        if (mRole == null) {
+            EntityFullJid participant = JidCreate.entityFullFrom(mMultiUserChat.getRoom(), nickName);
             Occupant o = mMultiUserChat.getOccupant(participant);
             if (o == null)
                 return ChatRoomMemberRole.GUEST;

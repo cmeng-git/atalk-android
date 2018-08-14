@@ -245,7 +245,6 @@ public class CryptoFragment extends OSGiFragment
     private MenuItem checkCryptoButton(int chatType)
     {
         MenuItem mItem;
-
         switch (chatType) {
             case ChatFragment.MSGTYPE_NORMAL:
             case ChatFragment.MSGTYPE_MUC_NORMAL:
@@ -280,12 +279,9 @@ public class CryptoFragment extends OSGiFragment
      */
     private void doHandleOmemoPressed(final boolean enable)
     {
-        if (mDescriptor == null)
-            return;
-
-        isOmemoMode = enable;
         // return: nothing to do if not enable
-        if (!enable)
+        isOmemoMode = enable;
+        if (!enable || (mDescriptor == null) || !activeChat.getProtocolProvider().isRegistered())
             return;
 
         // Linked map between OmemoDevice and its fingerprint.
@@ -322,6 +318,7 @@ public class CryptoFragment extends OSGiFragment
                 return;
             } catch (Exception e) { // catch any non-advertised exception
                 logger.warn("UndecidedOmemoIdentity check failed: " + e.getMessage());
+                return;
             }
 
             int numUntrusted = 0;
@@ -473,7 +470,7 @@ public class CryptoFragment extends OSGiFragment
      */
     private void doHandleOtrPressed(final boolean enable)
     {
-        if (currentOtrContact == null)
+        if ((currentOtrContact == null) || !activeChat.getProtocolProvider().isRegistered())
             return;
 
         new Thread()
@@ -608,7 +605,6 @@ public class CryptoFragment extends OSGiFragment
     private void setCurrentContact(Contact contact, String chatSessionId)
     {
         currentOtrContact = null;
-
         if (contact == null) {
             setOTRMenuItem(null);
             initOmemo(chatSessionId);
@@ -878,7 +874,7 @@ public class CryptoFragment extends OSGiFragment
 
         mDescriptor = mChatTransport.getDescriptor();
         mConnection = mChatTransport.getProtocolProvider().getConnection();
-        if (mConnection == null) {
+        if ((mConnection == null) || !mConnection.isAuthenticated()) {
             omemoCapable.put(mDescriptor, false);
             return;
         }

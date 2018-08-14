@@ -513,7 +513,7 @@
     <string name="service_gui_REJECT">Ablehnen</string>
     <string name="service_gui_REMOVE">Entfernen</string>
     <string name="service_gui_REMOVE_ACCOUNT">Konto entfernen</string>
-    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Möchten Sie das Konto wirklich entfernen:\'%1$s\'?</string>
+    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Möchten Sie das Konto wirklich entfernen:\n%1$s?</string>
     <string name="service_gui_REMOVE_CONTACT">Kontakt entfernen</string>
     <string name="service_gui_REMOVE_CONTACT_TEXT">%1$s:\n\nMöchten Sie den Kontakt:\'%2$s\' wirklich aus Ihrer Kontaktliste entfernen?</string>
     <string name="service_gui_REMOVE_CONTACT_NOT_CONNECTED">Sie müssen angemeldet sein um diesen Kontakt zu entfernen. Bitte melden Sie sich an und versuchen es erneut.</string>

@@ -367,10 +367,14 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     {
         switch (v.getId()) {
             case R.id.sendMessageButton:
-                sendMessage();
-                sendBtn.setVisibility(View.INVISIBLE);
-                if (isAudioAllowed)
-                    audioBtn.setVisibility(View.VISIBLE);
+                if (chatPanel.getProtocolProvider().isRegistered()) {
+                    sendMessage();
+                    sendBtn.setVisibility(View.INVISIBLE);
+                    if (isAudioAllowed)
+                        audioBtn.setVisibility(View.VISIBLE);
+                } else {
+                    aTalkApp.showToastMessage(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+                }
                 break;
 
             case R.id.cancelCorrectionBtn:

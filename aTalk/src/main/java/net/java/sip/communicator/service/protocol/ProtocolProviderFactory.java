@@ -657,7 +657,6 @@ public abstract class ProtocolProviderFactory
     public ServiceReference<ProtocolProviderService> getProviderForAccount(AccountID accountID)
     {
         ServiceRegistration<ProtocolProviderService> registration;
-
         synchronized (registeredAccounts) {
             registration = registeredAccounts.get(accountID);
         }
@@ -686,20 +685,18 @@ public abstract class ProtocolProviderFactory
     {
         boolean wasAccountExisting = false;
 
-        // Unregister the protocol provider.
-        ServiceReference<ProtocolProviderService> serRef = getProviderForAccount(accountID);
-
         // If the protocol provider service is registered, first unregister the service.
+        ServiceReference<ProtocolProviderService> serRef = getProviderForAccount(accountID);
         if (serRef != null) {
             BundleContext bundleContext = getBundleContext();
             ProtocolProviderService protocolProvider = bundleContext.getService(serRef);
-
             try {
                 protocolProvider.unregister();
             } catch (OperationFailedException ex) {
                 logger.error("Failed to unregister protocol provider for account: " + accountID + " caused by: " + ex);
             }
         }
+
         ServiceRegistration<ProtocolProviderService> registration;
         synchronized (registeredAccounts) {
             registration = registeredAccounts.remove(accountID);
@@ -708,7 +705,6 @@ public abstract class ProtocolProviderFactory
         // first remove the stored account so when PP is unregistered we can distinguish between
         // deleted or just disabled account
         wasAccountExisting = removeStoredAccount(accountID);
-
         if (registration != null) {
             // Kill the service.
             registration.unregister();
@@ -916,6 +912,8 @@ public abstract class ProtocolProviderFactory
         // because this method could return a modified version of the user id property.
         String userID = accountID.getAccountPropertyString(ProtocolProviderFactory.USER_ID);
         ProtocolProviderService service = createService(userID, accountID);
+        if (service == null)
+            return false;
 
         Dictionary<String, String> properties = new Hashtable<>();
         properties.put(PROTOCOL, protocolName);

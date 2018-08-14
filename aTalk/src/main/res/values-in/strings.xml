@@ -514,7 +514,7 @@
     <string name="service_gui_REJECT">Tolak</string>
     <string name="service_gui_REMOVE">Hapus</string>
     <string name="service_gui_REMOVE_ACCOUNT">Hapus akun</string>
-    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Anda yakin ingin menghapus akun:\'%1$s\'?</string>
+    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Anda yakin ingin menghapus akun:\n%1$s?</string>
     <string name="service_gui_REMOVE_CONTACT">Hapus kontak</string>
     <string name="service_gui_REMOVE_CONTACT_TEXT">Pemilik kontak: %1$s.\n\nApakah Anda yakin ingin menghapus kontak:\'%2$s\'dari daftar kontak Anda?</string>
     <string name="service_gui_REMOVE_CONTACT_NOT_CONNECTED">Anda harus terhubung untuk menghapus kontak ini. Harap masuk dan coba lagi.</string>

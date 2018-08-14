@@ -133,8 +133,8 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
             return service;
         } catch (XmppStringprepException e) {
             logger.error(userID + " is not a valid JID", e);
-            return null;
         }
+        return null;
     }
 
     /**
