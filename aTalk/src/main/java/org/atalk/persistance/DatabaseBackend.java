@@ -44,6 +44,8 @@ import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 import org.whispersystems.libsignal.*;
 import org.whispersystems.libsignal.state.*;
 
@@ -124,7 +126,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             + SQLiteOmemoStore.SESSION_TABLE_NAME + "("
             + SQLiteOmemoStore.BARE_JID + " TEXT, "
             + SQLiteOmemoStore.DEVICE_ID + " INTEGER, "
-            + SQLiteOmemoStore.KEY + " TEXT, UNIQUE("
+            + SQLiteOmemoStore.SESSION_KEY + " TEXT, UNIQUE("
             + SQLiteOmemoStore.BARE_JID + ", " + SQLiteOmemoStore.DEVICE_ID
             + ") ON CONFLICT REPLACE);";
 
@@ -1055,6 +1057,15 @@ public class DatabaseBackend extends SQLiteOpenHelper
         }
     }
 
+    public int deleteInactiveDeviceList()
+    {
+        final SQLiteDatabase db = this.getWritableDatabase();
+        String[] whereArgs = {"0"};
+
+        return db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.ACTIVE + "=? AND "
+                + SQLiteOmemoStore.IDENTITY_KEY + " IS NULL ", whereArgs);
+    }
+
     public void setLastDeviceIdPublicationDate(OmemoDevice device, Date date)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1179,7 +1190,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             cursor.moveToFirst();
             try {
                 session = new SessionRecord(Base64.decode(
-                        cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.KEY)), Base64.DEFAULT));
+                        cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.SESSION_KEY)), Base64.DEFAULT));
             } catch (IOException e) {
                 logger.warn("Could not deserialize raw session.", e);
             }
@@ -1195,14 +1206,14 @@ public class DatabaseBackend extends SQLiteOpenHelper
         HashMap<Integer, SessionRecord> deviceSessions = new HashMap<>();
         final SQLiteDatabase db = this.getReadableDatabase();
 
-        String[] columns = {SQLiteOmemoStore.DEVICE_ID, SQLiteOmemoStore.KEY};
+        String[] columns = {SQLiteOmemoStore.DEVICE_ID, SQLiteOmemoStore.SESSION_KEY};
         String[] selectionArgs = {contact.toString()};
         Cursor cursor = db.query(SQLiteOmemoStore.SESSION_TABLE_NAME, columns,
                 SQLiteOmemoStore.BARE_JID + "=?", selectionArgs, null, null, null);
 
         while (cursor.moveToNext()) {
             deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
-            String sessionKey = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.KEY));
+            String sessionKey = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.SESSION_KEY));
             if (!StringUtils.isNullOrEmpty(sessionKey)) {
                 try {
                     session = new SessionRecord(Base64.decode(sessionKey, Base64.DEFAULT));
@@ -1216,13 +1227,53 @@ public class DatabaseBackend extends SQLiteOpenHelper
         return deviceSessions;
     }
 
+
+    public HashMap<OmemoDevice, SessionRecord> getAllDeviceSessions()
+    {
+        OmemoDevice omemoDevice;
+        BareJid bareJid;
+        int deviceId;
+        String sJid;
+        SessionRecord session = null;
+        HashMap<OmemoDevice, SessionRecord> deviceSessions = new HashMap<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String[] columns = {SQLiteOmemoStore.BARE_JID, SQLiteOmemoStore.DEVICE_ID, SQLiteOmemoStore.SESSION_KEY};
+        Cursor cursor = db.query(SQLiteOmemoStore.SESSION_TABLE_NAME, columns,
+                null, null, null, null, null);
+
+        while (cursor.moveToNext()) {
+            String sessionKey = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.SESSION_KEY));
+            if (!StringUtils.isNullOrEmpty(sessionKey)) {
+                try {
+                    session = new SessionRecord(Base64.decode(sessionKey, Base64.DEFAULT));
+                } catch (IOException e) {
+                    logger.warn("Could not deserialize raw session!", e);
+                    continue;
+                }
+
+                deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
+                sJid = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.BARE_JID));
+                try {
+                    bareJid = JidCreate.bareFrom(sJid);
+                    omemoDevice = new OmemoDevice(bareJid, deviceId);
+                    deviceSessions.put(omemoDevice, session);
+                } catch (XmppStringprepException e) {
+                    logger.warn("Jid creation error for: " + sJid);
+                }
+            }
+        }
+        cursor.close();
+        return deviceSessions;
+    }
+
     public void storeSession(OmemoDevice omemoContact, SessionRecord session)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.BARE_JID, omemoContact.getJid().toString());
         values.put(SQLiteOmemoStore.DEVICE_ID, omemoContact.getDeviceId());
-        values.put(SQLiteOmemoStore.KEY, Base64.encodeToString(session.serialize(), Base64.DEFAULT));
+        values.put(SQLiteOmemoStore.SESSION_KEY, Base64.encodeToString(session.serialize(), Base64.DEFAULT));
         db.insert(SQLiteOmemoStore.SESSION_TABLE_NAME, null, values);
     }
 

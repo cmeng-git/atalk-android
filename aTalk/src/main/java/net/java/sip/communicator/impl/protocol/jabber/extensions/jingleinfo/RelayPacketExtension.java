@@ -67,7 +67,7 @@ public class RelayPacketExtension extends AbstractPacketExtension
      * @return XML string representation
      */
     @Override
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
 
@@ -75,7 +75,7 @@ public class RelayPacketExtension extends AbstractPacketExtension
         xml.optElement(token, token);
 
         for (ExtensionElement ext : getChildExtensions()) {
-            xml.append(ext.toXML());
+            xml.append(ext.toXML(null));
         }
         xml.closeElement(ELEMENT_NAME);
         return xml;

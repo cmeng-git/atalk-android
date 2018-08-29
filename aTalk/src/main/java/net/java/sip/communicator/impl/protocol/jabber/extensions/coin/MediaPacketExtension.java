@@ -203,7 +203,7 @@ public class MediaPacketExtension extends AbstractPacketExtension
      * @return XML string representation
      */
     @Override
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.prelude(getElementName(), getNamespace());
@@ -221,7 +221,7 @@ public class MediaPacketExtension extends AbstractPacketExtension
         xml.optElement(ELEMENT_LABEL, label);
 
         for (ExtensionElement ext : getChildExtensions()) {
-            xml.append(ext.toXML());
+            xml.append(ext.toXML(null));
         }
         xml.closeElement(getElementName());
         return xml;

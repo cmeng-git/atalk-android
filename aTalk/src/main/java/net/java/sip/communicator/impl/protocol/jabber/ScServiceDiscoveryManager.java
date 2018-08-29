@@ -15,6 +15,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
@@ -57,7 +58,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     private final boolean cacheNonCaps;
 
     /**
-     * The cache of non-caps. Used only if {@link #cacheNonCaps} is <tt>true</tt>.
+     * The cache for storing discoInfo without valid nvh. Used only if {@link #cacheNonCaps} is <tt>true</tt>.
      */
     private static final LruCache<Jid, DiscoverInfo> nonCapsCache = new LruCache<>(10000);
 
@@ -190,8 +191,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      *
      * Since no packet is actually sent to the server it is safe to perform this operation before
      * logging to the server. In fact, you may want to configure the supported features before
-     * logging to the server so that the information is already available if it is required upon
-     * login.
+     * logging to the server so that the information is already available if it is required upon login.
      *
      * @param feature the feature to register as supported.
      */
@@ -282,13 +282,13 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      *
      * @param entityID the address of the XMPP entity.
      * @return the discovered information.
-     * @throws XMPPException.XMPPErrorException if the operation failed for some reason.
+     * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if there is no connection
+     * @throws InterruptedException if there is an Exception
      */
     public DiscoverInfo discoverInfo(Jid entityID)
-            throws NoResponseException, XMPPException.XMPPErrorException, NotConnectedException, InterruptedException
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         // Check if we have it cached in the Entity Capabilities Manager
         DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityID);
@@ -296,36 +296,28 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
             return discoverInfo;
         }
 
-        // Try to get the newest node#version if it's known, otherwise null is returned
+        // Try to get the nvh if it's known, otherwise null is returned
         NodeVerHash nvh = EntityCapsManager.getNodeVerHashByJid(entityID);
 
-        // if nvh is not valid, has empty hash. Try to retrieve from nonCapsCache
+        // if nvh is null; try to retrieve from local nonCapsCache
         if (cacheNonCaps && (nvh == null)) {
-            // discoverInfo = nonCapsCache.get(entityID);
             discoverInfo = getDiscoverInfoByEntity(entityID);
             if (discoverInfo != null)
                 return discoverInfo;
         }
 
-        // Discover by requesting the information from the remote entity
-        // Note that we need to use NodeVer as argument for Node if it exists
-        discoverInfo = discoverInfo(entityID, nvh != null ? nvh.getNodeVer() : null);
-
-        if ((nvh != null)
-                && !EntityCapsManager.verifyDiscoverInfoVersion(nvh.getVer(), nvh.getHash(),
-                discoverInfo)) {
-            logger.warn("Invalid DiscoverInfo for " + nvh.getNodeVer() + ": " + discoverInfo);
-            nvh = null;
-        }
-
-        if (nvh == null) {
-            if (cacheNonCaps)
-                // nonCapsCache.put(entityID, discoverInfo);
+        // Not found: Then discover by requesting the information from the remote entity
+        discoverInfo = getRemoteDiscoverInfo(entityID);
+        if (discoverInfo != null) {
+            // store in local nonCapsCache
+            if ((nvh == null) && cacheNonCaps) {
+                // logger.warn("Add discoverInfo with null nvh for: " + entityID);
                 addDiscoverInfoByEntity(entityID, discoverInfo);
+            }
+            return discoverInfo;
         }
-        else { // If the node version is known, store the new entry.
-            EntityCapsManager.addDiscoverInfoByNode(nvh.getNodeVer(), discoverInfo);
-        }
+
+        logger.warn("Failed to get DiscoverInfo for: " + entityID);
         return discoverInfo;
     }
 
@@ -346,16 +338,16 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
             return discoverInfo;
         }
 
-        // Try to get the newest node#version if it's known, otherwise null is returned
+        // Try to get the nvh if it's known, otherwise null is returned
         NodeVerHash nvh = EntityCapsManager.getNodeVerHashByJid(entityID);
 
-        // if nvh is not valid, has empty hash. Try to retrieve from nonCapsCache
+        // if nvh is null; try to retrieve from local nonCapsCache
         if (cacheNonCaps && (nvh == null)) {
-            // discoverInfo = nonCapsCache.get(entityID);
             discoverInfo = getDiscoverInfoByEntity(entityID);
             if (discoverInfo != null)
                 return discoverInfo;
         }
+
         // add to retrieve thread
         retriever.addEntityForRetrieve(entityID, nvh);
         return null;
@@ -367,22 +359,20 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * addressable.
      *
      * @param entityID the address of the XMPP entity.
-     * @param node the attribute that supplements the 'jid' attribute.
      * @return the discovered information.
-     * @throws XMPPException.XMPPErrorException if the operation failed for some reason.
+     * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public DiscoverInfo discoverInfo(Jid entityID, String node)
-            throws NoResponseException, XMPPException.XMPPErrorException, NotConnectedException,
-            InterruptedException
+    public DiscoverInfo getRemoteDiscoverInfo(Jid entityID)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         // cmeng - "item-not-found" for request on a 5-second wait timeout. Actually server does
         // reply @ 28 seconds after disco#info is sent
         connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
-        DiscoverInfo discoInfo = discoveryManager.discoverInfo(entityID, node);
+        DiscoverInfo discoInfo = discoveryManager.discoverInfo(entityID);
 
         connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
         return discoInfo;
@@ -393,13 +383,13 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      *
      * @param entityID the address of the XMPP entity.
      * @return the discovered information.
-     * @throws XMPPException.XMPPErrorException if the operation failed for some reason.
+     * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException
      * @throws InterruptedException
      */
     public DiscoverItems discoverItems(Jid entityID)
-            throws NoResponseException, XMPPException.XMPPErrorException, NotConnectedException, InterruptedException
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         return discoveryManager.discoverItems(entityID);
     }
@@ -411,13 +401,13 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * @param entityID the address of the XMPP entity.
      * @param node the attribute that supplements the 'jid' attribute.
      * @return the discovered items.
-     * @throws XMPPException.XMPPErrorException if the operation failed for some reason.
+     * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException
      * @throws InterruptedException
      */
     public DiscoverItems discoverItems(Jid entityID, String node)
-            throws NoResponseException, XMPPException.XMPPErrorException, NotConnectedException, InterruptedException
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         return discoveryManager.discoverItems(entityID, node);
     }
@@ -479,7 +469,6 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     private static void addDiscoverInfoByEntity(Jid entityID, DiscoverInfo info)
     {
         nonCapsCache.put(entityID, info);
-
         if (discoInfoPersistentCache != null)
             discoInfoPersistentCache.addDiscoverInfoByNodePersistent(entityID.toString(), info);
     }
@@ -493,9 +482,8 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      */
     private static DiscoverInfo getDiscoverInfoByEntity(Jid entityID)
     {
-        DiscoverInfo info = nonCapsCache.get(entityID);
-
-        // If not in nonCapsCache, try to retrieve the information from discoInfoPersistentCache
+        // If not in nonCapsCache, try to retrieve the information from discoInfoPersistentCache using entityID
+        DiscoverInfo info = nonCapsCache.lookup(entityID);
         if (info == null && discoInfoPersistentCache != null) {
             info = discoInfoPersistentCache.lookup(entityID.toString());
             // Promote the information to nonCapsCache if one was found
@@ -504,7 +492,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
             }
         }
 
-        // If we were able to retrieve information from one of the caches, copy it before returning
+        // If we are able to retrieve information from one of the caches, copy it before returning
         if (info != null)
             info = new DiscoverInfo(info);
 
@@ -751,31 +739,26 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         private void requestDiscoveryInfo(final Jid entityID, NodeVerHash nvh)
         {
             try {
-                DiscoverInfo discoverInfo = discoverInfo(entityID, (nvh == null) ? null : nvh.getNodeVer());
+                // Discover by requesting the information from the remote entity;
+                // will return null if no nvh in JID_TO_NODEVER_CACHE=>CAPS_CACHE
+                DiscoverInfo discoverInfo = getRemoteDiscoverInfo(entityID);
+
                 if ((nvh != null)
                         && !EntityCapsManager.verifyDiscoverInfoVersion(nvh.getVer(), nvh.getHash(), discoverInfo)) {
+                    // Force nvh to null if nodeVersion is invalid and log error
                     logger.error("Invalid DiscoverInfo NodeVersion for " + nvh.getNodeVer());
-                    //  temporary fix for asterisk pbx testing only
-                    // Force nvh to null if nodeVersion is invalid
-                    //  nvh = null;
+                    nvh = null;
                 }
 
                 // (discoverInfo = null) if iq result with "item-not-found"
                 if (discoverInfo != null) {
-                    boolean fireEvent = false;
-                    if (nvh == null) {
-                        if (cacheNonCaps) {
-                            // nonCapsCache.put(entityID, discoverInfo);
-                            addDiscoverInfoByEntity(entityID, discoverInfo);
-                            fireEvent = true;
-                        }
+                    if ((nvh == null) && cacheNonCaps) {
+                        // logger.warn("Add discoverInfo with null nvh for: " + entityID);
+                        addDiscoverInfoByEntity(entityID, discoverInfo);
                     }
-                    else { // If the node version is known and verified, store the new entry.
-                        EntityCapsManager.addDiscoverInfoByNode(nvh.getNodeVer(), discoverInfo);
-                        fireEvent = true;
-                    }
+
                     // fire the event
-                    if (fireEvent && capabilitiesOpSet != null) {
+                    if (capabilitiesOpSet != null) {
                         capabilitiesOpSet.fireContactCapabilitiesChanged(entityID);
                     }
                 }

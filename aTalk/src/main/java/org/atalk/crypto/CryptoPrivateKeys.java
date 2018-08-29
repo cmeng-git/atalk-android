@@ -17,20 +17,10 @@
 package org.atalk.crypto;
 
 import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.content.*;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.view.*;
+import android.widget.*;
 
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.plugin.otr.ScOtrKeyManager;
@@ -44,20 +34,13 @@ import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
-import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.OmemoService;
-import org.jivesoftware.smackx.omemo.OmemoStore;
+import org.jivesoftware.smackx.omemo.*;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Settings screen displays local private keys. Allows user to generate new or regenerate
@@ -230,14 +213,15 @@ public class CryptoPrivateKeys extends OSGiActivity
                         }
                         accountsAdapter.notifyDataSetChanged();
                     }
-                }).setNegativeButton(R.string.service_gui_CANCEL, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.dismiss();
-            }
-        }).show();
+                })
+                .setNegativeButton(R.string.service_gui_CANCEL, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
     /**

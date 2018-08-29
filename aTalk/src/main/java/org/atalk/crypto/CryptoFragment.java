@@ -313,11 +313,15 @@ public class CryptoFragment extends OSGiFragment
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
                 activeChat.addMessage(mEntity, new Date(), Chat.ERROR_MESSAGE, ChatMessage.ENCODE_PLAIN,
-                        getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED));
+                        getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
                 logger.info("OMEMO changes mChatType to: " + mChatType);
                 return;
             } catch (Exception e) { // catch any non-advertised exception
                 logger.warn("UndecidedOmemoIdentity check failed: " + e.getMessage());
+                mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
+                activeChat.addMessage(mEntity, new Date(), Chat.ERROR_MESSAGE, ChatMessage.ENCODE_PLAIN,
+                        getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
+                logger.info("OMEMO changes mChatType to: " + mChatType);
                 return;
             }
 
@@ -366,10 +370,13 @@ public class CryptoFragment extends OSGiFragment
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
                 activeChat.addMessage(mEntity, new Date(), Chat.ERROR_MESSAGE, ChatMessage.ENCODE_PLAIN,
-                        getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED));
+                        getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
                 return;
             } catch (Exception e) { // catch any non-advertised exception
                 logger.warn("UndecidedOmemoIdentity check failed: " + e.getMessage());
+                mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
+                activeChat.addMessage(mEntity, new Date(), Chat.ERROR_MESSAGE, ChatMessage.ENCODE_PLAIN,
+                        getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
             }
 
             allTrusted = allTrusted && isAllTrusted(mMultiUserChat);
@@ -890,7 +897,7 @@ public class CryptoFragment extends OSGiFragment
                 boolean entityCan = false;
 
                 try {
-                    DomainBareJid serverJid = mConnection.getServiceName();
+                    DomainBareJid serverJid = mConnection.getXMPPServiceDomain();
                     serverCan = OmemoManager.serverSupportsOmemo(mConnection, serverJid);
 
                     if (mDescriptor instanceof ChatRoom) {

@@ -16,6 +16,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
+
 public class ReasonPacketExtension implements ExtensionElement
 {
     /**
@@ -152,7 +153,7 @@ public class ReasonPacketExtension implements ExtensionElement
      *
      * @return the packet extension as XML.
      */
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.openElement(getElementName());
@@ -164,7 +165,7 @@ public class ReasonPacketExtension implements ExtensionElement
 
         // add the extra element if it has been specified.
         if (getOtherExtension() != null) {
-            xml.append(getOtherExtension().toXML());
+            xml.append(getOtherExtension().toXML(null));
         }
         xml.closeElement(getElementName());
         return xml;

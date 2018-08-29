@@ -157,7 +157,7 @@ public class Registration extends IQ {
             }
         }
         else if (mDataForm != null) {
-            xml.append(mDataForm.toXML());
+            xml.append(mDataForm.toXML(null));
         }
         return xml;
     }
@@ -176,7 +176,7 @@ public class Registration extends IQ {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
 

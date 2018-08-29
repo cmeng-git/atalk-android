@@ -1013,11 +1013,14 @@
         поставщика услуг, чтобы сообщить им об этой проблеме. &lt;/DIV>&lt;/HTML></string>
 
     <!-- SSL Certificates -->
-	<string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Удаление SSL-сертификата</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Пожалуйста, подтвердите удаление сертификата SSL для: %1$s</string>
+	<string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Удалить сертификат</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Пожалуйста, подтвердите удаление сертификата для: %1$s</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Менеджер сертификатов SSL</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Управление сертификатами SSL</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Сертификат SSL</string>
+
+    <string name="pref_remove_trusted_certificates_title">Удалить сертификат</string>
+    <string name="pref_remove_trusted_certificates_summary">Удаление утвержденных вручную сертификатов</string>
 
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Сохранение изменений учетной записи, подождите&#8230;</string>
@@ -1389,7 +1392,7 @@
 
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">Запрос сеанса OTR от вашего собеседника был отклонен во время сеанса OMEMO. Вы можете включить сеанс OTR вручную!</string>
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">Ваш запрос сеанса OTR был отклонен во время сеанса omemo!</string>
-    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">Настройка сеанса OMEMO не удалась!</string>
+    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">Настройка сеанса OMEMO не удалась! %1$s</string>
     <string name="crypto_msg_OMEMO_SESSION_UNTRUSTED">Найден доверенный приятель ZERO для получения сообщений OMEMO!</string>
     <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED">Отправка сообщений OMEMO некоторым неизвестным друзьям с непроверенными отпечатками пальцев!</string>
     <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED_UNTRUSTED">MultiUserChat с некоторыми друзьями не доверенными или с непроверенными отпечатками пальцев!</string>

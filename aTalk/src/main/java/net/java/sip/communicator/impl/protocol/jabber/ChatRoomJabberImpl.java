@@ -33,7 +33,7 @@ import org.jivesoftware.smack.SmackException.*;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
@@ -635,13 +635,13 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             // We don't specify a reason.
             opSetMuc.fireLocalUserPresenceEvent(this, LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED, null);
         } catch (XMPPErrorException ex) {
-            XMPPError xmppError = ex.getXMPPError();
+            StanzaError xmppError = ex.getXMPPError();
             errorMessage += "\n" + ex.getMessage() + "\n";
             if (xmppError == null) {
                 logger.error(errorMessage, ex);
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
             }
-            else if (xmppError.getCondition().equals(XMPPError.Condition.not_authorized)) {
+            else if (xmppError.getCondition().equals(Condition.not_authorized)) {
                 logger.error(errorMessage, ex);
                 if (mCaptchaState == CaptchaDialog.unknown) {
                     errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD);
@@ -652,7 +652,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     throw new OperationFailedException(errorMessage, OperationFailedException.CAPTCHA_CHALLENGE, ex);
                 }
             }
-            else if (xmppError.getCondition().equals(XMPPError.Condition.registration_required)) {
+            else if (xmppError.getCondition().equals(Condition.registration_required)) {
                 String errText = xmppError.getDescriptiveText();
                 if (TextUtils.isEmpty(errText))
                     errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION);
@@ -1369,7 +1369,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             // If a moderator or a user with an affiliation of "owner" or "admin" was intended
             // to be kicked.
-            if (e.getXMPPError().getCondition().equals(XMPPError.Condition.not_allowed)) {
+            if (e.getXMPPError().getCondition().equals(Condition.not_allowed)) {
                 throw new OperationFailedException("Kicking an admin user or a chat room owner is a forbidden operation.",
                         OperationFailedException.FORBIDDEN);
             }
@@ -1405,14 +1405,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             // If a moderator or a user with an affiliation of "owner" or "admin" was intended
             // to be kicked.
-            if (e.getXMPPError().getCondition().equals(XMPPError.Condition.not_allowed)) {
+            if (e.getXMPPError().getCondition().equals(Condition.not_allowed)) {
                 throw new OperationFailedException(
                         "Kicking an admin user or a chat room owner is a forbidden operation.",
                         OperationFailedException.FORBIDDEN);
             }
             // If a participant that intended to kick another participant does not have kicking
             // privileges.
-            else if (e.getXMPPError().getCondition().equals(XMPPError.Condition.forbidden)) {
+            else if (e.getXMPPError().getCondition().equals(Condition.forbidden)) {
                 throw new OperationFailedException(
                         "The user that intended to kick another participant does not have enough privileges to do that.",
                         OperationFailedException.NOT_ENOUGH_PRIVILEGES);
@@ -1801,7 +1801,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             if (logger.isDebugEnabled()) {
                 if (logger.isDebugEnabled())
-                    logger.debug("Received from " + fromNick + " the message " + msg.toXML());
+                    logger.debug("Received from " + fromNick + " the message " + msg.toString());
             }
 
             Message newMessage = createMessage(msgBody);
@@ -1809,12 +1809,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 if (logger.isInfoEnabled())
                     logger.info("Message error received from: " + fromNick);
 
-                XMPPError error = msg.getError();
+                StanzaError error = msg.getError();
                 Condition errorCode = error.getCondition();
                 int errorResultCode = ChatRoomMessageDeliveryFailedEvent.UNKNOWN_ERROR;
                 String errorReason = error.getConditionText();
 
-                if (errorCode == XMPPError.Condition.service_unavailable) {
+                if (errorCode == Condition.service_unavailable) {
                     Condition errorCondition = error.getCondition();
                     if (Condition.service_unavailable == errorCondition) {
                         if (!member.getPresenceStatus().isOnline()) {
@@ -2135,7 +2135,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             this.configForm = new ChatRoomConfigurationFormJabberImpl(mMultiUserChat,
                     smackConfigForm);
         } catch (XMPPErrorException e) {
-            if (e.getXMPPError().getCondition().equals(XMPPError.Condition.forbidden))
+            if (e.getXMPPError().getCondition().equals(Condition.forbidden))
                 throw new OperationFailedException(
                         "Failed to obtain smack multi user chat config form. User doesn't have enough privileges to see the form.",
                         OperationFailedException.NOT_ENOUGH_PRIVILEGES, e);

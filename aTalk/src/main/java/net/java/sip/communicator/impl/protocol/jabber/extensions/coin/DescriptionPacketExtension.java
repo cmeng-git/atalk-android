@@ -144,7 +144,7 @@ public class DescriptionPacketExtension extends AbstractPacketExtension
      * @return XML string representation
      */
     @Override
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.prelude(getElementName(), getNamespace());
@@ -163,7 +163,7 @@ public class DescriptionPacketExtension extends AbstractPacketExtension
             xml.optIntElement(ELEMENT_MAX_USER_COUNT, maximumUserCount);
 
         for (ExtensionElement ext : getChildExtensions()) {
-            xml.append(ext.toXML());
+            xml.append(ext.toXML(null));
         }
 
         xml.closeElement(getElementName());

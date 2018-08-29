@@ -20,7 +20,7 @@ import android.os.Build;
 
 import org.atalk.android.util.ApiLib;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 /**
  * Wraps Smack's <tt>XMPPError</tt> into <tt>PacketExtension</tt>, so that it
@@ -33,23 +33,23 @@ public class XMPPErrorPE implements ExtensionElement
     /**
      * <tt>XMPPError</tt> wrapped into this <tt>XMPPErrorPE</tt>.
      */
-    private XMPPError error;
+    private StanzaError error;
 
     /**
      * Creates new instance of <tt>XMPPErrorPE</tt>.
      *
-     * @param xmppError the instance of <tt>XMPPError</tt> that will be wrapped
+     * @param stanzaError the instance of <tt>XMPPError</tt> that will be wrapped
      * by the newly created <tt>XMPPErrorPE</tt>.
      */
-    public XMPPErrorPE(XMPPError xmppError)
+    public XMPPErrorPE(StanzaError stanzaError)
     {
-        setError(xmppError);
+        setError(stanzaError);
     }
 
     /**
      * Returns the underlying instance of <tt>XMPPError</tt>.
      */
-    public XMPPError getError()
+    public StanzaError getError()
     {
         return error;
     }
@@ -60,7 +60,7 @@ public class XMPPErrorPE implements ExtensionElement
      * @param error <tt>XMPPError</tt> that will be wrapped by this <TT>XMPPErrorPE</TT>.
      */
 
-    public void setError(XMPPError error)
+    public void setError(StanzaError error)
     {
         ApiLib.requireNonNull(error, "error");
         this.error = error;
@@ -89,8 +89,8 @@ public class XMPPErrorPE implements ExtensionElement
      * {@inheritDoc}
      */
     @Override
-    public CharSequence toXML()
+    public CharSequence toXML(String enclosingNamespace)
     {
-        return error.toXML().toString();
+        return error.toXML(null).toString();
     }
 }

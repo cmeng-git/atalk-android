@@ -19,17 +19,16 @@ package net.java.sip.communicator.util;
 
 import android.text.TextUtils;
 
+import org.minidns.dnsmessage.DnsMessage;
+import org.minidns.hla.ResolverApi;
+import org.minidns.hla.ResolverResult;
+import org.minidns.record.*;
+import org.minidns.record.Record.TYPE;
+import org.minidns.util.InetAddressUtil;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
-
-import de.measite.minidns.DNSMessage;
-import de.measite.minidns.Record;
-import de.measite.minidns.Record.TYPE;
-import de.measite.minidns.hla.ResolverApi;
-import de.measite.minidns.hla.ResolverResult;
-import de.measite.minidns.record.*;
-import de.measite.minidns.util.InetAddressUtil;
 
 /**
  * Utility methods and fields to use when working with network addresses.
@@ -211,7 +210,7 @@ public class NetworkUtils
     {
         List<Record<? extends Data>> records = null;
         try {
-            DNSMessage dnsMessage = ResolverApi.INSTANCE.getClient().query(domain, TYPE.NAPTR);
+            DnsMessage dnsMessage = ResolverApi.INSTANCE.getClient().query(domain, TYPE.NAPTR);
             records = dnsMessage.answerSection;
         } catch (IOException tpe) {
             logger.trace("No A record found for " + domain);

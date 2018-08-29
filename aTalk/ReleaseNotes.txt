@@ -1,5 +1,27 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.5.0 (1050)
+Author:         cmeng
+Upload Date:	08/29/2018
+- Add user option to remove manually approved certificates
+- Fix Omemo locked up when no key found - SQliteOmemoStore#loadRawSession() must return null if no record found-for OmemoService to rebuild
+- Fix coding error in CertificateServiceImpl#addCertificateToTrust()
+- Ported to use smack libraries v4.3.0 and miniDNS v0.3.2
+- Fix TLSA,  DNSSEC and DNSSEC & DANE signature verification error (DefaultIsdnTransformator & TLSA) - minidns-core.0.3.3-SNAPSHOT
+- Port ScServiceDiscoveryManager to use smack 4.3.0
+- Remove AndroidUsingExecLowPriority.java and fall back to use miniDns 0.3.2 AndroidUsingExec instead
+- Disable omemo dialogs being cancelled when user clicks outside dialogs area or press back key
+- Inject system error message when omemo session setup failed
+- Delete all inactive devices with null Identity key when user select delete inactive identity - must monitor to ensure no problem
+
+=========================================================================
+Version:		1.4.7a (1046)
+Author:         cmeng
+Upload Date:	08/14/2018
+- Inject error chat message when there is a problem with a missing session record - no key found
+- Add method to delete and cleanup inactive identities
+
+=========================================================================
 Version:		1.4.6 (1046)
 Author:         cmeng
 Upload Date:	08/14/2018
@@ -12,6 +34,7 @@ Upload Date:	08/14/2018
 - Must setTrustCallback() after identity regeneration, else aTalk crash on null pointer
 - Prompt user for re-login on authentication security failure if any
 - Fix selected dnssecMode not properly saved if server override is not selected.
+
 =========================================================================
 Version:		1.4.5 (1045)
 Author:         cmeng

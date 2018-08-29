@@ -85,7 +85,6 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
 
         this.bundleContext = AndroidGUIActivator.bundleContext;
         bundleContext.addServiceListener(this);
-
         initAccounts(accounts);
     }
 
@@ -97,7 +96,6 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
     private void initAccounts(Collection<AccountID> collection)
     {
         ArrayList<Account> accounts = new ArrayList<>();
-
         for (AccountID acc : collection) {
             Account account = new Account(acc, bundleContext, getParentActivity());
             if (filterDisabledAccounts && !account.isEnabled())

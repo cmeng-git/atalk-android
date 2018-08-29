@@ -41,25 +41,16 @@ import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoStore;
-import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
-import org.jivesoftware.smackx.omemo.trust.OmemoTrustCallback;
-import org.jivesoftware.smackx.omemo.trust.TrustState;
+import org.jivesoftware.smackx.omemo.trust.*;
 import org.jivesoftware.smackx.omemo.util.OmemoKeyUtil;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.whispersystems.libsignal.IdentityKey;
 import org.whispersystems.libsignal.IdentityKeyPair;
-import org.whispersystems.libsignal.state.PreKeyRecord;
-import org.whispersystems.libsignal.state.SessionRecord;
-import org.whispersystems.libsignal.state.SignedPreKeyRecord;
+import org.whispersystems.libsignal.state.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * The extension of the OMEMO signal Store that uses SQLite database to support the storage of
@@ -119,7 +110,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     public static final String SESSION_TABLE_NAME = "sessions";
     // public static final String BARE_JID = "bareJid";
     // public static final String DEVICE_ID = "deviceId";
-    public static final String KEY = "key";
+    public static final String SESSION_KEY = "key";
 
     private static final int NUM_TRUSTS_TO_CACHE = 100;
     /*
@@ -354,6 +345,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
 
     /**
      * Load our identityKeyPair from storage.
+     * Return null, if we have no identityKeyPair.
      *
      * @param userDevice our OmemoDevice.
      * @return identityKeyPair
@@ -372,6 +364,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
             msg = e.getMessage();
             isCorrupted = true;
         }
+
         if (identityKeyPair == null) {
             msg = aTalkApp.getResString(R.string.omemo_identity_keypairs_missing, userDevice);
         }
@@ -432,6 +425,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
             msg = e.getMessage();
             isCorrupted = true;
         }
+
         if (identityKey == null) {
             msg = aTalkApp.getResString(R.string.omemo_identity_key_missing, contactDevice);
         }
@@ -446,8 +440,9 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     }
 
     /**
-     * Store the public identityKey of the device. If new device, initialize its fingerprint trust
-     * status basing on:
+     * Store the public identityKey of the device.
+     *
+     * If new device, initialize its fingerprint trust status basing on:
      * - found no previously manually verified fingerprints for the contact AND
      * - pending user option BlindTrustBeforeVerification.
      * Otherwise just set its status to active and update lastActivation to current.
@@ -644,25 +639,17 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     // --------------------------------------
 
     /**
-     * Returns a copy of the {@link SessionRecord} corresponding to the recipientId + deviceId
-     * tuple, or a new SessionRecord if one does not currently exist.
-     *
-     * It is important that implementations return a copy of the current durable information. The
-     * returned SessionRecord may be modified, but those changes should not have an effect on the
-     * durable session state (what is returned by subsequent calls to this method) without the
-     * store method being called here first.
-     *
      * Load the crypto-lib specific session object of the device from storage.
+     * A null session record will trigger a fresh session rebuild by omemoService
      *
      * @param userDevice our OmemoDevice.
      * @param contactDevice device whose session we want to load
-     * @return crypto related session
+     * @return crypto related session; null if none if found
      */
     @Override
     public SessionRecord loadRawSession(OmemoDevice userDevice, OmemoDevice contactDevice)
     {
-        SessionRecord session = mDB.loadSession(contactDevice);
-        return (session != null) ? session : new SessionRecord();
+        return mDB.loadSession(contactDevice);
     }
 
     /**
@@ -730,6 +717,32 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     }
 
     /**
+     * Set the date of the last message that was received from a device.
+     *
+     * @param userDevice our omemoDevice.
+     * @param contactDevice device in question
+     * @param date date of the last received message
+     */
+    @Override
+    public void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactDevice, Date date)
+    {
+        mDB.setLastMessageReceiveDate(contactDevice, date);
+    }
+
+    /**
+     * Return the date of the last message that was received from device 'from'.
+     *
+     * @param userDevice our OmemoDevice.
+     * @param contactDevice device in question
+     * @return date if existent, otherwise null
+     */
+    @Override
+    public Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactDevice)
+    {
+        return mDB.getLastMessageReceiveDate(contactDevice);
+    }
+
+    /**
      * Set the date of the last time the deviceId was published. This method only gets called, when the deviceId
      * was inactive/non-existent before it was published.
      *
@@ -755,32 +768,6 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     public Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactDevice)
     {
         return mDB.getLastDeviceIdPublicationDate(contactDevice);
-    }
-
-    /**
-     * Set the date in millis of the last message that was received from a device.
-     *
-     * @param userDevice omemoManager of our device.
-     * @param contactDevice device in question
-     * @param date date of the last received message
-     */
-    @Override
-    public void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactDevice, Date date)
-    {
-        mDB.setLastMessageReceiveDate(contactDevice, date);
-    }
-
-    /**
-     * Return the date in millis of the last message that was received from device 'from'.
-     *
-     * @param userDevice our OmemoDevice.
-     * @param contactDevice device in question
-     * @return date if existent, otherwise null
-     */
-    @Override
-    public Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactDevice)
-    {
-        return mDB.getLastMessageReceiveDate(contactDevice);
     }
 
     /**
@@ -852,9 +839,14 @@ public class SQLiteOmemoStore extends SignalOmemoStore
             OmemoCachedDeviceList deviceList = mDB.loadCachedDeviceList(userJid);
             for (int deviceId : deviceList.getInactiveDevices()) {
                 userDevice = new OmemoDevice(userJid, deviceId);
-                logger.info("Purge inactive device for: " +  userDevice);
+                logger.info("Purge inactive device for: " + userDevice);
                 purgeOwnDeviceKeys(userDevice);
             }
+
+            // Also delete all inactive devices with null Identity key - must monitor to ensure no problem
+            int count = mDB.deleteInactiveDeviceList();
+            logger.info("Number of inactive identities deleted: " + count);
+
         } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
             aTalkApp.showToastMessage(R.string.omemo_purge_inactive_device_error, userDevice);
             e.printStackTrace();

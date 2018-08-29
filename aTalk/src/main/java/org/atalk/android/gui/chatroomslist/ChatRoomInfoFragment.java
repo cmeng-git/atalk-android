@@ -161,7 +161,7 @@ public class ChatRoomInfoFragment extends OSGiFragment
                 textView.setText(textValue);
 
                 textView = mContent.findViewById(R.id.roominfo_contactjid);
-                List<String> contactJids = chatRoomInfo.getContactJids();
+                List<EntityBareJid> contactJids = chatRoomInfo.getContactJids();
                 textValue = (contactJids == null) ? "" : contactJids.toString();
                 textView.setText(textValue);
 

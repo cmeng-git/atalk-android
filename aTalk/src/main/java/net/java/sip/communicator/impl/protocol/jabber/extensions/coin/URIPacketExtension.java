@@ -106,7 +106,7 @@ public class URIPacketExtension extends AbstractPacketExtension
      * @return an XML representation of this extension.
      */
     @Override
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.prelude(getElementName(), getNamespace());
@@ -121,7 +121,7 @@ public class URIPacketExtension extends AbstractPacketExtension
         xml.optElement(ELEMENT_PURPOSE, purpose);
 
         for (ExtensionElement ext : getChildExtensions()) {
-            xml.append(ext.toXML());
+            xml.append(ext.toXML(null));
         }
         xml.closeElement(getElementName());
         return xml;

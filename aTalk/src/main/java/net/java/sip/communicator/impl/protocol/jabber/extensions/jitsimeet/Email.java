@@ -86,7 +86,7 @@ public class Email implements ExtensionElement
      * @return xml representation of this extension.
      */
     @Override
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.element(ELEMENT_NAME, getAddress());

@@ -19,7 +19,6 @@ package org.atalk.crypto.omemo;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.View;
 
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
@@ -72,14 +71,14 @@ public class OmemoRegenerateDialog extends OSGiActivity
                     public void onClick(DialogInterface dialog, int which, boolean isChecked)
                     {
                         checkedItems[which] = isChecked;
-                        final AlertDialog alertDialog = (AlertDialog) dialog;
+                        final AlertDialog multiChoiceDialog = (AlertDialog) dialog;
                         for (boolean item : checkedItems) {
                             if (item) {
-                                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+                                multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
                                 return;
                             }
                         }
-                        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+                        multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
                     }
                 });
 
@@ -111,28 +110,11 @@ public class OmemoRegenerateDialog extends OSGiActivity
                         finish();
                     }
                 });
+
         AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-    }
-
-    /**
-     * Method fired when the ok button is clicked.
-     *
-     * @param v ok button's <tt>View</tt>.
-     */
-    public void onOkClicked(View v)
-    {
-        finish();
-    }
-
-    /**
-     * Method fired when the cancel button is clicked.
-     *
-     * @param v the cancel button's <tt>View</tt>
-     */
-    public void onCancelClicked(View v)
-    {
-        finish();
     }
 }

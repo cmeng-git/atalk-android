@@ -473,7 +473,7 @@ public class ConferenceInfoDocument
 	 * @return the XML representation of the <tt>conference-info</tt> tree, or <tt>null</tt> if an
 	 *         error occurs while trying to get it.
 	 */
-	public String toXml()
+	public String toXml(String enclosingNamespace)
 	{
 		try {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -496,7 +496,7 @@ public class ConferenceInfoDocument
 	@Override
 	public String toString()
 	{
-		String s = toXml();
+		String s = toXml(null);
 		return s == null ? "Could not get conference-info XML" : s;
 	}
 

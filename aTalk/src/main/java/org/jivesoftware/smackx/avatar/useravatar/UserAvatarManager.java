@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smackx.avatar.useravatar;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
@@ -62,7 +63,7 @@ public class UserAvatarManager extends AvatarManager
 	/*
 	 * The constant String "http://jabber.org/protocol/pubsub#event".
 	 */
-	public static final String PUBSUB_EVENT_NAMESPACE = PubSubNamespace.EVENT.getXmlns();
+	public static final String PUBSUB_EVENT_NAMESPACE = PubSubNamespace.event.getXmlns();
 
 	/*
 	 * The pubSub node for avatar metadata.
@@ -284,8 +285,12 @@ public class UserAvatarManager extends AvatarManager
 		}
 		catch (SmackException.NotConnectedException | InterruptedException e) {
 			e.printStackTrace();
-		}
-		return false;
+		} catch (XMPPException.XMPPErrorException e) {
+            e.printStackTrace();
+        } catch (SmackException.NoResponseException e) {
+            e.printStackTrace();
+        }
+        return false;
 	}
 
 	/**
@@ -297,11 +302,11 @@ public class UserAvatarManager extends AvatarManager
 	 * 		the node to publish on.
 	 * @return an instance of leafNode
 	 */
+    @SuppressLint("NewApi")
 	private LeafNode getLeafNode(PubSubManager pubSubManager, String nodeId)
 	{
 		try {
-			Constructor getLeafNode
-					= LeafNode.class.getDeclaredConstructor(PubSubManager.class, String.class);
+			Constructor getLeafNode = LeafNode.class.getDeclaredConstructor(PubSubManager.class, String.class);
 			getLeafNode.setAccessible(true);
 			return (LeafNode) getLeafNode.newInstance(pubSubManager, nodeId);
 		}

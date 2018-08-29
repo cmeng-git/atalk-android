@@ -37,7 +37,8 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.StringUtils;
@@ -255,7 +256,7 @@ public class IBRCaptchaProcessDialog extends Dialog
             {
                 mAccountId.setIbRegistration(false);
                 String errMsg = "InBand registration cancelled by user!";
-                XMPPError xmppError = XMPPError.from(XMPPError.Condition.registration_required, errMsg).build();
+                StanzaError xmppError = StanzaError.from(Condition.registration_required, errMsg).build();
                 mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
                 closeDialog();
             }
@@ -285,10 +286,10 @@ public class IBRCaptchaProcessDialog extends Dialog
         submitForm = new DataForm(DataForm.Type.submit);
         addField(FormField.FORM_TYPE, Captcha.NAMESPACE);
 
-        String cl = mDataForm.getField(Captcha.CHALLENGE).getValues().get(0);
+        String cl = mDataForm.getField(Captcha.CHALLENGE).getFirstValue();
         addField(Captcha.CHALLENGE, cl);
 
-        String sid = mDataForm.getField(Captcha.SID).getValues().get(0);
+        String sid = mDataForm.getField(Captcha.SID).getFirstValue();
         addField(Captcha.SID, sid);
         addField(Captcha.ANSWER, "3");
 
@@ -315,7 +316,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                 mPPS.accountIBRegistered.reportSuccess();
             } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
                     | SmackException.NotConnectedException | InterruptedException ex) {
-                XMPPError xmppError;
+                StanzaError xmppError;
                 String errMsg = ex.getMessage();
                 String errDetails = "";
                 if (ex instanceof XMPPException.XMPPErrorException) {
@@ -323,7 +324,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                     errDetails = xmppError.getDescriptiveText();
                 }
                 else {
-                    xmppError = XMPPError.from(XMPPError.Condition.not_acceptable, errMsg).build();
+                    xmppError = StanzaError.from(Condition.not_acceptable, errMsg).build();
                 }
                 logger.error("Exception: " + errMsg + ": " + errDetails);
                 if (errMsg.contains("conflict") && errDetails.contains("exists"))
@@ -454,7 +455,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                     else {
                         FormField urlField = dataForm.getField("url");
                         if (urlField != null) {
-                            String urlString = urlField.getValues().get(0);
+                            String urlString = urlField.getFirstValue();
                             URL uri = new URL(urlString);
                             captcha = BitmapFactory.decodeStream(uri.openConnection().getInputStream());
                         }
@@ -474,7 +475,7 @@ public class IBRCaptchaProcessDialog extends Dialog
             }
         } catch (IOException | InterruptedException | XMPPException | SmackException e) {
             String errMsg = e.getMessage();
-            XMPPError xmppError = XMPPError.from(XMPPError.Condition.not_authorized, errMsg).build();
+            StanzaError xmppError = StanzaError.from(Condition.not_authorized, errMsg).build();
             mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
             showResult();
         }
@@ -545,7 +546,7 @@ public class IBRCaptchaProcessDialog extends Dialog
             String errMsg = exception.getMessage();
             logger.error("Captcha-Exception: " + errMsg);
 
-            XMPPError xmppError = XMPPError.from(XMPPError.Condition.remote_server_timeout, errMsg).build();
+            StanzaError xmppError = StanzaError.from(Condition.remote_server_timeout, errMsg).build();
             mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
 
             new Handler(Looper.getMainLooper()).post(new Runnable()

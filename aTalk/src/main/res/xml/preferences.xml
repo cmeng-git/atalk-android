@@ -41,12 +41,21 @@
             <intent android:action=".android.gui.settings.ChatSecuritySettings" />
         </PreferenceScreen>
 
+        <!-- SSL Certificates Removal -->
+        <PreferenceScreen
+            android:key="remove_trusted_certificates"
+            android:summary="@string/pref_remove_trusted_certificates_summary"
+            android:title="@string/pref_remove_trusted_certificates_title">
+            <intent android:action=".impl.androidcertdialog.CertificateDeleteDialog" />
+        </PreferenceScreen>
+
         <!-- SSL Certificates Management -->
         <PreferenceScreen
             android:summary="@string/service_gui_settings_SSL_CERTIFICATE_SUMMARY"
             android:title="@string/service_gui_settings_SSL_CERTIFICATE_TITLE">
-            <intent android:action=".android.gui.settings.ConnectionInfo" />
+            <intent android:action=".impl.androidcertdialog.ConnectionInfo" />
         </PreferenceScreen>
+
     </PreferenceCategory>
 
     <!-- Message settings -->

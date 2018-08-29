@@ -20,7 +20,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.*;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.carbons.CarbonCopyReceivedListener;
@@ -672,7 +672,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         }
 
         if (logger.isDebugEnabled())
-            logger.debug("Received from " + userBareID + " the message " + message.toXML());
+            logger.debug("Received from " + userBareID + " the message " + message.toString());
 
         String msgID = message.getStanzaId();
         String correctedMessageUID = getCorrectionMessageId(message);
@@ -717,7 +717,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             // error which is multi-chat and we don't know about the contact is a muc message
             // error which is missing muc extension and is coming from the room, when we try
             // to send message to room which was deleted or offline on the server
-            XMPPError error = message.getError();
+            StanzaError error = message.getError();
             if (isPrivateMessaging && sourceContact == null) {
                 int errorResultCode = ChatRoomMessageDeliveryFailedEvent.UNKNOWN_ERROR;
                 if ((error != null) && (Condition.forbidden == error.getCondition())) {

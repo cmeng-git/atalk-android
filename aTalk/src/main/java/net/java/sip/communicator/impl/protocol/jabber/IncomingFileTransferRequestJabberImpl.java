@@ -147,7 +147,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
             FileTransferCreatedEvent event = new FileTransferCreatedEvent(incomingTransfer, new Date());
             fileTransferOpSet.fireFileTransferCreated(event);
             try {
-                jabberTransfer.recieveFile(file);
+                jabberTransfer.receiveFile(file);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

@@ -109,10 +109,10 @@ public class SiThumb extends StreamInitiation
         /**
          * Represents this <tt>FileElement</tt> in an XML.
          *
-         * @see File#toXML()
+         * @see File#toXML(String)
          */
         @Override
-        public String toXML()
+        public String toXML(String enclosingNamespace)
         {
             StringBuilder buffer = new StringBuilder();
             Date date = getDate();
@@ -122,7 +122,7 @@ public class SiThumb extends StreamInitiation
                     .append("\" ");
 
             if (getName() != null) {
-                buffer.append("name=\"").append(StringUtils.escapeForXML(getName())).append("\" ");
+                buffer.append("name=\"").append(StringUtils.escapeForXml(getName())).append("\" ");
             }
 
             if (getSize() > 0) {
@@ -140,7 +140,7 @@ public class SiThumb extends StreamInitiation
             if (((desc != null) && (desc.length() > 0)) || isRanged() || (thumbnail != null)) {
                 buffer.append(">");
                 if (getDesc() != null && desc.length() > 0) {
-                    buffer.append("<desc>").append(StringUtils.escapeForXML(getDesc()))
+                    buffer.append("<desc>").append(StringUtils.escapeForXml(getDesc()))
                             .append("</desc>");
                 }
                 if (isRanged()) {
@@ -148,7 +148,7 @@ public class SiThumb extends StreamInitiation
                 }
 
                 if (thumbnail != null) {
-                    buffer.append(thumbnail.toXML());
+                    buffer.append(thumbnail.toXML(null));
                 }
                 buffer.append("</").append(getElementName()).append(">");
             }

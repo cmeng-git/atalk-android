@@ -24,7 +24,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
@@ -162,8 +162,8 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                     if (priority > bestPriority) {
                         bestPriority = priority;
                         fullJid = presence.getFrom();
-                        jabberStatus = OperationSetPersistentPresenceJabberImpl.jabberStatusToPresenceStatus(presence,
-                                jabberProvider);
+                        jabberStatus = OperationSetPersistentPresenceJabberImpl
+                                .jabberStatusToPresenceStatus(presence, jabberProvider);
                     }
                     else if (priority == bestPriority && jabberStatus != null) {
                         PresenceStatus tempStatus = OperationSetPersistentPresenceJabberImpl
@@ -363,7 +363,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                             streamInitiation.getFrom(), thumbnailElement.getCid(), IQ.Type.get);
 
                     if (logger.isDebugEnabled())
-                        logger.debug("Sending thumbnail request:" + thumbnailRequest.toXML());
+                        logger.debug("Sending thumbnail request:" + thumbnailRequest.toXML(null));
                     try {
                         jabberProvider.getConnection().sendStanza(thumbnailRequest);
                     } catch (NotConnectedException | InterruptedException e) {
@@ -519,7 +519,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                 logger.error("An exception occurred while transferring file: ", jabberTransfer.getException());
 
                 if (transferException instanceof XMPPErrorException) {
-                    XMPPError error = ((XMPPErrorException) transferException).getXMPPError();
+                    StanzaError error = ((XMPPErrorException) transferException).getStanzaError();
                     if ((error != null)
                             && ((error.getCondition() == Condition.not_acceptable)
                             || (error.getCondition() == Condition.forbidden)))

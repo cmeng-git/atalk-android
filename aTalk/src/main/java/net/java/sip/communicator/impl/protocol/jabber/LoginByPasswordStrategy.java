@@ -11,12 +11,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.protocol.AbstractProtocolProviderService;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.SecurityAuthority;
-import net.java.sip.communicator.service.protocol.UserCredentials;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.util.Logger;
 
@@ -24,7 +19,9 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.login.IBRCaptchaProcessDialog;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.StanzaError.Condition;
+import org.jivesoftware.smack.packet.StanzaError.Type;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jxmpp.jid.parts.Resourcepart;
 
@@ -107,8 +104,8 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
             // No response received within reply timeout. Timeout was 5000ms (~10s).
             // Rethrow XMPPException will trigger a re-login dialog
             String exMsg = ex.getMessage();
-            XMPPError.Builder xmppErrorBuilder = XMPPError.from(XMPPError.Condition.not_authorized, exMsg);
-            xmppErrorBuilder.setType(XMPPError.Type.CANCEL);
+            StanzaError.Builder xmppErrorBuilder = StanzaError.from(Condition.not_authorized, exMsg);
+            xmppErrorBuilder.setType(Type.CANCEL);
             throw new XMPPException.XMPPErrorException(null, xmppErrorBuilder.build());
         }
         return true;

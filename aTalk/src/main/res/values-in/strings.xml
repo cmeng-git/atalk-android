@@ -1005,11 +1005,14 @@
         penyedia layanan untuk memberi tahu mereka tentang masalah ini.&lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Penghapusan Sertifikat SSL</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Harap konfirmasikan untuk menghapus sertifikat SSL untuk: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Hapus sertifikat</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Harap konfirmasikan untuk menghapus sertifikat bagi: %1$s</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Pengelola Sertifikat SSL</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Kelola Sertifikat SSL</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Sertifikat SSL</string>
+
+    <string name="pref_remove_trusted_certificates_title">Hapus sertifikat</string>
+    <string name="pref_remove_trusted_certificates_summary">Hapus sertifikat yang disetujui secara manual</string>
 
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Menyimpan perubahan akun, harap tunggu&#8230;</string>
@@ -1377,7 +1380,7 @@
 
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">Permintaan sesi OTR dari teman anda telah ditolak selama sesi OMEMO. Anda dapat mengaktifkan sesi OTR secara manual!</string>
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">Permintaan sesi OTR anda telah ditolak sementara sesi omemo sedang berlangsung!</string>
-    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">Pengaturan sesi OMEMO tidak berhasil!</string>
+    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">Pengaturan sesi OMEMO tidak berhasil! %1$s</string>
     <string name="crypto_msg_OMEMO_SESSION_UNTRUSTED">Menemukan Sobat tepercaya ZERO untuk menerima pesan OMEMO!</string>
     <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED">Mengirim pesan OMEMO ke beberapa teman yang tidak dikenal dengan sidik jari yang tidak terverifikasi!</string>
     <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED_UNTRUSTED">MultiUserChat dengan beberapa teman yang tidak dipercaya atau dengan sidik jari yang tidak terverifikasi!</string>

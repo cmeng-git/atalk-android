@@ -126,7 +126,7 @@ public class ThumbnailElement
      *
      * @return the packet extension as XML.
      */
-    public String toXML()
+    public String toXML(String enclosingNamespace)
     {
         StringBuffer buf = new StringBuffer();
 

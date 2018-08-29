@@ -80,7 +80,7 @@ public class SctpMapExtension implements ExtensionElement
      * {@inheritDoc}
      */
     @Override
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.prelude(getElementName(), getNamespace());

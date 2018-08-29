@@ -142,8 +142,7 @@ public class ConferenceMediumPacketExtension extends AbstractPacketExtension
      * @return XML string representation
      */
     @Override
-    // public String toXML()
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.prelude(getElementName(), getNamespace());
@@ -159,7 +158,7 @@ public class ConferenceMediumPacketExtension extends AbstractPacketExtension
         xml.optElement(ELEMENT_STATUS, status);
 
         for (ExtensionElement ext : getChildExtensions()) {
-            xml.append(ext.toXML());
+            xml.append(ext.toXML(null));
         }
 
         xml.closeElement(getElementName());

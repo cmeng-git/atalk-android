@@ -20,13 +20,9 @@ package net.java.sip.communicator.impl.dns;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.util.AndroidUsingExecLowPriority;
 import org.atalk.android.util.AndroidUsingLinkProperties;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-
-import de.measite.minidns.DNSClient;
-import de.measite.minidns.dnsserverlookup.AndroidUsingExec;
 
 /**
  * The DNS Util activator.
@@ -53,10 +49,12 @@ public class DnsUtilActivator implements BundleActivator
     {
         logger.info("DNS service ... [STARTING]");
 
+        // Fall back to use miniDns 0.3.2 AndroidUsingExec instead
         // Init miniDNS Resolver for android 21/23 requirements
-        DNSClient.removeDNSServerLookupMechanism(AndroidUsingExec.INSTANCE);
-        DNSClient.addDnsServerLookupMechanism(AndroidUsingExecLowPriority.INSTANCE);
-        DNSClient.addDnsServerLookupMechanism(new AndroidUsingLinkProperties(aTalkApp.getGlobalContext()));
+        // DnsClient.removeDNSServerLookupMechanism(AndroidUsingExec.INSTANCE);
+        // DnsClient.addDnsServerLookupMechanism(AndroidUsingExecLowPriority.INSTANCE);
+
+        AndroidUsingLinkProperties.setup(aTalkApp.getGlobalContext());
     }
 
     /**

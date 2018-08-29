@@ -1002,11 +1002,14 @@
         proveedor de servicios para informarles sobre el problema.&lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Borrado de certificados SSL</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Por favor, confirma la eliminación del certificado SSL para: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Eliminar certificado</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Por favor, confirma la eliminación del certificado para: %1$s</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Administrador de certificados SSL</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Administración de certificados SSL</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Certificado SSL</string>
+
+    <string name="pref_remove_trusted_certificates_title">Eliminar certificado</string>
+    <string name="pref_remove_trusted_certificates_summary">Eliminar certificados aprobados manualmente</string>
 
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Cambios en el almacenamiento de la cuenta, por favor espera&#8230;</string>
@@ -1376,7 +1379,7 @@
 
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">La solicitud de sesión OTR de tu amigo ha sido denegada durante la sesión de OMEMO. Puedes habilitar la sesión OTR manualmente!</string>
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">¡Tu solicitud de sesión OTR ha sido denegada mientras la sesión de omemo está en curso!</string>
-    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">¡La configuración de la sesión de OMEMO no se ha realizado correctamente!</string>
+    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">¡La configuración de la sesión de OMEMO no se ha realizado correctamente! %1$s</string>
     <string name="crypto_msg_OMEMO_SESSION_UNTRUSTED">Encontrado un amigo ZERO de confianza para recibir mensajes OMEMO!</string>
     <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED">¡Enviar mensajes OMEMO a algunos amigos desconocidos con huellas dactilares no verificadas!</string>
     <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED_UNTRUSTED">¡Sala de charla con algunos amigos sin confianza o con huellas dactilares no verificadas!</string>

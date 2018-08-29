@@ -150,7 +150,7 @@ public class IdentityPacketExtension implements ExtensionElement
      * {@inheritDoc}
      */
     @Override
-    public CharSequence toXML()
+    public CharSequence toXML(String enclosingNamespace)
     {
         final StringBuilder buf = new StringBuilder();
 

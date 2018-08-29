@@ -86,7 +86,7 @@ public class StatsId implements ExtensionElement
      * Returns xml representation of this extension.
      * @return xml representation of this extension.
      */
-    public String toXML()
+    public String toXML(String enclosingNamespace)
     {
         final StringBuilder buf = new StringBuilder();
         buf.append("<").append(ELEMENT_NAME).append(">");

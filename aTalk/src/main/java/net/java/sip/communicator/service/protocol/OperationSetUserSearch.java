@@ -42,7 +42,7 @@ public interface OperationSetUserSearch extends OperationSet
 	 *        the text we want to query the server.
 	 * @return the list of found contact addresses.
 	 */
-	public List<String> search(String searchedString);
+	public List<CharSequence> search(String searchedString);
 
 	/**
 	 * Returns <tt>true</tt> if the user search service is enabled.

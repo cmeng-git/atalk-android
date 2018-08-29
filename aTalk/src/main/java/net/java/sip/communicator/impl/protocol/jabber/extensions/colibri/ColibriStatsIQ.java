@@ -47,7 +47,7 @@ public class ColibriStatsIQ extends IQ
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
     {
         xml.append('>');
-        xml.append(backEnd.toXML());
+        xml.append(backEnd.toXML(null));
         return xml;
     }
 }

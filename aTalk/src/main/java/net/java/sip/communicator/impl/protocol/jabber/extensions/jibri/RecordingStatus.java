@@ -18,7 +18,7 @@ package net.java.sip.communicator.impl.protocol.jabber.extensions.jibri;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketExtension;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import java.util.List;
 
@@ -133,7 +133,7 @@ public class RecordingStatus extends AbstractPacketExtension
      * Returns <tt>XMPPError</tt> associated with current
      * {@link RecordingStatus}.
      */
-    public XMPPError getError()
+    public StanzaError getError()
     {
         XMPPErrorPE errorPe = getErrorPE();
         return errorPe != null ? errorPe.getError() : null;
@@ -158,7 +158,7 @@ public class RecordingStatus extends AbstractPacketExtension
      * @param error <tt>XMPPError</tt> to add error details to this
      * <tt>RecordingStatus</tt> instance or <tt>null</tt> to have it removed.
      */
-    public void setError(XMPPError error)
+    public void setError(StanzaError error)
     {
         if (error != null) {
             // Wrap and add XMPPError as packet extension

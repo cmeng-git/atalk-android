@@ -199,13 +199,13 @@ public class CaptchaDialog extends Dialog
         formSubmit = new DataForm(DataForm.Type.submit);
         addField(FormField.FORM_TYPE, Captcha.NAMESPACE);
 
-        String from = mDataForm.getField(Captcha.FROM).getValues().get(0);
+        String from = mDataForm.getField(Captcha.FROM).getFirstValue();
         addField(Captcha.FROM, from);
 
-        String cl = mDataForm.getField(Captcha.CHALLENGE).getValues().get(0);
+        String cl = mDataForm.getField(Captcha.CHALLENGE).getFirstValue();
         addField(Captcha.CHALLENGE, cl);
 
-        String sid = mDataForm.getField(Captcha.SID).getValues().get(0);
+        String sid = mDataForm.getField(Captcha.SID).getFirstValue();
         addField(Captcha.SID, sid);
 
         // Only localPart is required
@@ -228,7 +228,7 @@ public class CaptchaDialog extends Dialog
                 | SmackException.NotConnectedException | InterruptedException ex) {
             String errMsg = ex.getMessage();
             if (ex instanceof XMPPException.XMPPErrorException) {
-                XMPPError xmppError = ((XMPPException.XMPPErrorException) ex).getXMPPError();
+                StanzaError xmppError = ((XMPPException.XMPPErrorException) ex).getStanzaError();
                 errMsg += "\n" + xmppError.getDescriptiveText();
             }
             logger.error("Exception: " + errMsg);
@@ -300,7 +300,7 @@ public class CaptchaDialog extends Dialog
                 // String mediaElement = ocrField.getDescription();
                 FormField urlField = dataForm.getField("ocr");
                 if (urlField != null) {
-                    String urlString = urlField.getValues().get(0);
+                    String urlString = urlField.getFirstValue();
                     if (urlString.contains("http://")) {
                         URL uri = new URL(urlString);
                         bmCaptcha = BitmapFactory.decodeStream(uri.openConnection().getInputStream());
