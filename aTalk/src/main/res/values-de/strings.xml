@@ -993,11 +993,14 @@
         &lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">SSL-Zertifikat löschen</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Bitte bestätigen Sie das Löschen des SSL-Zertifikats für: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Zertifikat entfernen</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Bitte bestätigen Sie das Löschen des Zertifikats für: %1$s</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">SSL-Zertifikatsmanager</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">SSL-Zertifikate verwalten</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">SSL-Zertifikat</string>
+
+    <string name="pref_remove_trusted_certificates_title">Zertifikat entfernen</string>
+    <string name="pref_remove_trusted_certificates_summary">Löschen Sie manuell genehmigte Zertifikate</string>
 
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Speichern von Kontoänderungen, bitte warten&#8230;</string>
@@ -1366,7 +1369,7 @@
 
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">OTR-Sitzungsanforderung von Ihrem Chatkontakt wurde in der OMEMO-Sitzung abgelehnt. Sie können die OTR-Sitzung manuell starten.</string>
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">Ihre OTR-Sitzungsanforderung wurde abgelehnt da OMEMO-Sitzung aktiv.</string>
-    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">OMEMO-Sitzungstart nicht erfolgreich!</string>
+    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">OMEMO-Sitzungstart nicht erfolgreich! %1$s</string>
     <string name="crypto_msg_OMEMO_SESSION_UNTRUSTED">Nicht vertrauenswürdigen Chatpartner gefunden um OMEMO-Nachrichten zu empfangen!</string>
     <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED">Senden von OMEMO-Nachrichten an unbekannte Chatpartner mit nicht überprüften Fingerprints!</string>
     <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED_UNTRUSTED">MultiUserChat mit einigen Chatpartnern, die nicht vertrauenswürdig sind oder nicht-verifizierte Fingerprints haben!</string>

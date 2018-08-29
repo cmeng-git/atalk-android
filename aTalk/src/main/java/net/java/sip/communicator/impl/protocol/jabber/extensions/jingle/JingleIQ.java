@@ -144,16 +144,16 @@ public class JingleIQ extends IQ
 
             // content
             for (ContentPacketExtension cpe : contentList) {
-                xml.append(cpe.toXML());
+                xml.append(cpe.toXML(null));
             }
 
             // reason
             if (reason != null)
-                xml.append(reason.toXML());
+                xml.append(reason.toXML(null));
 
             // session-info // XXX: this is RTP specific so we should probably handle it in a subclass
             if (sessionInfo != null)
-                xml.append(sessionInfo.toXML());
+                xml.append(sessionInfo.toXML(null));
         }
         return xml;
     }

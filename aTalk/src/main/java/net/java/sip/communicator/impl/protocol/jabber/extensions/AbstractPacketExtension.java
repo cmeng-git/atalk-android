@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions;
 
+import android.annotation.SuppressLint;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.StringUtils;
@@ -36,6 +38,7 @@ public abstract class AbstractPacketExtension implements ExtensionElement
      * @throws Exception if an error occurs during the cloning of the specified <tt>src</tt>
      */
     @SuppressWarnings("unchecked")
+    @SuppressLint("NewApi")
     public static <T extends AbstractPacketExtension> T clone(T src)
     {
         T dst = null;
@@ -135,7 +138,7 @@ public abstract class AbstractPacketExtension implements ExtensionElement
      *
      * @return an XML representation of this extension.
      */
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.prelude(getElementName(), getNamespace());
@@ -168,9 +171,9 @@ public abstract class AbstractPacketExtension implements ExtensionElement
                 else {
                     xml.append(">");
                     for (ExtensionElement packExt : childElements)
-                        xml.append(packExt.toXML());
+                        xml.append(packExt.toXML(null));
                     for (Stanza packet : packets)
-                        xml.append(packet.toXML());
+                        xml.append(packet.toXML(null));
                 }
             }
         }

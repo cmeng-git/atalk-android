@@ -104,7 +104,7 @@ public class HostInfoPacketExtension extends AbstractPacketExtension
      * @return XML string representation
      */
     @Override
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.prelude(getElementName(), getNamespace());
@@ -119,7 +119,7 @@ public class HostInfoPacketExtension extends AbstractPacketExtension
         xml.optElement(ELEMENT_WEB_PAGE, webPage);
 
         for (ExtensionElement ext : getChildExtensions()) {
-            xml.append(ext.toXML());
+            xml.append(ext.toXML(null));
         }
         xml.closeElement(ELEMENT_NAME);
         return xml;

@@ -19,13 +19,13 @@ import org.atalk.service.osgi.OSGiActivity;
 
 /**
  * Activity displays the certificate to the user and asks him whether to trust the certificate or
- * not. It also uses <tt>CertInfoDialog</tt> to display detailed information about the certificate.
+ * not. It also uses <tt>CertificateInfoDialog</tt> to display detailed information about the certificate.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
 public class VerifyCertificateActivity extends OSGiActivity
-        implements CertInfoDialog.CertInfoDialogListener
+        implements CertificateInfoDialog.CertInfoDialogListener
 {
     /**
      * The logger.
@@ -84,7 +84,7 @@ public class VerifyCertificateActivity extends OSGiActivity
      */
     public void onShowCertClicked(View v)
     {
-        CertInfoDialog.createFragment(requestId).show(getSupportFragmentManager(), "cert_info");
+        CertificateInfoDialog.createFragment(requestId).show(getSupportFragmentManager(), "cert_info");
     }
 
     /**

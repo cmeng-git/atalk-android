@@ -15,6 +15,8 @@
  */
 package net.java.sip.communicator.impl.certificate;
 
+import android.annotation.SuppressLint;
+
 import net.java.sip.communicator.service.certificate.*;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
@@ -89,7 +91,10 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     /**
      * Base property name for the storage of certificate user preferences.
      */
-    private final static String PNAME_CERT_TRUST_PREFIX = "certservice";
+    public final static String PNAME_CERT_TRUST_PREFIX = "certservice";
+
+    public final static String CERT_TRUST_SERVER_SUBFIX = ".server.";
+    public final static String CERT_TRUST_PARAM_SUBFIX = ".param.";
 
     /**
      * Hash algorithm for the cert thumbprint
@@ -127,6 +132,11 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
             sessionAllowedCertificates.put(propName, entry);
         }
         return entry;
+    }
+
+    public void purgeSessionCertificate()
+    {
+        sessionAllowedCertificates.clear();
     }
 
     /**
@@ -290,22 +300,43 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     public void addCertificateToTrust(Certificate cert, String trustFor, int trustMode)
             throws CertificateException
     {
-        String propName = PNAME_CERT_TRUST_PREFIX + ".param." + trustFor;
+        String propName = PNAME_CERT_TRUST_PREFIX + CERT_TRUST_PARAM_SUBFIX + trustFor;
         String thumbprint = getThumbprint(cert, THUMBPRINT_HASH_ALGORITHM);
         switch (trustMode) {
             case DO_NOT_TRUST:
                 throw new IllegalArgumentException("Cannot add a certificate to trust when no trust is requested.");
             case TRUST_ALWAYS:
                 String current = config.getString(propName);
+                if (current.contains(thumbprint))
+                    break;
+
                 String newValue = thumbprint;
                 if (current != null)
-                    newValue += "," + thumbprint;
+                    newValue += "," + current;
                 config.setProperty(propName, newValue);
                 break;
             case TRUST_THIS_SESSION_ONLY:
                 getSessionCertEntry(propName).add(thumbprint);
                 break;
         }
+    }
+
+    /**
+     * Fetch all the server authenticated certificates
+     *
+     * @return all the server authenticated certificates
+     */
+    public  List<String> getAllServerAuthCertificates() {
+        return config.getPropertyNamesByPrefix(PNAME_CERT_TRUST_PREFIX, false);
+    }
+
+    /**
+     * Remove server certificate for the given certEntry
+     * @param certEntry to be removed
+     */
+    public void removeCertificateEntry(String certEntry)
+    {
+        config.setProperty(certEntry, null);
     }
 
     /**
@@ -497,12 +528,12 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
             final CertificateMatcher clientVerifier, final CertificateMatcher serverVerifier)
             throws GeneralSecurityException
     {
-        // obtain the default X509 trust manager
+        // Obtain the system default X509 trust manager
         X509TrustManager defaultTm = null;
         TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         // TrustManagerFactory tmFactory = TrustManagerFactory.getInstance("X509");
 
-        // workaround for https://bugs.openjdk.java.net/browse/JDK-6672015
+        // Workaround for https://bugs.openjdk.java.net/browse/JDK-6672015
         KeyStore ks = null;
         String tsType = System.getProperty("javax.net.ssl.trustStoreType", null);
         if ("Windows-ROOT".equals(tsType)) {
@@ -525,72 +556,129 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
             throw new GeneralSecurityException("No default X509 trust manager found");
 
         final X509TrustManager tm = defaultTm;
-        return new X509TrustManager()
+        return new EntityTrustManager(tm, identitiesToTest, clientVerifier, serverVerifier);
+    }
+
+
+    /**
+     * Creates a trustManager that validates the certificate based on the specified verifiers and
+     * asks the user when the validation fails. When <tt>null</tt> is passed as the
+     * <tt>identityToTest</tt> then no check is performed whether the certificate is valid for a
+     * specific server or client.
+     *
+     * The trust manager which asks the client whether to trust particular certificate which is not
+     * android root's CA trusted.
+     *
+     * @return TrustManager to use in an SSLContext
+     */
+    private class EntityTrustManager implements X509TrustManager
+    {
+        private final X509TrustManager tm;
+        private final Iterable<String> identitiesToTest;
+        private final CertificateMatcher clientVerifier;
+        private final CertificateMatcher serverVerifier;
+
+        /**
+         * Creates the custom trust manager.
+         *
+         * @param tm the default trust manager for verification.
+         * @param identitiesToTest The identities to match against the supplied verifiers.
+         * @param clientVerifier The verifier to use in calls to checkClientTrusted
+         * @param serverVerifier The verifier to use in calls to checkServerTrusted
+         */
+        EntityTrustManager(X509TrustManager tm, final Iterable<String> identitiesToTest,
+                final CertificateMatcher clientVerifier, final CertificateMatcher serverVerifier)
         {
-            private boolean serverCheck;
+            this.tm = tm;
+            this.identitiesToTest = identitiesToTest;
+            this.clientVerifier = clientVerifier;
+            this.serverVerifier = serverVerifier;
+        }
 
-            public X509Certificate[] getAcceptedIssuers()
-            {
-                return tm.getAcceptedIssuers();
-            }
+        public X509Certificate[] getAcceptedIssuers()
+        {
+            return tm.getAcceptedIssuers();
+        }
 
-            public void checkServerTrusted(X509Certificate[] chain, String authType)
-                    throws CertificateException
-            {
-                serverCheck = true;
-                checkCertTrusted(chain, authType);
-            }
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException
+        {
+            checkCertTrusted(chain, authType, true);
+        }
 
-            public void checkClientTrusted(X509Certificate[] chain, String authType)
-                    throws CertificateException
-            {
-                serverCheck = false;
-                checkCertTrusted(chain, authType);
-            }
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException
+        {
+            checkCertTrusted(chain, authType, false);
+        }
 
-            private void checkCertTrusted(X509Certificate[] chain, String authType)
-                    throws CertificateException
-            {
-                // check and default configurations for property if missing default is null - false
-                String defaultAlwaysTrustMode = CertificateVerificationActivator.getResources()
-                        .getSettingsString(CertificateService.PNAME_ALWAYS_TRUST);
+        private void checkCertTrusted(X509Certificate[] chain, String authType, Boolean serverCheck)
+                throws CertificateException
+        {
+            // check and default configurations for property if missing default is null - false
+            String defaultAlwaysTrustMode = CertificateVerificationActivator.getResources()
+                    .getSettingsString(CertificateService.PNAME_ALWAYS_TRUST);
+            if (config.getBoolean(PNAME_ALWAYS_TRUST, Boolean.parseBoolean(defaultAlwaysTrustMode)))
+                return;
 
-                if (config.getBoolean(PNAME_ALWAYS_TRUST,
-                        Boolean.parseBoolean(defaultAlwaysTrustMode)))
-                    return;
-
+            try {
+                // check the certificate itself (issuer, validity)
                 try {
-                    // check the certificate itself (issuer, validity)
-                    try {
-                        chain = tryBuildChain(chain);
-                    } catch (Exception e) {
-                    } // don't care and take the chain as is
+                    chain = tryBuildChain(chain);
+                } catch (Exception e) {
+                } // don't care and take the chain as is
 
-                    // Domain specific configurations require that hostname aware checkServerTrusted(X509Certificate[],
-                    // String, String) is used") but required X509ExtenderTrustManager (API=24)
-                    if (serverCheck)
-                        tm.checkServerTrusted(chain, authType);
-                    else
-                        tm.checkClientTrusted(chain, authType);
+                /*
+                 * Domain specific configurations require that hostname aware
+                 * checkServerTrusted(X509Certificate[], String, String) is used
+                 * but required X509ExtenderTrustManager (API=24)
+                 */
+                if (serverCheck)
+                    tm.checkServerTrusted(chain, authType);
+                else
+                    tm.checkClientTrusted(chain, authType);
 
-                    if ((identitiesToTest == null) || !identitiesToTest.iterator().hasNext())
-                        return;
-                    else if (serverCheck)
-                        serverVerifier.verify(identitiesToTest, chain[0]);
-                    else
-                        clientVerifier.verify(identitiesToTest, chain[0]);
-                    // ok, globally valid cert
-                } catch (CertificateException e) {
-                    String thumbprint = getThumbprint(chain[0], THUMBPRINT_HASH_ALGORITHM);
-                    String message;
-                    List<String> propNames = new LinkedList<>();
-                    List<String> storedCerts = new LinkedList<>();
-                    String appName = aTalkApp.getResString(R.string.service_gui_APPLICATION_NAME);
+                if ((identitiesToTest == null) || !identitiesToTest.iterator().hasNext())
+                    return;
+                else if (serverCheck)
+                    serverVerifier.verify(identitiesToTest, chain[0]);
+                else
+                    clientVerifier.verify(identitiesToTest, chain[0]);
+                // ok, globally valid cert
+            } catch (CertificateException e) {
+                String thumbprint = getThumbprint(chain[0], THUMBPRINT_HASH_ALGORITHM);
+                String message;
+                List<String> propNames = new LinkedList<>();
+                List<String> storedCerts = new LinkedList<>();
+                String appName = aTalkApp.getResString(R.string.service_gui_APPLICATION_NAME);
 
-                    if ((identitiesToTest == null) || !identitiesToTest.iterator().hasNext()) {
-                        String propName = PNAME_CERT_TRUST_PREFIX + ".server." + thumbprint;
+                if ((identitiesToTest == null) || !identitiesToTest.iterator().hasNext()) {
+                    String propName = PNAME_CERT_TRUST_PREFIX + CERT_TRUST_SERVER_SUBFIX + thumbprint;
+                    propNames.add(propName);
+                    message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST, appName);
+
+                    // get the thumbprints from the permanent allowances
+                    String hashes = config.getString(propName);
+                    if (hashes != null)
+                        Collections.addAll(storedCerts, hashes.split(","));
+
+                    // get the thumbprints from the session allowances
+                    List<String> sessionCerts = sessionAllowedCertificates.get(propName);
+                    if (sessionCerts != null)
+                        storedCerts.addAll(sessionCerts);
+                }
+                else {
+                    if (serverCheck) {
+                        message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_DESCRIPTION_TXT,
+                                appName, identitiesToTest.toString());
+                    }
+                    else {
+                        message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT,
+                                appName, identitiesToTest.toString());
+                    }
+                    for (String identity : identitiesToTest) {
+                        String propName = PNAME_CERT_TRUST_PREFIX + CERT_TRUST_PARAM_SUBFIX + identity;
                         propNames.add(propName);
-                        message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST, appName);
 
                         // get the thumbprints from the permanent allowances
                         String hashes = config.getString(propName);
@@ -602,143 +690,121 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                         if (sessionCerts != null)
                             storedCerts.addAll(sessionCerts);
                     }
-                    else {
-                        if (serverCheck) {
-                            message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_DESCRIPTION_TXT,
-                                    appName, identitiesToTest.toString());
-                        }
-                        else {
-                            message = aTalkApp.getResString(R.string.service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT,
-                                    appName, identitiesToTest.toString());
-                        }
-                        for (String identity : identitiesToTest) {
-                            String propName = PNAME_CERT_TRUST_PREFIX + ".param." + identity;
-                            propNames.add(propName);
-
-                            // get the thumbprints from the permanent allowances
-                            String hashes = config.getString(propName);
-                            if (hashes != null)
-                                Collections.addAll(storedCerts, hashes.split(","));
-
-                            // get the thumbprints from the session allowances
-                            List<String> sessionCerts = sessionAllowedCertificates.get(propName);
-                            if (sessionCerts != null)
-                                storedCerts.addAll(sessionCerts);
-                        }
-                    }
-
-                    if (!storedCerts.contains(thumbprint)) {
-                        switch (verify(chain, message)) {
-                            case DO_NOT_TRUST:
-                                logger.info("Untrusted certificate", e);
-                                throw new CertificateException("The peer provided certificate with Subject <"
-                                        + chain[0].getSubjectDN() + "> is not trusted", e);
-                            case TRUST_ALWAYS:
-                                for (String propName : propNames) {
-                                    String current = config.getString(propName);
-                                    String newValue = thumbprint;
-                                    if (current != null)
-                                        newValue += "," + current;
-                                    config.setProperty(propName, newValue);
-                                }
-                                break;
-                            case TRUST_THIS_SESSION_ONLY:
-                                for (String propName : propNames)
-                                    getSessionCertEntry(propName).add(thumbprint);
-                                break;
-                        }
-                    }
-                    // ok, we've seen this certificate before
                 }
-            }
 
-            private X509Certificate[] tryBuildChain(X509Certificate[] chain)
-                    throws IOException, URISyntaxException, CertificateException
-            {
-                // Only try to build chains for servers that send only their own cert, but no
-                // issuer. This also matches self signed (will be ignored later) and Root-CA
-                // signed certs. In this case we throw the Root-CA away after the lookup
-                if (chain.length != 1)
-                    return chain;
-
-                // ignore self signed certs
-                if (chain[0].getIssuerDN().equals(chain[0].getSubjectDN()))
-                    return chain;
-
-                // prepare for the newly created chain
-                List<X509Certificate> newChain = new ArrayList<>(chain.length + 4);
-                Collections.addAll(newChain, chain);
-
-                // search from the topmost certificate upwards
-                CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-                X509Certificate current = chain[chain.length - 1];
-                boolean foundParent;
-                int chainLookupCount = 0;
-                do {
-                    foundParent = false;
-                    // extract the url(s) where the parent certificate can be found
-                    byte[] aiaBytes = current.getExtensionValue(Extension.authorityInfoAccess.getId());
-                    if (aiaBytes == null)
-                        break;
-
-                    AuthorityInformationAccess aia
-                            = AuthorityInformationAccess.getInstance(X509ExtensionUtil.fromExtensionValue(aiaBytes));
-
-                    // the AIA may contain different URLs and types, try all of them
-                    for (AccessDescription ad : aia.getAccessDescriptions()) {
-                        // we are only interested in the issuer certificate, not in OCSP urls the like
-                        if (!ad.getAccessMethod().equals(AccessDescription.id_ad_caIssuers))
-                            continue;
-
-                        GeneralName gn = ad.getAccessLocation();
-                        if (!(gn.getTagNo() == GeneralName.uniformResourceIdentifier
-                                && gn.getName() instanceof DERIA5String))
-                            continue;
-
-                        URI uri = new URI(((DERIA5String) gn.getName()).getString());
-                        // only http(s) urls; LDAP is taken care of in the default implementation
-                        if (!(uri.getScheme().equalsIgnoreCase("http")
-                                || uri.getScheme().equals("https")))
-                            continue;
-
-                        X509Certificate cert = null;
-
-                        // try to get cert from cache first to avoid consecutive-slow http lookups
-                        AiaCacheEntry cache = aiaCache.get(uri);
-                        if (cache != null && cache.cacheDate.after(new Date())) {
-                            cert = cache.cert;
-                        }
-                        else {
-                            // download if no cache entry or if it is expired
-                            if (logger.isDebugEnabled())
-                                logger.debug("Downloading parent certificate for <"
-                                        + current.getSubjectDN() + "> from <" + uri + ">");
-                            try {
-                                InputStream is = HttpUtils.openURLConnection(uri.toString()).getContent();
-                                cert = (X509Certificate) certFactory.generateCertificate(is);
-                            } catch (Exception e) {
-                                logger.debug("Could not download from <" + uri + ">");
+                if (!storedCerts.contains(thumbprint)) {
+                    switch (verify(chain, message)) {
+                        case DO_NOT_TRUST:
+                            logger.info("Untrusted certificate", e);
+                            throw new CertificateException("The peer provided certificate with Subject <"
+                                    + chain[0].getSubjectDN() + "> is not trusted", e);
+                        case TRUST_ALWAYS:
+                            for (String propName : propNames) {
+                                String current = config.getString(propName);
+                                String newValue = thumbprint;
+                                if (current != null)
+                                    newValue += "," + current;
+                                config.setProperty(propName, newValue);
                             }
-                            // cache for 10mins
-                            aiaCache.put(uri, new AiaCacheEntry(new Date(new Date().getTime() + 10 * 60 * 1000), cert));
-                        }
-                        if (cert != null) {
-                            if (!cert.getIssuerDN().equals(cert.getSubjectDN())) {
-                                newChain.add(cert);
-                                foundParent = true;
-                                current = cert;
-                                break; // an AD was valid, ignore others
-                            }
-                            else
-                                logger.debug("Parent is self-signed, ignoring");
-                        }
+                            break;
+                        case TRUST_THIS_SESSION_ONLY:
+                            for (String propName : propNames)
+                                getSessionCertEntry(propName).add(thumbprint);
+                            break;
                     }
-                    chainLookupCount++;
-                } while (foundParent && chainLookupCount < 10);
-                chain = newChain.toArray(chain);
-                return chain;
+                }
+                // ok, we've seen this certificate before
             }
-        };
+        }
+
+        /*
+         * Only try to build chains for servers that send only their own cert, but no issuer.
+         * This also matches self signed (will be ignored later) and Root-CA signed certs.
+         * In this case we throw the Root-CA away after the lookup
+         */
+        private X509Certificate[] tryBuildChain(X509Certificate[] chain)
+                throws IOException, URISyntaxException, CertificateException
+        {
+            if (chain.length != 1)
+                return chain;
+
+            // ignore self signed certs (issuer == signer)
+            if (chain[0].getIssuerDN().equals(chain[0].getSubjectDN()))
+                return chain;
+
+            // prepare for the newly created chain
+            List<X509Certificate> newChain = new ArrayList<>(chain.length + 4);
+            Collections.addAll(newChain, chain);
+
+            // search from the topmost certificate upwards
+            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+            X509Certificate current = chain[chain.length - 1];
+            boolean foundParent;
+            int chainLookupCount = 0;
+            do {
+                foundParent = false;
+                // extract the url(s) where the parent certificate can be found
+                byte[] aiaBytes = current.getExtensionValue(Extension.authorityInfoAccess.getId());
+                if (aiaBytes == null)
+                    break;
+
+                AuthorityInformationAccess aia
+                        = AuthorityInformationAccess.getInstance(X509ExtensionUtil.fromExtensionValue(aiaBytes));
+
+                // the AIA may contain different URLs and types, try all of them
+                for (AccessDescription ad : aia.getAccessDescriptions()) {
+                    // we are only interested in the issuer certificate, not in OCSP urls the like
+                    if (!ad.getAccessMethod().equals(AccessDescription.id_ad_caIssuers))
+                        continue;
+
+                    GeneralName gn = ad.getAccessLocation();
+                    if (!(gn.getTagNo() == GeneralName.uniformResourceIdentifier
+                            && gn.getName() instanceof DERIA5String))
+                        continue;
+
+                    URI uri = new URI(((DERIA5String) gn.getName()).getString());
+                    // only http(s) urls; LDAP is taken care of in the default implementation
+                    if (!(uri.getScheme().equalsIgnoreCase("http")
+                            || uri.getScheme().equals("https")))
+                        continue;
+
+                    X509Certificate cert = null;
+
+                    // try to get cert from cache first to avoid consecutive-slow http lookups
+                    AiaCacheEntry cache = aiaCache.get(uri);
+                    if (cache != null && cache.cacheDate.after(new Date())) {
+                        cert = cache.cert;
+                    }
+                    else {
+                        // download if no cache entry or if it has expired
+                        if (logger.isDebugEnabled())
+                            logger.debug("Downloading parent certificate for <"
+                                    + current.getSubjectDN() + "> from <" + uri + ">");
+                        try {
+                            InputStream is = HttpUtils.openURLConnection(uri.toString()).getContent();
+                            cert = (X509Certificate) certFactory.generateCertificate(is);
+                        } catch (Exception e) {
+                            logger.debug("Could not download from <" + uri + ">");
+                        }
+                        // cache for 10mins
+                        aiaCache.put(uri, new AiaCacheEntry(new Date(new Date().getTime() + 10 * 60 * 1000), cert));
+                    }
+                    if (cert != null) {
+                        if (!cert.getIssuerDN().equals(cert.getSubjectDN())) {
+                            newChain.add(cert);
+                            foundParent = true;
+                            current = cert;
+                            break; // an AD was valid, ignore others
+                        }
+                        else
+                            logger.debug("Parent is self-signed, ignoring");
+                    }
+                }
+                chainLookupCount++;
+            } while (foundParent && chainLookupCount < 10);
+            chain = newChain.toArray(chain);
+            return chain;
+        }
     }
 
     protected class BrowserLikeHostnameMatcher implements CertificateMatcher
@@ -828,6 +894,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      * @return The SHA-1 hash of the certificate.
      * @throws CertificateException
      */
+    @SuppressLint("NewApi")
     private static String getThumbprint(Certificate cert, String algorithm)
             throws CertificateException
     {

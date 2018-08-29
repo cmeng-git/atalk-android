@@ -193,7 +193,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
             fileTransferPacket.setFile(fileElement);
 
             if (logger.isDebugEnabled())
-                logger.debug("The file transfer packet with thumbnail: " + fileTransferPacket.toXML());
+                logger.debug("The file transfer packet with thumbnail: " + fileTransferPacket.toXML(null));
 
             // Add the request listener in order to listen for requests coming for the advertised thumbnail.
             if (connection != null) {
@@ -228,7 +228,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
                         thumbnailedFile.getThumbnailData(), IQ.Type.result);
 
                 if (logger.isDebugEnabled())
-                    logger.debug("Send thumbnail response to the receiver: " + thumbnailResponse.toXML());
+                    logger.debug("Send thumbnail response to the receiver: " + thumbnailResponse.toXML(null));
 
                 try {
                     connection.sendStanza(thumbnailResponse);

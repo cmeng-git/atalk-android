@@ -40,7 +40,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.BareJid;
@@ -401,7 +401,7 @@ public class OperationSetTelephonyConferencingJabberImpl
                 }
             }
             else if (type == IQ.Type.error) {
-                XMPPError error = coinIQ.getError();
+                StanzaError error = coinIQ.getError();
                 if (error != null) {
                     String msg = error.getConditionText();
                     errorMessage = ((msg != null) ? (msg + " ") : "") + "Error code: "

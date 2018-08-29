@@ -29,14 +29,13 @@ import org.ice4j.ice.IceMediaStream;
 import org.ice4j.ice.harvest.StunCandidateHarvester;
 import org.ice4j.ice.harvest.TurnCandidateHarvester;
 import org.ice4j.security.LongTermCredential;
+import org.minidns.record.SRV;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.util.Enumeration;
-
-import de.measite.minidns.record.SRV;
 
 /**
  * This implementation of the Network Address Manager allows you to intelligently retrieve the

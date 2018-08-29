@@ -78,7 +78,7 @@ public class InputEvtIQ extends IQ
         if (remoteControls.size() > 0) {
             xml.append('>');
             for (RemoteControlExtension p : remoteControls)
-                xml.append(p.toXML());
+                xml.append(p.toXML(null));
             xml.closeElement(ELEMENT_NAME);
         }
         else {

@@ -360,7 +360,7 @@ public class InfoRetriever
      */
     String checkForFullName(VCard card)
     {
-        String vcardXml = card.toXML().toString();
+        String vcardXml = card.toXML(null).toString();
         int indexOpen = vcardXml.indexOf(TAG_FN_OPEN);
 
         if (indexOpen == -1)

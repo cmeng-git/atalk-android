@@ -22,6 +22,7 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.roster.*;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
@@ -498,7 +499,7 @@ public class ServerStoredContactListJabberImpl
             String errTxt = "Error adding new jabber roster entry";
             logger.error(errTxt, ex);
             int errorCode = OperationFailedException.INTERNAL_ERROR;
-            XMPPError error = ex.getXMPPError();
+            StanzaError error = ex.getStanzaError();
             if (error != null) {
                 switch (error.getCondition()) {
                     case forbidden:
@@ -704,14 +705,14 @@ public class ServerStoredContactListJabberImpl
             } catch (XMPPErrorException ex) {
                 String errTxt = "Error removing contact";
                 int errorCode = OperationFailedException.INTERNAL_ERROR;
-                XMPPError error = ex.getXMPPError();
+                StanzaError error = ex.getStanzaError();
                 if (error != null) {
                     errTxt = error.getDescriptiveText();
-                    if (error.getCondition().equals(XMPPError.Condition.internal_server_error))
+                    if (error.getCondition().equals(Condition.internal_server_error))
                         errorCode = OperationFailedException.INTERNAL_SERVER_ERROR;
-                    else if (error.getCondition().equals(XMPPError.Condition.forbidden))
+                    else if (error.getCondition().equals(Condition.forbidden))
                         errorCode = OperationFailedException.FORBIDDEN;
-                    else if (error.getCondition().equals(XMPPError.Condition.bad_request))
+                    else if (error.getCondition().equals(Condition.bad_request))
                         errorCode = OperationFailedException.ILLEGAL_ARGUMENT;
                 }
                 logger.error(errTxt, ex);

@@ -74,7 +74,7 @@ public class UserRolesPacketExtension extends AbstractPacketExtension
      * @return an XML representation of this extension.
      */
     @Override
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.prelude(getElementName(), getNamespace());
@@ -90,7 +90,7 @@ public class UserRolesPacketExtension extends AbstractPacketExtension
         }
 
         for (ExtensionElement ext : getChildExtensions()) {
-            xml.append(ext.toXML());
+            xml.append(ext.toXML(null));
         }
         xml.closeElement(getElementName());
         return xml;

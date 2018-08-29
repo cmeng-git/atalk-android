@@ -33,10 +33,12 @@ configurations {
     jarjar2
 
     // conflict with android internal classes
-    all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    all*.exclude group: 'xpp3', module: 'xpp3'
-    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
-    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
+    all*.exclude group:'org.apache.httpcomponents', module:'httpclient'
+    all*.exclude group:'xpp3', module:'xpp3'
+
+    all*.exclude group:'org.minidns', module:'minidns-core'
+    // all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
+    // all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
 }
 
 android {
@@ -45,8 +47,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1046
-        versionName "1.4.6" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1050
+        versionName "1.5.0" // no alphabet allowed (e.g. 0.8.7.a)
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true
@@ -119,7 +121,7 @@ android {
 ext {
     // Need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
-    smackVersion = '4.2.4'
+    smackVersion = '4.3.0'
 }
 
 dependencies {
@@ -173,11 +175,13 @@ dependencies {
     implementation 'org.jmdns:jmdns:3.5.3'
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
-    implementation files('lib/smack/smack-omemo-4.2.3-SNAPSHOT.jar')
-    implementation files('lib/smack/smack-omemo-signal-4.2.3-SNAPSHOT.jar')
+    implementation files('lib/smack/smack-omemo-4.3.0-SNAPSHOT.jar')
+    implementation files('lib/smack/smack-omemo-signal-4.3.0-SNAPSHOT.jar')
     implementation 'org.whispersystems:signal-protocol-java:2.6.2'
-    implementation files('lib/smack/smack-core-4.2.5-SNAPSHOT.jar')
-    implementation files('lib/smack/smack-extensions-4.2.5-SNAPSHOT.jar')
+    implementation files('lib/smack/minidns-core-0.3.3-SNAPSHOT.jar')
+
+    // implementation files('lib/smack/smack-core-4.2.5-SNAPSHOT.jar')
+    // implementation files('lib/smack/smack-extensions-4.2.5-SNAPSHOT.jar')
 
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
     implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
@@ -195,8 +199,8 @@ dependencies {
 //            classDelete 'org.jivesoftware.smackx.caps.provider.CapsExtensionProvider'
 //    }
 
-//    implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
-//    implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
+    // implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
+    // implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
     // keep for reference only
     // Use jarjar.repackage in place of a dependency notation (destination file?).
@@ -205,7 +209,7 @@ dependencies {
     //        classDelete 'org.jivesoftware.smackx.omemo.OmemoManager'
     //    }
 
-    implementation 'org.jxmpp:jxmpp-jid:0.6.2'
+    implementation 'org.jxmpp:jxmpp-jid:0.6.3'
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
 
     implementation 'org.jetbrains:annotations-java5:15.0'

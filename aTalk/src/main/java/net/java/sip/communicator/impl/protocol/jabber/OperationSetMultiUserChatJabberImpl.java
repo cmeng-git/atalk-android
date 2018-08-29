@@ -174,7 +174,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
 
                         FormField submitField = form.getField(initField.getVariable());
                         if (submitField != null) {
-                            for (String fieldValue : initField.getValues()) {
+                            for (String fieldValue : initField.getValuesAsString()) {
                                 submitField.addValue(fieldValue);
                             }
                         }
@@ -321,7 +321,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         if (mMucMgr != null) {
             try {
                 // serviceNames = MultiUserChat.getServiceNames(getXmppConnection()).iterator();
-                serviceNames = mMucMgr.getXMPPServiceDomains();
+                serviceNames = mMucMgr.getMucServiceDomains();
             } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
                 throw new OperationFailedException("Failed to retrieve Jabber conference service names",
                         OperationFailedException.GENERAL_ERROR, ex);
@@ -435,7 +435,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         List<DomainBareJid> serviceNames = null;
         try {
             if (mMucMgr != null)
-                serviceNames = mMucMgr.getXMPPServiceDomains();
+                serviceNames = mMucMgr.getMucServiceDomains();
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
             AccountID accountId = jabberProvider.getAccountID();
             String errMsg = "Failed to retrieve conference service name for user: "

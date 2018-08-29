@@ -164,7 +164,7 @@ public class JingleNodesServiceDiscovery implements Runnable
 
         if (autoDiscover) {
             boolean continueSearch = searchDiscoItems(service, xmppConnection, maxEntries,
-                    xmppConnection.getServiceName(), mappedNodes, maxDepth - 1, maxSearchNodes,
+                    xmppConnection.getXMPPServiceDomain(), mappedNodes, maxDepth - 1, maxSearchNodes,
                     protocol, visited, prefix);
 
             // option to stop after first found is turned on, lets exit

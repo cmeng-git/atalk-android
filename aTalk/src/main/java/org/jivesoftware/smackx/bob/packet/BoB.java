@@ -199,7 +199,7 @@ public class BoB implements ExtensionElement
 	 * </data>
 	 */
 	@Override
-	public XmlStringBuilder toXML()
+	public XmlStringBuilder toXML(String enclosingNamespace)
 	{
 		XmlStringBuilder xml = new XmlStringBuilder(this);
 		xml.attribute(ATTR_CID, cid);

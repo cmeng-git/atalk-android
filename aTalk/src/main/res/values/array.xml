@@ -80,8 +80,8 @@
 
     <string-array name="dnssec_Mode_name">
         <item>SSL Certificate Authentication</item>
-        <item>DNSSEC only (experimental)</item>
-        <item>DNSSEC and DANE (experimental)</item>
+        <item>DNSSEC only</item>
+        <item>DNSSEC and DANE</item>
     </string-array>
     <string-array name="dnssec_Mode_value">
         <item>disabled</item>

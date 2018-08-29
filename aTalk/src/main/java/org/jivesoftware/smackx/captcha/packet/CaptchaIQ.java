@@ -56,7 +56,7 @@ public class CaptchaIQ extends IQ
     {
         xml.rightAngleBracket();
         if (mDataForm != null) {
-            xml.append(mDataForm.toXML());
+            xml.append(mDataForm.toXML(null));
         }
         return xml;
     }

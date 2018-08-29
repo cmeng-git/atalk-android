@@ -6,6 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.5.0 (08/29/2018)" versioncode="1050">
+        <change>Add user option to remove manually approved certificates</change>
+        <change>Fix Omemo session locked up when no key is found</change>
+        <change>Port to use smack libraries v4.3.0 and miniDNS v0.3.2</change>
+        <change>Fix TLSA, DNSSEC and DNSSEC/DANE RRset signature verification error</change>
+        <change>Remove feature support for xmpp server with non-compliant XEP implementation</change>
+        <change>Disable omemo dialogs being cancelled when user clicks outside dialogs area or press back key</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.4.6 (08/14/2018)" versioncode="1046">
         <change>Add 3-second wait timeout to avoid ANR in account removal due to network connection</change>
         <change>Block Omemo and OTR access until the user is online and authenticated</change>

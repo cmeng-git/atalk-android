@@ -318,6 +318,8 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+        <!-- Chat Security and SSL Certificate -->
         <activity
             android:name="org.atalk.android.gui.settings.ChatSecuritySettings"
             android:label="@string/service_gui_settings_MESSAGING_SECURITY_TITLE">
@@ -327,10 +329,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.atalk.android.gui.settings.ConnectionInfo"
+            android:name="org.atalk.impl.androidcertdialog.CertificateDeleteDialog"
+            android:label="@string/pref_remove_trusted_certificates_title">
+            <intent-filter>
+                <action android:name=".impl.androidcertdialog.CertificateDeleteDialog"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.atalk.impl.androidcertdialog.ConnectionInfo"
             android:label="@string/service_gui_settings_SSL_CERTIFICATE_MANAGER">
             <intent-filter>
-                <action android:name=".android.gui.settings.ConnectionInfo"/>
+                <action android:name=".impl.androidcertdialog.ConnectionInfo"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

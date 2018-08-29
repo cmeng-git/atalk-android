@@ -199,7 +199,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
      * @param searchedString the text we want to query the server.
      * @return the list of found JIDs
      */
-    public List<String> search(String searchedString)
+    public List<CharSequence> search(String searchedString)
     {
         ReportedData data = null;
         try {
@@ -233,7 +233,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
             logger.error("No jid collumn provided by the server.");
             return null;
         }
-        List<String> result = new ArrayList<>();
+        List<CharSequence> result = new ArrayList<>();
         for (Row row : rows) {
             result.add(row.getValues(jidColumn.getVariable()).get(0));
         }

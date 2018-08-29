@@ -93,18 +93,18 @@ public class AvatarMetadata implements ExtensionElement
 	}
 
 	@Override
-	public XmlStringBuilder toXML()
+	public XmlStringBuilder toXML(String enclosingNamespace)
 	{
 		XmlStringBuilder xml = new XmlStringBuilder(this);
 		xml.rightAngleBracket();
 		for (Info info : mInfo) {
-			xml.append(info.toXML());
+			xml.append(info.toXML(null));
 		}
 		xml.closeElement(this);
 		return xml;
 	}
 
-	/**
+    /**
 	 * A metadata information element.
 	 */
 	public static class Info
@@ -286,7 +286,7 @@ public class AvatarMetadata implements ExtensionElement
 		 *
 		 * @return an xml element representing this information
 		 */
-		public XmlStringBuilder toXML()
+		public XmlStringBuilder toXML(String enclosingNamespace)
 		{
 			XmlStringBuilder xml = new XmlStringBuilder();
 			xml.halfOpenElement(ELEMENT_INFO);

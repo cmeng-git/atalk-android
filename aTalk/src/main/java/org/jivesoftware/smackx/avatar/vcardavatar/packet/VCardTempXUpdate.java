@@ -61,7 +61,7 @@ public class VCardTempXUpdate implements ExtensionElement
 	 * 2. mAvatarHash.length() == 0 => vCard with an empty BINVAL i.e. No  photo
 	 * 3. mAvatarHash.length() > 0 => is the VCard <PHOTO/> image Hash value
 	 *
-	 * @see #toXML() update <x xmlns='vcard-temp:x:update'/> element generation
+	 * @see #toXML(String) update <x xmlns='vcard-temp:x:update'/> element generation
 	 */
 	private String mAvatarHash = null;
 
@@ -146,7 +146,7 @@ public class VCardTempXUpdate implements ExtensionElement
 	 * @see #mAvatarHash defination
 	 */
 	@Override
-	public XmlStringBuilder toXML()
+	public XmlStringBuilder toXML(String enclosingNamespace)
 	{
 		XmlStringBuilder xml = new XmlStringBuilder(this);
 		xml.rightAngleBracket();

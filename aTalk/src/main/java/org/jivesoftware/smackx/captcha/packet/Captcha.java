@@ -109,12 +109,12 @@ public class Captcha implements ExtensionElement
      * </captcha>
      */
     @Override
-    public XmlStringBuilder toXML()
+    public XmlStringBuilder toXML(String enclosingNamespace)
     {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.append('>');
         if (mForm != null) {
-            xml.append(mForm.toXML());
+            xml.append(mForm.toXML(null));
         }
         xml.closeElement(this);
         return xml;

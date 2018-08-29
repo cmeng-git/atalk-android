@@ -171,7 +171,7 @@ public class ConferenceDescriptionExtension extends AbstractPacketExtension
      */
     public void setUri(String uri)
     {
-        setAttribute(URI_ATTR_NAME, StringUtils.escapeForXML(uri));
+        setAttribute(URI_ATTR_NAME, StringUtils.escapeForXml(uri));
     }
 
     /**
@@ -211,7 +211,7 @@ public class ConferenceDescriptionExtension extends AbstractPacketExtension
      */
     public void setName(String name)
     {
-        setAttribute(CONFERENCE_NAME_ATTR_NAME, StringUtils.escapeForXML(name));
+        setAttribute(CONFERENCE_NAME_ATTR_NAME, StringUtils.escapeForXml(name));
     }
 
     /**

@@ -1070,11 +1070,14 @@
         service provider to inform them about the issue. &lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">SSL Certificate Deletion</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Please confirm to delete SSL certificate for: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Remove Certificate</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Please confirm to delete certificate for: %1$s</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">SSL Certificate Manager</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Manage SSL Certificates</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">SSL Certificate</string>
+
+    <string name="pref_remove_trusted_certificates_title">Remove certificate</string>
+    <string name="pref_remove_trusted_certificates_summary">Delete manually approved certificates</string>
 
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Storing account changes, please wait&#8230;</string>
@@ -1587,7 +1590,7 @@
 
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">OTR session request from your buddy has been denied while in OMEMO session. You may enable OTR session manually!</string>
     <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">Your OTR session request has been denied while omemo session is in progress!</string>
-    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">OMEMO session setup not successful!</string>
+    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">OMEMO session setup not successful! %1$s</string>
     <string name="crypto_msg_OMEMO_SESSION_UNTRUSTED">Found ZERO trusted buddy to receive OMEMO messages!</string>
     <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED">Sending OMEMO messages to some unknown buddies with unverified fingerprints!</string>
     <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED_UNTRUSTED">MultiUserChat with some buddies untrusted or with unverified fingerprints!</string>

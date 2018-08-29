@@ -248,7 +248,7 @@ public class ColibriStatsExtension extends AbstractPacketExtension
         }
 
         @Override
-        public XmlStringBuilder toXML()
+        public XmlStringBuilder toXML(String enclosingNamespace)
         {
             XmlStringBuilder xml = new XmlStringBuilder();
             String name = getName();

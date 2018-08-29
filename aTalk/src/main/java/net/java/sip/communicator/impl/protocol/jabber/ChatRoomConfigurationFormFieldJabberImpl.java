@@ -145,7 +145,7 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
      */
     public Iterator<?> getValues()
     {
-        List<String> smackValues = smackFormField.getValues();
+        List<String> smackValues = smackFormField.getValuesAsString();
         Iterator<?> valuesIter;
 
         if (smackFormField.getType() == FormField.Type.bool) {

@@ -42,7 +42,7 @@ import org.jivesoftware.smack.SmackException.*;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -99,6 +99,9 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
+import org.minidns.dnsname.DnsName;
+import org.minidns.dnssec.DnssecValidationFailedException;
+import org.minidns.record.SRV;
 import org.osgi.framework.ServiceReference;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmpp.jnodes.smack.*;
@@ -116,9 +119,6 @@ import java.util.*;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.*;
-
-import de.measite.minidns.dnssec.DNSSECValidationFailedException;
-import de.measite.minidns.record.SRV;
 
 /**
  * An implementation of the protocol provider service over the Jabber protocol
@@ -710,7 +710,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             }
             try {
                 connectAndLogin(userID, loginStrategy);
-            } catch (XMPPErrorException | SmackException ex) {
+            } catch (XMPPException | SmackException ex) {
                 // server disconnect us after such an error, do cleanup or connection denied.
                 disconnectAndCleanConnection();
                 throw ex; // rethrow the original exception
@@ -819,7 +819,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * @param loginStrategy the login strategy to use
      * @return return the state how to continue the connect process.
      * @throws XMPPException & SmackException if we cannot connect for some reason
-     * @throws UnknownHostException if the given service/server is unknown host
      */
     private ConnectState connectAndLogin(String userName, JabberLoginStrategy loginStrategy)
             throws XMPPException, SmackException
@@ -847,7 +846,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         try {
             if (customXMPPDomain != null) {
                 inetAddresses = Arrays.asList(InetAddress.getAllByName(customXMPPDomain));
-                mHostAddress = new HostAddress(customXMPPDomain, 5222, inetAddresses);
+                mHostAddress = new HostAddress(DnsName.from(customXMPPDomain), 5222, inetAddresses);
                 logger.info("Connect using custom XMPP domain: " + mHostAddress);
 
                 config.setHostAddress(inetAddresses.get(0));
@@ -859,7 +858,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                         serviceName.toString());
                 int port = mAccountID.getAccountPropertyInt(ProtocolProviderFactory.SERVER_PORT, DEFAULT_PORT);
                 inetAddresses = Arrays.asList(InetAddress.getAllByName(host));
-                mHostAddress = new HostAddress(host, port, inetAddresses);
+                mHostAddress = new HostAddress(DnsName.from(host), port, inetAddresses);
                 logger.info("Connect using server override: " + mHostAddress);
 
                 // For host given as ip address, then no DNSSEC authentication support
@@ -870,22 +869,23 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 config.setHost(host);
                 config.setPort(port);
             }
-            // connect using SRV Resource Record for userID service name
+            // connect using SRV Resource Record for userID service name (host and hostAddress must be null)
             else {
                 inetAddresses = Arrays.asList(InetAddress.getAllByName(serviceName.toString()));
-                mHostAddress = new HostAddress(serviceName.toString(), DEFAULT_PORT, inetAddresses);
+                mHostAddress = new HostAddress(DnsName.from(serviceName.toString()), DEFAULT_PORT, inetAddresses);
                 logger.info("Connect using service SRV Resource Record: " + mHostAddress);
 
+                DnsName dnsHost = null;
+                config.setHost(dnsHost);
                 config.setHostAddress(null);
-                config.setHost(null);
                 config.setPort(DEFAULT_PORT);
             }
         } catch (UnknownHostException ex) {
             String errMsg = ex.getMessage() + "\nYou may need to use 'Override server setting' option if " +
                     "XMPP service and server hostname is different.";
             logger.error(errMsg);
-            XMPPError xmppError = XMPPError.from(Condition.remote_server_not_found, errMsg).build();
-            throw new XMPPException.XMPPErrorException(null, xmppError);
+            StanzaError stanzaError = StanzaError.from(StanzaError.Condition.remote_server_not_found, errMsg).build();
+            throw new XMPPErrorException(null, stanzaError);
         }
 
         // if we have OperationSetPersistentPresence to take care of <presence/> sending, then
@@ -922,13 +922,13 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
                 } catch (GeneralSecurityException e) {
                     logger.error("Error creating custom trust manager", e);
-                    XMPPError xmppError = XMPPError.getBuilder(Condition.service_unavailable).build();
-                    throw new XMPPException.XMPPErrorException(null, xmppError);
+                    StanzaError stanzaError = StanzaError.getBuilder(Condition.service_unavailable).build();
+                    throw new XMPPErrorException(null, stanzaError);
                 }
             }
             else if (tlsRequired) {
-                XMPPError xmppError = XMPPError.getBuilder(Condition.service_unavailable).build();
-                throw new XMPPException.XMPPErrorException(null, xmppError);
+                StanzaError stanzaError = StanzaError.getBuilder(Condition.service_unavailable).build();
+                throw new XMPPErrorException(null, stanzaError);
             }
         }
         else {
@@ -952,8 +952,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         } catch (IllegalStateException ex) {
             // Cannot use a custom SSL context with DNSSEC enabled
             String errMsg = ex.getMessage() + "\n Please change DNSSEC security option accordingly.";
-            XMPPError xmppError = XMPPError.from(Condition.not_allowed, errMsg).build();
-            throw new XMPPException.XMPPErrorException(null, xmppError);
+            StanzaError stanzaError = StanzaError.from(Condition.not_allowed, errMsg).build();
+            throw new XMPPErrorException(null, stanzaError);
         }
 
         if (connectionListener == null) {
@@ -975,30 +975,31 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             if (StringUtils.isNullOrEmpty(errMsg))
                 errMsg = ex.getStreamError().getDescriptiveText();
             logger.error("Encounter problem during XMPPConnection: " + errMsg);
-            XMPPError xmppError = XMPPError.from(Condition.policy_violation, errMsg).build();
-            throw new XMPPException.XMPPErrorException(null, xmppError);
-        } catch (DNSSECValidationFailedException ex) {
+            StanzaError stanzaError = StanzaError.from(Condition.policy_violation, errMsg).build();
+            throw new XMPPErrorException(null, stanzaError);
+        // } catch (DnssecValidationFailedException | IllegalArgumentException ex) {
+        } catch (DnssecValidationFailedException ex) {
             String errMsg = ex.getMessage();
-            XMPPError xmppError = XMPPError.from(Condition.not_authorized, errMsg).build();
-            throw new XMPPException.XMPPErrorException(null, xmppError);
+            StanzaError stanzaError = StanzaError.from(Condition.not_authorized, errMsg).build();
+            throw new XMPPErrorException(null, stanzaError);
         } catch (SecurityRequiredByServerException ex) {
             // "SSL/TLS required by server but disabled in client"
             String errMsg = ex.getMessage();
-            XMPPError xmppError = XMPPError.from(Condition.not_allowed, errMsg).build();
-            throw new XMPPException.XMPPErrorException(null, xmppError);
+            StanzaError stanzaError = StanzaError.from(Condition.not_allowed, errMsg).build();
+            throw new XMPPErrorException(null, stanzaError);
         } catch (SecurityRequiredByClientException ex) {
             // "SSL/TLS required by client but not supported by server"
             String errMsg = ex.getMessage();
-            XMPPError xmppError = XMPPError.from(Condition.service_unavailable, errMsg).build();
-            throw new XMPPException.XMPPErrorException(null, xmppError);
+            StanzaError stanzaError = StanzaError.from(Condition.service_unavailable, errMsg).build();
+            throw new XMPPErrorException(null, stanzaError);
         } catch (XMPPException | SmackException | IOException | InterruptedException ex) {
 //            if (ex.getCause() instanceof SSLHandshakeException) {
 //                logger.error(ex.getCause());
 //            }
             String errMsg = "Encounter problem during XMPPConnection: " + ex.getMessage();
             logger.error(errMsg);
-            XMPPError xmppError = XMPPError.from(Condition.remote_server_timeout, errMsg).build();
-            throw new XMPPException.XMPPErrorException(null, xmppError);
+            StanzaError stanzaError = StanzaError.from(Condition.remote_server_timeout, errMsg).build();
+            throw new XMPPErrorException(null, stanzaError);
         }
         try {
             /*
@@ -1039,8 +1040,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         } catch (StreamErrorException ex) {
             String errMsg = ex.getStreamError().getDescriptiveText();
             logger.error("Encounter problem during XMPPConnection: " + errMsg);
-            XMPPError xmppError = XMPPError.from(Condition.policy_violation, errMsg).build();
-            throw new XMPPException.XMPPErrorException(null, xmppError);
+            StanzaError stanzaError = StanzaError.from(Condition.policy_violation, errMsg).build();
+            throw new XMPPErrorException(null, stanzaError);
         } catch (SmackException | XMPPException el) {
             String errMsg = el.getMessage();
             /*
@@ -1065,8 +1066,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     } catch (StreamErrorException ex) {
                         errMsg = ex.getStreamError().getDescriptiveText();
                         logger.error("Encounter problem during XMPPConnection: " + errMsg);
-                        XMPPError xmppError = XMPPError.from(Condition.policy_violation, errMsg).build();
-                        throw new XMPPException.XMPPErrorException(null, xmppError);
+                        StanzaError stanzaError = StanzaError.from(Condition.policy_violation, errMsg).build();
+                        throw new XMPPErrorException(null, stanzaError);
                     } catch (SmackException | XMPPException | InterruptedException | IOException err) {
                         disconnectAndCleanConnection();
                         eventDuringLogin = null;
@@ -1078,21 +1079,21 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                         if (!errMsg.contains("registration-required")) {
                             errMsg = "Error in account registration on server: " + errMsg;
                             logger.error(errMsg);
-                            XMPPError xmppError = XMPPError.from(Condition.forbidden, errMsg).build();
-                            throw new XMPPException.XMPPErrorException(null, xmppError);
+                            StanzaError stanzaError = StanzaError.from(Condition.forbidden, errMsg).build();
+                            throw new XMPPErrorException(null, stanzaError);
                         }
                         else {
                             logger.error(errMsg);
-                            XMPPError xmppError = XMPPError.from(Condition.registration_required, errMsg).build();
-                            throw new XMPPException.XMPPErrorException(null, xmppError);
+                            StanzaError stanzaError = StanzaError.from(Condition.registration_required, errMsg).build();
+                            throw new XMPPErrorException(null, stanzaError);
                         }
                     }
                 }
                 else {
                     errMsg = "You are not authorized to access the server. Check account settings, password"
                             + " or enable IB Registration and try again: " + errMsg;
-                    XMPPError xmppError = XMPPError.from(Condition.not_authorized, errMsg).build();
-                    throw new XMPPException.XMPPErrorException(null, xmppError);
+                    StanzaError stanzaError = StanzaError.from(Condition.not_authorized, errMsg).build();
+                    throw new XMPPErrorException(null, stanzaError);
                 }
             }
         }
@@ -1140,8 +1141,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         public void connectionClosed()
         {
             String errMsg = "Stream closed!";
-            XMPPError xmppError = XMPPError.from(Condition.remote_server_timeout, errMsg).build();
-            XMPPErrorException xmppException = new XMPPErrorException(null, xmppError);
+            StanzaError stanzaError = StanzaError.from(Condition.remote_server_timeout, errMsg).build();
+            XMPPErrorException xmppException = new XMPPErrorException(null, stanzaError);
             xmppConnected.reportFailure(xmppException);
 
             if (reconnectionManager != null)
@@ -1200,8 +1201,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             }
 
             // logger.error("Smack connection Closed OnError: " + errMsg, exception);
-            XMPPError xmppError = XMPPError.from(Condition.remote_server_not_found, errMsg).build();
-            XMPPErrorException xmppException = new XMPPErrorException(null, xmppError);
+            StanzaError stanzaError = StanzaError.from(Condition.remote_server_not_found, errMsg).build();
+            XMPPErrorException xmppException = new XMPPErrorException(null, stanzaError);
             xmppConnected.reportFailure(xmppException);
 
             // if we are in the middle of connecting process do not fire events, will do it
@@ -1250,8 +1251,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         public void reconnectionFailed(Exception exception)
         {
             String errMsg = exception.getMessage();
-            XMPPError xmppError = XMPPError.from(Condition.remote_server_not_found, errMsg).build();
-            XMPPErrorException xmppException = new XMPPErrorException(null, xmppError);
+            StanzaError stanzaError = StanzaError.from(Condition.remote_server_not_found, errMsg).build();
+            XMPPErrorException xmppException = new XMPPErrorException(null, stanzaError);
             xmppConnected.reportFailure(xmppException);
 
             if (logger.isInfoEnabled())
@@ -1821,15 +1822,15 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                             throws Exception
                     {
                         String errMsg = packetData.getContent().toString();
-//                        XMPPErrorException xmppException = null;
+//                        StanzaErrorException xmppException = null;
 //                        if (errMsg.contains("403")) {
-//                            XMPPError xmppError = XMPPError.from(Condition.forbidden, errMsg).build();
-//                            xmppException = new XMPPErrorException(null, xmppError);
+//                            StanzaError stanzaError = StanzaError.from(Condition.forbidden, errMsg).build();
+//                            xmppException = new StanzaErrorException(null, stanzaError);
 //
 //                        }
 //                        else if (errMsg.contains("503")) {
-//                            XMPPError xmppError = XMPPError.from(Condition.service_unavailable, errMsg).build();
-//                            xmppException = new XMPPErrorException(null, xmppError);
+//                            StanzaError stanzaError = StanzaError.from(Condition.service_unavailable, errMsg).build();
+//                            xmppException = new StanzaErrorException(null, stanzaError);
 //                        }
 //
 //                        if (xmppException != null)
@@ -2320,7 +2321,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         // Try re-register and ask user for new credentials giving detail reason description.
         if (ex instanceof XMPPErrorException) {
-            reason = ((XMPPErrorException) ex).getXMPPError().getDescriptiveText();
+            reason = ((XMPPErrorException) ex).getStanzaError().getDescriptiveText();
         }
         if (failMode != SecurityAuthority.REASON_UNKNOWN) {
             reRegister(failMode, reason);
@@ -2361,13 +2362,12 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 return false;
 
             DiscoverInfo featureInfo = discoveryManager.discoverInfoNonBlocking(jid);
-
             if (featureInfo == null)
                 return false;
 
+            // If one is not supported we return false and don't check the others.
             for (String feature : features) {
                 if (!featureInfo.containsFeature(feature)) {
-                    // If one is not supported we return false and don't check the others.
                     return false;
                 }
             }
@@ -2702,7 +2702,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     {
         if (mConnection != null && mConnection.isConnected()) {
             ScServiceDiscoveryManager discoveryManager = getDiscoveryManager();
-            DomainBareJid serviceName = mConnection.getServiceName();
+            DomainBareJid serviceName = mConnection.getXMPPServiceDomain();
             DiscoverItems discoverItems = null;
 
             try {

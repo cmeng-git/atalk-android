@@ -679,7 +679,7 @@ public class OperationSetBasicTelephonyJabberImpl
                  * packet is a response to a Jingle call but is not a JingleIQ so it is for sure an
                  * error (peer does not support Jingle or does not belong to our roster)
                  */
-                XMPPError error = packet.getError();
+                StanzaError error = packet.getError();
                 if (error != null) {
                     String errorMessage = error.getConditionText();
                     logger.error("Received an error: code=" + error.getCondition() + " message=" + errorMessage);
