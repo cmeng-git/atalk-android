@@ -343,7 +343,7 @@
     <string name="service_gui_FILE_TOO_BIG">Размер файла превышает максимально допустимый для этого протокола: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">Прерывание передачи файлов прерывается. Отслеживание состояния потеряно!</string>
     <string name="service_gui_FILE_TRANSFER_CANCELED">Передача файлов отменена</string>
-    <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Контакт, который вы выбрали, не поддерживает передачу файлов</string>
+    <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Контактный клиент или сервер не поддерживает передачу файлов или требуемые протоколы</string>
     <string name="service_gui_FILE_TRANSFER_PREPARING">Подготовка передачи файлов с %1$s. Подождите&#8230;</string>
     <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s делится файлом с вами</string>
     <string name="service_gui_FILE_TRANSFER_REFUSED">Отказано в передаче файлов</string>

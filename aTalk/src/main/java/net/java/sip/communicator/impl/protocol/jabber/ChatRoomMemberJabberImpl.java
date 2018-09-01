@@ -99,12 +99,15 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
         presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
                 chatRoom.getParentProvider().getOperationSet(OperationSetPersistentPresence.class);
 
-        mContact = presenceOpSet.findContactByID(jabberID.asBareJid());
-
-        // If we have found a mContact we set also its avatar.
-        if (mContact != null) {
-            this.avatar = mContact.getImage();
+        // jabberID may be null
+        if (jabberID != null) {
+            // If we found the mContact we set also its avatar.
+            mContact = presenceOpSet.findContactByID(jabberID.asBareJid());
+            if (mContact != null) {
+                this.avatar = mContact.getImage();
+            }
         }
+
         // just query the stack for role, if its present will be set
         getRole();
     }
@@ -157,6 +160,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
 
     /**
      * Update the name of this participant
+     *
      * @param newNick the newNick of the participant
      */
     protected void setNickName(Resourcepart newNick)
@@ -212,6 +216,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
 
     /**
      * Sets the role of this member.
+     *
      * @param role the role to set
      */
     public void setRole(ChatRoomMemberRole role)
@@ -283,6 +288,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
 
     /**
      * Sets the display name of this {@link ChatRoomMember}.
+     *
      * @param displayName the display name to set.
      */
     void setDisplayName(String displayName)
@@ -292,6 +298,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
 
     /**
      * Return the email of this {@link ChatRoomMember}.
+     *
      * @return the email of this {@link ChatRoomMember}.
      */
     public String getEmail()
@@ -301,6 +308,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
 
     /**
      * Sets the email of this {@link ChatRoomMember}.
+     *
      * @param email the display name to set.
      */
     void setEmail(String email)
@@ -318,6 +326,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
 
     /**
      * Sets the avatar URL of this {@link ChatRoomMember}.
+     *
      * @param avatarUrl the value to set.
      */
     void setAvatarUrl(String avatarUrl)
@@ -335,6 +344,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
 
     /**
      * Sets the avatar URL of this {@link ChatRoomMember}.
+     *
      * @param id the value to set.
      */
     void setStatisticsID(String id)

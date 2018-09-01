@@ -23,9 +23,11 @@ import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.*;
 
+import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiFragment;
@@ -36,6 +38,7 @@ import org.jivesoftware.smackx.muc.RoomInfo;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.util.XmppStringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,9 +48,13 @@ import java.util.List;
  */
 public class ChatRoomInfoFragment extends OSGiFragment
 {
+    /**
+     * Logger of this class
+     */
+    private static final Logger logger = Logger.getLogger(ChatRoomInfoFragment.class);
+
     private View mContent;
     private static ChatRoomWrapper mChatRoomWrapper;
-    private Activity mActivity;
 
     public ChatRoomInfoFragment()
     {
@@ -56,15 +63,13 @@ public class ChatRoomInfoFragment extends OSGiFragment
     public static ChatRoomInfoFragment newInstance(ChatRoomWrapper chatRoomWrapper)
     {
         mChatRoomWrapper = chatRoomWrapper;
-        ChatRoomInfoFragment chatRoomInfoFragment = new ChatRoomInfoFragment();
-        return chatRoomInfoFragment;
+        return new ChatRoomInfoFragment();
     }
 
     @Override
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        mActivity = activity;
     }
 
     @Override
@@ -118,7 +123,7 @@ public class ChatRoomInfoFragment extends OSGiFragment
                 } catch (SmackException.NoResponseException e) {
                     errMsg = e.getMessage();
                 } catch (XMPPException.XMPPErrorException e) {
-                    String descriptiveText = e.getXMPPError().getDescriptiveText() + "\n";
+                    String descriptiveText = e.getStanzaError().getDescriptiveText() + "\n";
                     errMsg = descriptiveText + e.getMessage();
                 } catch (SmackException.NotConnectedException e) {
                     errMsg = e.getMessage();
@@ -161,8 +166,14 @@ public class ChatRoomInfoFragment extends OSGiFragment
                 textView.setText(textValue);
 
                 textView = mContent.findViewById(R.id.roominfo_contactjid);
-                List<EntityBareJid> contactJids = chatRoomInfo.getContactJids();
-                textValue = (contactJids == null) ? "" : contactJids.toString();
+                // getContactJids() may throw NPE if contact == nul
+                List<EntityBareJid> contactJids = new ArrayList<>();
+                try {
+                    contactJids = chatRoomInfo.getContactJids();
+                } catch (NullPointerException e) {
+                    logger.error("Contact Jids excepiton: " + e.getMessage());
+                }
+                textValue = contactJids.toString();
                 textView.setText(textValue);
 
                 textView = mContent.findViewById(R.id.roominfo_lang);

@@ -594,7 +594,7 @@ public class MUCServiceImpl extends MUCService
                     break;
                 case JOIN_UNKNOWN_ERROR_PROP:
                     errorMessage = aTalkApp.getResString(R.string.service_gui_FAILED_TO_JOIN_CHAT_ROOM, chatRoomId)
-                            + "\n" + aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_JOINED);
+                            + "\n" + aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_JOINED) + "\n" + msg;
                     break;
                 case JOIN_SUCCESS_PROP:
                     if (rememberPassword) {

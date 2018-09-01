@@ -503,7 +503,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     {
         OperationSetPersistentPresenceJabberImpl opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
                 mProvider.getOperationSet(OperationSetPersistentPresence.class);
-
         Jid jid;
         try {
             jid = JidCreate.fullFrom(getIdentifier(), Resourcepart.from(nickname));
@@ -635,7 +634,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             // We don't specify a reason.
             opSetMuc.fireLocalUserPresenceEvent(this, LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED, null);
         } catch (XMPPErrorException ex) {
-            StanzaError xmppError = ex.getXMPPError();
+            StanzaError xmppError = ex.getStanzaError();
             errorMessage += "\n" + ex.getMessage() + "\n";
             if (xmppError == null) {
                 logger.error(errorMessage, ex);
@@ -668,6 +667,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         } catch (Throwable ex) {
             logger.error(errorMessage, ex);
             if (mCaptchaState == CaptchaDialog.unknown) {
+                errorMessage = ex.getMessage();
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
             }
             else if (mCaptchaState != CaptchaDialog.awaiting) {
@@ -1369,7 +1369,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             // If a moderator or a user with an affiliation of "owner" or "admin" was intended
             // to be kicked.
-            if (e.getXMPPError().getCondition().equals(Condition.not_allowed)) {
+            if (e.getStanzaError().getCondition().equals(Condition.not_allowed)) {
                 throw new OperationFailedException("Kicking an admin user or a chat room owner is a forbidden operation.",
                         OperationFailedException.FORBIDDEN);
             }
@@ -1405,14 +1405,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             // If a moderator or a user with an affiliation of "owner" or "admin" was intended
             // to be kicked.
-            if (e.getXMPPError().getCondition().equals(Condition.not_allowed)) {
+            if (e.getStanzaError().getCondition().equals(Condition.not_allowed)) {
                 throw new OperationFailedException(
                         "Kicking an admin user or a chat room owner is a forbidden operation.",
                         OperationFailedException.FORBIDDEN);
             }
             // If a participant that intended to kick another participant does not have kicking
             // privileges.
-            else if (e.getXMPPError().getCondition().equals(Condition.forbidden)) {
+            else if (e.getStanzaError().getCondition().equals(Condition.forbidden)) {
                 throw new OperationFailedException(
                         "The user that intended to kick another participant does not have enough privileges to do that.",
                         OperationFailedException.NOT_ENOUGH_PRIVILEGES);
@@ -2135,7 +2135,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             this.configForm = new ChatRoomConfigurationFormJabberImpl(mMultiUserChat,
                     smackConfigForm);
         } catch (XMPPErrorException e) {
-            if (e.getXMPPError().getCondition().equals(Condition.forbidden))
+            if (e.getStanzaError().getCondition().equals(Condition.forbidden))
                 throw new OperationFailedException(
                         "Failed to obtain smack multi user chat config form. User doesn't have enough privileges to see the form.",
                         OperationFailedException.NOT_ENOUGH_PRIVILEGES, e);

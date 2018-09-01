@@ -127,6 +127,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                 closeDialog();
             }
         });
+        setCanceledOnTouchOutside(false);
     }
 
     // add items into accountsSpinner dynamically

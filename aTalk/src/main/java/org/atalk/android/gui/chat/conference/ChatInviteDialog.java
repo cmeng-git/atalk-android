@@ -19,6 +19,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.*;
 import android.widget.*;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -262,7 +263,7 @@ public class ChatInviteDialog extends Dialog
      * {@inheritDoc}
      */
     @Override
-    public boolean onContextItemSelected(MenuItem item)
+    public boolean onContextItemSelected(@NonNull MenuItem item)
     {
         switch (item.getItemId()) {
             case R.id.muc_Kick:

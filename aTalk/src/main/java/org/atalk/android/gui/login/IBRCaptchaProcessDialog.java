@@ -320,7 +320,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                 String errMsg = ex.getMessage();
                 String errDetails = "";
                 if (ex instanceof XMPPException.XMPPErrorException) {
-                    xmppError = ((XMPPException.XMPPErrorException) ex).getXMPPError();
+                    xmppError = ((XMPPException.XMPPErrorException) ex).getStanzaError();
                     errDetails = xmppError.getDescriptiveText();
                 }
                 else {
@@ -495,7 +495,7 @@ public class IBRCaptchaProcessDialog extends Dialog
             if (ex != null) {
                 errMsg = ex.getMessage();
                 if (ex instanceof XMPPException.XMPPErrorException) {
-                    String errDetails = ((XMPPException.XMPPErrorException) ex).getXMPPError().getDescriptiveText();
+                    String errDetails = ((XMPPException.XMPPErrorException) ex).getStanzaError().getDescriptiveText();
                     if (!StringUtils.isEmpty(errDetails))
                         errMsg += "\n" + errDetails;
                 }

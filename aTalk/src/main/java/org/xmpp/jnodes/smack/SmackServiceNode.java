@@ -206,7 +206,7 @@ public class SmackServiceNode implements ConnectionListener, StanzaListener
 
     public void processStanza(final Stanza packet)
     {
-        // System.out.println("Received: " + packet.toXML());
+        // System.out.println("Received: " + packet.toXML(null));
         if (packet instanceof JingleChannelIQ) {
             final JingleChannelIQ request = (JingleChannelIQ) packet;
             if (request.isRequest()) {

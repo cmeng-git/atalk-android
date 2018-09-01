@@ -18,9 +18,10 @@ import net.java.sip.communicator.service.protocol.event.FileTransferListener;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.*;
@@ -179,7 +180,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
 
         // First we check if file transfer is at all supported for this contact.
         if (fullJid == null) {
-            throw new OperationNotSupportedException("Contact client or server does not support file transfers.");
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
         }
         if (!(fullJid instanceof Jid)) {
             try {
@@ -348,40 +349,26 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             IncomingFileTransferRequestJabberImpl incomingFileTransferRequest = new IncomingFileTransferRequestJabberImpl(
                     jabberProvider, OperationSetFileTransferJabberImpl.this, jabberRequest);
 
-            // cmeng - Send thumbnail request if advertised in streamInitiation packet and the feature is enabled
+            // Send thumbnail request if advertised in streamInitiation packet and the feature is enabled
+            ThumbnailIQ thumbnailRequest = null;
             org.jivesoftware.smackx.si.packet.StreamInitiation.File file = streamInitiation.getFile();
-
-            boolean isThumbnailFile = false;
-
             if ((file instanceof FileElement) && FileTransferConversation.FT_THUMBNAIL_ENABLE) {
                 ThumbnailElement thumbnailElement = ((FileElement) file).getThumbnailElement();
-
                 if ((thumbnailElement != null) && (thumbnailElement.getCid() != null)) {
-                    isThumbnailFile = true;
                     incomingFileTransferRequest.createThumbnailListeners(thumbnailElement.getCid());
-                    ThumbnailIQ thumbnailRequest = new ThumbnailIQ(streamInitiation.getTo(),
-                            streamInitiation.getFrom(), thumbnailElement.getCid(), IQ.Type.get);
+                    thumbnailRequest = new ThumbnailIQ(streamInitiation.getTo(), streamInitiation.getFrom(),
+                            thumbnailElement.getCid(), IQ.Type.get);
+                }
+                // No thumbnail request, then proceed to notify user to receive actual image file
+                else {
+                    FileTransferRequestEvent fileTransferRequestEvent = new FileTransferRequestEvent(
+                            OperationSetFileTransferJabberImpl.this, incomingFileTransferRequest, new Date());
 
-                    if (logger.isDebugEnabled())
-                        logger.debug("Sending thumbnail request:" + thumbnailRequest.toXML(null));
-                    try {
-                        jabberProvider.getConnection().sendStanza(thumbnailRequest);
-                    } catch (NotConnectedException | InterruptedException e) {
-                        isThumbnailFile = false;
-                        e.printStackTrace();
-                    }
+                    // Notify the global listener that a request has arrived.
+                    fireFileTransferRequest(fileTransferRequestEvent);
                 }
             }
-            // wait for thumb nail received before firing to receive actual image file
-            if (!isThumbnailFile) {
-                // Create an event associated to this global request.
-                FileTransferRequestEvent fileTransferRequestEvent = new FileTransferRequestEvent(
-                        OperationSetFileTransferJabberImpl.this, incomingFileTransferRequest, new Date());
-
-                // Notify the global listener that a request has arrived.
-                fireFileTransferRequest(fileTransferRequestEvent);
-            }
-            return null;
+            return thumbnailRequest;
         }
     }
 
@@ -488,7 +475,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                             || status == FileTransferStatusChangeEvent.CANCELED
                             || status == FileTransferStatusChangeEvent.REFUSED) {
                         if (fileTransfer instanceof OutgoingFileTransferJabberImpl) {
-                            ((OutgoingFileTransferJabberImpl) fileTransfer).removeThumbnailRequestListener();
+                            ((OutgoingFileTransferJabberImpl) fileTransfer).removeThumbnailRequestHander();
                         }
 
                         // sometimes a file transfer can be preparing and then completed :

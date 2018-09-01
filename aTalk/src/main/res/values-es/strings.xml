@@ -346,7 +346,7 @@
 	<string name="service_gui_FILE_TOO_BIG">El tamaño del archivo excede el máximo permitido para este protocolo: %1$s</string>
 	<string name="service_gui_FILE_TRANSFER_ACTIVE">La transferencia de archivos en curso se interrumpía. Seguimiento de estado perdido!</string>
 	<string name="service_gui_FILE_TRANSFER_CANCELED">Se ha cancelado la transferencia de archivos</string>
-	<string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">El contacto que has seleccionado no soporta transferencias de archivos</string>
+	<string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">El cliente o servidor de contacto no admite la transferencia de archivos ni los protocolos necesarios</string>
 	<string name="service_gui_FILE_TRANSFER_PREPARING">Preparando la transferencia de archivos con %1$s. Por favor, espere&#8230;</string>
 	<string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s%2$s comparte un archivo contigo</string>
 	<string name="service_gui_FILE_TRANSFER_REFUSED">Se ha rechazado la transferencia de archivos</string>

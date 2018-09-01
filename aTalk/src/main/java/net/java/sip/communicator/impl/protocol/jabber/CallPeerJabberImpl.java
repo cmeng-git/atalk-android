@@ -1218,7 +1218,7 @@ public class CallPeerJabberImpl
         } catch (XMPPException.XMPPErrorException e1) {
             // Log the failed transfer call and notify the user.
             throw new OperationFailedException("Remote peer does not manage call 'transfer'. "
-                    + e1.getXMPPError(), OperationFailedException.ILLEGAL_ARGUMENT);
+                    + e1.getStanzaError(), OperationFailedException.ILLEGAL_ARGUMENT);
         } catch (SmackException.NoResponseException e1) {
             // Log the failed transfer call and notify the user.
             throw new OperationFailedException("No response to the 'transfer' request.",
