@@ -339,7 +339,7 @@
     <string name="service_gui_FILE_TOO_BIG">Ukuran fail melebihi batas maksimum yang diizinkan untuk protokol ini: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">Transfer fail sedang diproses sedang terganggu. Pelacakan status hilang!</string>
     <string name="service_gui_FILE_TRANSFER_CANCELED">Transfer fail telah dibatalkan</string>
-    <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Kontak yang Anda pilih tidak mendukung transfer file</string>
+    <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Hubungi klien atau server tidak mendukung transfer file atau protokol yang diperlukan</string>
     <string name="service_gui_FILE_TRANSFER_PREPARING">Mempersiapkan transfer fail dengan %1$s. Harap tunggu&#8230;</string>
     <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s berbagi fail dengan Anda</string>
     <string name="service_gui_FILE_TRANSFER_REFUSED">Transfer fail telah ditolak</string>

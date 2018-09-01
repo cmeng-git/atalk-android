@@ -338,7 +338,7 @@
     <string name="service_gui_FILE_TOO_BIG">Die maximale Dateigrösse wurde überschritten: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">Der laufende Dateitransfer wurde unterbrochen.</string>
     <string name="service_gui_FILE_TRANSFER_CANCELED">Dateitransfer wurde abgebrochen</string>
-    <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Der von Ihnen ausgewählte Kontakt unterstützt keinen Dateitransfer.</string>
+    <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Contact Client oder Server unterstützt keine Dateiübertragung oder erforderliche Protokolle</string>
     <string name="service_gui_FILE_TRANSFER_PREPARING">Bereite Dateitransfer mit %1$s vor. Bitte warten&#8230;</string>
     <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s möchte Ihnen eine Datei senden.</string>
     <string name="service_gui_FILE_TRANSFER_REFUSED">Dateitransfer wurde abgelehnt</string>

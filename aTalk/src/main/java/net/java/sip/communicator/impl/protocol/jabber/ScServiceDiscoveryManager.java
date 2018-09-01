@@ -372,6 +372,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         // reply @ 28 seconds after disco#info is sent
         connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
+        logger.warn("### Remote discovery for: " + entityID);
         DiscoverInfo discoInfo = discoveryManager.discoverInfo(entityID);
 
         connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);

@@ -350,7 +350,7 @@
     <string name="service_gui_FILE_TOO_BIG">File size exceeds the maximum allowed for this protocol: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">File transfer in progress was being interrupted. Status tracking lost!</string>
     <string name="service_gui_FILE_TRANSFER_CANCELED">File transfer has been canceled</string>
-    <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">The contact you have selected doesn\'t support file transfers</string>
+    <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Contact client or server does not support file transfer or required protocols</string>
     <string name="service_gui_FILE_TRANSFER_PREPARING">Preparing file transfer with %1$s. Please wait&#8230;</string>
     <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s is sharing a file with you</string>
     <string name="service_gui_FILE_TRANSFER_REFUSED">File transfer has been rejected</string>

@@ -6,6 +6,12 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.5.1 (09/01/2018)" versioncode="1051">
+        <change>Fix image file transfer error when thumbnail preview is enabled</change>
+        <change>Port to use smack libraries v4.4.0</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.5.0 (08/29/2018)" versioncode="1050">
         <change>Add user option to remove manually approved certificates</change>
         <change>Fix Omemo session locked up when no key is found</change>

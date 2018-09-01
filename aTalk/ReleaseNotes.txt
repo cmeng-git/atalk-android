@@ -1,5 +1,13 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.5.1 (1051)
+Author:         cmeng
+Upload Date:	09/01/2018
+- Fix image file transfer error when thumbnail preview is enabled - IQThumbnailRequest needs to use IqRequestHandler (smack v4.3.0)
+- Implement check for muc participant jid as it may be null
+- Port to use smack 4.4.0 for latest jingle update
+
+=========================================================================
 Version:		1.5.0 (1050)
 Author:         cmeng
 Upload Date:	08/29/2018
