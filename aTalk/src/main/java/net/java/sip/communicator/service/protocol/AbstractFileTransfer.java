@@ -1,14 +1,14 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.util.*;
-
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.Logger;
+
+import java.util.*;
 
 /**
  * An abstract implementation of the <tt>FileTransfer</tt> interface providing implementation of
@@ -17,174 +17,157 @@ import net.java.sip.communicator.util.*;
  * <tt>getTransferredBytes()</tt>.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public abstract class AbstractFileTransfer implements FileTransfer
 {
-	private static final Logger logger = Logger.getLogger(AbstractFileTransfer.class);
+    private static final Logger logger = Logger.getLogger(AbstractFileTransfer.class);
 
-	/**
-	 * A list of listeners registered for file transfer status events.
-	 */
-	private Vector<FileTransferStatusListener> statusListeners = new Vector<FileTransferStatusListener>();
+    /**
+     * A list of listeners registered for file transfer status events.
+     */
+    final private Vector<FileTransferStatusListener> statusListeners = new Vector<FileTransferStatusListener>();
 
-	/**
-	 * A list of listeners registered for file transfer status events.
-	 */
-	private Vector<FileTransferProgressListener> progressListeners = new Vector<FileTransferProgressListener>();
+    /**
+     * A list of listeners registered for file transfer progress status events.
+     */
+    final private Vector<FileTransferProgressListener> progressListeners = new Vector<FileTransferProgressListener>();
 
-	private int status;
+    private int mStatus;
 
-	/**
-	 * Cancels this file transfer. When this method is called transfer should be interrupted.
-	 */
-	abstract public void cancel();
+    /**
+     * Cancels this file transfer. When this method is called transfer should be interrupted.
+     */
+    abstract public void cancel();
 
-	/**
-	 * Returns the number of bytes already transfered through this file transfer.
-	 *
-	 * @return the number of bytes already transfered through this file transfer
-	 */
-	abstract public long getTransferredBytes();
+    /**
+     * Returns the number of bytes already transfered through this file transfer.
+     *
+     * @return the number of bytes already transfered through this file transfer
+     */
+    abstract public long getTransferredBytes();
 
-	/**
-	 * Adds the given <tt>FileTransferProgressListener</tt> to listen for status changes on this
-	 * file transfer.
-	 *
-	 * @param listener
-	 *        the listener to add
-	 */
-	public void addProgressListener(FileTransferProgressListener listener)
-	{
-		synchronized (progressListeners) {
-			if (!progressListeners.contains(listener)) {
-				this.progressListeners.add(listener);
-			}
-		}
-	}
+    /**
+     * Adds the given <tt>FileTransferProgressListener</tt> to listen for status changes on this file transfer.
+     *
+     * @param listener the listener to add
+     */
+    public void addProgressListener(FileTransferProgressListener listener)
+    {
+        synchronized (progressListeners) {
+            if (!progressListeners.contains(listener)) {
+                this.progressListeners.add(listener);
+            }
+        }
+    }
 
-	/**
-	 * Adds the given <tt>FileTransferStatusListener</tt> to listen for status changes on this file
-	 * transfer.
-	 *
-	 * @param listener
-	 *        the listener to add
-	 */
-	public void addStatusListener(FileTransferStatusListener listener)
-	{
-		synchronized (statusListeners) {
-			if (!statusListeners.contains(listener)) {
-				this.statusListeners.add(listener);
-			}
-		}
-	}
+    /**
+     * Adds the given <tt>FileTransferStatusListener</tt> to listen for status changes on this file transfer.
+     *
+     * @param listener the listener to add
+     */
+    public void addStatusListener(FileTransferStatusListener listener)
+    {
+        synchronized (statusListeners) {
+            if (!statusListeners.contains(listener)) {
+                this.statusListeners.add(listener);
+            }
+        }
+    }
 
-	/**
-	 * Removes the given <tt>FileTransferProgressListener</tt>.
-	 *
-	 * @param listener
-	 *        the listener to remove
-	 */
-	public void removeProgressListener(FileTransferProgressListener listener)
-	{
-		synchronized (progressListeners) {
-			this.progressListeners.remove(listener);
-		}
-	}
+    /**
+     * Removes the given <tt>FileTransferProgressListener</tt>.
+     *
+     * @param listener the listener to remove
+     */
+    public void removeProgressListener(FileTransferProgressListener listener)
+    {
+        synchronized (progressListeners) {
+            this.progressListeners.remove(listener);
+        }
+    }
 
-	/**
-	 * Removes the given <tt>FileTransferStatusListener</tt>.
-	 *
-	 * @param listener
-	 *        the listener to remove
-	 */
-	public void removeStatusListener(FileTransferStatusListener listener)
-	{
-		synchronized (statusListeners) {
-			this.statusListeners.remove(listener);
-		}
-	}
+    /**
+     * Removes the given <tt>FileTransferStatusListener</tt>.
+     *
+     * @param listener the listener to remove
+     */
+    public void removeStatusListener(FileTransferStatusListener listener)
+    {
+        synchronized (statusListeners) {
+            this.statusListeners.remove(listener);
+        }
+    }
 
-	/**
-	 * Returns the current status of the transfer. This information could be used from the user
-	 * interface to show a progress bar indicating the file transfer status.
-	 *
-	 * @return the current status of the transfer
-	 */
-	public int getStatus()
-	{
-		return status;
-	}
+    /**
+     * Returns the current status of the transfer. This information could be used from the user
+     * interface to show a progress bar indicating the file transfer status.
+     *
+     * @return the current status of the transfer
+     */
+    public int getStatus()
+    {
+        return mStatus;
+    }
 
-	/**
-	 * Notifies all status listeners that a new <tt>FileTransferStatusChangeEvent</tt> occured.
-	 * 
-	 * @param newStatus
-	 *        the new status
-	 */
-	public void fireStatusChangeEvent(int newStatus)
-	{
-		this.fireStatusChangeEvent(newStatus, null);
-	}
+    /**
+     * Notifies all status listeners that a new <tt>FileTransferStatusChangeEvent</tt> occured.
+     *
+     * @param newStatus the new status
+     */
+    public void fireStatusChangeEvent(int newStatus)
+    {
+        this.fireStatusChangeEvent(newStatus, null);
+    }
 
-	/**
-	 * Notifies all status listeners that a new <tt>FileTransferStatusChangeEvent</tt> occured.
-	 * 
-	 * @param newStatus
-	 *        the new status
-	 * @param reason
-	 *        the reason of the status change
-	 */
-	public void fireStatusChangeEvent(int newStatus, String reason)
-	{
-		// ignore if status is the same
-		if (this.status == newStatus)
-			return;
+    /**
+     * Notifies all status listeners that a new <tt>FileTransferStatusChangeEvent</tt> occured.
+     *
+     * @param newStatus the new status
+     * @param reason the reason of the status change
+     */
+    public void fireStatusChangeEvent(int newStatus, String reason)
+    {
+        // ignore if status is the same
+        if (mStatus == newStatus)
+            return;
 
-		Collection<FileTransferStatusListener> listeners = null;
-		synchronized (statusListeners) {
-			listeners = new ArrayList<FileTransferStatusListener>(statusListeners);
-		}
+        Collection<FileTransferStatusListener> listeners = null;
+        synchronized (statusListeners) {
+            listeners = new ArrayList<FileTransferStatusListener>(statusListeners);
+        }
 
-		if (logger.isDebugEnabled())
-			logger.debug("Dispatching a FileTransfer Event to" + listeners.size()
-				+ " listeners. Status=" + status);
+        if (logger.isDebugEnabled())
+            logger.debug("Dispatching a FileTransfer Event to" + listeners.size()
+                    + " listeners. Status=" + newStatus);
 
-		FileTransferStatusChangeEvent statusEvent = new FileTransferStatusChangeEvent(this, status,
-			newStatus, reason);
+        FileTransferStatusChangeEvent statusEvent = new FileTransferStatusChangeEvent(this, mStatus,
+                newStatus, reason);
 
-		// Updates the status.
-		this.status = newStatus;
+        // Updates the status.
+        mStatus = newStatus;
 
-		Iterator<FileTransferStatusListener> listenersIter = listeners.iterator();
+        for (FileTransferStatusListener statusListener : listeners) {
+            statusListener.statusChanged(statusEvent);
+        }
+    }
 
-		while (listenersIter.hasNext()) {
-			FileTransferStatusListener statusListener = listenersIter.next();
-			statusListener.statusChanged(statusEvent);
-		}
-	}
+    /**
+     * Notifies all status listeners that a new <tt>FileTransferProgressEvent</tt> occured.
+     *
+     * @param timestamp the date on which the event occured
+     * @param progress the bytes representing the progress of the transfer
+     */
+    public void fireProgressChangeEvent(long timestamp, long progress)
+    {
+        Collection<FileTransferProgressListener> listeners = null;
+        synchronized (progressListeners) {
+            listeners = new ArrayList<FileTransferProgressListener>(progressListeners);
+        }
 
-	/**
-	 * Notifies all status listeners that a new <tt>FileTransferProgressEvent</tt> occured.
-	 * 
-	 * @param timestamp
-	 *        the date on which the event occured
-	 * @param progress
-	 *        the bytes representing the progress of the transfer
-	 */
-	public void fireProgressChangeEvent(long timestamp, long progress)
-	{
-		Collection<FileTransferProgressListener> listeners = null;
-		synchronized (progressListeners) {
-			listeners = new ArrayList<FileTransferProgressListener>(progressListeners);
-		}
-
-		FileTransferProgressEvent progressEvent = new FileTransferProgressEvent(this, timestamp,
-			progress);
-		Iterator<FileTransferProgressListener> listenersIter = listeners.iterator();
-
-		while (listenersIter.hasNext()) {
-			FileTransferProgressListener statusListener = listenersIter.next();
-			statusListener.progressChanged(progressEvent);
-		}
-	}
+        FileTransferProgressEvent progressEvent = new FileTransferProgressEvent(this, timestamp, progress);
+        for (FileTransferProgressListener statusListener : listeners) {
+            statusListener.progressChanged(progressEvent);
+        }
+    }
 }

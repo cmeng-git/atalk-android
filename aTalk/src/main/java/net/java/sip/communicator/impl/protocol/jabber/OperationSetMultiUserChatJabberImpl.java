@@ -617,12 +617,12 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                     || evt.getNewState() == RegistrationState.CONNECTION_FAILED) {
                 // clear cached chatRooms as there are no longer valid
                 chatRoomCache.clear();
+            }
+            else if (evt.getNewState() == RegistrationState.UNREGISTERING) {
                 if (mMucMgr != null) {
                     mMucMgr.removeInvitationListener(mInvitationListener);
                     mInvitationListener = null;
                 }
-            }
-            else if (evt.getNewState() == RegistrationState.UNREGISTERING) {
                 // lets check for joined rooms and leave them
                 List<ChatRoom> joinedRooms = getCurrentlyJoinedChatRooms();
                 for (ChatRoom room : joinedRooms) {

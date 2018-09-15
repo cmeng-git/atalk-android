@@ -19,10 +19,13 @@ package org.atalk.android.plugin.audioservice;
 import android.app.Service;
 import android.content.Intent;
 import android.media.*;
+import android.net.Uri;
 import android.os.*;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import org.atalk.persistance.FileBackend;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +49,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
 
     private File audioFile = null;
     private String filePath = null;
+    private Uri fileUri = null;
 
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
@@ -53,7 +57,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     private long startTime = 0L;
 
     // Handler for Sound Level Meter and Record Timer
-    private Handler mHandler = new Handler();
+    private Handler mHandler;
 
     // The Google ASR input requirements state that audio input sensitivity should be set such
     // that 90 dB SPL_LEVEL at 1000 Hz yields RMS of 2500 for 16-bit samples,
@@ -88,22 +92,22 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         super.onStartCommand(intent, flags, startId);
-        Bundle bundle = intent.getExtras();
-
         switch (intent.getAction()) {
             case ACTION_RECORDING:
+                mHandler = new Handler();
                 recordAudio();
                 break;
 
             case ACTION_PLAYBACK:
-                filePath = bundle.getString(URI);
-                playAudio(filePath);
+                fileUri = intent.getData();
+                playAudio(fileUri);
                 break;
 
             case ACTION_SEND:
                 stopTimer();
                 stopRecording();
                 if (audioFile != null) {
+                    // sendBroadcast(FileAccess.getUriForFile(this, audioFile));
                     filePath = audioFile.getAbsolutePath();
                     sendBroadcast(filePath);
                 }
@@ -126,12 +130,11 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
 
     public void recordAudio()
     {
-        try {
-            File sampleDir = getOutputMediaFolder();
-            audioFile = File.createTempFile("voice-", ".3gp", sampleDir);
-        } catch (IOException e) {
-            Log.e(TAG, "sdcard access error");
+        audioFile = createMediaVoiceFile();
+        if (audioFile == null) {
+            return;
         }
+
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -151,17 +154,17 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
         mHandler.postDelayed(updateSPL, 0);
     }
 
-    public void playAudio(String uri)
+    public void playAudio(Uri uri)
     {
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(this);
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
-            mPlayer.setDataSource(uri);
+            mPlayer.setDataSource(this, uri);
             mPlayer.prepare();
             mPlayer.start();
         } catch (IOException e) {
-            Log.e(TAG, "Incorrect audio file format: %s!".replace("%s", uri));
+            Log.e(TAG, "Unable to play audio file: %s!".replace("%s", uri.getPath()));
             e.printStackTrace();
             stopSelf();
         }
@@ -176,7 +179,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
                 mRecorder.release();
                 mRecorder = null;
             } catch (RuntimeException ex) {
-                /**
+                /*
                  * Note that a RuntimeException is intentionally thrown to the application, if no
                  * valid audio/video data has been received when stop() is called. This happens
                  * if stop() is called immediately after start().
@@ -215,6 +218,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     private void sendBroadcast(String filePath)
     {
         Intent intent = new Intent(ACTION_AUDIO_RECORD);
+        // intent.setDataAndType(uri, "video/3gp");
         intent.putExtra(URI, filePath);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
@@ -261,22 +265,26 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
             return 0;
     }
 
-    private static File getOutputMediaFolder()
-            throws IOException
+
+    /**
+     * Create the audio file if it does not exist
+     *
+     * @return Voice file for saving audio
+     */
+    private static File createMediaVoiceFile()
     {
-        String state = Environment.getExternalStorageState();
-        if (!state.equals(Environment.MEDIA_MOUNTED)) {
-            throw new IOException("SD Card is not mounted. It is %s .".replace("%s", state));
+        File voiceFile = null;
+        File mediaDir = FileBackend.getaTalkStore(FileBackend.MEDIA_VOICE_SEND);
+        if (!mediaDir.exists() && !mediaDir.mkdirs()) {
+            Log.d(TAG, "Fail to create Media voice directory!");
+            return voiceFile;
         }
 
-        File mediaStorageDir
-                = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "Sound");
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
-            Log.d("MySoundApp", "Path to voice file could not be created.");
-            return null;
+        try {
+            voiceFile = File.createTempFile("voice-", ".3gp", mediaDir);
+        } catch (IOException e) {
+            Log.d(TAG, "Fail to create Media voice file!");
         }
-        return mediaStorageDir;
+        return voiceFile;
     }
 }

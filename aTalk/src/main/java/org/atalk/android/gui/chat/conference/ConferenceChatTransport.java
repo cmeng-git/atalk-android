@@ -235,6 +235,14 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
+     * Sending sticker messages is not supported by this chat transport implementation.
+     */
+    public FileTransfer sendSticker(File file)
+    {
+        return null;
+    }
+
+    /**
      * Not used.
      *
      * @return status

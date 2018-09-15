@@ -95,20 +95,19 @@ public class TempFileManager
 	{
 		// Select all the files
 		File[] files = rootDir.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			// If the file is a directory, we will
-			// recursively call delete on it.
-			if (files[i].isDirectory()) {
-				recursiveDelete(files[i]);
-			}
-			else {
-				// It is just a file so we are safe to
-				// delete it
-				if (!files[i].delete()) {
-					throw new IOException("Could not delete: " + files[i].getAbsolutePath());
-				}
-			}
-		}
+        for (File file : files) {
+            // If the file is a directory, we will
+            // recursively call deleteRecursive on it.
+            if (file.isDirectory()) {
+                recursiveDelete(file);
+            }
+            else {
+                // It is just a file so we are safe to delete it
+                if (!file.delete()) {
+                    throw new IOException("Could not delete: " + file.getAbsolutePath());
+                }
+            }
+        }
 
 		// Finally, delete the root directory now
 		// that all of the files in the directory have
@@ -128,7 +127,7 @@ public class TempFileManager
 	 */
 	private static File sTmpDir = null;
 
-	/**
+	/*
 	 * Static block used to clean up any old temp directories found -- the JVM will run this block when a class loader
 	 * loads the class.
 	 */
@@ -151,34 +150,31 @@ public class TempFileManager
 
 		// Find all the files that do not have a lock by
 		// checking if the lock file exists.
-		for (int i = 0; i < tmpFiles.length; i++) {
-			File tmpFile = tmpFiles[i];
+        for (File tmpFile : tmpFiles) {
+            // Create a file to represent the lock and test.
+            File lockFile = new File(tmpFile.getParent(), tmpFile.getName() + ".lck");
+            if (!lockFile.exists()) {
+                // Delete the contents of the directory since
+                // it is no longer locked.
+                Logger.getLogger("default").log(Level.FINE, "TempFileManager::deleting old temp directory " + tmpFile);
 
-			// Create a file to represent the lock and test.
-			File lockFile = new File(tmpFile.getParent(), tmpFile.getName() + ".lck");
-			if (!lockFile.exists()) {
-				// Delete the contents of the directory since
-				// it is no longer locked.
-				Logger.getLogger("default").log(Level.FINE, "TempFileManager::deleting old temp directory " + tmpFile);
+                try {
+                    recursiveDelete(tmpFile);
+                } catch (IOException ex) {
+                    // You log at a fine level since not being able to delete
+                    // the temp directory should not stop the application
+                    // from performing correctly. However, if the application
+                    // generates a lot of temp files, this could become
+                    // a disk space problem and the level should be raised.
+                    Logger.getLogger("default").log(Level.INFO, "TempFileManager::unable to delete " + tmpFile.getAbsolutePath());
 
-				try {
-					recursiveDelete(tmpFile);
-				}
-				catch (IOException ex) {
-					// You log at a fine level since not being able to delete
-					// the temp directory should not stop the application
-					// from performing correctly. However, if the application
-					// generates a lot of temp files, this could become
-					// a disk space problem and the level should be raised.
-					Logger.getLogger("default").log(Level.INFO, "TempFileManager::unable to delete " + tmpFile.getAbsolutePath());
+                    // Print the exception.
+                    ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+                    ex.printStackTrace(new PrintStream(ostream));
 
-					// Print the exception.
-					ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-					ex.printStackTrace(new PrintStream(ostream));
-
-					Logger.getLogger("default").log(Level.FINE, ostream.toString());
-				}
-			}
-		}
+                    Logger.getLogger("default").log(Level.FINE, ostream.toString());
+                }
+            }
+        }
 	}
 }

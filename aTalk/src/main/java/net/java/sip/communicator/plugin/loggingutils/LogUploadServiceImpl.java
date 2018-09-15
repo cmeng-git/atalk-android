@@ -7,15 +7,13 @@ package net.java.sip.communicator.plugin.loggingutils;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
-import android.support.v4.content.FileProvider;
 
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.aTalk;
+import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.service.log.LogUploadService;
@@ -68,7 +66,6 @@ public class LogUploadServiceImpl implements LogUploadService
             String logcatFN = new File("log", "atalk-current-logcat.txt").toString();
             try {
                 logcatFile = LoggingUtilsActivator.getFileAccessService().getPrivatePersistentFile(logcatFN, FileCategory.LOG);
-
                 Runtime.getRuntime().exec("logcat -c -v time -f " + logcatFile.getAbsolutePath());
             } catch (Exception e) {
                 logger.error("Couldn't save current logcat file.");
@@ -84,14 +81,9 @@ public class LogUploadServiceImpl implements LogUploadService
             sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
             sendIntent.setType("application/zip");
 
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                Uri logsUri = FileProvider.getUriForFile(aTalkApp.getGlobalContext(),
-                        aTalk.APP_FILE_PROVIDER, externalStorageFile);
-                sendIntent.putExtra(Intent.EXTRA_STREAM, logsUri);
-            }
-            else {
-                sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(externalStorageFile));
-            }
+            Uri logsUri = FileBackend.getUriForFile(aTalkApp.getGlobalContext(), externalStorageFile);
+            sendIntent.putExtra(Intent.EXTRA_STREAM, logsUri);
+
             sendIntent.putExtra(Intent.EXTRA_TEXT, aTalkApp.getResString(R.string.service_gui_SEND_LOGS_INFO));
 
             // we are starting this activity from context that is most probably not from the

@@ -340,6 +340,7 @@
     <string name="service_gui_FILE_RECEIVING_FROM">Recibiendo un archivo de %1$s</string>
 	<string name="service_gui_FILE_SEND_COMPLETED">El fichero se ha enviado correctamente a %1$s</string>
 	<string name="service_gui_FILE_SEND_FAILED">No se pudo enviar el archivo: %1$s</string>
+    <string name="service_gui_FILE_SEND_NOT_ALLOW">No se puede enviar el archivo durante la llamada de conferencia!</string>
 	<string name="service_gui_FILE_SEND_REFUSED">%1$s ha rechazado este archivo</string>
 	<string name="service_gui_FILE_SEND_TO">Enviar archivo adjunto</string>
 	<string name="service_gui_FILE_SENDING_TO">Enviando el archivo a %1$s</string>
@@ -1184,7 +1185,7 @@
     <string name="service_gui_settings_GENERAL">General</string>
 
     <!-- Message settings -->
-    <string name="service_gui_settings_MSG">Mensaje</string>
+    <string name="service_gui_settings_MSG">Mensajería</string>
 
     <!-- Group messages in one window -->
     <string name="service_gui_settings_MULTICHAT_OFF">Ventana separada para la conversación</string>
@@ -1207,6 +1208,9 @@
 
     <!-- Enable option to send thumnail preview for image file sending -->
     <string name="service_gui_settings_SEND_THUMBNAIL">Enviar miniatura de archivo</string>
+
+    <!-- Auto accept downloadable max file size -->
+    <string name="service_gui_settings_ACCEPT_FILE">Acepta automáticamente el tamaño máximo de archivo</string>
 
     <!-- Setup substription Mode: auto or manual approval -->
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presencia Suscribir aprobación</string>

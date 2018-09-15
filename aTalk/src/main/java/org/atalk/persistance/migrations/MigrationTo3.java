@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.util.FileAccess;
+import org.atalk.persistance.FileBackend;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 
@@ -51,13 +51,13 @@ public class MigrationTo3
 
         try {
             if (historyDir.exists())
-                FileAccess.delete(historyDir.getAbsolutePath());
+                FileBackend.deleteRecursive(historyDir);
 
             if (xmlFP.exists())
-                FileAccess.delete(xmlFP.getAbsolutePath());
+                FileBackend.deleteRecursive(xmlFP);
 
             if (omemoDir.exists())
-                FileAccess.delete(omemoDir.getAbsolutePath());
+                FileBackend.deleteRecursive(omemoDir);
         }
         catch (Exception ignore) {
         }

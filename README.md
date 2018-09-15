@@ -22,6 +22,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * Support multi-user chat in room creation, server chat rooms discovery and joining chat room with captcha protection 
 * Supports both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
 * Send and receive files for all document types and images. Support Image thumb nail preview for acceptance before the actual file is sent
+* Support downloadable Stickers, Bitmoji and Emoji rich content sharing
 * Unique GPS-Location implementation standalone tool, or sending locations to your chosen buddy for real-time tracking or playback animation.
 * A 360° street view of your current location, may use for self-guided tour. The street view tracks and follows your direction of sight.
 * Built-in demo for GPS-Location features
@@ -96,6 +97,7 @@ Libraries used in this project
 * [dhcp4java](https://github.com/ggrandes-clones/dhcp4java)
 * [ews-android-api](https://github.com/alipov/ews-android-api)
 * [FFmpeg](https://github.com/FFmpeg/FFmpeg)
+* [glide](https://github.com/bumptech/glide)
 * [Google Play Services](https://developers.google.com/android/guides/overview)
 * [httpclient-android](https://github.com/smarek/httpclient-android)
 * [ice4j](https://github.com/jitsi/ice4j)

@@ -22,7 +22,7 @@ public interface IncomingFileTransferRequest
 	 *
 	 * @return the id.
 	 */
-	public String getID();
+	String getID();
 
 	/**
 	 * Returns a String that represents the name of the file that is being received. If there is no
@@ -30,7 +30,7 @@ public interface IncomingFileTransferRequest
 	 * 
 	 * @return a String that represents the name of the file
 	 */
-	public String getFileName();
+	String getFileName();
 
 	/**
 	 * Returns a String that represents the description of the file that is being received. If there
@@ -38,15 +38,22 @@ public interface IncomingFileTransferRequest
 	 *
 	 * @return a String that represents the description of the file
 	 */
-	public String getFileDescription();
+	String getFileDescription();
 
-	/**
-	 * Returns a long that represents the size of the file that is being received. If there is no
-	 * file size available, returns null.
-	 *
-	 * @return a long that represents the size of the file
-	 */
-	public long getFileSize();
+    /**
+     * Identifies the type of file that is desired to be transferred.
+     *
+     * @return The mime-type.
+     */
+    String getMimeType();
+
+    /**
+     * Returns a long that represents the size of the file that is being received. If there is no
+     * file size available, returns null.
+     *
+     * @return a long that represents the size of the file
+     */
+	long getFileSize();
 
 	/**
 	 * Returns a String that represents the name of the sender of the file being received. If there
@@ -54,7 +61,7 @@ public interface IncomingFileTransferRequest
 	 *
 	 * @return a String that represents the name of the sender
 	 */
-	public Contact getSender();
+	Contact getSender();
 
 	/**
 	 * Function called to accept and receive the file.
@@ -63,17 +70,17 @@ public interface IncomingFileTransferRequest
 	 *        the file to accept
 	 * @return the <tt>FileTransfer</tt> object managing the transfer
 	 */
-	public FileTransfer acceptFile(File file);
+	FileTransfer acceptFile(File file);
 
 	/**
 	 * Function called to refuse the file.
 	 */
-	public void rejectFile();
+	void rejectFile();
 
 	/**
 	 * Returns the thumbnail contained in this request.
 	 *
 	 * @return the thumbnail contained in this request
 	 */
-	public byte[] getThumbnail();
+	byte[] getThumbnail();
 }

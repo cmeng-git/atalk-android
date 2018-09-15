@@ -11,6 +11,8 @@ import android.app.Activity;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
+import android.support.v13.view.inputmethod.InputContentInfoCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
@@ -22,16 +24,22 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
+import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.util.ContentEditText;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.audioservice.SoundMeter;
+import org.atalk.persistance.FilePathHelper;
 import org.atalk.util.Logger;
+import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.chatstates.ChatState;
 
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Class is used to separate the logic of send message editing process from <tt>ChatFragment</tt>.
@@ -41,7 +49,8 @@ import java.util.Locale;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ChatController implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, TextWatcher
+public class ChatController implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener,
+        TextWatcher, ContentEditText.CommitListener
 {
     /**
      * The logger.
@@ -78,7 +87,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     /**
      * Message <tt>EditText</tt>.
      */
-    private EditText msgEdit;
+    private ContentEditText msgEdit;
     /**
      * Message editing area background.
      */
@@ -153,6 +162,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
             // Gets message edit view
             msgEdit = parent.findViewById(R.id.chatWriteText);
+            msgEdit.setCommitListener(this);
+            msgEdit.setFocusableInTouchMode(true);
 
             // Restore edited text
             msgEdit.setText(chatPanel.getEditedText());
@@ -223,7 +234,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 && ConfigurationUtils.isSendChatStateNotifications());
 
         if (allowsChatStateNotifications) {
-            msgEdit.setOnTouchListener(new EditText.OnTouchListener()
+            msgEdit.setOnTouchListener(new ContentEditText.OnTouchListener()
             {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)
@@ -344,7 +355,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             updateCorrectionState();
             // Sets corrected message content and show the keyboard
             msgEdit.setText(content);
-            msgEdit.setFocusableInTouchMode(true);
             msgEdit.requestFocus();
 
             InputMethodManager inputMethodManager = (InputMethodManager) parent.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -372,7 +382,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     sendBtn.setVisibility(View.INVISIBLE);
                     if (isAudioAllowed)
                         audioBtn.setVisibility(View.VISIBLE);
-                } else {
+                }
+                else {
                     aTalkApp.showToastMessage(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
                 }
                 break;
@@ -539,7 +550,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 logger.info("Sending audio recorded file!!!");
                 LocalBroadcastManager.getInstance(parent).unregisterReceiver(mReceiver);
                 String filePath = intent.getStringExtra(AudioBgService.URI);
-                if (filePath != null && filePath.length() > 0) {
+                // String filePath = intent.getData().getPath();
+                if (!StringUtils.isNullOrEmpty(filePath)) {
                     ((ChatActivity) parent).sendFile(filePath);
                 }
                 parent.stopService(new Intent(parent, AudioBgService.class));
@@ -653,6 +665,34 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
             if (allowsChatStateNotifications)
                 mChatTransport.sendChatStateNotification(newState);
+        }
+    }
+
+    @Override
+    public void onCommitContent(InputContentInfoCompat info)
+    {
+        Uri contentUri = info.getContentUri();
+        String filePath = FilePathHelper.getPath(parent, contentUri);
+        if (!StringUtils.isNullOrEmpty(filePath)) {
+            sendSticker(filePath);
+        }
+        else
+            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+    }
+
+    private void sendSticker(String filePath)
+    {
+        Date date = Calendar.getInstance().getTime();
+        UIService uiService = AndroidGUIActivator.getUIService();
+        if (uiService != null) {
+            MetaContact metacontact = chatPanel.getMetaContact();
+            if (metacontact != null) {
+                String sendTo = metacontact.getDefaultContact().getAddress();
+                chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_STICKER, ChatMessage.ENCODE_PLAIN, filePath);
+            }
+            else {
+                aTalkApp.showToastMessage(R.string.service_gui_FILE_SEND_NOT_ALLOW);
+            }
         }
     }
 

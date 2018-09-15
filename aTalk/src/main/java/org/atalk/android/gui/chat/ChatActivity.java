@@ -5,13 +5,15 @@
  */
 package org.atalk.android.gui.chat;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
+import android.content.*;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.*;
@@ -28,7 +30,6 @@ import net.java.sip.communicator.util.Logger;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
 import org.atalk.android.gui.chatroomslist.ChatRoomInfoFragment;
@@ -39,15 +40,16 @@ import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.geolocation.GeoLocation;
-import org.atalk.android.util.*;
 import org.atalk.crypto.CryptoFragment;
+import org.atalk.persistance.FileBackend;
+import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.StringUtils;
 
 import java.io.File;
 import java.util.*;
 
-import static org.atalk.android.util.FileAccess.getMimeType;
+import static org.atalk.persistance.FileBackend.getMimeType;
 
 /**
  * The <tt>ChatActivity</tt> is a singleTask activity containing chat related interface.
@@ -112,7 +114,9 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     // currently not implemented
     private int mCurrentChatType;
 
-    private static String mCameraFilePath = "";
+    private static File mCameraFilePath = null;
+    final private List<Uri> mPendingImageUris = new ArrayList<>();
+    final private List<Uri> mPendingFileUris = new ArrayList<>();
 
     private static final int SELECT_PHOTO = 100;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 101;
@@ -578,68 +582,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            String filePath;
-
-            switch (requestCode) {
-                case SELECT_PHOTO:
-                case SELECT_VIDEO:
-                    Uri selectedImage = data.getData();
-                    if (selectedImage != null) {
-                        filePath = RealPathUtil.getRealPath(this, selectedImage);
-                        if (!StringUtils.isNullOrEmpty(filePath))
-                            sendFile(filePath);
-                        else
-                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                    }
-                    break;
-
-                case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
-                case CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE:
-                    if (mCameraFilePath.length() > 0 && FileAccess.IsFileExist(mCameraFilePath)) {
-                        filePath = mCameraFilePath;
-                        if (!StringUtils.isNullOrEmpty(filePath)) {
-                            mCameraFilePath = "";
-                            sendFile(filePath);
-                        }
-                        else
-                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                    }
-                    break;
-
-                case CHOOSE_FILE_ACTIVITY_REQUEST_CODE:
-                    if (data != null) {
-                        Uri uri = data.getData();
-                        if (uri != null) {
-                            filePath = RealPathUtil.getRealPath(this, uri);
-                            if (!StringUtils.isNullOrEmpty(filePath))
-                                sendFile(filePath);
-                            else
-                                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                        }
-                    }
-                    break;
-
-                case OPEN_FILE_REQUEST_CODE:
-                    if (data != null) {
-                        Uri uri = data.getData();
-                        if (uri != null) {
-                            filePath = RealPathUtil.getRealPath(this, uri);
-                            if (!StringUtils.isNullOrEmpty(filePath))
-                                openFile(new File(filePath));
-                            else
-                                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                        }
-                    }
-                    break;
-            }
-        }
-    }
-
     public void sendFile(String filePath)
     {
         final ChatPanel chatPanel;
@@ -684,69 +626,59 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     public void sendAttachment(AttachOptionItem attachOptionItem, final Contact contact)
     {
         mRecipient = contact;
-        Intent intent;
+        Intent intent = new Intent();
         Uri fileUri;
 
         switch (attachOptionItem) {
             case pic:
-                intent = new Intent();
                 intent.setType("image/*");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                }
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PHOTO);
+                startActivityForResult(intent, SELECT_PHOTO);
                 break;
 
             case camera:
-                // create Intent to take a picture and return control to the calling application
-                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 // create a file to save the image
-                mCameraFilePath = CameraAccess.getOutputMediaFilePath(CameraAccess.MEDIA_TYPE_IMAGE);
+                mCameraFilePath = FileBackend.getOutputMediaFile(FileBackend.MEDIA_TYPE_IMAGE);
+                fileUri = FileBackend.getUriForFile(this, mCameraFilePath);
 
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                    fileUri = FileProvider.getUriForFile(this, aTalk.APP_FILE_PROVIDER, new File(mCameraFilePath));
-                }
-                else {
-                    fileUri = Uri.fromFile(new File(mCameraFilePath));
-                }
-
-                // set the image file name for camera service to save file
+                // create Intent to take a picture and return control to the calling application
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                // start the image capture Intent
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                 break;
 
             case video:
-                intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("video/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, SELECT_VIDEO);
                 break;
 
             case video_record:
-                // create Intent to take a picture and return control to the calling application
-                intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                // create a file to save the image
-                mCameraFilePath = CameraAccess.getOutputMediaFilePath(CameraAccess.MEDIA_TYPE_VIDEO);
+                // create a file to record video
+                mCameraFilePath = FileBackend.getOutputMediaFile(FileBackend.MEDIA_TYPE_VIDEO);
+                fileUri = FileBackend.getUriForFile(this, mCameraFilePath);
 
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                    fileUri = FileProvider.getUriForFile(this, aTalk.APP_FILE_PROVIDER, new File(mCameraFilePath));
-                }
-                else {
-                    fileUri = Uri.fromFile(new File(mCameraFilePath));
-                }
-
-                // set the image file name
+                // create Intent to record video and return control to the calling application
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                // start the image capture Intent
+                intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
                 startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
                 break;
 
             case share_file:
-                Intent chooseFile;
-                chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-                chooseFile.setType("*/*");
-                chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                }
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
                 try {
-                    intent = Intent.createChooser(chooseFile, getString(R.string.choose_file_activity_title));
-                    startActivityForResult(intent, CHOOSE_FILE_ACTIVITY_REQUEST_CODE);
+                    Intent chooseFile = Intent.createChooser(intent, getString(R.string.choose_file_activity_title));
+                    startActivityForResult(chooseFile, CHOOSE_FILE_ACTIVITY_REQUEST_CODE);
                 } catch (android.content.ActivityNotFoundException ex) {
                     showToastMessage(R.string.service_gui_FOLDER_OPEN_NO_APPLICATION);
                 }
@@ -754,76 +686,149 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         }
     }
 
-    public void openFolder(File dirFolder)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        try {
-            Intent pickFile = new Intent(Intent.ACTION_GET_CONTENT);
-            Uri uri = Uri.parse(dirFolder.toString());
-            pickFile.setDataAndType(uri, "*/*");
-            pickFile.addCategory(Intent.CATEGORY_OPENABLE);
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            String filePath;
 
-            Intent intent = Intent.createChooser(pickFile, "Open folder");
-            startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
+            switch (requestCode) {
+                case SELECT_PHOTO:
+                    mPendingImageUris.clear();
+                    mPendingImageUris.addAll(extractUriFromIntent(data));
+                    for (Iterator<Uri> i = mPendingImageUris.iterator(); i.hasNext(); i.remove()) {
+                        filePath = FilePathHelper.getPath(this, i.next());
+                        if (!StringUtils.isNullOrEmpty(filePath))
+                            sendFile(filePath);
+                        else
+                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                    }
+                    break;
 
-        } catch (android.content.ActivityNotFoundException ex) {
-            showToastMessage(R.string.service_gui_FOLDER_OPEN_NO_APPLICATION);
-        } catch (IllegalArgumentException | NullPointerException e) {
-            showToastMessage(R.string.service_gui_FOLDER_DOES_NOT_EXIST);
-        } catch (UnsupportedOperationException e) {
-            showToastMessage(R.string.service_gui_FILE_OPEN_NOT_SUPPORTED);
-        } catch (SecurityException e) {
-            showToastMessage(R.string.service_gui_FOLDER_OPEN_NO_PERMISSION);
-        } catch (Exception e) {
-            showToastMessage(R.string.service_gui_FOLDER_OPEN_FAILED);
+                case SELECT_VIDEO:
+                    Uri selectedVideo = data.getData();
+                    if (selectedVideo != null) {
+                        filePath = FilePathHelper.getPath(this, selectedVideo);
+                        if (!StringUtils.isNullOrEmpty(filePath))
+                            sendFile(filePath);
+                        else
+                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                    }
+                    break;
+
+                case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
+                case CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE:
+                    if ((mCameraFilePath != null) && mCameraFilePath.exists()) {
+                        filePath = mCameraFilePath.getPath();
+                        if (!StringUtils.isNullOrEmpty(filePath)) {
+                            mCameraFilePath = null;
+                            sendFile(filePath);
+                        }
+                        else
+                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                    }
+                    break;
+
+                case CHOOSE_FILE_ACTIVITY_REQUEST_CODE:
+                    mPendingImageUris.clear();
+                    mPendingImageUris.addAll(extractUriFromIntent(data));
+                    for (Iterator<Uri> i = mPendingImageUris.iterator(); i.hasNext(); i.remove()) {
+                        filePath = FilePathHelper.getPath(this, i.next());
+                        if (!StringUtils.isNullOrEmpty(filePath))
+                            sendFile(filePath);
+                        else
+                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                    }
+                    break;
+
+                case OPEN_FILE_REQUEST_CODE:
+                    if (data != null) {
+                        Uri uri = data.getData();
+                        if (uri != null) {
+                            filePath = FilePathHelper.getPath(this, uri);
+                            if (!StringUtils.isNullOrEmpty(filePath))
+                                openDownloadable(new File(filePath));
+                            else
+                                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                        }
+                    }
+                    break;
+            }
         }
+    }
+
+    @SuppressLint("NewApi")
+    private static List<Uri> extractUriFromIntent(final Intent intent)
+    {
+        List<Uri> uris = new ArrayList<>();
+        if (intent == null) {
+            return uris;
+        }
+        Uri uri = intent.getData();
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) && uri == null) {
+            final ClipData clipData = intent.getClipData();
+            if (clipData != null) {
+                for (int i = 0; i < clipData.getItemCount(); ++i) {
+                    uris.add(clipData.getItemAt(i).getUri());
+                }
+            }
+        }
+        else {
+            uris.add(uri);
+        }
+        return uris;
     }
 
     /**
      * Opens the given file through the <tt>DesktopService</tt>.
+     * TargetSdkVersion 24 (or higher) and you’re passing a file:/// URI outside your package domain
+     * through an Intent, then what you’ll get FileUriExposedException
      *
      * @param file the file to open
      */
-    public void openFile(File file)
+    public void openDownloadable(File file)
     {
-        try {
-            Uri uri;
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                uri = FileProvider.getUriForFile(aTalkApp.getGlobalContext(), aTalk.APP_FILE_PROVIDER, file);
-            }
-            else
-                uri = Uri.fromFile(file);
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-
-            // use uri.toString to take care of filename with space
-            String mimeType = getMimeType(uri.toString());
-            if (mimeType != null && file != null) {
-                if (mimeType.contains("3gp")) {
-                    intent = new Intent(this, AudioBgService.class);
-                    intent.setAction(AudioBgService.ACTION_PLAYBACK);
-                    intent.putExtra(AudioBgService.URI, uri.toString());
-                    startService(intent);
-                    // if (filename.startsWith("voice-"))
-                }
-                else {
-                    intent.setDataAndType(uri, mimeType);
-                    startActivity(intent);
-                }
-            }
-            else {
-                showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
-            }
-        } catch (IllegalStateException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Fragment ReceiveFileConversation not attached to Activity.", e);
-            showToastMessage(R.string.service_gui_FILE_OPEN_FAILED);
-        } catch (IllegalArgumentException | NullPointerException e) {
+        if (!file.exists()) {
             showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-        } catch (UnsupportedOperationException e) {
-            showToastMessage(R.string.service_gui_FILE_OPEN_NOT_SUPPORTED);
+            return;
+        }
+
+        Uri uri;
+        try {
+            uri = FileBackend.getUriForFile(this, file);
         } catch (SecurityException e) {
+            logger.debug("No permission to access " + file.getAbsolutePath(), e);
             showToastMessage(R.string.service_gui_FILE_OPEN_NO_PERMISSION);
-        } catch (Exception e) {
-            showToastMessage(R.string.service_gui_FILE_OPEN_FAILED);
+            return;
+        }
+
+        String mimeType = getMimeType(this, uri);
+        if ((mimeType == null) || mimeType.contains("application")) {
+            mimeType = "*/*";
+        }
+
+        Intent openIntent = new Intent(Intent.ACTION_VIEW);
+        if (mimeType.contains("3gp")) {
+            openIntent = new Intent(this, AudioBgService.class);
+            openIntent.setAction(AudioBgService.ACTION_PLAYBACK);
+            openIntent.setDataAndType(uri, mimeType);
+            openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startService(openIntent);
+            return;
+        }
+
+        openIntent.setDataAndType(uri, mimeType);
+        openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        PackageManager manager = getPackageManager();
+        List<ResolveInfo> info = manager.queryIntentActivities(openIntent, 0);
+        if (info.size() == 0) {
+            openIntent.setDataAndType(uri, "*/*");
+        }
+        try {
+            startActivity(openIntent);
+        } catch (ActivityNotFoundException e) {
+            showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
         }
     }
 

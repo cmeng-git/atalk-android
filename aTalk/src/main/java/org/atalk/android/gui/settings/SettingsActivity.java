@@ -67,6 +67,7 @@ public class SettingsActivity extends OSGiActivity
     static private final String P_KEY_HISTORY_SIZE = aTalkApp.getResString(R.string.pref_key_chat_history_size);
     static private final String P_KEY_CHAT_STATE_NOTIFICATIONS = aTalkApp.getResString(R.string.pref_key_chat_state_notifications);
     static private final String P_KEY_XFER_THUMBNAIL_PREVIEW = aTalkApp.getResString(R.string.pref_key_send_thumbnail);
+    static private final String P_KEY_AUTO_ACCEPT_FILE = aTalkApp.getResString(R.string.pref_key_auto_accept_file);
     static private final String P_KEY_PRESENCE_SUBSCRIBE_MODE = aTalkApp.getResString(R.string.pref_key_presence_subscribe_mode);
 
     // static private final String P_KEY_AUTO_UPDATE_CHECK_ENABLE
@@ -298,6 +299,7 @@ public class SettingsActivity extends OSGiActivity
             PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_PRESENCE_SUBSCRIBE_MODE,
                     ConfigurationUtils.isPresenceSubscribeAuto());
 
+            initAutoAcceptFileSize();
             // PreferenceUtil.setCheckboxVal(this, P_KEY_CHAT_ALERTS, ConfigurationUtils.isAlerterEnabled());
         }
 
@@ -309,6 +311,34 @@ public class SettingsActivity extends OSGiActivity
             EditTextPreference historySizePref = (EditTextPreference) findPreference(P_KEY_HISTORY_SIZE);
             historySizePref.setSummary(getString(R.string.service_gui_settings_CHAT_HISTORY_SUMMARY,
                     ConfigurationUtils.getChatHistorySize()));
+        }
+
+        /**
+         * Initialize auto accept file size
+         */
+        protected void initAutoAcceptFileSize()
+        {
+            final ListPreference fileSizeList = (ListPreference) findPreference(P_KEY_AUTO_ACCEPT_FILE);
+            fileSizeList.setEntries(R.array.filesizes);
+            fileSizeList.setEntryValues(R.array.filesizes_values);
+            long filesSize = ConfigurationUtils.getAutoAcceptFileSize();
+            fileSizeList.setValue(String.valueOf(filesSize));
+            fileSizeList.setSummary(fileSizeList.getEntry());
+
+            // summaryMapper not working for initLocal ?? so use this instead
+            fileSizeList.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object value)
+                {
+                    String fileSize = value.toString();
+                    fileSizeList.setValue(fileSize);
+                    fileSizeList.setSummary(fileSizeList.getEntry());
+
+                    ConfigurationUtils.setAutoAcceptFileSizeSize(Integer.parseInt(fileSize));
+                    return true;
+                }
+            });
         }
 
         /**

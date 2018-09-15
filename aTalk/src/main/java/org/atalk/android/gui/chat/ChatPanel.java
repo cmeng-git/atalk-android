@@ -69,6 +69,11 @@ public class ChatPanel implements Chat, MessageListener
     public static final String OUTGOING_FILE_MESSAGE = "OutgoingFileMessage";
 
     /**
+     * File transfer message types
+     */
+    public static final String OUTGOING_STICKER = "OutgoingSticker";
+
+    /**
      * The underlying <tt>MetaContact</tt>, we're chatting with.
      */
     private final MetaContact metaContact;
@@ -837,7 +842,7 @@ public class ChatPanel implements Chat, MessageListener
         throw new RuntimeException("Not supported yet");
     }
 
-    public static int chatTypeToChatMsgType(String msgType)
+    private static int chatTypeToChatMsgType(String msgType)
     {
         switch (msgType) {
             case Chat.ACTION_MESSAGE:
@@ -862,6 +867,8 @@ public class ChatPanel implements Chat, MessageListener
                 return ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
             case OUTGOING_FILE_MESSAGE:
                 return ChatMessage.MESSAGE_FILE_TRANSFER_SEND;
+            case OUTGOING_STICKER:
+                return ChatMessage.MESSAGE_STICKER_SEND;
             default:
                 throw new IllegalArgumentException("Not supported msg type: " + msgType);
         }

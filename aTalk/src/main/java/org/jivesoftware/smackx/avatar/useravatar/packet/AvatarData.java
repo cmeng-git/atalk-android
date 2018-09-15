@@ -34,84 +34,82 @@ import java.util.logging.Logger;
  */
 public class AvatarData implements ExtensionElement
 {
-	/**
-	 * The logger.
-	 */
-	private static final Logger LOGGER = Logger.getLogger(AvatarData.class.getName());
+    /**
+     * The logger.
+     */
+    private static final Logger LOGGER = Logger.getLogger(AvatarData.class.getName());
 
-	/**
-	 * This userAvatar data extension namespace.
-	 */
-	public static final String NAMESPACE = "urn:xmpp:avatar:data";
+    /**
+     * This userAvatar data extension namespace.
+     */
+    public static final String NAMESPACE = "urn:xmpp:avatar:data";
 
-	/**
-	 * This userAvatar data extension element name.
-	 */
-	public static final String ELEMENT = "data";
+    /**
+     * This userAvatar data extension element name.
+     */
+    public static final String ELEMENT = "data";
 
-	private String mData;
+    private String mData;
 
-	/**
-	 * Create an AvatarData.
-	 *
-	 * @param base64
-	 * 		the data of the avatar as a base64 string
-	 */
-	public AvatarData(final String base64)
-	{
-		mData = base64;
-	}
+    /**
+     * Create an AvatarData.
+     *
+     * @param base64 the data of the avatar as a base64 string
+     */
+    public AvatarData(final String base64)
+    {
+        mData = base64;
+    }
 
-	/**
-	 * Create an AvatarData.
-	 *
-	 * @param data
-	 * 		the data of the avatar
-	 */
-	public AvatarData(final byte[] data)
-	{
-		mData = Base64.encodeBytes(data);
-	}
+    /**
+     * Create an AvatarData.
+     *
+     * @param data the data of the avatar
+     */
+    public AvatarData(final byte[] data)
+    {
+        mData = Base64.encodeBytes(data);
+    }
 
-	/**
-	 * Get the avatar data as a Base64 string.
-	 *
-	 * @return a base64 string.
-	 */
-	public String getBase64()
-	{
-		return mData;
-	}
+    /**
+     * Get the avatar data as a Base64 string.
+     *
+     * @return a base64 string.
+     */
+    public String getBase64()
+    {
+        return mData;
+    }
 
-	/**
-	 * Get the avatar data.
-	 *
-	 * @return the decoded data
-	 */
-	public byte[] getData()
-	{
-		return Base64.decode(mData);
-	}
+    /**
+     * Get the avatar data.
+     *
+     * @return the decoded data
+     */
+    public byte[] getData()
+    {
+        return Base64.decode(mData);
+    }
 
-	@Override
-	public String getElementName()
-	{
-		return ELEMENT;
-	}
+    @Override
+    public String getElementName()
+    {
+        return ELEMENT;
+    }
 
-	@Override
-	public String getNamespace()
-	{
-		return NAMESPACE;
-	}
+    @Override
+    public String getNamespace()
+    {
+        return NAMESPACE;
+    }
 
-	@Override
-	public XmlStringBuilder toXML(String enclosingNamespace)
-	{
-		XmlStringBuilder xml = new XmlStringBuilder(this);
-		xml.rightAngleBracket();
-		xml.append(mData);
-		xml.closeElement(this);
-		return xml;
-	}
+    @Override
+    public XmlStringBuilder toXML(String enclosingNamespace)
+    {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.rightAngleBracket();
+        xml.append(mData);
+        xml.closeElement(this);
+        return xml;
+    }
 }

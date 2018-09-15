@@ -23,8 +23,7 @@ import net.java.sip.communicator.service.protocol.event.FileTransferStatusChange
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
 import net.java.sip.communicator.util.Logger;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
+import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
 
@@ -47,6 +46,7 @@ public class SendFileConversation extends FileTransferConversation implements Fi
     private String mDate;
     private File mSendFile;
     private int msgId;
+    private boolean mStickMode;
 
     public SendFileConversation()
     {
@@ -61,13 +61,15 @@ public class SendFileConversation extends FileTransferConversation implements Fi
      * @param fileName the file to transfer
      */
 
-    public static SendFileConversation newInstance(ChatFragment cPanel, String sendTo, final String fileName)
+    public static SendFileConversation newInstance(ChatFragment cPanel, String sendTo, final String fileName,
+            boolean stickerMode)
     {
         SendFileConversation fragmentSFC = new SendFileConversation();
         fragmentSFC.mChatFragment = cPanel;
         fragmentSFC.mSendTo = sendTo;
         fragmentSFC.mSendFile = new File(fileName);
         fragmentSFC.mDate = Calendar.getInstance().getTime().toString();
+        fragmentSFC.mStickMode = stickerMode;
         return fragmentSFC;
     }
 
@@ -76,7 +78,9 @@ public class SendFileConversation extends FileTransferConversation implements Fi
     {
         msgId = id;
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
+
         messageViewHolder.arrowDir.setImageResource(R.drawable.filexferarrowout);
+        MyGlideApp.loadImage(messageViewHolder.stickerView, mSendFile, false);
 
         this.setCompletedDownloadFile(mChatFragment, mSendFile);
         messageViewHolder.titleLabel.setText(aTalkApp.getResString(R.string.xFile_FILE_WAITING_TO_ACCEPT, mDate, mSendTo));
@@ -89,7 +93,7 @@ public class SendFileConversation extends FileTransferConversation implements Fi
             public void onClick(View v)
             {
                 messageViewHolder.retryButton.setVisibility(View.GONE);
-                mChatFragment.new SendFile(mSendFile, SendFileConversation.this, msgId).execute();
+                mChatFragment.new SendFile(mSendFile, SendFileConversation.this, msgId, mStickMode).execute();
             }
         });
 
@@ -97,7 +101,7 @@ public class SendFileConversation extends FileTransferConversation implements Fi
 		scrolling, new message send or received */
         int status = mChatFragment.getChatListAdapter().getXferStatus(msgId);
         if (status == -1) {
-            mChatFragment.new SendFile(mSendFile, SendFileConversation.this, msgId).execute();
+            mChatFragment.new SendFile(mSendFile, SendFileConversation.this, msgId, mStickMode).execute();
         }
         else {
             updateView(status);
@@ -127,9 +131,6 @@ public class SendFileConversation extends FileTransferConversation implements Fi
             case FileTransferStatusChangeEvent.COMPLETED:
                 messageViewHolder.titleLabel.setText(aTalkApp.getResString(R.string.xFile_FILE_SEND_COMPLETED, mDate, mSendTo));
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
-                // Do not want to offer file/folder opening on sending
-                // messageViewHolder.openFileButton.setVisibility(View.VISIBLE);
-                // messageViewHolder.openFolderButton.setVisibility(View.VISIBLE);
                 break;
 
             // not offer to retry - smack replied as ailed when recipient rejects on some devices
@@ -171,6 +172,8 @@ public class SendFileConversation extends FileTransferConversation implements Fi
             @Override
             public void run()
             {
+                // Must update the cached display message status
+                mChatFragment.getChatListAdapter().setXferStatus(msgId, status);
                 updateView(status);
 
                 if (status == FileTransferStatusChangeEvent.COMPLETED

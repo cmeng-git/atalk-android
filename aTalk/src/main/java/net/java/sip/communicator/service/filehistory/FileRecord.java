@@ -48,6 +48,14 @@ public class FileRecord extends EventObject
 	 */
 	public static final String REFUSED = "refused";
 
+    /**
+     * Status indicating that the file transfer has been refused.
+     */
+    public static final String PREPARING = "preparing";
+    /**
+     * Status indicating that the file transfer has been refused.
+     */
+    public static final String IN_PROGRESS = "in_progress";
 	/**
 	 * Status indicating that the file transfer was in active state.
 	 */

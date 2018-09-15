@@ -19,7 +19,7 @@
         android:layout_toStartOf="@+id/sendMessageButton"
         android:background="@drawable/white_rounded"/>
 
-    <EditText
+    <org.atalk.android.gui.util.ContentEditText
         android:id="@+id/chatWriteText"
         style="@style/MediumFont"
         android:layout_width="match_parent"

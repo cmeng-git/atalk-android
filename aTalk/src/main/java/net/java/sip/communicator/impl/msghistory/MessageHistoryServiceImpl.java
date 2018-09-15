@@ -893,11 +893,12 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 		int msgType = Integer.parseInt(mProperties.get(ChatMessage.MSG_TYPE));
 		if ((msgType == ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY)
 				|| (msgType == ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE)
-				|| (msgType == ChatMessage.MESSAGE_FILE_TRANSFER_SEND)) {
+				|| (msgType == ChatMessage.MESSAGE_FILE_TRANSFER_SEND)
+                || (msgType == ChatMessage.MESSAGE_STICKER_SEND)) {
 			return createFileRecordFromProperties(mProperties, contact);
 		}
 
-		// process normal chat message
+        // process normal chat message
 		MessageImpl msg = createMessageFromProperties(mProperties);
 		Date timestamp = new Date(Long.parseLong(mProperties.get(ChatMessage.TIME_STAMP)));
 

@@ -9,26 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ContactResource;
-import net.java.sip.communicator.service.protocol.FileTransfer;
-import net.java.sip.communicator.service.protocol.Message;
-import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
-import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
-import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
-import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
-import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
-import net.java.sip.communicator.service.protocol.OperationSetPresence;
-import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
-import net.java.sip.communicator.service.protocol.OperationSetThumbnailedFileFactory;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
-import net.java.sip.communicator.service.protocol.event.MessageListener;
-import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.FileUtils;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.util.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -36,10 +19,7 @@ import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jxmpp.jid.EntityBareJid;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 
 /**
  * The single chat implementation of the <tt>ChatTransport</tt> interface that provides abstraction
@@ -323,8 +303,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public boolean allowsChatStateNotifications()
     {
-//		Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
-//		return ((tnOpSet != null) && isChatStateSupported);
+        // Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
+        // return ((tnOpSet != null) && isChatStateSupported);
         return isChatStateSupported;
 
     }
@@ -556,6 +536,24 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             throws Exception
     {
         return sendFile(file, true);
+    }
+
+    /**
+     * Sends the given sticker through this chat transport file transfer operation set.
+     *
+     * @param file the file to send
+     * @return the <tt>FileTransfer</tt> object charged to transfer the file
+     * @throws Exception if anything goes wrong
+     */
+    public FileTransfer sendSticker(File file)
+            throws Exception
+    {
+        // If this chat transport does not support file transfer we do nothing and just return.
+        if (!allowsFileTransfer())
+            return null;
+
+        OperationSetFileTransfer ftOpSet = mPPS.getOperationSet(OperationSetFileTransfer.class);
+        return ftOpSet.sendFile(contact, file);
     }
 
     /**

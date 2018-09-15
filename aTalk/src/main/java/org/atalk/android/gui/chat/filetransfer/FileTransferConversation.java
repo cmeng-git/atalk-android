@@ -18,7 +18,6 @@ package org.atalk.android.gui.chat.filetransfer;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.view.*;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
@@ -126,9 +125,8 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
             messageViewHolder.retryButton = convertView.findViewById(R.id.button_retry);
             messageViewHolder.acceptButton = convertView.findViewById(R.id.button_accept);
             messageViewHolder.rejectButton = convertView.findViewById(R.id.button_reject);
-            messageViewHolder.openFileButton = convertView.findViewById(R.id.button_openfile);
-            messageViewHolder.openFolderButton = convertView.findViewById(R.id.button_openfolder);
             messageViewHolder.arrowDir = convertView.findViewById(R.id.filexferArrowView);
+            messageViewHolder.stickerView = convertView.findViewById(R.id.sticker);
 
             messageViewHolder.titleLabel = convertView.findViewById(R.id.filexferTitleView);
             messageViewHolder.fileLabel = convertView.findViewById(R.id.filexferFileNameView);
@@ -144,15 +142,13 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
             messageViewHolder.retryButton.setVisibility(View.GONE);
             messageViewHolder.acceptButton.setVisibility(View.GONE);
             messageViewHolder.rejectButton.setVisibility(View.GONE);
-            messageViewHolder.openFileButton.setVisibility(View.GONE);
-            messageViewHolder.openFolderButton.setVisibility(View.GONE);
             messageViewHolder.mProgressBar.setVisibility(View.GONE);
         }
 
         View.OnClickListener onAction = getOnSetListener();
         messageViewHolder.cancelButton.setOnClickListener(onAction);
-        messageViewHolder.openFileButton.setOnClickListener(onAction);
-        messageViewHolder.openFolderButton.setOnClickListener(onAction);
+
+        messageViewHolder.stickerView.setOnClickListener(onAction);
         messageViewHolder.titleLabel.setTextColor(AndroidGUIActivator.getResources().getColor("black"));
         return convertView;
     }
@@ -188,6 +184,7 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
                 messageViewHolder.imageLabel.setScaleType(ScaleType.CENTER);
             }
             messageViewHolder.imageLabel.setImageBitmap(thumbnailIcon);
+            // messageViewHolder.stickerView.setImageBitmap(thumbnailIcon);
         }
     }
 
@@ -250,7 +247,7 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
     /**
      * Updates progress bar progress line every time a progress event has been received.
      *
-     * @param event the <tt>FileTransferProgressEvent</tt> that notified us
+     * @param event the <tt>FileTransferProgressEvent</tt> that notifies us
      */
     public void progressChanged(final FileTransferProgressEvent event)
     {
@@ -372,14 +369,9 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
             {
                 switch (v.getId()) {
                     case R.id.button_file:
-                    case R.id.button_openfile:
-                        chatActivity.openFile(downloadFile);
-                        break;
-
-                    case R.id.button_openfolder:
-                        if (downloadDir == null) // FileHistory does not have downloadDir
-                            downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                        chatActivity.openFolder(downloadDir);
+                    case R.id.sticker:
+                        if (chatActivity != null)
+                            chatActivity.openDownloadable(downloadFile);
                         break;
 
                     case R.id.buttonCancel:

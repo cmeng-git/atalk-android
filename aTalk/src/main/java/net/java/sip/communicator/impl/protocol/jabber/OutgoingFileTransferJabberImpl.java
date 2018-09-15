@@ -199,8 +199,10 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
                 connection.registerIQRequestHandler(iqThumbnailRequestHandler);
             }
         }
+
         // Remove this packet interceptor after we're done.
-        connection.removeStanzaInterceptor(this);
+        if (connection != null)
+            connection.removeStanzaInterceptor(this);
     }
 
     /**

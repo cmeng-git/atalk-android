@@ -164,21 +164,6 @@ public class IceUdpTransportPacketExtension extends AbstractPacketExtension
     }
 
     /**
-     * Removes given <tt>PacketExtension</tt> from the list of child packet extensions.
-     * <tt>CandidatePacketExtension</tt> are not taken into account in this method and
-     * {@link #removeCandidate(CandidatePacketExtension)} should be used instead.
-     *
-     * @param childExtension <tt>ExtensionElement</tt> instance to be removed from child ExtensionElement list.
-     * @return <tt>true</tt> if given <tt>childExtension</tt> has been in the list and was
-     * removed or <tt>false</tt> otherwise.
-     */
-    public boolean removeChildExtension(ExtensionElement childExtension)
-    {
-        List<? extends ExtensionElement> childExtensions = super.getChildExtensions();
-        return childExtensions != null && childExtensions.remove(childExtension);
-    }
-
-    /**
      * Returns the list of {@link CandidatePacketExtension}s currently registered with this transport.
      *
      * @return the list of {@link CandidatePacketExtension}s currently registered with this transport.

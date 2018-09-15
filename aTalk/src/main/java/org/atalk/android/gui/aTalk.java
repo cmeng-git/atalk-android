@@ -69,8 +69,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      */
     public static final String ACTION_SHOW_CONTACTS = "org.atalk.show_contacts";
 
-    public static final String APP_FILE_PROVIDER = "org.atalk.android.file.provider";
-
     private static Boolean mPrefChange = false;
 
     private static boolean permissionFirstRequest = true;

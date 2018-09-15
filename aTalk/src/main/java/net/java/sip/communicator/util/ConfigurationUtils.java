@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package net.java.sip.communicator.util;
@@ -12,10 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetContactCapabilitiesJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
@@ -44,11 +41,7 @@ import org.osgi.framework.ServiceReference;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -162,6 +155,11 @@ public class ConfigurationUtils
      * The size of the chat history to show in chat window.
      */
     private static int chatHistorySize;
+
+    /**
+     * The auto accept file size.
+     */
+    private static int acceptFileSize;
 
     /**
      * The size of the chat write area.
@@ -408,6 +406,7 @@ public class ConfigurationUtils
     private static String pMultiChatWindowEnabled = "gui.IS_MULTI_CHAT_WINDOW_ENABLED";
     private static String pLeaveChatRoomOnWindowClose = "gui.LEAVE_CHATROOM_ON_WINDOW_CLOSE";
     private static String pMessageHistoryShown = "gui.IS_MESSAGE_HISTORY_SHOWN";
+    private static String pAcceptFileSize = "gui.AUTO_ACCEPT_FILE_SIZE";
     private static String pChatHistorySize = "gui.MESSAGE_HISTORY_SIZE";
     private static String pChatWriteAreaSize = "gui.CHAT_WRITE_AREA_SIZE";
     private static String pTransparentWindowEnabled = "gui.IS_TRANSPARENT_WINDOW_ENABLED";
@@ -549,6 +548,10 @@ public class ConfigurationUtils
         // Load the "isRecentMessagesShown" property.
         // isRecentMessagesShown = !configService.getBoolean(MessageHistoryService
         // .PNAME_IS_RECENT_MESSAGES_DISABLED, !isRecentMessagesShown);
+
+        // Load the "acceptFileSize" property.
+        String fileSize = configService.getString(pAcceptFileSize, aTalkApp.getResString(R.string.auto_accept_filesize));
+        acceptFileSize = Integer.parseInt(fileSize);
 
         // Load the "chatHistorySize" property.
         String chatHistorySizeString = configService.getString(pChatHistorySize);
@@ -896,6 +899,28 @@ public class ConfigurationUtils
         isSendThumbnail = sendThumbnail;
         configService.setProperty(pSendThumbnail, Boolean.toString(isSendThumbnail));
         FileTransferConversation.FT_THUMBNAIL_ENABLE = sendThumbnail;
+    }
+
+
+    /**
+     * The maximum file size that user will automatically accept for download.
+     *
+     * @return the auto accept file size.
+     */
+    public static long getAutoAcceptFileSize()
+    {
+        return acceptFileSize;
+    }
+
+    /**
+     * Updates the "acceptFileSize" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param fileSize indicates if the maximum file size for auto accept.
+     */
+    public static void setAutoAcceptFileSizeSize(int fileSize)
+    {
+        acceptFileSize = fileSize;
+        configService.setProperty(pAcceptFileSize, Integer.toString(acceptFileSize));
     }
 
     /**

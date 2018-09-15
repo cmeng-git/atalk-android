@@ -69,9 +69,9 @@
     <string name="ACCOUNT_TYPE">org.atalk.android.account</string>
 
     <string name="attachOptionDialog_picture">Pictures</string>
-    <string name="attachOptionDialog_camera">Capture picture</string>
+    <string name="attachOptionDialog_camera">Take picture</string>
     <string name="attachOptionDialog_Videos">Videos</string>
-    <string name="attachOptionDialog_videoRecord">Capture video</string>
+    <string name="attachOptionDialog_videoRecord">Record video</string>
     <string name="attachOptionDialog_shareFile">Share File</string>
     <string name="chat_fileTransferButton">Open</string>
     <string name="chat_message_del">Delete text</string>
@@ -344,6 +344,7 @@
     <string name="service_gui_FILE_RECEIVING_FROM">Receiving file from %1$s</string>
     <string name="service_gui_FILE_SEND_COMPLETED">File has been successfully sent to %1$s</string>
     <string name="service_gui_FILE_SEND_FAILED">Failed to send file: %1$s</string>
+    <string name="service_gui_FILE_SEND_NOT_ALLOW">Cannot send file during conference call!</string>
     <string name="service_gui_FILE_SEND_REFUSED">%1$s has rejected this file</string>
     <string name="service_gui_FILE_SEND_TO">Send Attachment</string>
     <string name="service_gui_FILE_SENDING_TO">Sending file to %1$s</string>
@@ -379,7 +380,6 @@
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Erase this chatRoom history</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Erase all chatRooms history</string>
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Turn off history for this chatRoom</string>
-
     <string name="service_gui_CHATROOM_INFO">ChatRoom info</string>
     <string name="service_gui_CHATROOM_INFO_NAME">Name</string>
     <string name="service_gui_CHATROOM_INFO_SUBJECT">Subject</string>
@@ -595,7 +595,7 @@
     <string name="service_gui_VOLUME_GAIN_LEVEL">Volume gain level: %1$s%%</string>
     <string name="service_gui_WAITING_AUTHORIZATION">Waiting for authorization</string>
     <string name="service_gui_WARNING">Warning</string>
-    <string name="service_gui_WARN_CALL_IN_PROGRESS">Can\'t do this during a call</string>    
+    <string name="service_gui_WARN_CALL_IN_PROGRESS">Can\'t do this during a call</string>
     <string name="service_gui_YES">Yes</string>
 
     <!-- Conference constants - no translation -->
@@ -736,7 +736,7 @@
         identity cannot be automatically verified.&lt;br/>&lt;br/>
         Proceed with connection for this instance only?&lt;br/>
         For more option and info, click "Show Certificate".&lt;/html></string>
-   <string name="service_gui_PROCEED">Proceed</string>
+    <string name="service_gui_PROCEED">Proceed</string>
     <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;html>&lt;b>Issued To&lt;/b>&lt;/html></string>
     <string name="service_gui_CERT_INFO_CHAIN">Certificate Chain:</string>
     <string name="service_gui_CERT_INFO_CN">Common Name:</string>
@@ -1083,14 +1083,14 @@
     <string name="service_gui_COMMIT_PROGRESS_MSG">Storing account changes, please wait&#8230;</string>
     <string name="service_gui_COMMIT_PROGRESS_TITLE">"Committing&#8230;"</string>
     <string name="service_gui_SETTINGS_NOT_SET">(Not set)</string>
-    
+
     <!-- Connection settings -->
     <string name="service_gui_CONN_NO_CERT">None</string>
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Audio encoding</string>
     <string name="service_gui_ENC_OVERRIDE_GLOBAL">Override global</string>
     <string name="service_gui_ENC_VIDEO_TITLE">Video encoding</string>
-    
+
     <!-- Security protocols dialog -->
     <string name="service_gui_LIST_EMPTY">None</string>
     <string name="service_gui_SEC_ENABLE_ENCRYPTION">Encryption</string>
@@ -1107,18 +1107,18 @@
     <string name="service_gui_SERVERS_LIST_EMPTY">The list is empty. Click to add new entry&#8230;</string>
     <string name="service_gui_SERVERS_LIST_REMOVE">Remove</string>
     <string name="service_gui_SERVERS_LIST_SAVE">Save</string>
-    
+
     <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">JID Address</string>
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Support relay</string>
-    
+
     <!-- STUN edit -->
     <string name="service_gui_STUN_EDIT_ADDRESS">IP Address</string>
     <string name="service_gui_STUN_EDIT_PASSWORD">Password</string>
     <string name="service_gui_STUN_EDIT_PORT">Server port</string>
     <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Support TURN</string>
     <string name="service_gui_STUN_EDIT_TURN_USER">TURN username</string>
- 
+
     <!-- Security preferences -->
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Enable call encryption</string>
     <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Encryption protocols</string>
@@ -1354,9 +1354,9 @@
     <string name="service_gui_settings_ENABLED_STR">Enabled</string>
     <string name="service_gui_settings_GENERAL">General</string>
 
-    <!-- Message settings -->
+    <!-- Messaging settings -->
     <string name="pref_cat_settings_msg">pref.cat.settings.msg</string>
-    <string name="service_gui_settings_MSG">Message</string>
+    <string name="service_gui_settings_MSG">Messaging</string>
 
     <!-- Group messages in one window -->
     <string name="pref_key_multichat_window">pref.key.msg.multichat_window</string>
@@ -1383,11 +1383,16 @@
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Send chat state notifications</string>
 
     <!-- Enable option to send thumnail preview for image file sending -->
-    <string name="pref_key_send_thumbnail">pref.key.send.thumbnail</string>
+    <string name="pref_key_send_thumbnail">pref.key.send_thumbnail</string>
     <string name="service_gui_settings_SEND_THUMBNAIL">Send file thumbnail preview</string>
 
+    <!-- Auto accept downloadable max file size -->
+    <string name="pref_key_auto_accept_file">pref.key.auto_accept_file</string>
+    <string name="auto_accept_filesize">524288</string>
+    <string name="service_gui_settings_ACCEPT_FILE">Auto accept max file size</string>
+
     <!-- Setup substription Mode: auto or manual approval -->
-    <string name="pref_key_presence_subscribe_mode">pref.key.presence.subscribe_mode</string>
+    <string name="pref_key_presence_subscribe_mode">pref.key.presence_subscribe_mode</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presence subscribe approval</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Subscribe approval - auto accept all</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Subscribe approval - manual</string>

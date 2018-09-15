@@ -58,11 +58,13 @@ public interface ChatMessage
     int STATUS_UNSEND = 7;
 
     /* File transfer status */
-    int STATUS_COMPLETED = 10;  // completed
-    int STATUS_FAILED = 11;        // failed
+    int STATUS_COMPLETED = 10;   // completed
+    int STATUS_FAILED = 11;      // failed
     int STATUS_CANCELED = 12;    // canceled
-    int STATUS_REFUSED = 13;    // refused
-    int STATUS_ACTIVE = 14;        // active
+    int STATUS_REFUSED = 13;     // refused
+    int STATUS_ACTIVE = 14;      // active
+    int STATUS_PREPARING = 15;   // preparing
+    int STATUS_IN_PROGRESS = 16; // in_progress
 
     int STATUS_DELETE = 99;  // to be deleted
 
@@ -149,6 +151,11 @@ public interface ChatMessage
      * The file transfer message type.
      */
     int MESSAGE_FILE_TRANSFER_RECEIVE = 51;
+
+    /**
+     * The sticker message type.
+     */
+    int MESSAGE_STICKER_SEND = 52;
 
     /**
      * The file transfer history message type.

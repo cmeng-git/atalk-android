@@ -52,7 +52,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     private byte[] thumbnail;
 
     //    private static final StanzaFilter THUMBNAIL_RESULT = new AndFilter(StanzaTypeFilter.IQ, IQTypeFilter.RESULT,
-//            new StanzaExtensionFilter(ThumbnailIQ.ELEMENT, ThumbnailIQ.NAMESPACE));
+    //        new StanzaExtensionFilter(ThumbnailIQ.ELEMENT, ThumbnailIQ.NAMESPACE));
     private static final StanzaFilter THUMBNAIL_RESULT = new AndFilter(StanzaTypeFilter.IQ, IQTypeFilter.RESULT);
 
     /**
@@ -112,7 +112,12 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
         return fileTransferRequest.getDescription();
     }
 
+    public String getMimeType() {
+        return fileTransferRequest.getMimeType();
+    }
+
     /**
+     *
      * Returns the name of the file corresponding to this request.
      *
      * @return the name of the file corresponding to this request

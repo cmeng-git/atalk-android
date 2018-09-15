@@ -171,13 +171,24 @@ public interface ChatTransport
             throws Exception;
 
     /**
-     * Sends the given SMS multimedia message trough this chat transport,
+     * Sends the given SMS multimedia message through this chat transport,
      * leaving the transport to choose the destination.
      *
      * @param file the file to send
      * @throws Exception if the send doesn't succeed
      */
     FileTransfer sendMultimediaFile(File file)
+            throws Exception;
+
+
+    /**
+     * Sends the given sticker file through this chat transport,
+     * leaving the transport to choose the destination.
+     *
+     * @param file the file to send
+     * @throws Exception if the send doesn't succeed
+     */
+    FileTransfer sendSticker(File file)
             throws Exception;
 
     /**

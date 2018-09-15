@@ -73,20 +73,6 @@ public class ConnectionInfo extends OSGiActivity
                     }
                 }
         );
-
-        // Disable delete cert here as it only delete partial
-//        pProviderKeysList.setOnItemLongClickListener(
-//                new AdapterView.OnItemLongClickListener()
-//                {
-//                    @Override
-//                    public boolean onItemLongClick(AdapterView<?> parent, View view,
-//                            int position, long id)
-//                    {
-//                        showSslCertificateDeleteAlert(position);
-//                        return true;
-//                    }
-//                }
-//        );
     }
 
     /*

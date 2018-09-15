@@ -24,13 +24,12 @@ import java.io.IOException;
  */
 public interface AvatarRetriever
 {
-	/**
-	 * Retrieve the avatar.
-	 *
-	 * @return the avatar
-	 * @throws IOException
-	 * 		if an IO error occurs while retrieving the avatar
-	 */
-	byte[] getAvatar()
-			throws IOException;
+    /**
+     * Retrieve the avatar.
+     *
+     * @return the avatar
+     * @throws IOException if an IO error occurs while retrieving the avatar
+     */
+    byte[] getAvatar()
+            throws IOException;
 }

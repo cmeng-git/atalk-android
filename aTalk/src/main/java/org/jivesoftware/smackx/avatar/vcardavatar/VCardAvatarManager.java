@@ -19,21 +19,11 @@ package org.jivesoftware.smackx.avatar.vcardavatar;
 
 import android.text.TextUtils;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
-import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPConnectionRegistry;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.PresenceTypeFilter;
-import org.jivesoftware.smack.filter.StanzaExtensionFilter;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.avatar.AvatarManager;
@@ -43,10 +33,7 @@ import org.jivesoftware.smackx.vcardtemp.VCardManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.*;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,8 +45,7 @@ import java.util.logging.Logger;
  *
  * @author Eng Chong Meng
  */
-public class VCardAvatarManager extends AvatarManager
-        implements StanzaListener
+public class VCardAvatarManager extends AvatarManager implements StanzaListener
 {
     /**
      * The logger.
@@ -307,7 +293,8 @@ public class VCardAvatarManager extends AvatarManager
                     LOGGER.log(Level.INFO, "Presence with new avatarHash received (old => new) from: "
                             + jidFrom + "\n" + currentAvatarHash + "\n" + avatarHash);
                     fireListeners(jidFrom, avatarHash);
-                } else {
+                }
+                else {
                     LOGGER.warning("vCard contains no avatar information!");
                 }
             }

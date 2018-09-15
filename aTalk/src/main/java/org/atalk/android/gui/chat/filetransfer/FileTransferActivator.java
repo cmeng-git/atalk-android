@@ -190,8 +190,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
 
     /**
      * Called when a new <tt>IncomingFileTransferRequest</tt> has been rejected. Nothing to do
-     * here, because we are the
-     * one who rejects the request.
+     * here, because we are the one who rejects the request.
      *
      * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
      */
