@@ -34,7 +34,7 @@ import org.atalk.android.gui.account.settings.AccountPreferencesActivity;
 import org.atalk.android.gui.contactlist.AddGroupDialog;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.util.FileAccess;
+import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
@@ -239,7 +239,7 @@ public class AccountsListActivity extends OSGiActivity
             File rosterStoreDirectory = jabberProvider.getRosterStoreDirectory();
             try {
                 if (rosterStoreDirectory != null)
-                    FileAccess.delete(rosterStoreDirectory.getAbsolutePath());
+                    FileBackend.deleteRecursive(rosterStoreDirectory);
             } catch (IOException e) {
                 logger.error("Failed to purge store for: " + R.string.service_gui_REFRESH_STORES_ROSTER);
             }
@@ -250,7 +250,7 @@ public class AccountsListActivity extends OSGiActivity
             File discoInfoStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir()
                     + "/discoInfoStore_" + userId);
             try {
-                FileAccess.delete(discoInfoStoreDirectory.getAbsolutePath());
+                FileBackend.deleteRecursive(discoInfoStoreDirectory);
             } catch (IOException e) {
                 logger.error("Failed to purge store for: " + R.string.service_gui_REFRESH_STORES_DISCINFO);
             }

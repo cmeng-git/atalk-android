@@ -16,6 +16,7 @@ import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.event.FileTransferListener;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
+import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
@@ -349,12 +350,16 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             IncomingFileTransferRequestJabberImpl incomingFileTransferRequest = new IncomingFileTransferRequestJabberImpl(
                     jabberProvider, OperationSetFileTransferJabberImpl.this, jabberRequest);
 
-            // Send thumbnail request if advertised in streamInitiation packet and the feature is enabled
+
+            // Request for the available thumbnail if auto accept file not allow
+            boolean isAutoAccept = (jabberRequest.getFileSize() <= ConfigurationUtils.getAutoAcceptFileSize());
+
+            // Send thumbnail request if advertised in streamInitiation packet, not autoAccept and the feature is enabled
             ThumbnailIQ thumbnailRequest = null;
             org.jivesoftware.smackx.si.packet.StreamInitiation.File file = streamInitiation.getFile();
             if ((file instanceof FileElement) && FileTransferConversation.FT_THUMBNAIL_ENABLE) {
                 ThumbnailElement thumbnailElement = ((FileElement) file).getThumbnailElement();
-                if ((thumbnailElement != null) && (thumbnailElement.getCid() != null)) {
+                if (!isAutoAccept && (thumbnailElement != null) && (thumbnailElement.getCid() != null)) {
                     incomingFileTransferRequest.createThumbnailListeners(thumbnailElement.getCid());
                     thumbnailRequest = new ThumbnailIQ(streamInitiation.getTo(), streamInitiation.getFrom(),
                             thumbnailElement.getCid(), IQ.Type.get);
@@ -467,13 +472,13 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                 try {
                     Thread.sleep(10);
 
-                    status = parseJabberStatus(jabberTransfer.getStatus());
                     progress = fileTransfer.getTransferredBytes();
-
-                    if (status == FileTransferStatusChangeEvent.FAILED
-                            || status == FileTransferStatusChangeEvent.COMPLETED
+                    status = parseJabberStatus(jabberTransfer.getStatus());
+                    if (status == FileTransferStatusChangeEvent.COMPLETED
+                            || status == FileTransferStatusChangeEvent.FAILED
                             || status == FileTransferStatusChangeEvent.CANCELED
                             || status == FileTransferStatusChangeEvent.REFUSED) {
+
                         if (fileTransfer instanceof OutgoingFileTransferJabberImpl) {
                             ((OutgoingFileTransferJabberImpl) fileTransfer).removeThumbnailRequestHander();
                         }
@@ -489,6 +494,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                         }
                         break;
                     }
+
                     fileTransfer.fireStatusChangeEvent(status, "Status changed");
                     fileTransfer.fireProgressChangeEvent(System.currentTimeMillis(), progress);
                 } catch (InterruptedException e) {

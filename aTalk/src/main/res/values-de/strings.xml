@@ -322,7 +322,7 @@
 	<string name="service_gui_ESTIMATED_TIME">Geschätzte Zeit: %1$s</string>
     <string name="service_gui_FILE">Datei</string>
     <string name="service_gui_FILE_DELIVERY_ERROR">Konnte Datei nicht senden: %1$s</string>
-    <string name="service_gui_FILE_DOES_NOT_EXIST">Die Datei wurde nicht gefunden. Sie wurde anscheinend gelöscht.</string>
+    <string name="service_gui_FILE_DOES_NOT_EXIST">Die Datei wurde nicht gefunden. Sie wurde anscheinend gelöscht</string>
     <string name="service_gui_FILE_OPEN_FAILED">Kann Datei nicht öffnen, sie wurde anscheinend gelöscht.</string>
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">Kann kein Programm finden welches diesem Dateityp zugehörig ist.</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">Sie haben keine Berechtigung zum Öffnen dieser Datei. Bitte überprüfen Sie Ihre Zugriffsrechte.</string>
@@ -332,6 +332,7 @@
     <string name="service_gui_FILE_RECEIVING_FROM">Empfange Datei von %1$s</string>
     <string name="service_gui_FILE_SEND_COMPLETED">Datei wurde erfolgreich an %1$s übertragen</string>
     <string name="service_gui_FILE_SEND_FAILED">Konnte Datei nicht senden: %1$s</string>
+    <string name="service_gui_FILE_SEND_NOT_ALLOW">Datei kann während einer Telefonkonferenz nicht gesendet werden!</string>
     <string name="service_gui_FILE_SEND_REFUSED">%1$s hat die Datei abgelehnt.</string>
     <string name="service_gui_FILE_SEND_TO">Anlagen senden</string>
     <string name="service_gui_FILE_SENDING_TO">Sende Datei an %1$s</string>
@@ -1198,6 +1199,9 @@
 
     <!-- Enable option to send thumnail preview for image file sending -->
     <string name="service_gui_settings_SEND_THUMBNAIL">Dateivorschau senden</string>
+
+    <!-- Auto accept downloadable max file size -->
+    <string name="service_gui_settings_ACCEPT_FILE">Akzeptieren Sie automatisch die maximale Dateigröße</string>
 
     <!-- Setup substription Mode: auto or manual approval -->
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presence-Anmeldebestätigungen</string>

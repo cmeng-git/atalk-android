@@ -49,6 +49,16 @@
             android:textColor="@color/grey"
             android:visibility="gone" />
 
+        <ImageView
+            android:id="@+id/sticker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="250dp"
+            android:adjustViewBounds= "true"
+            android:scaleType="fitCenter"
+            android:paddingLeft="5dip"
+            android:paddingStart="5dip" />
+
         <TextView
             android:id="@+id/filexferTitleView"
             style="@style/SmallFont"
@@ -59,8 +69,7 @@
             android:paddingLeft="5dip"
             android:paddingStart="5dip"
             android:text="{Title text}"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/filexferFileNameView"
@@ -168,24 +177,6 @@
                 android:drawableLeft="@drawable/ic_cancel"
                 android:drawableStart="@drawable/ic_cancel"
                 android:text="@string/service_gui_CANCEL"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/button_openfile"
-                style="@style/ButtonTop"
-                android:layout_marginEnd="2dp"
-                android:layout_marginRight="2dp"
-                android:drawableLeft="@drawable/ic_file_dark"
-                android:drawableStart="@drawable/ic_file_dark"
-                android:text="@string/service_gui_OPEN"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/button_openfolder"
-                style="@style/ButtonTop"
-                android:drawableLeft="@drawable/ic_folder"
-                android:drawableStart="@drawable/ic_folder"
-                android:text="@string/service_gui_OPEN_FOLDER"
                 android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>

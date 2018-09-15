@@ -23,56 +23,54 @@ import org.jivesoftware.smackx.pubsub.*;
 import org.jxmpp.jid.BareJid;
 
 import java.util.*;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An AvatarRetriever which retrieve the avatar over the XMPP connection.
  */
 public class XmppAvatarRetriever implements AvatarRetriever
 {
-	/**
-	 * The logger.
-	 */
-	private static final Logger LOGGER = Logger.getLogger(XmppAvatarRetriever.class.getName());
+    /**
+     * The logger.
+     */
+    private static final Logger LOGGER = Logger.getLogger(XmppAvatarRetriever.class.getName());
 
-	private PubSubManager mPubSubManager;
-	private String mId;
+    private PubSubManager mPubSubManager;
+    private String mId;
 
-	/**
-	 * Create an XmppAvatarRetriever.
-	 *
-	 * @param conn
-	 * 		the xmpp connection
-	 * @param toAddress
-	 * 		the contact from which we retrieve the avatar
-	 * @param id
-	 * 		the id of the avatar to retrieve
-	 */
-	public XmppAvatarRetriever(XMPPConnection conn, BareJid toAddress, String id)
-	{
-		mPubSubManager = PubSubManager.getInstance(conn, toAddress);
-		mId = id;
-	}
+    /**
+     * Create an XmppAvatarRetriever.
+     *
+     * @param conn the xmpp connection
+     * @param toAddress the contact from which we retrieve the avatar
+     * @param id the id of the avatar to retrieve
+     */
+    public XmppAvatarRetriever(XMPPConnection conn, BareJid toAddress, String id)
+    {
+        mPubSubManager = PubSubManager.getInstance(conn, toAddress);
+        mId = id;
+    }
 
-	@Override
-	public byte[] getAvatar()
-	{
-		List<Item> items = new ArrayList<Item>();
-		try {
-			LeafNode node = mPubSubManager.getNode(AvatarData.NAMESPACE);
-			items = node.getItems(Collections.singletonList(mId));
-		}
-		catch (XMPPException.XMPPErrorException | SmackException.NoResponseException
-				| SmackException.NotConnectedException | InterruptedException
-				| PubSubException.NotAPubSubNodeException e) {
-			LOGGER.log(Level.WARNING, "Error while retrieving avatar data: " + e.getMessage());
-		}
+    @Override
+    public byte[] getAvatar()
+    {
+        List<Item> items = new ArrayList<Item>();
+        try {
+            LeafNode node = mPubSubManager.getLeafNode(AvatarData.NAMESPACE);
+            items = node.getItems(Collections.singletonList(mId));
+        } catch (XMPPException.XMPPErrorException | SmackException.NoResponseException
+                | SmackException.NotConnectedException | InterruptedException
+                | PubSubException.NotAPubSubNodeException
+                | PubSubException.NotALeafNodeException e) {
+            LOGGER.log(Level.WARNING, "Error while retrieving avatar data: " + e.getMessage());
+        }
 
-		if (items != null && !items.isEmpty()) {
-			PayloadItem<AvatarData> item = (PayloadItem<AvatarData>) items.get(0);
-			AvatarData avatar = item.getPayload();
-			return avatar.getData();
-		}
-		return null;
-	}
+        if (items != null && !items.isEmpty()) {
+            PayloadItem<AvatarData> item = (PayloadItem<AvatarData>) items.get(0);
+            AvatarData avatar = item.getPayload();
+            return avatar.getData();
+        }
+        return null;
+    }
 }

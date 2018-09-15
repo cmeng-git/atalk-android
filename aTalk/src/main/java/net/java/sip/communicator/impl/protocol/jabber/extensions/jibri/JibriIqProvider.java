@@ -69,6 +69,11 @@ public class JibriIqProvider extends IQProvider<JibriIq>
                 iq.setSessionId(sessionId);
             }
 
+            String appData = parser.getAttributeValue("", JibriIq.APP_DATA_ATTR_NAME);
+            if (!StringUtils.isNullOrEmpty(appData)) {
+                iq.setAppData(appData);
+            }
+
             String failureStr = parser.getAttributeValue("", JibriIq.FAILURE_REASON_ATTR_NAME);
             if (!StringUtils.isNullOrEmpty(failureStr)) {
                 iq.setFailureReason(JibriIq.FailureReason.parse(failureStr));

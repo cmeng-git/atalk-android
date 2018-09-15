@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.avatar.useravatar.listener;
 
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarMetadata.Info;
-import org.jxmpp.jid.*;
+import org.jxmpp.jid.EntityBareJid;
 
 import java.util.List;
 
@@ -26,20 +26,16 @@ import java.util.List;
  * A listener for userAvatar changes event.
  *
  * @author Eng Chong Meng
- *
  */
 public interface UserAvatarListener
 {
-	/**
-	 * Event which is fired when a contact change avatar.
-	 *
-	 * @param from
-	 * 		the contact EntityBareJid who change his avatar
-	 * @param avatarId
-	 * 		the new avatar id, may be null if the contact set no avatar
-	 * @param avatarInfo
-	 * 		the metadata info of the userAvatar, may be empty if the contact set no avatar
-	 */
-	void onAvatarChange(EntityBareJid from, String avatarId, List<Info> avatarInfo);
+    /**
+     * Event which is fired when a contact change avatar.
+     *
+     * @param from the contact EntityBareJid who change his avatar
+     * @param avatarId the new avatar id, may be null if the contact set no avatar
+     * @param avatarInfo the metadata info of the userAvatar, may be empty if the contact set no avatar
+     */
+    void onAvatarChange(EntityBareJid from, String avatarId, List<Info> avatarInfo);
 
 }

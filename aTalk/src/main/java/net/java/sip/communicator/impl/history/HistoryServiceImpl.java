@@ -272,9 +272,7 @@ public class HistoryServiceImpl implements HistoryService
 		}
 
 		if (!directory.exists() && !directory.mkdirs()) {
-			throw new IOException(
-					"Could not create requested history service files:" + directory
-							.getAbsolutePath());
+			throw new IOException("Could not create requested history service files:" + directory.getAbsolutePath());
 		}
 		return directory;
 	}

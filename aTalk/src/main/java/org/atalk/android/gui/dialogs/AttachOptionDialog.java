@@ -48,8 +48,8 @@ public class AttachOptionDialog extends Dialog
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_attach_option_dialog);
 
-		mListView = (ListView) this.findViewById(R.id.attach_optionlist);
-		List<AttachOptionItem> items = new ArrayList<AttachOptionItem>(Arrays.asList(AttachOptionItem.values()));
+		mListView = this.findViewById(R.id.attach_optionlist);
+		List<AttachOptionItem> items = new ArrayList<>(Arrays.asList(AttachOptionItem.values()));
 		mAttachOptionAdapter = new AttachOptionModeAdapter(this.getContext(), R.layout.attach_option_child_row, items);
 		mListView.setAdapter(mAttachOptionAdapter);
 		mListView.setOnItemClickListener(new OnItemClickListener()
@@ -93,8 +93,8 @@ public class AttachOptionDialog extends Dialog
 				row = inflater.inflate(layoutResourceId, parent, false);
 
 				holder = new AttachOptionHolder();
-				holder.imgIcon = (ImageView) row.findViewById(R.id.attachOption_icon);
-				holder.txtTitle = (TextView) row.findViewById(R.id.attachOption_screenname);
+				holder.imgIcon = row.findViewById(R.id.attachOption_icon);
+				holder.txtTitle = row.findViewById(R.id.attachOption_screenname);
 
 				row.setTag(holder);
 			}

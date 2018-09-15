@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><!-- the <files-path> tag shares directories within the files/ directory of your app's internal storage -->
+<paths>
+    <external-path
+        name="external"
+        path="/" />
+    <root-path
+        name="storage"
+        path="/storage/" />
+    <files-path
+        name="pictures"
+        path="Images/" />
+    <files-path
+        name="videos"
+        path="Videos" />
+    <files-path
+        name="files"
+        path="Files/" />
+    <cache-path
+        name="camera"
+        path="Camera/" />
+</paths>

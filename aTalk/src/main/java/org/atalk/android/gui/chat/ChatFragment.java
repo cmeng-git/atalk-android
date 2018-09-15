@@ -985,9 +985,10 @@ public class ChatFragment extends OSGiFragment
                 case ChatMessage.MESSAGE_ERROR:
                     return ERROR_MESSAGE_VIEW;
 
+                case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
                 case ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE:
                 case ChatMessage.MESSAGE_FILE_TRANSFER_SEND:
-                case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
+                case ChatMessage.MESSAGE_STICKER_SEND:
                     return FILE_TRANSFER_MESSAGE_VIEW;
 
                 default: // Default others to INCOMING_MESSAGE_VIEW
@@ -1044,14 +1045,21 @@ public class ChatFragment extends OSGiFragment
                         }
                     }
 
+                    OperationSetFileTransfer opSet;
+                    FileRecord fileRecord;
+                    IncomingFileTransferRequest request;
+                    String fileName, sendFrom, sendTo;
+                    Date date;
+
                     msgType = message.getMessageType();
                     switch (msgType) {
+                        // File transfer start
                         case ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE:
                             clearMsgCache = true;
-                            OperationSetFileTransfer opSet = msg.getOpSet();
-                            IncomingFileTransferRequest request = msg.getFTRequest();
-                            String sendFrom = msg.getContactName();
-                            Date date = msg.getDate();
+                            opSet = msg.getOpSet();
+                            request = msg.getFTRequest();
+                            sendFrom = msg.getContactName();
+                            date = msg.getDate();
 
                             ReceiveFileConversation filexferR = (ReceiveFileConversation) getFileXfer(position);
                             if (filexferR == null) {
@@ -1064,23 +1072,26 @@ public class ChatFragment extends OSGiFragment
                             break;
 
                         case ChatMessage.MESSAGE_FILE_TRANSFER_SEND:
+                        case ChatMessage.MESSAGE_STICKER_SEND:
                             clearMsgCache = true;
-                            String fileName = msg.getMessage();
-                            String sendTo = msg.getContactName();
+                            fileName = msg.getMessage();
+                            sendTo = msg.getContactName();
                             SendFileConversation filexferS = (SendFileConversation) getFileXfer(position);
                             if (filexferS == null) {
-                                filexferS = SendFileConversation.newInstance(currentChatFragment, sendTo, fileName);
+                                filexferS = SendFileConversation.newInstance(currentChatFragment, sendTo, fileName,
+                                        (msgType == ChatMessage.MESSAGE_STICKER_SEND));
                                 setFileXfer(position, filexferS);
                             }
                             viewTemp = filexferS.SendFileConversationForm(inflater, messageViewHolder, parent, position, init);
                             break;
 
                         case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
-                            FileRecord fileRecord = message.getFileRecord();
+                            fileRecord = message.getFileRecord();
                             FileHistoryConversation filexferH = FileHistoryConversation.newInstance(currentChatFragment,
                                     fileRecord, message.getChatMessage());
                             viewTemp = filexferH.FileHistoryConversationForm(inflater, messageViewHolder, parent, init);
                             break;
+
                     }
 
                     if (init) {
@@ -1406,11 +1417,20 @@ public class ChatFragment extends OSGiFragment
             MessageDisplay(ChatMessage msg)
             {
                 this.id = idGenerator++;
-                this.status = -1; // Initial state
+                this.msg = msg;
+                this.status = checkFileXferStatus();
                 this.fileXfer = null;
                 this.encryption = msg.getEncryptionType();
-                this.msg = msg;
                 checkLatLng();
+            }
+
+            // Get file transfer status from fileRecord if exist
+            private int checkFileXferStatus() {
+                FileRecord fileRecord = msg.getFileRecord();
+                if (fileRecord != null) {
+                    return ChatMessageImpl.statusMap.get(fileRecord.getStatus());
+                }
+                return -1;
             }
 
             /**
@@ -1574,6 +1594,7 @@ public class ChatFragment extends OSGiFragment
         public TextView timeView;
 
         public ImageView arrowDir = null;
+        public ImageView stickerView = null;
         public ImageButton imageLabel = null;
         public ProgressBar mProgressBar = null;
 
@@ -1582,8 +1603,6 @@ public class ChatFragment extends OSGiFragment
         public Button retryButton = null;
         public Button acceptButton = null;
         public Button rejectButton = null;
-        public Button openFileButton = null;
-        public Button openFolderButton = null;
 
         public TextView titleLabel = null;
         public TextView fileLabel = null;
@@ -1935,12 +1954,14 @@ public class ChatFragment extends OSGiFragment
         private final SendFileConversation sendFTConversion;
         private final int msgId;
         private boolean chkMaxSize = true;
+        private boolean mStickerMode;
 
-        public SendFile(File mFile, SendFileConversation sFilexferCon, int mId)
+        public SendFile(File mFile, SendFileConversation sFilexferCon, int mId, boolean stickerMode)
         {
             file = mFile;
             sendFTConversion = sFilexferCon;
             msgId = mId;
+            mStickerMode = stickerMode;
         }
 
         @Override
@@ -1973,7 +1994,10 @@ public class ChatFragment extends OSGiFragment
             FileTransfer fileTransfer;
             Exception result = null;
             try {
-                fileTransfer = currentChatTransport.sendFile(file);
+                if (mStickerMode)
+                    fileTransfer = currentChatTransport.sendSticker(file);
+                else
+                    fileTransfer = currentChatTransport.sendFile(file);
 
                 // To be removed on file transfer completion
                 addActiveFileTransfer(fileTransfer.getID(), fileTransfer, msgId);
@@ -2038,8 +2062,8 @@ public class ChatFragment extends OSGiFragment
      */
     private void changeBackground(final View focusView, final int chatType)
     {
-//		logger.info("## Background color Changes: " + mChatType + "==>" + chatType
-//				+ " ChatPanel for: " + currentChatTransport.getDisplayName());
+        //		logger.info("## Background color Changes: " + mChatType + "==>" + chatType
+        //				+ " ChatPanel for: " + currentChatTransport.getDisplayName());
 
         if (mChatType == chatType)
             return;

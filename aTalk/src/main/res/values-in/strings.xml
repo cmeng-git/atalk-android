@@ -333,6 +333,7 @@
     <string name="service_gui_FILE_RECEIVING_FROM">Menerima fail dari %1$s</string>
     <string name="service_gui_FILE_SEND_COMPLETED">Fail telah berhasil dikirim ke %1$s</string>
     <string name="service_gui_FILE_SEND_FAILED">Gagal mengirim file: %1$s</string>
+    <string name="service_gui_FILE_SEND_NOT_ALLOW">Tidak dapat mengirim file selama panggilan konferensi!</string>
     <string name="service_gui_FILE_SEND_REFUSED">%1$s telah menolak fail ini</string>
     <string name="service_gui_FILE_SEND_TO">Kirim Lampiran</string>
     <string name="service_gui_FILE_SENDING_TO">Mengirim fail ke %1$s</string>
@@ -1187,7 +1188,7 @@
     <string name="service_gui_settings_GENERAL">Umum</string>
 
     <!-- Message settings -->
-    <string name="service_gui_settings_MSG">Pesan</string>
+    <string name="service_gui_settings_MSG">Messaging</string>
 
     <!-- Group messages in one window -->
     <string name="service_gui_settings_MULTICHAT_OFF">Jendela terpisah untuk ech percakapan</string>
@@ -1210,6 +1211,9 @@
 
     <!-- Enable option to send thumnail preview for image file sending -->
     <string name="service_gui_settings_SEND_THUMBNAIL">Kirim thumbnail file</string>
+
+    <!-- Auto accept downloadable max file size -->
+    <string name="service_gui_settings_ACCEPT_FILE">Otomatis menerima ukuran file maksimal</string>
 
     <!-- Setup substription Mode: auto or manual approval -->
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Kehadiran berlangganan persetujuan</string>

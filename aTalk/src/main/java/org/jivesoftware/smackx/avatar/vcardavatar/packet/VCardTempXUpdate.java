@@ -21,7 +21,8 @@ package org.jivesoftware.smackx.avatar.vcardavatar.packet;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Implements the presence extension corresponding to element name "x" and namespace
@@ -32,126 +33,124 @@ import java.util.logging.*;
  */
 public class VCardTempXUpdate implements ExtensionElement
 {
-	/**
-	 * The <tt>Logger</tt> used by the <tt>VCardTempXUpdatePresenceExtension</tt> class and its
-	 * instances for logging output.
-	 */
-	private static final Logger LOGGER = Logger.getLogger(VCardTempXUpdate.class.getName());
+    /**
+     * The <tt>Logger</tt> used by the <tt>VCardTempXUpdatePresenceExtension</tt> class and its
+     * instances for logging output.
+     */
+    private static final Logger LOGGER = Logger.getLogger(VCardTempXUpdate.class.getName());
 
-	/**
-	 * This presence extension namespace.
-	 */
-	public static final String NAMESPACE = "vcard-temp:x:update";
+    /**
+     * This presence extension namespace.
+     */
+    public static final String NAMESPACE = "vcard-temp:x:update";
 
-	/**
-	 * This presence extension element name.
-	 */
-	public static final String ELEMENT = "x";
+    /**
+     * This presence extension element name.
+     */
+    public static final String ELEMENT = "x";
 
-	/**
-	 * This photo extension element name.
-	 */
-	public static final String ELEMENT_PHOTO = "photo";
+    /**
+     * This photo extension element name.
+     */
+    public static final String ELEMENT_PHOTO = "photo";
 
-	/**
-	 * The SHA-1 hash in hexadecimal representation of the avatar image.
-	 *
-	 * mAvatarHash value definition for <photo/> element generation
-	 * 1. mAvatarHash == null => client is not yet ready to advertise an image
-	 * 2. mAvatarHash.length() == 0 => vCard with an empty BINVAL i.e. No  photo
-	 * 3. mAvatarHash.length() > 0 => is the VCard <PHOTO/> image Hash value
-	 *
-	 * @see #toXML(String) update <x xmlns='vcard-temp:x:update'/> element generation
-	 */
-	private String mAvatarHash = null;
+    /**
+     * The SHA-1 hash in hexadecimal representation of the avatar image.
+     *
+     * mAvatarHash value definition for <photo/> element generation
+     * 1. mAvatarHash == null => client is not yet ready to advertise an image
+     * 2. mAvatarHash.length() == 0 => vCard with an empty BINVAL i.e. No  photo
+     * 3. mAvatarHash.length() > 0 => is the VCard <PHOTO/> image Hash value
+     *
+     * @see #toXML(String) update <x xmlns='vcard-temp:x:update'/> element generation
+     */
+    private String mAvatarHash = null;
 
-	/**
-	 * Create an AvatarData.
-	 *
-	 * @param avatarHash
-	 * 		the data of the photo avatar
-	 */
-	public VCardTempXUpdate(String avatarHash)
-	{
-		mAvatarHash = avatarHash;
-	}
+    /**
+     * Create an AvatarData.
+     *
+     * @param avatarHash the data of the photo avatar
+     */
+    public VCardTempXUpdate(String avatarHash)
+    {
+        mAvatarHash = avatarHash;
+    }
 
-	/**
-	 * Updates the mAvatarHash used by extension.
-	 *
-	 * @param avatarHash
-	 * 		The new avatarHash to be used. null => client is not ready, so just ignore.
-	 * @return "false" if the new avatarHash is the same as the current one. "true" if this
-	 * extension has been updated with the new avatarHash.
-	 */
-	public boolean setAvatarHash(String avatarHash)
-	{
-		boolean isNewHash = false;
-		if ((avatarHash != null) && !avatarHash.equals(mAvatarHash)) {
-			LOGGER.log(Level.INFO, "Account avatar hash updated with (old => new): " + "\n"
-					+ mAvatarHash + "\n" + avatarHash);
-			mAvatarHash = avatarHash;
-			isNewHash = true;
-		}
-		return isNewHash;
-	}
+    /**
+     * Updates the mAvatarHash used by extension.
+     *
+     * @param avatarHash The new avatarHash to be used. null => client is not ready, so just ignore.
+     * @return "false" if the new avatarHash is the same as the current one. "true" if this
+     * extension has been updated with the new avatarHash.
+     */
+    public boolean setAvatarHash(String avatarHash)
+    {
+        boolean isNewHash = false;
+        if ((avatarHash != null) && !avatarHash.equals(mAvatarHash)) {
+            LOGGER.log(Level.INFO, "Account avatar hash updated with (old => new): " + "\n"
+                    + mAvatarHash + "\n" + avatarHash);
+            mAvatarHash = avatarHash;
+            isNewHash = true;
+        }
+        return isNewHash;
+    }
 
-	/**
-	 * Returns the current avatarHash.
-	 *
-	 * @return the current avatarHash.
-	 */
-	public String getAvatarHash() {
-		return mAvatarHash;
-	}
+    /**
+     * Returns the current avatarHash.
+     *
+     * @return the current avatarHash.
+     */
+    public String getAvatarHash()
+    {
+        return mAvatarHash;
+    }
 
-	/**
-	 * Returns the root element name.
-	 *
-	 * @return the element name.
-	 */
-	public String getElementName()
-	{
-		return ELEMENT;
-	}
+    /**
+     * Returns the root element name.
+     *
+     * @return the element name.
+     */
+    public String getElementName()
+    {
+        return ELEMENT;
+    }
 
-	/**
-	 * Returns the root element XML namespace.
-	 *
-	 * @return the namespace.
-	 */
-	public String getNamespace()
-	{
-		return NAMESPACE;
-	}
+    /**
+     * Returns the root element XML namespace.
+     *
+     * @return the namespace.
+     */
+    public String getNamespace()
+    {
+        return NAMESPACE;
+    }
 
-	/**
-	 * Returns the XML representation of the ExtensionElement.
-	 *
-	 * @return the packet extension as XML.
-	 * <p>
-	 * <pre>
-	 *  <x xmlns='vcard-temp:x:update'>
-	 *      <photo/> or
-	 *      <photo>910ec77e99e8fbf80778932ef26902f5ebe650df</photo>
-	 *   </x>
-	 * </pre>
-	 * XEP-0153: vCard-Based Avatars Definition for <photo/> element
-	 * 1. missing update <x xmlns='vcard-temp:x:update'/> element => XEP-0153 not support
-	 * 2. empty update <x xmlns='vcard-temp:x:update'/> element
-	 *    => client is not yet ready to advertise an image
-	 * 3. empty <photo/> element => vCard with an empty BINVAL i.e. No photo
-	 * 4. <photo>{avatarHash}</photo> => contains the VCard <PHOTO/> image Hash value
-	 *
-	 * @see #mAvatarHash defination
-	 */
-	@Override
-	public XmlStringBuilder toXML(String enclosingNamespace)
-	{
-		XmlStringBuilder xml = new XmlStringBuilder(this);
-		xml.rightAngleBracket();
-		xml.optElement(ELEMENT_PHOTO, mAvatarHash);
-		xml.closeElement(ELEMENT);
-		return xml;
-	}
+    /**
+     * Returns the XML representation of the ExtensionElement.
+     *
+     * @return the packet extension as XML.
+     * <p>
+     * <pre>
+     *  <x xmlns='vcard-temp:x:update'>
+     *      <photo/> or
+     *      <photo>910ec77e99e8fbf80778932ef26902f5ebe650df</photo>
+     *   </x>
+     * </pre>
+     * XEP-0153: vCard-Based Avatars Definition for <photo/> element
+     * 1. missing update <x xmlns='vcard-temp:x:update'/> element => XEP-0153 not support
+     * 2. empty update <x xmlns='vcard-temp:x:update'/> element
+     * => client is not yet ready to advertise an image
+     * 3. empty <photo/> element => vCard with an empty BINVAL i.e. No photo
+     * 4. <photo>{avatarHash}</photo> => contains the VCard <PHOTO/> image Hash value
+     * @see #mAvatarHash defination
+     */
+    @Override
+    public XmlStringBuilder toXML(String enclosingNamespace)
+    {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.rightAngleBracket();
+        xml.optElement(ELEMENT_PHOTO, mAvatarHash);
+        xml.closeElement(ELEMENT);
+        return xml;
+    }
 }

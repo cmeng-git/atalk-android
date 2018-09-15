@@ -107,6 +107,8 @@ public class ChatMessageImpl implements ChatMessage
         put(FileRecord.CANCELED, STATUS_CANCELED);
         put(FileRecord.REFUSED, STATUS_REFUSED);
         put(FileRecord.ACTIVE, STATUS_ACTIVE);
+        put(FileRecord.PREPARING, STATUS_PREPARING);
+        put(FileRecord.IN_PROGRESS, STATUS_IN_PROGRESS);
     }};
 
     /**
@@ -418,7 +420,7 @@ public class ChatMessageImpl implements ChatMessage
     {
         // New FTRequest message always treated as non-consecutiveMessage
         boolean nonFTMsg = ((messageType != MESSAGE_FILE_TRANSFER_RECEIVE)
-                && (messageType != MESSAGE_FILE_TRANSFER_SEND));
+                && (messageType != MESSAGE_FILE_TRANSFER_SEND) && (messageType != MESSAGE_STICKER_SEND));
         // New system message always treated as non-consecutiveMessage
         boolean nonSystemMsg = (messageType != MESSAGE_SYSTEM);
         // New LatLng message always treated as non-consecutiveMessage

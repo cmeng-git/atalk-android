@@ -977,7 +977,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             logger.error("Encounter problem during XMPPConnection: " + errMsg);
             StanzaError stanzaError = StanzaError.from(Condition.policy_violation, errMsg).build();
             throw new XMPPErrorException(null, stanzaError);
-        // } catch (DnssecValidationFailedException | IllegalArgumentException ex) {
+            // } catch (DnssecValidationFailedException | IllegalArgumentException ex) {
         } catch (DnssecValidationFailedException ex) {
             String errMsg = ex.getMessage();
             StanzaError stanzaError = StanzaError.from(Condition.not_authorized, errMsg).build();
@@ -1895,15 +1895,27 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addExtensionProvider(IdentityPacketExtension.ELEMENT_NAME, IdentityPacketExtension.NAMESPACE,
                     new IdentityPacketExtension.Provider());
 
+            ProviderManager.addExtensionProvider(AvatarIdPacketExtension.ELEMENT_NAME, AvatarIdPacketExtension.NAMESPACE,
+                    new DefaultPacketExtensionProvider<>(AvatarIdPacketExtension.class));
+
             ProviderManager.addExtensionProvider(JsonMessageExtension.ELEMENT_NAME, JsonMessageExtension.NAMESPACE,
                     new DefaultPacketExtensionProvider<>(JsonMessageExtension.class));
+
+            ProviderManager.addExtensionProvider(
+                    TranscriptionLanguageExtension.ELEMENT_NAME, TranscriptionLanguageExtension.NAMESPACE,
+                    new DefaultPacketExtensionProvider<>(TranscriptionLanguageExtension.class));
+
+            ProviderManager.addExtensionProvider(
+                    TranscriptionStatusExtension.ELEMENT_NAME, TranscriptionStatusExtension.NAMESPACE,
+                    new DefaultPacketExtensionProvider<>(TranscriptionStatusExtension.class));
+
+            ProviderManager.addExtensionProvider(
+                    TranscriptionRequestExtension.ELEMENT_NAME, TranscriptionRequestExtension.NAMESPACE,
+                    new DefaultPacketExtensionProvider<>(TranscriptionRequestExtension.class));
 
             ProviderManager.addExtensionProvider(TranslationLanguageExtension.ELEMENT_NAME,
                     TranslationLanguageExtension.NAMESPACE,
                     new DefaultPacketExtensionProvider<>(TranslationLanguageExtension.class));
-
-            ProviderManager.addExtensionProvider(AvatarIdPacketExtension.ELEMENT_NAME, AvatarIdPacketExtension.NAMESPACE,
-                    new DefaultPacketExtensionProvider<>(AvatarIdPacketExtension.class));
 
             // register our input event provider
             ProviderManager.addIQProvider(InputEvtIQ.ELEMENT_NAME, InputEvtIQ.NAMESPACE, new InputEvtIQProvider());

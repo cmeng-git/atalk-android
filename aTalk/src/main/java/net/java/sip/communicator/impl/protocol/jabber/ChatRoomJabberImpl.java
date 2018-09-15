@@ -1597,7 +1597,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param extension the <tt>ConferenceDescriptionPacketExtension<tt> to set, or <tt>null</tt> to not set one.
      * @param namespace the namespace of <tt>ExtensionElement</tt>.
      */
-    private static void setPacketExtension(Stanza packet, ExtensionElement extension, String namespace)
+    private static void setPacketExtension(Stanza packet, ExtensionElement extension, String namespace, boolean matchElementName)
     {
         if (StringUtils.isNullOrEmpty(namespace)) {
             return;
@@ -1605,12 +1605,38 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
         // clear previous announcements
         ExtensionElement pe;
-        while (null != (pe = packet.getExtension(namespace))) {
-            packet.removeExtension(pe);
+        if (matchElementName && extension != null) {
+            String element = extension.getElementName();
+            while (null != (pe = packet.getExtension(element, namespace))) {
+                packet.removeExtension(pe);
+            }
+        }
+        else {
+            while (null != (pe = packet.getExtension(namespace))) {
+                packet.removeExtension(pe);
+            }
         }
         if (extension != null) {
             packet.addExtension(extension);
         }
+    }
+
+
+    /**
+     * Sets <tt>ext</tt> as the only <tt>ExtensionElement</tt> that belongs to
+     * given <tt>namespace</tt> of the <tt>packet</tt>.
+     *
+     * @param packet the <tt>Packet<tt> to be modified.
+     * @param extension the <tt>ConferenceDescriptionPacketExtension<tt> to set,
+     * or <tt>null</tt> to not set one.
+     * @param namespace the namespace of <tt>ExtensionElement</tt>.
+     */
+    private static void setPacketExtension(
+            Stanza packet,
+            ExtensionElement extension,
+            String namespace)
+    {
+        setPacketExtension(packet, extension, namespace, false);
     }
 
     /**
@@ -1638,7 +1664,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     public void sendPresenceExtension(ExtensionElement extension)
     {
         if (lastPresenceSent != null) {
-            setPacketExtension(lastPresenceSent, extension, extension.getNamespace());
+            setPacketExtension(lastPresenceSent, extension, extension.getNamespace(), true);
             try {
                 mProvider.getConnection().sendStanza(lastPresenceSent);
             } catch (NotConnectedException | InterruptedException e) {
@@ -1869,11 +1895,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          */
         public void subjectUpdated(String subject, EntityFullJid from)
         {
-            if (logger.isInfoEnabled())
-                logger.info("ChatRoom subject updated to '" + subject + "'");
 
             // only fire event if subject has really changed, not for new one
             if (subject != null && !subject.equals(oldSubject)) {
+                if (logger.isDebugEnabled())
+                    logger.debug("ChatRoom subject updated to '" + subject + "'");
                 ChatRoomPropertyChangeEvent evt = new ChatRoomPropertyChangeEvent(
                         ChatRoomJabberImpl.this, ChatRoomPropertyChangeEvent.CHAT_ROOM_SUBJECT, oldSubject, subject);
                 firePropertyChangeEvent(evt);

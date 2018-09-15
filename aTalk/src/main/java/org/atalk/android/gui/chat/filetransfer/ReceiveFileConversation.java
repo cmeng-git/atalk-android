@@ -17,17 +17,18 @@
 package org.atalk.android.gui.chat.filetransfer;
 
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.view.*;
 
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.Logger;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
+import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
+import org.atalk.persistance.FileBackend;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.File;
 import java.util.Date;
@@ -86,6 +87,7 @@ public class ReceiveFileConversation extends FileTransferConversation
         msgId = id;
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
         messageViewHolder.arrowDir.setImageResource(R.drawable.filexferarrowin);
+        messageViewHolder.stickerView.setImageDrawable(null);
 
         messageViewHolder.titleLabel.setText(
                 aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, mDate, mSendTo));
@@ -102,6 +104,7 @@ public class ReceiveFileConversation extends FileTransferConversation
                 showThumbnail(thumbnail);
             }
 
+            downloadFile = createFile(fileTransferRequest);
             messageViewHolder.acceptButton.setVisibility(View.VISIBLE);
             messageViewHolder.acceptButton.setOnClickListener(new View.OnClickListener()
             {
@@ -113,11 +116,16 @@ public class ReceiveFileConversation extends FileTransferConversation
                     messageViewHolder.rejectButton.setVisibility(View.GONE);
 
                     // set the download for global display parameter
-                    downloadFile = createFile(fileTransferRequest);
                     mChatFragment.getChatListAdapter().setFileName(msgId, downloadFile);
                     (new acceptFile(downloadFile)).execute();
                 }
             });
+
+            long downloadFileSize = fileTransferRequest.getFileSize();
+            boolean isAutoAccept = (downloadFileSize <= ConfigurationUtils.getAutoAcceptFileSize());
+
+            if (isAutoAccept)
+                messageViewHolder.acceptButton.performClick();
 
             messageViewHolder.rejectButton.setVisibility(View.VISIBLE);
             messageViewHolder.rejectButton.setOnClickListener(new View.OnClickListener()
@@ -172,6 +180,8 @@ public class ReceiveFileConversation extends FileTransferConversation
                 if (downloadFile == null) { // Android view redraw happen
                     downloadFile = mChatFragment.getChatListAdapter().getFileName(msgId);
                 }
+                MyGlideApp.loadImage(messageViewHolder.stickerView, downloadFile, false);
+
                 String fileName = getFileLabel(downloadFile.getName(), downloadFile.length());
                 messageViewHolder.fileLabel.setText(fileName);
 
@@ -179,9 +189,7 @@ public class ReceiveFileConversation extends FileTransferConversation
                 messageViewHolder.titleLabel.setText(
                         aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, mDate, mSendTo));
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
-
-                messageViewHolder.openFileButton.setVisibility(View.VISIBLE);
-                messageViewHolder.openFolderButton.setVisibility(View.VISIBLE);
+                messageViewHolder.rejectButton.setVisibility(View.GONE);
                 break;
 
             case FileTransferStatusChangeEvent.FAILED:
@@ -204,8 +212,6 @@ public class ReceiveFileConversation extends FileTransferConversation
                 messageViewHolder.titleLabel.setText(
                         aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED, mDate));
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
-                messageViewHolder.openFileButton.setVisibility(View.GONE);
-                messageViewHolder.openFolderButton.setVisibility(View.GONE);
                 bgAlert = true;
                 break;
         }
@@ -250,15 +256,19 @@ public class ReceiveFileConversation extends FileTransferConversation
      */
     private File createFile(IncomingFileTransferRequest fileTransferRequest)
     {
-        File downloadFile;
         String incomingFileName = fileTransferRequest.getFileName();
-        downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        if (!downloadDir.exists()) {
-            if (!downloadDir.mkdirs()) {
-                logger.error("Could not create the download directory : " + downloadDir.getAbsolutePath());
-            }
-            if (logger.isDebugEnabled())
-                logger.debug("Download directory created : " + downloadDir.getAbsolutePath());
+        String mimeType = fileTransferRequest.getMimeType();
+
+        String downloadPath = FileBackend.MEDIA_DOCUMENT;
+        if (incomingFileName.contains("voice-"))
+            downloadPath = FileBackend.MEDIA_VOICE_RECEIVE;
+        else if (!StringUtils.isNullOrEmpty(mimeType)) {
+            downloadPath = FileBackend.MEDIA + File.separator + mimeType.split("/")[0];
+        }
+
+        File downloadDir = FileBackend.getaTalkStore(downloadPath);
+        if (!downloadDir.exists() && !downloadDir.mkdirs()) {
+            logger.error("Could not create the download directory : " + downloadDir.getAbsolutePath());
         }
 
         downloadFile = new File(downloadDir, incomingFileName);

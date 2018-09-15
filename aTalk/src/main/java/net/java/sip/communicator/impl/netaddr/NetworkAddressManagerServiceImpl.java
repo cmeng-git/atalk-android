@@ -479,7 +479,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
         try {
             SRV[] srvRecords = NetworkUtils.getSRVRecords(TURN_SRV_NAME, Transport.UDP.toString(), domainName);
             if (srvRecords != null) {
-                srvrAddress = srvRecords[0].name.toString();
+                srvrAddress = srvRecords[0].target.toString();
             }
 
             // Seem to have a TURN server, so we'll be using it for both TURN and STUN harvesting.
@@ -491,7 +491,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
             // srvrAddress was null. try for a STUN only server.
             srvRecords = NetworkUtils.getSRVRecords(STUN_SRV_NAME, Transport.UDP.toString(), domainName);
             if (srvRecords != null) {
-                srvrAddress = srvRecords[0].name.toString();
+                srvrAddress = srvRecords[0].target.toString();
                 port = srvRecords[0].port;
             }
         } catch (IOException e) {

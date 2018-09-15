@@ -107,6 +107,13 @@
             android:summaryOn="@string/service_gui_settings_ENABLED_STR"
             android:title="@string/service_gui_settings_SEND_THUMBNAIL" />
 
+        <!-- Attachment File Size Auto Accept -->
+        <ListPreference
+            android:entries="@array/filesizes"
+            android:entryValues="@array/filesizes_values"
+            android:key="@string/pref_key_auto_accept_file"
+            android:title="@string/service_gui_settings_ACCEPT_FILE"/>
+
         <!-- Prersence Subcription Mode - Auto or Manual -->
         <CheckBoxPreference
             android:key="@string/pref_key_presence_subscribe_mode"

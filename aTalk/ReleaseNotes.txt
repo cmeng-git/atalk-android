@@ -1,5 +1,23 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.5.2 (1052)
+Author:         cmeng
+Upload Date:	09/15/2018
+- Implement downloadable Stickers, Bitmoji and Emoji rich content sharing
+- Implement auto accept received file transfer request with max file size option
+- Add user support for multiple files selection for sending
+- Fix file access problem on android-N and above (SecurityException)
+- Revamp RealPathUtil and rename to FilePathHelper to get FilePath for Sticker and GBoard stream provider
+- Revamp FileAccess and rename to FileBackend
+- Consolidate all aTalk downloadable file to Download/aTalk
+- Fix AudioBgService playback - must use uri in android-N and above
+- Fix omemo messaging when server replies "item-not-found" on devicelist info request
+- Fix getMimeType for properly return values
+- Remove openFolder option button
+- Update Jitsi sources to jitsi-smack-4.2 (dated 20180903)
+- Add TranscriptionRequestExtension
+
+=========================================================================
 Version:		1.5.1 (1051)
 Author:         cmeng
 Upload Date:	09/01/2018
@@ -62,7 +80,7 @@ Upload Date:	07/31/2018
 - Display user warning alert when zero resource permission has been granted for aTalk operation
 - Disable media services when android OS aborts ffmpeg lib loading (Text-Relocation-Enforced-for-API-level-23)
 - see (https://android.googlesource.com/platform/bionic/+/master/android-changes-for-ndk-developers.md#Text-Relocations-Enforced-for-API-level-23)
-- Update Jitsi sources to jitsi-smack-4.2 (Jdated 20180720)
+- Update Jitsi sources to jitsi-smack-4.2 (dated 20180720)
 
 =========================================================================
 Version:		1.4.3 (1043)

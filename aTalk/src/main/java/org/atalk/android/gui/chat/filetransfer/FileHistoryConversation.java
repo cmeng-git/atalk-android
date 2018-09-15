@@ -20,13 +20,13 @@ import android.view.*;
 
 import net.java.sip.communicator.service.filehistory.FileRecord;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
+import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatFragment.MessageViewHolder;
 import org.atalk.android.gui.chat.ChatMessage;
 
+import java.io.File;
 import java.util.Date;
 
 /**
@@ -80,28 +80,25 @@ public class FileHistoryConversation extends FileTransferConversation
         else
             messageViewHolder.arrowDir.setImageResource(R.drawable.filexferarrowout);
 
+        File filePath = fileRecord.getFile();
         String status = fileRecord.getStatus();
+
         if (FileRecord.COMPLETED.equals(status)) {
             bgAlert = false;
-            // Open File/Folder buttons for completed file transfer
-            messageViewHolder.openFileButton.setVisibility(View.VISIBLE);
-            messageViewHolder.openFolderButton.setVisibility(View.VISIBLE);
+            MyGlideApp.loadImage(messageViewHolder.stickerView, filePath, true);
         }
-        else {
-            messageViewHolder.openFileButton.setVisibility(View.GONE);
-            messageViewHolder.openFolderButton.setVisibility(View.GONE);
-        }
+
         titleString = getStatusMessage(entityJid, dir, status);
         mChatFragment.clearMsgCache = FileRecord.ACTIVE.equals(status);
 
-        this.setCompletedDownloadFile(mChatFragment, fileRecord.getFile());
+        this.setCompletedDownloadFile(mChatFragment, filePath);
         Date date = fileRecord.getDate();
         StringBuilder tileLabel = new StringBuilder();
         tileLabel.append(date.toString())
                 .append(":\n")
                 .append(titleString);
         messageViewHolder.titleLabel.setText(tileLabel);
-        messageViewHolder.fileLabel.setText(getFileLabel(fileRecord.getFile()));
+        messageViewHolder.fileLabel.setText(getFileLabel(filePath));
 
         if (bgAlert) {
             messageViewHolder.titleLabel.setTextColor(AndroidGUIActivator.getResources().getColor("red"));

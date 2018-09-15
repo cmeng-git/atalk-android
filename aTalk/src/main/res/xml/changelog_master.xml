@@ -6,6 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.5.2 (09/15/2018)" versioncode="1052">
+        <change>Implement downloadable Stickers, Bitmoji and Emoji rich content sharing</change>
+        <change>Implement auto accept received file transfer request with max file size option</change>
+        <change>Add user support for multiple files selection for sending</change>
+        <change>Fix file access problem on android-N and above (SecurityException)</change>
+        <change>Fix voice message playback problem on android-N and above</change>
+        <change>Add provision for server without devicelist discoInfo support - omemo messaging</change>
+        <change>Consolidate all aTalk downloadable files into single Download/aTalk folder</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.5.1 (09/01/2018)" versioncode="1051">
         <change>Fix image file transfer error when thumbnail preview is enabled</change>
         <change>Port to use smack libraries v4.4.0</change>

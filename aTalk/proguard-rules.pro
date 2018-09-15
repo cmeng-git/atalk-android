@@ -21,3 +21,4 @@
 -dontwarn java.beans.**
 -dontwarn javax.imageio.**
 -dontwarn javax.naming.**
+-dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder

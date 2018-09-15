@@ -337,6 +337,7 @@
     <string name="service_gui_FILE_RECEIVING_FROM">Получение файла из %1$s</string>
     <string name="service_gui_FILE_SEND_COMPLETED">Файл успешно отправлен в %1$s</string>
     <string name="service_gui_FILE_SEND_FAILED">Не удалось отправить файл: %1$s</string>
+    <string name="service_gui_FILE_SEND_NOT_ALLOW">Не удается отправить файл во время телефонной конференции!</string>
     <string name="service_gui_FILE_SEND_REFUSED">%1$s отклонил этот файл</string>
     <string name="service_gui_FILE_SEND_TO">Отправить вложение</string>
     <string name="service_gui_FILE_SENDING_TO">Отправка файла в %1$s</string>
@@ -1195,7 +1196,7 @@
     <string name="service_gui_settings_GENERAL">Общие</string>
 
     <!-- Message settings -->
-    <string name="service_gui_settings_MSG">Сообщение</string>
+    <string name="service_gui_settings_MSG">обмен сообщениями</string>
 
     <!-- Group messages in one window -->
     <string name="service_gui_settings_MULTICHAT_OFF">Отдельное окно для ech-беседы</string>
@@ -1218,6 +1219,9 @@
 
     <!-- Enable option to send thumnail preview for image file sending -->
     <string name="service_gui_settings_SEND_THUMBNAIL">Отправить миниатюру файла</string>
+
+    <!-- Auto accept downloadable max file size -->
+    <string name="service_gui_settings_ACCEPT_FILE">Автоматическое принятие максимального размера файла</string>
 
     <!-- Setup substription Mode: auto or manual approval -->
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Утверждение подписки на доступность</string>

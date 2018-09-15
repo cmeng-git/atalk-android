@@ -181,6 +181,10 @@ public class SingleCallInProgressPolicy
                 }
             }
         }
+        else if (CallState.CALL_ENDED.equals(ev.getNewValue()))
+        {
+            this.handleCallEvent(CallEvent.CALL_ENDED, call);
+        }
 
         /*
          * Forward to onThePhoneStatusPolicy for which we are proxying the Call-related events.
@@ -208,9 +212,8 @@ public class SingleCallInProgressPolicy
      * {@link CallEvent#CALL_RECEIVED} which describes the type of the event to be handled
      * @param ev a <tt>CallEvent</tt> value which describes the change and the <tt>Call</tt> associated with it
      */
-    private void handleCallEvent(int type, CallEvent ev)
+    private void handleCallEvent(int type, Call call)
     {
-        Call call = ev.getSourceCall();
         if (logger.isTraceEnabled()) {
             logger.trace("Call event fired.");
         }
@@ -227,7 +230,7 @@ public class SingleCallInProgressPolicy
         /*
          * Forward to onThePhoneStatusPolicy for which we are proxying the Call-related events.
          */
-        onThePhoneStatusPolicy.handleCallEvent(type, ev);
+        onThePhoneStatusPolicy.handleCallEvent(type, call);
     }
 
     /**
@@ -266,8 +269,7 @@ public class SingleCallInProgressPolicy
             if (config.getBoolean(PNAME_REJECT_IN_CALL_ON_DND, false)
                     || provider.getAccountID().getAccountPropertyBoolean(
                     ACCOUNT_PROPERTY_REJECT_IN_CALL_ON_DND, false)) {
-                OperationSetPresence presence = provider
-                        .getOperationSet(OperationSetPresence.class);
+                OperationSetPresence presence = provider.getOperationSet(OperationSetPresence.class);
 
                 // if our provider has no presence op set, lets search for connected provider which will have
                 if (presence == null) {
@@ -296,7 +298,7 @@ public class SingleCallInProgressPolicy
                 }
             }
         }
-        handleCallEvent(CallEvent.CALL_RECEIVED, ev);
+        handleCallEvent(CallEvent.CALL_RECEIVED, call);
     }
 
     /**
@@ -510,9 +512,9 @@ public class SingleCallInProgressPolicy
          *
          * @param type one of {@link CallEvent#CALL_ENDED}, {@link CallEvent#CALL_INITIATED} and
          * {@link CallEvent#CALL_RECEIVED} which describes the type of the event to be handled
-         * @param ev a <tt>CallEvent</tt> value which describes the change and the <tt>Call</tt> associated with it
+         * @param call the <tt>Call</tt> instance.
          */
-        public void handleCallEvent(int type, CallEvent ev)
+        public void handleCallEvent(int type, Call call)
         {
             run();
         }
@@ -744,7 +746,12 @@ public class SingleCallInProgressPolicy
          */
         public void callEnded(CallEvent ev)
         {
-            SingleCallInProgressPolicy.this.handleCallEvent(CallEvent.CALL_ENDED, ev);
+            /**
+             * Not using call ended, cause the CallListener is removed
+             * when protocol disconnects and it can happen that this is
+             * before the callEnded event in case of running call during
+             * removing an account and this can lead to leaking calls.
+             */
         }
 
         /**
@@ -809,7 +816,7 @@ public class SingleCallInProgressPolicy
          */
         public void outgoingCallCreated(CallEvent ev)
         {
-            SingleCallInProgressPolicy.this.handleCallEvent(CallEvent.CALL_INITIATED, ev);
+            SingleCallInProgressPolicy.this.handleCallEvent(CallEvent.CALL_INITIATED, ev.getSourceCall());
         }
 
         /**
