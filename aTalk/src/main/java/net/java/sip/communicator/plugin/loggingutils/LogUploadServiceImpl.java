@@ -43,11 +43,6 @@ public class LogUploadServiceImpl implements LogUploadService
     private List<File> storedLogFiles = new ArrayList<>();
 
     /**
-     * The path pointing to directory used to store temporary log archives.
-     */
-    private static final String storagePath = Environment.getExternalStorageDirectory().getPath() + "/atalk-logs/";
-
-    /**
      * Retrieve logcat file from Android and Send the log files.
      *
      * @param destinations array of destination addresses
@@ -56,24 +51,19 @@ public class LogUploadServiceImpl implements LogUploadService
      */
     public void sendLogs(String[] destinations, String subject, String title)
     {
-        try {
-            File storageDir = new File(storagePath);
-            if (!storageDir.exists())
-                if (!storageDir.mkdir())
-                    return;
-
-            File logcatFile;
+        /* The path pointing to directory used to store temporary log archives. */
+        File logStorageDir = FileBackend.getaTalkStore("atalk-logs");
+        if (logStorageDir != null) {
+            File logcatFile = null;
             String logcatFN = new File("log", "atalk-current-logcat.txt").toString();
             try {
                 logcatFile = LoggingUtilsActivator.getFileAccessService().getPrivatePersistentFile(logcatFN, FileCategory.LOG);
-                Runtime.getRuntime().exec("logcat -c -v time -f " + logcatFile.getAbsolutePath());
+                Runtime.getRuntime().exec("logcat -v time -f " + logcatFile);
             } catch (Exception e) {
                 logger.error("Couldn't save current logcat file.");
             }
-            System.err.println("STORAGE DIR======" + storageDir);
-            File externalStorageFile = LogsCollector.collectLogs(storageDir, null);
-
             // Stores file name to remove it on service shutdown
+            File externalStorageFile = LogsCollector.collectLogs(logStorageDir, null);
             storedLogFiles.add(externalStorageFile);
 
             Intent sendIntent = new Intent(Intent.ACTION_SEND);
@@ -83,7 +73,6 @@ public class LogUploadServiceImpl implements LogUploadService
 
             Uri logsUri = FileBackend.getUriForFile(aTalkApp.getGlobalContext(), externalStorageFile);
             sendIntent.putExtra(Intent.EXTRA_STREAM, logsUri);
-
             sendIntent.putExtra(Intent.EXTRA_TEXT, aTalkApp.getResString(R.string.service_gui_SEND_LOGS_INFO));
 
             // we are starting this activity from context that is most probably not from the
@@ -92,8 +81,9 @@ public class LogUploadServiceImpl implements LogUploadService
             chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             aTalkApp.getGlobalContext().startActivity(chooserIntent);
-        } catch (Exception e) {
-            logger.error("Error sending files", e);
+        }
+        else {
+            logger.error("Error sending debug log files");
         }
     }
 

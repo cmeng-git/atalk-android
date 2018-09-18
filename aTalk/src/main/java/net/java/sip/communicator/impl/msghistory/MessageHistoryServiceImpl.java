@@ -76,7 +76,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	/**
 	 * Indicates if history logging is enabled.
 	 */
-	private static boolean isHistoryLoggingEnabled;
+	private static boolean isHistoryLoggingEnabled = true;
 	/**
 	 * The BundleContext that we got from the OSGI bus.
 	 */
@@ -2085,7 +2085,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 	public void setHistoryLoggingEnabled(boolean isEnabled)
 	{
 		isHistoryLoggingEnabled = isEnabled;
-
 		configService.setProperty(MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED,
 				Boolean.toString(isHistoryLoggingEnabled));
 	}

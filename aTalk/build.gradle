@@ -18,6 +18,7 @@ repositories {
     maven {
         // SNAPSHOT repository smack - need manual cleanup for new SNAPSHOT update if same name with date change only:
         url 'https://oss.sonatype.org/content/repositories/snapshots'
+        // url 'https://igniterealtime.org/repo' - gradle cannot find
     }
     maven {
         url 'https://jitpack.io'
@@ -47,8 +48,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1052
-        versionName "1.5.2" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1053
+        versionName "1.5.3" // no alphabet allowed (e.g. 0.8.7.a)
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true
@@ -136,9 +137,7 @@ dependencies {
 
     // direct import from local lib/bundles/*.jar
     implementation files('lib/bundles/dhcp4java-1.00.jar')
-    // ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
-    // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
-    // implementation files('lib/bundles/ice4j-2.0.0.jar')
+
     // must use local json-simple-1.1.1.jar - otherwise dependency conflict
     implementation files('lib/bundles/json-simple-1.1.1.jar')
 
@@ -306,6 +305,8 @@ task jarRepackage(type: Copy, description: 'Repackage jar to avoid conflict') {
                     result: 'org.atalk.@1'
         }
 
+        // ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
+        // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
         // Objects class only available in API-19 and above
         jarjar2(jarfile: 'libs/ice4j-2.0.0.jar') {
             zipfileset(src: 'lib/bundles/ice4j-2.0.0.jar')

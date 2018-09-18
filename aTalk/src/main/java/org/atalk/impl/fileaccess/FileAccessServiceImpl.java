@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.fileaccess;
@@ -8,10 +8,13 @@ package org.atalk.impl.fileaccess;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.*;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.*;
+import org.atalk.util.Logger;
+import org.atalk.util.OSUtils;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Default FileAccessService implementation.
@@ -21,424 +24,402 @@ import java.util.*;
  */
 public class FileAccessServiceImpl implements FileAccessService
 {
-	/**
-	 * The <tt>Logger</tt> used by the <tt>FileAccessServiceImpl</tt> class and its instances for logging output.
-	 */
-	private static final Logger logger = Logger.getLogger(FileAccessServiceImpl.class);
+    /**
+     * The <tt>Logger</tt> used by the <tt>FileAccessServiceImpl</tt> class and its instances for logging output.
+     */
+    private static final Logger logger = Logger.getLogger(FileAccessServiceImpl.class);
 
-	/**
-	 * The file prefix for all temp files.
-	 */
-	public static final String TEMP_FILE_PREFIX = "SIPCOMM";
+    /**
+     * The file prefix for all temp files.
+     */
+    public static final String TEMP_FILE_PREFIX = "SIPCOMM";
 
-	/**
-	 * The file suffix for all temp files.
-	 */
-	public static final String TEMP_FILE_SUFFIX = "TEMP";
+    /**
+     * The file suffix for all temp files.
+     */
+    public static final String TEMP_FILE_SUFFIX = "TEMP";
 
-	private String profileDirLocation;
-	private String cacheDirLocation;
-	private String logDirLocation;
-	private String scHomeDirName;
+    private String profileDirLocation;
+    private String cacheDirLocation;
+    private String logDirLocation;
+    private String scHomeDirName;
 
-	/**
-	 * The indicator which determines whether {@link #initialize()} has been invoked on this instance. Introduced to
-	 * delay the initialization of the state of this instance until it is actually necessary.
-	 */
-	private boolean initialized = false;
+    /**
+     * The indicator which determines whether {@link #initialize()} has been invoked on this instance. Introduced to
+     * delay the initialization of the state of this instance until it is actually necessary.
+     */
+    private boolean initialized = false;
 
-	public FileAccessServiceImpl() {
-	}
+    public FileAccessServiceImpl()
+    {
+    }
 
-	/**
-	 * This method returns a created temporary file. After you close this file it is not guaranteed that you will be
-	 * able to open it again nor that it will contain any information.
-	 *
-	 * Note: DO NOT store unencrypted sensitive information in this file
-	 *
-	 * @return The created temporary file
-	 * @throws IOException
-	 *         If the file cannot be created
-	 */
-	public File getTemporaryFile()
-		throws IOException
-	{
-		File retVal = null;
+    /**
+     * This method returns a created temporary file. After you close this file it is not guaranteed that you will be
+     * able to open it again nor that it will contain any information.
+     *
+     * Note: DO NOT store unencrypted sensitive information in this file
+     *
+     * @return The created temporary file
+     * @throws IOException If the file cannot be created
+     */
+    public File getTemporaryFile()
+            throws IOException
+    {
+        File retVal = null;
 
-		try {
-			logger.logEntry();
+        try {
+            logger.logEntry();
 
-			retVal = TempFileManager.createTempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX);
-		}
-		finally {
-			logger.logExit();
-		}
+            retVal = TempFileManager.createTempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX);
+        } finally {
+            logger.logExit();
+        }
 
-		return retVal;
-	}
+        return retVal;
+    }
 
-	/**
-	 * Returns the temporary directory.
-	 *
-	 * @return the created temporary directory
-	 * @throws IOException
-	 *         if the temporary directory cannot not be created
-	 */
-	public File getTemporaryDirectory()
-		throws IOException
-	{
-		File file = getTemporaryFile();
+    /**
+     * Returns the temporary directory.
+     *
+     * @return the created temporary directory
+     * @throws IOException if the temporary directory cannot not be created
+     */
+    public File getTemporaryDirectory()
+            throws IOException
+    {
+        File file = getTemporaryFile();
 
-		if (!file.delete()) {
-			throw new IOException("Could not create temporary directory, because: could not delete temporary file.");
-		}
-		if (!file.mkdirs()) {
-			throw new IOException("Could not create temporary directory");
-		}
+        if (!file.delete()) {
+            throw new IOException("Could not create temporary directory, because: could not delete temporary file.");
+        }
+        if (!file.mkdirs()) {
+            throw new IOException("Could not create temporary directory");
+        }
 
-		return file;
-	}
+        return file;
+    }
 
-	/**
-	 * Please use {@link #getPrivatePersistentFile(String, FileCategory)}.
-	 */
-	@Deprecated
-	public File getPrivatePersistentFile(String fileName)
-		throws Exception
-	{
-		return this.getPrivatePersistentFile(fileName, FileCategory.PROFILE);
-	}
+    /**
+     * Please use {@link #getPrivatePersistentFile(String, FileCategory)}.
+     */
+    @Deprecated
+    public File getPrivatePersistentFile(String fileName)
+            throws Exception
+    {
+        return this.getPrivatePersistentFile(fileName, FileCategory.PROFILE);
+    }
 
-	/**
-	 * This method returns a file specific to the current user. It may not exist, but it is guaranteed that you will
-	 * have the sufficient rights to create it.
-	 *
-	 * This file should not be considered secure because the implementor may return a file accessible to everyone.
-	 * Generally it will reside in current user's homedir, but it may as well reside in a shared directory.
-	 *
-	 * Note: DO NOT store unencrypted sensitive information in this file
-	 *
-	 * @param fileName
-	 *        The name of the private file you wish to access
-	 * @param category
-	 *        The classification of the file.
-	 * @return The file
-	 * @throws Exception
-	 *         if we failed to create the file.
-	 */
-	public File getPrivatePersistentFile(String fileName, FileCategory category)
-		throws Exception
-	{
-		logger.logEntry();
+    /**
+     * This method returns a file specific to the current user. It may not exist, but it is guaranteed that you will
+     * have the sufficient rights to create it.
+     *
+     * This file should not be considered secure because the implementor may return a file accessible to everyone.
+     * Generally it will reside in current user's homedir, but it may as well reside in a shared directory.
+     *
+     * Note: DO NOT store unencrypted sensitive information in this file
+     *
+     * @param fileName The name of the private file you wish to access
+     * @param category The classification of the file.
+     * @return The file
+     * @throws Exception if we failed to create the file.
+     */
+    public File getPrivatePersistentFile(String fileName, FileCategory category)
+            throws Exception
+    {
+        logger.logEntry();
+        File file = null;
+        try {
+            file = accessibleFile(getFullPath(category), fileName);
+            if (file == null) {
+                throw new SecurityException("Insufficient rights to access this file in current user's home directory: "
+                        + new File(getFullPath(category), fileName).getPath());
+            }
+        } finally {
+            logger.logExit();
+        }
+        return file;
+    }
 
-		File file = null;
-		try {
-			file = accessibleFile(getFullPath(category), fileName);
-			if (file == null) {
-				throw new SecurityException("Insufficient rights to access this file in current user's home directory: "
-					+ new File(getFullPath(category), fileName).getPath());
-			}
-		}
-		finally {
-			logger.logExit();
-		}
+    /**
+     * Please use {@link #getPrivatePersistentDirectory(String, FileCategory)}
+     */
+    @Deprecated
+    public File getPrivatePersistentDirectory(String dirName)
+            throws Exception
+    {
+        return getPrivatePersistentDirectory(dirName, FileCategory.PROFILE);
+    }
 
-		return file;
-	}
+    /**
+     * This method creates a directory specific to the current user.
+     *
+     * This directory should not be considered secure because the implementor may return a directory accessible to
+     * everyone. Generally it will reside in current user's homedir, but it may as well reside in a shared directory.
+     *
+     * It is guaranteed that you will be able to create files in it.
+     *
+     * Note: DO NOT store unencrypted sensitive information in this file
+     *
+     * @param dirName The name of the private directory you wish to access.
+     * @param category The classification of the directory.
+     * @return The created directory.
+     * @throws Exception Thrown if there is no suitable location for the persistent directory.
+     */
+    public File getPrivatePersistentDirectory(String dirName, FileCategory category)
+            throws Exception
+    {
+        File dir = new File(getFullPath(category), dirName);
+        if (dir.exists()) {
+            if (!dir.isDirectory()) {
+                throw new RuntimeException("Could not create directory " + "because: A file exists with this name:" + dir.getAbsolutePath());
+            }
+        }
+        else if (!dir.mkdirs()) {
+            throw new IOException("Could not create directory");
+        }
+        return dir;
+    }
 
-	/**
-	 * Please use {@link #getPrivatePersistentDirectory(String, FileCategory)}
-	 */
-	@Deprecated
-	public File getPrivatePersistentDirectory(String dirName)
-		throws Exception
-	{
-		return getPrivatePersistentDirectory(dirName, FileCategory.PROFILE);
-	}
+    /**
+     * Returns the full path corresponding to a file located in the sip-communicator config home and carrying the
+     * specified name.
+     *
+     * @param category The classification of the file or directory.
+     * @return the config home location of a a file with the specified name.
+     */
+    private File getFullPath(FileCategory category)
+    {
+        initialize();
 
-	/**
-	 * This method creates a directory specific to the current user.
-	 *
-	 * This directory should not be considered secure because the implementor may return a directory accessible to
-	 * everyone. Generally it will reside in current user's homedir, but it may as well reside in a shared directory.
-	 *
-	 * It is guaranteed that you will be able to create files in it.
-	 *
-	 * Note: DO NOT store unencrypted sensitive information in this file
-	 *
-	 * @param dirName
-	 *        The name of the private directory you wish to access.
-	 * @param category
-	 *        The classification of the directory.
-	 * @return The created directory.
-	 * @throws Exception
-	 *         Thrown if there is no suitable location for the persistent directory.
-	 */
-	public File getPrivatePersistentDirectory(String dirName, FileCategory category)
-		throws Exception
-	{
-		File dir = new File(getFullPath(category), dirName);
-		if (dir.exists()) {
-			if (!dir.isDirectory()) {
-				throw new RuntimeException("Could not create directory " + "because: A file exists with this name:" + dir.getAbsolutePath());
-			}
-		}
-		else if (!dir.mkdirs()) {
-			throw new IOException("Could not create directory");
-		}
-		return dir;
-	}
+        // bypass the configurationService here to remove the dependency
+        String directory;
 
-	/**
-	 * Returns the full path corresponding to a file located in the sip-communicator config home and carrying the
-	 * specified name.
-	 * 
-	 * @param category
-	 *        The classification of the file or directory.
-	 * @return the config home location of a a file with the specified name.
-	 */
-	private File getFullPath(FileCategory category)
-	{
-		initialize();
+        switch (category) {
+            case CACHE:
+                directory = this.cacheDirLocation;
+                break;
+            case LOG:
+                directory = this.logDirLocation;
+                break;
+            default:
+                directory = this.profileDirLocation;
+                break;
+        }
 
-		// bypass the configurationService here to remove the dependency
-		String directory;
+        return new File(directory, this.scHomeDirName);
+    }
 
-		switch (category) {
-			case CACHE:
-				directory = this.cacheDirLocation;
-				break;
-			case LOG:
-				directory = this.logDirLocation;
-				break;
-			default:
-				directory = this.profileDirLocation;
-				break;
-		}
+    /**
+     * Returns the value of the specified java system property. In case the value was a zero length String or one that
+     * only contained whitespaces, null is returned. This method is for internal use only. Users of the configuration
+     * service are to use the getProperty() or getString() methods which would automatically determine whether a
+     * property is system or not.
+     *
+     * @param propertyName the name of the property whose value we need.
+     * @return the value of the property with name propertyName or null if the value had length 0 or only contained
+     * spaces tabs or new lines.
+     */
+    private static String getSystemProperty(String propertyName)
+    {
+        String retval = System.getProperty(propertyName);
+        if (retval == null) {
+            return retval;
+        }
 
-		return new File(directory, this.scHomeDirName);
-	}
+        if (retval.trim().length() == 0) {
+            return null;
+        }
+        return retval;
+    }
 
-	/**
-	 * Returns the value of the specified java system property. In case the value was a zero length String or one that
-	 * only contained whitespaces, null is returned. This method is for internal use only. Users of the configuration
-	 * service are to use the getProperty() or getString() methods which would automatically determine whether a
-	 * property is system or not.
-	 * 
-	 * @param propertyName
-	 *        the name of the property whose value we need.
-	 * @return the value of the property with name propertyName or null if the value had length 0 or only contained
-	 *         spaces tabs or new lines.
-	 */
-	private static String getSystemProperty(String propertyName)
-	{
-		String retval = System.getProperty(propertyName);
-		if (retval == null) {
-			return retval;
-		}
+    /**
+     * Checks if a file exists and if it is writable or readable. If not - checks if the user has a write privileges to
+     * the containing directory.
+     *
+     * If those conditions are met it returns a File in the directory with a fileName. If not - returns null.
+     *
+     * @param homedir the location of the sip-communicator home directory.
+     * @param fileName the name of the file to create.
+     * @return Returns null if the file does not exist and cannot be created. Otherwise - an object to this file
+     * @throws IOException Thrown if the home directory cannot be created
+     */
+    private static File accessibleFile(File homedir, String fileName)
+            throws IOException
+    {
+        File file = null;
 
-		if (retval.trim().length() == 0) {
-			return null;
-		}
-		return retval;
-	}
+        try {
+            logger.logEntry();
 
-	/**
-	 * Checks if a file exists and if it is writable or readable. If not - checks if the user has a write privileges to
-	 * the containing directory.
-	 *
-	 * If those conditions are met it returns a File in the directory with a fileName. If not - returns null.
-	 *
-	 * @param homedir
-	 *        the location of the sip-communicator home directory.
-	 * @param fileName
-	 *        the name of the file to create.
-	 * @return Returns null if the file does not exist and cannot be created. Otherwise - an object to this file
-	 * @throws IOException
-	 *         Thrown if the home directory cannot be created
-	 */
-	private static File accessibleFile(File homedir, String fileName)
-		throws IOException
-	{
-		File file = null;
+            file = new File(homedir, fileName);
+            if (file.canRead() || file.canWrite()) {
+                return file;
+            }
 
-		try {
-			logger.logEntry();
+            if (!homedir.exists()) {
+                if (logger.isDebugEnabled())
+                    logger.debug("Creating home directory : " + homedir.getAbsolutePath());
+                if (!homedir.mkdirs()) {
+                    String message = "Could not create the home directory : " + homedir.getAbsolutePath();
 
-			file = new File(homedir, fileName);
-			if (file.canRead() || file.canWrite()) {
-				return file;
-			}
+                    if (logger.isDebugEnabled())
+                        logger.debug(message);
+                    throw new IOException(message);
+                }
+                if (logger.isDebugEnabled())
+                    logger.debug("Home directory created : " + homedir.getAbsolutePath());
+            }
+            else if (!homedir.canWrite()) {
+                file = null;
+            }
 
-			if (!homedir.exists()) {
-				if (logger.isDebugEnabled())
-					logger.debug("Creating home directory : " + homedir.getAbsolutePath());
-				if (!homedir.mkdirs()) {
-					String message = "Could not create the home directory : " + homedir.getAbsolutePath();
+            if (file != null && !file.getParentFile().exists()) {
+                if (!file.getParentFile().mkdirs()) {
+                    String message = "Could not create the parent directory : " + homedir.getAbsolutePath();
 
-					if (logger.isDebugEnabled())
-						logger.debug(message);
-					throw new IOException(message);
-				}
-				if (logger.isDebugEnabled())
-					logger.debug("Home directory created : " + homedir.getAbsolutePath());
-			}
-			else if (!homedir.canWrite()) {
-				file = null;
-			}
+                    logger.debug(message);
+                    throw new IOException(message);
+                }
+            }
 
-			if (file != null && !file.getParentFile().exists()) {
-				if (!file.getParentFile().mkdirs()) {
-					String message = "Could not create the parent directory : " + homedir.getAbsolutePath();
+        } finally {
+            logger.logExit();
+        }
 
-					logger.debug(message);
-					throw new IOException(message);
-				}
-			}
+        return file;
+    }
 
-		}
-		finally {
-			logger.logExit();
-		}
+    /**
+     * Returns the default download directory.
+     *
+     * @return the default download directory
+     * @throws IOException if it I/O error occurred
+     */
+    public File getDefaultDownloadDirectory()
+            throws IOException
+    {
+        // For all other operating systems we return the Downloads folder.
+        return new File(getSystemProperty("user.home"), "Downloads");
+    }
 
-		return file;
-	}
+    /*
+     * private static class HANDLE extends PointerType implements NativeMapped { }
+     *
+     * private static class HWND extends HANDLE { }
+     */
 
-	/**
-	 * Returns the default download directory.
-	 *
-	 * @return the default download directory
-	 * @throws IOException
-	 *         if it I/O error occurred
-	 */
-	public File getDefaultDownloadDirectory()
-		throws IOException
-	{
-		// For all other operating systems we return the Downloads folder.
-		return new File(getSystemProperty("user.home"), "Downloads");
-	}
+    // public static class GUIDs extends Structure
+    // {
+    // // public static class ByValue extends GUID implements Structure.ByValue {}
+    // public int data1;
+    // public short data2;
+    // public short data3;
+    // public byte[] data4;
+    //
+    // @Override
+    // protected List getFieldOrder()
+    // {
+    // return Arrays.asList(new String[] { "data1", "data2", "data3", "data4" });
+    // }
+    // }
 
-	/*
-	 * private static class HANDLE extends PointerType implements NativeMapped { }
-	 * 
-	 * private static class HWND extends HANDLE { }
-	 */
+    private static Map<String, Object> OPT;
 
-	// public static class GUIDs extends Structure
-	// {
-	// // public static class ByValue extends GUID implements Structure.ByValue {}
-	// public int data1;
-	// public short data2;
-	// public short data3;
-	// public byte[] data4;
-	//
-	// @Override
-	// protected List getFieldOrder()
-	// {
-	// return Arrays.asList(new String[] { "data1", "data2", "data3", "data4" });
-	// }
-	// }
+    static {
+        if (OSUtils.IS_WINDOWS) {
+            OPT = new HashMap<String, Object>();
+            // OPT.put(Library.OPTION_TYPE_MAPPER, W32APITypeMapper.UNICODE);
+            // OPT.put(Library.OPTION_FUNCTION_MAPPER, W32APIFunctionMapper.UNICODE);
+        }
+    }
 
-	private static Map<String, Object> OPT;
+    // private static interface Shell32 extends Library
+    // {
+    // public static final int MAX_PATH = 260;
+    // public static final int CSIDL_MYDOCUMENTS = 5;
+    // public static final int SHGFP_TYPE_CURRENT = 0;
+    // public static final int S_OK = 0;
+    // public static final int KF_FLAG_INIT = 0x00000800;
+    // public static final int KF_FLAG_CREATE = 0x00008000;
+    //
+    // static Shell32 INSTANCE = (Shell32) Native.loadLibrary("shell32", Shell32.class, OPT);
+    //
+    // /**
+    // * http://msdn.microsoft.com/en-us/library/bb762181(VS.85).aspx
+    // */
+    // public int SHGetFolderPath(HWND hwndOwner, int nFolder, HANDLE hToken, int dwFlags, char[] pszPath);
+    //
+    // /**
+    // * http://msdn.microsoft.com/en-us/library/bb762188(v=vs.85).aspx
+    // */
+    // public int SHGetKnownFolderPath(GUID rfid, int dwFlags, HANDLE hToken, PointerByReference pszPath);
+    // }
 
-	static {
-		if (OSUtils.IS_WINDOWS) {
-			OPT = new HashMap<String, Object>();
-			// OPT.put(Library.OPTION_TYPE_MAPPER, W32APITypeMapper.UNICODE);
-			// OPT.put(Library.OPTION_FUNCTION_MAPPER, W32APIFunctionMapper.UNICODE);
-		}
-	}
+    // private interface Ole32 extends Library
+    // {
+    // static Ole32 INSTANCE = (Ole32) Native.loadLibrary("Ole32", Ole32.class, OPT);
+    // public void CoTaskMemFree(Pointer p);
+    // }
 
-	// private static interface Shell32 extends Library
-	// {
-	// public static final int MAX_PATH = 260;
-	// public static final int CSIDL_MYDOCUMENTS = 5;
-	// public static final int SHGFP_TYPE_CURRENT = 0;
-	// public static final int S_OK = 0;
-	// public static final int KF_FLAG_INIT = 0x00000800;
-	// public static final int KF_FLAG_CREATE = 0x00008000;
-	//
-	// static Shell32 INSTANCE = (Shell32) Native.loadLibrary("shell32", Shell32.class, OPT);
-	//
-	// /**
-	// * http://msdn.microsoft.com/en-us/library/bb762181(VS.85).aspx
-	// */
-	// public int SHGetFolderPath(HWND hwndOwner, int nFolder, HANDLE hToken, int dwFlags, char[] pszPath);
-	//
-	// /**
-	// * http://msdn.microsoft.com/en-us/library/bb762188(v=vs.85).aspx
-	// */
-	// public int SHGetKnownFolderPath(GUID rfid, int dwFlags, HANDLE hToken, PointerByReference pszPath);
-	// }
+    /**
+     * Gets the major version of the executing operating system as defined by the <tt>os.version</tt> system property.
+     *
+     * @return the major version of the executing operating system as defined by the <tt>os.version</tt> system property
+     */
+    private static int getMajorOSVersion()
+    {
+        String osVersion = System.getProperty("os.version");
+        int majorOSVersion;
 
-	// private interface Ole32 extends Library
-	// {
-	// static Ole32 INSTANCE = (Ole32) Native.loadLibrary("Ole32", Ole32.class, OPT);
-	// public void CoTaskMemFree(Pointer p);
-	// }
+        if ((osVersion != null) && (osVersion.length() > 0)) {
+            int majorOSVersionEnd = osVersion.indexOf('.');
+            String majorOSVersionString = (majorOSVersionEnd > -1) ? osVersion.substring(0, majorOSVersionEnd) : osVersion;
 
-	/**
-	 * Gets the major version of the executing operating system as defined by the <tt>os.version</tt> system property.
-	 *
-	 * @return the major version of the executing operating system as defined by the <tt>os.version</tt> system property
-	 */
-	private static int getMajorOSVersion()
-	{
-		String osVersion = System.getProperty("os.version");
-		int majorOSVersion;
+            majorOSVersion = Integer.parseInt(majorOSVersionString);
+        }
+        else
+            majorOSVersion = 0;
+        return majorOSVersion;
+    }
 
-		if ((osVersion != null) && (osVersion.length() > 0)) {
-			int majorOSVersionEnd = osVersion.indexOf('.');
-			String majorOSVersionString = (majorOSVersionEnd > -1) ? osVersion.substring(0, majorOSVersionEnd) : osVersion;
+    /**
+     * Creates a failsafe transaction which can be used to safely store informations into a file.
+     *
+     * @param file The file concerned by the transaction, null if file is null.
+     * @return A new failsafe transaction related to the given file.
+     */
+    public FailSafeTransaction createFailSafeTransaction(File file)
+    {
+        return (file == null) ? null : new FailSafeTransactionImpl(file);
+    }
 
-			majorOSVersion = Integer.parseInt(majorOSVersionString);
-		}
-		else
-			majorOSVersion = 0;
-		return majorOSVersion;
-	}
+    /**
+     * Initializes this instance if it has not been initialized yet i.e. acts as a delayed constructor of this instance.
+     * Introduced because this <tt>FileAccessServiceImpl</tt> queries <tt>System</tt> properties that may not be set yet
+     * at construction time and, consequently, throws an <tt>IllegalStateException</tt> which could be avoided.
+     */
+    private synchronized void initialize()
+    {
+        if (initialized)
+            return;
 
-	/**
-	 * Creates a failsafe transaction which can be used to safely store informations into a file.
-	 *
-	 * @param file
-	 *        The file concerned by the transaction, null if file is null.
-	 *
-	 * @return A new failsafe transaction related to the given file.
-	 */
-	public FailSafeTransaction createFailSafeTransaction(File file)
-	{
-		return (file == null) ? null : new FailSafeTransactionImpl(file);
-	}
+        ConfigurationService cfg = LibJitsi.getConfigurationService();
+        profileDirLocation = cfg != null ? cfg.getScHomeDirLocation() : getSystemProperty(ConfigurationService.PNAME_SC_HOME_DIR_LOCATION);
+        if (profileDirLocation == null) {
+            throw new IllegalStateException(ConfigurationService.PNAME_SC_HOME_DIR_LOCATION);
+        }
 
-	/**
-	 * Initializes this instance if it has not been initialized yet i.e. acts as a delayed constructor of this instance.
-	 * Introduced because this <tt>FileAccessServiceImpl</tt> queries <tt>System</tt> properties that may not be set yet
-	 * at construction time and, consequently, throws an <tt>IllegalStateException</tt> which could be avoided.
-	 */
-	private synchronized void initialize()
-	{
-		if (initialized)
-			return;
+        scHomeDirName = cfg != null ? cfg.getScHomeDirName() : getSystemProperty(ConfigurationService.PNAME_SC_HOME_DIR_NAME);
+        if (scHomeDirName == null) {
+            throw new IllegalStateException(ConfigurationService.PNAME_SC_HOME_DIR_NAME);
+        }
 
-		ConfigurationService cfg = LibJitsi.getConfigurationService();
+        String cacheDir = getSystemProperty(ConfigurationService.PNAME_SC_CACHE_DIR_LOCATION);
+        cacheDirLocation = (cacheDir == null) ? profileDirLocation : cacheDir;
 
-		profileDirLocation = cfg != null ? cfg.getScHomeDirLocation() : getSystemProperty(ConfigurationService.PNAME_SC_HOME_DIR_LOCATION);
-		if (profileDirLocation == null) {
-			throw new IllegalStateException(ConfigurationService.PNAME_SC_HOME_DIR_LOCATION);
-		}
-
-		scHomeDirName = cfg != null ? cfg.getScHomeDirName() : getSystemProperty(ConfigurationService.PNAME_SC_HOME_DIR_NAME);
-		if (scHomeDirName == null) {
-			throw new IllegalStateException(ConfigurationService.PNAME_SC_HOME_DIR_NAME);
-		}
-
-		String cacheDir = getSystemProperty(ConfigurationService.PNAME_SC_CACHE_DIR_LOCATION);
-		cacheDirLocation = (cacheDir == null) ? profileDirLocation : cacheDir;
-
-		String logDir = getSystemProperty(ConfigurationService.PNAME_SC_LOG_DIR_LOCATION);
-		logDirLocation = (logDir == null) ? profileDirLocation : logDir;
-
-		initialized = true;
-	}
+        String logDir = getSystemProperty(ConfigurationService.PNAME_SC_LOG_DIR_LOCATION);
+        logDirLocation = (logDir == null) ? profileDirLocation : logDir;
+        initialized = true;
+    }
 }

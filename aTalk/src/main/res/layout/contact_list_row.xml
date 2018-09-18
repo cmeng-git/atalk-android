@@ -127,7 +127,7 @@
             android:minHeight="@dimen/min_button_height"
             android:minWidth="@dimen/min_button_width"
             android:scaleType="center"
-            android:src="@drawable/video_call" />
+            android:src="@drawable/contact_call_video" />
     </LinearLayout>
 
     <LinearLayout

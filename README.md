@@ -17,19 +17,20 @@
 aTalk is an xmpp client designed for android and supports the following features:
 * Instant messaging in plain text and End-to-End encryption with [OMEMO](http://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
 * Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway (experimental)
-* SSL Certificate authentication, DNSSEC and DANE Security Implementation for secure Connection Establishment
+* SSL Certificate authentication, DNSSEC and DANE Security implementation for enhanced secure Connection Establishment
 * Omemo encryption is available during multi-user-chat session, giving users' maximum privacy and security
 * Support multi-user chat in room creation, server chat rooms discovery and joining chat room with captcha protection 
 * Supports both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
-* Send and receive files for all document types and images. Support Image thumb nail preview for acceptance before the actual file is sent
-* Support downloadable Stickers, Bitmoji and Emoji rich content sharing
+* Send and receive files for all document types and images, with thumbnail preview before file is sent 
+* Auto accept file transfer request with max file size option
+* Support downloadable Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
 * Unique GPS-Location implementation standalone tool, or sending locations to your chosen buddy for real-time tracking or playback animation.
 * A 360° street view of your current location, may use for self-guided tour. The street view tracks and follows your direction of sight.
 * Built-in demo for GPS-Location features
 * Integrated photo editor with zooming and cropping, user can update the avatar with ease
 * Last message correction, message carbons and offline messages (omemo)
 * In-Band Registration with captcha support
-* Multiple accounts support
+* Multiple accounts creation
 * Multi-language UI support (Bahasa Indonesia, English, German, Russian, and Spanish). 
 
 ### XMPP Features

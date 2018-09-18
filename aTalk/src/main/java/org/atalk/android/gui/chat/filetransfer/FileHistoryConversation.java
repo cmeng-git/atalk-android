@@ -36,7 +36,6 @@ import java.util.Date;
  */
 public class FileHistoryConversation extends FileTransferConversation
 {
-    private ChatFragment mChatFragment;
     private FileRecord fileRecord;
     private ChatMessage chatMessage;
 
@@ -167,5 +166,13 @@ public class FileHistoryConversation extends FileTransferConversation
     protected String getProgressLabel(String bytesString)
     {
         return "";
+    }
+
+    /**
+     * File History status is known
+     */
+    @Override
+    protected void setXferStatus(int xferStatus)
+    {
     }
 }

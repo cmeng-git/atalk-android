@@ -31,6 +31,8 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.call.CallManager;
+import org.atalk.android.gui.call.notification.CallNotificationManager;
 import org.atalk.android.gui.util.ContentEditText;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.audioservice.SoundMeter;
@@ -80,6 +82,10 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      * Send button's View.
      */
     private View sendBtn;
+    /**
+     * media call button's View.
+     */
+    private View callBtn;
     /**
      * Audio recording button.
      */
@@ -180,7 +186,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             // Gets the send message button and hooks on click action
             sendBtn = parent.findViewById(R.id.sendMessageButton);
             sendBtn.setOnClickListener(this);
-            sendBtn.setVisibility(View.INVISIBLE);
 
             // Gets the send audio button and hooks on click action if permission allowed
             audioBtn = parent.findViewById(R.id.audioRecordButton);
@@ -191,8 +196,11 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             }
             else {
                 logger.warn("Audio recording is not allowed - permission denied!");
-                audioBtn.setVisibility(View.INVISIBLE);
             }
+
+            // Gets the call switch button
+            callBtn = parent.findViewById(R.id.chatBackToCallButton);
+            callBtn.setOnClickListener(this);
 
             mSoundMeter = parent.findViewById(R.id.sound_meter);
             mRecordTimer = parent.findViewById(R.id.recordTimer);
@@ -208,6 +216,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             animSlideUp.setDuration(1000);
 
             this.editingImage = parent.findViewById(R.id.editingImage);
+            showSendModeButton();
             updateCorrectionState();
             initChatController();
         }
@@ -379,9 +388,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             case R.id.sendMessageButton:
                 if (chatPanel.getProtocolProvider().isRegistered()) {
                     sendMessage();
-                    sendBtn.setVisibility(View.INVISIBLE);
-                    if (isAudioAllowed)
-                        audioBtn.setVisibility(View.VISIBLE);
+                    showSendModeButton();
                 }
                 else {
                     aTalkApp.showToastMessage(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
@@ -392,6 +399,10 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 cancelCorrection();
                 // Clear edited text
                 msgEdit.setText("");
+                break;
+
+            case R.id.chatBackToCallButton:
+                CallNotificationManager.get().backToCall();
                 break;
 
             case R.id.audioRecordButton:
@@ -617,14 +628,33 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     chatStateCtrlThread.refreshChatState();
             }
         }
-        if (s.length() > 0) {
+        showSendModeButton();
+    }
+
+    /**
+     * Which button is shown for user action depends on the current state
+     */
+    private void showSendModeButton()
+    {
+        // hasText indicates text entry box contains text to be sent
+        boolean hasText = (msgEdit.getText().length() > 0);
+        callBtn.setVisibility(View.INVISIBLE);
+        audioBtn.setVisibility(View.INVISIBLE);
+
+        if (hasText) {
             sendBtn.setVisibility(View.VISIBLE);
-            audioBtn.setVisibility(View.INVISIBLE);
         }
         else {
             sendBtn.setVisibility(View.INVISIBLE);
-            if (isAudioAllowed)
+            if (CallManager.getActiveCallsCount() > 0) {
+                callBtn.setVisibility(View.VISIBLE);
+            }
+            else if (isAudioAllowed) {
                 audioBtn.setVisibility(View.VISIBLE);
+            }
+            else {
+                sendBtn.setVisibility(View.VISIBLE);
+            }
         }
     }
 

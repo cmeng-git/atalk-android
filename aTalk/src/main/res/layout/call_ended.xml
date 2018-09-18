@@ -33,6 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginTop="@dimen/between_padding"
                 android:background="@drawable/call_status_bg"
                 android:gravity="center_vertical"
                 android:padding="10dp">
@@ -82,27 +83,40 @@
     <LinearLayout
         android:id="@+id/button_Container"
         android:layout_width="fill_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:background="#40000000"
         android:orientation="horizontal">
 
         <ImageButton
+            android:id="@+id/callBackToChatButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/image_button_background"
+            android:contentDescription="@string/hold"
+            android:focusable="true"
+            android:src="@drawable/callmessage_dark" />
+
+        <ImageButton
             android:id="@+id/speakerphoneButton"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_VOLUME_CONTROL_TOOL_TIP"
-            android:focusable="true"
             android:src="@drawable/callvolume_dark" />
 
         <ImageButton
             android:id="@+id/callMicrophoneButton"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_MUTE_BUTTON_TOOL_TIP"
@@ -110,9 +124,10 @@
 
         <ImageButton
             android:id="@+id/callVideoButton"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP"
@@ -120,9 +135,10 @@
 
         <ImageButton
             android:id="@+id/callHoldButton"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/hold"
@@ -130,9 +146,10 @@
 
         <ImageButton
             android:id="@+id/callHangupButton"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/hang_up"

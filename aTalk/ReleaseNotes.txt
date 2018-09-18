@@ -1,5 +1,15 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.5.3 (1053)
+Author:         cmeng
+Upload Date:	09/18/2018
+- Avoid delivered attachment gets reactivated when user reenter the chat session
+- Ensure file transfer view refresh reflects the actual state on user scrolling
+  i.e. Must update file transfer status on any user actions for proper view refresh on user scrolling
+- Enhance UI for switching between media call and message chat in-progress simultaneously
+- Fixed logcat -c not allow in android-N with missing atalk-current-logcat.txt
+
+=========================================================================
 Version:		1.5.2 (1052)
 Author:         cmeng
 Upload Date:	09/15/2018

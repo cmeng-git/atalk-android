@@ -64,7 +64,7 @@ public class FileRecord extends EventObject
 	private String direction = null;
 	private Date date;
 	private File file = null;
-	private String status;
+	private String mStatus;
 	private Contact contact;
 	private String id = null;
 
@@ -93,7 +93,7 @@ public class FileRecord extends EventObject
 		this.direction = direction;
 		this.date = date;
 		this.file = file;
-		this.status = status;
+		this.mStatus = status;
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class FileRecord extends EventObject
 	 */
 	public String getStatus()
 	{
-		return status;
+		return mStatus;
 	}
 
 	/**

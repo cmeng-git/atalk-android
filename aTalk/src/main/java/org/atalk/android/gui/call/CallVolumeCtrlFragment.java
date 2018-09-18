@@ -72,7 +72,6 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
 		else {
 			position = calcPosition(currentVol);
 		}
-
 		volumeControl.addVolumeChangeListener(this);
 	}
 
@@ -105,15 +104,12 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
 	public void onKeyVolUp()
 	{
 		int controlMode = AudioManager.ADJUST_RAISE;
-
 		if (position < 5) {
 			controlMode = AudioManager.ADJUST_SAME;
 		}
 
 		int current = getAudioStreamVolume();
-
 		audioManager.adjustStreamVolume(AudioManager.STREAM_VOICE_CALL, controlMode, AudioManager.FLAG_SHOW_UI);
-
 		int newStreamVol = getAudioStreamVolume();
 
 		if (current == newStreamVol) {
@@ -137,9 +133,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
 		}
 
 		int current = getAudioStreamVolume();
-
 		audioManager.adjustStreamVolume(AudioManager.STREAM_VOICE_CALL, controlMode, AudioManager.FLAG_SHOW_UI);
-
 		int newStreamVol = getAudioStreamVolume();
 
 		if (current == newStreamVol) {
@@ -158,7 +152,6 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
 	private void setVolumeGain(int newPosition)
 	{
 		float newVolume = getVolumeCtrlRange() * (((float) newPosition) / 10f);
-
 		this.position = calcPosition(volumeControl.setVolume(newVolume));
 	}
 
@@ -176,7 +169,6 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
 					return;
 
 				String txt = aTalkApp.getResString(R.string.service_gui_VOLUME_GAIN_LEVEL, position * 10);
-
 				if (toast == null) {
 					toast = Toast.makeText(parent, txt, Toast.LENGTH_SHORT);
 				}

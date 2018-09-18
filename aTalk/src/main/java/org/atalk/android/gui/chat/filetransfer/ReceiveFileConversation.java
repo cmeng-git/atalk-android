@@ -46,11 +46,8 @@ public class ReceiveFileConversation extends FileTransferConversation
 
     private IncomingFileTransferRequest fileTransferRequest;
     private OperationSetFileTransfer fileTransferOpSet;
-    private ChatFragment mChatFragment;
     private String mDate;
     private String mSendTo;
-
-    private int msgId;
     private File downloadFile;
 
     public ReceiveFileConversation()
@@ -97,7 +94,7 @@ public class ReceiveFileConversation extends FileTransferConversation
 
 		/* Must keep track of file transfer status as Android always request view redraw on
 		listView scrolling, new message send or received */
-        int status = mChatFragment.getChatListAdapter().getXferStatus(msgId);
+        int status = getXferStatus();
         if (status == -1) {
             if (FileTransferConversation.FT_THUMBNAIL_ENABLE) {
                 byte[] thumbnail = fileTransferRequest.getThumbnail();
@@ -141,7 +138,7 @@ public class ReceiveFileConversation extends FileTransferConversation
                     fileTransferRequest.rejectFile();
                     // need to update status here as chatFragment statusListener is enabled for
                     // fileTransfer and only after accept
-                    mChatFragment.getChatListAdapter().setXferStatus(msgId, FileTransferStatusChangeEvent.CANCELED);
+                    setXferStatus(FileTransferStatusChangeEvent.CANCELED);
                 }
             });
         }
@@ -228,6 +225,7 @@ public class ReceiveFileConversation extends FileTransferConversation
     {
         final FileTransfer fileTransfer = event.getFileTransfer();
         final int status = event.getNewStatus();
+        setXferStatus(status);
 
         // Event thread - Must execute in UiThread to Update UI information
         runOnUiThread(new Runnable()
@@ -236,7 +234,6 @@ public class ReceiveFileConversation extends FileTransferConversation
             public void run()
             {
                 updateView(status);
-
                 if (status == FileTransferStatusChangeEvent.COMPLETED
                         || status == FileTransferStatusChangeEvent.CANCELED
                         || status == FileTransferStatusChangeEvent.FAILED
@@ -332,18 +329,6 @@ public class ReceiveFileConversation extends FileTransferConversation
     }
 
     /**
-     * Returns the label to show on the progress bar.
-     *
-     * @param bytesString the bytes that have been transferred
-     * @return the label to show on the progress bar
-     */
-    @Override
-    protected String getProgressLabel(String bytesString)
-    {
-        return aTalkApp.getResString(R.string.service_gui_RECEIVED, bytesString);
-    }
-
-    /**
      * Called when a <tt>FileTransferCreatedEvent</tt> has been received.
      *
      * @param event the <tt>FileTransferCreatedEvent</tt> containing the newly received file transfer and
@@ -418,5 +403,23 @@ public class ReceiveFileConversation extends FileTransferConversation
                 }
             }
         });
+    }
+
+    /**
+     * Returns the label to show on the progress bar.
+     *
+     * @param bytesString the bytes that have been transferred
+     * @return the label to show on the progress bar
+     */
+    @Override
+    protected String getProgressLabel(String bytesString)
+    {
+        return aTalkApp.getResString(R.string.service_gui_RECEIVED, bytesString);
+    }
+
+    @Override
+    protected void setXferStatus(int xferStatus)
+    {
+        mChatFragment.getChatListAdapter().setXferStatus(msgId, xferStatus);
     }
 }

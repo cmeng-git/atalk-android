@@ -84,7 +84,7 @@ public class ChatPanel implements Chat, MessageListener
      * The state may also be change by the under lying signal protocol based on the current
      * signalling condition.
      */
-    private int mChatType = ChatFragment.MSGTYPE_NORMAL;
+    private int mChatType;
 
     /**
      * The current chat transport.
@@ -120,6 +120,12 @@ public class ChatPanel implements Chat, MessageListener
     private boolean historyLoaded = false;
 
     /**
+     * Flag indicates if there was a send File activity status changed, then the whole cache must be invalid and reload.
+     * Otherwise, the cache still contains the send file request and will trigger and file send action
+     */
+    private boolean cacheReflesh = false;
+
+    /**
      * Registered chatFragment to be informed of any messageReceived event
      */
     private final List<ChatSessionListener> msgListeners = new ArrayList<>();
@@ -139,8 +145,6 @@ public class ChatPanel implements Chat, MessageListener
      * ConferenceChatSession Subject - inform user if changed
      */
     private static String chatSubject = "";
-
-    private boolean hasNewMsg = false;
 
     /**
      * Creates a chat session with the given <tt>MetaContact</tt>.
@@ -299,8 +303,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Adds the given <tt>ChatSessionListener</tt> to listen for message events in this chat
-     * session.
+     * Adds the given <tt>ChatSessionListener</tt> to listen for message events in this chat session.
      *
      * @param msgListener the <tt>ChatSessionListener</tt> to add
      */
@@ -401,42 +404,59 @@ public class ChatPanel implements Chat, MessageListener
         }
     }
 
+
     /**
-     * Returns a collection of last messages.
+     * Set the cache refresh flag from send file status change event.
+     *
+     * @param cacheFreflesh if <tt>true</tt>, msgCache is cleared and reload.
+     */
+    public void setCacheReflesh(boolean cacheFreflesh)
+    {
+        this.cacheReflesh = cacheFreflesh;
+    }
+
+    /**
+     * Returns a collection of newly fetched last messages from store, merged with msgCache.
      *
      * @return a collection of last messages.
      */
     public Collection<ChatMessage> getHistory(boolean init)
     {
-        // If chatFragment is initializing (initActive) and we have cached messages that include
-        // history (historyLoaded == true) then just return the message cache.
-        if (init && historyLoaded) {
+        // If chatFragment is initializing (initActive) AND we have cached messages that include
+        // history (historyLoaded == true) and no request for cacheRefresh form file transfer activity
+        // then just return the message cache.
+        if (init && historyLoaded && !cacheReflesh) {
             return msgCache;
         }
 
+        // If the MetaHistoryService is not registered we have nothing to do here. The history store
+        // could be "disabled" by the user via Chat History Logging option.
         final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
-
-        // If the MetaHistoryService is not registered we have nothing to do here. The history
-        // could be "disabled" from the user through one of the configuration forms.
         if (metaHistory == null)
             return msgCache;
 
-        Collection<Object> history;
-        // descriptor can either be metaContact or chatRoomWrapper (ChatRoom)
+        // descriptor can either be metaContact or chatRoomWrapper (ChatRoom), from whom the history to be loaded
         Object descriptor = mChatSession.getDescriptor();
+        Collection<Object> history;
 
+        // Refresh msgCache if set via file transfer sending status change request
+        if (cacheReflesh) {
+            msgCache.clear();
+            cacheReflesh = false;
+        }
+
+        // first time fetch, so read in last HISTORY_CHUNK_SIZE of history messages
         if (msgCache.size() == 0) {
-            // first time fetch, so read in last HISTORY_CHUNK_SIZE of history messages
             history = metaHistory.findLast(chatHistoryFilter, descriptor, HISTORY_CHUNK_SIZE);
         }
         else {
-            // read in earlier than the 'last fetch date' of HISTORY_CHUNK_SIZE messages
-            ChatMessage oldest;
+            // read in earlier than the 'last fetch date' - top of the msgCache,  of HISTORY_CHUNK_SIZE messages
+            Date lastOldestMessageDate;
             synchronized (cacheLock) {
-                oldest = msgCache.get(0);
+                lastOldestMessageDate = msgCache.get(0).getDate();
             }
             history = metaHistory.findLastMessagesBefore(chatHistoryFilter, descriptor,
-                    oldest.getDate(), HISTORY_CHUNK_SIZE);
+                    lastOldestMessageDate, HISTORY_CHUNK_SIZE);
         }
 
         // Convert events into messages
@@ -474,7 +494,6 @@ public class ChatPanel implements Chat, MessageListener
                 // Otherwise just add in the newly fetched history
                 msgCache.addAll(0, historyMsgs);
             }
-
             if (init)
                 return msgCache;
             else
@@ -523,7 +542,6 @@ public class ChatPanel implements Chat, MessageListener
         while (list2Idx >= 0 && output.size() < msgLimit) {
             output.add(0, list2.get(list2Idx--));
         }
-
         return output;
     }
 
@@ -651,8 +669,7 @@ public class ChatPanel implements Chat, MessageListener
 
     /**
      * Adds the given {@link DocumentListener} to this <tt>Chat</tt>. The <tt>DocumentListener</tt>
-     * is used to inform other bundles when a user has modified the document in the chat editor
-     * area.
+     * is used to inform other bundles when a user has modified the document in the chat editor area.
      *
      * @param documentListener the <tt>DocumentListener</tt> to add
      */
@@ -1154,7 +1171,8 @@ public class ChatPanel implements Chat, MessageListener
                     // conferenceChatSession = new ConferenceChatSession(this, chatRoomWrapper);
                     Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
                     aTalkApp.getGlobalContext().startActivity(chatIntent);
-                } else {
+                }
+                else {
                     logger.error("Failed to create chatroom");
                 }
             }
