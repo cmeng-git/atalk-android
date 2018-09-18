@@ -341,7 +341,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
                 contactViewHolder.callButton.setImageResource(R.drawable.contact_call_selected_dark);
             }
             else if (contactViewHolder.callVideoButton.isPressed()) {
-                contactViewHolder.callVideoButton.setImageResource(R.drawable.video_call_selected_dark);
+                contactViewHolder.callVideoButton.setImageResource(R.drawable.contact_call_video_selected_dark);
             }
             else {
                 if (!isShowCall) {

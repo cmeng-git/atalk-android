@@ -42,10 +42,8 @@ public class SendFileConversation extends FileTransferConversation implements Fi
 
     // private final FileTransfer fileTransfer;
     private String mSendTo;
-    private ChatFragment mChatFragment;
     private String mDate;
     private File mSendFile;
-    private int msgId;
     private boolean mStickMode;
 
     public SendFileConversation()
@@ -99,7 +97,7 @@ public class SendFileConversation extends FileTransferConversation implements Fi
 
 		/* Must track file transfer status as Android will request view redraw on listView
 		scrolling, new message send or received */
-        int status = mChatFragment.getChatListAdapter().getXferStatus(msgId);
+        int status = getXferStatus();
         if (status == -1) {
             mChatFragment.new SendFile(mSendFile, SendFileConversation.this, msgId, mStickMode).execute();
         }
@@ -117,7 +115,8 @@ public class SendFileConversation extends FileTransferConversation implements Fi
         boolean bgAlert = false;
         switch (status) {
             case FileTransferStatusChangeEvent.PREPARING:
-                messageViewHolder.titleLabel.setText(aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mDate, mSendTo));
+                messageViewHolder.titleLabel
+                        .setText(aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mDate, mSendTo));
                 break;
 
             case FileTransferStatusChangeEvent.IN_PROGRESS:
@@ -133,7 +132,7 @@ public class SendFileConversation extends FileTransferConversation implements Fi
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
                 break;
 
-            // not offer to retry - smack replied as ailed when recipient rejects on some devices
+            // not offer to retry - smack replied as failed when recipient rejects on some devices
             case FileTransferStatusChangeEvent.FAILED:
                 setFailed();
                 // messageViewHolder.retryButton.setVisibility(View.VISIBLE);
@@ -165,17 +164,15 @@ public class SendFileConversation extends FileTransferConversation implements Fi
     {
         final FileTransfer fileTransfer = event.getFileTransfer();
         final int status = event.getNewStatus();
+        setXferStatus(status);
 
-        // Event thread - Must execute in UiThread to Update UI information
+        // Must execute in UiThread to Update UI information
         runOnUiThread(new Runnable()
         {
             @Override
             public void run()
             {
-                // Must update the cached display message status
-                mChatFragment.getChatListAdapter().setXferStatus(msgId, status);
                 updateView(status);
-
                 if (status == FileTransferStatusChangeEvent.COMPLETED
                         || status == FileTransferStatusChangeEvent.CANCELED
                         || status == FileTransferStatusChangeEvent.FAILED
@@ -224,5 +221,11 @@ public class SendFileConversation extends FileTransferConversation implements Fi
     protected String getProgressLabel(String bytesString)
     {
         return aTalkApp.getResString(R.string.xFile_FILE_BYTE_SENT, bytesString);
+    }
+
+    @Override
+    protected void setXferStatus(int xferStatus)
+    {
+        mChatFragment.getChatListAdapter().setXferStatus(msgId, xferStatus);
     }
 }

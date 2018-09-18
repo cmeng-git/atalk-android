@@ -1,15 +1,12 @@
 package org.atalk.android;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;
-import com.bumptech.glide.request.target.DrawableImageViewTarget;
 
 import org.atalk.persistance.FileBackend;
 import org.atalk.util.StringUtils;

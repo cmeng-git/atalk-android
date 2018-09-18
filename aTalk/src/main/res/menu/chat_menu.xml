@@ -26,7 +26,7 @@
     </item>
     <item
         android:id="@+id/call_contact_video"
-        android:icon="@drawable/chatcall_dark"
+        android:icon="@drawable/chatcallvideo_dark"
         android:title="@string/service_gui_CALL_VIDEO">
     </item>
     <item

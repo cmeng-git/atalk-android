@@ -24,8 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.java.sip.communicator.service.protocol.FileTransfer;
-import net.java.sip.communicator.service.protocol.event.FileTransferProgressEvent;
-import net.java.sip.communicator.service.protocol.event.FileTransferProgressListener;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ByteFormat;
 import net.java.sip.communicator.util.GuiUtils;
 
@@ -67,7 +66,6 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
      * The download file and directory.
      */
     protected File downloadFile;
-    protected File downloadDir;
 
     /**
      * The file transfer.
@@ -109,6 +107,12 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
      */
     private long lastEstimatedTime;
 
+    /**
+     * The file transfer index of the chatListAdapter
+     */
+    protected int msgId = 0;
+
+    protected ChatFragment mChatFragment;
     protected ChatFragment.MessageViewHolder messageViewHolder;
 
     protected View inflateViewForFileTransfer(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
@@ -331,6 +335,22 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
     protected abstract String getProgressLabel(String bytesString);
 
     /**
+     * Must update chatListAdapter file transfer status to actual for refresh when user scroll.
+     *
+     * @param xferStatus the file transfer new status
+     */
+    protected abstract void setXferStatus(int xferStatus);
+
+    /**
+     * Get the current status fo the file transfer
+     * @return the current status of the file transfer
+     */
+    protected int getXferStatus()
+    {
+        return mChatFragment.getChatListAdapter().getXferStatus(msgId);
+    }
+
+    /**
      * Returns the speed of the transfer.
      *
      * @param transferredBytes the number of bytes that have been transferred
@@ -360,7 +380,6 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
      * // @param evt
      * the <tt>ActionEvent</tt> that notified us
      */
-
     protected View.OnClickListener getOnSetListener()
     {
         return new View.OnClickListener()
@@ -377,6 +396,7 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
                     case R.id.buttonCancel:
                         messageViewHolder.retryButton.setVisibility(View.GONE);
                         messageViewHolder.cancelButton.setVisibility(View.GONE);
+                        setXferStatus(FileTransferStatusChangeEvent.CANCELED);
                         if (fileTransfer != null)
                             fileTransfer.cancel();
                         break;

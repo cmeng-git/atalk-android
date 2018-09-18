@@ -58,16 +58,17 @@
     <LinearLayout
         android:id="@+id/layout2"
         android:layout_width="fill_parent"
-        android:layout_height="100dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:background="#40000000"
         android:orientation="horizontal" >
 
         <ImageButton
             android:id="@+id/answerVideoButton"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/accept_call_video"
@@ -77,9 +78,10 @@
 
         <ImageButton
             android:id="@+id/callButton"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_CALL"
@@ -88,9 +90,10 @@
 
         <ImageButton
             android:id="@+id/hangupButton"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/hang_up"

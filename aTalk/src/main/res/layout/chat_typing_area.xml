@@ -127,6 +127,20 @@
         android:src="@drawable/send_message_dark"/>
 
     <ImageButton
+        android:id="@+id/chatBackToCallButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/chatWriteText"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:background="@null"
+        android:minHeight="40dp"
+        android:minWidth="40dp"
+        android:src="@drawable/send_call_dark"/>
+
+    <ImageButton
         android:id="@+id/audioRecordButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

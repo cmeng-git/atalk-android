@@ -1418,19 +1418,10 @@ public class ChatFragment extends OSGiFragment
             {
                 this.id = idGenerator++;
                 this.msg = msg;
-                this.status = checkFileXferStatus();
+                this.status = -1;
                 this.fileXfer = null;
                 this.encryption = msg.getEncryptionType();
                 checkLatLng();
-            }
-
-            // Get file transfer status from fileRecord if exist
-            private int checkFileXferStatus() {
-                FileRecord fileRecord = msg.getFileRecord();
-                if (fileRecord != null) {
-                    return ChatMessageImpl.statusMap.get(fileRecord.getStatus());
-                }
-                return -1;
             }
 
             /**
@@ -1611,25 +1602,25 @@ public class ChatFragment extends OSGiFragment
         public TextView estimatedTimeLabel = null;
     }
 
-    class IdRow2 // need to include in MessageViewHolder for stealth support
-    {
-        public int mId;
-        public View mRow;
-        public int mCountDownValue;
-        public boolean deleteFlag;
-        public boolean mStartCountDown;
-        public boolean mFileIsOpened;
-
-        public IdRow2(int id, View row, int startValue)
-        {
-            mId = id;
-            mRow = row;
-            mCountDownValue = startValue;
-            deleteFlag = false;
-            mStartCountDown = false;
-            mFileIsOpened = false;
-        }
-    }
+//    class IdRow2 // need to include in MessageViewHolder for stealth support
+//    {
+//        public int mId;
+//        public View mRow;
+//        public int mCountDownValue;
+//        public boolean deleteFlag;
+//        public boolean mStartCountDown;
+//        public boolean mFileIsOpened;
+//
+//        public IdRow2(int id, View row, int startValue)
+//        {
+//            mId = id;
+//            mRow = row;
+//            mCountDownValue = startValue;
+//            deleteFlag = false;
+//            mStartCountDown = false;
+//            mFileIsOpened = false;
+//        }
+//    }
 
     /**
      * Loads the history in an asynchronous thread and then adds the history messages to the user
@@ -1929,7 +1920,12 @@ public class ChatFragment extends OSGiFragment
                     aTalkApp.showToastMessage(e.getMessage());
                 }
             }
-            chatListAdapter.setXferStatus(msgPos, newStatus);
+
+            // Must request to refresh the msgCache once the send file activity has started. Otherwise the
+            // send file request will get activated a second time.
+            if (newStatus != FileTransferStatusChangeEvent.PREPARING) {
+                chatPanel.setCacheReflesh(true);
+            }
             if (newStatus == FileTransferStatusChangeEvent.COMPLETED
                     || newStatus == FileTransferStatusChangeEvent.CANCELED
                     || newStatus == FileTransferStatusChangeEvent.FAILED

@@ -6,12 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.5.3 (09/18/2018)" versioncode="1053">
+        <change>Avoid delivered attachment gets reactivated when user reenter the chat session</change>
+        <change>Ensure file transfer view refresh reflects the actual state on user scrolling</change>
+        <change>Enhance UI for switching between media call and message chat in-progress simultaneously</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.5.2 (09/15/2018)" versioncode="1052">
-        <change>Implement downloadable Stickers, Bitmoji and Emoji rich content sharing</change>
-        <change>Implement auto accept received file transfer request with max file size option</change>
-        <change>Add user support for multiple files selection for sending</change>
-        <change>Fix file access problem on android-N and above (SecurityException)</change>
-        <change>Fix voice message playback problem on android-N and above</change>
+        <change>Implement downloadable Stickers, Bitmoji and Emoji rich content sharing via Google Gboard</change>
+        <change>Implement auto accept file transfer request with max file size option</change>
+        <change>Add support for multiple files selection for sending</change>
+        <change>Fix voice message playback and file access problem on android-N and above (SecurityException)</change>
         <change>Add provision for server without devicelist discoInfo support - omemo messaging</change>
         <change>Consolidate all aTalk downloadable files into single Download/aTalk folder</change>
         <change>Bug fixes and other enhancements</change>

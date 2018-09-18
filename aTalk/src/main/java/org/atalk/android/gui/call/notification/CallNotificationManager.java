@@ -37,6 +37,11 @@ import java.util.Map;
 public class CallNotificationManager
 {
     /**
+     * Back to call pending intent, to allow trigger from message chat send button
+     */
+    PendingIntent pVideo = null;
+
+    /**
      * Private constructor
      */
     private CallNotificationManager()
@@ -59,12 +64,12 @@ public class CallNotificationManager
     }
 
     /**
-     * Map of currently running notifications.
+     * Map of currently running notifications - likely to contain only single item in android.
      */
-    private Map<String, CtrlNotificationThread> handlersMap = new HashMap<String, CtrlNotificationThread>();
+    private Map<String, CtrlNotificationThread> handlersMap = new HashMap<>();
 
     /**
-     * Displays notification allowing user to control the call directly from the status bar.
+     * Displays notification allowing user to control the call state directly from the status bar.
      *
      * @param context the Android context.
      * @param callID the ID of call that will be used. The ID is managed by {@link CallManager}.
@@ -82,11 +87,11 @@ public class CallNotificationManager
         else
             nBuilder = new NotificationCompat.Builder(context, null);
 
-        nBuilder.setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.ic_notification);
+        nBuilder.setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_notification);
 
         // Sets call peer display name
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.status_bar_call);
+
         CallPeer callPeer = call.getCallPeers().next();
         contentView.setTextViewText(R.id.calleeDisplayName, callPeer.getDisplayName());
 
@@ -157,7 +162,7 @@ public class CallNotificationManager
         // Show video call Activity
         Intent videoCall = new Intent(ctx, VideoCallActivity.class);
         videoCall.putExtra(CallManager.CALL_IDENTIFIER, callID);
-        PendingIntent pVideo = PendingIntent.getActivity(ctx, 4, videoCall, PendingIntent.FLAG_CANCEL_CURRENT);
+        pVideo = PendingIntent.getActivity(ctx, 4, videoCall, PendingIntent.FLAG_CANCEL_CURRENT);
         contentView.setOnClickPendingIntent(R.id.back_to_call, pVideo);
 
         // Binds show video call intent to the whole area
@@ -189,5 +194,16 @@ public class CallNotificationManager
     public synchronized boolean isNotificationRunning(String callID)
     {
         return handlersMap.containsKey(callID);
+    }
+
+    public void backToCall()
+    {
+        if (pVideo != null) {
+            try {
+                pVideo.send();
+            } catch (PendingIntent.CanceledException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

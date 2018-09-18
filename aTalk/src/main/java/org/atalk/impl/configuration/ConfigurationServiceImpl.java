@@ -5,6 +5,7 @@
  */
 package org.atalk.impl.configuration;
 
+import org.atalk.android.aTalkApp;
 import org.atalk.impl.configuration.xml.XMLConfigurationStore;
 import org.atalk.service.configuration.*;
 import org.atalk.service.fileaccess.FailSafeTransaction;
@@ -836,7 +837,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
     /**
      * Returns the location of the directory where SIP Communicator is to store user specific data
-     * such as configuration files, message and call history as well as is bundle repository.
+     * such as configuration files.
+     * Message and call history as well as is bundle repository are store SQL Database.
      *
      * @return the location of the directory where SIP Communicator is to store user specific data
      * such as configuration files, message and call history as well as is bundle repository.
@@ -846,12 +848,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
     {
         // first let's check whether we already have the name of the directory set as a configuration property
         String scHomeDirLocation = null;
-
         if (store != null)
             scHomeDirLocation = getString(PNAME_SC_HOME_DIR_LOCATION);
 
         if (scHomeDirLocation == null) {
             // no luck, check whether user has specified a custom name in the system properties
+            // return "/data/user/0/org.atalk.android/files" linked to /data/data/..
             scHomeDirLocation = getSystemProperty(PNAME_SC_HOME_DIR_LOCATION);
 
             if (scHomeDirLocation == null)
@@ -884,6 +886,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
         if (scHomeDirName == null) {
             // no luck, check whether user has specified a custom name in the system properties
+            // return "/data/user/0/org.atalk.android/files" linked to /data/data/..
             scHomeDirName = getSystemProperty(PNAME_SC_HOME_DIR_NAME);
 
             if (scHomeDirName == null)
@@ -936,7 +939,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         // we didn't find it in ".", try the SIP Communicator home directory first check whether a
         // custom SC home directory is specified
 
-        File configDir = new File(getScHomeDirLocation() + File.separator + getScHomeDirName());
+        File configDir = new File(getScHomeDirLocation(), getScHomeDirName());
         File configFileInUserHomeDir = new File(configDir, pFileName);
 
         if (configFileInUserHomeDir.exists()) {

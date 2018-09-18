@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.call;
@@ -159,17 +159,14 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
     private VideoHandlerFragment videoFragment;
 
-    private SubMenu mSubMenuRes;
-
     private ImageView peerAvatar;
 
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
      *
-     * @param savedInstanceState
-     *         If the activity is being re-initialized after previously being shut down then this
-     *         Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
-     *         Note: Otherwise it is null.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
+     * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     * Note: Otherwise it is null.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -177,20 +174,38 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.video_call);
         this.callIdentifier = getIntent().getExtras().getString(CallManager.CALL_IDENTIFIER);
-        call = CallManager.getActiveCall(callIdentifier);
 
+        call = CallManager.getActiveCall(callIdentifier);
         if (call == null) {
             logger.error("There's no call with id: " + callIdentifier);
             return;
         }
-
-        callConference = call.getConference();
-        initSpeakerphoneButton();
-        initMicrophoneView();
-        initHangupView();
-
         // Registers as the call state listener
         call.addCallChangeListener(this);
+        callConference = call.getConference();
+
+        View.OnClickListener onClickAction = onClickListener();
+        View.OnLongClickListener onLongClickAction = onLongClickListener();
+
+        // Initialize callChat button action
+        findViewById(R.id.callBackToChatButton).setOnClickListener(onClickAction);
+
+        // Initialize speakerphone button action
+        View speakerphoneButton = findViewById(R.id.speakerphoneButton);
+        speakerphoneButton.setOnClickListener(onClickAction);
+        speakerphoneButton.setOnLongClickListener(onLongClickAction);
+
+        // Initialize the microphone button view.
+        ImageView microphoneButton = findViewById(R.id.callMicrophoneButton);
+        microphoneButton.setOnClickListener(onClickAction);
+        microphoneButton.setOnLongClickListener(onLongClickAction);
+
+        findViewById(R.id.callHoldButton).setOnClickListener(onClickAction);
+        findViewById(R.id.callHangupButton).setOnClickListener(onClickAction);
+        findViewById(R.id.clickable_toast).setOnClickListener(onClickAction);
+
+        peerAvatar = findViewById(R.id.calleeAvatar);
+
         View toastView = findViewById(R.id.clickable_toast);
         View.OnClickListener toastclickHandler = new View.OnClickListener()
         {
@@ -200,7 +215,6 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 sasToastController.hideToast(true);
             }
         };
-        peerAvatar = findViewById(R.id.calleeAvatar);
 
         sasToastController = new ClickableToastController(toastView, toastclickHandler);
         if (savedInstanceState == null) {
@@ -213,7 +227,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             }
             volControl = new CallVolumeCtrlFragment();
 
-            /**
+            /*
              * Adds fragment that turns on and off the screen when proximity sensor detects FAR/NEAR distance.
              */
             getSupportFragmentManager().beginTransaction().add(volControl,
@@ -245,212 +259,6 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         super.onRestoreInstanceState(savedInstanceState);
         if (sasToastController != null)
             sasToastController.onRestoreInstanceState(savedInstanceState);
-    }
-
-    /**
-     * Initializes the hangup button view.
-     */
-    private void initHangupView()
-    {
-        ImageView hangupView = findViewById(R.id.callHangupButton);
-        hangupView.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                // Start the hang up Thread, Activity will be closed later on call ended event
-                if (call != null)
-                    CallManager.hangupCall(call);
-                // if call thread is null, then just exit the activity
-                else
-                    finish();
-            }
-        });
-    }
-
-    /**
-     * Called on call ended event. Runs on separate thread to release the EDT Thread and preview
-     * surface can be hidden effectively.
-     */
-    private void doFinishActivity()
-    {
-        if (finishing)
-            return;
-
-        finishing = true;
-        new Thread(new Runnable()
-        {
-            public void run()
-            {
-                // Waits for camera to be stopped
-                videoFragment.ensureCameraClosed();
-
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        callState.callDuration
-                                = ViewUtil.getTextViewValue(findViewById(android.R.id.content), R.id.callTime);
-                        callState.callEnded = true;
-
-                        // Remove video fragment
-                        if (videoFragment != null) {
-                            getSupportFragmentManager().beginTransaction().remove(videoFragment).commit();
-                        }
-                        // Remove auto hide fragment
-                        ensureAutoHideFragmentDetached();
-                        getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
-                                new CallEnded()).commit();
-                    }
-                });
-            }
-        }).start();
-    }
-
-    /**
-     * Initializes the microphone button view.
-     */
-    private void initMicrophoneView()
-    {
-        final ImageView microphoneButton = findViewById(R.id.callMicrophoneButton);
-        microphoneButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                CallManager.setMute(call, !isMuted());
-            }
-        });
-        microphoneButton.setOnLongClickListener(new View.OnLongClickListener()
-        {
-            public boolean onLongClick(View view)
-            {
-                DialogFragment newFragment = VolumeControlDialog.createInputVolCtrlDialog();
-                newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
-                return true;
-            }
-        });
-    }
-
-    /**
-     * Returns <tt>true</tt> if call is currently muted.
-     *
-     * @return <tt>true</tt> if call is currently muted.
-     */
-    private boolean isMuted()
-    {
-        return CallManager.isMute(call);
-    }
-
-    private void updateMuteStatus()
-    {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                doUpdateMuteStatus();
-            }
-        });
-    }
-
-    private void doUpdateMuteStatus()
-    {
-        final ImageView microphoneButton = findViewById(R.id.callMicrophoneButton);
-
-        if (isMuted()) {
-            microphoneButton.setBackgroundColor(0x50000000);
-            microphoneButton.setImageResource(R.drawable.callmicrophonemute_dark);
-        }
-        else {
-            microphoneButton.setBackgroundColor(Color.TRANSPARENT);
-            microphoneButton.setImageResource(R.drawable.callmicrophone_dark);
-        }
-    }
-
-    /**
-     * Initializes speakerphone button.
-     */
-    private void initSpeakerphoneButton()
-    {
-        View speakerphoneButton = findViewById(R.id.speakerphoneButton);
-        speakerphoneButton.setOnLongClickListener(new View.OnLongClickListener()
-        {
-            @Override
-            public boolean onLongClick(View v)
-            {
-                onCallVolumeClicked(v);
-                return true;
-            }
-        });
-    }
-
-    /**
-     * Fired when call volume control button is clicked.
-     *
-     * @param v
-     *         the call volume control <tt>View</tt>.
-     */
-    public void onCallVolumeClicked(View v)
-    {
-        // Create and show the dialog.
-        DialogFragment newFragment = VolumeControlDialog.createOutputVolCtrlDialog();
-        newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
-    }
-
-    /**
-     * Fired when speakerphone button is clicked.
-     *
-     * @param v
-     *         the speakerphone button <tt>View</tt>.
-     */
-    public void onSpeakerphoneClicked(View v)
-    {
-        AudioManager audioManager = aTalkApp.getAudioManager();
-        audioManager.setSpeakerphoneOn(!audioManager.isSpeakerphoneOn());
-        updateSpeakerphoneStatus();
-    }
-
-    /**
-     * Updates speakerphone button status.
-     */
-    private void updateSpeakerphoneStatus()
-    {
-        final ImageView speakerPhoneButton = findViewById(R.id.speakerphoneButton);
-
-        if (aTalkApp.getAudioManager().isSpeakerphoneOn()) {
-            speakerPhoneButton.setBackgroundColor(0x50000000);
-        }
-        else {
-            speakerPhoneButton.setBackgroundColor(Color.TRANSPARENT);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event)
-    {
-        /**
-         * The call to: setVolumeControlStream(AudioManager.STREAM_VOICE_CALL) doesn't work when
-         * notification was being played during this Activity creation, so the buttons must be
-         * captured and the voice call level will be manipulated programmatically.
-         */
-        int action = event.getAction();
-        int keyCode = event.getKeyCode();
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                if (action == KeyEvent.ACTION_UP) {
-                    volControl.onKeyVolUp();
-                }
-                return true;
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                if (action == KeyEvent.ACTION_DOWN) {
-                    volControl.onKeyVolDown();
-                }
-                return true;
-            default:
-                return super.dispatchKeyEvent(event);
-        }
     }
 
     /**
@@ -504,12 +312,10 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     protected void onPause()
     {
         super.onPause();
-
         if (call == null)
             return;
 
         call.removeCallChangeListener(this);
-
         if (callPeerAdapter != null) {
             Iterator<? extends CallPeer> callPeerIter = call.getCallPeers();
             if (callPeerIter.hasNext()) {
@@ -524,6 +330,201 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
+     * Called on call ended event. Runs on separate thread to release the EDT Thread and preview
+     * surface can be hidden effectively.
+     */
+    private void doFinishActivity()
+    {
+        if (finishing)
+            return;
+
+        finishing = true;
+        new Thread(new Runnable()
+        {
+            public void run()
+            {
+                // Waits for camera to be stopped
+                videoFragment.ensureCameraClosed();
+
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        callState.callDuration
+                                = ViewUtil.getTextViewValue(findViewById(android.R.id.content), R.id.callTime);
+                        callState.callEnded = true;
+
+                        // Remove video fragment
+                        if (videoFragment != null) {
+                            getSupportFragmentManager().beginTransaction().remove(videoFragment).commit();
+                        }
+                        // Remove auto hide fragment
+                        ensureAutoHideFragmentDetached();
+                        getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
+                                new CallEnded()).commit();
+                    }
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * Handles buttons action events- the <tt>ActionEvent</tt> that notified us
+     */
+    protected View.OnClickListener onClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                switch (v.getId()) {
+                    case R.id.callBackToChatButton:
+                        finish();
+                        break;
+
+                    case R.id.speakerphoneButton:
+                        AudioManager audioManager = aTalkApp.getAudioManager();
+                        audioManager.setSpeakerphoneOn(!audioManager.isSpeakerphoneOn());
+                        updateSpeakerphoneStatus();
+                        break;
+
+                    case R.id.callMicrophoneButton:
+                        CallManager.setMute(call, !isMuted());
+                        break;
+
+                    case R.id.callHoldButton:
+                        // call == null if call setup failed
+                        if (call != null)
+                            CallManager.putOnHold(call, !isOnHold());
+                        break;
+
+                    case R.id.callHangupButton:
+                        // Start the hang up Thread, Activity will be closed later on call ended event
+                        if (call != null)
+                            CallManager.hangupCall(call);
+                            // if call thread is null, then just exit the activity
+                        else
+                            finish();
+                        break;
+
+                    case R.id.clickable_toast:
+                        showZrtpInfoDialog();
+                        sasToastController.hideToast(true);
+                        break;
+                }
+            }
+        };
+    }
+
+    /**
+     * Handles buttons longPress action events - the <tt>ActionEvent</tt> that notified us
+     */
+    protected View.OnLongClickListener onLongClickListener()
+    {
+        return new View.OnLongClickListener()
+        {
+            @Override
+            public boolean onLongClick(View v)
+            {
+                DialogFragment newFragment;
+                switch (v.getId()) {
+                    // Create and show the volume control dialog.
+                    case R.id.speakerphoneButton:
+                        // Create and show the dialog.
+                        newFragment = VolumeControlDialog.createOutputVolCtrlDialog();
+                        newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
+                        return true;
+
+                    // Create and show the mic gain control dialog.
+                    case R.id.callMicrophoneButton:
+                        newFragment = VolumeControlDialog.createInputVolCtrlDialog();
+                        newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
+                        return true;
+                }
+                return false;
+            }
+        };
+    }
+
+    /**
+     * Returns <tt>true</tt> if call is currently muted.
+     *
+     * @return <tt>true</tt> if call is currently muted.
+     */
+    private boolean isMuted()
+    {
+        return CallManager.isMute(call);
+    }
+
+    private void updateMuteStatus()
+    {
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                doUpdateMuteStatus();
+            }
+        });
+    }
+
+    private void doUpdateMuteStatus()
+    {
+        final ImageView microphoneButton = findViewById(R.id.callMicrophoneButton);
+        if (isMuted()) {
+            microphoneButton.setBackgroundColor(0x50000000);
+            microphoneButton.setImageResource(R.drawable.callmicrophonemute_dark);
+        }
+        else {
+            microphoneButton.setBackgroundColor(Color.TRANSPARENT);
+            microphoneButton.setImageResource(R.drawable.callmicrophone_dark);
+        }
+    }
+
+    /**
+     * Updates speakerphone button status.
+     */
+    private void updateSpeakerphoneStatus()
+    {
+        final ImageView speakerPhoneButton = findViewById(R.id.speakerphoneButton);
+        if (aTalkApp.getAudioManager().isSpeakerphoneOn()) {
+            speakerPhoneButton.setBackgroundColor(0x50000000);
+        }
+        else {
+            speakerPhoneButton.setBackgroundColor(Color.TRANSPARENT);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event)
+    {
+        /*
+         * The call to: setVolumeControlStream(AudioManager.STREAM_VOICE_CALL) doesn't work when
+         * notification was being played during this Activity creation, so the buttons must be
+         * captured and the voice call level will be manipulated programmatically.
+         */
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (action == KeyEvent.ACTION_UP) {
+                    volControl.onKeyVolUp();
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    volControl.onKeyVolDown();
+                }
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
+        }
+    }
+
+    /**
      * Leaves the in call notification.
      */
     private void leaveNotification()
@@ -534,8 +535,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * Sets the peer name.
      *
-     * @param name
-     *         the name of the call peer
+     * @param name the name of the call peer
      */
     public void setPeerName(final String name)
     {
@@ -554,19 +554,18 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * Sets the peer image.
      *
-     * @param peer
-     *         the Jid of the call peer
+     * @param peer the Jid of the call peer
      */
     public void setPeerImage(Jid peer)
     {
+        callState.callPeer = peer;
         setPeerImage(AvatarManager.getAvatarImageByJid(peer.asBareJid()));
     }
 
     /**
      * Sets the peer image.
      *
-     * @param image
-     *         the avatar of the call peer
+     * @param image the avatar of the call peer
      */
     public void setPeerImage(byte[] image)
     {
@@ -578,12 +577,9 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * Sets the peer state.
      *
-     * @param oldState
-     *         the old peer state
-     * @param newState
-     *         the new peer state
-     * @param stateString
-     *         the state of the call peer
+     * @param oldState the old peer state
+     * @param newState the new peer state
+     * @param stateString the state of the call peer
      */
     public void setPeerState(CallPeerState oldState, CallPeerState newState, final String stateString)
     {
@@ -610,8 +606,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Removes the auto hide fragment, so that call control buttons will be always visible from
-     * now on.
+     * Removes the auto hide fragment, so that call control buttons will be always visible from now on.
      */
     public void ensureAutoHideFragmentDetached()
     {
@@ -669,19 +664,6 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     {
         // Just invoke mute UI refresh
         updateMuteStatus();
-    }
-
-    /**
-     * Method mapped to hold button view on click event
-     *
-     * @param holdButtonView
-     *         the button view that has been clicked
-     */
-    public void onHoldButtonClicked(View holdButtonView)
-    {
-        // call == null if call setup failed
-        if (call != null)
-            CallManager.putOnHold(call, !isOnHold());
     }
 
     private boolean isOnHold()
@@ -748,11 +730,11 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         // recording system will crash
     }
 
-// 	Dynamic get videoFragment can sometimes return null;
-//	private VideoHandlerFragment getVideoFragment() {
-//		return videoFragment;
-//		// return (VideoHandlerFragment) getSupportFragmentManager().findFragmentByTag("video");
-//	}
+    // 	Dynamic get videoFragment can sometimes return null;
+    //	private VideoHandlerFragment getVideoFragment() {
+    //		return videoFragment;
+    //		// return (VideoHandlerFragment) getSupportFragmentManager().findFragmentByTag("video");
+    //	}
 
     public boolean isLocalVideoVisible()
     {
@@ -776,7 +758,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         inflater.inflate(R.menu.video_call_menu, menu);
 
         // Add subMenu items for all supported resolutions
-        mSubMenuRes = menu.findItem(R.id.video_resolution).getSubMenu();
+        SubMenu mSubMenuRes = menu.findItem(R.id.video_resolution).getSubMenu();
         for (Dimension res : CameraUtils.PREFERRED_SIZES) {
             String sResolution = ((int) res.getWidth()) + "x" + ((int) res.getHeight());
             mSubMenuRes.addSubMenu(0, R.id.video_dimension, Menu.NONE, sResolution);
@@ -825,7 +807,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
-        /**
+        /*
          * If a Call is added to or removed from the CallConference depicted by this CallPanel, an
          * update of the view from its model will most likely be required.
          */
@@ -872,18 +854,17 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      * be required so that this view i.e. <tt>CallPanel</tt> depicts the current state of its
      * model i.e. {@link #callConference}.
      *
-     * @param ev
-     *         the <tt>EventObject</tt> this instance is being notified about.
+     * @param ev the <tt>EventObject</tt> this instance is being notified about.
      */
     private void onCallConferenceEventObject(EventObject ev)
     {
         /*
          * The main task is to invoke updateViewFromModel() in order to make sure that this view
-		 * depicts the current state of its model.
-		 */
+         * depicts the current state of its model.
+         */
 
         try {
-            /**
+            /*
              * However, we seem to be keeping track of the duration of the call (i.e. the
              * telephony conference) in the user interface. Stop the Timer which ticks the
              * duration of the call as soon as the telephony conference depicted by this instance
@@ -971,15 +952,13 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         setPeerState(null, callPeer.getState(), callPeer.getState().getLocalizedStateString());
         setPeerName(callPeer.getDisplayName());
         setPeerImage(callPeer.getPeerJid());
-        setPeerImage(callPeer.getPeerJid());
         getCallTimerFragment().callPeerAdded(callPeer);
     }
 
     /**
      * Removes given <tt>callPeer</tt> from UI.
      *
-     * @param callPeer
-     *         the {@link CallPeer} to be removed from UI.
+     * @param callPeer the {@link CallPeer} to be removed from UI.
      */
     private void removeCallPeerUI(CallPeer callPeer)
     {
@@ -1043,10 +1022,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * Updates padlock status text, icon and it's background color.
      *
-     * @param isSecure
-     *         <tt>true</tt> if the call is secured.
-     * @param isVerified
-     *         <tt>true</tt> if zrtp SAS string is verified.
+     * @param isSecure <tt>true</tt> if the call is secured.
+     * @param isVerified <tt>true</tt> if zrtp SAS string is verified.
      */
     @SuppressLint("ResourceAsColor")
     private void doUpdatePadlockStatus(boolean isSecure, boolean isVerified)
@@ -1073,8 +1050,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * Sets the security padlock background color.
      *
-     * @param colorId
-     *         the color resource id that will be used.
+     * @param colorId the color resource id that will be used.
      */
     private void setPadlockColor(int colorId)
     {
@@ -1086,8 +1062,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * Updates padlock icon based on security status.
      *
-     * @param isSecure
-     *         <tt>true</tt> if the call is secure.
+     * @param isSecure <tt>true</tt> if the call is secure.
      */
     private void setPadlockSecure(boolean isSecure)
     {
@@ -1170,10 +1145,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * Creates new video call intent for given <tt>callIdentifier</tt>.
      *
-     * @param parent
-     *         the parent <tt>Context</tt> that will be used to start new <tt>Activity</tt>.
-     * @param callIdentifier
-     *         the call ID managed by {@link CallManager}.
+     * @param parent the parent <tt>Context</tt> that will be used to start new <tt>Activity</tt>.
+     * @param callIdentifier the call ID managed by {@link CallManager}.
      * @return new video call <tt>Intent</tt> parametrized with given <tt>callIdentifier</tt>.
      */
     static public Intent createVideoCallIntent(Context parent, String callIdentifier)
@@ -1195,10 +1168,9 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         videoFragment.updateCallInfoMargin();
     }
 
-    static class CallStateHolder
+    public static class CallStateHolder
     {
-        // Call call;
-        // CallPeer callPeer;
+        Jid callPeer = null;
         String callPeerName = "";
         String callDuration = "";
         String errorReason = "";
