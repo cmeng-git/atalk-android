@@ -32,6 +32,7 @@ import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.jxmpp.util.XmppStringUtils;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -204,7 +205,8 @@ public class EntityListHelper
      * @param desc descriptor either MetaContact or ChatRoomWrapper
      * @param msgUUIDs list of message UID to be deleted. null to delete all for the specified desc
      */
-    public static void eraseEntityChatHistory(final Context caller, final Object desc, final List<String> msgUUIDs)
+    public static void eraseEntityChatHistory(final Context caller, final Object desc, final List<String> msgUUIDs,
+            final List<File> msgFiles)
     {
         String entityJid;
         if (desc instanceof MetaContact)
@@ -225,7 +227,7 @@ public class EntityListHelper
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
                         EntityListHelper mErase = new EntityListHelper();
-                        mErase.new doEraseEntityChatHistory(caller, msgUUIDs).execute(desc);
+                        mErase.new doEraseEntityChatHistory(caller, msgUUIDs, msgFiles).execute(desc);
                         return true;
                     }
 
@@ -236,17 +238,23 @@ public class EntityListHelper
                 });
     }
 
+    /**
+     * Perform history message delete in background.
+     * Purge all history messages for the descriptor if messageUUIDs is null
+     */
     private class doEraseEntityChatHistory extends AsyncTask<Object, Void, Integer>
     {
         private Context mContext = null;
         private TaskCompleted mCallback;
-        private List<String> messageUUIDs;
+        private final List<String> messageUUIDs;
+        private final List<File> messageFiles;
 
-        private doEraseEntityChatHistory(Context context, List<String> msgUUIDs)
+        private doEraseEntityChatHistory(Context context, List<String> msgUUIDs, List<File> msgFiles)
         {
             this.mContext = context;
             this.mCallback = (TaskCompleted) mContext;
             this.messageUUIDs = msgUUIDs;
+            this.messageFiles = msgFiles;
         }
 
         @Override
@@ -259,6 +267,13 @@ public class EntityListHelper
         {
             Object desc = mDescriptor[0];
             if (desc instanceof MetaContact) {
+                // purge all the voice files of the deleted messages
+                if (messageFiles != null) {
+                    for (File file : messageFiles) {
+                        if (file.exists())
+                            file.delete();
+                    }
+                }
                 MetaContact metaContact = (MetaContact) desc;
                 MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
                 mhs.eraseLocallyStoredHistory(metaContact, messageUUIDs);

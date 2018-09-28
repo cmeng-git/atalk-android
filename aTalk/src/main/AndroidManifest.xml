@@ -276,13 +276,6 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Holo.Dialog.MinWidth"/>
 
-        <!-- Call control from the status bar notification -->
-        <receiver android:name="org.atalk.android.gui.call.notification.CallControl">
-            <intent-filter>
-                <action android:name="org.atalk.call.control"/>
-            </intent-filter>
-        </receiver>
-        <!-- Chat link clicked handler -->
         <activity
             android:name="org.atalk.android.gui.chat.aTalkProtocolReceiver"
             android:theme="@android:style/Theme.NoDisplay">

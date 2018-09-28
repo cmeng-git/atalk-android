@@ -234,13 +234,11 @@
     <string name="PoweredBy">Работает на atalk.org</string>
 
     <!-- PTT Chat -->
-    <string name="chat_dbZero">00.00dB</string>
     <string name="chat_noaudio_buddyOffline">Аудио-чат с автономным получателем не разрешен.</string>
     <string name="chat_RecordCancel">&lt;сдвинуть влево\nчтобы отменить</string>
     <string name="chat_soundRecordCancelButton">Отменить</string>
     <string name="chat_soundRecordStartButton">Начать запись</string>
     <string name="chat_soundRecordStopButton">Готово</string>
-    <string name="chat_timeZero">00:00</string>
 
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Широта:</string>
@@ -756,7 +754,6 @@
     <!-- account info -->
     <string name="plugin_accountinfo_ABOUT_ME">Обо мне:</string>
     <string name="plugin_accountinfo_ABOUT_ME_HINT">Введите краткое описание себя в этом поле</string>
-    <string name="plugin_accountinfo_ABOUT_ME_MAX_CHARACTERS">200</string>
     <string name="plugin_accountinfo_AGE">Возраст:</string>
     <string name="plugin_accountinfo_BDAY">Дата рождения:</string>
     <string name="plugin_accountinfo_CHANGE">Изменить</string>
@@ -882,7 +879,6 @@
 
 	<string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Введите отпечаток, полученный от %1$s.</string>
     <string name="plugin_otr_authbuddydialog_HELP">Справка</string>
-    <string name="plugin_otr_authbuddydialog_HELP_URI">https://atalk.sytes.net/faq.html</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE">У меня</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">У меня нет</string>
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Мой отпечаток для %1$s: %2$s</string>
@@ -941,6 +937,7 @@
     <string name="omemo_menu_unauthenticated">OMEMO unAuthenticated</string>
     <string name="omemo_menu_untrusted">OMEMO Un-Trusted</string>
     <string name="omemo_rebuild_session">Перестроить новый сеанс для отсутствия: %1$s</string>
+    <string name="omemo_purge_inactive_device_error">Не удалось удалить неактивное устройство omemo для: %1$s.</string>
 
     <!-- Global proxy plugin -->
     <string name="service_gui_settings_PROXY">Глобальный прокси</string>
@@ -949,6 +946,7 @@
     <string name="plugin_globalproxy_PROXY_PASSWORD">Пароль прокси</string>
     <string name="plugin_globalproxy_PROXY_PORT">Порт прокси</string>
     <string name="plugin_globalproxy_PROXY_TYPE">Тип прокси</string>
+    <string name="plugin_globalproxy_PROXY_USERNAME">Имя пользователя прокси</string>
 
     <!-- Account proxy plugin -->
     <string name="service_gui_settings_ACCOUNT_PROXY">Конфигурация прокси-сервера</string>
@@ -973,7 +971,7 @@
     <string name="plugin_provisioning_MANUAL">Вручную укажите URI инициализации</string>
     <string name="plugin_provisioning_METHOD">Метод предоставления</string>
     <string name="plugin_provisioning_PROV_FAILED">Ошибка предоставления</string>
-    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Произошла неудача. %1$s! <br/>Повторите попытку позже или обратитесь к своему администратору.</html></string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Произошла неудача. %1$s!<br/>Повторите попытку позже или обратитесь к своему администратору.</html></string>
     <string name="plugin_provisioning_PROVISIONING">Предоставление</string>
     <string name="plugin_provisioning_PROVISIONING_SUMMARY">Настроить параметры настройки</string>
     <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Вы действительно хотите удалить пароль для обеспечения безопасности?</string>
@@ -1273,7 +1271,6 @@
     <string name="service_gui_settings_NORMALIZE_ON">Специальные символы будут удалены из числа</string>
     <!-- Convert letters in phone numbers -->
     <string name="service_gui_settings_ALLOW_ALPHA_OFF">Нет изменений номера телефона</string>
-    <string name="service_gui_settings_ALLOW_ALPHA_ON"><![CDATA[*e.g. +1–800–MYPHONE –>+1–800–694663]]></string>
     <string name="service_gui_settings_ALLOW_ALPHA_PNUMBER">Письма в телефонных номерах</string>
 
     <!-- Call settings -->
@@ -1313,6 +1310,7 @@
     <string name="service_gui_settings_USE_FRONT_CAMERA">Использовать переднюю камеру</string>
 
     <!-- Video codecs -->
+    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Использовать прямое поверхностное декодирование (требуется перезагрузка)</string>
     <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Использовать прямое кодирование (требуется перезагрузка)</string>
     <string name="service_gui_settings_HW_DECODE">Использовать аппаратное декодирование (требуется перезагрузка)</string>
     <string name="service_gui_settings_HW_ENCODE">Использовать аппаратное кодирование</string>

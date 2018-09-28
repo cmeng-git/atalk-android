@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia;
@@ -36,17 +36,15 @@ import javax.media.rtp.OutputDataStream;
 public abstract class RTPConnectorOutputStream implements OutputDataStream
 {
     /**
-     * The <tt>Logger</tt> used by the <tt>RTPConnectorOutputStream</tt> class and its instances for
-     * logging output.
+     * The <tt>Logger</tt> used by the <tt>RTPConnectorOutputStream</tt> class and its instances for logging output.
      */
     private static final Logger logger = Logger.getLogger(RTPConnectorOutputStream.class);
 
     /**
      * The maximum number of packets to be sent to be kept in the queue of
      * {@link RTPConnectorOutputStream}. When the maximum is reached, the next attempt to write a
-     * new packet in the queue will result in the first packet in the queue being dropped. Defined
-     * in order to prevent <tt>OutOfMemoryError</tt>s which may arise if the capacity of the queue
-     * is unlimited.
+     * new packet in the queue will result in the first packet in the queue being dropped. Defined in order
+     * to prevent <tt>OutOfMemoryError</tt>s which may arise if the capacity of the queue is unlimited.
      */
     public static final int PACKET_QUEUE_CAPACITY;
 
@@ -77,8 +75,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     /**
      * The name of the property which controls the value of {@link #USE_SEND_THREAD}.
      */
-    private static final String USE_SEND_THREAD_PNAME
-            = RTPConnectorOutputStream.class.getName() + ".USE_SEND_THREAD";
+    private static final String USE_SEND_THREAD_PNAME = RTPConnectorOutputStream.class.getName() + ".USE_SEND_THREAD";
 
     /**
      * The name of the <tt>ConfigurationService</tt> and/or <tt>System</tt> integer property which
@@ -90,8 +87,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     /**
      * The name of the property which specifies the value of {@link #POOL_CAPACITY}.
      */
-    private static final String POOL_CAPACITY_PNAME
-            = RTPConnectorOutputStream.class.getName() + ".POOL_CAPACITY";
+    private static final String POOL_CAPACITY_PNAME = RTPConnectorOutputStream.class.getName() + ".POOL_CAPACITY";
 
     /**
      * The name of the property which specifies the value of {@link #AVERAGE_BITRATE_WINDOW_MS}.
@@ -109,7 +105,6 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
 
         // Set PACKET_QUEUE_CAPACITY
         int packetQueueCapacity = ConfigUtils.getInt(cfg, PACKET_QUEUE_CAPACITY_PNAME, -1);
-
         if (packetQueueCapacity == -1) {
             // Backward-compatibility with the old property name.
             String oldPropertyName = "org.atalk.impl.neomedia.MaxPacketsPerMillisPolicy.PACKET_QUEUE_CAPACITY";
@@ -119,11 +114,10 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         PACKET_QUEUE_CAPACITY = packetQueueCapacity >= 0 ? packetQueueCapacity : 256;
         if (logger.isDebugEnabled()) {
             logger.debug("Initialized configuration. "
-                         + "Send thread: " + USE_SEND_THREAD
-                         + ". Pool capacity: " + POOL_CAPACITY
-                         + ". Queue capacity: " + PACKET_QUEUE_CAPACITY
-                         + ". Avg bitrate window: " + AVERAGE_BITRATE_WINDOW_MS);
-
+                    + "Send thread: " + USE_SEND_THREAD
+                    + ". Pool capacity: " + POOL_CAPACITY
+                    + ". Queue capacity: " + PACKET_QUEUE_CAPACITY
+                    + ". Avg bitrate window: " + AVERAGE_BITRATE_WINDOW_MS);
         }
     }
 
@@ -131,8 +125,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
      * Returns true if a warning should be logged after a queue has dropped
      * {@code numDroppedPackets} packets.
      *
-     * @param numDroppedPackets
-     *         the number of dropped packets.
+     * @param numDroppedPackets the number of dropped packets.
      * @return {@code true} if a warning should be logged.
      */
     public static boolean logDroppedPacket(int numDroppedPackets)
@@ -154,8 +147,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     private long numberOfBytesSent = 0;
 
     /**
-     * Number of packets sent through this stream, not taking into account the number of its
-     * targets.
+     * Number of packets sent through this stream, not taking into account the number of its targets.
      */
     private long numberOfPackets = 0;
 
@@ -176,8 +168,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     protected final List<InetSocketAddress> targets = new LinkedList<>();
 
     /**
-     * The {@link Queue} which will hold packets to be processed, if using a separate thread for
-     * sending is enabled.
+     * The {@link Queue} which will hold packets to be processed, if using a separate thread for sending is enabled.
      */
     private final Queue queue;
 
@@ -187,14 +178,12 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     private boolean closed = false;
 
     /**
-     * The {@code RateStatistics} instance used to calculate the sending bitrate of this output
-     * stream.
+     * The {@code RateStatistics} instance used to calculate the sending bitrate of this output stream.
      */
     private final RateStatistics rateStatistics = new RateStatistics(AVERAGE_BITRATE_WINDOW_MS);
 
     /**
-     * Initializes a new <tt>RTPConnectorOutputStream</tt> which is to send packet data out through
-     * a specific socket.
+     * Initializes a new <tt>RTPConnectorOutputStream</tt> which is to send packet data out through a specific socket.
      */
     public RTPConnectorOutputStream()
     {
@@ -209,10 +198,8 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     /**
      * Add a target to stream targets list
      *
-     * @param remoteAddr
-     *         target ip address
-     * @param remotePort
-     *         target port
+     * @param remoteAddr target ip address
+     * @param remotePort target port
      */
     public void addTarget(InetAddress remoteAddr, int remotePort)
     {
@@ -229,7 +216,6 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     {
         if (!closed) {
             closed = true;
-
             removeTargets();
         }
     }
@@ -242,24 +228,19 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
      *
      * Allows extenders to intercept the array and possibly filter and/or modify it.
      *
-     * @param buf
-     *         the packet data to be sent to the targets of this instance. The contents of
-     *         {@code buf} starting at {@code off} with the specified {@code len} is copied into the
-     *         buffer of the returned {@code RawPacket}.
-     * @param off
-     *         the offset of the packet data in <tt>buf</tt>
-     * @param len
-     *         the length of the packet data in <tt>buf</tt>
-     * @param context
-     *         the {@code Object} provided to {@link #write(byte[], int, int, java.lang.Object)}. The
-     *         implementation of {@code RTPConnectorOutputStream} ignores the {@code context}.
+     * @param buf the packet data to be sent to the targets of this instance. The contents of
+     * {@code buf} starting at {@code off} with the specified {@code len} is copied into the
+     * buffer of the returned {@code RawPacket}.
+     * @param off the offset of the packet data in <tt>buf</tt>
+     * @param len the length of the packet data in <tt>buf</tt>
+     * @param context the {@code Object} provided to {@link #write(byte[], int, int, java.lang.Object)}. The
+     * implementation of {@code RTPConnectorOutputStream} ignores the {@code context}.
      * @return an array with a single <tt>RawPacket</tt> containing the packet data of the specified
      * <tt>byte[]</tt> buffer.
      */
     protected RawPacket[] packetize(byte[] buf, int off, int len, Object context)
     {
         RawPacket[] pkts = new RawPacket[1];
-
         RawPacket pkt = rawPacketPool.poll();
         byte[] pktBuffer;
 
@@ -273,10 +254,10 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
 
         if (pktBuffer.length < len) {
             /*
-			 * XXX It may be argued that if the buffer length is insufficient once, it will be
-			 * insufficient more than once. That is why we recreate it without returning a packet to
-			 * the pool.
-			 */
+             * XXX It may be argued that if the buffer length is insufficient once, it will be
+             * insufficient more than once. That is why we recreate it without returning a packet to
+             * the pool.
+             */
             pktBuffer = new byte[len];
         }
 
@@ -286,7 +267,6 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         pkt.setOffset(0);
 
         System.arraycopy(buf, off, pktBuffer, 0, len);
-
         pkts[0] = pkt;
         return pkts;
     }
@@ -312,10 +292,8 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     /**
      * Remove a target from stream targets list
      *
-     * @param remoteAddr
-     *         target ip address
-     * @param remotePort
-     *         target port
+     * @param remoteAddr target ip address
+     * @param remotePort target port
      * @return <tt>true</tt> if the target is in stream target list and can be removed;
      * <tt>false</tt>, otherwise
      */
@@ -341,16 +319,13 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     }
 
     /**
-     * Sends a specific RTP packet through the <tt>DatagramSocket</tt> of this
-     * <tt>OutputDataSource</tt>.
+     * Sends a specific RTP packet through the <tt>DatagramSocket</tt> of this <tt>OutputDataSource</tt>.
      *
      * Warning: the <tt>RawPacket</tt> passed to this method, and its underlying buffer will be
      * consumed and might later be reused by this <tt>RTPConnectorOutputStream</tt>. They should not
      * be used by the user afterwards.
      *
-     * @param packet
-     *         the RTP packet to be sent through the <tt>DatagramSocket</tt> of this
-     *         <tt>OutputDataSource</tt>
+     * @param packet the RTP packet to be sent through the <tt>DatagramSocket</tt> of this <tt>OutputDataSource</tt>
      * @return <tt>true</tt> if the specified <tt>packet</tt> was successfully sent to all targets;
      * otherwise, <tt>false</tt>.
      */
@@ -381,15 +356,12 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
      * Sends a specific <tt>RawPacket</tt> through this <tt>OutputDataStream</tt> to a specific
      * <tt>InetSocketAddress</tt>.
      *
-     * @param packet
-     *         the <tt>RawPacket</tt> to send through this <tt>OutputDataStream</tt> to the specified
-     *         <tt>target</tt>
-     * @param target
-     *         the <tt>InetSocketAddress</tt> to which the specified <tt>packet</tt> is to be sent
-     *         through this <tt>OutputDataStream</tt>
-     * @throws IOException
-     *         if anything goes wrong while sending the specified <tt>packet</tt> through this
-     *         <tt>OutputDataStream</tt> to the specified <tt>target</tt>
+     * @param packet the <tt>RawPacket</tt> to send through this <tt>OutputDataStream</tt> to the specified
+     * <tt>target</tt>
+     * @param target the <tt>InetSocketAddress</tt> to which the specified <tt>packet</tt> is to be sent
+     * through this <tt>OutputDataStream</tt>
+     * @throws IOException if anything goes wrong while sending the specified <tt>packet</tt> through this
+     * <tt>OutputDataStream</tt> to the specified <tt>target</tt>
      */
     protected abstract void sendToTarget(RawPacket packet, InetSocketAddress target)
             throws IOException;
@@ -398,8 +370,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
      * Enables or disables this <tt>RTPConnectorOutputStream</tt>. While the stream is disabled, it
      * suppresses actually sending any packets via {@link #send(RawPacket)}.
      *
-     * @param enabled
-     *         <tt>true</tt> to enable, <tt>false</tt> to disable.
+     * @param enabled <tt>true</tt> to enable, <tt>false</tt> to disable.
      */
     public void setEnabled(boolean enabled)
     {
@@ -415,13 +386,10 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
      * Sets the maximum number of RTP packets to be sent by this <tt>OutputDataStream</tt> through
      * its <tt>DatagramSocket</tt> per a specific number of milliseconds.
      *
-     * @param maxPackets
-     *         the maximum number of RTP packets to be sent by this <tt>OutputDataStream</tt> through
-     *         its <tt>DatagramSocket</tt> per the specified number of milliseconds; <tt>-1</tt> if
-     *         no maximum is to be set
-     * @param perMillis
-     *         the number of milliseconds per which <tt>maxPackets</tt> are to be sent by this
-     *         <tt>OutputDataStream</tt> through its <tt>DatagramSocket</tt>
+     * @param maxPackets the maximum number of RTP packets to be sent by this <tt>OutputDataStream</tt> through
+     * its <tt>DatagramSocket</tt> per the specified number of milliseconds; <tt>-1</tt> if no maximum is to be set
+     * @param perMillis the number of milliseconds per which <tt>maxPackets</tt> are to be sent by this
+     * <tt>OutputDataStream</tt> through its <tt>DatagramSocket</tt>
      */
     public boolean setMaxPacketsPerMillis(int maxPackets, long perMillis)
     {
@@ -429,17 +397,15 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
             queue.setMaxPacketsPerMillis(maxPackets, perMillis);
         }
         else {
-            logger.error("Cannot enable pacing: send thread disabled.");
+            logger.error("Cannot enable pacing: send thread is not enabled.");
         }
-
         return queue != null;
     }
 
     /**
      * Changes current thread priority.
      *
-     * @param priority
-     *         the new priority.
+     * @param priority the new priority.
      */
     public void setPriority(int priority)
     {
@@ -449,14 +415,11 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     /**
      * Implements {@link OutputDataStream#write(byte[], int, int)}.
      *
-     * @param buf
-     *         the {@code byte[]} to write into this {@code OutputDataStream}
-     * @param off
-     *         the offset in {@code buf} at which the {@code byte}s to be written into this
-     *         {@code OutputDataStream} start
-     * @param len
-     *         the number of {@code byte}s in {@code buf} starting at {@code off} to be written into
-     *         this {@code OutputDataStream}
+     * @param buf the {@code byte[]} to write into this {@code OutputDataStream}
+     * @param off the offset in {@code buf} at which the {@code byte}s to be written into this
+     * {@code OutputDataStream} start
+     * @param len the number of {@code byte}s in {@code buf} starting at {@code off} to be written into
+     * this {@code OutputDataStream}
      * @return the number of {@code byte}s read from {@code buf} starting at {@code off} and not
      * exceeding {@code len} and written into this {@code OutputDataStream}
      */
@@ -502,26 +465,20 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         else {
             result = len; // there was nothing to send
         }
-
         return result;
     }
 
     /**
-     * Implements {@link OutputDataStream#write(byte[], int, int)}. Allows extenders to provide a
-     * context {@code Object} to invoked overridable methods such as
-     * {@link #packetize(byte[], int, int, Object)}.
+     * Implements {@link OutputDataStream#write(byte[], int, int)}. Allows extenders to provide a context
+     * {@code Object} to invoked overridable methods such as {@link #packetize(byte[], int, int, Object)}.
      *
-     * @param buf
-     *         the {@code byte[]} to write into this {@code OutputDataStream}
-     * @param off
-     *         the offset in {@code buf} at which the {@code byte}s to be written into this
-     *         {@code OutputDataStream} start
-     * @param len
-     *         the number of {@code byte}s in {@code buf} starting at {@code off} to be written into
-     *         this {@code OutputDataStream}
-     * @param context
-     *         the {@code Object} to provide to invoked overridable methods such as
-     *         {@link #packetize(byte[], int, int, Object)}
+     * @param buf the {@code byte[]} to write into this {@code OutputDataStream}
+     * @param off the offset in {@code buf} at which the {@code byte}s to be written into this
+     * {@code OutputDataStream} start
+     * @param len the number of {@code byte}s in {@code buf} starting at {@code off} to be written into
+     * this {@code OutputDataStream}
+     * @param context the {@code Object} to provide to invoked overridable methods such as
+     * {@link #packetize(byte[], int, int, Object)}
      * @return the number of {@code byte}s read from {@code buf} starting at {@code off} and not
      * exceeding {@code len} and written into this {@code OutputDataStream}
      */
@@ -542,15 +499,13 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
                 syncWrite(buf, off, len, context);
             }
         }
-
         return len;
     }
 
     /**
      * Sends an array of {@link RawPacket}s to this {@link RTPConnectorOutputStream}'s targets.
      *
-     * @param pkts
-     *         the array of {@link RawPacket}s to send.
+     * @param pkts the array of {@link RawPacket}s to send.
      * @return {@code true} if all {@code pkts} were written into this {@code OutputDataStream};
      * otherwise, {@code false}
      */
@@ -584,7 +539,6 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
                 }
             }
         }
-
         return success;
     }
 
@@ -597,8 +551,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     }
 
     /**
-     * @param now
-     *         the current time.
+     * @param now the current time.
      * @return the current output bitrate in bits per second.
      */
     public long getOutputBitrate(long now)
@@ -609,20 +562,17 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     private class Queue
     {
         /**
-         * The {@link java.util.Queue} which holds {@link Buffer}s to be processed by
-         * {@link #sendThread}.
+         * The {@link java.util.Queue} which holds {@link Buffer}s to be processed by {@link #sendThread}.
          */
         final ArrayBlockingQueue<Buffer> queue = new ArrayBlockingQueue<>(PACKET_QUEUE_CAPACITY);
 
         /**
-         * A pool of {@link RTPConnectorOutputStream.Queue.Buffer}
-         * instances.
+         * A pool of {@link RTPConnectorOutputStream.Queue.Buffer} instances.
          */
         final ArrayBlockingQueue<Buffer> pool = new ArrayBlockingQueue<>(15);
 
         /**
-         * The maximum number of {@link Buffer}s to be processed by {@link #sendThread} per
-         * {@link #perNanos} nanoseconds.
+         * The maximum number of {@link Buffer}s to be processed by {@link #sendThread} per {@link #perNanos} nanoseconds.
          */
         int maxBuffers = -1;
 
@@ -633,8 +583,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         long perNanos = -1;
 
         /**
-         * The number of {@link Buffer}s already processed during the current <tt>perNanos</tt>
-         * interval.
+         * The number of {@link Buffer}s already processed during the current <tt>perNanos</tt> interval.
          */
         long buffersProcessedInCurrentInterval = 0;
 
@@ -650,8 +599,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         final Thread sendThread;
 
         /**
-         * The instance optionally used to gather and print statistics about
-         * this queue.
+         * The instance optionally used to gather and print statistics about this queue.
          */
         QueueStatistics queueStats = null;
 
@@ -708,12 +656,13 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
                     pool.offer(b);
                     numDroppedPackets++;
                     if (logDroppedPacket(numDroppedPackets)) {
-                        logger.warn("Packets dropped (hashCode=" + hashCode() + "): "
-                                + numDroppedPackets);
+                        logger.warn("Packets dropped (hashCode=" + hashCode() + "): " + numDroppedPackets);
                     }
                 }
             }
-
+//            if (queue.size() % 200 == 0) {
+//                new Exception("queue check #" + buffer.context).printStackTrace();
+//            }
             if (queue.offer(buffer) && queueStats != null) {
                 queueStats.add(now);
             }
@@ -733,8 +682,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         private void runInSendThread()
         {
             if (!Thread.currentThread().equals(sendThread)) {
-                logger.warn("runInSendThread executing in the wrong thread: "
-                                + Thread.currentThread().getName(),
+                logger.warn("runInSendThread executing in the wrong thread: " + Thread.currentThread().getName(),
                         new Throwable());
                 return;
             }
@@ -752,26 +700,18 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
                     if (closed) {
                         break;
                     }
-
                     if (buffer == null) {
                         continue;
                     }
-
                     if (queueStats != null) {
                         queueStats.remove(System.currentTimeMillis());
                     }
-
                     RawPacket[] pkts;
                     try {
                         // We will sooner or later process the Buffer. Since this
-
                         // may take a non-negligible amount of time, do it
-                        // before
-                        // taking pacing into account.
-                        pkts
-                                = packetize(
-                                buffer.buf, 0, buffer.len,
-                                buffer.context);
+                        // before taking pacing into account.
+                        pkts = packetize(buffer.buf, 0, buffer.len, buffer.context);
                     } catch (Exception e) {
                         // The sending thread must not die because of a failure
                         // in the conversion to RawPacket[] or any of the
@@ -801,9 +741,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
                         logger.error("Failed to send a packet: ", e);
                         continue;
                     }
-
                     buffersProcessedInCurrentInterval++;
-
                 }
             } finally {
                 queue.clear();
@@ -827,8 +765,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         }
 
         /**
-         * @return a free {@link Buffer} instance with a byte array with a length of at least
-         * {@code len}.
+         * @return a free {@link Buffer} instance with a byte array with a length of at least {@code len}.
          */
         private Buffer getBuffer(int len)
         {
@@ -837,7 +774,6 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
                 buffer = new Buffer();
             if (buffer.buf == null || buffer.buf.length < len)
                 buffer.buf = new byte[len];
-
             return buffer;
         }
 

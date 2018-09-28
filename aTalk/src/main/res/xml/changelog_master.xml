@@ -6,6 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.5.4 (09/28/2018)" versioncode="1054">
+        <change>Update call notification broadcast receiver to be compliant with android-O requirements</change>
+        <change>Improve call icons/avatar and notifications UI to reflect actual calling states</change>
+        <change>Ensure modified settings for call encryption and media encoding are properly saved</change>
+        <change>Auto purge voice files along with the voice messages when deleted</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.5.3 (09/18/2018)" versioncode="1053">
         <change>Avoid delivered attachment gets reactivated when user reenter the chat session</change>
         <change>Ensure file transfer view refresh reflects the actual state on user scrolling</change>

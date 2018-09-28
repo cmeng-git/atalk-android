@@ -431,7 +431,6 @@ public abstract class AbstractRTPConnector implements RTPConnector
 		try {
 			// Forcing the stream to be created causes problems.
 			RTPConnectorInputStream<?> dataInputStream = getDataInputStream(false);
-
 			if (dataInputStream != null)
 				dataInputStream.setEnabled(receive);
 		}
@@ -442,7 +441,6 @@ public abstract class AbstractRTPConnector implements RTPConnector
 		try {
 			// Forcing the stream to be created causes problems.
 			RTPConnectorOutputStream dataOutputStream = getDataOutputStream(false);
-
 			if (dataOutputStream != null)
 				dataOutputStream.setEnabled(send);
 		}

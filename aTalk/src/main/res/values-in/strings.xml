@@ -234,7 +234,6 @@
     <string name="PoweredBy">Didukung oleh atalk.org</string>
 
     <!-- PTT Chat -->
-    <string name="chat_dbZero">00.00dB</string>
     <string name="chat_noaudio_buddyOffline">Obrolan audio dengan penerima offline tidak diizinkan.</string>
     <string name="chat_RecordCancel">&lt; geser ke kiri\nuntuk membatalkan</string>
     <string name="chat_soundRecordCancelButton">Batalkan</string>
@@ -479,6 +478,7 @@
     <string name="service_gui_NO">Tidak ada</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Setidaknya satu akun telepon online diperlukan untuk melakukan panggilan. Silakan masuk ke salah satu akun telepon Anda dan coba lagi.</string>
     <string name="service_gui_NOT_AUTHORIZED">Tidak diotorisasi</string>
+    <string name="service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME">TidakDalamDaftarKontak</string>
     <string name="service_gui_OFF">Tidak aktif</string>
     <string name="service_gui_OFFLINE">Offline</string>
     <string name="service_gui_OK">OK</string>
@@ -750,7 +750,6 @@
     <!-- account info -->
     <string name="plugin_accountinfo_ABOUT_ME">Tentang Saya:</string>
     <string name="plugin_accountinfo_ABOUT_ME_HINT">Masukkan deskripsi singkat tentang diri Anda di kotak ini</string>
-    <string name="plugin_accountinfo_ABOUT_ME_MAX_CHARACTERS">200</string>
     <string name="plugin_accountinfo_AGE">Umur:</string>
     <string name="plugin_accountinfo_BDAY">Tanggal Lahir:</string>
     <string name="plugin_accountinfo_CHANGE">Ubah</string>
@@ -866,15 +865,14 @@
     <string name="plugin_otr_menu_START_OTR">Mulai percakapan pribadi</string>
     <string name="plugin_otr_menu_TITLE">Chat aman</string>
     <string name="plugin_otr_menu_WHATS_THIS">Apa ini</string>
+
     <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">Mengautentikasi seorang buddy membantu untuk
     pastikan bahwa orang yang Anda ajak bicara adalah siapa yang dia klaim. Untuk memverifikasi sidik jari, hubungi teman Anda melalui
     beberapa saluran terotentikasi lainnya, seperti telepon atau email yang ditandatangani oleh GPG. Anda masing-masing harus memberitahu sidik jari Anda ke
     lain. Jika semuanya cocok, Anda harus menunjukkan dalam dialog berikut yang * saya * telah memverifikasi sidik jari.</string>
     <string name="plugin_otr_authbuddydialog_CANCEL">Batalkan</string>
     <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Harap masukkan sidik jari yang Anda terima dari %1$s.</string>
-
     <string name="plugin_otr_authbuddydialog_HELP">Bantuan</string>
-    <string name="plugin_otr_authbuddydialog_HELP_URI">https://atalk.sytes.net/faq.html</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE">Saya punya</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">Saya belum</string>
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Sidik Saya untuk %1$s: %2$s</string>
@@ -900,7 +898,7 @@
         http://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
     <string name="plugin_otr_activator_historyoff">%1$s TIDAK merekam percakapan ini. Anda dapat&lt;a href=\"atalk://%2$s/%3$s \">mengaktifkan riwayat obrolan di sini&lt;/a>.</string>
     <string name="plugin_otr_activator_historyon">%1$s merekam percakapan ini di perangkat Anda. Anda dapat&lt;a href=\"atalk://%2$s/%3$s \">mematikan riwayat obrolan di sini&lt;/a>.</string>
-    <string name="plugin_otr_activator_msgfromanotherstance">Pesan yang diterima dari instance percakapan OTR lain dengan %1$s terdeteksi.</string>
+    <string name="plugin_otr_activator_msgfromanotherinstance">Pesan yang diterima dari instance percakapan OTR lain dengan %1$s terdeteksi.</string>
     <string name="plugin_otr_activator_multipleinstancesdetected">Beberapa contoh percakapan OTR pribadi dengan %1$s terdeteksi.</string>
     <string name="plugin_otr_activator_requireencryption">Pesan Anda tidak terkirim. Diperlukan perpesanan pribadi.</string>
     <string name="plugin_otr_activator_sessionfinished">%1$s telah mengakhiri percakapan OTR pribadinya dengan Anda;Anda harus melakukan hal yang sama.</string>

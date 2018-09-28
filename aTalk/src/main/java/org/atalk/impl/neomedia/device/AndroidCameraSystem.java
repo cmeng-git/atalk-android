@@ -141,7 +141,7 @@ public class AndroidCameraSystem extends DeviceSystem
 			}
 
 			// YUV format
-			if (camFormats.contains(Integer.valueOf(ImageFormat.YV12))) {
+			if (camFormats.contains(ImageFormat.YV12)) {
 				// Image formats
 				for (Dimension size : sizes) {
 					formats.add(new YUVFormat(size, Format.NOT_SPECIFIED, Format.byteArray,
@@ -174,8 +174,7 @@ public class AndroidCameraSystem extends DeviceSystem
 				logger.error("No supported formats reported by camera: " + locator);
 				continue;
 			}
-			AndroidCamera device = new AndroidCamera(name, locator,
-				formats.toArray(new Format[formats.size()]));
+			AndroidCamera device = new AndroidCamera(name, locator, formats.toArray(new Format[formats.size()]));
 			CaptureDeviceManager.addDevice(device);
 		}
 	}

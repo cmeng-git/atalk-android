@@ -40,8 +40,7 @@ import javax.media.format.VideoFormat;
 import javax.media.protocol.DataSource;
 
 /**
- * Extends <tt>MediaStreamImpl</tt> in order to provide an implementation of
- * <tt>VideoMediaStream</tt>.
+ * Extends <tt>MediaStreamImpl</tt> in order to provide an implementation of <tt>VideoMediaStream</tt>.
  *
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
@@ -60,8 +59,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     private static final boolean USE_RTCP_FEEDBACK_PLI = true;
 
     /**
-     * The <tt>RecurringRunnableExecutor</tt> to be utilized by the
-     * <tt>MediaStreamImpl</tt> class and its instances.
+     * The <tt>RecurringRunnableExecutor</tt> to be utilized by the <tt>MediaStreamImpl</tt> class and its instances.
      */
     private static final RecurringRunnableExecutor recurringRunnableExecutor
             = new RecurringRunnableExecutor(VideoMediaStreamImpl.class.getSimpleName());
@@ -79,10 +77,8 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
         String token;
         Pattern pSendSingle = Pattern.compile("send \\[x=[0-9]+,y=[0-9]+\\]");
         Pattern pRecvSingle = Pattern.compile("recv \\[x=[0-9]+,y=[0-9]+\\]");
-        Pattern pSendRange = Pattern.compile(
-                "send \\[x=\\[[0-9]+(-|:)[0-9]+\\],y=\\[[0-9]+(-|:)[0-9]+\\]\\]");
-        Pattern pRecvRange = Pattern.compile(
-                "recv \\[x=\\[[0-9]+(-|:)[0-9]+\\],y=\\[[0-9]+(-|:)[0-9]+\\]\\]");
+        Pattern pSendRange = Pattern.compile("send \\[x=\\[[0-9]+(-|:)[0-9]+\\],y=\\[[0-9]+(-|:)[0-9]+\\]\\]");
+        Pattern pRecvRange = Pattern.compile("recv \\[x=\\[[0-9]+(-|:)[0-9]+\\],y=\\[[0-9]+(-|:)[0-9]+\\]\\]");
         Pattern pNumeric = Pattern.compile("[0-9]+");
         Matcher mSingle;
         Matcher mRange;
@@ -111,6 +107,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
 
             while (m.find() && i < 2) {
                 val[i] = Integer.parseInt(token.substring(m.start(), m.end()));
+                i++;
             }
             res[0] = new Dimension(val[0], val[1]);
         }
@@ -140,8 +137,8 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
 
             while (m.find() && i < 2) {
                 val[i] = Integer.parseInt(token.substring(m.start(), m.end()));
+                i++;
             }
-
             res[1] = new Dimension(val[0], val[1]);
         }
         else if (mRange.find()) /* try with range */ {
@@ -174,8 +171,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
      * <tt>videoDS</tt> which is as close as possible to <tt>preferredWidth</tt> and
      * <tt>preferredHeight</tt> and which has been set as the format of <tt>videoDS</tt>
      */
-    public static Dimension selectVideoSize(DataSource videoDS, final int preferredWidth,
-            final int preferredHeight)
+    public static Dimension selectVideoSize(DataSource videoDS, final int preferredWidth, final int preferredHeight)
     {
         if (videoDS == null)
             return null;
@@ -186,7 +182,6 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
 
         Format[] formats = formatControl.getSupportedFormats();
         final int count = formats.length;
-
         if (count < 1)
             return null;
 
@@ -288,10 +283,8 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                 });
 
                 FormatInfo preferredFormat = new FormatInfo(new Dimension(preferredWidth, preferredHeight));
-
                 Dimension closestAspect = null;
-                // Let's choose the closest size to the preferred one, finding the first suitable
-                // aspect
+                // Let's choose the closest size to the preferred one, finding the first suitable aspect
                 for (FormatInfo supported : supportedInfos) {
                     // find the first matching aspect
                     if (preferredFormat.difference > supported.difference)
@@ -321,9 +314,9 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * The <tt>VideoListener</tt> which handles <tt>VideoEvent</tt>s from the
-     * <tt>MediaDeviceSession</tt> of this instance and fires respective <tt>VideoEvent</tt>s from
-     * this <tt>VideoMediaStream</tt> to its <tt>VideoListener</tt>s.
+     * The <tt>VideoListener</tt> which handles <tt>VideoEvent</tt>s from the <tt>MediaDeviceSession</tt> of this
+     * instance and fires respective <tt>VideoEvent</tt>s from this <tt>VideoMediaStream</tt> to its
+     * <tt>VideoListener</tt>s.
      */
     private VideoListener deviceSessionVideoListener;
 
@@ -400,8 +393,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     private BandwidthEstimatorImpl bandwidthEstimator;
 
     /**
-     * The {@link CachingTransformer} which caches outgoing/incoming packets
-     * from/to this {@link VideoMediaStreamImpl}.
+     * The {@link CachingTransformer} which caches outgoing/incoming packets from/to this {@link VideoMediaStreamImpl}.
      */
     private CachingTransformer cachingTransformer;
 
@@ -821,7 +813,6 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     public Component getVisualComponent(long ssrc)
     {
         MediaDeviceSession deviceSession = getDeviceSession();
-
         return (deviceSession instanceof VideoMediaDeviceSession)
                 ? ((VideoMediaDeviceSession) deviceSession).getVisualComponent(ssrc) : null;
     }

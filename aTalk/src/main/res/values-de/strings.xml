@@ -478,6 +478,7 @@
     <string name="service_gui_NO">Nein</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Zum Tätigen eines Anrufs wird mindestens ein Online-Telefonie-Konto benötigt. Bitte melden Sie sich bei einem Ihrer Telefonkonten an und versuchen Sie es erneut.</string>
     <string name="service_gui_NOT_AUTHORIZED">Nicht autorisiert</string>
+    <string name="service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME">NotKontaktliste</string>
     <string name="service_gui_OFF">Aus</string>
     <string name="service_gui_OFFLINE">Offline</string>
     <string name="service_gui_OK">OK</string>
@@ -558,7 +559,6 @@
     <string name="service_gui_UNKNOWN_USER">Unbekannter Benutzer</string>
     <string name="service_gui_UNKNOWN_STATUS">Unbekannter Status</string>
     <string name="service_gui_URL_HINT">http://www.beispiel.de</string>
-    <string name="service_gui_VIDEO_CALL">Videoanruf</string>
     <string name="service_gui_VOLUME_CONTROL_TITLE">Ausgabe-Lautstärke</string>
     <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">Lautstärke anpassen</string>
     <string name="service_gui_VOLUME_GAIN_LEVEL">Lautstärke: %1$s%%</string>
@@ -656,10 +656,7 @@
     <!-- Security certificates -->
     <string name="service_gui_ALWAYS_TRUST">Immer diesem Zertifikat vertrauen</string>
     <string name="service_gui_CERT_DIALOG_TITLE">Zertifikatsüberprüfung</string>
-    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>%1$s kann die Identität des Servers beim Verbinden mit&lt;br>&lt;b>%2$s&lt;/b>&lt;br> nicht überprüfen&lt;br>
-        Das Zertifikat ist nicht vertrauenswürdig (ein selbstsigniertes Zertifikat).&lt;br/>&lt;br/>
-        Mit dieser Verbindung fortfahren?&lt;br/>
-        Klicken Sie für weitere Optionen und Informationen auf "Zertifikat anzeigen".&lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT"><html>%1$s kann die Identität des Servers beim Verbinden mit<br/><b>%2$s</b><br/>nicht überprüfen<br/>Das Zertifikat ist nicht vertrauenswürdig (ein selbstsigniertes Zertifikat).<br/><br/>Mit dieser Verbindung fortfahren?<br/>Klicken Sie für weitere Optionen und Informationen auf Zertifikat anzeigen.</html></string>
     <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%1$s kann die
         Identität des Zertifikats des Servers.&lt;br/> nicht überprüfen&lt;br/>
         Das Zertifikat ist nicht vertrauenswürdig (ein selbstsigniertes Zertifikat).&lt;br/>&lt;br/>
@@ -747,7 +744,6 @@
     <!-- account info -->
     <string name="plugin_accountinfo_ABOUT_ME">Über mich:</string>
     <string name="plugin_accountinfo_ABOUT_ME_HINT">Geben Sie bitte eine kurze Beschreibung von sich selbst ein</string>
-    <string name="plugin_accountinfo_ABOUT_ME_MAX_CHARACTERS">200</string>
     <string name="plugin_accountinfo_AGE">Alter:</string>
     <string name="plugin_accountinfo_BDAY">Geburtsdatum:</string>
     <string name="plugin_accountinfo_CHANGE">Ändern</string>
@@ -775,7 +771,7 @@
     <string name="plugin_accountinfo_REGION">Region:</string>
     <string name="plugin_accountinfo_SELECT_ACCOUNT">Bitte wählen Sie ein Konto:</string>
     <string name="plugin_accountinfo_STREET">Adresse:</string>
-    <string name="plugin_accounttinfo_TITLE">Kontoinformationen</string>
+    <string name="plugin_accountinfo_TITLE">Kontoinformation</string>
     <string name="plugin_accountinfo_USER_PICTURES">Benutzerbilder</string>
     <string name="plugin_accountinfo_WORK_EMAIL">E-Mail Büro:</string>
     <string name="plugin_accountinfo_WORK_PHONE">Telefon Büro:</string>
@@ -869,7 +865,6 @@
     <string name="plugin_otr_authbuddydialog_CANCEL">Abbrechen</string>
     <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Bitte geben Sie den Fingerprint ein, den Sie von %1$s erhalten haben.</string>
     <string name="plugin_otr_authbuddydialog_HELP">Hilfe</string>
-    <string name="plugin_otr_authbuddydialog_HELP_URI">https://atalk.sytes.net/faq.html</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE">Ich habe</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">Ich habe nicht</string>
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Mein Fingerprint für %1$s: %2$s</string>
@@ -905,8 +900,8 @@
     <string name="plugin_otr_activator_smpaborted">%1$s hat den OTR-Authentifizierungsprozess abgebrochen.</string>
     <string name="plugin_otr_activator_smperror">Bei der OTR-Authentifizierung ist ein Fehler aufgetreten.</string>
     <string name="plugin_otr_activator_unencryptedmsgreceived">Die Nachricht wurde unverschlüsselt empfangen.</string>
-    <string name="plugin_otr_activator_unreadablesmsgreceived">%1$s hat Ihnen eine unlesbar verschlüsselte Nachricht gesendet.</string>
-    <string name="plugin_otr_activator_unreadablesmsgreply">Sie haben %1$s eine unlesbar verschlüsselte Nachricht gesendet. Bitte beenden Sie Ihren Nachrichtenaustausch mit %2$s oder erneuern Sie ihn.</string>
+    <string name="plugin_otr_activator_unreadablemsgreceived">%1$s hat Ihnen eine unlesbare verschlüsselte Nachricht gesendet.</string>
+    <string name="plugin_otr_activator_unreadablemsgreply">Sie haben%1$s eine unlesbare verschlüsselte Nachricht gesendet. Bitte beenden Sie Ihre private Konversation mit %2$s oder aktualisieren Sie sie.</string>
     <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Nicht bestätigter&lt;/b>privater Nachrichtenaustausch mit %1$s wurde gestartet.</string>
     <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s wurde noch nicht authentifiziert. Sie sollten diesen Chatpartner&lt;a href="atalk://%2$s/%3$s?%4$s">&lt;b>authentifizieren&lt;/b>&lt;/a></string>
 
@@ -1449,7 +1444,7 @@
     <string name="permission_denied_feedback">VERWEIGERT</string>
     <string name="permission_granted_feedback">GEWÄHRT</string>
     <string name="permission_permanently_denied_feedback">PERMANENTLY DENIED</string>
-    <string name="berechtigungs_unknown_feedback">UNBEKANNT</string>
+    <string name="permission_unknown_feedback">UNBEKANNT</string>
 
     <string name="audio_permission_denied_dialog_title">Audio-Erlaubnisanforderung</string>
     <string name="audio_permission_denied_feedback">Audioanrufe sind erst verfügbar, wenn Sie die Berechtigungsanforderung erteilen</string>
@@ -1473,8 +1468,8 @@
     <string name="all_permissions_denied_feedback">aTalk funktioniert möglicherweise nicht richtig oder zeigt ein unsachgemäßes Verhalten da einige Dienste abgelehnt wurden.\nWenn Sie die Option\"Nicht erneut nachfragen\" gewählt haben, müssen Sie sich zu den Android-Einstellungen begeben: -> APP INFO für aTalk, zum Aktivieren der Ressourcenzugriffsberechtigungen</string>
     <string name="permission_denied_all_alert">aTalk würde nicht richtig funktionieren. Sie haben aTalk aller Berechtigungen verweigert!\nSie müssen zu Android-Einstellungen -> APP INFO für aTalk gehen, um die Ressourcenzugriffsberechtigung zu aktivieren.</string>
 
-    <string name="permission_rational_message">Sie werden nun nach jedem von aTalk benötigten Dienst gefragt; Bitte erlauben Sie aTalk auf diese Dienste zuzugreifen um alle unterstützten Funktionalitäten nutzen zu können.</string>
-    <string name="permission_rational_settings_button_text">EINSTELLUNGEN</string>
-    <string name="permission_rational_title">aTalk benötigt Berechtigungen</string>
+    <string name="permission_rationale_message">Sie werden nun nach jedem von aTalk benötigten Dienst gefragt; Bitte erlauben Sie aTalk auf diese Dienste zuzugreifen um alle unterstützten Funktionalitäten nutzen zu können.</string>
+    <string name="permission_rationale_settings_button_text">EINSTELLUNGEN</string>
+    <string name="permission_rationale_title">aTalk benötigt Berechtigungen</string>
 
 </resources>

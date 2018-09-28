@@ -366,7 +366,7 @@ public class ChatRoomListFragment extends OSGiFragment
                 return true;
             case R.id.erase_chatroom_history:
                 EntityListHelper.eraseEntityChatHistory(getActivity(),
-                        mClickedChatRoom, null);
+                        mClickedChatRoom, null, null);
                 return true;
             case R.id.erase_chatroom_history_all:
                 EntityListHelper.eraseAllContactHistory(getActivity());

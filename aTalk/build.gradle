@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.0" // jarjar.repackage
     }
 }
@@ -48,8 +48,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1053
-        versionName "1.5.3" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1054
+        versionName "1.5.4" // no alphabet allowed (e.g. 0.8.7.a)
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true
@@ -259,7 +259,7 @@ task jarRepackage(type: Copy, description: 'Repackage jar to avoid conflict') {
                 classpath: configurations.jarjar2.asPath
 
         jarjar2(jarfile: 'libs/fmj-1.0.jar') {
-            zipfileset(src: 'lib/bundles/fmj-1.0.jar')
+            zipfileset(src: 'lib/bundles/fmj-1.0-20170519.163031-24.jar')
             rule pattern: 'java.awt.**',
                     result: 'org.atalk.android.util.java.awt.@1'
             rule pattern: 'javax.swing.**',

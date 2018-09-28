@@ -6,8 +6,7 @@
 package org.atalk.android.gui.call;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -42,6 +41,7 @@ import net.java.sip.communicator.util.call.CallPeerAdapter;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.call.notification.CallControl;
 import org.atalk.android.gui.call.notification.CallNotificationManager;
 import org.atalk.android.gui.controller.AutoHideController;
 import org.atalk.android.gui.util.ActionBarUtil;
@@ -52,11 +52,11 @@ import org.atalk.android.gui.widgets.ClickableToastController;
 import org.atalk.android.gui.widgets.LegacyClickableToastCtrl;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
+import org.atalk.impl.neomedia.transform.srtp.SRTPCryptoContext;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.ZrtpControl;
 import org.atalk.service.osgi.OSGiActivity;
-import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.Jid;
 
 import java.beans.PropertyChangeEvent;
@@ -111,6 +111,11 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     private static final String VOLUME_CTRL_TAG = "call_volume_ctrl";
 
     /**
+     * Call notification broadcast receiver for android-O
+     */
+    private BroadcastReceiver callNotificationControl = null;
+
+    /**
      * The call peer adapter that gives us access to all call peer events.
      */
     private CallPeerAdapter callPeerAdapter;
@@ -160,6 +165,12 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     private VideoHandlerFragment videoFragment;
 
     private ImageView peerAvatar;
+    private ImageView microphoneButton;
+
+    /**
+     * Indicates that the user has temporary back to chat window to send chat messages
+     */
+    private static boolean mBackToChat = false;
 
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
@@ -172,7 +183,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.video_call);
+        setContentView(R.layout.call_video_audio);
         this.callIdentifier = getIntent().getExtras().getString(CallManager.CALL_IDENTIFIER);
 
         call = CallManager.getActiveCall(callIdentifier);
@@ -188,23 +199,24 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         View.OnLongClickListener onLongClickAction = onLongClickListener();
 
         // Initialize callChat button action
-        findViewById(R.id.callBackToChatButton).setOnClickListener(onClickAction);
+        findViewById(R.id.button_call_back_to_chat).setOnClickListener(onClickAction);
 
         // Initialize speakerphone button action
-        View speakerphoneButton = findViewById(R.id.speakerphoneButton);
+        View speakerphoneButton = findViewById(R.id.button_speakerphone);
         speakerphoneButton.setOnClickListener(onClickAction);
         speakerphoneButton.setOnLongClickListener(onLongClickAction);
 
         // Initialize the microphone button view.
-        ImageView microphoneButton = findViewById(R.id.callMicrophoneButton);
+        microphoneButton = findViewById(R.id.button_call_microphone);
         microphoneButton.setOnClickListener(onClickAction);
         microphoneButton.setOnLongClickListener(onLongClickAction);
 
-        findViewById(R.id.callHoldButton).setOnClickListener(onClickAction);
-        findViewById(R.id.callHangupButton).setOnClickListener(onClickAction);
+        findViewById(R.id.button_call_hold).setOnClickListener(onClickAction);
+        findViewById(R.id.button_call_hangup).setOnClickListener(onClickAction);
         findViewById(R.id.clickable_toast).setOnClickListener(onClickAction);
 
         peerAvatar = findViewById(R.id.calleeAvatar);
+        mBackToChat = false;
 
         View toastView = findViewById(R.id.clickable_toast);
         View.OnClickListener toastclickHandler = new View.OnClickListener()
@@ -269,11 +281,15 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     {
         super.onResume();
 
+        // Stop call broadcast receiver
+        if (callNotificationControl != null)
+            aTalkApp.getGlobalContext().unregisterReceiver(callNotificationControl);
+
         // Clears the in call notification
         if (CallNotificationManager.get().isNotificationRunning(callIdentifier)) {
             CallNotificationManager.get().stopNotification(callIdentifier);
-
         }
+
         // Call already ended or not found
         if (call == null)
             return;
@@ -325,8 +341,14 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             callPeerAdapter = null;
         }
         if (call.getCallState() != CallState.CALL_ENDED) {
+            mBackToChat = true;
+            callNotificationControl = new CallControl();
+            aTalkApp.getGlobalContext().registerReceiver(callNotificationControl,
+                    new IntentFilter("org.atalk.call.control"));
             leaveNotification();
         }
+        else
+            mBackToChat = false;
     }
 
     /**
@@ -379,27 +401,27 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             public void onClick(View v)
             {
                 switch (v.getId()) {
-                    case R.id.callBackToChatButton:
+                    case R.id.button_call_back_to_chat:
                         finish();
                         break;
 
-                    case R.id.speakerphoneButton:
+                    case R.id.button_speakerphone:
                         AudioManager audioManager = aTalkApp.getAudioManager();
                         audioManager.setSpeakerphoneOn(!audioManager.isSpeakerphoneOn());
                         updateSpeakerphoneStatus();
                         break;
 
-                    case R.id.callMicrophoneButton:
+                    case R.id.button_call_microphone:
                         CallManager.setMute(call, !isMuted());
                         break;
 
-                    case R.id.callHoldButton:
+                    case R.id.button_call_hold:
                         // call == null if call setup failed
                         if (call != null)
                             CallManager.putOnHold(call, !isOnHold());
                         break;
 
-                    case R.id.callHangupButton:
+                    case R.id.button_call_hangup:
                         // Start the hang up Thread, Activity will be closed later on call ended event
                         if (call != null)
                             CallManager.hangupCall(call);
@@ -430,14 +452,14 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 DialogFragment newFragment;
                 switch (v.getId()) {
                     // Create and show the volume control dialog.
-                    case R.id.speakerphoneButton:
+                    case R.id.button_speakerphone:
                         // Create and show the dialog.
                         newFragment = VolumeControlDialog.createOutputVolCtrlDialog();
                         newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
                         return true;
 
                     // Create and show the mic gain control dialog.
-                    case R.id.callMicrophoneButton:
+                    case R.id.button_call_microphone:
                         newFragment = VolumeControlDialog.createInputVolCtrlDialog();
                         newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
                         return true;
@@ -445,6 +467,22 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 return false;
             }
         };
+    }
+
+    /**
+     * Updates speakerphone button status.
+     */
+    private void updateSpeakerphoneStatus()
+    {
+        final ImageView speakerPhoneButton = findViewById(R.id.button_speakerphone);
+        if (aTalkApp.getAudioManager().isSpeakerphoneOn()) {
+            speakerPhoneButton.setImageResource(R.drawable.call_speakerphone_on_dark);
+            speakerPhoneButton.setBackgroundColor(0x50000000);
+        }
+        else {
+            speakerPhoneButton.setImageResource(R.drawable.call_speakerphone_off_dark);
+            speakerPhoneButton.setBackgroundColor(Color.TRANSPARENT);
+        }
     }
 
     /**
@@ -470,28 +508,13 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
     private void doUpdateMuteStatus()
     {
-        final ImageView microphoneButton = findViewById(R.id.callMicrophoneButton);
         if (isMuted()) {
+            microphoneButton.setImageResource(R.drawable.call_microphone_mute_dark);
             microphoneButton.setBackgroundColor(0x50000000);
-            microphoneButton.setImageResource(R.drawable.callmicrophonemute_dark);
         }
         else {
+            microphoneButton.setImageResource(R.drawable.call_microphone_dark);
             microphoneButton.setBackgroundColor(Color.TRANSPARENT);
-            microphoneButton.setImageResource(R.drawable.callmicrophone_dark);
-        }
-    }
-
-    /**
-     * Updates speakerphone button status.
-     */
-    private void updateSpeakerphoneStatus()
-    {
-        final ImageView speakerPhoneButton = findViewById(R.id.speakerphoneButton);
-        if (aTalkApp.getAudioManager().isSpeakerphoneOn()) {
-            speakerPhoneButton.setBackgroundColor(0x50000000);
-        }
-        else {
-            speakerPhoneButton.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 
@@ -539,7 +562,6 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     public void setPeerName(final String name)
     {
-        callState.callPeerName = name;
         runOnUiThread(new Runnable()
         {
             public void run()
@@ -549,17 +571,6 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 ActionBarUtil.setSubtitle(VideoCallActivity.this, name);
             }
         });
-    }
-
-    /**
-     * Sets the peer image.
-     *
-     * @param peer the Jid of the call peer
-     */
-    public void setPeerImage(Jid peer)
-    {
-        callState.callPeer = peer;
-        setPeerImage(AvatarManager.getAvatarImageByJid(peer.asBareJid()));
     }
 
     /**
@@ -705,12 +716,13 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private void doUpdateHoldStatus()
     {
-        final ImageView holdButton = findViewById(R.id.callHoldButton);
-
+        final ImageView holdButton = findViewById(R.id.button_call_hold);
         if (isOnHold()) {
+            holdButton.setImageResource(R.drawable.call_hold_on_dark);
             holdButton.setBackgroundColor(0x50000000);
         }
         else {
+            holdButton.setImageResource(R.drawable.call_hold_off_dark);
             holdButton.setBackgroundColor(Color.TRANSPARENT);
         }
     }
@@ -827,15 +839,13 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     public void callPeerRemoved(CallPeerEvent evt)
     {
         CallPeer callPeer = evt.getSourceCallPeer();
-
         if (callPeerAdapter != null) {
             callPeer.addCallPeerListener(callPeerAdapter);
             callPeer.addCallPeerSecurityListener(callPeerAdapter);
             callPeer.addPropertyChangeListener(callPeerAdapter);
         }
 
-        setPeerState(callPeer.getState(), callPeer.getState(),
-                callPeer.getState().getLocalizedStateString());
+        setPeerState(callPeer.getState(), callPeer.getState(), callPeer.getState().getLocalizedStateString());
         onCallConferenceEventObject(evt);
     }
 
@@ -951,8 +961,11 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
         setPeerState(null, callPeer.getState(), callPeer.getState().getLocalizedStateString());
         setPeerName(callPeer.getDisplayName());
-        setPeerImage(callPeer.getPeerJid());
+        setPeerImage(CallUIUtils.getCalleeAvatar(call));
         getCallTimerFragment().callPeerAdded(callPeer);
+
+        // set for use by CallEnded
+        callState.callPeer = callPeer.getPeerJid();
     }
 
     /**
@@ -1168,10 +1181,19 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         videoFragment.updateCallInfoMargin();
     }
 
+    public static void setBackToChat(boolean state)
+    {
+        mBackToChat = state;
+    }
+
+    public static boolean isBackToChat()
+    {
+        return mBackToChat;
+    }
+
     public static class CallStateHolder
     {
         Jid callPeer = null;
-        String callPeerName = "";
         String callDuration = "";
         String errorReason = "";
         boolean callEnded = false;

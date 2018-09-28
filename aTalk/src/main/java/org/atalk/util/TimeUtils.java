@@ -33,28 +33,28 @@ public class TimeUtils
 
     /**
      * Taken from org.apache.commons.net.ntp.TimeStamp.
-     *  baseline NTP time if bit-0=1 is 1-Jan-1900 @ 01:00:00 UTC
+     * baseline NTP time if bit-0=1 is 1-Jan-1900 @ 01:00:00 UTC
      */
     protected static final long msb1baseTime = -2208988800000L;
 
     /**
      * Taken from from org.apache.commons.net.ntp.TimeStamp#toNtpTime(long)
+     * cmeng; 20180924 - the ntp format return is incompatible for use in RTT calculation
+     * @see #toNtpTime(long)
      *
      * Converts Java time to 64-bit NTP time representation.
      *
      * @param t Java time
      * @return NTP timestamp representation of Java time value.
      */
-    public static long toNtpTime(long t)
+    public static long toNtpTime_error(long t)
     {
         boolean useBase1 = t < msb0baseTime;    // time < Feb-2036
         long baseTime;
-        if (useBase1)
-        {
+        if (useBase1) {
             baseTime = t - msb1baseTime; // dates <= Feb-2036
         }
-        else
-        {
+        else {
             // if base0 needed for dates >= Feb-2036
             baseTime = t - msb0baseTime;
         }
@@ -62,13 +62,30 @@ public class TimeUtils
         long seconds = baseTime / 1000;
         long fraction = ((baseTime % 1000) * 0x100000000L) / 1000;
 
-        if (useBase1)
-        {
+        if (useBase1) {
             seconds |= 0x80000000L; // set high-order bit if msb1baseTime 1900 used
         }
+        long time = seconds << 32 | fraction;
+        return time;
+    }
+
+    // This will returns the correct NTP time in RTT calculation
+    public static long toNtpTime(long baseTime)
+    {
+        long seconds = baseTime / 1000;
+        long fraction = ((baseTime % 1000) * 0x100000000L) / 1000;
 
         long time = seconds << 32 | fraction;
         return time;
+    }
+
+    public static long toNtpShort(long t)
+    {
+        long secs = t / 1000L;
+        long ntptimestamplsw = ((t % 1000) * 0x100000000L) / 1000;;
+        long ntptimestampmsw = secs;
+
+        return ((secs << 16) | (ntptimestamplsw >>> 16))  & 0x0ffffffffL;
     }
 
     /**
@@ -104,13 +121,11 @@ public class TimeUtils
          * from 6h 28m 16s UTC on 7 February 2036.
          */
         long msb = seconds & 0x80000000L;
-        if (msb == 0)
-        {
+        if (msb == 0) {
             // use base: 7-Feb-2036 @ 06:28:16 UTC
             return msb0baseTime + (seconds * 1000) + fraction;
         }
-        else
-        {
+        else {
             // use base: 1-Jan-1900 @ 01:00:00 UTC
             return msb1baseTime + (seconds * 1000) + fraction;
         }
@@ -132,6 +147,7 @@ public class TimeUtils
      * Converts a timestamp in NTP Short Format (Q16.16, see
      * {@link "http://tools.ietf.org/html/rfc5905#section-6"}) into
      * milliseconds.
+     *
      * @param ntpShortTime the timestamp in NTP Short Format to convert.
      * @return the number of milliseconds.
      */
@@ -156,6 +172,7 @@ public class TimeUtils
     /**
      * Gets the most significant word (32bits) from an NTP Timestamp represented
      * as a long.
+     *
      * @param ntpTime the timestamp in NTP Timestamp Format.
      * @return the MSW of {@code ntpTime}.
      */
@@ -178,6 +195,7 @@ public class TimeUtils
 
     /**
      * Returns the difference between two RTP timestamps.
+     *
      * @return the difference between two RTP timestamps.
      * @deprecated use {@link RTPUtils#rtpTimestampDiff(long, long)}
      */

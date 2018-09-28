@@ -72,8 +72,7 @@ public abstract class SecurityAccountRegistration implements Serializable
 		encryptionProtocols.put("ZRTP", 0);
 		encryptionProtocolStatus = new HashMap<String, Boolean>(1);
 		encryptionProtocolStatus.put("ZRTP", true);
-		sdesCipherSuites
-				= UtilActivator.getResources().getSettingsString(SDesControl.SDES_CIPHER_SUITES);
+		sdesCipherSuites = UtilActivator.getResources().getSettingsString(SDesControl.SDES_CIPHER_SUITES);
 	}
 
 	/**
@@ -312,8 +311,7 @@ public abstract class SecurityAccountRegistration implements Serializable
 	/**
 	 * Loads the list of enabled and disabled encryption protocols with their priority into array of
 	 * <tt>String</tt> and array of <tt>Boolean</tt>. The protocols are positioned in the array by
-	 * the priority and the <tt>Boolean</tt> array holds the enabled flag on the corresponding
-	 * index.
+	 * the priority and the <tt>Boolean</tt> array holds the enabled flag on the corresponding index.
 	 *
 	 * @param encryptionProtocols
 	 *        The map of encryption protocols with their priority available for this account.
@@ -363,7 +361,6 @@ public abstract class SecurityAccountRegistration implements Serializable
 				}
 			}
 		}
-
 		return new Object[] { encryptions, selectedEncryptions };
 	}
 

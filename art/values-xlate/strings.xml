@@ -468,7 +468,6 @@
     <string name="service_gui_MSG_NOT_DELIVERED">A network problem occurred. Please check your network configuration and try again.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s wrote</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">You must login first to send message.</string>
-
     <string name="service_gui_MISSED_CALLS_TOOL_TIP">Missed calls from:</string>
     <string name="service_gui_MULTIPLE_LOGIN">Multiple login instants not allowed. The following account: User name: %1$s, Server name: %2$s has been disconnected.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Mutually On Hold</string>
@@ -479,6 +478,7 @@
     <string name="service_gui_NO">No</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">At least one online telephony account is needed in order to make a call. Please login to one of your telephony accounts and try again.</string>
     <string name="service_gui_NOT_AUTHORIZED">Not authorized</string>
+    <string name="service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME">NotInContactList</string>
     <string name="service_gui_OFF">Off</string>
     <string name="service_gui_OFFLINE">Offline</string>
     <string name="service_gui_OK">OK</string>
@@ -750,7 +750,6 @@
     <!-- account info -->
     <string name="plugin_accountinfo_ABOUT_ME">About Me:</string>
     <string name="plugin_accountinfo_ABOUT_ME_HINT">Enter a brief description of yourself in this box</string>
-    <string name="plugin_accountinfo_ABOUT_ME_MAX_CHARACTERS">200</string>
     <string name="plugin_accountinfo_AGE">Age:</string>
     <string name="plugin_accountinfo_BDAY">Birth Date:</string>
     <string name="plugin_accountinfo_CHANGE">Change</string>
@@ -967,7 +966,7 @@
     <string name="plugin_provisioning_MANUAL">Manually specify a provisioning URI</string>
     <string name="plugin_provisioning_METHOD">Provisioning method</string>
     <string name="plugin_provisioning_PROV_FAILED">Provisioning failed</string>
-    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Provisioning failed. %1$s! <br />Please, try again later or contact your administrator.</html></string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Provisioning failed. %1$s!<br/>Please, try again later or contact your administrator.</html></string>
     <string name="plugin_provisioning_PROVISIONING">Provisioning</string>
     <string name="plugin_provisioning_PROVISIONING_SUMMARY">Configure provisioning settings</string>
     <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Are you sure you want to remove provisioning password?</string>
@@ -1188,7 +1187,7 @@
     <string name="service_gui_settings_ENABLED_STR">Enabled</string>
     <string name="service_gui_settings_GENERAL">General</string>
 
-    <!-- Message settings -->
+    <!-- Messaging settings -->
     <string name="service_gui_settings_MSG">Messaging</string>
 
     <!-- Group messages in one window -->
@@ -1222,11 +1221,10 @@
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Subscribe approval - manual</string>
 
     <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
-    <!-- Use task bar / dock alerts on incoming calls and chats -->
+    <!-- Use task bar/dock alerts on incoming calls and chats -->
     <string name="service_gui_settings_CHAT_ALERTS">Show status bar notifications</string>
 
     <!-- Leave chat rooms when closing window(omitted on Android for now) -->
-
     <!-- Auto away -->
     <!-- Not sure how to implement it on android - leave for now -->
 

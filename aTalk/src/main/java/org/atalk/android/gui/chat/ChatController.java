@@ -402,7 +402,11 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 break;
 
             case R.id.chatBackToCallButton:
-                CallNotificationManager.get().backToCall();
+                if (CallManager.getActiveCallsCount() > 0) {
+                    CallNotificationManager.get().backToCall();
+                }
+                else
+                    showSendModeButton();
                 break;
 
             case R.id.audioRecordButton:

@@ -2,47 +2,40 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-            android:title="@string/service_gui_PREF_SECURITY_GENERAL"
-            android:key="@string/pref_cat_security_general">
+        android:key="@string/pref_cat_security_general"
+        android:title="@string/service_gui_PREF_SECURITY_GENERAL">
         <CheckBoxPreference
-                android:key="@string/pref_key_enable_encryption"
-                android:title="@string/service_gui_PREF_SECURITY_ENCRYPTION"
-                />
+            android:key="@string/pref_key_enable_encryption"
+            android:title="@string/service_gui_PREF_SECURITY_ENCRYPTION" />
         <Preference
-                android:key="@string/pref_key_enc_protocols_dialog"
-                android:title="@string/service_gui_PREF_SECURITY_ENC_PROTOCOLS"
-                android:persistent="false"
-                android:dependency="@string/pref_key_enable_encryption"
-                />
+            android:dependency="@string/pref_key_enable_encryption"
+            android:key="@string/pref_key_enc_protocols_dialog"
+            android:persistent="false"
+            android:title="@string/service_gui_PREF_SECURITY_ENC_PROTOCOLS" />
     </PreferenceCategory>
     <PreferenceCategory
-            android:title="@string/service_gui_PREF_SECURITY_ZRTP"
-            android:key="@string/pref_cat_security_zrtp"
-            >
+        android:key="@string/pref_cat_security_zrtp"
+        android:title="@string/service_gui_PREF_SECURITY_ZRTP">
         <CheckBoxPreference
-                android:key="@string/pref_key_enc_sipzrtp_attr"
-                android:title="@string/service_gui_PREF_SECURITY_ZRTP_SIGNALING"
-                android:dependency="@string/pref_key_enable_encryption"
-                />
+            android:dependency="@string/pref_key_enable_encryption"
+            android:key="@string/pref_key_enc_sipzrtp_attr"
+            android:title="@string/service_gui_PREF_SECURITY_ZRTP_SIGNALING" />
     </PreferenceCategory>
     <PreferenceCategory
-            android:title="@string/service_gui_PREF_SECURITY_SDES"
-            android:key="@string/pref_cat_security_sdes"
-            >
+        android:key="@string/pref_cat_security_sdes"
+        android:title="@string/service_gui_PREF_SECURITY_SDES">
         <MultiSelectListPreference
-                android:key="@string/pref_key_enc_cipher_suites"
-                android:title="@string/service_gui_PREF_SECURITY_SDES_TITLE"
-                android:dialogTitle="@string/service_gui_PREF_SECURITY_SDES_DLG_TITLE"
-                
-                android:dependency="@string/pref_key_enable_encryption"
-                />
+            android:dependency="@string/pref_key_enable_encryption"
+            android:dialogTitle="@string/service_gui_PREF_SECURITY_SDES_DLG_TITLE"
+            android:key="@string/pref_key_enc_cipher_suites"
+
+            android:title="@string/service_gui_PREF_SECURITY_SDES_TITLE" />
         <ListPreference
-                android:key="@string/pref_key_enc_savp_option"
-                android:title="@string/service_gui_PREF_SECURITY_RTP_SAVP"
-                android:dialogTitle="@string/service_gui_PREF_SECURITY_RTP_SAVP_TITLE"
-                android:entries="@array/pref_savp_option_desc"
-                android:entryValues="@array/pref_savp_option_desc"
-                android:dependency="@string/pref_key_enable_encryption"
-                />
+            android:dependency="@string/pref_key_enable_encryption"
+            android:dialogTitle="@string/service_gui_PREF_SECURITY_RTP_SAVP_TITLE"
+            android:entries="@array/pref_savp_option_desc"
+            android:entryValues="@array/pref_savp_option_desc"
+            android:key="@string/pref_key_enc_savp_option"
+            android:title="@string/service_gui_PREF_SECURITY_RTP_SAVP" />
     </PreferenceCategory>
 </PreferenceScreen>
