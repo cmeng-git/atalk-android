@@ -20,7 +20,8 @@ aTalk is an xmpp client designed for android and supports the following features
 * SSL Certificate authentication, DNSSEC and DANE Security implementation for enhanced secure Connection Establishment
 * Omemo encryption is available during multi-user-chat session, giving users' maximum privacy and security
 * Support multi-user chat in room creation, server chat rooms discovery and joining chat room with captcha protection 
-* Supports both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
+* Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
+* Support simultaneous media call and message chat sessions 
 * Send and receive files for all document types and images, with thumbnail preview before file is sent 
 * Auto accept file transfer request with max file size option
 * Support downloadable Stickers, Bitmoji and Emoji rich content sharing via Google Gboard

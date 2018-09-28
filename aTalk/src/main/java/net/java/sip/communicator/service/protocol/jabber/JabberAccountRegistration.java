@@ -275,12 +275,11 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
                 }
             }
         }
-        // Populate other jabber account default properties for new Account creation
-        else {
-            securityRegistration.storeProperties(mAccountProperties);
-            if (encodingsRegistration != null)
-                encodingsRegistration.storeProperties(mAccountProperties);
-        }
+        // Must include other jabber account default/modified properties (ZRTP and Encoding) for account saving to DB
+        securityRegistration.storeProperties(mAccountProperties);
+        if (encodingsRegistration != null)
+            encodingsRegistration.storeProperties(mAccountProperties);
+
         super.storeProperties(protocolIconPath, accountIconPath, accountProperties);
     }
 

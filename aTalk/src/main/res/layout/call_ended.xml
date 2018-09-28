@@ -89,7 +89,7 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/callBackToChatButton"
+            android:id="@+id/button_call_back_to_chat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -98,10 +98,10 @@
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/hold"
             android:focusable="true"
-            android:src="@drawable/callmessage_dark" />
+            android:src="@drawable/call_back_to_chat_dark" />
 
         <ImageButton
-            android:id="@+id/speakerphoneButton"
+            android:id="@+id/button_speakerphone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -109,10 +109,10 @@
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_VOLUME_CONTROL_TOOL_TIP"
-            android:src="@drawable/callvolume_dark" />
+            android:src="@drawable/call_speakerphone_off_dark" />
 
         <ImageButton
-            android:id="@+id/callMicrophoneButton"
+            android:id="@+id/button_call_microphone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -120,10 +120,10 @@
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_MUTE_BUTTON_TOOL_TIP"
-            android:src="@drawable/callmicrophone_dark" />
+            android:src="@drawable/call_microphone_mute_dark" />
 
         <ImageButton
-            android:id="@+id/callVideoButton"
+            android:id="@+id/button_call_video"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -131,10 +131,10 @@
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP"
-            android:src="@drawable/callvideo_dark" />
+            android:src="@drawable/call_video_dark" />
 
         <ImageButton
-            android:id="@+id/callHoldButton"
+            android:id="@+id/button_call_hold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -142,10 +142,10 @@
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/hold"
-            android:src="@drawable/callhold_dark" />
+            android:src="@drawable/call_hold_on_dark" />
 
         <ImageButton
-            android:id="@+id/callHangupButton"
+            android:id="@+id/button_call_hangup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -153,6 +153,6 @@
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/hang_up"
-            android:src="@drawable/callhangup" />
+            android:src="@drawable/call_hangup" />
     </LinearLayout>
 </RelativeLayout>

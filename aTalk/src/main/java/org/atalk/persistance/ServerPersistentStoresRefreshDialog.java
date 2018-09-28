@@ -167,8 +167,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         private void showErrorMessage(String errorMessage)
         {
             Context ctx = aTalkApp.getGlobalContext();
-            AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_ERROR),
-                    errorMessage);
+            AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_ERROR), errorMessage);
         }
 
         @Override
@@ -189,13 +188,15 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
                     = (ProtocolProviderServiceJabberImpl) pps;
 
             File rosterStoreDirectory = jabberProvider.getRosterStoreDirectory();
-            try {
-                FileBackend.deleteRecursive(rosterStoreDirectory);
-            } catch (IOException e) {
-                logger.error("Failed to purchase store for: "
-                        + R.string.service_gui_REFRESH_STORES_ROSTER);
+            if ((rosterStoreDirectory != null) && rosterStoreDirectory.exists()) {
+                try {
+                    FileBackend.deleteRecursive(rosterStoreDirectory);
+                } catch (IOException e) {
+                    logger.error("Failed to purchase store for: "
+                            + R.string.service_gui_REFRESH_STORES_ROSTER);
+                }
+                jabberProvider.initRosterStore();
             }
-            jabberProvider.initRosterStore();
         }
     }
 
@@ -210,13 +211,15 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         EntityCapsManager.clearMemoryCache();
 
         File entityStoreDirectory = ScServiceDiscoveryManager.getEntityPersistentStore();
-        try {
-            FileBackend.deleteRecursive(entityStoreDirectory);
-        } catch (IOException e) {
-            logger.error("Failed to purchase store for: "
-                    + R.string.service_gui_REFRESH_STORES_CAPS);
+        if ((entityStoreDirectory != null) && entityStoreDirectory.exists()) {
+            try {
+                FileBackend.deleteRecursive(entityStoreDirectory);
+            } catch (IOException e) {
+                logger.error("Failed to purchase store for: "
+                        + R.string.service_gui_REFRESH_STORES_CAPS);
+            }
+            ScServiceDiscoveryManager.initEntityPersistentStore();
         }
-        ScServiceDiscoveryManager.initEntityPersistentStore();
     }
 
     /**
@@ -227,8 +230,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
     {
         Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : ppServices) {
-            ProtocolProviderServiceJabberImpl jabberProvider
-                    = (ProtocolProviderServiceJabberImpl) pps;
+            ProtocolProviderServiceJabberImpl jabberProvider = (ProtocolProviderServiceJabberImpl) pps;
 
             ScServiceDiscoveryManager discoveryInfoManager = jabberProvider.getDiscoveryManager();
             if (jabberProvider.isRegistered()) {
@@ -240,14 +242,15 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
             }
 
             File discoInfoStoreDirectory = discoveryInfoManager.getDiscoInfoPersistentStore();
-            // discoInfoStoreDirectory.listFiles();
-            try {
-                FileBackend.deleteRecursive(discoInfoStoreDirectory);
-            } catch (IOException e) {
-                logger.error("Failed to purchase store for: "
-                        + R.string.service_gui_REFRESH_STORES_DISCINFO);
+            if ((discoInfoStoreDirectory != null) && discoInfoStoreDirectory.exists()) {
+                try {
+                    FileBackend.deleteRecursive(discoInfoStoreDirectory);
+                } catch (IOException e) {
+                    logger.error("Failed to purchase store for: "
+                            + R.string.service_gui_REFRESH_STORES_DISCINFO);
+                }
+                discoveryInfoManager.initDiscoInfoPersistentStore();
             }
-            discoveryInfoManager.initDiscoInfoPersistentStore();
         }
     }
 
@@ -286,10 +289,12 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         else {
             String OMEMO_Store = "OMEMO_Store";
             File omemoDir = new File(ctx.getFilesDir(), OMEMO_Store);
-            try {
-                FileBackend.deleteRecursive(omemoDir);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if ((omemoDir != null) && omemoDir.exists()) {
+                try {
+                    FileBackend.deleteRecursive(omemoDir);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -317,7 +322,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         File appDBDir = new File(appRootDir, database);
         File appSPDir = new File(appRootDir, sharedPrefs);
         File appHistoryDir = new File(appFilesDir, history);
-        File appOmemoDir =  new File(appFilesDir, OMEMO_Store);
+        File appOmemoDir = new File(appFilesDir, OMEMO_Store);
         File appXmlFP = new File(appRootDir, clFileName);
 
         File atalkExportDir = FileBackend.getaTalkStore(FileBackend.EXPROT_DB);
@@ -336,10 +341,12 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
             if (appOmemoDir.exists()) {
                 FileBackend.copyRecursive(appOmemoDir, atalkExportDir, OMEMO_Store);
             }
-            if (appHistoryDir.exists())
+            if (appHistoryDir.exists()) {
                 FileBackend.copyRecursive(appHistoryDir, atalkExportDir, history);
-            if (appXmlFP.exists())
+            }
+            if (appXmlFP.exists()) {
                 FileBackend.copyRecursive(appXmlFP, atalkExportDir, clFileName);
+            }
         } catch (Exception e) {
             logger.warn("Export database exception: " + e.getMessage());
         }
@@ -360,7 +367,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         try {
             logDir = LibJitsi.getFileAccessService()
                     .getPrivatePersistentDirectory(LOGGING_DIR_NAME, FileCategory.LOG);
-            if (logDir.exists()) {
+            if ((logDir != null) && logDir.exists()) {
                 File[] files = logDir.listFiles();
                 boolean status = true;
                 for (File file : files) {

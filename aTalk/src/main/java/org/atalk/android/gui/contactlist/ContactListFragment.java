@@ -386,7 +386,7 @@ public class ContactListFragment extends OSGiFragment
                 onCloseAllChats();
                 return true;
             case R.id.erase_contact_chat_history:
-                EntityListHelper.eraseEntityChatHistory(getContext(), clickedContact, null);
+                EntityListHelper.eraseEntityChatHistory(getContext(), clickedContact, null, null);
                 return true;
             case R.id.erase_all_contact_chat_history:
                 EntityListHelper.eraseAllContactHistory(getContext());

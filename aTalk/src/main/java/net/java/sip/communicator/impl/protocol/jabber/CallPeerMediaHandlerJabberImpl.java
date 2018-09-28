@@ -33,6 +33,7 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.call.VideoCallActivity;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.util.java.awt.Component;
 import org.atalk.service.libjitsi.LibJitsi;
@@ -1000,7 +1001,6 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             throws OperationFailedException
     {
         MediaStream stream = super.initStream(connector, device, format, target, direction, rtpExtensions, masterStream);
-
         if (stream != null)
             stream.setName(streamName);
         return stream;
@@ -1165,7 +1165,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             target = transportManager.getStreamTarget(mediaType);
         }
 
-        logger.warn("### Bind stream for mediaType : " + mediaType + " => " + target);
+        // if sender has temporary pause the video, then set backToChat flag to avoid checkReplay failure on resume
+        SendersEnum sender = content.getSenders();
+        if (SendersEnum.responder == sender) {
+            VideoCallActivity.setBackToChat(true);
+        }
+        logger.warn("### Media modified, sender = " + sender + "; " + mediaType + " => " + target);
         // cmeng - get transport candidate from session-accept may produce null as
         // <transport/> child element can contain zero candidates. No reliable, fixed with above
         // if (target == null)

@@ -86,12 +86,12 @@ public class FileBackend
             throws IllegalArgumentException, SecurityException, IOException
     {
         // ensure source exists
-        if (!srcPath.exists()) {
+        if ((srcPath == null ) || !srcPath.exists()) {
             throw new FileNotFoundException("Source Path not found: " + srcPath);
         }
 
         // ensure target is a directory and exists
-        if (!targetPath.exists() || !targetPath.isDirectory()) {
+        if ((targetPath == null) || !targetPath.exists() || !targetPath.isDirectory()) {
             throw new FileNotFoundException("Target directory not found: " + targetPath);
         }
         // Form full destination path
@@ -159,7 +159,7 @@ public class FileBackend
      */
     public static void deleteRecursive(File filePath) throws IOException
     {
-        if (filePath.exists()) {
+        if ((filePath != null) && filePath.exists()) {
             // If the file is a directory, we will recursively call deleteRecursive on it.
             if (filePath.isDirectory()) {
                 File[] files = filePath.listFiles();

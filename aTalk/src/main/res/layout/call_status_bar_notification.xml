@@ -8,19 +8,20 @@
     <RelativeLayout
         android:id="@+id/iconContainer"
         android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
+        android:padding="2dp"
         android:layout_marginLeft="2dp"
         android:layout_marginStart="2dp"
         android:background="@color/status_bar_icon_bg">
 
         <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_notification" />
+            android:id="@+id/avatarView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_logo" />
     </RelativeLayout>
 
     <TextView
@@ -31,8 +32,8 @@
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="false"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
         android:layout_toEndOf="@+id/iconContainer"
         android:layout_toRightOf="@+id/iconContainer"
         android:singleLine="true"
@@ -46,8 +47,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp"
         android:singleLine="true"
         android:text="00:00:00" />
 
@@ -61,50 +62,55 @@
         android:weightSum="5">
 
         <ImageButton
-            android:id="@+id/back_to_call"
+            android:id="@+id/button_back_to_call"
             style="@style/NotificationCtrlButton"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:background="@color/status_bar_button"
             android:padding="2dp"
             android:scaleType="centerInside"
-            android:src="@drawable/status_bar_show_call_dark" />
+            android:src="@drawable/send_call_dark" />
 
         <ImageButton
-            android:id="@+id/speakerphone"
+            android:id="@+id/button_speakerphone"
             style="@style/NotificationCtrlButton"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:background="@color/status_bar_button"
             android:padding="2dp"
             android:scaleType="centerInside"
-            android:src="@drawable/status_bar_speaker_dark" />
-
-        <Button
-            android:id="@+id/mute_button"
-            style="@style/NotificationCtrlButton"
-            android:layout_width="fill_parent"
-            android:layout_weight="1"
-            android:background="@drawable/status_btn_off"
-            android:text="Mute" />
-
-        <Button
-            android:id="@+id/hold_button"
-            style="@style/NotificationCtrlButton"
-            android:layout_width="fill_parent"
-            android:layout_weight="1"
-            android:background="@drawable/status_btn_off"
-            android:text="Hold" />
+            android:src="@drawable/call_speakerphone_off_dark" />
 
         <ImageButton
-            android:id="@+id/hangup_button"
+            android:id="@+id/button_mute"
             style="@style/NotificationCtrlButton"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:padding="2dp"
+            android:scaleType="centerInside"
+            android:background="@color/status_bar_button"
+            android:src="@drawable/call_microphone_dark" />
+
+        <ImageButton
+            android:id="@+id/button_hold"
+            style="@style/NotificationCtrlButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:padding="2dp"
+            android:scaleType="centerInside"
+            android:background="@color/status_bar_button"
+            android:src="@drawable/call_hold_on_dark" />
+
+        <ImageButton
+            android:id="@+id/button_hangup"
+            style="@style/NotificationCtrlButton"
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:background="@color/status_bar_hangup"
-            android:padding="8dp"
+            android:padding="2dp"
+            android:layout_marginRight="4dp"
             android:scaleType="centerInside"
-            android:src="@drawable/status_bar_hangup_dark" />
+            android:src="@drawable/call_hangup_dark" />
     </LinearLayout>
 
 </RelativeLayout>

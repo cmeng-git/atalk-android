@@ -58,7 +58,6 @@ public class TransformOutputStreamImpl extends AbstractTransformOutputStream
 	{
 		if (getTransformer() != transformer) {
 			super.setTransformer(transformer);
-
 			transformer = getTransformer();
 			_transformerAsChain = (transformer instanceof TransformEngineChain.PacketTransformerChain)
 				? (TransformEngineChain.PacketTransformerChain) transformer : null;
@@ -81,7 +80,6 @@ public class TransformOutputStreamImpl extends AbstractTransformOutputStream
 	{
 		if (after != null) {
 			TransformEngineChain.PacketTransformerChain transformerAsChain = _transformerAsChain;
-
 			if (transformerAsChain != null) {
 				return transformerAsChain.transform(pkts, (TransformEngine) after);
 			}

@@ -26,7 +26,7 @@ public class aTalkProtocolReceiver extends OSGiActivity
 		super.onCreate(savedInstanceState);
 
 		Intent intent = getIntent();
-		logger.info("Jitsi protocol intent received " + intent);
+		logger.info("aTalk protocol intent received " + intent);
 
 		String urlStr = intent.getDataString();
 		if (urlStr != null) {

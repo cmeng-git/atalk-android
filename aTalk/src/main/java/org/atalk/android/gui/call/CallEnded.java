@@ -6,6 +6,7 @@
 package org.atalk.android.gui.call;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +28,7 @@ import org.jivesoftware.smackx.avatar.AvatarManager;
 public class CallEnded extends OSGiFragment
 {
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.call_ended, container, false);
 
@@ -46,8 +47,8 @@ public class CallEnded extends OSGiFragment
         }
 
         View.OnClickListener onClickAction = onActionListener();
-        v.findViewById(R.id.callHangupButton).setOnClickListener(onClickAction);
-        v.findViewById(R.id.callBackToChatButton).setOnClickListener(onClickAction);
+        v.findViewById(R.id.button_call_hangup).setOnClickListener(onClickAction);
+        v.findViewById(R.id.button_call_back_to_chat).setOnClickListener(onClickAction);
         return v;
     }
 
@@ -62,8 +63,8 @@ public class CallEnded extends OSGiFragment
             public void onClick(View v)
             {
                 switch (v.getId()) {
-                    case R.id.callHangupButton:
-                    case R.id.callBackToChatButton:
+                    case R.id.button_call_hangup:
+                    case R.id.button_call_back_to_chat:
                         FragmentActivity ctx = getActivity();
                         ctx.finish();
                         ctx.startActivity(aTalkApp.getHomeIntent());

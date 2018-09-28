@@ -27,8 +27,7 @@ import org.atalk.util.Logger;
 public class AudioMediaDeviceSession extends MediaDeviceSession
 {
 	/**
-	 * The <tt>Logger</tt> used by the <tt>AudioMediaDeviceSession</tt> class and its instances for
-	 * logging output.
+	 * The <tt>Logger</tt> used by the <tt>AudioMediaDeviceSession</tt> class and its instances for logging output.
 	 */
 	private static final Logger logger = Logger.getLogger(AudioMediaDeviceSession.class);
 

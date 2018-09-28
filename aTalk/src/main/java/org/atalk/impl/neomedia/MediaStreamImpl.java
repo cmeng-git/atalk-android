@@ -1929,12 +1929,15 @@ public class MediaStreamImpl extends AbstractMediaStream
     {
         mediaStreamStatsImpl.updateStats();
 
-        StringBuilder buff = new StringBuilder("\nReceive stream stats: discarded RTP packets: ")
-                .append(mediaStreamStatsImpl.getNbDiscarded())
-                .append("\nReceive stream stats: decoded with FEC: ")
-                .append(mediaStreamStatsImpl.getNbFec());
+        if (logger.isDebugEnabled())
+        {
+            StringBuilder buff = new StringBuilder("\nReceive stream stats: discarded RTP packets: ")
+                    .append(mediaStreamStatsImpl.getNbDiscarded())
+                    .append("\nReceive stream stats: decoded with FEC: ")
+                    .append(mediaStreamStatsImpl.getNbFec());
 
-        logger.debug(buff);
+            logger.debug(buff);
+        }
     }
 
     /**
@@ -2324,9 +2327,7 @@ public class MediaStreamImpl extends AbstractMediaStream
          * MediaDevice of this instance.
          */
         assertDirection(direction, getDeviceDirection(), "direction");
-
         this.direction = direction;
-
         switch (this.direction) {
             case INACTIVE:
                 stop(MediaDirection.SENDRECV);
@@ -3063,13 +3064,12 @@ public class MediaStreamImpl extends AbstractMediaStream
             throws TransmissionFailedException
     {
         try {
-            if (pkt == null) {
+            if (pkt == null || pkt.getBuffer() == null) {
                 // It's a waste of time to invoke the method with a null pkt so disallow it.
-                throw new NullPointerException("pkt");
+                throw new NullPointerException(pkt == null ? "pkt" : "pkt.getBuffer()");
             }
 
             AbstractRTPConnector rtpConnector = getRTPConnector();
-
             if (rtpConnector == null)
                 throw new IllegalStateException("rtpConnector");
 
@@ -3090,8 +3090,7 @@ public class MediaStreamImpl extends AbstractMediaStream
                 }
             }
 
-            outputStream.write(pkt.getBuffer(), pkt.getOffset(), pkt.getLength(),
-                    /* context */after);
+            outputStream.write(pkt.getBuffer(), pkt.getOffset(), pkt.getLength(), /* context */after);
         } catch (IllegalStateException | IOException | NullPointerException e) {
             throw new TransmissionFailedException(e);
         }

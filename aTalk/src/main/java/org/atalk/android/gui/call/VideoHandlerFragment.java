@@ -113,7 +113,7 @@ public class VideoHandlerFragment extends OSGiFragment
     /**
      * Local video call button.
      */
-    private View mCallVideoButton;
+    private ImageView mCallVideoButton;
 
     /**
      * VideoHandlerFragment parent activity.
@@ -162,7 +162,7 @@ public class VideoHandlerFragment extends OSGiFragment
                 });
 
         calleeAvatar = mActivity.findViewById(R.id.calleeAvatar);
-        mCallVideoButton = mActivity.findViewById(R.id.callVideoButton);
+        mCallVideoButton = mActivity.findViewById(R.id.button_call_video);
         mCallVideoButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -205,8 +205,7 @@ public class VideoHandlerFragment extends OSGiFragment
             float scale = getContext().getResources().getDisplayMetrics().density;
             int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
 
-            RelativeLayout.LayoutParams params
-                    = (RelativeLayout.LayoutParams) localPreviewContainer.getLayoutParams();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) localPreviewContainer.getLayoutParams();
             params.width = (int) (160 * scale + 0.5f);
             if ((ratio < 1.5) || (rotation == Surface.ROTATION_0)
                     || (rotation == Surface.ROTATION_180)) {
@@ -248,7 +247,6 @@ public class VideoHandlerFragment extends OSGiFragment
                 throw new RuntimeException(e);
             }
         }
-
         if (call == null) {
             logger.error("Call is null");
             return;
@@ -257,11 +255,12 @@ public class VideoHandlerFragment extends OSGiFragment
         removeVideoListener();
         if (call.getCallState() != CallState.CALL_ENDED) {
             wasVideoEnabled = isLocalVideoEnabled();
-            logger.error("Was local enabled ? " + wasVideoEnabled);
+            // logger.error("Was local enabled ? " + wasVideoEnabled);
 
-            /**
+            /*
              * Disables local video to stop the camera and release the surface.
              * Otherwise media recorder will crash on invalid preview surface.
+             * 20180921 - crash does not happen anymore when remains as true- fixed?
              */
             setLocalVideoEnabled(false);
             previewSurfaceHandler.waitForObjectRelease();
@@ -378,9 +377,11 @@ public class VideoHandlerFragment extends OSGiFragment
         setLocalVideoEnabled(isVideoEnable);
 
         if (isVideoEnable) {
+            mCallVideoButton.setImageResource(R.drawable.call_video_record_dark);
             mCallVideoButton.setBackgroundColor(0x50000000);
         }
         else {
+            mCallVideoButton.setImageResource(R.drawable.call_video_dark);
             mCallVideoButton.setBackgroundColor(android.graphics.Color.TRANSPARENT);
         }
     }

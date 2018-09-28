@@ -44,8 +44,7 @@ public class CallPeerJabberImpl
         extends MediaAwareCallPeer<CallJabberImpl, CallPeerMediaHandlerJabberImpl, ProtocolProviderServiceJabberImpl>
 {
     /**
-     * The <tt>Logger</tt> used by the <tt>CallPeerJabberImpl</tt> class and its instances for
-     * logging output.
+     * The <tt>Logger</tt> used by the <tt>CallPeerJabberImpl</tt> class and its instances for logging output.
      */
     private static final Logger logger = Logger.getLogger(CallPeerJabberImpl.class);
 

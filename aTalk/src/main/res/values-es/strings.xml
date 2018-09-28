@@ -56,7 +56,6 @@
     <string name="password">contraseña</string>
     <string name="password_label">Contraseña:</string>
     <string name="reason_label">Motivo:</string>
-    <string name="sign_in">Iniciar sesión</string>
     <string name="send_process_signal">Enviar señal de proceso</string>
     <string name="show_call_info">Información de la llamada</string>
     <string name="show_call_zrtp_info">"Información ZRTP de la llamada</string>
@@ -112,8 +111,6 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">El nombre del grupo no debe estar vacío.</string>
     <string name="service_gui_ADD_GROUP">Crear un grupo</string>
     <string name="service_gui_ADD_GROUP_HINT">Introducir el nombre del grupo</string>
-    <string name="service_gui_APPLICATION_NAME">aTalk</string>
-    <string name="service_gui_AT">at</string>
     <string name="service_gui_APPLY">Aplicar</string>
     <string name="service_gui_APPLY_CHANGES">Aplicando los cambion en la cuenta (~60S) &#8230;</string>
     <string name="service_gui_AUTHORIZE">Autorizar</string>
@@ -132,6 +129,7 @@
 
     <string name="service_gui_BUSY_STATUS">Ocupado</string>
     <string name="service_gui_CALL">Llamada de audio</string>
+    <string name="service_gui_CALL_FAILED">Llamada fallida</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histŕico de llamadas</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk no ha podido inicializar %1$s\nTodas las llamadas/servicios de medios estarán deshabilitados.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Llamar con</string>
@@ -141,12 +139,13 @@
     <string name="service_gui_CALL_NO_DEVICE_CODEC_H">El dispositivo %1$s o el códec no está totalmente configurado en \'Ajustes…\'. Por favor, compruébese y configúrese.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">¿Continuar la llamada?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">No hay formatos de medios que coincidan con la oferta %1$s para recibir llamadas. Por favor, compruebar la configuración del dispositivo y el códec en \'Ajustes…\'.</string>
+    <string name="service_gui_CALL_VIA">Llamar por: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Video llamada</string>
     <string name="service_gui_CANCEL">Cancelar</string>
     <string name="service_gui_Contacts">Contactos</string>
     <string name="service_gui_DONE">¡Hecho!</string>
 
-	<!-- Conference Chat -->
+    <!-- Conference Chat -->
 	<string name="service_gui_AUTOJOIN">Unirse automáticamente</string>
 	<string name="service_gui_CHANGE_NICK">Cambiar el apodo</string>
 	<string name="service_gui_CHANGE_NICKNAME">Cambiar el apodo&#8230;</string>
@@ -240,13 +239,11 @@
     <string name="PoweredBy">Desarrollado por atalk.org</string>
 
     <!-- PTT Chat -->
-    <string name="chat_dbZero">00.00dB</string>
     <string name="chat_noaudio_buddyOffline">No se permite el chat de audio con un destinatario que está fuera de línea.</string>
     <string name="chat_RecordCancel">&lt;portaobjetos de la izquierda\npara cancelar</string>
     <string name="chat_soundRecordCancelButton">Cancelar</string>
     <string name="chat_soundRecordStartButton">Comenzar la grabación</string>
     <string name="chat_soundRecordStopButton">Hecho</string>
-    <string name="chat_timeZero">00:00</string>
 
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Latitud:</string>
@@ -403,7 +400,16 @@
     <string name="service_gui_IGNORE">Ignorar</string>
     <string name="service_gui_INFO">Información</string>
 
+    <string name="service_gui_ADDRESS">" 7/5000 Dirección"</string>
+    <string name="service_gui_CITY">Ciudad</string>
 	<string name="service_gui_CLOSE_CHAT_ROOM_DIALOG">Cerrar</string>
+
+    <string name="service_gui_COUNTRY">País</string>
+    <string name="service_gui_EMAIL">Email</string>
+    <string name="service_gui_EMAILS">Emails</string>
+    <string name="service_gui_FAX">Fax</string>
+    <string name="service_gui_HOME">Casa</string>
+    <string name="service_gui_HOME_PAGE">Página de inicio</string>
     <string name="service_gui_INVALID_ADDRESS">Dirección inválida: %1$s</string>
 	<string name="service_gui_JOIN">Unirse</string>
 	<string name="service_gui_JOIN_AS">Unirse como</string>
@@ -445,6 +451,7 @@
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">No se puede iniciar la sesión con la cuenta: Usuario: %1$s, Servidor: %2$s, debido a un problema de configuración de la cuenta. Por favor, comprueba la configuración de su cuenta.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">No se puede iniciar sesión con la cuenta:\nUsuario: %1$s\nServidor: %2$s\ndebido a un fallo en la red. Por favor, compruebe su conexión de red.</string>
     <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Se produjo un error al cerrar la sesión con la siguiente cuenta: Nombre de usuario: %1$s, Nombre del servidor: %2$S.</string>
+    <string name="service_gui_MOBILE_PHONE">Móvil</string>
     <string name="service_gui_MOVE">Mover</string>
     <string name="service_gui_MOVE_CONTACT">Mover Contacto</string>
     <string name="service_gui_MOVE_CONTACT_ERROR">El contacto no se puede mover</string>
@@ -455,6 +462,7 @@
     <string name="service_gui_MOVE_TO_GROUP">Mover al grupo</string>
 	<string name="service_gui_NICKNAME_LABEL">Apodo</string>
 	<string name="service_gui_OPEN_AUTOMATICALLY">Abrir esta sala automáticamente cuando</string>
+    <string name="service_gui_PERSONAL">Personal</string>
 
     <string name="service_gui_MSG_DELIVERY_ERROR">No se entregó el mensaje.</string>
     <string name="service_gui_MSG_DELIVERY_FAILURE">No se ha podido entregar el mensaje anterior</string>
@@ -470,10 +478,12 @@
     <string name="service_gui_MISSED_CALLS_TOOL_TIP">Llamadas perdidas de:</string>
 	<string name="service_gui_MULTIPLE_LOGIN">No se permiten varias instancias de inicio de sesión. La siguiente cuenta: Usuario: %1$s, Servidor: %2$s ha sido desconectada.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Mutuamente en espera</string>
+    <string name="service_gui_NAME">"Nombre "</string>
     <string name="service_gui_NEW_ACCOUNT">Añadir una cuenta nueva</string>
     <string name="service_gui_NETOWRK_ASSERTION_ERROR">El proveedor de Jabber debe estar registrado antes de poder comunicarse.</string>
-
+    <string name="service_gui_NICKNAME">" 8/5000 ˈnikˌnām Apodo"</string>
     <string name="service_gui_NO">No</string>
+    <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Se necesita al menos una cuenta de telefonía en línea para realizar una llamada. Inicie sesión en una de sus cuentas de telefonía y vuelva a intentarlo.</string>
     <string name="service_gui_NOT_AUTHORIZED">No autorizado</string>
     <string name="service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME">NoEstáEnLaListaDeContactos</string>
     <string name="service_gui_OFF">Apagado</string>
@@ -484,8 +494,16 @@
     <string name="service_gui_OPEN">Abierto</string>
 	<string name="service_gui_OPEN_FILE_FROM_IMAGE">Hacer clic para abrir el archivo.</string>
     <string name="service_gui_OPEN_FOLDER">Carpeta</string>
+    <string name="service_gui_OTHER">Otro</string>
+    <string name="service_gui_ORGANIZATION">Organización</string>
+    <string name="service_gui_PHONE">Teléfono</string>
+    <string name="service_gui_PHONES">Teléfonos</string>
+    <string name="service_gui_POSTAL_CODE">Código postal</string>
     <string name="service_gui_RENAME">Renombrar</string>
+    <string name="service_gui_SHOW_STACK_TRACE">Mostrar stack Trace</string>
+    <string name="service_gui_STREET">Calle</string>
     <string name="service_gui_SUBMIT">Enviar</string>
+    <string name="service_gui_WORK_PHONE">"Trabajo "</string>
 
     <!-- Call -->
     <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Alternar vídeo</string>
@@ -1248,8 +1266,8 @@
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">Mostrar el indicador aTalk activo para el aviso</string>
 
     <!-- Locale -->
-    <string name="service_gui_settings_LOCALE">Idioma de la interfaz</string>
-    <string name="settings_language_label">Idioma</string>
+    <string name="service_gui_settings_LOCALE">Idioma</string>
+    <string name="settings_language_system">Sistema por defecto</string>
 
     <!-- Theme -->
     <string name="settings_theme_dark">Oscuro</string>
@@ -1262,7 +1280,6 @@
     <string name="service_gui_settings_NORMALIZE_ON">Se eliminarán los símbolos especiales del número</string>
     <!-- Convert letters in phone numbers -->
     <string name="service_gui_settings_ALLOW_ALPHA_OFF">Sin modificaciones de número de teléfono</string>
-    <string name="service_gui_settings_ALLOW_ALPHA_ON"><![CDATA[*e.g. +1–800–MITELEFONO –>+1–800–694663]]></string>
     <string name="service_gui_settings_ALLOW_ALPHA_PNUMBER">Letras en números de teléfono</string>
 
     <!-- Call settings -->
@@ -1462,23 +1479,23 @@
     <string name="permission_permanently_denied_feedback">DENEGADO PERMANENTEMENTE</string>
     <string name="permission_unknown_feedback">DESCONOCIDO</string>
 
-    <string name="audio_permission_denied_dialog_feedback">La llamada de audio no estará disponible hasta que concedas la solicitud de permiso</string>
     <string name="audio_permission_denied_dialog_title">Solicitud de permiso de audio</string>
+    <string name="audio_permission_denied_feedback">La llamada de audio no estará disponible hasta que concedas la solicitud de permiso</string>
 
     <string name="camera_permission_denied_dialog_title">Solicitud de permiso de cámara</string>
     <string name="camera_permission_denied_feedback">El permiso de la cámara es necesario para la configuración de la videollamada. La videollamada no estará disponible hasta que concedas la solicitud de permiso</string>
 
-    <string name="contacts_permission_denied_feedback">El permiso de los contactos es necesario para el acceso al estado del teléfono y la configuración de llamadas.</string>
     <string name="contacts_permission_denied_dialog_title">Solicitud de permiso de contactos</string>
+    <string name="contacts_permission_denied_feedback">El permiso de los contactos es necesario para el acceso al estado del teléfono y la configuración de llamadas.</string>
 
-    <string name="location_permission_denied_dialog_feedback">Las funciones de localización GPS no estarán disponibles hasta que concedas la solicitud de permiso.</string>
     <string name="location_permission_denied_dialog_title">Solicitud de permiso de ubicación</string>
+    <string name="location_permission_denied_feedback">Las funciones de localización GPS no estarán disponibles hasta que concedas la solicitud de permiso.</string>
 
-    <string name="phone_permission_denied_dialog_feedback">Las funciones del teléfono no estarán disponibles hasta que otorgues la solicitud de permiso</string>
     <string name="phone_permission_denied_dialog_title">Solicitud de permiso para leer estado del teléfono</string>
+    <string name="phone_permission_denied_feedback">Las funciones del teléfono no estarán disponibles hasta que otorgues la solicitud de permiso</string>
 
-    <string name="storage_permission_denied_dialog_feedback">No se permitirá guardar el contenido recibido en un almacenamiento externo hasta que concedas la solicitud de permiso.</string>
     <string name="storage_permission_denied_dialog_title">Solicitud de permiso de almacenamiento</string>
+    <string name="storage_permission_denied_feedback">No se permitirá guardar el contenido recibido en un almacenamiento externo hasta que concedas la solicitud de permiso.</string>
 
     <string name="all_permission_denied_dialog_title">Solicitar todos los permisos</string>
     <string name="all_permissions_denied_feedback">aTalk puede no funcionar correctamente o puede tener un comportamiento inesperado ya que algunos servicios han sido denegados! Si has seleccionado la opción "Don't ask again" (No preguntar de nuevo), debes ir a android Ajustes -> APP INFO para aTalk para habilitar el permiso de acceso a los recursos.</string>
@@ -1487,5 +1504,4 @@
     <string name="permission_rationale_message">Se presenta cada servicio que necesita aTalk; por favor permite que aTalk acceda a estos servicios para obtener todas las funciones soportadas.</string>
     <string name="permission_rationale_settings_button_text">AJUSTES</string>
     <string name="permission_rationale_title">aTalk necesita permisos</string>
-
 </resources>

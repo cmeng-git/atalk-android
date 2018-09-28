@@ -54,8 +54,7 @@ public class ContactInfoActivity extends OSGiActivity
 	 * Mapping between all supported by this plugin <tt>ServerStoredDetails</tt> and their
 	 * respective <tt>TextView</tt> that are used for modifying the details.
 	 */
-	private final Map<Class<? extends GenericDetail>, TextView> detailToTextField
-			= new HashMap<>();
+	private final Map<Class<? extends GenericDetail>, TextView> detailToTextField = new HashMap<>();
 
 	private TextView urlField;
 	private TextView ageField;
@@ -64,8 +63,9 @@ public class ContactInfoActivity extends OSGiActivity
 	/**
 	 * Intent's extra's key for account ID property of this activity
 	 */
-	static public final String INTENT_CONTACT_ID = "contact_id";
+	public static final String INTENT_CONTACT_ID = "contact_id";
 
+    public static final int ABOUT_ME_MAX_CHARACTERS = 200;
 	/**
 	 * The operation set giving access to the server stored contact details.
 	 */
@@ -221,8 +221,7 @@ public class ContactInfoActivity extends OSGiActivity
 
 		TextView aboutMeArea = findViewById(R.id.ci_AboutMeField);
 		InputFilter[] filterArray = new InputFilter[1];
-		filterArray[0] = new InputFilter.LengthFilter(Integer.valueOf(
-				getString(R.string.plugin_accountinfo_ABOUT_ME_MAX_CHARACTERS)));
+		filterArray[0] = new InputFilter.LengthFilter(ABOUT_ME_MAX_CHARACTERS);
 		aboutMeArea.setFilters(filterArray);
 		aboutMeArea.setBackgroundResource(R.drawable.alpha_blue_01);
 		detailToTextField.put(AboutMeDetail.class, aboutMeArea);

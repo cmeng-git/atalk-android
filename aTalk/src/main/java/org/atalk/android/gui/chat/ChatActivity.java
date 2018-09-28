@@ -416,7 +416,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
 
             case R.id.erase_chat_history:
                 EntityListHelper.eraseEntityChatHistory(ChatActivity.this,
-                        selectedChatPanel.getChatSession().getDescriptor(), null);
+                        selectedChatPanel.getChatSession().getDescriptor(), null, null);
                 return true;
 
             case R.id.leave_chat_room:

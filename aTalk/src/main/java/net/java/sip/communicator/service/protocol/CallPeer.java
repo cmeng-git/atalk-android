@@ -28,6 +28,7 @@ import org.jxmpp.jid.Jid;
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public interface CallPeer
 {
@@ -36,7 +37,7 @@ public interface CallPeer
 	 * marking the beginning of a participation in a <tt>Call</tt> or that such a transition may
 	 * have happened but the time of its occurrence is unknown.
 	 */
-	public static final long CALL_DURATION_START_TIME_UNKNOWN = 0;
+	public static long CALL_DURATION_START_TIME_UNKNOWN = 0;
 
 	/**
 	 * The mute property name.
@@ -53,7 +54,7 @@ public interface CallPeer
 	 *        conference-related information. If the specified listener is already in the list of
 	 *        interested listeners (i.e. it has been previously added), it is not added again.
 	 */
-	public void addCallPeerConferenceListener(CallPeerConferenceListener listener);
+	void addCallPeerConferenceListener(CallPeerConferenceListener listener);
 
 	/**
 	 * Allows the user interface to register a listener interested in changes
@@ -61,7 +62,7 @@ public interface CallPeer
 	 * @param listener
 	 *        a listener instance to register with this peer.
 	 */
-	public void addCallPeerListener(CallPeerListener listener);
+	void addCallPeerListener(CallPeerListener listener);
 
 	/**
 	 * Allows the user interface to register a listener interested in security status changes.
@@ -69,7 +70,7 @@ public interface CallPeer
 	 * @param listener
 	 *        a listener instance to register with this peer
 	 */
-	public void addCallPeerSecurityListener(CallPeerSecurityListener listener);
+	void addCallPeerSecurityListener(CallPeerSecurityListener listener);
 
 	/**
 	 * Adds a specific <tt>SoundLevelListener</tt> to the list of listeners interested in and
@@ -78,7 +79,7 @@ public interface CallPeer
 	 * @param listener
 	 *        the <tt>SoundLevelListener</tt> to add
 	 */
-	public void addConferenceMembersSoundLevelListener(ConferenceMembersSoundLevelListener listener);
+	void addConferenceMembersSoundLevelListener(ConferenceMembersSoundLevelListener listener);
 
 	/**
 	 * Allows the user interface to register a listener interested in property changes.
@@ -86,7 +87,7 @@ public interface CallPeer
 	 * @param listener
 	 *        a property change listener instance to register with this peer.
 	 */
-	public void addPropertyChangeListener(PropertyChangeListener listener);
+	void addPropertyChangeListener(PropertyChangeListener listener);
 
 	/**
 	 * Adds a specific <tt>SoundLevelListener</tt> to the list of listeners interested in and
@@ -95,7 +96,7 @@ public interface CallPeer
 	 * @param listener
 	 *        the <tt>SoundLevelListener</tt> to add
 	 */
-	public void addStreamSoundLevelListener(SoundLevelListener listener);
+	void addStreamSoundLevelListener(SoundLevelListener listener);
 
 	/**
 	 * Returns a String locator for that peer. A locator might be a SIP URI, an IP address or a
@@ -103,14 +104,14 @@ public interface CallPeer
 	 * 
 	 * @return the peer's address or phone number.
 	 */
-	public String getAddress();
+	String getAddress();
 
 	/**
 	 * Returns a reference to the call that this peer belongs to.
 	 * 
 	 * @return a reference to the call containing this peer.
 	 */
-	public Call getCall();
+	Call getCall();
 
 	/**
 	 * Gets the time at which this <tt>CallPeer</tt> transitioned into a state (likely
@@ -130,7 +131,7 @@ public interface CallPeer
 	 * @return a URL link to a location with call information or a call control web interface
 	 *         related to this peer or <tt>null</tt> if no such URL is available.
 	 */
-	public URL getCallInfoURL();
+	URL getCallInfoURL();
 
 	/**
 	 * Gets the number of <tt>ConferenceMember</tt>s currently known to this peer if it is acting as
@@ -141,7 +142,7 @@ public interface CallPeer
 	 *         but there are currently no members in the conference it manages, a value of zero is
 	 *         returned.
 	 */
-	public int getConferenceMemberCount();
+	int getConferenceMemberCount();
 
 	/**
 	 * Gets the <tt>ConferenceMember</tt>s currently known to this peer if it is acting as a
@@ -152,7 +153,7 @@ public interface CallPeer
 	 *         acting as a conference focus or it does but there are currently no members in the
 	 *         conference it manages, an empty <tt>List</tt> is returned.
 	 */
-	public List<ConferenceMember> getConferenceMembers();
+	List<ConferenceMember> getConferenceMembers();
 
 	/**
 	 * Returns the contact corresponding to this peer or null if no particular contact has been
@@ -162,21 +163,21 @@ public interface CallPeer
 	 * @return the <tt>Contact</tt> corresponding to this peer or null if no particular contact has
 	 *         been associated.
 	 */
-	public Contact getContact();
+	Contact getContact();
 
 	/**
 	 * Returns the currently used security settings of this <tt>CallPeer</tt>.
 	 *
 	 * @return the <tt>CallPeerSecurityStatusEvent</tt> that contains the current security settings.
 	 */
-	public CallPeerSecurityStatusEvent getCurrentSecuritySettings();
+	CallPeerSecurityStatusEvent getCurrentSecuritySettings();
 
 	/**
 	 * Returns a human readable name representing this peer.
 	 * 
 	 * @return a String containing a name for that peer.
 	 */
-	public String getDisplayName();
+	String getDisplayName();
 
 	/**
 	 * Returns an alternative IMPP address corresponding to this <tt>CallPeer</tt>.
@@ -184,7 +185,7 @@ public interface CallPeer
 	 * @return a string representing an alternative IMPP address corresponding to this
 	 *         <tt>CallPeer</tt>
 	 */
-	public String getAlternativeIMPPAddress();
+	String getAlternativeIMPPAddress();
 
 	/**
 	 * The method returns an image representation of the call peer (e.g. a photo). Generally, the
@@ -193,7 +194,7 @@ public interface CallPeer
 	 *
 	 * @return byte[] a byte array containing the image or null if no image is available.
 	 */
-	public byte[] getImage();
+	byte[] getImage();
 
 	/**
 	 * Returns a unique identifier representing this peer. Identifiers returned by this method
@@ -204,7 +205,7 @@ public interface CallPeer
 	 *
 	 * @return an identifier representing this call peer.
 	 */
-	public String getPeerID();
+	String getPeerID();
 
     Jid getPeerJid();
 
@@ -213,7 +214,7 @@ public interface CallPeer
 	 *
 	 * @return a reference to the ProtocolProviderService that this peer belongs to.
 	 */
-	public ProtocolProviderService getProtocolProvider();
+	ProtocolProviderService getProtocolProvider();
 
 	/**
 	 * Returns an object representing the current state of that peer. CallPeerState may vary among
@@ -222,14 +223,14 @@ public interface CallPeer
 	 * 
 	 * @return a CallPeerState instance representing the peer's state.
 	 */
-	public CallPeerState getState();
+	CallPeerState getState();
 
 	/**
 	 * Returns full URI of the address. For example sip:user@domain.org or xmpp:user@domain.org.
 	 *
 	 * @return full URI of the address
 	 */
-	public String getURI();
+	String getURI();
 
 	/**
 	 * Determines whether this peer is acting as a conference focus and thus may provide information
@@ -238,7 +239,7 @@ public interface CallPeer
 	 *
 	 * @return <tt>true</tt> if this peer is acting as a conference focus; <tt>false</tt>, otherwise
 	 */
-	public boolean isConferenceFocus();
+	boolean isConferenceFocus();
 
 	/**
 	 * Determines whether the audio stream (if any) being sent to this peer is mute.
@@ -246,7 +247,7 @@ public interface CallPeer
 	 * @return <tt>true</tt> if an audio stream is being sent to this peer and it is currently mute;
 	 *         <tt>false</tt>, otherwise
 	 */
-	public boolean isMute();
+	boolean isMute();
 
 	/**
 	 * Removes a specific <tt>CallPeerConferenceListener</tt> from the list of listeners interested
@@ -257,7 +258,7 @@ public interface CallPeer
 	 *        a <tt>CallPeerConferenceListener</tt> to no longer be notified about changes in
 	 *        conference-related information
 	 */
-	public void removeCallPeerConferenceListener(CallPeerConferenceListener listener);
+	void removeCallPeerConferenceListener(CallPeerConferenceListener listener);
 
 	/**
 	 * Unregisters the specified listener.
@@ -265,7 +266,7 @@ public interface CallPeer
 	 * @param listener
 	 *        the listener to unregister.
 	 */
-	public void removeCallPeerListener(CallPeerListener listener);
+	void removeCallPeerListener(CallPeerListener listener);
 
 	/**
 	 * Unregisters the specified listener.
@@ -273,7 +274,7 @@ public interface CallPeer
 	 * @param listener
 	 *        the listener to unregister
 	 */
-	public void removeCallPeerSecurityListener(CallPeerSecurityListener listener);
+	void removeCallPeerSecurityListener(CallPeerSecurityListener listener);
 
 	/**
 	 * Removes a specific <tt>SoundLevelListener</tt> of the list of listeners interested in and
@@ -282,7 +283,7 @@ public interface CallPeer
 	 * @param listener
 	 *        the <tt>SoundLevelListener</tt> to remove
 	 */
-	public void removeConferenceMembersSoundLevelListener(
+	void removeConferenceMembersSoundLevelListener(
 		ConferenceMembersSoundLevelListener listener);
 
 	/**
@@ -291,7 +292,7 @@ public interface CallPeer
 	 * @param listener
 	 *        the property change listener to unregister.
 	 */
-	public void removePropertyChangeListener(PropertyChangeListener listener);
+	void removePropertyChangeListener(PropertyChangeListener listener);
 
 	/**
 	 * Removes a specific <tt>SoundLevelListener</tt> of the list of listeners interested in and
@@ -300,7 +301,7 @@ public interface CallPeer
 	 * @param listener
 	 *        the <tt>SoundLevelListener</tt> to remove
 	 */
-	public void removeStreamSoundLevelListener(SoundLevelListener listener);
+	void removeStreamSoundLevelListener(SoundLevelListener listener);
 
 	/**
 	 * Returns a string representation of the peer in the form of <br>
@@ -308,5 +309,5 @@ public interface CallPeer
 	 *
 	 * @return a string representation of the peer and its state.
 	 */
-	public String toString();
+	String toString();
 }

@@ -589,6 +589,7 @@ public class ChatFragment extends OSGiFragment
 
                 case R.id.chat_message_del:
                     List<String> msgUid = new ArrayList<>();
+                    List<File> msgFiles = new ArrayList<>();
                     for (int i = 0; i < checkListSize; i++) {
                         if (checkedList.valueAt(i)) {
                             cPos = checkedList.keyAt(i) - headerCount;
@@ -603,13 +604,19 @@ public class ChatFragment extends OSGiFragment
                                     }
                                     else {
                                         msgUid.add(chatMsg.getMessageUID());
+                                        // add voice files for auto delete
+                                        if (cType == ChatListAdapter.FILE_TRANSFER_MESSAGE_VIEW) {
+                                            File file = chatMsg.getFileRecord().getFile();
+                                            if (file.exists() && file.getName().startsWith("voice-"))
+                                                msgFiles.add(file);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                     EntityListHelper.eraseEntityChatHistory(mFragmentActivity,
-                            chatPanel.getChatSession().getDescriptor(), msgUid);
+                            chatPanel.getChatSession().getDescriptor(), msgUid, msgFiles);
                     // Action picked, so close the CAB
                     mode.finish();
                     return true;
@@ -1602,25 +1609,25 @@ public class ChatFragment extends OSGiFragment
         public TextView estimatedTimeLabel = null;
     }
 
-//    class IdRow2 // need to include in MessageViewHolder for stealth support
-//    {
-//        public int mId;
-//        public View mRow;
-//        public int mCountDownValue;
-//        public boolean deleteFlag;
-//        public boolean mStartCountDown;
-//        public boolean mFileIsOpened;
-//
-//        public IdRow2(int id, View row, int startValue)
-//        {
-//            mId = id;
-//            mRow = row;
-//            mCountDownValue = startValue;
-//            deleteFlag = false;
-//            mStartCountDown = false;
-//            mFileIsOpened = false;
-//        }
-//    }
+    //    class IdRow2 // need to include in MessageViewHolder for stealth support
+    //    {
+    //        public int mId;
+    //        public View mRow;
+    //        public int mCountDownValue;
+    //        public boolean deleteFlag;
+    //        public boolean mStartCountDown;
+    //        public boolean mFileIsOpened;
+    //
+    //        public IdRow2(int id, View row, int startValue)
+    //        {
+    //            mId = id;
+    //            mRow = row;
+    //            mCountDownValue = startValue;
+    //            deleteFlag = false;
+    //            mStartCountDown = false;
+    //            mFileIsOpened = false;
+    //        }
+    //    }
 
     /**
      * Loads the history in an asynchronous thread and then adds the history messages to the user

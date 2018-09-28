@@ -50,6 +50,7 @@ public class CallManager
 
     /**
      * A table mapping protocol <tt>Call</tt> objects to the GUI dialogs that are currently used to display them.
+     * The string ID is an instance of the time when the call is first activated
      */
     private static final Map<String, Call> activeCalls = new HashMap<>();
 
@@ -94,8 +95,9 @@ public class CallManager
     }
 
     /**
-     * @param callKey
-     * @return
+     * @param callKey an instance of the time when the call is first activated,
+     * it is used for later identification of the call.
+     * @return the active call
      */
     public synchronized static Call getActiveCall(String callKey)
     {
@@ -199,8 +201,7 @@ public class CallManager
     }
 
     /**
-     * Asynchronously hangs up the <tt>Call</tt>s participating in a specific
-     * <tt>CallConference</tt>.
+     * Asynchronously hangs up the <tt>Call</tt>s participating in a specific <tt>CallConference</tt>.
      *
      * @param conference the <tt>CallConference</tt> whose participating <tt>Call</tt>s are to be hanged up
      */
@@ -312,7 +313,6 @@ public class CallManager
         }
 
         List<ProtocolProviderService> telephonyProviders = CallManager.getTelephonyProviders();
-
         if (telephonyProviders.size() == 1) {
             CallManager.createCall(telephonyProviders.get(0), callString);
 
@@ -415,7 +415,6 @@ public class CallManager
          * participating in the specified telephony conference (if any).
          */
         Call call = null;
-
         if (conference != null) {
             List<Call> calls = conference.getCalls();
 
@@ -847,8 +846,7 @@ public class CallManager
          * <tt>Call</tt> to a contact specified either as a <tt>Contact</tt> instance or as a
          * <tt>String</tt> contact address/identifier.
          *
-         * The constructor is private because it relies on its arguments being validated prior to
-         * its invocation.
+         * The constructor is private because it relies on its arguments being validated prior to its invocation.
          *
          *
          * @param protocolProvider the <tt>ProtocolProviderService</tt> which is to perform the establishment of the
@@ -1021,7 +1019,6 @@ public class CallManager
             throws OperationFailedException
     {
         OperationSetBasicTelephony<?> telephony = protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
-
         if (telephony != null) {
             telephony.createCall(conferenceDescription, chatRoom);
         }

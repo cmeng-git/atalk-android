@@ -120,9 +120,9 @@ public class SystrayServiceImpl extends AbstractSystrayService
 	}
 
 	/**
-	 * Returns id of general notification that is bound to Jitsi icon.
+	 * Returns id of general notification that is bound to aTalk icon.
 	 * 
-	 * @return id of general notification that is bound to Jitsi icon.
+	 * @return id of general notification that is bound to aTalk icon.
 	 */
 	public static int getGeneralNotificationId()
 	{

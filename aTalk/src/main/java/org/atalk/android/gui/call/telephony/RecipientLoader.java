@@ -1,8 +1,6 @@
 package org.atalk.android.gui.call.telephony;
 
-import android.content.AsyncTaskLoader;
-import android.content.ContentResolver;
-import android.content.Context;
+import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -11,10 +9,9 @@ import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Contacts.Data;
 import android.support.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.atalk.android.aTalkApp;
+
+import java.util.*;
 
 public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Recipient>>
 {
@@ -169,10 +166,15 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
         nickname = "%" + nickname + "%";
         Uri queryUriForNickname = ContactsContract.Data.CONTENT_URI;
 
-        return contentResolver.query(queryUriForNickname, PROJECTION_NICKNAME,
-                ContactsContract.CommonDataKinds.Nickname.NAME + " LIKE ? AND " + Data.MIMETYPE + " = ?",
-                new String[]{nickname, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE},
-                null);
+        try {
+            return contentResolver.query(queryUriForNickname, PROJECTION_NICKNAME,
+                    ContactsContract.CommonDataKinds.Nickname.NAME + " LIKE ? AND " + Data.MIMETYPE + " = ?",
+                    new String[]{nickname, ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE},
+                    null);
+        } catch (Exception e) {
+            aTalkApp.showToastMessage("Ccontact Access Exception:\n" + e.getMessage());
+        }
+        return null;
     }
 
     @SuppressWarnings("ConstantConditions")

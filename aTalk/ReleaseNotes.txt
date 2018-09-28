@@ -1,5 +1,21 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.5.4 (1054)
+Author:         cmeng
+Upload Date:	09/28/2018
+- Update call notification broadcast receiver to be compliant with android-O new implementation
+- Add support to reflect the correct notification speaker phone state and enhance call state icon display
+- Add call peer avatar to call notification
+- Must use random number for notification ID, else the notification may not be cleared.
+- Fix TimeUtils.toNtpTime computation error giving rise to incorrect RTT calculated values
+- Call encryption and media encoding settings must be include in new or modified account for saving
+- Telephony contact access needs CONTACT READ/WRITE access permissions. Alert user otherwise.
+- Do not proceed with "Back-To-Call" from chat session if call has ended, otherwise UI stuck at call screen.
+- Auto purge voice files along with the voice messages when deleted.
+- Clean up errors in string translation for other languages
+- Move to use AS 3.2.0 and buildtools 28.0.2
+
+=========================================================================
 Version:		1.5.3 (1053)
 Author:         cmeng
 Upload Date:	09/18/2018

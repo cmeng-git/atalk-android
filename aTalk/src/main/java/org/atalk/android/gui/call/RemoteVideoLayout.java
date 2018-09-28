@@ -16,10 +16,11 @@ import net.java.sip.communicator.util.Logger;
 import org.atalk.android.util.java.awt.Dimension;
 
 /**
- * Layout that aligns remote video <tt>View</tt> by stretching it to screen width or height. It also controls whether call control buttons
- * group should be auto hidden or stay visible all the time. This layout will work only with <tt>VideoCallActivity</tt>.<br/>
- * IMPORTANT: it can't be done from <tt>Activity</tt>, because just after the views are created we don't know their sizes yet(return 0 or
- * invalid).
+ * Layout that aligns remote video <tt>View</tt> by stretching it to screen width or height. It also controls whether
+ * call control buttons group should be auto hidden or stay visible all the time. This layout will work only with
+ * <tt>VideoCallActivity</tt>.<br/>
+ * IMPORTANT: it can't be done from <tt>Activity</tt>, because just after the views are created we don't know their
+ * sizes yet(return 0 or invalid).
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -87,8 +88,8 @@ public class RemoteVideoLayout extends LinearLayout
 			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 			return;
 		}
-		VideoCallActivity videoActivity = (VideoCallActivity) ctx;
 
+		VideoCallActivity videoActivity = (VideoCallActivity) ctx;
 		if (childCount > 0) {
 			int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
 			int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
@@ -103,7 +104,6 @@ public class RemoteVideoLayout extends LinearLayout
 				height = parentHeight;
 				// width = height * ratio;
 				width = Math.ceil((height * ratio) / 16.0) * 16;
-
 				videoActivity.ensureAutoHideFragmentAttached();
 			}
 			// Stretch to match width
@@ -113,7 +113,6 @@ public class RemoteVideoLayout extends LinearLayout
 				width = parentWidth;
 				// height = width * ratio;
 				height = Math.ceil((width * ratio) / 16.0) * 16;
-
 				videoActivity.ensureAutoHideFragmentDetached();
 			}
 
@@ -138,7 +137,6 @@ public class RemoteVideoLayout extends LinearLayout
 			params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
 			params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 			this.setLayoutParams(params);
-
 			videoActivity.ensureAutoHideFragmentDetached();
 		}
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);

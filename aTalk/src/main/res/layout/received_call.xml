@@ -86,7 +86,7 @@
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_CALL"
             android:focusable="true"
-            android:src="@drawable/callbutton" />
+            android:src="@drawable/call_button" />
 
         <ImageButton
             android:id="@+id/hangupButton"
@@ -98,7 +98,7 @@
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/hang_up"
             android:focusable="true"
-            android:src="@drawable/callhangup" />
+            android:src="@drawable/call_hangup" />
     </LinearLayout>
 
 </RelativeLayout>
