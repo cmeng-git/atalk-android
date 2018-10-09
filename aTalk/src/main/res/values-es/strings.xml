@@ -142,6 +142,7 @@
     <string name="service_gui_CALL_VIA">Llamar por: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Video llamada</string>
     <string name="service_gui_CANCEL">Cancelar</string>
+    <string name="service_gui_CONTACT_INVALID">El contacto seleccionado no es válido: %1$s</string>
     <string name="service_gui_Contacts">Contactos</string>
     <string name="service_gui_DONE">¡Hecho!</string>
 
@@ -608,7 +609,7 @@
     <string name="service_gui_DECEMBER">Dic</string>
 
     <!-- Call info -->
-    <string name="service.protocol.ICE_FAILED">No se pudo establecer la conexión (el ICE falló y no se encontró el relevador)</string>
+    <string name="service_protocol_ICE_FAILED">No se pudo establecer la conexión (el ICE falló y no se encontró el relevador)</string>
     <string name="service_gui_callinfo_AUDIO_INFO">Información del audio</string>
     <string name="service_gui_callinfo_BANDWITH">Ancho de banda:</string>
     <string name="service_gui_callinfo_CALL_DURATION">Duración de la llamada:</string>
@@ -835,12 +836,12 @@
     <string name="plugin_notificationconfig_vibration">Vibración</string>
 
     <!-- call recordingconfig -->
-    <string name="plugin.callrecordingconfig.CALL_SAVED">Llamada guardada exitosamente</string>
-    <string name="plugin.callrecordingconfig.CALL_SAVED_TO">Guardar en: %1$s</string>
+    <string name="plugin_callrecordingconfig_CALL_SAVED">Llamada guardada exitosamente</string>
+    <string name="plugin_callrecordingconfig_CALL_SAVED_TO">Guardar en: %1$s</string>
 
     <!-- ZRTP Securing -->
-    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_CHANGED">La configuración del dispositivo de audio ha cambiado</string>
-    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Haga clic aquí para la administración del dispositivo</string>
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_CHANGED">La configuración del dispositivo de audio ha cambiado</string>
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Haga clic aquí para la administración del dispositivo</string>
     <string name="impl_media_configform_NO_PREVIEW">Avance</string>
     <string name="impl_media_security_CHECKSUM_MISMATCH">&lt;html>Desajuste interno de la suma de comprobación de paquetes ZRTP.&lt;br/>Si ves este mensaje con frecuencia, puede significar un ataque de denegación de servicio.!&lt;/html></string>
     <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>No se enviaron los datos de encriptación. La conexión de datos de Internet o el par están caídos.&lt;br/>&lt;b>Tu llamada no es segura&lt;/b>&lt;br/>Código de error: %1$s&lt;/html></string>
@@ -851,7 +852,7 @@
     <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Se detectó un grave problema de seguridad.&lt;br/>&lt;b>Tu llamada no es segura&lt;/b>&lt;br/>Código de error: %1$s&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Ningún secreto compartido retenido disponible.&lt;br/>&lt;b>Se recomienda la verificación SAS&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Falta un secreto compartido que se espera que se conserve.&lt;br/>&lt;b>Se requiere verificación SAS&lt;/b>&lt;br/>Si los códigos SAS no coinciden, cuelga y vuelva a intentarlo.&lt;/html></string>
-    <string name="impl.media.security.ZRTP_GENERIC_MSG">&lt;html>Se detectó un problema grave de ZRTP. &lt;br/>&lt;b>Su llamada no es segura &lt;/b>&lt;br/>Código de error: %1$s&lt;/html></string>
+    <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Se detectó un problema grave de ZRTP. &lt;br/>&lt;b>Su llamada no es segura &lt;/b>&lt;br/>Código de error: %1$s&lt;/html></string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Autentificar amigo</string>

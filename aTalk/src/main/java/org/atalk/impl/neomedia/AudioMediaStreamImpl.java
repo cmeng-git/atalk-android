@@ -17,32 +17,16 @@ import org.atalk.impl.neomedia.transform.csrc.SsrcTransformEngine;
 import org.atalk.impl.neomedia.transform.dtmf.DtmfTransformEngine;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.AudioMediaStream;
-import org.atalk.service.neomedia.DTMFInbandTone;
-import org.atalk.service.neomedia.DTMFMethod;
-import org.atalk.service.neomedia.DTMFRtpTone;
-import org.atalk.service.neomedia.DTMFTone;
-import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaService;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.RTPExtension;
-import org.atalk.service.neomedia.SrtpControl;
-import org.atalk.service.neomedia.StreamConnector;
-import org.atalk.service.neomedia.VolumeControl;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.device.MediaDevice;
-import org.atalk.service.neomedia.event.CsrcAudioLevelListener;
-import org.atalk.service.neomedia.event.DTMFListener;
-import org.atalk.service.neomedia.event.DTMFToneEvent;
-import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
+import org.atalk.service.neomedia.event.*;
 import org.atalk.util.Logger;
 import org.atalk.util.event.PropertyChangeNotifier;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.media.Format;
 import javax.media.control.BufferControl;
@@ -63,29 +47,26 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
      *
      * @see #registerCustomCodecFormats(StreamRTPManager)
      */
-    private static final AudioFormat[] CUSTOM_CODEC_FORMATS = new AudioFormat[]
-            {
-                    /*
-                     * these formats are specific, since RTP uses format numbers with no
-                     * parameters.
-                     */
-                    new AudioFormat(
-                            Constants.ALAW_RTP,
-                            8000,
-                            8,
-                            1,
-                            Format.NOT_SPECIFIED,
-                            AudioFormat.SIGNED),
-                    new AudioFormat(
-                            Constants.G722_RTP,
-                            8000,
-                            Format.NOT_SPECIFIED /* sampleSizeInBits */,
-                            1)
-            };
+    private static final AudioFormat[] CUSTOM_CODEC_FORMATS = new AudioFormat[]{
+            /*
+             * these formats are specific, since RTP uses format numbers with no parameters.
+             */
+            new AudioFormat(
+                    Constants.ALAW_RTP,
+                    8000,
+                    8,
+                    1,
+                    Format.NOT_SPECIFIED,
+                    AudioFormat.SIGNED),
+            new AudioFormat(
+                    Constants.G722_RTP,
+                    8000,
+                    Format.NOT_SPECIFIED /* sampleSizeInBits */,
+                    1)
+    };
 
     /**
-     * The <tt>Logger</tt> used by the <tt>AudioMediaStreamImpl</tt> class and its instances for
-     * logging output.
+     * The <tt>Logger</tt> used by the <tt>AudioMediaStreamImpl</tt> class and its instances for logging output.
      */
     private static final Logger logger = Logger.getLogger(AudioMediaStreamImpl.class);
 
@@ -97,8 +78,7 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     private final PropertyChangeNotifier audioSystemChangeNotifier;
 
     /**
-     * The listener that gets notified of changes in the audio level of remote conference
-     * participants.
+     * The listener that gets notified of changes in the audio level of remote conference participants.
      */
     private CsrcAudioLevelListener csrcAudioLevelListener;
 
@@ -120,8 +100,7 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
 
     /**
      * The <tt>VolumeControl</tt> implementation which is to control the volume (level) of the
-     * audio
-     * received in/by this <tt>AudioMediaStream</tt> and played back.
+     * audio received in/by this <tt>AudioMediaStream</tt> and played back.
      */
     private VolumeControl outputVolumeControl;
 
@@ -148,8 +127,7 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
      * <tt>MediaDevice</tt> for both capture and playback of audio exchanged via the specified
      * <tt>StreamConnector</tt>.
      *
-     * @param connector the <tt>StreamConnector</tt> the new instance is to use for sending and receiving
-     * audio
+     * @param connector the <tt>StreamConnector</tt> the new instance is to use for sending and receiving audio
      * @param device the <tt>MediaDevice</tt> the new instance is to use for both capture and playback of
      * audio exchanged via the specified <tt>StreamConnector</tt>
      * @param srtpControl a control which is already created, used to control the srtp operations.
@@ -246,15 +224,13 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
 
     /**
      * Delivers the <tt>audioLevels</tt> map to whoever is interested. This method is meant for use
-     * primarily by the transform engine handling incoming RTP packets (currently
-     * <tt>CsrcTransformEngine</tt>).
+     * primarily by the transform engine handling incoming RTP packets (currently <tt>CsrcTransformEngine</tt>).
      *
      * @param audioLevels an array mapping CSRC IDs to audio levels in consecutive elements.
      */
     public void audioLevelsReceived(long[] audioLevels)
     {
         CsrcAudioLevelListener csrcAudioLevelListener = this.csrcAudioLevelListener;
-
         if (csrcAudioLevelListener != null)
             csrcAudioLevelListener.audioLevelsReceived(audioLevels);
     }
@@ -285,8 +261,7 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
 
     /**
      * Performs any optional configuration on the <tt>BufferControl</tt> of the specified
-     * <tt>RTPManager</tt> which is to be used as the <tt>RTPManager</tt> of this
-     * <tt>MediaStreamImpl</tt>.
+     * <tt>RTPManager</tt> which is to be used as the <tt>RTPManager</tt> of this <tt>MediaStreamImpl</tt>.
      *
      * @param rtpManager the <tt>RTPManager</tt> which is to be used by this <tt>MediaStreamImpl</tt>
      * @param bufferControl the <tt>BufferControl</tt> of <tt>rtpManager</tt> on which any optional configuration
@@ -305,7 +280,6 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
          * most is that it's proportional to the latency of the playback.
          */
         long bufferLength = 120;
-
         if (cfg != null) {
             String bufferLengthStr = cfg.getString(PROPERTY_NAME_RECEIVE_BUFFER_LENGTH);
 
@@ -332,11 +306,9 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * A stub that allows audio oriented streams to create and keep a reference to a
-     * <tt>DtmfTransformEngine</tt>.
+     * A stub that allows audio oriented streams to create and keep a reference to a <tt>DtmfTransformEngine</tt>.
      *
-     * @return a <tt>DtmfTransformEngine</tt> if this is an audio oriented stream and <tt>null</tt>
-     * otherwise.
+     * @return a <tt>DtmfTransformEngine</tt> if this is an audio oriented stream and <tt>null</tt> otherwise.
      */
     @Override
     protected DtmfTransformEngine createDtmfTransformEngine()
@@ -426,8 +398,7 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Returns the <tt>MediaDeviceSession</tt> associated with this stream after first casting
-     * it to
+     * Returns the <tt>MediaDeviceSession</tt> associated with this stream after first casting it to
      * <tt>AudioMediaDeviceSession</tt> since this is, after all, an <tt>AudioMediaStreamImpl</tt>.
      *
      * @return the <tt>AudioMediaDeviceSession</tt> associated with this stream.
@@ -439,19 +410,16 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Returns the last audio level that was measured by the underlying device session for the
-     * specified <tt>ssrc</tt> (where <tt>ssrc</tt> could also correspond to our local sync source
-     * identifier).
+     * Returns the last audio level that was measured by the underlying device session for the specified
+     * <tt>ssrc</tt> (where <tt>ssrc</tt> could also correspond to our local sync source identifier).
      *
      * @param ssrc the SSRC ID whose last measured audio level we'd like to retrieve.
      * @return the audio level that was last measured for the specified <tt>ssrc</tt> or
-     * <tt>-1</tt>
-     * if no level has been cached for that ID.
+     * <tt>-1</tt> if no level has been cached for that ID.
      */
     public int getLastMeasuredAudioLevel(long ssrc)
     {
         AudioMediaDeviceSession devSession = getDeviceSession();
-
         if (devSession == null)
             return -1;
         else if (ssrc == getLocalSourceID())
@@ -461,8 +429,7 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * The priority of the audio is 3, which is meant to be higher than other threads and higher
-     * than the video one.
+     * The priority of the audio is 3, which is meant to be higher than other threads and higher than the video one.
      *
      * @return audio priority.
      */
@@ -475,8 +442,7 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     /**
      * Receives and reacts to property change events: if the selected device (for capture, playback
      * or notifications) has changed, then create or recreate the streams in order to use it. We
-     * want to listen to these events, especially for those generated after the audio system has
-     * changed.
+     * want to listen to these events, especially for those generated after the audio system has changed.
      *
      * @param ev The event which may contain a audio system change event.
      */
@@ -503,7 +469,6 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     protected void registerCustomCodecFormats(StreamRTPManager rtpManager)
     {
         super.registerCustomCodecFormats(rtpManager);
-
         for (AudioFormat format : CUSTOM_CODEC_FORMATS) {
             if (logger.isDebugEnabled()) {
                 logger.debug("registering format " + format + " with RTPManager");
@@ -621,7 +586,6 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
         switch (dtmfMethod) {
             case INBAND_DTMF:
                 MediaDeviceSession deviceSession = getDeviceSession();
-
                 if (deviceSession != null)
                     deviceSession.addDTMF(DTMFInbandTone.mapTone(tone));
                 break;

@@ -15,6 +15,7 @@ import net.java.sip.communicator.service.protocol.ProtocolNames;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.AndroidCallUtil;
 import org.atalk.service.osgi.OSGiActivity;
 
@@ -60,8 +61,11 @@ public class AccountPreferencesActivity extends OSGiActivity
 
         String userUniqueID = getIntent().getStringExtra(EXTRA_USER_ID);
         AccountID account = AccountUtils.getAccountIDForUID(userUniqueID);
+
+        // account is null before it is properly registered with the server
         if (account == null) {
-            throw new RuntimeException("No account found for id: " + userUniqueID);
+            aTalkApp.showToastMessage("No valid registered account found: " + userUniqueID);
+            finish();
         }
         // Gets the registration wizard service for account protocol
         String protocolName = account.getProtocolName();

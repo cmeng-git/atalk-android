@@ -137,6 +137,7 @@
     <string name="service_gui_CALL_VIA">Anruf über: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Videoanruf tätigen</string>
     <string name="service_gui_CANCEL">Zurück</string>
+    <string name="service_gui_CONTACT_INVALID">Der ausgewählte Kontakt ist nicht gültig: %1$s</string>
     <string name="service_gui_Contacts">Kontakte</string>
     <string name="service_gui_DONE">OK</string>
 
@@ -601,7 +602,7 @@
     <string name="service_gui_DECEMBER">Dez</string>
 
     <!-- Call info -->
-    <string name="service.protocol.ICE_FAILED">Verbindung konnte nicht hergestellt werden (ICE fehlgeschlagen und kein Relay gefunden)</string>
+    <string name="service_protocol_ICE_FAILED">Verbindung konnte nicht hergestellt werden (ICE fehlgeschlagen und kein Relay gefunden)</string>
     <string name="service_gui_callinfo_AUDIO_INFO">Audioinformationen</string>
     <string name="service_gui_callinfo_BANDWITH">Bandbreite:</string>
     <string name="service_gui_callinfo_CALL_DURATION">Anrufdauer:</string>
@@ -820,12 +821,12 @@
     <string name="plugin_notificationconfig_vibration">Vibration</string>
 
     <!-- call recordingconfig -->
-    <string name="plugin.callrecordingconfig.CALL_SAVED">Anruf erfolgreich gespeichert</string>
-    <string name="plugin.callrecordingconfig.CALL_SAVED_TO">Speichern unter: %1$s</string>
+    <string name="plugin_callrecordingconfig_CALL_SAVED">Anruf erfolgreich gespeichert</string>
+    <string name="plugin_callrecordingconfig_CALL_SAVED_TO">Speichern unter: %1$s</string>
 
     <!-- ZRTP Securing -->
-    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_CHANGED">Audiogerätekonfiguration geändert</string>
-    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Klicken Sie hier für die Geräteverwaltung</string>
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_CHANGED">Audiogerätekonfiguration geändert</string>
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Klicken Sie hier für die Geräteverwaltung</string>
     <string name="impl_media_configform_NO_PREVIEW">Vorschau</string>
     <string name="impl_media_security_CHECKSUM_MISMATCH">&lt;html>Interne ZRTP-Paketprüfsummenabweichung.&lt;br/>Wenn Sie diese Nachricht sehen, kann dies eine Denial-of-Service-Attacke bedeuten!&lt;/html></string>
   <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>Fehler beim Senden der Verschlüsselungsdaten. Internetdatenverbindung oder Peer ist inaktiv.&lt;br/>&lt;b>Ihr Anruf läuft unverschlüsselt&lt;br>&lt;br/>&gt; Fehlercode: %1$s&lt;/html></string>
@@ -837,7 +838,7 @@
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Kein gemeinsames Passwort verfügbar.&lt;br/>&lt;b>SAS-Verifizierung wird empfohlen&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Ein erwartetes gemeinsames Passwort 
     fehlt.&lt;br/>&lt;b>SAS-Verifikation ist erforderlich.&lt;/b>&lt;br/>Wenn SAS-Codes nicht übereinstimmen, dann auflegen und neu versuchen.&lt;/html></string>
-    <string name="impl.media.security.ZRTP_GENERIC_MSG">&lt;html>Ein schwerwiegendes ZRTP-Problem wurde erkannt.&lt;br/>&lt;b>Ihr Anruf läuft unverschlüsselt.&lt;br>&lt;br/>Fehlercode: %1$s&lt;/html></string>
+    <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Ein schwerwiegendes ZRTP-Problem wurde erkannt.&lt;br/>&lt;b>Ihr Anruf läuft unverschlüsselt.&lt;br>&lt;br/>Fehlercode: %1$s&lt;/html></string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Chatpartner authentifizieren</string>

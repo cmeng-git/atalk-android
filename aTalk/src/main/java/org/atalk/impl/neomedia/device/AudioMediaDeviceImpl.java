@@ -28,6 +28,7 @@ import javax.media.protocol.DataSource;
  * Extends <tt>MediaDeviceImpl</tt> with audio-specific functionality.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class AudioMediaDeviceImpl extends MediaDeviceImpl
 {
@@ -49,9 +50,8 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
     private List<RTPExtension> rtpExtensions = null;
 
     /**
-     * Initializes a new <tt>AudioMediaDeviceImpl</tt> instance which represents a
-     * <tt>MediaDevice</tt> with <tt>MediaType</tt> <tt>AUDIO</tt> and a <tt>MediaDirection</tt>
-     * which does not allow sending.
+     * Initializes a new <tt>AudioMediaDeviceImpl</tt> instance which represents a <tt>MediaDevice</tt> with
+     * <tt>MediaType</tt> <tt>AUDIO</tt> and a <tt>MediaDirection</tt> which does not allow sending.
      */
     public AudioMediaDeviceImpl()
     {
@@ -87,19 +87,15 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
         /*
          * 1. Changing the buffer length to 30 ms. The default buffer size (for JavaSound) is
          * 125 ms (i.e. 1/8 sec). On Mac OS X, this leads to an exception and no audio capture. A
-         * value of 30 ms for the buffer length fixes the problem and is OK when using some PSTN
-         * gateways.
+         * value of 30 ms for the buffer length fixes the problem and is OK when using some PSTN gateways.
          *
-         * 2. Changing to 60 ms. When it is 30 ms, there are some issues with Asterisk and NAT (we
-         * don't start to send a/the stream and Asterisk's RTP functionality doesn't notice that
-         * we're behind NAT).
+         * 2. Changing to 60 ms. When it is 30 ms, there are some issues with Asterisk and NAT (we don't start to
+          * send a/the stream and Asterisk's RTP functionality doesn't notice that we're behind NAT).
          *
          * 3. Do not set buffer length on Linux as it completely breaks audio capture.
          */
         if (!OSUtils.IS_LINUX) {
-            BufferControl bufferControl = (BufferControl) captureDevice
-                    .getControl(BufferControl.class.getName());
-
+            BufferControl bufferControl = (BufferControl) captureDevice.getControl(BufferControl.class.getName());
             if (bufferControl != null)
                 bufferControl.setBufferLength(60 /* millis */);
         }
@@ -243,11 +239,9 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
                         || (sampleRate <= MediaUtils.MAX_AUDIO_SAMPLE_RATE)) {
                     int sampleSizeInBits = audioFormat.getSampleSizeInBits();
 
-                    if ((sampleSizeInBits == Format.NOT_SPECIFIED)
+                    return (sampleSizeInBits == Format.NOT_SPECIFIED)
                             || (MediaUtils.MAX_AUDIO_SAMPLE_SIZE_IN_BITS == Format.NOT_SPECIFIED)
-                            || (sampleSizeInBits <= MediaUtils.MAX_AUDIO_SAMPLE_SIZE_IN_BITS)) {
-                        return true;
-                    }
+                            || (sampleSizeInBits <= MediaUtils.MAX_AUDIO_SAMPLE_SIZE_IN_BITS);
                 }
             }
         }
@@ -278,7 +272,7 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
                     for (FormatControl formatControl : formatControls) {
                         Format format = formatControl.getFormat();
 
-                        if ((format != null) && isLessThanOrEqualToMaxAudioFormat(format))
+                        if (isLessThanOrEqualToMaxAudioFormat(format))
                             continue;
 
                         Format[] supportedFormats = formatControl.getSupportedFormats();
@@ -293,7 +287,7 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
                             }
                         }
 
-                        if (!supportedFormatToSet.matches(format)) {
+                        if ((supportedFormatToSet != null) && !supportedFormatToSet.matches(format)) {
                             int channels = supportedFormatToSet.getChannels();
                             double sampleRate = supportedFormatToSet.getSampleRate();
                             int sampleSizeInBits = supportedFormatToSet.getSampleSizeInBits();

@@ -48,7 +48,6 @@ public class ReceiveFileConversation extends FileTransferConversation
     private OperationSetFileTransfer fileTransferOpSet;
     private String mDate;
     private String mSendTo;
-    private File downloadFile;
 
     public ReceiveFileConversation()
     {
@@ -101,7 +100,7 @@ public class ReceiveFileConversation extends FileTransferConversation
                 showThumbnail(thumbnail);
             }
 
-            downloadFile = createFile(fileTransferRequest);
+            mXferFile = createFile(fileTransferRequest);
             messageViewHolder.acceptButton.setVisibility(View.VISIBLE);
             messageViewHolder.acceptButton.setOnClickListener(new View.OnClickListener()
             {
@@ -113,8 +112,8 @@ public class ReceiveFileConversation extends FileTransferConversation
                     messageViewHolder.rejectButton.setVisibility(View.GONE);
 
                     // set the download for global display parameter
-                    mChatFragment.getChatListAdapter().setFileName(msgId, downloadFile);
-                    (new acceptFile(downloadFile)).execute();
+                    mChatFragment.getChatListAdapter().setFileName(msgId, mXferFile);
+                    (new acceptFile(mXferFile)).execute();
                 }
             });
 
@@ -174,15 +173,15 @@ public class ReceiveFileConversation extends FileTransferConversation
                 break;
 
             case FileTransferStatusChangeEvent.COMPLETED:
-                if (downloadFile == null) { // Android view redraw happen
-                    downloadFile = mChatFragment.getChatListAdapter().getFileName(msgId);
+                if (mXferFile == null) { // Android view redraw happen
+                    mXferFile = mChatFragment.getChatListAdapter().getFileName(msgId);
                 }
-                MyGlideApp.loadImage(messageViewHolder.stickerView, downloadFile, false);
+                MyGlideApp.loadImage(messageViewHolder.stickerView, mXferFile, false);
 
-                String fileName = getFileLabel(downloadFile.getName(), downloadFile.length());
+                String fileName = getFileLabel(mXferFile.getName(), mXferFile.length());
                 messageViewHolder.fileLabel.setText(fileName);
 
-                setCompletedDownloadFile(mChatFragment, downloadFile);
+                setCompletedDownloadFile(mChatFragment, mXferFile);
                 messageViewHolder.titleLabel.setText(
                         aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, mDate, mSendTo));
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
@@ -268,25 +267,25 @@ public class ReceiveFileConversation extends FileTransferConversation
             logger.error("Could not create the download directory : " + downloadDir.getAbsolutePath());
         }
 
-        downloadFile = new File(downloadDir, incomingFileName);
+        mXferFile = new File(downloadDir, incomingFileName);
         // If a file with the given name already exists, add an index to the file name.
         int index = 0;
         int filenameLength = incomingFileName.lastIndexOf(".");
         if (filenameLength == -1) {
             filenameLength = incomingFileName.length();
         }
-        while (downloadFile.exists()) {
+        while (mXferFile.exists()) {
             String newFileName = incomingFileName.substring(0, filenameLength) + "-"
                     + ++index + incomingFileName.substring(filenameLength);
-            downloadFile = new File(downloadDir, newFileName);
+            mXferFile = new File(downloadDir, newFileName);
         }
 
         // Change the file name to the name we would use on the local file system.
-        if (!downloadFile.getName().equals(incomingFileName)) {
-            String fileName = getFileLabel(downloadFile.getName(), fileTransferRequest.getFileSize());
+        if (!mXferFile.getName().equals(incomingFileName)) {
+            String fileName = getFileLabel(mXferFile.getName(), fileTransferRequest.getFileSize());
             messageViewHolder.fileLabel.setText(fileName);
         }
-        return downloadFile;
+        return mXferFile;
     }
 
     /**
@@ -397,7 +396,7 @@ public class ReceiveFileConversation extends FileTransferConversation
                     fileTransferOpSet.removeFileTransferListener(ReceiveFileConversation.this);
 
                     hideProgressRelatedComponents();
-                    // delete created downloadFile???
+                    // delete created mXferFile???
                     messageViewHolder.titleLabel.setText(
                             aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED, mDate));
                 }

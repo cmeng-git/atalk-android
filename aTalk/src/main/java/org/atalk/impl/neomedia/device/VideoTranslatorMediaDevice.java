@@ -377,8 +377,7 @@ public class VideoTranslatorMediaDevice extends AbstractMediaDevice
 		 * data to be sent by <tt>MediaStream</tt> to <tt>MediaStreamTarget</tt>.
 		 *
 		 * @return the output <tt>DataSource</tt> of this instance which provides the captured
-		 * (RTP)
-		 * data to be sent by <tt>MediaStream</tt> to <tt>MediaStreamTarget</tt>
+		 * (RTP) data to be sent by <tt>MediaStream</tt> to <tt>MediaStreamTarget</tt>
 		 * @see MediaDeviceSession#getOutputDataSource()
 		 */
 		@Override

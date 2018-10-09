@@ -61,8 +61,7 @@ public class RTPSessionMgr extends net.sf.fmj.media.rtp.RTPSessionMgr
 
 	/**
 	 * Sets the <tt>SSRCFactory</tt> to be utilized by this instance to generate new
-	 * synchronization
-	 * source (SSRC) identifiers.
+	 * synchronization source (SSRC) identifiers.
 	 *
 	 * @param ssrcFactory
 	 * 		the <tt>SSRCFactory</tt> to be utilized by this instance to generate new

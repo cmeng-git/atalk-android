@@ -47,8 +47,7 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	protected final FormatControl formatControl;
 
 	/**
-	 * Initializes a new <tt>AbstractBufferStream</tt> instance which is to have its
-	 * <tt>Format</tt>
+	 * Initializes a new <tt>AbstractBufferStream</tt> instance which is to have its <tt>Format</tt>
 	 * -related information abstracted by a specific <tt>FormatControl</tt>.
 	 *
 	 * @param dataSource
@@ -85,8 +84,7 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	/**
 	 * Gets the <tt>Format</tt> of this <tt>AbstractBufferStream</tt> as directly known by it.
 	 * Allows extenders to override the <tt>Format</tt> known to the <tt>DataSource</tt> which
-	 * created this instance and possibly provide more details on the currently set
-	 * <tt>Format</tt>.
+	 * created this instance and possibly provide more details on the currently set <tt>Format</tt>.
 	 *
 	 * @return the <tt>Format</tt> of this <tt>AbstractBufferStream</tt> as directly known by it or
 	 * <tt>null</tt> if this <tt>AbstractBufferStream</tt> does not directly know its
@@ -157,8 +155,7 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	 * Implements {@link javax.media.protocol.Controls#getControls()}. Gets the controls available
 	 * for this instance.
 	 *
-	 * @return an array of <tt>Object</tt>s which represent the controls available for this
-	 * instance
+	 * @return an array of <tt>Object</tt>s which represent the controls available for this instance
 	 */
 	public Object[] getControls()
 	{

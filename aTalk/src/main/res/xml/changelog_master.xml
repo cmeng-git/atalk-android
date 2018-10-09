@@ -6,6 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.5.5 (10/09/2018)" versioncode="1055">
+        <change>Fix media call problem with no voice on receiving end; sender mic data lost due to improper HolePunchPacket sent</change>
+        <change>Show permission request prompt if &lt;3 permissions are granted. Some android devices permanently deny all on first launch</change>
+        <change>Need to take care voice files deletion when info is yet to be saved to chatHistory fileRecord</change>
+        <change>Avoid network re-connect during IBR Captcha dialog mode; Otherwise cause aTalk in deadlock</change>
+        <change>Add proper handler for SecurityException when access to phone contact while permission is not granted</change>
+        <change>Ensure proper display of phone book contacts information in contact list on search</change>
+        <change>Fix uncaught exception when member is kicked from chatRoom</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.5.4 (09/28/2018)" versioncode="1054">
         <change>Update call notification broadcast receiver to be compliant with android-O requirements</change>
         <change>Improve call icons/avatar and notifications UI to reflect actual calling states</change>

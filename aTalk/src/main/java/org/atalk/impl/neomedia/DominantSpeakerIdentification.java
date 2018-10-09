@@ -143,10 +143,9 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
 	private static final int N1 = 13;
 
 	/**
-	 * The length/size of a sub-band in the frequency range evaluated for immediate speech
-	 * activity. In the context of the implementation of the class
-	 * <tt>DominantSpeakerIdentification</tt>, it specifies the length/size of a sub-unit of the
-	 * audio level range defined by RFC 6465.
+	 * The length/size of a sub-band in the frequency range evaluated for immediate speech activity.
+	 * In the context of the implementation of the class <tt>DominantSpeakerIdentification</tt>, it
+	 * specifies the length/size of a sub-unit of the audio level range defined by RFC 6465.
 	 */
 	private static final int N1_SUBUNIT_LENGTH = (MAX_LEVEL - MIN_LEVEL + N1 - 1) / N1;
 

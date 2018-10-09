@@ -741,7 +741,10 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 			throws IllegalArgumentException
 	{
 		if (!(metaContact instanceof MetaContactImpl)) {
-			throw new IllegalArgumentException(metaContact + " is not a MetaContactImpl instance.");
+		    //cmeng: do not throw; there is no proper handler defined. Just log and return
+			// throw new IllegalArgumentException(metaContact + " is not a MetaContactImpl instance.");
+			logger.error(metaContact + " is not a MetaContactImpl instance.");
+			return;
 		}
 
 		byte[] oldAvatar = metaContact.getAvatar(true);

@@ -71,9 +71,9 @@ public class AndroidCallUtil
         Menu menu = popup.getMenu();
         ProtocolProviderService mProvider = null;
 
+        // loop through all registered providers to find the calleeAddress own provider
         for (final ProtocolProviderService provider : AccountUtils.getOnlineProviders()) {
             XMPPTCPConnection connection = provider.getConnection();
-
             try {
                 if (Roster.getInstanceFor(connection).contains(JidCreate.bareFrom(calleeAddress))) {
                     String accountAddress = provider.getAccountID().getAccountJid();
@@ -88,13 +88,18 @@ public class AndroidCallUtil
                     });
                     mProvider = provider;
                 }
+                // Pre-assigned current provider in case the calleeAddress is not listed in roaster;
+                // e.g call contact from phone book - user the first available
+                if (mProvider == null)
+                    mProvider = provider;
+
             } catch (XmppStringprepException e) {
                 e.printStackTrace();
             }
         }
         if (menu.size() > 1)
             popup.show();
-        else
+        else if (mProvider != null)
             createCall(context, calleeAddress, mProvider, isVideoCall);
     }
 

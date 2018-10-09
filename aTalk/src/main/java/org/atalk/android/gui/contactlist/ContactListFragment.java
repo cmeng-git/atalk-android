@@ -529,6 +529,11 @@ public class ContactListFragment extends OSGiFragment
         }
 
         MetaContact metaContact = (MetaContact) clicked;
+        if (metaContact.getDefaultContact() == null) {
+            aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID,  metaContact.getDisplayName());
+            return false;
+        }
+
         // Default to telephony access if contact is not a valid entityJid
         if (metaContact.getDefaultContact().getJid() instanceof DomainJid) {
             String domainJid = metaContact.getDefaultContact().getJid().toString();

@@ -161,7 +161,6 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
 				}
 			}
 		}
-
 		if (interrupted)
 			Thread.currentThread().interrupt();
 	}
@@ -380,7 +379,6 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
 				catch (Throwable t) {
 					if (t instanceof ThreadDeath)
 						throw (ThreadDeath) t;
-
 					/*
 					 * If loopCondition fails to successfully and explicitly evaluate to true,
 					 * this audio should seize to play in a loop. Otherwise, there is a risk that
@@ -396,7 +394,6 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
 					break;
 				}
 			}
-
 			if (interrupted)
 				Thread.currentThread().interrupt();
 		} finally {

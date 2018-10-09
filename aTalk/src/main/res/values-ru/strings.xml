@@ -137,6 +137,7 @@
     <string name="service_gui_CALL_VIA">Вызов через: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Видеозвонок</string>
     <string name="service_gui_CANCEL">Отменить</string>
+    <string name="service_gui_CONTACT_INVALID">Выбранный контакт недействителен: %1$s</string>
     <string name="service_gui_Contacts">Контакты</string>
     <string name="service_gui_DONE">Готово</string>
 
@@ -604,7 +605,7 @@
     <string name="service_gui_DECEMBER">Dec</string>
 
     <!-- Call info -->
-	<string name="service.protocol.ICE_FAILED">Не удалось установить соединение (ICE не удалось и не найдено)</string>
+	<string name="service_protocol_ICE_FAILED">Не удалось установить соединение (ICE не удалось и не найдено)</string>
     <string name="service_gui_callinfo_AUDIO_INFO">Аудиоинформация</string>
     <string name="service_gui_callinfo_BANDWITH">Полоса пропускания:</string>
     <string name="service_gui_callinfo_CALL_DURATION">Длительность звонка:</string>
@@ -831,12 +832,12 @@
     <string name="plugin_notificationconfig_vibration">Вибрация</string>
 
     <!-- call recordingconfig -->
-	<string name="plugin.callrecordingconfig.CALL_SAVED">Вызов успешно сохранен</string>
-    <string name="plugin.callrecordingconfig.CALL_SAVED_TO">Сохранить в: %1$s</string>
+	<string name="plugin_callrecordingconfig_CALL_SAVED">Вызов успешно сохранен</string>
+    <string name="plugin_callrecordingconfig_CALL_SAVED_TO">Сохранить в: %1$s</string>
 
     <!-- ZRTP Securing -->
-    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_CHANGED">Изменена конфигурация аудиоустройства</string>
-    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Нажмите здесь для управления устройством</string>
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_CHANGED">Изменена конфигурация аудиоустройства</string>
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Нажмите здесь для управления устройством</string>
     <string name="impl_media_configform_NO_PREVIEW">Предварительный просмотр</string>
     <string name="impl_media_security_CHECKSUM_MISMATCH">&lt;html>Внутренняя несоответствие контрольной суммы пакета ZRTP. &lt;br/>Если вы часто видите это сообщение, это может означать атаку отказа в обслуживании! &lt;/html></string>
     <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>Не удалось отправить данные шифрования. Интернет-соединение для передачи данных или одноранговое соединение отключено. &lt;br/>&lt;b>Ваш вызов не является безопасным &lt;/b>&lt;br/>Код ошибки: %1$s &lt;/html></string>
@@ -847,7 +848,7 @@
     <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Была обнаружена серьезная проблема безопасности. &lt;br/>&lt;b>Ваш вызов не защищен &lt;/b>&lt;br/>Код ошибки: {0} &lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Недоступен сохраненный общий секрет. &lt;br/>&lt;b>Рекомендуется проверка SAS &lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Отсутствует ожидаемый сохраненный общий секрет. &lt;br/>&lt;b>Требуется проверка SAS &lt;/b>&lt;br/>Если коды SAS не совпадают, то зависание и повторите попытку &lt;/html></string>
-    <string name="impl.media.security.ZRTP_GENERIC_MSG">&lt;html>Была обнаружена серьезная проблема ZRTP. &lt;br/>&lt;b>Ваш вызов не является безопасным &lt;/b>&lt;br/>Код ошибки : %1$s &lt;/html></string>
+    <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Была обнаружена серьезная проблема ZRTP. &lt;br/>&lt;b>Ваш вызов не является безопасным &lt;/b>&lt;br/>Код ошибки : %1$s &lt;/html></string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Аутентификация приятеля</string>

@@ -1,5 +1,24 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.5.5 (1055)
+Author:         cmeng
+Upload Date:	10/09/2018
+- Fix media call problem with no voice on receiving end - sender mic data lost
+- Fix CallPeerMediaHandler#sendHolePunchPacket-sending the defined HOLE_PUNCH_PACKET causes problem in transmit mic data being muted
+- Show permission request prompt if < 3 permissions are granted. Some android devices permanently deny all on first launch
+- Need to take care voice files deletion when the VoiceMessage is yet to be converted to chatHistory fileRecord
+- Avoid network re-connect during IBR Captcha dialog mode, Otherwise NetworkOnMainThreadException causing aTalk in deadlock
+- Add proper handler for SecurityException when access to phone contact while permission is not granted
+- Ensure proper display of phone book contacts information in contact list on search.
+- Ensure the corresponding protocolProvider for the callee is used when making media call - AndroidCallUtil.showCallViaMenu()
+- Use AudioTrack(AudioAttributes, android.media.AudioFormat, int,int,int)} in AudioTrackRender for android-L
+- Change hashTable members and banList in ChatRoomJabberImpl to use ResourcePart as key - otherwise member kick has exception.
+- Fix error in string names definition in string.xml file
+- Audio device capabilities query is not supported on android - change jni opensles access to reflect actual status
+- Fix NPE reported from field for aTalk v1.5.4
+- Android NDK: android-15 is unsupported. Using minimum supported version android-16.
+
+=========================================================================
 Version:		1.5.4 (1054)
 Author:         cmeng
 Upload Date:	09/28/2018

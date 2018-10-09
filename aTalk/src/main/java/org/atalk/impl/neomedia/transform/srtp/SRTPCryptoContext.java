@@ -34,7 +34,6 @@
  */
 package org.atalk.impl.neomedia.transform.srtp;
 
-import org.atalk.android.gui.call.VideoCallActivity;
 import org.atalk.bccontrib.params.ParametersForSkein;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
@@ -242,14 +241,14 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
         }
 
         // if video call is just resume from pause, then igore the first result if failed
-//        if (((seqNo - s_l) > 10 || (seqNo < s_l)) && VideoCallActivity.isBackToChat()) {
-//            logger.error("CheckReplay state: " + Long.toString(0xFFFFFFFFL & ssrc) + ": seqNo: "
-//                    + seqNo + ", s_l: " + s_l + ", state: " + isAuthPacket);
-//            VideoCallActivity.setBackToChat(false);
-//            if (!isAuthPacket)
-//                reSync(seqNo, guessedIndex);
-//            return true;
-//        }
+        //        if (((seqNo - s_l) > 10 || (seqNo < s_l)) && VideoCallActivity.isBackToChat()) {
+        //            logger.error("CheckReplay state: " + Long.toString(0xFFFFFFFFL & ssrc) + ": seqNo: "
+        //                    + seqNo + ", s_l: " + s_l + ", state: " + isAuthPacket);
+        //            VideoCallActivity.setBackToChat(false);
+        //            if (!isAuthPacket)
+        //                reSync(seqNo, guessedIndex);
+        //            return true;
+        //        }
 
         // Compute the index of the previously received packet and its delta to
         // the newly received packet.
@@ -318,7 +317,7 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
      */
     public SRTPCryptoContext deriveContext(int ssrc, int roc, long deriveRate)
     {
-        return new SRTPCryptoContext( sender, ssrc, roc, deriveRate, masterKey, masterSalt, policy);
+        return new SRTPCryptoContext(sender, ssrc, roc, deriveRate, masterKey, masterSalt, policy);
     }
 
     /**
@@ -562,8 +561,9 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
         if (!checkReplay(seqNo, guessedIndex, false)) {
             return false;
         }
-        //        if (seqNo % 1000 == 0)
-        //            new Exception("transform checkReply #" + seqNo + ": "+ Long.toString(0xFFFFFFFFL & ssrc)).printStackTrace();
+        // if (seqNo % 500 == 0)
+        //    logger.error("transform checkReply #" + seqNo + ": " + Long.toString(0xFFFFFFFFL & ssrc));
+        //    new Exception("transform checkReply #" + seqNo + ": " + Long.toString(0xFFFFFFFFL & ssrc)).printStackTrace();
 
         switch (policy.getEncType()) {
             // Encrypt the packet using Counter Mode encryption.

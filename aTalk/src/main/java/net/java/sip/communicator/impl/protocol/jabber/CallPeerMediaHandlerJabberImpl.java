@@ -1252,9 +1252,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             MediaStream stream = getStream(MediaType.VIDEO);
 
             if (stream != null && dev != null) {
-                List<MediaFormat> fmts = supportedFormats;
-                if (fmts.size() > 0) {
-                    MediaFormat fmt = fmts.get(0);
+                if (supportedFormats.size() > 0) {
+                    MediaFormat fmt = supportedFormats.get(0);
                     ((VideoMediaStream) stream).updateQualityControl(fmt.getAdvancedAttributes());
                 }
             }

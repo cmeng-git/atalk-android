@@ -63,9 +63,9 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
     private ChatActivity chatActivity;
 
     /**
-     * The download file and directory.
+     * The xfer file and directory.
      */
-    protected File downloadFile;
+    protected File mXferFile;
 
     /**
      * The file transfer.
@@ -200,9 +200,8 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
     protected void setCompletedDownloadFile(ChatFragment cPanel, File file)
     {
         this.chatActivity = (ChatActivity) cPanel.getActivity();
-        this.downloadFile = file;
+        mXferFile = file;
         final String toolTip = aTalkApp.getResString(R.string.service_gui_OPEN_FILE_FROM_IMAGE);
-        // messageViewHolder.imageLabel.setFile(downloadFile);
         messageViewHolder.imageLabel.setContentDescription(toolTip);
         View.OnClickListener onAction = getOnSetListener();
         messageViewHolder.imageLabel.setOnClickListener(onAction);
@@ -390,7 +389,7 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
                     case R.id.button_file:
                     case R.id.sticker:
                         if (chatActivity != null)
-                            chatActivity.openDownloadable(downloadFile);
+                            chatActivity.openDownloadable(mXferFile);
                         break;
 
                     case R.id.buttonCancel:
@@ -403,5 +402,12 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
                 }
             }
         };
+    }
+
+    /**
+     * @return the fileTransfer file
+     */
+    public File getFileName() {
+        return mXferFile;
     }
 }

@@ -113,9 +113,8 @@ public abstract class AbstractControls implements Controls
 	 * <tt>Controls</tt> implementation or the <tt>Controls</tt> implementation itself if it is an
 	 * instance of the specified <tt>Class</tt>. The method is similar to
 	 * {@link #getControl(Controls, String)} in querying the specified <tt>Controls</tt>
-	 * implementation about a control of the specified <tt>Class</tt> but is different in
-	 * looking at the type hierarchy of the <tt>Controls</tt> implementation for the specified
-	 * <tt>Class</tt>.
+	 * implementation about a control of the specified <tt>Class</tt> but is different in looking at
+	 * the type hierarchy of the <tt>Controls</tt> implementation for the specified <tt>Class</tt>.
 	 *
 	 * @param controlsImpl
 	 * 		the <tt>Controls</tt> implementation to query

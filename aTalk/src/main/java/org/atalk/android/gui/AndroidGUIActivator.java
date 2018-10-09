@@ -27,8 +27,6 @@ import net.java.sip.communicator.util.account.LoginManager;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
 import org.atalk.android.gui.chat.ChatSessionManager;
-import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.login.AndroidSecurityAuthority;
 import org.atalk.android.gui.util.AlertUIServiceImpl;
 import org.atalk.crypto.CryptoFragment;

@@ -137,6 +137,7 @@
     <string name="service_gui_CALL_VIA">Hubungi dengan: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Panggilan video</string>
     <string name="service_gui_CANCEL">Tamatkan</string>
+    <string name="service_gui_CONTACT_INVALID">Kontak yang dipilih tidak dikenali: %1$s</string>
     <string name="service_gui_Contacts">Kontak</string>
     <string name="service_gui_DONE">Selesai</string>
 
@@ -601,7 +602,7 @@
     <string name="service_gui_DECEMBER">Des</string>
 
     <!-- Call info -->
-    <string name="service.protocol.ICE_FAILED">Tidak dapat membuat koneksi (ICE gagal dan tidak ditemukan relai)</string>
+    <string name="service_protocol_ICE_FAILED">Tidak dapat membuat koneksi (ICE gagal dan tidak ditemukan relai)</string>
     <string name="service_gui_callinfo_AUDIO_INFO">Informasi audio</string>
     <string name="service_gui_callinfo_BANDWITH">Bandwidth:</string>
     <string name="service_gui_callinfo_CALL_DURATION">Durasi panggilan:</string>
@@ -826,12 +827,12 @@
     <string name="plugin_notificationconfig_vibration">Getaran</string>
 
     <!-- call recordingconfig -->
-    <string name="plugin.callrecordingconfig.CALL_SAVED">Panggilan berhasil disimpan</string>
-    <string name="plugin.callrecordingconfig.CALL_SAVED_TO">Simpan ke: %1$s</string>
+    <string name="plugin_callrecordingconfig_CALL_SAVED">Panggilan berhasil disimpan</string>
+    <string name="plugin_callrecordingconfig_CALL_SAVED_TO">Simpan ke: %1$s</string>
 
     <!-- ZRTP Securing -->
-    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_CHANGED">Konfigurasi perangkat audio diubah</string>
-    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Klik di sini untuk pengelolaan perangkat</string>
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_CHANGED">Konfigurasi perangkat audio diubah</string>
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Klik di sini untuk pengelolaan perangkat</string>
     <string name="impl_media_configform_NO_PREVIEW">Pratinjau</string>
     <string name="impl_media_security_CHECKSUM_MISMATCH">&lt;html>Internal checksum paket checksum ZRTP.&lt;br/>Jika Anda sering melihat pesan ini, ini berarti serangan denial-of-service!&lt;/html></string>
     <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>Gagal mengirim data enkripsi. Koneksi data internet atau rekan sedang down.&lt;br/>&lt;b>Panggilan Anda tidak aman&lt;/b>&lt;br/>Kode kesalahan: %1$s&lt;/html></string>
@@ -842,7 +843,7 @@
     <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Masalah keamanan yang parah terdeteksi.&lt;/b>&lt;br/>Kode kesalahan: {0}&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Tidak ada rahasia bersama yang dipertahankan.&lt;br/>&lt;b>Verifikasi SAS direkomendasikan&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Rahasia bersama retensi yang diharapkan tidak ada.&lt;br/>&lt;b>Verifikasi SAS diperlukan&lt;/b>&lt;br/>Jika kode SAS tidak cocok, maka hangup dan coba lagi&lt;/html></string>
-    <string name="impl.media.security.ZRTP_GENERIC_MSG">&lt;html>Masalah ZRTP parah terdeteksi.&lt;br/>&lt;b>Panggilan Anda tidak aman&lt;/b>&lt;br/>Kode kesalahan : %1$s&lt;/html></string>
+    <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Masalah ZRTP parah terdeteksi.&lt;br/>&lt;b>Panggilan Anda tidak aman&lt;/b>&lt;br/>Kode kesalahan : %1$s&lt;/html></string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Otentikasi teman</string>

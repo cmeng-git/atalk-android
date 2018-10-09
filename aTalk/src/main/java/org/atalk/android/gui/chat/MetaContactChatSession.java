@@ -237,7 +237,7 @@ public class MetaContactChatSession extends ChatSession
     @Override
     public String getDefaultSmsNumber()
     {
-        String smsNumber = null;
+        String smsNumber;
         JSONArray jsonArray = metaContact.getDetails("mobile");
         if (jsonArray != null && jsonArray.length() > 0) {
             try {
@@ -277,7 +277,7 @@ public class MetaContactChatSession extends ChatSession
 
             addChatTransports(contact,
                     (contactResource != null) ? contactResource.getResourceName() : null,
-                    (protocolContact != null && contact.equals(protocolContact)));
+                    contact.equals(protocolContact));
         }
     }
 
@@ -586,7 +586,7 @@ public class MetaContactChatSession extends ChatSession
                         this, contact, resource, (contact.getResources().size() > 1));
 
                 addChatTransport(resourceTransport);
-                if ((resourceName != null && resource.getResourceName().equals(resourceName))
+                if (resource.getResourceName().equals(resourceName)
                         || (contactResources.size() == 1)) {
                     chatTransport = resourceTransport;
                 }
@@ -675,16 +675,18 @@ public class MetaContactChatSession extends ChatSession
      */
     private void updateChatTransports(Contact contact)
     {
-        boolean isSelectedContact = (currentChatTransport != null)
-                && ((MetaContactChatTransport) currentChatTransport).getContact().equals(contact);
-        boolean isResourceSelected = isSelectedContact && (currentChatTransport.getResourceName() != null);
-        String resourceName = currentChatTransport.getResourceName();
+        if (currentChatTransport != null) {
+            boolean isSelectedContact =
+                    ((MetaContactChatTransport) currentChatTransport).getContact().equals(contact);
+            boolean isResourceSelected = isSelectedContact && (currentChatTransport.getResourceName() != null);
+            String resourceName = currentChatTransport.getResourceName();
 
-        removeChatTransports(contact);
-        if (isResourceSelected)
-            addChatTransports(contact, resourceName, true);
-        else
-            addChatTransports(contact, null, isSelectedContact);
+            removeChatTransports(contact);
+            if (isResourceSelected)
+                addChatTransports(contact, resourceName, true);
+            else
+                addChatTransports(contact, null, isSelectedContact);
+        }
     }
 
     /**

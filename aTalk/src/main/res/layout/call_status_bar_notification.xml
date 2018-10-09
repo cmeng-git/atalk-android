@@ -99,7 +99,7 @@
             android:padding="2dp"
             android:scaleType="centerInside"
             android:background="@color/status_bar_button"
-            android:src="@drawable/call_hold_on_dark" />
+            android:src="@drawable/call_hold_off_dark" />
 
         <ImageButton
             android:id="@+id/button_hangup"

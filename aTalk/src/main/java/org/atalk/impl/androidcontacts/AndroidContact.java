@@ -68,13 +68,13 @@ public class AndroidContact extends GenericSourceContact
 		/*
 		 * String address = super.getContactAddress(); if(address == null) { Context ctx =
 		 * aTalkApp.getGlobalContext();
-		 * 
+		 *
 		 * Cursor result = ctx.getContentResolver().query( ContactsContract.CommonDataKinds.Email
 		 * .CONTENT_URI, new
 		 * String[]{ContactsContract.CommonDataKinds.Email.DATA},
 		 * ContactsContract.CommonDataKinds.Email.CONTACT_ID+"=?", new String[]{String.valueOf(id)
 		 * },null);
-		 * 
+		 *
 		 * if(result.moveToNext()) { int adrIdx = result.getColumnIndex( ContactsContract
 		 * .CommonDataKinds.Email.DATA);
 		 * address = result.getString(adrIdx); setContactAddress(address); } result.close(); }
@@ -125,18 +125,13 @@ public class AndroidContact extends GenericSourceContact
 
 		if (image == null) {
 			Context ctx = aTalkApp.getGlobalContext();
-
 			Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
-
-			Uri photoUri = Uri.withAppendedPath(contactUri,
-					ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-
+			Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
 			Cursor cursor = ctx.getContentResolver().query(photoUri,
 					new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
 
 			if (cursor == null)
 				return null;
-
 			try {
 				if (cursor.moveToFirst()) {
 					image = cursor.getBlob(0);

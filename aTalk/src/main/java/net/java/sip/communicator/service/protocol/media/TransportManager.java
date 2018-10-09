@@ -404,6 +404,9 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     public void sendHolePunchPacket(MediaStreamTarget target, MediaType type, RawPacket packet)
     {
         logger.info("Send NAT hole punch packets");
+        // target may have been closed by remote action
+        if (target == null)
+            return;
 
         // check how many hole punch packets we would be supposed to send:
         int packetCount = ProtocolMediaActivator.getConfigurationService()

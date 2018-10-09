@@ -25,9 +25,10 @@ project.ext {
     preDexLibs = !project.hasProperty('disablePreDex')
     testCoverage = project.hasProperty('testCoverage')
 
-    minSdkVersion = 15
-    compileSdkVersion = 27
+    minSdkVersion = 16
+    compileSdkVersion = 28
     buildToolsVersion = '28.0.2'
+    // do not change to 28.0.0 => ClassNotFoundException : OnUnhandledKeyEventListener
     supportLibraryVersion = '27.1.1'
     gmsPlayServicesVersion = '15.0.1'
 }

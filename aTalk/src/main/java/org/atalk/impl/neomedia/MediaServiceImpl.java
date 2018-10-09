@@ -31,7 +31,6 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.format.MediaFormatFactory;
 import org.atalk.service.neomedia.recording.Recorder;
 import org.atalk.service.neomedia.recording.RecorderEventHandler;
-import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;

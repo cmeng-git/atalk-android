@@ -26,6 +26,7 @@ import java.util.*;
  * Implements media control code which allows state sharing among multiple <tt>CallPeerMediaHandler</tt>s.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class MediaHandler extends PropertyChangeNotifier
 {
@@ -693,7 +694,7 @@ public class MediaHandler extends PropertyChangeNotifier
     private SrtpListener[] getSrtpListeners()
     {
         synchronized (srtpListeners) {
-            return srtpListeners.toArray(new SrtpListener[srtpListeners.size()]);
+            return srtpListeners.toArray(new SrtpListener[0]);
         }
     }
 
@@ -980,8 +981,7 @@ public class MediaHandler extends PropertyChangeNotifier
         KeyFrameControl.KeyFrameRequester[] keyFrameRequesters;
 
         synchronized (this.keyFrameRequesters) {
-            keyFrameRequesters = this.keyFrameRequesters.toArray(
-                    new KeyFrameControl.KeyFrameRequester[this.keyFrameRequesters.size()]);
+            keyFrameRequesters = this.keyFrameRequesters.toArray(new KeyFrameControl.KeyFrameRequester[0]);
         }
 
         for (KeyFrameControl.KeyFrameRequester keyFrameRequester : keyFrameRequesters) {

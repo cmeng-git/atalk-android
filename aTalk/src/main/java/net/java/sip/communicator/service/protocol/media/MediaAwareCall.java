@@ -475,7 +475,6 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
 
         // Record the setting locally and notify all peers.
         Iterator<T> peers = getCallPeers();
-
         while (peers.hasNext())
             peers.next().setLocalVideoAllowed(allowed);
     }

@@ -9,6 +9,7 @@ import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Contacts.Data;
 import android.support.annotation.Nullable;
 
+import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
 import java.util.*;
@@ -235,8 +236,13 @@ public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Re
         String selection = Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? " +
                 " OR (" + ContactsContract.CommonDataKinds.Email.ADDRESS + " LIKE ? AND " + Data.MIMETYPE + " = '" + Phone.CONTENT_ITEM_TYPE + "')";
         String[] selectionArgs = {query, query};
-        Cursor cursor = contentResolver.query(queryUri, PROJECTION, selection, selectionArgs, SORT_ORDER);
 
+        Cursor cursor = null;
+        try {
+            cursor = contentResolver.query(queryUri, PROJECTION, selection, selectionArgs, SORT_ORDER);
+        } catch (SecurityException e) {
+            aTalkApp.showToastMessage(R.string.contacts_permission_denied_feedback);
+        }
         if (cursor == null) {
             return false;
         }

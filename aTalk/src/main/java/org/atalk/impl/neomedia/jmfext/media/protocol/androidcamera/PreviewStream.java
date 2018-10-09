@@ -127,7 +127,8 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         buffer.setTimeStamp(System.currentTimeMillis());
 
         // Put the buffer for reuse
-        mCamera.addCallbackBuffer(data);
+        if (mCamera != null)
+            mCamera.addCallbackBuffer(data);
     }
 
     /**
