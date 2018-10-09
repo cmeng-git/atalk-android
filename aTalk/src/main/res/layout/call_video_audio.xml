@@ -150,7 +150,7 @@
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_VOLUME_CONTROL_TOOL_TIP"
             android:focusable="true"
-            android:src="@drawable/call_speakerphone_on_dark" />
+            android:src="@drawable/call_speakerphone_off_dark" />
 
         <ImageButton
             android:id="@+id/button_call_microphone"
@@ -174,7 +174,7 @@
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP"
             android:focusable="true"
-            android:src="@drawable/call_video_record_dark" />
+            android:src="@drawable/call_video_dark" />
 
         <ImageButton
             android:id="@+id/button_call_hold"

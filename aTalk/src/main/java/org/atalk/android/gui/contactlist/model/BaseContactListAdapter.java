@@ -286,14 +286,12 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         else {
             contactViewHolder = (ContactViewHolder) convertView.getTag();
         }
-
         contactViewHolder.groupPosition = groupPosition;
         contactViewHolder.childPosition = childPosition;
 
         // return and stop further process if child contact may have been removed
         Object child = getChild(groupPosition, childPosition);
-        if ((child == null) || !(child instanceof MetaContact)
-                || (((MetaContact) child).getDefaultContact() == null))
+        if (child == null)
             return convertView;
 
         UIContactRenderer renderer = getContactRenderer(groupPosition);
@@ -303,17 +301,22 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         else {
             convertView.setBackgroundResource(R.drawable.contact_list_selector);
         }
-        // Set display name value.
-        String sJid = renderer.getDisplayName(child);
+
+        // Set display name and status message for conacts or phone book contacts
+        String sDisplayName = renderer.getDisplayName(child);
         String statusMessage = renderer.getStatusMessage(child);
-        String sDisplayName = sJid;
-        if (TextUtils.isEmpty(statusMessage)) {
-            if (sJid.contains("@")) {
-                sDisplayName = sJid.split("@")[0];
-                statusMessage = sJid;
+
+        if ((child instanceof MetaContact)
+                && (((MetaContact) child).getDefaultContact() != null)) {
+            String sJid = sDisplayName;
+            if (TextUtils.isEmpty(statusMessage)) {
+                if (sJid.contains("@")) {
+                    sDisplayName = sJid.split("@")[0];
+                    statusMessage = sJid;
+                }
+                else
+                    statusMessage = renderer.getDefaultAddress(child);
             }
-            else
-                statusMessage = renderer.getDefaultAddress(child);
         }
         contactViewHolder.displayName.setText(sDisplayName);
         contactViewHolder.statusMessage.setText(statusMessage);

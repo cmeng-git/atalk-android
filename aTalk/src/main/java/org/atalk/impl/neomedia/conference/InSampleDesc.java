@@ -49,9 +49,8 @@ class InSampleDesc
 	private long timeStamp = Buffer.TIME_UNKNOWN;
 
 	/**
-	 * Initializes a new <tt>InSampleDesc</tt> instance which is to describe a specific set of
-	 * audio samples read from a specific set of input streams specified by their
-	 * <tt>InStreamDesc</tt>s.
+	 * Initializes a new <tt>InSampleDesc</tt> instance which is to describe a specific set of audio
+	 * samples read from a specific set of input streams specified by their <tt>InStreamDesc</tt>s.
 	 *
 	 * @param inSamples
 	 * 		the set of audio samples read from <tt>inStreams</tt>

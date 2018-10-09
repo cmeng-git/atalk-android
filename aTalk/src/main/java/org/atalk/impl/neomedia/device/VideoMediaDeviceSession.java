@@ -1403,8 +1403,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
 
 		/*
 		 * For H.264 we will monitor RTCP feedback. For example, if we receive a PLI/FIR
-		 * message, we
-		 * will send a keyframe.
+		 * message, we will send a keyframe.
 		 */
 		/*
 		 * The current Android video capture device system provided H.264 so it is not possible to

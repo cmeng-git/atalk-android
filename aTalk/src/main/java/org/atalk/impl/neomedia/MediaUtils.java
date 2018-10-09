@@ -323,8 +323,8 @@ public class MediaUtils
         }
 
         /* H263+
-		Map<String, String> h263FormatParams = new HashMap<String, String>();
-        Map<String, String> h263AdvancedAttributes = new LinkedHashMap<String, String>();
+		Map<String, String> h263FormatParams = new HashMap<>();
+        Map<String, String> h263AdvancedAttributes = new LinkedHashMap<>();
 
          // The maximum resolution we can receive is the size of our screen device.
         if (res != null)
@@ -587,9 +587,7 @@ public class MediaUtils
      * @param maxRecvSize maximum size peer can display
      * @return string that represent imgattr that can be encoded via SIP/SDP or XMPP/Jingle
      */
-    public static String createImageAttr(
-            Dimension sendSize,
-            Dimension maxRecvSize)
+	public static String createImageAttr(Dimension sendSize, Dimension maxRecvSize)
     {
         StringBuffer img = new StringBuffer();
 

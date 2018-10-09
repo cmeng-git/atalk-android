@@ -34,7 +34,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
 	/**
 	 * The list of <tt>DeviceSystem</tt>s which have been initialized.
 	 */
-	private static List<DeviceSystem> deviceSystems = new LinkedList<DeviceSystem>();
+	private static List<DeviceSystem> deviceSystems = new LinkedList<>();
 
 	/**
 	 * The constant/flag (to be) returned by {@link #getFeatures()} in order to indicate that the
@@ -104,14 +104,13 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
 	public static DeviceSystem[] getDeviceSystems(MediaType mediaType)
 	{
 		List<DeviceSystem> ret;
-
 		synchronized (deviceSystems) {
-			ret = new ArrayList<DeviceSystem>(deviceSystems.size());
+			ret = new ArrayList<>(deviceSystems.size());
 			for (DeviceSystem deviceSystem : deviceSystems)
 				if (deviceSystem.getMediaType().equals(mediaType))
 					ret.add(deviceSystem);
 		}
-		return ret.toArray(new DeviceSystem[ret.size()]);
+		return ret.toArray(new DeviceSystem[0]);
 	}
 
 	/**

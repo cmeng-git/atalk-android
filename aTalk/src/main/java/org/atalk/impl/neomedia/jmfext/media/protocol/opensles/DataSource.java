@@ -219,8 +219,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 				 * Apart from the thread in which #read(Buffer) is executed, use the thread priority
 				 * for the thread which will create the OpenSL ES Audio Recorder.
 				 */
-				org.atalk.impl.neomedia.jmfext.media.protocol.audiorecord.DataSource
-					.setThreadPriority();
+				org.atalk.impl.neomedia.jmfext.media.protocol.audiorecord.DataSource.setThreadPriority();
 				ptr = DataSource.connect(format.getEncoding(), sampleRate, sampleSizeInBits,
 					channels, format.getEndian(), format.getSigned(), format.getDataType());
 				if (ptr == 0)
@@ -262,8 +261,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 		{
 			if (setThreadPriority) {
 				setThreadPriority = false;
-				org.atalk.impl.neomedia.jmfext.media.protocol.audiorecord.DataSource
-					.setThreadPriority();
+				org.atalk.impl.neomedia.jmfext.media.protocol.audiorecord.DataSource.setThreadPriority();
 			}
 
 			Object data = buffer.getData();

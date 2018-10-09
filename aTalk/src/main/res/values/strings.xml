@@ -146,6 +146,7 @@
     <string name="service_gui_CALL_VIA">Call via: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Video call</string>
     <string name="service_gui_CANCEL">Cancel</string>
+    <string name="service_gui_CONTACT_INVALID">The selected contact is not valid: %1$s</string>
     <string name="service_gui_Contacts">Contacts</string>
     <string name="service_gui_DONE">Done</string>
 
@@ -658,7 +659,7 @@
     <string name="service_gui_DECEMBER">Dec</string>
 
     <!-- Call info -->
-    <string name="service.protocol.ICE_FAILED">Could not establish connection (ICE failed and no relay found)</string>
+    <string name="service_protocol_ICE_FAILED">Could not establish connection (ICE failed and no relay found)</string>
     <string name="service_gui_callinfo_AUDIO_INFO">Audio info</string>
     <string name="service_gui_callinfo_BANDWITH">Bandwidth:</string>
     <string name="service_gui_callinfo_CALL_DURATION">Call duration:</string>
@@ -881,12 +882,12 @@
     <string name="plugin_notificationconfig_vibration">Vibration</string>
 
     <!-- call recordingconfig -->
-    <string name="plugin.callrecordingconfig.CALL_SAVED">Call saved successfully</string>
-    <string name="plugin.callrecordingconfig.CALL_SAVED_TO">Save to: %1$s</string>
+    <string name="plugin_callrecordingconfig_CALL_SAVED">Call saved successfully</string>
+    <string name="plugin_callrecordingconfig_CALL_SAVED_TO">Save to: %1$s</string>
 
     <!-- ZRTP Securing -->
-    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_CHANGED">Audio device configuration changed</string>
-    <string name="impl.media.configform.AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Click here for device management</string>
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_CHANGED">Audio device configuration changed</string>
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Click here for device management</string>
     <string name="impl_media_configform_NO_PREVIEW">Preview</string>
     <string name="impl_media_security_CHECKSUM_MISMATCH">&lt;html>Internal ZRTP packet checksum mismatch.&lt;br/>If you see this message often this may mean a denial-of-service attack!&lt;/html></string>
     <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>Failed to send encryption data. Internet data connection or peer is down.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
@@ -897,7 +898,7 @@
     <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>A severe security problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: {0}&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>No retained shared secret available.&lt;br/>&lt;b>SAS verification is recommended&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>An expected retained shared secret is missing.&lt;br/>&lt;b>SAS verification is required&lt;/b>&lt;br/>If SAS codes do not match then hangup and try again&lt;/html></string>
-    <string name="impl.media.security.ZRTP_GENERIC_MSG">&lt;html>A severe ZRTP problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
+    <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>A severe ZRTP problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Authenticate buddy</string>

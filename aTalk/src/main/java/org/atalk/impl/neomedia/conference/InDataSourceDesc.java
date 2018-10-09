@@ -38,8 +38,7 @@ class InDataSourceDesc
 	private static final SourceStream[] EMPTY_STREAMS = new SourceStream[0];
 
 	/**
-	 * The <tt>Logger</tt> used by the <tt>InDataSourceDesc</tt> class and its instances for
-	 * logging output.
+	 * The <tt>Logger</tt> used by the <tt>InDataSourceDesc</tt> class and its instances for logging output.
 	 */
 	private static final Logger logger = Logger.getLogger(InDataSourceDesc.class);
 
@@ -154,8 +153,7 @@ class InDataSourceDesc
 	 * 		the <tt>Format</tt> in which the tracks of the input <tt>DataSource</tt> described by
 	 * 		this instance are to be transcoded
 	 * @return <tt>true</tt> if a new transcoding <tt>DataSource</tt> has been created for the
-	 * input
-	 * <tt>DataSource</tt> described by this instance; otherwise, <tt>false</tt>
+	 * input <tt>DataSource</tt> described by this instance; otherwise, <tt>false</tt>
 	 */
 	synchronized boolean createTranscodingDataSource(Format outFormat)
 	{
@@ -274,8 +272,7 @@ class InDataSourceDesc
 	}
 
 	/**
-	 * Starts the effective input <tt>DataSource</tt> described by this instance if it is
-	 * connected.
+	 * Starts the effective input <tt>DataSource</tt> described by this instance if it is connected.
 	 *
 	 * @throws IOException
 	 * 		if starting the effective input <tt>DataSource</tt> described by this instance fails

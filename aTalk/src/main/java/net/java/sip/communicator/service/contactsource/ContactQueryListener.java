@@ -21,6 +21,7 @@ package net.java.sip.communicator.service.contactsource;
  * the query status has changed.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public interface ContactQueryListener
 {
@@ -29,26 +30,26 @@ public interface ContactQueryListener
      * @param event the <tt>ContactQueryEvent</tt> containing information
      * about the received <tt>SourceContact</tt>
      */
-    public void contactReceived(ContactReceivedEvent event);
+    void contactReceived(ContactReceivedEvent event);
 
     /**
      * Indicates that the status of a search has been changed.
      * @param event the <tt>ContactQueryStatusEvent</tt> containing information
      * about the status change
      */
-    public void queryStatusChanged(ContactQueryStatusEvent event);
+    void queryStatusChanged(ContactQueryStatusEvent event);
 
     /**
      * Indicates that a contact has been removed after a search.
      * @param event the <tt>ContactQueryEvent</tt> containing information
      * about the received <tt>SourceContact</tt>
      */
-    public void contactRemoved(ContactRemovedEvent event);
+    void contactRemoved(ContactRemovedEvent event);
 
     /**
      * Indicates that a contact has been updated after a search.
      * @param event the <tt>ContactQueryEvent</tt> containing information
      * about the updated <tt>SourceContact</tt>
      */
-    public void contactChanged(ContactChangedEvent event);
+    void contactChanged(ContactChangedEvent event);
 }

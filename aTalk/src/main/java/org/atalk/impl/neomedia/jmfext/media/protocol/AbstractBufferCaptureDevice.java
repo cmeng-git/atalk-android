@@ -302,8 +302,7 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT
 	 * Provides the default implementation of <tt>AbstractBufferCaptureDevice</tt> for
 	 * {@link #getControls()}.
 	 *
-	 * @return an array of <tt>Object</tt>s which represent the controls available for this
-	 * instance
+	 * @return an array of <tt>Object</tt>s which represent the controls available for this instance
 	 */
 	final Object[] defaultGetControls()
 	{
@@ -441,8 +440,7 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT
 	/**
 	 * Stops the transfer of media data from this <tt>AbstractBufferCaptureDevice</tt>. Allows
 	 * extenders to override and be sure that there will be no request to stop the transfer of
-	 * media
-	 * data if it has not been started yet.
+	 * media data if it has not been started yet.
 	 *
 	 * @throws IOException
 	 * 		if anything goes wrong while stopping the transfer of media data from this
@@ -500,8 +498,7 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT
 	 * Implements {@link javax.media.Controls#getControls()}. Gets the controls available for this
 	 * instance.
 	 *
-	 * @return an array of <tt>Object</tt>s which represent the controls available for this
-	 * instance
+	 * @return an array of <tt>Object</tt>s which represent the controls available for this instance
 	 */
 	public Object[] getControls()
 	{

@@ -74,11 +74,11 @@ public class StunTurnDialogFragment extends DialogFragment
             builder = builder.setNegativeButton(R.string.service_gui_SERVERS_LIST_REMOVE, null);
         }
 
-        TextView portView = (TextView) contentView.findViewById(R.id.serverPort);
-        final TextView turnUserView = (TextView) contentView.findViewById(R.id.usernameField);
-        final TextView passwordView = (TextView) contentView.findViewById(R.id.passwordField);
+        TextView portView = contentView.findViewById(R.id.serverPort);
+        final TextView turnUserView = contentView.findViewById(R.id.usernameField);
+        final TextView passwordView = contentView.findViewById(R.id.passwordField);
 
-        CompoundButton useTurnButton = (CompoundButton) contentView.findViewById(R.id.useTurnCheckbox);
+        CompoundButton useTurnButton = contentView.findViewById(R.id.useTurnCheckbox);
         useTurnButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             public void onCheckedChanged(CompoundButton cButton, boolean b)
@@ -89,7 +89,7 @@ public class StunTurnDialogFragment extends DialogFragment
         });
 
         if (descriptor != null) {
-            TextView ipAdrTextView = (TextView) contentView.findViewById(R.id.ipAddress);
+            TextView ipAdrTextView = contentView.findViewById(R.id.ipAddress);
             ipAdrTextView.setText(descriptor.getAddress());
 
             portView.setText(Integer.toString(descriptor.getPort()));
@@ -97,12 +97,13 @@ public class StunTurnDialogFragment extends DialogFragment
             passwordView.setText(new String(descriptor.getPassword()));
             useTurnButton.setChecked(descriptor.isTurnSupported());
         }
+        else
+            portView.setText(DEFAULT_STUN_PORT);
 
         boolean isTurnSupported = useTurnButton.isChecked();
-        useTurnButton.setChecked(isTurnSupported);
-        portView.setText(DEFAULT_STUN_PORT);
         turnUserView.setEnabled(isTurnSupported);
         passwordView.setEnabled(isTurnSupported);
+        useTurnButton.setChecked(isTurnSupported);
 
         final AlertDialog dialog = builder.create();
         dialog.setOnShowListener(new DialogInterface.OnShowListener()
@@ -173,5 +174,4 @@ public class StunTurnDialogFragment extends DialogFragment
         }
         return true;
     }
-
 }

@@ -1,22 +1,23 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.device;
+
+import net.java.sip.communicator.util.Logger;
+
+import org.atalk.impl.androidcontacts.AndroidContact;
+import org.atalk.impl.neomedia.jmfext.media.renderer.audio.OpenSLESRenderer;
+import org.atalk.service.neomedia.codec.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.Format;
-import javax.media.MediaLocator;
-import javax.media.Renderer;
+import javax.media.*;
 import javax.media.format.AudioFormat;
-
-import org.atalk.service.neomedia.codec.Constants;
-import org.atalk.impl.neomedia.jmfext.media.renderer.audio.OpenSLESRenderer;
 
 /**
  * Discovers and registers OpenSL ES capture devices with FMJ.
@@ -25,134 +26,145 @@ import org.atalk.impl.neomedia.jmfext.media.renderer.audio.OpenSLESRenderer;
  */
 public class OpenSLESSystem extends AudioSystem
 {
-	/**
-	 * The protocol of the <tt>MediaLocator</tt>s identifying OpenSL ES capture devices.
-	 */
-	private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_OPENSLES;
+    private final static Logger logger = Logger.getLogger(OpenSLESSystem.class);
 
-	/**
-	 * The identifier denoting the set of input devices that the implementation receives audio from
-	 * by default.
-	 */
-	private static final long SL_DEFAULTDEVICEID_AUDIOINPUT = 0xFFFFFFFFL;
+    /**
+     * The protocol of the <tt>MediaLocator</tt>s identifying OpenSL ES capture devices.
+     */
+    private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_OPENSLES;
 
-	/**
-	 * The list of channels to be checked for support by <tt>OpenSLESAuto</tt> in descending order
-	 * of preference.
-	 */
-	private static final int[] SUPPORTED_CHANNELS = { 1, 2 };
+    /**
+     * The identifier denoting the set of input devices that the implementation receives audio from
+     * by default.
+     */
+    private static final long SL_DEFAULTDEVICEID_AUDIOINPUT = 0xFFFFFFFFL;
 
-	/**
-	 * The list of sample sizes in bits to be checked for support by <tt>OpenSLESAuto</tt> in
-	 * descending order of preference.
-	 */
-	private static final int[] SUPPORTED_SAMPLE_SIZES_IN_BITS = { 16, 8 };
+    /**
+     * The list of channels to be checked for support by <tt>OpenSLESAuto</tt> in descending order
+     * of preference.
+     */
+    private static final int[] SUPPORTED_CHANNELS = {1, 2};
 
-	static {
-		System.loadLibrary("jnopensles");
-	}
+    /**
+     * The list of sample sizes in bits to be checked for support by <tt>OpenSLESAuto</tt> in
+     * descending order of preference.
+     */
+    private static final int[] SUPPORTED_SAMPLE_SIZES_IN_BITS = {16, 8};
 
-	/**
-	 * Initializes a new <tt>OpenSLESSystem</tt> instance which discovers and registers OpenSL ES
-	 * capture devices with FMJ.
-	 *
-	 * @throws Exception
-	 *         if anything goes wrong while discovering and registering OpenSL ES capture devices
-	 *         with FMJ
-	 */
-	public OpenSLESSystem()
-		throws Exception
-	{
-		super(LOCATOR_PROTOCOL);
-	}
+    static {
+        System.loadLibrary("jnopensles");
+    }
 
-	@Override
-	public Renderer createRenderer(boolean playback)
-	{
-		return new OpenSLESRenderer(playback);
-	}
+    /**
+     * Initializes a new <tt>OpenSLESSystem</tt> instance which discovers and registers OpenSL ES
+     * capture devices with FMJ.
+     *
+     * @throws Exception if anything goes wrong while discovering and registering OpenSL ES capture devices
+     * with FMJ
+     */
+    public OpenSLESSystem()
+            throws Exception
+    {
+        super(LOCATOR_PROTOCOL);
+    }
 
-	protected void doInitialize()
-		throws Exception
-	{
-		double[] supportedSampleRates = Constants.AUDIO_SAMPLE_RATES;
-		// cmeng 08/15/2016: queryAudioInputCapabilities not supported by android?
-		int[] audioInputCapabilities = queryAudioInputCapabilities(SL_DEFAULTDEVICEID_AUDIOINPUT,
-			supportedSampleRates, SUPPORTED_SAMPLE_SIZES_IN_BITS, SUPPORTED_CHANNELS);
-		List<Format> formats = new ArrayList<>();
+    @Override
+    public Renderer createRenderer(boolean playback)
+    {
+        return new OpenSLESRenderer(playback);
+    }
 
-		if (audioInputCapabilities != null) {
-			int audioInputCapabilitiesIndex = 0;
+    protected void doInitialize()
+            throws Exception
+    {
+        List<Format> formats = new ArrayList<>();
+        double[] supportedSampleRates = Constants.AUDIO_SAMPLE_RATES;
 
-			while (true) {
-				int sampleRateIndex = audioInputCapabilities[audioInputCapabilitiesIndex++];
-				int sampleSizeInBitsIndex = audioInputCapabilities[audioInputCapabilitiesIndex++];
-				int channelIndex = audioInputCapabilities[audioInputCapabilitiesIndex++];
+        // cmeng 2018/10/06: queryAudioInputCapabilities not supported by android
+        int[] audioInputCapabilities = queryAudioInputCapabilities(SL_DEFAULTDEVICEID_AUDIOINPUT,
+                supportedSampleRates, SUPPORTED_SAMPLE_SIZES_IN_BITS, SUPPORTED_CHANNELS);
 
-				if ((sampleRateIndex == -1) || (sampleSizeInBitsIndex == -1)
-					|| (channelIndex == -1))
-					break;
+        if (audioInputCapabilities != null) {
+            int audioInputCapabilitiesIndex = 0;
 
-				double sampleRate = supportedSampleRates[sampleRateIndex];
-				int sampleSizeInBits = SUPPORTED_SAMPLE_SIZES_IN_BITS[sampleSizeInBitsIndex];
-				int channels = SUPPORTED_CHANNELS[channelIndex];
+            while (true) {
+                int sampleRateIndex = audioInputCapabilities[audioInputCapabilitiesIndex++];
+                int sampleSizeInBitsIndex = audioInputCapabilities[audioInputCapabilitiesIndex++];
+                int channelIndex = audioInputCapabilities[audioInputCapabilitiesIndex++];
 
-				formats.add(new AudioFormat(AudioFormat.LINEAR, sampleRate, sampleSizeInBits,
-					channels, AudioFormat.LITTLE_ENDIAN, AudioFormat.SIGNED,
-					Format.NOT_SPECIFIED /* frameSizeInBits */,
-					Format.NOT_SPECIFIED /* frameRate */, Format.byteArray));
-			}
-		}
+                if ((sampleRateIndex == -1) || (sampleSizeInBitsIndex == -1)
+                        || (channelIndex == -1))
+                    break;
 
-		/*
-		 * In case SLAudioIODeviceCapabilitiesItf is not supported, use a default which is known to
-		 * work on the tested devices.
-		 */
-		if (formats.isEmpty()) {
-			formats.add(new AudioFormat(AudioFormat.LINEAR, 44100 /* sampleRate */,
-				16 /* sampleSizeInBits */, 1 /* channels */, AudioFormat.LITTLE_ENDIAN,
-				AudioFormat.SIGNED, Format.NOT_SPECIFIED /* frameSizeInBits */,
-				Format.NOT_SPECIFIED /* frameRate */, Format.byteArray));
-		}
+                double sampleRate = supportedSampleRates[sampleRateIndex];
+                int sampleSizeInBits = SUPPORTED_SAMPLE_SIZES_IN_BITS[sampleSizeInBitsIndex];
+                int channels = SUPPORTED_CHANNELS[channelIndex];
 
-		if (!formats.isEmpty()) {
-			CaptureDeviceInfo2 captureDevice = new CaptureDeviceInfo2("OpenSL ES",
-				new MediaLocator(LOCATOR_PROTOCOL + ":"),
-				formats.toArray(new Format[formats.size()]), null, null, null);
-			List<CaptureDeviceInfo2> captureDevices = new ArrayList<>(1);
+                formats.add(new AudioFormat(
+                        AudioFormat.LINEAR,
+                        sampleRate,
+                        sampleSizeInBits,
+                        channels,
+                        AudioFormat.LITTLE_ENDIAN,
+                        AudioFormat.SIGNED,
+                        Format.NOT_SPECIFIED /* frameSizeInBits */,
+                        Format.NOT_SPECIFIED /* frameRate */,
+                        Format.byteArray));
+            }
+        }
 
-			captureDevices.add(captureDevice);
-			setCaptureDevices(captureDevices);
-		}
-	}
+        /*
+         * In case SLAudioIODeviceCapabilitiesItf is not supported, use a default which is known to
+         * work on the tested devices.
+         */
+        if (formats.isEmpty()) {
+            formats.add(new AudioFormat(
+                    AudioFormat.LINEAR,
+                    48000 /* sampleRate */,
+                    16 /* sampleSizeInBits */,
+                    1 /* channels */,
+                    AudioFormat.LITTLE_ENDIAN,
+                    AudioFormat.SIGNED,
+                    Format.NOT_SPECIFIED /* frameSizeInBits */,
+                    Format.NOT_SPECIFIED /* frameRate */,
+                    Format.byteArray));
+        }
 
-	private static native int[] queryAudioInputCapabilities(long deviceID, double[] sampleRates,
-		int[] sampleSizesInBits, int[] channels);
+        if (!formats.isEmpty()) {
+            CaptureDeviceInfo2 captureDevice = new CaptureDeviceInfo2("OpenSL ES",
+                    new MediaLocator(LOCATOR_PROTOCOL + ":"),
+                    formats.toArray(new Format[formats.size()]), null, null, null);
 
-	/**
-	 * Obtains an audio input stream from the URL provided.
-	 * 
-	 * @param url
-	 *        a valid url to a sound resource.
-	 * @return the input stream to audio data.
-	 * @throws java.io.IOException
-	 *         if an I/O exception occurs
-	 */
-	public InputStream getAudioInputStream(String url)
-		throws IOException
-	{
-		return AudioStreamUtils.getAudioInputStream(url);
-	}
+            List<CaptureDeviceInfo2> captureDevices = new ArrayList<>(1);
+            captureDevices.add(captureDevice);
+            setCaptureDevices(captureDevices);
+        }
+    }
 
-	/**
-	 * Returns the audio format for the <tt>InputStream</tt>. Or null if format cannot be obtained.
-	 * 
-	 * @param audioInputStream
-	 *        the input stream.
-	 * @return the format of the audio stream.
-	 */
-	public AudioFormat getFormat(InputStream audioInputStream)
-	{
-		return AudioStreamUtils.getFormat(audioInputStream);
-	}
+    private static native int[] queryAudioInputCapabilities(long deviceID, double[] sampleRates,
+            int[] sampleSizesInBits, int[] channels);
+
+    /**
+     * Obtains an audio input stream from the URL provided.
+     *
+     * @param url a valid url to a sound resource.
+     * @return the input stream to audio data.
+     * @throws java.io.IOException if an I/O exception occurs
+     */
+    public InputStream getAudioInputStream(String url)
+            throws IOException
+    {
+        return AudioStreamUtils.getAudioInputStream(url);
+    }
+
+    /**
+     * Returns the audio format for the <tt>InputStream</tt>. Or null if format cannot be obtained.
+     *
+     * @param audioInputStream the input stream.
+     * @return the format of the audio stream.
+     */
+    public AudioFormat getFormat(InputStream audioInputStream)
+    {
+        return AudioStreamUtils.getFormat(audioInputStream);
+    }
 }

@@ -71,8 +71,7 @@ public class AudioMixingPushBufferStream extends ControlsAdapter
 
 	/**
 	 * The <tt>AudioMixingPushBufferDataSource</tt> which created and owns this instance and
-	 * defines the input data which is to not be mixed in the output of this
-	 * <tt>PushBufferStream</tt>.
+	 * defines the input data which is to not be mixed in the output of this <tt>PushBufferStream</tt>.
 	 */
 	private final AudioMixingPushBufferDataSource dataSource;
 
@@ -88,8 +87,7 @@ public class AudioMixingPushBufferStream extends ControlsAdapter
 	private int maxInSampleCount;
 
 	/**
-	 * The audio samples output by the last invocation of
-	 * {@link #mix(short[][], AudioFormat, int)}.
+	 * The audio samples output by the last invocation of {@link #mix(short[][], AudioFormat, int)}.
 	 * Cached in order to reduce allocations and garbage collection.
 	 */
 	private short[] outSamples;

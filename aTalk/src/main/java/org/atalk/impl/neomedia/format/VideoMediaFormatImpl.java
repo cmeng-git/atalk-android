@@ -111,12 +111,8 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
 	 * @param advancedParameters
 	 * 		set of advanced parameters of the new instance
 	 */
-	VideoMediaFormatImpl(
-			VideoFormat format,
-			double clockRate,
-			float frameRate,
-			Map<String, String> formatParameters,
-			Map<String, String> advancedParameters)
+	VideoMediaFormatImpl(VideoFormat format, double clockRate, float frameRate,
+		Map<String, String> formatParameters, Map<String, String> advancedParameters)
 	{
 		super(new ParameterizedVideoFormat(
 						format.getEncoding(),
@@ -166,10 +162,8 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
 	 * {@inheritDoc}
 	 * <p>
 	 * Takes into account RFC 3984 "RTP Payload Format for H.264 Video" which says that &quot;
-	 * [w]hen
-	 * the value of packetization-mode [format parameter] is equal to 0 or packetization-mode is
-	 * not
-	 * present, the single NAL mode, as defined in section 6.2 of RFC 3984, MUST be used.&quot;
+	 * [w]hen the value of packetization-mode [format parameter] is equal to 0 or packetization-mode is
+	 * not present, the single NAL mode, as defined in section 6.2 of RFC 3984, MUST be used.&quot;
 	 * </p>
 	 *
 	 * @see MediaFormatImpl#formatParametersAreEqual(Map, Map)
@@ -195,8 +189,7 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
 	 * </p>
 	 *
 	 * @param encoding
-	 * 		the encoding (name) related to the two sets of format parameters to be tested for
-	 * 		equality
+	 * 		the encoding (name) related to the two sets of format parameters to be tested for equality
 	 * @param fmtps1
 	 * 		the first set of format parameters to be tested for equality
 	 * @param fmtps2
@@ -254,8 +247,7 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
 	}
 
 	/**
-	 * Determines whether two sets of format parameters match in the context of a specific
-	 * encoding.
+	 * Determines whether two sets of format parameters match in the context of a specific encoding.
 	 *
 	 * @param encoding
 	 * 		the encoding (name) related to the two sets of format parameters to be matched.

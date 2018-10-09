@@ -18,9 +18,10 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.*;
@@ -384,9 +385,7 @@ public class OperationSetBasicTelephonyJabberImpl
         AbstractCallPeer<?, ?> peer = null;
         // initiate call
         try {
-            if (di != null) {
-                peer = call.initiateSession(fullCalleeAddress, di, sessionInitiateExtensions, null);
-            }
+            peer = call.initiateSession(fullCalleeAddress, di, sessionInitiateExtensions, null);
         } catch (Throwable t) {
             /*
              * The Javadoc on ThreadDeath says: If ThreadDeath is caught by a method, it is

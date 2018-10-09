@@ -1,153 +1,150 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.device;
+
+import android.annotation.TargetApi;
+import android.media.audiofx.*;
+import android.os.Build;
+
+import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AudioTrackRenderer;
+import org.atalk.service.neomedia.codec.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.Format;
-import javax.media.MediaLocator;
-import javax.media.Renderer;
+import javax.media.*;
 import javax.media.format.AudioFormat;
-
-import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AudioTrackRenderer;
-import org.atalk.service.neomedia.codec.Constants;
-
-import android.annotation.TargetApi;
-import android.media.audiofx.AcousticEchoCanceler;
-import android.media.audiofx.AutomaticGainControl;
-import android.media.audiofx.NoiseSuppressor;
-import android.os.Build;
 
 /**
  * Discovers and registers {@link android.media.AudioRecord} capture devices with FMJ.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 @SuppressWarnings("unused")
 public class AudioRecordSystem extends AudioSystem
 {
-	/**
-	 * The protocol of the <tt>MediaLocator</tt>s identifying <tt>AudioRecord</tt> capture devices.
-	 */
-	private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_AUDIORECORD;
+    /**
+     * The protocol of the <tt>MediaLocator</tt>s identifying <tt>AudioRecord</tt> capture devices.
+     */
+    private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_AUDIORECORD;
 
-	/**
-	 * Initializes a new <tt>AudioRecordSystem</tt> instance which discovers and registers
-	 * <tt>AudioRecord</tt> capture devices with FMJ.
-	 *
-	 * @throws Exception
-	 *         if anything goes wrong while discovering and registering <tt>AudioRecord</tt> capture
-	 *         devices with FMJ
-	 */
-	public AudioRecordSystem()
-		throws Exception
-	{
-		super(LOCATOR_PROTOCOL, getFeatureSet());
-	}
+    /**
+     * Initializes a new <tt>AudioRecordSystem</tt> instance which discovers and registers
+     * <tt>AudioRecord</tt> capture devices with FMJ.
+     *
+     * @throws Exception if anything goes wrong while discovering and registering <tt>AudioRecord</tt> capture
+     * devices with FMJ
+     */
+    public AudioRecordSystem()
+            throws Exception
+    {
+        super(LOCATOR_PROTOCOL, getFeatureSet());
+    }
 
-	/**
-	 * Returns feature set for current device.
-	 * 
-	 * @return feature set for current device.
-	 */
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	public static int getFeatureSet()
-	{
-		int featureSet = FEATURE_NOTIFY_AND_PLAYBACK_DEVICES;
-		if (AndroidUtils.hasAPI(16)) {
-			if (AcousticEchoCanceler.isAvailable()) {
-				featureSet |= FEATURE_ECHO_CANCELLATION;
-			}
-			if (NoiseSuppressor.isAvailable()) {
-				featureSet |= FEATURE_DENOISE;
-			}
-			if (AutomaticGainControl.isAvailable()) {
-				featureSet |= FEATURE_AGC;
-			}
-		}
-		return featureSet;
-	}
+    /**
+     * Returns feature set for current device.
+     *
+     * @return feature set for current device.
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public static int getFeatureSet()
+    {
+        int featureSet = FEATURE_NOTIFY_AND_PLAYBACK_DEVICES;
+        if (AndroidUtils.hasAPI(16)) {
+            if (AcousticEchoCanceler.isAvailable()) {
+                featureSet |= FEATURE_ECHO_CANCELLATION;
+            }
+            if (NoiseSuppressor.isAvailable()) {
+                featureSet |= FEATURE_DENOISE;
+            }
+            if (AutomaticGainControl.isAvailable()) {
+                featureSet |= FEATURE_AGC;
+            }
+        }
+        return featureSet;
+    }
 
-	@Override
-	public Renderer createRenderer(boolean playback)
-	{
-		return new AudioTrackRenderer(playback);
-	}
+    @Override
+    public Renderer createRenderer(boolean playback)
+    {
+        return new AudioTrackRenderer(playback);
+    }
 
-	protected void doInitialize()
-		throws Exception
-	{
-		List<Format> formats = new ArrayList<Format>();
+    protected void doInitialize()
+            throws Exception
+    {
+        List<Format> formats = new ArrayList<>();
+        for (int i = 0; i < Constants.AUDIO_SAMPLE_RATES.length; i++) {
+            double sampleRate = Constants.AUDIO_SAMPLE_RATES[i];
 
-		for (int i = 0; i < Constants.AUDIO_SAMPLE_RATES.length; i++) {
-			double sampleRate = Constants.AUDIO_SAMPLE_RATES[i];
+            // Certain sample rates do not seem to be supported.
+            if (sampleRate == 48000)
+                continue;
 
-			// Certain sample rates do not seem to be supported.
-			if (sampleRate == 48000)
-				continue;
+            formats.add(new AudioFormat(AudioFormat.LINEAR,
+                    sampleRate,
+                    16 /* sampleSizeInBits */,
+                    1 /* channels */,
+                    AudioFormat.LITTLE_ENDIAN,
+                    AudioFormat.SIGNED,
+                    Format.NOT_SPECIFIED /* frameSizeInBits */,
+                    Format.NOT_SPECIFIED /* frameRate */,
+                    Format.byteArray));
+        }
 
-			formats.add(new AudioFormat(AudioFormat.LINEAR, sampleRate, 16 /* sampleSizeInBits */,
-				1 /* channels */, AudioFormat.LITTLE_ENDIAN, AudioFormat.SIGNED,
-				Format.NOT_SPECIFIED /* frameSizeInBits */, Format.NOT_SPECIFIED /* frameRate */,
-				Format.byteArray));
-		}
+        CaptureDeviceInfo2 captureDevice = new CaptureDeviceInfo2(
+                "android.media.AudioRecordCapture", new MediaLocator(LOCATOR_PROTOCOL + ":"),
+                formats.toArray(new Format[0]), null, null, null);
+        List<CaptureDeviceInfo2> captureDevices = new ArrayList<>(1);
 
-		CaptureDeviceInfo2 captureDevice = new CaptureDeviceInfo2(
-			"android.media.AudioRecordCapture", new MediaLocator(LOCATOR_PROTOCOL + ":"),
-			formats.toArray(new Format[formats.size()]), null, null, null);
-		List<CaptureDeviceInfo2> captureDevices = new ArrayList<CaptureDeviceInfo2>(1);
+        captureDevices.add(captureDevice);
+        setCaptureDevices(captureDevices);
 
-		captureDevices.add(captureDevice);
-		setCaptureDevices(captureDevices);
+        CaptureDeviceInfo2 playbackDevice = new CaptureDeviceInfo2(
+                "android.media.AudioRecordPlayback", new MediaLocator(LOCATOR_PROTOCOL + ":playback"),
+                formats.toArray(new Format[0]), null, null, null);
+        CaptureDeviceInfo2 notificationDevice = new CaptureDeviceInfo2(
+                "android.media.AudioRecordNotification", new MediaLocator(LOCATOR_PROTOCOL
+                + ":notification"), formats.toArray(new Format[0]), null, null, null);
 
-		CaptureDeviceInfo2 playbackDevice = new CaptureDeviceInfo2(
-			"android.media.AudioRecordPlayback", new MediaLocator(LOCATOR_PROTOCOL + ":playback"),
-			formats.toArray(new Format[formats.size()]), null, null, null);
-		CaptureDeviceInfo2 notificationDevice = new CaptureDeviceInfo2(
-			"android.media.AudioRecordNotification", new MediaLocator(LOCATOR_PROTOCOL
-				+ ":notification"), formats.toArray(new Format[formats.size()]), null, null, null);
+        List<CaptureDeviceInfo2> playbackDevices = new ArrayList<>(2);
+        playbackDevices.add(playbackDevice);
+        playbackDevices.add(notificationDevice);
+        setPlaybackDevices(playbackDevices);
 
-		List<CaptureDeviceInfo2> playbackDevices = new ArrayList<CaptureDeviceInfo2>(2);
-		playbackDevices.add(playbackDevice);
-		playbackDevices.add(notificationDevice);
-		setPlaybackDevices(playbackDevices);
+        setDevice(DataFlow.NOTIFY, notificationDevice, true);
+        setDevice(DataFlow.PLAYBACK, playbackDevice, true);
 
-		setDevice(DataFlow.NOTIFY, notificationDevice, true);
-		setDevice(DataFlow.PLAYBACK, playbackDevice, true);
+    }
 
-	}
+    /**
+     * Obtains an audio input stream from the URL provided.
+     *
+     * @param url a valid url to a sound resource.
+     * @return the input stream to audio data.
+     * @throws java.io.IOException if an I/O exception occurs
+     */
+    public InputStream getAudioInputStream(String url)
+            throws IOException
+    {
+        return AudioStreamUtils.getAudioInputStream(url);
+    }
 
-	/**
-	 * Obtains an audio input stream from the URL provided.
-	 * 
-	 * @param url
-	 *        a valid url to a sound resource.
-	 * @return the input stream to audio data.
-	 * @throws java.io.IOException
-	 *         if an I/O exception occurs
-	 */
-	public InputStream getAudioInputStream(String url)
-		throws IOException
-	{
-		return AudioStreamUtils.getAudioInputStream(url);
-	}
-
-	/**
-	 * Returns the audio format for the <tt>InputStream</tt>. Or null if format cannot be obtained.
-	 * 
-	 * @param audioInputStream
-	 *        the input stream.
-	 * @return the format of the audio stream.
-	 */
-	public AudioFormat getFormat(InputStream audioInputStream)
-	{
-		return AudioStreamUtils.getFormat(audioInputStream);
-	}
+    /**
+     * Returns the audio format for the <tt>InputStream</tt>. Or null if format cannot be obtained.
+     *
+     * @param audioInputStream the input stream.
+     * @return the format of the audio stream.
+     */
+    public AudioFormat getFormat(InputStream audioInputStream)
+    {
+        return AudioStreamUtils.getFormat(audioInputStream);
+    }
 }

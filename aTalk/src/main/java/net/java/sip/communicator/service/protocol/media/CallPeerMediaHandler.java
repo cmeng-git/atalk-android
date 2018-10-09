@@ -5,51 +5,27 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import net.java.sip.communicator.service.protocol.CallPeerState;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.util.java.awt.Component;
-import org.atalk.service.neomedia.AudioMediaStream;
-import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.MediaStreamTarget;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.QualityPreset;
-import org.atalk.service.neomedia.RTPExtension;
-import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.neomedia.SrtpControl;
-import org.atalk.service.neomedia.SrtpControlType;
-import org.atalk.service.neomedia.StreamConnector;
-import org.atalk.service.neomedia.VideoMediaStream;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.device.MediaDeviceWrapper;
-import org.atalk.service.neomedia.event.CsrcAudioLevelListener;
-import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
-import org.atalk.service.neomedia.event.SrtpListener;
+import org.atalk.service.neomedia.event.*;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.event.PropertyChangeNotifier;
-import org.atalk.util.event.VideoEvent;
-import org.atalk.util.event.VideoListener;
-import org.atalk.util.event.VideoNotifierSupport;
+import org.atalk.util.event.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A utility class implementing media control code shared between current telephony implementations.
@@ -152,8 +128,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     /**
      * The <tt>KeyFrameRequester</tt> implemented by this <tt>CallPeerMediaHandler</tt>.
      */
-    private final KeyFrameControl.KeyFrameRequester keyFrameRequester
-            = new KeyFrameControl.KeyFrameRequester()
+    private final KeyFrameControl.KeyFrameRequester keyFrameRequester = new KeyFrameControl.KeyFrameRequester()
     {
         public boolean requestKeyFrame()
         {
@@ -177,8 +152,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     private final Object localUserAudioLevelListenerLock = new Object();
 
     /**
-     * The state of this instance which may be shared with multiple other
-     * <tt>CallPeerMediaHandler</tt>s.
+     * The state of this instance which may be shared with multiple other <tt>CallPeerMediaHandler</tt>s.
      */
     private MediaHandler mediaHandler;
 
@@ -189,8 +163,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * listens to <tt>PropertyChangeEvent</tt>s fired by the <tt>MediaHandler</tt> in question and
      * forwards them as its own.
      */
-    private final PropertyChangeListener mediaHandlerPropertyChangeListener
-            = new PropertyChangeListener()
+    private final PropertyChangeListener mediaHandlerPropertyChangeListener = new PropertyChangeListener()
     {
         /**
          * Notifies this <tt>PropertyChangeListener</tt> that the value of a specific property of
@@ -198,8 +171,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
          *
          * @param ev
          *        a <tt>PropertyChangeEvent</tt> which describes the source of the event, the name
-         *        of the property which has changed its value and the old and new values of the
-         *        property
+         *        of the property which has changed its value and the old and new values of the property
          * @see PropertyChangeListener#propertyChange(PropertyChangeEvent)
          */
         public void propertyChange(PropertyChangeEvent ev)
@@ -470,9 +442,9 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      */
     protected MediaFormat findMediaFormat(List<MediaFormat> formats, MediaFormat format)
     {
-        for (MediaFormat match : formats) {
-            if (match.matches(format))
-                return match;
+        for (MediaFormat mFormat : formats) {
+            if (mFormat.matches(format))
+                return mFormat;
         }
         return null;
     }
@@ -517,7 +489,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      */
     public SrtpControlType[] getAdvertisedEncryptionMethods()
     {
-        return advertisedEncryptionMethods.toArray(new SrtpControlType[advertisedEncryptionMethods.size()]);
+        return advertisedEncryptionMethods.toArray(new SrtpControlType[0]);
     }
 
     /**
@@ -615,8 +587,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Returns the extended type of the candidate selected if this transport manager is using ICE.
      *
      * @param streamName The stream name (AUDIO, VIDEO);
-     * @return The extended type of the candidate selected if this transport manager is using ICE.
-     * Otherwise, returns null.
+     * @return The extended type of the candidate selected if this transport manager is using ICE. Otherwise return null.
      */
     public String getICECandidateExtendedType(String streamName)
     {
@@ -746,8 +717,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     {
         List<MediaFormat> supportFormats = Collections.emptyList();
         if (mediaDevice != null) {
-            Map<String, String> accountProperties
-                    = getPeer().getProtocolProvider().getAccountID().getAccountProperties();
+            Map<String, String> accountProperties = getPeer().getProtocolProvider().getAccountID().getAccountProperties();
             String overrideEncodings = accountProperties.get(ProtocolProviderFactory.OVERRIDE_ENCODINGS);
 
             if (Boolean.parseBoolean(overrideEncodings)) {
@@ -755,7 +725,6 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
                  * The account properties associated with the CallPeer of this CallPeerMediaHandler
                  * override the global EncodingConfiguration.
                  */
-
                 EncodingConfiguration encodingConfiguration
                         = ProtocolMediaActivator.getMediaService().createEmptyEncodingConfiguration();
 
@@ -769,8 +738,10 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         }
 
         if (supportFormats.size() == 0) {
-            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), aTalkApp.getResString(R.string.service_gui_CALL),
-                    aTalkApp.getResString(R.string.service_gui_CALL_NO_DEVICE_CODEC_H, mediaDevice.getMediaType().toString())
+            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                    aTalkApp.getResString(R.string.service_gui_CALL),
+                    aTalkApp.getResString(R.string.service_gui_CALL_NO_DEVICE_CODEC_H,
+                            (mediaDevice != null) ? mediaDevice.getMediaType().toString() : "Unknown")
             );
         }
         return supportFormats;
@@ -1072,7 +1043,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
             List<RTPExtension> supportedExtensions)
     {
         if (remoteExtensions == null || supportedExtensions == null)
-            return new ArrayList<RTPExtension>();
+            return new ArrayList<>();
 
         List<RTPExtension> intersection = new ArrayList<>(Math.min(remoteExtensions.size(), supportedExtensions.size()));
 
@@ -1095,8 +1066,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     /**
      * Checks whether <tt>dev</tt> can be used for a call.
      *
-     * @return <tt>true</tt> if the device is not null, and it has at least one enabled format.
-     * Otherwise <tt>false</tt>
+     * @return <tt>true</tt> if the device is not null, and it has at least one enabled format. Otherwise <tt>false</tt>
      */
     public boolean isDeviceActive(MediaDevice dev)
     {
@@ -1104,11 +1074,9 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     }
 
     /**
-     * Checks whether <tt>dev</tt> can be used for a call, using <tt>sendPreset</tt> and
-     * <tt>receivePreset</tt>
+     * Checks whether <tt>dev</tt> can be used for a call, using <tt>sendPreset</tt> and <tt>receivePreset</tt>
      *
-     * @return <tt>true</tt> if the device is not null, and it has at least one enabled format.
-     * Otherwise <tt>false</tt>
+     * @return <tt>true</tt> if the device is not null, and it has at least one enabled format. Otherwise <tt>false</tt>
      */
     public boolean isDeviceActive(MediaDevice dev, QualityPreset sendPreset, QualityPreset receivePreset)
     {
@@ -1118,8 +1086,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     /**
      * Determines whether this media handler is currently set to transmit local audio.
      *
-     * @return <tt>true</tt> if the media handler is set to transmit local audio and <tt>false</tt>
-     * otherwise.
+     * @return <tt>true</tt> if the media handler is set to transmit local audio and <tt>false</tt> otherwise.
      */
     public boolean isLocalAudioTransmissionEnabled()
     {
@@ -1134,16 +1101,14 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     public boolean isLocallyOnHold()
     {
         return locallyOnHold;
-        // no need to actually check stream directions because we only update them through the
-        // setLocallyOnHold() method so if the value of the locallyOnHold field has changed, so
-        // have stream directions.
+        // no need to actually check stream directions because we only update them through the setLocallyOnHold()
+        // method so if the value of the locallyOnHold field has changed, so have stream directions.
     }
 
     /**
      * Determines whether this media handler is currently set to transmit local video.
      *
-     * @return <tt>true</tt> if the media handler is set to transmit local video and false
-     * otherwise.
+     * @return <tt>true</tt> if the media handler is set to transmit local video and false otherwise.
      */
     public boolean isLocalVideoTransmissionEnabled()
     {
@@ -1184,8 +1149,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * @param mediaType the <tt>MediaType</tt> for which it is to be determined whether RTP translation is
      * enabled for the <tT>CallPeeer</tt> represented by this <tt>CallPeerMediaHandler</tt>
      * @return <tt>true</tt> if RTP translation is enabled for the <tt>CallPeer</tt> represented by
-     * this <tt>CallPeerMediaHandler</tt> and for the specified <tt>mediaType</tt>; otherwise,
-     * <tt>false</tt>
+     * this <tt>CallPeerMediaHandler</tt> and for the specified <tt>mediaType</tt>; otherwise, <tt>false</tt>
      */
     public boolean isRTPTranslationEnabled(MediaType mediaType)
     {
@@ -1264,7 +1228,6 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         for (SrtpControlType i : SrtpControlType.values()) {
             if (!i.equals(srtpControlType)) {
                 SrtpControl e = srtpControls.remove(mediaType, i);
-
                 if (e != null)
                     e.cleanup(null);
             }
@@ -1273,8 +1236,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
     /**
      * Unregisters a specific <tt>VideoListener</tt> from this instance so that it stops receiving
-     * notifications from it about changes in the availability of visual <tt>Component</tt>s
-     * displaying video.
+     * notifications from it about changes in the availability of visual <tt>Component</tt>s displaying video.
      *
      * @param listener the <tt>VideoListener</tt> to be unregistered from this instance and to stop receiving
      * notifications from it about changes in the availability of visual <tt>Component</tt>s displaying video
@@ -1303,6 +1265,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * NAT or RTP proxy if any. In order to be really efficient, this method should be called
      * after we send our offer or answer.
      *
+     * @param stream <tt>MediaStream</tt> non-null stream
      * @param mediaType <tt>MediaType</tt>
      */
     protected void sendHolePunchPacket(MediaStream stream, MediaType mediaType)
@@ -1310,8 +1273,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         if (disableHolePunching)
             return;
 
-        // send as a hole punch packet a constructed rtp packet has the correct payload type and
-        // ssrc
+        // send as a hole punch packet a constructed rtp packet has the correct payload type and ssrc
         RawPacket packet = new RawPacket(HOLE_PUNCH_PACKET, 0, RawPacket.FIXED_HEADER_SIZE);
 
         MediaFormat format = stream.getFormat();
@@ -1323,7 +1285,10 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
         packet.setPayloadType(payloadType);
         packet.setSSRC((int) stream.getLocalSourceID());
-        getTransportManager().sendHolePunchPacket(stream.getTarget(), mediaType, packet);
+
+        // cmeng (20181008): sending the defined HOLE_PUNCH_PACKET causing problem in transmit mic data being muted???
+        // Disable it for aTalk always i.e. not using defined packet
+        getTransportManager().sendHolePunchPacket(stream.getTarget(), mediaType, null);
     }
 
     /**
@@ -1534,9 +1499,8 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * Causes this handler's <tt>AudioMediaStream</tt> to stop transmitting the audio being fed
      * from this stream's <tt>MediaDevice</tt> and transmit silence instead.
      *
-     * @param mute <tt>true</tt> if we are to make our audio stream start transmitting silence and
-     * <tt>false</tt> if we are to end the transmission of silence and use our stream's
-     * <tt>MediaDevice</tt> again.
+     * @param mute <tt>true</tt> if we are to make our audio stream start transmitting silence and <tt>false</tt>
+     * if we are to end the transmission of silence and use our stream's <tt>MediaDevice</tt> again.
      */
     public void setMute(boolean mute)
     {
@@ -1690,9 +1654,8 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
     /**
      * Represents the <tt>PropertyChangeListener</tt> which listens to changes in the values of the
-     * properties of the <tt>Call</tt> of {@link #peer}. Remembers the <tt>Call</tt> it has been
-     * added to because <tt>peer</tt> does not have a <tt>call</tt> anymore at the time
-     * {@link #close()} is called.
+     * properties of the <tt>Call</tt> of {@link #peer}. Remembers the <tt>Call</tt> it has been added to
+     * because <tt>peer</tt> does not have a <tt>call</tt> anymore at the time {@link #close()} is called.
      */
     private class CallPropertyChangeListener implements PropertyChangeListener
     {
@@ -1702,8 +1665,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         private final MediaAwareCall<?, ?, ?> call;
 
         /**
-         * Initializes a new <tt>CallPropertyChangeListener</tt> which is to be added to a specific
-         * <tt>Call</tt>.
+         * Initializes a new <tt>CallPropertyChangeListener</tt> which is to be added to a specific <tt>Call</tt>.
          *
          * @param call the <tt>Call</tt> the new instance is to be added to
          */

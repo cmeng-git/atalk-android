@@ -245,7 +245,7 @@ class AudioMixerPushBufferStream extends ControlsAdapter
 
 		if (effectiveInDataSource != null) {
 			BufferControl bufferControl
-					= (BufferControl) effectiveInDataSource.getControl(bufferControlType);
+                    = (BufferControl) effectiveInDataSource.getControl(bufferControlType);
 
 			if (bufferControl != null)
 				return bufferControl;
@@ -685,8 +685,7 @@ class AudioMixerPushBufferStream extends ControlsAdapter
 						Arrays.fill(samples, sampleCount, samples.length, (short) 0);
 					}
 
-					inSamples[i] = ((buffer.getFlags() & Buffer.FLAG_SILENCE) == 0) ? samples
-							: null;
+					inSamples[i] = ((buffer.getFlags() & Buffer.FLAG_SILENCE) == 0) ? samples : null;
 
 					if (maxInSampleCount < samples.length)
 						maxInSampleCount = samples.length;
@@ -912,8 +911,7 @@ class AudioMixerPushBufferStream extends ControlsAdapter
 	 * @param transferHandler
 	 * 		the <tt>BufferTransferHandler</tt> to be set to the specified <tt>inStreams</tt>
 	 */
-	private void setTransferHandler(InStreamDesc[] inStreams, BufferTransferHandler
-			transferHandler)
+	private void setTransferHandler(InStreamDesc[] inStreams, BufferTransferHandler transferHandler)
 	{
 		if ((inStreams == null) || (inStreams.length <= 0))
 			return;

@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class implements adapter that can be used to search contact sources and the contact list. Meta contact list is a base
- * for this adapter and queries returned from contact sources are appended as next contact groups.
+ * Class implements adapter that can be used to search contact sources and the contact list. Meta contact list
+ * is a base for this adapter and queries returned from contact sources are appended as next contact groups.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
-public class QueryContactListAdapter extends BaseContactListAdapter implements UIGroupRenderer, ContactQueryListener
+public class QueryContactListAdapter extends BaseContactListAdapter
+        implements UIGroupRenderer, ContactQueryListener
 {
     /**
      * The logger
@@ -50,12 +52,12 @@ public class QueryContactListAdapter extends BaseContactListAdapter implements U
     /**
      * List of results groups. Each group corresponds to results from one contact source.
      */
-    private List<ResultGroup> results = new ArrayList<ResultGroup>();
+    private List<ResultGroup> results = new ArrayList<>();
 
     /**
      * List of queries currently handled.
      */
-    private List<ContactQuery> queries = new ArrayList<ContactQuery>();
+    private List<ContactQuery> queries = new ArrayList<>();
 
     /**
      * Creates new instance of <tt>QueryContactListAdapter</tt>.
@@ -76,10 +78,10 @@ public class QueryContactListAdapter extends BaseContactListAdapter implements U
      */
     private List<ContactSourceService> getSources()
     {
-        ServiceReference<ContactSourceService>[] serRefs = ServiceUtils.getServiceReferences(
-                AndroidGUIActivator.bundleContext, ContactSourceService.class);
+        ServiceReference<ContactSourceService>[] serRefs
+                = ServiceUtils.getServiceReferences(AndroidGUIActivator.bundleContext, ContactSourceService.class);
 
-        List<ContactSourceService> contactSources = new ArrayList<ContactSourceService>(serRefs.length);
+        List<ContactSourceService> contactSources = new ArrayList<>(serRefs.length);
         for (ServiceReference<ContactSourceService> serRef : serRefs) {
             ContactSourceService contactSource = AndroidGUIActivator.bundleContext.getService(serRef);
             if (contactSource.getType() == ContactSourceService.SEARCH_TYPE) {

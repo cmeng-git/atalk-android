@@ -61,8 +61,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         implements ReceiveStreamListener, SendStreamListener, SessionListener, RemoteListener
 {
     /**
-     * The <tt>Logger</tt> used by the <tt>MediaStreamImpl</tt> class and its instances for logging
-     * output.
+     * The <tt>Logger</tt> used by the <tt>MediaStreamImpl</tt> class and its instances for logging output.
      */
     private static final Logger logger = Logger.getLogger(MediaStreamImpl.class);
 
@@ -76,8 +75,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * form of a <tt>String</tt> value.
      *
      * @param dataSource the <tt>DataSource</tt> to return a human-readable representation of
-     * @return a <tt>String</tt> value which gives a human-readable representation of the specified
-     * <tt>dataSource</tt>
+     * @return a <tt>String</tt> value which gives a human-readable representation of the specified <tt>dataSource</tt>
      */
     public static String toString(DataSource dataSource)
     {
@@ -181,14 +179,12 @@ public class MediaStreamImpl extends AbstractMediaStream
 
     /**
      * The <tt>ReceiveStream</tt>s this instance plays back on its associated <tt>MediaDevice</tt>.
-     * The (read and write) accesses to the field are to be synchronized using
-     * {@link #receiveStreamsLock}.
+     * The (read and write) accesses to the field are to be synchronized using {@link #receiveStreamsLock}.
      */
     private final List<ReceiveStream> receiveStreams = new LinkedList<>();
 
     /**
-     * The <tt>ReadWriteLock</tt> which synchronizes the (read and write) accesses to
-     * {@link #receiveStreams}.
+     * The <tt>ReadWriteLock</tt> which synchronizes the (read and write) accesses to {@link #receiveStreams}.
      */
     private final ReadWriteLock receiveStreamsLock = new ReentrantReadWriteLock();
 
@@ -210,8 +206,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     private AbstractRTPConnector rtpConnector;
 
     /**
-     * The one and only <tt>MediaStreamTarget</tt> this instance has added as a target in
-     * {@link #rtpConnector}.
+     * The one and only <tt>MediaStreamTarget</tt> this instance has added as a target in {@link #rtpConnector}.
      */
     private MediaStreamTarget rtpConnectorTarget;
 
@@ -314,8 +309,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * an associated <tt>StreamConnector</tt> and it must be set later for the new instance to be
      * able to exchange media with a remote peer.
      *
-     * @param device the <tt>MediaDevice</tt> the new instance is to use for both capture and playback of
-     * media
+     * @param device the <tt>MediaDevice</tt> the new instance is to use for both capture and playback of media
      * @param srtpControl an existing control instance to control the SRTP operations
      */
     public MediaStreamImpl(MediaDevice device, SrtpControl srtpControl)
@@ -324,9 +318,8 @@ public class MediaStreamImpl extends AbstractMediaStream
     }
 
     /**
-     * Initializes a new <tt>MediaStreamImpl</tt> instance which will use the specified
-     * <tt>MediaDevice</tt> for both capture and playback of media exchanged via the specified
-     * <tt>StreamConnector</tt>.
+     * Initializes a new <tt>MediaStreamImpl</tt> instance which will use the specified <tt>MediaDevice</tt> for
+     * both capture and playback of media exchanged via the specified <tt>StreamConnector</tt>.
      *
      * @param connector the <tt>StreamConnector</tt> the new instance is to use for sending and receiving
      * media or <tt>null</tt> if the <tt>StreamConnector</tt> of the new instance is to not
@@ -662,7 +655,6 @@ public class MediaStreamImpl extends AbstractMediaStream
 
         stop();
         closeSendStreams();
-
         srtpControl.cleanup(this);
 
         if (csrcEngine != null) {
@@ -724,8 +716,7 @@ public class MediaStreamImpl extends AbstractMediaStream
 
         /*
          * XXX Call AbstractRTPConnector#removeTargets() after StreamRTPManager#dispose().
-         * Otherwise, the latter will try to send an RTCP BYE and there will be no targets to send
-         * it to.
+         * Otherwise, the latter will try to send an RTCP BYE and there will be no targets to send it to.
          */
         if (rtpConnector != null)
             rtpConnector.removeTargets();
@@ -773,8 +764,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * <tt>MediaStreamImpl</tt>. Allows extenders to override.
      *
      * @param rtpManager the <tt>RTPManager</tt> which is to be used by this <tt>MediaStreamImpl</tt>
-     * @param bufferControl the <tt>BufferControl</tt> of <tt>rtpManager</tt> on which any optional configuration
-     * is to be performed
+     * @param bufferControl the <tt>BufferControl</tt> of <tt>rtpManager</tt> on which any optional
+     * configuration is to be performed
      */
     protected void configureRTPManagerBufferControl(StreamRTPManager rtpManager, BufferControl bufferControl)
     {
@@ -1584,8 +1575,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Gets the address that this stream is sending RTCP traffic to.
      *
-     * @return an <tt>InetSocketAddress</tt> instance indicating the address that this stream is
-     * sending RTCP traffic to
+     * @return an <tt>InetSocketAddress</tt> instance indicating the address that this stream is sending RTCP traffic to
      * @see MediaStream#getRemoteControlAddress()
      */
     @Override
@@ -1751,7 +1741,6 @@ public class MediaStreamImpl extends AbstractMediaStream
     public StreamConnector.Protocol getTransportProtocol()
     {
         StreamConnector connector = (rtpConnector != null) ? rtpConnector.getConnector() : null;
-
         if (connector == null) {
             return null;
         }
@@ -1895,7 +1884,8 @@ public class MediaStreamImpl extends AbstractMediaStream
                     .append("max inter-arrival jitter: ")
                     .append(statisticsEngine.getMaxInterArrivalJitter())
                     .append(eol)
-                    .append("RTCPs received: ").append(rs.getRTCPRecd()).append(eol)
+                    .append("RTCPs received: ").append(rs.getRTCPRecd())
+                    .append(eol)
                     .append("bad RTCP packets: ").append(rs.getBadRTCPPkts())
                     .append(eol)
                     .append("bad RTP packets: ").append(rs.getBadRTPkts())
@@ -1914,7 +1904,8 @@ public class MediaStreamImpl extends AbstractMediaStream
                     .append(eol)
                     .append("remote collisions: ").append(rs.getRemoteColls())
                     .append(eol)
-                    .append("SRs received: ").append(rs.getSRRecd()).append(eol)
+                    .append("SRs received: ").append(rs.getSRRecd())
+                    .append(eol)
                     .append("transmit failed: ").append(rs.getTransmitFailed())
                     .append(eol)
                     .append("unknown types: ").append(rs.getUnknownTypes());
@@ -2126,8 +2117,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * Sets the <tt>StreamConnector</tt> to be used by this instance for sending and receiving media.
      *
-     * @param connector the <tt>StreamConnector</tt> to be used by this instance for sending and receiving
-     * media
+     * @param connector the <tt>StreamConnector</tt> to be used by this instance for sending and receiving media
      */
     @Override
     public void setConnector(StreamConnector connector)
@@ -2899,10 +2889,8 @@ public class MediaStreamImpl extends AbstractMediaStream
                         }
 
                         // as output streams of the DataSource are recreated we
-                        // need to update mixers and everything that are using
-                        // them
-                        devSess.playbackDataSourceChanged(
-                                receiveStream.getDataSource());
+                        // need to update mixers and everything that are using them
+                        devSess.playbackDataSourceChanged( receiveStream.getDataSource());
                     } catch (IOException e) {
                         logger.error("Error re-creating TranscodingDataSource's processor!", e);
                     }
@@ -3124,18 +3112,15 @@ public class MediaStreamImpl extends AbstractMediaStream
             return -1;
         }
 
-        final byte vp8PT = getDynamicRTPPayloadType(Constants.VP8),
-                vp9PT = getDynamicRTPPayloadType(Constants.VP9);
+        final byte vp8PT = getDynamicRTPPayloadType(Constants.VP8), vp9PT = getDynamicRTPPayloadType(Constants.VP9);
 
         if (redBlock.getPayloadType() == vp8PT) {
             return org.atalk.impl.neomedia.codec.video.vp8.DePacketizer.VP8PayloadDescriptor
-                    .getTemporalLayerIndex(
-                            redBlock.getBuffer(), redBlock.getOffset(), redBlock.getLength());
+                    .getTemporalLayerIndex(redBlock.getBuffer(), redBlock.getOffset(), redBlock.getLength());
         }
         else if (redBlock.getPayloadType() == vp9PT) {
             return org.atalk.impl.neomedia.codec.video.vp9.DePacketizer.VP9PayloadDescriptor
-                    .getTemporalLayerIndex(
-                            redBlock.getBuffer(), redBlock.getOffset(), redBlock.getLength());
+                    .getTemporalLayerIndex(redBlock.getBuffer(), redBlock.getOffset(), redBlock.getLength());
         }
         else {
             // XXX not implementing temporal layer detection should not break things.
@@ -3410,7 +3395,6 @@ public class MediaStreamImpl extends AbstractMediaStream
             return new REDBlock(pkt.getBuffer(), pkt.getPayloadOffset(), pkt.getPayloadLength(), pktPT);
         }
     }
-
 
     /**
      * Gets the {@code RtxTransformer}, if any, used by the {@code MediaStream}.

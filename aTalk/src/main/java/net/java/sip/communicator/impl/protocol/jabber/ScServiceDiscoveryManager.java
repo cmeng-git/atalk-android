@@ -354,9 +354,8 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     }
 
     /**
-     * Returns the discovered information of a given XMPP entity addressed by its JID and note
-     * attribute. Use this message only when trying to query information which is not directly
-     * addressable.
+     * Returns the discovered information of a given XMPP entity addressed by its JID and note attribute.
+     * Use this message only when trying to query information which is not directly addressable.
      *
      * @param entityID the address of the XMPP entity.
      * @return the discovered information.
@@ -372,7 +371,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         // reply @ 28 seconds after disco#info is sent
         connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
-        logger.warn("### Remote discovery for: " + entityID);
+        // logger.warn("### Remote discovery for: " + entityID);
         DiscoverInfo discoInfo = discoveryManager.discoverInfo(entityID);
 
         connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);

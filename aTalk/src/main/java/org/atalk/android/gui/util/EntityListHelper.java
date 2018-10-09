@@ -62,8 +62,12 @@ public class EntityListHelper
         String title;
 
         if (desc instanceof MetaContact) {
-            MetaContact contact = (MetaContact) desc;
             title = ctx.getString(R.string.service_gui_REMOVE_CONTACT);
+            MetaContact contact = (MetaContact) desc;
+            if (contact.getDefaultContact() == null) {
+                aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contact.getDisplayName());
+                return;
+            }
             message = ctx.getString(R.string.service_gui_REMOVE_CONTACT_TEXT,
                     contact.getDefaultContact().getProtocolProvider().getAccountID().getUserID(),
                     contact.getDisplayName());

@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -58,188 +58,175 @@ import java.util.concurrent.locks.*;
  */
 public class BasicActiveSpeakerDetector extends AbstractActiveSpeakerDetector
 {
-	// TODO clean histories for very old streams (dont keep hitting
-	// MAX_NEW_ACTIVE_SILENT_INTERVAL)
+    // TODO clean histories for very old streams (dont keep hitting
+    // MAX_NEW_ACTIVE_SILENT_INTERVAL)
 
-	private static final double ACTIVE_COEF = 1.15;
+    private static final double ACTIVE_COEF = 1.15;
 
-	private static final int MAX_NEW_ACTIVE_SILENT_INTERVAL = 1000; // ms
+    private static final int MAX_NEW_ACTIVE_SILENT_INTERVAL = 1000; // ms
 
-	private static final double MIN_NEW_ACTIVE_SCORE = 120.;
+    private static final double MIN_NEW_ACTIVE_SCORE = 120.;
 
-	private static final int MIN_NEW_ACTIVE_SIZE = 20;
+    private static final int MIN_NEW_ACTIVE_SIZE = 20;
 
-	private History active;
+    private History active;
 
-	private final Object activeSyncRoot = new Object();
+    private final Object activeSyncRoot = new Object();
 
-	private final Map<Long, History> histories = new HashMap<Long, History>();
+    private final Map<Long, History> histories = new HashMap<Long, History>();
 
-	private final ReadWriteLock historiesLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock historiesLock = new ReentrantReadWriteLock();
 
-	private History getHistory(long ssrc)
-	{
-		History history = null;
+    private History getHistory(long ssrc)
+    {
+        History history = null;
+        Lock readLock = historiesLock.readLock();
+        readLock.lock();
+        try {
+            history = histories.get(ssrc);
+        } finally {
+            readLock.unlock();
+        }
 
-		Lock readLock = historiesLock.readLock();
+        if (history == null) {
+            history = new History(ssrc);
+            Lock writeLock = historiesLock.writeLock();
 
-		readLock.lock();
-		try {
-			history = histories.get(ssrc);
-		}
-		finally {
-			readLock.unlock();
-		}
+            writeLock.lock();
+            try {
+                histories.put(ssrc, history);
+            } finally {
+                writeLock.unlock();
+            }
+        }
+        return history;
+    }
 
-		if (history == null) {
-			history = new History(ssrc);
-			Lock writeLock = historiesLock.writeLock();
+    @Override
+    public void levelChanged(long ssrc, int level)
+    {
+        History history = getHistory(ssrc);
+        history.update(level);
+        updateActive();
+    }
 
-			writeLock.lock();
-			try {
-				histories.put(ssrc, history);
-			}
-			finally {
-				writeLock.unlock();
-			}
-		}
+    private History setInitialActive(ArrayList<History> histories)
+    {
+        History bestHistory = null;
+        Double bestScore = 0.;
 
-		return history;
-	}
+        for (History h : histories) {
+            if (h.score >= bestScore) {
+                bestHistory = h;
+                bestScore = h.score;
+            }
+        }
 
-	@Override
-	public void levelChanged(long ssrc, int level)
-	{
-		History history = getHistory(ssrc);
+        synchronized (activeSyncRoot) {
+            active = bestHistory;
+        }
+        return bestHistory;
+    }
 
-		history.update(level);
+    private void updateActive()
+    {
+        History active;
+        synchronized (activeSyncRoot) {
+            active = this.active;
+        }
 
-		updateActive();
-	}
+        ArrayList<History> histories;
+        Lock readLock = historiesLock.readLock();
+        readLock.lock();
+        try {
+            histories = new ArrayList<History>(this.histories.values());
+        } finally {
+            readLock.unlock();
+        }
 
-	private History setInitialActive(ArrayList<History> histories)
-	{
-		History bestHistory = null;
-		Double bestScore = 0.;
+        if (histories.isEmpty())
+            return;
 
-		for (History h : histories) {
-			if (h.score >= bestScore) {
-				bestHistory = h;
-				bestScore = h.score;
-			}
-		}
+        if (active == null) {
+            active = setInitialActive(histories);
+            if (active != null)
+                fireActiveSpeakerChanged(active.ssrc);
+            return;
+        }
+        History newActive = active;
+        for (History history : histories) {
+            if ((history.lastUpdate != -1) && history.lastUpdate
+                    + MAX_NEW_ACTIVE_SILENT_INTERVAL < System.currentTimeMillis()) //rule 4 in class javadoc
+            {
+                history.reset();
+            }
 
-		synchronized (activeSyncRoot) {
-			active = bestHistory;
-		}
+            if (history.score > active.score * ACTIVE_COEF // rule 1
+                    // highest score among eligible
+                    && history.score > newActive.score
+                    && history.size >= MIN_NEW_ACTIVE_SIZE // rule 3
+                    && history.score >= MIN_NEW_ACTIVE_SCORE) // rule 2
+                newActive = history;
+        }
 
-		return bestHistory;
-	}
+        if (newActive != active) {
+            synchronized (activeSyncRoot) {
+                this.active = newActive;
+            }
+            fireActiveSpeakerChanged(newActive.ssrc);
+        }
+    }
 
-	private void updateActive()
-	{
-		History active;
-		synchronized (activeSyncRoot) {
-			active = this.active;
-		}
+    private static class History
+    {
+        private static final int C_OLDER = 1;
+        private static final int C_RECENT = 2;
+        private static final int SIZE = 25 + 100;
 
-		ArrayList<History> histories;
-		Lock readLock = historiesLock.readLock();
+        private int head = 0;
+        private int[] history = new int[SIZE];
+        private long lastUpdate = -1;
+        private double score = 0.;
+        private int size = 0;
+        private long ssrc = -1;
 
-		readLock.lock();
-		try {
-			histories = new ArrayList<History>(this.histories.values());
-		}
-		finally {
-			readLock.unlock();
-		}
+        private History(long ssrc)
+        {
+            this.ssrc = ssrc;
+        }
 
-		if (histories.isEmpty())
-			return;
+        private synchronized void reset()
+        {
+            lastUpdate = -1;
+            size = head = 0;
+            score = 0.;
+            Arrays.fill(history, 0);
+        }
 
-		if (active == null) {
-			active = setInitialActive(histories);
-			if (active != null)
-				fireActiveSpeakerChanged(active.ssrc);
-			return;
-		}
+        private synchronized void update(int level)
+        {
+            // TODO compute score efficiently
 
-		History newActive = active;
-		for (History history : histories) {
-			if (history.lastUpdate != -1
-				&& history.lastUpdate + MAX_NEW_ACTIVE_SILENT_INTERVAL
-                        < System.currentTimeMillis()) //rule 4 in class javadoc
-			{
-				history.reset();
-			}
+            history[head] = level;
+            head = (head + 1) % SIZE;
+            size = Math.min(size + 1, SIZE);
 
-			if (history.score > active.score * ACTIVE_COEF // rule 1
-				 // highest score among eligible
-				&& history.score > newActive.score
-				&& history.size >= MIN_NEW_ACTIVE_SIZE // rule 3
-				&& history.score >= MIN_NEW_ACTIVE_SCORE) // rule 2
-				newActive = history;
-		}
+            int sum = 0;
+            for (int i = 0; i < 100; i++)
+                sum += history[(head + i) % SIZE];
 
-		if (newActive != active) {
-			synchronized (activeSyncRoot) {
-				this.active = newActive;
-			}
-			fireActiveSpeakerChanged(newActive.ssrc);
-		}
-	}
+            int sum2 = 0;
+            for (int i = 0; i < 25; i++)
+                sum2 += history[(SIZE + head - 1 - i) % SIZE];
 
-	private static class History
-	{
-		private static final int C_OLDER = 1;
-		private static final int C_RECENT = 2;
-		private static final int SIZE = 25 + 100;
-
-		private int head = 0;
-		private int[] history = new int[SIZE];
-		private long lastUpdate = -1;
-		private double score = 0.;
-		private int size = 0;
-		private long ssrc = -1;
-
-		private History(long ssrc)
-		{
-			this.ssrc = ssrc;
-		}
-
-		private synchronized void reset()
-		{
-			lastUpdate = -1;
-			size = head = 0;
-			score = 0.;
-			Arrays.fill(history, 0);
-		}
-
-		private synchronized void update(int level)
-		{
-			// TODO compute score efficiently
-
-			history[head] = level;
-
-			head = (head + 1) % SIZE;
-			size = Math.min(size + 1, SIZE);
-
-			int sum = 0;
-			for (int i = 0; i < 100; i++)
-				sum += history[(head + i) % SIZE];
-
-			int sum2 = 0;
-			for (int i = 0; i < 25; i++)
-				sum2 += history[(SIZE + head - 1 - i) % SIZE];
-
-			score = C_OLDER * ((double) sum) / 100 + C_RECENT * ((double) sum2) / 25;
-			lastUpdate = System.currentTimeMillis();
-			// if(score>110)
-			// {
-			// System.err.println(
-			// getClass().getName() + " " + ssrc + " update(" + level
-			// + ") score=" + score);
-			// }
-		}
-	}
+            score = C_OLDER * ((double) sum) / 100 + C_RECENT * ((double) sum2) / 25;
+            lastUpdate = System.currentTimeMillis();
+            // if(score>110)
+            // {
+            // System.err.println(
+            // getClass().getName() + " " + ssrc + " update(" + level
+            // + ") score=" + score);
+            // }
+        }
+    }
 }

@@ -158,7 +158,14 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     {
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(this);
-        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mPlayer.setAudioAttributes(
+                    new AudioAttributes.Builder().setLegacyStreamType(AudioManager.STREAM_MUSIC).build());
+        }
+        else {
+            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        }
+
         try {
             mPlayer.setDataSource(this, uri);
             mPlayer.prepare();

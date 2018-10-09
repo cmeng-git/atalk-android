@@ -153,7 +153,7 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
 			outputBuffer.setLength(inputBufferLength);
 			outputBuffer.setOffset(0);
 
-			System.arraycopy(inputBuffer.getData(), inputBuffer.getOffset(), bufferData, 0,
+			System.arraycopy((byte[]) inputBuffer.getData(), inputBuffer.getOffset(), bufferData, 0,
 					inputBufferLength);
 
 			// Now copy the remaining attributes.
@@ -186,7 +186,6 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
             if (ext.value == null || ext.value.length < 1)
                 ext.value = new byte[1];
             ext.value[0] = level;
-
             outputBuffer.setHeaderExtension(ext);
 		}
 		else {

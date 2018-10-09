@@ -606,8 +606,14 @@ public class ChatFragment extends OSGiFragment
                                         msgUid.add(chatMsg.getMessageUID());
                                         // add voice files for auto delete
                                         if (cType == ChatListAdapter.FILE_TRANSFER_MESSAGE_VIEW) {
-                                            File file = chatMsg.getFileRecord().getFile();
-                                            if (file.exists() && file.getName().startsWith("voice-"))
+                                            File file;
+                                            // file is in chatHistory fileRecord or in chatMsg if yet to be converted
+                                            if (chatMsg.getFileRecord() != null)
+                                                file = chatMsg.getFileRecord().getFile();
+                                            else if ((file = chatListAdapter.getFileName(cPos)) == null) {
+                                                file = new File(chatMsg.getMessage());
+                                            }
+                                            if ((file != null) && file.exists() && file.getName().startsWith("voice-"))
                                                 msgFiles.add(file);
                                         }
                                     }

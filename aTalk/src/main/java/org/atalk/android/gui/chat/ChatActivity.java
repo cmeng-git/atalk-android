@@ -283,6 +283,10 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         ChatSessionManager.setCurrentChatId(chatId);
 
         selectedChatPanel = ChatSessionManager.getActiveChat(chatId);
+        // field feeback = can have null?
+        if (selectedChatPanel == null)
+            return;
+
         ChatSession chatSession = selectedChatPanel.getChatSession();
         if (chatSession instanceof MetaContactChatSession) {
             mRecipient = selectedChatPanel.getMetaContact().getDefaultContact();
@@ -727,7 +731,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                         }
                         else
                             aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                    }
+                    } else
+                        aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                     break;
 
                 case CHOOSE_FILE_ACTIVITY_REQUEST_CODE:

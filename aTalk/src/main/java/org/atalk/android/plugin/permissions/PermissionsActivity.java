@@ -31,7 +31,8 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -40,7 +41,6 @@ import com.karumi.dexter.listener.multi.*;
 import com.karumi.dexter.listener.single.*;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
 
 import java.util.LinkedList;
@@ -283,14 +283,23 @@ public class PermissionsActivity extends Activity
                 e.printStackTrace();
             }
         }
+        // Proceed to request user for permissions if not all are permanently denied
         for (PermissionDeniedResponse response : deniedPermissionResponses) {
             if (!response.isPermanentlyDenied())
                 return true;
         }
-        // Must warn user if none permission has been granted to aTalk - will not work in almost cases
-        if (grantedPermissionResponses.size() == 0)
+        /*
+         * It seems that some android devices have init all requested permissions to permanently denied states
+         * i.e. incorrect return value for: ActivityCompat.shouldShowRequestPermissionRationale == false
+         * Must warn user if < 3 permission has been granted to aTalk - will not work in almost cases;
+         * and bug user and request for it anyway, otherwise aTalk will not work properly.
+         */
+        if (grantedPermissionResponses.size() < 3) {
             DialogActivity.showDialog(this, getResources().getString(R.string.service_gui_WARNING),
                     getResources().getString(R.string.permission_denied_all_alert));
+            return true;
+        }
+        // Do not disturb user, if he has chosen partially granted the permissions.
         return false;
     }
 

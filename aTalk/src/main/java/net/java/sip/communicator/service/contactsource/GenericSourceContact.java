@@ -15,10 +15,11 @@
  */
 package net.java.sip.communicator.service.contactsource;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.util.DataObject;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.*;
+import java.util.*;
 
 /**
  * Implements a generic <tt>SourceContact</tt> for the purposes of the support
@@ -26,9 +27,8 @@ import net.java.sip.communicator.util.*;
  *
  * @author Lyubomir Marinov
  */
-public class GenericSourceContact
-    extends DataObject
-    implements SourceContact
+public class GenericSourceContact extends DataObject
+        implements SourceContact
 {
     /**
      * The <tt>ContactDetail</tt>s of this <tt>SourceContact</tt>.
@@ -36,8 +36,7 @@ public class GenericSourceContact
     protected final List<ContactDetail> contactDetails;
 
     /**
-     * The <tt>ContactSourceService</tt> which has created this
-     * <tt>SourceContact</tt>.
+     * The <tt>ContactSourceService</tt> which has created this <tt>SourceContact</tt>.
      */
     private final ContactSourceService contactSource;
 
@@ -60,7 +59,7 @@ public class GenericSourceContact
      * The image/avatar of this <tt>SourceContact</tt>
      */
     private byte[] image;
-    
+
     /**
      * The address of the contact.
      */
@@ -69,8 +68,7 @@ public class GenericSourceContact
     /**
      * Initializes a new <tt>AddrBookSourceContact</tt> instance.
      *
-     * @param contactSource the <tt>ContactSourceService</tt> which is creating
-     * the new instance
+     * @param contactSource the <tt>ContactSourceService</tt> which is creating the new instance
      * @param displayName the display name of the new instance
      * @param contactDetails the <tt>ContactDetail</tt>s of the new instance
      */
@@ -86,7 +84,7 @@ public class GenericSourceContact
 
     /**
      * Returns the address of the contact.
-     * 
+     *
      * @return the contact address.
      */
     public String getContactAddress()
@@ -111,20 +109,15 @@ public class GenericSourceContact
      *
      * @param operationSet the <tt>OperationSet</tt> the supporting
      * <tt>ContactDetail</tt>s of which are to be returned
-     * @return the <tt>ContactDetail</tt>s of this <tt>SourceContact</tt> which
-     * support the specified <tt>operationSet</tt>
+     * @return the <tt>ContactDetail</tt>s of this <tt>SourceContact</tt> which support the specified
+     * <tt>operationSet</tt>
      * @see SourceContact#getContactDetails(Class)
      */
-    public List<ContactDetail> getContactDetails(
-            Class<? extends OperationSet> operationSet)
+    public List<ContactDetail> getContactDetails(Class<? extends OperationSet> operationSet)
     {
         List<ContactDetail> contactDetails = new LinkedList<ContactDetail>();
-
-        for (ContactDetail contactDetail : getContactDetails())
-        {
-            List<Class<? extends OperationSet>> supportedOperationSets
-                = contactDetail.getSupportedOperationSets();
-
+        for (ContactDetail contactDetail : getContactDetails()) {
+            List<Class<? extends OperationSet>> supportedOperationSets = contactDetail.getSupportedOperationSets();
             if ((supportedOperationSets != null)
                     && supportedOperationSets.contains(operationSet))
                 contactDetails.add(contactDetail);
@@ -133,23 +126,17 @@ public class GenericSourceContact
     }
 
     /**
-     * Returns a list of all <tt>ContactDetail</tt>s corresponding to the given
-     * category.
+     * Returns a list of all <tt>ContactDetail</tt>s corresponding to the given category.
+     *
      * @param category the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ContactDetail</tt>s corresponding to the given
-     * category
+     * @return a list of all <tt>ContactDetail</tt>s corresponding to the given category
      */
-    public List<ContactDetail> getContactDetails(
-        ContactDetail.Category category)
+    public List<ContactDetail> getContactDetails(ContactDetail.Category category)
     {
         List<ContactDetail> contactDetails = new LinkedList<ContactDetail>();
-
-        for (ContactDetail contactDetail : getContactDetails())
-        {
-            if(contactDetail != null)
-            {
-                ContactDetail.Category detailCategory
-                    = contactDetail.getCategory();
+        for (ContactDetail contactDetail : getContactDetails()) {
+            if (contactDetail != null) {
+                ContactDetail.Category detailCategory = contactDetail.getCategory();
                 if (detailCategory != null && detailCategory.equals(category))
                     contactDetails.add(contactDetail);
             }
@@ -158,11 +145,9 @@ public class GenericSourceContact
     }
 
     /**
-     * Gets the <tt>ContactSourceService</tt> which has created this
-     * <tt>SourceContact</tt>.
+     * Gets the <tt>ContactSourceService</tt> which has created this <tt>SourceContact</tt>.
      *
-     * @return the <tt>ContactSourceService</tt> which has created this
-     * <tt>SourceContact</tt>
+     * @return the <tt>ContactSourceService</tt> which has created this <tt>SourceContact</tt>
      * @see SourceContact#getContactSource()
      */
     public ContactSourceService getContactSource()
@@ -183,7 +168,7 @@ public class GenericSourceContact
 
     /**
      * Sets the address of the contact.
-     * 
+     *
      * @param contactAddress the address to set.
      */
     public void setContactAddress(String contactAddress)
@@ -219,7 +204,7 @@ public class GenericSourceContact
      */
     public void setDisplayName(String displayName)
     {
-       this.displayName = displayName;
+        this.displayName = displayName;
     }
 
     /**
@@ -234,20 +219,15 @@ public class GenericSourceContact
     }
 
     /**
-     * Gets the preferred <tt>ContactDetail</tt> for a specific
-     * <tt>OperationSet</tt>.
+     * Gets the preferred <tt>ContactDetail</tt> for a specific <tt>OperationSet</tt>.
      *
-     * @param operationSet the <tt>OperationSet</tt> to get the preferred
-     * <tt>ContactDetail</tt> for
-     * @return the preferred <tt>ContactDetail</tt> for the specified
-     * <tt>operationSet</tt>
+     * @param operationSet the <tt>OperationSet</tt> to get the preferred <tt>ContactDetail</tt> for
+     * @return the preferred <tt>ContactDetail</tt> for the specified <tt>operationSet</tt>
      * @see SourceContact#getPreferredContactDetail(Class)
      */
-    public ContactDetail getPreferredContactDetail(
-            Class<? extends OperationSet> operationSet)
+    public ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet)
     {
         List<ContactDetail> contactDetails = getContactDetails(operationSet);
-
         return contactDetails.isEmpty() ? null : contactDetails.get(0);
     }
 
@@ -263,8 +243,7 @@ public class GenericSourceContact
 
     /**
      * Whether the current image returned by @see #getImage() is the one
-     * provided by the SourceContact by default, or is a one used and obtained
-     * from external source.
+     * provided by the SourceContact by default, or is a one used and obtained from external source.
      *
      * @return whether this is the default image for this SourceContact.
      */
@@ -276,8 +255,8 @@ public class GenericSourceContact
     }
 
     /**
-     * Returns the status of the source contact. And null if such information
-     * is not available.
+     * Returns the status of the source contact. And null if such information is not available.
+     *
      * @return the PresenceStatus representing the state of this source contact.
      */
     public PresenceStatus getPresenceStatus()

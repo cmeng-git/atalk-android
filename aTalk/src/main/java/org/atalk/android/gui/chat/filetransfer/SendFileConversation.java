@@ -43,7 +43,6 @@ public class SendFileConversation extends FileTransferConversation implements Fi
     // private final FileTransfer fileTransfer;
     private String mSendTo;
     private String mDate;
-    private File mSendFile;
     private boolean mStickMode;
 
     public SendFileConversation()
@@ -65,7 +64,7 @@ public class SendFileConversation extends FileTransferConversation implements Fi
         SendFileConversation fragmentSFC = new SendFileConversation();
         fragmentSFC.mChatFragment = cPanel;
         fragmentSFC.mSendTo = sendTo;
-        fragmentSFC.mSendFile = new File(fileName);
+        fragmentSFC.mXferFile = new File(fileName);
         fragmentSFC.mDate = Calendar.getInstance().getTime().toString();
         fragmentSFC.mStickMode = stickerMode;
         return fragmentSFC;
@@ -78,11 +77,11 @@ public class SendFileConversation extends FileTransferConversation implements Fi
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
 
         messageViewHolder.arrowDir.setImageResource(R.drawable.filexferarrowout);
-        MyGlideApp.loadImage(messageViewHolder.stickerView, mSendFile, false);
+        MyGlideApp.loadImage(messageViewHolder.stickerView, mXferFile, false);
 
-        this.setCompletedDownloadFile(mChatFragment, mSendFile);
+        this.setCompletedDownloadFile(mChatFragment, mXferFile);
         messageViewHolder.titleLabel.setText(aTalkApp.getResString(R.string.xFile_FILE_WAITING_TO_ACCEPT, mDate, mSendTo));
-        messageViewHolder.fileLabel.setText(getFileLabel(mSendFile));
+        messageViewHolder.fileLabel.setText(getFileLabel(mXferFile));
 
         messageViewHolder.cancelButton.setVisibility(View.VISIBLE);
         messageViewHolder.retryButton.setVisibility(View.GONE);
@@ -91,7 +90,7 @@ public class SendFileConversation extends FileTransferConversation implements Fi
             public void onClick(View v)
             {
                 messageViewHolder.retryButton.setVisibility(View.GONE);
-                mChatFragment.new SendFile(mSendFile, SendFileConversation.this, msgId, mStickMode).execute();
+                mChatFragment.new SendFile(mXferFile, SendFileConversation.this, msgId, mStickMode).execute();
             }
         });
 
@@ -99,7 +98,7 @@ public class SendFileConversation extends FileTransferConversation implements Fi
 		scrolling, new message send or received */
         int status = getXferStatus();
         if (status == -1) {
-            mChatFragment.new SendFile(mSendFile, SendFileConversation.this, msgId, mStickMode).execute();
+            mChatFragment.new SendFile(mXferFile, SendFileConversation.this, msgId, mStickMode).execute();
         }
         else {
             updateView(status);
@@ -122,7 +121,7 @@ public class SendFileConversation extends FileTransferConversation implements Fi
             case FileTransferStatusChangeEvent.IN_PROGRESS:
                 if (!messageViewHolder.mProgressBar.isShown()) {
                     messageViewHolder.mProgressBar.setVisibility(View.VISIBLE);
-                    messageViewHolder.mProgressBar.setMax((int) mSendFile.length());
+                    messageViewHolder.mProgressBar.setMax((int) mXferFile.length());
                 }
                 messageViewHolder.titleLabel.setText(aTalkApp.getResString(R.string.xFile_FILE_SENDING_TO, mDate, mSendTo));
                 break;
@@ -198,7 +197,7 @@ public class SendFileConversation extends FileTransferConversation implements Fi
 
         this.fileTransfer = fileTransfer;
         fileTransfer.addStatusListener(this);
-        this.setFileTransfer(fileTransfer, mSendFile.length());
+        this.setFileTransfer(fileTransfer, mXferFile.length());
     }
 
     /**

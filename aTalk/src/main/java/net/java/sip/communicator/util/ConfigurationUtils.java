@@ -448,6 +448,8 @@ public class ConfigurationUtils
      */
     public static void loadGuiConfigurations()
     {
+        // Do it here one more time, sometime see accessing preference crash with configService == null
+        configService = UtilActivator.getConfigurationService();
         if (configService == null)
             return;
 

@@ -16,29 +16,26 @@
 package net.java.sip.communicator.service.contactsource;
 
 import java.util.*;
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
 /**
- * Provides an abstract implementation of a <tt>ContactQuery</tt> which runs in
- * a separate <tt>Thread</tt>.
+ * Provides an abstract implementation of a <tt>ContactQuery</tt> which runs in a separate <tt>Thread</tt>.
  *
+ * @param <T> the very type of <tt>ContactSourceService</tt> which performs the <tt>ContactQuery</tt>
  * @author Lyubomir Marinov
- * @param <T> the very type of <tt>ContactSourceService</tt> which performs the
- * <tt>ContactQuery</tt>
+ * @author Eng Chong Meng
  */
 public abstract class AsyncContactQuery<T extends ContactSourceService>
-    extends AbstractContactQuery<T>
+        extends AbstractContactQuery<T>
 {
     /**
      * The {@link #query} in the form of a <tt>String</tt> telephone number if
-     * such parsing, formatting and validation is possible; otherwise,
-     * <tt>null</tt>.
+     * such parsing, formatting and validation is possible; otherwise, <tt>null</tt>.
      */
     private String phoneNumberQuery;
 
     /**
-     * The <tt>Pattern</tt> for which the associated
-     * <tt>ContactSourceService</tt> is being queried.
+     * The <tt>Pattern</tt> for which the associated <tt>ContactSourceService</tt> is being queried.
      */
     protected final Pattern query;
 
@@ -52,12 +49,10 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     /**
      * The <tt>SourceContact</tt>s which match {@link #query}.
      */
-    private Collection<SourceContact> queryResults
-        = new LinkedList<SourceContact>();
+    private Collection<SourceContact> queryResults = new LinkedList<>();
 
     /**
-     * The <tt>Thread</tt> in which this <tt>AsyncContactQuery</tt> is
-     * performing {@link #query}.
+     * The <tt>Thread</tt> in which this <tt>AsyncContactQuery</tt> is performing {@link #query}.
      */
     private Thread thread;
 
@@ -67,20 +62,15 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
      *
      * @param contactSource the <tt>ContactSourceService</tt> which is to
      * perform the new <tt>ContactQuery</tt> instance
-     * @param query the <tt>Pattern</tt> for which <tt>contactSource</tt> is
-     * being queried
+     * @param query the <tt>Pattern</tt> for which <tt>contactSource</tt> is being queried
      * @param isSorted indicates if the results of this query should be sorted
      */
-    protected AsyncContactQuery(T contactSource,
-                                Pattern query,
-                                boolean isSorted)
+    protected AsyncContactQuery(T contactSource, Pattern query, boolean isSorted)
     {
         super(contactSource);
-
         this.query = query;
-
         if (isSorted)
-            queryResults = new TreeSet<SourceContact>();
+            queryResults = new TreeSet<>();
     }
 
     /**
@@ -89,13 +79,11 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
      *
      * @param contactSource the <tt>ContactSourceService</tt> which is to
      * perform the new <tt>ContactQuery</tt> instance
-     * @param query the <tt>Pattern</tt> for which <tt>contactSource</tt> is
-     * being queried
+     * @param query the <tt>Pattern</tt> for which <tt>contactSource</tt> is being queried
      */
     protected AsyncContactQuery(T contactSource, Pattern query)
     {
         super(contactSource);
-
         this.query = query;
     }
 
@@ -106,18 +94,14 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
      *
      * @param sourceContact the <tt>SourceContact</tt> to be added to the
      * <tt>queryResults</tt> of this <tt>ContactQuery</tt>
-     * @param showMoreEnabled indicates whether show more label should be shown 
-     * or not.
+     * @param showMoreEnabled indicates whether show more label should be shown or not.
      * @return <tt>true</tt> if the <tt>queryResults</tt> of this
      * <tt>ContactQuery</tt> has changed in response to the call
      */
-    protected boolean addQueryResult(SourceContact sourceContact, 
-        boolean showMoreEnabled)
+    protected boolean addQueryResult(SourceContact sourceContact, boolean showMoreEnabled)
     {
         boolean changed;
-
-        synchronized (queryResults)
-        {
+        synchronized (queryResults) {
             changed = queryResults.add(sourceContact);
         }
         if (changed)
@@ -128,8 +112,7 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
 
     /**
      * Adds a specific <tt>SourceContact</tt> to the list of
-     * <tt>SourceContact</tt>s to be returned by this <tt>ContactQuery</tt> in
-     * response to {@link #getQueryResults()}.
+     * <tt>SourceContact</tt>s to be returned by this <tt>ContactQuery</tt> in response to {@link #getQueryResults()}.
      *
      * @param sourceContact the <tt>SourceContact</tt> to be added to the
      * <tt>queryResults</tt> of this <tt>ContactQuery</tt>
@@ -139,14 +122,11 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     protected boolean addQueryResult(SourceContact sourceContact)
     {
         boolean changed;
-
-        synchronized (queryResults)
-        {
+        synchronized (queryResults) {
             changed = queryResults.add(sourceContact);
         }
         if (changed)
             fireContactReceived(sourceContact);
-
         return changed;
     }
 
@@ -162,14 +142,11 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     protected boolean removeQueryResult(SourceContact sourceContact)
     {
         boolean changed;
-
-        synchronized (queryResults)
-        {
+        synchronized (queryResults) {
             changed = queryResults.remove(sourceContact);
         }
         if (changed)
             fireContactRemoved(sourceContact);
-
         return changed;
     }
 
@@ -183,25 +160,20 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
      * @return <tt>true</tt> if the <tt>queryResults</tt> of this
      * <tt>ContactQuery</tt> has changed in response to the call
      */
-    protected boolean addQueryResults(
-        final Set<? extends SourceContact> sourceContacts)
+    protected boolean addQueryResults(final Set<? extends SourceContact> sourceContacts)
     {
         final boolean changed;
 
-        synchronized (queryResults)
-        {
+        synchronized (queryResults) {
             changed = queryResults.addAll(sourceContacts);
         }
 
-        if (changed)
-        {
+        if (changed) {
             // TODO Need something to fire one event for multiple contacts.
-            for (SourceContact contact : sourceContacts)
-            {
+            for (SourceContact contact : sourceContacts) {
                 fireContactReceived(contact, false);
             }
         }
-
         return changed;
     }
 
@@ -216,37 +188,26 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
      */
     protected String getPhoneNumberQuery()
     {
-        if ((phoneNumberQuery == null) && !queryIsConvertedToPhoneNumber)
-        {
-            try
-            {
+        if ((phoneNumberQuery == null) && !queryIsConvertedToPhoneNumber) {
+            try {
                 String pattern = query.pattern();
-
-                if (pattern != null)
-                {
+                if (pattern != null) {
                     int patternLength = pattern.length();
 
                     if ((patternLength > 2)
                             && (pattern.charAt(0) == '^')
-                            && (pattern.charAt(patternLength - 1) == '$'))
-                    {
-                        phoneNumberQuery
-                            = pattern.substring(1, patternLength - 1);
+                            && (pattern.charAt(patternLength - 1) == '$')) {
+                        phoneNumberQuery = pattern.substring(1, patternLength - 1);
                     }
                     else if ((patternLength > 4)
-                        && (pattern.charAt(0) == '\\')
-                        && (pattern.charAt(1) == 'Q')
-                        && (pattern.charAt(patternLength - 2) == '\\')
-                        && (pattern.charAt(patternLength - 1) == 'E'))
-                    {
-                        phoneNumberQuery
-                            = pattern.substring(2, patternLength - 2);
+                            && (pattern.charAt(0) == '\\')
+                            && (pattern.charAt(1) == 'Q')
+                            && (pattern.charAt(patternLength - 2) == '\\')
+                            && (pattern.charAt(patternLength - 1) == 'E')) {
+                        phoneNumberQuery = pattern.substring(2, patternLength - 2);
                     }
-
                 }
-            }
-            finally
-            {
+            } finally {
                 queryIsConvertedToPhoneNumber = true;
             }
         }
@@ -254,34 +215,28 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Gets the number of <tt>SourceContact</tt>s which match this
-     * <tt>ContactQuery</tt>.
+     * Gets the number of <tt>SourceContact</tt>s which match this <tt>ContactQuery</tt>.
      *
-     * @return the number of <tt>SourceContact</tt> which match this
-     * <tt>ContactQuery</tt>
+     * @return the number of <tt>SourceContact</tt> which match this <tt>ContactQuery</tt>
      */
     public int getQueryResultCount()
     {
-        synchronized (queryResults)
-        {
+        synchronized (queryResults) {
             return queryResults.size();
         }
     }
 
     /**
-     * Gets the <tt>List</tt> of <tt>SourceContact</tt>s which match this
-     * <tt>ContactQuery</tt>.
+     * Gets the <tt>List</tt> of <tt>SourceContact</tt>s which match this <tt>ContactQuery</tt>.
      *
-     * @return the <tt>List</tt> of <tt>SourceContact</tt>s which match this
-     * <tt>ContactQuery</tt>
+     * @return the <tt>List</tt> of <tt>SourceContact</tt>s which match this <tt>ContactQuery</tt>
      * @see ContactQuery#getQueryResults()
      */
     public List<SourceContact> getQueryResults()
     {
         List<SourceContact> qr;
 
-        synchronized (queryResults)
-        {
+        synchronized (queryResults) {
             qr = new ArrayList<SourceContact>(queryResults.size());
             qr.addAll(queryResults);
         }
@@ -308,31 +263,25 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
      */
     public synchronized void start()
     {
-        if (thread == null)
-        {
-            thread
-                = new Thread()
+        if (thread == null) {
+            thread = new Thread()
+            {
+                @Override
+                public void run()
                 {
-                    @Override
-                    public void run()
-                    {
-                        boolean completed = false;
+                    boolean completed = false;
 
-                        try
-                        {
-                            AsyncContactQuery.this.run();
-                            completed = true;
-                        }
-                        finally
-                        {
-                            synchronized (AsyncContactQuery.this)
-                            {
-                                if (thread == Thread.currentThread())
-                                    stopped(completed);
-                            }
+                    try {
+                        AsyncContactQuery.this.run();
+                        completed = true;
+                    } finally {
+                        synchronized (AsyncContactQuery.this) {
+                            if (thread == Thread.currentThread())
+                                stopped(completed);
                         }
                     }
-                };
+                }
+            };
             thread.setDaemon(true);
             thread.start();
         }
@@ -345,8 +294,7 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
      * in the associated background <tt>Thread</tt>.
      *
      * @param completed <tt>true</tt> if this <tt>ContactQuery</tt> has
-     * successfully completed, <tt>false</tt> if an error has been encountered
-     * during its execution
+     * successfully completed, <tt>false</tt> if an error has been encountered during its execution
      */
     protected void stopped(boolean completed)
     {
@@ -361,8 +309,7 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
      * @param phoneNumber the <tt>String</tt> which represents the phone number
      * to match to the <tt>query</tt> of this <tt>AsyncContactQuery</tt>
      * @return <tt>true</tt> if the specified <tt>phoneNumber</tt> matches the
-     * <tt>query</tt> of this <tt>AsyncContactQuery</tt>; otherwise,
-     * <tt>false</tt>
+     * <tt>query</tt> of this <tt>AsyncContactQuery</tt>; otherwise, <tt>false</tt>
      */
     protected boolean phoneNumberMatches(String phoneNumber)
     {
@@ -370,20 +317,15 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
          * PhoneNumberI18nService implements functionality to aid the parsing,
          * formatting and validation of international phone numbers so attempt
          * to use it to determine whether the specified phoneNumber matches the
-         * query. For example, check whether the normalized phoneNumber matches
-         * the query.
+         * query. For example, check whether the normalized phoneNumber matches the query.
          */
 
         boolean phoneNumberMatches = false;
 
-        if (query
-                .matcher(ContactSourceActivator.getPhoneNumberI18nService()
-                    .normalize(phoneNumber)).find())
-        {
+        if (query.matcher(ContactSourceActivator.getPhoneNumberI18nService().normalize(phoneNumber)).find()) {
             phoneNumberMatches = true;
         }
-        else
-        {
+        else {
             /*
              * The fact that the normalized form of the phoneNumber doesn't
              * match the query doesn't mean that, for example, it doesn't
@@ -398,18 +340,12 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
             String phoneNumberQuery = getPhoneNumberQuery();
 
             if ((phoneNumberQuery != null)
-                    && (phoneNumberQuery.length() != 0))
-            {
-                try
-                {
-                    phoneNumberMatches
-                        = ContactSourceActivator.getPhoneNumberI18nService()
-                            .phoneNumbersMatch(
-                                phoneNumberQuery,
-                                phoneNumber);
-                }
-                catch (IllegalArgumentException iaex)
-                {
+                    && (phoneNumberQuery.length() != 0)) {
+                try {
+                    phoneNumberMatches = ContactSourceActivator.getPhoneNumberI18nService().phoneNumbersMatch(
+                            phoneNumberQuery,
+                            phoneNumber);
+                } catch (IllegalArgumentException iaex) {
                     /*
                      * Ignore it, phoneNumberMatches will remain equal to
                      * false.

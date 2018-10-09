@@ -9,6 +9,12 @@
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
 #include <stdlib.h>
+#include <assert.h>
+#include <android/log.h>
+
+#define  LOG_TAG    "OpenSLES"
+#define  ALOG_INFO(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  ALOG_ERROR(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 static void
 OpenSLESSystem_queryAudioInputCapabilities
@@ -40,87 +46,90 @@ Java_org_atalk_impl_neomedia_device_OpenSLESSystem_queryAudioInputCapabilities
         jlong deviceID,
         jdoubleArray sampleRates, jintArray sampleSizesInBits, jintArray channels)
 {
-    SLObjectItf engine_ObjectItf;
-    SLInterfaceID interfaceIds[] = { SL_IID_AUDIOIODEVICECAPABILITIES };
+    SLInterfaceID interfaceIds[] = { SL_IID_ENGINE };
     SLboolean interfaceRequired[] = { SL_BOOLEAN_TRUE };
-    SLresult SLresult_  = slCreateEngine(
-            &engine_ObjectItf,
-            0,
-            NULL,
+
+    SLObjectItf engineObject_;
+    SLEngineItf EngineItf;
+    SLAudioIODeviceCapabilitiesItf AudioIODeviceCapabilitiesItf;
+    SLAudioInputDescriptor AudioInputDescriptor;
+    jintArray audioInputCapabilities = NULL;
+
+    ALOG_INFO("Create Audio Engine\n");
+    SLresult result = slCreateEngine(
+            &engineObject_, 0, NULL,
             sizeof(interfaceIds) / sizeof(SLInterfaceID),
             interfaceIds,
             interfaceRequired);
-    jintArray audioInputCapabilities = NULL;
+    assert(SL_RESULT_SUCCESS == result);
 
-    if (SL_RESULT_SUCCESS == SLresult_)
-    {
-        SLresult_ = (*engine_ObjectItf)->Realize(engine_ObjectItf, SL_BOOLEAN_FALSE);
-        if (SL_RESULT_SUCCESS == SLresult_)
+    ALOG_INFO("Realize Audio Engine; engineObject_: %p\n", engineObject_);
+    result = (*engineObject_)->Realize(engineObject_, SL_BOOLEAN_FALSE);
+    assert(SL_RESULT_SUCCESS == result);
+
+    // Get the Audio IO DEVICE CAPABILITIES interface, implicit
+    ALOG_INFO("Get the Audio IO DEVICE CAPABILITIES interface, implicit");
+    result = (*engineObject_)->GetInterface(
+        engineObject_, SL_IID_AUDIOIODEVICECAPABILITIES, &AudioIODeviceCapabilitiesItf);
+    assert(SL_RESULT_SUCCESS == result);
+
+    // ANDROID: obtaining SL_IID_AUDIOIODEVICECAPABILITIES may fail
+    if (AudioIODeviceCapabilitiesItf != NULL ) {
+        ALOG_INFO("Query Audio Input Capabilities, implicit");
+        SLAudioInputDescriptor descriptor;
+        result = (*AudioIODeviceCapabilitiesItf)->QueryAudioInputCapabilities(
+                AudioIODeviceCapabilitiesItf, (SLuint32) deviceID, &AudioInputDescriptor);
+        assert(SL_RESULT_SUCCESS == result);
+
+        ALOG_INFO("Retrieve the audio capabilities\n");
+        jsize sampleRateCount = (*jniEnv)->GetArrayLength(jniEnv, sampleRates);
+        if (!((*jniEnv)->ExceptionCheck(jniEnv)))
         {
-            SLAudioIODeviceCapabilitiesItf engine_AudioIODeviceCapabilitiesItf;
-
-            SLresult_ = (*engine_ObjectItf)->GetInterface(
-                engine_ObjectItf,
-                SL_IID_AUDIOIODEVICECAPABILITIES,
-                &engine_AudioIODeviceCapabilitiesItf);
-            if (SL_RESULT_SUCCESS == SLresult_)
+            jsize sampleSizeInBitsCount = (*jniEnv)->GetArrayLength(jniEnv, sampleSizesInBits);
+            if (!((*jniEnv)->ExceptionCheck(jniEnv)))
             {
-                SLAudioInputDescriptor descriptor;
-                SLresult_ = (*engine_AudioIODeviceCapabilitiesItf)
-                    ->QueryAudioInputCapabilities(
-                        engine_AudioIODeviceCapabilitiesItf,
-                        (SLuint32) deviceID,
-                        &descriptor);
-                if (SL_RESULT_SUCCESS == SLresult_)
+                jsize channelCount = (*jniEnv)->GetArrayLength(jniEnv, channels);
+                if (!((*jniEnv)->ExceptionCheck(jniEnv)))
                 {
-                    jsize sampleRateCount = (*jniEnv)->GetArrayLength(jniEnv, sampleRates);
-
-                    if (!((*jniEnv)->ExceptionCheck(jniEnv)))
+                    audioInputCapabilities = (*jniEnv)->NewIntArray(
+                            jniEnv,
+                            (sampleRateCount
+                                * sampleSizeInBitsCount
+                                * channelCount
+                                + 1)
+                        * 3);
+                    if (audioInputCapabilities)
                     {
-                        jsize sampleSizeInBitsCount = (*jniEnv)->GetArrayLength(jniEnv, sampleSizesInBits);
-
+                        jsize audioInputCapabilitiesIndex = 0;
+                        OpenSLESSystem_queryAudioInputCapabilities(
+                                jniEnv,
+                                AudioIODeviceCapabilitiesItf,
+                                deviceID, descriptor,
+                                sampleRates, sampleSizesInBits, channels,
+                                audioInputCapabilities, &audioInputCapabilitiesIndex);
                         if (!((*jniEnv)->ExceptionCheck(jniEnv)))
                         {
-                            jsize channelCount = (*jniEnv)->GetArrayLength(jniEnv, channels);
-
-                            if (!((*jniEnv)->ExceptionCheck(jniEnv)))
-                            {
-                                audioInputCapabilities = (*jniEnv)->NewIntArray(
-                                        jniEnv,
-                                        (sampleRateCount
-                                            * sampleSizeInBitsCount
-                                            * channelCount
-                                            + 1)
-                                    * 3);
-                                if (audioInputCapabilities)
-                                {
-                                    jsize audioInputCapabilitiesIndex = 0;
-
-                                    OpenSLESSystem_queryAudioInputCapabilities(
-                                            jniEnv,
-                                            engine_AudioIODeviceCapabilitiesItf,
-                                            deviceID, descriptor,
-                                            sampleRates, sampleSizesInBits, channels,
-                                            audioInputCapabilities, &audioInputCapabilitiesIndex);
-                                    if (!((*jniEnv)->ExceptionCheck(jniEnv)))
-                                    {
-                                        jint minus1s[] = { -1, -1, -1 };
-
-                                        (*jniEnv)->SetIntArrayRegion(
-                                                jniEnv,
-                                                audioInputCapabilities,
-                                                audioInputCapabilitiesIndex,
-                                                sizeof(minus1s) / sizeof(jint),
-                                                minus1s);
-                                    }
-                                }
-                            }
+                            jint minus1s[] = { -1, -1, -1 };
+                            (*jniEnv)->SetIntArrayRegion(
+                                    jniEnv,
+                                    audioInputCapabilities,
+                                    audioInputCapabilitiesIndex,
+                                    sizeof(minus1s) / sizeof(jint),
+                                    minus1s);
                         }
                     }
                 }
             }
         }
-        (*engine_ObjectItf)->Destroy(engine_ObjectItf);
+    }
+    else
+        ALOG_ERROR("Failed: Query Audio Input Capabilities\n");
+
+    // destroy engine object, and invalidate all associated interfaces
+    if (engineObject_ != NULL) {
+        ALOG_INFO("Shutdown audio engine\n");
+        (*engineObject_)->Destroy(engineObject_);
+        engineObject_ = NULL;
     }
     return audioInputCapabilities;
 }
@@ -142,9 +151,7 @@ OpenSLESSystem_queryAudioInputCapabilities
     {
         jint channel;
         (*jniEnv)->GetIntArrayRegion(
-                jniEnv,
-                channels, channelIndex, 1,
-                &channel);
+                jniEnv, channels, channelIndex, 1, &channel);
         if ((*jniEnv)->ExceptionCheck(jniEnv))
             break;
 
@@ -183,30 +190,24 @@ OpenSLESSystem_queryAudioInputCapabilitiesByChannel
         jboolean sampleRateIsSupported;
 
         (*jniEnv)->GetDoubleArrayRegion(
-                jniEnv,
-                sampleRates, sampleRateIndex, 1,
-                &sampleRate);
+                jniEnv, sampleRates, sampleRateIndex, 1, &sampleRate);
         if ((*jniEnv)->ExceptionCheck(jniEnv))
             break;
 
         sampleRate *= 1000;
         if (SL_BOOLEAN_TRUE == descriptor.isFreqRangeContinuous)
         {
-            sampleRateIsSupported
-                = (descriptor.minSampleRate <= sampleRate)
+            sampleRateIsSupported = (descriptor.minSampleRate <= sampleRate)
                     && (sampleRate <= descriptor.maxSampleRate);
         }
         else
         {
-            SLint16 supportedSampleRateCount
-                = descriptor.numOfSamplingRatesSupported;
-
+            SLint16 supportedSampleRateCount = descriptor.numOfSamplingRatesSupported;
             sampleRateIsSupported = JNI_FALSE;
             if (supportedSampleRateCount)
             {
                 SLint16 supportedSampleRateIndex;
-                SLmilliHertz *supportedSampleRates
-                    = descriptor.samplingRatesSupported;
+                SLmilliHertz *supportedSampleRates = descriptor.samplingRatesSupported;
 
                 for (supportedSampleRateIndex = 0;
                         supportedSampleRateIndex < supportedSampleRateCount;
@@ -244,30 +245,26 @@ OpenSLESSystem_queryAudioInputCapabilitiesBySampleRate
         jintArray audioInputCapabilities, jint *audioInputCapabilitiesIndex)
 {
     SLint32 sampleFormatCount;
-    SLresult SLresult_
+    SLresult result
         = (*engine_AudioIODeviceCapabilitiesItf)->QuerySampleFormatsSupported(
                 engine_AudioIODeviceCapabilitiesItf,
                 deviceID,
                 sampleRate,
                 NULL, &sampleFormatCount);
-    if ((SL_RESULT_SUCCESS == SLresult_) && sampleFormatCount)
+    if ((SL_RESULT_SUCCESS == result) && sampleFormatCount)
     {
         SLint32 *sampleFormats = malloc(sizeof(SLint32) * sampleFormatCount);
-
         if (sampleFormats)
         {
-            SLresult_
-                = (*engine_AudioIODeviceCapabilitiesItf)
-                    ->QuerySampleFormatsSupported(
-                        engine_AudioIODeviceCapabilitiesItf,
-                        deviceID,
-                        sampleRate,
-                        sampleFormats, &sampleFormatCount);
-            if (SL_RESULT_SUCCESS == SLresult_)
+            result = (*engine_AudioIODeviceCapabilitiesItf)->QuerySampleFormatsSupported(
+                    engine_AudioIODeviceCapabilitiesItf,
+                    deviceID,
+                    sampleRate,
+                    sampleFormats, &sampleFormatCount);
+            if (SL_RESULT_SUCCESS == result)
             {
                 int sampleSizeInBitsIndex;
-                jsize sampleSizeInBitsCount
-                    = (*jniEnv)->GetArrayLength(jniEnv, sampleSizesInBits);
+                jsize sampleSizeInBitsCount = (*jniEnv)->GetArrayLength(jniEnv, sampleSizesInBits);
 
                 if ((*jniEnv)->ExceptionCheck(jniEnv))
                     sampleSizeInBitsCount = 0;
@@ -310,16 +307,13 @@ OpenSLESSystem_queryAudioInputCapabilitiesBySampleRate
 
                     if (sampleSizeInBitsIsSupported)
                     {
-                        jint audioInputCapability[]
-                            = {
-                                sampleRateIndex,
-                                sampleSizeInBitsIndex,
-                                channelIndex
-                            };
-                        jint _audioInputCapabilitiesIndex
-                            = *audioInputCapabilitiesIndex;
-                        jsize audioInputCapabilityLength
-                            = sizeof(audioInputCapability) / sizeof(jint);
+                        jint audioInputCapability[] = {
+                            sampleRateIndex,
+                            sampleSizeInBitsIndex,
+                            channelIndex
+                        };
+                        jint _audioInputCapabilitiesIndex = *audioInputCapabilitiesIndex;
+                        jsize audioInputCapabilityLength = sizeof(audioInputCapability) / sizeof(jint);
 
                         (*jniEnv)->SetIntArrayRegion(
                                 jniEnv,
@@ -330,8 +324,7 @@ OpenSLESSystem_queryAudioInputCapabilitiesBySampleRate
                         if ((*jniEnv)->ExceptionCheck(jniEnv))
                             break;
                         *audioInputCapabilitiesIndex
-                            = _audioInputCapabilitiesIndex
-                                + audioInputCapabilityLength;
+                            = _audioInputCapabilitiesIndex + audioInputCapabilityLength;
                     }
                 }
             }

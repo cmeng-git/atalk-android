@@ -165,9 +165,8 @@ public class AudioMixer
 	 * <tt>CaptureDevice</tt> for audio if it is implemented for video and it is indeed the cause
 	 * for our use case of <tt>AudioMixingPushBufferDataSource</tt>, the new <tt>AudioMixer</tt>
 	 * instance provides specified <tt>CaptureDevice</tt> capabilities to the
-	 * <tt>AudioMixingPushBufferDataSource</tt>s it creates. The specified
-	 * <tt>CaptureDevice</tt> is also added as the first input <tt>DataSource</tt> of the new
-	 * instance.
+	 * <tt>AudioMixingPushBufferDataSource</tt>s it creates. The specified <tt>CaptureDevice</tt> is
+	 * also added as the first input <tt>DataSource</tt> of the new instance.
 	 *
 	 * @param captureDevice
 	 * 		the <tt>CaptureDevice</tt> capabilities to be provided to the
@@ -235,8 +234,7 @@ public class AudioMixer
 
 			if (added) {
 				if (logger.isTraceEnabled()) {
-					logger.trace("Added input DataSource with hashCode "
-							+ inDataSource.hashCode());
+					logger.trace("Added input DataSource with hashCode " + inDataSource.hashCode());
 				}
 
 				/*
@@ -291,8 +289,7 @@ public class AudioMixer
 					}
 					catch (IOException ioe) {
 						logger.error("Failed to connect to inDataSource "
-										+ MediaStreamImpl.toString(inDataSourceDesc.inDataSource),
-								ioe);
+					            + MediaStreamImpl.toString(inDataSourceDesc.inDataSource), ioe);
 						throw ioe;
 					}
 
@@ -368,8 +365,7 @@ public class AudioMixer
 	 * @return a new <tt>InStreamDesc</tt> instance which describes the specified input
 	 * <tt>SourceStream</tt> and <tt>DataSource</tt>
 	 */
-	private InStreamDesc createInStreamDesc(SourceStream inStream, InDataSourceDesc
-			inDataSourceDesc)
+	private InStreamDesc createInStreamDesc(SourceStream inStream, InDataSourceDesc inDataSourceDesc)
 	{
 		return new InStreamDesc(inStream, inDataSourceDesc);
 	}
@@ -408,8 +404,7 @@ public class AudioMixer
 	 * 		if an error occurs while creating the transcoding <tt>DataSource</tt>, connecting to
 	 * 		it or staring it
 	 */
-	private boolean createTranscodingDataSource(InDataSourceDesc inDataSourceDesc, Format
-			outFormat)
+	private boolean createTranscodingDataSource(InDataSourceDesc inDataSourceDesc, Format outFormat)
 			throws IOException
 	{
 		if (inDataSourceDesc.createTranscodingDataSource(outFormat)) {
@@ -568,8 +563,7 @@ public class AudioMixer
 	/**
 	 * Gets the <tt>SourceStream</tt>s (in the form of <tt>InStreamDesc</tt>) of a specific
 	 * <tt>DataSource</tt> (provided in the form of <tt>InDataSourceDesc</tt>) which produce
-	 * data in
-	 * a specific <tt>AudioFormat</tt> (or a matching one).
+	 * data in a specific <tt>AudioFormat</tt> (or a matching one).
 	 *
 	 * @param inDataSourceDesc
 	 * 		the <tt>DataSource</tt> (in the form of <tt>InDataSourceDesc</tt>) which is to be
@@ -601,8 +595,7 @@ public class AudioMixer
 				Format inFormat = getFormat(inStream);
 
 				if ((inFormat != null) && matches(inFormat, outFormat)) {
-					InStreamDesc inStreamDesc = getExistingInStreamDesc(inStream,
-							existingInStreams);
+					InStreamDesc inStreamDesc = getExistingInStreamDesc(inStream, existingInStreams);
 
 					if (inStreamDesc == null)
 						inStreamDesc = createInStreamDesc(inStream, inDataSourceDesc);
@@ -623,8 +616,7 @@ public class AudioMixer
 		if ((inFormat != null) && !matches(inFormat, outFormat)) {
 			if (inDataSource instanceof PushDataSource) {
 				for (PushSourceStream inStream : ((PushDataSource) inDataSource).getStreams()) {
-					InStreamDesc inStreamDesc = getExistingInStreamDesc(inStream,
-							existingInStreams);
+					InStreamDesc inStreamDesc = getExistingInStreamDesc(inStream, existingInStreams);
 
 					if (inStreamDesc == null)
 						inStreamDesc = createInStreamDesc(new PushBufferStreamAdapter(inStream,
@@ -635,8 +627,7 @@ public class AudioMixer
 			}
 			if (inDataSource instanceof PullDataSource) {
 				for (PullSourceStream inStream : ((PullDataSource) inDataSource).getStreams()) {
-					InStreamDesc inStreamDesc = getExistingInStreamDesc(inStream,
-							existingInStreams);
+					InStreamDesc inStreamDesc = getExistingInStreamDesc(inStream, existingInStreams);
 
 					if (inStreamDesc == null)
 						inStreamDesc = createInStreamDesc(new PullBufferStreamAdapter(inStream,
@@ -751,8 +742,7 @@ public class AudioMixer
 			outFormat = DEFAULT_OUTPUT_FORMAT;
 
 		if (logger.isTraceEnabled()) {
-			logger.trace("Determined outFormat of AudioMixer from inDataSources to be "
-					+ outFormat);
+			logger.trace("Determined outFormat of AudioMixer from inDataSources to be " + outFormat);
 		}
 		return outFormat;
 	}
@@ -816,8 +806,7 @@ public class AudioMixer
 			else if (ourDataSource instanceof ReceiveStreamPushBufferDataSource) {
 				// Sometimes the inDataSource has come to AudioMixer wrapped in
 				// a ReceiveStreamPushBufferDataSource. We consider it to match.
-				if (((ReceiveStreamPushBufferDataSource) ourDataSource).getDataSource()
-						== inDataSource)
+				if (((ReceiveStreamPushBufferDataSource) ourDataSource).getDataSource() == inDataSource)
 					return inDataSourceDesc.getTranscodingDataSource();
 			}
 		}
@@ -826,21 +815,18 @@ public class AudioMixer
 
 	/**
 	 * Determines whether a specific <tt>Format</tt> matches a specific <tt>Format</tt> in the
-	 * sense
-	 * of JMF <tt>Format</tt> matching. Since this <tt>AudioMixer</tt> and the audio mixing
+	 * sense of JMF <tt>Format</tt> matching. Since this <tt>AudioMixer</tt> and the audio mixing
 	 * functionality related to it can handle varying characteristics of a certain output
 	 * <tt>Format</tt>, the only requirement for the specified <tt>Format</tt>s to match is for
-	 * both
-	 * of them to have one and the same encoding.
+	 * both of them to have one and the same encoding.
 	 *
 	 * @param input
 	 * 		the <tt>Format</tt> for which it is required to determine whether it matches a
 	 * 		specific <tt>Format</tt>
 	 * @param pattern
 	 * 		the <tt>Format</tt> against which the specified <tt>input</tt> is to be matched
-	 * @return <tt>true</tt> if the specified <tt>input<tt> matches the
-	 * specified <tt>pattern</tt> in the sense of JMF <tt>Format</tt> matching; otherwise,
-	 * <tt>false</tt>
+	 * @return <tt>true</tt> if the specified <tt>input<tt> matches the specified
+	 * <tt>pattern</tt> in the sense of JMF <tt>Format</tt> matching; otherwise, <tt>false</tt>
 	 */
 	private boolean matches(Format input, AudioFormat pattern)
 	{
@@ -949,8 +935,7 @@ public class AudioMixer
 	 * 		the <tt>AudioMixerPushBufferStream</tt> which requests this <tt>AudioMixer</tt> to
 	 * 		start. If <tt>outStream</tt> is the current one and only
 	 * 		<tt>AudioMixerPushBufferStream</tt> of this <tt>AudioMixer</tt>, this
-	 * 		<tt>AudioMixer</tt> starts if it hasn't started yet. Otherwise, the request is
-	 * 		ignored.
+	 * 		<tt>AudioMixer</tt> starts if it hasn't started yet. Otherwise, the request is ignored.
 	 * @param generation
 	 * 		a value generated by <tt>outStream</tt> indicating the order of the invocations of the
 	 * 		<tt>start</tt> and <tt>stop</tt> methods performed by <tt>outStream</tt> allowing it

@@ -507,6 +507,10 @@ public class MUCServiceImpl extends MUCService
 
             // clf is only used as Fragment reference to startChatActivity
             ContactListFragment clf = aTalkApp.getContactListFragment();
+            if (clf == null) {
+                done(JOIN_UNKNOWN_ERROR_PROP, "No valid contact list");
+                return;
+            }
             clf.startChatActivity(chatRoomWrapper);
 
             ChatRoom chatRoom = chatRoomWrapper.getChatRoom();

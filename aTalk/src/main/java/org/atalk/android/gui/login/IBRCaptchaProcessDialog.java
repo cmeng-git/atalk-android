@@ -433,8 +433,10 @@ public class IBRCaptchaProcessDialog extends Dialog
     {
         try {
             // Reconnect if the connection is closed by the earlier exception
+            // cmeng (20180929): NetworkOnMainThreadException when attempt in UI thread, so just return. Otherwise deadlock.
             if (!mConnection.isConnected())
-                mConnection.connect();
+                // mConnection.connect();
+                return false;
 
             AccountManager accountManager = AccountManager.getInstance(mConnection);
             if (accountManager.isSupported()) {
@@ -460,7 +462,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                             captcha = BitmapFactory.decodeStream(uri.openConnection().getInputStream());
                         }
                     }
-                    if ((captcha != null) && (dataForm != null)) {
+                    if (captcha != null) {
                         mDataForm = dataForm;
                         mCaptcha = captcha;
                         return true;
