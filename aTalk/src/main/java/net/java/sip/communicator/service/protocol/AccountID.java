@@ -432,6 +432,25 @@ public class AccountID
     }
 
     /**
+     * Store the value to the account property of the given key to persistence store.
+     *
+     * @param key the name of the property to change.
+     * @param property the new value of the specified property. Null will remove the propertyName item
+     */
+    public void storeAccountProperty(String key, Object property)
+    {
+        String accPropertyName = uuid + "." + key;
+        ConfigurationService configService = ProtocolProviderActivator.getConfigurationService();
+        if (configService != null) {
+            if (property != null)
+                putAccountProperty(key, property);
+            else
+                removeAccountProperty(key);
+            configService.setProperty(accPropertyName, property);
+        }
+    }
+
+    /**
      * Adds a property to the map of properties for this account identifier.
      *
      * @param key the key of the property
@@ -664,6 +683,26 @@ public class AccountID
     public void setKeepAliveOption(boolean isKeepAliveEnable)
     {
         putAccountProperty(ProtocolProviderFactory.IS_KEEP_ALIVE_ENABLE, isKeepAliveEnable);
+    }
+
+    /**
+     * Determines whether ping interval auto optimization is enabled.
+     *
+     * @return <tt>true</tt> if ping interval optimization for this account is enabled and <tt>false</tt> otherwise.
+     */
+    public boolean isPingAutoTuneEnable()
+    {
+        return getAccountPropertyBoolean(ProtocolProviderFactory.IS_PING_AUTO_TUNE_ENABLE, true);
+    }
+
+    /**
+     * Specifies whether protocol provide should perform auto ping optimization for this account registered.
+     *
+     * @param isPingAutoEnable <tt>true</tt> if allow to perform ping auto optimization, <tt>false</tt> otherwise.
+     */
+    public void setPingAutoTuneOption(boolean isPingAutoEnable)
+    {
+        putAccountProperty(ProtocolProviderFactory.IS_PING_AUTO_TUNE_ENABLE, isPingAutoEnable);
     }
 
     /**
@@ -1542,20 +1581,20 @@ public class AccountID
     public String getOtrFingerprint()
     {
         if (this.otrFingerprint == null) {
-//			try {
-//				if (this.mOtrService == null) {
-//					return null;
-//				}
-//				final PublicKey publicKey = this.mOtrService.getPublicKey();
-//				if (publicKey == null || !(publicKey instanceof DSAPublicKey)) {
+            //			try {
+            //				if (this.mOtrService == null) {
+            //					return null;
+            //				}
+            //				final PublicKey publicKey = this.mOtrService.getPublicKey();
+            //				if (publicKey == null || !(publicKey instanceof DSAPublicKey)) {
             return null;
-//				}
-//				this.otrFingerprint = new OtrCryptoEngineImpl().getFingerprint(publicKey)
-//						.toLowerCase(Locale.US);
-//				return this.otrFingerprint;
-//			} catch (final OtrCryptoException ignored) {
-//				return null;
-//			}
+            //				}
+            //				this.otrFingerprint = new OtrCryptoEngineImpl().getFingerprint(publicKey)
+            //						.toLowerCase(Locale.US);
+            //				return this.otrFingerprint;
+            //			} catch (final OtrCryptoException ignored) {
+            //				return null;
+            //			}
         }
         else {
             return this.otrFingerprint;

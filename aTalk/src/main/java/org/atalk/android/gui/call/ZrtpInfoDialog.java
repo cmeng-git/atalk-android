@@ -1,37 +1,24 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.call;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.Toast;
 
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityListener;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityMessageEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityNegotiationStartedEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOffEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOnEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityStatusEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutEvent;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.util.java.awt.Component;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.SrtpControl;
-import org.atalk.service.neomedia.ZrtpControl;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.osgi.OSGiDialogFragment;
 import org.atalk.util.event.VideoEvent;
 import org.atalk.util.event.VideoListener;
@@ -101,8 +88,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * Notifies the listener(if any) about the SAS verification update.
      *
-     * @param isVerified
-     *         <tt>true</tt> if the SAS string has been verified by the user.
+     * @param isVerified <tt>true</tt> if the SAS string has been verified by the user.
      */
     private void notifySasVerified(boolean isVerified)
     {
@@ -233,8 +219,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * Shows the toast on the screen with given <tt>text</tt>.
      *
-     * @param text
-     *         the message text that will be used.
+     * @param text the message text that will be used.
      */
     private void showToast(String text)
     {
@@ -269,8 +254,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * Updates audio security displays according to given status flag.
      *
-     * @param isSecure
-     *         <tt>true</tt> if the audio is secure.
+     * @param isSecure <tt>true</tt> if the audio is secure.
      */
     private void updateAudioSecureStatus(boolean isSecure)
     {
@@ -295,8 +279,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * Updates video security displays.
      *
-     * @param isSecure
-     *         <tt>true</tt> if video stream is secured.
+     * @param isSecure <tt>true</tt> if video stream is secured.
      */
     private void updateVideoSecureStatus(boolean isSecure)
     {
@@ -305,9 +288,9 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         OperationSetVideoTelephony videoTelephony = mediaAwarePeer.getProtocolProvider().getOperationSet(OperationSetVideoTelephony.class);
         if (videoTelephony != null) {
             /*
-			 * The invocation of MediaAwareCallPeer.isLocalVideoStreaming() is cheaper than the invocation of
-			 * OperationSetVideoTelephony.getVisualComponents(CallPeer).
-			 */
+             * The invocation of MediaAwareCallPeer.isLocalVideoStreaming() is cheaper than the invocation of
+             * OperationSetVideoTelephony.getVisualComponents(CallPeer).
+             */
             isVideo = mediaAwarePeer.isLocalVideoStreaming();
             if (!isVideo) {
                 List<Component> videos = videoTelephony.getVisualComponents(mediaAwarePeer);
@@ -318,7 +301,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         ViewUtil.ensureVisible(getView(), R.id.secure_video_text, isVideo);
         ViewUtil.ensureVisible(getView(), R.id.secure_video_icon, isVideo);
 
-        /**
+        /*
          * If there's no video skip this part, as controls will be hidden.
          */
         if (!isVideo)
@@ -335,8 +318,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      * The handler for the security event received. The security event represents an indication of change in the
      * security status.
      *
-     * @param securityEvent
-     *         the security event received
+     * @param securityEvent the security event received
      */
     public void securityOn(CallPeerSecurityOnEvent securityEvent)
     {
@@ -355,8 +337,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      * The handler for the security event received. The security event represents an indication of change in the
      * security status.
      *
-     * @param securityEvent
-     *         the security event received
+     * @param securityEvent the security event received
      */
     public void securityOff(CallPeerSecurityOffEvent securityEvent)
     {
@@ -383,6 +364,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      */
     public void securityMessageReceived(CallPeerSecurityMessageEvent event)
     {
+        logger.info("### ZRTP security Message Received: " + event.getMessage());
     }
 
     /**
@@ -438,8 +420,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         /**
          * Called when SAS verification status is updated.
          *
-         * @param isVerified
-         *         <tt>true</tt> if SAS is verified by the user.
+         * @param isVerified <tt>true</tt> if SAS is verified by the user.
          */
         void onSasVerificationChanged(boolean isVerified);
     }
@@ -447,8 +428,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * Creates new parametrized instance of {@link ZrtpInfoDialog}.
      *
-     * @param callKey
-     *         the call key managed by {@link CallManager}.
+     * @param callKey the call key managed by {@link CallManager}.
      * @return parametrized instance of <tt>ZrtpInfoDialog</tt>.
      */
     public static ZrtpInfoDialog newInstance(String callKey)

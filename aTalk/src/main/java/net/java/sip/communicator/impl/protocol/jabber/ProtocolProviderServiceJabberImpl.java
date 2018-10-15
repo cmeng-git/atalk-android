@@ -5,6 +5,10 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultPacketExtensionProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.coin.CoinIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.coin.CoinIQProvider;
@@ -90,6 +94,7 @@ import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
+import org.jivesoftware.smackx.ping.PingFailedListener;
 import org.jivesoftware.smackx.ping.PingManager;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
@@ -132,6 +137,7 @@ import javax.net.ssl.*;
  * @author Eng Chong Meng
  */
 public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderService
+    implements PingFailedListener
 {
     /**
      * Logger of this class
@@ -455,7 +461,21 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * The default ping interval in seconds used by PingManager. The Smack default is 30 minutes.
      * See {@link #initSmackDefaultSettings()}
      */
-    public static int defaultPingInterval = 60 * 4;  // 4 minutes
+    public static int defaultPingInterval = 240;  // 4 minutes
+
+    /**
+     * Flag to indicate the network type connection before the ConnectionClosedOnError occur
+     * Note: Switching between WiFi and Mobile network will also causes ConnectionClosedOnError to occur
+     */
+    private boolean isLastConnectionMobile = false;
+
+    /**
+     * Flag to indicate the connected mobile network has ConnectionClosedOnError due to:
+     * 1. Disconnection occur while it is in connected with Mobile network
+     * 2. Occur within 500mS of the ping action
+     * i.e. to discard ConnectionClosedOnError due to other factors e.g. network fading etc
+     */
+    private boolean isMobilePingClosedOnError = false;
 
     /**
      * Set to success if protocol provider has successfully connected to the server.
@@ -993,9 +1013,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             StanzaError stanzaError = StanzaError.from(Condition.service_unavailable, errMsg).build();
             throw new XMPPErrorException(null, stanzaError);
         } catch (XMPPException | SmackException | IOException | InterruptedException ex) {
-//            if (ex.getCause() instanceof SSLHandshakeException) {
-//                logger.error(ex.getCause());
-//            }
+            //            if (ex.getCause() instanceof SSLHandshakeException) {
+            //                logger.error(ex.getCause());
+            //            }
             String errMsg = "Encounter problem during XMPPConnection: " + ex.getMessage();
             logger.error(errMsg);
             StanzaError stanzaError = StanzaError.from(Condition.remote_server_timeout, errMsg).build();
@@ -1220,46 +1240,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         }
 
         /**
-         * Implements <tt>reconnectingIn</tt> from <tt>ConnectionListener</tt>
-         *
-         * @param i delay in seconds for reconnection.
-         */
-        public void reconnectingIn(int i)
-        {
-            if ((i <= 0) && logger.isInfoEnabled())
-                logger.info("ReconnectionManager starting connection attempt...");
-        }
-
-        /**
-         * Implements <tt>reconnectingIn</tt> from <tt>ConnectionListener</tt>
-         */
-        public void reconnectionSuccessful()
-        {
-            xmppConnected.reportSuccess();
-            if (reconnectionManager != null)
-                reconnectionManager.disableAutomaticReconnection();
-
-            if (logger.isInfoEnabled())
-                logger.info("Reconnection Successful");
-        }
-
-        /**
-         * Implements <tt>reconnectionFailed</tt> from <tt>ConnectionListener</tt>.
-         *
-         * @param exception description of the failure
-         */
-        public void reconnectionFailed(Exception exception)
-        {
-            String errMsg = exception.getMessage();
-            StanzaError stanzaError = StanzaError.from(Condition.remote_server_not_found, errMsg).build();
-            XMPPErrorException xmppException = new XMPPErrorException(null, stanzaError);
-            xmppConnected.reportFailure(xmppException);
-
-            if (logger.isInfoEnabled())
-                logger.info("Reconnection Failed: ", exception);
-        }
-
-        /**
          * Notification that the connection has been successfully connected to the remote endpoint (e.g. the XMPP server).
          *
          * Note that the connection is likely not yet authenticated and therefore only limited operations like registering
@@ -1271,6 +1251,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         {
             xmppConnected.reportSuccess();
             setTrafficClass();
+
+            // check and set auto tune ping interval if necessary
+            tunePingInterval();
 
             // must initialize caps entities upon success connection to ensure it is ready for the very first <iq/> send
             initServicesAndFeatures();
@@ -1315,10 +1298,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             mRoster.setSubscriptionMode(Roster.SubscriptionMode.manual);
 
             /* Set Roster subscription mode per global defined option for this accounts - Roaster will handle accept-all*/
-//            if (ConfigurationUtils.isPresenceSubscribeAuto())
-//                mRoster.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
-//            else
-//                mRoster.setSubscriptionMode(Roster.SubscriptionMode.manual);
+            //    if (ConfigurationUtils.isPresenceSubscribeAuto())
+            //        mRoster.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
+            //    else
+            //        mRoster.setSubscriptionMode(Roster.SubscriptionMode.manual);
 
             isResumed = resumed;
             String msg = "Smack: User Authenticated with isResumed state: " + resumed;
@@ -1346,6 +1329,56 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                         RegistrationStateChangeEvent.REASON_USER_REQUEST, msg, true);
             }
         }
+    }
+
+    /**
+     * Called when the server ping fails.
+     */
+    public void pingFailed() {
+//        logger.warn("Ping failed! isLastConnectionMobile: " + isLastConnectionMobile
+//                + "; isConnectedMobile: " + isConnectedMobile());
+        isMobilePingClosedOnError = isLastConnectionMobile && isConnectedMobile();
+    }
+
+    /*
+     * Perform auto tuning of the ping interval if ping and optimization are both enabled and
+     * connectionClosedOnError is due to ping activity
+     */
+    private void tunePingInterval()
+    {
+        // Remember the new connection network type, use in next network ClosedOnError for reference
+        isLastConnectionMobile = isConnectedMobile();
+
+        // Perform ping auto-tune only if a mobile network connection error, ping and auto tune options are all enabled
+        if (!isMobilePingClosedOnError || !mAccountID.isKeepAliveEnable() || !mAccountID.isPingAutoTuneEnable())
+            return;
+
+        isMobilePingClosedOnError = false;
+        int pingInterval = Integer.parseInt(mAccountID.getPingInterval());
+        /* adjust ping Interval in step according to its current value */
+        if (pingInterval > 240)
+            pingInterval -= 30;
+        else if (pingInterval > 120)
+            pingInterval -= 10;
+
+        // kept lowest limit at 120S ping interval
+        if (pingInterval >= 120) {
+            mAccountID.storeAccountProperty(ProtocolProviderFactory.PING_INTERVAL, pingInterval);
+            logger.warn("Auto tunning ping interval to: " + pingInterval);
+        }
+        else {
+            logger.error("Connection closed on error with ping interval of 120 second!!!");
+        }
+    }
+
+    // Check if there is any connectivity to a mobile network
+    private boolean isConnectedMobile()
+    {
+        Context context = aTalkApp.getGlobalContext();
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        return (info != null && info.isConnected()
+                && info.getType() == ConnectivityManager.TYPE_MOBILE);
     }
 
     /**
@@ -1534,17 +1567,15 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         VersionManager versionManager = VersionManager.getInstanceFor(mConnection);
 
         /* XEP-0199: XMPP Ping: Each account may set his own ping interval */
-        PingManager pingManager = PingManager.getInstanceFor(mConnection);
-
-        boolean isKeepAliveEnable = mAccountID.getAccountPropertyBoolean(
-                ProtocolProviderFactory.IS_KEEP_ALIVE_ENABLE, false);
-        if (isKeepAliveEnable) {
-            int pingInterval = mAccountID.getAccountPropertyInt(ProtocolProviderFactory.PING_INTERVAL, defaultPingInterval);
-            pingManager.setPingInterval(pingInterval);
+        PingManager mPingManager = PingManager.getInstanceFor(mConnection);
+        if (mAccountID.isKeepAliveEnable()) {
+            int pingInterval = Integer.parseInt(mAccountID.getPingInterval());
+            mPingManager.setPingInterval(pingInterval);
+            mPingManager.registerPingFailedListener(this);
         }
         else {
             // Disable pingManager
-            pingManager.setPingInterval(0);
+            mPingManager.setPingInterval(0);
         }
 
         /*  Start up VCardAvatarManager / UserAvatarManager for mAccount auto-update */
@@ -1822,20 +1853,19 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                             throws Exception
                     {
                         String errMsg = packetData.getContent().toString();
-//                        StanzaErrorException xmppException = null;
-//                        if (errMsg.contains("403")) {
-//                            StanzaError stanzaError = StanzaError.from(Condition.forbidden, errMsg).build();
-//                            xmppException = new StanzaErrorException(null, stanzaError);
-//
-//                        }
-//                        else if (errMsg.contains("503")) {
-//                            StanzaError stanzaError = StanzaError.from(Condition.service_unavailable, errMsg).build();
-//                            xmppException = new StanzaErrorException(null, stanzaError);
-//                        }
-//
-//                        if (xmppException != null)
-//                            throw xmppException;
-//                        else
+                        // StanzaErrorException xmppException = null;
+                        // if (errMsg.contains("403")) {
+                        //     StanzaError stanzaError = StanzaError.from(Condition.forbidden, errMsg).build();
+                        //     xmppException = new StanzaErrorException(null, stanzaError);
+                        // }
+                        // else if (errMsg.contains("503")) {
+                        //     StanzaError stanzaError = StanzaError.from(Condition.service_unavailable, errMsg).build();
+                        //     xmppException = new StanzaErrorException(null, stanzaError);
+                        // }
+                        //
+                        // if (xmppException != null)
+                        //     throw xmppException;
+                        // else
                         logger.warn("UnparseableStanza Error: " + errMsg, packetData.getParsingException());
                     }
                 }
@@ -1974,7 +2004,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
              * Here are all the OperationSets that aTalk supported; to be queried by the
              * application and take appropriate actions
              */
-//			String keepAliveStrValue = mAccountID.getAccountPropertyString(ProtocolProviderFactory.KEEP_ALIVE_METHOD);
+            // String keepAliveStrValue = mAccountID.getAccountPropertyString(ProtocolProviderFactory.KEEP_ALIVE_METHOD);
 
             // initialize the presence OperationSet
             InfoRetriever infoRetriever = new InfoRetriever(this, screenName);

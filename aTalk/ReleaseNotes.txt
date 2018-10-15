@@ -1,5 +1,13 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.5.6 (1056)
+Author:         cmeng
+Upload Date:	10/16/2018
+- Implement Ping Interval auto-tune optimization to prevent mobile network closed by ISP on non-activity timer timeout
+- Upgrade UCrop to v2.2.2 - to fix image file pick error
+- Implement OnClickListener and OnLongClickListener in class to avoid OnClickListener become inactive whe resume
+
+=========================================================================
 Version:		1.5.5 (1055)
 Author:         cmeng
 Upload Date:	10/09/2018

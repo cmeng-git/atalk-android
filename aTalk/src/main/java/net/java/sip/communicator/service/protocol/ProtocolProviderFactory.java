@@ -481,6 +481,11 @@ public abstract class ProtocolProviderFactory
     public static final String IS_KEEP_ALIVE_ENABLE = "IS_KEEP_ALIVE_ENABLE";
 
     /**
+     * The Ping auto optimization option enable / disable.
+     */
+    public static final String IS_PING_AUTO_TUNE_ENABLE = "IS_PING_AUTO_TUNE_ENABLE";
+
+    /**
      * The interval for keep-alive if any.
      */
     public static final String PING_INTERVAL = "PING_INTERVAL";

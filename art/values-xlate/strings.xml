@@ -1142,10 +1142,13 @@
     <string name="service_gui_JBR_JINGLE_SUMMARY">Use jingle nodes</string>
     <string name="service_gui_JBR_KEEP_ALIVE">Keep alive</string>
     <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Enable Keep Alive option</string>
-    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Enable if experiencing frequent network disconnection</string>
+    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Enable if experiencing frequent mobile network disconnection</string>
     <string name="service_gui_JBR_OVERRIDE_SERVER">Override server default options</string>
     <string name="service_gui_JBR_PASSWORD">Enter Password</string>
     <string name="service_gui_JBR_PING_INTERVAL">Ping interval (1~3600 seconds)</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ENABLE">Enable Ping Interval optimization</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_OFF_SUMMARY">Do not perform ping interval optimization for mobile network connection</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ON_SUMMARY">Perform ping interval optimization for mobile network connection</string>
     <string name="service_gui_JBR_PORT">Server Port</string>
     <string name="service_gui_JBR_PRIORITY">Priority (range:-128~127)</string>
     <string name="service_gui_JBR_RES_AUTO_GEN">Auto generate resource</string>

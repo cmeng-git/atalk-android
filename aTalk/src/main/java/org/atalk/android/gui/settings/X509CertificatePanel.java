@@ -34,10 +34,8 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Formatter;
-import java.util.HashMap;
 
 import javax.security.auth.x500.X500Principal;
-
 
 /**
  * Panel that shows the content of an X509Certificate.
@@ -46,395 +44,343 @@ import javax.security.auth.x500.X500Principal;
  */
 public class X509CertificatePanel extends Dialog
 {
-	private Certificate certificate;
-	private Context mContext;
+    private Certificate certificate;
+    private Context mContext;
 
-	/**
-	 * Constructs a X509 certificate panel from certificate[] chain
-	 * Default to assume only one certificate in the certificate chain.
-	 *
-	 * @param certificates
-	 * 		<tt>X509Certificate</tt> object
-	 */
-	public X509CertificatePanel(Context context, Certificate[] certificates)
-	{
-		super(context);
-		mContext = context;
-		this.certificate = certificates[0];
-	}
+    /**
+     * Constructs a X509 certificate panel from certificate[] chain
+     * Default to assume only one certificate in the certificate chain.
+     *
+     * @param certificates <tt>X509Certificate</tt> object
+     */
+    public X509CertificatePanel(Context context, Certificate[] certificates)
+    {
+        super(context);
+        mContext = context;
+        this.certificate = certificates[0];
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.x509_certificate_view);
-		setTitle(mContext.getString(R.string.service_gui_CERT_INFO_CHAIN));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.x509_certificate_view);
+        setTitle(mContext.getString(R.string.service_gui_CERT_INFO_CHAIN));
 
-		WebView certInfo = findViewById(R.id.certificateInfo);
-		WebSettings settings = certInfo.getSettings();
-		settings.setDefaultFontSize(10);
-		settings.setDefaultFixedFontSize(10);
-		settings.setBuiltInZoomControls(true);
+        WebView certInfo = findViewById(R.id.certificateInfo);
+        WebSettings settings = certInfo.getSettings();
+        settings.setDefaultFontSize(10);
+        settings.setDefaultFixedFontSize(10);
+        settings.setBuiltInZoomControls(true);
 
-		String certHtml = toString(certificate);
-		certInfo.loadDataWithBaseURL(null, certHtml, "text/html", "utf-8", null);
-	}
+        String certHtml = toString(certificate);
+        certInfo.loadDataWithBaseURL(null, certHtml, "text/html", "utf-8", null);
+    }
 
-	/**
-	 * Creates a String representation of the given object.
-	 *
-	 * @param certificate
-	 * 		to print
-	 * @return the String representation
-	 */
-	private String toString(Object certificate)
-	{
-		final StringBuilder sb = new StringBuilder();
-		sb.append("<html><body>\n");
+    /**
+     * Creates a String representation of the given object.
+     *
+     * @param certificate to print
+     * @return the String representation
+     */
+    private String toString(Object certificate)
+    {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("<html><body>\n");
 
-		if (certificate instanceof X509Certificate) {
-			renderX509(sb, (X509Certificate) certificate);
-		}
-		else {
-			sb.append("<pre>\n");
-			sb.append(certificate.toString());
-			sb.append("</pre>\n");
-		}
-		sb.append("</body></html>");
-		return sb.toString();
-	}
+        if (certificate instanceof X509Certificate) {
+            renderX509(sb, (X509Certificate) certificate);
+        }
+        else {
+            sb.append("<pre>\n");
+            sb.append(certificate.toString());
+            sb.append("</pre>\n");
+        }
+        sb.append("</body></html>");
+        return sb.toString();
+    }
 
-	/**
-	 * Appends an HTML representation of the given X509Certificate.
-	 *
-	 * @param sb
-	 * 		StringBuilder to append to
-	 * @param certificate
-	 * 		to print
-	 */
-	private void renderX509(StringBuilder sb, X509Certificate certificate)
-	{
-		X500Principal issuer = certificate.getIssuerX500Principal();
-		X500Principal subject = certificate.getSubjectX500Principal();
+    /**
+     * Appends an HTML representation of the given X509Certificate.
+     *
+     * @param sb StringBuilder to append to
+     * @param certificate to print
+     */
+    private void renderX509(StringBuilder sb, X509Certificate certificate)
+    {
+        X500Principal issuer = certificate.getIssuerX500Principal();
+        X500Principal subject = certificate.getSubjectX500Principal();
 
-		sb.append("<table cellspacing='1' cellpadding='1'>\n");
+        sb.append("<table cellspacing='1' cellpadding='1'>\n");
+        // subject
+        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_ISSUED_TO));
+        try {
+            for (Rdn name : new LdapName(subject.getName()).getRdns()) {
+                String nameType = name.getType();
+                String lblKey = "service_gui_CERT_INFO_" + nameType;
+                int resID = mContext.getResources().getIdentifier(lblKey, "string", mContext.getPackageName());
+                String lbl = mContext.getString(resID);
 
-		// subject
-		addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_ISSUED_TO));
-		try {
-			for (Rdn name : new LdapName(subject.getName()).getRdns()) {
-				String nameType = name.getType();
-				String lblKey = "service_gui_CERT_INFO_" + nameType;
-				int resID = mContext.getResources().getIdentifier(lblKey,
-						"string", mContext.getPackageName());
-				String lbl = mContext.getString(resID);
+                if ((lbl == null) || ("!" + lblKey + "!").equals(lbl))
+                    lbl = nameType;
 
-				if ((lbl == null) || ("!" + lblKey + "!").equals(lbl))
-					lbl = nameType;
+                final String value;
+                Object nameValue = name.getValue();
+                if (nameValue instanceof byte[]) {
+                    byte[] nameValueAsByteArray = (byte[]) nameValue;
+                    value = getHex(nameValueAsByteArray) + " (" + new String(nameValueAsByteArray) + ")";
+                }
+                else
+                    value = nameValue.toString();
+                addField(sb, lbl, value);
+            }
+        } catch (InvalidNameException ine) {
+            addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_CN), subject.getName());
+        }
 
-				final String value;
-				Object nameValue = name.getValue();
+        // issuer
+        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_ISSUED_BY));
+        try {
+            for (Rdn name : new LdapName(issuer.getName()).getRdns()) {
+                String nameType = name.getType();
+                String lblKey = "service_gui_CERT_INFO_" + nameType;
+                int resID = mContext.getResources().getIdentifier(lblKey, "string", mContext.getPackageName());
+                String lbl = mContext.getString(resID);
 
-				if (nameValue instanceof byte[]) {
-					byte[] nameValueAsByteArray = (byte[]) nameValue;
+                if ((lbl == null) || ("!" + lblKey + "!").equals(lbl))
+                    lbl = nameType;
 
-					value = getHex(nameValueAsByteArray) + " ("
-							+ new String(nameValueAsByteArray) + ")";
-				}
-				else
-					value = nameValue.toString();
-				addField(sb, lbl, value);
-			}
-		}
-		catch (InvalidNameException ine) {
-			addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_CN),
-					subject.getName());
-		}
+                final String value;
+                Object nameValue = name.getValue();
 
-		// issuer
-		addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_ISSUED_BY));
-		try {
-			for (Rdn name : new LdapName(issuer.getName()).getRdns()) {
-				String nameType = name.getType();
-				String lblKey = "service_gui_CERT_INFO_" + nameType;
-				int resID = mContext.getResources().getIdentifier(lblKey,
-						"string", mContext.getPackageName());
-				String lbl = mContext.getString(resID);
+                if (nameValue instanceof byte[]) {
+                    byte[] nameValueAsByteArray = (byte[]) nameValue;
+                    value = getHex(nameValueAsByteArray) + " (" + new String(nameValueAsByteArray) + ")";
+                }
+                else
+                    value = nameValue.toString();
 
-				if ((lbl == null) || ("!" + lblKey + "!").equals(lbl))
-					lbl = nameType;
+                addField(sb, lbl, value);
+            }
+        } catch (InvalidNameException ine) {
+            addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_CN), issuer.getName());
+        }
 
-				final String value;
-				Object nameValue = name.getValue();
+        // validity
+        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_VALIDITY));
+        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_ISSUED_ON), certificate.getNotBefore().toString());
+        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_EXPIRES_ON), certificate.getNotAfter().toString());
 
-				if (nameValue instanceof byte[]) {
-					byte[] nameValueAsByteArray = (byte[]) nameValue;
+        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_FINGERPRINTS));
+        try {
+            String sha256String = getThumbprint(certificate, "SHA-256");
+            String sha1String = getThumbprint(certificate, "SHA1");
 
-					value = getHex(nameValueAsByteArray) + " ("
-							+ new String(nameValueAsByteArray) + ")";
-				}
-				else
-					value = nameValue.toString();
+            addField(sb, "SHA256:", sha256String, 48);
+            addField(sb, "SHA1:", sha1String, 72);
+        } catch (CertificateException e) {
+            // do nothing as we cannot show this value
+        }
 
-				addField(sb, lbl, value);
-			}
-		}
-		catch (InvalidNameException ine) {
-			addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_CN),
-					issuer.getName());
-		}
+        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_CERT_DETAILS));
+        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_SER_NUM), certificate.getSerialNumber().toString());
+        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_VER), String.valueOf(certificate.getVersion()));
+        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_SIGN_ALG), String.valueOf(certificate.getSigAlgName()));
+        addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_PUB_KEY_INFO));
+        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_ALG), certificate.getPublicKey().getAlgorithm());
 
-		// validity
-		addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_VALIDITY));
-		addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_ISSUED_ON),
-				certificate.getNotBefore().toString());
-		addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_EXPIRES_ON),
-				certificate.getNotAfter().toString());
+        if (certificate.getPublicKey().getAlgorithm().equals("RSA")) {
+            RSAPublicKey key = (RSAPublicKey) certificate.getPublicKey();
 
-		addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_FINGERPRINTS));
-		try {
-			String sha256String = getThumbprint(certificate, "SHA-256");
-			String sha1String = getThumbprint(certificate, "SHA1");
+            addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_PUB_KEY),
+                    mContext.getString(R.string.service_gui_CERT_INFO_KEY_BITS_PRINT,
+                            String.valueOf((key.getModulus().toByteArray().length - 1) * 8)),
+                    getHex(key.getModulus().toByteArray()), 48);
 
-			addField(sb, "SHA256:", sha256String, 48);
-			addField(sb, "SHA1:", sha1String, 72);
-		}
-		catch (CertificateException e) {
-			// do nothing as we cannot show this value
-		}
+            addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_EXP),
+                    key.getPublicExponent().toString());
 
-		addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_CERT_DETAILS));
+            addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_KEY_SIZE),
+                    mContext.getString(R.string.service_gui_CERT_INFO_KEY_BITS_PRINT,
+                            String.valueOf(key.getModulus().bitLength())));
+        }
+        else if (certificate.getPublicKey().getAlgorithm().equals("DSA")) {
+            DSAPublicKey key = (DSAPublicKey) certificate.getPublicKey();
+            addField(sb, "Y:", key.getY().toString(16));
+        }
 
-		addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_SER_NUM),
-				certificate.getSerialNumber().toString());
+        addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_SIGN),
+                mContext.getString(R.string.service_gui_CERT_INFO_KEY_BITS_PRINT,
+                        String.valueOf(certificate.getSignature().length * 8)),
+                getHex(certificate.getSignature()), 48);
+        sb.append("</table>\n");
+    }
 
-		addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_VER),
-				String.valueOf(certificate.getVersion()));
+    /**
+     * Add a title.
+     *
+     * @param sb StringBuilder to append to
+     * @param title to print
+     */
+    private void addTitle(StringBuilder sb, String title)
+    {
+        sb.append("<tr><td colspan='2'")
+                .append(" style='margin-top: 10pt; white-space: nowrap'><p><b>")
+                .append(title).append("</b></p></td></tr>\n");
+    }
 
-		addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_SIGN_ALG),
-				String.valueOf(certificate.getSigAlgName()));
+    /**
+     * Add a field.
+     *
+     * @param sb StringBuilder to append to
+     * @param field name of the certificate field
+     * @param value to print
+     */
+    private void addField(StringBuilder sb, String field, String value)
+    {
+        addField(sb, field, value, null, 0);
+    }
 
-		addTitle(sb, mContext.getString(R.string.service_gui_CERT_INFO_PUB_KEY_INFO));
+    /**
+     * Add a field.
+     *
+     * @param sb StringBuilder to append to
+     * @param field name of the certificate field
+     * @param value to print
+     * @param wrap force-wrap after number of characters
+     */
+    private void addField(StringBuilder sb, String field, String value, int wrap)
+    {
+        addField(sb, field, value, null, wrap);
+    }
 
-		addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_ALG),
-				certificate.getPublicKey().getAlgorithm());
+    /**
+     * Add a field.
+     *
+     * @param sb StringBuilder to append to
+     * @param field name of the certificate field
+     * @param value to print (not wrapped)
+     * @param otherValue second line of value to print (wrapped)
+     * @param wrap force-wrap after number of characters
+     */
+    private void addField(StringBuilder sb, String field, String value,
+            String otherValue, int wrap)
+    {
+        sb.append("<tr><td style='margin-right: 25pt;")
+                .append("white-space: nowrap' valign='top'>&#8226; ")
+                .append(field).append("</td><td><span");
 
-		if (certificate.getPublicKey().getAlgorithm().equals("RSA")) {
-			RSAPublicKey key = (RSAPublicKey) certificate.getPublicKey();
+        if (otherValue != null) {
+            sb.append('>').append(value).append("</span><br/><span");
+            value = otherValue;
+        }
 
-			addField(sb,
-					mContext.getString(R.string.service_gui_CERT_INFO_PUB_KEY),
-					mContext.getString(R.string.service_gui_CERT_INFO_KEY_BITS_PRINT,
-							String.valueOf((key.getModulus().toByteArray().length - 1) * 8)),
-					getHex(key.getModulus().toByteArray()), 48);
+        if (wrap > 0) {
+            sb.append(" style='font-family:monospace'>");
+            for (int i = 0; i < value.length(); i++) {
+                if (i % wrap == 0 && i > 0) {
+                    sb.append("<br/>");
+                }
+                sb.append(value.charAt(i));
+            }
+        }
+        else {
+            sb.append(">");
+            sb.append(value);
+        }
+        sb.append("</span></td></tr>");
+    }
 
-			addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_EXP),
-					key.getPublicExponent().toString());
+    /**
+     * Converts the byte array to hex string.
+     *
+     * @param raw the data.
+     * @return the hex string.
+     */
+    private String getHex(byte[] raw)
+    {
+        if (raw == null)
+            return null;
 
-			addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_KEY_SIZE),
-					mContext.getString(R.string.service_gui_CERT_INFO_KEY_BITS_PRINT,
-					String.valueOf(key.getModulus().bitLength())));
-		}
-		else if (certificate.getPublicKey().getAlgorithm().equals("DSA")) {
-			DSAPublicKey key = (DSAPublicKey) certificate.getPublicKey();
-			addField(sb, "Y:", key.getY().toString(16));
-		}
+        StringBuilder hex = new StringBuilder(2 * raw.length);
+        Formatter f = new Formatter(hex);
+        try {
+            for (byte b : raw)
+                f.format("%02x:", b);
+        } finally {
+            f.close();
+        }
+        return hex.substring(0, hex.length() - 1);
+    }
 
-		addField(sb, mContext.getString(R.string.service_gui_CERT_INFO_SIGN),
-				mContext.getString(R.string.service_gui_CERT_INFO_KEY_BITS_PRINT,
-						String.valueOf(certificate.getSignature().length * 8)),
-				getHex(certificate.getSignature()), 48);
-		sb.append("</table>\n");
-	}
+    /**
+     * Calculates the hash of the certificate known as the "thumbprint"
+     * and returns it as a string representation.
+     *
+     * @param cert The certificate to hash.
+     * @param algorithm The hash algorithm to use.
+     * @return The SHA-1 hash of the certificate.
+     * @throws CertificateException
+     */
+    private static String getThumbprint(X509Certificate cert, String algorithm)
+            throws CertificateException
+    {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance(algorithm);
+        } catch (NoSuchAlgorithmException e) {
+            throw new CertificateException(e);
+        }
 
-	/**
-	 * Add a title.
-	 *
-	 * @param sb
-	 * 		StringBuilder to append to
-	 * @param title
-	 * 		to print
-	 */
-	private void addTitle(StringBuilder sb, String title)
-	{
-		sb.append("<tr><td colspan='2'")
-				.append(" style='margin-top: 10pt; white-space: nowrap'><p><b>")
-				.append(title).append("</b></p></td></tr>\n");
-	}
+        byte[] encodedCert = cert.getEncoded();
+        StringBuilder sb = new StringBuilder(encodedCert.length * 2);
+        Formatter f = new Formatter(sb);
+        try {
+            for (byte b : digest.digest(encodedCert))
+                f.format("%02x:", b);
+        } finally {
+            f.close();
+        }
 
-	/**
-	 * Add a field.
-	 *
-	 * @param sb
-	 * 		StringBuilder to append to
-	 * @param field
-	 * 		name of the certificate field
-	 * @param value
-	 * 		to print
-	 */
-	private void addField(StringBuilder sb, String field, String value)
-	{
-		addField(sb, field, value, null, 0);
-	}
+        return sb.substring(0, sb.length() - 1);
+    }
 
-	/**
-	 * Add a field.
-	 *
-	 * @param sb
-	 * 		StringBuilder to append to
-	 * @param field
-	 * 		name of the certificate field
-	 * @param value
-	 * 		to print
-	 * @param wrap
-	 * 		force-wrap after number of characters
-	 */
-	private void addField(StringBuilder sb, String field, String value,
-			int wrap)
-	{
-		addField(sb, field, value, null, wrap);
-	}
-
-	/**
-	 * Add a field.
-	 *
-	 * @param sb
-	 * 		StringBuilder to append to
-	 * @param field
-	 * 		name of the certificate field
-	 * @param value
-	 * 		to print (not wrapped)
-	 * @param otherValue
-	 * 		second line of value to print (wrapped)
-	 * @param wrap
-	 * 		force-wrap after number of characters
-	 */
-	private void addField(StringBuilder sb, String field, String value,
-			String otherValue, int wrap)
-	{
-		sb.append("<tr><td style='margin-right: 25pt;")
-				.append("white-space: nowrap' valign='top'>&#8226; ")
-				.append(field).append("</td><td><span");
-
-		if (otherValue != null) {
-			sb.append('>').append(value).append("</span><br/><span");
-			value = otherValue;
-		}
-
-		if (wrap > 0) {
-			sb.append(" style='font-family:monospace'>");
-			for (int i = 0; i < value.length(); i++) {
-				if (i % wrap == 0 && i > 0) {
-					sb.append("<br/>");
-				}
-				sb.append(value.charAt(i));
-			}
-		}
-		else {
-			sb.append(">");
-			sb.append(value);
-		}
-		sb.append("</span></td></tr>");
-	}
-
-	/**
-	 * Converts the byte array to hex string.
-	 *
-	 * @param raw
-	 * 		the data.
-	 * @return the hex string.
-	 */
-	private String getHex(byte[] raw)
-	{
-		if (raw == null)
-			return null;
-
-		StringBuilder hex = new StringBuilder(2 * raw.length);
-		Formatter f = new Formatter(hex);
-		try {
-			for (byte b : raw)
-				f.format("%02x:", b);
-		} finally {
-			f.close();
-		}
-		return hex.substring(0, hex.length() - 1);
-	}
-
-	/**
-	 * Calculates the hash of the certificate known as the "thumbprint"
-	 * and returns it as a string representation.
-	 *
-	 * @param cert
-	 * 		The certificate to hash.
-	 * @param algorithm
-	 * 		The hash algorithm to use.
-	 * @return The SHA-1 hash of the certificate.
-	 * @throws CertificateException
-	 */
-	private static String getThumbprint(X509Certificate cert, String algorithm)
-			throws CertificateException
-	{
-		MessageDigest digest;
-		try {
-			digest = MessageDigest.getInstance(algorithm);
-		}
-		catch (NoSuchAlgorithmException e) {
-			throw new CertificateException(e);
-		}
-
-		byte[] encodedCert = cert.getEncoded();
-		StringBuilder sb = new StringBuilder(encodedCert.length * 2);
-		Formatter f = new Formatter(sb);
-		try {
-			for (byte b : digest.digest(encodedCert))
-				f.format("%02x:", b);
-		} finally {
-			f.close();
-		}
-
-		return sb.substring(0, sb.length() - 1);
-	}
-
-	/**
-	 * Construct a "simplified name" based on the subject DN from the
-	 * certificate. The purpose is to have something shorter to display in the
-	 * list. The name used is one of the following DN parts, if
-	 * available, otherwise the complete DN:
-	 * 'CN', 'OU' or else 'O'.
-	 *
-	 * @param cert
-	 * 		to read subject DN from
-	 * @return the simplified name
-	 */
-	private static String getSimplifiedName(X509Certificate cert)
-	{
-		final HashMap<String, String> parts = new HashMap<>();
-		try {
-			for (Rdn name : new LdapName(
-					cert.getSubjectX500Principal().getName()).getRdns()) {
-				if (name.getType() != null && name.getValue() != null) {
-					parts.put(name.getType(), name.getValue().toString());
-				}
-			}
-		}
-		catch (InvalidNameException ex) // NOPMD
-		{
-			ex.printStackTrace();
-		}
-
-		String result = parts.get("CN");
-		if (result == null) {
-			result = parts.get("OU");
-		}
-		if (result == null) {
-			result = parts.get("O");
-		}
-		if (result == null) {
-			result = cert.getSubjectX500Principal().getName();
-		}
-		return result;
-	}
+    /*
+     * Construct a "simplified name" based on the subject DN from the
+     * certificate. The purpose is to have something shorter to display in the
+     * list. The name used is one of the following DN parts, if
+     * available, otherwise the complete DN: 'CN', 'OU' or else 'O'.
+     *
+     * @param cert to read subject DN from
+     * @return the simplified name
+     */
+    //    private static String getSimplifiedName(X509Certificate cert)
+    //    {
+    //        final HashMap<String, String> parts = new HashMap<>();
+    //        try {
+    //            for (Rdn name : new LdapName(cert.getSubjectX500Principal().getName()).getRdns()) {
+    //                if (name.getType() != null && name.getValue() != null) {
+    //                    parts.put(name.getType(), name.getValue().toString());
+    //                }
+    //            }
+    //        } catch (InvalidNameException ex) // NOPMD
+    //        {
+    //            ex.printStackTrace();
+    //        }
+    //
+    //        String result = parts.get("CN");
+    //        if (result == null) {
+    //            result = parts.get("OU");
+    //        }
+    //        if (result == null) {
+    //            result = parts.get("O");
+    //        }
+    //        if (result == null) {
+    //            result = cert.getSubjectX500Principal().getName();
+    //        }
+    //        return result;
+    //    }
 }

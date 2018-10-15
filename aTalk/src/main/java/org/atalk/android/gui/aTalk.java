@@ -46,6 +46,7 @@ import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.osgi.framework.BundleContext;
 
+import java.io.File;
 import java.util.List;
 
 import de.cketti.library.changelog.ChangeLog;
@@ -254,7 +255,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     /**
      * Handler for chatListFragment on completed execution of
      *
-     * @see EntityListHelper#eraseEntityChatHistory(Context, Object, List)
+     * @see EntityListHelper#eraseEntityChatHistory(Context, Object, List, List)
      * @see EntityListHelper#eraseAllContactHistory(Context)
      */
     @Override

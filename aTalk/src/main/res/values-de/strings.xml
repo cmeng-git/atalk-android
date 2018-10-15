@@ -1129,10 +1129,13 @@
     <string name="service_gui_JBR_JINGLE_SUMMARY">Jingle-Nodes verwenden</string>
     <string name="service_gui_JBR_KEEP_ALIVE">Keep-Alive</string>
     <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Keep-Alive aktivieren</string>
-    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Bei häufigen Netzwerktrennungen aktivieren</string>
+    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Aktivieren Sie diese Einstellung, wenn die Verbindung zum Mobilfunknetz häufig unterbrochen wird</string>
     <string name="service_gui_JBR_OVERRIDE_SERVER">Server-Standardoptionen überschreiben</string>
     <string name="service_gui_JBR_PASSWORD">Passwort eingeben</string>
     <string name="service_gui_JBR_PING_INTERVAL">Ping-Intervall (1~3600 Sekunden)</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ENABLE">Aktivieren Sie die Ping-Intervall-Optimierung</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_OFF_SUMMARY">Führen Sie keine Ping-Intervall-Optimierung für die mobile Netzwerkverbindung durch</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ON_SUMMARY">Führen Sie die Optimierung des Ping-Intervalls für die mobile Netzwerkverbindung durch</string>
     <string name="service_gui_JBR_PORT">Server-Port</string>
     <string name="service_gui_JBR_PRIORITY">Priorität (Bereich: -128~127)</string>
     <string name="service_gui_JBR_RES_AUTO_GEN">Resource automatisch generieren</string>

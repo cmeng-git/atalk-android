@@ -12,29 +12,14 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.SubMenu;
-import android.view.View;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.java.sip.communicator.service.gui.call.CallPeerRenderer;
 import net.java.sip.communicator.service.gui.call.CallRenderer;
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.CallPeerState;
-import net.java.sip.communicator.service.protocol.CallState;
-import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
-import net.java.sip.communicator.service.protocol.event.CallChangeListener;
-import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityNegotiationStartedEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOffEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOnEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutEvent;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.call.CallPeerAdapter;
@@ -44,18 +29,12 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.notification.CallControl;
 import org.atalk.android.gui.call.notification.CallNotificationManager;
 import org.atalk.android.gui.controller.AutoHideController;
-import org.atalk.android.gui.util.ActionBarUtil;
-import org.atalk.android.gui.util.AndroidImageUtil;
-import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.gui.util.ViewUtil;
+import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.widgets.ClickableToastController;
 import org.atalk.android.gui.widgets.LegacyClickableToastCtrl;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
-import org.atalk.impl.neomedia.transform.srtp.SRTPCryptoContext;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.SrtpControl;
-import org.atalk.service.neomedia.ZrtpControl;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jxmpp.jid.Jid;
 
@@ -73,7 +52,7 @@ import java.util.Iterator;
  */
 public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer, CallRenderer,
         CallChangeListener, PropertyChangeListener, ZrtpInfoDialog.SasVerificationListener,
-        AutoHideController.AutoHideListener
+        AutoHideController.AutoHideListener, View.OnClickListener, View.OnLongClickListener
 {
     /**
      * The logger
@@ -195,25 +174,22 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         call.addCallChangeListener(this);
         callConference = call.getConference();
 
-        View.OnClickListener onClickAction = onClickListener();
-        View.OnLongClickListener onLongClickAction = onLongClickListener();
-
         // Initialize callChat button action
-        findViewById(R.id.button_call_back_to_chat).setOnClickListener(onClickAction);
+        findViewById(R.id.button_call_back_to_chat).setOnClickListener(this);
 
         // Initialize speakerphone button action
         View speakerphoneButton = findViewById(R.id.button_speakerphone);
-        speakerphoneButton.setOnClickListener(onClickAction);
-        speakerphoneButton.setOnLongClickListener(onLongClickAction);
+        speakerphoneButton.setOnClickListener(this);
+        speakerphoneButton.setOnLongClickListener(this);
 
         // Initialize the microphone button view.
         microphoneButton = findViewById(R.id.button_call_microphone);
-        microphoneButton.setOnClickListener(onClickAction);
-        microphoneButton.setOnLongClickListener(onLongClickAction);
+        microphoneButton.setOnClickListener(this);
+        microphoneButton.setOnLongClickListener(this);
 
-        findViewById(R.id.button_call_hold).setOnClickListener(onClickAction);
-        findViewById(R.id.button_call_hangup).setOnClickListener(onClickAction);
-        findViewById(R.id.clickable_toast).setOnClickListener(onClickAction);
+        findViewById(R.id.button_call_hold).setOnClickListener(this);
+        findViewById(R.id.button_call_hangup).setOnClickListener(this);
+        findViewById(R.id.clickable_toast).setOnClickListener(this);
 
         peerAvatar = findViewById(R.id.calleeAvatar);
         mBackToChat = false;
@@ -394,79 +370,68 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * Handles buttons action events- the <tt>ActionEvent</tt> that notified us
      */
-    protected View.OnClickListener onClickListener()
+    @Override
+    public void onClick(View v)
     {
-        return new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                switch (v.getId()) {
-                    case R.id.button_call_back_to_chat:
-                        finish();
-                        break;
+        switch (v.getId()) {
+            case R.id.button_call_back_to_chat:
+                finish();
+                break;
 
-                    case R.id.button_speakerphone:
-                        AudioManager audioManager = aTalkApp.getAudioManager();
-                        audioManager.setSpeakerphoneOn(!audioManager.isSpeakerphoneOn());
-                        updateSpeakerphoneStatus();
-                        break;
+            case R.id.button_speakerphone:
+                AudioManager audioManager = aTalkApp.getAudioManager();
+                audioManager.setSpeakerphoneOn(!audioManager.isSpeakerphoneOn());
+                updateSpeakerphoneStatus();
+                break;
 
-                    case R.id.button_call_microphone:
-                        CallManager.setMute(call, !isMuted());
-                        break;
+            case R.id.button_call_microphone:
+                CallManager.setMute(call, !isMuted());
+                break;
 
-                    case R.id.button_call_hold:
-                        // call == null if call setup failed
-                        if (call != null)
-                            CallManager.putOnHold(call, !isOnHold());
-                        break;
+            case R.id.button_call_hold:
+                // call == null if call setup failed
+                if (call != null)
+                    CallManager.putOnHold(call, !isOnHold());
+                break;
 
-                    case R.id.button_call_hangup:
-                        // Start the hang up Thread, Activity will be closed later on call ended event
-                        if (call != null)
-                            CallManager.hangupCall(call);
-                            // if call thread is null, then just exit the activity
-                        else
-                            finish();
-                        break;
+            case R.id.button_call_hangup:
+                // Start the hang up Thread, Activity will be closed later on call ended event
+                if (call != null)
+                    CallManager.hangupCall(call);
+                    // if call thread is null, then just exit the activity
+                else
+                    finish();
+                break;
 
-                    case R.id.clickable_toast:
-                        showZrtpInfoDialog();
-                        sasToastController.hideToast(true);
-                        break;
-                }
-            }
-        };
+            case R.id.clickable_toast:
+                showZrtpInfoDialog();
+                sasToastController.hideToast(true);
+                break;
+        }
     }
 
     /**
      * Handles buttons longPress action events - the <tt>ActionEvent</tt> that notified us
      */
-    protected View.OnLongClickListener onLongClickListener()
+    @Override
+    public boolean onLongClick(View v)
     {
-        return new View.OnLongClickListener()
-        {
-            @Override
-            public boolean onLongClick(View v)
-            {
-                DialogFragment newFragment;
-                switch (v.getId()) {
-                    // Create and show the volume control dialog.
-                    case R.id.button_speakerphone:
-                        // Create and show the dialog.
-                        newFragment = VolumeControlDialog.createOutputVolCtrlDialog();
-                        newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
-                        return true;
+        DialogFragment newFragment;
+        switch (v.getId()) {
+            // Create and show the volume control dialog.
+            case R.id.button_speakerphone:
+                // Create and show the dialog.
+                newFragment = VolumeControlDialog.createOutputVolCtrlDialog();
+                newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
+                return true;
 
-                    // Create and show the mic gain control dialog.
-                    case R.id.button_call_microphone:
-                        newFragment = VolumeControlDialog.createInputVolCtrlDialog();
-                        newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
-                        return true;
-                }
-                return false;
-            }
-        };
+            // Create and show the mic gain control dialog.
+            case R.id.button_call_microphone:
+                newFragment = VolumeControlDialog.createInputVolCtrlDialog();
+                newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -480,7 +445,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             speakerPhoneButton.setBackgroundColor(0x50000000);
         }
         else {
-            speakerPhoneButton.setImageResource(R.drawable.call_speakerphone_off_dark);
+            speakerPhoneButton.setImageResource(R.drawable.call_receiver_on_dark);
             speakerPhoneButton.setBackgroundColor(Color.TRANSPARENT);
         }
     }

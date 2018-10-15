@@ -141,7 +141,7 @@
     <string name="service_gui_Contacts">Контакты</string>
     <string name="service_gui_DONE">Готово</string>
 
-	<!-- Conference Chat -->
+    <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Автосоединение</string>
 	<string name="service_gui_CHANGE_NICK">Изменить псевдоним</string>
 	<string name="service_gui_CHANGE_NICKNAME">Изменить псевдоним&#8230;</string>
@@ -1152,10 +1152,13 @@
     <string name="service_gui_JBR_JINGLE_SUMMARY">Использовать jingle-узлы</string>
     <string name="service_gui_JBR_KEEP_ALIVE">Сохранить вживую</string>
     <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Включить опцию Keep Alive</string>
-    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Включить, если наблюдается частая отключение сети</string>
+    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Включить, если наблюдается частая отключение мобильной сети</string>
     <string name="service_gui_JBR_OVERRIDE_SERVER">Изменить параметры сервера по умолчанию</string>
     <string name="service_gui_JBR_PASSWORD">Введите пароль</string>
     <string name="service_gui_JBR_PING_INTERVAL">Интервал Ping (1~3600 секунд)</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ENABLE">Включить оптимизацию Ping Interval</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_OFF_SUMMARY">Не выполняйте оптимизацию интервала ping для подключения к мобильной сети</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ON_SUMMARY">Выполнять оптимизацию интервала ping для подключения к мобильной сети</string>
     <string name="service_gui_JBR_PORT">Порт сервера</string>
     <string name="service_gui_JBR_PRIORITY">Приоритет (диапазон: -128~127)</string>
     <string name="service_gui_JBR_RES_AUTO_GEN">Автоматическое создание ресурса</string>

@@ -6,6 +6,12 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.5.6 (10/16/2018)" versioncode="1056">
+        <change>Implement Ping Interval auto-tune optimization to avoid mobile network closed by ISP when idle</change>
+        <change>Upgrade UCrop to v2.2.2 - to fix image file pick error</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.5.5 (10/09/2018)" versioncode="1055">
         <change>Fix media call problem with no voice on receiving end; sender mic data lost due to improper HolePunchPacket sent</change>
         <change>Show permission request prompt if &lt;3 permissions are granted. Some android devices permanently deny all on first launch</change>

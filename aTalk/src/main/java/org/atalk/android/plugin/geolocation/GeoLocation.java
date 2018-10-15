@@ -184,7 +184,7 @@ public class GeoLocation extends EasyLocationActivity
         switch (view.getId()) {
             case R.id.requestSingleLocationButton:
                 if (sendContinuous) {
-                    toggleSendButton(sendContinuous);
+                    toggleSendButton(true);
                     stopLocationUpdates();
                 }
                 locationRequest = new LocationRequest()
@@ -204,7 +204,7 @@ public class GeoLocation extends EasyLocationActivity
                     mGpsTrack.setChecked(true);
 
                 if (!sendContinuous) {
-                    toggleSendButton(sendContinuous);
+                    toggleSendButton(false);
                     locationRequest = new LocationRequest()
                             .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
                             .setInterval(sendTimeInterval * 1000)
@@ -217,7 +217,7 @@ public class GeoLocation extends EasyLocationActivity
                     requestLocationUpdates(easyLocationRequest);
                 }
                 else {
-                    toggleSendButton(sendContinuous);
+                    toggleSendButton(true);
                     stopLocationUpdates();
                 }
         }

@@ -676,8 +676,7 @@ public class MetaContactChatSession extends ChatSession
     private void updateChatTransports(Contact contact)
     {
         if (currentChatTransport != null) {
-            boolean isSelectedContact =
-                    ((MetaContactChatTransport) currentChatTransport).getContact().equals(contact);
+            boolean isSelectedContact = ((MetaContactChatTransport) currentChatTransport).getContact().equals(contact);
             boolean isResourceSelected = isSelectedContact && (currentChatTransport.getResourceName() != null);
             String resourceName = currentChatTransport.getResourceName();
 
@@ -690,8 +689,7 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Called when a new <tt>ContactResource</tt> has been added to the list of
-     * available <tt>Contact</tt> resources.
+     * Called when a new <tt>ContactResource</tt> has been added to the list of available <tt>Contact</tt> resources.
      *
      * @param event the <tt>ContactResourceEvent</tt> that notified us
      */
