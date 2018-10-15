@@ -109,7 +109,7 @@
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_VOLUME_CONTROL_TOOL_TIP"
-            android:src="@drawable/call_speakerphone_off_dark" />
+            android:src="@drawable/call_receiver_on_dark" />
 
         <ImageButton
             android:id="@+id/button_call_microphone"

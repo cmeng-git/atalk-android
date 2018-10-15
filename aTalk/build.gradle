@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.0" // jarjar.repackage
     }
 }
@@ -48,8 +48,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1055
-        versionName "1.5.5" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1056
+        versionName "1.5.6" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -159,7 +159,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 
-    implementation 'com.github.yalantis:ucrop:2.2.1'
+    implementation 'com.github.yalantis:ucrop:2.2.2'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:7.5.1'
     implementation 'com.splitwise:tokenautocomplete:2.0.8'

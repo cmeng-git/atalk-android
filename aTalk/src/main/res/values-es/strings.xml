@@ -1161,10 +1161,13 @@
     <string name="service_gui_JBR_JINGLE_SUMMARY">Usar nodos Jingle</string>
     <string name="service_gui_JBR_KEEP_ALIVE">Mantener activo</string>
     <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Habilitar la opción de mantener activo</string>
-    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Habilitar si se experimentan desconexiones frecuentes de la red</string>
+    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Habilitar si experimenta desconexión frecuente de la red móvil</string>
     <string name="service_gui_JBR_OVERRIDE_SERVER">Anular las opciones predeterminadas del servidor</string>
     <string name="service_gui_JBR_PASSWORD">Introducir la contraseña</string>
     <string name="service_gui_JBR_PING_INTERVAL">Intervalo de ping (1~3600 segundos)</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ENABLE">Habilitar la optimización del intervalo de ping</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_OFF_SUMMARY">No realice la optimización del intervalo de ping para la conexión de red móvil</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ON_SUMMARY">Realizar la optimización del intervalo de ping para la conexión de red móvil</string>
     <string name="service_gui_JBR_PORT">Puerto del servidor</string>
     <string name="service_gui_JBR_PRIORITY">Prioridad (rango:-128~127)</string>
     <string name="service_gui_JBR_RES_AUTO_GEN">Autogenerar recurso</string>

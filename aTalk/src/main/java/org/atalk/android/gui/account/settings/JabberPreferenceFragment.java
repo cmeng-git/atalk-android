@@ -64,6 +64,8 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
     private static final String P_KEY_IS_KEEP_ALIVE_ENABLE
             = aTalkApp.getResString(R.string.pref_key_is_keep_alive_enable);
     public static final String P_KEY_PING_INTERVAL = aTalkApp.getResString(R.string.pref_key_ping_interval);
+    private static final String P_KEY_IS_PING_AUTO_TUNE_ENABLE
+            = aTalkApp.getResString(R.string.pref_key_ping_auto_tune_enable);
     private static final String P_KEY_IS_SERVER_OVERRIDDEN
             = aTalkApp.getResString(R.string.pref_key_is_server_overridden);
     public static final String P_KEY_SERVER_ADDRESS = aTalkApp.getResString(R.string.pref_key_server_address);
@@ -170,6 +172,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         // Keep alive options
         editor.putBoolean(P_KEY_IS_KEEP_ALIVE_ENABLE, jbrReg.isKeepAliveEnable());
         editor.putString(P_KEY_PING_INTERVAL, "" + jbrReg.getPingInterval());
+        editor.putBoolean(P_KEY_IS_PING_AUTO_TUNE_ENABLE, jbrReg.isPingAutoTuneEnable());
 
         // Server options
         editor.putBoolean(P_KEY_IS_SERVER_OVERRIDDEN, jbrReg.isServerOverridden());
@@ -366,6 +369,9 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         else if (key.equals(P_KEY_PING_INTERVAL)) {
             jbrReg.setPingInterval(shPrefs.getString(P_KEY_PING_INTERVAL,
                     Integer.toString(ProtocolProviderServiceJabberImpl.defaultPingInterval)));
+        }
+        else if (key.equals(P_KEY_IS_PING_AUTO_TUNE_ENABLE)) {
+            jbrReg.setPingAutoTuneOption(shPrefs.getBoolean(P_KEY_IS_PING_AUTO_TUNE_ENABLE, true));
         }
         else if (key.equals(P_KEY_IS_SERVER_OVERRIDDEN)) {
             jbrReg.setServerOverridden(shPrefs.getBoolean(P_KEY_IS_SERVER_OVERRIDDEN, false));

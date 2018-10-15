@@ -166,18 +166,6 @@ public class SmackServiceNode implements ConnectionListener, StanzaListener
         closeAllChannels();
     }
 
-    public void reconnectingIn(int i)
-    {
-    }
-
-    public void reconnectionSuccessful()
-    {
-    }
-
-    public void reconnectionFailed(Exception e)
-    {
-    }
-
     protected IQ createUdpChannel(final JingleChannelIQ iq)
     {
         try {

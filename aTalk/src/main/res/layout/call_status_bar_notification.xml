@@ -79,7 +79,7 @@
             android:background="@color/status_bar_button"
             android:padding="2dp"
             android:scaleType="centerInside"
-            android:src="@drawable/call_speakerphone_off_dark" />
+            android:src="@drawable/call_receiver_on_dark" />
 
         <ImageButton
             android:id="@+id/button_mute"

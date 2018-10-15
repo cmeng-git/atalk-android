@@ -1144,10 +1144,13 @@
     <string name="service_gui_JBR_JINGLE_SUMMARY">Gunakan node jingle</string>
     <string name="service_gui_JBR_KEEP_ALIVE">Tetap hidup</string>
     <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Aktifkan opsi Keep Alive</string>
-    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Aktifkan jika mengalami pemutusan jaringan yang sering</string>
+    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Aktifkan jika mengalami pemutusan jaringan seluler yang sering</string>
     <string name="service_gui_JBR_OVERRIDE_SERVER">Ganti opsi default server</string>
     <string name="service_gui_JBR_PASSWORD">Masukkan Kata Sandi</string>
     <string name="service_gui_JBR_PING_INTERVAL">Interval Ping (1~3600 detik)</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ENABLE">Lakukan optimasi interval ping untuk koneksi jaringan seluler</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_OFF_SUMMARY">Jangan melakukan optimasi interval ping untuk koneksi jaringan seluler</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ON_SUMMARY">Lakukan optimasi interval ping untuk koneksi jaringan seluler</string>
     <string name="service_gui_JBR_PORT">Server Port</string>
     <string name="service_gui_JBR_PRIORITY">Prioritas (rentang: -128~127)</string>
     <string name="service_gui_JBR_RES_AUTO_GEN">Menghasilkan sumber daya otomatis</string>

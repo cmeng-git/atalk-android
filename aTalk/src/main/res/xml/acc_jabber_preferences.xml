@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res/org.atalk.android">
+    xmlns:custom="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
         android:key="@string/pref_cat_account"
         android:title="@string/service_gui_JBR_USER_CATEGORY">
@@ -60,11 +60,16 @@
                     android:summary="@string/service_gui_JBR_KEEP_ALIVE_SUMMARY"
                     android:title="@string/service_gui_JBR_KEEP_ALIVE_ENABLE" />
                 <EditTextPreference
-                    android:defaultValue="1800"
+                    android:defaultValue="240"
                     android:dependency="@string/pref_key_is_keep_alive_enable"
                     android:inputType="number"
                     android:key="@string/pref_key_ping_interval"
                     android:title="@string/service_gui_JBR_PING_INTERVAL" />
+                <CheckBoxPreference
+                    android:key="@string/pref_key_ping_auto_tune_enable"
+                    android:title="@string/service_gui_JBR_PING_INTERVAL_TUNE_ENABLE"
+                    android:summaryOff="@string/service_gui_JBR_PING_INTERVAL_TUNE_OFF_SUMMARY"
+                    android:summaryOn="@string/service_gui_JBR_PING_INTERVAL_TUNE_ON_SUMMARY" />
                 <CheckBoxPreference
                     android:key="@string/pref_key_is_server_overridden"
                     android:title="@string/service_gui_JBR_OVERRIDE_SERVER" />

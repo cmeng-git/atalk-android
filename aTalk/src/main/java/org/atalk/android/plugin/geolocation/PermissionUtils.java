@@ -59,8 +59,7 @@ public abstract class PermissionUtils
      *
      * @see android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback
      */
-    public static boolean isPermissionGranted(String[] grantPermissions, int[] grantResults,
-            String permission)
+    public static boolean isPermissionGranted(String[] grantPermissions, int[] grantResults, String permission)
     {
         for (int i = 0; i < grantPermissions.length; i++) {
             if (permission.equals(grantPermissions[i])) {
@@ -77,7 +76,6 @@ public abstract class PermissionUtils
     {
 
         private static final String ARGUMENT_FINISH_ACTIVITY = "finish";
-
         private boolean mFinishActivity = false;
 
         /**
@@ -117,8 +115,7 @@ public abstract class PermissionUtils
     }
 
     /**
-     * A dialog that explains the use of the location permission and requests the necessary
-     * permission.
+     * A dialog that explains the use of the location permission and requests the necessary permission.
      * <p>
      * The activity should implement
      * {@link android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback}
@@ -132,16 +129,13 @@ public abstract class PermissionUtils
         private boolean mFinishActivity = false;
 
         /**
-         * Creates a new instance of a dialog displaying the rationale for the use of the location
-         * permission.
+         * Creates a new instance of a dialog displaying the rationale for the use of the location permission.
          * <p>
          * The permission is requested after clicking 'ok'.
          *
-         * @param requestCode Id of the request that is used to request the permission. It is
-         * returned to the
+         * @param requestCode Id of the request that is used to request the permission. It is returned to the
          * {@link android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback}.
-         * @param finishActivity Whether the calling Activity should be finished if the dialog is
-         * cancelled.
+         * @param finishActivity Whether the calling Activity should be finished if the dialog is cancelled.
          */
         public static RationaleDialog newInstance(int requestCode, boolean finishActivity)
         {

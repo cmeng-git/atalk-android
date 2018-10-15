@@ -113,7 +113,7 @@ class CtrlNotificationThread
             boolean isSpeakerphoneOn = aTalkApp.getAudioManager().isSpeakerphoneOn();
             notification.contentView.setImageViewResource(R.id.button_speakerphone, isSpeakerphoneOn
                     ? R.drawable.call_speakerphone_on_dark
-                    : R.drawable.call_speakerphone_off_dark);
+                    : R.drawable.call_receiver_on_dark);
 
             // Update notification call mute status
             boolean isMute = CallManager.isMute(call);

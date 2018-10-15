@@ -8,9 +8,7 @@ package org.atalk.android.gui.call;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ImageView;
 
 import org.atalk.android.R;
@@ -25,7 +23,7 @@ import org.jivesoftware.smackx.avatar.AvatarManager;
  *
  * @author Pawel Domas
  */
-public class CallEnded extends OSGiFragment
+public class CallEnded extends OSGiFragment implements View.OnClickListener
 {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -46,30 +44,23 @@ public class CallEnded extends OSGiFragment
             ViewUtil.ensureVisible(v, R.id.callErrorReason, false);
         }
 
-        View.OnClickListener onClickAction = onActionListener();
-        v.findViewById(R.id.button_call_hangup).setOnClickListener(onClickAction);
-        v.findViewById(R.id.button_call_back_to_chat).setOnClickListener(onClickAction);
+        v.findViewById(R.id.button_call_hangup).setOnClickListener(this);
+        v.findViewById(R.id.button_call_back_to_chat).setOnClickListener(this);
         return v;
     }
 
     /**
-     * Handles buttons action events.
-     * the <tt>ActionEvent</tt> that notified us
+     * Handles buttons action events. the <tt>ActionEvent</tt> that notified us
      */
-    protected View.OnClickListener onActionListener()
+    @Override
+    public void onClick(View v)
     {
-        return new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                switch (v.getId()) {
-                    case R.id.button_call_hangup:
-                    case R.id.button_call_back_to_chat:
-                        FragmentActivity ctx = getActivity();
-                        ctx.finish();
-                        ctx.startActivity(aTalkApp.getHomeIntent());
-                }
-            }
-        };
+        switch (v.getId()) {
+            case R.id.button_call_hangup:
+            case R.id.button_call_back_to_chat:
+                FragmentActivity ctx = getActivity();
+                ctx.finish();
+                ctx.startActivity(aTalkApp.getHomeIntent());
+        }
     }
 }

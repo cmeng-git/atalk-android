@@ -561,31 +561,6 @@ public class IBRCaptchaProcessDialog extends Dialog
             });
         }
 
-        /**
-         * Implements <tt>reconnectingIn</tt> from <tt>ConnectionListener</tt>
-         *
-         * @param i delay in seconds for reconnection.
-         */
-        public void reconnectingIn(int i)
-        {
-        }
-
-        /**
-         * Implements <tt>reconnectingIn</tt> from <tt>ConnectionListener</tt>
-         */
-        public void reconnectionSuccessful()
-        {
-        }
-
-        /**
-         * Implements <tt>reconnectionFailed</tt> from <tt>ConnectionListener</tt>.
-         *
-         * @param exception description of the failure
-         */
-        public void reconnectionFailed(Exception exception)
-        {
-        }
-
         @Override
         public void connected(XMPPConnection connection)
         {
