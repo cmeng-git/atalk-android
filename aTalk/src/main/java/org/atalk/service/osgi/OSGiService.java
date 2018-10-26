@@ -33,7 +33,7 @@ public class OSGiService extends Service
     /**
      * The ID of Jitsi notification icon
      */
-    private static int GENERAL_NOTIFICATION_ID = R.string.app_name;
+    private static int GENERAL_NOTIFICATION_ID = R.string.APPLICATION_NAME;
 
     /**
      * Indicates that Jitsi is running in foreground mode and it's icon is constantly displayed.
@@ -149,7 +149,7 @@ public class OSGiService extends Service
         PendingIntent pendIntent = aTalkApp.getAtalkIconIntent();
 
         Resources res = getResources();
-        String title = res.getString(R.string.app_name);
+        String title = res.getString(R.string.APPLICATION_NAME);
 
         NotificationCompat.Builder nBuilder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -204,5 +204,4 @@ public class OSGiService extends Service
         Security.insertProviderAt(new org.bouncycastle.jce.provider.BouncyCastleProvider(), 1);
 
     }
-
 }

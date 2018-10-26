@@ -398,11 +398,9 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
-     * Returns the UID of the message that this message replaces, or <tt>null</tt> if this is a
-     * new message.
+     * Returns the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
      *
-     * @return the UID of the message that this message replaces, or <tt>null</tt> if this is a
-     * new message.
+     * @return the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
      */
     public String getCorrectedMessageUID()
     {
@@ -413,8 +411,7 @@ public class ChatMessageImpl implements ChatMessage
      * Indicates if given <tt>nextMsg</tt> is a consecutive message.
      *
      * @param nextMsg the next message to check
-     * @return <tt>true</tt> if the given message is a consecutive message, <tt>false</tt> -
-     * otherwise
+     * @return <tt>true</tt> if the given message is a consecutive message, <tt>false</tt> - otherwise
      */
     public boolean isConsecutiveMessage(ChatMessage nextMsg)
     {

@@ -2,6 +2,7 @@ package org.atalk.android;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -9,7 +10,6 @@ import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;
 
 import org.atalk.persistance.FileBackend;
-import org.atalk.util.StringUtils;
 
 import java.io.File;
 
@@ -57,7 +57,7 @@ public class MyGlideApp extends AppGlideModule
         String mimeType = FileBackend.getMimeType(ctx, uri);
 
         // mimeType is null if file contains no ext on old android or else "application/octet-stream"
-        if (StringUtils.isNullOrEmpty(mimeType)) {
+        if (TextUtils.isEmpty(mimeType)) {
             Log.e(TAG, "File mimeType is null: " + file.getPath());
             return false;
         }

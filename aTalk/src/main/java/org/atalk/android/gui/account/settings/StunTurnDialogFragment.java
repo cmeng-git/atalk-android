@@ -133,7 +133,6 @@ public class StunTurnDialogFragment extends DialogFragment
                 }
             }
         });
-
         return dialog;
     }
 

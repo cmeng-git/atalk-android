@@ -12,6 +12,7 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'org.anarres.jarjar' // jarjar.repackage tool
+// apply from: './preprocessor.gradle'
 
 repositories {
     jcenter()
@@ -31,13 +32,16 @@ repositories {
 }
 
 configurations {
+    fdroidImplementation
+    playstoreImplementation
+
     jarjar2
 
     // conflict with android internal classes
-    all*.exclude group:'org.apache.httpcomponents', module:'httpclient'
-    all*.exclude group:'xpp3', module:'xpp3'
+    all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    all*.exclude group: 'xpp3', module: 'xpp3'
 
-    all*.exclude group:'org.minidns', module:'minidns-core'
+    all*.exclude group: 'org.minidns', module: 'minidns-core'
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
 }
@@ -48,12 +52,23 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1056
-        versionName "1.5.6" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1060
+        versionName "1.6.0" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true
+    }
+
+    flavorDimensions("distribution")
+    productFlavors {
+        playstore {
+            dimension "distribution"
+        }
+
+        fdroid {
+            dimension "distribution"
+        }
     }
 
     signingConfigs {
@@ -72,18 +87,18 @@ android {
 
     buildTypes {
         release {
+            // cannot enable for aTalk string resource as not all are per android style
             shrinkResources false
-            minifyEnabled false  // too many missing reference when enable
+            // too many missing references when enable
+            minifyEnabled false
             // useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            buildConfigField "boolean", "DEVELOPER_MODE", "false"
         }
 
         debug {
             debuggable true
             minifyEnabled false
-            buildConfigField "boolean", "DEVELOPER_MODE", "true"
         }
     }
 
@@ -108,6 +123,7 @@ android {
     lintOptions {
         abortOnError false
         lintConfig file("lint.xml")
+        // disable 'MissingTranslation', 'InvalidPackage', 'MissingQuantity', 'AppCompatResource'
     }
 
     packagingOptions {
@@ -128,9 +144,6 @@ ext {
 
 dependencies {
     jarjar2 'com.googlecode.jarjar:jarjar:1.3'
-
-    implementation project(':plugins:ews-android-api')
-    implementation project(':plugins:easylocation')
 
     // Java implementation dependency: ndkBuild & jarRepackage (avoid class conflict)
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
@@ -222,9 +235,10 @@ dependencies {
 
     implementation 'org.jetbrains:annotations-java5:15.0'
     implementation 'org.osgi:osgi.core:7.0.0'
-    implementation "com.google.android.gms:play-services-location:${rootProject.gmsPlayServicesVersion}"
-    implementation "com.google.android.gms:play-services-maps:${rootProject.gmsPlayServicesVersion}"
-    implementation "com.google.android.gms:play-services-panorama:${rootProject.gmsPlayServicesVersion}"
+
+    playstoreImplementation "com.google.android.gms:play-services-location:${rootProject.gmsPlayServicesVersion}"
+    playstoreImplementation "com.google.android.gms:play-services-maps:${rootProject.gmsPlayServicesVersion}"
+    playstoreImplementation "com.google.android.gms:play-services-panorama:${rootProject.gmsPlayServicesVersion}"
 }
 
 task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {

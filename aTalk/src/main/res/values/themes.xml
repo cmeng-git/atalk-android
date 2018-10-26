@@ -9,7 +9,7 @@
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionOverflowButtonStyle">@style/actionOverflowButtonStyle</item>
         <item name="android:actionBarSize">@dimen/actionbar_height</item>
-
+        <item name="android:textColor">@color/color_text_dark</item>
         <!--item name="android:windowBackground">@color/theme_background</item-->
         <!--
         <item name="colorPrimary">@color/color_primary</item>
@@ -76,7 +76,7 @@
 
     <style name="Theme.App.Dark.Common" parent="Theme.App.Dark.Base">
         <item name="color_text_primary">@color/white</item>
-        <item name="color_text_secondary">@color/white70</item>
+        <item name="color_text_secondary">@color/color_text_dark</item>
 
         <item name="color_background_primary">@color/grey800</item>
         <item name="color_background_secondary">@color/grey900</item>

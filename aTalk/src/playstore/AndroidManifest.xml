@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.atalk.android"
+          android:installLocation="internalOnly">
+
+
+    <application
+        android:name="org.atalk.android.aTalkApp"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_logo"
+        android:label="@string/APPLICATION_NAME"
+        android:logo="@drawable/ic_notification"
+        android:networkSecurityConfig="@xml/network_security_configuration"
+        android:theme="@style/Theme.App">
+
+    <!--
+          The API key for Google Maps-based APIs is defined as a string resource.
+          (See the file "res/values/google_maps_api.xml").
+          Note that the API key is linked to the encryption key used to sign the APK.
+          You need a different API key for each encryption key, including the release key
+          that is used to sign the APK for publishing.
+          You can define the keys for the debug and release targets in src/debug/ and src/release/.
+     -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
+
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+         App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
+        <service
+            android:name="com.akhgupta.easylocation.LocationBgService"
+            android:exported="false"/>
+
+    </application>
+
+</manifest>

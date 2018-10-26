@@ -22,8 +22,7 @@ public class AndroidConsoleHandler extends Handler
 	/**
 	 * Tag used for output(can be used to filter logcat).
 	 */
-	private final static String TAG
-			= aTalkApp.getGlobalContext().getResources().getString(R.string.app_name);
+	private final static String TAG = aTalkApp.getResString(R.string.APPLICATION_NAME);
 
 	/**
 	 * Property indicates whether logger should translate logging levels to logcat levels.

@@ -650,7 +650,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 String message;
                 List<String> propNames = new LinkedList<>();
                 List<String> storedCerts = new LinkedList<>();
-                String appName = aTalkApp.getResString(R.string.service_gui_APPLICATION_NAME);
+                String appName = aTalkApp.getResString(R.string.APPLICATION_NAME);
 
                 if ((identitiesToTest == null) || !identitiesToTest.iterator().hasNext()) {
                     String propName = PNAME_CERT_TRUST_PREFIX + CERT_TRUST_SERVER_SUBFIX + thumbprint;
@@ -695,8 +695,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 if (!storedCerts.contains(thumbprint)) {
                     switch (verify(chain, message)) {
                         case DO_NOT_TRUST:
-                            logger.info("Untrusted certificate", e);
-                            throw new CertificateException("The peer provided certificate with Subject <"
+                            throw new CertificateException("Peer provided certificate with Subject <"
                                     + chain[0].getSubjectDN() + "> is not trusted", e);
                         case TRUST_ALWAYS:
                             for (String propName : propNames) {

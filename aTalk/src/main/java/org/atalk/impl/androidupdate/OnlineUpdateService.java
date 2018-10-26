@@ -95,7 +95,7 @@ public class OnlineUpdateService extends IntentService {
                 nBuilder.setWhen(System.currentTimeMillis());
                 nBuilder.setAutoCancel(true);
                 nBuilder.setTicker(msgString);
-                nBuilder.setContentTitle(getString(R.string.app_name));
+                nBuilder.setContentTitle(getString(R.string.APPLICATION_NAME));
                 nBuilder.setContentText(msgString);
 
                 Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);

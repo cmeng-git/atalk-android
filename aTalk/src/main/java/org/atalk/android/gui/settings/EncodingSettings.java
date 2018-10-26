@@ -9,8 +9,8 @@ import android.R;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-import org.atalk.android.gui.account.settings.EncodingActivity;
-import org.atalk.android.gui.account.settings.EncodingsFragment;
+import org.atalk.android.gui.account.settings.MediaEncodingActivity;
+import org.atalk.android.gui.account.settings.MediaEncodingsFragment;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.service.neomedia.MediaType;
@@ -29,7 +29,7 @@ public class EncodingSettings extends OSGiActivity
     public static final String EXTRA_MEDIA_TYPE = "media_type";
     public static final String MEDIA_TYPE_AUDIO = "media_type.AUDIO";
     public static final String MEDIA_TYPE_VIDEO = "media_type.VIDEO";
-    private EncodingsFragment encodingsFragment;
+    private MediaEncodingsFragment encodingsFragment;
     private MediaType mediaType;
 
     @Override
@@ -49,16 +49,16 @@ public class EncodingSettings extends OSGiActivity
             if (mediaSrvc != null) {
                 EncodingConfiguration encConfig = mediaSrvc.getCurrentEncodingConfiguration();
 
-                List<MediaFormat> formats = EncodingActivity.getEncodings(encConfig, mediaType);
-                List<String> encodings = EncodingActivity.getEncodingsStr(formats.iterator());
-                List<Integer> priorities = EncodingActivity.getPriorities(formats, encConfig);
+                List<MediaFormat> formats = MediaEncodingActivity.getEncodings(encConfig, mediaType);
+                List<String> encodings = MediaEncodingActivity.getEncodingsStr(formats.iterator());
+                List<Integer> priorities = MediaEncodingActivity.getPriorities(formats, encConfig);
 
-                this.encodingsFragment = EncodingsFragment.newInstance(encodings, priorities);
+                this.encodingsFragment = MediaEncodingsFragment.newInstance(encodings, priorities);
                 getFragmentManager().beginTransaction().add(R.id.content, encodingsFragment).commit();
             }
         }
         else {
-            this.encodingsFragment = (EncodingsFragment) getFragmentManager().findFragmentById(R.id.content);
+            this.encodingsFragment = (MediaEncodingsFragment) getFragmentManager().findFragmentById(R.id.content);
         }
     }
 
@@ -71,7 +71,7 @@ public class EncodingSettings extends OSGiActivity
         MediaServiceImpl mediaSrvc = NeomediaActivator.getMediaServiceImpl();
 
         if ((keyCode == KeyEvent.KEYCODE_BACK) && (mediaSrvc != null)) {
-            EncodingActivity.commitPriorities(
+            MediaEncodingActivity.commitPriorities(
                     NeomediaActivator.getMediaServiceImpl().getCurrentEncodingConfiguration(),
                     mediaType, encodingsFragment);
             finish();

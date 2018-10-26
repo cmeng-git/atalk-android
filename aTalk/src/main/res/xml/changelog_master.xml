@@ -6,6 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.6.0 (10/26/2018)" versioncode="1060">
+        <change>Built target for Android 9.0 (Pie) or API-28</change>
+        <change>Improve X509 certificate display layout and information</change>
+        <change>Fix StreetViews &amp; Map playback stop after screen rotation</change>
+        <change>Proper handling of up/home navigation and ensure all setting changes are saved to persistent database</change>
+        <change>Incoming file transfer request not working when Send file thumbnail preview is disable</change>
+        <change>Add product flavors to support both PlayStore and F-Droid releases</change>
+        <change>GPS-Location feature is not available in F-Droid release</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.5.6 (10/16/2018)" versioncode="1056">
         <change>Implement Ping Interval auto-tune optimization to avoid mobile network closed by ISP when idle</change>
         <change>Upgrade UCrop to v2.2.2 - to fix image file pick error</change>

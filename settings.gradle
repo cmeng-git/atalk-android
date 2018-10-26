@@ -1,3 +1,1 @@
 include ':aTalk'
-include ':plugins:ews-android-api'
-include ':plugins:easylocation'

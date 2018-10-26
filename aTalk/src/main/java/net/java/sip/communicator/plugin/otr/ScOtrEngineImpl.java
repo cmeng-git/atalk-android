@@ -146,12 +146,12 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
                         if (!OtrActivator.getMessageHistoryService().isHistoryLoggingEnabled()
                                 || !isHistoryLoggingEnabled(contact)) {
                             otrAndHistoryMessage = aTalkApp.getResString(R.string.plugin_otr_activator_historyoff,
-                                    aTalkApp.getResString(R.string.service_gui_APPLICATION_NAME),
+                                    aTalkApp.getResString(R.string.APPLICATION_NAME),
                                     this.getClass().getName(), "showHistoryPopupMenu");
                         }
                         else {
                             otrAndHistoryMessage = aTalkApp.getResString(R.string.plugin_otr_activator_historyon,
-                                    aTalkApp.getResString(R.string.service_gui_APPLICATION_NAME),
+                                    aTalkApp.getResString(R.string.APPLICATION_NAME),
                                     this.getClass().getName(), "showHistoryPopupMenu");
                         }
                         OtrActivator.uiService.getChat(contact).addMessage(sender, new Date(),

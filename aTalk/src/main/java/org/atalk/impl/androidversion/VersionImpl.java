@@ -23,7 +23,7 @@ public class VersionImpl extends AbstractVersion
     /**
      * Default application name.
      */
-    private static final String DEFAULT_APPLICATION_NAME = aTalkApp.getResString(R.string.service_gui_APPLICATION_NAME);
+    private static final String DEFAULT_APPLICATION_NAME = aTalkApp.getResString(R.string.APPLICATION_NAME);
 
     /**
      * The name of this application.

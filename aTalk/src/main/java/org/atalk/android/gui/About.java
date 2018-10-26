@@ -52,7 +52,6 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"commons-lang", "http://commons.apache.org/proper/commons-lang/"},
             new String[]{"Dexter", "https://github.com/Karumi/Dexter"},
             new String[]{"dhcp4java", "https://github.com/ggrandes-clones/dhcp4java"},
-            new String[]{"ews-android-api", "https://github.com/alipov/ews-android-api"},
             new String[]{"FFmpeg", "https://github.com/FFmpeg/FFmpeg"},
             new String[]{"glide", "https://github.com/bumptech/glide"},
             new String[]{"Google Play Services", "https://developers.google.com/android/guides/overview"},

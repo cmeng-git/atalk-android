@@ -281,11 +281,14 @@ public class SettingsActivity extends OSGiActivity
          */
         private void initMessagesPreferences()
         {
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_LOG_CHAT_HISTORY,
-                    AndroidGUIActivator.getMessageHistoryService().isHistoryLoggingEnabled());
+            // mhs may be null if user access settings before the mhs service is properly setup
+            MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
+            boolean isHistoryLoggingEnabled = (mhs != null) && mhs.isHistoryLoggingEnabled();
+            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_LOG_CHAT_HISTORY, isHistoryLoggingEnabled);
 
             PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_SHOW_HISTORY, ConfigurationUtils.isHistoryShown());
 
+            // Updates displayed history size summary.
             EditTextPreference historySizePref = (EditTextPreference) findPreference(P_KEY_HISTORY_SIZE);
             historySizePref.setText("" + ConfigurationUtils.getChatHistorySize());
             updateHistorySizeSummary();

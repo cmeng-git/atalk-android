@@ -25,7 +25,6 @@
 -->
 
 <resources>
-    <string name="app_name">aTalk</string>
     <string name="accept_call_video">Per Video annehmen</string>
     <string name="account_setup_basics_show_password">Passwort anzeigen</string>
     <string name="account_override_server">Servereinstellungen setzen</string>
@@ -904,7 +903,7 @@
     <string name="plugin_otr_activator_unreadablemsgreceived">%1$s hat Ihnen eine unlesbare verschlüsselte Nachricht gesendet.</string>
     <string name="plugin_otr_activator_unreadablemsgreply">Sie haben%1$s eine unlesbare verschlüsselte Nachricht gesendet. Bitte beenden Sie Ihre private Konversation mit %2$s oder aktualisieren Sie sie.</string>
     <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Nicht bestätigter&lt;/b>privater Nachrichtenaustausch mit %1$s wurde gestartet.</string>
-    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s wurde noch nicht authentifiziert. Sie sollten diesen Chatpartner&lt;a href="atalk://%2$s/%3$s?%4$s">&lt;b>authentifizieren&lt;/b>&lt;/a></string>
+    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s wurde noch nicht authentifiziert. Sie sollten diesen Chatpartner&lt;a href="atalk://%2$s/%3$s?%4$s">&lt;br/>authentifizieren&lt;br/>&lt;/a></string>
 
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">Einfacher Text</string>
@@ -983,10 +982,10 @@
     <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">DNS-Antwort für %1$s ist unverschlüsselt.</string>
     <string name="util_dns_INSECURE_ANSWER_MESSAGE_REASON">DNS-Antwort für %1$s ist unverschlüsselt.\n Grund: %2$s</string>
     <string name="util_dns_DNSSEC_ADVANCED_OPTIONS">Erweiterte Optionen anzeigen</string>
-    <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>Die von DNSSEC signierte Zone %1$s hat ungültige Daten zurückgegeben.&lt;br>%2$s&lt;/html></string>
+    <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>Die von DNSSEC signierte Zone %1$s hat ungültige Daten zurückgegeben.&lt;br/>%2$s&lt;/html></string>
     <string name="util_dns_DNSSEC_ADVANCED_REASON_UNSIGNED">%1$s-Abfrage für %2$s ist unsigniert.</string>
-    <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s hat versucht,eine Verbindung zum Server &lt;b>%2$s&lt;&lt;/b>herzustellen. Diese Domain ist mit DNSSEC geschützt. Die Information, die %1$s vom DNS-Server erhalten hat entspricht nicht den Informationen, die DNSSEC über diese Domain bereitstellt.&lt;br>&lt;br>&lt;b>
-        Dies sollte normalerweise nicht passieren, es sei denn Seitens %2$s wurde ein schwerwiegender Fehler begangen. Es ist daher ein starkes Anzeichen dafür, dass etwas in Bezug auf die Vertrauenswürdigkeit Ihrer Netzwerkverbindung nicht stimmt.&lt;/b>&lt;br>&lt;br>
+    <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s hat versucht,eine Verbindung zum Server &lt;b>%2$s&lt;&lt;/b>herzustellen. Diese Domain ist mit DNSSEC geschützt. Die Information, die %1$s vom DNS-Server erhalten hat entspricht nicht den Informationen, die DNSSEC über diese Domain bereitstellt.&lt;br/>&lt;br/>&lt;br/>
+        Dies sollte normalerweise nicht passieren, es sei denn Seitens %2$s wurde ein schwerwiegender Fehler begangen. Es ist daher ein starkes Anzeichen dafür, dass etwas in Bezug auf die Vertrauenswürdigkeit Ihrer Netzwerkverbindung nicht stimmt.&lt;br/>&lt;br/>&lt;br/>
         &lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
@@ -1167,7 +1166,7 @@
     <string name="service_gui_NOT_IN_CALLGROUP">%1$s gehört nicht zur definierten Anrufgruppe</string>
     <string name="service_gui_NO_JINGLE_SUPPORT">%1$s\nunterstützt kein Jingle-Protokoll</string>
     <string name="recipient_error_parse_failed">Fehler beim Parsen der Adresse!</string>
-    <string name="unknown_recipient"><![CDATA[<Unbekannter Empfänger>]]></string>
+    <string name="unknown_recipient">&lt;![CDATA[&lt;Unbekannter Empfänger>]></string>
 
     <!-- General settings -->
     <string name="service_gui_settings_DISABLED_STR">Deaktiviert</string>
@@ -1197,7 +1196,7 @@
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Am-Schreiben...-Benachrichtigungen aktivieren</string>
 
     <!-- Enable option to send thumnail preview for image file sending -->
-    <string name="service_gui_settings_SEND_THUMBNAIL">Dateivorschau senden</string>
+    <string name="service_gui_settings_THUMBNAIL_OPTION">Miniaturvorschau senden/empfangen</string>
 
     <!-- Auto accept downloadable max file size -->
     <string name="service_gui_settings_ACCEPT_FILE">Akzeptieren Sie automatisch die maximale Dateigröße</string>
@@ -1476,4 +1475,9 @@
     <string name="permission_rationale_settings_button_text">EINSTELLUNGEN</string>
     <string name="permission_rationale_title">aTalk benötigt Berechtigungen</string>
 
+	<!--Location string constant -->
+    <string name="location_permission_dialog_title">Standortgenehmigung erforderlich</string>
+    <string name="location_permission_dialog_message">Jetzt Standortberechtigung aktivieren?</string>
+    <string name="location_services_off">Standortdienste AUS</string>
+    <string name="open_location_settings">Standortdienste jetzt aktivieren?</string>
 </resources>

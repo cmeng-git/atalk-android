@@ -43,7 +43,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:padding="5sp"
-                        android:text="@string/app_name"
+                        android:text="@string/APPLICATION_NAME"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 

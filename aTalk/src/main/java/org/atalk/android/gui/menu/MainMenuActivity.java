@@ -35,8 +35,7 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
+import org.atalk.android.*;
 import org.atalk.android.gui.About;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AccountsListActivity;
@@ -48,7 +47,6 @@ import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.ActionBarUtil;
 import org.atalk.android.plugin.geolocation.GeoLocation;
-import org.atalk.impl.androidtray.NotificationHelper;
 import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.*;
@@ -58,7 +56,7 @@ import java.util.*;
 /**
  * The main options menu. Every <tt>Activity</tt> that desires to have the general options menu
  * shown have to extend this class.
- * <p>
+ *
  * The <tt>MainMenuActivity</tt> is an <tt>OSGiActivity</tt>.
  *
  * @author Eng Chong Meng
@@ -129,8 +127,7 @@ public class MainMenuActivity extends ExitMenuActivity
     }
 
     /**
-     * Invoked when the options menu is created. Creates our own options menu from the
-     * corresponding xml.
+     * Invoked when the options menu is created. Creates our own options menu from the corresponding xml.
      *
      * @param menu the options menu
      */
@@ -139,6 +136,10 @@ public class MainMenuActivity extends ExitMenuActivity
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+
+        if (BuildConfig.FLAVOR.equals("fdroid") && (menu.findItem(R.id.show_location) != null)) {
+            menu.removeItem(R.id.show_location);
+        }
 
         this.videoBridgeMenuItem = menu.findItem(R.id.create_videobridge);
         /* Need this on first start up */
@@ -325,9 +326,11 @@ public class MainMenuActivity extends ExitMenuActivity
                 getSupportFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
                 break;
             case R.id.show_location:
-                Intent intent = new Intent(this, GeoLocation.class);
-                intent.putExtra(GeoLocation.SEND_LOCATION, false);
-                startActivity(intent);
+                if (!BuildConfig.FLAVOR.equals("fdroid")) {
+                    Intent intent = new Intent(this, GeoLocation.class);
+                    intent.putExtra(GeoLocation.SEND_LOCATION, false);
+                    startActivity(intent);
+                }
                 break;
             case R.id.main_settings:
                 startActivity(SettingsActivity.class);

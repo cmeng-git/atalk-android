@@ -1809,7 +1809,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
          * The CapsExtension reply to be included in the caps <Identity/>
          */
         String category = "client";
-        String appName = aTalkApp.getGlobalContext().getResources().getString(R.string.app_name);
+        String appName = aTalkApp.getResString(R.string.APPLICATION_NAME);
         String type = "android";
 
         DiscoverInfo.Identity identity = new DiscoverInfo.Identity(category, appName, type);
@@ -2575,14 +2575,16 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     public EntityFullJid getOurJID()
     {
-        EntityFullJid jid = null;
+        EntityFullJid fullJid = null;
         if (mConnection != null) {
-            jid = mConnection.getUser();
+            fullJid = mConnection.getUser();
         }
         else {
-            jid = JidCreate.fullFrom(mAccountID.getBareJid().asEntityBareJidIfPossible(), mResource);
+            // mResource can be null if user is not registered, so use default
+            loadResource();
+            fullJid = JidCreate.fullFrom(mAccountID.getBareJid().asEntityBareJidIfPossible(), mResource);
         }
-        return jid;
+        return fullJid;
     }
 
     /**

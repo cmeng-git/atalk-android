@@ -6,14 +6,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import net.java.sip.communicator.util.Logger;
 
 import org.apache.commons.io.IOUtils;
-import org.atalk.android.aTalkApp;
-import org.atalk.util.StringUtils;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -86,7 +85,7 @@ public class FileBackend
             throws IllegalArgumentException, SecurityException, IOException
     {
         // ensure source exists
-        if ((srcPath == null ) || !srcPath.exists()) {
+        if ((srcPath == null) || !srcPath.exists()) {
             throw new FileNotFoundException("Source Path not found: " + srcPath);
         }
 
@@ -183,7 +182,7 @@ public class FileBackend
     public static File getaTalkStore(String subFolder)
     {
         String filePath = FP_aTALK;
-        if (!StringUtils.isNullOrEmpty(subFolder))
+        if (!TextUtils.isEmpty(subFolder))
             filePath += File.separator + subFolder;
 
         File atalkDLDir

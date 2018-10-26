@@ -59,11 +59,12 @@ public class AvatarCacheFile implements AvatarCache
 	public void addAvatarByHash(String id, byte[] data)
 	{
 		File file = new File(mStoreDir, id);
-
 		OutputStream os = null;
 		try {
 			os = new BufferedOutputStream(new FileOutputStream(file));
-			os.write(data);
+			// os == null if storage permission in not granted
+			if (os != null)
+    			os.write(data);
 		}
 		catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to write photo avatar to file", e);

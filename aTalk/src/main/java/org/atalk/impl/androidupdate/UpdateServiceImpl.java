@@ -129,7 +129,7 @@ public class UpdateServiceImpl implements UpdateService
             AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
                     aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_TITLE),
                     aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_MESSAGE,
-                            latestVersion, Integer.toString(latestVersionCode), aTalkApp.getResString(R.string.app_name)),
+                            latestVersion, Integer.toString(latestVersionCode), aTalkApp.getResString(R.string.APPLICATION_NAME)),
                     aTalkApp.getResString(R.string.plugin_updatechecker_BUTTON_DOWNLOAD),
                     new DialogActivity.DialogListener()
                     {

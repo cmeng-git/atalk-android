@@ -30,7 +30,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.ProgressDialogFragment;
-import org.atalk.android.gui.account.settings.AccountPreferencesActivity;
+import org.atalk.android.gui.account.settings.AccountPreferenceActivity;
 import org.atalk.android.gui.contactlist.AddGroupDialog;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidUtils;
@@ -197,7 +197,7 @@ public class AccountsListActivity extends OSGiActivity
             return true;
         }
         else if (id == R.id.account_settings) {
-            Intent preferences = AccountPreferencesActivity.getIntent(this, clickedAccount.getAccountID());
+            Intent preferences = AccountPreferenceActivity.getIntent(this, clickedAccount.getAccountID());
             startActivity(preferences);
             return true;
         }

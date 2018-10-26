@@ -30,7 +30,7 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.account.settings.AccountPreferencesActivity;
+import org.atalk.android.gui.account.settings.AccountPreferenceActivity;
 import org.atalk.android.gui.contactlist.ContactInfoActivity;
 import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.event.EventListener;
@@ -1129,7 +1129,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             return true;
         }
         else if (id == R.id.account_settings) {
-            Intent preferences = AccountPreferencesActivity.getIntent(this, mAccount.getAccountID());
+            Intent preferences = AccountPreferenceActivity.getIntent(this, mAccount.getAccountID());
             startActivity(preferences);
             return true;
         }

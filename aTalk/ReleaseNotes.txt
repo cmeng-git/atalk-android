@@ -1,5 +1,21 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.6.0 (1060)
+Author:         cmeng
+Upload Date:	10/26/2018
+- Built target for Android 9.0 (Pie) or API-28
+- Apps targeting API Build.VERSION_CODES.P or later must request the permission Manifest.permission.FOREGROUND_SERVICE
+- Remove aTalk dependency on plugins:ews-android-api and its library source
+  i.e. X509CertificateForm code rewrite and reuse in CertificateShowDialog
+- Fix exception when MessageHistoryService is not ready in Settings menu
+- Fix NPE in SettingsFragment.initMessagesPreferences (SettingsActivity.java:285)
+- Incoming file transfer request not working when Send file thumbnail preview is disable
+- Fix GPS playback stop after screen rotation due to onPause is called before onSaveInstanceState
+- Implement Up navigator handler to ensure it returns to its previous screen if active. Otherwise account setting may not save to persistent database
+  i.e. override methods onOptionsItemSelected() in OSGiActivity and OSGiPreferenceActivity
+- Restructure whole source directory to support productFlavors build for playStore and F-Droid
+
+=========================================================================
 Version:		1.5.6 (1056)
 Author:         cmeng
 Upload Date:	10/16/2018

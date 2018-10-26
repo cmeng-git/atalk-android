@@ -18,7 +18,6 @@ package org.atalk.android.gui.chatroomslist;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -36,9 +35,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatSessionManager;
-import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.util.ComboBox;
 import org.jxmpp.util.XmppStringUtils;

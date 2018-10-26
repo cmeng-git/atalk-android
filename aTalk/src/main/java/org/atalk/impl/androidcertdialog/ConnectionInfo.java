@@ -20,7 +20,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.settings.X509CertificatePanel;
+import org.atalk.android.aTalkApp;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.StringUtils;
 
@@ -44,7 +44,7 @@ public class ConnectionInfo extends OSGiActivity
     /*
      * X509 SSL Certificate view on dialog window
      */
-    private X509CertificatePanel viewCertDialog;
+    private X509CertificateView viewCertDialog;
 
     private AlertDialog deleteDialog;
 
@@ -141,12 +141,16 @@ public class ConnectionInfo extends OSGiActivity
     public void showSslCertificate(int position)
     {
         ProtocolProviderServiceJabberImpl pps = (ProtocolProviderServiceJabberImpl) pProvidersAdapter.getItem(position);
-        OperationSetTLS opSetTLS = pps.getOperationSet(OperationSetTLS.class);
-        Certificate[] chain = opSetTLS.getServerCertificates();
+        if (pps.isRegistered()) {
+            OperationSetTLS opSetTLS = pps.getOperationSet(OperationSetTLS.class);
+            Certificate[] chain = opSetTLS.getServerCertificates();
 
-        if (chain != null) {
-            viewCertDialog = new X509CertificatePanel(this, chain);
-            viewCertDialog.show();
+            if (chain != null) {
+                viewCertDialog = new X509CertificateView(this, chain);
+                viewCertDialog.show();
+            }
+        } else {
+            aTalkApp.showToastMessage(R.string.service_gui_ACCOUNT_UNREGISTERED, pps.getOurJID());
         }
     }
 
