@@ -25,7 +25,7 @@ import org.atalk.service.osgi.OSGiActivity;
  * @author Eng Chong Meng
  */
 public class VerifyCertificateActivity extends OSGiActivity
-        implements CertificateInfoDialog.CertInfoDialogListener
+        implements CertificateShowDialog.CertInfoDialogListener
 {
     /**
      * The logger.
@@ -84,7 +84,7 @@ public class VerifyCertificateActivity extends OSGiActivity
      */
     public void onShowCertClicked(View v)
     {
-        CertificateInfoDialog.createFragment(requestId).show(getSupportFragmentManager(), "cert_info");
+        CertificateShowDialog.createFragment(requestId).show(getSupportFragmentManager(), "cert_info");
     }
 
     /**

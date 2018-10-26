@@ -10,6 +10,7 @@ import android.app.*;
 import android.content.*;
 import android.os.*;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -117,7 +118,6 @@ public class OSGiActivity extends FragmentActivity
 
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
-
             // Disable up arrow on home activity
             Class<?> homeActivity = aTalkApp.getHomeScreenActivityClass();
             if (this.getClass().equals(homeActivity)) {
@@ -368,17 +368,26 @@ public class OSGiActivity extends FragmentActivity
     }
 
     /**
-     * {@inheritDoc}
+     * Handler for home navigator. Use upIntent if parentActivityName defined. Otherwise execute onBackKeyPressed.
+     * Account setting must back to its previous menu (BackKey) to properly save changes
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Handle home action
         switch (item.getItemId()) {
             case android.R.id.home:
-                Class<?> homeActivity = aTalkApp.getHomeScreenActivityClass();
-                if (!this.getClass().equals(homeActivity)) {
-                    switchActivity(homeActivity);
+                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                if (upIntent != null) {
+                    logger.warn("Process UpIntent for: " + this.getLocalClassName());
+                    NavUtils.navigateUpTo(this, upIntent);
+                }
+                else {
+                    logger.warn("Replace Up with BackKeyPress for: " + this.getLocalClassName());
+                    super.onBackPressed();
+                    // Class<?> homeActivity = aTalkApp.getHomeScreenActivityClass();
+                    // if (!this.getClass().equals(homeActivity)) {
+                    //    switchActivity(homeActivity);
+                    // }
                 }
                 return true;
             default:
@@ -427,7 +436,6 @@ public class OSGiActivity extends FragmentActivity
 
     /**
      * Broadcast listener that listens for {@link aTalkApp#ACTION_EXIT} and then finishes this <tt>Activity</tt>
-     * .
      */
     class ExitActionListener extends BroadcastReceiver
     {

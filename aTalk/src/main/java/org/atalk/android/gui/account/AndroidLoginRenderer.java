@@ -276,7 +276,7 @@ public class AndroidLoginRenderer implements LoginRenderer
 		}
 
 		AndroidUtils.updateGeneralNotification(aTalkApp.getGlobalContext(), notificationID,
-				aTalkApp.getResString(R.string.app_name), status, System.currentTimeMillis());
+				aTalkApp.getResString(R.string.APPLICATION_NAME), status, System.currentTimeMillis());
 	}
 
 	/**

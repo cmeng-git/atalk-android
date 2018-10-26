@@ -351,15 +351,15 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                     jabberProvider, OperationSetFileTransferJabberImpl.this, jabberRequest);
 
 
-            // Request for the available thumbnail if auto accept file not allow
-            boolean isAutoAccept = (jabberRequest.getFileSize() <= ConfigurationUtils.getAutoAcceptFileSize());
-
             // Send thumbnail request if advertised in streamInitiation packet, not autoAccept and the feature is enabled
             ThumbnailIQ thumbnailRequest = null;
             org.jivesoftware.smackx.si.packet.StreamInitiation.File file = streamInitiation.getFile();
-            if ((file instanceof FileElement) && FileTransferConversation.FT_THUMBNAIL_ENABLE) {
+            if (file instanceof FileElement) {
+                // Proceed to request for the available thumbnail if auto accept file not permitted
+                boolean isAutoAccept = (jabberRequest.getFileSize() <= ConfigurationUtils.getAutoAcceptFileSize());
                 ThumbnailElement thumbnailElement = ((FileElement) file).getThumbnailElement();
-                if (!isAutoAccept && (thumbnailElement != null) && (thumbnailElement.getCid() != null)) {
+                if (!isAutoAccept && FileTransferConversation.FT_THUMBNAIL_ENABLE
+                        && (thumbnailElement != null) && (thumbnailElement.getCid() != null)) {
                     incomingFileTransferRequest.createThumbnailListeners(thumbnailElement.getCid());
                     thumbnailRequest = new ThumbnailIQ(streamInitiation.getTo(), streamInitiation.getFrom(),
                             thumbnailElement.getCid(), IQ.Type.get);

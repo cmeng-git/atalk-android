@@ -1,8 +1,18 @@
 /*
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
  *
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Distributable under LGPL license. See terms of license at gnu.org.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.atalk.android.gui.chat;
 
@@ -26,8 +36,6 @@ import android.view.*;
 import android.widget.*;
 import android.widget.LinearLayout.LayoutParams;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
@@ -45,7 +53,6 @@ import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.HtmlImageGetter;
 import org.atalk.android.gui.util.event.EventListener;
-import org.atalk.android.plugin.geolocation.SplitStreetViewPanoramaAndMapActivity;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.crypto.listener.CryptoModeChangeListener;
 import org.atalk.service.osgi.OSGiFragment;
@@ -184,7 +191,8 @@ public class ChatFragment extends OSGiFragment
     private FragmentActivity mFragmentActivity = null;
 
     private boolean mSVP_Started;
-    private SplitStreetViewPanoramaAndMapActivity mSVP = null;
+    private Object mSVP = null;
+    private SvpApiImpl svpApi = null;
 
     /**
      * {@inheritDoc}
@@ -323,6 +331,9 @@ public class ChatFragment extends OSGiFragment
     public void onResume()
     {
         super.onResume();
+        if (svpApi == null)
+            svpApi = new SvpApiImpl();
+
         /*
          * If this chatFragment is added to the pager adapter for the first time it is required to
          * check again, because it's marked visible when the Views are not created yet
@@ -818,19 +829,7 @@ public class ChatFragment extends OSGiFragment
             }
 
             if (mSVP_Started) {
-                if (mSVP == null) {
-                    Activity currentActivity = aTalkApp.getCurrentActivity();
-                    if (currentActivity != null) {
-                        if (currentActivity instanceof SplitStreetViewPanoramaAndMapActivity) {
-                            mSVP = (SplitStreetViewPanoramaAndMapActivity) currentActivity;
-                        }
-                    }
-                }
-                if (mSVP != null) {
-                    MessageDisplay msg = getMessageDisplay(msgIdx);
-                    if (msg.hasLatLng())
-                        mSVP.onLocationChanged(msg.mLatLng);
-                }
+                mSVP = svpApi.svpHandler(mSVP, getMessageDisplay(msgIdx));
             }
 
             if (update) {
@@ -1414,12 +1413,13 @@ public class ChatFragment extends OSGiFragment
             /**
              * Incoming message has LatLng info
              */
-            private boolean hasLatLng = false;
+            protected boolean hasLatLng = false;
 
             /**
-             * LatLng info in the incoming message
+             * Lat & Lng info in the incoming message
              */
-            private LatLng mLatLng = null;
+            protected double latitude;
+            protected double longitude;
 
             /**
              * Creates new instance of <tt>MessageDisplay</tt> that will be used for displaying
@@ -1464,8 +1464,9 @@ public class ChatFragment extends OSGiFragment
                             else
                                 sLng = sLng.replaceAll("[^0-9.]+", "");
 
-                            mLatLng = new LatLng(Double.parseDouble(sLat), Double.parseDouble(sLng));
                             hasLatLng = true;
+                            latitude = Double.parseDouble(sLat);
+                            longitude = Double.parseDouble(sLng);
                         } catch (NumberFormatException ex) {
                             ex.printStackTrace();
                         }
@@ -1481,30 +1482,29 @@ public class ChatFragment extends OSGiFragment
             @Override
             public void onClick(View view)
             {
-                // You can now create a LatLng Object for use with maps
                 mSVP_Started = true;
-                Intent intent = new Intent(mActivity, SplitStreetViewPanoramaAndMapActivity.class);
-                intent.putExtra(SplitStreetViewPanoramaAndMapActivity.MARKER_POSITION_KEY, mLatLng);
-                startActivity(intent);
+                svpApi.onSVPClick(mActivity, latitude, longitude);
             }
 
+            /**
+             * Perform google street and map view playback when user longclick the show map button
+             *
+             * @param v View
+             */
             @Override
             public boolean onLongClick(View v)
             {
-                ArrayList<LatLng> xLatLng = new ArrayList<>();
+                ArrayList<double[]> mLatLng = new ArrayList<double[]>();
                 int smt = getMessageType();
                 List<MessageDisplay> displayMessages = getMessageDisplays();
                 for (MessageDisplay dm : displayMessages) {
-                    if (dm.hasLatLng() && (smt == dm.getMessageType())) {
-                        xLatLng.add(dm.mLatLng);
+                    if (dm.hasLatLng && (smt == dm.getMessageType())) {
+                        mLatLng.add(new double[]{dm.latitude, dm.longitude});
                     }
                 }
-                if (!xLatLng.isEmpty()) {
+                if (!mLatLng.isEmpty()) {
                     mSVP_Started = true;
-                    Intent intent = new Intent(mActivity, SplitStreetViewPanoramaAndMapActivity.class);
-                    intent.putExtra(SplitStreetViewPanoramaAndMapActivity.MARKER_POSITION_KEY, mLatLng);
-                    intent.putExtra(SplitStreetViewPanoramaAndMapActivity.MARKER_LIST, xLatLng);
-                    startActivity(intent);
+                    svpApi.onSVPLongClick(mActivity, mLatLng);
                 }
                 return true;
             }

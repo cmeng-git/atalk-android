@@ -11,6 +11,7 @@ import android.content.*;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.view.MenuItem;
 
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
 import net.java.sip.communicator.service.protocol.*;
@@ -391,34 +392,34 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     }
 
     /**
-     * Starts the {@link EncodingActivity} in order to edit encoding properties.
+     * Starts the {@link MediaEncodingActivity} in order to edit encoding properties.
      *
      * @param mediaType indicates if AUDIO or VIDEO encodings will be edited
      */
     private void startEncodingActivity(MediaType mediaType)
     {
-        Intent intent = new Intent(mActivity, EncodingActivity.class);
-        intent.putExtra(EncodingActivity.ENC_MEDIA_TYPE_KEY, mediaType);
+        Intent intent = new Intent(mActivity, MediaEncodingActivity.class);
+        intent.putExtra(MediaEncodingActivity.ENC_MEDIA_TYPE_KEY, mediaType);
 
         EncodingsRegistrationUtil encodingsRegistration = getEncodingsRegistration();
         if (encodingsRegistration == null)
             throw new NullPointerException();
-        intent.putExtra(EncodingActivity.EXTRA_KEY_ENC_REG, encodingsRegistration);
+        intent.putExtra(MediaEncodingActivity.EXTRA_KEY_ENC_REG, encodingsRegistration);
         startActivityForResult(intent, EDIT_ENCODINGS);
     }
 
     /**
-     * Handles {@link EncodingActivity} and {@link SecurityActivity} results
+     * Handles {@link MediaEncodingActivity} and {@link SecurityActivity} results
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         if (requestCode == EDIT_ENCODINGS && resultCode == Activity.RESULT_OK) {
-            Boolean hasChanges = data.getBooleanExtra(EncodingActivity.EXTRA_KEY_HAS_CHANGES, false);
+            Boolean hasChanges = data.getBooleanExtra(MediaEncodingActivity.EXTRA_KEY_HAS_CHANGES, false);
             if (!hasChanges)
                 return;
 
             EncodingsRegistrationUtil encReg = (EncodingsRegistrationUtil)
-                    data.getSerializableExtra(EncodingActivity.EXTRA_KEY_ENC_REG);
+                    data.getSerializableExtra(MediaEncodingActivity.EXTRA_KEY_ENC_REG);
 
             EncodingsRegistrationUtil myReg = getEncodingsRegistration();
             myReg.setOverrideEncodings(encReg.isOverrideEncodings());

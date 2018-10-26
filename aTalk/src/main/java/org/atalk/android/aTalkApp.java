@@ -29,6 +29,7 @@ import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.DrawableCache;
+import org.atalk.impl.androidcertdialog.VerifyCertificateActivity;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
@@ -560,7 +561,8 @@ public class aTalkApp extends Application
                     String activity = currentActivity.toString();
                     if (!(currentActivity instanceof LauncherActivity)
                             && ((currentActivity instanceof aTalk)
-                            || currentActivity instanceof AccountsListActivity)) {
+                            || (currentActivity instanceof AccountsListActivity)
+                            || (currentActivity instanceof VerifyCertificateActivity))) {
                         break;
                     }
                     else {

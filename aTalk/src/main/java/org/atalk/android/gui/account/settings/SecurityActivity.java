@@ -35,7 +35,7 @@ import ch.imvs.sdes4j.srtp.SrtpCryptoSuite;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class SecurityActivity extends OSGiActivity implements SecProtocolsDialogFragment.DialogClosedListener
+public class SecurityActivity extends OSGiActivity implements SecurityProtocolsDialogFragment.DialogClosedListener
 {
     /**
      * The intent's extra key for passing the {@link SecurityAccountRegistration}
@@ -109,7 +109,7 @@ public class SecurityActivity extends OSGiActivity implements SecProtocolsDialog
         return super.onKeyUp(keyCode, event);
     }
 
-    public void onDialogClosed(SecProtocolsDialogFragment dialog)
+    public void onDialogClosed(SecurityProtocolsDialogFragment dialog)
     {
         securityFragment.onDialogClosed(dialog);
     }
@@ -212,20 +212,20 @@ public class SecurityActivity extends OSGiActivity implements SecProtocolsDialog
          */
         private void showEditSecurityProtocolsDialog()
         {
-            SecProtocolsDialogFragment securityDialog = new SecProtocolsDialogFragment();
+            SecurityProtocolsDialogFragment securityDialog = new SecurityProtocolsDialogFragment();
 
             Map<String, Integer> encryptions = securityReg.getEncryptionProtocols();
             Map<String, Boolean> statusMap = securityReg.getEncryptionProtocolStatus();
             Bundle args = new Bundle();
-            args.putSerializable(SecProtocolsDialogFragment.ARG_ENCRYPTIONS, (Serializable) encryptions);
-            args.putSerializable(SecProtocolsDialogFragment.ARG_STATUS_MAP, (Serializable) statusMap);
+            args.putSerializable(SecurityProtocolsDialogFragment.ARG_ENCRYPTIONS, (Serializable) encryptions);
+            args.putSerializable(SecurityProtocolsDialogFragment.ARG_STATUS_MAP, (Serializable) statusMap);
             securityDialog.setArguments(args);
 
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             securityDialog.show(ft, "SecProtocolsDlgFragment");
         }
 
-        void onDialogClosed(SecProtocolsDialogFragment dialog)
+        void onDialogClosed(SecurityProtocolsDialogFragment dialog)
         {
             if (dialog.hasChanges()) {
                 hasChanges = true;
@@ -366,5 +366,4 @@ public class SecurityActivity extends OSGiActivity implements SecProtocolsDialog
             }
         }
     }
-
 }

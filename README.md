@@ -98,7 +98,6 @@ Libraries used in this project
 * [commons-lang](http://commons.apache.org/proper/commons-lang/)
 * [Dexter](https://github.com/Karumi/Dexter)
 * [dhcp4java](https://github.com/ggrandes-clones/dhcp4java)
-* [ews-android-api](https://github.com/alipov/ews-android-api)
 * [FFmpeg](https://github.com/FFmpeg/FFmpeg)
 * [glide](https://github.com/bumptech/glide)
 * [Google Play Services](https://developers.google.com/android/guides/overview)

@@ -153,7 +153,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
                             cl.getLogDialog().show();
                         }
                     }
-                }, 12000); // allow 12 seconds for first launch login to complete
+                }, 15000); // allow 15 seconds for first launch login to complete
             }
         });
     }
@@ -421,7 +421,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     {
         getPreferences().edit().putBoolean(getBatteryOptimizationPreferenceKey(), false).apply();
     }
-
 
     protected SharedPreferences getPreferences()
     {

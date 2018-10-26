@@ -5,6 +5,8 @@
     <color name="color_primary_dark">#021625</color>
     <color name="color_accent">#2DA4F2</color>
 
+    <color name="color_text_dark">@color/white85</color>
+
     <color name="theme_background">#2E5368</color>
     <color name="call_background">#2E5368</color>
     <color name="chat_background">#f5f5f5</color>
@@ -48,7 +50,7 @@
     <color name="lightblueA700">#ff0091ea</color>
 
     <color name="white">#ffffff</color>
-    <color name="white70">#b2ffffff</color>
+    <color name="white85">#d8ffffff</color>
     <color name="white12">#1fffffff</color>
     <color name="white900">#fff0f0f0</color>
 

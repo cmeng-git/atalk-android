@@ -61,8 +61,7 @@ public class ServerListActivity extends OSGiActivity
 		super.start(bundleContext);
 
 		Intent intent = getIntent();
-		this.registration = (JabberAccountRegistration)
-				intent.getSerializableExtra(JABBER_REGISTRATION_KEY);
+		this.registration = (JabberAccountRegistration) intent.getSerializableExtra(JABBER_REGISTRATION_KEY);
 		int listType = intent.getIntExtra(REQUEST_CODE_KEY, -1);
 		if (listType == REQUEST_EDIT_STUN_TURN) {
 			this.adapter = new StunServerAdapter(this, registration);
@@ -77,8 +76,9 @@ public class ServerListActivity extends OSGiActivity
 		ListFragment listFragment = new ServerListFragment();
 		listFragment.setListAdapter(adapter);
 		// Display the fragment as the main content.
-		getFragmentManager().beginTransaction().replace(android.R.id.content,
-				listFragment).commit();
+		getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, listFragment)
+                .commit();
 
 		findViewById(android.R.id.content).setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view)

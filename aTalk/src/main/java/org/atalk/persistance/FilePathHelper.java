@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import net.java.sip.communicator.util.Logger;
 
 import org.apache.commons.io.IOUtils;
-import org.atalk.util.StringUtils;
 
 import java.io.*;
 
@@ -71,14 +70,14 @@ public class FilePathHelper
         String fileName = null;
         String filePath = uri.getQueryParameter("fileName");
         String mimeType = uri.getQueryParameter("mimeType");
-        if (!StringUtils.isNullOrEmpty(filePath)) {
+        if (!TextUtils.isEmpty(filePath)) {
             fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
-            if (!StringUtils.isNullOrEmpty(mimeType)) {
+            if (!TextUtils.isEmpty(mimeType)) {
                 String ext = mimeType.substring(mimeType.lastIndexOf('/') + 1);
                 fileName += "." + ext;
             }
         }
-        if (StringUtils.isNullOrEmpty(fileName)) {
+        if (TextUtils.isEmpty(fileName)) {
             String path = uri.getPath();
             fileName = path.substring(path.lastIndexOf('/') + 1);
         }

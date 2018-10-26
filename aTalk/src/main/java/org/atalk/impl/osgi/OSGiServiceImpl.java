@@ -161,7 +161,7 @@ public class OSGiServiceImpl
                 ApplicationInfo info = service.getApplicationInfo();
                 name = info.name;
                 if (TextUtils.isEmpty(name))
-                    name = aTalkApp.getGlobalContext().getResources().getString(R.string.app_name);
+                    name = aTalkApp.getResString(R.string.APPLICATION_NAME);
             }
             System.setProperty(ConfigurationService.PNAME_SC_HOME_DIR_NAME, name);
         }

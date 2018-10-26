@@ -29,8 +29,6 @@
 -->
 
 <resources>
-
-    <string name="app_name">aTalk</string>
     <string name="accept_call_video">Contestar a la llamada con vídeo</string>
     <string name="account_setup_basics_show_password">Mostrar contraseña</string>
     <string name="account_override_server">Anular la configuración del servidor</string>
@@ -1229,7 +1227,7 @@
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Enviar notificaciones del estado de la charla</string>
 
     <!-- Enable option to send thumnail preview for image file sending -->
-    <string name="service_gui_settings_SEND_THUMBNAIL">Enviar miniatura de archivo</string>
+    <string name="service_gui_settings_THUMBNAIL_OPTION">Enviar/Recibir vista previa en miniatura</string>
 
     <!-- Auto accept downloadable max file size -->
     <string name="service_gui_settings_ACCEPT_FILE">Acepta automáticamente el tamaño máximo de archivo</string>
@@ -1508,4 +1506,10 @@
     <string name="permission_rationale_message">Se presenta cada servicio que necesita aTalk; por favor permite que aTalk acceda a estos servicios para obtener todas las funciones soportadas.</string>
     <string name="permission_rationale_settings_button_text">AJUSTES</string>
     <string name="permission_rationale_title">aTalk necesita permisos</string>
+
+	<!--Location string constant -->
+    <string name="location_permission_dialog_title">Se necesita permiso de ubicación</string>
+    <string name="location_permission_dialog_message">Habilitar permiso de ubicación ahora?</string>
+    <string name="location_services_off">Servicios de localización OFF</string>
+    <string name="open_location_settings">Habilitar servicios de ubicación ahora?</string>
 </resources>

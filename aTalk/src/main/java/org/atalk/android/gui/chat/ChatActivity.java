@@ -27,8 +27,7 @@ import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.Logger;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
+import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
@@ -332,6 +331,10 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         mChatRoomInfo = mMenu.findItem(R.id.chatroom_info);
         mChatRoomMember = mMenu.findItem(R.id.show_chat_room_occupant);
 
+        if (BuildConfig.FLAVOR.equals("fdroid") && (mSendLocation != null)) {
+            menu.removeItem(R.id.send_location);
+        }
+
         setOptionItem();
         return true;
     }
@@ -413,9 +416,11 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 return true;
 
             case R.id.send_location:
-                intent = new Intent(this, GeoLocation.class);
-                intent.putExtra(GeoLocation.SEND_LOCATION, true);
-                startActivity(intent);
+                if (!BuildConfig.FLAVOR.equals("fdroid")) {
+                    intent = new Intent(this, GeoLocation.class);
+                    intent.putExtra(GeoLocation.SEND_LOCATION, true);
+                    startActivity(intent);
+                }
                 return true;
 
             case R.id.erase_chat_history:
@@ -731,7 +736,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                         }
                         else
                             aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                    } else
+                    }
+                    else
                         aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                     break;
 
