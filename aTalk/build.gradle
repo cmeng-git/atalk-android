@@ -36,7 +36,6 @@ configurations {
     all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     all*.exclude group: 'xpp3', module: 'xpp3'
 
-    all*.exclude group: 'org.minidns', module: 'minidns-core'
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
 }
@@ -199,7 +198,14 @@ dependencies {
     implementation files('lib/smack/smack-omemo-4.4.0-alpha2-SNAPSHOT.jar')
     implementation files('lib/smack/smack-omemo-signal-4.4.0-alpha2-SNAPSHOT.jar')
     implementation 'org.whispersystems:signal-protocol-java:2.6.2'
-    implementation files('lib/smack/minidns-core-0.3.3-SNAPSHOT.jar')
+
+    // Force to use v0.3.3 instead of dependency defined by smack
+    implementation 'org.minidns:minidns-android21:0.3.3'
+    implementation 'org.minidns:minidns-client:0.3.3'
+    implementation 'org.minidns:minidns-core:0.3.3'
+    implementation 'org.minidns:minidns-dnssec:0.3.3'
+    implementation 'org.minidns:minidns-hla:0.3.3'
+    implementation 'org.minidns:minidns-iterative-resolver:0.3.3'
 
     implementation files('lib/smack/smack-core-4.4.0-alpha2-SNAPSHOT.jar')
     // implementation files('lib/smack/smack-experimental-4.4.0-alpha2-SNAPSHOT.jar')
