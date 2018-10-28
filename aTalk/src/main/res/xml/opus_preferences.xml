@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:custom="http://schemas.android.com/apk/res/org.atalk.android">
+                  xmlns:custom="http://schemas.android.com/apk/res-auto">
     <org.atalk.android.gui.settings.widget.ConfigListPreference
             android:title="@string/service_gui_settings_OPUS_AUDIO_BANDWIDTH"
             android:key="@string/pref_key_opus_audio_bandwidth"

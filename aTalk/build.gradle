@@ -1,7 +1,7 @@
 buildscript {
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
 
     dependencies {
@@ -12,9 +12,9 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'org.anarres.jarjar' // jarjar.repackage tool
-// apply from: './preprocessor.gradle'
 
 repositories {
+    google()
     jcenter()
     maven {
         // SNAPSHOT repository smack - need manual cleanup for new SNAPSHOT update if same name with date change only:
@@ -24,11 +24,6 @@ repositories {
     maven {
         url 'https://jitpack.io'
     }
-    maven {
-        url 'https://maven.google.com/'
-        name 'Google'
-    }
-    google()
 }
 
 configurations {
@@ -71,20 +66,6 @@ android {
         }
     }
 
-    signingConfigs {
-        release {
-            storeFile file("${keystore}")
-            File propsFile = file("${secure_properties}")
-            if (propsFile.exists()) {
-                Properties props = new Properties()
-                props.load(new FileInputStream(propsFile))
-                storePassword props.getProperty('key.store.password')
-                keyAlias props.getProperty('key.store.alias')
-                keyPassword props.getProperty('key.alias.password')
-            }
-        }
-    }
-
     buildTypes {
         release {
             // cannot enable for aTalk string resource as not all are per android style
@@ -93,13 +74,34 @@ android {
             minifyEnabled false
             // useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
 
         debug {
             debuggable true
             minifyEnabled false
         }
+    }
+
+    File cfgFile = project.rootProject.file("settings.signing")
+    if (cfgFile != null && cfgFile.exists()) {
+        println "### Found settings.signing to prepare signingConfig for release signing"
+        signingConfigs {
+            release {
+                Properties config = new Properties()
+                config.load(new FileInputStream(cfgFile))
+
+                storeFile file(config.getProperty('keystore'))
+                File propsFile = file(config.getProperty('secure_properties'))
+                if (propsFile.exists()) {
+                    Properties props = new Properties()
+                    props.load(new FileInputStream(propsFile))
+                    storePassword props.getProperty('key.store.password')
+                    keyAlias props.getProperty('key.store.alias')
+                    keyPassword props.getProperty('key.alias.password')
+                }
+            }
+        }
+        buildTypes.release.signingConfig signingConfigs.release
     }
 
     sourceSets {
@@ -222,7 +224,6 @@ dependencies {
 //            classDelete 'org.jivesoftware.smackx.caps.provider.CapsExtensionProvider'
 //    }
 
-
     // keep for reference only
     // Use jarjar.repackage in place of a dependency notation (destination file?).
     //    implementation jarjar.repackage {
@@ -256,7 +257,7 @@ task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
             '-j', Runtime.runtime.availableProcessors(),
             'NDK_OUT=' + project.buildDir,
             'NDK_LIBS_OUT=' + projectDir + '/libs/$(TARGET_ARCH_ABI)'
-            //'V=1'  // enable only for compilation debug only
+    //'V=1'  // enable only for compilation debug only
 }
 
 task ndkClean(type: Exec, description: 'Clean JNI object files') {
@@ -354,7 +355,7 @@ task updateVersionFile(type: Copy) {
 }
 
 tasks.withType(JavaCompile) {
-    // cmeng - need to perform setup libs (first time & after clean)
+        // cmeng - need to perform setup libs (first time & after clean)
     compileTask -> compileTask.dependsOn ndkBuild, jarRepackage
 }
 
