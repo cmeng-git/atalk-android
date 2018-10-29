@@ -5,6 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import android.os.Build;
+import android.text.Html;
+
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -43,6 +46,8 @@ import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 import org.jxmpp.jid.*;
 
 import java.util.*;
+
+import butterknife.BuildConfig;
 
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 
@@ -387,7 +392,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             String content = event.getSourceMessage().getContent();
 
             if (ChatMessage.ENCODE_HTML == message.getMimeType()) {
-                msg.setBody(Html2Text.extractText(content));
+                // msg.setBody(Html2Text.extractText(content));
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+                    msg.setBody(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
+                else
+                    msg.setBody(Html.escapeHtml(content));
 
                 // Check if the other user supports XHTML messages make sure we use our discovery
                 // manager as it caches calls
