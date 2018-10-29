@@ -154,6 +154,7 @@ dependencies {
     implementation files('lib/bundles/dhcp4java-1.00.jar')
 
     // must use local json-simple-1.1.1.jar - otherwise dependency conflict
+    // implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation files('lib/bundles/json-simple-1.1.1.jar')
 
     implementation "com.android.support:support-v4:${rootProject.supportLibraryVersion}"
@@ -295,31 +296,32 @@ task jarRepackage(type: Copy, description: 'Repackage jar to avoid conflict') {
             zap pattern: 'javax.media.Manager**'
         }
 
-        jarjar2(jarfile: 'libs/systray-service.jar') {
-            zipfileset(src: 'lib/bundles/systray-service.jar')
-            rule pattern: 'org.jitsi.**',
-                    result: 'org.atalk.@1'
-        }
-
-        jarjar2(jarfile: 'libs/ui-service.jar') {
-            zipfileset(src: 'lib/bundles/ui-service.jar')
-            rule pattern: 'java.awt.**',
-                    result: 'org.atalk.android.util.java.awt.@1'
-            rule pattern: 'javax.swing.**',
-                    result: 'org.atalk.android.util.javax.swing.@1'
-            rule pattern: 'javax.sound.**',
-                    result: 'org.atalk.android.util.javax.sound.@1'
-            rule pattern: 'org.jitsi.**',
-                    result: 'org.atalk.@1'
-            zap pattern: 'net.java.sip.communicator.service.gui.AccountRegistrationWizard'
-        }
-
-        jarjar2(jarfile: 'libs/util.jar') {
-            zipfileset(src: 'lib/bundles/util.jar')
-            rule pattern: 'org.jitsi.**',
-                    result: 'org.atalk.@1'
-            zap pattern: 'net.java.sip.communicator.util.SRVRecord'
-        }
+        // cmeng: include sources in aTalk project
+//        jarjar2(jarfile: 'libs/systray-service.jar') {
+//            zipfileset(src: 'lib/bundles/systray-service.jar')
+//            rule pattern: 'org.jitsi.**',
+//                    result: 'org.atalk.@1'
+//        }
+//
+//        jarjar2(jarfile: 'libs/ui-service.jar') {
+//            zipfileset(src: 'lib/bundles/ui-service.jar')
+//            rule pattern: 'java.awt.**',
+//                    result: 'org.atalk.android.util.java.awt.@1'
+//            rule pattern: 'javax.swing.**',
+//                    result: 'org.atalk.android.util.javax.swing.@1'
+//            rule pattern: 'javax.sound.**',
+//                    result: 'org.atalk.android.util.javax.sound.@1'
+//            rule pattern: 'org.jitsi.**',
+//                    result: 'org.atalk.@1'
+//            zap pattern: 'net.java.sip.communicator.service.gui.AccountRegistrationWizard'
+//        }
+//
+//        jarjar2(jarfile: 'libs/util.jar') {
+//            zipfileset(src: 'lib/bundles/util.jar')
+//            rule pattern: 'org.jitsi.**',
+//                    result: 'org.atalk.@1'
+//            zap pattern: 'net.java.sip.communicator.util.SRVRecord'
+//        }
 
         jarjar2(jarfile: 'libs/zrtp4j-light-4.1.0.jar') {
             zipfileset(src: 'lib/bundles/zrtp4j-light-4.1.0.jar')
@@ -331,7 +333,7 @@ task jarRepackage(type: Copy, description: 'Repackage jar to avoid conflict') {
         // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
         // Objects class only available in API-19 and above
         jarjar2(jarfile: 'libs/ice4j-2.0.0.jar') {
-            zipfileset(src: 'lib/bundles/ice4j-2.0.0.jar')
+            zipfileset(src: 'lib/bundles/ice4j-2.0.0-20181024.160538-12.jar')
             rule pattern: 'java.util.Objects',
                     result: 'org.jivesoftware.smack.util.Objects'
         }
