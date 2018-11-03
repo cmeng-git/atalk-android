@@ -66,9 +66,10 @@ public class DatabaseBackend extends SQLiteOpenHelper
 
     /**
      * Name of the database and its version number
+     * Increment DATABASE_VERSION when there is a change in database records
      */
     public static final String DATABASE_NAME = "dbRecords.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static DatabaseBackend instance = null;
     private ProtocolProviderService mProvider;
 
@@ -117,6 +118,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             + SQLiteOmemoStore.LAST_ACTIVATION + " NUMBER, "
             + SQLiteOmemoStore.LAST_DEVICE_ID_PUBLISH + " NUMBER, "
             + SQLiteOmemoStore.LAST_MESSAGE_RX + " NUMBER, "
+            + SQLiteOmemoStore.MESSAGE_COUNTER + " INTEGER, "
             + SQLiteOmemoStore.IDENTITY_KEY + " TEXT, UNIQUE("
             + SQLiteOmemoStore.BARE_JID + ", " + SQLiteOmemoStore.DEVICE_ID
             + ") ON CONFLICT REPLACE);";
@@ -1114,6 +1116,32 @@ public class DatabaseBackend extends SQLiteOpenHelper
         }
         return null;
     }
+
+
+    public void setOmemoMessageCounter(OmemoDevice device, int count)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(SQLiteOmemoStore.MESSAGE_COUNTER, count);
+
+        String[] selectionArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
+
+        db.update(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, values,
+                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", selectionArgs);
+    }
+
+    public int getOmemoMessageCounter(OmemoDevice device)
+    {
+        Cursor cursor = getIdentityKeyCursor(device, null);
+        if (cursor.getCount() != 0) {
+            cursor.moveToFirst();
+            int count = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.MESSAGE_COUNTER));
+            cursor.close();
+            return count;
+        }
+        return 0;
+    }
+
 
     // ========= Fingerprint =========
     public FingerprintStatus getFingerprintStatus(OmemoDevice device, String fingerprint)

@@ -480,7 +480,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             throws OperationFailedException
     {
         TransportManagerJabberImpl transportManager = getTransportManager();
-        Iterable<ContentPacketExtension> sessAccept = transportManager.wrapupCandidateHarvest();
+        Iterable<ContentPacketExtension> sessionAccept = transportManager.wrapupCandidateHarvest();
         CallPeerJabberImpl peer = getPeer();
 
         // user answered an incoming call so we go through whatever content entries we are
@@ -489,7 +489,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         // First parse content so we know how many streams and what type of content we have
         Map<ContentPacketExtension, RtpDescriptionPacketExtension> contents = new HashMap<>();
 
-        for (ContentPacketExtension ourContent : sessAccept) {
+        for (ContentPacketExtension ourContent : sessionAccept) {
             RtpDescriptionPacketExtension description = JingleUtils.getRtpDescription(ourContent);
             contents.put(ourContent, description);
         }
@@ -578,7 +578,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 addSourceExtension(description, ourSsrc);
             }
         }
-        return sessAccept;
+        return sessionAccept;
     }
 
     /**

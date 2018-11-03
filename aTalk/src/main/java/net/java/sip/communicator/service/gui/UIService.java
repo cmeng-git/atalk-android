@@ -339,19 +339,6 @@ public interface UIService
     boolean isExportedWindowSupported(WindowID windowID);
 
     /**
-     * Returns the <tt>WizardContainer</tt> for the current UIService
-     * implementation. The <tt>WizardContainer</tt> is meant to be implemented
-     * by the UI service implementation in order to allow other modules to add
-     * to the GUI <tt>AccountRegistrationWizard</tt> s. Each of these wizards is
-     * made for a given protocol and should provide a sequence of user interface
-     * forms through which the user could register a new account.
-     *
-     * @return Returns the <tt>AccountRegistrationWizardContainer</tt> for the
-     *         current UIService implementation.
-     */
-    WizardContainer getAccountRegWizardContainer();
-
-    /**
      * Returns an iterator over a set containing containerID-s pointing to
      * containers supported by the current UI implementation. Each containerID
      * in the set is one of the CONTAINER_XXX constants. The method is meant to
@@ -393,22 +380,6 @@ public interface UIService
      *         the top of the windows; otherwise, <tt>false</tt>
      */
     boolean useMacOSXScreenMenuBar();
-
-    /**
-     * Returns the <tt>ConfigurationContainer</tt> associated with this
-     * <tt>UIService</tt>.
-     *
-     * @return the <tt>ConfigurationContainer</tt> associated with this
-     * <tt>UIService</tt>
-     */
-    ConfigurationContainer getConfigurationContainer();
-
-    /**
-     * Returns the create account window.
-     *
-     * @return the create account window
-     */
-    CreateAccountWindow getCreateAccountWindow();
 
     /**
      * Adds the given <tt>WindowListener</tt> listening for events triggered
@@ -479,15 +450,6 @@ public interface UIService
      * @param isSmsEnabled whether sms option should be enabled if possible
      */
     void startChat(String[] participants, boolean isSmsEnabled);
-
-    /**
-     * Creates a contact list component.
-     *
-     * @param clContainer the parent contact list container
-     * @return the created <tt>ContactList</tt>
-     */
-    ContactList createContactListComponent(
-        ContactListContainer clContainer);
 
     /**
      * Returns a collection of all currently in progress calls.

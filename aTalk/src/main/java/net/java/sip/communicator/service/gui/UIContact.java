@@ -24,8 +24,7 @@ import org.atalk.android.util.javax.swing.JMenuItem;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * The <tt>UIContact</tt> represents the user interface contact contained in the
- * contact list component.
+ * The <tt>UIContact</tt> represents the user interface contact contained in the contact list component.
  *
  * @author Yana Stamcheva
  */
@@ -46,8 +45,7 @@ public abstract class UIContact
     public abstract String getDisplayName();
 
     /**
-     * Returns the display details of this contact. These would be shown
-     * whenever the contact is selected.
+     * Returns the display details of this contact. These would be shown whenever the contact is selected.
      *
      * @return the display details of this contact
      */
@@ -83,19 +81,16 @@ public abstract class UIContact
     public abstract UIGroup getParentGroup();
 
     /**
-     * Sets the given <tt>UIGroup</tt> to be the parent group of this
-     * <tt>UIContact</tt>.
+     * Sets the given <tt>UIGroup</tt> to be the parent group of this <tt>UIContact</tt>.
      *
      * @param parentGroup the parent <tt>UIGroup</tt> of this contact
      */
     public abstract void setParentGroup(UIGroup parentGroup);
 
     /**
-     * Returns an <tt>Iterator</tt> over a list of the search strings of this
-     * contact.
+     * Returns an <tt>Iterator</tt> over a list of the search strings of this contact.
      *
-     * @return an <tt>Iterator</tt> over a list of the search strings of this
-     * contact
+     * @return an <tt>Iterator</tt> over a list of the search strings of this contact
      */
     public abstract Iterator<String> getSearchStrings();
 
@@ -122,11 +117,9 @@ public abstract class UIContact
         Class<? extends OperationSet> opSetClass);
 
     /**
-     * Returns a list of all <tt>UIContactDetail</tt>s within this
-     * <tt>UIContact</tt>.
+     * Returns a list of all <tt>UIContactDetail</tt>s within this <tt>UIContact</tt>.
      *
-     * @return a list of all <tt>UIContactDetail</tt>s within this
-     * <tt>UIContact</tt>
+     * @return a list of all <tt>UIContactDetail</tt>s within this <tt>UIContact</tt>
      */
     public abstract List<UIContactDetail> getContactDetails();
 

@@ -107,6 +107,7 @@ public class StreamRTPManager
 	public SendStream createSendStream(DataSource dataSource, int streamIndex)
 		throws IOException, UnsupportedFormatException
 	{
+	    // Received content-reject while processing content-add. createSendStream throws exception;
 		if (translator == null)
 			return manager.createSendStream(dataSource, streamIndex);
 		else

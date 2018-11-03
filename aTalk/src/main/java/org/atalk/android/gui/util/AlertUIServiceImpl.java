@@ -50,7 +50,6 @@ public class AlertUIServiceImpl implements AlertUIService
     public void showAlertDialog(String title, String message, Throwable e)
     {
         AndroidUtils.showAlertDialog(androidContext, title, message);
-
         System.err.println("Exception occured: " + e);
     }
 

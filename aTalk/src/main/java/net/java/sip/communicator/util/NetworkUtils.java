@@ -20,6 +20,7 @@ package net.java.sip.communicator.util;
 import android.text.TextUtils;
 
 import org.minidns.dnsmessage.DnsMessage;
+import org.minidns.dnsqueryresult.DnsQueryResult;
 import org.minidns.hla.ResolverApi;
 import org.minidns.hla.ResolverResult;
 import org.minidns.record.*;
@@ -210,8 +211,8 @@ public class NetworkUtils
     {
         List<Record<? extends Data>> records = null;
         try {
-            DnsMessage dnsMessage = ResolverApi.INSTANCE.getClient().query(domain, TYPE.NAPTR);
-            records = dnsMessage.answerSection;
+            DnsQueryResult dnsQueryResult = ResolverApi.INSTANCE.getClient().query(domain, TYPE.NAPTR);
+            records = dnsQueryResult.query.answerSection;
         } catch (IOException tpe) {
             logger.trace("No A record found for " + domain);
             // throw new ParseException(tpe.getMessage(), 0);

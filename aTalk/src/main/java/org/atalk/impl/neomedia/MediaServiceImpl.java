@@ -35,8 +35,7 @@ import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 import org.atalk.util.swing.VideoContainer;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import org.json.JSONObject;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -790,17 +789,18 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
                     String source = cfg.getString(propertyName);
                     if ((source != null) && (source.length() != 0)) {
                         try {
-                            JSONObject json = (JSONObject) JSONValue.parseWithException(source);
-                            String encoding = (String) json.get(MediaFormatImpl.ENCODING_PNAME);
-                            long clockRate = (Long) json.get(MediaFormatImpl.CLOCK_RATE_PNAME);
+                            // JSONObject json = (JSONObject) JSONValue.parseWithException(source);
+                            JSONObject json = new JSONObject(source);
+                            String encoding = json.getString(MediaFormatImpl.ENCODING_PNAME);
+                            long clockRate = json.getLong(MediaFormatImpl.CLOCK_RATE_PNAME);
                             Map<String, String> fmtps = new HashMap<>();
 
-                            if (json.containsKey(MediaFormatImpl.FORMAT_PARAMETERS_PNAME)) {
+                            if (json.has(MediaFormatImpl.FORMAT_PARAMETERS_PNAME)) {
                                 JSONObject jsonFmtps = (JSONObject) json.get(MediaFormatImpl.FORMAT_PARAMETERS_PNAME);
-
-                                for (Object o : jsonFmtps.keySet()) {
-                                    String key = o.toString();
-                                    String value = (String) jsonFmtps.get(key);
+                                Iterator<String> keys = jsonFmtps.keys();
+                                while(keys.hasNext()) {
+                                    String key = keys.next();
+                                    String value = jsonFmtps.getString(key);
                                     fmtps.put(key, value);
                                 }
                             }

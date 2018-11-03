@@ -287,7 +287,6 @@
     <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Die Gerätekamera kann die ausgewählte Videoauflösung im Hochformat nicht unterstützen. Bitte platzieren Sie das Telefon im Querformat für den Videoanruf:\n[width=%1$s; Höhe=%2$s]</string>
     <string name="service_gui_DISCONNECTED_STATUS">Beendet</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Beende %1$s</string>
-    <string name="service_gui_DEFAULT_USER_PHOTO">Personenfoto</string>
     <string name="service_gui_DENY">Ablehnen</string>
     <string name="service_gui_DISPLAY_NAME">angezeigter Name</string>
     <string name="service_gui_DND_STATUS">Bitte nicht stören</string>

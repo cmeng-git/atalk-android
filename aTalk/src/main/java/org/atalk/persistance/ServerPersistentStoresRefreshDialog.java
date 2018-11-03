@@ -233,6 +233,9 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
             ProtocolProviderServiceJabberImpl jabberProvider = (ProtocolProviderServiceJabberImpl) pps;
 
             ScServiceDiscoveryManager discoveryInfoManager = jabberProvider.getDiscoveryManager();
+            if (discoveryInfoManager == null)
+                return;
+
             if (jabberProvider.isRegistered()) {
                 if (RegistrationState.REGISTERED.equals(jabberProvider.getRegistrationState())) {
                     // stop discoveryInfoManager from accessing the store

@@ -14,8 +14,7 @@ import org.atalk.android.util.javax.swing.JMenuItem;
 import java.util.List;
 
 /**
- * Listens for the chat's right click menu becoming visible so menu items can
- * be offered.
+ * Listens for the chat's right click menu becoming visible so menu items can be offered.
  *
  * @author Damian Johnson
  */

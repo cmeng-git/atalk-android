@@ -16,8 +16,7 @@ import net.java.sip.communicator.service.contactlist.*;
  *
  * @author Yana Stamcheva
  */
-public class MetaContactQueryEvent
-    extends EventObject
+public class MetaContactQueryEvent extends EventObject
 {
     /**
      * The <tt>MetaContact</tt> this event is about.
@@ -26,14 +25,12 @@ public class MetaContactQueryEvent
 
     /**
      * Creates an instance of <tt>MetaGroupQueryEvent</tt> by specifying the
-     * <tt>source</tt> query this event comes from and the <tt>metaContact</tt>
-     * this event is about.
+     * <tt>source</tt> query this event comes from and the <tt>metaContact</tt> this event is about.
      *
      * @param source the <tt>MetaContactQuery</tt> that triggered this event
      * @param metaContact the <tt>MetaContact</tt> this event is about
      */
-    public MetaContactQueryEvent(   MetaContactQuery source,
-                                    MetaContact metaContact)
+    public MetaContactQueryEvent(MetaContactQuery source, MetaContact metaContact)
     {
         super(source);
         this.metaContact = metaContact;

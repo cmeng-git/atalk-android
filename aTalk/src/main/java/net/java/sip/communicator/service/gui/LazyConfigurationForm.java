@@ -5,19 +5,18 @@
  */
 package net.java.sip.communicator.service.gui;
 
-import java.lang.reflect.*;
+import net.java.sip.communicator.service.gui.internal.GuiServiceActivator;
+import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 
-import net.java.sip.communicator.service.gui.internal.*;
-import net.java.sip.communicator.service.resources.*;
+import org.atalk.service.resources.ResourceManagementService;
 
-import org.atalk.service.resources.*;
+import java.lang.reflect.UndeclaredThrowableException;
 
 /**
  * @author Lubomir Marinov
  * @author Yana Stamcheva
  */
-public class LazyConfigurationForm
-    implements ConfigurationForm
+public class LazyConfigurationForm implements ConfigurationForm
 {
     /**
      * The <tt>ResourceManagementService</tt> used to obtain any resources.
@@ -27,14 +26,13 @@ public class LazyConfigurationForm
     /**
      * Returns an instance of the <tt>ResourceManagementService</tt>, which
      * could be used to obtain any resources.
+     *
      * @return an instance of the <tt>ResourceManagementService</tt>
      */
     private static ResourceManagementService getResources()
     {
         if (resources == null)
-            resources =
-                ResourceManagementServiceUtils.getService(GuiServiceActivator
-                    .getBundleContext());
+            resources = ResourceManagementServiceUtils.getService(GuiServiceActivator.getBundleContext());
         return resources;
     }
 
@@ -70,19 +68,20 @@ public class LazyConfigurationForm
 
     /**
      * Creates an instance of <tt>LazyConfigurationForm</tt>.
+     *
      * @param formClassName the class name of the configuration form
      * @param formClassLoader the class loader
      * @param iconID the identifier of the form icon
      * @param titleID the identifier of the form title
      */
-    public LazyConfigurationForm(String formClassName,
-        ClassLoader formClassLoader, String iconID, String titleID)
+    public LazyConfigurationForm(String formClassName, ClassLoader formClassLoader, String iconID, String titleID)
     {
         this(formClassName, formClassLoader, iconID, titleID, -1, false);
     }
 
     /**
      * Creates an instance of <tt>LazyConfigurationForm</tt>.
+     *
      * @param formClassName the class name of the configuration form
      * @param formClassLoader the class loader
      * @param iconID the identifier of the form icon
@@ -90,13 +89,14 @@ public class LazyConfigurationForm
      * @param index the index of the form in the parent container
      */
     public LazyConfigurationForm(String formClassName,
-        ClassLoader formClassLoader, String iconID, String titleID, int index)
+            ClassLoader formClassLoader, String iconID, String titleID, int index)
     {
         this(formClassName, formClassLoader, iconID, titleID, index, false);
     }
 
     /**
      * Creates an instance of <tt>LazyConfigurationForm</tt>.
+     *
      * @param formClassName the class name of the configuration form
      * @param formClassLoader the class loader
      * @param iconID the identifier of the form icon
@@ -105,11 +105,11 @@ public class LazyConfigurationForm
      * @param isAdvanced indicates if the form is advanced configuration form
      */
     public LazyConfigurationForm(String formClassName,
-                                ClassLoader formClassLoader,
-                                String iconID,
-                                String titleID,
-                                int index,
-                                boolean isAdvanced)
+            ClassLoader formClassLoader,
+            String iconID,
+            String titleID,
+            int index,
+            boolean isAdvanced)
     {
         this.formClassName = formClassName;
         this.formClassLoader = formClassLoader;
@@ -121,27 +121,21 @@ public class LazyConfigurationForm
 
     /**
      * Returns the form component.
+     *
      * @return the form component
      */
     public Object getForm()
     {
         Exception exception;
-        try
-        {
+        try {
             return Class
-                .forName(getFormClassName(), true, getFormClassLoader())
-                .newInstance();
-        }
-        catch (ClassNotFoundException ex)
-        {
+                    .forName(getFormClassName(), true, getFormClassLoader())
+                    .newInstance();
+        } catch (ClassNotFoundException ex) {
             exception = ex;
-        }
-        catch (IllegalAccessException ex)
-        {
+        } catch (IllegalAccessException ex) {
             exception = ex;
-        }
-        catch (InstantiationException ex)
-        {
+        } catch (InstantiationException ex) {
             exception = ex;
         }
         throw new UndeclaredThrowableException(exception);
@@ -149,6 +143,7 @@ public class LazyConfigurationForm
 
     /**
      * Returns the form class loader.
+     *
      * @return the form class loader
      */
     protected ClassLoader getFormClassLoader()
@@ -158,6 +153,7 @@ public class LazyConfigurationForm
 
     /**
      * Returns the form class name.
+     *
      * @return the form class name
      */
     public String getFormClassName()
@@ -167,6 +163,7 @@ public class LazyConfigurationForm
 
     /**
      * Returns the icon of the form.
+     *
      * @return a byte array containing the icon of the form
      */
     public byte[] getIcon()
@@ -176,6 +173,7 @@ public class LazyConfigurationForm
 
     /**
      * Returns the identifier of the icon.
+     *
      * @return the identifier of the icon
      */
     protected String getIconID()
@@ -185,6 +183,7 @@ public class LazyConfigurationForm
 
     /**
      * Returns the index of the form in its parent container.
+     *
      * @return the index of the form in its parent container
      */
     public int getIndex()
@@ -194,6 +193,7 @@ public class LazyConfigurationForm
 
     /**
      * Returns the title of the form.
+     *
      * @return the title of the form
      */
     public String getTitle()
@@ -203,6 +203,7 @@ public class LazyConfigurationForm
 
     /**
      * Returns the identifier of the title of the form.
+     *
      * @return the identifier of the title of the form
      */
     protected String getTitleID()
@@ -212,8 +213,8 @@ public class LazyConfigurationForm
 
     /**
      * Indicates if the form is an advanced form.
-     * @return <tt>true</tt> to indicate that this is an advanced form,
-     * otherwise returns <tt>false</tt>
+     *
+     * @return <tt>true</tt> to indicate that this is an advanced form, otherwise returns <tt>false</tt>
      */
     public boolean isAdvanced()
     {

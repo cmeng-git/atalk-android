@@ -10,10 +10,9 @@ import java.util.*;
 
 /**
  * The <tt>ContainerEvent</tt> indicates that a change in a <tt>container</tt>
- * such a <tt>Comonent</tt> added or removed.
+ * such a <tt>Component</tt> added or removed.
  */
-public class ContainerEvent
-    extends EventObject
+public class ContainerEvent extends EventObject
 {
     /**
      * Serial version UID.
@@ -39,10 +38,8 @@ public class ContainerEvent
 
     /**
      * Creates a new ContainerEvent according to the specified parameters.
-     * @param source The containerID of the container that is added to supported
-     * containers.
-     * @param eventID one of the CONTAINER_XXX static fields indicating the
-     * nature of the event.
+     * @param source The containerID of the container that is added to supported containers.
+     * @param eventID one of the CONTAINER_XXX static fields indicating the nature of the event.
      */
     public ContainerEvent(Object source, int eventID)
     {
@@ -51,8 +48,7 @@ public class ContainerEvent
     }
 
     /**
-     * Returns an event id specifying whether the type of this event
-     * (CONTAINER_ADDED or CONTAINER_REMOVED)
+     * Returns an event id specifying whether the type of this event (CONTAINER_ADDED or CONTAINER_REMOVED)
      * @return one of the CONTAINER_XXX int fields of this class.
      */
     public int getEventID()

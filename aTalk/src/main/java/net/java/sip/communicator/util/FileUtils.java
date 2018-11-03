@@ -7,8 +7,7 @@
 package net.java.sip.communicator.util;
 
 /**
- * Utility class that allows to check if a given file is an image or to obtain
- * the file thumbnail icon.
+ * Utility class that allows to check if a given file is an image or to obtain the file thumbnail icon.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -25,8 +24,7 @@ public class FileUtils
      * image, <tt>false</tt> - otherwise.
      *
      * @param fileName the name of the file to check
-     * @return <code>true</code> if the file is an image, <tt>false</tt> -
-     * otherwise.
+     * @return <code>true</code> if the file is an image, <tt>false</tt> - otherwise.
      */
     public static boolean isImage(String fileName)
     {
@@ -39,7 +37,6 @@ public class FileUtils
                 return true;
             }
         }
-
         return false;
     }
 }

@@ -841,7 +841,7 @@ public class ChatFragment extends OSGiFragment
 
         /**
          * Inserts given <tt>Collection</tt> of <tt>ChatMessage</tt> at the beginning of the list.
-         * synchronized to avoid java.util.ConcurrentModificationException
+         * synchronized to avoid java.util.ConcurrentModificationException on receive history messages
          *
          * @param chatMessages the collection of <tt>ChatMessage</tt> to prepend.
          */

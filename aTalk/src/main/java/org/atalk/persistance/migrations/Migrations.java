@@ -26,6 +26,8 @@ public class Migrations {
                 MigrationTo2.createOmemoTables(db);
             case 2:
                 MigrationTo3.updateSQLDatabase(db);
+            case 3:
+                MigrationTo4.updateOmemoIdentitiesTable(db);
         }
     }
 }

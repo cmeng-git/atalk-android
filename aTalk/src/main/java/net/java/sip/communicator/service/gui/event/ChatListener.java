@@ -6,13 +6,14 @@
  */
 package net.java.sip.communicator.service.gui.event;
 
-import net.java.sip.communicator.service.gui.*;
+import net.java.sip.communicator.service.gui.Chat;
 
 /**
  * Listens to the creation and closing of <tt>Chat</tt>s.
  *
  * @author Damian Johnson
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public interface ChatListener
 {
@@ -21,12 +22,12 @@ public interface ChatListener
      *
      * @param chat the <tt>Chat</tt> which has been closed
      */
-    public void chatClosed(Chat chat);
+    void chatClosed(Chat chat);
 
     /**
      * Notifies this instance that a new <tt>Chat</tt> has been created.
      *
      * @param chat the new <tt>Chat</tt> which has been created
      */
-    public void chatCreated(Chat chat);
+    void chatCreated(Chat chat);
 }

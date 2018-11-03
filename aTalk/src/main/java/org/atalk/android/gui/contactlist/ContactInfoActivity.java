@@ -287,7 +287,6 @@ public class ContactInfoActivity extends OSGiActivity
 			{
 				public void onClick(View v)
 				{
-					// ContactInfoActivator.getBrowserLauncher().openURL(urlString);
 					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
 					startActivity(browserIntent);
 				}

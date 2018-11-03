@@ -104,6 +104,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     public static final String LAST_ACTIVATION = "last_activation"; // lastMessageReceivedDate
     public static final String LAST_DEVICE_ID_PUBLISH = "last_deviceid_publish"; // DateOfLastDeviceIdPublication
     public static final String LAST_MESSAGE_RX = "last_message_received"; // DateOfLastReceivedMessage
+    public static final String MESSAGE_COUNTER = "message_counter"; // message counter
     public static final String IDENTITY_KEY = "identityKey"; // or identityKeyPair
 
     // Sessions Table
@@ -768,6 +769,35 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     public Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactDevice)
     {
         return mDB.getLastDeviceIdPublicationDate(contactDevice);
+    }
+
+    /**
+     * Store the number of messages we sent to a device since we last received a message back.
+     * This counter gets reset to 0 whenever we receive a message from the contacts device.
+     *
+     * @param userDevice our omemoDevice.
+     * @param contactsDevice device of which we want to set the message counter.
+     * @param counter counter value.
+     */
+    @Override
+    public void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter)
+    {
+        mDB.setOmemoMessageCounter(contactsDevice, counter);
+    }
+
+    /**
+     * Return the current value of the message counter.
+     * This counter represents the number of message we sent to the contactsDevice without getting a reply back.
+     * The default value for this counter is 0.
+     *
+     * @param userDevice our omemoDevice
+     * @param contactsDevice device of which we want to get the message counter.
+     * @return counter value.
+     */
+    @Override
+    public int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice)
+    {
+        return mDB.getOmemoMessageCounter(contactsDevice);
     }
 
     /**

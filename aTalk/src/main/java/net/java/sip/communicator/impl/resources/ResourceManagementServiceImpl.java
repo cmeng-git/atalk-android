@@ -111,12 +111,10 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the int representation of the color corresponding to the
-     * given key.
+     * Returns the int representation of the color corresponding to the given key.
      *
      * @param key The key of the color in the colors properties file.
-     * @return the int representation of the color corresponding to the
-     * given key.
+     * @return the int representation of the color corresponding to the given key.
      */
     public int getColor(String key)
     {
@@ -149,12 +147,10 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>InputStream</tt> of the image corresponding to the given
-     * path.
+     * Returns the <tt>InputStream</tt> of the image corresponding to the given path.
      *
      * @param path The path to the image file.
-     * @return the <tt>InputStream</tt> of the image corresponding to the given
-     * path.
+     * @return the <tt>InputStream</tt> of the image corresponding to the given path.
      */
     public InputStream getImageInputStreamForPath(String path)
     {
@@ -172,13 +168,10 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>InputStream</tt> of the image corresponding to the given
-     * key.
+     * Returns the <tt>InputStream</tt> of the image corresponding to the given key.
      *
-     * @param streamKey The identifier of the image in the resource properties
-     * file.
-     * @return the <tt>InputStream</tt> of the image corresponding to the given
-     * key.
+     * @param streamKey The identifier of the image in the resource properties file.
+     * @return the <tt>InputStream</tt> of the image corresponding to the given key.
      */
     public InputStream getImageInputStream(String streamKey)
     {
@@ -227,11 +220,9 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>URL</tt> of the sound corresponding to the given
-     * property key.
+     * Returns the <tt>URL</tt> of the sound corresponding to the given property key.
      *
-     * @return the <tt>URL</tt> of the sound corresponding to the given
-     * property key.
+     * @return the <tt>URL</tt> of the sound corresponding to the given property key.
      */
     public URL getSoundURL(String urlKey)
     {
@@ -265,12 +256,10 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     public byte[] getImageInBytes(String imageID)
     {
         InputStream in = getImageInputStream(imageID);
-
         if (in == null)
             return null;
 
         byte[] image = null;
-
         try {
             image = new byte[in.available()];
             in.read(image);

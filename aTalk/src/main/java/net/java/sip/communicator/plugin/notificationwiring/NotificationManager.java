@@ -21,6 +21,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.AndroidUIServiceImpl;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
+import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.event.SrtpListener;
@@ -152,7 +153,8 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
 
             contactIcon = contact.getImage();
             if (contactIcon == null) {
-                contactIcon = NotificationWiringActivator.getImageLoaderService().getImageBytes(DEFAULT_USER_PHOTO);
+                // contactIcon = NotificationWiringActivator.getImageLoaderService().getImageBytes(DEFAULT_USER_PHOTO);
+                contactIcon = AndroidImageUtil.getImageBytes(aTalkApp.getGlobalContext(), R.drawable.personphoto);
             }
         }
         else if (chatDescriptor instanceof ChatRoom) {
@@ -985,11 +987,11 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             else {
                 fireChatNotification = (sourceChatRoom.getUserNickname() != null);
 
-//				String nickname = sourceChatRoom.getUserNickname().toString();
-//				int atIx = nickname.indexOf("@");
+                // 	String nickname = sourceChatRoom.getUserNickname().toString();
+                // int atIx = nickname.indexOf("@");
 
-//				fireChatNotification = messageContent.toLowerCase().contains(nickname.toLowerCase())
-//						|| ((atIx != -1) && messageContent.toLowerCase().contains(nickname.substring(0, atIx).toLowerCase()));
+                // ireChatNotification = messageContent.toLowerCase().contains(nickname.toLowerCase())
+                //		|| ((atIx != -1) && messageContent.toLowerCase().contains(nickname.substring(0, atIx).toLowerCase()));
             }
 
             if (fireChatNotification) {

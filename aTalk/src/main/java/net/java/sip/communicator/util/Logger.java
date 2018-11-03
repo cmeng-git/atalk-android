@@ -97,8 +97,7 @@ public class Logger
     }
 
     /**
-     * Check if a message with a TRACE level would actually be logged by this
-     * logger.
+     * Check if a message with a TRACE level would actually be logged by this logger.
      * <p>
      * @return true if the TRACE level is currently being logged
      */

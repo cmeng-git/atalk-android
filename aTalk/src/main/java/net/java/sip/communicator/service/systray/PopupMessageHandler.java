@@ -21,8 +21,7 @@ public interface PopupMessageHandler
     /**
      * Registers a listener to be informed of systray popup events.
      *
-     * @param listener the listened which will be informed of systray popup
-     * events
+     * @param listener the listened which will be informed of systray popup events
      */
     public void addPopupMessageListener(SystrayPopupMessageListener listener);
 
@@ -37,8 +36,7 @@ public interface PopupMessageHandler
      * Shows the given <tt>PopupMessage</tt>. Any given <tt>PopupMessage</tt>
      * will provide a minimum of two values: a message title and a message body.
      * These two values are respectively available via
-     * <tt>PopupMessage#getMessageTitle()</tt> and
-     * <tt>PopupMessage#getMessage()</tt>
+     * <tt>PopupMessage#getMessageTitle()</tt> and <tt>PopupMessage#getMessage()</tt>
      *
      * @param popupMessage the message to show
      */

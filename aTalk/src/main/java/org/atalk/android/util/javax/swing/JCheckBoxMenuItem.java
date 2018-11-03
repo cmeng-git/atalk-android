@@ -22,11 +22,6 @@ public class JCheckBoxMenuItem {
 		
 	}
 
-	public <OtrContactMenu> void addActionListener(OtrContactMenu otrContactMenu) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public void setEnabled(boolean enableManual) {
 		// TODO Auto-generated method stub
 		

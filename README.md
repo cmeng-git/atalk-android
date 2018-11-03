@@ -106,7 +106,6 @@ Libraries used in this project
 * [jitsi](https://github.com/jitsi/jitsi)
 * [jitsi-android](https://github.com/jitsi/jitsi-android)
 * [jmdns](https://github.com/jmdns/jmdns)
-* [json-simple](https://github.com/fangyidong/json-simple)
 * [jxmpp-jid](https://github.com/igniterealtime/jxmpp)
 * [libjitsi](https://github.com/jitsi/libjitsi)
 * [libphonenumber](https://github.com/googlei18n/libphonenumber)

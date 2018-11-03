@@ -20,12 +20,11 @@ public interface ContainerListener
      * Indicates that a container was added to the list of supported containers.
      * @param event the ContainerEvent containing the corresponding container.
      */
-    public void containerAdded(ContainerEvent event);
+    void containerAdded(ContainerEvent event);
 
     /**
-     * Indicates that a container was removed from the list of supported
-     * containers.
+     * Indicates that a container was removed from the list of supported containers.
      * @param event the ContainerEvent containing the corresponding container.
      */
-    public void containerRemoved(ContainerEvent event);
+    void containerRemoved(ContainerEvent event);
 }

@@ -287,7 +287,6 @@
     <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Kamera perangkat tidak dapat mendukung resolusi video yang dipilih saat mode potret. Silakan letakkan ponsel dalam orientasi lanskap untuk panggilan video:\n[lebar=%1$s; tinggi=%2$s]</string>
     <string name="service_gui_DISCONNECTED_STATUS">Terputus</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Memutuskan sambungan %1$s</string>
-    <string name="service_gui_DEFAULT_USER_PHOTO">personphoto</string>
     <string name="service_gui_DENY">Tolak</string>
     <string name="service_gui_DISPLAY_NAME">Nama Tampilan Kontak</string>
     <string name="service_gui_DND_STATUS">Jangan ganggu</string>

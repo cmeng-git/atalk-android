@@ -226,12 +226,6 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
 	}
 
 	@Override
-	public Iterator<WizardPage> getPages()
-	{
-		return null;
-	}
-
-	@Override
 	public Object getFirstPageIdentifier()
 	{
 		return null;

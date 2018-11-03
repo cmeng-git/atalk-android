@@ -51,11 +51,6 @@ public abstract class AccountRegistrationWizard
     private boolean isModification;
 
     /**
-     * The parent wizard container.
-     */
-    private WizardContainer wizardContainer;
-
-    /**
      * Returns the protocol icon that will be shown on the left of the protocol name in the list,
      * where user will choose the protocol to register to.
      *
@@ -104,16 +99,8 @@ public abstract class AccountRegistrationWizard
     public abstract void loadAccount(ProtocolProviderService protocolProvider);
 
     /**
-     * Returns the set of <tt>WizardPage</tt>-s for this wizard.
-     *
-     * @return the set of <tt>WizardPage</tt>-s for this wizard.
-     */
-    public abstract Iterator<WizardPage> getPages();
-
-    /**
      * Returns the identifier of the first account registration wizard page. This method is meant
-     * to be used by the wizard container to determine, which is the first page to show to the
-     * user.
+     * to be used by the wizard container to determine, which is the first page to show to the user.
      *
      * @return the identifier of the first account registration wizard page
      */
@@ -290,26 +277,6 @@ public abstract class AccountRegistrationWizard
     public boolean isAdvancedConfigurationEnabled()
     {
         return true;
-    }
-
-    /**
-     * Returns the wizard container, where all pages are added.
-     *
-     * @return the wizard container, where all pages are added
-     */
-    public WizardContainer getWizardContainer()
-    {
-        return wizardContainer;
-    }
-
-    /**
-     * Sets the wizard container, where all pages are added.
-     *
-     * @param wizardContainer the wizard container, where all pages are added
-     */
-    protected void setWizardContainer(WizardContainer wizardContainer)
-    {
-        this.wizardContainer = wizardContainer;
     }
 
     /**
