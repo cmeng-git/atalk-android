@@ -6,14 +6,15 @@
  */
 package net.java.sip.communicator.service.gui.event;
 
-import java.util.*;
+import java.util.EventListener;
 
 /**
  * The listener interface for receiving focus events on a <tt>Chat</tt>.
  *
  * @author Yana Stamcheva
  */
-public interface ChatFocusListener extends EventListener {
+public interface ChatFocusListener extends EventListener
+{
 
     /**
      * Indicates that a <tt>Chat</tt> has gained the focus.

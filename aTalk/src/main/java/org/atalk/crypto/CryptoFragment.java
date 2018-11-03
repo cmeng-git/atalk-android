@@ -677,7 +677,7 @@ public class CryptoFragment extends OSGiFragment
     {
         public void sessionStatusChanged(OtrContact otrContact)
         {
-            // OtrMetaContactButton.this.contact can be null - equals order is important.
+            // currentOtrContact can be null - equals order is important.
             if (otrContact.equals(currentOtrContact)) {
                 setStatusOtr(scOtrEngine.getSessionStatus(otrContact));
             }

@@ -9,13 +9,11 @@ package net.java.sip.communicator.util;
 import org.osgi.framework.*;
 
 /**
- * Bundle activator that will start the bundle when certain
- * service is available.
+ * Bundle activator that will start the bundle when certain ervice is available.
  *
  * @author Damian Minkov
  */
-public abstract class AbstractServiceDependentActivator
-    implements BundleActivator
+public abstract class AbstractServiceDependentActivator implements BundleActivator
 {
     /**
      * The service we are dependent on.
@@ -24,43 +22,40 @@ public abstract class AbstractServiceDependentActivator
 
     /**
      * Starts the bundle.
+     *
      * @param bundleContext the currently valid <tt>BundleContext</tt>.
      */
     @Override
     public void start(BundleContext bundleContext)
-        throws Exception
+            throws Exception
     {
         setBundleContext(bundleContext);
 
-        if(getDependentService(bundleContext) == null)
-        {
-            try
-            {
+        if (getDependentService(bundleContext) == null) {
+            try {
                 bundleContext.addServiceListener(
                         new DependentServiceListener(bundleContext),
-                        '(' + Constants.OBJECTCLASS + '='
-                            + getDependentServiceClass().getName() + ')');
-            }
-            catch (InvalidSyntaxException ise)
-            {
+                        '(' + Constants.OBJECTCLASS + '=' + getDependentServiceClass().getName() + ')');
+            } catch (InvalidSyntaxException ise) {
                 // Oh, it should not really happen.
             }
             return;
         }
-        else
-        {
+        else {
             start(getDependentService(bundleContext));
         }
     }
 
     /**
      * The dependent service is available and the bundle will start.
+     *
      * @param dependentService the service this activator is waiting.
      */
     public abstract void start(Object dependentService);
 
     /**
      * The class of the service which this activator is interested in.
+     *
      * @return the class name.
      */
     public abstract Class<?> getDependentServiceClass();
@@ -74,18 +69,15 @@ public abstract class AbstractServiceDependentActivator
 
     /**
      * Obtain the dependent service. Null if missing.
+     *
      * @param context the current context to use for obtaining.
      * @return the dependent service object or null.
      */
     private Object getDependentService(BundleContext context)
     {
-        if(dependentService == null)
-        {
-            ServiceReference<?> serviceRef
-                = context.getServiceReference(
-                        getDependentServiceClass().getName());
-
-            if(serviceRef != null)
+        if (dependentService == null) {
+            ServiceReference<?> serviceRef = context.getServiceReference(getDependentServiceClass().getName());
+            if (serviceRef != null)
                 dependentService = context.getService(serviceRef);
         }
         return dependentService;
@@ -96,11 +88,9 @@ public abstract class AbstractServiceDependentActivator
      * the dependent service implementation to become available, invokes
      * {@link #start(Object)} and un-registers itself.
      */
-    private class DependentServiceListener
-        implements ServiceListener
+    private class DependentServiceListener implements ServiceListener
     {
         private final BundleContext context;
-
         DependentServiceListener(BundleContext context)
         {
             this.context = context;
@@ -110,16 +100,12 @@ public abstract class AbstractServiceDependentActivator
         public void serviceChanged(ServiceEvent serviceEvent)
         {
             Object depService = getDependentService(context);
-
-            if (depService != null)
-            {
+            if (depService != null) {
                 /*
                  * This ServiceListener has successfully waited for a Service
-                 * implementation to become available so it no longer need to
-                 * listen.
+                 * implementation to become available so it no longer need to listen.
                  */
                 context.removeServiceListener(this);
-
                 start(depService);
             }
         }

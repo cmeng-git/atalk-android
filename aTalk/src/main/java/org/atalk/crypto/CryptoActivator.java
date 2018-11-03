@@ -63,8 +63,11 @@ public class CryptoActivator implements BundleActivator
         OmemoConfiguration.setRenewOldSignedPreKeys(true);
         OmemoConfiguration.setDeleteStaleDevices(true);
 
-        // Disable IgnoreStaleDevices option, devices can get lockout in this state if no omemo messaging for 7 days
-        OmemoConfiguration.setIgnoreStaleDevices(false);
+        // IgnoreReadOnlyDevices: if read-only devices should get ignored after a certain amount of unanswered messages.
+        // OmemoConfiguration.setIgnoreReadOnlyDevices(true);  // default
+
+        // For testing only
+        // OmemoConfiguration.setMaxReadOnlyMessageCount(5);
 
         // Uncomment to setup to use a file-based persistent storage for OMEMO
         // File omemoStoreDirectory = aTalkApp.getGlobalContext().getFilesDir();

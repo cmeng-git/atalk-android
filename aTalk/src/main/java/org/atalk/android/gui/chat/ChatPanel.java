@@ -7,15 +7,12 @@ package org.atalk.android.gui.chat;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.text.method.KeyListener;
 
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
-import net.java.sip.communicator.service.gui.event.ChatFocusListener;
-import net.java.sip.communicator.service.gui.event.ChatMenuListener;
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
@@ -27,9 +24,6 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.conference.*;
 import org.atalk.android.gui.util.ActionBarUtil;
-import org.atalk.android.util.javax.swing.event.CaretListener;
-import org.atalk.android.util.javax.swing.event.DocumentListener;
-import org.atalk.android.util.javax.swing.text.Highlighter;
 import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
 import org.jxmpp.jid.impl.JidCreate;
@@ -591,136 +585,6 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Adds the given <tt>ChatFocusListener</tt> to this <tt>Chat</tt>. The
-     * <tt>ChatFocusListener</tt> is used to inform other bundles when
-     * a chat has changed its focus state.
-     *
-     * @param chatFocusListener the <tt>ChatFocusListener</tt> to add
-     */
-    @Override
-    public void addChatFocusListener(ChatFocusListener chatFocusListener)
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
-     * Removes the given <tt>ChatFocusListener</tt> from this <tt>Chat</tt>. The
-     * <tt>ChatFocusListener</tt> is used to inform other bundles
-     * when a chat has changed its focus state.
-     *
-     * @param chatFocusListener the <tt>ChatFocusListener</tt> to remove
-     */
-    @Override
-    public void removeChatFocusListener(ChatFocusListener chatFocusListener)
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
-     * Adds the given {@link KeyListener} to this <tt>Chat</tt>. The <tt>KeyListener</tt>
-     * is used to inform other bundles when a user has typed in the chat editor area.
-     *
-     * @param keyListener the <tt>KeyListener</tt> to add
-     */
-    @Override
-    public void addChatEditorKeyListener(KeyListener keyListener)
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
-     * Removes the given {@link KeyListener} from this <tt>Chat</tt>. The <tt>KeyListener</tt>
-     * is used to inform other bundles when a user has typed in the chat editor area.
-     *
-     * @param keyListener the <tt>ChatFocusListener</tt> to remove
-     */
-
-    @Override
-    public void removeChatEditorKeyListener(KeyListener keyListener)
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
-     * Adds the given {@link ChatMenuListener} to this <tt>Chat</tt>. The
-     * <tt>ChatMenuListener</tt> is used to determine menu elements that
-     * should be added on right clicks.
-     *
-     * @param chatMenuListener the <tt>ChatMenuListener</tt> to add
-     */
-
-    @Override
-    public void addChatEditorMenuListener(ChatMenuListener chatMenuListener)
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
-     * Adds the given {@link CaretListener} to this <tt>Chat</tt>. The <tt>CaretListener</tt>
-     * is used to inform other bundles when a user has moved the caret in the chat editor area.
-     *
-     * @param caretListener the <tt>CaretListener</tt> to add
-     */
-    @Override
-    public void addChatEditorCaretListener(CaretListener caretListener)
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
-     * Adds the given {@link DocumentListener} to this <tt>Chat</tt>. The <tt>DocumentListener</tt>
-     * is used to inform other bundles when a user has modified the document in the chat editor area.
-     *
-     * @param documentListener the <tt>DocumentListener</tt> to add
-     */
-    @Override
-    public void addChatEditorDocumentListener(DocumentListener documentListener)
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
-     * Removes the given {@link ChatMenuListener} to this <tt>Chat</tt>. The
-     * <tt>ChatMenuListener</tt> is used to determine menu elements
-     * that should be added on right clicks.
-     *
-     * @param chatMenuListener the <tt>ChatMenuListener</tt> to add
-     */
-
-    @Override
-    public void removeChatEditorMenuListener(ChatMenuListener chatMenuListener)
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
-     * Removes the given {@link CaretListener} from this <tt>Chat</tt>. The <tt>CaretListener</tt>
-     * is used to inform other bundles when a user has moved the caret in the chat editor area.
-     *
-     * @param caretListener the <tt>CaretListener</tt> to remove
-     */
-
-    @Override
-    public void removeChatEditorCaretListener(CaretListener caretListener)
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
-     * Removes the given {@link DocumentListener} from this <tt>Chat</tt>. The
-     * <tt>DocumentListener</tt> is used to inform other bundles
-     * when a user has modified the document in the chat editor area.
-     *
-     * @param documentListener the <tt>DocumentListener</tt> to remove
-     */
-
-    @Override
-    public void removeChatEditorDocumentListener(DocumentListener documentListener)
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
      * Adds a message to this <tt>Chat</tt>.
      *
      * @param contactName the name of the contact sending the message
@@ -814,49 +678,6 @@ public class ChatPanel implements Chat, MessageListener
     public void addChatLinkClickedListener(ChatLinkClickedListener chatLinkClickedListener)
     {
         ChatSessionManager.addChatLinkListener(chatLinkClickedListener);
-    }
-
-    /**
-     * Removes an existing ChatLinkClickedListener
-     *
-     * @param chatLinkClickedListener the already registered listener to remove.
-     */
-
-    @Override
-    public void removeChatLinkClickedListener(ChatLinkClickedListener chatLinkClickedListener)
-    {
-        ChatSessionManager.removeChatLinkListener(chatLinkClickedListener);
-    }
-
-    /**
-     * Provides the {@link Highlighter} used in rendering the chat editor.
-     *
-     * @return highlighter used to render message being composed
-     */
-    @Override
-    public Highlighter getHighlighter()
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
-     * Gets the caret position in the chat editor.
-     *
-     * @return index of caret in message being composed
-     */
-    @Override
-    public int getCaretPosition()
-    {
-        throw new RuntimeException("Not supported yet");
-    }
-
-    /**
-     * Causes the chat to validate its appearance (suggests a repaint operation may be necessary).
-     */
-    @Override
-    public void promptRepaint()
-    {
-        throw new RuntimeException("Not supported yet");
     }
 
     private static int chatTypeToChatMsgType(String msgType)
@@ -1113,8 +934,7 @@ public class ChatPanel implements Chat, MessageListener
             });
         }
         if (!StringUtils.isNullOrEmpty(statusMessage)) {
-            String contactName
-                    = ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getContactAddress();
+            String contactName = ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getContactAddress();
             this.addMessage(contactName, chatContact.getName(), new Date(), Chat.STATUS_MESSAGE, ChatMessage.ENCODE_PLAIN,
                     statusMessage, ChatMessage.ENCRYPTION_NONE, null, null);
         }

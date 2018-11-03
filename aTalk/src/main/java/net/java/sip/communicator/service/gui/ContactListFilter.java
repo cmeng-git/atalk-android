@@ -13,6 +13,7 @@ package net.java.sip.communicator.service.gui;
  * <tt>UIGroup</tt> is matching the corresponding filter.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public interface ContactListFilter
 {
@@ -22,7 +23,7 @@ public interface ContactListFilter
      * @return <tt>true</tt> to indicate that the given <tt>uiContact</tt>
      * matches this filter, <tt>false</tt> - otherwise
      */
-    public boolean isMatching(UIContact uiContact);
+    boolean isMatching(UIContact uiContact);
 
     /**
      * Indicates if the given <tt>uiGroup</tt> is matching the current filter.
@@ -30,12 +31,11 @@ public interface ContactListFilter
      * @return <tt>true</tt> to indicate that the given <tt>uiGroup</tt>
      * matches this filter, <tt>false</tt> - otherwise
      */
-    public boolean isMatching(UIGroup uiGroup);
+    boolean isMatching(UIGroup uiGroup);
 
     /**
      * Applies this filter to any interested sources
-     * @param filterQuery the <tt>FilterQuery</tt> that tracks the results of
-     * this filtering
+     * @param filterQuery the <tt>FilterQuery</tt> that tracks the results of this filtering
      */
-    public void applyFilter(FilterQuery filterQuery);
+    void applyFilter(FilterQuery filterQuery);
 }

@@ -17,14 +17,11 @@ import java.util.List;
 
 /**
  * The <tt>ContactList</tt> interface represents a contact list. All contact
- * list components that need to be available as a service could implement
- * this interface.
+ * list components that need to be available as a service could implement this interface.
  *
  * @author Yana Stamcheva
  */
-public interface ContactList
-        extends ContactQueryListener,
-        MetaContactQueryListener
+public interface ContactList extends ContactQueryListener, MetaContactQueryListener
 {
     /**
      * Returns the actual component corresponding to the contact list.
@@ -41,13 +38,11 @@ public interface ContactList
     Collection<UIContactSource> getContactSources();
 
     /**
-     * Returns the <tt>ExternalContactSource</tt> corresponding to the given
-     * <tt>ContactSourceService</tt>.
+     * Returns the <tt>ExternalContactSource</tt> corresponding to the given <tt>ContactSourceService</tt>.
      *
      * @param contactSource the <tt>ContactSourceService</tt>, which
      * corresponding external source implementation we're looking for
-     * @return the <tt>ExternalContactSource</tt> corresponding to the given
-     * <tt>ContactSourceService</tt>
+     * @return the <tt>ExternalContactSource</tt> corresponding to the given <tt>ContactSourceService</tt>
      */
     UIContactSource getContactSource(ContactSourceService contactSource);
 
@@ -59,8 +54,7 @@ public interface ContactList
     void addContactSource(ContactSourceService contactSource);
 
     /**
-     * Removes the given contact source from the list of available contact
-     * sources.
+     * Removes the given contact source from the list of available contact sources.
      *
      * @param contactSource
      */
@@ -97,8 +91,7 @@ public interface ContactList
      * Adds the given group to this list.
      *
      * @param group the <tt>UIGroup</tt> to add
-     * @param isSorted indicates if the contact should be sorted regarding to
-     * the <tt>GroupNode</tt> policy
+     * @param isSorted indicates if the contact should be sorted regarding to the <tt>GroupNode</tt> policy
      */
     void addGroup(final UIGroup group, final boolean isSorted);
 
@@ -117,8 +110,7 @@ public interface ContactList
      * @param isContactSorted indicates if the contact should be sorted
      * regarding to the <tt>GroupNode</tt> policy
      * @param isGroupSorted indicates if the group should be sorted regarding to
-     * the <tt>GroupNode</tt> policy in case it doesn't exist and should be
-     * added
+     * the <tt>GroupNode</tt> policy in case it doesn't exist and should be dded
      */
     void addContact(final UIContact contact,
             final UIGroup group,
@@ -140,8 +132,7 @@ public interface ContactList
             final boolean isSorted);
 
     /**
-     * Removes the node corresponding to the given <tt>MetaContact</tt> from
-     * this list.
+     * Removes the node corresponding to the given <tt>MetaContact</tt> from this list.
      *
      * @param contact the <tt>UIContact</tt> to remove
      * @param removeEmptyGroup whether we should delete the group if is empty
@@ -167,8 +158,7 @@ public interface ContactList
      * <tt>UIGroup</tt>.
      *
      * @param group the parent <tt>UIGroup</tt>
-     * @return a collection of all direct child <tt>UIContact</tt>s of the given
-     * <tt>UIGroup</tt>
+     * @return a collection of all direct child <tt>UIContact</tt>s of the given <tt>UIGroup</tt>
      */
     Collection<UIContact> getContacts(final UIGroup group);
 
@@ -238,8 +228,7 @@ public interface ContactList
     void setSelectedGroup(UIGroup uiGroup);
 
     /**
-     * Selects the first found contact node from the beginning of the contact
-     * list.
+     * Selects the first found contact node from the beginning of the contact list.
      */
     void selectFirstContact();
 
@@ -272,16 +261,14 @@ public interface ContactList
     /**
      * Indicates if this contact list is empty.
      *
-     * @return <tt>true</tt> if this contact list contains no children,
-     * otherwise returns <tt>false</tt>
+     * @return <tt>true</tt> if this contact list contains no children, otherwise returns <tt>false</tt>
      */
     boolean isEmpty();
 
     /**
      * Shows/hides buttons shown in contact row.
      *
-     * @param isVisible <tt>true</tt> to show contact buttons, <tt>false</tt> -
-     * otherwise.
+     * @param isVisible <tt>true</tt> to show contact buttons, <tt>false</tt> - otherwise.
      */
     void setContactButtonsVisible(boolean isVisible);
 
@@ -304,16 +291,14 @@ public interface ContactList
     /**
      * Enables/disables drag operations on this contact list.
      *
-     * @param isEnabled <tt>true</tt> to enable drag operations, <tt>false</tt>
-     * otherwise
+     * @param isEnabled <tt>true</tt> to enable drag operations, <tt>false</tt> otherwise
      */
     void setDragEnabled(boolean isEnabled);
 
     /**
      * Enables/disables the right mouse click menu.
      *
-     * @param isEnabled <tt>true</tt> to enable right button menu,
-     * <tt>false</tt> otherwise.
+     * @param isEnabled <tt>true</tt> to enable right button menu, <tt>false</tt> otherwise.
      */
     void setRightButtonMenuEnabled(boolean isEnabled);
 }

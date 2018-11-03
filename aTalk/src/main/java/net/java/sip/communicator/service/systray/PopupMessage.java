@@ -50,14 +50,12 @@ public class PopupMessage
     private Object tag;
 
     /**
-     * Suggested timeout value in ms for hiding the popup if not clicked
-     * (-1 for infinity)
+     * Suggested timeout value in ms for hiding the popup if not clicked (-1 for infinity)
      */
     private long timeout;
 
     /**
-     * Name of the popup group to which this popup will belong.
-     * Used to group notifications on Android.
+     * Name of the popup group to which this popup will belong. Used to group notifications on Android.
      */
     private String group;
 
@@ -79,8 +77,7 @@ public class PopupMessage
      *
      * @param title the title, which will be shown
      * @param message the content of the message to display
-     * @param messageType the message type; one of XXX_MESSAGE_TYPE constants
-     * declared in <tt>SystrayService
+     * @param messageType the message type; one of XXX_MESSAGE_TYPE constants declared in <tt>SystrayService
      */
     public PopupMessage(String title, String message, int messageType)
     {
@@ -142,8 +139,7 @@ public class PopupMessage
      * @param imageIcon the image icon to show in this popup message
      * @param tag additional info to be used by the <tt>PopupMessageHandler</tt>
      */
-    public PopupMessage(String title, String message,
-            byte[] imageIcon, Object tag)
+    public PopupMessage(String title, String message, byte[] imageIcon, Object tag)
     {
         this(title, message, imageIcon);
         this.tag = tag;
@@ -280,8 +276,7 @@ public class PopupMessage
     }
 
     /**
-     * Returns suggested timeout value in ms for hiding the popup if not clicked
-     * by the user.
+     * Returns suggested timeout value in ms for hiding the popup if not clicked by the user.
      *
      * @return timeout for hiding the popup if not clicked by the user in ms.
      */

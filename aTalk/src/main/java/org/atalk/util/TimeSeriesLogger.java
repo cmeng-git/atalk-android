@@ -16,7 +16,7 @@
 
 package org.atalk.util;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -92,7 +92,7 @@ public class TimeSeriesLogger
      */
     public void trace(HashMap<String, Object> point)
     {
-        logger.trace(new JSONObject(point).toJSONString());
+        logger.trace(new JSONObject(point).toString());
     }
 
     /**
@@ -102,7 +102,7 @@ public class TimeSeriesLogger
      */
     public void warn(HashMap<String, Object> point)
     {
-        logger.warn(new JSONObject(point).toJSONString());
+        logger.warn(new JSONObject(point).toString());
     }
 
     /**
@@ -112,6 +112,6 @@ public class TimeSeriesLogger
      */
     public void info(HashMap<String, Object> point)
     {
-        logger.info(new JSONObject(point).toJSONString());
+        logger.info(new JSONObject(point).toString());
     }
 }

@@ -250,7 +250,7 @@ public class IceUdpTransportPacketExtension extends AbstractPacketExtension
      * type, attributes, namespace, text and candidates as the specified <tt>src</tt>
      */
     public static IceUdpTransportPacketExtension cloneTransportAndCandidates(
-            IceUdpTransportPacketExtension src, boolean copyDtls)
+            final IceUdpTransportPacketExtension src, boolean copyDtls)
     {
         IceUdpTransportPacketExtension dst = null;
         if (src != null) {
@@ -261,6 +261,7 @@ public class IceUdpTransportPacketExtension extends AbstractPacketExtension
                     dst.addCandidate(AbstractPacketExtension.clone(srcCand));
             }
             // Copy "web-socket" extensions.
+            // cmeng - NPE for src during testing; force to use final hopefully it helps
             for (WebSocketPacketExtension wspe : src.getChildExtensionsOfType(WebSocketPacketExtension.class)) {
                 dst.addChildExtension(new WebSocketPacketExtension(wspe.getUrl()));
             }

@@ -6,9 +6,9 @@
  */
 package net.java.sip.communicator.service.gui;
 
-import java.util.*;
-
 import net.java.sip.communicator.service.protocol.*;
+
+import java.util.*;
 
 /**
  * The <tt>UIContactDetail</tt> corresponds to a particular contact detail,
@@ -16,6 +16,7 @@ import net.java.sip.communicator.service.protocol.*;
  * transport <tt>ProtocolProviderService</tt>.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public abstract class UIContactDetail
 {
@@ -37,12 +38,10 @@ public abstract class UIContactDetail
     /**
      * The <tt>ProtocolProviderService</tt> corresponding to this detail.
      */
-    private Map<Class<? extends OperationSet>, ProtocolProviderService>
-                                                    preferredProviders;
+    private Map<Class<? extends OperationSet>, ProtocolProviderService> preferredProviders;
 
     /**
-     * The protocol to be used for this contact detail if no protocol provider
-     * is set.
+     * The protocol to be used for this contact detail if no protocol provider is set.
      */
     private Map<Class<? extends OperationSet>, String> preferredProtocols;
 
@@ -70,11 +69,11 @@ public abstract class UIContactDetail
      * @param descriptor the underlying object that this class is wrapping
      */
     public UIContactDetail(
-        String address,
-        String displayName,
-        Object descriptor)
+            String address,
+            String displayName,
+            Object descriptor)
     {
-        this(   address,
+        this(address,
                 displayName,
                 null,
                 null,
@@ -92,19 +91,17 @@ public abstract class UIContactDetail
      * @param category the category of the underlying contact detail
      * @param labels the collection of labels associated with this detail
      * @param preferredProviders the preferred protocol provider
-     * @param preferredProtocols the preferred protocol if no protocol provider
-     * is set
+     * @param preferredProtocols the preferred protocol if no protocol provider is set
      * @param descriptor the underlying object that this class is wrapping
      */
     public UIContactDetail(
-        String address,
-        String displayName,
-        String category,
-        Collection<String> labels,
-        Map<Class<? extends OperationSet>, ProtocolProviderService>
-                                                            preferredProviders,
-        Map<Class<? extends OperationSet>, String> preferredProtocols,
-        Object descriptor)
+            String address,
+            String displayName,
+            String category,
+            Collection<String> labels,
+            Map<Class<? extends OperationSet>, ProtocolProviderService> preferredProviders,
+            Map<Class<? extends OperationSet>, String> preferredProtocols,
+            Object descriptor)
     {
         this.address = address;
         this.displayName = displayName;
@@ -117,6 +114,7 @@ public abstract class UIContactDetail
 
     /**
      * Returns the display name of this detail.
+     *
      * @return the display name of this detail
      */
     public String getDisplayName()
@@ -126,6 +124,7 @@ public abstract class UIContactDetail
 
     /**
      * Returns the address of this detail.
+     *
      * @return the address of this detail
      */
     public String getAddress()
@@ -147,11 +146,9 @@ public abstract class UIContactDetail
     }
 
     /**
-     * Returns an iterator over the collection of labels associated with this
-     * detail.
+     * Returns an iterator over the collection of labels associated with this detail.
      *
-     * @return an iterator over the collection of labels associated with this
-     * detail
+     * @return an iterator over the collection of labels associated with this detail
      */
     public Iterator<String> getLabels()
     {
@@ -164,12 +161,11 @@ public abstract class UIContactDetail
     /**
      * Returns the protocol provider preferred for contacting this detail for
      * the given <tt>OperationSet</tt> class.
-     * @param opSetClass the <tt>OperationSet</tt> class for which we're looking
-     * for provider
+     *
+     * @param opSetClass the <tt>OperationSet</tt> class for which we're looking for provider
      * @return the protocol provider preferred for contacting this detail
      */
-    public ProtocolProviderService getPreferredProtocolProvider(
-        Class<? extends OperationSet> opSetClass)
+    public ProtocolProviderService getPreferredProtocolProvider(Class<? extends OperationSet> opSetClass)
     {
         if (preferredProviders != null)
             return preferredProviders.get(opSetClass);
@@ -179,17 +175,14 @@ public abstract class UIContactDetail
     /**
      * Adds a preferred protocol provider for a given OperationSet class.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class for which we're looking
-     * for protocol
+     * @param opSetClass the <tt>OperationSet</tt> class for which we're looking for protocol
      * @param protocolProvider the preferred protocol provider to add
      */
     public void addPreferredProtocolProvider(
-                                    Class<? extends OperationSet> opSetClass,
-                                    ProtocolProviderService protocolProvider)
+            Class<? extends OperationSet> opSetClass, ProtocolProviderService protocolProvider)
     {
         if (preferredProviders == null)
-            preferredProviders = new HashMap<   Class<? extends OperationSet>,
-                                                ProtocolProviderService>();
+            preferredProviders = new HashMap<>();
 
         preferredProviders.put(opSetClass, protocolProvider);
     }
@@ -198,6 +191,7 @@ public abstract class UIContactDetail
      * Returns the name of the protocol preferred for contacting this detail for
      * the given <tt>OperationSet</tt> class if no preferred protocol provider
      * is set.
+     *
      * @param opSetClass the <tt>OperationSet</tt> class for which we're looking
      * for protocol
      * @return the name of the protocol preferred for contacting this detail
@@ -212,17 +206,13 @@ public abstract class UIContactDetail
     /**
      * Adds a preferred protocol for a given OperationSet class.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class for which we're looking
-     * for protocol
+     * @param opSetClass the <tt>OperationSet</tt> class for which we're looking for protocol
      * @param protocol the preferred protocol to add
      */
-    public void addPreferredProtocol(
-                                    Class<? extends OperationSet> opSetClass,
-                                    String protocol)
+    public void addPreferredProtocol(Class<? extends OperationSet> opSetClass, String protocol)
     {
         if (preferredProtocols == null)
-            preferredProtocols = new HashMap<   Class<? extends OperationSet>,
-                                                String>();
+            preferredProtocols = new HashMap<>();
 
         preferredProtocols.put(opSetClass, protocol);
     }
@@ -260,6 +250,7 @@ public abstract class UIContactDetail
     /**
      * Returns the <tt>PresenceStatus</tt> of this <tt>ContactDetail</tt> or
      * null if the detail doesn't support presence.
+     *
      * @return the <tt>PresenceStatus</tt> of this <tt>ContactDetail</tt> or
      * null if the detail doesn't support presence
      */

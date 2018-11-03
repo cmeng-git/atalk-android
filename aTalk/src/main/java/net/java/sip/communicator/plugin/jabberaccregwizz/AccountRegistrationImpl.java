@@ -9,12 +9,7 @@ package net.java.sip.communicator.plugin.jabberaccregwizz;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
-import net.java.sip.communicator.service.gui.WizardPage;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.ProtocolNames;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
 import net.java.sip.communicator.util.Logger;
 
@@ -165,11 +160,11 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
     public boolean isPreferredProtocol()
     {
         // Check for preferred account through the PREFERRED_ACCOUNT_WIZARD property.
-//        String prefWName = JabberAccountRegistrationActivator.getResources().
-//            getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
-//
-//        if(!TextUtils.isEmpty(prefWName) > 0 && prefWName.equals(this.getClass().getName()))
-//            return true;
+        //        String prefWName = JabberAccountRegistrationActivator.getResources().
+        //            getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
+        //
+        //        if(!TextUtils.isEmpty(prefWName) > 0 && prefWName.equals(this.getClass().getName()))
+        //            return true;
 
         return true;
     }
@@ -235,12 +230,6 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
 
         // Loads account properties into registration object
         registration.loadAccount(accountID, JabberAccountRegistrationActivator.bundleContext);
-    }
-
-    @Override
-    public Iterator<WizardPage> getPages()
-    {
-        return null;
     }
 
     @Override

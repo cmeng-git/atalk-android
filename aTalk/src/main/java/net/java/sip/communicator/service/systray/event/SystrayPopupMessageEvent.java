@@ -14,8 +14,7 @@ import java.util.*;
  *
  * @author Yana Stamcheva
  */
-public class SystrayPopupMessageEvent
-    extends EventObject
+public class SystrayPopupMessageEvent extends EventObject
 {
     /**
      * Serial version UID.

@@ -290,7 +290,6 @@
     <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Камера не может поддерживать выбранное разрешение видео в портретном режиме. Поместите телефон в альбомную ориентацию для видеовызова:\n[width=%1$s; высота=%2$s]</string>
     <string name="service_gui_DISCONNECTED_STATUS">Отключено</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Отключение %1$s</string>
-    <string name="service_gui_DEFAULT_USER_PHOTO">personphoto</string>
     <string name="service_gui_DENY">Запретить</string>
     <string name="service_gui_DISPLAY_NAME">Контактное отображаемое имя</string>
     <string name="service_gui_DND_STATUS">Не беспокоить</string>

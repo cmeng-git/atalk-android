@@ -98,8 +98,7 @@ public interface SystrayService
      * @param popupHandler the handler to use
      * @return the previously used popup handler
      */
-    public PopupMessageHandler setActivePopupMessageHandler(
-            PopupMessageHandler popupHandler);
+    public PopupMessageHandler setActivePopupMessageHandler(PopupMessageHandler popupHandler);
 
     /**
      * Get the handler currently used by the systray service for popup message

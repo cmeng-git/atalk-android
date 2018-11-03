@@ -287,7 +287,6 @@
     <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">The device camera cannot support selected video resolution while in portrait mode. Please place phone in landscape orientation for video call:\n[width=%1$s; height=%2$s]</string>
     <string name="service_gui_DISCONNECTED_STATUS">Disconnected</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Disconnecting %1$s</string>
-    <string name="service_gui_DEFAULT_USER_PHOTO">personphoto</string>
     <string name="service_gui_DENY">Deny</string>
     <string name="service_gui_DISPLAY_NAME">Contact Display Name</string>
     <string name="service_gui_DND_STATUS">Do not disturb</string>

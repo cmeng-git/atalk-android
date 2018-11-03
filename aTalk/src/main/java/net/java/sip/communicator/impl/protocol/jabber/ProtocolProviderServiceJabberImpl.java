@@ -93,6 +93,7 @@ import org.jivesoftware.smackx.iqversion.VersionManager;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.nick.packet.Nick;
+import org.jivesoftware.smackx.nick.provider.NickProvider;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.ping.PingFailedListener;
 import org.jivesoftware.smackx.ping.PingManager;
@@ -1916,7 +1917,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     ConferenceDescriptionExtension.ELEMENT_NAME, ConferenceDescriptionExtension.NAMESPACE,
                     new ConferenceDescriptionExtensionProvider());
 
-            ProviderManager.addExtensionProvider(Nick.ELEMENT_NAME, Nick.NAMESPACE, new Nick.Provider());
+            ProviderManager.addExtensionProvider(Nick.ELEMENT_NAME, Nick.NAMESPACE, new NickProvider());
 
             ProviderManager.addExtensionProvider(AvatarUrl.ELEMENT_NAME, AvatarUrl.NAMESPACE, new AvatarUrl.Provider());
 
@@ -2582,7 +2583,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         else {
             // mResource can be null if user is not registered, so use default
             loadResource();
-            fullJid = JidCreate.fullFrom(mAccountID.getBareJid().asEntityBareJidIfPossible(), mResource);
+            fullJid = JidCreate.entityFullFrom(mAccountID.getBareJid().asEntityBareJidIfPossible(), mResource);
         }
         return fullJid;
     }

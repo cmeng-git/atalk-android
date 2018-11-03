@@ -23,6 +23,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.atalk.android.aTalkApp;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,6 +146,7 @@ public class LocationBgService extends Service {
                     if (task.isSuccessful() && task.getResult() != null) {
                         mLocation = task.getResult();
                     } else {
+                        aTalkApp.showToastMessage("Failed to get GPS location information!");
                         Log.w(TAG, "Failed to get location.");
                     }
                 }

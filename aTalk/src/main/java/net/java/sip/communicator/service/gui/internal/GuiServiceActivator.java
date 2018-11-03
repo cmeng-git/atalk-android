@@ -5,17 +5,17 @@
  */
 package net.java.sip.communicator.service.gui.internal;
 
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.service.resources.*;
-import org.osgi.framework.*;
+import org.atalk.service.resources.ResourceManagementService;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Lubomir Marinov
  * @author Yana Stamcheva
  */
-public class GuiServiceActivator
-    implements BundleActivator
+public class GuiServiceActivator implements BundleActivator
 {
     /**
      * The <tt>BundleContext</tt> of the service.
@@ -23,8 +23,7 @@ public class GuiServiceActivator
     private static BundleContext bundleContext;
 
     /**
-     * The <tt>ResourceManagementService</tt>, which gives access to application
-     * resources.
+     * The <tt>ResourceManagementService</tt>, which gives access to application resources.
      */
     private static ResourceManagementService resourceService;
 
@@ -60,20 +59,14 @@ public class GuiServiceActivator
     }
 
     /**
-     * Returns the <tt>ResourceManagementService</tt>, through which we will
-     * access all resources.
+     * Returns the <tt>ResourceManagementService</tt>, through which we will access all resources.
      *
-     * @return the <tt>ResourceManagementService</tt>, through which we will
-     * access all resources.
+     * @return the <tt>ResourceManagementService</tt>, through which we will access all resources.
      */
     public static ResourceManagementService getResources()
     {
-        if (resourceService == null)
-        {
-            resourceService
-                = ServiceUtils.getService(
-                        bundleContext,
-                        ResourceManagementService.class);
+        if (resourceService == null) {
+            resourceService = ServiceUtils.getService(bundleContext, ResourceManagementService.class);
         }
         return resourceService;
     }

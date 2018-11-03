@@ -60,7 +60,6 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"jitsi", "https://github.com/jitsi/jitsi"},
             new String[]{"jitsi-android", "https://github.com/jitsi/jitsi-android"},
             new String[]{"jmdns", "https://github.com/jmdns/jmdns"},
-            new String[]{"json-simple", "https://github.com/fangyidong/json-simple"},
             new String[]{"jxmpp-jid", "https://github.com/igniterealtime/jxmpp"},
             new String[]{"libjitsi", "https://github.com/jitsi/libjitsi"},
             new String[]{"libphonenumber", "https://github.com/googlei18n/libphonenumber"},

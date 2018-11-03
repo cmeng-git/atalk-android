@@ -291,7 +291,6 @@
     <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">La cámara del dispositivo no puede admitir la resolución de video seleccionada mientras está en modo vertical. Coloque el teléfono en orientación horizontal para la videollamada:\n[ancho=%1$s; altura=%2$s]</string>
     <string name="service_gui_DISCONNECTED_STATUS">Desconectado</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Desconectando %1$s</string>
-    <string name="service_gui_DEFAULT_USER_PHOTO">Foto de persona</string>
     <string name="service_gui_DENY">Denegar</string>
     <string name="service_gui_DISPLAY_NAME">Nombre del contacto que mostrar</string>
     <string name="service_gui_DND_STATUS">no molestar</string>

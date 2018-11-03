@@ -13,6 +13,7 @@ import net.java.sip.communicator.service.protocol.*;
  * interfaces representing a call should implement this interface.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public interface CallRenderer
 {
@@ -23,41 +24,36 @@ public interface CallRenderer
      * associated <tt>CallPeer</tt>s). Invoked by <tt>CallPanel</tt> when it
      * determines that this <tt>CallRenderer</tt> is no longer necessary.
      */
-    public void dispose();
+    void dispose();
 
     /**
-     * Returns the <tt>CallPeerRenderer</tt> corresponding to the given
-     * <tt>callPeer</tt>.
+     * Returns the <tt>CallPeerRenderer</tt> corresponding to the given <tt>callPeer</tt>.
      *
-     * @param callPeer the <tt>CallPeer</tt>, for which we're looking for a
-     * renderer
-     * @return the <tt>CallPeerRenderer</tt> corresponding to the given
-     * <tt>callPeer</tt>
+     * @param callPeer the <tt>CallPeer</tt>, for which we're looking for a renderer
+     * @return the <tt>CallPeerRenderer</tt> corresponding to the given <tt>callPeer</tt>
      */
-    public CallPeerRenderer getCallPeerRenderer(CallPeer callPeer);
+    CallPeerRenderer getCallPeerRenderer(CallPeer callPeer);
 
     /**
      * Starts the timer that counts call duration.
      */
-    public void startCallTimer();
+    void startCallTimer();
 
     /**
      * Stops the timer that counts call duration.
      */
-    public void stopCallTimer();
+    void stopCallTimer();
 
     /**
-     * Returns <code>true</code> if the call timer has been started, otherwise
-     * returns <code>false</code>.
-     * @return <code>true</code> if the call timer has been started, otherwise
-     * returns <code>false</code>
+     * Returns <code>true</code> if the call timer has been started, otherwise returns <code>false</code>.
+     * @return <code>true</code> if the call timer has been started, otherwise returns <code>false</code>
      */
-    public boolean isCallTimerStarted();
+    boolean isCallTimerStarted();
 
     /**
      * Updates the state of the general hold button. The hold button is selected
      * only if all call peers are locally or mutually on hold at the same time.
      * In all other cases the hold button is unselected.
      */
-    public void updateHoldButtonState();
+    void updateHoldButtonState();
 }

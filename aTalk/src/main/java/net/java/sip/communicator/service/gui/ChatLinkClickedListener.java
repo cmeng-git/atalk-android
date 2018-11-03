@@ -12,6 +12,7 @@ import java.net.*;
  * Event-callback for clicks on links.
  *
  * @author Daniel Perren
+ * @author Eng Chong Meng
  */
 public interface ChatLinkClickedListener
 {
@@ -20,5 +21,5 @@ public interface ChatLinkClickedListener
      *
      * @param url The URI of the link that was clicked.
      */
-    public void chatLinkClicked(URI url);
+    void chatLinkClicked(URI url);
 }

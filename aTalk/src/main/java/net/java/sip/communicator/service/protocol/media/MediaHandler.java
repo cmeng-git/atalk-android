@@ -570,10 +570,14 @@ public class MediaHandler extends PropertyChangeNotifier
         stream.setDirection(direction);
         stream.setFormat(format);
 
+        // cmeng: call has NPE during testing. Received content-reject while processing content-add;
+        // Call terminated? Just return with original stream if so ??   
         MediaAwareCall<?, ?, ?> call = callPeerMediaHandler.getPeer().getCall();
+        // if (call == null)
+        //    return stream;
+
         MediaType mediaType = (stream instanceof AudioMediaStream)
                 ? MediaType.AUDIO : MediaType.VIDEO;
-
         stream.setRTPTranslator(call.getRTPTranslator(mediaType));
 
         switch (mediaType) {
@@ -735,12 +739,11 @@ public class MediaHandler extends PropertyChangeNotifier
      * @param rtpExtensions the list of <tt>RTPExtension</tt>s that should be enabled for this stream.
      * @param masterStream whether the stream to be used as master if secured
      * @return the newly created <tt>MediaStream</tt>.
-     * @throws OperationFailedException if creating the stream fails for any reason (like for example accessing the device or
-     * setting the format).
+     * @throws OperationFailedException if creating the stream fails for any reason (like for example accessing
+     * the device or setting the format).
      */
     MediaStream initStream(CallPeerMediaHandler<?> callPeerMediaHandler, StreamConnector connector,
-            MediaDevice device, MediaFormat format, MediaStreamTarget target,
-            MediaDirection direction,
+            MediaDevice device, MediaFormat format, MediaStreamTarget target, MediaDirection direction,
             List<RTPExtension> rtpExtensions, boolean masterStream)
             throws OperationFailedException
     {
@@ -749,7 +752,7 @@ public class MediaHandler extends PropertyChangeNotifier
 
         if (stream == null) {
             if (logger.isTraceEnabled() && (mediaType != format.getMediaType()))
-                logger.trace("The media types of device and format differ.");
+                logger.trace("The media types of device and format differ: " + mediaType.toString());
 
             MediaService mediaService = ProtocolMediaActivator.getMediaService();
             SrtpControl srtpControl = srtpControls.findFirst(mediaType);
@@ -774,6 +777,7 @@ public class MediaHandler extends PropertyChangeNotifier
             if (logger.isDebugEnabled())
                 logger.debug("Reinitializing stream: " + stream);
         }
+        // cmeng: sream can still be null in testing. why?
         return configureStream(callPeerMediaHandler, device, format, target, direction,
                 rtpExtensions, stream, masterStream);
     }

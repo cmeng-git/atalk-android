@@ -26,15 +26,13 @@ import java.util.*;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public abstract class AbstractSystrayService
-        implements SystrayService
+public abstract class AbstractSystrayService implements SystrayService
 {
 
     /**
      * The logger
      */
-    private final Logger logger
-            = Logger.getLogger(AbstractSystrayService.class);
+    private final Logger logger = Logger.getLogger(AbstractSystrayService.class);
 
     /**
      * OSGI bundle context
@@ -92,8 +90,7 @@ public abstract class AbstractSystrayService
      * Checks if given <tt>handlerClass</tt> is registered as a handler.
      *
      * @param handlerClass the class name to be checked.
-     * @return <tt>true</tt> if given <tt>handlerClass</tt> is already
-     * registered as a handler.
+     * @return <tt>true</tt> if given <tt>handlerClass</tt> is already registered as a handler.
      */
     protected boolean containsHandler(String handlerClass)
     {
@@ -125,8 +122,7 @@ public abstract class AbstractSystrayService
 
     /**
      * Implements the <tt>SystrayService.addPopupMessageListener</tt> method.
-     * If <tt>activePopupHandler</tt> is still not available record the listener
-     * so we can add him later.
+     * If <tt>activePopupHandler</tt> is still not available record the listener so we can add him later.
      *
      * @param listener the listener to add
      */
@@ -156,8 +152,7 @@ public abstract class AbstractSystrayService
     /**
      * Set the handler which will be used for popup message
      *
-     * @param newHandler the handler to set. providing a null handler is like
-     * disabling popup.
+     * @param newHandler the handler to set. providing a null handler is like disabling popup.
      * @return the previously used popup handler
      */
     public PopupMessageHandler setActivePopupMessageHandler(PopupMessageHandler newHandler)
@@ -165,8 +160,7 @@ public abstract class AbstractSystrayService
         PopupMessageHandler oldHandler = activePopupHandler;
 
         if (logger.isInfoEnabled()) {
-            logger.info(
-                    "setting the following popup handler as active: " + newHandler);
+            logger.info("setting the following popup handler as active: " + newHandler);
         }
         activePopupHandler = newHandler;
         // if we have received calls to addPopupMessageListener before
@@ -300,8 +294,7 @@ public abstract class AbstractSystrayService
                         setActivePopupMessageHandler(handler);
                     }
                     if ((configuredHandler != null)
-                            && configuredHandler.equals(
-                            handler.getClass().getName())) {
+                            && configuredHandler.equals(handler.getClass().getName())) {
                         // The user has a preferred handler set and it just
                         // became available, thus setting it as active
                         setActivePopupMessageHandler(handler);

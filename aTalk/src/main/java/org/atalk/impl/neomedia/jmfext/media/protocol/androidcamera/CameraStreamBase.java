@@ -105,6 +105,8 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
             throws IOException
     {
         try {
+            // Resue if already acquired add not release previously
+            // if (mCamera == null) ???
             mCamera = Camera.open(mCameraId);
             mRotation = CameraUtils.getCameraDisplayRotation(mCameraId);
             boolean swap = (mRotation == 90) || (mRotation == 270);

@@ -111,7 +111,7 @@ public class LaunchArgHandler
     private  static final String PNAME_APPLICATION_NAME = "APPLICATION_NAME";
 
     /**
-     * The package name of the applications (e.g. jitsi).
+     * The package name of the applications (e.g. atalk).
      */
     private  static final String PNAME_PACKAGE_NAME = "PACKAGE_NAME";
 
@@ -429,7 +429,7 @@ public class LaunchArgHandler
 
         if (name == null || name.trim().length() == 0)
         {
-            name = "Jitsi";
+            name = "atalk";
         }
 
         if (version == null || version.trim().length() == 0)
@@ -451,9 +451,7 @@ public class LaunchArgHandler
     {
         String version = versionProperties.getProperty(PNAME_VERSION);
 
-        return  version == null
-            ? "build.by.SVN"
-            : version;
+        return  version == null ? "build.by.SVN" : version;
     }
 
     /**
@@ -467,9 +465,7 @@ public class LaunchArgHandler
     {
         String name = versionProperties.getProperty(PNAME_APPLICATION_NAME);
 
-        return  name == null
-            ? "Jitsi"
-            : name;
+        return  name == null ? "atalk" : name;
     }
 
     /**
@@ -482,9 +478,7 @@ public class LaunchArgHandler
     {
         String name = versionProperties.getProperty(PNAME_PACKAGE_NAME);
 
-        return  name == null
-            ? "jitsi"
-            : name;
+        return  name == null ? "atalk" : name;
     }
 
     /**

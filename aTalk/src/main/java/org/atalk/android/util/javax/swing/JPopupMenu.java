@@ -1,16 +1,11 @@
 package org.atalk.android.util.javax.swing;
 
 import net.java.sip.communicator.plugin.desktoputil.SelectedObject;
-import net.java.sip.communicator.plugin.otr.OtrMetaContactMenu;
 
 import org.atalk.android.util.java.awt.Dimension;
 
 public class JPopupMenu extends JComponent implements Accessible {
-	
-	public void addPopupMenuListener(OtrMetaContactMenu otrMetaContactMenu) {
-		// TODO Auto-generated method stub
-	}
-	
+
 	public void setMininumSize(Dimension dimension) {
 		// TODO Auto-generated method stub - cmeng
 		

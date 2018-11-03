@@ -48,26 +48,24 @@ public class GuiUtils
     private static final Map<Character, Character> DIGIT_MAPPINGS;
 
     /**
-     *  Characters and their replacement in created folder names
+     * Characters and their replacement in created folder names
      */
     private final static String[][] ESCAPE_SEQUENCES = new String[][]
-    {
-        {"&", "&_amp"},
-        {"/", "&_sl"},
-        {"\\\\", "&_bs"},   // the char \
-        {":", "&_co"},
-        {"\\*", "&_as"},    // the char *
-        {"\\?", "&_qm"},    // the char ?
-        {"\"", "&_pa"},     // the char "
-        {"<", "&_lt"},
-        {">", "&_gt"},
-        {"\\|", "&_pp"}     // the char |
-    };
+            {
+                    {"&", "&_amp"},
+                    {"/", "&_sl"},
+                    {"\\\\", "&_bs"},   // the char \
+                    {":", "&_co"},
+                    {"\\*", "&_as"},    // the char *
+                    {"\\?", "&_qm"},    // the char ?
+                    {"\"", "&_pa"},     // the char "
+                    {"<", "&_lt"},
+                    {">", "&_gt"},
+                    {"\\|", "&_pp"}     // the char |
+            };
 
-    static
-    {
-        HashMap<Character, Character> digitMap
-            = new HashMap<Character, Character>(50);
+    static {
+        HashMap<Character, Character> digitMap = new HashMap<>(50);
 
         digitMap.put('0', '0');
         digitMap.put('\uFF10', '0');  // Fullwidth digit 0
@@ -104,6 +102,7 @@ public class GuiUtils
 
     /**
      * Replaces some chars that are special in a regular expression.
+     *
      * @param text The initial text.
      * @return the formatted text
      */
@@ -113,21 +112,19 @@ public class GuiUtils
     }
 
     /**
-     * Counts occurrences of the <tt>needle</tt> character in the given
-     * <tt>text</tt>.
+     * Counts occurrences of the <tt>needle</tt> character in the given <tt>text</tt>.
+     *
      * @param text the text in which we search
      * @param needle the character we're looking for
-     * @return the count of occurrences of the <tt>needle</tt> chat in the
-     * given <tt>text</tt>
+     * @return the count of occurrences of the <tt>needle</tt> chat in the given <tt>text</tt>
      */
     public static int countOccurrences(String text, char needle)
     {
         int count = 0;
 
-        for (char c : text.toCharArray())
-        {
+        for (char c : text.toCharArray()) {
             if (c == needle)
-               ++count;
+                ++count;
         }
         return count;
     }
@@ -137,6 +134,7 @@ public class GuiUtils
      * and year values. Returns 0 if the two dates are equals, a value < 0 if
      * the first date is before the second one and > 0 if the first date is after
      * the second one.
+     *
      * @param date1 the first date to compare
      * @param date2 the second date to compare with
      * @return Returns 0 if the two dates are equals, a value < 0 if
@@ -153,6 +151,7 @@ public class GuiUtils
      * and year values. Returns 0 if the two dates are equals, a value < 0 if
      * the first date is before the second one and > 0 if the first date is after
      * the second one.
+     *
      * @param date1 the first date to compare
      * @param date2 the second date to compare with
      * @return Returns 0 if the two dates are equals, a value < 0 if
@@ -169,6 +168,7 @@ public class GuiUtils
      * and year values. Returns 0 if the two dates are equals, a value < 0 if
      * the first date is before the second one and > 0 if the first date is
      * after the second one.
+     *
      * @param date1 the first date to compare
      * @param date2 the second date to compare with
      * @return Returns 0 if the two dates are equals, a value < 0 if
@@ -188,16 +188,13 @@ public class GuiUtils
         int month2 = c2.get(Calendar.MONTH);
         int year2 = c2.get(Calendar.YEAR);
 
-        if (year1 < year2)
-        {
+        if (year1 < year2) {
             return -1;
         }
-        else if (year1 == year2)
-        {
+        else if (year1 == year2) {
             if (month1 < month2)
                 return -1;
-            else if (month1 == month2)
-            {
+            else if (month1 == month2) {
                 if (day1 < day2)
                     return -1;
                 else if (day1 == day2)
@@ -208,8 +205,7 @@ public class GuiUtils
             else
                 return 1;
         }
-        else
-        {
+        else {
             return 1;
         }
     }
@@ -219,6 +215,7 @@ public class GuiUtils
      * and year values. Returns 0 if the two dates are equals, a value < 0 if
      * the first date is before the second one and > 0 if the first date is
      * after the second one.
+     *
      * @param date1 the first date to compare
      * @param date2 the second date to compare with
      * @return Returns 0 if the two dates are equals, a value < 0 if
@@ -233,6 +230,7 @@ public class GuiUtils
     /**
      * Formats the given date. The result format is the following:
      * [Month] [Day], [Year]. For example: Dec 24, 2000.
+     *
      * @param date the date to format
      * @return the formatted date string
      */
@@ -244,6 +242,7 @@ public class GuiUtils
     /**
      * Formats the given date. The result format is the following:
      * [Month] [Day], [Year]. For example: Dec 24, 2000.
+     *
      * @param date the date to format
      * @return the formatted date string
      */
@@ -258,6 +257,7 @@ public class GuiUtils
     /**
      * Formats the given date as: Month DD, YYYY and appends it to the given
      * <tt>dateStrBuf</tt> string buffer.
+     *
      * @param date the date to format
      * @param dateStrBuf the <tt>StringBuffer</tt>, where to append the
      * formatted date
@@ -276,6 +276,7 @@ public class GuiUtils
     /**
      * Formats the given date as: Month DD, YYYY and appends it to the given
      * <tt>dateStrBuf</tt> string buffer.
+     *
      * @param date the date to format
      * @param dateStrBuf the <tt>StringBuffer</tt>, where to append the
      * formatted date
@@ -294,6 +295,7 @@ public class GuiUtils
     /**
      * Formats the time for the given date. The result format is the following:
      * [Hour]:[Minute]:[Second]. For example: 12:25:30.
+     *
      * @param date the date to format
      * @return the formatted hour string
      */
@@ -305,6 +307,7 @@ public class GuiUtils
     /**
      * Formats the time for the given date. The result format is the following:
      * [Hour]:[Minute]:[Second]. For example: 12:25:30.
+     *
      * @param time the date to format
      * @return the formatted hour string
      */
@@ -326,6 +329,7 @@ public class GuiUtils
      * Formats the time period duration for the given start date and end date.
      * The result format is the following:
      * [Hour]:[Minute]:[Second]. For example: 12:25:30.
+     *
      * @param startDate the start date
      * @param endDate the end date
      * @return the formatted hour string
@@ -339,6 +343,7 @@ public class GuiUtils
      * Formats the time period duration for the given start date and end date.
      * The result format is the following:
      * [Hour]:[Minute]:[Second]. For example: 12:25:30.
+     *
      * @param start the start date in milliseconds
      * @param end the end date in milliseconds
      * @return the formatted hour string
@@ -348,15 +353,15 @@ public class GuiUtils
         long duration = end - start;
 
         long milPerSec = 1000;
-        long milPerMin = milPerSec*60;
-        long milPerHour = milPerMin*60;
+        long milPerMin = milPerSec * 60;
+        long milPerHour = milPerMin * 60;
 
         long hours = duration / milPerHour;
         long minutes
-            = ( duration - hours*milPerHour ) / milPerMin;
+                = (duration - hours * milPerHour) / milPerMin;
         long seconds
-            = ( duration - hours*milPerHour - minutes*milPerMin)
-                    / milPerSec;
+                = (duration - hours * milPerHour - minutes * milPerMin)
+                / milPerSec;
 
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
@@ -372,21 +377,45 @@ public class GuiUtils
     {
         String monthStringKey;
 
-        switch (month)
-        {
-        case 0: monthStringKey = "service.gui.JANUARY"; break;
-        case 1: monthStringKey = "service.gui.FEBRUARY"; break;
-        case 2: monthStringKey = "service.gui.MARCH"; break;
-        case 3: monthStringKey = "service.gui.APRIL"; break;
-        case 4: monthStringKey = "service.gui.MAY"; break;
-        case 5: monthStringKey = "service.gui.JUNE"; break;
-        case 6: monthStringKey = "service.gui.JULY"; break;
-        case 7: monthStringKey = "service.gui.AUGUST"; break;
-        case 8: monthStringKey = "service.gui.SEPTEMBER"; break;
-        case 9: monthStringKey = "service.gui.OCTOBER"; break;
-        case 10: monthStringKey = "service.gui.NOVEMBER"; break;
-        case 11: monthStringKey = "service.gui.DECEMBER"; break;
-        default: return "";
+        switch (month) {
+            case 0:
+                monthStringKey = "service.gui.JANUARY";
+                break;
+            case 1:
+                monthStringKey = "service.gui.FEBRUARY";
+                break;
+            case 2:
+                monthStringKey = "service.gui.MARCH";
+                break;
+            case 3:
+                monthStringKey = "service.gui.APRIL";
+                break;
+            case 4:
+                monthStringKey = "service.gui.MAY";
+                break;
+            case 5:
+                monthStringKey = "service.gui.JUNE";
+                break;
+            case 6:
+                monthStringKey = "service.gui.JULY";
+                break;
+            case 7:
+                monthStringKey = "service.gui.AUGUST";
+                break;
+            case 8:
+                monthStringKey = "service.gui.SEPTEMBER";
+                break;
+            case 9:
+                monthStringKey = "service.gui.OCTOBER";
+                break;
+            case 10:
+                monthStringKey = "service.gui.NOVEMBER";
+                break;
+            case 11:
+                monthStringKey = "service.gui.DECEMBER";
+                break;
+            default:
+                return "";
         }
 
         return UtilActivator.getResources().getI18NString(monthStringKey);
@@ -410,6 +439,7 @@ public class GuiUtils
 
     /**
      * Formats the given long to X hour, Y min, Z sec.
+     *
      * @param millis the time in milliseconds to format
      * @return the formatted seconds
      */
@@ -421,22 +451,19 @@ public class GuiUtils
         values[2] = (millis / MILLIS_PER_MINUTE) % 60;
         values[3] = (millis / MILLIS_PER_SECOND) % 60;
 
-        String[] fields = { " d ", " h ", " min ", " sec" };
+        String[] fields = {" d ", " h ", " min ", " sec"};
 
         StringBuffer buf = new StringBuffer(64);
         boolean valueOutput = false;
 
-        for (int i = 0; i < 4; i++)
-        {
+        for (int i = 0; i < 4; i++) {
             long value = values[i];
 
-            if (value == 0)
-            {
+            if (value == 0) {
                 if (valueOutput)
                     buf.append('0').append(fields[i]);
             }
-            else
-            {
+            else {
                 valueOutput = true;
                 buf.append(value).append(fields[i]);
             }
@@ -457,17 +484,14 @@ public class GuiUtils
     {
         String resultId = string;
 
-        for (int j = 0; j < ESCAPE_SEQUENCES.length; j++)
-        {
-            resultId = resultId.
-                replaceAll(ESCAPE_SEQUENCES[j][0], ESCAPE_SEQUENCES[j][1]);
+        for (int j = 0; j < ESCAPE_SEQUENCES.length; j++) {
+            resultId = resultId.replaceAll(ESCAPE_SEQUENCES[j][0], ESCAPE_SEQUENCES[j][1]);
         }
         return resultId;
     }
 
     /**
-     * Escapes special HTML characters such as &lt;, &gt;, &amp; and &quot; in
-     * the specified message.
+     * Escapes special HTML characters such as &lt;, &gt;, &amp; and &quot; in the specified message.
      *
      * @param message the message to be processed
      * @return the processed message with escaped special HTML characters

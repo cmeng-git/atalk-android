@@ -15,15 +15,6 @@
  */
 package net.java.sip.communicator.service.gui;
 
-import android.text.method.KeyListener;
-
-import net.java.sip.communicator.service.gui.event.ChatFocusListener;
-import net.java.sip.communicator.service.gui.event.ChatMenuListener;
-
-import org.atalk.android.util.javax.swing.event.CaretListener;
-import org.atalk.android.util.javax.swing.event.DocumentListener;
-import org.atalk.android.util.javax.swing.text.Highlighter;
-
 import java.util.Date;
 
 /**
@@ -85,114 +76,28 @@ public interface Chat
      *
      * @return TRUE if the chat is focused, FALSE - otherwise
      */
-   boolean isChatFocused();
+    boolean isChatFocused();
 
     /**
      * Returns the message written by user in the chat write area.
      *
      * @return the message written by user in the chat write area
      */
-   String getMessage();
+    String getMessage();
 
     /**
      * Bring this chat to front if <tt>b</tt> is true, hide it otherwise.
      *
      * @param isVisible tells if the chat will be made visible or not.
      */
-   void setChatVisible(boolean isVisible);
+    void setChatVisible(boolean isVisible);
 
     /**
      * Sets the given message as a message in the chat write area.
      *
      * @param message the text that would be set to the chat write area
      */
-   void setMessage(String message);
-
-    /**
-     * Adds the given <tt>ChatFocusListener</tt> to this <tt>Chat</tt>. The
-     * <tt>ChatFocusListener</tt> is used to inform other bundles when a chat has changed its
-     * focus state.
-     *
-     * @param l the <tt>ChatFocusListener</tt> to add
-     */
-   void addChatFocusListener(ChatFocusListener l);
-
-    /**
-     * Removes the given <tt>ChatFocusListener</tt> from this <tt>Chat</tt>. The
-     * <tt>ChatFocusListener</tt> is used to inform other bundles when a chat has changed its
-     * focus state.
-     *
-     * @param l the <tt>ChatFocusListener</tt> to remove
-     */
-   void removeChatFocusListener(ChatFocusListener l);
-
-    /**
-     * Adds the given {@link KeyListener} to this <tt>Chat</tt>. The <tt>KeyListener</tt> is used
-     * to inform other bundles when a user has typed in the chat editor area.
-     *
-     * @param l the <tt>KeyListener</tt> to add
-     */
-   void addChatEditorKeyListener(KeyListener l);
-
-    /**
-     * Removes the given {@link KeyListener} from this <tt>Chat</tt>. The <tt>KeyListener</tt>
-     * is used to inform other bundles when a user has typed in the chat editor area.
-     *
-     * @param l the <tt>ChatFocusListener</tt> to remove
-     */
-   void removeChatEditorKeyListener(KeyListener l);
-
-    /**
-     * Adds the given {@link ChatMenuListener} to this <tt>Chat</tt>. The
-     * <tt>ChatMenuListener</tt> is used to determine menu elements that should be added on right
-     * clicks.
-     *
-     * @param l the <tt>ChatMenuListener</tt> to add
-     */
-   void addChatEditorMenuListener(ChatMenuListener l);
-
-    /**
-     * Adds the given {@link CaretListener} to this <tt>Chat</tt>. The <tt>CaretListener</tt> is
-     * used to inform other bundles when a user has moved the caret in the chat editor area.
-     *
-     * @param l the <tt>CaretListener</tt> to add
-     */
-   void addChatEditorCaretListener(CaretListener l);
-
-    /**
-     * Adds the given {@link DocumentListener} to this <tt>Chat</tt>. The
-     * <tt>DocumentListener</tt> is used to inform other bundles when a user has modified the
-     * document in the chat editor area.
-     *
-     * @param l the <tt>DocumentListener</tt> to add
-     */
-   void addChatEditorDocumentListener(DocumentListener l);
-
-    /**
-     * Removes the given {@link ChatMenuListener} to this <tt>Chat</tt>. The
-     * <tt>ChatMenuListener</tt> is used to determine menu elements that should be added on right
-     * clicks.
-     *
-     * @param l the <tt>ChatMenuListener</tt> to add
-     */
-   void removeChatEditorMenuListener(ChatMenuListener l);
-
-    /**
-     * Removes the given {@link CaretListener} from this <tt>Chat</tt>. The <tt>CaretListener</tt>
-     * is used to inform other bundles when a user has moved the caret in the chat editor area.
-     *
-     * @param l the <tt>CaretListener</tt> to remove
-     */
-   void removeChatEditorCaretListener(CaretListener l);
-
-    /**
-     * Removes the given {@link DocumentListener} from this <tt>Chat</tt>. The
-     * <tt>DocumentListener</tt> is used to inform other bundles when a user has modified the
-     * document in the chat editor area.
-     *
-     * @param l the <tt>DocumentListener</tt> to remove
-     */
-   void removeChatEditorDocumentListener(DocumentListener l);
+    void setMessage(String message);
 
     /**
      * Adds a message to this <tt>Chat</tt>.
@@ -203,7 +108,7 @@ public interface Chat
      * @param mimeType the content encode type i.e plain or html
      * @param message the message text
      */
-   void addMessage(String contactName, Date date, String messageType, int mimeType, String message);
+    void addMessage(String contactName, Date date, String messageType, int mimeType, String message);
 
     /**
      * Adds a new ChatLinkClickedListener. The callback is called for every link whose scheme is
@@ -216,31 +121,5 @@ public interface Chat
      *
      * @param listener callback that is notified when a link was clicked.
      */
-   void addChatLinkClickedListener(ChatLinkClickedListener listener);
-
-    /**
-     * Removes an existing ChatLinkClickedListener
-     *
-     * @param listener the already registered listener to remove.
-     */
-   void removeChatLinkClickedListener(ChatLinkClickedListener listener);
-
-    /**
-     * Provides the {@link Highlighter} used in rendering the chat editor.
-     *
-     * @return highlighter used to render message being composed
-     */
-   Highlighter getHighlighter();
-
-    /**
-     * Gets the caret position in the chat editor.
-     *
-     * @return index of caret in message being composed
-     */
-   int getCaretPosition();
-
-    /**
-     * Causes the chat to validate its appearance (suggests a repaint operation may be necessary).
-     */
-   void promptRepaint();
+    void addChatLinkClickedListener(ChatLinkClickedListener listener);
 }

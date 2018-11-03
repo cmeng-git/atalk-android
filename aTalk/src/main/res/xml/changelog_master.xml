@@ -6,6 +6,13 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.6.1 (11/03/2018)" versioncode="1061">
+        <change>Omemo to ignore read-only devices to avoid weakening of forward secrecy implementation</change>
+        <change>Fix ConcurrentModification Exception when receiving multiple history messages</change>
+        <change>Port to use smack 4.4.0-alpha2 and dependency miniDns-0.4.0-alpha3</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.6.0 (10/26/2018)" versioncode="1060">
         <change>Built target for Android 9.0 (Pie) or API-28</change>
         <change>Improve X509 certificate display layout and information</change>

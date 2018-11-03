@@ -6,19 +6,17 @@
  */
 package net.java.sip.communicator.service.gui.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 
-import net.java.sip.communicator.service.contactlist.*;
+import java.util.EventObject;
 
 /**
  * The <tt>MetaGroupQueryEvent</tt> is triggered each time a
- * <tt>MetaContactGroup</tt> is received as a result of a
- * <tt>MetaContactQuery</tt>.
+ * <tt>MetaContactGroup</tt> is received as a result of a <tt>MetaContactQuery</tt>.
  *
  * @author Yana Stamcheva
  */
-public class MetaGroupQueryEvent
-    extends EventObject
+public class MetaGroupQueryEvent extends EventObject
 {
     /**
      * The <tt>MetaContactGroup</tt> this event is about.
@@ -27,14 +25,12 @@ public class MetaGroupQueryEvent
 
     /**
      * Creates an instance of <tt>MetaGroupQueryEvent</tt> by specifying the
-     * <tt>source</tt> query this event comes from and the <tt>metaGroup</tt>
-     * this event is about.
+     * <tt>source</tt> query this event comes from and the <tt>metaGroup</tt> this event is about.
      *
      * @param source the <tt>MetaContactQuery</tt> that triggered this event
      * @param metaGroup the <tt>MetaContactGroup</tt> this event is about
      */
-    public MetaGroupQueryEvent( MetaContactQuery source,
-                                MetaContactGroup metaGroup)
+    public MetaGroupQueryEvent(MetaContactQuery source, MetaContactGroup metaGroup)
     {
         super(source);
         this.metaGroup = metaGroup;
@@ -42,6 +38,7 @@ public class MetaGroupQueryEvent
 
     /**
      * Returns the <tt>MetaContactQuery</tt> that triggered this event.
+     *
      * @return the <tt>MetaContactQuery</tt> that triggered this event
      */
     public MetaContactQuery getQuerySource()
@@ -51,6 +48,7 @@ public class MetaGroupQueryEvent
 
     /**
      * Returns the <tt>MetaContactGroup</tt> this event is about.
+     *
      * @return the <tt>MetaContactGroup</tt> this event is about
      */
     public MetaContactGroup getMetaGroup()

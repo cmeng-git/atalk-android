@@ -16,25 +16,21 @@ import net.java.sip.communicator.service.systray.event.*;
  *
  * @author Lubomir Marinov
  */
-public abstract class AbstractPopupMessageHandler
-    implements PopupMessageHandler
+public abstract class AbstractPopupMessageHandler implements PopupMessageHandler
 {
 
     /**
      * The list of <tt>SystrayPopupMessageListener</tt>s registered with this
      * instance.
      */
-    private final List<SystrayPopupMessageListener> popupMessageListeners
-        = new Vector<SystrayPopupMessageListener>();
+    private final List<SystrayPopupMessageListener> popupMessageListeners = new Vector<>();
 
     /**
      * Adds a <tt>SystrayPopupMessageListener</tt> to this instance so that it
      * receives <tt>SystrayPopupMessageEvent</tt>s.
      *
-     * @param listener the <tt>SystrayPopupMessageListener</tt> to be added to
-     * this instance
-     * @see PopupMessageHandler#addPopupMessageListener(
-     * SystrayPopupMessageListener)
+     * @param listener the <tt>SystrayPopupMessageListener</tt> to be added to this instance
+     * @see PopupMessageHandler#addPopupMessageListener(SystrayPopupMessageListener)
      */
     public void addPopupMessageListener(SystrayPopupMessageListener listener)
     {
@@ -58,9 +54,7 @@ public abstract class AbstractPopupMessageHandler
 
         synchronized (popupMessageListeners)
         {
-            listeners
-                = new ArrayList<SystrayPopupMessageListener>(
-                        popupMessageListeners);
+            listeners = new ArrayList<>(popupMessageListeners);
         }
 
         for (SystrayPopupMessageListener listener : listeners)
@@ -71,10 +65,8 @@ public abstract class AbstractPopupMessageHandler
      * Removes a <tt>SystrayPopupMessageListener</tt> from this instance so that
      * it no longer receives <tt>SystrayPopupMessageEvent</tt>s.
      *
-     * @param listener the <tt>SystrayPopupMessageListener</tt> to be removed
-     * from this instance
-     * @see PopupMessageHandler#removePopupMessageListener(
-     * SystrayPopupMessageListener)
+     * @param listener the <tt>SystrayPopupMessageListener</tt> to be removed from this instance
+     * @see PopupMessageHandler#removePopupMessageListener(SystrayPopupMessageListener)
      */
     public void removePopupMessageListener(SystrayPopupMessageListener listener)
     {
