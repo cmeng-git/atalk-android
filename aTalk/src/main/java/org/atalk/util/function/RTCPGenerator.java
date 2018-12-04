@@ -18,21 +18,20 @@ package org.atalk.util.function;
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 
 import org.atalk.service.neomedia.RawPacket;
+// import java.util.function.Function; => need API-24
 
 /**
- * A <tt>Function</tt> that produces <tt>RawPacket</tt>s from
- * <tt>RTCPCompoundPacket</tt>s.
+ * A <tt>Function</tt> that produces <tt>RawPacket</tt>s from <tt>RTCPCompoundPacket</tt>s.
  *
  * @author George Politis
+ * @author Eng Chong Meng
  */
-public class RTCPGenerator
-    extends AbstractFunction<RTCPCompoundPacket, RawPacket>
+public class RTCPGenerator extends AbstractFunction<RTCPCompoundPacket, RawPacket>
 {
     @Override
     public RawPacket apply(RTCPCompoundPacket in)
     {
-        if (in == null)
-        {
+        if (in == null) {
             return null;
         }
 
@@ -41,9 +40,7 @@ public class RTCPGenerator
 
         // TODO We need to be able to re-use original RawPacket buffer.
         in.assemble(len, false);
-
         byte[] buf = in.data;
-
         return new RawPacket(buf, 0, len);
     }
 }

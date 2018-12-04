@@ -195,7 +195,9 @@ public class CallPeerJabberImpl
             // send an error response
             String reasonText = "Error: " + exc.getMessage();
             JingleIQ errResp = JinglePacketFactory.createSessionTerminate(
-                    sessionInitIQ.getTo(), sessionInitIQ.getFrom(), sessionInitIQ.getSID(),
+                    sessionInitIQ.getTo(),
+                    sessionInitIQ.getFrom(),
+                    sessionInitIQ.getSID(),
                     Reason.GENERAL_ERROR, reasonText);
 
             setState(CallPeerState.FAILED, reasonText);
@@ -606,8 +608,11 @@ public class CallPeerJabberImpl
                 logger.info("Failed to process a session-accept", exc);
 
             // send an error response;
-            JingleIQ errResp = JinglePacketFactory.createSessionTerminate(sessionInitIQ.getTo(),
-                    sessionInitIQ.getFrom(), sessionInitIQ.getSID(), Reason.INCOMPATIBLE_PARAMETERS,
+            JingleIQ errResp = JinglePacketFactory.createSessionTerminate(
+                    sessionInitIQ.getTo(),
+                    sessionInitIQ.getFrom(),
+                    sessionInitIQ.getSID(),
+                    Reason.INCOMPATIBLE_PARAMETERS,
                     exc.getClass().getName() + ": " + exc.getMessage());
 
             setState(CallPeerState.FAILED, "Error: " + exc.getMessage());
@@ -690,8 +695,11 @@ public class CallPeerJabberImpl
 
             // send an error response;
             String reasonText = "Error: " + ex.getMessage();
-            JingleIQ errResp = JinglePacketFactory.createSessionTerminate(sessionInitIQ.getTo(),
-                    sessionInitIQ.getFrom(), sessionInitIQ.getSID(), Reason.INCOMPATIBLE_PARAMETERS, reasonText);
+            JingleIQ errResp = JinglePacketFactory.createSessionTerminate(
+                    sessionInitIQ.getTo(),
+                    sessionInitIQ.getFrom(),
+                    sessionInitIQ.getSID(),
+                    Reason.INCOMPATIBLE_PARAMETERS, reasonText);
 
             setState(CallPeerState.FAILED, reasonText);
             mConnection.sendStanza(errResp);
@@ -722,8 +730,11 @@ public class CallPeerJabberImpl
         DiscoverInfo discoverInfo = getDiscoveryInfo();
         if ((discoverInfo != null)
                 && discoverInfo.containsFeature(ProtocolProviderServiceJabberImpl.URN_IETF_RFC_3264)) {
-            mConnection.sendStanza(JinglePacketFactory.createDescriptionInfo(sessionInitIQ.getTo(),
-                    sessionInitIQ.getFrom(), sessionInitIQ.getSID(), getMediaHandler().getLocalContentList()));
+            mConnection.sendStanza(JinglePacketFactory.createDescriptionInfo(
+                    sessionInitIQ.getTo(),
+                    sessionInitIQ.getFrom(),
+                    sessionInitIQ.getSID(),
+                    getMediaHandler().getLocalContentList()));
         }
         // process members if any
         processSourceAdd(sessionInitIQ);
@@ -827,8 +838,11 @@ public class CallPeerJabberImpl
 
             // send an error response
             String reasonText = "Error: " + ofe.getMessage();
-            JingleIQ errResp = JinglePacketFactory.createSessionTerminate(mProtocolProvider.getOurJID(),
-                    mPeerJid, sessionInitIQ.getSID(), Reason.GENERAL_ERROR, reasonText);
+            JingleIQ errResp = JinglePacketFactory.createSessionTerminate(
+                    mProtocolProvider.getOurJID(),
+                    mPeerJid,
+                    sessionInitIQ.getSID(),
+                    Reason.GENERAL_ERROR, reasonText);
 
             setState(CallPeerState.FAILED, reasonText);
             mConnection.sendStanza(errResp);
@@ -862,7 +876,11 @@ public class CallPeerJabberImpl
         // we are now on hold and need to realize this before potentially
         // spoiling it all with an exception while sending the packet :).
         reevalLocalHoldStatus();
-        JingleIQ onHoldIQ = JinglePacketFactory.createSessionInfo(mProtocolProvider.getOurJID(), mPeerJid, getSID(), type);
+        JingleIQ onHoldIQ = JinglePacketFactory.createSessionInfo(
+                mProtocolProvider.getOurJID(),
+                mPeerJid,
+                getSID(),
+                type);
         try {
             mConnection.sendStanza(onHoldIQ);
         } catch (NotConnectedException | InterruptedException e) {

@@ -14,6 +14,8 @@
 package org.atalk.impl.neomedia.transform;
 
 import org.atalk.service.neomedia.*;
+
+// import java.util.function.Predicate;  // cmeng: required API-24
 import org.atalk.util.function.Predicate;
 
 /**

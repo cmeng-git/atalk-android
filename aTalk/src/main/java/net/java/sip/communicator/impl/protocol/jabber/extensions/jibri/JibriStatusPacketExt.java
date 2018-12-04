@@ -7,8 +7,8 @@ package net.java.sip.communicator.impl.protocol.jabber.extensions.jibri;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketExtension;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultPacketExtensionProvider;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.health.HealthStatusPacketExt;
 
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.provider.ProviderManager;
 
 /**
@@ -30,8 +30,6 @@ public class JibriStatusPacketExt extends AbstractPacketExtension
      */
     public static final String ELEMENT_NAME = "jibri-status";
 
-    private static final String STATUS_ATTRIBUTE = "status";
-
     /**
      * Creates new instance of <tt>VideoMutedExtension</tt>.
      */
@@ -46,51 +44,35 @@ public class JibriStatusPacketExt extends AbstractPacketExtension
                 new DefaultPacketExtensionProvider<>(JibriStatusPacketExt.class));
     }
 
-    public Status getStatus()
+    public JibriBusyStatusPacketExt getBusyStatus()
     {
-        return Status.parse(getAttributeAsString(STATUS_ATTRIBUTE));
+        return getChildExtension(JibriBusyStatusPacketExt.class);
     }
 
-    public void setStatus(Status status)
+    public void setBusyStatus(JibriBusyStatusPacketExt busyStatus)
     {
-        setAttribute(STATUS_ATTRIBUTE, String.valueOf(status));
+        setChildExtension(busyStatus);
     }
 
-    public enum Status
+    public HealthStatusPacketExt getHealthStatus()
     {
-        IDLE("idle"),
-        BUSY("busy"),
-        UNDEFINED("undefined");
-        private String name;
+        return getChildExtension(HealthStatusPacketExt.class);
+    }
 
-        Status(String name)
-        {
-            this.name = name;
-        }
+    public void setHealthStatus(HealthStatusPacketExt healthStatus)
+    {
+        setChildExtension(healthStatus);
+    }
 
-        @Override
-        public String toString()
-        {
-            return name;
-        }
-
-        /**
-         * Parses <tt>Status</tt> from given string.
-         *
-         * @param status the string representation of <tt>Status</tt>.
-         * @return <tt>Status</tt> value for given string or {@link #UNDEFINED} if given string does
-         * not reflect any of valid values.
-         */
-        public static Status parse(String status)
-        {
-            if (StringUtils.isNullOrEmpty(status))
-                return UNDEFINED;
-
-            try {
-                return Status.valueOf(status.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return UNDEFINED;
-            }
-        }
+    /**
+     * Provides a convenient helper to determine if this Jibri is available or not by looking at
+     * both the busy status and the health status.
+     * @return true if this Jibri should be considered available for use according to this presence, false
+     * otherwise
+     */
+    public boolean isAvailable()
+    {
+        return getHealthStatus().getStatus().equals(HealthStatusPacketExt.Health.HEALTHY) &&
+                getBusyStatus().getStatus().equals(JibriBusyStatusPacketExt.BusyStatus.IDLE);
     }
 }

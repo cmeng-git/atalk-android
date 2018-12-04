@@ -248,11 +248,11 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         XMPPConnection connection = protocolProvider.getConnection();
         Stanza response = null;
         try {
-            StanzaCollector packetCollector = connection.createStanzaCollectorAndSend(conferenceRequest);
+            StanzaCollector stanzaCollector = connection.createStanzaCollectorAndSend(conferenceRequest);
             try {
-                response = packetCollector.nextResultOrThrow();
+                response = stanzaCollector.nextResultOrThrow();
             } finally {
-                packetCollector.cancel();
+                stanzaCollector.cancel();
             }
         } catch (NotConnectedException | InterruptedException e1) {
             throw new OperationFailedException("Could not send the conference request",

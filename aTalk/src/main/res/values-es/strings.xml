@@ -1062,6 +1062,7 @@
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Soporte relé</string>
     
     <!-- STUN edit -->
+    <string name="service_gui_STUN_TURN_SERVER">Servidor STUN/TURN</string>
     <string name="service_gui_STUN_EDIT_ADDRESS">Dirección IP</string>
     <string name="service_gui_STUN_EDIT_PASSWORD">Contraseña</string>
     <string name="service_gui_STUN_EDIT_PORT">Puerto del Servidor</string>

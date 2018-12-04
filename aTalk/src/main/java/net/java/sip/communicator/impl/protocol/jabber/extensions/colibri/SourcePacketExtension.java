@@ -57,8 +57,7 @@ public class SourcePacketExtension extends AbstractPacketExtension
     }
 
     /**
-     * Adds a specific parameter (as defined by Source-Specific Media Attributes in Jingle) to this
-     * source.
+     * Adds a specific parameter (as defined by Source-Specific Media Attributes in Jingle) to this source.
      *
      * @param parameter the <tt>ParameterPacketExtension</tt> to add to this source
      */
@@ -68,8 +67,7 @@ public class SourcePacketExtension extends AbstractPacketExtension
     }
 
     /**
-     * Gets the parameters (as defined by Source-Specific Media Attributes in Jingle) of this
-     * source.
+     * Gets the parameters (as defined by Source-Specific Media Attributes in Jingle) of this source.
      *
      * @return the <tt>ParameterPacketExtension</tt>s of this source
      */

@@ -1044,6 +1044,7 @@
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Support relay</string>
 
     <!-- STUN edit -->
+    <string name="service_gui_STUN_TURN_SERVER">STUN/TURN Server</string>
     <string name="service_gui_STUN_EDIT_ADDRESS">IP Address</string>
     <string name="service_gui_STUN_EDIT_PASSWORD">Password</string>
     <string name="service_gui_STUN_EDIT_PORT">Server port</string>

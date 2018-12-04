@@ -11,6 +11,7 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketE
  * Sidebars by val packet extension.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public class SidebarsByValPacketExtension extends AbstractPacketExtension
 {

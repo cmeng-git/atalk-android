@@ -6,7 +6,6 @@
 package org.atalk.android.gui.call;
 
 import net.java.sip.communicator.impl.phonenumbers.PhoneNumberI18nServiceImpl;
-import net.java.sip.communicator.plugin.desktoputil.ErrorDialog;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.*;
 import net.java.sip.communicator.util.*;
@@ -19,7 +18,6 @@ import org.atalk.android.gui.contactlist.UIContactImpl;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.util.java.awt.Component;
 import org.atalk.android.util.javax.swing.JComponent;
-import net.java.sip.communicator.util.NetworkUtils;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
@@ -357,8 +355,8 @@ public class CallManager
             }
         }
         else {
-            new ErrorDialog(null, aTalkApp.getResString(R.string.service_gui_WARNING),
-                    aTalkApp.getResString(R.string.service_gui_NO_ONLINE_TELEPHONY_ACCOUNT)).showDialog();
+            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                    R.string.service_gui_WARNING, R.string.service_gui_NO_ONLINE_TELEPHONY_ACCOUNT);
         }
     }
 
@@ -848,7 +846,6 @@ public class CallManager
          *
          * The constructor is private because it relies on its arguments being validated prior to its invocation.
          *
-         *
          * @param protocolProvider the <tt>ProtocolProviderService</tt> which is to perform the establishment of the
          * new <tt>Call</tt>
          * @param contact the contact to call
@@ -932,9 +929,8 @@ public class CallManager
 
                 if (t.getMessage() != null)
                     message += "\n" + t.getMessage();
-
-                // new ErrorDialog(null, aTalkApp.getResString(R.string.service_gui_ERROR), message, t).showDialog();
-                AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), aTalkApp.getResString(R.string.service_gui_ERROR), message);
+                AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                        aTalkApp.getResString(R.string.service_gui_ERROR), message);
             }
         }
     }
@@ -1128,9 +1124,8 @@ public class CallManager
             }
             if (exception != null) {
                 logger.error("The call could not be created: ", exception);
-
-                new ErrorDialog(null, aTalkApp.getResString(R.string.service_gui_ERROR),
-                        exception.getMessage(), ErrorDialog.ERROR).showDialog();
+                AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                        aTalkApp.getResString(R.string.service_gui_ERROR), exception.getMessage());
             }
 
             if (uiContact != null && createdCall != null)
@@ -1340,8 +1335,8 @@ public class CallManager
                     }
                 } catch (Exception e) {
                     logger.error("Failed to invite callees: " + Arrays.toString(contactArray), e);
-                    new ErrorDialog(null, aTalkApp.getResString(R.string.service_gui_ERROR),
-                            e.getMessage(), ErrorDialog.ERROR).showDialog();
+                    AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                            aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
                 }
             }
         }
@@ -1354,9 +1349,7 @@ public class CallManager
     private static class InviteToConferenceBridgeThread extends Thread
     {
         private final ProtocolProviderService callProvider;
-
         private final String[] callees;
-
         private final Call call;
 
         public InviteToConferenceBridgeThread(ProtocolProviderService callProvider, String[] callees, Call call)
@@ -1389,8 +1382,8 @@ public class CallManager
                 }
             } catch (Exception e) {
                 logger.error("Failed to invite callees: " + Arrays.toString(callees), e);
-                new ErrorDialog(null, aTalkApp.getResString(R.string.service_gui_ERROR),
-                        e.getMessage(), e).showDialog();
+                AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                        aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
             }
         }
     }

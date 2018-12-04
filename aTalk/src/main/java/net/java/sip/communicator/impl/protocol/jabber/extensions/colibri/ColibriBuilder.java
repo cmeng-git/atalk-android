@@ -49,6 +49,7 @@ import java.util.Map;
  * it will fail on other request types because it will not supply valid conference ID.
  *
  * @author Pawel Domas
+ * @author Boris Grozev
  * @author Eng Chong Meng
  */
 public class ColibriBuilder
@@ -180,13 +181,14 @@ public class ColibriBuilder
     private Integer channelLastN;
 
     /**
-     * Channel 'simulcast-mode' option that will be added when channels are created. Set to <tt>null</tt> in order to omit.
+     * Channel 'simulcast-mode' option that will be added when channels are created.
+     * Set to <tt>null</tt> in order to omit.
      */
     private SimulcastMode simulcastMode;
 
     /**
-     * Specifies the audio packet delay that will be set on all created audio
-     * channels. When set to <tt>null</tt> the builder will clear the attribute which stands for 'undefined'.
+     * Specifies the audio packet delay that will be set on all created audio channels.
+     * When set to <tt>null</tt> the builder will clear the attribute which stands for 'undefined'.
      **/
     private Integer audioPacketDelay;
 
@@ -363,8 +365,8 @@ public class ColibriBuilder
     }
 
     /**
-     * Adds a {@link ColibriConferenceIQ.ChannelBundle} with a specific ID and a specific {@code transport} element to a
-     * {@link RequestType#CHANNEL_INFO_UPDATE} query.
+     * Adds a {@link ColibriConferenceIQ.ChannelBundle} with a specific ID and a specific {@code transport}
+     * element to a {@link RequestType#CHANNEL_INFO_UPDATE} query.
      * @param transport the transport element to add to the bundle.
      * @param channelBundleId the ID of the bundle
      * @return {@code true} if the request yields any changes in Colibri
@@ -486,20 +488,23 @@ public class ColibriBuilder
                 /*
                  * If the last remote channel is to be expired, expire the local channel as well.
                  */
-                /*
-                 * if (stateContent.getSctpConnections().size() == 1) { stateConn =
-                 * stateContent.getSctpConnections().get(0);
-                 *
-                 * ColibriConferenceIQ.SctpConnection connRequest = new
-                 * ColibriConferenceIQ.SctpConnection(); connRequest.setID(stateConn.getID());
-                 * connRequest.setExpire(0); connRequest.setEndpoint(stateConn.getEndpoint());
-                 * requestContent.addSctpConnection(connRequest);
-                 *
-                 * hasAnyChannelsToExpire = true;
-                 *
-                 * stateContent.removeSctpConnection(stateConn);
-                 *
-                 * break; } */
+                /*if (stateContent.getSctpConnections().size() == 1)
+                {
+                    stateConn = stateContent.getSctpConnections().get(0);
+
+                    ColibriConferenceIQ.SctpConnection requestConn
+                        = new ColibriConferenceIQ.SctpConnection();
+                    requestConn.setID(stateConn.getID());
+                    requestConn.setExpire(0);
+                    requestConn.setEndpoint(stateConn.getEndpoint());
+                    requestContent.addSctpConnection(requestConn);
+
+                    hasAnyChannelsToExpire = true;
+
+                    stateContent.removeSctpConnection(stateConn);
+
+                    break;
+                }*/
             }
         }
         return hasAnyChannelsToExpire;

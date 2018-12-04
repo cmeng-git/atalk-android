@@ -16,6 +16,7 @@ import org.atalk.android.util.javax.swing.JTextField;
 /**
  * @author Yana Stamcheva
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class ProvisioningForm extends TransparentPanel {
 	/**

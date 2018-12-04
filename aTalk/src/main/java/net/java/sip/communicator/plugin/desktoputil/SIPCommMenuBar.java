@@ -22,8 +22,7 @@ import org.atalk.android.util.javax.swing.UIManager;
  * @author Yana Stamcheva
  * @author Adam Netocny
  */
-public class SIPCommMenuBar extends JMenuBar
-		implements Skinnable {
+public class SIPCommMenuBar extends JMenuBar implements Skinnable {
 	/**
 	 * Serial version UID.
 	 */
@@ -38,8 +37,7 @@ public class SIPCommMenuBar extends JMenuBar
 	 * Adds the ui class to UIDefaults.
 	 */
 	static {
-		UIManager.getDefaults().put(UIClassID,
-				SIPCommMenuBarUI.class.getName());
+		UIManager.getDefaults().put(UIClassID, SIPCommMenuBarUI.class.getName());
 	}
 
 	/**

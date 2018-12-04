@@ -21,6 +21,7 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketE
 
 /**
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class WebSocketPacketExtension extends AbstractPacketExtension
 {

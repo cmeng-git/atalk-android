@@ -24,6 +24,7 @@ import java.util.*;
  * <tt>Thread.setUncaughtExceptionHandler()</tt>
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionHandler
 {

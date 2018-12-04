@@ -9,10 +9,7 @@ import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.EncodingConfigurationImpl;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.device.ScreenDeviceImpl;
-import org.atalk.impl.neomedia.format.AudioMediaFormatImpl;
-import org.atalk.impl.neomedia.format.MediaFormatImpl;
-import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
-import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
+import org.atalk.impl.neomedia.format.*;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaService;
@@ -23,10 +20,7 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.media.Format;
 import javax.media.format.AudioFormat;
@@ -135,12 +129,12 @@ public class MediaUtils
                 MediaType.AUDIO,
                 Constants.SPEEX_RTP,
                 8000, 16000, 32000);
-//		 addMediaFormats(
-//		 		(byte) SdpConstants.G722,
-//				 "G722",
-//				 MediaType.AUDIO,
-//				 Constants.G722_RTP,
-//				 8000);
+        //		 addMediaFormats(
+        //		 		(byte) SdpConstants.G722,
+        //				 "G722",
+        //				 MediaType.AUDIO,
+        //				 Constants.G722_RTP,
+        //				 8000);
         if (EncodingConfigurationImpl.G729) {
             Map<String, String> g729FormatParams = new HashMap<>();
             g729FormatParams.put("annexb", "no");
@@ -255,7 +249,11 @@ public class MediaUtils
             if (avcodec != 0)
                 h264Enabled = true;
         }
-        if (h264Enabled) {
+
+        // register h264 media formats if codec is present or there is
+        // a property that forces enabling the formats (in case of videobridge)
+        if (h264Enabled
+                || cfg.getBoolean(MediaService.ENABLE_H264_FORMAT_PNAME, false)) {
             Map<String, String> h264FormatParams = new HashMap<>();
             String packetizationMode = VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP;
             Map<String, String> h264AdvancedAttributes = new HashMap<>();
@@ -587,7 +585,7 @@ public class MediaUtils
      * @param maxRecvSize maximum size peer can display
      * @return string that represent imgattr that can be encoded via SIP/SDP or XMPP/Jingle
      */
-	public static String createImageAttr(Dimension sendSize, Dimension maxRecvSize)
+    public static String createImageAttr(Dimension sendSize, Dimension maxRecvSize)
     {
         StringBuffer img = new StringBuffer();
 

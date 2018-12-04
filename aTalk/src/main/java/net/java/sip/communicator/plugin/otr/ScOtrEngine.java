@@ -21,6 +21,7 @@ import java.util.List;
  * functionality.
  *
  * @author George Politis
+ * @author Eng Chong Meng
  */
 public interface ScOtrEngine {
 	// Proxy methods OtrEngine.

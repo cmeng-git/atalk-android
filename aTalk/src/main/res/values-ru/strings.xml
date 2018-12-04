@@ -1051,6 +1051,7 @@
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Реле поддержки</string>
     
     <!-- STUN edit -->
+    <string name="service_gui_STUN_TURN_SERVER">STUN/TURN Сервер</string>
     <string name="service_gui_STUN_EDIT_ADDRESS">IP-адрес</string>
     <string name="service_gui_STUN_EDIT_PASSWORD">Пароль</string>
     <string name="service_gui_STUN_EDIT_PORT">Порт сервера</string>

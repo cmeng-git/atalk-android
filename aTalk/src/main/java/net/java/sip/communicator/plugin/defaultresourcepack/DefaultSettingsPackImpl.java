@@ -24,31 +24,24 @@ import net.java.sip.communicator.service.resources.*;
  *
  * @author Damian Minkov
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
-public class DefaultSettingsPackImpl
-    implements SettingsPack
+public class DefaultSettingsPackImpl implements SettingsPack
 {
-    private static final String DEFAULT_RESOURCE_PATH
-        = "resources.config.defaults";
+    private static final String DEFAULT_RESOURCE_PATH = "resources.config.defaults";
 
     /**
-     * Returns a <tt>Map</tt>, containing all [key, value] pairs for this
-     * resource pack.
+     * Returns a <tt>Map</tt>, containing all [key, value] pairs for this resource pack.
      *
-     * @return a <tt>Map</tt>, containing all [key, value] pairs for this
-     * resource pack.
+     * @return a <tt>Map</tt>, containing all [key, value] pairs for this resource pack.
      */
     public Map<String, String> getResources()
     {
-        ResourceBundle resourceBundle
-            = ResourceBundle.getBundle(DEFAULT_RESOURCE_PATH);
-
-        Map<String, String> resources = new TreeMap<String, String>();
+        ResourceBundle resourceBundle = ResourceBundle.getBundle(DEFAULT_RESOURCE_PATH);
+        Map<String, String> resources = new TreeMap<>();
 
         this.initResources(resourceBundle, resources);
-
         this.initPluginResources(resources);
-
         return resources;
     }
 
@@ -78,15 +71,12 @@ public class DefaultSettingsPackImpl
      * files for references to other properties files and will include in the
      * final map data from all referenced files.
      *
-     * @param resourceBundle The initial <tt>ResourceBundle</tt>, corresponding
-     * to the "main" properties file.
+     * @param resourceBundle The initial <tt>ResourceBundle</tt>, corresponding to the "main" properties file.
      * @param resources A <tt>Map</tt> that would store the data.
      */
-    private void initResources( ResourceBundle resourceBundle,
-                                Map<String, String> resources)
+    private void initResources(ResourceBundle resourceBundle, Map<String, String> resources)
     {
         Enumeration<String> colorKeys = resourceBundle.getKeys();
-
         while (colorKeys.hasMoreElements())
         {
             String key = colorKeys.nextElement();
@@ -97,24 +87,19 @@ public class DefaultSettingsPackImpl
     }
 
     /**
-     * Finds all plugin color resources, matching the "defaults-*.properties"
-     * pattern and adds them to this resource pack.
+     * Finds all plugin color resources, matching the "defaults-*.properties" pattern and adds them to this resource pack.
      */
     private void initPluginResources(Map<String, String> resources)
     {
-        Iterator<String> pluginProperties = DefaultResourcePackActivator
-            .findResourcePaths(   "resources/config",
-                                    "defaults-*.properties");
+        Iterator<String> pluginProperties
+                = DefaultResourcePackActivator.findResourcePaths("resources/config", "defaults-*.properties");
 
         while (pluginProperties.hasNext())
         {
             String resourceBundleName = pluginProperties.next();
 
             ResourceBundle resourceBundle
-                = ResourceBundle.getBundle(
-                    resourceBundleName.substring(
-                        0, resourceBundleName.indexOf(".properties")));
-
+                = ResourceBundle.getBundle(resourceBundleName.substring(0, resourceBundleName.indexOf(".properties")));
             initResources(resourceBundle, resources);
         }
     }

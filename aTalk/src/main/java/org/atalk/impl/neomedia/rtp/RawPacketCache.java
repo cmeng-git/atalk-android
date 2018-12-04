@@ -68,20 +68,23 @@ public class RawPacketCache implements AutoCloseable
 	/**
 	 * Packets added to the cache more than <tt>SIZE_MILLIS</tt> ago might be
 	 * cleared from the cache.
-	 * <p>
+	 *
 	 * FIXME(gp) the cache size should be adaptive based on the RTT.
 	 */
-	private static int SIZE_MILLIS = cfg.getInt(NACK_CACHE_SIZE_MILLIS, 500);
+	private static int SIZE_MILLIS = cfg.getInt(NACK_CACHE_SIZE_MILLIS, 1000);
 
 	/**
 	 * The maximum number of different SSRCs for which a cache will be created.
 	 */
 	private static int MAX_SSRC_COUNT = cfg.getInt(NACK_CACHE_SIZE_STREAMS, 50);
 
-	/**
-	 * The maximum number of packets cached for each SSRC.
-	 */
-	private static int MAX_SIZE_PACKETS = cfg.getInt(NACK_CACHE_SIZE_PACKETS, 200);
+    /**
+     * The maximum number of packets cached for each SSRC. A 1080p stream maxes
+     * out at around 500 packets per second (pps). Assuming an RTT of 500ms, a
+     * 250packets/500ms packet cache is just enough. In order to be on the safe
+     * side, we use the double as defaults.
+     */
+	private static int MAX_SIZE_PACKETS = cfg.getInt(NACK_CACHE_SIZE_PACKETS, 500);
 
 	/**
 	 * The size of {@link #pool} and {@link #containersPool}.

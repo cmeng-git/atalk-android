@@ -5,7 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions;
 
-import android.annotation.SuppressLint;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
@@ -37,8 +38,8 @@ public abstract class AbstractPacketExtension implements ExtensionElement
      * <tt>src</tt> which has the same attributes, namespace and text
      * @throws Exception if an error occurs during the cloning of the specified <tt>src</tt>
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressWarnings("unchecked")
-    @SuppressLint("NewApi")
     public static <T extends AbstractPacketExtension> T clone(T src)
     {
         T dst = null;
@@ -213,8 +214,43 @@ public abstract class AbstractPacketExtension implements ExtensionElement
     }
 
     /**
+     * Add the given extension to the list of child extensions, but, if there already exists
+     * any child extensions of this type, remove them first.
+     *
+     * @param childExtension the extension to add
+     */
+    public void setChildExtension(ExtensionElement childExtension)
+    {
+        // required API-24
+        // getChildExtensionsOfType(childExtension.getClass()).forEach(this::removeChildExtension);
+        List<? extends ExtensionElement> extensionElements = getChildExtensionsOfType(childExtension.getClass());
+        for (ExtensionElement xe : extensionElements) {
+            removeChildExtension(xe);
+        }
+        addChildExtension(childExtension);
+    }
+
+    /**
+     * Gets the first extension present of the given type
+     *
+     * @param type the type of extension to get
+     * @return the first instance of an extension of type T we find, or null if there is none
+     */
+    public <T extends ExtensionElement> T getChildExtension(Class<T> type)
+    {
+        List<T> childExts = getChildExtensionsOfType(type);
+        if (!childExts.isEmpty()) {
+            return childExts.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
      * Removes all occurrences of an extension element from the list of child
      * extensions.
+     *
      * @param childExtension the child extension to remove.
      * @return {@code true} if any extensions were removed, and {@code false}
      * otherwise.
@@ -222,17 +258,14 @@ public abstract class AbstractPacketExtension implements ExtensionElement
     public boolean removeChildExtension(ExtensionElement childExtension)
     {
         boolean removed = false;
-        if (childExtension != null)
-        {
-            while (childExtensions.remove(childExtension))
-            {
+        if (childExtension != null) {
+            while (childExtensions.remove(childExtension)) {
                 removed = true;
             }
         }
-
         return removed;
     }
-    
+
     /**
      * Returns the list of packets.
      *

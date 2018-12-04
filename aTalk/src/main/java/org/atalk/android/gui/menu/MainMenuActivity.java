@@ -383,7 +383,6 @@ public class MainMenuActivity extends ExitMenuActivity
         public void actionPerformed()
         {
             ConferenceInviteDialog inviteDialog = null;
-
             if (preselectedProvider != null)
                 inviteDialog = new ConferenceInviteDialog(mContext, preselectedProvider, true);
             else if (videoBridgeProviders != null)

@@ -16,17 +16,12 @@ import org.ice4j.socket.DatagramPacketFilter;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.media.Buffer;
-import javax.media.protocol.ContentDescriptor;
-import javax.media.protocol.PushBufferStream;
-import javax.media.protocol.PushSourceStream;
-import javax.media.protocol.SourceTransferHandler;
+import javax.media.protocol.*;
 
 /**
  * @author Bing SU (nova.su@gmail.com)
@@ -174,7 +169,7 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
             }
         }
 
-		// PacketLoggingService
+        // PacketLoggingService
         addDatagramPacketFilter(new DatagramPacketFilter()
         {
             @Override
@@ -576,13 +571,19 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
 
             try {
                 receive(p);
+            } catch (SocketTimeoutException ste) {
+                // We need to handle these, because some of our implementations
+                // of DatagramSocket#receive are unable to throw a SocketClosed exception.
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Socket timeout, closed=" + closed);
+                }
+                continue;
             } catch (IOException e) {
                 ioError = true;
                 break;
             }
 
             numberOfReceivedBytes += (long) p.getLength();
-
             try {
                 // Do the DatagramPacketFilters accept the received DatagramPacket?
                 if (accept(p)) {

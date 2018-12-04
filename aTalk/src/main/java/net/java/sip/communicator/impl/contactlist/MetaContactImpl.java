@@ -14,7 +14,9 @@
  */
 package net.java.sip.communicator.impl.contactlist;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
@@ -174,9 +176,11 @@ public class MetaContactImpl extends DataObject implements MetaContact
                     = contactProvider.getOperationSet(OperationSetContactCapabilities.class);
 
             if (capOpSet != null) {
-                List<Contact> capContacts = capabilities.get(opSetClass.getName());
-                if ((capContacts != null) && capContacts.contains(contact))
-                    opSetContacts.add(contact);
+                synchronized (capabilities) {
+                    List<Contact> capContacts = capabilities.get(opSetClass.getName());
+                    if ((capContacts != null) && capContacts.contains(contact))
+                        opSetContacts.add(contact);
+                }
             }
             else if (contactProvider.getOperationSet(opSetClass) != null)
                 opSetContacts.add(contact);
@@ -321,14 +325,17 @@ public class MetaContactImpl extends DataObject implements MetaContact
                     OperationSetContactCapabilities.class);
 
             if (capOpSet != null) {
-                List<Contact> capContacts = capabilities.get(operationSet.getName());
+                synchronized (capabilities) {
+                    List<Contact> capContacts = capabilities.get(operationSet.getName());
 
-                if (capContacts != null && capContacts.contains(defaultContact)) {
-                    defaultOpSetContact = defaultContact;
+                    if (capContacts != null && capContacts.contains(defaultContact)) {
+                        defaultOpSetContact = defaultContact;
+                    }
                 }
             }
-            else if (contactProvider.getOperationSet(operationSet) != null)
+            else if (contactProvider.getOperationSet(operationSet) != null) {
                 defaultOpSetContact = defaultContact;
+            }
         }
 
         if (defaultOpSetContact == null) {
@@ -343,10 +350,11 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
                 // We filter to care only about contact which support the needed opset.
                 if (capOpSet != null) {
-                    List<Contact> capContacts = capabilities.get(operationSet.getName());
-
-                    if (capContacts == null || !capContacts.contains(protoContact)) {
-                        continue;
+                    synchronized (capabilities) {
+                        List<Contact> capContacts = capabilities.get(operationSet.getName());
+                        if (capContacts == null || !capContacts.contains(protoContact)) {
+                            continue;
+                        }
                     }
                 }
                 else if (contactProvider.getOperationSet(operationSet) == null)
@@ -821,6 +829,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
      * @param name of the detail to be removed.
      * @param value value of the detail to be removed.
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void removeDetail(String name, String value)
     {
         try {
@@ -946,8 +955,8 @@ public class MetaContactImpl extends DataObject implements MetaContact
      */
     public void updateCapabilities(Contact contact, Map<String, ? extends OperationSet> opSets)
     {
-        OperationSetContactCapabilities capOpSet = contact.getProtocolProvider()
-                .getOperationSet(OperationSetContactCapabilities.class);
+        OperationSetContactCapabilities capOpSet
+                = contact.getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
 
         // This should not happen, because this method is called explicitly for
         // events coming from the capabilities operation set.
@@ -966,20 +975,22 @@ public class MetaContactImpl extends DataObject implements MetaContact
      */
     private void removeCapabilities(Contact contact, Map<String, ? extends OperationSet> opSets)
     {
-        Iterator<Map.Entry<String, List<Contact>>> caps = this.capabilities.entrySet().iterator();
-        Set<String> contactNewCaps = opSets.keySet();
+        synchronized (capabilities) {
+            Iterator<Map.Entry<String, List<Contact>>> caps = this.capabilities.entrySet().iterator();
+            Set<String> contactNewCaps = opSets.keySet();
 
-        while (caps.hasNext()) {
-            Map.Entry<String, List<Contact>> entry = caps.next();
+            while (caps.hasNext()) {
+                Map.Entry<String, List<Contact>> entry = caps.next();
 
-            String opSetName = entry.getKey();
-            List<Contact> contactsForCap = entry.getValue();
+                String opSetName = entry.getKey();
+                List<Contact> contactsForCap = entry.getValue();
 
-            if (contactsForCap.contains(contact) && !contactNewCaps.contains(opSetName)) {
-                contactsForCap.remove(contact);
+                if (contactsForCap.contains(contact) && !contactNewCaps.contains(opSetName)) {
+                    contactsForCap.remove(contact);
 
-                if (contactsForCap.size() == 0)
-                    caps.remove();
+                    if (contactsForCap.size() == 0)
+                        caps.remove();
+                }
             }
         }
     }
@@ -992,19 +1003,20 @@ public class MetaContactImpl extends DataObject implements MetaContact
      */
     private void addCapabilities(Contact contact, Map<String, ? extends OperationSet> opSets)
     {
-
-        for (String newCap : opSets.keySet()) {
-            List<Contact> capContacts;
-            if (!capabilities.containsKey(newCap)) {
-                capContacts = new LinkedList<>();
-                capContacts.add(contact);
-                capabilities.put(newCap, capContacts);
-            }
-            else {
-                capContacts = capabilities.get(newCap);
-
-                if (!capContacts.contains(contact)) {
+        synchronized (capabilities) {
+            for (String newCap : opSets.keySet()) {
+                List<Contact> capContacts;
+                if (!capabilities.containsKey(newCap)) {
+                    capContacts = new LinkedList<>();
                     capContacts.add(contact);
+                    capabilities.put(newCap, capContacts);
+                }
+                else {
+                    capContacts = capabilities.get(newCap);
+
+                    if (!capContacts.contains(contact)) {
+                        capContacts.add(contact);
+                    }
                 }
             }
         }

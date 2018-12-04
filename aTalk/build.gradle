@@ -52,8 +52,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1061
-        versionName "1.6.1" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1062
+        versionName "1.6.2" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -142,7 +142,14 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'LICENSE.txt'
     }
+
+//    Some libraries e.g. fmj.jar not compatible with 1.8
+//    compileOptions {
+//        sourceCompatibility = '1.8'
+//        targetCompatibility = '1.8'
+//    }
 }
+
 ext {
     // Need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack

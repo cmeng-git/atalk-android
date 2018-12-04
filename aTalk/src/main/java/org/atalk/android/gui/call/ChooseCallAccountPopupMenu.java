@@ -15,7 +15,6 @@
  */
 package org.atalk.android.gui.call;
 
-import net.java.sip.communicator.plugin.desktoputil.ErrorDialog;
 import net.java.sip.communicator.service.contactsource.ContactDetail;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.AccountUtils;
@@ -27,6 +26,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatTransport;
 import org.atalk.android.gui.contactlist.UIContactDetailImpl;
 import org.atalk.android.gui.contactlist.UIContactImpl;
+import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.util.java.awt.Component;
 import org.atalk.android.util.java.awt.Point;
 import org.atalk.android.util.java.awt.event.ActionEvent;
@@ -187,10 +187,10 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
      */
     private void init(String infoString)
     {
-//        setInvoker(invoker);
-//        this.add(createInfoLabel(infoString));
-//        this.addSeparator();
-//        this.setFocusable(true);
+        // setInvoker(invoker);
+        // this.add(createInfoLabel(infoString));
+        // this.addSeparator();
+        // this.setFocusable(true);
     }
 
     /**
@@ -229,8 +229,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     }
 
     /**
-     * Adds the given <tt>telephonyContact</tt> to the list of available
-     * telephony contact.
+     * Adds the given <tt>telephonyContact</tt> to the list of available telephony contact.
      *
      * @param telephonyContact the telephony contact to add
      * @param opSetClass the operation set class, that indicates the action that
@@ -250,8 +249,8 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
                         telephonyContact.getPreferredProtocol(opSetClass));
 
                 if (providers == null || providers.size() <= 0) {
-                    new ErrorDialog(null, aTalkApp.getResString(R.string.service_gui_CALL_FAILED),
-                            aTalkApp.getResString(R.string.service_gui_NO_ONLINE_TELEPHONY_ACCOUNT)).showDialog();
+                    AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                            R.string.service_gui_CALL_FAILED, R.string.service_gui_NO_ONLINE_TELEPHONY_ACCOUNT);
                     return;
                 }
                 else if (providers.size() > 1) {
@@ -273,23 +272,23 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
 
         String category = telephonyContact.getCategory();
 
-        if (category != null && category.equals(ContactDetail.Category.Phone)) {
+        if (category != null && category.equals(ContactDetail.Category.Phone.toString())) {
             int index = findPhoneItemIndex();
-//            if (index < 0)
-//                add(contactItem);
-//            else
-//                insert(contactItem, findPhoneItemIndex());
+            // if (index < 0)
+            //     add(contactItem);
+            // else
+            //     insert(contactItem, findPhoneItemIndex());
         }
         else {
-//            Component lastComp = getComponent(getComponentCount() - 1);
-//            if (lastComp instanceof ContactMenuItem)
-//                category = ((ContactMenuItem) lastComp).getCategory();
-//
-//            if (category != null
-//                && category.equals(ContactDetail.Category.Phone))
-//                addSeparator();
-//
-//            add(contactItem);
+            // Component lastComp = getComponent(getComponentCount() - 1);
+            // if (lastComp instanceof ContactMenuItem)
+            //     category = ((ContactMenuItem) lastComp).getCategory();
+            //
+            // if (category != null
+            //     && category.equals(ContactDetail.Category.Phone))
+            //     addSeparator();
+            //
+            // add(contactItem);
         }
     }
 
@@ -301,22 +300,22 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     private int findPhoneItemIndex()
     {
         int index = -1;
-//        for (int i = getComponentCount() - 1; i > 1; i--)
-//        {
-//            Component c = getComponent(i);
-//
-//            if (c instanceof ContactMenuItem)
-//            {
-//                String category = ((ContactMenuItem) c).getCategory();
-//                if (category == null
-//                    || !category.equals(ContactDetail.Category.Phone))
-//                continue;
-//            }
-//            else if (c instanceof JSeparator)
-//                index = i - 1;
-//            else
-//                return index;
-//        }
+        // for (int i = getComponentCount() - 1; i > 1; i--)
+        // {
+        // Component c = getComponent(i);
+        //
+        // if (c instanceof ContactMenuItem)
+        // {
+        //     String category = ((ContactMenuItem) c).getCategory();
+        //     if (category == null
+        //         || !category.equals(ContactDetail.Category.Phone))
+        //     continue;
+        // }
+        // else if (c instanceof JSeparator)
+        //     index = i - 1;
+        // else
+        //     return index;
+        // }
         return index;
     }
 
@@ -331,27 +330,27 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     private void addTelephonyChatTransportItem(final ChatTransport telTransport,
             final Class<? extends OperationSet> opSetClass)
     {
-//        final ChatTransportMenuItem transportItem
-//            = new ChatTransportMenuItem(telTransport);
+        // final ChatTransportMenuItem transportItem
+        // = new ChatTransportMenuItem(telTransport);
 
-//        transportItem.addActionListener(new ActionListener()
-//        {
-//            public void actionPerformed(ActionEvent e)
-//            {
-//                ProtocolProviderService provider
-//                    = telTransport.getProtocolProvider();
-//                String contactAddress = telTransport.getName();
+        // transportItem.addActionListener(new ActionListener()
+        // {
+        // public void actionPerformed(ActionEvent e)
+        // {
+        //     ProtocolProviderService provider
+        //         = telTransport.getProtocolProvider();
+        //     String contactAddress = telTransport.getName();
 
-//                if (uiContact != null)
-//                    CallManager.createCall(
-//                        opSetClass, provider, contactAddress, uiContact);
-//                else
-//                    CallManager.createCall(
-//                        opSetClass, provider, contactAddress);
-//
-//                ChooseCallAccountPopupMenu.this.setVisible(false);
-//            }
-//        });
+        //     if (uiContact != null)
+        //         CallManager.createCall(
+        //             opSetClass, provider, contactAddress, uiContact);
+        //     else
+        //         CallManager.createCall(
+        //             opSetClass, provider, contactAddress);
+        //
+        //     ChooseCallAccountPopupMenu.this.setVisible(false);
+        // }
+        // });
 
         // this.add(transportItem);
     }
@@ -364,8 +363,8 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
      */
     public void showPopupMenu(int x, int y)
     {
-//        setLocation(x, y);
-//        setVisible(true);
+        // setLocation(x, y);
+        // setVisible(true);
     }
 
     /**
@@ -375,10 +374,10 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     {
         Point location = new Point(invoker.getX(), invoker.getY() + invoker.getHeight());
 
-//        SwingUtilities
-//            .convertPointToScreen(location, invoker.getParent());
-//        setLocation(location);
-//        setVisible(true);
+        // SwingUtilities
+        // .convertPointToScreen(location, invoker.getParent());
+        // setLocation(location);
+        // setVisible(true);
     }
 
     /**
@@ -419,11 +418,11 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     protected void itemSelected(Class<? extends OperationSet> opSetClass,
             ProtocolProviderService protocolProviderService, String contact, UIContactImpl uiContact)
     {
-//        CallManager.createCall(
-//            opSetClass,
-//            protocolProviderService,
-//            contact,
-//            uiContact);
+        // CallManager.createCall(
+        // opSetClass,
+        // protocolProviderService,
+        // contact,
+        // uiContact);
     }
 
     /**
@@ -436,10 +435,10 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     protected void itemSelected(Class<? extends OperationSet> opSetClass,
             ProtocolProviderService protocolProviderService, String contact)
     {
-//        CallManager.createCall(
-//            opSetClass,
-//            protocolProviderService,
-//            contact);
+        // CallManager.createCall(
+        // opSetClass,
+        // protocolProviderService,
+        // contact);
     }
 
     /**
@@ -452,11 +451,11 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     protected void itemSelected(Class<? extends OperationSet> opSetClass,
             List<ProtocolProviderService> providers, String contact)
     {
-//        ChooseCallAccountDialog callAccountDialog = new ChooseCallAccountDialog(contact, opSetClass, providers);
-//
-//        if (uiContact != null)
-//            callAccountDialog.setUIContact(uiContact);
-//        callAccountDialog.setVisible(true);
+        // ChooseCallAccountDialog callAccountDialog = new ChooseCallAccountDialog(contact, opSetClass, providers);
+        //
+        // if (uiContact != null)
+        // callAccountDialog.setUIContact(uiContact);
+        // callAccountDialog.setVisible(true);
     }
 
     /**
@@ -490,10 +489,10 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
         {
             byte[] protocolIcon = protocolProvider.getProtocolIcon().getIcon(ProtocolIcon.ICON_SIZE_16x16);
 
-//            if (protocolIcon != null)
-//                this.setIcon(ImageLoader.getIndexedProtocolIcon(
-//                                ImageUtils.getBytesInImage(protocolIcon),
-//                                protocolProvider));
+            // if (protocolIcon != null)
+            //  this.setIcon(ImageLoader.getIndexedProtocolIcon(
+            //    ImageUtils.getBytesInImage(protocolIcon),
+            //    protocolProvider));
         }
     }
 
@@ -541,26 +540,26 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
          */
         public void loadSkin()
         {
-//            ImageIcon contactIcon = contact.getStatusIcon();
-//
-//            if (contactIcon == null)
-//            {
-//                PresenceStatus status = contact.getPresenceStatus();
-//
-//                BufferedImage statusIcon = null;
-//                if (status != null)
-//                    statusIcon = Constants.getStatusIcon(status);
-//
-//                if (statusIcon != null)
-//                    contactIcon = ImageLoader.getIndexedProtocolIcon(
-//                        statusIcon,
-//                        contact.getPreferredProtocolProvider(null));
-//            }
-//
-//            if (contactIcon != null)
-//                this.setIcon(ImageLoader.getIndexedProtocolIcon(
-//                    contactIcon.getImage(),
-//                    contact.getPreferredProtocolProvider(null)));
+            // ImageIcon contactIcon = contact.getStatusIcon();
+            //
+            // if (contactIcon == null)
+            // {
+            //  PresenceStatus status = contact.getPresenceStatus();
+            //
+            //  BufferedImage statusIcon = null;
+            //  if (status != null)
+            //  statusIcon = Constants.getStatusIcon(status);
+            //
+            //  if (statusIcon != null)
+            //  contactIcon = ImageLoader.getIndexedProtocolIcon(
+            //   statusIcon,
+            //   contact.getPreferredProtocolProvider(null));
+            // }
+            //
+            // if (contactIcon != null)
+            //  this.setIcon(ImageLoader.getIndexedProtocolIcon(
+            //  contactIcon.getImage(),
+            //  contact.getPreferredProtocolProvider(null)));
         }
     }
 
@@ -596,13 +595,13 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
 
             Icon statusIcon = null;
             if (statusIconBytes != null && statusIconBytes.length > 0) {
-//                statusIcon = ImageLoader.getIndexedProtocolIcon(
-//                    ImageUtils.getBytesInImage(statusIconBytes),
-//                    chatTransport.getProtocolProvider());
+                //  statusIcon = ImageLoader.getIndexedProtocolIcon(
+                //  ImageUtils.getBytesInImage(statusIconBytes),
+                //  chatTransport.getProtocolProvider());
             }
 
-//            if (statusIcon != null)
-//                this.setIcon(statusIcon);
+            // if (statusIcon != null)
+            //  this.setIcon(statusIcon);
         }
     }
 
@@ -611,14 +610,12 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
      */
     public void loadSkin()
     {
-//        Component[] components = getComponents();
-//        for(Component component : components)
-//        {
-//            if(component instanceof Skinnable)
-//            {
-//                Skinnable skinnableComponent = (Skinnable) component;
-//                skinnableComponent.loadSkin();
-//            }
-//        }
+        // Component[] components = getComponents();
+        // for(Component component : components) {
+        //      if(component instanceof Skinnable) {
+        //          Skinnable skinnableComponent = (Skinnable) component;
+        //          skinnableComponent.loadSkin();
+        //      }
+        // }
     }
 }

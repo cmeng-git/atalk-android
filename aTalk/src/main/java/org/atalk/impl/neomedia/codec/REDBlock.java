@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -13,7 +13,8 @@
  */
 package org.atalk.impl.neomedia.codec;
 
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.ByteArrayBuffer;
+
 /**
  * Represents a RED block.
  *
@@ -22,7 +23,7 @@ import org.atalk.service.neomedia.*;
 public class REDBlock implements ByteArrayBuffer
 {
     /**
-     *The byte buffer that holds the RED block.
+     * The byte buffer that holds the RED block.
      */
     private final byte[] buf;
 
@@ -36,28 +37,25 @@ public class REDBlock implements ByteArrayBuffer
      */
     private int off;
 
-	/**
-	 * The payload type of this RED block.
-	 */
-	private final byte pt;
+    /**
+     * The payload type of this RED block.
+     */
+    private final byte pt;
 
-	/**
-	 * Ctor.
-	 *
-	 * @param off
-	 *        the offset in the buffer where this RED block starts
-	 * @param len
-	 *        the length of this RED block
-	 * @param pt
-	 *        the payload type of this RED block
-	 */
+    /**
+     * Ctor.
+     *
+     * @param off the offset in the buffer where this RED block starts
+     * @param len the length of this RED block
+     * @param pt the payload type of this RED block
+     */
     public REDBlock(byte[] buf, int off, int len, byte pt)
     {
         this.buf = buf;
-		this.pt = pt;
-		this.off = off;
-		this.len = len;
-	}
+        this.pt = pt;
+        this.off = off;
+        this.len = len;
+    }
 
     /**
      * {@inheritDoc}
@@ -108,18 +106,18 @@ public class REDBlock implements ByteArrayBuffer
      * {@inheritDoc}
      */
     @Override
-	public int getOffset()
-	{
-		return off;
-	}
+    public int getOffset()
+    {
+        return off;
+    }
 
-	/**
-	 * Gets the payload type of this RED block.
-	 *
-	 * @return the payload type of this RED block
-	 */
-	public byte getPayloadType()
-	{
-		return pt;
-	}
+    /**
+     * Gets the payload type of this RED block.
+     *
+     * @return the payload type of this RED block
+     */
+    public byte getPayloadType()
+    {
+        return pt;
+    }
 }

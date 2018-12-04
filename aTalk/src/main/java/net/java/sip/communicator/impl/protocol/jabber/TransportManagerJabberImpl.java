@@ -726,7 +726,6 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
             ColibriConferenceIQ.Content content = colibri.getContent(mediaType.toString());
             if (content != null) {
                 List<ColibriConferenceIQ.Channel> channels = content.getChannels();
-
                 if (channels.size() == 2)
                     channel = channels.get(local ? 0 : 1);
             }

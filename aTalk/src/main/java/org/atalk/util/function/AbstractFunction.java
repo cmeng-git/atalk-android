@@ -19,8 +19,16 @@ package org.atalk.util.function;
  * Represents a function that accepts one argument and produces a result. This
  * is a poor man's backport of the <tt>Function</tt> interface found in Java 1.8.
  *
+ * <p>This is a <a href="package-summary.html">functional interface</a>
+ * whose functional method is {@link #apply(Object)}.
+ *
+ * @param <T> the type of the input to the function
+ * @param <R> the type of the result of the function
+ *
  * @author George Politis
- * @deprecated Use {@link java.util.function.Function}.
+ * @author Eng Chong Meng
+ *
+ * @deprecated Use {@link java.util.function.Function}=> required API-24
  */
 @Deprecated
 public abstract class AbstractFunction<T, R>
@@ -39,20 +47,16 @@ public abstract class AbstractFunction<T, R>
      * If evaluation of either function throws an exception, it is relayed to
      * the caller of the composed function.
      *
-     * @param <V> the type of input to the {@code before} function, and to the
-     *           composed function
+     * @param <V> the type of input to the {@code before} function, and to the composed function
      * @param before the function to apply before this function is applied
      * @return a composed function that first applies the {@code before}
      * function and then applies this function
      * @throws NullPointerException if before is null
-     *
      * @see #andThen(AbstractFunction)
      */
-    public <V> AbstractFunction<V, R> compose(
-            final AbstractFunction<? super V, ? extends T> before) {
-
-        if (before == null)
-        {
+    public <V> AbstractFunction<V, R> compose(final AbstractFunction<? super V, ? extends T> before)
+    {
+        if (before == null) {
             throw new NullPointerException();
         }
 
@@ -72,20 +76,16 @@ public abstract class AbstractFunction<T, R>
      * If evaluation of either function throws an exception, it is relayed to
      * the caller of the composed function.
      *
-     * @param <V> the type of output of the {@code after} function, and of the
-     *           composed function
+     * @param <V> the type of output of the {@code after} function, and of the composed function
      * @param after the function to apply after this function is applied
      * @return a composed function that first applies this function and then
      * applies the {@code after} function
      * @throws NullPointerException if after is null
-     *
      * @see #compose(AbstractFunction)
      */
-    public <V> AbstractFunction<T, V> andThen(
-            final AbstractFunction<? super R, ? extends V> after) {
-
-        if (after == null)
-        {
+    public <V> AbstractFunction<T, V> andThen(final AbstractFunction<? super R, ? extends V> after)
+    {
+        if (after == null) {
             throw new NullPointerException();
         }
 
@@ -99,4 +99,13 @@ public abstract class AbstractFunction<T, R>
         };
     }
 
+//    /**
+//     * Returns a function that always returns its input argument.
+//     *
+//     * @param <T> the type of the input and output objects to the function
+//     * @return a function that always returns its input argument
+//     */
+//    static <T> Function<T, T> identity() {
+//        return t -> t;
+//    }
 }

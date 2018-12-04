@@ -24,6 +24,7 @@ import org.osgi.framework.*;
  * Starts Resource Management Service.
  * @author Damian Minkov
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class ResourceManagementActivator
     extends SimpleServiceActivator<ResourceManagementServiceImpl>

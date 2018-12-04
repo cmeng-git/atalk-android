@@ -43,8 +43,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -203,7 +202,7 @@ public class OperationSetTelephonyConferencingJabberImpl
         }
 
         // check that callPeer supports COIN before sending him a conference-info
-        Jid to = getBasicTelephony().getFullCalleeURI(callPeer.getPeerJid());
+        EntityFullJid to = getBasicTelephony().getFullCalleeURI(callPeer.getPeerJid());
 
         // XXX if this generates actual disco#info requests we might want to cache it.
         try {
@@ -240,7 +239,8 @@ public class OperationSetTelephonyConferencingJabberImpl
                 try {
                     parentProvider.getConnection().sendStanza(iq);
                 } catch (NotConnectedException | InterruptedException e) {
-                    e.printStackTrace();
+                    logger.error("Could not send conference IQ", e);
+                    return;
                 }
 
                 // We save currentConfInfo, because it is of state "full", while diff could be a partial
@@ -267,24 +267,25 @@ public class OperationSetTelephonyConferencingJabberImpl
         if (callPeerSID == null)
             return null;
 
-        CoinIQ iq = new CoinIQ()
+        CoinIQ coinIQ = new CoinIQ()
         {
             @Override
             public IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
             {
                 // strip both "conference-info" ends' tags and rebuild xml;
-                String xmlString = confInfo.toString().replace("<conference-info xmlns=\"urn:ietf:params:xml:ns:conference-info\"",
-                        "").replace("</conference-info>", "");
+                String xmlString = confInfo.toString()
+                        .replace("<conference-info xmlns=\"urn:ietf:params:xml:ns:conference-info\"", "")
+                        .replace("</conference-info>", "");
                 return (IQChildElementXmlStringBuilder) xml.append(xmlString);
             }
         };
 
         CallJabberImpl call = callPeer.getCall();
-        iq.setFrom(call.getProtocolProvider().getOurJID());
-        iq.setTo(callPeer.getPeerJid());
-        iq.setType(Type.set);
+        coinIQ.setFrom(call.getProtocolProvider().getOurJID());
+        coinIQ.setTo(callPeer.getPeerJid());
+        coinIQ.setType(Type.set);
 
-        return iq;
+        return coinIQ;
     }
 
     /**
@@ -363,6 +364,7 @@ public class OperationSetTelephonyConferencingJabberImpl
      * @param packet the packet to test.
      * @return true if and only if <tt>packet</tt> passes the filter.
      */
+    @Override
     public boolean accept(Stanza packet)
     {
         return (packet instanceof CoinIQ);

@@ -6,6 +6,11 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.6.2 (12/04/2018)" versioncode="1062">
+        <change>Use google stunServers as default if none is specified</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.6.1 (11/03/2018)" versioncode="1061">
         <change>Omemo to ignore read-only devices to avoid weakening of forward secrecy implementation</change>
         <change>Fix ConcurrentModification Exception when receiving multiple history messages</change>

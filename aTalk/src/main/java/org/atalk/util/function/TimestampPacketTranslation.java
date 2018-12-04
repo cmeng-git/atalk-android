@@ -23,12 +23,12 @@ import org.atalk.impl.neomedia.rtcp.RTCPSenderInfoUtils;
 import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.RTCPUtils;
+// import java.util.function.Function; => need API-24
 
 /**
  * @author George Politis
  */
-public class TimestampPacketTranslation<T extends ByteArrayBuffer>
-        extends AbstractFunction<T, T>
+public class TimestampPacketTranslation<T extends ByteArrayBuffer> extends AbstractFunction<T, T>
 {
     /**
      * The {@link TimestampTranslation} to apply to the timestamp of the

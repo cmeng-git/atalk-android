@@ -40,6 +40,12 @@ public interface MediaService
     public static final String ENABLE_FFMPEG_CODECS_PNAME = "neomedia.MediaService.ENABLE_FFMPEG_CODECS";
 
     /**
+     * The name of the property which controls whether the h264 formats
+     * will be registered in libjitsi even if the ffmpeg codec is missing.
+     */
+    public static final String ENABLE_H264_FORMAT_PNAME = "neomedia.MediaService.ENABLE_H264_FORMAT";
+
+    /**
 	 * Adds a <tt>PropertyChangeListener</tt> to be notified about changes in the values of the
 	 * properties of this instance.
 	 *

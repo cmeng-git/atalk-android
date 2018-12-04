@@ -39,8 +39,8 @@ public class OperationSetVideoBridgeImpl extends AbstractIqRequestHandler
     /*
      * Thumbnail request StanzaFilter for handling the request
      */
-//    private static final StanzaFilter COLIBRI_EXT = new AndFilter(new StanzaTypeFilter(IQ.class),
-//            IQTypeFilter.GET, new StanzaExtensionFilter(ColibriConferenceIQ.ELEMENT, ColibriConferenceIQ.NAMESPACE));
+    // private static final StanzaFilter COLIBRI_EXT = new AndFilter(new StanzaTypeFilter(IQ.class),
+    //    IQTypeFilter.GET, new StanzaExtensionFilter(ColibriConferenceIQ.ELEMENT, ColibriConferenceIQ.NAMESPACE));
     private static final StanzaFilter COLIBRI_FILTER = new AndFilter(StanzaTypeFilter.IQ,
             new StanzaExtensionFilter(ColibriConferenceIQ.ELEMENT, ColibriConferenceIQ.NAMESPACE));
 

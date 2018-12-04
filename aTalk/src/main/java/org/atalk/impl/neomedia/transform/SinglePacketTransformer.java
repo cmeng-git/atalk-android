@@ -10,6 +10,9 @@ import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.Logger;
 import org.atalk.util.function.Predicate;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+
 /**
  * Extends the <tt>PacketTransformer</tt> interface with methods which allow the transformation of a
  * single packet into a single packet.
@@ -160,6 +163,52 @@ public abstract class SinglePacketTransformer implements PacketTransformer
                             throw (Error) t;
                         else
                             throw (RuntimeException) t;
+                    }
+                }
+            }
+        }
+        return pkts;
+    }
+
+    /**
+     * Applies a specific transformation function to an array of {@link RawPacket}s.
+     * @param pkts the array to transform.
+     * @param transformFunction the function to apply to each (non-null) element
+     * of the array.
+     * @param exceptionCounter a counter of the number of exceptions encountered.
+     * @param logMessage a name of the transformation function, to be used
+     * when logging exceptions.
+     * @return {@code pkts}.
+     */
+    private RawPacket[] transformArray(
+        RawPacket[] pkts,
+        Function<RawPacket, RawPacket> transformFunction,
+        AtomicInteger exceptionCounter,
+        String logMessage)
+    {
+        if (pkts != null) {
+            for (int i = 0; i < pkts.length; i++) {
+                RawPacket pkt = pkts[i];
+                if (pkt != null
+                    && (packetPredicate == null || packetPredicate.test(pkt))) {
+                    try {
+                        pkts[i] = transformFunction.apply(pkt);
+                    }
+                    catch (Throwable t) {
+                        exceptionCounter.incrementAndGet();
+                        if ((exceptionCounter.get() % EXCEPTIONS_TO_LOG) == 0
+                            || exceptionCounter.get() == 1) {
+                            logger.error("Failed to " + logMessage + " RawPacket(s)!", t);
+                        }
+                        if (t instanceof Error) {
+                            throw (Error) t;
+                        }
+                        else if (t instanceof RuntimeException) {
+                            throw (RuntimeException) t;
+                        }
+                        else {
+                            throw new RuntimeException(t);
+                        }
                     }
                 }
             }
