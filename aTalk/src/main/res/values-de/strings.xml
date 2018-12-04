@@ -1031,6 +1031,7 @@
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Relay unterstützen</string>
     
     <!-- STUN edit -->
+    <string name="service_gui_STUN_TURN_SERVER">STUN/TURN Server</string>
     <string name="service_gui_STUN_EDIT_ADDRESS">IP-Adresse</string>
     <string name="service_gui_STUN_EDIT_PASSWORD">Passwort</string>
     <string name="service_gui_STUN_EDIT_PORT">Server Port</string>

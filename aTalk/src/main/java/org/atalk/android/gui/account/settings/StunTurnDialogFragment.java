@@ -62,7 +62,7 @@ public class StunTurnDialogFragment extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder = builder.setTitle(R.string.service_gui_SEC_PROTOCOLS_TITLE);
+        builder = builder.setTitle(R.string.service_gui_STUN_TURN_SERVER);
 
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();

@@ -9,6 +9,7 @@ package net.java.sip.communicator.impl.protocol.jabber.extensions.coin;
  * Status type.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public enum StateType
 {
@@ -37,10 +38,10 @@ public enum StateType
     public static StateType parseString(String typeStr)
             throws IllegalArgumentException
     {
-        for (StateType value : values())
+        for (StateType value : values()) {
             if (value.toString().equals(typeStr))
                 return value;
-
+        }
         throw new IllegalArgumentException(typeStr + " is not a valid reason");
     }
 }

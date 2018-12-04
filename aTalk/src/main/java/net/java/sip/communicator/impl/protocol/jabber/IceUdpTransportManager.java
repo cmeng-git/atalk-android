@@ -5,41 +5,22 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CandidatePacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CandidateType;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.IceUdpTransportPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RtpDescriptionPacketExtension;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
-import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.SecurityAuthority;
-import net.java.sip.communicator.service.protocol.StunServerDescriptor;
-import net.java.sip.communicator.service.protocol.UserCredentials;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.PortTracker;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.service.neomedia.DefaultStreamConnector;
-import org.atalk.service.neomedia.MediaStreamTarget;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.StreamConnector;
+import org.atalk.service.neomedia.*;
 import org.atalk.util.StringUtils;
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
-import org.ice4j.ice.Agent;
-import org.ice4j.ice.Candidate;
-import org.ice4j.ice.CandidatePair;
-import org.ice4j.ice.Component;
-import org.ice4j.ice.IceMediaStream;
-import org.ice4j.ice.IceProcessingState;
-import org.ice4j.ice.LocalCandidate;
-import org.ice4j.ice.RemoteCandidate;
-import org.ice4j.ice.harvest.StunCandidateHarvester;
-import org.ice4j.ice.harvest.TurnCandidateHarvester;
-import org.ice4j.ice.harvest.UPNPHarvester;
+import org.ice4j.ice.*;
+import org.ice4j.ice.harvest.*;
 import org.ice4j.security.LongTermCredential;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.xmpp.jnodes.smack.SmackServiceNode;
@@ -48,12 +29,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A {@link TransportManagerJabberImpl} implementation that would use ICE for candidate management.
@@ -70,15 +46,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     private static final Logger logger = Logger.getLogger(IceUdpTransportManager.class);
 
-    /**
-     * Default STUN server address.
-     */
-    protected static final String DEFAULT_STUN_SERVER_ADDRESS = "stun.jitsi.net";
-
-    /**
-     * Default STUN server port.
-     */
-    protected static final int DEFAULT_STUN_SERVER_PORT = 3478;
+    // The default STUN servers that will be used in the peer to peer connections if none is specified
+    List<InetSocketAddress> stunServers = Arrays.asList(
+            new InetSocketAddress("stun1.l.google.com", 19302),
+            new InetSocketAddress("stun2.l.google.com", 19302),
+            new InetSocketAddress("stun3.l.google.com", 19302)
+    );
 
     /**
      * The ICE <tt>Component</tt> IDs in their common order used, for example, by
@@ -205,13 +178,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             agent.addCandidateHarvester(harvester);
         }
 
+        // Found no configured or discovered STUN server; so takes default stunServers provided if user allows it
         if (!atLeastOneStunServer && accID.isUseDefaultStunServer()) {
-            /*
-             * we have no configured or discovered STUN server so takes the default provided by us if user allows it
-             */
-            TransportAddress addr
-                    = new TransportAddress(DEFAULT_STUN_SERVER_ADDRESS, DEFAULT_STUN_SERVER_PORT, Transport.UDP);
-            agent.addCandidateHarvester(new StunCandidateHarvester(addr));
+            for (InetSocketAddress stunServer : stunServers) {
+                TransportAddress addr = new TransportAddress(stunServer, Transport.UDP);
+                agent.addCandidateHarvester(new StunCandidateHarvester(addr));
+            }
         }
 
         /* Jingle nodes candidate */

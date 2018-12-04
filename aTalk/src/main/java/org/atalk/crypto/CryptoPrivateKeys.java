@@ -39,6 +39,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.omemo.*;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
+import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 
 import java.util.*;
 
@@ -104,10 +105,12 @@ public class CryptoPrivateKeys extends OSGiActivity
             String bareJid = accountId.getAccountJid();
 
             // Get OmemoDevice fingerprint
-            String fingerprint = null;
+            String fingerprint = "";
             deviceJid = OMEMO + userDevice;
             try {
-                fingerprint = omemoManager.getOwnFingerprint().toString();
+                OmemoFingerprint omemoFingerprint = omemoManager.getOwnFingerprint();
+                if (omemoFingerprint != null)
+                    fingerprint = omemoFingerprint.toString();
             } catch (SmackException.NotLoggedInException e) {
                 e.printStackTrace();
             } catch (CorruptedOmemoKeyException e) {

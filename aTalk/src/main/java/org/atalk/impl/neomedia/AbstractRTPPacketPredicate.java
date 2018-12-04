@@ -17,6 +17,8 @@ import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.util.Logger;
 import org.atalk.util.RTCPUtils;
 import org.atalk.util.function.Predicate;
+// import java.util.function.Predicate; => need API-24
+
 
 /**
  * @author George Politis

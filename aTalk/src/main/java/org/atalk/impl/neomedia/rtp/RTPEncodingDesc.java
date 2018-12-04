@@ -35,6 +35,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RTPEncodingDesc
 {
     /**
+     * The quality that is used to represent that forwarding is suspended.
+     */
+    public static final int SUSPENDED_INDEX = -1;
+
+    /**
      * The {@link Logger} used by the {@link RTPEncodingDesc} class to print debug information.
      */
     private static final Logger logger = Logger.getLogger(RTPEncodingDesc.class);

@@ -63,7 +63,7 @@ public class AvatarCacheFile implements AvatarCache
 		try {
 			os = new BufferedOutputStream(new FileOutputStream(file));
 			// os == null if storage permission in not granted
-			if (os != null)
+			if ((os != null) && (data != null))
     			os.write(data);
 		}
 		catch (IOException e) {

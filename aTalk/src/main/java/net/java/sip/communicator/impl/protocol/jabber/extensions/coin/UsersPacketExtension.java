@@ -11,6 +11,7 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketE
  * Users packet extension.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public class UsersPacketExtension extends AbstractPacketExtension
 {

@@ -148,9 +148,9 @@ public class PortAudioSystem extends AudioSystem2
 		long sampleFormat = Pa.getPaSampleFormat(sampleSizeInBits);
 		int defaultInputDeviceIndex = Pa.GetDefaultInputDevice();
 		int defaultOutputDeviceIndex = Pa.GetDefaultOutputDevice();
-		List<CaptureDeviceInfo2> captureAndPlaybackDevices = new LinkedList<CaptureDeviceInfo2>();
-		List<CaptureDeviceInfo2> captureDevices = new LinkedList<CaptureDeviceInfo2>();
-		List<CaptureDeviceInfo2> playbackDevices = new LinkedList<CaptureDeviceInfo2>();
+		List<CaptureDeviceInfo2> captureAndPlaybackDevices = new LinkedList<>();
+		List<CaptureDeviceInfo2> captureDevices = new LinkedList<>();
+		List<CaptureDeviceInfo2> playbackDevices = new LinkedList<>();
 		final boolean loggerIsDebugEnabled = logger.isDebugEnabled();
 
 		if (CoreAudioDevice.isLoaded)

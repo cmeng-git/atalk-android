@@ -327,6 +327,9 @@ public class UserAvatarManager extends AvatarManager
                 String currentAvatarHash = getAvatarHashByJid(from);
                 AvatarRetriever retriever = AvatarRetrieverFactory.getRetriever(mConnection, from, info);
                 byte[] avatar = retriever.getAvatar();
+                // FCR indicates avatar can be null => system crash
+                if (avatar == null)
+                    return false;
 
                 addAvatarImageByAvatarId(avatarId, avatar);
                 // add an index hash for the jid

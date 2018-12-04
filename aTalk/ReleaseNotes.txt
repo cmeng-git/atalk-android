@@ -1,5 +1,15 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.6.2 (1062)
+Author:         cmeng
+Upload Date:	12/04/2018
+- Replace incompatible jitsi ErrorDialog with android showAlertDialog
+- Set Type=chat for Omemo message before sending
+- Use google stunServers as default if none is specified {stun1.l.google.com:19302}
+- Update atalk to use jitsi-smack4.2 release 20181020
+- Update libjitsi to release 20181122 (Omit Function and Predicate that require API-24)
+
+=========================================================================
 Version:		1.6.1 (1061)
 Author:         cmeng
 Upload Date:	11/03/2018

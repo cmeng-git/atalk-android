@@ -15,99 +15,98 @@ package net.java.sip.communicator.plugin.defaultresourcepack;
 import net.java.sip.communicator.service.resources.*;
 import net.java.sip.communicator.util.Logger;
 
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 import java.net.URL;
 import java.util.*;
 
 /**
- *
  * @author damencho
+ * @author Eng Chong Meng
  */
 public class DefaultResourcePackActivator implements BundleActivator
 {
-	private Logger logger = Logger.getLogger(DefaultResourcePackActivator.class);
+    private Logger logger = Logger.getLogger(DefaultResourcePackActivator.class);
 
-	static BundleContext bundleContext;
+    static BundleContext bundleContext;
 
-	// buffer for ressource files found
-	private static Hashtable<String, Iterator<String>> ressourcesFiles = new Hashtable<String, Iterator<String>>();
+    // buffer for ressource files found
+    private static Hashtable<String, Iterator<String>> ressourcesFiles = new Hashtable<>();
 
-	public void start(BundleContext bc)
-		throws Exception
-	{
-		bundleContext = bc;
+    public void start(BundleContext bc)
+            throws Exception
+    {
+        bundleContext = bc;
 
-		DefaultColorPackImpl colPackImpl = new DefaultColorPackImpl();
-		Hashtable<String, String> props = new Hashtable<String, String>();
-		props.put(ResourcePack.RESOURCE_NAME, ColorPack.RESOURCE_NAME_DEFAULT_VALUE);
-		bundleContext.registerService(ColorPack.class.getName(), colPackImpl, props);
+        DefaultColorPackImpl colPackImpl = new DefaultColorPackImpl();
+        Hashtable<String, String> props = new Hashtable<>();
+        props.put(ResourcePack.RESOURCE_NAME, ColorPack.RESOURCE_NAME_DEFAULT_VALUE);
+        bundleContext.registerService(ColorPack.class.getName(), colPackImpl, props);
 
-		DefaultImagePackImpl imgPackImpl = new DefaultImagePackImpl();
-		Hashtable<String, String> imgProps = new Hashtable<String, String>();
-		imgProps.put(ResourcePack.RESOURCE_NAME, ImagePack.RESOURCE_NAME_DEFAULT_VALUE);
-		bundleContext.registerService(ImagePack.class.getName(), imgPackImpl, imgProps);
+        DefaultImagePackImpl imgPackImpl = new DefaultImagePackImpl();
+        Hashtable<String, String> imgProps = new Hashtable<>();
+        imgProps.put(ResourcePack.RESOURCE_NAME, ImagePack.RESOURCE_NAME_DEFAULT_VALUE);
+        bundleContext.registerService(ImagePack.class.getName(), imgPackImpl, imgProps);
 
-//		DefaultLanguagePackImpl langPackImpl = new DefaultLanguagePackImpl();
-//		Hashtable<String, String> langProps = new Hashtable<String, String>();
-//		langProps.put(ResourcePack.RESOURCE_NAME, LanguagePack.RESOURCE_NAME_DEFAULT_VALUE);
-//		bundleContext.registerService(LanguagePack.class.getName(), langPackImpl, langProps);
+        //		DefaultLanguagePackImpl langPackImpl = new DefaultLanguagePackImpl();
+        //		Hashtable<String, String> langProps = new Hashtable<String, String>();
+        //		langProps.put(ResourcePack.RESOURCE_NAME, LanguagePack.RESOURCE_NAME_DEFAULT_VALUE);
+        //		bundleContext.registerService(LanguagePack.class.getName(), langPackImpl, langProps);
 
-		DefaultSettingsPackImpl setPackImpl = new DefaultSettingsPackImpl();
-		Hashtable<String, String> setProps = new Hashtable<String, String>();
-		setProps.put(ResourcePack.RESOURCE_NAME, SettingsPack.RESOURCE_NAME_DEFAULT_VALUE);
-		bundleContext.registerService(SettingsPack.class.getName(), setPackImpl, setProps);
+        DefaultSettingsPackImpl setPackImpl = new DefaultSettingsPackImpl();
+        Hashtable<String, String> setProps = new Hashtable<>();
+        setProps.put(ResourcePack.RESOURCE_NAME, SettingsPack.RESOURCE_NAME_DEFAULT_VALUE);
+        bundleContext.registerService(SettingsPack.class.getName(), setPackImpl, setProps);
 
-		DefaultSoundPackImpl sndPackImpl = new DefaultSoundPackImpl();
-		Hashtable<String, String> sndProps = new Hashtable<String, String>();
-		sndProps.put(ResourcePack.RESOURCE_NAME, SoundPack.RESOURCE_NAME_DEFAULT_VALUE);
-		bundleContext.registerService(SoundPack.class.getName(), sndPackImpl, sndProps);
+        DefaultSoundPackImpl sndPackImpl = new DefaultSoundPackImpl();
+        Hashtable<String, String> sndProps = new Hashtable<>();
+        sndProps.put(ResourcePack.RESOURCE_NAME, SoundPack.RESOURCE_NAME_DEFAULT_VALUE);
+        bundleContext.registerService(SoundPack.class.getName(), sndPackImpl, sndProps);
 
-		if (logger.isInfoEnabled())
-			logger.info("Default resources ... [REGISTERED]");
-	}
+        if (logger.isInfoEnabled())
+            logger.info("Default resources ... [REGISTERED]");
+    }
 
-	public void stop(BundleContext bc)
-		throws Exception
-	{
+    public void stop(BundleContext bc)
+            throws Exception
+    {
+    }
 
-	}
+    /**
+     * Finds all properties files for the given path in this bundle.
+     *
+     * @param path the path pointing to the properties files.
+     */
+    protected static Iterator<String> findResourcePaths(String path, String pattern)
+    {
+        Iterator<String> bufferedResult = ressourcesFiles.get(path + pattern);
+        if (bufferedResult != null) {
+            return bufferedResult;
+        }
 
-	/**
-	 * Finds all properties files for the given path in this bundle.
-	 *
-	 * @param path
-	 *        the path pointing to the properties files.
-	 */
-	protected static Iterator<String> findResourcePaths(String path, String pattern)
-	{
-		Iterator<String> bufferedResult = ressourcesFiles.get(path + pattern);
-		if (bufferedResult != null) {
-			return bufferedResult;
-		}
+        ArrayList<String> propertiesList = new ArrayList<>();
 
-		ArrayList<String> propertiesList = new ArrayList<String>();
+        @SuppressWarnings("unchecked")
+        Enumeration<URL> propertiesUrls = bundleContext.getBundle().findEntries(path, pattern, false);
 
-		@SuppressWarnings("unchecked")
-		Enumeration<URL> propertiesUrls = bundleContext.getBundle().findEntries(path, pattern, false);
+        if (propertiesUrls != null) {
+            while (propertiesUrls.hasMoreElements()) {
+                URL propertyUrl = propertiesUrls.nextElement();
 
-		if (propertiesUrls != null) {
-			while (propertiesUrls.hasMoreElements()) {
-				URL propertyUrl = propertiesUrls.nextElement();
+                // Remove the first slash.
+                String propertyFilePath = propertyUrl.getPath().substring(1);
 
-				// Remove the first slash.
-				String propertyFilePath = propertyUrl.getPath().substring(1);
+                // Replace all slashes with dots.
+                propertyFilePath = propertyFilePath.replaceAll("/", ".");
 
-				// Replace all slashes with dots.
-				propertyFilePath = propertyFilePath.replaceAll("/", ".");
+                propertiesList.add(propertyFilePath);
+            }
+        }
 
-				propertiesList.add(propertyFilePath);
-			}
-		}
+        Iterator<String> result = propertiesList.iterator();
+        ressourcesFiles.put(path + pattern, result);
 
-		Iterator<String> result = propertiesList.iterator();
-		ressourcesFiles.put(path + pattern, result);
-
-		return result;
-	}
+        return result;
+    }
 }

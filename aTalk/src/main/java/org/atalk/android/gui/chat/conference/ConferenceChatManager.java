@@ -23,6 +23,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chat.history.HistoryWindow;
 import org.atalk.android.gui.chatroomslist.*;
+import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.util.StringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.*;
@@ -259,17 +260,17 @@ public class ConferenceChatManager
                     break;
                 }
             }
-//			if (hasMatch)
-//				return; // cmeng disable for now
+            //			if (hasMatch)
+            //				return; // cmeng disable for now
         }
         String jabberID = sourceMember.getContactAddress();
         String displayName = sourceMember.getNickName();
         chatPanel.addMessage(jabberID, displayName, evt.getTimestamp(), messageType, message.getMimeType(),
                 messageContent, message.getEncryptionType(), message.getMessageUID(), null);
 
-//		if (createWindow) {
-//			ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());
-//		}
+        //		if (createWindow) {
+        //			ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());
+        //		}
     }
 
     /**
@@ -523,10 +524,10 @@ public class ConferenceChatManager
             members.addAll(contacts);
             chatRoom = groupChatOpSet.createAdHocChatRoom("chatroom-" + new Date().getTime(), members, reason);
         } catch (OperationFailedException | OperationNotSupportedException ex) {
-            // new ErrorDialog(AndroidGUIActivator.getUIService().getMainFrame(),
-            // aTalkApp.getResString(R.string.service_gui_ERROR"),
-            // aTalkApp.getResString(R.string.service_gui_CREATE_CHAT_ROOM_ERROR,
-            // protocolProvider.getProtocolDisplayName()), ex).showDialog();
+            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                    aTalkApp.getResString(R.string.service_gui_ERROR),
+                    aTalkApp.getResString(R.string.service_gui_CREATE_CHAT_ROOM_ERROR,
+                            protocolProvider.getProtocolDisplayName()));
         }
 
         if (chatRoom != null) {
@@ -552,9 +553,10 @@ public class ConferenceChatManager
         AdHocChatRoom chatRoom = chatRoomWrapper.getAdHocChatRoom();
 
         if (chatRoom == null) {
-            // new ErrorDialog(AndroidGUIActivator.getUIService().getMainFrame(),
-            // aTalkApp.getResString(R.string.service_gui_WARNING),
-            // aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, chatRoomWrapper.getAdHocChatRoomName())).showDialog();
+            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                    aTalkApp.getResString(R.string.service_gui_WARNING),
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED,
+                            chatRoomWrapper.getAdHocChatRoomName()));
             return;
         }
         new JoinAdHocChatRoomTask(chatRoomWrapper).execute();
@@ -627,9 +629,8 @@ public class ConferenceChatManager
             chatRoom.leave();
         }
         else {
-            // new ErrorDialog(AndroidGUIActivator.getUIService().getMainFrame(),
-            // aTalkApp.getResString(R.string.service_gui_WARNING"),
-            // aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED)).showDialog();
+            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                    R.string.service_gui_WARNING, R.string.service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED);
         }
     }
 

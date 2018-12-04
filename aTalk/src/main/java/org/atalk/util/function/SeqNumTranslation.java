@@ -15,11 +15,12 @@
  */
 package org.atalk.util.function;
 
+// import java.util.function.Function; => need API-24
+
 /**
  * @author George Politis
  */
-public class SeqNumTranslation
-    extends AbstractFunction<Integer, Integer>
+public class SeqNumTranslation extends AbstractFunction<Integer, Integer>
 {
     /**
      * The delta to apply to the sequence number that is specified as an
@@ -44,7 +45,6 @@ public class SeqNumTranslation
     @Override
     public Integer apply(Integer seqNum)
     {
-        return seqNumDelta == 0
-            ? seqNum : (seqNum + seqNumDelta) & 0xFFFF;
+        return seqNumDelta == 0 ? seqNum : (seqNum + seqNumDelta) & 0xFFFF;
     }
 }

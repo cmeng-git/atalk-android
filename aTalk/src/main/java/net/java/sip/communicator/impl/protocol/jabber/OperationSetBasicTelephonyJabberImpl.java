@@ -18,6 +18,7 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.util.AndroidUtils;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -397,9 +398,12 @@ public class OperationSetBasicTelephonyJabberImpl
                 if (telephonyDomain != null)
                     throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_NOT_IN_ROSTER,
                             telephonyDomain), OperationFailedException.ILLEGAL_ARGUMENT);
-                else
-                    throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_INVALID_ADDRESS,
-                            fullCalleeAddress), OperationFailedException.ILLEGAL_ARGUMENT);
+                else {
+                    String message = aTalkApp.getResString(R.string.service_gui_CREATE_CALL_FAILED);
+                    if (t.getMessage() != null)
+                        message += "\n" + t.getMessage();
+                    throw new OperationFailedException(message, OperationFailedException.NETWORK_FAILURE);
+                }
             }
         }
         return peer;

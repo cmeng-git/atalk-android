@@ -15,14 +15,16 @@
  */
 package org.atalk.util.function;
 
-import org.atalk.impl.neomedia.*;
-import org.atalk.service.neomedia.*;
+import org.atalk.impl.neomedia.RTPPacketPredicate;
+import org.atalk.service.neomedia.ByteArrayBuffer;
+import org.atalk.service.neomedia.RawPacket;
+
+// import java.util.function.Function; => need API-24
 
 /**
  * @author George Politis
  */
-public class SeqNumPacketTranslation<T extends ByteArrayBuffer>
-    extends AbstractFunction<T, T>
+public class SeqNumPacketTranslation<T extends ByteArrayBuffer> extends AbstractFunction<T, T>
 {
     /**
      * The {@link SeqNumTranslation} to apply to the sequence number of the
@@ -31,7 +33,6 @@ public class SeqNumPacketTranslation<T extends ByteArrayBuffer>
     private final SeqNumTranslation seqNumTranslation;
 
     /**
-     *
      * @param seqNumDelta The delta to apply to the sequence number of the
      * {@link RawPacket} that is specified as an argument in the apply method.
      */
@@ -46,13 +47,11 @@ public class SeqNumPacketTranslation<T extends ByteArrayBuffer>
     @Override
     public ByteArrayBuffer apply(ByteArrayBuffer baf)
     {
-        if (RTPPacketPredicate.INSTANCE.test(baf))
-        {
+        if (RTPPacketPredicate.INSTANCE.test(baf)) {
             int srcSeqNum = RawPacket.getSequenceNumber(baf);
             int dstSeqNum = seqNumTranslation.apply(srcSeqNum);
 
-            if (srcSeqNum != dstSeqNum)
-            {
+            if (srcSeqNum != dstSeqNum) {
                 RawPacket.setSequenceNumber(baf, dstSeqNum);
             }
         }

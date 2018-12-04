@@ -15,23 +15,22 @@
  */
 package org.atalk.util.function;
 
+// import java.util.function.Function; => need API-24
+
 /**
  * @author George Politis
  */
-public class TimestampTranslation
-    extends AbstractFunction<Long, Long>
+public class TimestampTranslation extends AbstractFunction<Long, Long>
 {
     /**
-     * The delta to apply to the timestamp that is specified as an argument in
-     * the apply method.
+     * The delta to apply to the timestamp that is specified as an argument in the apply method.
      */
     private final long tsDelta;
 
     /**
      * Ctor.
      *
-     * @param tsDelta The delta to apply to the timestamp that is specified as
-     * an argument in the apply method.
+     * @param tsDelta The delta to apply to the timestamp that is specified as an argument in the apply method.
      */
     public TimestampTranslation(long tsDelta)
     {

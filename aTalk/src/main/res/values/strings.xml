@@ -228,8 +228,8 @@
 
     <!-- About Dialog -->
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nAll rights reserved.</string>
-    <string name="AboutDialog_help"><a href="http://atalk.sytes.net">Online Help</a></string>
-    <string name="AboutDialog_Link">http://atalk.sytes.net</string>
+    <string name="AboutDialog_help"><a href="http://atalk.sytes.net/atalk">Online Help</a></string>
+    <string name="AboutDialog_Link">http://atalk.sytes.net/atalk</string>
     <string name="AboutDialog_title">About</string>
     <string name="AboutDialog_Version">Version %1$s</string>
     <string name="About_action">About</string>
@@ -1109,6 +1109,7 @@
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Support relay</string>
 
     <!-- STUN edit -->
+    <string name="service_gui_STUN_TURN_SERVER">STUN/TURN Server</string>
     <string name="service_gui_STUN_EDIT_ADDRESS">IP Address</string>
     <string name="service_gui_STUN_EDIT_PASSWORD">Password</string>
     <string name="service_gui_STUN_EDIT_PORT">Server port</string>

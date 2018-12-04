@@ -7,28 +7,11 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriConferenceIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.SourcePacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension.SendersEnum;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CryptoPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.DtlsFingerprintPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.EncryptionPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.IceUdpTransportPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.InputEvtPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ParameterPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.PayloadTypePacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.RtpDescriptionPacketExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ZrtpHashPacketExtension;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.CallPeerState;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.media.CallPeerMediaHandler;
-import net.java.sip.communicator.service.protocol.media.MediaAwareCallConference;
-import net.java.sip.communicator.service.protocol.media.SrtpControls;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.media.*;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
@@ -37,20 +20,7 @@ import org.atalk.android.gui.call.VideoCallActivity;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.util.java.awt.Component;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.DtlsControl;
-import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.MediaStreamTarget;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.QualityControl;
-import org.atalk.service.neomedia.QualityPreset;
-import org.atalk.service.neomedia.RTPExtension;
-import org.atalk.service.neomedia.SDesControl;
-import org.atalk.service.neomedia.SrtpControl;
-import org.atalk.service.neomedia.SrtpControlType;
-import org.atalk.service.neomedia.StreamConnector;
-import org.atalk.service.neomedia.VideoMediaStream;
-import org.atalk.service.neomedia.ZrtpControl;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.jivesoftware.smack.SmackException;
@@ -59,15 +29,7 @@ import org.jxmpp.jid.Jid;
 
 import java.beans.PropertyChangeEvent;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import ch.imvs.sdes4j.srtp.SrtpCryptoAttribute;
 
@@ -222,19 +184,17 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     public synchronized void close()
     {
         super.close();
-//        OperationSetDesktopSharingClientJabberImpl client = (OperationSetDesktopSharingClientJabberImpl)
-//                getPeer().getProtocolProvider().getOperationSet(OperationSetDesktopSharingClient.class);
-//        if (client != null)
-//            client.fireRemoteControlRevoked(getPeer());
+        //        OperationSetDesktopSharingClientJabberImpl client = (OperationSetDesktopSharingClientJabberImpl)
+        //                getPeer().getProtocolProvider().getOperationSet(OperationSetDesktopSharingClient.class);
+        //        if (client != null)
+        //            client.fireRemoteControlRevoked(getPeer());
     }
 
     /**
-     * Creates a {@link ContentPacketExtension}s of the streams for a specific
-     * <tt>MediaDevice</tt>.
+     * Creates a {@link ContentPacketExtension}s of the streams for a specific <tt>MediaDevice</tt>.
      *
      * @param dev <tt>MediaDevice</tt>
-     * @return the {@link ContentPacketExtension}s of stream that this handler is prepared to
-     * initiate.
+     * @return the {@link ContentPacketExtension}s of stream that this handler is prepared to initiate.
      * @throws OperationFailedException if we fail to create the descriptions for reasons like problems with device
      * interaction, allocating ports, etc.
      */
@@ -523,8 +483,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 ourContent.setSenders(ContentPacketExtension.SendersEnum.both);
             }
 
-            // let's now see what was the format we announced as first and configure the stream
-            // with it.
+            // let's now see what was the format we announced as first and configure the stream with it.
             String contentName = ourContent.getName();
             ContentPacketExtension theirContent = this.remoteContentMap.get(contentName);
             RtpDescriptionPacketExtension theirDescription = JingleUtils.getRtpDescription(theirContent);
@@ -582,8 +541,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     }
 
     /**
-     * Adds a <tt>SourcePacketExtension</tt> as a child element of <tt>description</tt>. See
-     * XEP-0339.
+     * Adds a <tt>SourcePacketExtension</tt> as a child element of <tt>description</tt>. See XEP-0339.
      *
      * @param description the <tt>RtpDescriptionPacketExtension</tt> to which a child element will be added.
      * @param ssrc the SSRC for the <tt>SourcePacketExtension</tt> to use.
@@ -641,8 +599,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             return qualityControls;
         }
         else {
-            // we have detected that its not supported and return null and control ui won't be
-            // visible
+            // we have detected that its not supported and return null and control ui won't be visible
             return null;
         }
     }
@@ -1427,7 +1384,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     {
         transportManager = getTransportManager();
         if (transportManager != null) {
-             transportManager.startConnectivityEstablishment(contents);
+            transportManager.startConnectivityEstablishment(contents);
         }
     }
 

@@ -20,15 +20,12 @@ import org.atalk.service.neomedia.*;
 /**
  * @author George Politis
  */
-public abstract class RawPacketTransformation
-    extends AbstractFunction<RawPacket, RawPacket>
+public abstract class RawPacketTransformation extends AbstractFunction<RawPacket, RawPacket>
 {
     /**
-     * An identity {@link RawPacketTransformation} that returns the original
-     * packet.
+     * An identity {@link RawPacketTransformation} that returns the original packet.
      */
-    public final static RawPacketTransformation identity
-        = new RawPacketTransformation()
+    public final static RawPacketTransformation identity = new RawPacketTransformation()
     {
         @Override
         public RawPacket apply(RawPacket rawPacket)
