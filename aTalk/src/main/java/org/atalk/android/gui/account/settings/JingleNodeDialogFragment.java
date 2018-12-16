@@ -82,7 +82,7 @@ public class JingleNodeDialogFragment extends DialogFragment
             // Add remove button if it''s not "create new" dialog
             builder = builder.setNegativeButton(R.string.service_gui_SERVERS_LIST_REMOVE, null);
 
-            TextView jidAdrTextView = (TextView) contentView.findViewById(R.id.jidAddress);
+            TextView jidAdrTextView = contentView.findViewById(R.id.jidAddress);
             jidAdrTextView.setText(descriptor.getJID());
 
             CompoundButton useRelayCb = (CompoundButton) contentView.findViewById(R.id.relaySupportCheckbox);

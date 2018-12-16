@@ -82,11 +82,11 @@ public class ConnectionInfo extends OSGiActivity
     protected void onPause()
     {
         super.onPause();
-        if (viewCertDialog != null) {
+        if (viewCertDialog != null && viewCertDialog.isShowing()) {
             viewCertDialog.dismiss();
             viewCertDialog = null;
         }
-        if (deleteDialog != null) {
+        if (deleteDialog != null && deleteDialog.isShowing()) {
             deleteDialog.dismiss();
             deleteDialog = null;
         }
@@ -286,8 +286,8 @@ public class ConnectionInfo extends OSGiActivity
             if (convertView == null) {
                 convertView = getLayoutInflater().inflate(R.layout.connection_info_list_row, parent, false);
                 ciViewHolder = new CIViewHolder();
-                ciViewHolder.pProtocolService = (TextView) convertView.findViewById(R.id.protocolProvider);
-                ciViewHolder.connectionInfo = (TextView) convertView.findViewById(R.id.connectionInfo);
+                ciViewHolder.pProtocolService = convertView.findViewById(R.id.protocolProvider);
+                ciViewHolder.connectionInfo = convertView.findViewById(R.id.connectionInfo);
                 convertView.setTag(ciViewHolder);
             }
             else {

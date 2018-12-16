@@ -78,7 +78,7 @@ public class LegacyClickableToastCtrl
 
 		this.clickListener = clickListener;
 
-		messageView = (TextView) toastView.findViewById(R.id.toast_msg);
+		messageView = toastView.findViewById(R.id.toast_msg);
 
 		toastView.findViewById(toastButtonId).setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view)

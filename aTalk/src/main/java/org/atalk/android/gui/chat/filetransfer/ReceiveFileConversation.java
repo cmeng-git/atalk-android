@@ -40,7 +40,7 @@ import java.util.Date;
  * @author Eng Chong Meng
  */
 public class ReceiveFileConversation extends FileTransferConversation
-        implements FileTransferListener, FileTransferStatusListener
+        implements ScFileTransferListener, FileTransferStatusListener
 {
     private final Logger logger = Logger.getLogger(ReceiveFileConversation.class);
 
@@ -72,7 +72,7 @@ public class ReceiveFileConversation extends FileTransferConversation
         fragmentRFC.fileTransferRequest = request;
         fragmentRFC.mDate = date.toString();
 
-        // need to enable FileTransferListener for ReceiveFileConversion reject/cancellation.
+        // need to enable ScFileTransferListener for ReceiveFileConversion reject/cancellation.
         fragmentRFC.fileTransferOpSet.addFileTransferListener(fragmentRFC);
         return fragmentRFC;
     }
@@ -134,7 +134,11 @@ public class ReceiveFileConversation extends FileTransferConversation
                             aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED, mDate));
                     messageViewHolder.acceptButton.setVisibility(View.GONE);
                     messageViewHolder.rejectButton.setVisibility(View.GONE);
-                    fileTransferRequest.rejectFile();
+                    try {
+                        fileTransferRequest.rejectFile();
+                    } catch (OperationFailedException e) {
+                        logger.error("Reject file exception: " + e.getMessage());
+                    }
                     // need to update status here as chatFragment statusListener is enabled for
                     // fileTransfer and only after accept
                     setXferStatus(FileTransferStatusChangeEvent.CANCELED);
@@ -142,7 +146,7 @@ public class ReceiveFileConversation extends FileTransferConversation
             });
         }
         else {
-            updateView(status);
+            updateView(status, "");
         }
         return convertView;
     }
@@ -150,7 +154,7 @@ public class ReceiveFileConversation extends FileTransferConversation
     /**
      * Handles file transfer status changes. Updates the interface to reflect the changes.
      */
-    private void updateView(final int status)
+    private void updateView(final int status, final String reason)
     {
         boolean bgAlert = false;
         switch (status) {
@@ -191,7 +195,7 @@ public class ReceiveFileConversation extends FileTransferConversation
             case FileTransferStatusChangeEvent.FAILED:
                 // hideProgressRelatedComponents(); keep the status info for user view
                 messageViewHolder.titleLabel.setText(
-                        aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, mDate, mSendTo));
+                        aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, mDate, mSendTo, reason));
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
                 bgAlert = true;
                 break;
@@ -224,6 +228,7 @@ public class ReceiveFileConversation extends FileTransferConversation
     {
         final FileTransfer fileTransfer = event.getFileTransfer();
         final int status = event.getNewStatus();
+        final String reason = event.getReason();
         setXferStatus(status);
 
         // Event thread - Must execute in UiThread to Update UI information
@@ -232,7 +237,7 @@ public class ReceiveFileConversation extends FileTransferConversation
             @Override
             public void run()
             {
-                updateView(status);
+                updateView(status, reason);
                 if (status == FileTransferStatusChangeEvent.COMPLETED
                         || status == FileTransferStatusChangeEvent.CANCELED
                         || status == FileTransferStatusChangeEvent.FAILED

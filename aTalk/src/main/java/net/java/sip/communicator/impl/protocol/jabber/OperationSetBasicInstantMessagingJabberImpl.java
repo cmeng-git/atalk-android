@@ -503,7 +503,6 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             if (correctedMessageUID != null)
                 sendMessage.addExtension(new MessageCorrectExtension(correctedMessageUID));
             sendMessage.setStanzaId(message.getMessageUID());
-            sendMessage.setType(org.jivesoftware.smack.packet.Message.Type.chat);
             mChat = mChatManager.chatWith(toJid.asEntityBareJidIfPossible());
             mChat.send(sendMessage);
         } catch (UndecidedOmemoIdentityException e) {

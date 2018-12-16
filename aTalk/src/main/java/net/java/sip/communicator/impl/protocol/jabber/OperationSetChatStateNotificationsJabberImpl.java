@@ -16,14 +16,7 @@
 
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.packet.ThumbnailIQ;
-import net.java.sip.communicator.service.protocol.AbstractOperationSetChatStateNotifications;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
-import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
@@ -32,27 +25,18 @@ import net.java.sip.communicator.util.Logger;
 import org.atalk.android.gui.chat.MetaContactChatTransport;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.StanzaExtensionFilter;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
-import org.jivesoftware.smackx.xevent.MessageEventManager;
-import org.jivesoftware.smackx.xevent.MessageEventNotificationListener;
-import org.jivesoftware.smackx.xevent.MessageEventRequestListener;
+import org.jivesoftware.smackx.xevent.*;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
 import java.util.List;
-
-import static org.jxmpp.util.XmppStringUtils.parseBareJid;
 
 /**
  * OperationSet that handle chat state notifications
@@ -131,19 +115,19 @@ public class OperationSetChatStateNotificationsJabberImpl extends
             throw new IllegalArgumentException("The specified contact is not a Jabber contact." + contact);
 
         // now handle XEP-0085 chat state sending
-//		Chat chat = opSetBasicIM.getChat((EntityJid) contact.getJid());
-//		if (opSetBasicIM != null && mConnection != null && chat != null) {
-//			logger.info("Sending Chat State for : " + chatState.toString());
-//			chatStateManager.setCurrentState(chatState, chat);
-//		}
+        //		Chat chat = opSetBasicIM.getChat((EntityJid) contact.getJid());
+        //		if (opSetBasicIM != null && mConnection != null && chat != null) {
+        //			logger.info("Sending Chat State for : " + chatState.toString());
+        //			chatStateManager.setCurrentState(chatState, chat);
+        //		}
 
         if (opSetBasicIM != null && mConnection != null) {
             Jid toJid = opSetBasicIM.getRecentFullJidForContactIfPossible(contact);
 
-			/*
+            /*
              * find the currently contacted jid to send chat state info or if we do not have a jid and
-			 * we have already sent message to the bare jid we will also send chat state info there
-			 */
+             * we have already sent message to the bare jid we will also send chat state info there
+             */
 
             // if we haven't sent a message yet, do not send chat state notifications
             if (toJid == null)
@@ -226,7 +210,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
                 messageEventManager.addMessageEventRequestListener(new JabberMessageEventRequestListener());
                 messageEventManager.addMessageEventNotificationListener(new IncomingMessageEventsListener());
 
-				if (smackChatStateListener == null) {
+                if (smackChatStateListener == null) {
                     smackChatStateListener = new SmackChatStateListener();
                     mConnection.addAsyncStanzaListener(smackChatStateListener, CHATSTATE);
                 }

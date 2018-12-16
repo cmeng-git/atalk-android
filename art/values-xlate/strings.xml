@@ -305,7 +305,7 @@
     <!-- File Transfer (xFile prefix with date) -->
     <string name="xFile_FILE_BYTE_SENT">%1$s sent</string>
     <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nFile has been received from %2$s</string>
-    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\nAn error occurred while transferring file from %2$s</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\nAn error occurred while transferring file from %2$s\n%3$s</string>
     <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nReceiving file from %2$s</string>
     <string name="xFile_FILE_SEND_COMPLETED">%1$s:\nFile has been successfully sent to %2$s</string>
     <string name="xFile_FILE_SEND_REFUSED">%1$s:\n%2$s has rejected this file</string>

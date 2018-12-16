@@ -51,7 +51,7 @@ public class RegistryDefaults
 
 	public static List<String> contentPrefixList(int flags)
 	{
-		final List<String> contentPrefixList = new ArrayList<String>();
+		final List<String> contentPrefixList = new ArrayList<>();
 
 		if ((flags & JMF) != 0) {
 			contentPrefixList.add("javax");
@@ -102,7 +102,7 @@ public class RegistryDefaults
 	 */
 	public static List<Object> plugInList(int flags)
 	{
-		final List<Object> result = new ArrayList<Object>();
+		final List<Object> result = new ArrayList<>();
 		if (flags == NONE)
 			return result;
 
@@ -614,7 +614,7 @@ public class RegistryDefaults
 
 	public static List<String> protocolPrefixList(int flags)
 	{
-		final List<String> protocolPrefixList = new ArrayList<String>();
+		final List<String> protocolPrefixList = new ArrayList<>();
 
 		if ((flags & JMF) != 0) {
 			protocolPrefixList.add("javax");
@@ -705,7 +705,7 @@ public class RegistryDefaults
 
 	private static List<String> removePluginsFromList(int flags, List v)
 	{
-		final List<String> result = new ArrayList<String>();
+		final List<String> result = new ArrayList<>();
 		for (Object o : v) {
 			final String className = (String) o;
 

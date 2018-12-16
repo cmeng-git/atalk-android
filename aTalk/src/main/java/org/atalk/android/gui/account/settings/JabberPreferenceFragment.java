@@ -106,9 +106,10 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
             = aTalkApp.getResString(R.string.pref_key_tele_bypass_gtalk_caps);
 
     /*
-     * A new instance of AccountID and is not the same as accountID
+     * A new instance of AccountID and is not the same as accountID.
+     * Defined as static, otherwise it may get clear onActivityResult - on some android devices
      */
-    private JabberAccountRegistration jbrReg;
+    private static JabberAccountRegistration jbrReg;
 
     /**
      * Creates new instance of <tt>JabberPreferenceFragment</tt>

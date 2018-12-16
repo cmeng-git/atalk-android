@@ -36,8 +36,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="0dp"
-            android:src="@drawable/global_offline" />
+            android:layout_marginBottom="0dp" />
 
         <TextView
             android:id="@+id/actionBarStatusText"

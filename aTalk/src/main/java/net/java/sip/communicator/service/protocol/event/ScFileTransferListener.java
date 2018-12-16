@@ -14,7 +14,7 @@ import java.util.EventListener;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public interface FileTransferListener extends EventListener
+public interface ScFileTransferListener extends EventListener
 {
     /**
      * Called when a new <tt>IncomingFileTransferRequest</tt> has been received.

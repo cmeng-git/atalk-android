@@ -39,7 +39,7 @@ import static net.java.sip.communicator.service.history.HistoryService.DATE_FORM
 public class HistoryReaderImpl implements HistoryReader
 {
 	private HistoryImpl historyImpl;
-	private Vector<HistorySearchProgressListener> progressListeners = new Vector<HistorySearchProgressListener>();
+	private Vector<HistorySearchProgressListener> progressListeners = new Vector<>();
 
 	// regexp used for index of case(in)sensitive impl
 	private static String REGEXP_END = ".*$";
@@ -195,7 +195,7 @@ public class HistoryReaderImpl implements HistoryReader
 		// the files are supposed to be ordered from oldest to newest
 		Vector<String> filelist = filterFilesByDate(this.historyImpl.getFileList(), null, null);
 
-		TreeSet<HistoryRecord> result = new TreeSet<HistoryRecord>(new HistoryRecordComparator());
+		TreeSet<HistoryRecord> result = new TreeSet<>(new HistoryRecordComparator());
 		int leftCount = count;
 		int currentFile = filelist.size() - 1;
 
@@ -209,7 +209,7 @@ public class HistoryReaderImpl implements HistoryReader
 			}
 
 			// will get nodes and construct a List of nodes so we can easily get sublist of it
-			List<Node> nodes = new ArrayList<Node>();
+			List<Node> nodes = new ArrayList<>();
 			NodeList nodesList = doc.getElementsByTagName("record");
 			for (int i = 0; i < nodesList.getLength(); i++) {
 				nodes.add(nodesList.item(i));
@@ -327,7 +327,7 @@ public class HistoryReaderImpl implements HistoryReader
 	public QueryResultSet<HistoryRecord> findFirstRecordsAfter(Date date, int count)
 		throws RuntimeException
 	{
-		TreeSet<HistoryRecord> result = new TreeSet<HistoryRecord>(new HistoryRecordComparator());
+		TreeSet<HistoryRecord> result = new TreeSet<>(new HistoryRecordComparator());
 
 		Vector<String> filelist = filterFilesByDate(this.historyImpl.getFileList(), date, null);
 
@@ -363,7 +363,7 @@ public class HistoryReaderImpl implements HistoryReader
 				if (!isInPeriod(timestamp, date, null))
 					continue;
 
-				ArrayList<String> nameVals = new ArrayList<String>();
+				ArrayList<String> nameVals = new ArrayList<>();
 
 				boolean isRecordOK = true;
 				int len = propertyNodes.getLength();
@@ -402,7 +402,7 @@ public class HistoryReaderImpl implements HistoryReader
 			currentFile++;
 		}
 
-		return new OrderedQueryResultSet<HistoryRecord>(result);
+		return new OrderedQueryResultSet<>(result);
 	}
 
 	/**
@@ -421,7 +421,7 @@ public class HistoryReaderImpl implements HistoryReader
 		// the files are supposed to be ordered from oldest to newest
 		Vector<String> filelist = filterFilesByDate(this.historyImpl.getFileList(), null, date);
 
-		TreeSet<HistoryRecord> result = new TreeSet<HistoryRecord>(new HistoryRecordComparator());
+		TreeSet<HistoryRecord> result = new TreeSet<>(new HistoryRecordComparator());
 		int leftCount = count;
 
 		int currentFile = filelist.size() - 1;
@@ -453,7 +453,7 @@ public class HistoryReaderImpl implements HistoryReader
 	
 					if (isInPeriod(timestamp, null, date)) {
 	
-						ArrayList<String> nameVals = new ArrayList<String>();
+						ArrayList<String> nameVals = new ArrayList<>();
 	
 						boolean isRecordOK = true;
 						int len = propertyNodes.getLength();
@@ -491,12 +491,12 @@ public class HistoryReaderImpl implements HistoryReader
 				currentFile--;
 			}
 		}
-		return new OrderedQueryResultSet<HistoryRecord>(result);
+		return new OrderedQueryResultSet<>(result);
 	}
 
 	private QueryResultSet<HistoryRecord> find(Date startDate, Date endDate, String[] keywords, String field, boolean caseSensitive)
 	{
-		TreeSet<HistoryRecord> result = new TreeSet<HistoryRecord>(new HistoryRecordComparator());
+		TreeSet<HistoryRecord> result = new TreeSet<>(new HistoryRecordComparator());
 
 		Vector<String> filelist = filterFilesByDate(this.historyImpl.getFileList(), startDate, endDate);
 
@@ -559,7 +559,7 @@ public class HistoryReaderImpl implements HistoryReader
 			fireProgressStateChanged(startDate, endDate, keywords, HistorySearchProgressListener.PROGRESS_MAXIMUM_VALUE);
 		}
 
-		return new OrderedQueryResultSet<HistoryRecord>(result);
+		return new OrderedQueryResultSet<>(result);
 	}
 
 	/**
@@ -610,7 +610,7 @@ public class HistoryReaderImpl implements HistoryReader
 	 */
 	static HistoryRecord filterByKeyword(NodeList propertyNodes, Date timestamp, String[] keywords, String field, boolean caseSensitive)
 	{
-		ArrayList<String> nameVals = new ArrayList<String>();
+		ArrayList<String> nameVals = new ArrayList<>();
 		int len = propertyNodes.getLength();
 		boolean targetNodeFound = false;
 		for (int j = 0; j < len; j++) {
@@ -721,7 +721,7 @@ public class HistoryReaderImpl implements HistoryReader
 	{
 		if (startDate == null && endDate == null) {
 			// no filtering needed then just return the same list
-			Vector<String> result = new Vector<String>();
+			Vector<String> result = new Vector<>();
 			while (filelist.hasNext()) {
 				result.add(filelist.next());
 			}
@@ -740,18 +740,18 @@ public class HistoryReaderImpl implements HistoryReader
 			return result;
 		}
 		// first convert all files to long
-		TreeSet<Long> files = new TreeSet<Long>();
+		TreeSet<Long> files = new TreeSet<>();
 		while (filelist.hasNext()) {
 			String filename = filelist.next();
 
 			files.add(Long.parseLong(filename.substring(0, filename.length() - 4)));
 		}
 
-		TreeSet<Long> resultAsLong = new TreeSet<Long>();
+		TreeSet<Long> resultAsLong = new TreeSet<>();
 
 		// Temporary fix of a NoSuchElementException
 		if (files.size() == 0) {
-			return new Vector<String>();
+			return new Vector<>();
 		}
 
 		Long startLong;
@@ -782,7 +782,7 @@ public class HistoryReaderImpl implements HistoryReader
 				resultAsLong.add(setBeforeTheInterval.last());
 		}
 
-		Vector<String> result = new Vector<String>();
+		Vector<String> result = new Vector<>();
 
 		Iterator<Long> iter = resultAsLong.iterator();
 		while (iter.hasNext()) {

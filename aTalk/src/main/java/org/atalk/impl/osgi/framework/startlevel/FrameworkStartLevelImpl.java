@@ -24,7 +24,7 @@ public class FrameworkStartLevelImpl
     private final BundleImpl bundle;
 
     private final AsyncExecutor<Command> executor
-        = new AsyncExecutor<Command>(5, TimeUnit.MINUTES);
+        = new AsyncExecutor<>(5, TimeUnit.MINUTES);
 
     private int initialBundleStartLevel = 0;
 

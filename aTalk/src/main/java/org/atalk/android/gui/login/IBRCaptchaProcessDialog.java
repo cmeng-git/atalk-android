@@ -42,7 +42,7 @@ import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.bob.packet.BoB;
+import org.jivesoftware.smackx.bob.packet.BoBExt;
 import org.jivesoftware.smackx.captcha.packet.Captcha;
 import org.jivesoftware.smackx.iqregisterx.AccountManager;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
@@ -448,9 +448,9 @@ public class IBRCaptchaProcessDialog extends Dialog
                         return false;
 
                     Bitmap captcha = null;
-                    BoB bob = info.getBoB();
+                    BoBExt bob = info.getBoB();
                     if (bob != null) {
-                        byte[] bytData = bob.getContent();
+                        byte[] bytData = bob.getBoBData().getContent();
                         InputStream stream = new ByteArrayInputStream(bytData);
                         captcha = BitmapFactory.decodeStream(stream);
                     }

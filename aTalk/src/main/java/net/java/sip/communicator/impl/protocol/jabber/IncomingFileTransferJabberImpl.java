@@ -16,6 +16,7 @@ import java.io.File;
  * The Jabber protocol extension of the <tt>AbstractFileTransfer</tt>.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
 {

@@ -6,25 +6,25 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail;
 
 import net.java.sip.communicator.util.Logger;
-import net.java.sip.communicator.util.Sha1Crypto;
 
+import org.jivesoftware.smack.util.SHA1;
+import org.jivesoftware.smackx.bob.BoBHash;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 
 /**
- * The <tt>ThumbnailElement</tt> represents a "thumbnail" XML element, that is contained in the file
- * element, we're sending to notify for a file transfer. The <tt>ThumbnailElement</tt>'s role is to
+ * The <tt>Thumbnail</tt> represents a "thumbnail" XML element, that is contained in the file
+ * element, we're sending to notify for a file transfer. The <tt>Thumbnail</tt>'s role is to
  * advertise a thumbnail. Implementing XEP-0264: Jingle Content Thumbnails
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
-public class ThumbnailElement
+public class Thumbnail
 {
-    private static final Logger logger = Logger.getLogger(ThumbnailElement.class);
+    private static final Logger logger = Logger.getLogger(Thumbnail.class);
 
     /**
      * The name of the XML element used for transport of thumbnail parameters.
@@ -57,7 +57,7 @@ public class ThumbnailElement
      */
     public final static String HEIGHT = "height";
 
-    private String cid;
+    private BoBHash cid;
     private String mimeType;
     private int width;
     private int height;
@@ -65,60 +65,50 @@ public class ThumbnailElement
     /**
      * Creates a <tt>ThumbnailPacketExtension</tt> by specifying all extension attributes.
      *
-     * @param serverAddress the Jabber address of the destination contact
      * @param thumbnailData the byte array containing the thumbnail data
      * @param mimeType the mime type attribute
      * @param width the width of the thumbnail
      * @param height the height of the thumbnail
      */
-    public ThumbnailElement(String serverAddress, byte[] thumbnailData, String mimeType, int width, int height)
+    public Thumbnail(byte[] thumbnailData, String mimeType, int width, int height)
     {
-        this.cid = createCid(serverAddress, thumbnailData);
+        this.cid = createCid(thumbnailData);
         this.mimeType = mimeType;
         this.width = width;
         this.height = height;
     }
 
     /**
-     * Creates a <tt>ThumbnailElement</tt> by parsing the given <tt>xml</tt>.
+     * Creates a <tt>Thumbnail</tt> by parsing the given <tt>xml</tt>.
      * <thumbnail xmlns="urn:xmpp:thumbs:0" cid="sha1+2845ad11024a99dc61fe2bad3c59c5fb0a23cd1c@atalk.org"
      * mime-type="image/png" width="64" height="64"/>
      *
-     * @param parser the XML from which we obtain the needed information to create this <tt>ThumbnailElement</tt>
+     * @param parser the XML from which we obtain the needed information to create this <tt>Thumbnail</tt>
      */
-    public ThumbnailElement(XmlPullParser parser)
+    public Thumbnail(XmlPullParser parser)
     {
-        boolean done = false;
-        int eventType;
-        String elementName;
-
-        while (!done) {
-            try {
-                eventType = parser.getEventType();
-                elementName = parser.getName();
-
-                if (eventType == XmlPullParser.START_TAG) {
-                    if (elementName.equals(ELEMENT)) {
-                        this.setCid(parser.getAttributeValue("", CID));
-                        this.setMimeType(parser.getAttributeValue("", MIME_TYPE));
-                        this.setWidth(Integer.parseInt(parser.getAttributeValue("", WIDTH)));
-                        this.setHeight(Integer.parseInt(parser.getAttributeValue("", HEIGHT)));
-                    }
-                }
-                else if (eventType == XmlPullParser.END_TAG) {
-                    if (elementName.equals(ELEMENT)) {
-                        done = true;
-                    }
-                }
-                if (!done)
-                    eventType = parser.next();
-            } catch (XmlPullParserException e) {
-                if (logger.isDebugEnabled())
-                    logger.debug("Element name unknown!");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        cid = parseCid(parser.getAttributeValue("", CID));
+        mimeType = parser.getAttributeValue("", MIME_TYPE);
+        String parserWidth = parser.getAttributeValue("", WIDTH);
+        String parserHeight = parser.getAttributeValue("", HEIGHT);
+        try
+        {
+            width = Integer.parseInt(parserWidth);
+            height = Integer.parseInt(parserHeight);
         }
+        catch (NumberFormatException nfe)
+        {
+            // ignore, width and height are optional
+        }
+    }
+
+    private BoBHash parseCid(String cid)
+    {
+        // previous Jitsi versions used to send <hashType>-<hash>@<server>
+        if (!cid.endsWith("@bob.xmpp.org")) {
+            cid = cid.substring(0, cid.indexOf('@')) + "@bob.xmpp.org";
+        }
+        return BoBHash.fromCid(cid);
     }
 
     /**
@@ -134,7 +124,7 @@ public class ThumbnailElement
         buf.append("<").append(ELEMENT).append(" xmlns=\"").append(NAMESPACE).append("\"");
 
         // adding thumbnail parameters
-        buf = addXmlAttribute(buf, CID, this.getCid());
+        buf = addXmlAttribute(buf, CID, this.getCid().getCid());
         buf = addXmlAttribute(buf, MIME_TYPE, this.getMimeType());
         buf = addXmlIntAttribute(buf, WIDTH, this.getWidth());
         buf = addXmlIntAttribute(buf, HEIGHT, this.getWidth());
@@ -145,19 +135,19 @@ public class ThumbnailElement
     }
 
     /**
-     * Returns the Content-ID, corresponding to this <tt>ThumbnailElement</tt>.
+     * Returns the Content-ID, corresponding to this <tt>Thumbnail</tt>.
      *
-     * @return the Content-ID, corresponding to this <tt>ThumbnailElement</tt>
+     * @return the Content-ID, corresponding to this <tt>Thumbnail</tt>
      */
-    public String getCid()
+    public BoBHash getCid()
     {
         return cid;
     }
 
     /**
-     * Returns the mime type of this <tt>ThumbnailElement</tt>.
+     * Returns the mime type of this <tt>Thumbnail</tt>.
      *
-     * @return the mime type of this <tt>ThumbnailElement</tt>
+     * @return the mime type of this <tt>Thumbnail</tt>
      */
     public String getMimeType()
     {
@@ -165,9 +155,9 @@ public class ThumbnailElement
     }
 
     /**
-     * Returns the width of this <tt>ThumbnailElement</tt>.
+     * Returns the width of this <tt>Thumbnail</tt>.
      *
-     * @return the width of this <tt>ThumbnailElement</tt>
+     * @return the width of this <tt>Thumbnail</tt>
      */
     public int getWidth()
     {
@@ -175,9 +165,9 @@ public class ThumbnailElement
     }
 
     /**
-     * Returns the height of this <tt>ThumbnailElement</tt>.
+     * Returns the height of this <tt>Thumbnail</tt>.
      *
-     * @return the height of this <tt>ThumbnailElement</tt>
+     * @return the height of this <tt>Thumbnail</tt>
      */
     public int getHeight()
     {
@@ -185,11 +175,11 @@ public class ThumbnailElement
     }
 
     /**
-     * Sets the content-ID of this <tt>ThumbnailElement</tt>.
+     * Sets the content-ID of this <tt>Thumbnail</tt>.
      *
      * @param cid the content-ID to set
      */
-    public void setCid(String cid)
+    public void setCid(BoBHash cid)
     {
         this.cid = cid;
     }
@@ -254,24 +244,13 @@ public class ThumbnailElement
     }
 
     /**
-     * Creates the cid attrubte value for the given <tt>contactJabberAddress</tt> and
-     * <tt>thumbnailData</tt>.
+     * Creates the cid attribute value for the given  <tt>thumbnailData</tt>.
      *
-     * @param serverAddress the Jabber server address
      * @param thumbnailData the byte array containing the data
-     * @return the cid attrubte value for the thumbnail extension
+     * @return the cid attribute value for the thumbnail extension
      */
-    private String createCid(String serverAddress, byte[] thumbnailData)
+    private BoBHash createCid(byte[] thumbnailData)
     {
-        try {
-            return "sha1+" + Sha1Crypto.encode(thumbnailData) + "@" + serverAddress;
-        } catch (NoSuchAlgorithmException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Failed to encode the thumbnail in SHA-1.", e);
-        } catch (UnsupportedEncodingException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Failed to encode the thumbnail in SHA-1.", e);
-        }
-        return null;
+        return new BoBHash(SHA1.hex(thumbnailData), "sha1");
     }
 }

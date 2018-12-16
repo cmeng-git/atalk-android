@@ -656,6 +656,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 else
                     errorMessage += errText;
                 logger.error(errorMessage, ex);
+                // initRegistrationRequest();
                 throw new OperationFailedException(errorMessage, OperationFailedException.REGISTRATION_REQUIRED, ex);
             }
             else {
@@ -680,6 +681,31 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mProvider.getConnection().setReplyTimeout(SMACK_PACKET_REPLY_TIMEOUT_10);
         }
     }
+
+    //    /**
+    //     * Send chatRoom registration request
+    //     * <iq to='chatroom-8eev@conference.atalk.org' id='VAgx3-116' type='get'><query xmlns='jabber:iq:register'></query></iq>
+    //     *
+    //     * <iq xml:lang='en' to='leopard@atalk.org/atalk' from='chatroom-8eev@conference.atalk.org' type='error' id='VAgx3-116'>
+    //     * <query xmlns='jabber:iq:register'/><error code='503' type='cancel'><service-unavailable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>
+    //     * <text xml:lang='en' xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'>The feature requested is not supported by the conference</text></error></iq>
+    //     */
+    //    private void initRegistrationRequest()
+    //    {
+    //        Registration req = new Registration(null);
+    //        EntityBareJid chatRoom = mMultiUserChat.getRoom();
+    //        DomainFullJid fromJid = JidCreate.domainFullFrom(chatRoom.asDomainBareJid(), mNickName);
+    //        req.setTo(chatRoom);
+    //        req.setType(IQ.Type.get);
+    //        req.setFrom(fromJid);
+    //        req.setStanzaId();
+    //        try {
+    //            StanzaCollector stanzaCollector
+    //                    = mProvider.getConnection().createStanzaCollectorAndSend(new StanzaIdFilter(req.getStanzaId()), req);
+    //        } catch (NotConnectedException | InterruptedException e) {
+    //            e.printStackTrace();
+    //        }
+    //    }
 
     /**
      * Returns that <tt>ChatRoomJabberRole</tt> instance corresponding to the <tt>smackRole</tt> string.
@@ -1345,11 +1371,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Returns the list of banned users.
      *
      * @return a list of all banned participants
-     * @throws OperationFailedException if we could not obtain the ban list
      */
     @Override
     public Iterator<ChatRoomMember> getBanList()
-            throws OperationFailedException
     {
         return banList.values().iterator();
     }
@@ -1605,7 +1629,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         /*
          * Save the extensions to set to other outgoing Presence packets
          */
-        publishedConference = (cd == null || !cd.isAvailable()) ? null : cd;
+        publishedConference = (!cd.isAvailable()) ? null : cd;
         publishedConferenceExt = (publishedConference == null) ? null : ext;
 
 
@@ -1793,15 +1817,15 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 // skip it otherwise save it as last seen delayed message
                 if (lastSeenDelayedMessage == null) {
                     // initialise this from configuration
-                    String timestamp = ConfigurationUtils.getChatRoomProperty(mProvider,
+                    String sTimestamp = ConfigurationUtils.getChatRoomProperty(mProvider,
                             getName(), LAST_SEEN_DELAYED_MESSAGE_PROP);
 
-                    try {
-                        lastSeenDelayedMessage = new Date(Long.parseLong(timestamp));
-                    } catch (Throwable ex) {
-                        ex.printStackTrace();
+                        try {
+                                lastSeenDelayedMessage = new Date(Long.parseLong(sTimestamp));
+                        } catch (Throwable ex) {
+                            logger.warn("TimeStamp property is null! " + timeStamp);
+                        }
                     }
-                }
 
                 if (lastSeenDelayedMessage != null && !timeStamp.after(lastSeenDelayedMessage))
                     return;

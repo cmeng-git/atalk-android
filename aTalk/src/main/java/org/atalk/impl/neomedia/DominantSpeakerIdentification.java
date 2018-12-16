@@ -730,7 +730,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
          */
         public DecisionMaker(DominantSpeakerIdentification algorithm)
         {
-            this.algorithm = new WeakReference<DominantSpeakerIdentification>(algorithm);
+            this.algorithm = new WeakReference<>(algorithm);
         }
 
         /**

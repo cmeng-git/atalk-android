@@ -19,7 +19,7 @@ import org.osgi.framework.Bundle;
  */
 public class EventListenerList
 {
-    private final List<Element<?>> elements = new LinkedList<Element<?>>();
+    private final List<Element<?>> elements = new LinkedList<>();
 
     public synchronized <T extends EventListener> boolean add(
             Bundle bundle,

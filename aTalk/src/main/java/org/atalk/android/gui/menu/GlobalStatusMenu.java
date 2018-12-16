@@ -225,8 +225,8 @@ public class GlobalStatusMenu extends FragmentActivity
      */
     public void setContentView(int layoutResID)
     {
-        LayoutInflater inflator = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        setContentView(inflator.inflate(layoutResID, null));
+        LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        setContentView(inflater.inflate(layoutResID, null));
     }
 
     /**

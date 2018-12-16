@@ -308,7 +308,7 @@
     <!-- File Transfer (xFile prefix with date) -->
     <string name="xFile_FILE_BYTE_SENT">отправлено %1$s</string>
     <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nFile получен из %2$s</string>
-    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\nПроизошла ошибка при передаче файла из %2$s</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\nПроизошла ошибка при передаче файла из %2$s\n%3$s</string>
     <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nПолучить файл из %2$s</string>
     <string name="xFile_FILE_SEND_COMPLETED">%1$s:\nFile успешно отправлен в %2$s</string>
     <string name="xFile_FILE_SEND_REFUSED">%1$s:\n%2$s отклонил этот файл</string>

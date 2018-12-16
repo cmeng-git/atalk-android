@@ -455,8 +455,8 @@ public class JabberAccountID extends AccountID
     /**
      * Sets the <tt>useUPNP</tt> property.
      *
-     * @param isUseUPNP <tt>true</tt> to indicate that UPnP should be used for this account, <tt>false</tt> -
-     * otherwise.
+     * @param isUseUPNP <tt>true</tt> to indicate that UPnP should be used for this account,
+     * <tt>false</tt> - otherwise.
      */
     public void setUseUPNP(boolean isUseUPNP)
     {

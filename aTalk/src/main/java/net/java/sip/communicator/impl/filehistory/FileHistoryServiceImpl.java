@@ -41,12 +41,12 @@ import java.util.*;
  * File History Service stores info for file transfers from various protocols.
  * It handles both the outgoing and incoming file transfer events.
  * FileTransferStatusListener = in/out file transfer status
- * FileTransferListener = Incoming file transfer request
+ * ScFileTransferListener = Incoming file transfer request
  *
  * @author Eng Chong Meng
  */
 public class FileHistoryServiceImpl implements FileHistoryService, ServiceListener,
-        FileTransferStatusListener, FileTransferListener
+        FileTransferStatusListener, ScFileTransferListener
 {
     /**
      * The logger for this class.

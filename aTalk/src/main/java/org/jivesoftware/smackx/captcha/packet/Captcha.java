@@ -55,10 +55,9 @@ public class Captcha implements ExtensionElement
     private DataForm mForm;
 
     /**
-     * Creates a <tt>BoB</tt> packet, by specifying the content-ID, the maxAge, the type
-     * of data and the data of the bob.
+     * Creates a <tt>Captcha</tt> form, by specifying the form
      *
-     * @param form the content-ID used to identify this packet in the destination
+     * @param form the DataForm
      */
     public Captcha(DataForm form)
     {

@@ -420,7 +420,7 @@ public class XMLUtils
 					+ "parent = " + parent
 					+ "; tagName = " + tagName);
 
-		List<Element> result = new ArrayList<Element>();
+		List<Element> result = new ArrayList<>();
 		NodeList nodes = parent.getChildNodes();
 		Node node;
 		int len = nodes.getLength();
@@ -501,7 +501,7 @@ public class XMLUtils
 	public static List<Element> locateElements(Element root, String tagName,
 			String keyAttributeName, String keyAttributeValue)
 	{
-		List<Element> result = new ArrayList<Element>();
+		List<Element> result = new ArrayList<>();
 		NodeList nodes = root.getChildNodes();
 		Node node;
 		int len = nodes.getLength();

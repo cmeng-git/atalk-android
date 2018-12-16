@@ -55,7 +55,7 @@ public class MoveToGroupDialog extends OSGiDialogFragment
 		this.metaContact = AndroidGUIActivator.getContactListService()
 				.findMetaContactByMetaUID(getArguments().getString(META_CONTACT_UID));
 
-		View contentView = getActivity().getLayoutInflater().inflate(R.layout.move_to_group, container, false);
+		View contentView = inflater.inflate(R.layout.move_to_group, container, false);
 
 		String UserId = getArguments().getString(USER_ID);
 		TextView accountOwner = contentView.findViewById(R.id.accountOwner);

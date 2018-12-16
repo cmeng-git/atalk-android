@@ -134,7 +134,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
 
         Collection<FileTransferStatusListener> listeners = null;
         synchronized (statusListeners) {
-            listeners = new ArrayList<FileTransferStatusListener>(statusListeners);
+            listeners = new ArrayList<>(statusListeners);
         }
 
         if (logger.isDebugEnabled())

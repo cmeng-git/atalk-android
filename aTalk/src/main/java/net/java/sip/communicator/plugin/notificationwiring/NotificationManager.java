@@ -44,7 +44,7 @@ import java.util.concurrent.Callable;
  */
 public class NotificationManager implements AdHocChatRoomMessageListener, CallChangeListener, CallListener,
         CallPeerConferenceListener, CallPeerListener, CallPeerSecurityListener, ChatRoomMessageListener,
-        FileTransferListener, LocalUserAdHocChatRoomPresenceListener, LocalUserChatRoomPresenceListener,
+        ScFileTransferListener, LocalUserAdHocChatRoomPresenceListener, LocalUserChatRoomPresenceListener,
         MessageListener, Recorder.Listener, ServiceListener, ChatStateNotificationsListener
 {
     /**
@@ -544,7 +544,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      * When a request has been received we show a notification.
      *
      * @param event <tt>FileTransferRequestEvent</tt>
-     * @see FileTransferListener#fileTransferRequestReceived(FileTransferRequestEvent)
+     * @see ScFileTransferListener#fileTransferRequestReceived(FileTransferRequestEvent)
      */
     public void fileTransferRequestReceived(FileTransferRequestEvent event)
     {

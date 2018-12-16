@@ -24,7 +24,8 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingleinfo.JingleInfoQueryIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingleinfo.JingleInfoQueryIQProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet.*;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.ThumbnailElement;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.Thumbnail;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.ThumbnailStreamInitiationProvider;
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
@@ -68,8 +69,8 @@ import org.jivesoftware.smackx.avatar.useravatar.provider.AvatarMetadataProvider
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
 import org.jivesoftware.smackx.avatar.vcardavatar.provider.VCardTempXUpdateProvider;
-import org.jivesoftware.smackx.bob.packet.BoB;
-import org.jivesoftware.smackx.bob.provider.BoBProvider;
+import org.jivesoftware.smackx.bob.packet.BoBExt;
+import org.jivesoftware.smackx.bob.provider.BoBExtensionProvider;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
@@ -138,7 +139,7 @@ import javax.net.ssl.*;
  * @author Eng Chong Meng
  */
 public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderService
-    implements PingFailedListener
+        implements PingFailedListener
 {
     /**
      * Logger of this class
@@ -1335,9 +1336,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Called when the server ping fails.
      */
-    public void pingFailed() {
-//        logger.warn("Ping failed! isLastConnectionMobile: " + isLastConnectionMobile
-//                + "; isConnectedMobile: " + isConnectedMobile());
+    public void pingFailed()
+    {
+        //        logger.warn("Ping failed! isLastConnectionMobile: " + isLastConnectionMobile
+        //                + "; isConnectedMobile: " + isConnectedMobile());
         isMobilePingClosedOnError = isLastConnectionMobile && isConnectedMobile();
     }
 
@@ -1730,10 +1732,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         supportedFeatures.add(FileTransferNegotiator.SI_PROFILE_FILE_TRANSFER_NAMESPACE);
 
         // XEP-0231: Bits of Binary
-        supportedFeatures.add("urn:xmpp:bob");
+        supportedFeatures.add(BoBExt.NAMESPACE);
 
         // XEP-0264: File Transfer Thumbnails
-        supportedFeatures.add(ThumbnailElement.NAMESPACE);
+        supportedFeatures.add(Thumbnail.NAMESPACE);
 
         // XEP-0084: User Avatar
         supportedFeatures.add(AvatarMetadata.NAMESPACE_NOTIFY);
@@ -1913,6 +1915,23 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             ProviderManager.addIQProvider(JibriIq.ELEMENT_NAME, JibriIq.NAMESPACE, new JibriIqProvider());
 
+            // register our input event provider
+            ProviderManager.addIQProvider(InputEvtIQ.ELEMENT_NAME, InputEvtIQ.NAMESPACE, new InputEvtIQProvider());
+
+            // register our jingle provider
+            ProviderManager.addIQProvider(JingleIQ.ELEMENT_NAME, JingleIQ.NAMESPACE, new JingleIQProvider());
+
+            // register our JingleInfo provider
+            ProviderManager.addIQProvider(JingleInfoQueryIQ.ELEMENT_NAME, JingleInfoQueryIQ.NAMESPACE,
+                    new JingleInfoQueryIQProvider());
+
+            // replace the default StreamInitiationProvider with our
+            // custom provider that handles the XEP-0264 <File/> element
+            ProviderManager.addIQProvider(StreamInitiation.ELEMENT, StreamInitiation.NAMESPACE,
+                    new ThumbnailStreamInitiationProvider());
+
+            ProviderManager.addIQProvider(Registration.ELEMENT, Registration.NAMESPACE, new RegistrationProvider());
+
             ProviderManager.addExtensionProvider(
                     ConferenceDescriptionExtension.ELEMENT_NAME, ConferenceDescriptionExtension.NAMESPACE,
                     new ConferenceDescriptionExtensionProvider());
@@ -1932,6 +1951,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addExtensionProvider(JsonMessageExtension.ELEMENT_NAME, JsonMessageExtension.NAMESPACE,
                     new DefaultPacketExtensionProvider<>(JsonMessageExtension.class));
 
+            ProviderManager.addExtensionProvider(TranslationLanguageExtension.ELEMENT_NAME,
+                    TranslationLanguageExtension.NAMESPACE,
+                    new DefaultPacketExtensionProvider<>(TranslationLanguageExtension.class));
+
             ProviderManager.addExtensionProvider(
                     TranscriptionLanguageExtension.ELEMENT_NAME, TranscriptionLanguageExtension.NAMESPACE,
                     new DefaultPacketExtensionProvider<>(TranscriptionLanguageExtension.class));
@@ -1944,22 +1967,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     TranscriptionRequestExtension.ELEMENT_NAME, TranscriptionRequestExtension.NAMESPACE,
                     new DefaultPacketExtensionProvider<>(TranscriptionRequestExtension.class));
 
-            ProviderManager.addExtensionProvider(TranslationLanguageExtension.ELEMENT_NAME,
-                    TranslationLanguageExtension.NAMESPACE,
-                    new DefaultPacketExtensionProvider<>(TranslationLanguageExtension.class));
-
-            // register our input event provider
-            ProviderManager.addIQProvider(InputEvtIQ.ELEMENT_NAME, InputEvtIQ.NAMESPACE, new InputEvtIQProvider());
-
-            // register our JingleInfo provider
-            ProviderManager.addIQProvider(JingleInfoQueryIQ.ELEMENT_NAME, JingleInfoQueryIQ.NAMESPACE,
-                    new JingleInfoQueryIQProvider());
-
-            // register our jingle provider
-            ProviderManager.addIQProvider(JingleIQ.ELEMENT_NAME, JingleIQ.NAMESPACE, new JingleIQProvider());
-
-            ProviderManager.addIQProvider(Registration.ELEMENT, Registration.NAMESPACE, new RegistrationProvider());
-
             /*
              * Tell Smack what are the additional StreamFeatureProvider and ExtensionProviders that aTalk can support
              */
@@ -1969,8 +1976,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addExtensionProvider(CapsExtension.ELEMENT, CapsExtension.NAMESPACE,
                     new CapsExtensionProvider());
 
-            // XEP-0231: Bits of Binary
-            ProviderManager.addExtensionProvider(BoB.ELEMENT, BoB.NAMESPACE, new BoBProvider());
+            // XEP-0231: Bits of Binary Extension - aTalk Bob Extension Provider support
+            ProviderManager.addExtensionProvider(BoBExt.ELEMENT, BoBExt.NAMESPACE, new BoBExtensionProvider());
 
             // XEP-0084: User Avatar (metadata) + notify
             ProviderManager.addExtensionProvider(AvatarMetadata.ELEMENT, AvatarMetadata.NAMESPACE,

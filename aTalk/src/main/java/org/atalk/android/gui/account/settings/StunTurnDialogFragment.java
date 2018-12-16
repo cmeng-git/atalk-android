@@ -125,7 +125,6 @@ public class StunTurnDialogFragment extends DialogFragment
                     {
                         public void onClick(View view)
                         {
-
                             parentAdapter.removeServer(descriptor);
                             dismiss();
                         }

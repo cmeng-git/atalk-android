@@ -647,7 +647,7 @@ public abstract class ProtocolProviderFactory
     public ArrayList<AccountID> getRegisteredAccounts()
     {
         synchronized (registeredAccounts) {
-            return new ArrayList<AccountID>(registeredAccounts.keySet());
+            return new ArrayList<>(registeredAccounts.keySet());
         }
     }
 

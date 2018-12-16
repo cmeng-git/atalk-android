@@ -42,7 +42,7 @@ public class ViewUtil
 	 */
 	public static void setTextViewValue(View container, int id, String text)
 	{
-		TextView tv = (TextView) container.findViewById(id);
+		TextView tv = container.findViewById(id);
 		tv.setText(text);
 	}
 
@@ -54,13 +54,13 @@ public class ViewUtil
 
 	public static void setTextViewValue(View container, String tag, String text)
 	{
-		TextView tv = (TextView) container.findViewWithTag(tag);
+		TextView tv = container.findViewWithTag(tag);
 		tv.setText(text);
 	}
 
     public static void setTextViewColor(View container, int id, int color)
     {
-        TextView tv = (TextView) container.findViewById(id);
+        TextView tv = container.findViewById(id);
         tv.setTextColor(aTalkApp.getAppResources().getColor(color));
     }
 
@@ -97,7 +97,7 @@ public class ViewUtil
 	 */
 	public static void setImageViewIcon(View container, int imageViewId, int drawableId)
 	{
-		ImageView imageView = (ImageView) container.findViewById(imageViewId);
+		ImageView imageView = container.findViewById(imageViewId);
 		imageView.setImageResource(drawableId);
 	}
 

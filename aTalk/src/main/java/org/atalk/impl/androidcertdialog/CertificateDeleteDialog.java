@@ -30,7 +30,7 @@ import org.atalk.service.osgi.OSGiActivity;
 import java.util.*;
 
 /**
- * Allow user to remove any manually approved certficate
+ * Allow user to remove any manually approved certificate
  *
  * @author Eng Chong Meng
  */
@@ -62,7 +62,7 @@ public class CertificateDeleteDialog extends OSGiActivity implements DialogInter
         checkedItems = new boolean[certificateMap.size()];
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE);
-        builder.setMultiChoiceItems(certificates.toArray(new CharSequence[certificates.size()]),
+        builder.setMultiChoiceItems(certificates.toArray(new CharSequence[0]),
                 checkedItems, new DialogInterface.OnMultiChoiceClickListener()
                 {
                     @Override
@@ -138,7 +138,7 @@ public class CertificateDeleteDialog extends OSGiActivity implements DialogInter
      * @param trustFor the ID of <tt>SSL Certificate</tt> to be deleted.
      */
     @SuppressLint("NewApi")
-    private AlertDialog showCertificateDeleteAlert(final String trustFor)
+    private void showCertificateDeleteAlert(final String trustFor)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE))
@@ -164,6 +164,5 @@ public class CertificateDeleteDialog extends OSGiActivity implements DialogInter
 
         AlertDialog confirmDialog = builder.create();
         confirmDialog.show();
-        return confirmDialog;
     }
 }
