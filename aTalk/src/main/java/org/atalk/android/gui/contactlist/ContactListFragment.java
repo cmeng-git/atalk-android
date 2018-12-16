@@ -153,7 +153,7 @@ public class ContactListFragment extends OSGiFragment
         if (searchItem != null) {
             SearchView searchView = (SearchView) searchItem.getActionView();
             int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-            TextView textView = (TextView) searchView.findViewById(id);
+            TextView textView = searchView.findViewById(id);
 
             filterContactList(textView.getText().toString());
             bindSearchListener();
@@ -230,7 +230,7 @@ public class ContactListFragment extends OSGiFragment
         searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.getComponentName()));
 
         int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-        TextView textView = (TextView) searchView.findViewById(id);
+        TextView textView = searchView.findViewById(id);
         textView.setTextColor(getResources().getColor(R.color.white));
         textView.setHintTextColor(getResources().getColor(R.color.white));
         bindSearchListener();
@@ -578,7 +578,7 @@ public class ContactListFragment extends OSGiFragment
      *
      * @param descriptor <tt>MetaContact</tt> for which chat activity will be started.
      */
-    public void startChatActivity(Object descriptor)
+    private void startChatActivity(Object descriptor)
     {
         Intent chatIntent = ChatSessionManager.getChatIntent(descriptor);
         if (chatIntent != null) {

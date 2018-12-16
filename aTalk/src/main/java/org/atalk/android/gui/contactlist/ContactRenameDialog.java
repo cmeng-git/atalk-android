@@ -61,11 +61,9 @@ public class ContactRenameDialog extends OSGiDialogFragment
 		this.metaContact = AndroidGUIActivator.getContactListService()
 				.findMetaContactByMetaUID(getArguments().getString(META_CONTACT_UID));
 
-		View contentView = getActivity().getLayoutInflater().inflate(R.layout.contact_rename,
-				container, false);
-
+		View contentView = inflater.inflate(R.layout.contact_rename, container, false);
 		String userId = getArguments().getString(USER_ID);
-		TextView accountOwner = (TextView) contentView.findViewById(R.id.accountOwner);
+		TextView accountOwner = contentView.findViewById(R.id.accountOwner);
 		accountOwner.setText(getString(R.string.service_gui_CONTACT_OWNER, userId));
 
 		mEditName = contentView.findViewById(R.id.editName);

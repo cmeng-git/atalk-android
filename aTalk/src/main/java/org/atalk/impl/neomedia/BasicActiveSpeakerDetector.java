@@ -73,7 +73,7 @@ public class BasicActiveSpeakerDetector extends AbstractActiveSpeakerDetector
 
     private final Object activeSyncRoot = new Object();
 
-    private final Map<Long, History> histories = new HashMap<Long, History>();
+    private final Map<Long, History> histories = new HashMap<>();
 
     private final ReadWriteLock historiesLock = new ReentrantReadWriteLock();
 
@@ -139,7 +139,7 @@ public class BasicActiveSpeakerDetector extends AbstractActiveSpeakerDetector
         Lock readLock = historiesLock.readLock();
         readLock.lock();
         try {
-            histories = new ArrayList<History>(this.histories.values());
+            histories = new ArrayList<>(this.histories.values());
         } finally {
             readLock.unlock();
         }

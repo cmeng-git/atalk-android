@@ -27,7 +27,7 @@ import org.osgi.framework.*;
 import java.util.Date;
 
 /**
- * Android FileTransferActivator activator which registers <tt>FileTransferListener</tt>
+ * Android FileTransferActivator activator which registers <tt>ScFileTransferListener</tt>
  * for each protocol service provider specific to this system. It listens in to any incoming
  * fileTransferRequestReceived and generate a message to be display in the respective chatPanel
  * for user action.
@@ -36,7 +36,7 @@ import java.util.Date;
  *
  * @author Eng Chong Meng
  */
-public class FileTransferActivator implements BundleActivator, ServiceListener, FileTransferListener
+public class FileTransferActivator implements BundleActivator, ServiceListener, ScFileTransferListener
 {
     /**
      * The logger for this class.

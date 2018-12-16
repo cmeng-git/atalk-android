@@ -176,8 +176,12 @@ public class AccountsListActivity extends OSGiActivity
         // Set menu title
         menu.setHeaderTitle(clickedAccount.getAccountName());
 
+        // No access for account settings or info if not registered
         MenuItem accountSettings = menu.findItem(R.id.account_settings);
         accountSettings.setVisible(clickedAccount.getProtocolProvider() != null);
+
+        MenuItem accountInfo = menu.findItem(R.id.account_info);
+        accountInfo.setVisible(clickedAccount.getProtocolProvider() != null);
     }
 
     @Override
@@ -197,11 +201,25 @@ public class AccountsListActivity extends OSGiActivity
             return true;
         }
         else if (id == R.id.account_settings) {
-            Intent preferences = AccountPreferenceActivity.getIntent(this, clickedAccount.getAccountID());
-            startActivity(preferences);
+            startPreferenceActivity(clickedAccount);
+            return true;
+        }
+        else if (id == R.id.account_info) {
+            startPresenceActivity(clickedAccount);
             return true;
         }
         return super.onContextItemSelected(item);
+    }
+
+    /**
+     * Starts the {@link AccountPreferenceActivity} for clicked {@link Account}
+     *
+     * @param account the <tt>Account</tt> for which preference settings will be opened.
+     */
+    private void startPreferenceActivity(Account account)
+    {
+        Intent preferences = AccountPreferenceActivity.getIntent(getBaseContext(), account.getAccountID());
+        startActivity(preferences);
     }
 
     /**
@@ -294,7 +312,7 @@ public class AccountsListActivity extends OSGiActivity
                 {
                     // Start only for registered accounts
                     if (account.getProtocolProvider() != null) {
-                        startPresenceActivity(account);
+                        startPreferenceActivity(account);
                     }
                     else {
                         String msg = getString(R.string.service_gui_ACCOUNT_UNREGISTERED, account.getAccountName());
@@ -320,7 +338,7 @@ public class AccountsListActivity extends OSGiActivity
                 }
             });
 
-            ToggleButton button = (ToggleButton) rowView.findViewById(R.id.accountToggleButton);
+            ToggleButton button = rowView.findViewById(R.id.accountToggleButton);
             button.setChecked(account.isEnabled());
 
             button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()

@@ -38,7 +38,7 @@ public class StringCompiler
 
 	public StringCompiler()
 	{
-		this.bindings = new HashMap<String, Object>();
+		this.bindings = new HashMap<>();
 	}
 
 	public void bind(String key, Object value)

@@ -272,7 +272,7 @@ public class MainMenuActivity extends ExitMenuActivity
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                if (progressDialog != null) {
+                if (progressDialog != null && progressDialog.isShowing()) {
                     done = true;
                     progressDialog.dismiss();
                 }

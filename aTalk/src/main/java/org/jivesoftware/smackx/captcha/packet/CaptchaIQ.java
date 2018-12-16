@@ -16,12 +16,8 @@
 
 package org.jivesoftware.smackx.captcha.packet;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.bob.packet.BoB;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
-import java.util.Map;
 
 /**
  * XEP-0158: CAPTCHA Forms IQ Implementation with DataForm

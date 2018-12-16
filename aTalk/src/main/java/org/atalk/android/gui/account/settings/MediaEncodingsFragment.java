@@ -297,10 +297,10 @@ public class MediaEncodingsFragment extends Fragment implements TouchInterceptor
 			});
 			// Create string for given format entry
 			String mf = encodings.get(i);
-			TextView tv = (TextView) gv.findViewById(android.R.id.text1);
+			TextView tv = gv.findViewById(android.R.id.text1);
 			tv.setText(mf);
 			// Creates the drag handle view(used to grab list entries)
-			ImageView iv = (ImageView) gv.findViewById(R.id.dragHandle);
+			ImageView iv = gv.findViewById(R.id.dragHandle);
 			if (!isEnabled)
 				gv.removeView(iv);
 			cb.setEnabled(isEnabled);

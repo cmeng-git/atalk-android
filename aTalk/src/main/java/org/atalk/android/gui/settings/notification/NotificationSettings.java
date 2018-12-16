@@ -157,9 +157,9 @@ public class NotificationSettings extends OSGiActivity
 				}
 			});
 
-			TextView textView = (TextView) row.findViewById(R.id.text1);
+			TextView textView = row.findViewById(R.id.text1);
 			textView.setText((String) getItem(position));
-			CompoundButton enableBtn = (CompoundButton) row.findViewById(R.id.enable);
+			CompoundButton enableBtn = row.findViewById(R.id.enable);
 			enableBtn.setChecked(notificationService.isActive(events.get(position)));
 
 			enableBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

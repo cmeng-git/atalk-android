@@ -305,7 +305,7 @@
     <!-- File Transfer (xFile prefix with date) -->
     <string name="xFile_FILE_BYTE_SENT">%1$s dikirim</string>
     <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nFail telah diterima dari %2$s</string>
-    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\n Terjadi kesalahan saat mentransfer fail dari %2$s</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\n Terjadi kesalahan saat mentransfer fail dari %2$s\n%3$s</string>
     <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nMenerima fail dari %2$s</string>
     <string name="xFile_FILE_SEND_COMPLETED">%1$s:\nFail telah berhasil dikirim ke %2$s</string>
     <string name="xFile_FILE_SEND_REFUSED">%1$s:\n %2$s telah menolak fail ini</string>

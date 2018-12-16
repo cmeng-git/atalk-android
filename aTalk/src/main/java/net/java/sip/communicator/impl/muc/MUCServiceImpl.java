@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.impl.muc;
 
+import android.content.Intent;
+
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.contactsource.SourceContact;
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
@@ -17,7 +19,7 @@ import net.java.sip.communicator.util.*;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.contactlist.ContactListFragment;
+import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jxmpp.jid.EntityBareJid;
@@ -505,14 +507,7 @@ public class MUCServiceImpl extends MUCService
             // Must setup up chatRoom and ready to receive incoming messages before joining/sending presence to server
             // ChatPanel chatPanel = ChatSessionManager.getMultiChat(chatRoomWrapper, true);
 
-            // clf is only used as Fragment reference to startChatActivity
-            ContactListFragment clf = aTalkApp.getContactListFragment();
-            if (clf == null) {
-                done(JOIN_UNKNOWN_ERROR_PROP, "No valid contact list");
-                return;
-            }
-            clf.startChatActivity(chatRoomWrapper);
-
+            startChatActivity(chatRoomWrapper);
             ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
             try {
                 if (password != null && password.length > 0)
@@ -547,6 +542,22 @@ public class MUCServiceImpl extends MUCService
                     default:
                         done(JOIN_UNKNOWN_ERROR_PROP, message);
                 }
+            }
+        }
+
+        /**
+         * Starts the chat activity for the given metaContact.
+         *
+         * @param descriptor <tt>MetaContact</tt> for which chat activity will be started.
+         */
+        private void startChatActivity(Object descriptor)
+        {
+            Intent chatIntent = ChatSessionManager.getChatIntent(descriptor);
+            if (chatIntent != null) {
+                aTalkApp.getGlobalContext().startActivity(chatIntent);
+            }
+            else {
+                logger.warn("Failed to start chat with " + descriptor);
             }
         }
 

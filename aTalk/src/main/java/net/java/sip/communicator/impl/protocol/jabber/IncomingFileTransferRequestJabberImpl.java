@@ -5,17 +5,15 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.packet.ThumbnailIQ;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
-import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent;
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.bob.BoBHash;
+import org.jivesoftware.smackx.bob.BoBManager;
 import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
 import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 import org.jxmpp.jid.Jid;
@@ -23,6 +21,8 @@ import org.jxmpp.jid.Jid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Jabber implementation of the incoming file transfer request
@@ -39,6 +39,11 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      */
     private static final Logger logger = Logger.getLogger(IncomingFileTransferRequestJabberImpl.class);
 
+    /**
+     * Thread to fetch thumbnails in the background, one at a time
+     */
+    private static ExecutorService thumbnailCollector = Executors.newSingleThreadExecutor();
+
     private String id;
 
     /**
@@ -47,13 +52,9 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     private final FileTransferRequest fileTransferRequest;
     private final OperationSetFileTransferJabberImpl fileTransferOpSet;
     private final ProtocolProviderServiceJabberImpl jabberProvider;
+    private Jid fromJid;
     private Contact sender;
-    private String thumbnailCid;
     private byte[] thumbnail;
-
-    //    private static final StanzaFilter THUMBNAIL_RESULT = new AndFilter(StanzaTypeFilter.IQ, IQTypeFilter.RESULT,
-    //        new StanzaExtensionFilter(ThumbnailIQ.ELEMENT, ThumbnailIQ.NAMESPACE));
-    private static final StanzaFilter THUMBNAIL_RESULT = new AndFilter(StanzaTypeFilter.IQ, IQTypeFilter.RESULT);
 
     /**
      * Creates an <tt>IncomingFileTransferRequestJabberImpl</tt> based on the given
@@ -70,22 +71,22 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
         this.fileTransferOpSet = fileTransferOpSet;
         this.fileTransferRequest = fileTransferRequest;
 
-        Jid fromUserID = fileTransferRequest.getRequestor();
+        fromJid = fileTransferRequest.getRequestor();
         OperationSetPersistentPresenceJabberImpl opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
                 jabberProvider.getOperationSet(OperationSetPersistentPresence.class);
 
-        sender = opSetPersPresence.findContactByID(fromUserID);
+        sender = opSetPersPresence.findContactByID(fromJid);
         if (sender == null) {
             ChatRoom privateContactRoom = null;
             OperationSetMultiUserChatJabberImpl mucOpSet = (OperationSetMultiUserChatJabberImpl)
                     jabberProvider.getOperationSet(OperationSetMultiUserChat.class);
 
             if (mucOpSet != null)
-                privateContactRoom = mucOpSet.getChatRoom(fromUserID.asBareJid());
+                privateContactRoom = mucOpSet.getChatRoom(fromJid.asBareJid());
             if (privateContactRoom != null) {
                 sender = ((OperationSetPersistentPresenceJabberImpl)
                         jabberProvider.getOperationSet(OperationSetPersistentPresence.class))
-                        .createVolatileContact(fromUserID, true);
+                        .createVolatileContact(fromJid, true);
                 privateContactRoom.updatePrivateContactPresenceStatus(sender);
             }
         }
@@ -97,6 +98,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      *
      * @return the <tt>Contact</tt> making this request
      */
+    @Override
     public Contact getSender()
     {
         return sender;
@@ -107,21 +109,23 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      *
      * @return the description of the file corresponding to this request
      */
+    @Override
     public String getFileDescription()
     {
         return fileTransferRequest.getDescription();
     }
 
-    public String getMimeType() {
+    public String getMimeType()
+    {
         return fileTransferRequest.getMimeType();
     }
 
     /**
-     *
      * Returns the name of the file corresponding to this request.
      *
      * @return the name of the file corresponding to this request
      */
+    @Override
     public String getFileName()
     {
         return fileTransferRequest.getFileName();
@@ -132,6 +136,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      *
      * @return the size of the file corresponding to this request
      */
+    @Override
     public long getFileSize()
     {
         return fileTransferRequest.getFileSize();
@@ -142,6 +147,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      *
      * @return a boolean : <code>false</code> if the transfer fails, <code>true</code> otherwise
      */
+    @Override
     public FileTransfer acceptFile(File file)
     {
         AbstractFileTransfer incomingTransfer = null;
@@ -151,17 +157,12 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
             incomingTransfer = new IncomingFileTransferJabberImpl(id, sender, file, jabberTransfer);
             FileTransferCreatedEvent event = new FileTransferCreatedEvent(incomingTransfer, new Date());
             fileTransferOpSet.fireFileTransferCreated(event);
-            try {
-                jabberTransfer.receiveFile(file);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+
+            jabberTransfer.receiveFile(file);
             new OperationSetFileTransferJabberImpl.FileTransferProgressThread(jabberTransfer,
                     incomingTransfer, getFileSize()).start();
-        } catch (SmackException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (IOException | SmackException e) {
+            logger.error("Receiving file failed.", e);
         }
         return incomingTransfer;
     }
@@ -169,12 +170,15 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     /**
      * Refuses the file transfer request.
      */
+    @Override
     public void rejectFile()
+            throws OperationFailedException
     {
         try {
             fileTransferRequest.reject();
         } catch (NotConnectedException | InterruptedException e) {
-            e.printStackTrace();
+            throw new OperationFailedException("Could not reject file transfer",
+                    OperationFailedException.GENERAL_ERROR, e);
         }
         fileTransferOpSet.fireFileTransferRequestRejected(
                 new FileTransferRequestEvent(fileTransferOpSet, this, new Date()));
@@ -185,6 +189,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      *
      * @return the id.
      */
+    @Override
     public String getID()
     {
         return id;
@@ -195,58 +200,39 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      *
      * @return the thumbnail contained in this request
      */
+    @Override
     public byte[] getThumbnail()
     {
         return thumbnail;
     }
 
     /**
-     * Sets the thumbnail content-ID.
+     * Requests the thumbnail from the peer and fire the incoming transfer request event.
      *
      * @param cid the thumbnail content-ID
      */
-    public void createThumbnailListeners(String cid)
+    public void fetchThumbnailAndNotify(final BoBHash cid)
     {
-        this.thumbnailCid = cid;
-
-        if (jabberProvider.getConnection() != null) {
-            jabberProvider.getConnection().addAsyncStanzaListener(new ThumbnailResponseListener(), THUMBNAIL_RESULT);
-        }
-    }
-
-    /**
-     * The <tt>ThumbnailResponseListener</tt> listens for events triggered by the reception of a
-     * <tt>BoB</tt> packet. The packet is examined and a file transfer request event is
-     * fired when the thumbnail is extracted.
-     */
-    private class ThumbnailResponseListener implements StanzaListener
-    {
-        public void processStanza(Stanza stanza)
+        final BoBManager bobManager = BoBManager.getInstanceFor(jabberProvider.getConnection());
+        thumbnailCollector.submit(new Runnable()
         {
-            // If this is not an IQ packet, we're not interested.
-            if (!(stanza instanceof ThumbnailIQ))
-                return;
-
-            if (logger.isDebugEnabled())
-                logger.debug("Thumbnail response received.");
-
-            ThumbnailIQ thumbnailResponse = (ThumbnailIQ) stanza;
-            if ((thumbnailResponse.getCid() != null) && thumbnailResponse.getCid().equals(thumbnailCid)) {
-                thumbnail = thumbnailResponse.getData();
-
-                // Create an event associated to this global request.
-                FileTransferRequestEvent fileTransferRequestEvent = new FileTransferRequestEvent(
-                        fileTransferOpSet, IncomingFileTransferRequestJabberImpl.this, new Date());
-
-                // Notify the global listener that a request has arrived.
-                fileTransferOpSet.fireFileTransferRequest(fileTransferRequestEvent);
+            @Override
+            public void run()
+            {
+                logger.debug("Sending thumbnail request");
+                try {
+                    thumbnail = bobManager.requestBoB(fromJid, cid).getContent();
+                } catch (SmackException.NotLoggedInException
+                        | SmackException.NoResponseException
+                        | XMPPException.XMPPErrorException
+                        | NotConnectedException
+                        | InterruptedException e) {
+                    logger.error("Could not get thumbnail", e);
+                } finally {
+                    // Notify the global listener that a request has arrived.
+                    fileTransferOpSet.fireFileTransferRequest(IncomingFileTransferRequestJabberImpl.this);
+                }
             }
-            else {
-                logger.warn("Item not found");
-            }
-            if (jabberProvider.getConnection() != null) {
-                jabberProvider.getConnection().removeAsyncStanzaListener(this);
-            }
-        }
+        });
     }
 }

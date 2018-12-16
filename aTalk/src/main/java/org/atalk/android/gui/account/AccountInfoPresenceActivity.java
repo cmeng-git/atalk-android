@@ -185,7 +185,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     private ImageView mCalenderButton;
     private SoftKeyboard softKeyboard;
     private ProgressDialog progressDialog;
-    boolean isRegistered;
+    private boolean isRegistered;
 
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState)
@@ -226,9 +226,19 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         accountInfoOpSet = protocolProvider.getOperationSet(OperationSetServerStoredAccountInfo.class);
         if (accountInfoOpSet != null) {
-            isRegistered = protocolProvider.isRegistered();
-
             initSummaryPanel();
+
+            // account may still be in unregistered state after returning from account preference editing
+            if (!protocolProvider.isRegistered()) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    logger.error("Account Registration State wait error: " + protocolProvider.getRegistrationState());
+                }
+                logger.warn("Account Registration State: " + protocolProvider.getRegistrationState());
+            }
+
+            isRegistered = protocolProvider.isRegistered();
             if (!isRegistered) {
                 setTextEditState(false);
                 Toast.makeText(this, R.string.plugin_accountinfo_NO_REGISTERED_MESSAGE, Toast.LENGTH_LONG).show();
@@ -246,7 +256,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         super.stop(bundleContext);
         softKeyboard.unRegisterSoftKeyboardCallback();
 
-        if (progressDialog != null)
+        if (progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
     }
 

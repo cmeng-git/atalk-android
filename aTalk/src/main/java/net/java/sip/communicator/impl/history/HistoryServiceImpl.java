@@ -60,7 +60,7 @@ public class HistoryServiceImpl implements HistoryService
 	private static final Logger logger = Logger.getLogger(HistoryServiceImpl.class);
 
 	// Note: Hashtable is SYNCHRONIZED
-	private final Map<HistoryID, History> histories = new Hashtable<HistoryID, History>();
+	private final Map<HistoryID, History> histories = new Hashtable<>();
 
 	private final FileAccessService fileAccessService;
 
@@ -101,7 +101,7 @@ public class HistoryServiceImpl implements HistoryService
 
 	public Iterator<HistoryID> getExistingIDs()
 	{
-		List<File> vect = new Vector<File>();
+		List<File> vect = new Vector<>();
 		File histDir;
 		try {
 			String userSetDataDirectory = System.getProperty("HistoryServiceDirectory");
@@ -526,7 +526,7 @@ public class HistoryServiceImpl implements HistoryService
 		}
 
 		if (histDir == null || !histDir.exists())
-			return new ArrayList<HistoryID>();
+			return new ArrayList<>();
 
 		StringBuilder folderPath = new StringBuilder();
 		// history_ver1.0/messages/default
@@ -535,20 +535,20 @@ public class HistoryServiceImpl implements HistoryService
 
 		File srcFolder = new File(histDir, folderPath.toString());
 		if (!srcFolder.exists())
-			return new ArrayList<HistoryID>();
+			return new ArrayList<>();
 
-		TreeMap<File, HistoryID> recentFiles = new TreeMap<File, HistoryID>(new Comparator<File>()
-		{
-			@Override
-			public int compare(File o1, File o2)
-			{
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
+		TreeMap<File, HistoryID> recentFiles = new TreeMap<>(new Comparator<File>()
+        {
+            @Override
+            public int compare(File o1, File o2)
+            {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
 		getExistingFiles(srcFolder, Arrays.asList(rawId), recentFiles);
 		// return non duplicate
-		List<HistoryID> result = new ArrayList<HistoryID>();
+		List<HistoryID> result = new ArrayList<>();
 		for (Map.Entry<File, HistoryID> entry : recentFiles.entrySet()) {
 			HistoryID hid = entry.getValue();
 
@@ -573,7 +573,7 @@ public class HistoryServiceImpl implements HistoryService
 	{
 		for (File f : sourceFolder.listFiles()) {
 			if (f.isDirectory()) {
-				List<String> newRawID = new ArrayList<String>(rawID);
+				List<String> newRawID = new ArrayList<>(rawID);
 				newRawID.add(f.getName());
 				getExistingFiles(f, newRawID, res);
 			}

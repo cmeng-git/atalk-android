@@ -153,7 +153,7 @@ public class DBStructSerializer
 		NodeList nodes = structNode.getChildNodes();
 		int count = nodes.getLength();
 
-		ArrayList<String> propertyNames = new ArrayList<String>(count);
+		ArrayList<String> propertyNames = new ArrayList<>(count);
 
 		for (int i = 0; i < count; i++) {
 			Node node = nodes.item(i);

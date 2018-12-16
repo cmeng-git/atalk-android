@@ -237,7 +237,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         ChatRoomViewHolder chatRoomViewHolder;
 
         if (convertView == null) {
-            LayoutInflater inflater = chatRoomListFragment.getActivity().getLayoutInflater();
+            LayoutInflater inflater = chatRoomListFragment.getLayoutInflater();
             convertView = inflater.inflate(R.layout.chatroom_list_row, parent, false);
 
             chatRoomViewHolder = new ChatRoomViewHolder();
@@ -303,7 +303,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         GroupViewHolder groupViewHolder;
 
         if (convertView == null) {
-            LayoutInflater inflater = chatRoomListFragment.getActivity().getLayoutInflater();
+            LayoutInflater inflater = chatRoomListFragment.getLayoutInflater();
             convertView = inflater.inflate(R.layout.chatroom_list_group_row, parent, false);
 
             groupViewHolder = new GroupViewHolder();

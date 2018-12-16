@@ -46,7 +46,7 @@ public class HistoryImpl implements History
 
 	private HistoryWriter writer;
 
-	private SortedMap<String, Object> historyDocuments = new TreeMap<String, Object>();
+	private SortedMap<String, Object> historyDocuments = new TreeMap<>();
 
 	/**
 	 * Creates an instance of <tt>HistoryImpl</tt> by specifying the history identifier, the directory, the

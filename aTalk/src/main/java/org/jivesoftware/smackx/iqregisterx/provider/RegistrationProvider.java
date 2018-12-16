@@ -20,13 +20,21 @@ package org.jivesoftware.smackx.iqregisterx.provider;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smackx.bob.packet.BoB;
+import org.jivesoftware.smackx.bob.packet.BoBExt;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.*;
 
+/**
+ * XEP-0077: In-Band Registration Implementation with fields elements and DataForm
+ * Represents registration packets.
+ *
+ * The Registration can supported via DataForm with Captcha protection
+ *
+ * @author Eng Chong Meng
+ */
 public class RegistrationProvider extends IQProvider<Registration>
 {
     @Override
@@ -38,10 +46,11 @@ public class RegistrationProvider extends IQProvider<Registration>
 
         boolean isRegistered = false;
         String instruction = null;
-        BoB bob = null;
+        BoBExt boBExt = null;
 
         List<ExtensionElement> packetExtensions = new LinkedList<>();
-        outerloop: while (true) {
+        outerloop:
+        while (true) {
             int eventType = parser.next();
             switch (eventType) {
                 case XmlPullParser.START_TAG:
@@ -74,8 +83,8 @@ public class RegistrationProvider extends IQProvider<Registration>
                             dataForm = (DataForm)
                                     PacketParserUtils.parseExtensionElement(DataForm.ELEMENT, DataForm.NAMESPACE, parser);
                             break;
-                        case BoB.NAMESPACE:
-                            bob = (BoB) PacketParserUtils.parseExtensionElement(BoB.ELEMENT, BoB.NAMESPACE, parser);
+                        case BoBExt.NAMESPACE:
+                            boBExt = (BoBExt) PacketParserUtils.parseExtensionElement(BoBExt.ELEMENT, BoBExt.NAMESPACE, parser);
                             break;
                         // In case there are more packet extension.
                         default:
@@ -94,7 +103,7 @@ public class RegistrationProvider extends IQProvider<Registration>
         Registration registration = new Registration(fields, dataForm);
         registration.setRegistrationStatus(isRegistered);
         registration.setInstructions(instruction);
-        registration.setBoB(bob);
+        registration.setBoB(boBExt);
         registration.addExtensions(packetExtensions);
         return registration;
     }

@@ -64,7 +64,7 @@ public class MediaCodecList extends OSGiActivity implements AdapterView.OnItemCl
 		private final ArrayList<CodecInfo> codecs;
 
 		MediaCodecAdapter() {
-			codecs = new ArrayList<CodecInfo>(CodecInfo.getSupportedCodecs());
+			codecs = new ArrayList<>(CodecInfo.getSupportedCodecs());
 		}
 
 		@Override

@@ -53,6 +53,8 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
     private final boolean isShownCallButton;
 
+    private LayoutInflater mInflater;
+
     /**
      * Creates the contact list adapter.
      *
@@ -61,6 +63,9 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      */
     public BaseContactListAdapter(ContactListFragment clFragment, boolean isShowButton)
     {
+        // cmeng - must use this as clFragment may not always attached to FragmentManager e.g. muc invite dialog
+        mInflater = LayoutInflater.from(aTalkApp.getGlobalContext());
+
         contactListFragment = clFragment;
         isShownCallButton = isShowButton;
         contactListView = contactListFragment.getContactListView();
@@ -148,8 +153,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     protected void updateDisplayName(final int groupIndex, final int contactIndex)
     {
         int firstIndex = contactListView.getFirstVisiblePosition();
-        View contactView = contactListView.getChildAt(
-                getListIndex(groupIndex, contactIndex) - firstIndex);
+        View contactView = contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
 
         if (contactView != null) {
             MetaContact metaContact = (MetaContact) getChild(groupIndex, contactIndex);
@@ -168,8 +172,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             final Object contactImpl)
     {
         int firstIndex = contactListView.getFirstVisiblePosition();
-        View contactView
-                = contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
+        View contactView = contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
 
         if (contactView != null) {
             ImageView avatarView = contactView.findViewById(R.id.avatarIcon);
@@ -256,8 +259,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         ContactViewHolder contactViewHolder;
 
         if (convertView == null) {
-            LayoutInflater inflater = contactListFragment.getActivity().getLayoutInflater();
-            convertView = inflater.inflate(R.layout.contact_list_row, parent, false);
+            convertView = mInflater.inflate(R.layout.contact_list_row, parent, false);
 
             contactViewHolder = new ContactViewHolder();
             contactViewHolder.displayName = convertView.findViewById(R.id.displayName);
@@ -376,14 +378,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         GroupViewHolder groupViewHolder;
 
         if (convertView == null) {
-            // cmeng - dynamic getActivity in fragment can sometimes proudce null???
-            if (contactListFragment.getActivity() == null) {
-                new Exception("Group position: " + groupPosition).printStackTrace();
-                return null;
-            }
-            LayoutInflater inflater = contactListFragment.getActivity().getLayoutInflater();
-            convertView = inflater.inflate(R.layout.contact_list_group_row, parent, false);
-
+            convertView = mInflater.inflate(R.layout.contact_list_group_row, parent, false);
             groupViewHolder = new GroupViewHolder();
             groupViewHolder.displayName = convertView.findViewById(R.id.displayName);
             groupViewHolder.indicator = convertView.findViewById(R.id.groupIndicatorView);
@@ -460,8 +455,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             UIContactRenderer renderer = getContactRenderer(viewHolder.groupPosition);
             boolean isVideoCall = viewHolder.callVideoButton.isPressed();
             AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),
-                    viewHolder.callVideoButton,
-                    renderer.getDefaultAddress(contact), isVideoCall);
+                    viewHolder.callVideoButton, renderer.getDefaultAddress(contact), isVideoCall);
         }
     }
 
@@ -482,10 +476,8 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             }
             else {
                 String contactAddress = getContactRenderer(groupPos).getDefaultAddress(contact);
-
                 // make toast, show contact details
-                Toast.makeText(contactListFragment.getActivity(), contactAddress,
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(contactListFragment.getActivity(), contactAddress, Toast.LENGTH_SHORT).show();
             }
         }
     }

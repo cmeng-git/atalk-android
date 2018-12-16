@@ -225,7 +225,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
             LayoutInflater li = getActivity().getLayoutInflater();
             View v = li.inflate(R.layout.encoding_item, viewGroup, false);
 
-            TextView tv = (TextView) v.findViewById(android.R.id.text1);
+            TextView tv = v.findViewById(android.R.id.text1);
             tv.setText(encryption);
 
             CompoundButton cb = (CompoundButton) v.findViewById(android.R.id.checkbox);

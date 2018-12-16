@@ -11,7 +11,6 @@ import android.content.*;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.view.MenuItem;
 
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
 import net.java.sip.communicator.service.protocol.*;
@@ -464,7 +463,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     {
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(summaryMapper);
-        hideOperationInProgressToast();
+        dismissOperationInProgressDialog();
         super.onPause();
     }
 
@@ -510,7 +509,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
             {
                 public void run()
                 {
-                    hideOperationInProgressToast();
+                    dismissOperationInProgressDialog();
                 }
             });
         } catch (Exception e) {
@@ -535,9 +534,9 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     /**
      * Hides the "in progress" dialog
      */
-    private void hideOperationInProgressToast()
+    private void dismissOperationInProgressDialog()
     {
-        if (progressDialog != null) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
             progressDialog = null;
         }

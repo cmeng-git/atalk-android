@@ -11,13 +11,12 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package net.java.sip.communicator.impl.protocol.jabber.extensions.si.provider;
+package net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.si.packet.SiThumb;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.si.packet.SiThumb.FileElement;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.ThumbnailElement;
+import net.java.sip.communicator.util.Logger;
 
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.jxmpp.util.XmppDateTime;
@@ -25,37 +24,41 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * The SiThumbProvider parses SiThumb packets.
+ * The ThumbnailStreamInitiationProvider parses StreamInitiation packets.
  *
  * @author Alexander Wenckus
  * @author Eng Chong Meng
- *
  */
-public class SiThumbProvider extends IQProvider<SiThumb>
+public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiation>
 {
-    private static final Logger LOGGER = Logger.getLogger(SiThumbProvider.class.getName());
+    private static final Logger logger = Logger.getLogger(ThumbnailStreamInitiationProvider.class);
 
+    /**
+     * Parses the given <tt>parser</tt> in order to create a <tt>FileElement</tt> from it.
+     *
+     * @param parser the parser to parse
+     */
     @Override
-    public SiThumb parse(XmlPullParser parser, int initialDepth)
+    public StreamInitiation parse(XmlPullParser parser, int initialDepth)
             throws Exception
     {
         boolean done = false;
-        SiThumb initiation = new SiThumb();
+
+        // si
         String id = parser.getAttributeValue("", "id");
         String mimeType = parser.getAttributeValue("", "mime-type");
+        StreamInitiation initiation = new StreamInitiation();
 
         // file
-        boolean isRanged = false;
         String name = null;
         String size = null;
         String hash = null;
         String date = null;
         String desc = null;
-        ThumbnailElement thumbnail = null;
+        Thumbnail thumbnail = null;
+        boolean isRanged = false;
 
         // feature
         DataForm form = null;
@@ -85,7 +88,7 @@ public class SiThumbProvider extends IQProvider<SiThumb>
                     form = dataFormProvider.parse(parser);
                 }
                 else if (elementName.equals("thumbnail")) {
-                    thumbnail = new ThumbnailElement(parser);
+                    thumbnail = new Thumbnail(parser);
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
@@ -101,26 +104,26 @@ public class SiThumbProvider extends IQProvider<SiThumb>
                         try {
                             fileSize = Long.parseLong(size);
                         } catch (NumberFormatException e) {
-                            LOGGER.log(Level.SEVERE, "Failed to parse file size from " + fileSize,
-                                    e);
+                            logger.warn("Received an invalid file size, continuing with fileSize set to 0", e);
                         }
                     }
-                    FileElement file = new FileElement(name, fileSize);
+                    ThumbnailFile file = new ThumbnailFile(name, fileSize);
                     file.setHash(hash);
 
-                    Date fileDate = new Date();
                     if (date != null) {
                         try {
-                            fileDate = XmppDateTime.parseDate(date);
+                            file.setDate(XmppDateTime.parseDate(date));
                         } catch (ParseException e) {
-                            // couldn't parse date, use current date-time
+                            logger.warn("Unknown dateformat on incoming file transfer: " + date);
                         }
                     }
-                    if (thumbnail != null)
-                        file.setThumbnailElement(thumbnail);
+                    else {
+                        file.setDate(new Date());
+                    }
 
-                    file.setHash(hash);
-                    file.setDate(fileDate);
+                    if (thumbnail != null)
+                        file.setThumbnail(thumbnail);
+
                     file.setDesc(desc);
                     file.setRanged(isRanged);
                     initiation.setFile(file);

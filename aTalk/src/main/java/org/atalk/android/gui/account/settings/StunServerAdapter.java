@@ -58,7 +58,7 @@ public class StunServerAdapter extends ServerItemAdapter
     {
         LayoutInflater li = parent.getLayoutInflater();
         View rowView = li.inflate(android.R.layout.simple_list_item_1, viewGroup, false);
-        TextView tv = (TextView) rowView.findViewById(android.R.id.text1);
+        TextView tv = rowView.findViewById(android.R.id.text1);
 
         StunServerDescriptor server = (StunServerDescriptor) getItem(i);
         String descriptor = aTalkApp.getResString(R.string.service_gui_SERVERS_STUN_DESCRIPTOR,

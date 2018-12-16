@@ -248,7 +248,8 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
 
 		if (iceStateVisible) {
 			Resources resources = getResources();
-			int strId = resources.getIdentifier("service_gui_callinfo_ICE_STATE_" + iceState.toUpperCase(), "string", getActivity().getPackageName());
+			int strId = resources.getIdentifier("service_gui_callinfo_ICE_STATE_" + iceState.toUpperCase(),
+                    "string", getActivity().getPackageName());
 			setTextViewValue(R.id.iceState, resources.getString(strId));
 		}
 
@@ -268,12 +269,32 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
 		}
 
 		// Current harvester time if ICE agent is harvesting.
-		String[] harvesterNames = { "GoogleTurnCandidateHarvester", "GoogleTurnSSLCandidateHarvester", "HostCandidateHarvester", "JingleNodesHarvester",
-			"StunCandidateHarvester", "TurnCandidateHarvester", "UPNPHarvester" };
-		int[] harvesterLabels = { R.id.googleTurnLabel, R.id.googleTurnSSlLabel, R.id.hostHarvesterLabel, R.id.jingleNodesLabel, R.id.stunHarvesterLabel,
-			R.id.turnHarvesterLabel, R.id.upnpHarvesterLabel };
-		int[] harvesterValues = { R.id.googleTurnTime, R.id.googleTurnSSlTime, R.id.hostHarvesterTime, R.id.jingleNodesTime, R.id.stunHarvesterTime,
-			R.id.turnHarvesterTime, R.id.upnpHarvesterTime };
+		String[] harvesterNames = {
+		        "GoogleTurnCandidateHarvester",
+                "GoogleTurnSSLCandidateHarvester",
+                "HostCandidateHarvester",
+                "JingleNodesHarvester",
+                "StunCandidateHarvester",
+                "TurnCandidateHarvester",
+                "UPNPHarvester"
+		};
+		int[] harvesterLabels = {
+		        R.id.googleTurnLabel,
+                R.id.googleTurnSSlLabel,
+                R.id.hostHarvesterLabel,
+                R.id.jingleNodesLabel,
+                R.id.stunHarvesterLabel,
+                R.id.turnHarvesterLabel,
+                R.id.upnpHarvesterLabel
+		};
+		int[] harvesterValues = {
+		        R.id.googleTurnTime,
+                R.id.googleTurnSSlTime,
+                R.id.hostHarvesterTime,
+                R.id.jingleNodesTime,
+                R.id.stunHarvesterTime,
+                R.id.turnHarvesterTime,
+                R.id.upnpHarvesterTime };
 		for (int i = 0; i < harvesterLabels.length; ++i) {
 			harvestingTime = 0;
 

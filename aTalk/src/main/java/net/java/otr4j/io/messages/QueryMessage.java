@@ -19,7 +19,7 @@ public class QueryMessage extends AbstractMessage
 	{
 		super(messageType);
 		this.versions = (versions == null)
-				? versions : Collections.unmodifiableList(new ArrayList<Integer>(versions));
+				? versions : Collections.unmodifiableList(new ArrayList<>(versions));
 	}
 
 	public QueryMessage(List<Integer> versions)

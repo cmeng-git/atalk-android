@@ -205,7 +205,7 @@ public class AudioFormat
                        boolean bigEndian, Map<String, Object> properties) {
         this(encoding, sampleRate, sampleSizeInBits, channels,
              frameSize, frameRate, bigEndian);
-        this.properties = new HashMap<String, Object>(properties);
+        this.properties = new HashMap<>(properties);
     }
 
 
@@ -382,7 +382,7 @@ public class AudioFormat
     public Map<String,Object> properties() {
         Map<String,Object> ret;
         if (properties == null) {
-            ret = new HashMap<String,Object>(0);
+            ret = new HashMap<>(0);
         } else {
             ret = (Map<String,Object>) (properties.clone());
         }

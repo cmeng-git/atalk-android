@@ -35,7 +35,7 @@ public class OtrSessionManagerImpl implements OtrSessionManager
 			throw new IllegalArgumentException();
 
 		if (sessions == null)
-			sessions = new Hashtable<SessionID, Session>();
+			sessions = new Hashtable<>();
 
 		if (!sessions.containsKey(sessionID)) {
 			Session session = new SessionImpl(sessionID, getHost());

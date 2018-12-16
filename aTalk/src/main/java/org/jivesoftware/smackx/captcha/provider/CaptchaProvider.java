@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * The <tt>BoBProvider</tt> is an extension element provider that is meant to be used for
+ * The <tt>CaptchaProvider</tt> is an extension element provider that is meant to be used for
  * thumbnail & captcha requests and responses. Implementing XEP-0158: CAPTCHA Forms
  *
  * @author Eng Chong Meng
@@ -60,6 +60,7 @@ public class CaptchaProvider extends ExtensionElementProvider<Captcha>
                 }
                 else if (eventType == XmlPullParser.TEXT) {
                     data = parser.getText();
+                    // data = parser.nextText();
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {

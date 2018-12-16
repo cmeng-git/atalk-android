@@ -43,7 +43,7 @@ configurations {
     all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     all*.exclude group: 'xpp3', module: 'xpp3'
 
-    // all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
+    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
 }
 
 android {
@@ -52,8 +52,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1062
-        versionName "1.6.2" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1063
+        versionName "1.6.3" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -153,7 +153,12 @@ android {
 ext {
     // Need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
-    // smackVersion = '4.4.0-alpha1'
+    // Remove source reference in .idea/libraries if source mismatched with class jar
+
+    // for official maven release
+    // smackVersion = '4.4.0-alpha2'
+
+    // For smack own respository release
     smackVersion = '4.4.0-alpha2-SNAPSHOT'
 }
 
@@ -203,13 +208,16 @@ dependencies {
     implementation 'org.jmdns:jmdns:3.5.3'
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
-    // Smack 4.4.0-alpha2 has moved to use v0.4.0-alpha3
+    // Smack local libraries with patches or enhance features
+    implementation files('lib/smack/smack-extensions-4.4.0-alpha2-SNAPSHOT.jar')
+
+    // Smack 4.4.0-alpha2 has moved to use minidns v0.4.0-alpha3
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
     implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
     implementation "org.igniterealtime.smack:smack-compression-jzlib:$smackVersion"
     implementation "org.igniterealtime.smack:smack-core:$smackVersion"
     implementation "org.igniterealtime.smack:smack-experimental:$smackVersion"
-    implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
+    // implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
     implementation "org.igniterealtime.smack:smack-im:$smackVersion"
     implementation "org.igniterealtime.smack:smack-legacy:$smackVersion"
     implementation "org.igniterealtime.smack:smack-resolver-minidns:$smackVersion"

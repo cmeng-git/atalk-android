@@ -291,8 +291,7 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
     public boolean onChildClick(ExpandableListView listView, View v, int groupPosition,
             int childPosition, long id)
     {
-        BaseContactListAdapter adapter
-                = (BaseContactListAdapter) listView.getExpandableListAdapter();
+        BaseContactListAdapter adapter = (BaseContactListAdapter) listView.getExpandableListAdapter();
         int position = adapter.getListIndex(groupPosition, childPosition);
         contactListView.setSelection(position);
         // adapter.invalidateViews();
