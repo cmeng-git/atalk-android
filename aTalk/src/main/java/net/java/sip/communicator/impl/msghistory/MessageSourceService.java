@@ -176,7 +176,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      */
     public void handleProviderAdded(final ProtocolProviderService provider, final boolean isStatusChanged)
     {
-        // new Exception().printStackTrace();
         logger.info("Handle new provider added and status changed to online: " + provider.getAccountID().getUserID());
         new Thread(new Runnable()
         {

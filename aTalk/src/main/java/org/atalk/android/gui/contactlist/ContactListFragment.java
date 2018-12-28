@@ -82,9 +82,9 @@ public class ContactListFragment extends OSGiFragment
     protected ExpandableListView contactListView;
 
     /**
-     * Stores last clicked <tt>MetaContact</tt>.
+     * Stores last clicked <tt>MetaContact</tt>; take care activity destroyed by OS.
      */
-    protected MetaContact clickedContact;
+    protected static MetaContact clickedContact;
 
     /**
      * Stores recently clicked contact group.
@@ -205,10 +205,9 @@ public class ContactListFragment extends OSGiFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater)
     {
         super.onCreateOptionsMenu(menu, menuInflater);
-        Activity activity = getActivity();
 
         // Get the SearchView and set the search configuration
-        SearchManager searchManager = (SearchManager) activity.getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) aTalkApp.getGlobalContext().getSystemService(Context.SEARCH_SERVICE);
         this.searchItem = menu.findItem(R.id.search);
 
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener()
@@ -227,7 +226,7 @@ public class ContactListFragment extends OSGiFragment
         });
 
         SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
 
         int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
         TextView textView = searchView.findViewById(id);
@@ -285,12 +284,13 @@ public class ContactListFragment extends OSGiFragment
             return;
         }
 
-        ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
+        ExpandableListView.ExpandableListContextMenuInfo info
+                = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
         int type = ExpandableListView.getPackedPositionType(info.packedPosition);
         int group = ExpandableListView.getPackedPositionGroup(info.packedPosition);
         int child = ExpandableListView.getPackedPositionChild(info.packedPosition);
 
-        // Only create a context menu for child items
+        // Create different context menu for both group and child items
         MenuInflater inflater = getActivity().getMenuInflater();
         if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
             createGroupCtxMenu(menu, inflater, group);
@@ -363,10 +363,10 @@ public class ContactListFragment extends OSGiFragment
     private void createGroupCtxMenu(ContextMenu menu, MenuInflater inflater, int group)
     {
         this.clickedGroup = (MetaContactGroup) contactListAdapter.getGroup(group);
+        menu.setHeaderTitle(clickedGroup.getGroupName());
 
         // Inflate contact list context menu
         inflater.inflate(R.menu.group_menu, menu);
-        menu.setHeaderTitle(clickedGroup.getGroupName());
     }
 
     /**

@@ -72,7 +72,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.received_call);
+        setContentView(R.layout.call_received);
         TextView displayNameView = findViewById(R.id.calleeDisplayName);
         TextView addressView = findViewById(R.id.calleeAddress);
         ImageView avatarView = findViewById(R.id.calleeAvatar);
@@ -95,22 +95,10 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
         }
 
         ImageView hangupView = findViewById(R.id.hangupButton);
-        hangupView.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                hangupCall();
-            }
-        });
+        hangupView.setOnClickListener(v -> hangupCall());
 
         final ImageView callButton = findViewById(R.id.callButton);
-        callButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                answerCall(call, false);
-            }
-        });
+        callButton.setOnClickListener(v -> answerCall(call, false));
     }
 
     /**
@@ -138,14 +126,10 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     private void answerCall(final Call call, boolean isVideoCall)
     {
         CallManager.answerCall(call, isVideoCall);
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                Intent videoCall = VideoCallActivity.createVideoCallIntent(ReceivedCallActivity.this, callIdentifier);
-                startActivity(videoCall);
-                finish();
-            }
+        runOnUiThread(() -> {
+            Intent videoCall = VideoCallActivity.createVideoCallIntent(ReceivedCallActivity.this, callIdentifier);
+            startActivity(videoCall);
+            finish();
         });
     }
 

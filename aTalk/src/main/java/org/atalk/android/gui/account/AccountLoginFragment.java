@@ -161,51 +161,45 @@ public class AccountLoginFragment extends OSGiFragment {
         final Button signInButton = content.findViewById(R.id.buttonSignIn);
         signInButton.setEnabled(true);
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Translate network label to network value
-                String[] networkValues = getResources().getStringArray(R.array.networks_array_values);
-                String selectedNetwork = networkValues[spinnerNwk.getSelectedItemPosition()];
+        signInButton.setOnClickListener(v -> {
+            // Translate network label to network value
+            String[] networkValues = getResources().getStringArray(R.array.networks_array_values);
+            String selectedNetwork = networkValues[spinnerNwk.getSelectedItemPosition()];
 
-                // Translate dnssecMode label to dnssecMode value
-                String[] dnssecModeValues = getResources().getStringArray(R.array.dnssec_Mode_value);
-                String selectedDnssecMode = dnssecModeValues[spinnerDM.getSelectedItemPosition()];
-                accountProperties.put(ProtocolProviderFactory.DNSSEC_MODE, selectedDnssecMode);
+            // Translate dnssecMode label to dnssecMode value
+            String[] dnssecModeValues = getResources().getStringArray(R.array.dnssec_Mode_value);
+            String selectedDnssecMode = dnssecModeValues[spinnerDM.getSelectedItemPosition()];
+            accountProperties.put(ProtocolProviderFactory.DNSSEC_MODE, selectedDnssecMode);
 
-                // cmeng - must trim all inline, leading and ending whitespace character entered by
-                // user accidentally or included by android from spelling checker
-                final EditText userNameField = content.findViewById(R.id.usernameField);
-                String userName = userNameField.getText().toString().replaceAll("\\s", "");
-                String password = mPasswordField.getText().toString().trim();
+            // cmeng - must trim all inline, leading and ending whitespace character entered by
+            // user accidentally or included by android from spelling checker
+            final EditText userNameField = content.findViewById(R.id.usernameField);
+            String userName = userNameField.getText().toString().replaceAll("\\s", "");
+            String password = mPasswordField.getText().toString().trim();
 
-                String serverAddress = mServerIpField.getText().toString().replaceAll("\\s", "");
-                String serverPort = mServerPortField.getText().toString().replaceAll("\\s", "");
+            String serverAddress = mServerIpField.getText().toString().replaceAll("\\s", "");
+            String serverPort = mServerPortField.getText().toString().replaceAll("\\s", "");
 
-                String savePassword = Boolean.toString(mSavePasswordCheckBox.isChecked());
-                accountProperties.put(ProtocolProviderFactory.PASSWORD_PERSISTENT, savePassword);
+            String savePassword = Boolean.toString(mSavePasswordCheckBox.isChecked());
+            accountProperties.put(ProtocolProviderFactory.PASSWORD_PERSISTENT, savePassword);
 
-                String ibRegistration = Boolean.toString(mIBRegistrationCheckBox.isChecked());
-                accountProperties.put(ProtocolProviderFactory.IBR_REGISTRATION, ibRegistration);
+            String ibRegistration = Boolean.toString(mIBRegistrationCheckBox.isChecked());
+            accountProperties.put(ProtocolProviderFactory.IBR_REGISTRATION, ibRegistration);
 
-                // Update server override options
-                if (mServerOverrideCheckBox.isChecked()
-                        && !TextUtils.isEmpty(serverAddress) && !TextUtils.isEmpty(serverPort)) {
-                    accountProperties.put(ProtocolProviderFactory.IS_SERVER_OVERRIDDEN, "true");
-                    accountProperties.put(ProtocolProviderFactory.SERVER_ADDRESS, serverAddress);
-                    accountProperties.put(ProtocolProviderFactory.SERVER_PORT, serverPort);
-                } else {
-                    accountProperties.put(ProtocolProviderFactory.IS_SERVER_OVERRIDDEN, "false");
-                }
-                loginListener.onLoginPerformed(userName, password, selectedNetwork, accountProperties);
+            // Update server override options
+            if (mServerOverrideCheckBox.isChecked()
+                    && !TextUtils.isEmpty(serverAddress) && !TextUtils.isEmpty(serverPort)) {
+                accountProperties.put(ProtocolProviderFactory.IS_SERVER_OVERRIDDEN, "true");
+                accountProperties.put(ProtocolProviderFactory.SERVER_ADDRESS, serverAddress);
+                accountProperties.put(ProtocolProviderFactory.SERVER_PORT, serverPort);
+            } else {
+                accountProperties.put(ProtocolProviderFactory.IS_SERVER_OVERRIDDEN, "false");
             }
+            loginListener.onLoginPerformed(userName, password, selectedNetwork, accountProperties);
         });
 
         final Button cancelButton = content.findViewById(R.id.buttonCancel);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                getActivity().finish();
-            }
-        });
+        cancelButton.setOnClickListener(v -> getActivity().finish());
     }
 
     private void updateViewVisibility(boolean IsServerOverridden) {

@@ -48,7 +48,7 @@ public class ProgressDialogFragment extends OSGiFragment
      * @param title dialog's title
      * @param message the message to be displayed next to the progress bar.
      * @return dialog id that can be used to close the dialog
-     * {@link DialogActivity#closeDialog(android.content.Context, long)}.
+     * {@link DialogActivity#closeDialog(long)}.
      */
     public static long showProgressDialog(String title, String message)
     {

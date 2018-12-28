@@ -288,7 +288,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Crear una pasarela de vídeo</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Crear / Ingresar en una videoconferencia</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Crear una nueva videoconferencia para esta sala de chat</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">La cámara del dispositivo no puede admitir la resolución de video seleccionada mientras está en modo vertical. Coloque el teléfono en orientación horizontal para la videollamada:\n[ancho=%1$s; altura=%2$s]</string>
+    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Error al configurar la vista previa de la cámara del dispositivo en: %1$s; Excepción: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Desconectado</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Desconectando %1$s</string>
     <string name="service_gui_DENY">Denegar</string>
@@ -1262,10 +1262,14 @@
     <string name="service_gui_settings_EVENTS_TITLE">Eventos</string>
 
     <!-- aTalk icon -->
-    <string name="pref_key_show_jitsi_icon">org.atalk.android.show_icon</string>
     <string name="service_gui_settings_SHOW_ICON">Mostrar el icono aTalk</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_OFF">Ocultar el indicador aTalk activo para el aviso</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">Mostrar el indicador aTalk activo para el aviso</string>
+
+    <!-- aTalk auto start -->
+    <string name="service_gui_settings_AUTO_START">Inicio automático aTalk al reiniciar</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_DISABLE">Deshabilitar el inicio automático de Talk en el próximo reiniciot</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_ENABLE">Habilitar el inicio automático de aTalk en el próximo reinicio</string>
 
     <!-- Locale -->
     <string name="service_gui_settings_LOCALE">Idioma</string>
@@ -1331,7 +1335,6 @@
     <string name="service_gui_settings_VIDEO_CODECS_SUMMARY">Seleccionar y definir la prioridad de los códecs de vídeo</string>
     <string name="service_gui_settings_VIDEO_CODECS_TITLE">Códecs de Vídeo</string>
     <!-- Video resolution -->
-    <string name="service_gui_settings_AUTO_RESOLUTION">Automático</string>
     <string name="service_gui_settings_VIDEO_RESOLUTION">Resolución del vídeo</string>
     <!-- Frame rate -->
     <string name="service_gui_settings_LIMIT_FPS_OFF">Ilimitado</string>

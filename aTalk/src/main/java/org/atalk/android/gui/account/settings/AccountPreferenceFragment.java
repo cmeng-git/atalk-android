@@ -85,9 +85,9 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     private SummaryMapper summaryMapper = new SummaryMapper();
 
     /**
-     * Flag indicating if there are uncommitted changes
+     * Flag indicating if there are uncommitted changes - need static to avoid clear by android OS
      */
-    private boolean uncommittedChanges;
+    private static boolean uncommittedChanges;
 
     /**
      * The progress dialog shown when changes are being committed
@@ -496,22 +496,10 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
         if (!uncommittedChanges)
             return;
         try {
-            mActivity.runOnUiThread(new Runnable()
-            {
-                public void run()
-                {
-                    displayOperationInProgressDialog();
-                }
-            });
+            mActivity.runOnUiThread(() -> displayOperationInProgressDialog());
             doCommitChanges();
 
-            mActivity.runOnUiThread(new Runnable()
-            {
-                public void run()
-                {
-                    dismissOperationInProgressDialog();
-                }
-            });
+            mActivity.runOnUiThread(() -> dismissOperationInProgressDialog());
         } catch (Exception e) {
             logger.error("Error occurred while trying to commit changes", e);
         }

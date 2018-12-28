@@ -143,7 +143,7 @@ public class AndroidCallUtil
                     AndroidUtils.showAlertDialog(context, context.getString(R.string.service_gui_ERROR), t.getMessage());
                 } finally {
                     if (DialogActivity.waitForDialogOpened(dialogId)) {
-                        DialogActivity.closeDialog(aTalkApp.getGlobalContext(), dialogId);
+                        DialogActivity.closeDialog(dialogId);
                     }
                     else {
                         logger.error("Failed to wait for the dialog: " + dialogId);

@@ -114,15 +114,10 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     {
         // Expand group view only when chatRoomListView is in focus (UI mode)
         // cmeng - do not use isFocused() - may not in sync with actual
-        uiHandler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                int count = getGroupCount();
-                for (int position = 0; position < count; position++)
-                    chatRoomListView.expandGroup(position);
-            }
+        uiHandler.post(() -> {
+            int count = getGroupCount();
+            for (int position = 0; position < count; position++)
+                chatRoomListView.expandGroup(position);
         });
     }
 
@@ -132,13 +127,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     public void invalidateViews()
     {
         if (chatRoomListView != null) {
-            chatRoomListFragment.runOnUiThread(new Runnable()
-            {
-                public void run()
-                {
-                    chatRoomListView.invalidateViews();
-                }
-            });
+            chatRoomListFragment.runOnUiThread(() -> chatRoomListView.invalidateViews());
         }
     }
 

@@ -236,13 +236,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
 		@Override
 		public void run()
 		{
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run()
-				{
-					hide();
-				}
-			});
+			runOnUiThread(() -> hide());
 		}
 	}
 

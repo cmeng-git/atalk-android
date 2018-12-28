@@ -54,7 +54,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+		audioManager = (AudioManager) aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
 		MediaServiceImpl mediaService = NeomediaActivator.getMediaServiceImpl();
 		this.volumeControl = mediaService.getOutputVolumeControl();
 	}
@@ -160,24 +160,20 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
 	{
 		position = calcPosition(volumeChangeEvent.getLevel() / getVolumeCtrlRange());
 
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run()
-			{
-				Activity parent = getActivity();
-				if (parent == null)
-					return;
+		runOnUiThread(() -> {
+            Activity parent = getActivity();
+            if (parent == null)
+                return;
 
-				String txt = aTalkApp.getResString(R.string.service_gui_VOLUME_GAIN_LEVEL, position * 10);
-				if (toast == null) {
-					toast = Toast.makeText(parent, txt, Toast.LENGTH_SHORT);
-				}
-				else {
-					toast.setText(txt);
-				}
-				toast.show();
-			}
-		});
+            String txt = aTalkApp.getResString(R.string.service_gui_VOLUME_GAIN_LEVEL, position * 10);
+            if (toast == null) {
+                toast = Toast.makeText(parent, txt, Toast.LENGTH_SHORT);
+            }
+            else {
+                toast.setText(txt);
+            }
+            toast.show();
+        });
 	}
 
 	/**

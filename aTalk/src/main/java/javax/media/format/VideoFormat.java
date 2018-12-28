@@ -107,8 +107,7 @@ public class VideoFormat extends Format {
 	 * Constructs a <tt>VideoFormat</tt> with the specified encoding type.
 	 *
 	 * @param encoding
-	 * 		A <tt>String</tt> that describes the encoding type for this
-	 * 		<tt>VideoFormat</tt>.
+	 * 		A <tt>String</tt> that describes the encoding type for this <tt>VideoFormat</tt>.
 	 */
 	public VideoFormat(String encoding) {
 		super(encoding);

@@ -130,7 +130,7 @@ public class CsrcTransformEngine extends SinglePacketTransformer
 	public void close()
 	{
 		if (csrcAudioLevelDispatcher != null)
-			csrcAudioLevelDispatcher.setMediaStream(null);
+            csrcAudioLevelDispatcher.close();
 	}
 
 	/**

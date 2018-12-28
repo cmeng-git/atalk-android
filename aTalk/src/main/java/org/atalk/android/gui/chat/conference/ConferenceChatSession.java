@@ -343,76 +343,71 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      */
     public void memberPresenceChanged(final ChatRoomMemberPresenceChangeEvent evt)
     {
-        new Handler(Looper.getMainLooper()).post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                ChatRoom sourceChatRoom = evt.getChatRoom();
-                ChatRoom room = chatRoomWrapper.getChatRoom();
-                // return if this is not for this chatRoomWrapper session
-                if (!sourceChatRoom.equals(room))
-                    return;
+        new Handler(Looper.getMainLooper()).post(() -> {
+            ChatRoom sourceChatRoom = evt.getChatRoom();
+            ChatRoom room = chatRoomWrapper.getChatRoom();
+            // return if this is not for this chatRoomWrapper session
+            if (!sourceChatRoom.equals(room))
+                return;
 
-                String eventType = evt.getEventType();
-                ChatRoomMember chatRoomMember = evt.getChatRoomMember();
-                String statusMessage = null;
-                if (eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED)) {
-                    ConferenceChatContact chatContact = new ConferenceChatContact(chatRoomMember);
+            String eventType = evt.getEventType();
+            ChatRoomMember chatRoomMember = evt.getChatRoomMember();
+            String statusMessage = null;
+            if (eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED)) {
+                ConferenceChatContact chatContact = new ConferenceChatContact(chatRoomMember);
 
-                    // Check if not ever present in the chat room. In some cases, the considered
-                    // chatRoom member may appear twice in the chat contact list panel.
-                    synchronized (chatParticipants) {
-                        if (!chatParticipants.contains(chatContact))
-                            chatParticipants.add(chatContact);
-                    }
-                    room.updatePrivateContactPresenceStatus(chatRoomMember.getNickName());
+                // Check if not ever present in the chat room. In some cases, the considered
+                // chatRoom member may appear twice in the chat contact list panel.
+                synchronized (chatParticipants) {
+                    if (!chatParticipants.contains(chatContact))
+                        chatParticipants.add(chatContact);
+                }
+                room.updatePrivateContactPresenceStatus(chatRoomMember.getNickName());
 
-                    /*
-                     * When the whole list of members of a given chat room is reported, it doesn't
-                     * make sense to see "ChatContact has joined #ChatRoom" for all of them one
-                     * after the other. Such an event occurs not because the ChatContact has
-                     * joined after us but rather she was there before us.
-                     */
-                    if (!evt.isReasonUserList()) {
+                /*
+                 * When the whole list of members of a given chat room is reported, it doesn't
+                 * make sense to see "ChatContact has joined #ChatRoom" for all of them one
+                 * after the other. Such an event occurs not because the ChatContact has
+                 * joined after us but rather she was there before us.
+                 */
+                if (!evt.isReasonUserList()) {
+                    statusMessage = aTalkApp.getResString(
+                            R.string.service_gui_CHAT_ROOM_USER_JOINED, sourceChatRoom.getName());
+                    sessionRenderer.updateChatContactStatus(chatContact, statusMessage);
+                }
+            }
+            else if (eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_LEFT)
+                    || eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED)
+                    || eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_QUIT)) {
+                switch (eventType) {
+                    case ChatRoomMemberPresenceChangeEvent.MEMBER_LEFT:
                         statusMessage = aTalkApp.getResString(
-                                R.string.service_gui_CHAT_ROOM_USER_JOINED, sourceChatRoom.getName());
-                        sessionRenderer.updateChatContactStatus(chatContact, statusMessage);
+                                R.string.service_gui_CHAT_ROOM_USER_LEFT, sourceChatRoom.getName());
+                        break;
+                    case ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED:
+                        statusMessage = aTalkApp.getResString(
+                                R.string.service_gui_CHAT_ROOM_USER_KICKED, sourceChatRoom.getName());
+                        break;
+                    case ChatRoomMemberPresenceChangeEvent.MEMBER_QUIT:
+                        statusMessage = aTalkApp.getResString(
+                                R.string.service_gui_CHAT_ROOM_USER_QUIT, sourceChatRoom.getName());
+                        break;
+                }
+
+                ChatContact<?> contact = null;
+                for (ChatContact<?> chatContact : chatParticipants) {
+                    if (chatContact.getDescriptor().equals(chatRoomMember)) {
+                        room.updatePrivateContactPresenceStatus(chatRoomMember.getNickName());
+                        contact = chatContact;
+                        break;
                     }
                 }
-                else if (eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_LEFT)
-                        || eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED)
-                        || eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_QUIT)) {
-                    switch (eventType) {
-                        case ChatRoomMemberPresenceChangeEvent.MEMBER_LEFT:
-                            statusMessage = aTalkApp.getResString(
-                                    R.string.service_gui_CHAT_ROOM_USER_LEFT, sourceChatRoom.getName());
-                            break;
-                        case ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED:
-                            statusMessage = aTalkApp.getResString(
-                                    R.string.service_gui_CHAT_ROOM_USER_KICKED, sourceChatRoom.getName());
-                            break;
-                        case ChatRoomMemberPresenceChangeEvent.MEMBER_QUIT:
-                            statusMessage = aTalkApp.getResString(
-                                    R.string.service_gui_CHAT_ROOM_USER_QUIT, sourceChatRoom.getName());
-                            break;
-                    }
 
-                    ChatContact<?> contact = null;
-                    for (ChatContact<?> chatContact : chatParticipants) {
-                        if (chatContact.getDescriptor().equals(chatRoomMember)) {
-                            room.updatePrivateContactPresenceStatus(chatRoomMember.getNickName());
-                            contact = chatContact;
-                            break;
-                        }
-                    }
-
-                    // If contact found, remove from chat participants.
-                    if (contact != null) {
-                        synchronized (chatParticipants) {
-                            chatParticipants.remove(contact);
-                            sessionRenderer.updateChatContactStatus(contact, statusMessage);
-                        }
+                // If contact found, remove from chat participants.
+                if (contact != null) {
+                    synchronized (chatParticipants) {
+                        chatParticipants.remove(contact);
+                        sessionRenderer.updateChatContactStatus(contact, statusMessage);
                     }
                 }
             }
@@ -585,21 +580,17 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      */
     public void conferencePublished(final ChatRoomConferencePublishedEvent evt)
     {
-        (new Activity()).runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                ChatRoom room = evt.getChatRoom();
-                if (!room.equals(chatRoomWrapper.getChatRoom()))
-                    return;
+        (new Activity()).runOnUiThread(() -> {
+            ChatRoom room = evt.getChatRoom();
+            if (!room.equals(chatRoomWrapper.getChatRoom()))
+                return;
 
-                ConferenceDescription cd = evt.getConferenceDescription();
-                if (evt.getType() == ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_SENT) {
-                    // sessionRenderer.chatConferenceDescriptionSent(cd);
-                }
-                else if (evt.getType() == ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_RECEIVED) {
-                    updateChatConferences(room, evt.getMember(), cd, room.getCachedConferenceDescriptionSize());
-                }
+            ConferenceDescription cd = evt.getConferenceDescription();
+            if (evt.getType() == ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_SENT) {
+                // sessionRenderer.chatConferenceDescriptionSent(cd);
+            }
+            else if (evt.getType() == ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_RECEIVED) {
+                updateChatConferences(room, evt.getMember(), cd, room.getCachedConferenceDescriptionSize());
             }
         });
     }

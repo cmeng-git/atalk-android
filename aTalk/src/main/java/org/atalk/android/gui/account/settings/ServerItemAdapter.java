@@ -42,12 +42,7 @@ abstract class ServerItemAdapter extends BaseAdapter
 	 */
 	protected void refresh()
 	{
-		parent.runOnUiThread(new Runnable() {
-			public void run()
-			{
-				notifyDataSetChanged();
-			}
-		});
+		parent.runOnUiThread(() -> notifyDataSetChanged());
 	}
 
 	/**

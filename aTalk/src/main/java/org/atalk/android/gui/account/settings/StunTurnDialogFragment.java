@@ -6,7 +6,6 @@
 package org.atalk.android.gui.account.settings;
 
 import android.app.*;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.widget.*;
 import net.java.sip.communicator.service.protocol.StunServerDescriptor;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 
 import static net.java.sip.communicator.service.protocol.jabber.JabberAccountID.DEFAULT_STUN_PORT;
 
@@ -79,20 +79,16 @@ public class StunTurnDialogFragment extends DialogFragment
         final TextView passwordView = contentView.findViewById(R.id.passwordField);
 
         CompoundButton useTurnButton = contentView.findViewById(R.id.useTurnCheckbox);
-        useTurnButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            public void onCheckedChanged(CompoundButton cButton, boolean b)
-            {
-                turnUserView.setEnabled(b);
-                passwordView.setEnabled(b);
-            }
+        useTurnButton.setOnCheckedChangeListener((cButton, b) -> {
+            turnUserView.setEnabled(b);
+            passwordView.setEnabled(b);
         });
 
         if (descriptor != null) {
             TextView ipAdrTextView = contentView.findViewById(R.id.ipAddress);
             ipAdrTextView.setText(descriptor.getAddress());
 
-            portView.setText(Integer.toString(descriptor.getPort()));
+            portView.setText(String.valueOf(descriptor.getPort()));
             turnUserView.setText(new String(descriptor.getUsername()));
             passwordView.setText(new String(descriptor.getPassword()));
             useTurnButton.setChecked(descriptor.isTurnSupported());
@@ -106,30 +102,18 @@ public class StunTurnDialogFragment extends DialogFragment
         useTurnButton.setChecked(isTurnSupported);
 
         final AlertDialog dialog = builder.create();
-        dialog.setOnShowListener(new DialogInterface.OnShowListener()
-        {
-            public void onShow(DialogInterface dialogInterface)
-            {
-                Button pos = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                pos.setOnClickListener(new View.OnClickListener()
-                {
-                    public void onClick(View view)
-                    {
-                        if (saveChanges())
-                            dismiss();
-                    }
+        dialog.setOnShowListener(dialogInterface -> {
+            Button pos = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            pos.setOnClickListener(view -> {
+                if (saveChanges())
+                    dismiss();
+            });
+            Button neg = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            if (neg != null) {
+                neg.setOnClickListener(view -> {
+                    parentAdapter.removeServer(descriptor);
+                    dismiss();
                 });
-                Button neg = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                if (neg != null) {
-                    neg.setOnClickListener(new View.OnClickListener()
-                    {
-                        public void onClick(View view)
-                        {
-                            parentAdapter.removeServer(descriptor);
-                            dismiss();
-                        }
-                    });
-                }
             }
         });
         return dialog;
@@ -151,14 +135,13 @@ public class StunTurnDialogFragment extends DialogFragment
 
         String portStr = ((TextView) dialog.findViewById(R.id.serverPort)).getText().toString();
         if (portStr.isEmpty()) {
-            Toast toast = Toast.makeText(getActivity(), "The port can not be empty", 3);
-            toast.show();
+            aTalkApp.showToastMessage("The port can not be empty");
             return false;
         }
         int port = Integer.parseInt(portStr);
 
+        // Create descriptor if new entry
         if (descriptor == null) {
-            // Create new descriptor
             descriptor = new StunServerDescriptor(ipAddress, port, useTurn, turnUser, password);
             parentAdapter.addServer(descriptor);
         }

@@ -128,33 +128,23 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
         handleIntent(getIntent(), savedInstanceState);
 
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                new Handler().postDelayed(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        // Always request on first apk launch
-                        if (permissionFirstRequest && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
-                            logger.info("Launching user permission request for aTalk.");
-                            // Request user to add aTalk to BatteryOptimization whitelist
-                            openBatteryOptimizationDialogIfNeeded();
-                            permissionFirstRequest = false;
-                            Intent iPermissions = new Intent(aTalk.this, PermissionsActivity.class);
-                            startActivity(iPermissions);
-                        }
+        runOnUiThread(() -> {
+            new Handler().postDelayed(() -> {
+                // Always request on first apk launch
+                if (permissionFirstRequest && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
+                    logger.info("Launching user permission request for aTalk.");
+                    // Request user to add aTalk to BatteryOptimization whitelist
+                    openBatteryOptimizationDialogIfNeeded();
+                    permissionFirstRequest = false;
+                    Intent iPermissions = new Intent(aTalk.this, PermissionsActivity.class);
+                    startActivity(iPermissions);
+                }
 
-                        ChangeLog cl = new ChangeLog(aTalk.this);
-                        if (cl.isFirstRun()) {
-                            cl.getLogDialog().show();
-                        }
-                    }
-                }, 15000); // allow 15 seconds for first launch login to complete
-            }
+                ChangeLog cl = new ChangeLog(aTalk.this);
+                if (cl.isFirstRun()) {
+                    cl.getLogDialog().show();
+                }
+            }, 15000); // allow 15 seconds for first launch login to complete
         });
     }
 
@@ -236,6 +226,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     @Override
     public void onBackPressed()
     {
+        super.onBackPressed();
         if (mPager.getCurrentItem() == 0) {
             // If the user is currently looking at the first page, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.

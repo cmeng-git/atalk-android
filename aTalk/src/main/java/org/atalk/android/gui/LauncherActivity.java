@@ -18,6 +18,7 @@ import org.atalk.android.*;
 import org.atalk.impl.androidtray.NotificationHelper;
 import org.atalk.impl.androidupdate.OnlineUpdateService;
 import org.atalk.persistance.DatabaseBackend;
+import org.atalk.service.EventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
@@ -53,6 +54,8 @@ public class LauncherActivity extends OSGiActivity
      */
     private Intent restoreIntent;
 
+    private boolean startOnReboot = false;
+
     /**
      * aTalk SQLite database
      */
@@ -82,6 +85,13 @@ public class LauncherActivity extends OSGiActivity
         databaseBackend = DatabaseBackend.getInstance(getApplicationContext());
         databaseBackend.getReadableDatabase();
 
+        // Get restore Intent and display "Restoring..." label
+        Intent intent = getIntent();
+        if (intent != null) {
+            this.restoreIntent = intent.getParcelableExtra(ARG_RESTORE_INTENT);
+            startOnReboot = intent.getBooleanExtra(EventReceiver.AUTO_START_ONBOOT, false);
+        }
+
         setProgressBarIndeterminateVisibility(true);
         setContentView(R.layout.splash);
 
@@ -89,11 +99,6 @@ public class LauncherActivity extends OSGiActivity
         ImageView myImageView = findViewById(R.id.loadingImage);
         Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fadein);
         myImageView.startAnimation(myFadeInAnimation);
-
-        // Get restore Intent and display "Restoring..." label
-        Intent intent = getIntent();
-        if (intent != null)
-            this.restoreIntent = intent.getParcelableExtra(ARG_RESTORE_INTENT);
 
         View restoreView = findViewById(R.id.restoring);
         restoreView.setVisibility(restoreIntent != null ? View.VISIBLE : View.GONE);
@@ -104,24 +109,27 @@ public class LauncherActivity extends OSGiActivity
             throws Exception
     {
         super.start(osgiContext);
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                if (restoreIntent != null) {
-                    // Starts restore intent
-                    startActivity(restoreIntent);
-                    finish();
-                }
-                else if (BuildConfig.DEBUG) {
-                    // Perform software version update check on first launch - for debug version only
-                    Intent dailyCheckupIntent = new Intent(getApplicationContext(), OnlineUpdateService.class);
-                    dailyCheckupIntent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_START);
-                    startService(dailyCheckupIntent);
-                }
+        runOnUiThread(() -> {
+            if (restoreIntent != null) {
+                // Starts restore intent
+                startActivity(restoreIntent);
+                finish();
+            }
+            else if (BuildConfig.DEBUG) {
+                // Perform software version update check on first launch - for debug version only
+                Intent dailyCheckupIntent = new Intent(getApplicationContext(), OnlineUpdateService.class);
+                dailyCheckupIntent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_START);
+                startService(dailyCheckupIntent);
+            }
 
-                // Start home screen Activity
-                switchActivity(aTalkApp.getHomeScreenActivityClass());
+            // Start home screen Activity
+            Class<?> activityClass = aTalkApp.getHomeScreenActivityClass();
+            if (!startOnReboot || !aTalk.class.equals(activityClass)) {
+                switchActivity(activityClass);
+            }
+            else {
+                startOnReboot = false;
+                finish();
             }
         });
     }

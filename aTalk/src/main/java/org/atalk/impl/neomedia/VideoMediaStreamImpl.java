@@ -664,6 +664,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                      */
                     public void videoRemoved(VideoEvent e)
                     {
+                        // Process in the same way as VIDEO_ADDED.
                         videoAdded(e);
                     }
 

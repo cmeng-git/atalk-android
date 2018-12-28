@@ -33,6 +33,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
@@ -207,10 +208,9 @@ public class ChatRoomListFragment extends OSGiFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater)
     {
         super.onCreateOptionsMenu(menu, menuInflater);
-        Activity activity = getActivity();
 
         // Get the SearchView and set the search configuration
-        SearchManager searchManager = (SearchManager) activity.getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) aTalkApp.getGlobalContext().getSystemService(Context.SEARCH_SERVICE);
         mSearchItem = menu.findItem(R.id.search);
 
         // OnActionExpandListener not supported prior API 14
@@ -230,7 +230,7 @@ public class ChatRoomListFragment extends OSGiFragment
         });
 
         SearchView searchView = (SearchView) mSearchItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
 
         int id = searchView.getContext().getResources()
                 .getIdentifier("android:id/search_src_text", null, null);

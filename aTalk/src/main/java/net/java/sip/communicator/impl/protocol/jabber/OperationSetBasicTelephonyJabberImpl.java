@@ -18,7 +18,6 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.util.AndroidUtils;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -719,11 +718,11 @@ public class OperationSetBasicTelephonyJabberImpl
     }
 
     /**
-     * Handler for Jabber incoming file transfer request.
+     * Handler for Jabber incoming JingleIQ request.
      */
     private class JingleIqSetRequestHandler extends AbstractIqRequestHandler
     {
-        // setup for Si FileTransferRequest event
+        // setup for Jingle IQRequest event
         protected JingleIqSetRequestHandler()
         {
             super(JingleIQ.ELEMENT_NAME, JingleIQ.NAMESPACE, IQ.Type.set, Mode.async);
@@ -743,17 +742,17 @@ public class OperationSetBasicTelephonyJabberImpl
             try {
                 mConnection.sendStanza(ack);
             } catch (NotConnectedException | InterruptedException e) {
-                e.printStackTrace();
+                logger.error("Error while sending Jingle IQ reply: " + e.getMessage());
             }
 
             try {
-                if (iq instanceof JingleIQ)
+                if (iq instanceof JingleIQ) {
                     processJingleIQ((JingleIQ) iq);
+                }
             } catch (Throwable t) {
                 if (logger.isInfoEnabled()) {
                     String packetClass = iq.getClass().getSimpleName();
-                    logger.error("Error while handling incoming " + packetClass + " packet. Exception: ", t);
-                    logger.error("On IQ: " + iq);
+                    logger.error("Error while handling incoming " + packetClass + ". Exception: ", t);
                 }
                 /*
                  * The Javadoc on ThreadDeath says: If ThreadDeath is caught by a method, it is
@@ -777,7 +776,7 @@ public class OperationSetBasicTelephonyJabberImpl
         // let's first see whether we have a peer that's concerned by this IQ
         CallPeerJabberImpl callPeer = activeCallsRepository.findCallPeer(jingleIQ.getSID());
         JingleAction action = jingleIQ.getAction();
-        logger.info("### Jingle action processing: " + action.toString());
+        logger.warn("### Processing Jingle Iq id: " + jingleIQ.getStanzaId() + ". Action: " + action.toString());
 
         if (action == JingleAction.SESSION_INITIATE) {
             TransferPacketExtension transfer = jingleIQ.getExtension(
@@ -834,8 +833,8 @@ public class OperationSetBasicTelephonyJabberImpl
                     break;
                 case SESSION_INFO:
                     SessionInfoPacketExtension info = jingleIQ.getSessionInfo();
+                    // change status.
                     if (info != null) {
-                        // change status.
                         callPeer.processSessionInfo(info);
                     }
                     else {
@@ -857,8 +856,8 @@ public class OperationSetBasicTelephonyJabberImpl
                                 CoinPacketExtension.NAMESPACE);
                         if (packetExtension instanceof CoinPacketExtension) {
                             CoinPacketExtension coinExt = (CoinPacketExtension) packetExtension;
-                            callPeer.setConferenceFocus(Boolean.parseBoolean(coinExt
-                                    .getAttributeAsString(CoinPacketExtension.ISFOCUS_ATTR_NAME)));
+                            callPeer.setConferenceFocus(Boolean.parseBoolean(
+                                    coinExt.getAttributeAsString(CoinPacketExtension.ISFOCUS_ATTR_NAME)));
                         }
                     }
                     break;

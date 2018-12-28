@@ -92,14 +92,7 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
         if (queryThread != null)
             return;
 
-        queryThread = new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                doQuery();
-            }
-        });
+        queryThread = new Thread(() -> doQuery());
         queryThread.start();
     }
 

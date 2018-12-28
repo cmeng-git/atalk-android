@@ -71,29 +71,17 @@ public class ContactRenameDialog extends OSGiDialogFragment
 		if (!StringUtils.isNullOrEmpty(contactNick))
 			mEditName.setText(contactNick);
 
-		contentView.findViewById(R.id.rename).setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View v)
-			{
-				String displayName = mEditName.getText().toString().trim();
-				if (displayName.length() == 0) {
-					showErrorMessage(getString(R.string.service_gui_CONTACT_NAME_EMPTY));
-				}
-				else
-					renameContact(displayName);
-				dismiss();
-			}
-		});
+		contentView.findViewById(R.id.rename).setOnClickListener(v -> {
+            String displayName = mEditName.getText().toString().trim();
+            if (displayName.length() == 0) {
+                showErrorMessage(getString(R.string.service_gui_CONTACT_NAME_EMPTY));
+            }
+            else
+                renameContact(displayName);
+            dismiss();
+        });
 
-		contentView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View v)
-			{
-				dismiss();
-			}
-		});
+		contentView.findViewById(R.id.cancel).setOnClickListener(v -> dismiss());
 		return contentView;
 	}
 

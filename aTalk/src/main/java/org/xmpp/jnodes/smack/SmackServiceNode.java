@@ -117,18 +117,14 @@ public class SmackServiceNode implements ConnectionListener, StanzaListener
 
     private void setup()
     {
-        scheduledExecutor.scheduleWithFixedDelay(new Runnable()
-        {
-            public void run()
-            {
-                for (final RelayChannel c : channels.values()) {
-                    final long current = System.currentTimeMillis();
-                    final long da = current - c.getLastReceivedTimeA();
-                    final long db = current - c.getLastReceivedTimeB();
+        scheduledExecutor.scheduleWithFixedDelay(() -> {
+            for (final RelayChannel c : channels.values()) {
+                final long current = System.currentTimeMillis();
+                final long da = current - c.getLastReceivedTimeA();
+                final long db = current - c.getLastReceivedTimeB();
 
-                    if (da > timeout || db > timeout) {
-                        removeChannel(c);
-                    }
+                if (da > timeout || db > timeout) {
+                    removeChannel(c);
                 }
             }
         }, timeout, timeout, TimeUnit.MILLISECONDS);
@@ -320,14 +316,8 @@ public class SmackServiceNode implements ConnectionListener, StanzaListener
             final String protocol, final boolean searchBuddies)
     {
         final MappedNodes mappedNodes = new MappedNodes();
-        final Runnable bgTask = new Runnable()
-        {
-            public void run()
-            {
-                searchServices(new ConcurrentHashMap<Jid, Jid>(), xmppConnection, maxEntries,
-                        maxDepth, maxSearchNodes, protocol, searchBuddies, mappedNodes);
-            }
-        };
+        final Runnable bgTask = () -> searchServices(new ConcurrentHashMap<>(), xmppConnection, maxEntries,
+                maxDepth, maxSearchNodes, protocol, searchBuddies, mappedNodes);
         executorService.submit(bgTask);
         return mappedNodes;
     }
@@ -336,7 +326,7 @@ public class SmackServiceNode implements ConnectionListener, StanzaListener
             final int maxEntries, final int maxDepth, final int maxSearchNodes,
             final String protocol, final boolean searchBuddies)
     {
-        return searchServices(new ConcurrentHashMap<Jid, Jid>(), xmppConnection, maxEntries,
+        return searchServices(new ConcurrentHashMap<>(), xmppConnection, maxEntries,
                 maxDepth, maxSearchNodes, protocol, searchBuddies, new MappedNodes());
     }
 

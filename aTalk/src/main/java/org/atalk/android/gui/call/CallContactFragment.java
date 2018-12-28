@@ -85,20 +85,16 @@ public class CallContactFragment extends OSGiFragment
 		final View content = inflater.inflate(R.layout.call_contact, container, false);
 
 		final ImageView callButton = content.findViewById(R.id.callButtonFull);
-		callButton.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				final EditText callField = content.findViewById(R.id.callField);
-				String contact = callField.getText().toString();
-				if (contact.isEmpty()) {
-					System.err.println("Contact is empty");
-				}
-				else {
-					showCallViaMenu(callButton, contact);
-				}
-			}
-		});
+		callButton.setOnClickListener(v -> {
+            final EditText callField = content.findViewById(R.id.callField);
+            String contact = callField.getText().toString();
+            if (contact.isEmpty()) {
+                System.err.println("Contact is empty");
+            }
+            else {
+                showCallViaMenu(callButton, contact);
+            }
+        });
 
 		// Call intent handling
 		Bundle arguments = getArguments();

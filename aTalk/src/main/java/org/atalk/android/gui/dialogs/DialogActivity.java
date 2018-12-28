@@ -6,14 +6,15 @@
 package org.atalk.android.gui.dialogs;
 
 import android.content.*;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.*;
 
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiActivity;
 
@@ -112,6 +113,9 @@ public class DialogActivity extends OSGiActivity
      */
     private boolean confirmed;
 
+    private static LocalBroadcastManager localBroadcastManager
+            = LocalBroadcastManager.getInstance(aTalkApp.getGlobalContext());
+
     /**
      * <tt>BroadcastReceiver</tt> that listens for close dialog action.
      */
@@ -134,6 +138,8 @@ public class DialogActivity extends OSGiActivity
 
     /**
      * {@inheritDoc}
+     *  cmeng: the onCreate get retrigger by android when developer option on keep activity is enabled
+     *  then the new dialog is not disposed.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -195,10 +201,10 @@ public class DialogActivity extends OSGiActivity
         setFinishOnTouchOutside(cancelable);
 
         // always place window onTop - no difference
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-//            getWindow().setType(WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW);
-//        else
-//            getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
+        //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        //            getWindow().setType(WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW);
+        //        else
+        //            getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
 
         // Removes the buttons
         if (intent.getBooleanExtra(EXTRA_REMOVE_BUTTONS, false)) {
@@ -209,10 +215,10 @@ public class DialogActivity extends OSGiActivity
         // Close this dialog on ACTION_CLOSE_DIALOG broadcast
         long dialogId = intent.getLongExtra(EXTRA_DIALOG_ID, -1);
         if (dialogId != -1) {
-            this.commandIntentListener = new CommandDialogListener(dialogId);
+            commandIntentListener = new CommandDialogListener(dialogId);
             IntentFilter intentFilter = new IntentFilter(ACTION_CLOSE_DIALOG);
             intentFilter.addAction(ACTION_FOCUS_DIALOG);
-            registerReceiver(commandIntentListener, intentFilter);
+            localBroadcastManager.registerReceiver(commandIntentListener, intentFilter);
 
             // Adds this dialog to active dialogs list and notifies all waiting threads.
             synchronized (displayedDialogs) {
@@ -277,7 +283,7 @@ public class DialogActivity extends OSGiActivity
     {
         super.onDestroy();
         if (commandIntentListener != null) {
-            unregisterReceiver(commandIntentListener);
+            localBroadcastManager.unregisterReceiver(commandIntentListener);
             // Notify about dialogs list change
             synchronized (displayedDialogs) {
                 displayedDialogs.remove(listenerID);
@@ -327,28 +333,26 @@ public class DialogActivity extends OSGiActivity
      * Fires {@link #ACTION_CLOSE_DIALOG} broadcast action in order to close the dialog identified
      * by given <tt>dialogId</tt>.
      *
-     * @param ctx the context.
      * @param dialogId dialog identifier returned when the dialog was created.
      */
-    public static void closeDialog(Context ctx, long dialogId)
+    public static void closeDialog(long dialogId)
     {
         Intent intent = new Intent(ACTION_CLOSE_DIALOG);
         intent.putExtra(EXTRA_DIALOG_ID, dialogId);
-        ctx.sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(intent);
     }
 
     /**
      * Fires {@link #ACTION_FOCUS_DIALOG} broadcast action in order to focus the dialog identified
      * by given <tt>dialogId</tt>.
      *
-     * @param ctx the context.
      * @param dialogId dialog identifier returned when the dialog was created.
      */
-    public static void focusDialog(Context ctx, long dialogId)
+    public static void focusDialog(long dialogId)
     {
         Intent intent = new Intent(ACTION_FOCUS_DIALOG);
         intent.putExtra(EXTRA_DIALOG_ID, dialogId);
-        ctx.sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(intent);
     }
 
     /**
@@ -450,6 +454,7 @@ public class DialogActivity extends OSGiActivity
         }
         alert.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         alert.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+
         context.startActivity(alert);
         return dialogId;
     }

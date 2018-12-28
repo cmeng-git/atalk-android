@@ -227,31 +227,20 @@ public class ContactInfoActivity extends OSGiActivity
 		detailToTextField.put(AboutMeDetail.class, aboutMeArea);
 
 		Button mOkButton = findViewById(R.id.button_OK);
-		mOkButton.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				finish();
-			}
-		});
+		mOkButton.setOnClickListener(v -> finish());
 	}
 
 	@Override
 	public void detailsRetrieved(final Iterator<GenericDetail> allDetails)
 	{
-		new Handler(Looper.getMainLooper()).post(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (allDetails != null) {
-					while (allDetails.hasNext()) {
-						GenericDetail detail = allDetails.next();
-						loadDetail(detail);
-					}
-				}
-			}
-		});
+		new Handler(Looper.getMainLooper()).post(() -> {
+            if (allDetails != null) {
+                while (allDetails.hasNext()) {
+                    GenericDetail detail = allDetails.next();
+                    loadDetail(detail);
+                }
+            }
+        });
 	}
 
 	/**
@@ -283,14 +272,10 @@ public class ContactInfoActivity extends OSGiActivity
 					+ urlString
 					+ "</a>";
 			urlField.setText(Html.fromHtml(html));
-			urlField.setOnClickListener(new View.OnClickListener()
-			{
-				public void onClick(View v)
-				{
-					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
-					startActivity(browserIntent);
-				}
-			});
+			urlField.setOnClickListener(v -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+                startActivity(browserIntent);
+            });
 		}
 		else if (detail instanceof BirthDateDetail) {
 			// birthDateDetail = (BirthDateDetail) detail;

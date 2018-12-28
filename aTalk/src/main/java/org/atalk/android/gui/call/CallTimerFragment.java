@@ -82,13 +82,7 @@ public class CallTimerFragment extends OSGiFragment
      */
     public void updateCallDuration()
     {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                doUpdateCallDuration();
-            }
-        });
+        runOnUiThread(() -> doUpdateCallDuration());
     }
 
     /**

@@ -224,42 +224,30 @@ public class IBRCaptchaProcessDialog extends Dialog
                     }
                 });
 
-        mAcceptButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                // server disconnect user if waited for too long
-                if (mConnection.isConnected()) {
-                    if (updateAccount()) {
-                        onAcceptClicked();
-                        showResult();
-                    }
+        mAcceptButton.setOnClickListener(v -> {
+            // server disconnect user if waited for too long
+            if (mConnection.isConnected()) {
+                if (updateAccount()) {
+                    onAcceptClicked();
+                    showResult();
                 }
             }
         });
 
-        mOKButton.setOnClickListener(new View.OnClickListener()
-        {
-            // Retrigger IBR is user click OK - let login takes over
-            public void onClick(View v)
-            {
-                closeDialog();
-                GlobalStatusService globalStatusService = AndroidGUIActivator.getGlobalStatusService();
-                globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
-            }
+        // Retrigger IBR is user click OK - let login takes over
+        mOKButton.setOnClickListener(v -> {
+            closeDialog();
+            GlobalStatusService globalStatusService = AndroidGUIActivator.getGlobalStatusService();
+            globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
         });
 
-        mCancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            // Set IBR to false on user cancel. Otherwise may loop in IBR if server returns error
-            public void onClick(View v)
-            {
-                mAccountId.setIbRegistration(false);
-                String errMsg = "InBand registration cancelled by user!";
-                StanzaError xmppError = StanzaError.from(Condition.registration_required, errMsg).build();
-                mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
-                closeDialog();
-            }
+        // Set IBR to false on user cancel. Otherwise may loop in IBR if server returns error
+        mCancelButton.setOnClickListener(v -> {
+            mAccountId.setIbRegistration(false);
+            String errMsg = "InBand registration cancelled by user!";
+            StanzaError xmppError = StanzaError.from(Condition.registration_required, errMsg).build();
+            mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
+            closeDialog();
         });
     }
 
@@ -509,14 +497,9 @@ public class IBRCaptchaProcessDialog extends Dialog
             mReasonText = mContext.getString(R.string.captcha_registration_fail, errMsg);
         }
         // close connection on error, else throws connectionClosedOnError on timeout
-        Async.go(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (mConnection.isConnected())
-                    mConnection.disconnect();
-            }
+        Async.go(() -> {
+            if (mConnection.isConnected())
+                mConnection.disconnect();
         });
 
         mReason.setText(mReasonText);
@@ -551,14 +534,7 @@ public class IBRCaptchaProcessDialog extends Dialog
             StanzaError xmppError = StanzaError.from(Condition.remote_server_timeout, errMsg).build();
             mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
 
-            new Handler(Looper.getMainLooper()).post(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    showResult();
-                }
-            });
+            new Handler(Looper.getMainLooper()).post(() -> showResult());
         }
 
         @Override

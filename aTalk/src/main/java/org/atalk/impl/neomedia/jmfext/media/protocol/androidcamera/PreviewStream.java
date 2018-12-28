@@ -38,7 +38,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     /**
      * Buffers queue
      */
-    final LinkedList<byte[]> bufferQueue = new LinkedList<>();
+    final private LinkedList<byte[]> bufferQueue = new LinkedList<>();
 
     /* In use camera rotation - for video streaming */
     private int cameraRotation;
@@ -84,17 +84,17 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         else {
             cameraRotation = mRotation;
         }
+        boolean swap = (mRotation == 90) || (mRotation == 270);
 
         // Alloc two buffers
         Camera.Parameters params = mCamera.getParameters();
-        Camera.Size prevSize = params.getPreviewSize();
-        int bufferSize = calcYV12Size(prevSize.width, prevSize.height);
+        Camera.Size previewSize = params.getPreviewSize();
+        int bufferSize = calcYV12Size(previewSize, swap);
 
-        logger.info(prevSize.width + "x" + prevSize.height + " @ " + cameraRotation
-                + "DEG with buffer size: " + bufferSize + " for image format: 0x"
-                + Integer.toString(params.getPreviewFormat(), 16));
+        logger.info("Camera captured preview = " + previewSize.width + "x" + previewSize.height + " @ "
+                + cameraRotation + "-DEG with buffer size: " + bufferSize
+                + " for image format: 0x" + Integer.toString(params.getPreviewFormat(), 16));
 
-        mCamera.addCallbackBuffer(new byte[bufferSize]);
         mCamera.addCallbackBuffer(new byte[bufferSize]);
 
         SurfaceHolder previewSurface = CameraUtils.obtainPreviewSurface();
@@ -120,7 +120,6 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         int outLen = (w * h * 12) / 8;
 
         byte[] copy = AbstractCodec2.validateByteArraySize(buffer, outLen, false);
-        // YV12toYUV420Planar(data, copy, w, h); // old method without rotation support
         YV12toYUV420PlanarRotate(data, copy, w, h, cameraRotation);
         buffer.setLength(outLen);
         buffer.setFlags(Buffer.FLAG_LIVE_DATA | Buffer.FLAG_RELATIVE_TIME);
@@ -138,7 +137,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     public void onPreviewFrame(byte[] data, Camera camera)
     {
         if (data == null) {
-            logger.error("Null data received on callback, " + " invalid buffer size ?");
+            logger.error("Null data received on callback, invalid buffer size?");
             return;
         }
         // Calculate statistics for average frame rate
@@ -241,38 +240,46 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     }
 
     /**
-     * Calculates YV12 image data size in bytes.
+     * Calculates YV12 image data bufferSize in bytes.
+     * The buffer is used to received the generated preview streaming data,
+     * hence need to consider when image is swap (rotated)
      *
-     * @param width image width.
-     * @param height image height.
+     * @param previewSize camera preview size.
+     * @param swap indicate camera is rotated, and width and height must be swapped to get the buffer size
      * @return YV12 image data size in bytes.
      */
-    private static int calcYV12Size(int width, int height)
+    private static int calcYV12Size(Camera.Size previewSize, boolean swap)
     {
-        float yStride = (int) Math.ceil(width / 16.0) * 16;
+        int wp = previewSize.width;
+        int hp = previewSize.height;
+        if (swap) {
+            wp = previewSize.height;
+            hp = previewSize.width;
+        }
+
+        float yStride = (int) Math.ceil(wp / 16.0) * 16;
         float uvStride = (int) Math.ceil((yStride / 2) / 16.0) * 16;
-        float ySize = yStride * height;
-        float uvSize = uvStride * height / 2;
+        float ySize = yStride * hp;
+        float uvSize = uvStride * hp / 2;
         // float yRowIndex = yStride * y;
         // float uRowIndex = ySize + uvSize + uvStride * c;
         // float vRowIndex = ySize + uvStride * c;
         return (int) (ySize + uvSize * 2);
     }
 
-    /**
-     * Converts Android YV12 format to YUV420 planar.
-     *
-     * @param input
-     *         input YV12 image bytes.
-     * @param output
-     *         output buffer.
-     * @param width
-     *         image width.
-     * @param height
-     *         image height.
-     */
-//    static void YV12toYUV420Planar(final byte[] input, final byte[] output, final int width,
-//                                   final int height)
+//    /**
+//     * Converts Android YV12 format to YUV420 planar without rotation support
+//     *
+//     * @param input
+//     *         input YV12 image bytes.
+//     * @param output
+//     *         output buffer.
+//     * @param width
+//     *         image width.
+//     * @param height
+//     *         image height.
+//     */
+//    static void YV12toYUV420Planar(final byte[] input, final byte[] output, final int width, final int height)
 //    {
 //        if (width % 16 != 0)
 //            throw new IllegalArgumentException("Unsupported width: " + width);

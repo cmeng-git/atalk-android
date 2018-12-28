@@ -299,14 +299,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
             final CheckBox cb_fingerprint = (CheckBox) rowView.findViewById(R.id.fingerprint);
             cb_fingerprint.setChecked(isVerified);
 
-            cb_fingerprint.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    fingerprintCheck.put(device, cb_fingerprint.isChecked());
-                }
-            });
+            cb_fingerprint.setOnClickListener(v -> fingerprintCheck.put(device, cb_fingerprint.isChecked()));
             return rowView;
         }
 

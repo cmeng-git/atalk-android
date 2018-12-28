@@ -186,13 +186,6 @@ public class ViewUtil
 			return;
 		}
 
-		viewHandler.post(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				view.setVisibility(newState);
-			}
-		});
+		viewHandler.post(() -> view.setVisibility(newState));
 	}
 }

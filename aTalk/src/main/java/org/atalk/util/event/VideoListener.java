@@ -15,12 +15,11 @@
  */
 package org.atalk.util.event;
 
-import java.util.*;
+import java.util.EventListener;
 
 /**
  * Defines the notification support informing about changes in the availability
- * of visual <tt>Component</tt>s representing video such as adding and
- * removing.
+ * of visual <tt>Component</tt>s representing video such as adding and removing.
  *
  * @author Lyubomir Marinov
  */
@@ -47,8 +46,7 @@ public interface VideoListener extends EventListener
     void videoRemoved(VideoEvent event);
 
     /**
-     * Notifies about an update to a visual <tt>Component</tt> representing
-     * video.
+     * Notifies about an update to a visual <tt>Component</tt> representing video.
      *
      * @param event a <tt>VideoEvent</tt> describing the visual
      * <tt>Component</tt> related to the update and the details of the specific

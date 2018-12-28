@@ -104,13 +104,9 @@ public class ActionBarStatusFragment extends OSGiFragment
         displayDetailsService = AndroidGUIActivator.getGlobalDisplayDetailsService();
 
         final RelativeLayout actionBarView = fragmentActivity.findViewById(R.id.actionBarView);
-        actionBarView.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                globalStatusMenu.show(actionBarView);
-                globalStatusMenu.setAnimStyle(GlobalStatusMenu.ANIM_REFLECT);
-            }
+        actionBarView.setOnClickListener(v -> {
+            globalStatusMenu.show(actionBarView);
+            globalStatusMenu.setAnimStyle(GlobalStatusMenu.ANIM_REFLECT);
         });
     }
 
@@ -207,29 +203,24 @@ public class ActionBarStatusFragment extends OSGiFragment
         /*
          * Runs publish status on separate thread to prevent NetworkOnMainThreadException
          */
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                GlobalStatusService globalStatusService = AndroidGUIActivator.getGlobalStatusService();
-                switch (newStatus) {
-                    case ONLINE:
-                        globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
-                        break;
-                    case OFFLINE:
-                        globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
-                        break;
-                    case FFC:
-                        globalStatusService.publishStatus(GlobalStatusEnum.FREE_FOR_CHAT);
-                        break;
-                    case AWAY:
-                        globalStatusService.publishStatus(GlobalStatusEnum.AWAY);
-                        break;
-                    case DND:
-                        globalStatusService.publishStatus(GlobalStatusEnum.DO_NOT_DISTURB);
-                        break;
-                }
+        new Thread(() -> {
+            GlobalStatusService globalStatusService = AndroidGUIActivator.getGlobalStatusService();
+            switch (newStatus) {
+                case ONLINE:
+                    globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
+                    break;
+                case OFFLINE:
+                    globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
+                    break;
+                case FFC:
+                    globalStatusService.publishStatus(GlobalStatusEnum.FREE_FOR_CHAT);
+                    break;
+                case AWAY:
+                    globalStatusService.publishStatus(GlobalStatusEnum.AWAY);
+                    break;
+                case DND:
+                    globalStatusService.publishStatus(GlobalStatusEnum.DO_NOT_DISTURB);
+                    break;
             }
         }).start();
     }
@@ -240,24 +231,19 @@ public class ActionBarStatusFragment extends OSGiFragment
         if ((presenceStatus == null) || (fragmentActivity == null))
             return;
 
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                String mStatus = presenceStatus.getStatusName();
-                ActionBarUtil.setSubtitle(fragmentActivity, mStatus);
-                ActionBarUtil.setStatus(fragmentActivity, StatusUtil.getStatusIcon(presenceStatus));
+        runOnUiThread(() -> {
+            String mStatus = presenceStatus.getStatusName();
+            ActionBarUtil.setSubtitle(fragmentActivity, mStatus);
+            ActionBarUtil.setStatus(fragmentActivity, StatusUtil.getStatusIcon(presenceStatus));
 
-                MenuItem mOnOffLine = ((MainMenuActivity) fragmentActivity).getMenuItemOnOffLine();
-                // Proceed only if mOnOffLine has been initialized
-                if (mOnOffLine != null) {
-                    boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(mStatus);
-                    int itemId = isOffline
-                            ? R.string.service_gui_SIGN_IN
-                            : R.string.service_gui_SIGN_OUT;
-                    mOnOffLine.setTitle(aTalkApp.getResString(itemId));
-                }
+            MenuItem mOnOffLine = ((MainMenuActivity) fragmentActivity).getMenuItemOnOffLine();
+            // Proceed only if mOnOffLine has been initialized
+            if (mOnOffLine != null) {
+                boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(mStatus);
+                int itemId = isOffline
+                        ? R.string.service_gui_SIGN_IN
+                        : R.string.service_gui_SIGN_OUT;
+                mOnOffLine.setTitle(aTalkApp.getResString(itemId));
             }
         });
     }
@@ -268,14 +254,7 @@ public class ActionBarStatusFragment extends OSGiFragment
     @Override
     public void globalDisplayAvatarChanged(final GlobalAvatarChangeEvent evt)
     {
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                setGlobalAvatar(evt.getNewAvatar());
-            }
-        });
+        runOnUiThread(() -> setGlobalAvatar(evt.getNewAvatar()));
 
     }
 
@@ -285,14 +264,7 @@ public class ActionBarStatusFragment extends OSGiFragment
     @Override
     public void globalDisplayNameChanged(final GlobalDisplayNameChangeEvent evt)
     {
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                setGlobalDisplayName(evt.getNewDisplayName());
-            }
-        });
+        runOnUiThread(() -> setGlobalDisplayName(evt.getNewDisplayName()));
     }
 
     /**

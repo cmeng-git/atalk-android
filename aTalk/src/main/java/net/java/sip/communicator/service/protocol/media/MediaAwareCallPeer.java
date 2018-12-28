@@ -887,7 +887,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     public void setState(CallPeerState newState, String reason, int reasonCode)
     {
         // synchronized to mediaHandler if there are currently jobs of
-        // initializing, configuring and starting streams (method processAnswer
+        // initializing, configuring and starting streams (method processSessionAcceptContent
         // of CallPeerMediaHandler) we won't set and fire the current state
         // to Disconnected. Before closing the mediaHandler is setting the state
         // in order to deliver states as quick as possible.

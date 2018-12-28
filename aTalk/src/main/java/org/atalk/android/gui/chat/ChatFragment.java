@@ -33,6 +33,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.SparseBooleanArray;
 import android.view.*;
+import android.view.View.OnClickListener;
 import android.widget.*;
 import android.widget.LinearLayout.LayoutParams;
 
@@ -784,17 +785,12 @@ public class ChatFragment extends OSGiFragment
          */
         private void addMessage(final ChatMessage newMessage, final boolean update)
         {
-            runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    if (chatListAdapter == null) {
-                        logger.warn("Add message handled, when there's no adapter - possibly after onDetach()");
-                        return;
-                    }
-                    addMessageImpl(newMessage, update);
+            runOnUiThread(() -> {
+                if (chatListAdapter == null) {
+                    logger.warn("Add message handled, when there's no adapter - possibly after onDetach()");
+                    return;
                 }
+                addMessageImpl(newMessage, update);
             });
         }
 
@@ -1013,7 +1009,7 @@ public class ChatFragment extends OSGiFragment
          * Hack required to capture TextView(message body) clicks, when
          * <tt>LinkMovementMethod</tt> is set.
          */
-        private final View.OnClickListener msgClickAdapter = new View.OnClickListener()
+        private final OnClickListener msgClickAdapter = new OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -1348,17 +1344,12 @@ public class ChatFragment extends OSGiFragment
          */
         public void localAvatarOrStatusChanged()
         {
-            runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    for (int i = 0; i < chatListView.getChildCount(); i++) {
-                        View row = chatListView.getChildAt(i);
-                        MessageViewHolder viewHolder = (MessageViewHolder) row.getTag();
-                        if (viewHolder != null)
-                            updateStatusAndAvatarView(viewHolder, null);
-                    }
+            runOnUiThread(() -> {
+                for (int i = 0; i < chatListView.getChildCount(); i++) {
+                    View row = chatListView.getChildAt(i);
+                    MessageViewHolder viewHolder = (MessageViewHolder) row.getTag();
+                    if (viewHolder != null)
+                        updateStatusAndAvatarView(viewHolder, null);
                 }
             });
         }
@@ -1367,7 +1358,7 @@ public class ChatFragment extends OSGiFragment
          * Class used to cache processed message contents. Prevents from re-processing on each
          * View display.
          */
-        class MessageDisplay implements View.OnClickListener, View.OnLongClickListener
+        class MessageDisplay implements OnClickListener, View.OnLongClickListener
         {
             /**
              * Row identifier.
@@ -1780,55 +1771,50 @@ public class ChatFragment extends OSGiFragment
             return;
         }
 
-        mActivity.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (chatState != null) {
-                    TextView chatStateTextView = chatStateView.findViewById(R.id.chatStateTextView);
-                    ImageView chatStateImgView = chatStateView.findViewById(R.id.chatStateImageView);
+        mActivity.runOnUiThread(() -> {
+            if (chatState != null) {
+                TextView chatStateTextView = chatStateView.findViewById(R.id.chatStateTextView);
+                ImageView chatStateImgView = chatStateView.findViewById(R.id.chatStateImageView);
 
-                    String buddy = chatPanel.getShortDisplayName();
-                    switch (chatState) {
-                        case composing:
-                            Drawable chatStateDrawable = chatStateImgView.getDrawable();
-                            if (!(chatStateDrawable instanceof AnimationDrawable)) {
-                                chatStateImgView.setImageResource(R.drawable.chat_state_drawable);
-                                chatStateDrawable = chatStateImgView.getDrawable();
-                            }
+                String buddy = chatPanel.getShortDisplayName();
+                switch (chatState) {
+                    case composing:
+                        Drawable chatStateDrawable = chatStateImgView.getDrawable();
+                        if (!(chatStateDrawable instanceof AnimationDrawable)) {
+                            chatStateImgView.setImageResource(R.drawable.chat_state_drawable);
+                            chatStateDrawable = chatStateImgView.getDrawable();
+                        }
 
-                            if (!((AnimationDrawable) chatStateDrawable).isRunning()) {
-                                AnimationDrawable animatedDrawable = (AnimationDrawable) chatStateDrawable;
-                                animatedDrawable.setOneShot(false);
-                                animatedDrawable.start();
-                            }
-                            chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_COMPOSING, buddy));
-                            break;
-                        case paused:
-                            chatStateImgView.setImageResource(R.drawable.typing1);
-                            chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_PAUSED_TYPING, buddy));
-                            break;
-                        case active:
-                            chatStateImgView.setImageResource(R.drawable.global_ffc);
-                            chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_ACTIVE, buddy));
-                            break;
-                        case inactive:
-                            chatStateImgView.setImageResource(R.drawable.global_away);
-                            chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_INACTIVE, buddy));
-                            break;
-                        case gone:
-                            chatStateImgView.setImageResource(R.drawable.global_extended_away);
-                            chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_GONE, buddy));
-                            break;
-                    }
-                    chatStateImgView.getLayoutParams().height = LayoutParams.WRAP_CONTENT;
-                    chatStateImgView.setPadding(7, 0, 7, 7);
-                    chatStateView.setVisibility(View.VISIBLE);
+                        if (!((AnimationDrawable) chatStateDrawable).isRunning()) {
+                            AnimationDrawable animatedDrawable = (AnimationDrawable) chatStateDrawable;
+                            animatedDrawable.setOneShot(false);
+                            animatedDrawable.start();
+                        }
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_COMPOSING, buddy));
+                        break;
+                    case paused:
+                        chatStateImgView.setImageResource(R.drawable.typing1);
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_PAUSED_TYPING, buddy));
+                        break;
+                    case active:
+                        chatStateImgView.setImageResource(R.drawable.global_ffc);
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_ACTIVE, buddy));
+                        break;
+                    case inactive:
+                        chatStateImgView.setImageResource(R.drawable.global_away);
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_INACTIVE, buddy));
+                        break;
+                    case gone:
+                        chatStateImgView.setImageResource(R.drawable.global_extended_away);
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_GONE, buddy));
+                        break;
                 }
-                else {
-                    chatStateView.setVisibility(View.INVISIBLE);
-                }
+                chatStateImgView.getLayoutParams().height = LayoutParams.WRAP_CONTENT;
+                chatStateImgView.setPadding(7, 0, 7, 7);
+                chatStateView.setVisibility(View.VISIBLE);
+            }
+            else {
+                chatStateView.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -2081,34 +2067,29 @@ public class ChatFragment extends OSGiFragment
         mChatType = chatType;
         chatPanel.setChatType(mChatType);
 
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                switch (chatType) {
-                    case MSGTYPE_OMEMO:
-                        focusView.setBackgroundResource(R.color.chat_background_omemo);
-                        break;
-                    case MSGTYPE_OMEMO_UA:
-                    case MSGTYPE_OMEMO_UT:
-                        focusView.setBackgroundResource(R.color.chat_background_omemo_ua);
-                        break;
-                    case MSGTYPE_OTR:
-                        focusView.setBackgroundResource(R.color.chat_background_otr);
-                        break;
-                    case MSGTYPE_OTR_UA:
-                        focusView.setBackgroundResource(R.color.chat_background_otr_ua);
-                        break;
-                    case MSGTYPE_NORMAL:
-                        focusView.setBackgroundResource(R.color.chat_background_normal);
-                        break;
-                    case MSGTYPE_MUC_NORMAL:
-                        focusView.setBackgroundResource(R.color.chat_background_muc);
-                        break;
-                    default:
-                        focusView.setBackgroundResource(R.color.chat_background_normal);
-                }
+        runOnUiThread(() -> {
+            switch (chatType) {
+                case MSGTYPE_OMEMO:
+                    focusView.setBackgroundResource(R.color.chat_background_omemo);
+                    break;
+                case MSGTYPE_OMEMO_UA:
+                case MSGTYPE_OMEMO_UT:
+                    focusView.setBackgroundResource(R.color.chat_background_omemo_ua);
+                    break;
+                case MSGTYPE_OTR:
+                    focusView.setBackgroundResource(R.color.chat_background_otr);
+                    break;
+                case MSGTYPE_OTR_UA:
+                    focusView.setBackgroundResource(R.color.chat_background_otr_ua);
+                    break;
+                case MSGTYPE_NORMAL:
+                    focusView.setBackgroundResource(R.color.chat_background_normal);
+                    break;
+                case MSGTYPE_MUC_NORMAL:
+                    focusView.setBackgroundResource(R.color.chat_background_muc);
+                    break;
+                default:
+                    focusView.setBackgroundResource(R.color.chat_background_normal);
             }
         });
     }

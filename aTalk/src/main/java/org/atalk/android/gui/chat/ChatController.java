@@ -507,34 +507,24 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     // Need to wait on new thread for animation to end
     private void onAnimationEnd(final int wait)
     {
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try {
-                    Thread.sleep(wait);
-                    parent.runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            mTrashAnimate.stop();
-                            mTrashAnimate.selectDrawable(0);
+        new Thread(() -> {
+            try {
+                Thread.sleep(wait);
+                parent.runOnUiThread(() -> {
+                    mTrashAnimate.stop();
+                    mTrashAnimate.selectDrawable(0);
 
-                            msgEdit.setVisibility(View.VISIBLE);
-                            cancelBtn.setVisibility(View.VISIBLE);
+                    msgEdit.setVisibility(View.VISIBLE);
+                    cancelBtn.setVisibility(View.VISIBLE);
 
-                            msgRecordView.setVisibility(View.GONE);
-                            mSoundMeter.clearAnimation();
-                            mdBTextView.clearAnimation();
-                            mRecordTimer.clearAnimation();
-                            audioBtn.setEnabled(true);
-                        }
-                    });
-                } catch (Exception ex) {
-                    logger.error("Exception: ", ex);
-                }
+                    msgRecordView.setVisibility(View.GONE);
+                    mSoundMeter.clearAnimation();
+                    mdBTextView.clearAnimation();
+                    mRecordTimer.clearAnimation();
+                    audioBtn.setEnabled(true);
+                });
+            } catch (Exception ex) {
+                logger.error("Exception: ", ex);
             }
         }).start();
     }

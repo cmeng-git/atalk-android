@@ -77,7 +77,7 @@ public class VideoTranslatorMediaDevice extends AbstractMediaDevice
 		if (streamDeviceSessions.isEmpty()) {
 			if (deviceSession != null) {
 				deviceSession.removeVideoListener(this);
-				deviceSession.close();
+				deviceSession.close(MediaDirection.SENDRECV);
 			}
 			deviceSession = null;
 		}
@@ -318,10 +318,9 @@ public class VideoTranslatorMediaDevice extends AbstractMediaDevice
 		 * prepares it to be garbage collected.
 		 */
 		@Override
-		public void close()
+		public void close(MediaDirection direction)
 		{
-			super.close();
-
+			super.close(direction);
 			VideoTranslatorMediaDevice.this.close(this);
 		}
 

@@ -66,24 +66,12 @@ public class MoveToGroupDialog extends OSGiDialogFragment
 				= new MetaContactGroupAdapter(getActivity(), groupList, false, true);
 		groupList.setAdapter(contactGroupAdapter);
 
-		contentView.findViewById(R.id.move).setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View v)
-			{
-				moveContact((MetaContactGroup) groupList.getSelectedItem());
-				dismiss();
-			}
-		});
+		contentView.findViewById(R.id.move).setOnClickListener(v -> {
+            moveContact((MetaContactGroup) groupList.getSelectedItem());
+            dismiss();
+        });
 
-		contentView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View v)
-			{
-				dismiss();
-			}
-		});
+		contentView.findViewById(R.id.cancel).setOnClickListener(v -> dismiss());
 		return contentView;
 	}
 

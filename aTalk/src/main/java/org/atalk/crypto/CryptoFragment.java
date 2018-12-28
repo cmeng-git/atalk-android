@@ -735,25 +735,20 @@ public class CryptoFragment extends OSGiFragment
      */
     private void setOTRMenuItem(final OtrPolicy contactPolicy)
     {
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (contactPolicy != null) {
-                    if (contactPolicy.getEnableManual()) {
-                        mOtr.setEnabled(true);
-                        // padLock.getIcon().setAlpha(255);
-                    }
-                    else {
-                        // padLock.getIcon().setAlpha(120);
-                        mOtr.setEnabled(false);
-                    }
+        runOnUiThread(() -> {
+            if (contactPolicy != null) {
+                if (contactPolicy.getEnableManual()) {
+                    mOtr.setEnabled(true);
+                    // padLock.getIcon().setAlpha(255);
                 }
                 else {
-                    // padLock.setVisible(false);
+                    // padLock.getIcon().setAlpha(120);
                     mOtr.setEnabled(false);
                 }
+            }
+            else {
+                // padLock.setVisible(false);
+                mOtr.setEnabled(false);
             }
         });
     }
@@ -803,14 +798,9 @@ public class CryptoFragment extends OSGiFragment
                     return;
             }
 
-            runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    mCryptoChoice.setIcon(iconId);
-                    mCryptoChoice.setTitle(tipKey);
-                }
+            runOnUiThread(() -> {
+                mCryptoChoice.setIcon(iconId);
+                mCryptoChoice.setTitle(tipKey);
             });
 
             // setStatusOmemo() will always get executed. So skip if same chatType
@@ -855,14 +845,9 @@ public class CryptoFragment extends OSGiFragment
                 iconId = R.drawable.encrypted_unsecure_dark;
                 tipKey = R.string.menu_crypto_plain_text;
         }
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                mCryptoChoice.setIcon(iconId);
-                mCryptoChoice.setTitle(tipKey);
-            }
+        runOnUiThread(() -> {
+            mCryptoChoice.setIcon(iconId);
+            mCryptoChoice.setTitle(tipKey);
         });
         // logger.warn("Omemo CryptMode change to: " + chatType + " for " + mDescriptor);
         notifyCryptoModeChanged(mChatType);

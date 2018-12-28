@@ -748,7 +748,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
                 synchronized (mediaStreamMediaDeviceSessions) {
                     if (mediaStreamMediaDeviceSessions.remove(mediaStreamMediaDeviceSession)
                             && mediaStreamMediaDeviceSessions.isEmpty())
-                        close();
+                        close(MediaDirection.SENDRECV);
                 }
             }
         }
@@ -853,13 +853,13 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * Releases the resources allocated by this instance in the course of its execution and
          * prepares it to be garbage collected.
          *
-         * @see MediaDeviceSession#close()
+         * @see MediaDeviceSession#close(MediaDirection)
          */
         @Override
-        public void close()
+        public void close(MediaDirection direction)
         {
             try {
-                super.close();
+                super.close(direction);
             } finally {
                 audioMixerMediaDeviceSession.removeMediaStreamMediaDeviceSession(this);
             }

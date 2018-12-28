@@ -11,11 +11,13 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 
 import org.atalk.android.util.java.awt.Dimension;
+import org.atalk.impl.neomedia.device.DeviceConfiguration;
+import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.PreviewStream;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.*;
 
 import javax.media.MediaLocator;
 
@@ -43,24 +45,20 @@ public class CameraUtils
      * The list of sizes from which the first supported by the respective {@link Camera} is to be
      * chosen as the size of the one and only <tt>Format</tt> supported by the associated
      * <tt>mediarecorder</tt> <tt>CaptureDevice</tt>.
-     */
-    public static final Dimension[] PREFERRED_SIZES;
-
-    /**
+     *
      * User selectable video resolution. The actual resolution use during video call is adjusted so
-     * it is within device capability {@link #getOptimalPreviewSize(List, Dimension, boolean)}
+     * it is within device capability {@link #getOptimalPreviewSize(Dimension, List)
      * Any strides paddings if required, is properly handled in
      * {@link PreviewStream#YV12toYUV420PlanarRotate(byte[], byte[], int, int, int)}
      */
-    static {
-        PREFERRED_SIZES = new Dimension[]{
-                new Dimension(320, 240),
-                new Dimension(640, 480),
-                new Dimension(720, 480),
-                new Dimension(960, 720),
-                new Dimension(1280, 720)
-        };
-    }
+    public static final Dimension[] PREFERRED_SIZES = DeviceConfiguration.SUPPORTED_RESOLUTIONS;
+
+    /**
+     * Map contains all the phone available cameras and their supported resolution sizes
+     * This list is being update at the device start up in.
+     * @see org.atalk.impl.neomedia.device.MediaRecorderSystem
+     */
+    private static Map<Integer, List<Camera.Size>> cameraSupportSize = new HashMap<>();
 
     /**
      * Returns <tt>true</tt> if given <tt>size</tt> is on the list of preferred sizes.
@@ -263,40 +261,34 @@ public class CameraUtils
     }
 
     /**
-     * @param sizes
-     * @param previewSize
-     * @param swap
-     * @return
+     * Get the optimize size that is supported by the camera resolution capability
+     * closely match to the preview size requested.
+     * Note: Camera native natural oritation is always in landscape mode
+     *
+     * @param previewSize requested preview size
+     * @param sizes List of camera supported sizes
+     * @return optimized preview size based on camera capability
      */
-    public static Dimension getOptimalPreviewSize(List<Camera.Size> sizes, Dimension previewSize, boolean swap)
+    public static Dimension getOptimalPreviewSize(Dimension previewSize, List<Camera.Size> sizes)
     {
         if (sizes == null)
-            return null;
+            return previewSize;
 
         int w = previewSize.width;
         int h = previewSize.height;
 
         int maxH = sizes.get(0).height;
-        // Need to check only if previewSize.width > maxH on swap
-        swap = swap && (w > maxH);
-
         final double ASPECT_TOLERANCE = 0.05;
         double targetRatio = (double) w / h;
 
         Camera.Size optimalSize = null;
         double minDiff = Double.MAX_VALUE;
 
+        // obtain the highest possible resolution
         for (Camera.Size size : sizes) {
-            // obtain the highest possible resolution if swap is true
-            if (swap) {
-                if (size.width > maxH)
-                    continue;
-            }
-            else {
-                double ratio = (double) size.width / size.height;
-                if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
-                    continue;
-            }
+            double ratio = (double) size.width / size.height;
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
+                continue;
 
             if (Math.abs(size.height - h) < minDiff) {
                 optimalSize = size;
@@ -314,5 +306,26 @@ public class CameraUtils
             }
         }
         return new Dimension(optimalSize.width, optimalSize.height);
+    }
+
+    /**
+     * Store the supported video resolution by camera cameraId
+     * @param cameraId camera ID
+     * @param supportSizes list of camera support video resolutions
+     */
+    public static void setCameraSupportSize(int cameraId, List<Camera.Size> supportSizes)
+    {
+        cameraSupportSize.put(cameraId, supportSizes);
+    }
+
+    /**
+     * Get the list of camera video resolutions supported by cameraId
+     *
+     * @param cameraId the request camera Id resolutions
+     * @return List of camera video resolutions supported by cameraId
+     */
+    public static List<Camera.Size> getSupportSizeForCameraId(int cameraId)
+    {
+        return cameraSupportSize.get(cameraId);
     }
 }

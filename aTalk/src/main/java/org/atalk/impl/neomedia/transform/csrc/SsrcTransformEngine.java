@@ -117,7 +117,7 @@ public class SsrcTransformEngine extends SinglePacketTransformerAdapter
 	public void close()
 	{
 		if (csrcAudioLevelDispatcher != null)
-			csrcAudioLevelDispatcher.setMediaStream(null);
+            csrcAudioLevelDispatcher.close();
 	}
 
 	/**

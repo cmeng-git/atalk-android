@@ -54,17 +54,13 @@ public class DirectLink implements NetworkLink
 			throws IOException
 	{
 		final SctpSocket dest = s == this.a ? this.b : this.a;
-		new Thread(new Runnable()
-		{
-			public void run()
-			{
-				try {
-					dest.onConnIn(packet, 0, packet.length);
-				}
-				catch (IOException e) {
-					logger.error(e, e);
-				}
-			}
-		}).start();
+		new Thread(() -> {
+            try {
+                dest.onConnIn(packet, 0, packet.length);
+            }
+            catch (IOException e) {
+                logger.error(e, e);
+            }
+        }).start();
 	}
 }

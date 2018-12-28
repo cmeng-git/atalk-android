@@ -988,7 +988,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     /**
      * Handles the specified <tt>answer</tt> by creating and initializing the corresponding <tt>MediaStream</tt>s.
      *
-     * @param answer the Jingle answer
+     * @param contentList the Jingle answer
      * @throws OperationFailedException if we fail to handle <tt>answer</tt> for reasons like failing
      * to initialize media devices or streams.
      * @throws IllegalArgumentException if there's a problem with the syntax or the semantics of <tt>answer</tt>.
@@ -996,23 +996,23 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * configuring and starting streams and anybody interested in this operation can synchronize to the mediaHandler
      * instance to wait processing to stop (method setState in CallPeer).
      */
-    public void processAnswer(List<ContentPacketExtension> answer)
+    public void processSessionAcceptContent(List<ContentPacketExtension> contentList)
             throws OperationFailedException, IllegalArgumentException
     {
         /*
          * The answer given in session-accept may contain transport-related information compatible
          * with that carried in transport-info.
          */
-        processTransportInfo(answer);
+        processTransportInfo(contentList);
 
         boolean masterStreamSet = false;
-        for (ContentPacketExtension content : answer) {
+        for (ContentPacketExtension content : contentList) {
             remoteContentMap.put(content.getName(), content);
 
             boolean masterStream = false;
             // if we have more than one stream, let the audio be the master
             if (!masterStreamSet) {
-                if (answer.size() > 1) {
+                if (contentList.size() > 1) {
                     RtpDescriptionPacketExtension description = JingleUtils.getRtpDescription(content);
                     if (MediaType.AUDIO.toString().equals(description.getMedia())) {
                         masterStream = true;
@@ -1088,16 +1088,16 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     }
 
     /**
-     * Process a <tt>ContentPacketExtension</tt> and initialize its corresponding
-     * <tt>MediaStream</tt>.
+     * Process a <tt>ContentPacketExtension</tt> and initialize its corresponding <tt>MediaStream</tt>.
+     * Each Jingle session-accept can contain both audio and video; and will be process individually
      *
      * @param content a <tt>ContentPacketExtension</tt>
      * @param modify if it correspond to a content-modify for resolution change
      * @param masterStream whether the stream to be used as master
-     * @throws OperationFailedException if we fail to handle <tt>content</tt> for reasons like failing to initialize media
-     * devices or streams.
-     * @throws IllegalArgumentException if there's a problem with the syntax or the semantics of <tt>content</tt>. The method
-     * is synchronized in order to avoid closing mediaHandler when we are currently in
+     * @throws OperationFailedException if we fail to handle <tt>content</tt> for reasons like failing to
+     * initialize media devices or streams.
+     * @throws IllegalArgumentException if there's a problem with the syntax or the semantics of <tt>content</tt>.
+     * The method is synchronized in order to avoid closing mediaHandler when we are currently in
      * process of initializing, configuring and starting streams and anybody interested in
      * this operation can synchronize to the mediaHandler instance to wait processing to
      * stop (method setState in CallPeer).
@@ -1127,7 +1127,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         if (SendersEnum.responder == sender) {
             VideoCallActivity.setBackToChat(true);
         }
-        logger.warn("### Media modified, sender = " + sender + "; " + mediaType + " => " + target);
+        logger.warn("### Process media content for: sender = " + sender + "; " + mediaType + " => " + target);
+
         // cmeng - get transport candidate from session-accept may produce null as
         // <transport/> child element can contain zero candidates. No reliable, fixed with above
         // if (target == null)
@@ -1391,10 +1392,10 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     /**
      * Reinitialize all media contents.
      *
-     * @throws OperationFailedException if we fail to handle <tt>content</tt> for reasons like failing to initialize media
-     * devices or streams.
-     * @throws IllegalArgumentException if there's a problem with the syntax or the semantics of <tt>content</tt>. Method is
-     * synchronized in order to avoid closing mediaHandler when we are currently in process
+     * @throws OperationFailedException if we fail to handle <tt>content</tt> for reasons like failing
+     * to initialize media devices or streams.
+     * @throws IllegalArgumentException if there's a problem with the syntax or the semantics of <tt>content</tt>.
+     * Method is synchronized in order to avoid closing mediaHandler when we are currently in process
      * of initializing, configuring and starting streams and anybody interested in this
      * operation can synchronize to the mediaHandler instance to wait processing to stop (method setState in CallPeer).
      */

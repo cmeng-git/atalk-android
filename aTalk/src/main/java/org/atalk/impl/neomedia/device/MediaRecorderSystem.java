@@ -97,13 +97,12 @@ public class MediaRecorderSystem extends DeviceSystem
             return;
 
         Camera.CameraInfo cameraInfo = null;
-        List<CaptureDeviceInfo> captureDevices = new LinkedList<CaptureDeviceInfo>();
+        List<CaptureDeviceInfo> captureDevices = new LinkedList<>();
 
         for (int cameraId = 0; cameraId < cameraCount; cameraId++) {
             if (cameraInfo == null)
                 cameraInfo = new Camera.CameraInfo();
             Camera.getCameraInfo(cameraId, cameraInfo);
-
             String facing;
 
             switch (cameraInfo.facing) {
@@ -145,6 +144,9 @@ public class MediaRecorderSystem extends DeviceSystem
                             + CameraUtils.cameraSizesToString(supportedSizes));
                 }
                 if (supportedSizes != null) {
+                    // Keep a copy of the video resolution supportSizes for cameraId
+                    CameraUtils.setCameraSupportSize(cameraId, supportedSizes);
+
                     for (Dimension preferredSize : CameraUtils.PREFERRED_SIZES) {
                         for (Camera.Size supportedSize : supportedSizes) {
                             if ((preferredSize.height == supportedSize.height)

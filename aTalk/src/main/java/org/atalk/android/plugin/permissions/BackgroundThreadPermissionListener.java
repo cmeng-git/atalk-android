@@ -40,39 +40,19 @@ public class BackgroundThreadPermissionListener extends AppPermissionListener
     @Override
     public void onPermissionGranted(final PermissionGrantedResponse response)
     {
-        handler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                BackgroundThreadPermissionListener.super.onPermissionGranted(response);
-            }
-        });
+        handler.post(() -> BackgroundThreadPermissionListener.super.onPermissionGranted(response));
     }
 
     @Override
     public void onPermissionDenied(final PermissionDeniedResponse response)
     {
-        handler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                BackgroundThreadPermissionListener.super.onPermissionDenied(response);
-            }
-        });
+        handler.post(() -> BackgroundThreadPermissionListener.super.onPermissionDenied(response));
     }
 
     @Override
     public void onPermissionRationaleShouldBeShown(final PermissionRequest permission, final PermissionToken token)
     {
-        handler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                BackgroundThreadPermissionListener.super.onPermissionRationaleShouldBeShown(permission, token);
-            }
-        });
+        handler.post(()
+                -> BackgroundThreadPermissionListener.super.onPermissionRationaleShouldBeShown(permission, token));
     }
 }

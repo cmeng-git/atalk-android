@@ -198,31 +198,13 @@ public class TelephonyFragment extends OSGiFragment
     private void initButton(final View content)
     {
         final Button buttonAudio = content.findViewById(R.id.button_audio);
-        buttonAudio.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                onCallClicked(content, false);
-            }
-        });
+        buttonAudio.setOnClickListener(v -> onCallClicked(content, false));
 
         final Button buttonVideo = content.findViewById(R.id.button_video);
-        buttonVideo.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                onCallClicked(content, true);
-            }
-        });
+        buttonVideo.setOnClickListener(v -> onCallClicked(content, true));
 
         final Button buttonCancel = content.findViewById(R.id.button_cancel);
-        buttonCancel.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                closeFragment();
-            }
-        });
+        buttonCancel.setOnClickListener(v -> closeFragment());
     }
 
     /**

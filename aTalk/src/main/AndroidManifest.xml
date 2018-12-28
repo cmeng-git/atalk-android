@@ -1,49 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.atalk.android"
-          android:installLocation="internalOnly">
+    package="org.atalk.android"
+    android:installLocation="internalOnly">
 
     <!-- Tell the system this app requires OpenGL ES 2.0. -->
-    <uses-feature android:glEsVersion="0x00020000"
-        android:required="false"/>
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.microphone"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.wifi"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.location.gps"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.location.network"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.location"
-        android:required="false"/>
+        android:required="false" />
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name="org.atalk.android.aTalkApp"
@@ -53,31 +55,31 @@
         android:logo="@drawable/ic_notification"
         android:networkSecurityConfig="@xml/network_security_configuration"
         android:theme="@style/Theme.App">
-    <!--
-        android:vmSafeMode="true"
-        resolved issue in https://issuetracker.google.com/issues/64425255
-        but failed https://community.igniterealtime.org/message/266176#comment-266176
-     -->
+        <!--
+            android:vmSafeMode="true"
+            resolved issue in https://issuetracker.google.com/issues/64425255
+            but failed https://community.igniterealtime.org/message/266176#comment-266176
+         -->
 
-        <service android:name="org.atalk.service.osgi.OSGiService"/>
+        <service android:name="org.atalk.service.osgi.OSGiService" />
         <service
             android:name="org.atalk.android.gui.account.AccountAuthenticatorService"
             android:exported="true"
             android:process=":auth">
             <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator"/>
+                <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
 
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator"/>
+                android:resource="@xml/authenticator" />
         </service>
         <service
             android:name="org.atalk.impl.androidupdate.OnlineUpdateService"
-            android:enabled="true"/>
+            android:enabled="true" />
         <service
             android:name="org.atalk.android.plugin.audioservice.AudioBgService"
-            android:exported="false"/>
+            android:exported="false" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -86,7 +88,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
 
         <activity
@@ -94,18 +96,17 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/APPLICATION_NAME"
             android:launchMode="singleTask"
-			android:theme="@style/Theme.App.NoActionBar">
+            android:theme="@style/Theme.App.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="org.atalk.android.gui.ShutdownActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/APPLICATION_NAME"
-            android:launchMode="singleTask">
-        </activity>
+            android:launchMode="singleTask" />
         <activity
             android:name="org.atalk.android.gui.aTalk"
             android:label="@string/APPLICATION_NAME"
@@ -113,10 +114,10 @@
 
             <!-- android:uiOptions="splitActionBarWhenNarrow" -->
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
-                <action android:name="org.atalk.show_contacts"/>
+                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="org.atalk.show_contacts" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <!--
@@ -126,116 +127,106 @@
             -->
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name="org.atalk.android.plugin.permissions.PermissionsActivity"
             android:label="@string/APPLICATION_NAME"
-            android:theme="@style/Theme.App.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.App.NoActionBar" />
 
         <!-- Account settings and sub-menu-->
         <activity
             android:name="org.atalk.android.gui.account.AccountsListActivity"
             android:label="@string/APPLICATION_NAME"
-            android:parentActivityName="org.atalk.android.gui.aTalk">
-        </activity>
+            android:parentActivityName="org.atalk.android.gui.aTalk" />
         <activity
             android:name="org.atalk.android.gui.account.AccountInfoPresenceActivity"
             android:label="@string/plugin_accountinfo_TITLE"
-            android:parentActivityName="org.atalk.android.gui.account.AccountsListActivity">
-        </activity>
+            android:parentActivityName="org.atalk.android.gui.account.AccountsListActivity" />
         <activity
             android:name="org.atalk.android.gui.account.AccountLoginActivity"
-            android:label="@string/APPLICATION_NAME">
-        </activity>
+            android:label="@string/APPLICATION_NAME" />
         <activity
             android:name="org.atalk.android.plugin.geolocation.GeoLocation"
-            android:label="@string/APPLICATION_NAME">
-        </activity>
+            android:label="@string/APPLICATION_NAME" />
         <activity
             android:name="org.atalk.android.gui.contactlist.AddContactActivity"
-            android:label="@string/APPLICATION_NAME"/>
+            android:label="@string/APPLICATION_NAME" />
         <activity
             android:name="org.atalk.android.gui.contactlist.ContactInfoActivity"
-            android:label="@string/plugin_connectioninfo_TITLE">
-        </activity>
+            android:label="@string/plugin_connectioninfo_TITLE" />
         <!-- Dialog Activity -->
         <activity
             android:name="org.atalk.android.gui.dialogs.DialogActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@android:style/Theme.Holo.Dialog.MinWidth"/>
+            android:theme="@android:style/Theme.Holo.Dialog.MinWidth" />
 
         <!-- Verify Certificate Activity -->
         <activity
             android:name="org.atalk.impl.androidcertdialog.VerifyCertificateActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@android:style/Theme.Holo.Dialog.MinWidth"/>
+            android:theme="@android:style/Theme.Holo.Dialog.MinWidth" />
         <!-- Authorization requested dialog -->
         <activity
             android:name="org.atalk.android.gui.authorization.AuthorizationRequestedDialog"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/service_gui_AUTHORIZATION_REQUEST"
-            android:theme="@android:style/Theme.Holo.Dialog.MinWidth"/>
+            android:theme="@android:style/Theme.Holo.Dialog.MinWidth" />
         <!-- Authentication window service Activity -->
         <activity
             android:name="org.atalk.impl.androidauthwindow.AuthWindowActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@android:style/Theme.Holo.Dialog.MinWidth"/>
+            android:theme="@android:style/Theme.Holo.Dialog.MinWidth" />
         <!-- Request authorization dialog -->
         <activity
             android:name="org.atalk.android.gui.authorization.RequestAuthorizationDialog"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/service_gui_REQUEST_AUTHORIZATION"
-            android:theme="@android:style/Theme.Holo.Dialog.MinWidth"/>
+            android:theme="@android:style/Theme.Holo.Dialog.MinWidth" />
         <activity
             android:name="org.atalk.android.gui.call.CallContactActivity"
             android:icon="@drawable/ic_notification"
             android:label="@string/APPLICATION_NAME"
             android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.CALL"/>
-                <action android:name="android.intent.action.CALL_PRIVILEGED"/>
+                <action android:name="android.intent.action.CALL" />
+                <action android:name="android.intent.action.CALL_PRIVILEGED" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:scheme="tel"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="tel" />
             </intent-filter>
         </activity>
         <activity
             android:name="org.atalk.android.gui.call.VideoCallActivity"
             android:hardwareAccelerated="true"
-            android:label="@string/APPLICATION_NAME">
-            <!-- android:screenOrientation="landscape" -->
-        </activity>
+            android:label="@string/APPLICATION_NAME" />
         <activity
             android:name="org.atalk.android.gui.call.ReceivedCallActivity"
-            android:label="@string/APPLICATION_NAME">
-        </activity>
+            android:label="@string/APPLICATION_NAME" />
         <activity
             android:name="org.atalk.android.gui.chat.ChatActivity"
             android:label="@string/APPLICATION_NAME"
-            android:launchMode="singleTask">
-        </activity>
+            android:launchMode="singleTask" />
 
         <!-- OMEMO activities -->
         <activity
             android:name="org.atalk.crypto.omemo.OmemoAuthenticateDialog"
             android:label="@string/APPLICATION_NAME"
-            android:theme="@android:style/Theme.Holo.Dialog.MinWidth"/>
+            android:theme="@android:style/Theme.Holo.Dialog.MinWidth" />
         <activity
             android:name="org.atalk.crypto.omemo.OmemoRegenerateDialog"
             android:label="@string/service_gui_settings_OMEMO_REGENERATE_TITLE">
             <intent-filter>
-                <action android:name=".crypto.omemo.OmemoRegenerateDialog"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".crypto.omemo.OmemoRegenerateDialog" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name="org.atalk.crypto.omemo.OmemoDeviceDeleteDialog"
             android:label="@string/service_gui_settings_OMEMO_PURGE_DEVICE_TITLE">
             <intent-filter>
-                <action android:name=".crypto.omemo.OmemoDeviceDeleteDialog"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".crypto.omemo.OmemoDeviceDeleteDialog" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -244,16 +235,16 @@
             android:name="org.atalk.crypto.CryptoPrivateKeys"
             android:label="@string/service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">
             <intent-filter>
-                <action android:name=".crypto.CryptoPrivateKeys"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".crypto.CryptoPrivateKeys" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name="org.atalk.crypto.CryptoDeviceFingerPrints"
             android:label="@string/service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">
             <intent-filter>
-                <action android:name=".crypto.CryptoDeviceFingerPrints"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".crypto.CryptoDeviceFingerPrints" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -261,27 +252,26 @@
         <activity
             android:name="org.atalk.crypto.otr.OtrAuthenticateDialog"
             android:label="@string/APPLICATION_NAME"
-            android:theme="@android:style/Theme.Holo.Dialog.MinWidth"/>
+            android:theme="@android:style/Theme.Holo.Dialog.MinWidth" />
 
         <activity
             android:name="org.atalk.android.gui.chat.aTalkProtocolReceiver"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <data android:scheme="atalk"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="atalk" />
             </intent-filter>
         </activity>
         <activity
             android:name="org.atalk.android.gui.settings.SettingsActivity"
-            android:label="@string/APPLICATION_NAME">
-        </activity>
+            android:label="@string/APPLICATION_NAME" />
         <activity
             android:name="org.atalk.android.gui.settings.EncodingSettings"
             android:label="@string/APPLICATION_NAME">
             <intent-filter>
-                <action android:name=".android.gui.settings.EncodingSettings"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".android.gui.settings.EncodingSettings" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <!-- MediaCodec list -->
@@ -289,8 +279,8 @@
             android:name="org.atalk.android.gui.settings.MediaCodecList"
             android:label="@string/APPLICATION_NAME">
             <intent-filter>
-                <action android:name=".android.gui.settings.MediaCodecList"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".android.gui.settings.MediaCodecList" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -299,24 +289,24 @@
             android:name="org.atalk.android.gui.settings.ChatSecuritySettings"
             android:label="@string/service_gui_settings_MESSAGING_SECURITY_TITLE">
             <intent-filter>
-                <action android:name=".android.gui.settings.ChatSecuritySettings"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".android.gui.settings.ChatSecuritySettings" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name="org.atalk.impl.androidcertdialog.CertificateDeleteDialog"
             android:label="@string/pref_remove_trusted_certificates_title">
             <intent-filter>
-                <action android:name=".impl.androidcertdialog.CertificateDeleteDialog"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".impl.androidcertdialog.CertificateDeleteDialog" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name="org.atalk.impl.androidcertdialog.ConnectionInfo"
             android:label="@string/service_gui_settings_SSL_CERTIFICATE_MANAGER">
             <intent-filter>
-                <action android:name=".impl.androidcertdialog.ConnectionInfo"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".impl.androidcertdialog.ConnectionInfo" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -334,50 +324,48 @@
             android:name="org.atalk.android.gui.settings.notification.NotificationSettings"
             android:label="@string/service_gui_settings_EVENTS_TITLE">
             <intent-filter>
-                <action android:name=".android.gui.settings.notification.NotificationsSettings"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".android.gui.settings.notification.NotificationsSettings" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="org.atalk.android.gui.settings.notification.NotificationDetails">
-        </activity>
+        <activity android:name="org.atalk.android.gui.settings.notification.NotificationDetails" />
         <!-- Basic settings -->
         <activity
             android:name="org.atalk.android.gui.settings.BasicSettingsActivity"
-            android:label="@string/APPLICATION_NAME">
-        </activity>
+            android:label="@string/APPLICATION_NAME" />
         <!-- Opus settings -->
         <activity-alias
             android:name=".android.gui.settings.OpusSettings"
             android:targetActivity="org.atalk.android.gui.settings.BasicSettingsActivity">
             <intent-filter>
-                <action android:name=".android.gui.settings.OpusSettings"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".android.gui.settings.OpusSettings" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <meta-data
                 android:name="android.preference"
-                android:resource="@xml/opus_preferences"/>
+                android:resource="@xml/opus_preferences" />
         </activity-alias>
         <!-- Silk settings -->
         <activity-alias
             android:name=".android.gui.settings.SilkSettings"
             android:targetActivity="org.atalk.android.gui.settings.BasicSettingsActivity">
             <intent-filter>
-                <action android:name=".android.gui.settings.SilkSettings"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".android.gui.settings.SilkSettings" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <meta-data
                 android:name="android.preference"
-                android:resource="@xml/silk_preferences"/>
+                android:resource="@xml/silk_preferences" />
         </activity-alias>
         <!-- Sip settings -->
         <activity
             android:name="org.atalk.android.gui.settings.SipSettings"
             android:label="@string/APPLICATION_NAME">
             <intent-filter>
-                <action android:name=".android.gui.settings.SipSettings"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".android.gui.settings.SipSettings" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <!-- Dns settings -->
@@ -385,57 +373,65 @@
             android:name="org.atalk.android.gui.settings.DnsSettings"
             android:label="@string/service_gui_settings_DNS">
             <intent-filter>
-                <action android:name=".android.gui.settings.DnsSettings"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".android.gui.settings.DnsSettings" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <meta-data
                 android:name="android.preference"
-                android:resource="@xml/dns_preferences"/>
+                android:resource="@xml/dns_preferences" />
         </activity>
         <!-- Provisioning settings -->
         <activity
             android:name="org.atalk.android.gui.settings.ProvisioningSettings"
             android:label="@string/APPLICATION_NAME">
             <intent-filter>
-                <action android:name=".android.gui.settings.ProvisioningSettings"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name=".android.gui.settings.ProvisioningSettings" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-		<!-- Do not define android:parentActivityName for the following 4 preference activities;
-		  the actual preference menus shown are fragments, then will have problem if defined.
-		  Override to execute onBackKeyPress for Up navigator -->
+        <!-- Do not define android:parentActivityName for the following 4 preference activities;
+          the actual preference menus shown are fragments, then will have problem if defined.
+          Override to execute onBackKeyPress for Up navigator -->
         <activity
             android:name="org.atalk.android.gui.account.settings.AccountPreferenceActivity"
-            android:label="@string/APPLICATION_NAME">
-        </activity>
+            android:label="@string/APPLICATION_NAME" />
         <activity
             android:name="org.atalk.android.gui.account.settings.SecurityActivity"
-            android:label="@string/APPLICATION_NAME">
-        </activity>
+            android:label="@string/APPLICATION_NAME" />
         <activity
             android:name="org.atalk.android.gui.account.settings.ServerListActivity"
-            android:label="@string/APPLICATION_NAME">
-        </activity>
+            android:label="@string/APPLICATION_NAME" />
         <activity
             android:name="org.atalk.android.gui.account.settings.MediaEncodingActivity"
-            android:label="@string/APPLICATION_NAME">
-        </activity>
+            android:label="@string/APPLICATION_NAME" />
 
         <activity
             android:name="org.atalk.android.plugin.geolocation.SplitStreetViewPanoramaAndMapActivity"
-            android:label="@string/split_street_view_panorama_and_map_label"/>
+            android:label="@string/split_street_view_panorama_and_map_label" />
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-    <activity
-        android:name="org.atalk.android.gui.About"
-        android:label="@string/About_action"
-        android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name="org.atalk.android.gui.About"
+            android:label="@string/About_action"
+            android:theme="@android:style/Theme.Dialog" />
+
+        <receiver
+            android:name="org.atalk.service.EventReceiver"
+            android:enabled="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -75,18 +75,13 @@ public abstract class ViewDependentProvider<T>
 	protected void ensureViewCreated()
 	{
 		if (view == null) {
-			activity.runOnUiThread(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					view = createViewInstance();
-					ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-						ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-					container.addView(view, params);
-					container.setVisibility(View.VISIBLE);
-				}
-			});
+			activity.runOnUiThread(() -> {
+                view = createViewInstance();
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                container.addView(view, params);
+                container.setVisibility(View.VISIBLE);
+            });
 		}
 	}
 
@@ -106,15 +101,10 @@ public abstract class ViewDependentProvider<T>
 			final View viewToRemove = view;
 			view = null;
 
-			activity.runOnUiThread(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					container.removeView(viewToRemove);
-					container.setVisibility(View.GONE);
-				}
-			});
+			activity.runOnUiThread(() -> {
+                container.removeView(viewToRemove);
+                container.setVisibility(View.GONE);
+            });
 		}
 	}
 

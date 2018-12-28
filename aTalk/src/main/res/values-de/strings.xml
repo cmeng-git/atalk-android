@@ -926,7 +926,7 @@
     <string name="service_gui_settings_PROXY">Globaler Proxy</string>
     <string name="service_gui_settings_PROXY_SUMMARY">Proxy-Einstellungen konfigurieren&#8230;</string>
     <string name="plugin_globalproxy_PROXY_ADDRESS">Proxyserver</string>
-    <string name="plugin_globalproxy_PROXY_PASSWORD">Proxy-Passwort</string>not in
+    <string name="plugin_globalproxy_PROXY_PASSWORD">Proxy-Passwort</string>
     <string name="plugin_globalproxy_PROXY_PORT">Proxy-Port</string>
     <string name="plugin_globalproxy_PROXY_TYPE">Proxy-Typ</string>
     <string name="plugin_globalproxy_PROXY_USERNAME">Proxy-Benutzername</string>
@@ -1231,10 +1231,14 @@
     <string name="service_gui_settings_EVENTS_TITLE">Ereignisse</string>
 
     <!-- aTalk icon -->
-    <string name="pref_key_show_jitsi_icon">org.atalk.android.show_icon</string>
     <string name="service_gui_settings_SHOW_ICON">Zeigt das aTalk-Symbol</string>an
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_OFF">aTalk-aktiv Symbol in den Benachrichtigung ausblenden</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">aTalk-aktiv Symbol in den Benachrichtigungen einschalten</string>an
+
+    <!-- aTalk auto start -->
+    <string name="service_gui_settings_AUTO_START">Autostart aTalk beim Neustart</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_DISABLE">Deaktivieren Sie beim nächsten Neustart einen automatischen Start von Talk</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_ENABLE">Aktivieren Sie beim nächsten Neustart einen automatischen Start von Talk</string>
 
     <!-- Locale -->
     <string name="service_gui_settings_LOCALE">Sprache</string>
@@ -1300,7 +1304,6 @@
     <string name="service_gui_settings_VIDEO_CODECS_SUMMARY">Prioritäten für Video-Codecs</string>
     <string name="service_gui_settings_VIDEO_CODECS_TITLE">Videocodecs</string>
     <!-- Video resolution -->
-    <string name="service_gui_settings_AUTO_RESOLUTION">Auto</string>
     <string name="service_gui_settings_VIDEO_RESOLUTION">Videoauflösung</string>
     <!-- Frame rate -->
     <string name="service_gui_settings_LIMIT_FPS_OFF">Unbegrenzt</string>

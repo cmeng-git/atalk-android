@@ -144,33 +144,19 @@ public class InvitationReceivedDialog extends Dialog
         reasonTextArea = this.findViewById(R.id.rejectReasonTextArea);
 
         Button mAcceptButton = this.findViewById(R.id.button_Accept);
-        mAcceptButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                dismiss();
-                onAcceptClicked();
-            }
+        mAcceptButton.setOnClickListener(v -> {
+            dismiss();
+            onAcceptClicked();
         });
 
         Button mRejectButton = this.findViewById(R.id.button_Reject);
-        mRejectButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                dismiss();
-                onRejectClicked();
-            }
+        mRejectButton.setOnClickListener(v -> {
+            dismiss();
+            onRejectClicked();
         });
 
         Button mIgnoreButton = this.findViewById(R.id.button_Ignore);
-        mIgnoreButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                dismiss();
-            }
-        });
+        mIgnoreButton.setOnClickListener(v -> dismiss());
     }
 
     /**

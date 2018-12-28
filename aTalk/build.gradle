@@ -50,10 +50,15 @@ android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
 
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1063
-        versionName "1.6.3" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1064
+        versionName "1.6.4" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -142,12 +147,6 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'LICENSE.txt'
     }
-
-//    Some libraries e.g. fmj.jar not compatible with 1.8
-//    compileOptions {
-//        sourceCompatibility = '1.8'
-//        targetCompatibility = '1.8'
-//    }
 }
 
 ext {
@@ -288,10 +287,14 @@ task jarRepackage(type: Copy, description: 'Repackage jar to avoid conflict') {
             zipfileset(src: 'lib/bundles/fmj-1.0-20170519.163031-24.jar')
             rule pattern: 'java.awt.**',
                     result: 'org.atalk.android.util.java.awt.@1'
+            rule pattern: 'java.beans.**',
+                    result: 'org.atalk.android.util.java.beans.@1'
             rule pattern: 'javax.swing.**',
                     result: 'org.atalk.android.util.javax.swing.@1'
             rule pattern: 'javax.sound.**',
                     result: 'org.atalk.android.util.javax.sound.@1'
+            rule pattern: 'javax.imageio.**',
+                    result: 'org.atalk.android.util.javax.imageio.@1'
             // remove extracted modules for changes
             zap pattern: 'net.sf.fmj.media.RegistryDefaults'
             zap pattern: 'javax.media.format.VideoFormat'

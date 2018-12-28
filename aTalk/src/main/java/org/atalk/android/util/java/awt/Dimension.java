@@ -75,7 +75,7 @@ public class Dimension extends Dimension2D implements Serializable
 
 	public String toString()
 	{
-		return super.getClass().getName() + "[width=" + this.width + ",height=" + this.height + "]";
+		return "[width=" + this.width + ", height=" + this.height + "]";
 	}
 
 	static {

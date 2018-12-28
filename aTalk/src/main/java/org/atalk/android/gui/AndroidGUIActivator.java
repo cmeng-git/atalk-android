@@ -132,13 +132,7 @@ public class AndroidGUIActivator implements BundleActivator
         if (accountManager != null) {
             Collection<AccountID> storedAccounts = accountManager.getStoredAccounts();
             if (storedAccounts != null && storedAccounts.size() > 0) {
-                new Thread(new Runnable()
-                {
-                    public void run()
-                    {
-                        loginManager.runLogin();
-                    }
-                }).start();
+                new Thread(() -> loginManager.runLogin()).start();
             }
         }
 

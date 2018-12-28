@@ -81,13 +81,7 @@ class CtrlNotificationThread
      */
     public void start()
     {
-        this.thread = new Thread(new Runnable()
-        {
-            public void run()
-            {
-                notificationLoop();
-            }
-        });
+        this.thread = new Thread(() -> notificationLoop());
         thread.start();
     }
 

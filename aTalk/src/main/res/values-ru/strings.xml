@@ -287,7 +287,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Создать видеомост</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Создать/Присоединиться к видеоконференции</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Создать новую видеоконференцию для этого чата</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Камера не может поддерживать выбранное разрешение видео в портретном режиме. Поместите телефон в альбомную ориентацию для видеовызова:\n[width=%1$s; высота=%2$s]</string>
+    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Не удалось установить предварительный просмотр камеры устройства на: %1$s; Исключение: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Отключено</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Отключение %1$s</string>
     <string name="service_gui_DENY">Запретить</string>
@@ -1251,10 +1251,14 @@
     <string name="service_gui_settings_EVENTS_TITLE">События</string>
 
     <!-- aTalk icon -->
-    <string name="pref_key_show_jitsi_icon">org.atalk.android.show_icon</string>
     <string name="service_gui_settings_SHOW_ICON">Показать значок aTalk</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_OFF">Скрыть активный индикатор aTalk в уведомлении</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">Показать активный индикатор aTalk в уведомлении</string>
+
+    <!-- aTalk auto start -->
+    <string name="service_gui_settings_AUTO_START">Автозапуск aTalk при перезагрузке</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_DISABLE">Отключить автоматический запуск aTalk при следующей перезагрузке</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_ENABLE">Включить автоматический запуск aTalk при следующей перезагрузке</string>
 
     <!-- Locale -->
     <string name="service_gui_settings_LOCALE">Язык</string>
@@ -1320,7 +1324,6 @@
     <string name="service_gui_settings_VIDEO_CODECS_SUMMARY">Выбрать и определить приоритет для видеокодеков</string>
     <string name="service_gui_settings_VIDEO_CODECS_TITLE">Видеокодеки</string>
     <!-- Video resolution -->
-    <string name="service_gui_settings_AUTO_RESOLUTION">Авто</string>
     <string name="service_gui_settings_VIDEO_RESOLUTION">Разрешение видео</string>
     <!-- Frame rate -->
     <string name="service_gui_settings_LIMIT_FPS_OFF">Неограниченный</string>

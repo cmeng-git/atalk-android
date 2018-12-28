@@ -952,13 +952,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     private static void showPreview(final JComponent previewContainer, final Component preview, final Player player)
     {
         if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(new Runnable()
-            {
-                public void run()
-                {
-                    showPreview(previewContainer, preview, player);
-                }
-            });
+            SwingUtilities.invokeLater(() -> showPreview(previewContainer, preview, player));
             return;
         }
 
@@ -987,14 +981,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     {
         // launch disposing preview player in separate thread will lock renderer and can produce
         // lock if user has quickly requested preview component and can lock ui thread
-        new Thread(new Runnable()
-        {
-            public void run()
-            {
-                player.stop();
-                player.deallocate();
-                player.close();
-            }
+        new Thread(() -> {
+            player.stop();
+            player.deallocate();
+            player.close();
         }).start();
     }
 

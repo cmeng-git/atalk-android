@@ -237,21 +237,16 @@ public class QueryChatRoomListAdapter extends BaseChatRoomListAdapter
 				return;
 			}
 
-			uiHandler.post(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					if (!queries.contains(query)) {
-						logger.warn("Received event for cancelled query: " + query);
-						return;
-					}
+			uiHandler.post(() -> {
+                if (!queries.contains(query)) {
+                    logger.warn("Received event for cancelled query: " + query);
+                    return;
+                }
 
-					results.add(resultGroup);
-					notifyDataSetChanged();
-					expandAllGroups();
-				}
-			});
+                results.add(resultGroup);
+                notifyDataSetChanged();
+                expandAllGroups();
+            });
 		}
 	}
 

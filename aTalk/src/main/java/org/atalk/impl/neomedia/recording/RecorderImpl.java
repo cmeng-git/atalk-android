@@ -279,7 +279,7 @@ public class RecorderImpl implements Recorder
 	public void stop()
 	{
 		if (deviceSession != null) {
-			deviceSession.close();
+			deviceSession.close(MediaDirection.SENDRECV);
 			deviceSession = null;
 		}
 

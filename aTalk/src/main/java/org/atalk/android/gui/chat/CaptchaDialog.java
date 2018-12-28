@@ -144,38 +144,19 @@ public class CaptchaDialog extends Dialog
     private void initializeViewListeners()
     {
         mImageView.setOnClickListener(
-                new ImageView.OnClickListener()
-                {
-                    public void onClick(View v)
-                    {
-                        mCaptchaText.requestFocus();
-                    }
-                });
+                v -> mCaptchaText.requestFocus()
+        );
 
-        mAcceptButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                onAcceptClicked();
-                showResult();
-            }
+        mAcceptButton.setOnClickListener(v -> {
+            onAcceptClicked();
+            showResult();
         });
 
-        mOKButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                closeDialog();
-            }
-        });
+        mOKButton.setOnClickListener(v -> closeDialog());
 
-        mCancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                callBack.onResult(cancel);
-                closeDialog();
-            }
+        mCancelButton.setOnClickListener(v -> {
+            callBack.onResult(cancel);
+            closeDialog();
         });
     }
 
