@@ -293,22 +293,17 @@ public class PortAudioSystem extends AudioSystem2
 		setPlaybackDevices(playbackDevices);
 
 		if (devicesChangedCallback == null) {
-			devicesChangedCallback = new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					try {
-						reinitialize();
-					}
-					catch (Throwable t) {
-						if (t instanceof ThreadDeath)
-							throw (ThreadDeath) t;
+			devicesChangedCallback = () -> {
+                try {
+                    reinitialize();
+                }
+                catch (Throwable t) {
+                    if (t instanceof ThreadDeath)
+                        throw (ThreadDeath) t;
 
-						logger.warn("Failed to reinitialize PortAudio devices", t);
-					}
-				}
-			};
+                    logger.warn("Failed to reinitialize PortAudio devices", t);
+                }
+            };
 			Pa.setDevicesChangedCallback(devicesChangedCallback);
 		}
 	}

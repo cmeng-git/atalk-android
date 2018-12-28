@@ -540,16 +540,11 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactRenamed(final MetaContactRenamedEvent evt)
     {
-        uiHandler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (logger.isDebugEnabled())
-                    logger.debug("CONTACT RENAMED: " + evt.getSourceMetaContact());
+        uiHandler.post(() -> {
+            if (logger.isDebugEnabled())
+                logger.debug("CONTACT RENAMED: " + evt.getSourceMetaContact());
 
-                updateDisplayName(evt.getSourceMetaContact());
-            }
+            updateDisplayName(evt.getSourceMetaContact());
         });
     }
 
@@ -560,16 +555,11 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void protoContactAdded(final ProtoContactEvent evt)
     {
-        uiHandler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (logger.isDebugEnabled())
-                    logger.debug("PROTO CONTACT ADDED: " + evt.getNewParent());
+        uiHandler.post(() -> {
+            if (logger.isDebugEnabled())
+                logger.debug("PROTO CONTACT ADDED: " + evt.getNewParent());
 
-                updateStatus(evt.getNewParent());
-            }
+            updateStatus(evt.getNewParent());
         });
     }
 
@@ -607,16 +597,11 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void protoContactRemoved(final ProtoContactEvent evt)
     {
-        uiHandler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (logger.isDebugEnabled())
-                    logger.debug("PROTO CONTACT REMOVED: " + evt.getProtoContact().getAddress());
+        uiHandler.post(() -> {
+            if (logger.isDebugEnabled())
+                logger.debug("PROTO CONTACT REMOVED: " + evt.getProtoContact().getAddress());
 
-                updateStatus(evt.getOldParent());
-            }
+            updateStatus(evt.getOldParent());
         });
     }
 
@@ -627,17 +612,12 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void protoContactMoved(final ProtoContactEvent evt)
     {
-        uiHandler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (logger.isDebugEnabled())
-                    logger.debug("PROTO CONTACT MOVED: " + evt.getProtoContact().getAddress());
+        uiHandler.post(() -> {
+            if (logger.isDebugEnabled())
+                logger.debug("PROTO CONTACT MOVED: " + evt.getProtoContact().getAddress());
 
-                updateStatus(evt.getOldParent());
-                updateStatus(evt.getNewParent());
-            }
+            updateStatus(evt.getOldParent());
+            updateStatus(evt.getNewParent());
         });
     }
 
@@ -732,16 +712,11 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactAvatarUpdated(final MetaContactAvatarUpdateEvent evt)
     {
-        uiHandler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (logger.isDebugEnabled())
-                    logger.debug("META CONTACT AVATAR UPDATED: " + evt.getSourceMetaContact());
+        uiHandler.post(() -> {
+            if (logger.isDebugEnabled())
+                logger.debug("META CONTACT AVATAR UPDATED: " + evt.getSourceMetaContact());
 
-                updateAvatar(evt.getSourceMetaContact());
-            }
+            updateAvatar(evt.getSourceMetaContact());
         });
     }
 
@@ -931,25 +906,20 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     @Override
     public void contactPresenceStatusChanged(final ContactPresenceStatusChangeEvent event)
     {
-        uiHandler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Contact sourceContact = event.getSourceContact();
+        uiHandler.post(() -> {
+            Contact sourceContact = event.getSourceContact();
 
-                if (logger.isDebugEnabled())
-                    logger.debug("Contact presence status changed: " + sourceContact.getAddress());
+            if (logger.isDebugEnabled())
+                logger.debug("Contact presence status changed: " + sourceContact.getAddress());
 
-                MetaContact metaContact
-                        = contactListService.findMetaContactByContact(sourceContact);
-                // metaContact is already existing, just update it
-                if (metaContact != null) {
-                    if (mDialogMode || presenceFilter.isShowOffline())
-                        updateStatus(metaContact);
-                    else
-                        filterData("");
-                }
+            MetaContact metaContact
+                    = contactListService.findMetaContactByContact(sourceContact);
+            // metaContact is already existing, just update it
+            if (metaContact != null) {
+                if (mDialogMode || presenceFilter.isShowOffline())
+                    updateStatus(metaContact);
+                else
+                    filterData("");
             }
         });
     }
@@ -1031,14 +1001,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     private void uiChangeUpdate()
     {
-        uiHandler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                notifyDataSetChanged();
-            }
-        });
+        uiHandler.post(() -> notifyDataSetChanged());
     }
 
 //	/**

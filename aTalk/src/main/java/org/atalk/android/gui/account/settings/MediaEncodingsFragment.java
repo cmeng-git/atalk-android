@@ -258,12 +258,7 @@ public class MediaEncodingsFragment extends Fragment implements TouchInterceptor
 		 */
 		public void invalidate()
 		{
-			getActivity().runOnUiThread(new Runnable() {
-				public void run()
-				{
-					notifyDataSetChanged();
-				}
-			});
+			getActivity().runOnUiThread(() -> notifyDataSetChanged());
 		}
 
 		public int getCount()

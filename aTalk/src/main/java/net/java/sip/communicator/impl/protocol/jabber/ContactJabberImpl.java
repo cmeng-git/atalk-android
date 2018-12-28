@@ -122,7 +122,7 @@ public class ContactJabberImpl extends AbstractContact
     {
         // rosterEntry can be null when creating volatile contact
         if (rosterEntry != null) {
-            // always return BareJid from RosterEntry
+            // RosterEntry contains only BareJid
             contactJid = rosterEntry.getJid();
             this.serverDisplayName = rosterEntry.getName();
         }
@@ -161,7 +161,7 @@ public class ContactJabberImpl extends AbstractContact
      */
     public String getAddress()
     {
-        if (isResolved || (contactJid != null))
+        if (isResolved && (contactJid != null))
             return contactJid.toString();
         else
             return tempId.toString();
@@ -175,7 +175,7 @@ public class ContactJabberImpl extends AbstractContact
      */
     public Jid getJid()
     {
-        if (isResolved || (contactJid != null))
+        if (isResolved && (contactJid != null))
             return contactJid;
         else {
             return tempId;

@@ -23,7 +23,7 @@ import org.atalk.android.aTalkApp;
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
- * @see {@link ServerListActivity}
+ * See {@link ServerListActivity}
  */
 public class StunServerAdapter extends ServerItemAdapter
 {

@@ -78,13 +78,7 @@ public class ChatRoomInfoFragment extends OSGiFragment
         mContent = inflater.inflate(R.layout.chatroom_info, container, false);
 
         final Button buttonOk = mContent.findViewById(R.id.button_ok);
-        buttonOk.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                closeFragment();
-            }
-        });
+        buttonOk.setOnClickListener(v -> closeFragment());
 
         new getRoomInfo().execute();
         return mContent;

@@ -114,25 +114,21 @@ public class ConferenceChatManager
         final ChatRoomInvitation invitation = evt.getInvitation();
 
         // Event thread - Must execute in UiThread for dialog
-        new Handler(Looper.getMainLooper()).post(new Runnable()
-        {
-            public void run()
-            {
-                Activity activity = aTalkApp.getCurrentActivity();
-                if (activity != null) {
-                    InvitationReceivedDialog dialog
-                            = new InvitationReceivedDialog(activity, multiUserChatManager, multiUserChatOpSet, invitation);
-                    dialog.show();
-                }
-                else {
-                    // cmeng - auto accept and join room if aTalk is minimized. Set setCurrentChatId to null
-                    // so incomingMessage pop-message is active
-                    try {
-                        invitation.getTargetChatRoom().join();
-                        ChatSessionManager.setCurrentChatId(null);
-                    } catch (OperationFailedException e) {
-                        e.printStackTrace();
-                    }
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Activity activity = aTalkApp.getCurrentActivity();
+            if (activity != null) {
+                InvitationReceivedDialog dialog
+                        = new InvitationReceivedDialog(activity, multiUserChatManager, multiUserChatOpSet, invitation);
+                dialog.show();
+            }
+            else {
+                // cmeng - auto accept and join room if aTalk is minimized. Set setCurrentChatId to null
+                // so incomingMessage pop-message is active
+                try {
+                    invitation.getTargetChatRoom().join();
+                    ChatSessionManager.setCurrentChatId(null);
+                } catch (OperationFailedException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -866,14 +862,10 @@ public class ConferenceChatManager
         final AdHocChatRoomInvitation invitationAdHoc = evt.getInvitation();
 
         // Event thread - Must execute in UiThread for dialog
-        new Handler(Looper.getMainLooper()).post(new Runnable()
-        {
-            public void run()
-            {
-                InvitationReceivedDialog dialog = new InvitationReceivedDialog(
-                        getCurrentActivity(), multiUserChatManager, multiUserChatOpSet, invitationAdHoc);
-                dialog.show();
-            }
+        new Handler(Looper.getMainLooper()).post(() -> {
+            InvitationReceivedDialog dialog = new InvitationReceivedDialog(
+                    getCurrentActivity(), multiUserChatManager, multiUserChatOpSet, invitationAdHoc);
+            dialog.show();
         });
     }
 

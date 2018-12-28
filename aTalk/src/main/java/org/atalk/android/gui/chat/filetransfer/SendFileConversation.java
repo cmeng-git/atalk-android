@@ -85,13 +85,9 @@ public class SendFileConversation extends FileTransferConversation implements Fi
 
         messageViewHolder.cancelButton.setVisibility(View.VISIBLE);
         messageViewHolder.retryButton.setVisibility(View.GONE);
-        messageViewHolder.retryButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                messageViewHolder.retryButton.setVisibility(View.GONE);
-                mChatFragment.new SendFile(mXferFile, SendFileConversation.this, msgId, mStickMode).execute();
-            }
+        messageViewHolder.retryButton.setOnClickListener(v -> {
+            messageViewHolder.retryButton.setVisibility(View.GONE);
+            mChatFragment.new SendFile(mXferFile, SendFileConversation.this, msgId, mStickMode).execute();
         });
 
 		/* Must track file transfer status as Android will request view redraw on listView
@@ -166,20 +162,15 @@ public class SendFileConversation extends FileTransferConversation implements Fi
         setXferStatus(status);
 
         // Must execute in UiThread to Update UI information
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                updateView(status);
-                if (status == FileTransferStatusChangeEvent.COMPLETED
-                        || status == FileTransferStatusChangeEvent.CANCELED
-                        || status == FileTransferStatusChangeEvent.FAILED
-                        || status == FileTransferStatusChangeEvent.REFUSED) {
-                    // must do this in UI, otherwise the status is not being updated to FileRecord
-                    fileTransfer.removeStatusListener(SendFileConversation.this);
-                    // removeProgressListener();
-                }
+        runOnUiThread(() -> {
+            updateView(status);
+            if (status == FileTransferStatusChangeEvent.COMPLETED
+                    || status == FileTransferStatusChangeEvent.CANCELED
+                    || status == FileTransferStatusChangeEvent.FAILED
+                    || status == FileTransferStatusChangeEvent.REFUSED) {
+                // must do this in UI, otherwise the status is not being updated to FileRecord
+                fileTransfer.removeStatusListener(SendFileConversation.this);
+                // removeProgressListener();
             }
         });
     }

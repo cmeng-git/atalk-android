@@ -10,8 +10,7 @@ import android.content.*;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.*;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,7 +51,8 @@ import java.util.Iterator;
  */
 public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer, CallRenderer,
         CallChangeListener, PropertyChangeListener, ZrtpInfoDialog.SasVerificationListener,
-        AutoHideController.AutoHideListener, View.OnClickListener, View.OnLongClickListener
+        AutoHideController.AutoHideListener, View.OnClickListener, View.OnLongClickListener,
+        VideoHandlerFragment.OnRemoteVideoChangeListener
 {
     /**
      * The logger
@@ -145,6 +145,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
     private ImageView peerAvatar;
     private ImageView microphoneButton;
+    private View padlockGroupView;
 
     /**
      * Indicates that the user has temporary back to chat window to send chat messages
@@ -194,27 +195,16 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         peerAvatar = findViewById(R.id.calleeAvatar);
         mBackToChat = false;
 
+        padlockGroupView = findViewById(R.id.security_group);
+        padlockGroupView.setOnClickListener(this);
+
+        // set up clickable toastView for onSaveInstanceState in case phone rotate
         View toastView = findViewById(R.id.clickable_toast);
-        View.OnClickListener toastclickHandler = new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                showZrtpInfoDialog();
-                sasToastController.hideToast(true);
-            }
-        };
+        sasToastController = new ClickableToastController(toastView, this, R.id.clickable_toast);
 
-        sasToastController = new ClickableToastController(toastView, toastclickHandler);
         if (savedInstanceState == null) {
-            // VideoHandlerFragment videoFragment;
-            if (AndroidUtils.hasAPI(18)) {
-                videoFragment = new VideoHandlerFragmentAPI18();
-            }
-            else {
-                videoFragment = new VideoHandlerFragment();
-            }
+            videoFragment = new VideoHandlerFragment();
             volControl = new CallVolumeCtrlFragment();
-
             /*
              * Adds fragment that turns on and off the screen when proximity sensor detects FAR/NEAR distance.
              */
@@ -230,6 +220,14 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             // Retrieve restored auto hide fragment
             autoHide = (AutoHideController) fragmentManager.findFragmentByTag(AUTO_HIDE_TAG);
             volControl = (CallVolumeCtrlFragment) fragmentManager.findFragmentByTag(VOLUME_CTRL_TAG);
+        }
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment)
+    {
+        if (fragment instanceof VideoHandlerFragment) {
+            ((VideoHandlerFragment) fragment).setRemoteVideoChangeListener(this);
         }
     }
 
@@ -337,34 +335,68 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             return;
 
         finishing = true;
-        new Thread(new Runnable()
-        {
-            public void run()
-            {
-                // Waits for camera to be stopped
-                videoFragment.ensureCameraClosed();
+        new Thread(() -> {
+            // Waits for camera to be stopped
+            videoFragment.ensureCameraClosed();
 
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        callState.callDuration
-                                = ViewUtil.getTextViewValue(findViewById(android.R.id.content), R.id.callTime);
-                        callState.callEnded = true;
+            runOnUiThread(() -> {
+                callState.callDuration = ViewUtil.getTextViewValue(findViewById(android.R.id.content), R.id.callTime);
+                callState.callEnded = true;
 
-                        // Remove video fragment
-                        if (videoFragment != null) {
-                            getSupportFragmentManager().beginTransaction().remove(videoFragment).commit();
-                        }
-                        // Remove auto hide fragment
-                        ensureAutoHideFragmentDetached();
-                        getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
-                                new CallEnded()).commit();
-                    }
-                });
-            }
+                // Remove video fragment
+                if (videoFragment != null) {
+                    getSupportFragmentManager().beginTransaction().remove(videoFragment).commit();
+                }
+                // Remove auto hide fragment
+                ensureAutoHideFragmentDetached();
+                getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
+                        new CallEnded()).commit();
+                showSystemUI();
+            });
         }).start();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            onRemoteVideoChange((videoFragment != null) && videoFragment.isRemoteVideoVisible());
+        }
+    }
+
+    @Override
+    public void onRemoteVideoChange(boolean isRemoteVideoVisible)
+    {
+        if (isRemoteVideoVisible)
+            hideSystemUI();
+        else
+            showSystemUI();
+    }
+
+    private void hideSystemUI()
+    {
+        // Enables regular immersive mode.
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE
+                // Set the content to appear under the system bars so that the
+                // content doesn't resize when the system bars hide and show.
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                // Hide the nav bar and status bar
+                // | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
+
+    // Shows the system bars by removing all the flags
+    // except for the ones that make the content appear under the system bars.
+    public void showSystemUI()
+    {
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
     /**
@@ -401,6 +433,10 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                     // if call thread is null, then just exit the activity
                 else
                     finish();
+                break;
+
+            case R.id.security_group:
+                showZrtpInfoDialog();
                 break;
 
             case R.id.clickable_toast:
@@ -462,13 +498,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
     private void updateMuteStatus()
     {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                doUpdateMuteStatus();
-            }
-        });
+        runOnUiThread(this::doUpdateMuteStatus);
     }
 
     private void doUpdateMuteStatus()
@@ -527,14 +557,10 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     public void setPeerName(final String name)
     {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                ActionBarUtil.setTitle(VideoCallActivity.this,
-                        getResources().getString(R.string.service_gui_CALL_WITH) + ": ");
-                ActionBarUtil.setSubtitle(VideoCallActivity.this, name);
-            }
+        runOnUiThread(() -> {
+            ActionBarUtil.setTitle(VideoCallActivity.this,
+                    getResources().getString(R.string.service_gui_CALL_WITH) + ": ");
+            ActionBarUtil.setSubtitle(VideoCallActivity.this, name);
         });
     }
 
@@ -559,13 +585,9 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     public void setPeerState(CallPeerState oldState, CallPeerState newState, final String stateString)
     {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                TextView statusName = findViewById(R.id.callStatus);
-                statusName.setText(stateString);
-            }
+        runOnUiThread(() -> {
+            TextView statusName = findViewById(R.id.callStatus);
+            statusName.setText(stateString);
         });
     }
 
@@ -620,18 +642,13 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     {
         logger.info("Error reason: " + reason);
 
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                callState.errorReason = reason;
+        runOnUiThread(() -> {
+            callState.errorReason = reason;
 
-                TextView errorReason = findViewById(R.id.callErrorReason);
-                if (errorReason != null) {
-                    errorReason.setText(reason);
-                    errorReason.setVisibility(View.VISIBLE);
-                }
+            TextView errorReason = findViewById(R.id.callErrorReason);
+            if (errorReason != null) {
+                errorReason.setText(reason);
+                errorReason.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -666,13 +683,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private void updateHoldStatus()
     {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                doUpdateHoldStatus();
-            }
-        });
+        runOnUiThread(this::doUpdateHoldStatus);
     }
 
     /**
@@ -740,6 +751,10 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             String sResolution = ((int) res.getWidth()) + "x" + ((int) res.getHeight());
             mSubMenuRes.addSubMenu(0, R.id.video_dimension, Menu.NONE, sResolution);
         }
+
+        // cmeng - hide menu item - not implemented
+        MenuItem mMenuRes = menu.findItem(R.id.video_resolution);
+        mMenuRes.setVisible(false);
         return true;
     }
 
@@ -748,7 +763,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     {
         switch (item.getItemId()) {
             case R.id.video_dimension:
-                // #TODO for actual action
+                aTalkApp.showToastMessage("Not implemented!");
                 return true;
             case R.id.call_info_item:
                 showCallInfoDialog();
@@ -958,8 +973,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     {
     }
 
-    public void securityNegotiationStarted(
-            CallPeerSecurityNegotiationStartedEvent securityStartedEvent)
+    public void securityNegotiationStarted(CallPeerSecurityNegotiationStartedEvent securityStartedEvent)
     {
     }
 
@@ -976,10 +990,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         if (callPeers.hasNext()) {
             CallPeer cpCandidate = callPeers.next();
             if (cpCandidate instanceof MediaAwareCallPeer<?, ?, ?>) {
-                MediaAwareCallPeer<?, ?, ?> mediaAwarePeer
-                        = (MediaAwareCallPeer<?, ?, ?>) cpCandidate;
-                SrtpControl srtpCtrl
-                        = mediaAwarePeer.getMediaHandler().getEncryptionMethod(MediaType.AUDIO);
+                MediaAwareCallPeer<?, ?, ?> mediaAwarePeer = (MediaAwareCallPeer<?, ?, ?>) cpCandidate;
+                SrtpControl srtpCtrl = mediaAwarePeer.getMediaHandler().getEncryptionMethod(MediaType.AUDIO);
                 isSecure = srtpCtrl != null && srtpCtrl.getSecureCommunicationStatus();
 
                 if (srtpCtrl instanceof ZrtpControl) {
@@ -1032,9 +1044,10 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private void setPadlockColor(int colorId)
     {
-        View padlockGroup = findViewById(R.id.security_group);
+        padlockGroupView.setOnClickListener(this);
+
         int color = getResources().getColor(colorId);
-        padlockGroup.setBackgroundColor(color);
+        padlockGroupView.setBackgroundColor(color);
     }
 
     /**
@@ -1053,13 +1066,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     public void securityPending()
     {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                doUpdatePadlockStatus(false, false);
-            }
-        });
+        runOnUiThread(() -> doUpdatePadlockStatus(false, false));
     }
 
     /**
@@ -1081,13 +1088,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     public void securityOff(CallPeerSecurityOffEvent evt)
     {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                doUpdatePadlockStatus(false, false);
-            }
-        });
+        runOnUiThread(() -> doUpdatePadlockStatus(false, false));
     }
 
     /**
@@ -1095,27 +1096,23 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     public void securityOn(final CallPeerSecurityOnEvent evt)
     {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                SrtpControl srtpCtrl = evt.getSecurityController();
-                ZrtpControl zrtpControl = null;
-                if (srtpCtrl instanceof ZrtpControl) {
-                    zrtpControl = (ZrtpControl) srtpCtrl;
-                }
+        runOnUiThread(() -> {
+            SrtpControl srtpCtrl = evt.getSecurityController();
+            ZrtpControl zrtpControl = null;
+            if (srtpCtrl instanceof ZrtpControl) {
+                zrtpControl = (ZrtpControl) srtpCtrl;
+            }
 
-                boolean isVerified = zrtpControl != null && zrtpControl.isSecurityVerified();
-                doUpdatePadlockStatus(zrtpControl != null, isVerified);
+            boolean isVerified = zrtpControl != null && zrtpControl.isSecurityVerified();
+            doUpdatePadlockStatus(zrtpControl != null, isVerified);
 
-                // Protocol name label
-                ViewUtil.setTextViewValue(findViewById(android.R.id.content),
-                        R.id.security_protocol, zrtpControl != null ? "zrtp" : "sdes");
+            // Protocol name label
+            ViewUtil.setTextViewValue(findViewById(android.R.id.content),
+                    R.id.security_protocol, zrtpControl != null ? "zrtp" : "sdes");
 
-                if (!isVerified && zrtpControl != null) {
-                    String toastMsg = getString(R.string.service_gui_security_VERIFY_TOAST);
-                    sasToastController.showToast(false, toastMsg);
-                }
+            if (!isVerified && zrtpControl != null) {
+                String toastMsg = getString(R.string.service_gui_security_VERIFY_TOAST);
+                sasToastController.showToast(false, toastMsg);
             }
         });
     }
@@ -1151,7 +1148,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         mBackToChat = state;
     }
 
-    public static boolean isBackToChat()
+    public boolean isBackToChat()
     {
         return mBackToChat;
     }

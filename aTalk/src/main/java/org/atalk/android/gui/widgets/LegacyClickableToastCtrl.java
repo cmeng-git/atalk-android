@@ -80,13 +80,10 @@ public class LegacyClickableToastCtrl
 
 		messageView = toastView.findViewById(R.id.toast_msg);
 
-		toastView.findViewById(toastButtonId).setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view)
-			{
-				hideToast(false);
-				LegacyClickableToastCtrl.this.clickListener.onClick(view);
-			}
-		});
+		toastView.findViewById(toastButtonId).setOnClickListener(view -> {
+            hideToast(false);
+            LegacyClickableToastCtrl.this.clickListener.onClick(view);
+        });
 
 		hideToast(true);
 	}
@@ -158,10 +155,5 @@ public class LegacyClickableToastCtrl
 	/**
 	 * Hides the toast after delay.
 	 */
-	private Runnable hideRunnable = new Runnable() {
-		public void run()
-		{
-			hideToast(false);
-		}
-	};
+	private Runnable hideRunnable = () -> hideToast(false);
 }

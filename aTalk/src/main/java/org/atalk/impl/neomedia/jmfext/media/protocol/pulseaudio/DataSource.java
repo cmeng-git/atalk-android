@@ -261,14 +261,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 					throw new IOException("pa_buffer_attr_new");
 
 				try {
-					Runnable stateCallback = new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							audioSystem.signalMainloop(false);
-						}
-					};
+					Runnable stateCallback = () -> audioSystem.signalMainloop(false);
 
 					PA.stream_set_state_callback(stream, stateCallback);
 					PA.stream_connect_record(stream, getLocatorDev(), attr,

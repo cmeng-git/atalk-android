@@ -251,8 +251,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
                 }
 
                 // Also must remove STUN/JN settings from this instance of accountProperties - otherwise remove will not work
-                String[] accKeys = accountProperties.keySet().toArray(
-                        new String[accountProperties.size()]);
+                String[] accKeys = accountProperties.keySet().toArray(new String[0]);
                 for (String property : accKeys) {
                     if (property.startsWith(ProtocolProviderFactory.STUN_PREFIX)
                             || property.startsWith(JingleNodeDescriptor.JN_PREFIX)) {

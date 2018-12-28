@@ -135,23 +135,13 @@ public class ChatInviteDialog extends Dialog
             mInviteButton.setAlpha(.3f);
         }
 
-        mInviteButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                inviteContacts();
-                closeDialog();
-            }
+        mInviteButton.setOnClickListener(v -> {
+            inviteContacts();
+            closeDialog();
         });
 
         Button mCancelButton = this.findViewById(R.id.buttonCancel);
-        mCancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                closeDialog();
-            }
-        });
+        mCancelButton.setOnClickListener(v -> closeDialog());
         // this.initContactListData();
     }
 

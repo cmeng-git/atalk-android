@@ -42,6 +42,9 @@ public class InfoRetriever
     private static final String TAG_FN_OPEN = "<FN>";
     private static final String TAG_FN_CLOSE = "</FN>";
 
+    public static final String BDAY_FORMAT_MEDIUM = "MMM dd, yyyy";
+    public static final String BDAY_FORMAT_SHORT = "yyyy-mm-dd";
+
     protected InfoRetriever(ProtocolProviderServiceJabberImpl jabberProvider, EntityBareJid ownerUin)
     {
         this.jabberProvider = jabberProvider;
@@ -177,16 +180,24 @@ public class InfoRetriever
 
         tmp = card.getField("BDAY");
         if (tmp != null) {
+            Calendar birthDateCalendar = Calendar.getInstance();
+            Date birthDate = null;
             try {
-                Calendar birthDateCalendar = Calendar.getInstance();
-                DateFormat dateFormat = new SimpleDateFormat(
-                        aTalkApp.getResString(R.string.plugin_accountinfo_BDAY_FORMAT), Locale.getDefault());
-                Date birthDate = dateFormat.parse(tmp);
+                DateFormat dateFormatMedium = new SimpleDateFormat(BDAY_FORMAT_MEDIUM, Locale.US);
+                birthDate = dateFormatMedium.parse(tmp);
+            } catch (ParseException ex) {
+                try {
+                    // take care of avatar date short format created by other clients i.e. 1992-01-03
+                    DateFormat dateFormatShort = new SimpleDateFormat(BDAY_FORMAT_SHORT, Locale.US);
+                    birthDate = dateFormatShort.parse(tmp);
+                } catch (ParseException e) {
+                    logger.warn(msg + ex.getMessage());
+                }
+            }
+            if (birthDate != null) {
                 birthDateCalendar.setTime(birthDate);
                 BirthDateDetail bd = new BirthDateDetail(birthDateCalendar);
                 result.add(bd);
-            } catch (ParseException ex) {
-                logger.warn(msg + ex.getMessage());
             }
         }
         // Home Details addrField one of: POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR,

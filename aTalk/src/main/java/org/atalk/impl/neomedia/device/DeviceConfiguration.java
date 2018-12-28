@@ -100,12 +100,12 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * The default video width.
      */
-    public static final int DEFAULT_VIDEO_WIDTH = 640;
+    public static final int DEFAULT_VIDEO_WIDTH = 1280;
 
     /**
      * The default video height.
      */
-    public static final int DEFAULT_VIDEO_HEIGHT = 480;
+    public static final int DEFAULT_VIDEO_HEIGHT = 720;
 
     /**
      * The default value for video maximum bandwidth.
@@ -158,27 +158,20 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     private static final String PROP_VIDEO_WIDTH = "neomedia.video.width";
 
     /**
-     * The currently supported resolutions we will show as option and user can select.
+     * The currently supported resolutions we will show as option for user selection.
      */
     public static final Dimension[] SUPPORTED_RESOLUTIONS = new Dimension[]{
-            // QQVGA
-            // new Dimension(160, 120),
-            // QCIF
-            // new Dimension(176, 144),
-            // QVGA
-            // new Dimension(320, 200),
-            // QVGA
-            new Dimension(320, 240),
-            // CIF
-            // new Dimension(352, 288),
-            // VGA
-            new Dimension(640, 480),
-            // HD 720
-            new Dimension(720, 480),
-            // Panasonic DVCPRO100
-            new Dimension(960, 720),
-            // WXGA
-            new Dimension(1280, 720)
+            // new Dimension(160, 120), // QQVGA
+            // new Dimension(176, 144), // QCIF
+            // new Dimension(320, 200), // QVGA
+            new Dimension(320, 240), // QVGA
+            // new Dimension(352, 288), // CIF
+            new Dimension(640, 480), // VGA
+            new Dimension(720, 480), // DV NTSC
+            new Dimension(960, 720), // Panasonic DVCPRO100
+            new Dimension(1280, 720), // HDTV
+            new Dimension(1440, 1080), // HDV 1080
+            new Dimension(1920, 1080) // HD
     };
 
     /**
@@ -1006,24 +999,16 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     }
 
     /**
-     * Sets and stores the video size.
+     * Sets and stores the video size selected by user
      *
      * @param videoSize the video size to be set on this <tt>DeviceConfiguration</tt>
      */
     public void setVideoSize(Dimension videoSize)
     {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
-
         if (cfg != null) {
-            if ((videoSize.getHeight() != DEFAULT_VIDEO_HEIGHT)
-                    || (videoSize.getWidth() != DEFAULT_VIDEO_WIDTH)) {
-                cfg.setProperty(PROP_VIDEO_HEIGHT, videoSize.height);
-                cfg.setProperty(PROP_VIDEO_WIDTH, videoSize.width);
-            }
-            else {
-                cfg.removeProperty(PROP_VIDEO_HEIGHT);
-                cfg.removeProperty(PROP_VIDEO_WIDTH);
-            }
+            cfg.setProperty(PROP_VIDEO_HEIGHT, videoSize.height);
+            cfg.setProperty(PROP_VIDEO_WIDTH, videoSize.width);
         }
         this.videoSize = videoSize;
         firePropertyChange(VIDEO_CAPTURE_DEVICE, videoCaptureDevice, videoCaptureDevice);

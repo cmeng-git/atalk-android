@@ -148,14 +148,10 @@ public class NotificationSettings extends OSGiActivity
 		public View getView(final int position, View convertView, ViewGroup parent)
 		{
 			View row = getLayoutInflater().inflate(R.layout.notification_item, parent, false);
-			row.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v)
-				{
-					Intent details = NotificationDetails.getIntent(NotificationSettings.this, events.get(position));
-					startActivity(details);
-				}
-			});
+			row.setOnClickListener(v -> {
+                Intent details = NotificationDetails.getIntent(NotificationSettings.this, events.get(position));
+                startActivity(details);
+            });
 
 			TextView textView = row.findViewById(R.id.text1);
 			textView.setText((String) getItem(position));
@@ -178,14 +174,10 @@ public class NotificationSettings extends OSGiActivity
 		@Override
 		public void eventTypeAdded(final NotificationEventTypeEvent event)
 		{
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run()
-				{
-					events.add(event.getEventType());
-					notifyDataSetChanged();
-				}
-			});
+			runOnUiThread(() -> {
+                events.add(event.getEventType());
+                notifyDataSetChanged();
+            });
 		}
 
 		/**
@@ -194,14 +186,10 @@ public class NotificationSettings extends OSGiActivity
 		@Override
 		public void eventTypeRemoved(final NotificationEventTypeEvent event)
 		{
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run()
-				{
-					events.remove(event.getEventType());
-					notifyDataSetChanged();
-				}
-			});
+			runOnUiThread(() -> {
+                events.remove(event.getEventType());
+                notifyDataSetChanged();
+            });
 		}
 
 		/**

@@ -269,14 +269,8 @@ public class aTalkApp extends Application
      */
     public static void showToastMessage(final String message)
     {
-        new Handler(Looper.getMainLooper()).post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Toast.makeText(getGlobalContext(), message, Toast.LENGTH_LONG).show();
-            }
-        });
+        new Handler(Looper.getMainLooper()).post(()
+                -> Toast.makeText(getGlobalContext(), message, Toast.LENGTH_LONG).show());
     }
 
     public static void showToastMessage(int id)
@@ -292,26 +286,14 @@ public class aTalkApp extends Application
 
     public static void showToastMessageOnUI(final int id, final Object... arg)
     {
-        currentActivity.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                showToastMessage(getAppResources().getString(id, arg));
-            }
-        });
+        currentActivity.runOnUiThread(() -> showToastMessage(getAppResources().getString(id, arg)));
     }
 
     public static void showAlertDialogOnUI(final String title, final int id, final Object... arg)
     {
-        currentActivity.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                String msg = getResString(id, arg);
-                DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);
-            }
+        currentActivity.runOnUiThread(() -> {
+            String msg = getResString(id, arg);
+            DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);
         });
     }
 

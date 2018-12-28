@@ -23,6 +23,7 @@ import org.atalk.service.osgi.*;
  * Chat security settings screen with OTR preferences.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class ChatSecuritySettings extends OSGiActivity
 {
@@ -32,12 +33,9 @@ public class ChatSecuritySettings extends OSGiActivity
 	private static final Logger logger = Logger.getLogger(SettingsActivity.class);
 
 	// Preference mKeys
-	static private final String P_KEY_CRYPTO_ENABLE
-			= aTalkApp.getResString(org.atalk.android.R.string.pref_key_crypto_enable);
-	static private final String P_KEY_CRYPTO_AUTO
-			= aTalkApp.getResString(org.atalk.android.R.string.pref_key_otr_auto);
-	static private final String P_KEY_CRYPTO_REQUIRE
-			= aTalkApp.getResString(R.string.pref_key_crypto_require);
+	static private final String P_KEY_CRYPTO_ENABLE = aTalkApp.getResString(R.string.pref_key_crypto_enable);
+	static private final String P_KEY_CRYPTO_AUTO = aTalkApp.getResString(R.string.pref_key_otr_auto);
+	static private final String P_KEY_CRYPTO_REQUIRE = aTalkApp.getResString(R.string.pref_key_crypto_require);
 
 	// OMEMO Security section
 	static private final String P_KEY_OMEMO_KEY_BLIND_TRUST
@@ -54,8 +52,7 @@ public class ChatSecuritySettings extends OSGiActivity
 		super.onCreate(savedInstanceState);
 		if (savedInstanceState == null) {
 			// Display the fragment as the main content.
-			getFragmentManager().beginTransaction().replace(android.R.id.content,
-					new SettingsFragment()).commit();
+			getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
 		}
 	}
 

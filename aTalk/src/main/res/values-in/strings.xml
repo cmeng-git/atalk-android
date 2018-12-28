@@ -284,7 +284,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Buat jembatan video</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Buat/Gabung konferensi video</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Buat konferensi video baru untuk ruang obrolan ini</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Kamera perangkat tidak dapat mendukung resolusi video yang dipilih saat mode potret. Silakan letakkan ponsel dalam orientasi lanskap untuk panggilan video:\n[lebar=%1$s; tinggi=%2$s]</string>
+    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Gagal menyetel pratinjau kamera perangkat ke: %1$s; Pengecualian: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Terputus</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Memutuskan sambungan %1$s</string>
     <string name="service_gui_DENY">Tolak</string>
@@ -1245,10 +1245,14 @@
     <string name="service_gui_settings_EVENTS_TITLE">Acara</string>
 
     <!-- aTalk icon -->
-    <string name="pref_key_show_jitsi_icon">org.atalk.android.show_icon</string>
     <string name="service_gui_settings_SHOW_ICON">Tunjukkan ikon aTalk</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_OFF">Sembunyikan indikator aktif aTalk di notifikasi</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">Menungjukkan indikator aktif aTalk di notifikasi</string>
+
+    <!-- aTalk auto start -->
+    <string name="service_gui_settings_AUTO_START">Mulai otomatis aTalk saat reboot</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_DISABLE">Nonaktifkan aTalk secara otomatis mulai pada reboot berikutnya</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_ENABLE">Aktifkan aTalk otomatis mulai pada reboot berikutnya</string>
 
     <!-- Locale -->
     <string name="service_gui_settings_LOCALE">Bahasa</string>
@@ -1314,7 +1318,6 @@
     <string name="service_gui_settings_VIDEO_CODECS_SUMMARY">Pilih dan tentukan prioritas untuk codec video</string>
     <string name="service_gui_settings_VIDEO_CODECS_TITLE">Codec video</string>
     <!-- Video resolution -->
-    <string name="service_gui_settings_AUTO_RESOLUTION">Otomatis</string>
     <string name="service_gui_settings_VIDEO_RESOLUTION">Resolusi video</string>
     <!-- Frame rate -->
     <string name="service_gui_settings_LIMIT_FPS_OFF">Tidak Terbatas</string>

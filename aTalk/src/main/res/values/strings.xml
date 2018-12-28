@@ -296,7 +296,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Create a video bridge</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Create / Join video conference</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Create a new video conference for this chat room</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">The device camera cannot support selected video resolution while in portrait mode. Please place phone in landscape orientation for video call:\n[width=%1$s; height=%2$s]</string>
+    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Failed to set device camera preview to: %1$s; Exception: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Disconnected</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Disconnecting %1$s</string>
     <string name="service_gui_DEFAULT_USER_PHOTO">personphoto</string>
@@ -805,7 +805,6 @@
     <string name="plugin_accountinfo_ABOUT_ME_HINT">Enter a brief description of yourself in this box</string>
     <string name="plugin_accountinfo_AGE">Age:</string>
     <string name="plugin_accountinfo_BDAY">Birth Date:</string>
-    <string name="plugin_accountinfo_BDAY_FORMAT">MMM dd, yyyy</string>
     <string name="plugin_accountinfo_CHANGE">Change</string>
     <string name="plugin_accountinfo_CITY">City:</string>
     <string name="plugin_accountinfo_COUNTRY">Country:</string>
@@ -1426,10 +1425,16 @@
     <string name="service_gui_settings_EVENTS_TITLE">Events</string>
 
     <!-- aTalk icon -->
-    <string name="pref_key_show_jitsi_icon">org.atalk.android.show_icon</string>
+    <string name="pref_key_show_atalk_icon">org.atalk.android.show_icon</string>
     <string name="service_gui_settings_SHOW_ICON">Display aTalk icon</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_OFF">Hide aTalk active indicator in notification</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">Show aTalk active indicator in notification</string>
+
+    <!-- aTalk auto start -->
+    <string name="pref_key_atalk_auto_start">org.atalk.android.auto_start</string>
+    <string name="service_gui_settings_AUTO_START">Auto start aTalk on reboot</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_DISABLE">Disable aTalk auto start on next reboot</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_ENABLE">Enable aTalk auto start on next reboot</string>
 
     <!-- Locale -->
     <string name="pref_key_locale">pref.key.locale</string>
@@ -1514,7 +1519,6 @@
     <string name="service_gui_settings_VIDEO_CODECS_TITLE">Video codecs</string>
     <!-- Video resolution -->
     <string name="pref_key_video_resolution">pref.key.video.resolution</string>
-    <string name="service_gui_settings_AUTO_RESOLUTION">Auto</string>
     <string name="service_gui_settings_VIDEO_RESOLUTION">Video resolution</string>
     <!-- Frame rate -->
     <string name="pref_key_video_bitrate">pref.key.video.bitrate</string>

@@ -86,9 +86,8 @@ public class AndroidCameraSystem extends DeviceSystem
 			// Pick up the preferred sizes which is supported by the Camera.
 			Camera camera = Camera.open(cameraId);
 			Camera.Parameters params = camera.getParameters();
-			// Locator contains camera id and it's facing
-			MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL, cameraId,
-				cameraInfo);
+			// Locator contains camera id and its facing direction
+			MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL, cameraId, cameraInfo);
 
 			List<Camera.Size> previewSizes = params.getSupportedVideoSizes();
 			if (previewSizes == null) {
@@ -174,7 +173,7 @@ public class AndroidCameraSystem extends DeviceSystem
 				logger.error("No supported formats reported by camera: " + locator);
 				continue;
 			}
-			AndroidCamera device = new AndroidCamera(name, locator, formats.toArray(new Format[formats.size()]));
+			AndroidCamera device = new AndroidCamera(name, locator, formats.toArray(new Format[0]));
 			CaptureDeviceManager.addDevice(device);
 		}
 	}

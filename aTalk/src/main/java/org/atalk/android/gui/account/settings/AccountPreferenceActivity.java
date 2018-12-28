@@ -125,13 +125,9 @@ public class AccountPreferenceActivity extends OSGiActivity
             if (commitThread != null)
                 return true;
 
-            this.commitThread = new Thread(new Runnable()
-            {
-                public void run()
-                {
-                    preferencesFragment.commitChanges();
-                    finish();
-                }
+            this.commitThread = new Thread(() -> {
+                preferencesFragment.commitChanges();
+                finish();
             });
             commitThread.start();
             return true;

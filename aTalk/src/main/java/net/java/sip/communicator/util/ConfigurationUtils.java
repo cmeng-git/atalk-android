@@ -106,6 +106,11 @@ public class ConfigurationUtils
     private static boolean isQuitWarningShown = true;
 
     /**
+     * Indicates if aTalk will auto start on device reboot.
+     */
+    private static boolean isAutoStartOnBoot = true;
+
+    /**
      * Indicates if chat state notifications should be sent.
      */
     private static boolean isSendChatStateNotifications = true;
@@ -396,6 +401,7 @@ public class ConfigurationUtils
     /**
      * The names of the configuration properties.
      */
+    public static String pAutoStart = "gui.AUTO_START_ON_REBOOT";
     private static String pAutoPopupNewMessage = "gui.AUTO_POPUP_NEW_MESSAGE";
     private static String pMsgCommand = "gui.SEND_MESSAGE_COMMAND";
     private static String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
@@ -476,6 +482,9 @@ public class ConfigurationUtils
 
         // Load the showCallPanel property.
         isCallPanelShown = configService.getBoolean("gui.showCallPanel", isCallPanelShown);
+
+        // Load the "isAutoStartOnBoot" property.
+        isAutoStartOnBoot = configService.getBoolean(pAutoStart, isAutoStartOnBoot);
 
         // Load the "showOffline" property.
         isShowOffline = configService.getBoolean("gui.showOffline", isShowOffline);
@@ -851,6 +860,28 @@ public class ConfigurationUtils
     public static boolean isQuitWarningShown()
     {
         return isQuitWarningShown;
+    }
+
+    /**
+     * Return TRUE if "iaAuotStart" property is true, otherwise - return FALSE.
+     * Indicates if aTalk will auto start on device reboot.
+     *
+     * @return TRUE if "iaAuotStart" property is true, otherwise - return FALSE.
+     */
+    public static boolean isAutoStartEnable()
+    {
+        return isAutoStartOnBoot;
+    }
+
+    /**
+     * Updates the "isAutoStartOnBoot" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param autoStart <code>true</code> to auto start aTalk on device reboot
+     */
+    public static void setAutoStart(boolean autoStart)
+    {
+        isAutoStartOnBoot = autoStart;
+        configService.setProperty(pAutoStart, Boolean.toString(autoStart));
     }
 
     /**
@@ -2223,6 +2254,9 @@ public class ConfigurationUtils
             }
             else if (evt.getPropertyName().equals("gui.showCallPanel")) {
                 isCallPanelShown = Boolean.parseBoolean(newValue);
+            }
+            else if (evt.getPropertyName().equals(pAutoStart)) {
+                isAutoStartOnBoot = Boolean.parseBoolean(newValue);
             }
             else if (evt.getPropertyName().equals("gui.showOffline")) {
                 isShowOffline = Boolean.parseBoolean(newValue);

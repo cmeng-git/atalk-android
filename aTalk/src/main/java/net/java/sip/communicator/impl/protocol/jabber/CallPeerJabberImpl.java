@@ -376,7 +376,7 @@ public class CallPeerJabberImpl
 
         try {
             mediaHandler.getTransportManager().wrapupConnectivityEstablishment();
-            mediaHandler.processAnswer(contents);
+            mediaHandler.processSessionAcceptContent(contents);
             for (ContentPacketExtension c : contents)
                 setSenders(getMediaType(c), c.getSenders());
         } catch (Exception e) {
@@ -590,18 +590,22 @@ public class CallPeerJabberImpl
             throws NotConnectedException, InterruptedException
     {
         this.sessionInitIQ = sessionInitIQ;
+        /*
+         * Session-accept contentList request may contains both audio and video requests e.g.
+         * <content creator='initiator' name='audio'>
+         * <content creator='initiator' name='video' senders='both'>
+         */
+        List<ContentPacketExtension> contentList = sessionInitIQ.getContentList();
 
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
-        List<ContentPacketExtension> answer = sessionInitIQ.getContentList();
-
         try {
             TransportManagerJabberImpl transportManager = mediaHandler.getTransportManager();
             if (transportManager == null)
                 throw new Exception("No available transport manager to process session-accept!");
 
             transportManager.wrapupConnectivityEstablishment();
-            mediaHandler.processAnswer(answer);
-            for (ContentPacketExtension c : answer)
+            mediaHandler.processSessionAcceptContent(contentList);
+            for (ContentPacketExtension c : contentList)
                 setSenders(getMediaType(c), c.getSenders());
         } catch (Exception exc) {
             if (logger.isInfoEnabled())

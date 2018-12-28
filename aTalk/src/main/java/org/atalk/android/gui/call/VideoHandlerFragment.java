@@ -5,11 +5,8 @@
  */
 package org.atalk.android.gui.call;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.*;
@@ -20,6 +17,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.controller.SimpleDragController;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.util.java.awt.Component;
@@ -28,12 +26,13 @@ import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.video.AndroidDecoder;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.impl.neomedia.device.util.*;
+import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.PreviewStream;
 import org.atalk.service.neomedia.ViewAccessor;
-import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.event.*;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Fragment takes care of handling call UI parts related to the video - both local and remote.
@@ -42,7 +41,7 @@ import java.util.Iterator;
  * @author Eng Chong Meng
  */
 @SuppressWarnings("deprecation")
-public class VideoHandlerFragment extends OSGiFragment
+public class VideoHandlerFragment extends OSGiFragment implements View.OnLongClickListener
 {
     /**
      * The logger
@@ -57,7 +56,7 @@ public class VideoHandlerFragment extends OSGiFragment
     /**
      * The remote video container.
      */
-    private ViewGroup remoteVideoContainer;
+    private RemoteVideoLayout remoteVideoContainer;
 
     /**
      * The remote video view
@@ -86,14 +85,14 @@ public class VideoHandlerFragment extends OSGiFragment
     static boolean wasVideoEnabled = false;
 
     /**
+     * Indicate phone orientation change and need to init RemoteVideoContainer
+     */
+    private boolean initOnPhoneOrientationChange = false;
+
+    /**
      * The call for which this fragment is handling video events.
      */
     private Call call;
-
-    /**
-     * Menu object used by this fragment.
-     */
-    private Menu menu;
 
     /**
      * The thread that switches the camera.
@@ -116,9 +115,14 @@ public class VideoHandlerFragment extends OSGiFragment
     private ImageView mCallVideoButton;
 
     /**
-     * VideoHandlerFragment parent activity.
+     * For long press to toggle between front and back (full screen display - not shown option in Android 8.0)
      */
-    private Activity mActivity;
+    protected MenuItem mCameraToggle;
+
+    /**
+     * VideoHandlerFragment parent activity for callback i.e. VideoCallActivity
+     */
+    VideoCallActivity mCallback;
 
     /**
      * Creates new instance of <tt>VideoHandlerFragment</tt>.
@@ -128,62 +132,61 @@ public class VideoHandlerFragment extends OSGiFragment
         setHasOptionsMenu(true);
     }
 
+    /**
+     * Must be called by parent activity on fragment attached
+     *
+     * @param activity VideoCall Activity
+     */
+    public void setRemoteVideoChangeListener(VideoCallActivity activity)
+    {
+        mCallback = activity;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        mActivity = getActivity();
 
-        remoteVideoContainer = mActivity.findViewById(R.id.remoteVideoContainer);
-        localPreviewContainer = mActivity.findViewById(R.id.localPreviewContainer);
-        callInfoGroup = mActivity.findViewById(R.id.callInfoGroup);
-        ctrlButtonsGroup = mActivity.findViewById(R.id.button_Container);
+        remoteVideoContainer = mCallback.findViewById(R.id.remoteVideoContainer);
+        localPreviewContainer = mCallback.findViewById(R.id.localPreviewContainer);
+        callInfoGroup = mCallback.findViewById(R.id.callInfoGroup);
+        ctrlButtonsGroup = mCallback.findViewById(R.id.button_Container);
 
         // (must be done after layout or 0 sizes will be returned)
-        ctrlButtonsGroup.getViewTreeObserver()
-                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
-                {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void onGlobalLayout()
-                    {
-                        // We know the size of all components at this point, so we can init layout
-                        // dependent stuff. Initial call info margin adjustment
-                        updateCallInfoMargin();
-
-                        // Remove the listener, as it has to be called only once
-                        if (AndroidUtils.hasAPI(16)) {
-                            ctrlButtonsGroup.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        }
-                        else {
-                            ctrlButtonsGroup.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        }
-                    }
-                });
-
-        calleeAvatar = mActivity.findViewById(R.id.calleeAvatar);
-        mCallVideoButton = mActivity.findViewById(R.id.button_call_video);
-        mCallVideoButton.setOnClickListener(new View.OnClickListener()
+        ctrlButtonsGroup.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
         {
             @Override
-            public void onClick(View v)
+            public void onGlobalLayout()
             {
-                onLocalVideoButtonClicked(v);
+                // We know the size of all components at this point, so we can init layout
+                // dependent stuff. Initial call info margin adjustment
+                updateCallInfoMargin();
+
+                // Remove the listener, as it has to be called only once
+                ctrlButtonsGroup.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
 
+        calleeAvatar = mCallback.findViewById(R.id.calleeAvatar);
+        mCallVideoButton = mCallback.findViewById(R.id.button_call_video);
+        mCallVideoButton.setOnClickListener(this::onLocalVideoButtonClicked);
+        mCallVideoButton.setOnLongClickListener(this);
+
         // Creates and registers surface handler for events
-        this.previewSurfaceHandler = new PreviewSurfaceProvider((OSGiActivity) mActivity,
-                localPreviewContainer, true);
+        this.previewSurfaceHandler = new PreviewSurfaceProvider(mCallback, localPreviewContainer, true);
         CameraUtils.setPreviewSurfaceProvider(previewSurfaceHandler);
-        // Makes the preview display draggable on the screen
+
+        // Makes the local preview window draggable on the screen
         localPreviewContainer.setOnTouchListener(new SimpleDragController());
 
-        this.call = ((VideoCallActivity) mActivity).getCall();
-        AndroidDecoder.renderSurfaceProvider = new PreviewSurfaceProvider((OSGiActivity) mActivity,
-                remoteVideoContainer, false);
-        // Makes the preview display draggable on the screen
+        this.call = mCallback.getCall();
+        AndroidDecoder.renderSurfaceProvider = new PreviewSurfaceProvider(mCallback, remoteVideoContainer, false);
+
+        // Makes the preview display draggable on the screen - not applicable in full screen mode
         // remoteVideoContainer.setOnTouchListener(new SimpleDragController());
+
+        if (AndroidUtils.hasAPI(18))
+            CameraUtils.localPreviewCtxProvider = new OpenGlCtxProvider(mCallback, localPreviewContainer);
     }
 
     @Override
@@ -195,25 +198,40 @@ public class VideoHandlerFragment extends OSGiFragment
             return;
         }
 
-        // Restores local video state if it was enabled or on first video call entry
+        // Default local preview width
+        int DEFAULT_PREVIEW_WIDTH = 160;
+
+        /*
+         * Restores local video state if it was enabled or on first video call entry
+         * The local preview size is configure to be proportional to the actually camera capture
+         * video dimension with preset default width
+         */
         if (wasVideoEnabled || isLocalVideoEnabled()) {
-            // cmeng - Need further work on local video preview setting. Presently hard coded
-            // portrait preview size
+
             DeviceConfiguration deviceConfig = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration();
             Dimension videoSize = deviceConfig.getVideoSize();
-            float ratio = (float) videoSize.width / videoSize.height;
-            float scale = getContext().getResources().getDisplayMetrics().density;
-            int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
 
+            // Remote and Local video preview dimension follows phone orientation i.e. portrait or landscape
+            int cameraId = PreviewStream.getCameraId();
+            int mRotation = CameraUtils.getCameraDisplayRotation(cameraId);
+            boolean swap = (mRotation == 90) || (mRotation == 270);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) localPreviewContainer.getLayoutParams();
-            params.width = (int) (160 * scale + 0.5f);
-            if ((ratio < 1.5) || (rotation == Surface.ROTATION_0)
-                    || (rotation == Surface.ROTATION_180)) {
-                params.height = (int) (120 * scale + 0.5f);
+
+            // Get actual preview size for phone in its current orientation
+            List<Camera.Size> supportSizes = CameraUtils.getSupportSizeForCameraId(cameraId);
+            Dimension optimizedSize = CameraUtils.getOptimalPreviewSize(videoSize, supportSizes);
+
+            // Local preview size has default fixed width of 160 (landscape mode)
+            float scale = getResources().getDisplayMetrics().density * DEFAULT_PREVIEW_WIDTH / optimizedSize.width;
+            Dimension previewSize;
+            if (swap) {
+                previewSize = new Dimension(optimizedSize.height, optimizedSize.width);
             }
             else {
-                params.height = (int) (90 * scale + 0.5f);
+                previewSize = optimizedSize;
             }
+            params.width = (int) (previewSize.width * scale + 0.5f);
+            params.height = (int) (previewSize.height * scale + 0.5f);
             localPreviewContainer.setLayoutParams(params);
 
             // Set proper videoCallButtonState and restore local video
@@ -225,8 +243,7 @@ public class VideoHandlerFragment extends OSGiFragment
         if (peers.hasNext()) {
             CallPeer callPeer = peers.next();
             addVideoListener(callPeer);
-            // cmeng - redundant, let remote handleVideoEvent trigger the setup. Multiple quick access
-            // to GLSurfaceView can cause problem. Need to re-init remote video on screen rotation
+            initOnPhoneOrientationChange = true;
             initRemoteVideo(callPeer);
         }
         else {
@@ -263,6 +280,7 @@ public class VideoHandlerFragment extends OSGiFragment
              * 20180921 - crash does not happen anymore when remains as true- fixed?
              */
             setLocalVideoEnabled(false);
+
             previewSurfaceHandler.waitForObjectRelease();
             // TODO: release object on rotation, but the data source have to be paused
             // remoteSurfaceHandler.waitForObjectRelease();
@@ -275,6 +293,7 @@ public class VideoHandlerFragment extends OSGiFragment
         super.onDestroy();
         // Release shared video component
         remoteVideoContainer.removeAllViews();
+        CameraUtils.localPreviewCtxProvider = null;
     }
 
     @Override
@@ -286,77 +305,88 @@ public class VideoHandlerFragment extends OSGiFragment
             return;
         }
 
-        // Check for camera with other facing from current system
-        int otherFacing = (currentCamera.getCameraFacing() == AndroidCamera.FACING_BACK) ?
-                AndroidCamera.FACING_FRONT : AndroidCamera.FACING_BACK;
+        // Check and set camera option with other facing from current system if available
+        boolean isFrontCamera = (currentCamera.getCameraFacing() == AndroidCamera.FACING_FRONT);
+        int otherFacing = isFrontCamera ? AndroidCamera.FACING_BACK : AndroidCamera.FACING_FRONT;
         if (AndroidCamera.getCameraFromCurrentDeviceSystem(otherFacing) == null) {
             return;
         }
-        inflater.inflate(R.menu.camera_menu, menu);
-        this.menu = menu;
-        updateMenu();
-    }
 
-    /**
-     * Updates menu status.
-     */
-    private void updateMenu()
-    {
         if (menu != null) {
-            AndroidCamera currentCamera = AndroidCamera.getSelectedCameraDevInfo();
-            boolean isFrontCamera = (currentCamera.getCameraFacing() == AndroidCamera.FACING_FRONT);
-
+            inflater.inflate(R.menu.camera_menu, menu);
             String displayName = isFrontCamera
                     ? getString(R.string.service_gui_settings_USE_BACK_CAMERA)
                     : getString(R.string.service_gui_settings_USE_FRONT_CAMERA);
-            menu.findItem(R.id.switch_camera).setTitle(displayName);
+            mCameraToggle = menu.findItem(R.id.switch_camera).setTitle(displayName);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        if (item.getItemId() == R.id.switch_camera) {
-            // Ignore action if camera switching is in progress
-            if (cameraSwitchThread != null)
-                return true;
-
-            String back = getString(R.string.service_gui_settings_USE_BACK_CAMERA);
-            String front = getString(R.string.service_gui_settings_USE_FRONT_CAMERA);
-            String newTitle;
-
-            final AndroidCamera newDevice;
-            if (item.getTitle().equals(back)) {
-                // Switch to back camera
-                newDevice = AndroidCamera.getCameraFromCurrentDeviceSystem(Camera.CameraInfo.CAMERA_FACING_BACK);
-                // Set opposite title
-                newTitle = front;
-            }
-            else {
-                // Switch to front camera
-                newDevice = AndroidCamera.getCameraFromCurrentDeviceSystem(Camera.CameraInfo.CAMERA_FACING_FRONT);
-                // Set opposite title
-                newTitle = back;
-            }
-            item.setTitle(newTitle);
-
-            // Switch the camera in separate thread
-            this.cameraSwitchThread = new Thread()
-            {
-                @Override
-                public void run()
-                {
-                    if (newDevice != null) {
-                        AndroidCamera.setSelectedCamera(newDevice.getLocator());
-                        // Keep track of created threads
-                        cameraSwitchThread = null;
-                    }
-                }
-            };
-            cameraSwitchThread.start();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.switch_camera:
+                return startCameraSwitchThread(item);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Toggle the camera device in seperate thread and update the menu title text
+     *
+     * @param item Menu Item
+     * @return status
+     */
+    protected boolean startCameraSwitchThread(MenuItem item)
+    {
+        // Ignore action if camera switching is in progress
+        if (cameraSwitchThread != null)
+            return true;
+
+        String back = getString(R.string.service_gui_settings_USE_BACK_CAMERA);
+        String front = getString(R.string.service_gui_settings_USE_FRONT_CAMERA);
+        String newTitle;
+
+        final AndroidCamera newDevice;
+        if (item.getTitle().equals(back)) {
+            // Switch to back camera and toggle item name
+            newDevice = AndroidCamera.getCameraFromCurrentDeviceSystem(Camera.CameraInfo.CAMERA_FACING_BACK);
+            newTitle = front;
+        }
+        else {
+            // Switch to front camera and toggle item name
+            newDevice = AndroidCamera.getCameraFromCurrentDeviceSystem(Camera.CameraInfo.CAMERA_FACING_FRONT);
+            newTitle = back;
+        }
+        item.setTitle(newTitle);
+
+        // Switch the camera in separate thread
+        cameraSwitchThread = new Thread()
+        {
+            @Override
+            public void run()
+            {
+                if (newDevice != null) {
+                    AndroidCamera.setSelectedCamera(newDevice.getLocator());
+                    // Keep track of created threads
+                    cameraSwitchThread = null;
+                }
+            }
+        };
+        cameraSwitchThread.start();
+        return true;
+    }
+
+    @Override
+    public boolean onLongClick(View v)
+    {
+        switch (v.getId()) {
+            case R.id.button_call_video:
+                aTalkApp.showToastMessage(mCameraToggle.getTitle().toString());
+                return startCameraSwitchThread(mCameraToggle);
+            default:
+                return false;
+        }
     }
 
     /**
@@ -364,7 +394,7 @@ public class VideoHandlerFragment extends OSGiFragment
      *
      * @param callVideoButton local video button <tt>View</tt>.
      */
-    public void onLocalVideoButtonClicked(View callVideoButton)
+    private void onLocalVideoButtonClicked(View callVideoButton)
     {
         initLocalVideoState(!isLocalVideoEnabled());
     }
@@ -407,6 +437,7 @@ public class VideoHandlerFragment extends OSGiFragment
             logger.error("Call instance is null(the call has ended already ?)");
             return;
         }
+        // logger.warn("Set local Video enable state: " + enable);
         CallManager.enableLocalVideo(call, enable);
     }
 
@@ -460,8 +491,7 @@ public class VideoHandlerFragment extends OSGiFragment
             if (pps == null)
                 return;
 
-            OperationSetVideoTelephony osvt
-                    = pps.getOperationSet(OperationSetVideoTelephony.class);
+            OperationSetVideoTelephony osvt = pps.getOperationSet(OperationSetVideoTelephony.class);
             if (osvt == null)
                 return;
 
@@ -472,7 +502,11 @@ public class VideoHandlerFragment extends OSGiFragment
     }
 
     /**
-     * Initializes current video status for the call.
+     * Initializes remote video for the call. Visual component is null on initial setup.
+     * but no null on phone rotate: Need to re-init remote video on screen rotation
+     *
+     * Let remote handleVideoEvent triggers the initial setup.
+     * Multiple quick access to GLSurfaceView can cause problem.
      *
      * @param callPeer owner of video object.
      */
@@ -518,6 +552,7 @@ public class VideoHandlerFragment extends OSGiFragment
 
             SizeChangeVideoEvent scve = (eventType == VideoEvent.VIDEO_SIZE_CHANGE)
                     ? (SizeChangeVideoEvent) event : null;
+
             handleRemoteVideoEvent(visualComponent, scve);
         }
     }
@@ -526,76 +561,95 @@ public class VideoHandlerFragment extends OSGiFragment
      * Handles remote video event arguments.
      *
      * @param visualComponent the remote video <tt>Component</tt> if available or <tt>null</tt> otherwise.
-     * @param scve the <tt>SizeChangeVideoEvent</tt> event if was supplied.
+     * visualComponent is null on video call initial setup and on remote video removed.
+     * No null on phone rotate and need to re-init remote video on screen rotation
+     * @param scvEvent the <tt>SizeChangeVideoEvent</tt> event if was supplied.
      */
-    private void handleRemoteVideoEvent(final Component visualComponent, final SizeChangeVideoEvent scve)
+    private void handleRemoteVideoEvent(final Component visualComponent, final SizeChangeVideoEvent scvEvent)
     {
         if (visualComponent instanceof ViewAccessor) {
-            logger.trace("Remote video added: " + hashCode());
             this.remoteVideoAccessor = (ViewAccessor) visualComponent;
         }
         else {
-            logger.trace("Remote video removed: " + hashCode());
             this.remoteVideoAccessor = null;
             // null evaluates to false, so need to check here before warn
+            // Report component is not compatible
             if (visualComponent != null) {
-                // Report component as not compatible
                 logger.error("Remote video component is not Android compatible.");
             }
         }
 
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                View view = (remoteVideoAccessor != null) ? remoteVideoAccessor.getView(mActivity) : null;
-                Dimension preferredSize = selectRemotePreferredSize(visualComponent, view, scve);
-                logger.info("Remote video size: " + preferredSize.getWidth() + " x " + preferredSize.getHeight());
+        runOnUiThread(() -> {
+            // Update window full screen visibility
+            mCallback.onRemoteVideoChange(remoteVideoAccessor != null);
+
+            if (remoteVideoAccessor != null) {
+                View view = remoteVideoAccessor.getView(mCallback);
+                Dimension preferredSize = selectRemotePreferredSize(visualComponent, view, scvEvent);
+                logger.warn("Remote video content changed @ size: " + preferredSize.toString());
                 doAlignRemoteVideo(view, preferredSize);
+            }
+            /*
+            * (20181228) cmeng: New implementation will not trigger content remove and content add when toggle local camera
+            * Remove remote view container and realign display will happen when:
+            * a. Remote camera is toggled
+            * b. Remote camera (phone) rotation changed
+            * as the action causes stream Timeout event, then followed by receipt of new stream data
+            *
+            * May want to investigate extend stream timeout period to avoid remote video playback disruption
+            * i.e. playback view is being toggled off and on for ~2S
+            * Note change in remote camera dimension due to rotation will cause media decoder to trigger a
+            * remote video chane event.
+            */
+            else {
+                logger.warn("Remote video removed.");
+                doAlignRemoteVideo(null, null);
             }
         });
     }
 
     /**
-     * Selected remote video preferred size based on current components and event status.
+     * Selected remote video preferred size based on current visual components and event status.
+     * In android: the remote video view container size is fixed by aTalk to full screen; and user is
+     * not allow to change. Hence remoteVideoView has higher priority over visualComponent
      *
      * @param visualComponent remote video <tt>Component</tt>, <tt>null</tt> if not available
      * @param remoteVideoView the remote video <tt>View</tt> if already created, or <tt>null</tt> otherwise
-     * @param scve the <tt>SizeChangeVideoEvent</tt> if was supplied during event handling or <tt>null</tt> otherwise.
+     * @param scvEvent the <tt>SizeChangeVideoEvent</tt> if was supplied during event handling or <tt>null</tt> otherwise.
      * @return selected preferred remote video size.
      */
     private Dimension selectRemotePreferredSize(Component visualComponent, View remoteVideoView,
-            SizeChangeVideoEvent scve)
+            SizeChangeVideoEvent scvEvent)
     {
-        // Default view dimension - must be valid for OpenGL
-        int width = 640;
-        int height = 480;
+        // Default view dimension - must be valid for OpenGL else crash
+        int width = 720;
+        int height = 1280;
 
+        // There is no remote video View, so returns default dimension (720x1280).
+        // Note: Other dimension ratio e.g. (-1x-1) will cause Invalid Operation in OpenGL
         if ((remoteVideoView == null) || (visualComponent == null)) {
-            // There is no remote video View, so returns default dimension (640x480).
-            // Note: Other dimension ratio e.g. (1x1) will cause InValid Operation in OpenGL
             return new Dimension(width, height);
         }
 
-        Dimension preferredSize = visualComponent.getPreferredSize();
-        if ((preferredSize != null) && (preferredSize.width > 0) && (preferredSize.height > 0)) {
-            /*
-             * If the visualComponent displaying the video of the remote callPeer has a
-             * preferredSize, attempt to respect it.
-             */
-            width = preferredSize.width;
-            height = preferredSize.height;
+        /*
+         * The SizeChangeVideoEvent may have been delivered with a delay and thus may not
+         * represent the up-to-date size of the remote video. The visualComponent is taken
+         * as fallback in case SizeChangeVideoEvent is null
+         */
+        if ((scvEvent != null)
+                && (scvEvent.getHeight() > 0) && (scvEvent.getWidth() > 0)) {
+            width = scvEvent.getWidth();
+            height = scvEvent.getHeight();
         }
-        else if (scve != null) {
-            /*
-             * The SizeChangeVideoEvent may have been delivered with a delay and thus may not
-             * represent the up-to-date size of the remote video. But since the visualComponent
-             * does not have a preferredSize, anything like the size reported by the
-             * SizeChangeVideoEvent may be used as a hint.
-             */
-            if ((scve.getHeight() > 0) && (scve.getWidth() > 0)) {
-                height = scve.getHeight();
-                width = scve.getWidth();
+        /*
+         * If the visualComponent displaying the video of the remote callPeer has a
+         * preferredSize, then use as fallback in case scvEvent video size is invalid.
+         */
+        else {
+            Dimension preferredSize = visualComponent.getPreferredSize();
+            if ((preferredSize != null) && (preferredSize.width > 0) && (preferredSize.height > 0)) {
+                width = preferredSize.width;
+                height = preferredSize.height;
             }
         }
         return new Dimension(width, height);
@@ -610,7 +664,14 @@ public class VideoHandlerFragment extends OSGiFragment
     private void doAlignRemoteVideo(View remoteVideoView, Dimension preferredSize)
     {
         if (remoteVideoView != null) {
-            ((RemoteVideoLayout) remoteVideoContainer).setVideoPreferredSize(preferredSize);
+            // GLSurfaceView frequent changes can cause error, so change only if absolutely necessary
+            boolean sizeChange = remoteVideoContainer.setVideoPreferredSize(remoteVideoView, preferredSize);
+            if (!sizeChange && !initOnPhoneOrientationChange) {
+                logger.info("No change in remote video viewContainer dimension!");
+                return;
+            }
+            // reset the flag after use
+            initOnPhoneOrientationChange = false;
 
             // Hack only for GLSurfaceView. Remote video view will match parents width and height,
             // but renderer object is properly updated only when removed and added back again.
@@ -618,20 +679,18 @@ public class VideoHandlerFragment extends OSGiFragment
                 remoteVideoContainer.removeAllViews();
                 remoteVideoContainer.addView(remoteVideoView);
             }
-            calleeAvatar.setVisibility(View.GONE);
-
-            // When remote video is visible then the call info is positioned in the bottom part of
-            // the screen
+            // When remote video is visible then the call info is positioned in the bottom part of the screen
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) callInfoGroup.getLayoutParams();
             params.addRule(RelativeLayout.CENTER_VERTICAL, 0);
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
             // Realign call group info start from left if system is in landscape mode
-            int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
-            if ((rotation == Surface.ROTATION_90) || (rotation == Surface.ROTATION_270))
-                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            // int rotation = mCallback.getWindowManager().getDefaultDisplay().getRotation();
+            // if ((rotation == Surface.ROTATION_90) || (rotation == Surface.ROTATION_270))
+            //     params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
             callInfoGroup.setLayoutParams(params);
+            calleeAvatar.setVisibility(View.GONE);
         }
         else {
             remoteVideoContainer.removeAllViews();
@@ -658,9 +717,13 @@ public class VideoHandlerFragment extends OSGiFragment
         return localPreviewContainer.getChildCount() > 0;
     }
 
+    public boolean isRemoteVideoVisible()
+    {
+        return remoteVideoContainer.getChildCount() > 0;
+    }
+
     /**
-     * Block the program until camera is stopped to prevent from crashing on not existing preview
-     * surface.
+     * Block the program until camera is stopped to prevent from crashing on not existing preview surface.
      */
     void ensureCameraClosed()
     {
@@ -674,13 +737,12 @@ public class VideoHandlerFragment extends OSGiFragment
      */
     void updateCallInfoMargin()
     {
-        RelativeLayout.LayoutParams params
-                = (RelativeLayout.LayoutParams) callInfoGroup.getLayoutParams();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) callInfoGroup.getLayoutParams();
 
         // If we have remote video
         if (remoteVideoContainer.getChildCount() > 0) {
             DisplayMetrics displaymetrics = new DisplayMetrics();
-            mActivity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            mCallback.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 
             int ctrlButtonsHeight = ctrlButtonsGroup.getHeight();
             int marginBottom = (int) (0.10 * displaymetrics.heightPixels);
@@ -702,5 +764,11 @@ public class VideoHandlerFragment extends OSGiFragment
             params.setMargins(0, 0, 0, 0);
             callInfoGroup.setLayoutParams(params);
         }
+    }
+
+    // Parent container activity must implement this interface for callback from this fragment
+    public interface OnRemoteVideoChangeListener
+    {
+        void onRemoteVideoChange(boolean isRemoteVideoVisible);
     }
 }

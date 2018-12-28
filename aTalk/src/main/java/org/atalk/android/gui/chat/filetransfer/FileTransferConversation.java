@@ -260,41 +260,36 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
 
         final String bytesString = ByteFormat.format(transferredBytes);
 
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                messageViewHolder.mProgressBar.setProgress(progressStatus);
+        runOnUiThread(() -> {
+            messageViewHolder.mProgressBar.setProgress(progressStatus);
 
-                if ((progressTimestamp - lastSpeedTimestamp) >= SPEED_CALCULATE_DELAY) {
-                    lastProgressSpeed = Math.round(calculateProgressSpeed(transferredBytes));
+            if ((progressTimestamp - lastSpeedTimestamp) >= SPEED_CALCULATE_DELAY) {
+                lastProgressSpeed = Math.round(calculateProgressSpeed(transferredBytes));
 
-                    lastSpeedTimestamp = progressTimestamp;
-                    lastTransferredBytes = transferredBytes;
-                }
+                lastSpeedTimestamp = progressTimestamp;
+                lastTransferredBytes = transferredBytes;
+            }
 
-                if ((progressTimestamp - lastEstimatedTimeTimestamp) >= SPEED_CALCULATE_DELAY
-                        && lastProgressSpeed > 0) {
-                    lastEstimatedTime = Math.round(calculateEstimatedTransferTime(lastProgressSpeed,
-                            transferredFileSize - transferredBytes));
-                    lastEstimatedTimeTimestamp = progressTimestamp;
-                }
+            if ((progressTimestamp - lastEstimatedTimeTimestamp) >= SPEED_CALCULATE_DELAY
+                    && lastProgressSpeed > 0) {
+                lastEstimatedTime = Math.round(calculateEstimatedTransferTime(lastProgressSpeed,
+                        transferredFileSize - transferredBytes));
+                lastEstimatedTimeTimestamp = progressTimestamp;
+            }
 
-                if (lastProgressSpeed > 0) {
-                    messageViewHolder.progressSpeedLabel.setVisibility(View.VISIBLE);
-                    messageViewHolder.progressSpeedLabel.setText(
-                            aTalkApp.getResString(R.string.service_gui_SPEED, ByteFormat.format(lastProgressSpeed), bytesString));
-                }
+            if (lastProgressSpeed > 0) {
+                messageViewHolder.progressSpeedLabel.setVisibility(View.VISIBLE);
+                messageViewHolder.progressSpeedLabel.setText(
+                        aTalkApp.getResString(R.string.service_gui_SPEED, ByteFormat.format(lastProgressSpeed), bytesString));
+            }
 
-                if (transferredBytes >= transferredFileSize) {
-                    messageViewHolder.estimatedTimeLabel.setVisibility(View.GONE);
-                }
-                else if (lastEstimatedTime > 0) {
-                    messageViewHolder.estimatedTimeLabel.setVisibility(View.VISIBLE);
-                    messageViewHolder.estimatedTimeLabel.setText(aTalkApp.getResString(R.string.service_gui_ESTIMATED_TIME,
-                            GuiUtils.formatSeconds(lastEstimatedTime * 1000)));
-                }
+            if (transferredBytes >= transferredFileSize) {
+                messageViewHolder.estimatedTimeLabel.setVisibility(View.GONE);
+            }
+            else if (lastEstimatedTime > 0) {
+                messageViewHolder.estimatedTimeLabel.setVisibility(View.VISIBLE);
+                messageViewHolder.estimatedTimeLabel.setText(aTalkApp.getResString(R.string.service_gui_ESTIMATED_TIME,
+                        GuiUtils.formatSeconds(lastEstimatedTime * 1000)));
             }
         });
     }
@@ -381,25 +376,21 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
      */
     protected View.OnClickListener getOnSetListener()
     {
-        return new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                switch (v.getId()) {
-                    case R.id.button_file:
-                    case R.id.sticker:
-                        if (chatActivity != null)
-                            chatActivity.openDownloadable(mXferFile);
-                        break;
+        return v -> {
+            switch (v.getId()) {
+                case R.id.button_file:
+                case R.id.sticker:
+                    if (chatActivity != null)
+                        chatActivity.openDownloadable(mXferFile);
+                    break;
 
-                    case R.id.buttonCancel:
-                        messageViewHolder.retryButton.setVisibility(View.GONE);
-                        messageViewHolder.cancelButton.setVisibility(View.GONE);
-                        setXferStatus(FileTransferStatusChangeEvent.CANCELED);
-                        if (fileTransfer != null)
-                            fileTransfer.cancel();
-                        break;
-                }
+                case R.id.buttonCancel:
+                    messageViewHolder.retryButton.setVisibility(View.GONE);
+                    messageViewHolder.cancelButton.setVisibility(View.GONE);
+                    setXferStatus(FileTransferStatusChangeEvent.CANCELED);
+                    if (fileTransfer != null)
+                        fileTransfer.cancel();
+                    break;
             }
         };
     }

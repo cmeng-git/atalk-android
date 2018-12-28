@@ -856,14 +856,7 @@ public class ChatSessionManager
          */
         public ChatPanel getChatPanel()
         {
-            new Handler(Looper.getMainLooper()).post(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    chatPanel = createChatPanel();
-                }
-            });
+            new Handler(Looper.getMainLooper()).post(() -> chatPanel = createChatPanel());
             return chatPanel;
         }
 

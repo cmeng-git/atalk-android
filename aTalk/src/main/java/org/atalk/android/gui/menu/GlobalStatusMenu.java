@@ -365,24 +365,20 @@ public class GlobalStatusMenu extends FragmentActivity
                 final PresenceStatus selectedStatus = (PresenceStatus) statusSpinner.getSelectedItem();
                 final String statusMessage = selectedStatus.getStatusName();
 
-                new Thread(new Runnable()
-                {
-                    public void run()
-                    {
-                        // Try to publish selected status
-                        try {
-                            // cmeng: set state to false to force it to execute offline->online
-                            if (globalStatus != null) {
-                                globalStatus.publishStatus(pps, selectedStatus, false);
-                                // logger.warn("## Publish global presence status: " + selectedStatus.getStatusName() + ": " + pps);
-                            }
-                            if (pps.isRegistered()) {
-                                accountPresence.publishPresenceStatus(selectedStatus, statusMessage);
-                                // logger.warn("## Publish account presence status: " + selectedStatus.getStatusName() + ": " + pps);
-                            }
-                        } catch (Exception e) {
-                            logger.error("Account presence publish error: ", e);
+                new Thread(() -> {
+                    // Try to publish selected status
+                    try {
+                        // cmeng: set state to false to force it to execute offline->online
+                        if (globalStatus != null) {
+                            globalStatus.publishStatus(pps, selectedStatus, false);
+                            // logger.warn("## Publish global presence status: " + selectedStatus.getStatusName() + ": " + pps);
                         }
+                        if (pps.isRegistered()) {
+                            accountPresence.publishPresenceStatus(selectedStatus, statusMessage);
+                            // logger.warn("## Publish account presence status: " + selectedStatus.getStatusName() + ": " + pps);
+                        }
+                    } catch (Exception e) {
+                        logger.error("Account presence publish error: ", e);
                     }
                 }).start();
             }
@@ -540,14 +536,7 @@ public class GlobalStatusMenu extends FragmentActivity
         final Spinner statusSpinner = spinnerContainer.findViewById(R.id.presenceSpinner);
         final StatusListAdapter statusAdapter = (StatusListAdapter) statusSpinner.getAdapter();
 
-        mActivity.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                statusSpinner.setSelection(statusAdapter.getPosition(presenceStatus));
-            }
-        });
+        mActivity.runOnUiThread(() -> statusSpinner.setSelection(statusAdapter.getPosition(presenceStatus)));
     }
 
     @Override

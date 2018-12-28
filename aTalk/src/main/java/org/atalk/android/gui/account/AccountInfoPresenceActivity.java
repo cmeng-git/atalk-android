@@ -197,14 +197,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         avatarView = findViewById(R.id.accountAvatar);
         registerForContextMenu(avatarView);
-        avatarView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                openContextMenu(avatarView);
-            }
-        });
+        avatarView.setOnClickListener(v -> openContextMenu(avatarView));
 
         // Get account ID from intent extras; and find account for given account ID
         String accountIDStr = getIntent().getStringExtra(INTENT_ACCOUNT_ID);
@@ -491,34 +484,19 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         mCalenderButton = findViewById(R.id.datePicker);
         mCalenderButton.setEnabled(false);
-        mCalenderButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                calendarDatePicker.show(getSupportFragmentManager(), FRAG_TAG_DATE_PICKER);
-            }
-        });
+        mCalenderButton.setOnClickListener(
+                v -> calendarDatePicker.show(getSupportFragmentManager(), FRAG_TAG_DATE_PICKER));
 
         Button mApplyButton = findViewById(R.id.button_Apply);
-        mApplyButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                if (hasChanges || hasStatusChanges)
-                    launchApplyProgressDialog();
-                else
-                    finish();
-            }
+        mApplyButton.setOnClickListener(v -> {
+            if (hasChanges || hasStatusChanges)
+                launchApplyProgressDialog();
+            else
+                finish();
         });
 
         Button mCancelButton = findViewById(R.id.button_Cancel);
-        mCancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                checkUnsavedChanges();
-            }
-        });
+        mCancelButton.setOnClickListener(v -> checkUnsavedChanges());
     }
 
     private void checkUnsavedChanges()
@@ -1277,25 +1255,21 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      */
     private void publishStatus(final PresenceStatus status, final String text)
     {
-        new Thread(new Runnable()
-        {
-            public void run()
-            {
-                try {
-                    // Try to publish selected status
-                    logger.trace("Publishing status " + status + " msg: " + text);
-                    GlobalStatusService globalStatus
-                            = ServiceUtils.getService(AndroidGUIActivator.bundleContext, GlobalStatusService.class);
+        new Thread(() -> {
+            try {
+                // Try to publish selected status
+                logger.trace("Publishing status " + status + " msg: " + text);
+                GlobalStatusService globalStatus
+                        = ServiceUtils.getService(AndroidGUIActivator.bundleContext, GlobalStatusService.class);
 
-                    ProtocolProviderService pps = mAccount.getProtocolProvider();
-                    // cmeng: set state to false to force it to execute offline->online
-                    if (globalStatus != null)
-                        globalStatus.publishStatus(pps, status, false);
-                    if (pps.isRegistered())
-                        accountPresence.publishPresenceStatus(status, text);
-                } catch (Exception e) {
-                    logger.error(e);
-                }
+                ProtocolProviderService pps = mAccount.getProtocolProvider();
+                // cmeng: set state to false to force it to execute offline->online
+                if (globalStatus != null)
+                    globalStatus.publishStatus(pps, status, false);
+                if (pps.isRegistered())
+                    accountPresence.publishPresenceStatus(status, text);
+            } catch (Exception e) {
+                logger.error(e);
             }
         }).start();
     }
@@ -1312,13 +1286,9 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             return;
         }
 
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                Account account = eventObject.getSource();
-                avatarView.setImageDrawable(account.getAvatarIcon());
-            }
+        runOnUiThread(() -> {
+            Account account = eventObject.getSource();
+            avatarView.setImageDrawable(account.getAvatarIcon());
         });
     }
 
@@ -1378,22 +1348,17 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         progressDialog = ProgressDialog.show(this, getString(R.string.service_gui_WAITING),
                 getString(R.string.service_gui_APPLY_CHANGES), true);
         progressDialog.setCancelable(true);
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try {
-                    commitStatusChanges();
-                    SubmitChangesAction();
-                    // too fast to be viewed user at times - so pause for 2.0 seconds
-                    Thread.sleep(2000);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                progressDialog.dismiss();
-                finish();
+        new Thread(() -> {
+            try {
+                commitStatusChanges();
+                SubmitChangesAction();
+                // too fast to be viewed user at times - so pause for 2.0 seconds
+                Thread.sleep(2000);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+            progressDialog.dismiss();
+            finish();
         }).start();
     }
 
@@ -1416,27 +1381,13 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     @Override
     public void onSoftKeyboardHide()
     {
-        new Handler(Looper.getMainLooper()).post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                mButtonContainer.setVisibility(View.VISIBLE);
-            }
-        });
+        new Handler(Looper.getMainLooper()).post(() -> mButtonContainer.setVisibility(View.VISIBLE));
     }
 
     @Override
     public void onSoftKeyboardShow()
     {
-        new Handler(Looper.getMainLooper()).post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                mButtonContainer.setVisibility(View.GONE);
-            }
-        });
+        new Handler(Looper.getMainLooper()).post(() -> mButtonContainer.setVisibility(View.GONE));
     }
 
     private class EditTextWatcher implements TextWatcher

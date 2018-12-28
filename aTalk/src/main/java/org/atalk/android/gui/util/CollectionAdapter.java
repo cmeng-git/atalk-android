@@ -139,14 +139,9 @@ public abstract class CollectionAdapter<T> extends BaseAdapter
     public void remove(final T object)
     {
         // Remove item on UI thread to make sure it's not being painted at the same time
-        parentActivity.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (items.remove(object)) {
-                    doRefreshList();
-                }
+        parentActivity.runOnUiThread(() -> {
+            if (items.remove(object)) {
+                doRefreshList();
             }
         });
     }
@@ -156,13 +151,7 @@ public abstract class CollectionAdapter<T> extends BaseAdapter
      */
     protected void doRefreshList()
     {
-        parentActivity.runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                notifyDataSetChanged();
-            }
-        });
+        parentActivity.runOnUiThread(() -> notifyDataSetChanged());
     }
 
     /**

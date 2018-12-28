@@ -284,7 +284,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Create a video bridge</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Create / Join video conference</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Create a new video conference for this chat room</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">The device camera cannot support selected video resolution while in portrait mode. Please place phone in landscape orientation for video call:\n[width=%1$s; height=%2$s]</string>
+    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Failed to set device camera preview to: %1$s; Exception: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Disconnected</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Disconnecting %1$s</string>
     <string name="service_gui_DENY">Deny</string>
@@ -1248,6 +1248,11 @@
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_OFF">Hide aTalk active indicator in notification</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">Show aTalk active indicator in notification</string>
 
+    <!-- aTalk auto start -->
+    <string name="service_gui_settings_AUTO_START">Auto start aTalk on reboot</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_DISABLE">Disable aTalk auto start on next reboot</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_ENABLE">Enable aTalk auto start on next reboot</string>
+
     <!-- Locale -->
     <string name="service_gui_settings_LOCALE">Language</string>
     <string name="settings_language_system">System default</string>
@@ -1312,7 +1317,6 @@
     <string name="service_gui_settings_VIDEO_CODECS_SUMMARY">Select and define priority for video codecs</string>
     <string name="service_gui_settings_VIDEO_CODECS_TITLE">Video codecs</string>
     <!-- Video resolution -->
-    <string name="service_gui_settings_AUTO_RESOLUTION">Auto</string>
     <string name="service_gui_settings_VIDEO_RESOLUTION">Video resolution</string>
     <!-- Frame rate -->
     <string name="service_gui_settings_LIMIT_FPS_OFF">Unlimited</string>

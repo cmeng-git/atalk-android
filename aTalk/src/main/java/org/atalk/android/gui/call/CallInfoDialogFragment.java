@@ -101,13 +101,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
 		View main = inflater.inflate(R.layout.call_info, container, true);
 
         View cancelBtn = main.findViewById(R.id.call_info_ok);
-        cancelBtn.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
-                dismiss();
-            }
-        });
+        cancelBtn.setOnClickListener(view -> dismiss());
 
 		// Sets the title.
 		getDialog().setTitle(R.string.service_gui_callinfo_TECHNICAL_CALL_INFO);
@@ -119,13 +113,10 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
 	 */
 	private void updateView()
 	{
-		runOnUiThread(new Runnable() {
-			public void run()
-			{
-				if (getView() != null)
-					doUpdateView();
-			}
-		});
+		runOnUiThread(() -> {
+            if (getView() != null)
+                doUpdateView();
+        });
 	}
 
 	/**

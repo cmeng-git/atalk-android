@@ -142,14 +142,7 @@ public class PulseAudioSystem extends AudioSystem
 						proplist = 0;
 					}
 
-					Runnable stateCallback = new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							signalMainloop(false);
-						}
-					};
+					Runnable stateCallback = () -> signalMainloop(false);
 
 					lockMainloop();
 					try {

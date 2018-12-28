@@ -118,18 +118,13 @@ public class EntityListHelper
     private static void doRemoveContact(final MetaContact contact)
     {
         // Prevent NetworkOnMainThreadException
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Context ctx = aTalkApp.getGlobalContext();
-                MetaContactListService mls = AndroidGUIActivator.getContactListService();
-                try {
-                    mls.removeMetaContact(contact);
-                } catch (Exception ex) {
-                    AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_CONTACT), ex.getMessage());
-                }
+        new Thread(() -> {
+            Context ctx = aTalkApp.getGlobalContext();
+            MetaContactListService mls = AndroidGUIActivator.getContactListService();
+            try {
+                mls.removeMetaContact(contact);
+            } catch (Exception ex) {
+                AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_CONTACT), ex.getMessage());
             }
         }).start();
     }
@@ -179,17 +174,12 @@ public class EntityListHelper
     private static void doRemoveGroup(final MetaContactGroup group)
     {
         // Prevent NetworkOnMainThreadException
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Context ctx = aTalkApp.getGlobalContext();
-                try {
-                    AndroidGUIActivator.getContactListService().removeMetaContactGroup(group);
-                } catch (Exception ex) {
-                    AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_GROUP), ex.getMessage());
-                }
+        new Thread(() -> {
+            Context ctx = aTalkApp.getGlobalContext();
+            try {
+                AndroidGUIActivator.getContactListService().removeMetaContactGroup(group);
+            } catch (Exception ex) {
+                AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_GROUP), ex.getMessage());
             }
         }).start();
     }

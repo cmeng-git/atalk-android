@@ -197,14 +197,8 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
 	 * The <tt>Runnable</tt> which is executed to bring the invocations of
 	 * {@link #reflectInputFormatOnComponent()} into the AWT event dispatching thread.
 	 */
-	private final Runnable reflectInputFormatOnComponentInEventDispatchThread = new Runnable()
-	{
-		@Override
-		public void run()
-		{
-			reflectInputFormatOnComponentInEventDispatchThread();
-		}
-	};
+	private final Runnable reflectInputFormatOnComponentInEventDispatchThread
+            = () -> reflectInputFormatOnComponentInEventDispatchThread();
 
 	/**
 	 * The last known width of the input processed by this <tt>JAWTRenderer</tt>.
@@ -386,14 +380,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
 		// The #addNotify() invocation, if any, should happen outside the
 		// synchronized block in order to avoid a deadlock.
 		if (addNotify) {
-			SwingUtilities.invokeLater(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					component.addNotify();
-				}
-			});
+			SwingUtilities.invokeLater(() -> component.addNotify());
 		}
 	}
 

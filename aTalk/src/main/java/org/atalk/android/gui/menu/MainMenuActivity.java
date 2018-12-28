@@ -221,21 +221,16 @@ public class MainMenuActivity extends ExitMenuActivity
             enableMenu = false;
 
         // runOnUiThread to update view
-        this.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                // videoBridgeMenuItem is always enabled - allow user to re-trigger if earlier init failed
-                videoBridgeMenuItem.setEnabled(true);
+        this.runOnUiThread(() -> {
+            // videoBridgeMenuItem is always enabled - allow user to re-trigger if earlier init failed
+            videoBridgeMenuItem.setEnabled(true);
 
-                if (enableMenu) {
-                    videoBridgeMenuItem.getIcon().setAlpha(255);
-                }
-                else {
-                    videoBridgeMenuItem.getIcon().setAlpha(80);
-                    menuVbItem = null;
-                }
+            if (enableMenu) {
+                videoBridgeMenuItem.getIcon().setAlpha(255);
+            }
+            else {
+                videoBridgeMenuItem.getIcon().setAlpha(80);
+                menuVbItem = null;
             }
         });
     }
@@ -261,21 +256,16 @@ public class MainMenuActivity extends ExitMenuActivity
             progressDialog = null;
         }
 
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try {
-                    initVideoBridge_task();
-                    Thread.sleep(100);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    done = true;
-                    progressDialog.dismiss();
-                }
+        new Thread(() -> {
+            try {
+                initVideoBridge_task();
+                Thread.sleep(100);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            if (progressDialog != null && progressDialog.isShowing()) {
+                done = true;
+                progressDialog.dismiss();
             }
         }).start();
     }
@@ -449,14 +439,9 @@ public class MainMenuActivity extends ExitMenuActivity
         switch (event.getType()) {
             case ServiceEvent.REGISTERED:
             case ServiceEvent.UNREGISTERING:
-                OSGiActivity.uiHandler.post(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        if (videoBridgeMenuItem != null) {
-                            initVideoBridge();
-                        }
+                OSGiActivity.uiHandler.post(() -> {
+                    if (videoBridgeMenuItem != null) {
+                        initVideoBridge();
                     }
                 });
                 break;
@@ -467,15 +452,10 @@ public class MainMenuActivity extends ExitMenuActivity
     public void contactPresenceStatusChanged(final ContactPresenceStatusChangeEvent evt)
     {
         // cmeng - how to add the listener onResume - multiple protocol providers???
-        OSGiActivity.uiHandler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Contact sourceContact = evt.getSourceContact();
-                if (videoBridgeMenuItem != null) {
-                    initVideoBridge();
-                }
+        OSGiActivity.uiHandler.post(() -> {
+            Contact sourceContact = evt.getSourceContact();
+            if (videoBridgeMenuItem != null) {
+                initVideoBridge();
             }
         });
     }

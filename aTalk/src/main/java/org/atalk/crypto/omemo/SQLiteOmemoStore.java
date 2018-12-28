@@ -624,14 +624,8 @@ public class SQLiteOmemoStore extends SignalOmemoStore
             mDB.storeCachedDeviceList(userDevice, contact, contactDeviceList);
         } catch (CannotEstablishOmemoSessionException | CorruptedOmemoKeyException e) {
             final String errMsg = e.getMessage();
-            new Handler(Looper.getMainLooper()).post(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    Toast.makeText(aTalkApp.getGlobalContext(), errMsg, Toast.LENGTH_SHORT).show();
-                }
-            });
+            new Handler(Looper.getMainLooper()).post(()
+                    -> Toast.makeText(aTalkApp.getGlobalContext(), errMsg, Toast.LENGTH_SHORT).show());
         }
     }
 

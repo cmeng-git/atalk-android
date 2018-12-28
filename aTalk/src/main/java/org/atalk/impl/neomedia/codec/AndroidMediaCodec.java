@@ -112,8 +112,8 @@ public class AndroidMediaCodec extends AbstractCodec2
 		 * colorFormats out of the loop bellow in order to minimize the production of garbage.
 		 */
 		List<Format> bSupportedFormats = null;
-		List<Format> supportedInputFormats = new ArrayList<Format>();
-		List<Format> supportedOutputFormats = new ArrayList<Format>();
+		List<Format> supportedInputFormats = new ArrayList<>();
+		List<Format> supportedOutputFormats = new ArrayList<>();
 		boolean loggerIsDebugEnabled = logger.isDebugEnabled();
 
 		for (int codecIndex = 0, codecCount = MediaCodecList.getCodecCount();
@@ -161,7 +161,7 @@ public class AndroidMediaCodec extends AbstractCodec2
 						continue;
 
 					if (bSupportedFormats == null) {
-						bSupportedFormats = new ArrayList<Format>(colorFormats.length);
+						bSupportedFormats = new ArrayList<>(colorFormats.length);
 					}
 					bSupportedFormats.add(bSupportedFormat);
 				}
@@ -669,7 +669,7 @@ public class AndroidMediaCodec extends AbstractCodec2
 		 * the multiple MediaCodecs in question.
 		 */
 
-		List<Format> outputFormats = new LinkedList<Format>();
+		List<Format> outputFormats = new LinkedList<>();
 
 		for (int codecIndex = 0, codecCount = MediaCodecList.getCodecCount(); codecIndex < codecCount; codecIndex++) {
 			MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(codecIndex);
@@ -862,13 +862,11 @@ public class AndroidMediaCodec extends AbstractCodec2
 				// the size/Dimension.
 				if (inputFormat instanceof VideoFormat) {
 					Dimension size = ((VideoFormat) inputFormat).getSize();
-
 					if (size == null)
 						size = new Dimension(640, 480);
-					if (size != null) {
-						format.setInteger(MediaFormat.KEY_HEIGHT, size.height);
-						format.setInteger(MediaFormat.KEY_WIDTH, size.width);
-					}
+
+                    format.setInteger(MediaFormat.KEY_HEIGHT, size.height);
+                    format.setInteger(MediaFormat.KEY_WIDTH, size.width);
 				}
 
 				mediaCodec.configure(format, null, null, flags);

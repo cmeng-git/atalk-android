@@ -205,32 +205,22 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
             mInviteButton.setAlpha(1.0f);
         }
 
-        mInviteButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
-                if (mContacts.size() != 0) {
-                    if (isJitsiVideobridge)
-                        inviteJitsiVideobridgeContacts(preselectedProtocolProvider, mContacts);
-                    else
-                        inviteContacts(mContacts);
+        mInviteButton.setOnClickListener(v -> {
+            List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
+            if (mContacts.size() != 0) {
+                if (isJitsiVideobridge)
+                    inviteJitsiVideobridgeContacts(preselectedProtocolProvider, mContacts);
+                else
+                    inviteContacts(mContacts);
 
-                    // Store the last used account in order to pre-select it next time.
-                    ConfigurationUtils.setLastCallConferenceProvider(preselectedProtocolProvider);
-                    closeDialog();
-                }
+                // Store the last used account in order to pre-select it next time.
+                ConfigurationUtils.setLastCallConferenceProvider(preselectedProtocolProvider);
+                closeDialog();
             }
         });
 
         mCancelButton = this.findViewById(R.id.buttonCancel);
-        mCancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                closeDialog();
-            }
-        });
+        mCancelButton.setOnClickListener(v -> closeDialog());
         // this.initContactListData();
     }
 

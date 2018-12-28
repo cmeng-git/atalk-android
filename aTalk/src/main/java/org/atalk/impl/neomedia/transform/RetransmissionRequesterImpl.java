@@ -80,14 +80,7 @@ public class RetransmissionRequesterImpl extends SinglePacketTransformerAdapter
         this.stream = stream;
         retransmissionRequesterDelegate = new RetransmissionRequesterDelegate(stream, new TimeProvider());
         recurringRunnableExecutor.registerRecurringRunnable(retransmissionRequesterDelegate);
-        retransmissionRequesterDelegate.setWorkReadyCallback(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                recurringRunnableExecutor.startOrNotifyThread();
-            }
-        });
+        retransmissionRequesterDelegate.setWorkReadyCallback(() -> recurringRunnableExecutor.startOrNotifyThread());
     }
 
     /**

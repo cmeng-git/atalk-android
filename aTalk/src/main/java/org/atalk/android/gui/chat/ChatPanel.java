@@ -846,14 +846,10 @@ public class ChatPanel implements Chat, MessageListener
     {
         if (isChatFocused()) {
             final Activity activity = aTalkApp.getCurrentActivity();
-            activity.runOnUiThread(new Runnable()
-            {
-                public void run()
-                {
-                    PresenceStatus presenceStatus = chatTransport.getStatus();
-                    ActionBarUtil.setSubtitle(activity, presenceStatus.getStatusName());
-                    ActionBarUtil.setStatus(activity, presenceStatus.getStatusIcon());
-                }
+            activity.runOnUiThread(() -> {
+                PresenceStatus presenceStatus = chatTransport.getStatus();
+                ActionBarUtil.setSubtitle(activity, presenceStatus.getStatusName());
+                ActionBarUtil.setStatus(activity, presenceStatus.getStatusIcon());
             });
         }
 
@@ -876,13 +872,9 @@ public class ChatPanel implements Chat, MessageListener
     {
         if (isChatFocused()) {
             final Activity activity = aTalkApp.getCurrentActivity();
-            activity.runOnUiThread(new Runnable()
-            {
-                public void run()
-                {
-                    if (mChatSession instanceof MetaContactChatSession) {
-                        ActionBarUtil.setTitle(activity, name);
-                    }
+            activity.runOnUiThread(() -> {
+                if (mChatSession instanceof MetaContactChatSession) {
+                    ActionBarUtil.setTitle(activity, name);
                 }
             });
         }
@@ -914,22 +906,18 @@ public class ChatPanel implements Chat, MessageListener
     {
         if (isChatFocused()) {
             final Activity activity = aTalkApp.getCurrentActivity();
-            activity.runOnUiThread(new Runnable()
-            {
-                public void run()
-                {
-                    // cmeng: check instanceof just in case
-                    if (mChatSession instanceof ConferenceChatSession) {
-                        ActionBarUtil.setStatus(activity, mChatSession.getChatStatusIcon());
+            activity.runOnUiThread(() -> {
+                // cmeng: check instanceof just in case
+                if (mChatSession instanceof ConferenceChatSession) {
+                    ActionBarUtil.setStatus(activity, mChatSession.getChatStatusIcon());
 
-                        // mSubTitle = ccSession.getChatSubject();
-                        String mSubTitle = "";
-                        Iterator<ChatContact<?>> mParticipants = mChatSession.getParticipants();
-                        while (mParticipants.hasNext()) {
-                            mSubTitle += mParticipants.next().getName() + ", ";
-                        }
-                        ActionBarUtil.setSubtitle(activity, mSubTitle);
+                    // mSubTitle = ccSession.getChatSubject();
+                    String mSubTitle = "";
+                    Iterator<ChatContact<?>> mParticipants = mChatSession.getParticipants();
+                    while (mParticipants.hasNext()) {
+                        mSubTitle += mParticipants.next().getName() + ", ";
                     }
+                    ActionBarUtil.setSubtitle(activity, mSubTitle);
                 }
             });
         }

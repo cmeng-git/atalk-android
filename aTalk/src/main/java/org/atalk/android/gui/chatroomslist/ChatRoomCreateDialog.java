@@ -107,23 +107,13 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         new initComboBox().execute();
 
         mJoinButton = this.findViewById(R.id.button_Join);
-        mJoinButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                createOrJoinChatRoom();
-                closeDialog();
-            }
+        mJoinButton.setOnClickListener(v -> {
+            createOrJoinChatRoom();
+            closeDialog();
         });
 
         Button mCancelButton = this.findViewById(R.id.button_Cancel);
-        mCancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                closeDialog();
-            }
-        });
+        mCancelButton.setOnClickListener(v -> closeDialog());
         setCanceledOnTouchOutside(false);
     }
 

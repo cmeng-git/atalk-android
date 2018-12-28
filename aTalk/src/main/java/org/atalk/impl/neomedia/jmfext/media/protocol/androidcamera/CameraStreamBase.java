@@ -46,7 +46,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     /**
      * ID of the camera used by this instance.
      */
-    protected final int mCameraId;
+    protected static int mCameraId;
 
     /**
      * Camera object.
@@ -61,7 +61,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     /**
      * Final previewSize use for streaming
      */
-    protected Dimension mPreviewSize;
+    protected static Dimension mPreviewSize;
 
     // Camera rotation
     protected int mRotation;
@@ -99,7 +99,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
      *
      * Note: Samsung note8 has problem of supporting the rotated 4:3 dimension in portrait mode. So use 1:1
      *
-     * @throws IOException
+     * @throws IOException IO exception
      */
     protected void startImpl()
             throws IOException
@@ -119,18 +119,9 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
             DeviceConfiguration deviceConfig = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration();
             Dimension videoSize = deviceConfig.getVideoSize();
 
-            // note8 cannot support rotated landscape preview dimension
-            if (Build.MODEL.contains("N950F") && swap) {
-                videoSize = new Dimension(736, 736);
-                // aTalkApp.showAlertDialogOnUI(aTalkApp.getResString(R.string.service_gui_ERROR),
-                //        R.string.service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED, videoSize.width, videoSize.height);
-            }
-
             // Find optimised video resolution with user selected against device support formats
-            mPreviewSize = videoSize;
-            List<Size> previewSizes = params.getSupportedPreviewSizes();
-            Dimension optimizedSize = CameraUtils.getOptimalPreviewSize(previewSizes, mPreviewSize, swap);
-
+            List<Size> supportedPreviewSizes = params.getSupportedPreviewSizes();
+            Dimension optimizedSize = CameraUtils.getOptimalPreviewSize(videoSize, supportedPreviewSizes);
             // Set preview display orientation according to device rotation
             if (swap) {
                 mPreviewSize = new Dimension(optimizedSize.height, optimizedSize.width);
@@ -139,12 +130,13 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
                 mPreviewSize = optimizedSize;
             }
 
-            // Streaming video always send in landscape mode irrespectively of phone orientation
-            mFormat.setVideoSize(optimizedSize);
+            // Streaming video always send in dimension according to the phone orientation
+            mFormat.setVideoSize(mPreviewSize);
             logger.info("Camera stream format: " + mFormat);
 
             params.setRotation(mRotation);
-            params.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
+            // Always set camera capture in its native dimension - otherwise may not be supported.
+            params.setPreviewSize(optimizedSize.width, optimizedSize.height);
             // Change camera preview default format NV21 to YV12.
             params.setPreviewFormat(ImageFormat.YV12);
             mCamera.setParameters(params);
@@ -155,7 +147,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
         } catch (Exception e) {
             logger.error("Set camera preview failed: ", e);
             aTalkApp.showAlertDialogOnUI(aTalkApp.getResString(R.string.service_gui_ERROR),
-                    R.string.service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED, mPreviewSize.width, mPreviewSize.height);
+                    R.string.service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED, mPreviewSize.toString(), e.getMessage());
 
             // Close camera on error
             if (mCamera != null) {
@@ -249,5 +241,13 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
             logger.debug("Avg frame rate: " + (1000 / (movAvg / avg.length)));
         }
         return delay;
+    }
+
+    /**
+     * @return the current selected cameraId
+     */
+    public static int getCameraId()
+    {
+        return mCameraId;
     }
 }

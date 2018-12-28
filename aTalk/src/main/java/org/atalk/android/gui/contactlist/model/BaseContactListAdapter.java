@@ -114,16 +114,11 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     {
         // Expand group view only when contactListView is in focus (UI mode)
         // cmeng - do not use isFocused() - may not in sync with actual
-        uiHandler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                int count = getGroupCount();
-                for (int position = 0; position < count; position++) {
-                    if (contactListView != null)
-                        contactListView.expandGroup(position);
-                }
+        uiHandler.post(() -> {
+            int count = getGroupCount();
+            for (int position = 0; position < count; position++) {
+                if (contactListView != null)
+                    contactListView.expandGroup(position);
             }
         });
     }
@@ -134,13 +129,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     public void invalidateViews()
     {
         if (contactListView != null) {
-            contactListFragment.runOnUiThread(new Runnable()
-            {
-                public void run()
-                {
-                    contactListView.invalidateViews();
-                }
-            });
+            contactListFragment.runOnUiThread(() -> contactListView.invalidateViews());
         }
     }
 

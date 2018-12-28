@@ -6,6 +6,7 @@
 package org.atalk.android.gui.account;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -83,7 +84,7 @@ public class AccountsListActivity extends OSGiActivity
     private static AccountEnableThread accEnableThread;
 
     @Override
-    protected void onCreate(android.os.Bundle savedInstanceState)
+    protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         if (AndroidGUIActivator.bundleContext == null) {
@@ -190,14 +191,7 @@ public class AccountsListActivity extends OSGiActivity
         int id = item.getItemId();
         if (id == R.id.remove) {
             RemoveAccountDialog.create(this, clickedAccount,
-                    new RemoveAccountDialog.OnAccountRemovedListener()
-                    {
-                        @Override
-                        public void onAccountRemoved(Account account)
-                        {
-                            listAdapter.remove(account);
-                        }
-                    }).show();
+                    account -> listAdapter.remove(account)).show();
             return true;
         }
         else if (id == R.id.account_settings) {
@@ -305,25 +299,20 @@ public class AccountsListActivity extends OSGiActivity
             View rowView = super.getView(isDropDown, account, parent, inflater);
 
             rowView.setClickable(true);
-            rowView.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    // Start only for registered accounts
-                    if (account.getProtocolProvider() != null) {
-                        startPreferenceActivity(account);
+            rowView.setOnClickListener(v -> {
+                // Start only for registered accounts
+                if (account.getProtocolProvider() != null) {
+                    startPreferenceActivity(account);
+                }
+                else {
+                    String msg = getString(R.string.service_gui_ACCOUNT_UNREGISTERED, account.getAccountName());
+                    if (offlineToast == null) {
+                        offlineToast = Toast.makeText(AccountsListActivity.this, msg, Toast.LENGTH_SHORT);
                     }
                     else {
-                        String msg = getString(R.string.service_gui_ACCOUNT_UNREGISTERED, account.getAccountName());
-                        if (offlineToast == null) {
-                            offlineToast = Toast.makeText(AccountsListActivity.this, msg, Toast.LENGTH_SHORT);
-                        }
-                        else {
-                            offlineToast.setText(msg);
-                        }
-                        offlineToast.show();
+                        offlineToast.setText(msg);
                     }
+                    offlineToast.show();
                 }
             });
             rowView.setOnLongClickListener(new View.OnLongClickListener()
@@ -407,7 +396,7 @@ public class AccountsListActivity extends OSGiActivity
                 logger.error(e.getMessage(), e);
             } finally {
                 if (DialogActivity.waitForDialogOpened(progressDialog)) {
-                    DialogActivity.closeDialog(aTalkApp.getGlobalContext(), progressDialog);
+                    DialogActivity.closeDialog(progressDialog);
                 }
                 else {
                     logger.error("Failed to wait for the dialog: " + progressDialog);

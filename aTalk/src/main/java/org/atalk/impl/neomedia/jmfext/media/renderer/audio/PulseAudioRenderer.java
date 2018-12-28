@@ -338,14 +338,7 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
 				throw new ResourceUnavailableException("pa_buffer_attr_new");
 
 			try {
-				Runnable stateCallback = new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						audioSystem.signalMainloop(false);
-					}
-				};
+				Runnable stateCallback = () -> audioSystem.signalMainloop(false);
 
 				PA.stream_set_state_callback(stream, stateCallback);
 				String dev = getLocatorDev();

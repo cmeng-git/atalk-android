@@ -118,13 +118,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
 
         // checking this can be slow so make sure its out of our way
-        new Thread(new Runnable()
-        {
-            public void run()
-            {
-                checkImCaps();
-            }
-        }).start();
+        new Thread(() -> checkImCaps()).start();
     }
 
     /**

@@ -127,27 +127,17 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         View content = inflater.inflate(R.layout.zrtp_info_dialog, container, false);
 
         View cancelBtn = content.findViewById(R.id.zrtp_ok);
-        cancelBtn.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
-                dismiss();
-            }
-        });
+        cancelBtn.setOnClickListener(view -> dismiss());
 
         View confirmBtn = content.findViewById(R.id.security_confirm);
-        confirmBtn.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
-                if (mediaAwarePeer.getCall() == null)
-                    return;
+        confirmBtn.setOnClickListener(view -> {
+            if (mediaAwarePeer.getCall() == null)
+                return;
 
-                // Confirms / clears SAS confirmation status
-                masterControl.setSASVerification(!masterControl.isSecurityVerified());
-                updateVerificationStatus();
-                notifySasVerified(masterControl.isSecurityVerified());
-            }
+            // Confirms / clears SAS confirmation status
+            masterControl.setSASVerification(!masterControl.isSecurityVerified());
+            updateVerificationStatus();
+            notifySasVerified(masterControl.isSecurityVerified());
         });
 
         getDialog().setTitle(R.string.service_gui_SECURITY_INFO);
@@ -379,13 +369,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      */
     private void refreshVideoOnUIThread()
     {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                updateVideoSecureStatus(isVideoSecure());
-            }
-        });
+        runOnUiThread(() -> updateVideoSecureStatus(isVideoSecure()));
     }
 
     /**

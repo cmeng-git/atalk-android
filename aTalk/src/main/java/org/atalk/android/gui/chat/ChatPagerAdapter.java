@@ -207,28 +207,16 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     @Override
     public void chatClosed(final Chat chat)
     {
-        parent.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                removeChatSession(((ChatPanel) chat).getChatSession().getChatId());
-            }
-        });
+        parent.runOnUiThread(() -> removeChatSession(((ChatPanel) chat).getChatSession().getChatId()));
     }
 
     @Override
     public void chatCreated(final Chat chat)
     {
-        parent.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                synchronized (chats) {
-                    chats.add(((ChatPanel) chat).getChatSession().getChatId());
-                    notifyDataSetChanged();
-                }
+        parent.runOnUiThread(() -> {
+            synchronized (chats) {
+                chats.add(((ChatPanel) chat).getChatSession().getChatId());
+                notifyDataSetChanged();
             }
         });
     }

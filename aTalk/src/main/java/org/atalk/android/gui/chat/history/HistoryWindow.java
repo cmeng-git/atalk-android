@@ -308,20 +308,15 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
                 }
 
             if ((msgList != null) && (msgList.size() > 0)) {
-                Runnable updateDatesPanel = new Runnable()
-                {
-                    public void run()
-                    {
-                        Date date = null;
-                        for (Date curr : datesDisplayed) {
-                            date = curr;
-                        }
-                        if (date != null) {
-                            ignoreProgressDate = date;
-                        }
-                        // Initializes the conversation panel with the data of the last
-                        // conversation.
+                Runnable updateDatesPanel = () -> {
+                    Date date = null;
+                    for (Date curr : datesDisplayed) {
+                        date = curr;
                     }
+                    if (date != null) {
+                        ignoreProgressDate = date;
+                    }
+                    // Initializes the conversation panel with the data of the last conversation.
                 };
             }
         }
@@ -366,12 +361,8 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
             else
                 msgList = null;
 
-            Runnable updateMessagesPanel = new Runnable()
-            {
-                public void run()
-                {
-                    String doc = createHistory(msgList);
-                }
+            Runnable updateMessagesPanel = () -> {
+                String doc = createHistory(msgList);
             };
         }
     }
@@ -434,20 +425,16 @@ public class HistoryWindow implements HistorySearchProgressListener, MessageList
                     }
                 }
 
-            Runnable updateDatesPanel = new Runnable()
-            {
-                public void run()
-                {
-                    if (keywordDatesVector.size() > 0) {
-                        Date date = null;
-                        for (int i = 0; i < keywordDatesVector.size(); i++) {
-                            date = keywordDatesVector.get(i);
-                        }
-                        if (date != null) {
-                        }
+            Runnable updateDatesPanel = () -> {
+                if (keywordDatesVector.size() > 0) {
+                    Date date = null;
+                    for (int i = 0; i < keywordDatesVector.size(); i++) {
+                        date = keywordDatesVector.get(i);
                     }
-                    else {
+                    if (date != null) {
                     }
+                }
+                else {
                 }
             };
         }

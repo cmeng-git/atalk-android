@@ -723,7 +723,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         rtpConnectorTarget = null;
 
         if (deviceSession != null)
-            deviceSession.close();
+            deviceSession.close(MediaDirection.SENDRECV);
     }
 
     /**
@@ -2238,7 +2238,7 @@ public class MediaStreamImpl extends AbstractMediaStream
 
                 // keep player active
                 deviceSession.setDisposePlayerOnClose(!(deviceSession instanceof VideoMediaDeviceSession));
-                deviceSession.close();
+                deviceSession.close(MediaDirection.SENDONLY);
                 deviceSession = null;
             }
             else {
@@ -2839,7 +2839,7 @@ public class MediaStreamImpl extends AbstractMediaStream
             List<ReceiveStream> receiveStreamsToRemove = new ArrayList<>();
             if (evReceiveStream != null) {
                 receiveStreamsToRemove.add(evReceiveStream);
-                logger.warn("### Receiving stream TimeoutEvent occurred!!!");
+                logger.warn("### Receiving stream TimeoutEvent occurred for: " + evReceiveStream);
             }
             else if (participant != null) {
                 Collection<ReceiveStream> receiveStreams = getReceiveStreams();
@@ -2855,7 +2855,7 @@ public class MediaStreamImpl extends AbstractMediaStream
             }
 
             // cmeng: can happen when remote video streaming is enabled but arriving
-            // late/TimeoutEvent happen
+            // late/TimeoutEvent happen or remote video streaming is stop/terminated
             for (ReceiveStream receiveStream : receiveStreamsToRemove) {
                 removeReceiveStream(receiveStream);
 

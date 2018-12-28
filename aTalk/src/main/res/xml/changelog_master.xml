@@ -6,7 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="1.6.3 (12/17/2019)" versioncode="1063">
+    <release version="1.6.4 (12/28/2018)" versioncode="1064">
+        <change>Add user option for aTalk auto start on device reboot</change>
+        <change>Implement full screen playback for remote video during media call</change>
+        <change>Remove restriction on camera resolutions support for phone either in portrait or landscape mode</change>
+        <change>Local preview and streaming video dimension shall follow phone orientation</change>
+        <change>Remove auto &amp; add new resolutions in video resolution settings</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
+    <release version="1.6.3 (12/17/2018)" versioncode="1063">
         <change>Implement Fault-tolerant negotiation for file transfer using Socks5ByteStream with IbbByteStream fallback</change>
         <change>Allow account connection by either its fully qualified domain name (FQDN) or its IP</change>
         <change>Change account setting to direct access and move account info access to context menu</change>

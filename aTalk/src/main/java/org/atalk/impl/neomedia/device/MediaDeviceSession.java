@@ -175,7 +175,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     private MediaDirection startedDirection = MediaDirection.INACTIVE;
 
     /**
-     * If the player have to be disposed when we {@link #close()} this instance.
+     * If the player have to be disposed when we {@link #close(MediaDirection)} this instance.
      */
     private boolean disposePlayerOnClose = true;
 
@@ -307,11 +307,14 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     /**
      * Releases the resources allocated by this instance in the course of its execution and
      * prepares it to be garbage collected.
+     *
+     * cmeng: should close only the required direction e.g. toggle camera should not close remote video
+     * Need to clean up this section
      */
-    public void close()
+    public void close(MediaDirection direction)
     {
         try {
-            stop(MediaDirection.SENDRECV);
+            stop(direction);
         } finally {
             /*
              * XXX The order of stopping the playback and capture is important here because when we
@@ -1801,8 +1804,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
         MediaDirection oldValue = startedDirection;
         switch (startedDirection) {
             case SENDRECV:
-                if (direction.allowsReceiving())
-                    startedDirection = direction.allowsSending() ? MediaDirection.INACTIVE : MediaDirection.SENDONLY;
+                if (direction.equals(startedDirection))
+                    startedDirection = MediaDirection.INACTIVE;
+                else if (direction.allowsReceiving())
+                    startedDirection = MediaDirection.SENDONLY;
                 else if (direction.allowsSending())
                     startedDirection = MediaDirection.RECVONLY;
                 break;

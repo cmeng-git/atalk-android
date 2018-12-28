@@ -249,8 +249,7 @@ public class AsyncExecutor<T extends Runnable>
 
     protected void uncaughtException(T command, Throwable exception)
     {
-        Logger.getLogger(AsyncExecutor.class)
-                .error("Error executing command "+command, exception);
+        Logger.getLogger(AsyncExecutor.class).error("Error executing command "+command, exception);
     }
 
     private static class CommandFuture<T extends Runnable>
@@ -324,7 +323,7 @@ public class AsyncExecutor<T extends Runnable>
 
         public synchronized boolean isCancelled()
         {
-            return ((done != null) && !done.booleanValue());
+            return ((done != null) && !done);
         }
 
         public synchronized boolean isDone()

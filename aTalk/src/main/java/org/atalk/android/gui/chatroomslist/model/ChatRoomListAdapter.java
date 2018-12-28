@@ -618,13 +618,6 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
      */
     private void uiChangeUpdate()
     {
-        uiHandler.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                notifyDataSetChanged();
-            }
-        });
+        uiHandler.post(() -> notifyDataSetChanged());
     }
 }

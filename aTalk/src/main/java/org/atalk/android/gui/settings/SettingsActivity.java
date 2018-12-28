@@ -62,6 +62,7 @@ public class SettingsActivity extends OSGiActivity
     static public final String P_KEY_THEME = aTalkApp.getResString(R.string.pref_key_theme);
 
     // Message section
+    static private final String P_KEY_AUTO_START = aTalkApp.getResString(R.string.pref_key_atalk_auto_start);
     static private final String P_KEY_LOG_CHAT_HISTORY = aTalkApp.getResString(R.string.pref_key_history_logging);
     static private final String P_KEY_SHOW_HISTORY = aTalkApp.getResString(R.string.pref_key_show_history);
     static private final String P_KEY_HISTORY_SIZE = aTalkApp.getResString(R.string.pref_key_chat_history_size);
@@ -293,6 +294,9 @@ public class SettingsActivity extends OSGiActivity
             historySizePref.setText("" + ConfigurationUtils.getChatHistorySize());
             updateHistorySizeSummary();
 
+            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_AUTO_START,
+                    ConfigurationUtils.isAutoStartEnable());
+
             PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_CHAT_STATE_NOTIFICATIONS,
                     ConfigurationUtils.isSendChatStateNotifications());
 
@@ -433,15 +437,10 @@ public class SettingsActivity extends OSGiActivity
             updateHwCodecStatus(currentCamera);
 
             // Resolutions
-            int resCount = CameraUtils.PREFERRED_SIZES.length;
-            String[] resolutionValues = new String[resCount + 1];
-
-            // Auto resolution entry
-            String autoResStr = getString(R.string.service_gui_settings_AUTO_RESOLUTION);
-            resolutionValues[0] = autoResStr;
-
-            for (int i = 0; i < resolutionValues.length - 1; i++) {
-                resolutionValues[i + 1] = resToStr(CameraUtils.PREFERRED_SIZES[i]);
+            int resolutionSize = CameraUtils.PREFERRED_SIZES.length;
+            String[] resolutionValues = new String[resolutionSize];
+            for (int i = 0; i < resolutionSize; i++) {
+                resolutionValues[i] = resToStr(CameraUtils.PREFERRED_SIZES[i]);
             }
 
             ListPreference resList = (ListPreference) findPreference(P_KEY_VIDEO_RES);
@@ -449,15 +448,7 @@ public class SettingsActivity extends OSGiActivity
             resList.setEntryValues(resolutionValues);
 
             // Init current resolution
-            Dimension currentResDim = deviceConfig.getVideoSize();
-            Dimension autoResDim
-                    = new Dimension(DeviceConfiguration.DEFAULT_VIDEO_WIDTH, DeviceConfiguration.DEFAULT_VIDEO_HEIGHT);
-            if (currentResDim.equals(autoResDim)) {
-                resList.setValue(autoResStr);
-            }
-            else {
-                resList.setValue(resToStr(deviceConfig.getVideoSize()));
-            }
+            resList.setValue(resToStr(deviceConfig.getVideoSize()));
 
             // Frame rate
             String defaultFpsStr = "20";
@@ -485,7 +476,7 @@ public class SettingsActivity extends OSGiActivity
 
             // Summaries mapping
             summaryMapper.includePreference(cameraList, getString(R.string.service_gui_settings_NO_CAMERA));
-            summaryMapper.includePreference(resList, getString(R.string.service_gui_settings_AUTO_RESOLUTION));
+            summaryMapper.includePreference(resList, "1280x720");
             summaryMapper.includePreference(targetFpsPref, defaultFpsStr);
             summaryMapper.includePreference(maxBWPref, Integer.toString(DeviceConfiguration.DEFAULT_VIDEO_RTP_PACING_THRESHOLD));
             summaryMapper.includePreference(bitratePref, Integer.toString(DeviceConfiguration.DEFAULT_VIDEO_BITRATE));
@@ -516,7 +507,7 @@ public class SettingsActivity extends OSGiActivity
                 if (resToStr(resolution).equals(resStr))
                     return resolution;
             }
-            // "Auto" string won't match none of "120x320" strings so will return default for auto
+            // "Auto" string won't match the defined resolution strings so will return default for auto
             return new Dimension(DeviceConfiguration.DEFAULT_VIDEO_WIDTH, DeviceConfiguration.DEFAULT_VIDEO_HEIGHT);
         }
 
@@ -608,6 +599,10 @@ public class SettingsActivity extends OSGiActivity
                         Integer.toString(ConfigurationUtils.getChatHistorySize()));
                 ConfigurationUtils.setChatHistorySize(Integer.parseInt(intStr));
                 updateHistorySizeSummary();
+            }
+            else if (key.equals(P_KEY_AUTO_START)) {
+                ConfigurationUtils.setAutoStart(shPreferences.getBoolean(
+                        P_KEY_AUTO_START, ConfigurationUtils.isAutoStartEnable()));
             }
             else if (key.equals(P_KEY_CHAT_STATE_NOTIFICATIONS)) {
                 ConfigurationUtils.setSendChatStateNotifications(shPreferences.getBoolean(

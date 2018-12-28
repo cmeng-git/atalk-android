@@ -6,10 +6,17 @@
         android:title="@string/service_gui_settings_GENERAL">
 
         <org.atalk.android.gui.settings.widget.ConfigCheckBox
-            android:key="@string/pref_key_show_jitsi_icon"
+            android:key="@string/pref_key_show_atalk_icon"
             android:summaryOff="@string/service_gui_settings_SHOW_ICON_SUMMARY_OFF"
             android:summaryOn="@string/service_gui_settings_SHOW_ICON_SUMMARY_ON"
             android:title="@string/service_gui_settings_SHOW_ICON" />
+
+        <!-- aTalk auto start on next system reboot -->
+        <CheckBoxPreference
+            android:key="@string/pref_key_atalk_auto_start"
+            android:summaryOff="@string/service_gui_settings_AUTO_START_SUMMARY_DISABLE"
+            android:summaryOn="@string/service_gui_settings_AUTO_START_SUMMARY_ENABLE"
+            android:title="@string/service_gui_settings_AUTO_START" />
 
         <ListPreference
             android:dialogTitle="@string/service_gui_settings_LOCALE"

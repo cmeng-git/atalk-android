@@ -671,8 +671,7 @@ public class Skein implements ExtendedDigest {
          */
         void setTreeLevel(int value) throws Exception {
             if (value > 63)
-                throw new Exception(
-                        "Tree level must be between 0 and 63, inclusive.");
+                throw new Exception("Tree level must be between 0 and 63, inclusive.");
 
             tweak[1] &= ~((long) 0x7f << 48);
             tweak[1] |= (long) value << 48;

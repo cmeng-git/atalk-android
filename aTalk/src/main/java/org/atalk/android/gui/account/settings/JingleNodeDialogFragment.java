@@ -95,23 +95,15 @@ public class JingleNodeDialogFragment extends DialogFragment
             public void onShow(DialogInterface dialogInterface)
             {
                 Button pos = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                pos.setOnClickListener(new View.OnClickListener()
-                {
-                    public void onClick(View view)
-                    {
-                        if (saveChanges())
-                            dismiss();
-                    }
+                pos.setOnClickListener(view -> {
+                    if (saveChanges())
+                        dismiss();
                 });
                 Button neg = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
                 if (neg != null) {
-                    neg.setOnClickListener(new View.OnClickListener()
-                    {
-                        public void onClick(View view)
-                        {
-                            listener.removeJingleNode(descriptor);
-                            dismiss();
-                        }
+                    neg.setOnClickListener(view -> {
+                        listener.removeJingleNode(descriptor);
+                        dismiss();
                     });
                 }
             }

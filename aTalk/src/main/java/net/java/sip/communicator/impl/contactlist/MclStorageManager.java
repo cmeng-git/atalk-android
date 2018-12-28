@@ -443,7 +443,6 @@ public class MclStorageManager implements MetaContactListListener
         if (findMetaContactGroupEntry(mcGroupUid) == null) {
             logger.warn("Failed to find metaContactGroup for removal (may have been removed): "
                     + mcGroup.getGroupName());
-            // new Exception().printStackTrace();
             return;
         }
 
