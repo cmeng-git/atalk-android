@@ -33,6 +33,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.call.notification.CallNotificationManager;
+import org.atalk.android.gui.chat.conference.ConferenceChatTransport;
 import org.atalk.android.gui.util.ContentEditText;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.audioservice.SoundMeter;
@@ -635,7 +636,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         callBtn.setVisibility(View.INVISIBLE);
         audioBtn.setVisibility(View.INVISIBLE);
 
-        if (hasText) {
+        // audio message sending is not allow if it is not MetaContact
+        if (hasText || !(mChatTransport instanceof MetaContact)) {
             sendBtn.setVisibility(View.VISIBLE);
         }
         else {

@@ -6,7 +6,7 @@
 # See terms of license at gnu.org.
 #
 # Note to translators:
-# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by getI8NString()
+# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by get18NString()
 # - ensure the number of parameters and their designation are correctly specified.
 #
 # Do Not translate string values containing the patterns below. They are used internally only by code/source as key index etc
@@ -147,6 +147,7 @@
     <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">Ник уже существует</string>
 	<string name="service_gui_CHANGE_NICKNAME_ERROR">Ошибка при изменении псевдонима</string>
     <string name="service_gui_CHANGE_NICKNAME_LABEL">В поле ниже вы можете ввести новый псевдоним.</string>
+    <string name="service_gui_CHANGE_ROOM_INFO">Изменить информацию комнаты чата</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT">Изменить тему помещения&#8230;</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">В поле ниже вы можете ввести новый объект для этой комнаты.</string>
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Изменить качество удаленного видео</string>
@@ -176,7 +177,7 @@
 	<string name="service_gui_CHAT_ROOM_OPTIONS">Параметры чата</string>
 	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">Чат чата %1$s запросил пароль.</string>
 	<string name="service_gui_CHAT_ROOM">Чат</string>
-	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">{0} изменил объект на {1}</string>
+	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s изменил объект на %2$s</string>
 	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Вы можете продолжить разговор в следующем чате: %1$s</string>
 	<string name="service_gui_CHAT_ROOMS">Чаты</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">{0} теперь известен как {1}</string>
@@ -1500,6 +1501,7 @@
 
     <string name="permission_rationale_message">Вам предоставляется каждая услуга, необходимая для aTalk; разрешите aTalk получить доступ к этим службам для поддержки всех поддерживаемых функций</string>
     <string name="permission_rationale_settings_button_text">НАСТРОЙКИ</string>
+    <string name="permission_rationale_title">aTalk нужны разрешения</string>
 
 	<!--Location string constant -->
     <string name="location_permission_dialog_title">Требуется разрешение на размещение</string>

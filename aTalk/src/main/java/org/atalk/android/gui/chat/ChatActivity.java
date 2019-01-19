@@ -31,7 +31,7 @@ import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
-import org.atalk.android.gui.chatroomslist.ChatRoomInfoFragment;
+import org.atalk.android.gui.chatroomslist.*;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
@@ -81,7 +81,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
      * view hierarchy in an idle state. Pages beyond this limit will be recreated from the adapter when needed.
      * Note: this is not the max fragments that user is allowed to have
      */
-    private final int CHAT_PAGER_SIZE = 4;
+    private final static int CHAT_PAGER_SIZE = 4;
 
     /**
      * Caches last index to prevent from propagating too many events.
@@ -101,6 +101,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     private MenuItem mDestroyChatRoom;
     private MenuItem mChatRoomInfo;
     private MenuItem mChatRoomMember;
+    private MenuItem mChatRoomSubject;
 
     /**
      * Holds chat id that is currently handled by this Activity.
@@ -312,7 +313,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         mLeaveChatRoom = mMenu.findItem(R.id.leave_chat_room);
         mDestroyChatRoom = mMenu.findItem(R.id.destroy_chat_room);
         mChatRoomInfo = mMenu.findItem(R.id.chatroom_info);
-        mChatRoomMember = mMenu.findItem(R.id.show_chat_room_occupant);
+        mChatRoomMember = mMenu.findItem(R.id.show_chatroom_occupant);
+        mChatRoomSubject = mMenu.findItem(R.id.change_chatroom_subject);
 
         if (BuildConfig.FLAVOR.equals("fdroid") && (mSendLocation != null)) {
             menu.removeItem(R.id.send_location);
@@ -349,6 +351,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mSendLocation.setVisible(true);
                 mChatRoomInfo.setVisible(false);
                 mChatRoomMember.setVisible(false);
+                mChatRoomSubject.setVisible(false);
             }
             else {
                 mLeaveChatRoom.setVisible(true);
@@ -356,6 +359,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
                 mChatRoomInfo.setVisible(true);
                 mChatRoomMember.setVisible(true);
+                mChatRoomSubject.setVisible(true);
                 mCallAudioContact.setVisible(false);
                 mCallVideoContact.setVisible(false);
                 mSendFile.setVisible(false);
@@ -378,7 +382,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     public boolean onOptionsItemSelected(MenuItem item)
     {
         Intent intent;
-        Object object;
+        Object object = selectedChatPanel.getChatSession().getDescriptor();
+
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.muc_invite:
@@ -412,7 +417,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 return true;
 
             case R.id.leave_chat_room:
-                object = selectedChatPanel.getChatSession().getDescriptor();
                 if (object instanceof ChatRoomWrapper) {
                     ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
                     ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
@@ -430,7 +434,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 return true;
 
             case R.id.destroy_chat_room:
-                object = selectedChatPanel.getChatSession().getDescriptor();
                 if (object instanceof ChatRoomWrapper) {
                     ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
                     ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
@@ -453,7 +456,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 return true;
 
             case R.id.chatroom_info:
-                object = selectedChatPanel.getChatSession().getDescriptor();
                 if (object instanceof ChatRoomWrapper) {
                     ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
                     ChatRoomInfoFragment chatRoomInfoFragment = ChatRoomInfoFragment.newInstance(chatRoomWrapper);
@@ -462,8 +464,16 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 }
                 return true;
 
-            case R.id.show_chat_room_occupant:
-                object = selectedChatPanel.getChatSession().getDescriptor();
+            case R.id.change_chatroom_subject:
+                if (object instanceof ChatRoomWrapper) {
+                    ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
+                    ChatRoomInfoChangeDialog chatRoomInfoChangeDialog
+                            = new ChatRoomInfoChangeDialog(this, chatRoomWrapper);
+                    chatRoomInfoChangeDialog.show();
+                }
+                return true;
+
+            case R.id.show_chatroom_occupant:
                 if (object instanceof ChatRoomWrapper) {
                     ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
                     StringBuilder memberList = new StringBuilder();
@@ -525,7 +535,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     }
 
     /**
-     * Sets the selected chat.
+     * Update the selected chat fragment actionBar info when user changes chat session.
      */
     private void updateSelectedChatInfo(int newIdx)
     {
@@ -562,14 +572,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 ActionBarUtil.setAvatar(this, AndroidImageUtil.convertToBytes(BitmapFactory
                         .decodeResource(this.getResources(), R.drawable.ic_chatroom), 100));
                 ActionBarUtil.setStatus(this, ccSession.getChatStatusIcon());
-
-                // mSubTitle = ccSession.getChatSubject();
-                StringBuilder mSubTitle = new StringBuilder();
-                Iterator<ChatContact<?>> mParticipants = ccSession.getParticipants();
-                while (mParticipants.hasNext()) {
-                    mSubTitle.append(mParticipants.next().getName()).append(", ");
-                }
-                ActionBarUtil.setSubtitle(this, mSubTitle.toString());
+                ActionBarUtil.setSubtitle(this, ccSession.getChatSubject());
             }
         }
     }
@@ -580,8 +583,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         Date date = Calendar.getInstance().getTime();
         UIService uiService = AndroidGUIActivator.getUIService();
         if (uiService != null) {
-            String sendTo = mRecipient.getAddress();
-            if ((mRecipient != null) && mRecipient instanceof Contact) {
+            if (mRecipient != null) {
+                String sendTo = mRecipient.getAddress();
                 chatPanel = (ChatPanel) uiService.getChat(mRecipient);
                 if (chatPanel != null) {
                     chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, ChatMessage.ENCODE_PLAIN, filePath);

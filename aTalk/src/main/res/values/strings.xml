@@ -6,7 +6,7 @@
 # See terms of license at gnu.org.
 #
 # Note to translators:
-# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by getI8NString()
+# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by get18NString()
 # - ensure the number of parameters and their designation are correctly specified.
 #
 # Do Not translate string values containing the patterns below. They are used internally only by code/source as key index etc
@@ -156,6 +156,7 @@
     <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">Nickname already exists</string>
     <string name="service_gui_CHANGE_NICKNAME_ERROR">Error changing nickname</string>
     <string name="service_gui_CHANGE_NICKNAME_LABEL">In the field below, you can enter your new nickname.</string>
+    <string name="service_gui_CHANGE_ROOM_INFO">Change chatRoom\'s Info</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT">Change room\'s subject&#8230;</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">In the field below, you can enter the new subject for this room.</string>
     <string name="service_gui_CHANGE_VIDEO_QUALITY">Change remote video quality</string>
@@ -185,7 +186,7 @@
     <string name="service_gui_CHAT_ROOM_OPTIONS">Chat room options</string>
     <string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">The %1$s chat room has requested a password.</string>
     <string name="service_gui_CHAT_ROOM">Chat Room</string>
-    <string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">{0} has changed the subject to {1}</string>
+    <string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s has changed the subject to %2$s</string>
     <string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">You can continue the conversation in the following chat room: %1$s</string>
     <string name="service_gui_CHAT_ROOMS">Chat rooms</string>
     <string name="service_gui_CHAT_NICKNAME_CHANGE">{0} is now known as {1}</string>
@@ -376,7 +377,7 @@
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Are you sure you want to purge all messages for all contacts?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Error removing locally stored messages for %1$s.</string>
 
-    <string name="service_gui_CHATROOM_OCCUPANT">Chat room occupants</string>
+    <string name="service_gui_CHATROOM_OCCUPANT">ChatRoom occupants</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Erase this chatRoom history</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Erase all chatRooms history</string>
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Turn off history for this chatRoom</string>
@@ -771,7 +772,7 @@
     <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">Call not secure.</string>
     <string name="service_gui_security_CALL_SECURED_COMPARE_TOOLTIP">Press here to compare security secret with your partner.</string>
     <string name="service_gui_security_CALL_SECURED_TOOLTIP">Call secured. Fore more information press here.</string>
-    <string name="service_gui_security_CIPHER">Cipher: {0}</string>
+    <string name="service_gui_security_CIPHER">Cipher: %1$s</string>
     <string name="service_gui_security_CLEAR">Clear</string>
     <string name="service_gui_security_COMPARE_WITH_PARTNER_SHORT">Compare with partner:</string>
     <string name="service_gui_security_CONFIRM">Confirm</string>

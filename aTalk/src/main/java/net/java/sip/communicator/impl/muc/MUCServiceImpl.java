@@ -6,6 +6,7 @@
 package net.java.sip.communicator.impl.muc;
 
 import android.content.Intent;
+import android.text.TextUtils;
 
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.contactsource.SourceContact;
@@ -145,7 +146,7 @@ public class MUCServiceImpl extends MUCService
         if (chatRoomWrapper.getChatRoom() == null) {
             chatRoomWrapper = createChatRoom(chatRoomWrapper.getChatRoomName(),
                     chatRoomWrapper.getParentProvider().getProtocolProvider(),
-                    new ArrayList<String>(), "", false, false, true);
+                    new ArrayList<>(), "", false, false, true);
         }
 
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
@@ -172,7 +173,7 @@ public class MUCServiceImpl extends MUCService
         if (chatRoomWrapper.getChatRoom() == null) {
             chatRoomWrapper = createChatRoom(chatRoomWrapper.getChatRoomName(),
                     chatRoomWrapper.getParentProvider().getProtocolProvider(),
-                    new ArrayList<String>(), "", false, false, true);
+                    new ArrayList<>(), "", false, false, true);
         }
 
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
@@ -196,7 +197,7 @@ public class MUCServiceImpl extends MUCService
         if (chatRoomWrapper.getChatRoom() == null) {
             chatRoomWrapper = createChatRoom(chatRoomWrapper.getChatRoomName(),
                     chatRoomWrapper.getParentProvider().getProtocolProvider(),
-                    new ArrayList<String>(), "", false, false, true);
+                    new ArrayList<>(), "", false, false, true);
         }
 
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
@@ -615,7 +616,7 @@ public class MUCServiceImpl extends MUCService
                     if (rememberPassword) {
                         chatRoomWrapper.savePassword(new String(password));
                     }
-                    if (!StringUtils.isNullOrEmpty(subject)) {
+                    if (!TextUtils.isEmpty(subject)) {
                         try {
                             chatRoomWrapper.getChatRoom().setSubject(subject);
                         } catch (OperationFailedException ex) {
@@ -643,6 +644,7 @@ public class MUCServiceImpl extends MUCService
     {
         if (!(contact instanceof ChatRoomSourceContact))
             return null;
+
         ChatRoomSourceContact chatRoomContact = (ChatRoomSourceContact) contact;
         return chatRoomList.findChatRoomWrapperFromChatRoomID(chatRoomContact.getChatRoomID(),
                 chatRoomContact.getProvider());
@@ -794,7 +796,7 @@ public class MUCServiceImpl extends MUCService
     {
         if (room.getChatRoom() == null) {
             room = createChatRoom(room.getChatRoomName(), room.getParentProvider().getProtocolProvider(),
-                    new ArrayList<String>(), "", false, false, true);
+                    new ArrayList<>(), "", false, false, true);
 
             // leave the chatRoom because getChatRoom().isJoined() returns true otherwise
             if (room.getChatRoom().isJoined())

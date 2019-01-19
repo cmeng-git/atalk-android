@@ -37,6 +37,7 @@
         android:layout_marginTop="@dimen/between_padding"
         android:padding="@dimen/between_padding"
         android:text="@string/service_gui_RESTORING"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:visibility="invisible"/>
 
 </LinearLayout>

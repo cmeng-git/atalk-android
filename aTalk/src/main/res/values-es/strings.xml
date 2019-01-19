@@ -10,7 +10,7 @@
 #        susocomesanha@lavabit.org
 #
 # Note to translators:
-# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by getI8NString()
+# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by get18NString()
 # - ensure the number of parameters and their designation are correctly specified.
 #
 # Do Not translate string values containing the patterns below. They are used internally only by code/source as key index etc
@@ -151,6 +151,7 @@
 	<string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">El apodo ya existe</string>
 	<string name="service_gui_CHANGE_NICKNAME_ERROR">Error al cambiar el apodo</string>
 	<string name="service_gui_CHANGE_NICKNAME_LABEL">En el campo de abajo, puedes introducir tu nuevo apodo.</string>
+    <string name="service_gui_CHANGE_ROOM_INFO">Cambiar información de la sala de chat</string>
 	<string name="service_gui_CHANGE_ROOM_SUBJECT">Cambiar el tema de la sala\'s&#8230;</string>
 	<string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">En el siguiente campo, puede introducir el nuevo tema para esta sala.</string>
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Cambiar la calidad de vídeo remoto</string>

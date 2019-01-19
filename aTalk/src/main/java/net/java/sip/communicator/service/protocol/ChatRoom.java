@@ -147,8 +147,7 @@ public interface ChatRoom
      * Returns the local user's nickname in the context of this chat room or <tt>null</tt> if not
      * currently joined.
      *
-     * @return the nickname currently being used by the local user in the context of the local chat
-     * room.
+     * @return the nickname currently being used by the local user in the context of the local chat room.
      */
     Resourcepart getUserNickname();
 

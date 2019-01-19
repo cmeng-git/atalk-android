@@ -5,6 +5,8 @@
  */
 package org.atalk.impl.neomedia.device;
 
+import android.support.annotation.NonNull;
+
 /**
  * Implements an <tt>AudioSystem</tt> without any devices which allows the user to select to use no
  * audio capture, notification and playback.
@@ -27,7 +29,8 @@ public class NoneAudioSystem extends AudioSystem
 	{
 	}
 
-	@Override
+	@NonNull
+    @Override
 	public String toString()
 	{
 		return "None";

@@ -362,6 +362,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
                     if (!chatParticipants.contains(chatContact))
                         chatParticipants.add(chatContact);
                 }
+                // cmeng: seems to do nothing for private contact presence in chatRoom
                 room.updatePrivateContactPresenceStatus(chatRoomMember.getNickName());
 
                 /*

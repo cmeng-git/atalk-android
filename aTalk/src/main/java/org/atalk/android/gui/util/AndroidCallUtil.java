@@ -17,7 +17,7 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.ProgressDialogFragment;
+import org.atalk.android.gui.dialogs.ProgressDialogFragment;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.jivesoftware.smack.roster.Roster;

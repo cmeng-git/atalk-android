@@ -31,12 +31,12 @@ import java.security.Security;
 public class OSGiService extends Service
 {
     /**
-     * The ID of Jitsi notification icon
+     * The ID of aTalk notification icon
      */
     private static int GENERAL_NOTIFICATION_ID = R.string.APPLICATION_NAME;
 
     /**
-     * Indicates that Jitsi is running in foreground mode and it's icon is constantly displayed.
+     * Indicates that aTalk is running in foreground mode and it's icon is constantly displayed.
      */
     private static boolean running_foreground = false;
 
@@ -49,7 +49,7 @@ public class OSGiService extends Service
      * The very implementation of this Android <tt>Service</tt> which is split out of the class <tt>OSGiService</tt> so
      * that the class <tt>OSGiService</tt> may remain in a <tt>service</tt> package and be treated as public from the
      * Android point of view and the class <tt>OSGiServiceImpl</tt> may reside in an <tt>impl</tt> package and be
-     * recognized as internal from the Jitsi point of view.
+     * recognized as internal from the aTalk point of view.
      */
     private final OSGiServiceImpl impl;
 

@@ -466,7 +466,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             else {
                 String contactAddress = getContactRenderer(groupPos).getDefaultAddress(contact);
                 // make toast, show contact details
-                Toast.makeText(contactListFragment.getActivity(), contactAddress, Toast.LENGTH_SHORT).show();
+                aTalkApp.showToastMessage(contactAddress);
             }
         }
     }

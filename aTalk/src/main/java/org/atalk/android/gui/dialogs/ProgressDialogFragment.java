@@ -3,14 +3,13 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package org.atalk.android.gui;
+package org.atalk.android.gui.dialogs;
 
 import android.os.Bundle;
 import android.view.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 
@@ -22,6 +21,7 @@ import java.util.Map;
  * Fragment can be used to display indeterminate progress dialogs.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class ProgressDialogFragment extends OSGiFragment
 {

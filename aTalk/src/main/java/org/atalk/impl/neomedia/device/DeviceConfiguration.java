@@ -119,7 +119,8 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * reverberation time is in the order of 300 ms, so a filter length of 100 ms is a good choice
      * (800 samples at 8000 Hz sampling rate).
      */
-    static final String PROP_AUDIO_ECHOCANCEL_FILTER_LENGTH_IN_MILLIS = "neomedia.echocancel.filterLengthInMillis";
+    private static final String PROP_AUDIO_ECHOCANCEL_FILTER_LENGTH_IN_MILLIS
+            = "neomedia.echocancel.filterLengthInMillis";
 
     public static final String PROP_AUDIO_SYSTEM = "neomedia.audioSystem";
 
@@ -220,8 +221,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
             if (renderers.contains("com.sun.media.renderer.video.LightWeightRenderer")
                     || renderers.contains("com.sun.media.renderer.video.AWTRenderer")) {
                 // Remove XLibRenderer because it is native and JMF is supported on 32-bit machines only.
-                PlugInManager.removePlugIn("com.sun.media.renderer.video.XLibRenderer",
-                        PlugInManager.RENDERER);
+                PlugInManager.removePlugIn("com.sun.media.renderer.video.XLibRenderer", PlugInManager.RENDERER);
             }
         }
     }
@@ -830,7 +830,6 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
             if ((renderers == null) || !renderers.contains(customRenderer)) {
                 try {
                     Renderer customRendererInstance = (Renderer) Class.forName(customRenderer).newInstance();
-
                     PlugInManager.addPlugIn(customRenderer, customRendererInstance.getSupportedInputFormats(),
                             null, PlugInManager.RENDERER);
                     commit = true;

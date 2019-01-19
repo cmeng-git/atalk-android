@@ -16,16 +16,10 @@
  */
 package org.atalk.android.gui;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.SearchManager;
-import android.content.*;
-import android.net.Uri;
+import android.content.Context;
+import android.content.Intent;
 import android.os.*;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.*;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -43,10 +37,8 @@ import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.fragment.ActionBarStatusFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.EntityListHelper;
-import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.osgi.framework.BundleContext;
 
-import java.io.File;
 import java.util.List;
 
 import de.cketti.library.changelog.ChangeLog;
@@ -63,16 +55,12 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      */
     private static final Logger logger = Logger.getLogger(aTalk.class);
 
-    private static final int REQUEST_BATTERY_OP = 100;
-
     /**
      * The action that will show contacts.
      */
     public static final String ACTION_SHOW_CONTACTS = "org.atalk.show_contacts";
 
     private static Boolean mPrefChange = false;
-
-    private static boolean permissionFirstRequest = true;
 
     /**
      * The main pager view fragment containing the contact List
@@ -130,16 +118,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
         runOnUiThread(() -> {
             new Handler().postDelayed(() -> {
-                // Always request on first apk launch
-                if (permissionFirstRequest && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
-                    logger.info("Launching user permission request for aTalk.");
-                    // Request user to add aTalk to BatteryOptimization whitelist
-                    openBatteryOptimizationDialogIfNeeded();
-                    permissionFirstRequest = false;
-                    Intent iPermissions = new Intent(aTalk.this, PermissionsActivity.class);
-                    startActivity(iPermissions);
-                }
-
                 ChangeLog cl = new ChangeLog(aTalk.this);
                 if (cl.isFirstRun()) {
                     cl.getLogDialog().show();
@@ -340,81 +318,5 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
                 view.setAlpha(0);
             }
         }
-    }
-
-    /* **********************************************
-     * Android Battery Usage Optimization Request
-     ************************************************/
-    private void openBatteryOptimizationDialogIfNeeded()
-    {
-        if (isOptimizingBattery() && getPreferences().getBoolean(getBatteryOptimizationPreferenceKey(), true)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(aTalk.this);
-            builder.setTitle(R.string.battery_optimizations);
-            builder.setMessage(R.string.battery_optimizations_dialog);
-
-            builder.setPositiveButton(R.string.next, new DialogInterface.OnClickListener()
-            {
-                @RequiresApi(api = Build.VERSION_CODES.M)
-                @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
-                    Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                    Uri uri = Uri.parse("package:" + getPackageName());
-                    intent.setData(uri);
-                    try {
-                        startActivityForResult(intent, REQUEST_BATTERY_OP);
-                    } catch (ActivityNotFoundException e) {
-                        aTalkApp.showToastMessage(R.string.device_does_not_support_battery_op);
-                    }
-                }
-            });
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                builder.setOnDismissListener(new DialogInterface.OnDismissListener()
-                {
-                    @Override
-                    public void onDismiss(DialogInterface dialog)
-                    {
-                        setNeverAskForBatteryOptimizationsAgain();
-                    }
-                });
-            }
-            AlertDialog dialog = builder.create();
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, final Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ((resultCode != RESULT_OK) && (requestCode == REQUEST_BATTERY_OP)) {
-            setNeverAskForBatteryOptimizationsAgain();
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    protected boolean isOptimizingBattery()
-    {
-        final PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        return pm != null && !pm.isIgnoringBatteryOptimizations(getPackageName());
-    }
-
-    private String getBatteryOptimizationPreferenceKey()
-    {
-        @SuppressLint("HardwareIds")
-        String device = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        return "show_battery_optimization" + (device == null ? "" : device);
-    }
-
-    private void setNeverAskForBatteryOptimizationsAgain()
-    {
-        getPreferences().edit().putBoolean(getBatteryOptimizationPreferenceKey(), false).apply();
-    }
-
-    protected SharedPreferences getPreferences()
-    {
-        return PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 }

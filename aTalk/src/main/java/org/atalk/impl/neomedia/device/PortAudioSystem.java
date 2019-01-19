@@ -5,6 +5,8 @@
  */
 package org.atalk.impl.neomedia.device;
 
+import android.support.annotation.NonNull;
+
 import java.util.*;
 
 import javax.media.*;
@@ -322,7 +324,8 @@ public class PortAudioSystem extends AudioSystem2
 	 *
 	 * The implementation of <tt>PortAudioSystem</tt> always returns &quot;PortAudio&quot;.
 	 */
-	@Override
+	@NonNull
+    @Override
 	public String toString()
 	{
 		return "PortAudio";

@@ -6,7 +6,7 @@
 # See terms of license at gnu.org.
 #
 # Note to translators:
-# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by getI8NString()
+# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by get18NString()
 # - ensure the number of parameters and their designation are correctly specified.
 #
 # Do Not translate string values containing the patterns below. They are used internally only by code/source as key index etc
@@ -147,6 +147,7 @@
     <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">Spitzname existiert bereits</string>
 	<string name="service_gui_CHANGE_NICKNAME_ERROR">Kann Spitznamen nicht ändern</string>
     <string name="service_gui_CHANGE_NICKNAME_LABEL">Untenstehend kannst du deinen Spitznamen ändern.</string>
+    <string name="service_gui_CHANGE_ROOM_INFO">Informationen zum Chatraum ändern</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT">Chatraum Thema ändern&#8230;</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">Untenstehend kannst du ein neues Thema für diesen Chatraum eingeben.</string>
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Ändern der Videoauflösung auf der Gegenseite.</string>
@@ -176,7 +177,7 @@
 	<string name="service_gui_CHAT_ROOM_OPTIONS">Chatraum Optionen</string>
 	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">Der %1$s Chatraum fragt nach einem Passwort.</string>
 	<string name="service_gui_CHAT_ROOM">Chatraum</string>
-	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">{0} hat das Thema von {1} geändert</string>
+	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s hat das Thema von %2$s geändert</string>
 	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Du kannst dein Gespräch in folgendem Chatraum fortsetzen: %1$s</string>
 	<string name="service_gui_CHAT_ROOMS">Chaträume</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">{0} heißt nun {1}</string>
@@ -711,7 +712,7 @@
     <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">Anruf nicht sicher</string>
     <string name="service_gui_security_CALL_SECURED_COMPARE_TOOLTIP">Drücken hier, um das Sicherheitskennwort mit deinem Partner zu vergleichen.</string>
     <string name="service_gui_security_CALL_SECURED_TOOLTIP">Anruf gesichert. Für weitere Informationen drücke hier.</string>
-    <string name="service_gui_security_CIPHER">Chiffre: {0}</string>
+    <string name="service_gui_security_CIPHER">Chiffre: %1$s</string>
     <string name="service_gui_security_CLEAR">Löschen</string>
     <string name="service_gui_security_COMPARE_WITH_PARTNER_SHORT">Vergleiche mit Partner:</string>
     <string name="service_gui_security_CONFIRM">Bestätigen</string>

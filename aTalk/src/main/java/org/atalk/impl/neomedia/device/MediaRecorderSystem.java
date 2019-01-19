@@ -41,9 +41,9 @@ public class MediaRecorderSystem extends DeviceSystem
      */
     private static final Logger logger = Logger.getLogger(MediaRecorderSystem.class);
 
-    public static final String CAMERA_FACING_BACK = "CAMERA_FACING_BACK";
+    private static final String CAMERA_FACING_BACK = "CAMERA_FACING_BACK";
 
-    public static final String CAMERA_FACING_FRONT = "CAMERA_FACING_FRONT";
+    private static final String CAMERA_FACING_FRONT = "CAMERA_FACING_FRONT";
 
     /**
      * The protocol of the <tt>MediaLocator</tt>s identifying <tt>MediaRecorder</tt> capture devices.
@@ -93,8 +93,10 @@ public class MediaRecorderSystem extends DeviceSystem
             return;
 
         if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
-                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            logger.warn("Camera Init has no permission to start!");
             return;
+        }
 
         Camera.CameraInfo cameraInfo = null;
         List<CaptureDeviceInfo> captureDevices = new LinkedList<>();

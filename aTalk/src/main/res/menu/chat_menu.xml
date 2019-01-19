@@ -49,9 +49,13 @@
         android:visible="false">
     </item>
     <item
-        android:id="@+id/show_chat_room_occupant"
+        android:id="@+id/change_chatroom_subject"
+        android:title="@string/service_gui_CHANGE_ROOM_INFO"
+        android:visible="false">
+    </item>
+    <item
+        android:id="@+id/show_chatroom_occupant"
         android:title="@string/service_gui_CHATROOM_OCCUPANT"
         android:visible="false">
     </item>
-
 </menu>

@@ -65,51 +65,32 @@ public class OmemoRegenerateDialog extends OSGiActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.pref_omemo_regenerate_identities_title);
         builder.setMultiChoiceItems(accounts.toArray(new CharSequence[accounts.size()]),
-                checkedItems, new DialogInterface.OnMultiChoiceClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked)
-                    {
-                        checkedItems[which] = isChecked;
-                        final AlertDialog multiChoiceDialog = (AlertDialog) dialog;
-                        for (boolean item : checkedItems) {
-                            if (item) {
-                                multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
-                                return;
-                            }
+                checkedItems, (dialog, which, isChecked) -> {
+                    checkedItems[which] = isChecked;
+                    final AlertDialog multiChoiceDialog = (AlertDialog) dialog;
+                    for (boolean item : checkedItems) {
+                        if (item) {
+                            multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+                            return;
                         }
-                        multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
                     }
+                    multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
                 });
 
-        builder.setNegativeButton(R.string.service_gui_CANCEL,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        finish();
+        builder.setNegativeButton(R.string.service_gui_CANCEL, (dialog, which) -> finish());
+        builder.setPositiveButton(R.string.crypto_dialog_button_OMEMO_REGENERATE, (dialog, which) -> {
+            OmemoStore omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
+            for (int i = 0; i < checkedItems.length; ++i) {
+                if (checkedItems[i]) {
+                    ProtocolProviderService pps = accountMap.get(accounts.get(i).toString());
+                    if (pps != null) {
+                        AccountID accountID = pps.getAccountID();
+                        ((SQLiteOmemoStore) omemoStore).regenerate(accountID);
                     }
-                });
-        builder.setPositiveButton(R.string.crypto_dialog_button_OMEMO_REGENERATE,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        OmemoStore omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
-                        for (int i = 0; i < checkedItems.length; ++i) {
-                            if (checkedItems[i]) {
-                                ProtocolProviderService pps = accountMap.get(accounts.get(i).toString());
-                                if (pps != null) {
-                                    AccountID accountID = pps.getAccountID();
-                                    ((SQLiteOmemoStore) omemoStore).regenerate(accountID);
-                                }
-                            }
-                        }
-                        finish();
-                    }
-                });
+                }
+            }
+            finish();
+        });
 
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);

@@ -42,8 +42,6 @@ import org.osgi.framework.BundleContext;
  */
 public class LauncherActivity extends OSGiActivity
 {
-    // private final Logger logger = Logger.getLogger(LauncherActivity.class);
-
     /**
      * Argument that holds an <tt>Intent</tt> that will be started once OSGi startup is finished.
      */
@@ -75,7 +73,6 @@ public class LauncherActivity extends OSGiActivity
         }
 
         // Must initialize Notification channels before any notification is being issued.
-        // logger.warn("Notification Helper initialized!");
         new NotificationHelper(this);
 
         // force delete in case system locked during testing

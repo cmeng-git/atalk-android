@@ -1,8 +1,21 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.6.5 (1065)
+Author:         cmeng
+Upload Date:	01/18/2019
+- Launch permission request prior to start aTalk activity to fix no camera and video call problem
+- Do not override chat room subject with default unless specified by user
+- Add user option to change chat room nick and subject
+- Display chat room subject instead of room occupants on actionBar
+- Hide audio send button in conference - not supported and cause system crash
+- Show camera disable icon in video call if no permission.CAMERA is granted
+- DialogActivity - cannot unregister LocalBroadcastManager listener on Destroy as the activity
+  is destroyed when developer don't keep activities is enabled. This cause dialog to remain open.
+
+=========================================================================
 Version:		1.6.4 (1064)
 Author:         cmeng
-Upload Date:	12/2/2018
+Upload Date:	12/28/2018
 - Add user option for aTalk auto start on device reboot
 - Implement full screen playback for remote video during media call
   i.e. put display to full screen for remote video playback in VideoCallActivity/VideoHandlerFragment

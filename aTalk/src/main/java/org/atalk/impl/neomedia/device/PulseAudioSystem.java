@@ -5,6 +5,8 @@
  */
 package org.atalk.impl.neomedia.device;
 
+import android.support.annotation.NonNull;
+
 import java.io.*;
 import java.util.*;
 
@@ -590,7 +592,8 @@ public class PulseAudioSystem extends AudioSystem
 	 * @return &quot;PulseAudio&quot; as a human-readable <tt>String</tt> representation of this
 	 *         <tt>PulseAudioSystem</tt>
 	 */
-	@Override
+	@NonNull
+    @Override
 	public String toString()
 	{
 		return "PulseAudio";

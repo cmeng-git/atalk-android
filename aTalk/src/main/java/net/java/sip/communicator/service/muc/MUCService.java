@@ -213,8 +213,7 @@ public abstract class MUCService
      * has only one <code>ChatRoomMember</code> who is not the local user.
      *
      * @param chatRoom the <code>ChatRoom</code> to be determined as private or not
-     * @return <tt>true</tt> if the specified <code>ChatRoom</code> is private;
-     * otherwise, <tt>false</tt>
+     * @return <tt>true</tt> if the specified <code>ChatRoom</code> is private; otherwise, <tt>false</tt>
      */
     public static boolean isPrivate(ChatRoom chatRoom)
     {
@@ -240,8 +239,7 @@ public abstract class MUCService
     public abstract ChatRoomWrapper leaveChatRoom(ChatRoomWrapper chatRoomWrapper);
 
     /**
-     * Finds <tt>ChatRoomWrapper</tt> instance associated with the given source
-     * contact.
+     * Finds <tt>ChatRoomWrapper</tt> instance associated with the given source contact.
      *
      * @param contact the contact.
      * @return <tt>ChatRoomWrapper</tt> instance associated with the given source contact.
@@ -260,15 +258,13 @@ public abstract class MUCService
     /**
      * Returns the multi user chat operation set for the given protocol provider.
      *
-     * @param protocolProvider The protocol provider for which the multi user
-     * chat operation set is about.
-     * @return OperationSetMultiUserChat The telephony operation
-     * set for the given protocol provider.
+     * @param protocolProvider The protocol provider for which the multi user chat operation set is about.
+     * @return OperationSetMultiUserChat The telephony operation set for the given protocol provider.
      */
     public static OperationSetMultiUserChat getMultiUserChatOpSet(ProtocolProviderService protocolProvider)
     {
         OperationSet opSet = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
-        return (opSet instanceof OperationSetMultiUserChat) ? (OperationSetMultiUserChat) opSet : null;
+        return (opSet != null) ? (OperationSetMultiUserChat) opSet : null;
     }
 
     /**
@@ -362,8 +358,7 @@ public abstract class MUCService
      *
      * @return instance of the <tt>ServerChatRoomContactSourceService</tt> contact source.
      */
-    public abstract ContactSourceService getServerChatRoomsContactSourceForProvider(
-            ChatRoomProviderWrapper pps);
+    public abstract ContactSourceService getServerChatRoomsContactSourceForProvider(ChatRoomProviderWrapper pps);
 
     /**
      * Returns <tt>true</tt> if the contact is <tt>ChatRoomSourceContact</tt>

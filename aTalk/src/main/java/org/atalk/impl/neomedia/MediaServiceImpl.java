@@ -1161,8 +1161,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Notifies this instance that the value of a property of {@link #deviceConfiguration} has
-     * changed.
+     * Notifies this instance that the value of a property of {@link #deviceConfiguration} has changed.
      *
      * @param event a <tt>PropertyChangeEvent</tt> which specifies the name of the property which had its
      * value changed and the old and the new values of that property

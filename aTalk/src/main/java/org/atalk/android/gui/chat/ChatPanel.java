@@ -7,6 +7,7 @@ package org.atalk.android.gui.chat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -887,9 +888,18 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void setChatSubject(final String subject)
     {
-        if ((chatSubject.length() != 0) && !chatSubject.equals(subject)) {
+        if ((subject != null) && !subject.equals(chatSubject)) {
             chatSubject = subject;
 
+            if (isChatFocused()) {
+                final Activity activity = aTalkApp.getCurrentActivity();
+                activity.runOnUiThread(() -> {
+                    // cmeng: check instanceof just in case user change chat session
+                    if (mChatSession instanceof ConferenceChatSession) {
+                        ActionBarUtil.setSubtitle(activity, subject);
+                    }
+                });
+            }
             this.addMessage(mChatSession.getChatName(), new Date(), Chat.STATUS_MESSAGE, ChatMessage.ENCODE_PLAIN,
                     aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SUBJECT_CHANGED, mChatSession.getChatName(), subject));
         }
@@ -901,26 +911,26 @@ public class ChatPanel implements Chat, MessageListener
      * @param chatContact the chat contact of the conference to update
      * @param statusMessage the status message to show
      */
-    public void updateChatContactStatus(final ChatContact<?> chatContact,
-            final String statusMessage)
+    public void updateChatContactStatus(final ChatContact<?> chatContact, final String statusMessage)
     {
-        if (isChatFocused()) {
-            final Activity activity = aTalkApp.getCurrentActivity();
-            activity.runOnUiThread(() -> {
-                // cmeng: check instanceof just in case
-                if (mChatSession instanceof ConferenceChatSession) {
-                    ActionBarUtil.setStatus(activity, mChatSession.getChatStatusIcon());
-
-                    // mSubTitle = ccSession.getChatSubject();
-                    String mSubTitle = "";
-                    Iterator<ChatContact<?>> mParticipants = mChatSession.getParticipants();
-                    while (mParticipants.hasNext()) {
-                        mSubTitle += mParticipants.next().getName() + ", ";
-                    }
-                    ActionBarUtil.setSubtitle(activity, mSubTitle);
-                }
-            });
-        }
+//        if (isChatFocused()) {
+//            final Activity activity = aTalkApp.getCurrentActivity();
+//            activity.runOnUiThread(() -> {
+//                // cmeng: check instanceof just in case
+//                if (mChatSession instanceof ConferenceChatSession) {
+//                    ActionBarUtil.setStatus(activity, mChatSession.getChatStatusIcon());
+//
+//                    StringBuilder mSubTitle = new StringBuilder();
+//                    mSubTitle.append(((ConferenceChatSession) mChatSession).getChatSubject());
+//                    mSubTitle.append(": ");
+//                    Iterator<ChatContact<?>> mParticipants = mChatSession.getParticipants();
+//                    while (mParticipants.hasNext()) {
+//                        mSubTitle.append(mParticipants.next().getName()).append(", ");
+//                    }
+//                    ActionBarUtil.setSubtitle(activity, mSubTitle.toString());
+//                }
+//            });
+//        }
         if (!StringUtils.isNullOrEmpty(statusMessage)) {
             String contactName = ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getContactAddress();
             this.addMessage(contactName, chatContact.getName(), new Date(), Chat.STATUS_MESSAGE, ChatMessage.ENCODE_PLAIN,

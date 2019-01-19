@@ -40,8 +40,6 @@ import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.util.ComboBox;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.*;
 
 /**
@@ -101,7 +99,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 
         nicknameField = this.findViewById(R.id.NickName_Edit);
         subjectField = this.findViewById(R.id.chatRoom_Subject_Edit);
-        subjectField.setText(mParent.getString(R.string.service_gui_GROUP_CHAT));
+        subjectField.setText("");
 
         chatRoomComboBox = this.findViewById(R.id.chatRoom_Combo);
         new initComboBox().execute();
@@ -180,8 +178,9 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             if (chatRoomList.size() == 0)
                 chatRoomList.add(mParent.getString(R.string.service_gui_ROOM_NAME));
 
+            String chatRoomID = chatRoomList.get(0);
             chatRoomComboBox.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-            chatRoomComboBox.setText(chatRoomList.get(0));
+            chatRoomComboBox.setText(chatRoomID);
             chatRoomComboBox.setSuggestionSource(chatRoomList);
         }
     }
@@ -322,18 +321,13 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                     false)) {
                 final ChatRoomWrapper crWrapper = chatRoomWrapper;
 
-                chatRoomWrapper.addPropertyChangeListener(new PropertyChangeListener()
-                {
-                    @Override
-                    public void propertyChange(PropertyChangeEvent evt)
-                    {
-                        if (evt.getPropertyName().equals(ChatRoomWrapper.JOIN_SUCCESS_PROP))
-                            return;
+                chatRoomWrapper.addPropertyChangeListener(evt -> {
+                    if (evt.getPropertyName().equals(ChatRoomWrapper.JOIN_SUCCESS_PROP))
+                        return;
 
-                        // if we failed for some , then close and remove the room
-                        AndroidGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
-                        AndroidGUIActivator.getMUCService().removeChatRoom(crWrapper);
-                    }
+                    // if we failed for some , then close and remove the room
+                    AndroidGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
+                    AndroidGUIActivator.getMUCService().removeChatRoom(crWrapper);
                 });
             }
 
@@ -345,62 +339,62 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         }
     }
 
-//	/**
-//	 * Invites the contacts to the chat conference.
-//	 */
-//	private void createChatRoom()
-//	{
-//		// allow nickName to contain spaces
-//		String nickName = nicknameField.getText().toString().trim();
-//		String subject = subjectField.getText().toString().trim();
-//		chatRoomField = chatRoomComboBox.getText().replaceAll("\\s", "");
-//		Collection<String> contacts = new ArrayList<>();
-//		String reason = "Let's chat";
-//
-//		if (!TextUtils.isEmpty(chatRoomField) && !TextUtils.isEmpty(nickName)) {
-//			final ChatRoomWrapper chatRoomWrapper = AndroidGUIActivator.getMUCService()
-//					.createChatRoom(chatRoomField, getSelectedProvider().getProtocolProvider(),
-//							contacts, reason, true, false, false);
-//
-//			// In case the protocol failed to create a chat room (null), then return without
-//			// open the chat room.
-//			if (chatRoomWrapper == null) {
-//				return;
-//			}
-//
-//			ProtocolProviderService pps = chatRoomWrapper.getParentProvider().getProtocolProvider();
-//			String chatRoomID = chatRoomWrapper.getChatRoomID();
-//
-//			if (!chatRoomWrapper.isPersistent()) {
-//				chatRoomWrapper.setPersistent(true);
-//				ConfigurationUtils.saveChatRoom(pps, chatRoomID, chatRoomID);
-//			}
-//			ConfigurationUtils.updateChatRoomProperty(pps, chatRoomID, ChatRoom.USER_NICK_NAME, nickName);
-//
-//			if (AndroidGUIActivator.getConfigurationService()
-//					.getBoolean(REMOVE_ROOM_ON_FIRST_JOIN_FAILED, false)) {
-//				chatRoomWrapper.addPropertyChangeListener(new PropertyChangeListener()
-//				{
-//					@Override
-//					public void propertyChange(PropertyChangeEvent evt)
-//					{
-//						if (evt.getPropertyName().equals(ChatRoomWrapper.JOIN_SUCCESS_PROP))
-//							return;
-//
-//						// if we failed for some reason we want to remove the room close the room
-//						AndroidGUIActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
-//
-//						// remove it
-//						AndroidGUIActivator.getMUCService().removeChatRoom(chatRoomWrapper);
-//					}
-//				});
-//			}
-//
-//			// Set chatRoom openAutomatically on_activity
-//			MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
-//			AndroidGUIActivator.getMUCService().joinChatRoom(chatRoomWrapper, nickName, null, subject);
-//			Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
-//			mParent.startActivity(chatIntent);
-//		}
-//	}
+    //	/**
+    //	 * Invites the contacts to the chat conference.
+    //	 */
+    //	private void createChatRoom()
+    //	{
+    //		// allow nickName to contain spaces
+    //		String nickName = nicknameField.getText().toString().trim();
+    //		String subject = subjectField.getText().toString().trim();
+    //		chatRoomField = chatRoomComboBox.getText().replaceAll("\\s", "");
+    //		Collection<String> contacts = new ArrayList<>();
+    //		String reason = "Let's chat";
+    //
+    //		if (!TextUtils.isEmpty(chatRoomField) && !TextUtils.isEmpty(nickName)) {
+    //			final ChatRoomWrapper chatRoomWrapper = AndroidGUIActivator.getMUCService()
+    //					.createChatRoom(chatRoomField, getSelectedProvider().getProtocolProvider(),
+    //							contacts, reason, true, false, false);
+    //
+    //			// In case the protocol failed to create a chat room (null), then return without
+    //			// open the chat room.
+    //			if (chatRoomWrapper == null) {
+    //				return;
+    //			}
+    //
+    //			ProtocolProviderService pps = chatRoomWrapper.getParentProvider().getProtocolProvider();
+    //			String chatRoomID = chatRoomWrapper.getChatRoomID();
+    //
+    //			if (!chatRoomWrapper.isPersistent()) {
+    //				chatRoomWrapper.setPersistent(true);
+    //				ConfigurationUtils.saveChatRoom(pps, chatRoomID, chatRoomID);
+    //			}
+    //			ConfigurationUtils.updateChatRoomProperty(pps, chatRoomID, ChatRoom.USER_NICK_NAME, nickName);
+    //
+    //			if (AndroidGUIActivator.getConfigurationService()
+    //					.getBoolean(REMOVE_ROOM_ON_FIRST_JOIN_FAILED, false)) {
+    //				chatRoomWrapper.addPropertyChangeListener(new PropertyChangeListener()
+    //				{
+    //					@Override
+    //					public void propertyChange(PropertyChangeEvent evt)
+    //					{
+    //						if (evt.getPropertyName().equals(ChatRoomWrapper.JOIN_SUCCESS_PROP))
+    //							return;
+    //
+    //						// if we failed for some reason we want to remove the room close the room
+    //						AndroidGUIActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
+    //
+    //						// remove it
+    //						AndroidGUIActivator.getMUCService().removeChatRoom(chatRoomWrapper);
+    //					}
+    //				});
+    //			}
+    //
+    //			// Set chatRoom openAutomatically on_activity
+    //			MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
+    //			AndroidGUIActivator.getMUCService().joinChatRoom(chatRoomWrapper, nickName, null, subject);
+    //			Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
+    //			mParent.startActivity(chatIntent);
+    //		}
+    //	}
 }

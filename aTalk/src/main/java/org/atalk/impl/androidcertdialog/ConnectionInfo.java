@@ -6,7 +6,6 @@
 package org.atalk.impl.androidcertdialog;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
@@ -64,14 +63,7 @@ public class ConnectionInfo extends OSGiActivity
         pProviderKeysList.setAdapter(pProvidersAdapter);
 
         pProviderKeysList.setOnItemClickListener(
-                new AdapterView.OnItemClickListener()
-                {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        showSslCertificate(position);
-                    }
-                }
+                (parent, view, position, id) -> showSslCertificate(position)
         );
     }
 
@@ -109,25 +101,13 @@ public class ConnectionInfo extends OSGiActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE))
                 .setMessage(getString(R.string.service_gui_settings_SSL_CERTIFICATE_DELETE, bareJid))
-                .setPositiveButton(R.string.service_gui_YES, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        CertificateServiceImpl cvs
-                                = (CertificateServiceImpl) JabberAccountRegistrationActivator.getCertificateService();
-                        cvs.removeCertificateEntry(certificateEntry);
-                        dialog.dismiss();
-                    }
+                .setPositiveButton(R.string.service_gui_YES, (dialog, which) -> {
+                    CertificateServiceImpl cvs
+                            = (CertificateServiceImpl) JabberAccountRegistrationActivator.getCertificateService();
+                    cvs.removeCertificateEntry(certificateEntry);
+                    dialog.dismiss();
                 })
-                .setNegativeButton(R.string.service_gui_NO, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                });
+                .setNegativeButton(R.string.service_gui_NO, (dialog, which) -> dialog.dismiss());
         deleteDialog = builder.create();
         deleteDialog.show();
     }
@@ -149,7 +129,8 @@ public class ConnectionInfo extends OSGiActivity
                 viewCertDialog = new X509CertificateView(this, chain);
                 viewCertDialog.show();
             }
-        } else {
+        }
+        else {
             aTalkApp.showToastMessage(R.string.service_gui_ACCOUNT_UNREGISTERED, pps.getOurJID());
         }
     }

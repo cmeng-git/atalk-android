@@ -1569,7 +1569,6 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
 
                 if (inputFormat != null) {
                     Dimension size = ((VideoFormat) inputFormat).getSize();
-
                     if ((size != null) && (size.height >= MIN_SWS_SCALE_HEIGHT_OR_WIDTH)
                             && (size.width >= MIN_SWS_SCALE_HEIGHT_OR_WIDTH)
                             && !size.equals(lastSize)) {

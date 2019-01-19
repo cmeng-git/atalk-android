@@ -42,20 +42,15 @@ import android.view.Surface;
  */
 public class AndroidCameraSystem extends DeviceSystem
 {
-	/**
+    /**
+     * The logger.
+     */
+    private static final Logger logger = Logger.getLogger(AndroidCameraSystem.class);
+
+    /**
 	 * Locator protocol of this system.
 	 */
 	private static final String LOCATOR_PROTOCOL = DeviceSystem.LOCATOR_PROTOCOL_ANDROIDCAMERA;
-
-	/*
-	 * Array of supported video sizes.
-	 */
-	// private static Dimension[] SUPPORTED_SIZES;
-
-	/**
-	 * The logger.
-	 */
-	private static final Logger logger = Logger.getLogger(AndroidCameraSystem.class);
 
 	/**
 	 * Creates new instance of <tt>AndroidCameraSystem</tt>.
@@ -124,8 +119,7 @@ public class AndroidCameraSystem extends DeviceSystem
 
 			// Surface format
 			if (AndroidEncoder.isDirectSurfaceEnabled()) {
-				// TODO: camera will not be detected if only surface format is
-				// reported
+				// TODO: camera will not be detected if only surface format is reported
 
 				for (Dimension size : sizes) {
 					formats.add(new VideoFormat(Constants.ANDROID_SURFACE, size,

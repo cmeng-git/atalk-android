@@ -176,8 +176,7 @@ public class MediaEncodingActivity extends OSGiActivity
 	/**
 	 * Initializes encodings list
 	 */
-	public static List<MediaFormat> getEncodings(final EncodingConfiguration encodingConfig,
-			MediaType mediaType)
+	public static List<MediaFormat> getEncodings(final EncodingConfiguration encodingConfig, MediaType mediaType)
 	{
 		MediaFormat[] availableEncodings = encodingConfig.getAllEncodings(mediaType);
 

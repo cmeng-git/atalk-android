@@ -280,7 +280,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
             //            }
         }
         else {
-            // We don't know this particular format. We'll just leave it alone then.
+            // For other video format, we'll just leave it alone then.
             return sourceFormat;
         }
 
