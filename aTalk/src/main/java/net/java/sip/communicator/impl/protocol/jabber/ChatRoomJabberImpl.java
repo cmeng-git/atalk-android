@@ -833,6 +833,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 mMultiUserChat.leave();
         } catch (Throwable e) {
             logger.warn("Error occurred while leaving, maybe just disconnected before leaving", e);
+            return;
         }
 
         // cmeng: removed as chatPanel will closed ?
@@ -2666,6 +2667,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     /**
      * Updates the presence status of private messaging contact.
+     * cmeng: chatroom member always has e.g. conference@conference.atalk.org/swan, so sourceContact == null always
+     * since the search is based on contact List
      *
      * @param nickname the nickname of the contact.
      */
@@ -2675,7 +2678,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 mProvider.getOperationSet(OperationSetPersistentPresence.class);
         ContactJabberImpl sourceContact
                 = (ContactJabberImpl) presenceOpSet.findContactByID(getName() + "/" + nickname);
-
         updatePrivateContactPresenceStatus(sourceContact);
     }
 
@@ -2686,16 +2688,16 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public void updatePrivateContactPresenceStatus(Contact contact)
     {
-        OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
-                mProvider.getOperationSet(OperationSetPersistentPresence.class);
-
         if (contact == null)
             return;
+
+        OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
+                mProvider.getOperationSet(OperationSetPersistentPresence.class);
 
         PresenceStatus oldContactStatus = contact.getPresenceStatus();
         Resourcepart nickname;
         try {
-            nickname = JidCreate.from(contact.getAddress()).getResourceOrThrow();
+            nickname = JidCreate.from(contact.getAddress()).getResourceOrEmpty();
         } catch (XmppStringprepException e) {
             logger.error("Invalid contact address: " + contact.getAddress());
             return;

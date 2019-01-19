@@ -35,10 +35,8 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.contactlist.contactsource.ProtocolContactSourceServiceImpl;
 import org.atalk.android.gui.contactlist.model.*;
 
 import java.util.*;

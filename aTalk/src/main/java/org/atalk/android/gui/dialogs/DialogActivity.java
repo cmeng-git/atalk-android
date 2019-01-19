@@ -9,7 +9,8 @@ import android.content.*;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.View;
 
 import net.java.sip.communicator.util.Logger;
 
@@ -61,8 +62,7 @@ public class DialogActivity extends OSGiActivity
     private static final String EXTRA_DIALOG_ID = "dialog_id";
 
     /**
-     * Optional listener ID extra(can be supplied only using method static
-     * <tt>showConfirmDialog</tt>.
+     * Optional listener ID extra(can be supplied only using method static <tt>showConfirmDialog</tt>.
      */
     public static final String EXTRA_LISTENER_ID = "listener_id";
 
@@ -77,8 +77,7 @@ public class DialogActivity extends OSGiActivity
     public static final String EXTRA_CONTENT_ARGS = "fragment_args";
 
     /**
-     * Prevents from closing this activity on outside touch events and blocks the back key if set
-     * to <tt>true</tt>.
+     * Prevents from closing this activity on outside touch events and blocks the back key if set to <tt>true</tt>.
      */
     public static final String EXTRA_CANCELABLE = "cancelable";
 
@@ -138,19 +137,16 @@ public class DialogActivity extends OSGiActivity
 
     /**
      * {@inheritDoc}
-     *  cmeng: the onCreate get retrigger by android when developer option on keep activity is enabled
-     *  then the new dialog is not disposed.
+     * cmeng: the onCreate get retrigger by android when developer option on keep activity is enabled
+     * then the new dialog is not disposed.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-
         setContentView(R.layout.alert_dialog);
         mContent = findViewById(android.R.id.content);
-
-        // Title
         setTitle(intent.getStringExtra(EXTRA_TITLE));
 
         // Message or custom content
@@ -199,12 +195,6 @@ public class DialogActivity extends OSGiActivity
 
         // Prevents from closing the dialog on outside touch
         setFinishOnTouchOutside(cancelable);
-
-        // always place window onTop - no difference
-        //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        //            getWindow().setType(WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW);
-        //        else
-        //            getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
 
         // Removes the buttons
         if (intent.getBooleanExtra(EXTRA_REMOVE_BUTTONS, false)) {
@@ -282,15 +272,19 @@ public class DialogActivity extends OSGiActivity
     protected void onDestroy()
     {
         super.onDestroy();
+        /*
+         * cmeng: cannot do here as this is triggered when dialog is obscured by other activity
+         * when developer do keep activity is enable
         if (commandIntentListener != null) {
             localBroadcastManager.unregisterReceiver(commandIntentListener);
-            // Notify about dialogs list change
-            synchronized (displayedDialogs) {
+
+           // Notify about dialogs list change
+           synchronized (displayedDialogs) {
                 displayedDialogs.remove(listenerID);
                 displayedDialogs.notifyAll();
             }
         }
-
+        */
         // Notify that dialog was cancelled if confirmed == false
         if (listener != null && !confirmed) {
             listener.onDialogCancelled(this);
@@ -319,7 +313,17 @@ public class DialogActivity extends OSGiActivity
         {
             if (intent.getLongExtra(EXTRA_DIALOG_ID, -1) == dialogId) {
                 if (ACTION_CLOSE_DIALOG.equals(intent.getAction())) {
-                    // Finish this activity
+                    // Unregistered listener and finish this activity with dialogId
+                    if (commandIntentListener != null) {
+                        localBroadcastManager.unregisterReceiver(commandIntentListener);
+
+                        // Notify about dialogs list change
+                        synchronized (displayedDialogs) {
+                            displayedDialogs.remove(listenerID);
+                            displayedDialogs.notifyAll();
+                        }
+                        commandIntentListener = null;
+                    }
                     finish();
                 }
                 else if (ACTION_FOCUS_DIALOG.equals(intent.getAction())) {
@@ -369,8 +373,7 @@ public class DialogActivity extends OSGiActivity
     }
 
     /**
-     * Creates an <tt>Intent</tt> that will display a dialog with given <tt>title</tt> and content
-     * <tt>message</tt>.
+     * Creates an <tt>Intent</tt> that will display a dialog with given <tt>title</tt> and content <tt>message</tt>.
      *
      * @param ctx Android context.
      * @param title dialog title that will be used
@@ -493,13 +496,13 @@ public class DialogActivity extends OSGiActivity
          *
          * @param dialog source <tt>DialogActivity</tt>.
          */
-        public boolean onConfirmClicked(DialogActivity dialog);
+        boolean onConfirmClicked(DialogActivity dialog);
 
         /**
          * Fired when user dismisses the dialog.
          *
          * @param dialog source <tt>DialogActivity</tt>
          */
-        public void onDialogCancelled(DialogActivity dialog);
+        void onDialogCancelled(DialogActivity dialog);
     }
 }

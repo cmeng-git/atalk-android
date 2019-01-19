@@ -5,9 +5,12 @@
  */
 package org.atalk.android.gui.call;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.view.*;
 import android.widget.ImageView;
@@ -83,6 +86,8 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * Also use during screen rotation to re-init local video
      */
     static boolean wasVideoEnabled = false;
+
+    static boolean isCameraEnable = false;
 
     /**
      * Indicate phone orientation change and need to init RemoteVideoContainer
@@ -167,10 +172,16 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             }
         });
 
+        isCameraEnable = ContextCompat.checkSelfPermission(mCallback, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED;
+
         calleeAvatar = mCallback.findViewById(R.id.calleeAvatar);
         mCallVideoButton = mCallback.findViewById(R.id.button_call_video);
-        mCallVideoButton.setOnClickListener(this::onLocalVideoButtonClicked);
-        mCallVideoButton.setOnLongClickListener(this);
+
+        if (isCameraEnable) {
+            mCallVideoButton.setOnClickListener(this::onLocalVideoButtonClicked);
+            mCallVideoButton.setOnLongClickListener(this);
+        }
 
         // Creates and registers surface handler for events
         this.previewSurfaceHandler = new PreviewSurfaceProvider(mCallback, localPreviewContainer, true);
@@ -279,11 +290,16 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
              * Otherwise media recorder will crash on invalid preview surface.
              * 20180921 - crash does not happen anymore when remains as true- fixed?
              */
+            //  if (!mCallback.isBackToChat()) {
+            //                previewSurfaceHandler.setPreviewSurface(PreviewStream.getCamera());
+            //  }
+            //            else {
             setLocalVideoEnabled(false);
 
             previewSurfaceHandler.waitForObjectRelease();
             // TODO: release object on rotation, but the data source have to be paused
             // remoteSurfaceHandler.waitForObjectRelease();
+            //}
         }
     }
 
@@ -300,8 +316,9 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+
         AndroidCamera currentCamera = AndroidCamera.getSelectedCameraDevInfo();
-        if (currentCamera == null) {
+        if (!isCameraEnable || currentCamera == null) {
             return;
         }
 
@@ -404,9 +421,14 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      */
     private void initLocalVideoState(boolean isVideoEnable)
     {
+
         setLocalVideoEnabled(isVideoEnable);
 
-        if (isVideoEnable) {
+        if (!isCameraEnable) {
+            mCallVideoButton.setImageResource(R.drawable.call_video_no_dark);
+            mCallVideoButton.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+        }
+        else if (isVideoEnable) {
             mCallVideoButton.setImageResource(R.drawable.call_video_record_dark);
             mCallVideoButton.setBackgroundColor(0x50000000);
         }
@@ -590,17 +612,17 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
                 doAlignRemoteVideo(view, preferredSize);
             }
             /*
-            * (20181228) cmeng: New implementation will not trigger content remove and content add when toggle local camera
-            * Remove remote view container and realign display will happen when:
-            * a. Remote camera is toggled
-            * b. Remote camera (phone) rotation changed
-            * as the action causes stream Timeout event, then followed by receipt of new stream data
-            *
-            * May want to investigate extend stream timeout period to avoid remote video playback disruption
-            * i.e. playback view is being toggled off and on for ~2S
-            * Note change in remote camera dimension due to rotation will cause media decoder to trigger a
-            * remote video chane event.
-            */
+             * (20181228) cmeng: New implementation will not trigger content remove and content add when toggle local camera
+             * Remove remote view container and realign display will happen when:
+             * a. Remote camera is toggled
+             * b. Remote camera (phone) rotation changed
+             * as the action causes stream Timeout event, then followed by receipt of new stream data
+             *
+             * May want to investigate extend stream timeout period to avoid remote video playback disruption
+             * i.e. playback view is being toggled off and on for ~2S
+             * Note change in remote camera dimension due to rotation will cause media decoder to trigger a
+             * remote video chane event.
+             */
             else {
                 logger.warn("Remote video removed.");
                 doAlignRemoteVideo(null, null);

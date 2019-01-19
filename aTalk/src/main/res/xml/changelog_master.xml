@@ -6,6 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.6.5 (01/18/2019)" versioncode="1065">
+        <change>Launch permission request prior to start aTalk activity to fix no camera and video call problem</change>
+        <change>Do not override chat room subject with default unless specified by user</change>
+        <change>Add user option to change chat room nick and subject</change>
+        <change>Display chat room subject instead of room occupants on actionBar</change>
+        <change>Hide audio send button in conference - not supported</change>
+        <change>Show camera disable icon in video call if no permission.CAMERA is granted</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.6.4 (12/28/2018)" versioncode="1064">
         <change>Add user option for aTalk auto start on device reboot</change>
         <change>Implement full screen playback for remote video during media call</change>

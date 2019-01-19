@@ -203,28 +203,16 @@ public class CryptoPrivateKeys extends OSGiActivity
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle(getString(R.string.crypto_dialog_KEY_GENERATE_TITLE))
                 .setMessage(message)
-                .setPositiveButton(R.string.service_gui_PROCEED, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        if (accountId != null) {
-                            if (bareJid.startsWith(OMEMO))
-                                regenerate(accountId);
-                            else if (bareJid.startsWith(OTR))
-                                keyManager.generateKeyPair(accountId);
-                        }
-                        accountsAdapter.notifyDataSetChanged();
+                .setPositiveButton(R.string.service_gui_PROCEED, (dialog, which) -> {
+                    if (accountId != null) {
+                        if (bareJid.startsWith(OMEMO))
+                            regenerate(accountId);
+                        else if (bareJid.startsWith(OTR))
+                            keyManager.generateKeyPair(accountId);
                     }
+                    accountsAdapter.notifyDataSetChanged();
                 })
-                .setNegativeButton(R.string.service_gui_CANCEL, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                }).show();
+                .setNegativeButton(R.string.service_gui_CANCEL, (dialog, which) -> dialog.dismiss()).show();
     }
 
     /**

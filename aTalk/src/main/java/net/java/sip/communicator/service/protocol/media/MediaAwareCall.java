@@ -632,15 +632,11 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
              * If the recorder gets stopped earlier than this call ends, don't wait for the end of
              * the call because callChangeListener will keep a reference to the stopped recorder.
              */
-            recorder.addListener(new Recorder.Listener()
-            {
-                public void recorderStopped(Recorder recorder)
-                {
-                    removeCallChangeListener(callChangeListener);
-                    Iterator<Recorder.Listener> iter = ProtocolMediaActivator.getMediaService().getRecorderListeners();
-                    while (iter.hasNext())
-                        recorder.removeListener(iter.next());
-                }
+            recorder.addListener(recorder1 -> {
+                removeCallChangeListener(callChangeListener);
+                Iterator<Recorder.Listener> iter = ProtocolMediaActivator.getMediaService().getRecorderListeners();
+                while (iter.hasNext())
+                    recorder1.removeListener(iter.next());
             });
 
             // add listener for mute event to all current peers

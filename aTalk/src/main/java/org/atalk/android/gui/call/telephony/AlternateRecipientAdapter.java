@@ -128,14 +128,7 @@ public class AlternateRecipientAdapter extends BaseAdapter
             holder.headerAddressLabel.setVisibility(View.GONE);
         }
 
-        holder.headerRemove.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                listener.onRecipientRemove(currentRecipient);
-            }
-        });
+        holder.headerRemove.setOnClickListener(v -> listener.onRecipientRemove(currentRecipient));
     }
 
     public void bindItemView(View view, final Recipient recipient)
@@ -157,14 +150,7 @@ public class AlternateRecipientAdapter extends BaseAdapter
         holder.itemAddress.setTypeface(null, isCurrent ? Typeface.BOLD : Typeface.NORMAL);
         holder.itemAddressLabel.setTypeface(null, isCurrent ? Typeface.BOLD : Typeface.NORMAL);
 
-        holder.layoutItem.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                listener.onRecipientChange(currentRecipient, recipient);
-            }
-        });
+        holder.layoutItem.setOnClickListener(v -> listener.onRecipientChange(currentRecipient, recipient));
     }
 
     public void setShowAdvancedInfo(boolean showAdvancedInfo)

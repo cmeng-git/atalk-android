@@ -128,6 +128,13 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
     {
+        /*
+         * surfaceChange event is mainly triggered by local video preview change by user; currently
+         * not implemented in android aTalk. Hence no action is required.
+         * Note: the event get trigger whenever there is an init of the local video preview
+         * e.g. init or toggle camera
+         * logger.warn("Preview surface change size: " + width + " x " + height);
+         */
         // if (mHolder.getSurface() == null){
         // // preview surface does not exist
         // return;

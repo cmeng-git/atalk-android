@@ -26,11 +26,9 @@ import org.atalk.android.R;
  *
  * @author Eng Chong Meng
  */
-
 public class AttachOptionDialog extends Dialog
 {
-	private ListView mListView = null;
-	private AttachOptionModeAdapter mAttachOptionAdapter = null;
+    private AttachOptionModeAdapter mAttachOptionAdapter = null;
 	private AttachOptionItem mSelectedItem = null;
 	private ChatActivity mParent = null;
 	private final Contact mContact;
@@ -48,20 +46,15 @@ public class AttachOptionDialog extends Dialog
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_attach_option_dialog);
 
-		mListView = this.findViewById(R.id.attach_optionlist);
+        ListView mListView = this.findViewById(R.id.attach_optionlist);
 		List<AttachOptionItem> items = new ArrayList<>(Arrays.asList(AttachOptionItem.values()));
 		mAttachOptionAdapter = new AttachOptionModeAdapter(this.getContext(), R.layout.attach_option_child_row, items);
 		mListView.setAdapter(mAttachOptionAdapter);
-		mListView.setOnItemClickListener(new OnItemClickListener()
-		{
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-			{
-				mSelectedItem = mAttachOptionAdapter.getItem((int) id);
-				mParent.sendAttachment(mSelectedItem, mContact);
-				closeDialog();
-			}
-		});
+		mListView.setOnItemClickListener((parent, view, position, id) -> {
+            mSelectedItem = mAttachOptionAdapter.getItem((int) id);
+            mParent.sendAttachment(mSelectedItem, mContact);
+            closeDialog();
+        });
 	}
 
 	public void closeDialog()

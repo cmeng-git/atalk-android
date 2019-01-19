@@ -45,11 +45,6 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
         implements ChatRoomProviderWrapperListener, ChatRoomListChangeListener, UIGroupRenderer
 {
     /**
-     * The logger for this class.
-     */
-    private final Logger logger = Logger.getLogger(ChatRoomListAdapter.class);
-
-    /**
      * The group of original chatRoomProviderWrapper
      */
     private LinkedList<ChatRoomProviderWrapper> originalCrpWrapperGroup;
@@ -267,12 +262,12 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     {
         if (originalCrpWrapperGroup.indexOf(crpWrapper) < 0) {
             originalCrpWrapperGroup.add(crpWrapper);
-            originalCrWrapperList.add(new TreeSet<ChatRoomWrapper>());
+            originalCrWrapperList.add(new TreeSet<>());
         }
 
         if (mCrpWrapperGroup.indexOf(crpWrapper) < 0) {
             mCrpWrapperGroup.add(crpWrapper);
-            mCrWrapperList.add(new TreeSet<ChatRoomWrapper>());
+            mCrWrapperList.add(new TreeSet<>());
         }
     }
 
@@ -618,6 +613,6 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
      */
     private void uiChangeUpdate()
     {
-        uiHandler.post(() -> notifyDataSetChanged());
+        uiHandler.post(this::notifyDataSetChanged);
     }
 }

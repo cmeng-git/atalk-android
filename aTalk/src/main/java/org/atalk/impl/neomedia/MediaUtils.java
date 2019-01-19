@@ -221,8 +221,9 @@ public class MediaUtils
                 Constants.AMR_WB_RTP,
                 16000);
 
-        // We don't really support these.
         /*
+         * We don't really support these.
+         *
         addMediaFormats(
             (byte) SdpConstants.JPEG,
             "JPEG",

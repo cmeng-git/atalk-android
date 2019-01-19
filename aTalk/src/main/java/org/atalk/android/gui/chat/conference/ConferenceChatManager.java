@@ -43,8 +43,7 @@ import static org.atalk.android.aTalkApp.getCurrentActivity;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class ConferenceChatManager
-        implements ChatRoomMessageListener, ChatRoomInvitationListener,
+public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomInvitationListener,
         ChatRoomInvitationRejectionListener, AdHocChatRoomMessageListener,
         AdHocChatRoomInvitationListener, AdHocChatRoomInvitationRejectionListener,
         LocalUserChatRoomPresenceListener, LocalUserAdHocChatRoomPresenceListener,
@@ -383,8 +382,8 @@ public class ConferenceChatManager
     public void localUserPresenceChanged(final LocalUserChatRoomPresenceChangeEvent evt)
     {
         ChatRoom sourceChatRoom = evt.getChatRoom();
-        ChatRoomWrapper chatRoomWrapper = AndroidGUIActivator.getMUCService()
-                .findChatRoomWrapperFromChatRoom(sourceChatRoom);
+        ChatRoomWrapper chatRoomWrapper
+                = AndroidGUIActivator.getMUCService().findChatRoomWrapperFromChatRoom(sourceChatRoom);
 
         String eventType = evt.getEventType();
         if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED.equals(eventType)) {
@@ -400,16 +399,14 @@ public class ConferenceChatManager
                     createWindow = true;
 
                 ChatPanel chatPanel = ChatSessionManager.getMultiChat(chatRoomWrapper, createWindow);
-                // cmeng - below code may not be required since above code will create and
-                // setActive
+                // cmeng - below code may not be required since above code will create and setActive
                 if (chatPanel != null) {
                     // chatPanel.setChatIcon(chatPanel.getChatStatusIcon());
 
                     // Check if we have already opened a chat window for this chat wrapper and
                     // load the real chat room corresponding to the wrapper.
                     if (chatPanel.isChatFocused()) {
-                        ((ConferenceChatSession) chatPanel.getChatSession())
-                                .loadChatRoom(sourceChatRoom);
+                        ((ConferenceChatSession) chatPanel.getChatSession()).loadChatRoom(sourceChatRoom);
                     }
                     else {
                         // ChatSessionManager.openChat(chatPanel, true);
@@ -456,8 +453,7 @@ public class ConferenceChatManager
                         }
                     }
                 }
-                // Need to refresh the chat room's list in order to change the state of the chat
-                // room to offline.
+                // Need to refresh the chat room's list in order to change the state of the chat room to offline.
                 AndroidGUIActivator.getMUCService().fireChatRoomListChangedEvent(chatRoomWrapper,
                         ChatRoomListChangeEvent.CHAT_ROOM_CHANGED);
             }
@@ -566,7 +562,6 @@ public class ConferenceChatManager
     public void removeChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
-
         if (chatRoom != null)
             leaveChatRoom(chatRoomWrapper);
 

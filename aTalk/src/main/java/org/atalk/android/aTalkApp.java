@@ -58,6 +58,8 @@ public class aTalkApp extends Application
      */
     public static final String ACTION_EXIT = "org.atalk.android.exit";
 
+    public static boolean permissionFirstRequest = true;
+
     /**
      * Possible values for the different theme settings.
      *
@@ -75,7 +77,7 @@ public class aTalkApp extends Application
     /**
      * Static instance holder.
      */
-    private static aTalkApp instance;
+    private static aTalkApp mInstance;
 
     /**
      * The currently shown activity.
@@ -111,7 +113,7 @@ public class aTalkApp extends Application
     public void onCreate()
     {
         super.onCreate();
-        instance = this;
+        mInstance = this;
     }
 
     @Override
@@ -127,7 +129,7 @@ public class aTalkApp extends Application
     @Override
     public void onTerminate()
     {
-        instance = null;
+        mInstance = null;
         super.onTerminate();
     }
 
@@ -136,7 +138,7 @@ public class aTalkApp extends Application
      */
     public static void shutdownApplication()
     {
-        instance.doShutdownApplication();
+        mInstance.doShutdownApplication();
     }
 
     /**
@@ -159,7 +161,7 @@ public class aTalkApp extends Application
      */
     public static DrawableCache getImageCache()
     {
-        return instance.drawableCache;
+        return mInstance.drawableCache;
     }
 
     /**
@@ -219,7 +221,7 @@ public class aTalkApp extends Application
      */
     public static Context getGlobalContext()
     {
-        return instance.getApplicationContext();
+        return mInstance.getApplicationContext();
     }
 
     /**
@@ -229,7 +231,7 @@ public class aTalkApp extends Application
      */
     public static Resources getAppResources()
     {
-        return instance.getResources();
+        return mInstance.getResources();
     }
 
     /**
@@ -257,9 +259,9 @@ public class aTalkApp extends Application
 
     public static String getResStringByName(String aString)
     {
-        String packageName = instance.getPackageName();
-        int resId = instance.getResources().getIdentifier(aString, "string", packageName);
-        return instance.getString(resId);
+        String packageName = mInstance.getPackageName();
+        int resId = mInstance.getResources().getIdentifier(aString, "string", packageName);
+        return mInstance.getString(resId);
     }
 
     /**
@@ -282,7 +284,6 @@ public class aTalkApp extends Application
     {
         showToastMessage(getAppResources().getString(id, arg));
     }
-
 
     public static void showToastMessageOnUI(final int id, final Object... arg)
     {
@@ -310,10 +311,11 @@ public class aTalkApp extends Application
             return LauncherActivity.class;
         }
 
-        AccountManager accountManager = ServiceUtils.getService(osgiContext, AccountManager.class);
         // If account manager is null means that OSGI has not started yet
-        if (accountManager == null)
+        AccountManager accountManager = ServiceUtils.getService(osgiContext, AccountManager.class);
+        if (accountManager == null) {
             return LauncherActivity.class;
+        }
 
         final int accountCount = accountManager.getStoredAccounts().size();
         if (accountCount == 0) {
@@ -333,8 +335,8 @@ public class aTalkApp extends Application
      */
     public static Intent getHomeIntent()
     {
-        Intent homeIntent = new Intent(instance, getHomeScreenActivityClass());
         // Home is singleTask anyway, but this way it can be started from non Activity context.
+        Intent homeIntent = new Intent(mInstance, getHomeScreenActivityClass());
         homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return homeIntent;
     }
@@ -350,8 +352,7 @@ public class aTalkApp extends Application
         if (intent == null) {
             intent = getHomeIntent();
         }
-        return PendingIntent.getActivity(getGlobalContext(), 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getActivity(getGlobalContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -525,6 +526,10 @@ public class aTalkApp extends Application
         return (aTalkApp) ctx.getApplicationContext();
     }
 
+    public static aTalkApp getInstance()
+    {
+        return mInstance;
+    }
 
     /**
      * If OSGi has not started, then wait for the <tt>LauncherActivity</tt> etc to complete before
@@ -534,7 +539,7 @@ public class aTalkApp extends Application
      */
     public static void waitForDisplay()
     {
-//		if (AndroidGUIActivator.bundleContext == null) { #false on first application installation
+        // if (AndroidGUIActivator.bundleContext == null) { #false on first application installation
         final Object currentActivityMonitor = aTalkApp.getCurrentActivityMonitor();
         synchronized (currentActivityMonitor) {
             while (true) {

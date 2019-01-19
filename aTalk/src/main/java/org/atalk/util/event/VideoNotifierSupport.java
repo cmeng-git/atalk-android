@@ -175,8 +175,8 @@ public class VideoNotifierSupport
      */
     public void fireVideoEvent(VideoEvent event, boolean wait)
     {
-        // if (VideoEvent.VIDEO_REMOVED == event.getType())
-        //     new Exception("Video Update Event").printStackTrace();
+        // if (VideoEvent.VIDEO_SIZE_CHANGE == event.getType())
+        //    new Exception("Video Update Event").printStackTrace();
         if (synchronous)
             doFireVideoEvent(event);
         else {

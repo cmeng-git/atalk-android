@@ -2058,9 +2058,6 @@ public class ChatFragment extends OSGiFragment
      */
     private void changeBackground(final View focusView, final int chatType)
     {
-        //		logger.info("## Background color Changes: " + mChatType + "==>" + chatType
-        //				+ " ChatPanel for: " + currentChatTransport.getDisplayName());
-
         if (mChatType == chatType)
             return;
 

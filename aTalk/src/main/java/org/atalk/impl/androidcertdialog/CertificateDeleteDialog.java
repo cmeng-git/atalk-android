@@ -63,48 +63,30 @@ public class CertificateDeleteDialog extends OSGiActivity implements DialogInter
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE);
         builder.setMultiChoiceItems(certificates.toArray(new CharSequence[0]),
-                checkedItems, new DialogInterface.OnMultiChoiceClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked)
-                    {
-                        checkedItems[which] = isChecked;
-                        final AlertDialog multiChoiceDialog = (AlertDialog) dialog;
-                        for (boolean item : checkedItems) {
-                            if (item) {
-                                multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
-                                return;
-                            }
+                checkedItems, (dialog, which, isChecked) -> {
+                    checkedItems[which] = isChecked;
+                    final AlertDialog multiChoiceDialog = (AlertDialog) dialog;
+                    for (boolean item : checkedItems) {
+                        if (item) {
+                            multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+                            return;
                         }
-                        multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
                     }
+                    multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
                 });
 
-        builder.setNegativeButton(R.string.service_gui_CANCEL,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        finish();
-                    }
-                });
-        builder.setPositiveButton(R.string.crypto_dialog_button_DELETE,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        // proceed to delete only first selected item. Remainders handle by onDismiss() of dialog
-                        for (int i = 0; i < checkedItems.length; ++i) {
-                            if (checkedItems[i]) {
-                                showCertificateDeleteAlert(certificates.get(i));
-                                checkedItems[i] = false;
-                                break;
-                            }
-                        }
-                    }
-                });
+        builder.setNegativeButton(R.string.service_gui_CANCEL, (dialog, which) -> finish());
+
+        builder.setPositiveButton(R.string.crypto_dialog_button_DELETE, (dialog, which) -> {
+            // proceed to delete only first selected item. Remainders handle by onDismiss() of dialog
+            for (int i = 0; i < checkedItems.length; ++i) {
+                if (checkedItems[i]) {
+                    showCertificateDeleteAlert(certificates.get(i));
+                    checkedItems[i] = false;
+                    break;
+                }
+            }
+        });
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
@@ -143,23 +125,11 @@ public class CertificateDeleteDialog extends OSGiActivity implements DialogInter
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE))
                 .setMessage(getString(R.string.service_gui_settings_SSL_CERTIFICATE_DELETE, trustFor))
-                .setPositiveButton(R.string.service_gui_PROCEED, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        cvs.removeCertificateEntry(certificateMap.get(trustFor));
-                        dialog.dismiss();
-                    }
+                .setPositiveButton(R.string.service_gui_PROCEED, (dialog, which) -> {
+                    cvs.removeCertificateEntry(certificateMap.get(trustFor));
+                    dialog.dismiss();
                 })
-                .setNegativeButton(R.string.service_gui_CANCEL, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                })
+                .setNegativeButton(R.string.service_gui_CANCEL, (dialog, which) -> dialog.dismiss())
                 .setOnDismissListener(this);
 
         AlertDialog confirmDialog = builder.create();

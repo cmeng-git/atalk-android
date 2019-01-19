@@ -111,23 +111,13 @@ public class ProvisioningSettings extends BasicSettingsActivity implements Share
 		AlertDialog.Builder askForget = new AlertDialog.Builder(this);
 		askForget.setTitle(R.string.service_gui_REMOVE)
 				.setMessage(R.string.plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE)
-				.setPositiveButton(R.string.service_gui_YES, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which)
-				{
+				.setPositiveButton(R.string.service_gui_YES, (dialog, which) -> {
 					AndroidGUIActivator.getCredentialsStorageService().removePassword(P_KEY_PASS);
 					AndroidGUIActivator.getConfigurationService().removeProperty(P_KEY_USER);
 
 					usernamePreference.setText("");
 					passwordPreference.setText("");
-				}
-			}).setNegativeButton(R.string.service_gui_NO, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which)
-				{
-					dialog.dismiss();
-				}
-			}).show();
+				}).setNegativeButton(R.string.service_gui_NO, (dialog, which) -> dialog.dismiss()).show();
 	}
 
 	/**

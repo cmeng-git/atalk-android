@@ -8,7 +8,6 @@ package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
-import android.os.Build;
 
 import net.java.sip.communicator.util.Logger;
 
@@ -51,7 +50,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     /**
      * Camera object.
      */
-    protected Camera mCamera;
+    protected static Camera mCamera;
 
     /**
      * Format of this stream.
@@ -249,5 +248,13 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     public static int getCameraId()
     {
         return mCameraId;
+    }
+
+    /**
+     * @return the current selected cameraId
+     */
+    public static Camera getCamera()
+    {
+        return mCamera;
     }
 }

@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -172,16 +171,10 @@ public class ActionBarStatusFragment extends OSGiFragment
             globalStatusMenu.addActionItem(actionItem, pps);
         }
 
-        globalStatusMenu.setOnActionItemClickListener(
-                new GlobalStatusMenu.OnActionItemClickListener()
-                {
-                    @Override
-                    public void onItemClick(GlobalStatusMenu source, int pos, int actionId)
-                    {
-                        if (actionId <= DND)
-                            publishGlobalStatus(actionId);
-                    }
-                });
+        globalStatusMenu.setOnActionItemClickListener((source, pos, actionId) -> {
+            if (actionId <= DND)
+                publishGlobalStatus(actionId);
+        });
 
         globalStatusMenu.setOnDismissListener(new GlobalStatusMenu.OnDismissListener()
         {

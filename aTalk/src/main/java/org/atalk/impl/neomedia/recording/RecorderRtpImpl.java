@@ -712,14 +712,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
                     if (performActiveSpeakerDetection) {
                         AudioLevelEffect audioLevelEffect = new AudioLevelEffect();
-                        audioLevelEffect.setAudioLevelListener(new SimpleAudioLevelListener()
-                        {
-                            @Override
-                            public void audioLevelChanged(int level)
-                            {
-                                activeSpeakerDetector.levelChanged(ssrc, level);
-                            }
-                        });
+                        audioLevelEffect.setAudioLevelListener(level
+                                -> activeSpeakerDetector.levelChanged(ssrc, level));
 
                         codecList.add(audioLevelEffect);
                     }

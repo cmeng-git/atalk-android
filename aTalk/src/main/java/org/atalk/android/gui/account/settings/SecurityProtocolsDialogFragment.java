@@ -86,23 +86,15 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View contentView = inflater.inflate(R.layout.sec_protocols_dialog, null);
-        builder.setView(contentView).setPositiveButton(R.string.service_gui_SEC_PROTOCOLS_OK, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int i)
-            {
-                hasChanges = true;
-                dismiss();
-            }
-        }).setNegativeButton(R.string.service_gui_SEC_PROTOCOLS_CANCEL, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int i)
-            {
-                hasChanges = false;
-                dismiss();
-            }
+        builder.setView(contentView).setPositiveButton(R.string.service_gui_SEC_PROTOCOLS_OK, (dialog, i) -> {
+            hasChanges = true;
+            dismiss();
+        }).setNegativeButton(R.string.service_gui_SEC_PROTOCOLS_CANCEL, (dialog, i) -> {
+            hasChanges = false;
+            dismiss();
         });
 
-        TouchInterceptor lv = (TouchInterceptor) contentView.findViewById(android.R.id.list);
+        TouchInterceptor lv = contentView.findViewById(android.R.id.list);
         lv.setAdapter(protocolsAdapter);
         lv.setDropListener(protocolsAdapter);
 

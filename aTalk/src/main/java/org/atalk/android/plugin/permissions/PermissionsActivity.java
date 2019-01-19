@@ -17,17 +17,18 @@
 package org.atalk.android.plugin.permissions;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
+import android.os.*;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -40,8 +41,13 @@ import com.karumi.dexter.listener.*;
 import com.karumi.dexter.listener.multi.*;
 import com.karumi.dexter.listener.single.*;
 
+import net.java.sip.communicator.util.Logger;
+
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.Splash;
 import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.service.EventReceiver;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -53,6 +59,13 @@ import butterknife.*;
  */
 public class PermissionsActivity extends Activity
 {
+    private static final Logger logger = Logger.getLogger(PermissionsActivity.class);
+
+    private static final int REQUEST_BATTERY_OP = 100;
+
+    // startLauncher is set ot false when user click the "Done" button
+    private static boolean startLauncher = false;
+
     @BindView(R.id.camera_permission_feedback)
     TextView cameraPermissionFeedbackView;
     @BindView(R.id.contacts_permission_feedback)
@@ -83,16 +96,60 @@ public class PermissionsActivity extends Activity
     protected static List<PermissionGrantedResponse> grantedPermissionResponses = new LinkedList<>();
     protected static List<PermissionDeniedResponse> deniedPermissionResponses = new LinkedList<>();
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.permissions_activity);
-        ButterKnife.bind(this);
-        createPermissionListeners();
-        if (!getPackagePermissionsStatus())
-            finish();
-        permissionsStatusUpdate();
+
+        // Always request permission on first apk launch for android.M
+        if (aTalkApp.permissionFirstRequest && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
+
+            // see if we should show the splash screen and wait for it to complete before continue
+            if (Splash.isFirstRun()) {
+                Intent intent = new Intent(this, Splash.class);
+                startActivity(intent);
+            }
+
+            setContentView(R.layout.permissions_activity);
+            logger.info("Launching user permission request for aTalk.");
+            aTalkApp.permissionFirstRequest = false;
+
+            // Request user to add aTalk to BatteryOptimization whitelist
+            openBatteryOptimizationDialogIfNeeded();
+
+            ButterKnife.bind(this);
+            createPermissionListeners();
+            if (!getPackagePermissionsStatus())
+                startLauncher();
+            permissionsStatusUpdate();
+        }
+        else
+            startLauncher();
+    }
+
+    /**
+     * Start Launcher only after user has done with the permission request
+     * Note: pause will get call when user clicks on each permission request box
+     */
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        if (startLauncher) {
+            startLauncher = false;
+            startLauncher();
+        }
+    }
+
+    private void startLauncher()
+    {
+        finish();
+        Class<?> activityClass = aTalkApp.getHomeScreenActivityClass();
+        Intent i = new Intent(this, activityClass);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.putExtra(EventReceiver.AUTO_START_ONBOOT, false);
+        startActivity(i);
     }
 
     public void onAllPermissionsCheck()
@@ -205,6 +262,7 @@ public class PermissionsActivity extends Activity
     @OnClick(R.id.button_done)
     public void onDoneButtonClicked()
     {
+        startLauncher = true;
         finish();
     }
 
@@ -470,5 +528,70 @@ public class PermissionsActivity extends Activity
                 feedbackView = null;
         }
         return feedbackView;
+    }
+
+    /* **********************************************
+     * Android Battery Usage Optimization Request
+     ************************************************/
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void openBatteryOptimizationDialogIfNeeded()
+    {
+        if (isOptimizingBattery() && getPreferences().getBoolean(getBatteryOptimizationPreferenceKey(), true)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.battery_optimizations);
+            builder.setMessage(R.string.battery_optimizations_dialog);
+
+            builder.setPositiveButton(R.string.next, (dialog, which) -> {
+                Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                Uri uri = Uri.parse("package:" + getPackageName());
+                intent.setData(uri);
+                try {
+                    startActivityForResult(intent, REQUEST_BATTERY_OP);
+                } catch (ActivityNotFoundException e) {
+                    aTalkApp.showToastMessage(R.string.device_does_not_support_battery_op);
+                }
+            });
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                builder.setOnDismissListener(dialog -> setNeverAskForBatteryOptimizationsAgain());
+            }
+
+            AlertDialog dialog = builder.create();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ((resultCode != RESULT_OK) && (requestCode == REQUEST_BATTERY_OP)) {
+            setNeverAskForBatteryOptimizationsAgain();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    protected boolean isOptimizingBattery()
+    {
+        final PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+        return (pm != null) && !pm.isIgnoringBatteryOptimizations(getPackageName());
+    }
+
+    private String getBatteryOptimizationPreferenceKey()
+    {
+        @SuppressLint("HardwareIds")
+        String device = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        return "show_battery_optimization" + (device == null ? "" : device);
+    }
+
+    private void setNeverAskForBatteryOptimizationsAgain()
+    {
+        getPreferences().edit().putBoolean(getBatteryOptimizationPreferenceKey(), false).apply();
+    }
+
+    protected SharedPreferences getPreferences()
+    {
+        return PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 }

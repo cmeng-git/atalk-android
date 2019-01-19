@@ -7,7 +7,6 @@ import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.gui.LauncherActivity;
-import org.atalk.android.plugin.geolocation.GeoLocation;
 import org.atalk.persistance.DatabaseBackend;
 
 
@@ -24,7 +23,8 @@ public class EventReceiver extends BroadcastReceiver
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.putExtra(AUTO_START_ONBOOT, true);
                 context.startActivity(i);
-            } else {
+            }
+            else {
                 System.exit(0);
             }
         }
