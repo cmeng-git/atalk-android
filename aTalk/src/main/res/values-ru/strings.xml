@@ -36,8 +36,10 @@
     <string name="captcha_registration_success">Регистрация-Captcha успешно.\nВы можете перейти к регистрации!</string>
     <string name="captcha_registration_reason">Inband регистрация, запрошенная пользователем</string>
     <string name="captcha_registration_pwd_empty">Ошибка: поле пароля пуст!</string>
-    <string name="captcha_hint">Введите текст, указанный на картинке выше</string>
-    <string name="choose_network">Выберите сеть</string>
+    <string name="captcha_hint">Введите текст, который вы видите</string>
+    <string name="captcha_retry">Нажмите «ОК», чтобы повторить попытку, или «Отмена», чтобы завершить</string>
+
+        <string name="choose_network">Выберите сеть</string>
     <string name="encryption_TOOLTIP">Шифровать чат</string>
     <string name="encryption_choices">EncryptChoices</string>
     <string name="encryption_choice_unencrypted">Unencrypted</string>
@@ -66,7 +68,7 @@
     <string name="attachOptionDialog_videoRecord">Захват видео</string>
     <string name="attachOptionDialog_shareFile">Поделиться файлом</string>
     <string name="chat_fileTransferButton">Открыть</string>
-    <string name="chat_message_del">Удалить текст</string>
+    <string name="chat_message_del">Удалить сообщение</string>
     <string name="chat_message_edit">Изменить</string>
     <string name="chat_message_long_press_hint">Избегайте нажатия в области сообщений для операции выбора нескольких элементов</string>
     <string name="chat_message_select_all">Выбрать все</string>
@@ -204,7 +206,7 @@
     <string name="service_gui_CONTACT_RENAME_HINT">Введите новый контакт Имя</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Изменить имя контакта</string>
     <string name="service_gui_CONTACTS">Контакты</string>
-    <string name="service_gui_COPY_MESSAGE_TEXT">Копировать текст</string>
+    <string name="service_gui_COPY_MESSAGE_TEXT">Копировать текст сообщения</string>
 
 <string name="service_gui_CREATE">Создать</string>
     <string name="service_gui_CREATE_CALL_FAILED">Не удалось создать вызов.</string>
@@ -348,6 +350,8 @@
     <string name="service_gui_FILE_TRANSFER_REFUSED">Отказано в передаче файлов</string>
 	<string name="service_gui_FILE_UNABLE_TO_SEND">Произошла ошибка при отправке файла в %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Ожидание %1$s, чтобы принять ваш файл</string>
+    <string name="service_gui_FILE_DOWNLOAD_LINK">&lt;html xmlns=\'http://jabber.org/protocol/xhtml-im\'>&lt;body xmlns=\'http://www.w3.org/1999/xhtml\'>
+      &lt;p>Передача файла в автономном режиме, доступ по ссылке:\n&lt;a href=\'%1$s\'>%2$s&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
 
 	<string name="service_gui_FINISH">Закончить</string>
 	<string name="service_gui_FOLDER_DOES_NOT_EXIST">Не удалось найти папку, содержащую этот файл. Он был удален или перемещен</string>
@@ -366,6 +370,7 @@
 	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Вы действительно хотите очистить все сообщения для %1$s?</string>
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Вы действительно хотите очистить все сообщения для всех контактов?</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Ошибка удаления локально сохраненных сообщений для %1$s.</string>
+    <string name="service_gui_HISTORY_REMOVE_MEDIA">Удалить медиа с моего телефона</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Жители чатов</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Удалить эту историю чата</string>

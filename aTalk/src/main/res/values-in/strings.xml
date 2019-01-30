@@ -36,8 +36,10 @@
     <string name="captcha_registration_success">Pendaftaran-Captcha berhasil.\nAnda sekarang dapat melanjutkan untuk masuk!</string>
     <string name="captcha_registration_reason">Pendaftaran inband diminta oleh pengguna</string>
     <string name="captcha_registration_pwd_empty">Kesalahan: bidang kata sandi kosong!</string>
-    <string name="captcha_hint">Masukkan teks yang terlihat pada gambar di atas</string>
-    <string name="choose_network">Pilih jaringan</string>
+    <string name="captcha_hint">Isikan teks yang Anda lihat</string>
+    <string name="captcha_retry">Klik \'OK\' untuk mencoba lagi atau \'Batal\' untuk mengakhiri</string>
+
+        <string name="choose_network">Pilih jaringan</string>
     <string name="encryption_TOOLTIP">Enkripsi obrolan</string>
     <string name="encryption_choices">Enkripsikan Pilihan</string>
     <string name="encryption_choice_unencrypted">Tidak terenkripsi</string>
@@ -66,7 +68,7 @@
     <string name="attachOptionDialog_videoRecord">Rekam video</string>
     <string name="attachOptionDialog_shareFile">Bagikan Fail</string>
     <string name="chat_fileTransferButton">Buka</string>
-    <string name="chat_message_del">Hapus teks</string>
+    <string name="chat_message_del">Hapus pesan</string>
     <string name="chat_message_edit">Meredaksi</string>
     <string name="chat_message_long_press_hint">Hindari mengklik dalam area pesan untuk operasi pemilihan multi-item</string>
     <string name="chat_message_select_all">Pilih semua</string>
@@ -204,7 +206,7 @@
     <string name="service_gui_CONTACT_RENAME_HINT">Masukkan Nama kontak baru</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Ubah Nama Kontak</string>
     <string name="service_gui_CONTACTS">Kontak</string>
-    <string name="service_gui_COPY_MESSAGE_TEXT">Salin teks</string>
+    <string name="service_gui_COPY_MESSAGE_TEXT">Salin teks pesan</string>
 
     <string name="service_gui_CREATE">Buat</string>
     <string name="service_gui_CREATE_CALL_FAILED">Gagal membuat panggilan.</string>
@@ -345,6 +347,8 @@
     <string name="service_gui_FILE_TRANSFER_REFUSED">Transfer fail telah ditolak</string>
     <string name="service_gui_FILE_UNABLE_TO_SEND">Terjadi kesalahan saat mengirim fail ke %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Menunggu %1$s untuk menerima fail Anda</string>
+    <string name="service_gui_FILE_DOWNLOAD_LINK">&lt;html xmlns=\'http://jabber.org/protocol/xhtml-im\'>&lt;body xmlns=\'http://www.w3.org/1999/xhtml\'>
+      &lt;p>File offline ditransfer, akses melalui tautan:\n&lt;a href=\'%1$s\'>%2$s&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
 
     <string name="service_gui_FINISH">Selesai</string>
     <string name="service_gui_FOLDER_DOES_NOT_EXIST">Folder yang berisi fail ini tidak dapat ditemukan. Itu dihapus atau dipindahkan</string>
@@ -363,6 +367,7 @@
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Anda yakin ingin menghapus semua pesan untuk %1$s?</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Anda yakin ingin menghapus semua pesan untuk semua kontak?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Kesalahan menghapus pesan yang disimpan secara lokal untuk %1$s.</string>
+    <string name="service_gui_HISTORY_REMOVE_MEDIA">Hapus media dari ponsel saya</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Penghuni ruang obrolan</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Hapus obrolan iniRiwayat riwayat</string>

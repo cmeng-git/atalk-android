@@ -36,7 +36,9 @@
     <string name="captcha_registration_success">Registration-Captcha is successful.\nYou can now proceed to log in!</string>
     <string name="captcha_registration_reason">Inband registration requested by user</string>
     <string name="captcha_registration_pwd_empty">Error: password field is empty!</string>
-    <string name="captcha_hint">Enter text seen in image above</string>
+    <string name="captcha_hint">Enter the text you see</string>
+    <string name="captcha_retry">Click \'OK\' to retry or \'Cancel\' to end</string>
+
     <string name="choose_network">Choose a network</string>
     <string name="encryption_TOOLTIP">Encrypt chat</string>
     <string name="encryption_choices">Encrypt Choices</string>
@@ -66,7 +68,7 @@
     <string name="attachOptionDialog_videoRecord">Record video</string>
     <string name="attachOptionDialog_shareFile">Share File</string>
     <string name="chat_fileTransferButton">Open</string>
-    <string name="chat_message_del">Delete text</string>
+    <string name="chat_message_del">Delete message</string>
     <string name="chat_message_edit">Edit</string>
     <string name="chat_message_long_press_hint">Avoid clicking within the message area for multi-item selection operation</string>
     <string name="chat_message_select_all">Select all</string>
@@ -204,7 +206,7 @@
     <string name="service_gui_CONTACT_RENAME_HINT">Enter new contact Name</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Change Contact Name</string>
     <string name="service_gui_CONTACTS">Contacts</string>
-    <string name="service_gui_COPY_MESSAGE_TEXT">Copy text</string>
+    <string name="service_gui_COPY_MESSAGE_TEXT">Copy message text</string>
 
     <string name="service_gui_CREATE">Create</string>
     <string name="service_gui_CREATE_CALL_FAILED">Failed to create the call.</string>
@@ -345,6 +347,8 @@
     <string name="service_gui_FILE_TRANSFER_REFUSED">File transfer has been rejected</string>
     <string name="service_gui_FILE_UNABLE_TO_SEND">An error occurred while sending file to %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Waiting for %1$s to accept your file</string>
+    <string name="service_gui_FILE_DOWNLOAD_LINK">&lt;html xmlns=\'http://jabber.org/protocol/xhtml-im\'>&lt;body xmlns=\'http://www.w3.org/1999/xhtml\'>
+      &lt;p>Offline file transferred, access via link:\n&lt;a href=\'%1$s\'>%2$s&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
 
     <string name="service_gui_FINISH">Finish</string>
     <string name="service_gui_FOLDER_DOES_NOT_EXIST">The folder containing this file could not be found. It was either deleted or moved</string>
@@ -363,6 +367,7 @@
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Are you sure you want to purge all messages for %1$s?</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Are you sure you want to purge all messages for all contacts?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Error removing locally stored messages for %1$s.</string>
+    <string name="service_gui_HISTORY_REMOVE_MEDIA">Delete media from my phone</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">ChatRoom occupants</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Erase this chatRoom history</string>
@@ -1244,7 +1249,6 @@
     <string name="service_gui_settings_EVENTS_TITLE">Events</string>
 
     <!-- aTalk icon -->
-    <string name="pref_key_show_jitsi_icon">org.atalk.android.show_icon</string>
     <string name="service_gui_settings_SHOW_ICON">Display aTalk icon</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_OFF">Hide aTalk active indicator in notification</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">Show aTalk active indicator in notification</string>

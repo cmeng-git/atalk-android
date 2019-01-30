@@ -31,7 +31,8 @@ import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
-import org.atalk.android.gui.chatroomslist.*;
+import org.atalk.android.gui.chatroomslist.ChatRoomInfoChangeDialog;
+import org.atalk.android.gui.chatroomslist.ChatRoomInfoFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
@@ -44,6 +45,8 @@ import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.StringUtils;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 
 import java.io.File;
 import java.util.*;
@@ -328,7 +331,13 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     private void setOptionItem()
     {
         if ((mMenu != null) && (selectedChatPanel != null)) {
+            boolean hasUploadService = false;
             ChatSession chatSession = selectedChatPanel.getChatSession();
+            XMPPTCPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
+            if (connection != null) {
+                HttpFileUploadManager httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
+                hasUploadService = httpFileUploadManager.isUploadServiceDiscovered();
+            }
 
             // Enable/disable certain menu items based on current transport type
             boolean contactSession = (chatSession instanceof MetaContactChatSession);
@@ -346,7 +355,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mCallAudioContact.setVisible(isShowCall);
                 mCallVideoContact.setVisible(isShowVideoCall);
 
-                boolean isShowFileSend = contactRenderer.isShowFileSendBtn(metaContact);
+                boolean isShowFileSend = contactRenderer.isShowFileSendBtn(metaContact) || hasUploadService;
                 mSendFile.setVisible(isShowFileSend);
                 mSendLocation.setVisible(true);
                 mChatRoomInfo.setVisible(false);
@@ -357,13 +366,13 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mLeaveChatRoom.setVisible(true);
                 mDestroyChatRoom.setVisible(true);
                 mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
+                mSendFile.setVisible(hasUploadService);
+                mSendLocation.setVisible(false);
                 mChatRoomInfo.setVisible(true);
                 mChatRoomMember.setVisible(true);
                 mChatRoomSubject.setVisible(true);
                 mCallAudioContact.setVisible(false);
                 mCallVideoContact.setVisible(false);
-                mSendFile.setVisible(false);
-                mSendLocation.setVisible(false);
             }
 
             MenuItem mPadlock = mMenu.findItem(R.id.otr_padlock);
@@ -577,20 +586,26 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         }
     }
 
+    /**
+     * Send an outgoing file message to chatFragment for its to start the file send process
+     *
+     * @param filePath of the file to be sent
+     */
     public void sendFile(String filePath)
     {
-        final ChatPanel chatPanel;
         Date date = Calendar.getInstance().getTime();
-        UIService uiService = AndroidGUIActivator.getUIService();
-        if (uiService != null) {
-            if (mRecipient != null) {
-                String sendTo = mRecipient.getAddress();
-                chatPanel = (ChatPanel) uiService.getChat(mRecipient);
-                if (chatPanel != null) {
-                    chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, ChatMessage.ENCODE_PLAIN, filePath);
-                }
-            }
-        }
+//        UIService uiService = AndroidGUIActivator.getUIService();
+//        if (uiService != null) {
+//            if (mRecipient != null) {
+//                String sendTo = mRecipient.getAddress();
+//                ChatPanel chatPanel = (ChatPanel) uiService.getChat(mRecipient);
+//                if (chatPanel != null) {
+//                    chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, ChatMessage.ENCODE_PLAIN, filePath);
+//                }
+//            }
+//        }
+        String sendTo = selectedChatPanel.getChatSession().getCurrentChatTransport().getName();
+        selectedChatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, ChatMessage.ENCODE_PLAIN, filePath);
     }
 
     public static void sendLocation(String location)

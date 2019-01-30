@@ -248,7 +248,7 @@ public class ContactJabberImpl extends AbstractContact
     @Override
     public boolean equals(Object obj)
     {
-        if (obj == null || !(obj instanceof String || (obj instanceof ContactJabberImpl)))
+        if (!(obj instanceof String || (obj instanceof ContactJabberImpl)))
             return false;
 
         if ((obj instanceof ContactJabberImpl)

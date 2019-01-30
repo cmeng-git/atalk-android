@@ -351,7 +351,6 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 ensureAutoHideFragmentDetached();
                 getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
                         new CallEnded()).commit();
-                showSystemUI();
             });
         }).start();
     }
@@ -385,18 +384,16 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 // Hide the nav bar and status bar
-                // | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
-    // Shows the system bars by removing all the flags
-    // except for the ones that make the content appear under the system bars.
+    // Restore the system bars by removing all the flags. On end call,
+    // do not request for full screen nor hide navigation bar, let user selected navigation state take control.
     public void showSystemUI()
     {
         View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
 
     /**

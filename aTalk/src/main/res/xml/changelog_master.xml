@@ -6,6 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.6.6 (01/31/2019)" versioncode="1066">
+        <change>Improve IB Registration process with optional Captcha challenge etc</change>
+        <change>Enhance purge messages with option to delete received media files on local device</change>
+        <change>Add support for file sharing with offline contact and chat members in conference room</change>
+        <change>Always prompt user with battery optimization option on each aTalk launch if it was denied</change>
+        <change>Change call-in-progress icon in notification bar to be more prominent for user awareness</change>
+        <change>Ensure the call control buttons are not overlay by the navigation bar latest changes</change>
+        <change>Allow user to clear/delete last sent chat message</change>
+        <change>Disable last outgoing message edit option when in muc session - not supported</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.6.5 (01/18/2019)" versioncode="1065">
         <change>Launch permission request prior to start aTalk activity to fix no camera and video call problem</change>
         <change>Do not override chat room subject with default unless specified by user</change>

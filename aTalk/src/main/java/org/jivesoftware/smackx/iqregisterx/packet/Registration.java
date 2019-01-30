@@ -59,29 +59,30 @@ public class Registration extends IQ {
 
     public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "jabber:iq:register";
-    public static final String ELE_REGISTERED = "registered";
+    public static final String ELEMENT_REGISTERED = "registered";
 
-    private final Map<String, String> attributes;
-    private final DataForm mDataForm;
-
-    private boolean hasRegistered = false;
     private String instructions;
+    private final Map<String, String> attributes;
+
+    private final DataForm mDataForm;
+    private boolean hasRegistered = false;
     private BoBExt mBoB = null;
 
     public Registration() {
-        this(null, null);
+        this(null, null, null);
     }
 
     public Registration(Map<String, String> attributes) {
-        this(attributes, null);
+        this(null, attributes, null);
     }
 
     public Registration(DataForm dataForm) {
-        this(null, dataForm);
+        this(null, null, dataForm);
     }
 
-    public Registration(Map<String, String> attributes, DataForm dataForm) {
+    public Registration(String instructions, Map<String, String> attributes, DataForm dataForm) {
         super(ELEMENT, NAMESPACE);
+        this.instructions = instructions;
         this.attributes = attributes;
         this.mDataForm = dataForm;
     }
@@ -95,10 +96,6 @@ public class Registration extends IQ {
      */
     public String getInstructions() {
         return instructions;
-    }
-
-    public void setInstructions(String msg) {
-        instructions = msg;
     }
 
     /**
@@ -149,11 +146,13 @@ public class Registration extends IQ {
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.rightAngleBracket();
+        xml.optElement("instructions", instructions);
+
         // attributes and mDataForm are mutually exclusive in account registration
         if (attributes != null && attributes.size() > 0) {
             for (String name : attributes.keySet()) {
                 String value = attributes.get(name);
-                xml.element(name, value);
+                xml.optElement(name, value);
             }
         }
         else if (mDataForm != null) {

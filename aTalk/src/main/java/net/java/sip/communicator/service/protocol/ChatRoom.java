@@ -304,6 +304,15 @@ public interface ChatRoom
     void removeMessageListener(ChatRoomMessageListener listener);
 
     /**
+     * Create a Message instance for sending a simple text messages with default (text/plain)
+     * content type and encoding.
+     *
+     * @param messageText the string content of the message.
+     * @return Message the newly created message
+     */
+    Message createMessage(String messageText);
+
+    /**
      * Create a Message instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
@@ -313,15 +322,6 @@ public interface ChatRoom
      * @return the newly created message.
      */
     Message createMessage(String content, int encryptionType, int mimeType, String subject);
-
-    /**
-     * Create a Message instance for sending a simple text messages with default (text/plain)
-     * content type and encoding.
-     *
-     * @param messageText the string content of the message.
-     * @return Message the newly created message
-     */
-    Message createMessage(String messageText);
 
     /**
      * Sends the <tt>message</tt> to this chat room.

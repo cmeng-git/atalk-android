@@ -8,6 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageListener;
 import net.java.sip.communicator.service.protocol.event.AdHocChatRoomParticipantPresenceListener;
 
+import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jxmpp.jid.EntityBareJid;
 
 import java.util.List;
@@ -108,11 +109,24 @@ public interface AdHocChatRoom
     Message createMessage(String messageText);
 
     /**
+     * Create a Message instance for sending arbitrary MIME-encoding content.
+     *
+     * @param content content value
+     * @param encryptionType encryption used for <tt>content</tt>
+     * @param mimeType the MIME-type for <tt>content</tt>
+     * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
+     * @return the newly created message.
+     */
+    Message createMessage(String content, int encryptionType, int mimeType, String subject);
+
+    /**
      * Sends the <tt>Message</tt> to this ad-hoc chat room.
      *
      * @param message the <tt>Message</tt> to send.
      */
     void sendMessage(Message message);
+
+    void sendMessage(Message message, OmemoManager omemoManager);
 
     /**
      * Returns a reference to the provider that created this room.

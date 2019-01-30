@@ -40,7 +40,9 @@
     <string name="captcha_registration_success">Registro con Chapta realizado.\nAhora se puede iniciar la sesión!</string>
     <string name="captcha_registration_reason">Registro InBand solicitado por el usuario</string>
     <string name="captcha_registration_pwd_empty">Error: ¡el campo de contraseña está vacío!</string>
-    <string name="captcha_hint">Ingresar el texto visto en la imagen de arriba</string>
+    <string name="captcha_hint">Ingresar el texto que ves</string>
+    <string name="captcha_retry">Haga clic en \'Aceptar\' para volver a intentarlo o en \'Cancelar\' para finalizar</string>
+
     <string name="choose_network">Escojer una red</string>
     <string name="encryption_TOOLTIP">Encriptar chat</string>
     <string name="encryption_choices">Opciones de cifrado</string>
@@ -70,7 +72,7 @@
     <string name="attachOptionDialog_videoRecord">Grabar un vídeo</string>
     <string name="attachOptionDialog_shareFile">Compartir archivo</string>
     <string name="chat_fileTransferButton">Abrir</string>
-    <string name="chat_message_del">Borrar el texto</string>
+    <string name="chat_message_del">Borrar mensaje</string>
     <string name="chat_message_edit">Editar</string>
     <string name="chat_message_long_press_hint">Evitar hacer clic dentro del área de mensajes para la operación de selección de varios items.</string>
     <string name="chat_message_select_all">Seleccionar todo</string>
@@ -208,7 +210,7 @@
     <string name="service_gui_CONTACT_RENAME_HINT">Ingresar nuevo nombre de contacto</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Cambiar el nombre del contacto</string>
     <string name="service_gui_CONTACTS">Contactos</string>
-    <string name="service_gui_COPY_MESSAGE_TEXT">Copia el texto</string>
+    <string name="service_gui_COPY_MESSAGE_TEXT">Copiar mensaje de texto</string>
 
     <string name="service_gui_CREATE">Crear</string>
     <string name="service_gui_CREATE_CALL_FAILED">No se ha podido realizar la llamada.</string>
@@ -349,6 +351,8 @@
 	<string name="service_gui_FILE_TRANSFER_REFUSED">Se ha rechazado la transferencia de archivos</string>
 	<string name="service_gui_FILE_UNABLE_TO_SEND">Se ha producido un error al enviar el archivo a %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Esperando %1$s para aceptar tu archivo</string>
+    <string name="service_gui_FILE_DOWNLOAD_LINK">&lt;html xmlns=\'http://jabber.org/protocol/xhtml-im\'>&lt;body xmlns=\'http://www.w3.org/1999/xhtml\'>
+      &lt;p>Archivo fuera de línea transferido, acceso por enlace:\n&lt;a href=\'%1$s\'>%2$s&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
 
 	<string name="service_gui_FINISH">Finalizar</string>
 	<string name="service_gui_FOLDER_DOES_NOT_EXIST">No se ha podido encontrar la carpeta que contiene este archivo. Se ha borrado o movido</string>
@@ -367,6 +371,7 @@
 	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">¿Seguro que se quiere borrar todos los mensajes de %1$s?</string>
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">¿Seguro que se quiere borrar todos los mensajes de todos los contactos??</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente.</string>
+    <string name="service_gui_HISTORY_REMOVE_MEDIA">Eliminar medios de mi teléfono</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Miembros de la sala de charla</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Borrar el historial de esta sala de charla</string>

@@ -129,7 +129,8 @@ public class SendFileConversation extends FileTransferConversation implements Fi
 
             // not offer to retry - smack replied as failed when recipient rejects on some devices
             case FileTransferStatusChangeEvent.FAILED:
-                setFailed();
+                messageViewHolder.titleLabel.setText(aTalkApp.getResString(R.string.xFile_FILE_UNABLE_TO_SEND, mDate, mSendTo));
+                messageViewHolder.cancelButton.setVisibility(View.GONE);
                 // messageViewHolder.retryButton.setVisibility(View.VISIBLE);
                 bgAlert = true;
                 break;
@@ -169,7 +170,8 @@ public class SendFileConversation extends FileTransferConversation implements Fi
                     || status == FileTransferStatusChangeEvent.FAILED
                     || status == FileTransferStatusChangeEvent.REFUSED) {
                 // must do this in UI, otherwise the status is not being updated to FileRecord
-                fileTransfer.removeStatusListener(SendFileConversation.this);
+                if (fileTransfer != null)
+                    fileTransfer.removeStatusListener(SendFileConversation.this);
                 // removeProgressListener();
             }
         });
@@ -192,13 +194,15 @@ public class SendFileConversation extends FileTransferConversation implements Fi
     }
 
     /**
-     * Change the style of the component to be failed. Caller must in UI thread to call this.
+     * Change the xfer file status, must execute in UI thread to call this.
      */
-    public void setFailed()
+    public void setStatus(final int status)
     {
-        // hideProgressRelatedComponents();
-        messageViewHolder.titleLabel.setText(aTalkApp.getResString(R.string.xFile_FILE_UNABLE_TO_SEND, mDate, mSendTo));
-        messageViewHolder.cancelButton.setVisibility(View.GONE);
+        setXferStatus(status);
+        // Must execute in UiThread to Update UI information
+        runOnUiThread(() -> {
+            updateView(status);
+        });
     }
 
     /**

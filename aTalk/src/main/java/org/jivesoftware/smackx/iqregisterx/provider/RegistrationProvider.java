@@ -41,11 +41,11 @@ public class RegistrationProvider extends IQProvider<Registration>
     public Registration parse(XmlPullParser parser, int initialDepth)
             throws Exception
     {
-        Map<String, String> fields = new HashMap<>();
-        DataForm dataForm = null;
-
-        boolean isRegistered = false;
         String instruction = null;
+        Map<String, String> fields = new HashMap<>();
+
+        DataForm dataForm = null;
+        boolean isRegistered = false;
         BoBExt boBExt = null;
 
         List<ExtensionElement> packetExtensions = new LinkedList<>();
@@ -63,7 +63,7 @@ public class RegistrationProvider extends IQProvider<Registration>
                             String value = "";
 
                             // Ignore instructions, but anything else should be added to the map.
-                            if (name.equals(Registration.ELE_REGISTERED)) {
+                            if (name.equals(Registration.ELEMENT_REGISTERED)) {
                                 isRegistered = true;
                             }
                             else {
@@ -100,9 +100,8 @@ public class RegistrationProvider extends IQProvider<Registration>
             }
         }
 
-        Registration registration = new Registration(fields, dataForm);
+        Registration registration = new Registration(instruction, fields, dataForm);
         registration.setRegistrationStatus(isRegistered);
-        registration.setInstructions(instruction);
         registration.setBoB(boBExt);
         registration.addExtensions(packetExtensions);
         return registration;

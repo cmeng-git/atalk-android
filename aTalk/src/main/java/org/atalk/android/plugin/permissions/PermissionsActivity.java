@@ -144,12 +144,12 @@ public class PermissionsActivity extends Activity
 
     private void startLauncher()
     {
-        finish();
         Class<?> activityClass = aTalkApp.getHomeScreenActivityClass();
         Intent i = new Intent(this, activityClass);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.putExtra(EventReceiver.AUTO_START_ONBOOT, false);
         startActivity(i);
+        finish();
     }
 
     public void onAllPermissionsCheck()
@@ -536,7 +536,9 @@ public class PermissionsActivity extends Activity
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void openBatteryOptimizationDialogIfNeeded()
     {
-        if (isOptimizingBattery() && getPreferences().getBoolean(getBatteryOptimizationPreferenceKey(), true)) {
+        // Will always request for battery optimzation disable for aTalk if not so on aTalk new launch
+        // if (isOptimizingBattery() && getPreferences().getBoolean(getBatteryOptimizationPreferenceKey(), true)) {
+        if (isOptimizingBattery()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.battery_optimizations);
             builder.setMessage(R.string.battery_optimizations_dialog);
@@ -553,21 +555,12 @@ public class PermissionsActivity extends Activity
             });
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                builder.setOnDismissListener(dialog -> setNeverAskForBatteryOptimizationsAgain());
+                builder.setOnDismissListener(dialog -> setAskForBatteryOptimizations(true));
             }
 
             AlertDialog dialog = builder.create();
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, final Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ((resultCode != RESULT_OK) && (requestCode == REQUEST_BATTERY_OP)) {
-            setNeverAskForBatteryOptimizationsAgain();
         }
     }
 
@@ -578,16 +571,27 @@ public class PermissionsActivity extends Activity
         return (pm != null) && !pm.isIgnoringBatteryOptimizations(getPackageName());
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        // RESULT_OK is returned if disable optimization is alloed
+        if (requestCode == REQUEST_BATTERY_OP) {
+            setAskForBatteryOptimizations((resultCode != RESULT_OK));
+        }
+    }
+
     private String getBatteryOptimizationPreferenceKey()
     {
         @SuppressLint("HardwareIds")
         String device = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        return "show_battery_optimization" + (device == null ? "" : device);
+        return "pref_key_show_battery_optimization_" + (device == null ? "" : device);
     }
 
-    private void setNeverAskForBatteryOptimizationsAgain()
+    // cmeng: save value is not use in new aTalk release
+    private void setAskForBatteryOptimizations(boolean state)
     {
-        getPreferences().edit().putBoolean(getBatteryOptimizationPreferenceKey(), false).apply();
+        getPreferences().edit().putBoolean(getBatteryOptimizationPreferenceKey(), state).apply();
     }
 
     protected SharedPreferences getPreferences()

@@ -83,13 +83,11 @@ public class CallNotificationManager
 
         NotificationCompat.Builder nBuilder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            nBuilder = new NotificationCompat.Builder(context, AndroidNotifications.DEFAULT_GROUP);
+            nBuilder = new NotificationCompat.Builder(context, AndroidNotifications.CALL_GROUP);
         else
             nBuilder = new NotificationCompat.Builder(context, null);
 
-        nBuilder.setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.ic_notification);;
-
+        nBuilder.setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_notification);
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.call_status_bar_notification);
 
         // Sets call peer display name and avatar
@@ -105,6 +103,7 @@ public class CallNotificationManager
 
         // Sets the content view
         nBuilder.setContent(contentView);
+        nBuilder.setSmallIcon(R.drawable.missed_call);
         Notification notification = nBuilder.build();
 
         // Must use random Id, else notification cancel() may not work properly

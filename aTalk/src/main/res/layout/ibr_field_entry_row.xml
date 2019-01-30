@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="5dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/field_label"
+        style="@style/MediumFont"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="@string/username_label" />
+
+    <ImageView
+        android:id="@+id/star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_star" />
+
+    <EditText
+        android:id="@+id/field_value"
+        style="@style/EntryTextView"
+        android:layout_width="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

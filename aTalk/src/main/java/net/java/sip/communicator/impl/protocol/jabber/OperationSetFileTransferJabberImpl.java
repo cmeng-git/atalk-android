@@ -153,7 +153,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             }
         }
 
-        // First we check if file transfer is at all supported for this contact.
+        // FullJid is null if file transfer is not supported for this contact; or if contact is offline.
         if (fullJid == null) {
             throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
         }

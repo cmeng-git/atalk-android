@@ -178,8 +178,7 @@ public class AndroidPopup
      * @param popupMessage the popup message that will be displayed by returned <tt>AndroidPopup</tt>
      * @return new <tt>AndroidPopup</tt> for given parameters.
      */
-    static public AndroidPopup createNew(NotificationPopupHandler handler, PopupMessage
-            popupMessage)
+    static public AndroidPopup createNew(NotificationPopupHandler handler, PopupMessage popupMessage)
     {
         return new AndroidPopup(handler, popupMessage);
     }

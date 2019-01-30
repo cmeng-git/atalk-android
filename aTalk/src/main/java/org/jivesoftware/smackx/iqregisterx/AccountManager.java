@@ -92,7 +92,7 @@ public final class AccountManager extends Manager {
     /**
      * Flag that indicates whether the server supports In-Band Registration.
      * In-Band Registration may be advertised as a stream feature. If no stream feature
-     * was advertised from the server then try sending an IQ stanza(/packet) to discover if In-Band
+     * was advertised from the server then try sending an IQ stanza to discover if In-Band
      * Registration is available.
      */
     private boolean accountCreationSupported = false;
@@ -109,7 +109,7 @@ public final class AccountManager extends Manager {
     /**
      * Sets whether the server supports In-Band Registration. In-Band Registration may be
      * advertised as a stream feature. If no stream feature was advertised from the server
-     * then try sending an IQ stanza(/packet) to discover if In-Band Registration is available.
+     * then try sending an IQ stanza to discover if In-Band Registration is available.
      *
      * @param accountCreationSupported true if the server supports In-Band Registration.
      */
@@ -124,10 +124,10 @@ public final class AccountManager extends Manager {
      * behavior is to only create new accounts before having logged in to a server.
      *
      * @return true if the server support creating new accounts.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public boolean supportsAccountCreation()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -170,10 +170,10 @@ public final class AccountManager extends Manager {
      * the user's email address.
      *
      * @return the required account attributes.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public Set<String> getAccountAttributes() throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException  {
@@ -195,10 +195,10 @@ public final class AccountManager extends Manager {
      * @param name the name of the account attribute to return its value.
      * @return the value of the account attribute or <tt>null</tt> if an account
      * attribute wasn't found for the requested name.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public String getAccountAttribute(String name) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         if (info == null) {
@@ -213,10 +213,10 @@ public final class AccountManager extends Manager {
      * that will complete the registration process.
      *
      * @return the account creation instructions, or <tt>null</tt> if there are none.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public String getAccountInstructions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         if (info == null) {
@@ -254,10 +254,10 @@ public final class AccountManager extends Manager {
      *
      * @param username the username.
      * @param password the password.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void createAccount(Localpart username, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         // Create a map for all the required attributes, but give them blank values.
@@ -278,8 +278,8 @@ public final class AccountManager extends Manager {
      * @param attributes the account attributes.
      * @throws XMPPErrorException if an error occurs creating the account.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      * @see #getAccountAttributes()
      */
     public void createAccount(Localpart username, String password, Map<String, String> attributes)
@@ -329,11 +329,13 @@ public final class AccountManager extends Manager {
      * be performed after a successful login operation has been completed. Not all servers
      * support changing passwords; an XMPPException will be thrown when that is the case.
      *
+     * @param newPassword new password.
+     *
      * @throws IllegalStateException if not currently logged-in to the server.
      * @throws XMPPErrorException if an error occurs when changing the password.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (!connection().isSecureConnection() && !allowSensitiveOperationOverInsecureConnection) {
@@ -356,8 +358,8 @@ public final class AccountManager extends Manager {
      * @throws IllegalStateException if not currently logged-in to the server.
      * @throws XMPPErrorException if an error occurs when deleting the account.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void deleteAccount() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Map<String, String> attributes = new HashMap<>();
@@ -389,26 +391,19 @@ public final class AccountManager extends Manager {
 
     /**
      * Gets the account registration info from the server.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
-     *
-     * @throws XMPPErrorException if an error occurs.
+     * @throws XMPPErrorException  if an error occurs.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
-    private synchronized void _getRegistrationInfo() throws NoResponseException,
-            XMPPErrorException,
+    private synchronized void _getRegistrationInfo() throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException {
         Registration reg = new Registration();
         reg.setTo(connection().getXMPPServiceDomain());
         info = createStanzaCollectorAndSend(reg).nextResultOrThrow();
     }
 
-    private StanzaCollector createStanzaCollectorAndSend(IQ req) throws NotConnectedException,
-            InterruptedException {
-        StanzaCollector collector = connection().createStanzaCollectorAndSend(
-                new StanzaIdFilter(req.getStanzaId()), req);
-        return collector;
+    private StanzaCollector createStanzaCollectorAndSend(IQ req) throws NotConnectedException, InterruptedException {
+        return connection().createStanzaCollectorAndSend(new StanzaIdFilter(req.getStanzaId()), req);
     }
 }

@@ -1,5 +1,20 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.6.6 (1066)
+Author:         cmeng
+Upload Date:	01/31/2019
+- Improve IB Registration process with optional Captcha challenge etc
+- Enhance purge messages with option to delete received media files on local device
+- Add support for file sharing with offline contact and chat members in conference room
+- Change call-in-progress icon in notification bar to be more prominent for user awareness
+- Ensure the call control buttons are not overlay by the navigation bar latest changes
+- Always prompt user with battery optimization option on each aTalk launch if it was denied
+- Allow user to clear/delete last sent chat message
+- Disable last outgoing message edit option when in muc session
+
+- fix ChatController: initChatController() must precede showSendModeButton() to init mChatTransport
+  before use and mChatTransport must check against MetaContactChatTransport
+=========================================================================
 Version:		1.6.5 (1065)
 Author:         cmeng
 Upload Date:	01/18/2019

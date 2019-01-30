@@ -70,6 +70,10 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
         // interface to track this transfer.
         this.id = String.valueOf(System.currentTimeMillis()) + String.valueOf(hashCode());
 
+        // jabberTransfer is null for http file upload
+        if (jabberTransfer == null)
+            return;
+
         // Add this outgoing transfer as a packet interceptor in order to manage thumbnails.
         if (file instanceof ThumbnailedFile
                 && (((ThumbnailedFile) file).getThumbnailData() != null)
