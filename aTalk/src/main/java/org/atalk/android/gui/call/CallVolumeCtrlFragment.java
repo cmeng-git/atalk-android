@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.call;
@@ -90,7 +90,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
 
 	/**
 	 * Returns current volume index for <tt>AudioManager.STREAM_VOICE_CALL</tt>.
-	 * 
+	 *
 	 * @return current volume index for <tt>AudioManager.STREAM_VOICE_CALL</tt>.
 	 */
 	private int getAudioStreamVolume()
@@ -178,7 +178,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
 
 	/**
 	 * Returns abstract volume control range calculated for volume control min and max values.
-	 * 
+	 *
 	 * @return the volume control range calculated for current volume control min and max values.
 	 */
 	private float getVolumeCtrlRange()

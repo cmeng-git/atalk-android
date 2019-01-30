@@ -6,27 +6,22 @@
 
 package org.atalk.android.gui.chat.conference;
 
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.FileTransfer;
-import net.java.sip.communicator.service.protocol.Message;
-import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
-import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
-import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.chat.ChatMessage;
-import org.atalk.android.gui.chat.ChatSession;
-import org.atalk.android.gui.chat.ChatTransport;
+import org.atalk.android.gui.chat.*;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.chatstates.ChatState;
+import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jxmpp.jid.EntityBareJid;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * The conference implementation of the <tt>ChatTransport</tt> interface that provides
@@ -40,11 +35,13 @@ public class ConferenceChatTransport implements ChatTransport
     private final ChatSession chatSession;
     private final ChatRoom chatRoom;
     private final ProtocolProviderService mPPS;
+    private HttpFileUploadManager httpFileUploadManager;
+
+    private static URL mURL = null;
 
     /**
      * Creates an instance of <tt>ConferenceChatTransport</tt> by specifying the parent chat
-     * session and the chat room associated with this
-     * transport.
+     * session and the chat room associated with this transport.
      *
      * @param chatSession the parent chat session.
      * @param chatRoom the chat room associated with this conference transport.
@@ -54,6 +51,7 @@ public class ConferenceChatTransport implements ChatTransport
         this.chatSession = chatSession;
         this.chatRoom = chatRoom;
         mPPS = chatRoom.getParentProvider();
+        httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
     }
 
     /**
@@ -90,8 +88,7 @@ public class ConferenceChatTransport implements ChatTransport
     /**
      * Indicates if the display name should only show the resource.
      *
-     * @return <tt>true</tt> if the display name shows only the resource, <tt>false</tt> -
-     * otherwise
+     * @return <tt>true</tt> if the display name shows only the resource, <tt>false</tt> - otherwise
      */
     public boolean isDisplayResourceOnly()
     {
@@ -119,11 +116,11 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports instant messaging, otherwise
-     * returns <code>false</code>.
+     * Returns <code>true</code> if this chat transport supports instant messaging,
+     * otherwise returns <code>false</code>.
      *
-     * @return <code>true</code> if this chat transport supports instant messaging, otherwise
-     * returns <code>false</code>.
+     * @return <code>true</code> if this chat transport supports instant messaging,
+     * otherwise returns <code>false</code>.
      */
     public boolean allowsInstantMessage()
     {
@@ -131,11 +128,11 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports sms messaging, otherwise returns
-     * <code>false</code>.
+     * Returns <code>true</code> if this chat transport supports sms messaging,
+     * otherwise returns <code>false</code>.
      *
-     * @return <code>true</code> if this chat transport supports sms messaging, otherwise returns
-     * <code>false</code>.
+     * @return <code>true</code> if this chat transport supports sms messaging,
+     * otherwise returns <code>false</code>.
      */
     public boolean allowsSmsMessage()
     {
@@ -164,7 +161,7 @@ public class ConferenceChatTransport implements ChatTransport
      * @param mimeType The mime type of the message to send: 1=text/html or 0=text/plain.
      */
     public void sendInstantMessage(String messageText, int encryptionType, int mimeType)
-			throws Exception
+            throws Exception
     {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
@@ -183,17 +180,16 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Sends <tt>message</tt> as a message correction through this transport, specifying the mime
-     * type (html or plain text) and the id of the message to replace.
+     * Sends <tt>message</tt> as a message correction through this transport, specifying the
+     * mime type (html or plain text) and the id of the message to replace.
      *
      * @param message The message to send.
      * @param encryptionType The encryptionType of the message to send: @see ChatMessage Encryption Type
      * @param mimeType The mime type of the message to send: 1=text/html or 0=text/plain.
+     * @param correctedMessageUID The ID of the message being corrected by this message.
      * @see ChatMessage Encryption Type
-     * * @param correctedMessageUID
-     * The ID of the message being corrected by this message.
      */
-    public void sendInstantMessage(String message, int encryptionType,  int mimeType, String correctedMessageUID)
+    public void sendInstantMessage(String message, int encryptionType, int mimeType, String correctedMessageUID)
     {
     }
 
@@ -260,13 +256,36 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Sending files through a chat room is not yet supported by this chat transport
-     * implementation.
+     * Sending files through a chat room is not yet supported by this chat transport implementation.
      */
-    public FileTransfer sendFile(File file)
+    public URL sendFile(File file)
             throws Exception
     {
-        return null;
+        // If this chat transport does not support file transfer we do nothing and just return.
+        if (!allowsFileTransfer())
+            return null;
+
+        if (httpFileUploadManager.isUploadServiceDiscovered()) {
+            try {
+                return httpFileUploadManager.uploadFile(file, null);
+            } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
+                throw new OperationNotSupportedException(e.getMessage());
+            }
+        }
+        else
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
+    }
+
+    /**
+     * Returns <code>true</code> if this chat transport supports file transfer, otherwise returns
+     * <code>false</code>.
+     *
+     * @return <code>true</code> if this chat transport supports file transfer, otherwise returns
+     * <code>false</code>.
+     */
+    public boolean allowsFileTransfer()
+    {
+        return httpFileUploadManager.isUploadServiceDiscovered();
     }
 
     /**
@@ -276,7 +295,7 @@ public class ConferenceChatTransport implements ChatTransport
      */
     public long getMaximumFileLength()
     {
-        return -1;
+        return httpFileUploadManager.getDefaultUploadService().getMaxFileSize();
     }
 
     /**
@@ -316,6 +335,7 @@ public class ConferenceChatTransport implements ChatTransport
         // If this chat transport does not support sms messaging we do nothing here.
         if (!allowsSmsMessage())
             return;
+
         OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
         smsOpSet.addMessageListener(l);
     }
@@ -330,6 +350,7 @@ public class ConferenceChatTransport implements ChatTransport
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage())
             return;
+
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
         imOpSet.addMessageListener(l);
     }
@@ -344,6 +365,7 @@ public class ConferenceChatTransport implements ChatTransport
         // If this chat transport does not support sms messaging we do nothing here.
         if (!allowsSmsMessage())
             return;
+
         OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
         smsOpSet.removeMessageListener(l);
     }
@@ -358,6 +380,7 @@ public class ConferenceChatTransport implements ChatTransport
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage())
             return;
+
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
         imOpSet.removeMessageListener(l);
     }
@@ -377,11 +400,9 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports message corrections and false
-     * otherwise.
+     * Returns <tt>true</tt> if this chat transport supports message corrections and false otherwise.
      *
-     * @return <code>true</code> if this chat transport supports message corrections and false
-     * otherwise.
+     * @return <tt>true</tt> if this chat transport supports message corrections and false otherwise.
      */
     public boolean allowsMessageCorrections()
     {

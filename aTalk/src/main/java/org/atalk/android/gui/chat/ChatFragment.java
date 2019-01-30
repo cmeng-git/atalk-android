@@ -61,6 +61,7 @@ import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.io.File;
+import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -531,7 +532,8 @@ public class ChatFragment extends OSGiFragment
             // ensure the selected view is the last MESSAGE_OUT for edit action
             cPos = position - headerCount;
             boolean visible = false;
-            if (chatListAdapter.getItemViewType(cPos) == ChatListAdapter.OUTGOING_MESSAGE_VIEW) {
+            if ((currentChatTransport instanceof MetaContactChatTransport)
+                    && (chatListAdapter.getItemViewType(cPos) == ChatListAdapter.OUTGOING_MESSAGE_VIEW)) {
                 visible = true;
                 if (cPos != (chatListAdapter.getCount() - 1)) {
                     for (int i = cPos + 1; i < chatListAdapter.getCount(); i++) {
@@ -616,17 +618,22 @@ public class ChatFragment extends OSGiFragment
                                     }
                                     else {
                                         msgUid.add(chatMsg.getMessageUID());
-                                        // add voice files for auto delete
                                         if (cType == ChatListAdapter.FILE_TRANSFER_MESSAGE_VIEW) {
-                                            File file;
+                                            boolean xferIn = (ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE == chatMsg.getMessageType());
+                                            File file = null;
                                             // file is in chatHistory fileRecord or in chatMsg if yet to be converted
-                                            if (chatMsg.getFileRecord() != null)
+                                            if (chatMsg.getFileRecord() != null) {
+                                                xferIn = FileRecord.IN.equals(chatMsg.getFileRecord().getDirection());
                                                 file = chatMsg.getFileRecord().getFile();
+                                            }
                                             else if ((file = chatListAdapter.getFileName(cPos)) == null) {
                                                 file = new File(chatMsg.getMessage());
                                             }
-                                            if ((file != null) && file.exists() && file.getName().startsWith("voice-"))
+                                            // always add voice files and incoming media file xfer only for deletion
+                                            if ((file != null) && file.exists()
+                                                    && (file.getName().startsWith("voice-") || xferIn)) {
                                                 msgFiles.add(file);
+                                            }
                                         }
                                     }
                                 }
@@ -1946,15 +1953,15 @@ public class ChatFragment extends OSGiFragment
 
     public class SendFile extends AsyncTask<Void, Void, Exception>
     {
-        private final File file;
+        private final File mFile;
         private final SendFileConversation sendFTConversion;
         private final int msgId;
         private boolean chkMaxSize = true;
         private boolean mStickerMode;
 
-        public SendFile(File mFile, SendFileConversation sFilexferCon, int mId, boolean stickerMode)
+        public SendFile(File file, SendFileConversation sFilexferCon, int mId, boolean stickerMode)
         {
-            file = mFile;
+            mFile = file;
             sendFTConversion = sFilexferCon;
             msgId = mId;
             mStickerMode = stickerMode;
@@ -1964,7 +1971,7 @@ public class ChatFragment extends OSGiFragment
         public void onPreExecute()
         {
             long maxFileLength = currentChatTransport.getMaximumFileLength();
-            if (file.length() > maxFileLength) {
+            if (mFile.length() > maxFileLength) {
                 chatPanel.addMessage(currentChatTransport.getDisplayName(), new Date(), Chat.ERROR_MESSAGE,
                         ChatMessage.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG,
                                 ByteFormat.format(maxFileLength)));
@@ -1972,7 +1979,7 @@ public class ChatFragment extends OSGiFragment
                 // stop background task to proceed and update status
                 chkMaxSize = false;
                 chatListAdapter.setXferStatus(msgId, FileTransferStatusChangeEvent.CANCELED);
-                sendFTConversion.setFailed();
+                sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED);
             }
             else {
                 // must reset status here as background task cannot catch up with Android redraw
@@ -1987,21 +1994,37 @@ public class ChatFragment extends OSGiFragment
             if (!chkMaxSize)
                 return null;
 
-            FileTransfer fileTransfer;
+            // return can either be FileTransfer or URL when httpFileUpload or exception
+            Object fileXfer;
             Exception result = null;
             try {
                 if (mStickerMode)
-                    fileTransfer = currentChatTransport.sendSticker(file);
+                    fileXfer = currentChatTransport.sendSticker(mFile);
                 else
-                    fileTransfer = currentChatTransport.sendFile(file);
+                    fileXfer = currentChatTransport.sendFile(mFile);
 
-                // To be removed on file transfer completion
-                addActiveFileTransfer(fileTransfer.getID(), fileTransfer, msgId);
+                if (fileXfer instanceof FileTransfer) {
+                    FileTransfer fileTransfer = (FileTransfer) fileXfer;
 
-                // Trigger SendFileConversation to add statusListener as well
-                sendFTConversion.setProtocolFileTransfer(fileTransfer);
+                    // To be removed on file transfer completion
+                    addActiveFileTransfer(fileTransfer.getID(), fileTransfer, msgId);
+
+                    // Trigger SendFileConversation to add statusListener as well
+                    sendFTConversion.setProtocolFileTransfer(fileTransfer);
+                }
+                else {
+                    URL url = (URL) fileXfer;
+                    if (url != null) {
+                        chatController.sendMessage(aTalkApp.getResString(R.string.service_gui_FILE_DOWNLOAD_LINK,
+                                url.toString(), mFile.getName()));
+                        sendFTConversion.setStatus(FileTransferStatusChangeEvent.COMPLETED);
+                    }
+                    else
+                        sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED);
+                }
             } catch (Exception e) {
                 result = e;
+                sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED);
             }
             return result;
         }

@@ -8,14 +8,14 @@
         android:visible="false">
     </item>
     <item
-        android:id="@+id/select_all"
-        android:icon="@drawable/ic_action_select_all_dark"
-        android:title="@string/chat_message_select_all">
-    </item>
-    <item
         android:id="@+id/chat_message_del"
         android:icon="@drawable/ic_action_delete_dark"
         android:title="@string/chat_message_del">
+    </item>
+    <item
+        android:id="@+id/select_all"
+        android:icon="@drawable/ic_action_select_all_dark"
+        android:title="@string/chat_message_select_all">
     </item>
     <item
         android:id="@+id/copy_to_clipboard"

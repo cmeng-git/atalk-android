@@ -1056,7 +1056,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         // Init the user authentication SynchronizedPoints
         accountAuthenticated = new LoginSynchronizationPoint<>(this, "account authenticated");
-        Boolean success = false;
+        boolean success = false;
         try {
             success = loginStrategy.login(mConnection, userName, mResource);
         } catch (StreamErrorException ex) {
@@ -1067,8 +1067,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         } catch (SmackException | XMPPException el) {
             String errMsg = el.getMessage();
             /*
-             * If account is not registered on server, send registration to server if user
-             * requested. Otherwise throw back to user and ask for InBand registration confirmation.
+             * If account is not registered on server, send IB registration request to server if user
+             * enable the option. Otherwise throw back to user and ask for InBand registration confirmation.
              */
             if (errMsg.contains("not-authorized")) {
                 if (mAccountID.isIbRegistration()) {

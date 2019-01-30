@@ -9,17 +9,22 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 
+import net.java.sip.communicator.impl.protocol.jabber.OperationSetFileTransferJabberImpl;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.chatstates.ChatState;
+import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jxmpp.jid.EntityBareJid;
 
 import java.io.*;
+import java.net.URL;
 
 /**
  * The single chat implementation of the <tt>ChatTransport</tt> interface that provides abstraction
@@ -40,6 +45,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     private final MetaContactChatSession parentChatSession;
 
+    private OperationSetFileTransferJabberImpl ftOpSet;
+
     /**
      * The associated protocol <tt>Contact</tt>.
      */
@@ -49,6 +56,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * The associated protocol provider service for the <tt>Contact</tt>.
      */
     private final ProtocolProviderService mPPS;
+    
+    private HttpFileUploadManager httpFileUploadManager;
 
     /**
      * The resource associated with this contact.
@@ -79,7 +88,12 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     /**
      * Indicates if only the resource name should be displayed.
      */
-    private boolean isDisplayResourceOnly = false;
+    private boolean isDisplayResourceOnly;
+
+    /**
+     * URL link to fetch the upload file
+     */
+    private static URL mURL = null;
 
     /**
      * Creates an instance of <tt>MetaContactChatTransport</tt> by specifying the parent
@@ -111,6 +125,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         this.contactResource = contactResource;
         this.isDisplayResourceOnly = isDisplayResourceOnly;
         mPPS = contact.getProtocolProvider();
+        ftOpSet = (OperationSetFileTransferJabberImpl) mPPS.getOperationSet(OperationSetFileTransfer.class);
+        httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
 
         presenceOpSet = mPPS.getOperationSet(OperationSetPresence.class);
         if (presenceOpSet != null)
@@ -118,7 +134,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
 
         // checking this can be slow so make sure its out of our way
-        new Thread(() -> checkImCaps()).start();
+        new Thread(this::checkImCaps).start();
     }
 
     /**
@@ -234,14 +250,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 isChatStateSupported = false;
                 return false;
             }
-            if (capOpSet.getOperationSet(contact, OperationSetBasicInstantMessaging.class) != null) {
-                return true;
-            }
+            return capOpSet.getOperationSet(contact, OperationSetBasicInstantMessaging.class) != null;
         }
-        else if (mPPS.getOperationSet(OperationSetBasicInstantMessaging.class) != null)
-            return true;
+        else
+            return mPPS.getOperationSet(OperationSetBasicInstantMessaging.class) != null;
 
-        return false;
     }
 
     /**
@@ -276,21 +289,17 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         OperationSetContactCapabilities capOpSet
                 = getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
         if (capOpSet != null) {
-            if (capOpSet.getOperationSet(contact, OperationSetSmsMessaging.class) != null) {
-                return true;
-            }
+            return capOpSet.getOperationSet(contact, OperationSetSmsMessaging.class) != null;
         }
-        else if (mPPS.getOperationSet(OperationSetSmsMessaging.class) != null)
-            return true;
-        return false;
+        else
+            return mPPS.getOperationSet(OperationSetSmsMessaging.class) != null;
     }
 
     /**
      * Returns <code>true</code> if this chat transport supports chat state notifications,
      * otherwise returns <code>false</code>.
      * User SHOULD explicitly discover whether the Contact supports the protocol or negotiate the
-     * use of chat state notifications with the Contact (e.g., via XEP-0155 Stanza Session
-     * Negotiation).
+     * use of chat state notifications with the Contact (e.g., via XEP-0155 Stanza Session Negotiation).
      *
      * @return <code>true</code> if this chat transport supports chat state
      * notifications, otherwise returns <code>false</code>.
@@ -317,8 +326,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public boolean allowsFileTransfer()
     {
-        Object ftOpSet = mPPS.getOperationSet(OperationSetFileTransfer.class);
-        return (ftOpSet != null);
+        return (ftOpSet != null) || httpFileUploadManager.isUploadServiceDiscovered();
     }
 
     /**
@@ -396,7 +404,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Sends the given sms message trough this chat transport.
+     * Sends the given sms message through this chat transport.
      *
      * @param phoneNumber phone number of the destination
      * @param messageText The message to send.
@@ -407,6 +415,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     {
         // If this chat transport does not support sms messaging we do nothing here.
         if (allowsSmsMessage()) {
+            logger.warn("Method not implemented");
             // SMSManager.sendSMS(mPPS, phoneNumber, messageText);}
         }
     }
@@ -427,7 +436,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Sends the given sms message trough this chat transport.
+     * Sends the given sms message through this chat transport.
      *
      * @param message the message to send
      * @throws Exception if the send operation is interrupted
@@ -437,6 +446,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     {
         // If this chat transport does not support sms messaging we do nothing here.
         if (allowsSmsMessage()) {
+            logger.warn("Method not implemented");
             // SMSManager.sendSMS(contact, message);
         }
     }
@@ -468,13 +478,31 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
+     * Sending files through a chat room is not yet supported by this chat transport implementation.
+     */
+    public URL httpUploadFile(File file)
+            throws Exception
+    {
+        // check to see if server support httpFileUpload if contact is off line
+        if (httpFileUploadManager.isUploadServiceDiscovered()) {
+            try {
+                return httpFileUploadManager.uploadFile(file, null);
+            } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
+                throw new OperationNotSupportedException(e.getMessage());
+            }
+        }
+        else
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
+    }
+
+    /**
      * Sends the given file through this chat transport file transfer operation set.
      *
      * @param file the file to send
      * @return the <tt>FileTransfer</tt> object charged to transfer the file
      * @throws Exception if anything goes wrong
      */
-    public FileTransfer sendFile(File file)
+    public Object sendFile(File file)
             throws Exception
     {
         return sendFile(file, false);
@@ -487,20 +515,18 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @return the <tt>FileTransfer</tt> object charged to transfer the file
      * @throws Exception if anything goes wrong
      */
-    private FileTransfer sendFile(File file, boolean isMultimediaMessage)
+    private Object sendFile(File file, boolean isMultimediaMessage)
             throws Exception
     {
-        // If this chat transport does not support file transfer we do nothing and just return.
+        // If this chat transport does not support file transfer we do nothing and just return. HttpFileUpload?
         if (!allowsFileTransfer())
             return null;
 
+        // Create a thumbNailed file if possible.
         if (FileUtils.isImage(file.getName())) {
-            // Create a thumbNailed file if possible.
             OperationSetThumbnailedFileFactory tfOpSet = mPPS.getOperationSet(OperationSetThumbnailedFileFactory.class);
-
             if (tfOpSet != null) {
                 byte[] thumbnail = getFileThumbnail(file);
-
                 if (thumbnail != null && thumbnail.length > 0) {
                     file = tfOpSet.createFileWithThumbnail(file, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT,
                             "image/png", thumbnail);
@@ -514,8 +540,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             return smsOpSet.sendMultimediaFile(contact, file);
         }
         else {
-            OperationSetFileTransfer ftOpSet = mPPS.getOperationSet(OperationSetFileTransfer.class);
-            return ftOpSet.sendFile(contact, file);
+            if (getStatus().isOnline())
+                return ftOpSet.sendFile(contact, file);
+            else
+                return httpUploadFile(file);
         }
     }
 
@@ -526,7 +554,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @throws Exception if the send doesn't succeed
      */
-    public FileTransfer sendMultimediaFile(File file)
+    public Object sendMultimediaFile(File file)
             throws Exception
     {
         return sendFile(file, true);
@@ -539,15 +567,17 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @return the <tt>FileTransfer</tt> object charged to transfer the file
      * @throws Exception if anything goes wrong
      */
-    public FileTransfer sendSticker(File file)
+    public Object sendSticker(File file)
             throws Exception
     {
         // If this chat transport does not support file transfer we do nothing and just return.
         if (!allowsFileTransfer())
             return null;
 
-        OperationSetFileTransfer ftOpSet = mPPS.getOperationSet(OperationSetFileTransfer.class);
-        return ftOpSet.sendFile(contact, file);
+        if (getStatus().isOnline())
+            return ftOpSet.sendFile(contact, file);
+        else
+            return httpUploadFile(file);
     }
 
     /**
@@ -557,7 +587,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public long getMaximumFileLength()
     {
-        OperationSetFileTransfer ftOpSet = mPPS.getOperationSet(OperationSetFileTransfer.class);
         return ftOpSet.getMaximumFileLength();
     }
 
@@ -649,7 +678,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         if (evt.getSourceContact().equals(contact)
                 && !evt.getOldStatus().equals(evt.getNewStatus())
             //&& (contactResource == null)
-                ) {
+        ) {
             this.updateContactStatus();
         }
     }

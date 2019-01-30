@@ -70,8 +70,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.refresh_persistent_stores, container, false);
         if (BuildConfig.DEBUG) {
@@ -368,8 +367,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
     {
         File logDir;
         try {
-            logDir = LibJitsi.getFileAccessService()
-                    .getPrivatePersistentDirectory(LOGGING_DIR_NAME, FileCategory.LOG);
+            logDir = LibJitsi.getFileAccessService().getPrivatePersistentDirectory(LOGGING_DIR_NAME, FileCategory.LOG);
             if ((logDir != null) && logDir.exists()) {
                 File[] files = logDir.listFiles();
                 boolean status = true;

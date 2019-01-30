@@ -36,7 +36,9 @@
     <string name="captcha_registration_success">Registrierungs-Captcha erfolgreich.\nDu kannst dich jetzt einloggen.</string>
     <string name="captcha_registration_reason">Inband Registrierung vom Benutzer angefordert</string>
     <string name="captcha_registration_pwd_empty">Fehler: Passwortfeld ist leer!</string>
-    <string name="captcha_hint">Bitten gib den Text aus dem Bild ein.</string>
+    <string name="captcha_hint">Geben Sie den angezeigten Text ein</string>
+    <string name="captcha_retry">Klicken Sie auf \'OK\', um es erneut zu versuchen, oder auf \'Abbrechen\', um den Vorgang zu beenden</string>
+
     <string name="choose_network">Netzwerk auswählen</string>
     <string name="encryption_TOOLTIP">Chat verschlüsseln</string>
     <string name="encryption_choices">Verschlüsselungsmethoden</string>
@@ -66,7 +68,7 @@
     <string name="attachOptionDialog_videoRecord">Video aufnehmen</string>
     <string name="attachOptionDialog_shareFile">Datei schicken</string>
     <string name="chat_fileTransferButton">Öffnen</string>
-    <string name="chat_message_del">Text löschen</string>
+    <string name="chat_message_del">Nachricht löschen</string>
     <string name="chat_message_edit">Bearbeiten</string>
     <string name="chat_message_long_press_hint">Vermeide bitte in den Textbereich zu klicken um mehrere Objekte zu markieren.</string>
     <string name="chat_message_select_all">Alle auswählen</string>
@@ -204,7 +206,7 @@
     <string name="service_gui_CONTACT_RENAME_HINT">Neuen Kontaktnamen eingeben</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Kontaktnamen ändern</string>
     <string name="service_gui_CONTACTS">Kontakte</string>
-    <string name="service_gui_COPY_MESSAGE_TEXT">Text kopieren</string>
+    <string name="service_gui_COPY_MESSAGE_TEXT">Nachrichtentext kopieren</string>
 
     <string name="service_gui_CREATE">Erstellen</string>
     <string name="service_gui_CREATE_CALL_FAILED">Kann Anruf nicht aufbauen.</string>
@@ -345,6 +347,8 @@
     <string name="service_gui_FILE_TRANSFER_REFUSED">Dateitransfer wurde abgelehnt</string>
 	<string name="service_gui_FILE_UNABLE_TO_SEND">Es gab ein Problem beim Sender einer Datei an %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Warte auf %1$s zur Bestätigung des Transfers.</string>
+    <string name="service_gui_FILE_DOWNLOAD_LINK">&lt;html xmlns=\'http://jabber.org/protocol/xhtml-im\'>&lt;body xmlns=\'http://www.w3.org/1999/xhtml\'>
+      &lt;p>Offline-Datei übertragen, Zugriff über Link:\n&lt;a href=\'%1$s\'>%2$s&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
 
 	<string name="service_gui_FINISH">Beenden</string>
 	<string name="service_gui_FOLDER_DOES_NOT_EXIST">Das Verzeichnis zu dieser Datei wurde nicht gefunden. Es wurde anscheinend gelöscht.</string>
@@ -363,6 +367,7 @@
 	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Willst du wirklich alle Nachrichten von %1$s löschen?</string>
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Willst du wirklich alle Nachrichten von allen Kontakten löschen?</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Fehler beim Löschen der Nachrichten von %1$s.</string>
+    <string name="service_gui_HISTORY_REMOVE_MEDIA">Löschen Sie Medien von meinem Telefon</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Teilnehmer des Chatraums</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Chatverlauf von diesem Chatraum löschen</string>

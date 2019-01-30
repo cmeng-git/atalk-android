@@ -124,17 +124,12 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
     public boolean registerAccount(final ProtocolProviderServiceJabberImpl pps, final AccountID accountId)
     {
         // Wait for right moment before proceed, otherwise captcha dialog will be
-        // obscured by other launching activities in progress.
+        // obscured by other launching activities in progress on first aTalk launch.
         aTalkApp.waitForDisplay();
-        new Handler(Looper.getMainLooper()).post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Context context = aTalkApp.getCurrentActivity();
-                IBRCaptchaProcessDialog mCaptchaDialog = new IBRCaptchaProcessDialog(context, pps, accountId, password);
-                mCaptchaDialog.show();
-            }
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Context context = aTalkApp.getCurrentActivity();
+            IBRCaptchaProcessDialog mCaptchaDialog = new IBRCaptchaProcessDialog(context, pps, accountId, password);
+            mCaptchaDialog.show();
         });
         return true;
     }

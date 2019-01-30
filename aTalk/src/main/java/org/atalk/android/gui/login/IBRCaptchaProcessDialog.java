@@ -23,6 +23,7 @@ import android.graphics.BitmapFactory;
 import android.os.*;
 import android.text.*;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
 
@@ -47,17 +48,21 @@ import org.jivesoftware.smackx.captcha.packet.Captcha;
 import org.jivesoftware.smackx.iqregisterx.AccountManager;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.FormField.Type;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.io.*;
 import java.net.URL;
+import java.util.*;
 
 /**
  * The dialog pops up when the user account login return with "not-authorized" i.e. not
- * registered on server, and user has confirmed the InBand Registration.
+ * registered on server, and user has select the InBand Registration option.
+ *
+ * The IBRegistration supports Form submission with optional captcha challenge,
+ * and the bare attributes format method
  *
  * @author Eng Chong Meng
  */
@@ -73,6 +78,15 @@ public class IBRCaptchaProcessDialog extends Dialog
      */
     private JabberConnectionListener connectionListener;
 
+    private ProtocolProviderServiceJabberImpl mPPS;
+    private XMPPTCPConnection mConnection;
+
+    // Map contains extra form field label and variable not in static layout
+    private Map<String, String> varMap = new HashMap<>();
+
+    // The layout container to add the extra form fields
+    private LinearLayout entryFields;
+
     private EditText mCaptchaText;
     private EditText mPasswordField;
     private CheckBox mServerOverrideCheckBox;
@@ -84,7 +98,7 @@ public class IBRCaptchaProcessDialog extends Dialog
     private ImageView mShowPasswordImage;
     private CheckBox mShowPasswordCheckBox;
 
-    private Button mAcceptButton;
+    private Button mSubmitButton;
     private Button mCancelButton;
     private Button mOKButton;
 
@@ -95,16 +109,13 @@ public class IBRCaptchaProcessDialog extends Dialog
     private DataForm submitForm;
     private String mPassword;
     private String mReasonText;
-    private ProtocolProviderServiceJabberImpl mPPS;
-    private XMPPTCPConnection mConnection;
 
     /**
      * Constructor for the <tt>Captcha Request Dialog</tt> for passing the dialog parameters
-     * <p>
      *
      * @param context the context to which the dialog belongs
      * @param pps the protocol provider service that offers the service
-     * @param accountId the AccountID of the login user
+     * @param accountId the AccountID of the login user request for IBRegistration
      */
     public IBRCaptchaProcessDialog(Context context, ProtocolProviderServiceJabberImpl pps, AccountID accountId, String pwd)
     {
@@ -123,7 +134,7 @@ public class IBRCaptchaProcessDialog extends Dialog
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        this.setContentView(R.layout.captcha_ibr);
+        this.setContentView(R.layout.ibr_captcha);
         setTitle(mContext.getString(R.string.captcha_registration_request));
 
         EditText mUserNameField = this.findViewById(R.id.username);
@@ -140,8 +151,8 @@ public class IBRCaptchaProcessDialog extends Dialog
         mCaptchaText = this.findViewById(R.id.input);
         mReason = this.findViewById(R.id.reason_field);
 
-        mAcceptButton = this.findViewById(R.id.button_Accept);
-        mAcceptButton.setVisibility(View.VISIBLE);
+        mSubmitButton = this.findViewById(R.id.button_Submit);
+        mSubmitButton.setVisibility(View.VISIBLE);
         mOKButton = this.findViewById(R.id.button_OK);
         mOKButton.setVisibility(View.GONE);
         mCancelButton = this.findViewById(R.id.button_Cancel);
@@ -151,23 +162,30 @@ public class IBRCaptchaProcessDialog extends Dialog
             mConnection.addConnectionListener(connectionListener);
         }
 
+        // Prevents from closing the dialog on outside touch or Back Key
+        setCanceledOnTouchOutside(false);
+        setCancelable(false);
+
         UpdateDialogContent();
         if (initIBRRegistration()) {
+            mReason.setText(mReasonText);
+            updateEntryFields();
             showCaptchaContent();
             initializeViewListeners();
         }
-        else { // unable to start IBR registration on server
+        // unable to start IBR registration on server
+        else {
             onIBRServerFailure();
         }
     }
 
     /*
-     * Update dialog content with the supplied information.
+     * Update IBRegistration dialog content with the initial user supplied information.
      */
     private void UpdateDialogContent()
     {
         mPasswordField.setText(mPassword);
-        Boolean isServerOverridden = mAccountId.isServerOverridden();
+        boolean isServerOverridden = mAccountId.isServerOverridden();
         mServerOverrideCheckBox.setChecked(isServerOverridden);
 
         mServerIpField.setText(mAccountId.getServerAddress());
@@ -175,66 +193,175 @@ public class IBRCaptchaProcessDialog extends Dialog
         updateViewVisibility(isServerOverridden);
     }
 
+    /**
+     * Start the InBand Registration for the accountId on the defined XMPP connection by pps.
+     * Registration can either be:
+     * - simple username and password or
+     * - Form With captcha protection with embedded captcha image if available, else the
+     * image is retrieved from the given url in the form.
+     *
+     * Return <tt>true</tt> if IBRegistration is supported and info is available
+     */
+    private boolean initIBRRegistration()
+    {
+        // NetworkOnMainThreadException if attempt to reconnect in UI thread; so return if no connection, else deadlock.
+        if (!mConnection.isConnected())
+            return false;
+
+        try {
+            // Check and proceed only if IBRegistration is supported by the server
+            AccountManager accountManager = AccountManager.getInstance(mConnection);
+            if (accountManager.isSupported()) {
+                Registration info = accountManager.getRegistrationInfo();
+                if (info != null) {
+                    // do not proceed if dataForm is null
+                    DataForm dataForm = info.getDataForm();
+                    if (dataForm == null)
+                        return false;
+
+                    mDataForm = dataForm;
+                    BoBExt bob = info.getBoB();
+                    if (bob != null) {
+                        byte[] bytData = bob.getBoBData().getContent();
+                        InputStream stream = new ByteArrayInputStream(bytData);
+                        mCaptcha = BitmapFactory.decodeStream(stream);
+                    }
+                    // Get the captcha image from the url link if bob is not available
+                    else {
+                        FormField urlField = dataForm.getField("url");
+                        if (urlField != null) {
+                            String urlString = urlField.getFirstValue();
+                            getCaptcha(urlString);
+                        }
+                    }
+                }
+                // Not user Form, so setup to use plain attributes login method instead.
+                else {
+                    mDataForm = null;
+                    mCaptcha = null;
+                }
+                return true;
+            }
+        } catch (InterruptedException | XMPPException | SmackException e) {
+            String errMsg = e.getMessage();
+            StanzaError xmppError = StanzaError.from(Condition.not_authorized, errMsg).build();
+            mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
+            showResult();
+        }
+        return false;
+    }
+
+    /**
+     * Add extra Form fields if there are not in the static layout
+     */
+    private void updateEntryFields()
+    {
+        entryFields = findViewById(R.id.entry_fields);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+
+        if (mDataForm != null) {
+            List<FormField> formFields = mDataForm.getFields();
+            for (FormField formField : formFields) {
+                Type type = formField.getType();
+                String var = formField.getVariable();
+
+                if ((type == Type.hidden) || (type == Type.fixed))
+                    continue;
+
+                String label = formField.getLabel();
+                String value = formField.getFirstValue();
+
+                if (var.equals("url")) {
+                    ((TextView) findViewById(R.id.url_label)).setText(label);
+                    TextView url_link = findViewById(R.id.url_link);
+                    url_link.setText(value);
+                    url_link.setOnClickListener(v -> {
+                        getCaptcha(value);
+                    });
+                }
+                else {
+                    if (var.equals(Captcha.USER_NAME) || var.equals(Captcha.PASSWORD) || var.equals(Captcha.OCR))
+                        continue;
+
+                    LinearLayout fieldEntry = (LinearLayout) inflater.inflate(R.layout.ibr_field_entry_row, null);
+                    TextView viewLabel = fieldEntry.findViewById(R.id.field_label);
+                    ImageView viewRequired = fieldEntry.findViewById(R.id.star);
+
+                    logger.warn("New entry field: " + label + " = " + var);
+                    // Keep copy of the variable field for later extracting the user entered value
+                    varMap.put(label, var);
+
+                    viewLabel.setText(label);
+                    viewRequired.setVisibility(formField.isRequired() ? View.VISIBLE : View.INVISIBLE);
+                    entryFields.addView(fieldEntry);
+                }
+            }
+        }
+    }
+
     /*
      * Update dialog content with the received captcha information for form presentation.
      */
     private void showCaptchaContent()
     {
-        // Scale the captcha to the display resolution
-        DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-        Bitmap captcha = Bitmap.createScaledBitmap(mCaptcha,
-                (int) (mCaptcha.getWidth() * metrics.scaledDensity),
-                (int) (mCaptcha.getHeight() * metrics.scaledDensity), false);
-        mImageView.setImageBitmap(captcha);
-        mReason.setText(mReasonText);
-        mCaptchaText.requestFocus();
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (mCaptcha != null) {
+                findViewById(R.id.captcha_container).setVisibility(View.VISIBLE);
+                // Scale the captcha to the display resolution
+                DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+                Bitmap captcha = Bitmap.createScaledBitmap(mCaptcha,
+                        (int) (mCaptcha.getWidth() * metrics.scaledDensity),
+                        (int) (mCaptcha.getHeight() * metrics.scaledDensity), false);
+                mImageView.setImageBitmap(captcha);
+                mCaptchaText.setHint(R.string.captcha_hint);
+                mCaptchaText.requestFocus();
+            }
+            else {
+                findViewById(R.id.captcha_container).setVisibility(View.GONE);
+            }
+        });
     }
 
     /**
-     * Setup all the dialog buttons. listeners for the required actions on user click
+     * Fetch the captcha bitmap from the given url link on new thread
+     *
+     * @param urlString Url link to fetch the captcha
+     */
+    private void getCaptcha(String urlString)
+    {
+        new Thread(() -> {
+            try {
+                if (!TextUtils.isEmpty(urlString)) {
+                    URL uri = new URL(urlString);
+                    mCaptcha = BitmapFactory.decodeStream(uri.openConnection().getInputStream());
+                    showCaptchaContent();
+                }
+            } catch (IOException e) {
+                logger.error(e, e);
+            }
+        }).start();
+    }
+
+    /**
+     * Setup all the dialog buttons' listeners for the required actions on user click
      */
     private void initializeViewListeners()
     {
-        mShowPasswordCheckBox.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener()
-                {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-                    {
-                        showPassword(isChecked);
-                    }
-                });
+        mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> showPassword(isChecked));
+        mServerOverrideCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> updateViewVisibility(isChecked));
+        mImageView.setOnClickListener(v -> mCaptchaText.requestFocus());
 
-        mServerOverrideCheckBox.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener()
-                {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-                    {
-                        updateViewVisibility(isChecked);
-                    }
-                });
-
-        mImageView.setOnClickListener(
-                new ImageView.OnClickListener()
-                {
-                    public void onClick(View v)
-                    {
-                        mCaptchaText.requestFocus();
-                    }
-                });
-
-        mAcceptButton.setOnClickListener(v -> {
+        mSubmitButton.setOnClickListener(v -> {
             // server disconnect user if waited for too long
             if (mConnection.isConnected()) {
                 if (updateAccount()) {
-                    onAcceptClicked();
+                    onSubmitClicked();
                     showResult();
                 }
             }
         });
 
-        // Retrigger IBR is user click OK - let login takes over
+        // Re-trigger IBR if user click OK - let login takes over
         mOKButton.setOnClickListener(v -> {
             closeDialog();
             GlobalStatusService globalStatusService = AndroidGUIActivator.getGlobalStatusService();
@@ -251,54 +378,94 @@ public class IBRCaptchaProcessDialog extends Dialog
         });
     }
 
-    // Server failure with start of IBR registration
-    private void onIBRServerFailure()
+    /**
+     * Updated AccountID with the parameters entered by user
+     */
+    private boolean updateAccount()
     {
-        mReasonText = "InBand registration - Server Error!";
-        mImageView.setVisibility(View.GONE);
-        mReason.setText(mReasonText);
-        mPasswordField.setEnabled(false);
-        mCaptchaText.setVisibility(View.GONE);
-        mAcceptButton.setEnabled(false);
-        mAcceptButton.setAlpha(0.5f);
-        mOKButton.setEnabled(false);
-        mOKButton.setAlpha(0.5f);
-        initializeViewListeners();
+        String password;
+        Editable pwd = mPasswordField.getText();
+        if ((pwd != null) && !StringUtils.isNullOrEmpty(password = pwd.toString())) {
+            mAccountId.setPassword(password);
+            if (mAccountId.isPasswordPersistent())
+                JabberActivator.getProtocolProviderFactory().storePassword(mAccountId, password);
+        }
+        else {
+            mReason.setText(R.string.captcha_registration_pwd_empty);
+            return false;
+        }
+
+        // Update server override options
+        String serverAddress = mServerIpField.getText().toString().replaceAll("\\s", "");
+        String serverPort = mServerPortField.getText().toString().replaceAll("\\s", "");
+        boolean isServerOverride = mServerOverrideCheckBox.isChecked();
+        mAccountId.setServerOverridden(isServerOverride);
+        if ((isServerOverride) && !TextUtils.isEmpty(serverAddress) && !TextUtils.isEmpty(serverPort)) {
+            mAccountId.setServerAddress(mServerIpField.getText().toString());
+            mAccountId.setServerPort(mServerPortField.getText().toString());
+        }
+        return true;
     }
 
     /**
      * Handles the <tt>ActionEvent</tt> triggered when one user clicks on the Submit button.
      */
-    private void onAcceptClicked()
+    private void onSubmitClicked()
     {
-        submitForm = new DataForm(DataForm.Type.submit);
-        addField(FormField.FORM_TYPE, Captcha.NAMESPACE);
-
-        String cl = mDataForm.getField(Captcha.CHALLENGE).getFirstValue();
-        addField(Captcha.CHALLENGE, cl);
-
-        String sid = mDataForm.getField(Captcha.SID).getFirstValue();
-        addField(Captcha.SID, sid);
-        addField(Captcha.ANSWER, "3");
-
-        // Only localPart is required
-        String userName = XmppStringUtils.parseLocalpart(mAccountId.getUserID());
-        addField(Captcha.USER_NAME, userName);
-
-        Editable pwd = mPasswordField.getText();
-        if (pwd != null) {
-            addField(Captcha.PASSWORD, pwd.toString());
-        }
-
-        Editable rc = mCaptchaText.getText();
-        if (rc != null) {
-            addField(Captcha.OCR, rc.toString());
-        }
-
+        // Server will ends connection on wait timeout due to user no response
         if ((mConnection != null) && mConnection.isConnected()) {
             AccountManager accountManager = AccountManager.getInstance(mConnection);
+
+            // Only localPart is required
+            String userName = XmppStringUtils.parseLocalpart(mAccountId.getUserID());
+            Editable pwd = mPasswordField.getText();
+
             try {
-                accountManager.createAccount(submitForm);
+                if (mDataForm != null) {
+                    submitForm = new DataForm(DataForm.Type.submit);
+                    addField(Captcha.USER_NAME, userName);
+                    if (pwd != null) {
+                        addField(Captcha.PASSWORD, pwd.toString());
+                    }
+
+                    // Add extra field if any and its value is not empty
+                    int varCount = entryFields.getChildCount();
+                    for (int i = 0; i < varCount; i++) {
+                        final View row = entryFields.getChildAt(i);
+                        String label = ((TextView) row.findViewById(R.id.field_label)).getText().toString();
+                        if (varMap.containsKey(label)) {
+                            CharSequence data = ((TextView) row.findViewById(R.id.field_value)).getText();
+                            if (!TextUtils.isEmpty(data))
+                                addField(varMap.get(label), data.toString());
+                        }
+                    }
+
+                    // set captcha challenge required info
+                    if (mCaptcha != null) {
+                        addField(FormField.FORM_TYPE, Captcha.NAMESPACE);
+
+                        String cl = mDataForm.getField(Captcha.CHALLENGE).getFirstValue();
+                        addField(Captcha.CHALLENGE, cl);
+
+                        String sid = mDataForm.getField(Captcha.SID).getFirstValue();
+                        addField(Captcha.SID, sid);
+                        addField(Captcha.ANSWER, "3");
+
+                        Editable rc = mCaptchaText.getText();
+                        if (rc != null) {
+                            addField(Captcha.OCR, rc.toString());
+                        }
+                    }
+                    accountManager.createAccount(submitForm);
+                }
+                else {
+                    Localpart username = Localpart.formUnescapedOrNull(userName);
+                    accountManager.sensitiveOperationOverInsecureConnection(false);
+                    if (pwd != null) {
+                        accountManager.createAccount(username, pwd.toString());
+                    }
+                }
+
                 // if not exception being thrown, then registration is successful. Clear IBR flag on success
                 mAccountId.setIbRegistration(false);
                 mPPS.accountIBRegistered.reportSuccess();
@@ -346,35 +513,6 @@ public class IBRCaptchaProcessDialog extends Dialog
     }
 
     /**
-     * Updated AccountID with the parameters entered by user
-     */
-    private boolean updateAccount()
-    {
-        String password;
-        Editable pwd = mPasswordField.getText();
-        if ((pwd != null) && !StringUtils.isNullOrEmpty(password = pwd.toString())) {
-            mAccountId.setPassword(password);
-            if (mAccountId.isPasswordPersistent())
-                JabberActivator.getProtocolProviderFactory().storePassword(mAccountId, password);
-        }
-        else {
-            mReason.setText(R.string.captcha_registration_pwd_empty);
-            return false;
-        }
-
-        // Update server override options
-        String serverAddress = mServerIpField.getText().toString().replaceAll("\\s", "");
-        String serverPort = mServerPortField.getText().toString().replaceAll("\\s", "");
-        boolean isServerOverride = mServerOverrideCheckBox.isChecked();
-        mAccountId.setServerOverridden(isServerOverride);
-        if ((isServerOverride) && !TextUtils.isEmpty(serverAddress) && !TextUtils.isEmpty(serverPort)) {
-            mAccountId.setServerAddress(mServerIpField.getText().toString());
-            mAccountId.setServerPort(mServerPortField.getText().toString());
-        }
-        return true;
-    }
-
-    /**
      * Show or hide password
      *
      * @param show <tt>true</tt> set password visible to user
@@ -411,75 +549,12 @@ public class IBRCaptchaProcessDialog extends Dialog
     }
 
     /**
-     * Perform the InBand Registration for the accountId on the defined XMPP connection by pps.
-     * Registration can either be:
-     * - simple username and password or
-     * - With captcha protection using form with embedded captcha image if available, else the
-     * image is retrieved from the given url in the form.
-     */
-    private boolean initIBRRegistration()
-    {
-        try {
-            // Reconnect if the connection is closed by the earlier exception
-            // cmeng (20180929): NetworkOnMainThreadException when attempt in UI thread, so just return. Otherwise deadlock.
-            if (!mConnection.isConnected())
-                // mConnection.connect();
-                return false;
-
-            AccountManager accountManager = AccountManager.getInstance(mConnection);
-            if (accountManager.isSupported()) {
-                Registration info = accountManager.getRegistrationInfo();
-                if (info != null) {
-                    DataForm dataForm = info.getDataForm();
-                    // do not proceed if dataForm is null
-                    if (dataForm == null)
-                        return false;
-
-                    Bitmap captcha = null;
-                    BoBExt bob = info.getBoB();
-                    if (bob != null) {
-                        byte[] bytData = bob.getBoBData().getContent();
-                        InputStream stream = new ByteArrayInputStream(bytData);
-                        captcha = BitmapFactory.decodeStream(stream);
-                    }
-                    else {
-                        FormField urlField = dataForm.getField("url");
-                        if (urlField != null) {
-                            String urlString = urlField.getFirstValue();
-                            URL uri = new URL(urlString);
-                            captcha = BitmapFactory.decodeStream(uri.openConnection().getInputStream());
-                        }
-                    }
-                    if (captcha != null) {
-                        mDataForm = dataForm;
-                        mCaptcha = captcha;
-                        return true;
-                    }
-                }
-                else {
-                    String userName = mAccountId.getUserID();
-                    Localpart username = JidCreate.bareFrom(userName).getLocalpartOrNull();
-                    accountManager.sensitiveOperationOverInsecureConnection(false);
-                    accountManager.createAccount(username, mPassword);
-                }
-            }
-        } catch (IOException | InterruptedException | XMPPException | SmackException e) {
-            String errMsg = e.getMessage();
-            StanzaError xmppError = StanzaError.from(Condition.not_authorized, errMsg).build();
-            mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
-            showResult();
-        }
-        return false;
-    }
-
-    /**
      * Shows IBR registration result.
      */
     private void showResult()
     {
         String errMsg = null;
         mReasonText = mContext.getString(R.string.captcha_registration_success);
-
         try {
             XMPPException ex = mPPS.accountIBRegistered.checkIfSuccessOrWait();
             if (ex != null) {
@@ -503,8 +578,25 @@ public class IBRCaptchaProcessDialog extends Dialog
         });
 
         mReason.setText(mReasonText);
-        mAcceptButton.setVisibility(View.GONE);
+        mSubmitButton.setVisibility(View.GONE);
         mOKButton.setVisibility(View.VISIBLE);
+        mCaptchaText.setHint(R.string.captcha_retry);
+        mCaptchaText.setEnabled(false);
+    }
+
+    // Server failure with start of IBR registration
+    private void onIBRServerFailure()
+    {
+        mReasonText = "InBand registration - Server Error!";
+        mImageView.setVisibility(View.GONE);
+        mReason.setText(mReasonText);
+        mPasswordField.setEnabled(false);
+        mCaptchaText.setVisibility(View.GONE);
+        mSubmitButton.setEnabled(false);
+        mSubmitButton.setAlpha(0.5f);
+        mOKButton.setEnabled(false);
+        mOKButton.setAlpha(0.5f);
+        initializeViewListeners();
     }
 
     /**
@@ -534,7 +626,7 @@ public class IBRCaptchaProcessDialog extends Dialog
             StanzaError xmppError = StanzaError.from(Condition.remote_server_timeout, errMsg).build();
             mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
 
-            new Handler(Looper.getMainLooper()).post(() -> showResult());
+            new Handler(Looper.getMainLooper()).post(IBRCaptchaProcessDialog.this::showResult);
         }
 
         @Override

@@ -6,7 +6,6 @@
 
 package org.atalk.android.gui.chat;
 
-import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
@@ -177,9 +176,8 @@ public interface ChatTransport
      * @param file the file to send
      * @throws Exception if the send doesn't succeed
      */
-    FileTransfer sendMultimediaFile(File file)
+    Object sendMultimediaFile(File file)
             throws Exception;
-
 
     /**
      * Sends the given sticker file through this chat transport,
@@ -188,7 +186,17 @@ public interface ChatTransport
      * @param file the file to send
      * @throws Exception if the send doesn't succeed
      */
-    FileTransfer sendSticker(File file)
+    Object sendSticker(File file)
+            throws Exception;
+
+    /**
+     * Sends the given file through this chat transport.
+     *
+     * @param file the file to send
+     * @return the <tt>FileTransfer</tt> charged to transfer the given <tt>file</tt>.
+     * @throws Exception if the send doesn't succeed
+     */
+    Object sendFile(File file)
             throws Exception;
 
     /**
@@ -197,16 +205,6 @@ public interface ChatTransport
      * @param chatState the chat state notification to send
      */
     void sendChatStateNotification(ChatState chatState);
-
-    /**
-     * Sends the given file trough this chat transport.
-     *
-     * @param file the file to send
-     * @return the <tt>FileTransfer</tt> charged to transfer the given <tt>file</tt>.
-     * @throws Exception if the send doesn't succeed
-     */
-    FileTransfer sendFile(File file)
-            throws Exception;
 
     /**
      * Returns the maximum file length supported by the protocol in bytes.

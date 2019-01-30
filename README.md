@@ -21,7 +21,8 @@ aTalk is an xmpp client designed for android and supports the following features
 * Omemo encryption is available during multi-user-chat session, giving users' maximum privacy and security
 * Support multi-user chat in room creation, server chat rooms discovery and joining chat room with captcha protection 
 * Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
-* Support simultaneous media call and message chat sessions 
+* Support simultaneous media call and message chat sessions
+* Support http file upload for file sharing with offline contact and members in conference room
 * Send and receive files for all document types and images, with thumbnail preview before file is sent 
 * Auto accept file transfer request with max file size option
 * Support downloadable Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
@@ -52,6 +53,7 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0092: Software Version](https://xmpp.org/extensions/xep-0092.html)
 * [XEP-0095: Stream Initiation](https://xmpp.org/extensions/xep-0095.html)
 * [XEP-0096: SI File Transfer](https://xmpp.org/extensions/xep-0096.html)
+* [XEP-0100: Gateway Interaction](https://xmpp.org/extensions/xep-0100.html)
 * [XEP-0115: Entity Capabilities](https://xmpp.org/extensions/xep-0115.html)
 * [XEP-0138: Stream Compression](https://xmpp.org/extensions/xep-0138.html)
 * [XEP-0153: vCard-Based Avatar](https://xmpp.org/extensions/xep-0153.html)
@@ -83,6 +85,7 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0319: Last User Interaction in Presence](https://xmpp.org/extensions/xep-0319.html)
 * [XEP-0320: Use of DTLS-SRTP in Jingle Sessions](https://xmpp.org/extensions/xep-0320.html)
 * [XEP-0352: Client State Indication](https://xmpp.org/extensions/xep-052.html)
+* [XEP-0363: HTTP File Upload](https://xmpp.org/extensions/xep-0363.html)
 * [XEP-0364: Off-the-Record Messaging (V2/3)](https://xmpp.org/extensions/xep-0364.html)
 
 Libraries used in this project

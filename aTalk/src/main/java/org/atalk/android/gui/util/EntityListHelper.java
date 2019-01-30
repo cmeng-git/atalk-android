@@ -18,6 +18,8 @@ package org.atalk.android.gui.util;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.widget.CheckBox;
 
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
@@ -34,6 +36,8 @@ import org.jxmpp.util.XmppStringUtils;
 
 import java.io.File;
 import java.util.List;
+
+import static org.atalk.android.R.id.cb_media_delete;
 
 /**
  * The <tt>EntityListHelper</tt> is the class through which we make operations with the
@@ -210,16 +214,21 @@ public class EntityListHelper
         else
             return;
 
+        Bundle args = new Bundle();
+        args.putString(HistoryDeleteFragment.ARG_MESSAGE,
+                aTalkApp.getResString(R.string.service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING, entityJid));
         String title = aTalkApp.getResString(R.string.service_gui_HISTORY_CONTACT, entityJid);
-        String message = aTalkApp.getResString(R.string.service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING, entityJid);
 
-        DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(), title, message,
-                aTalkApp.getResString(R.string.service_gui_PURGE),
-                new DialogActivity.DialogListener()
+        // Displays the history delete dialog and waits for user confirmation
+        DialogActivity.showCustomDialog(aTalkApp.getGlobalContext(), title, HistoryDeleteFragment.class.getName(),
+                args, aTalkApp.getResString(R.string.service_gui_PURGE), new DialogActivity.DialogListener()
                 {
-                    @Override
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
+                        CheckBox cbMediaDelete = dialog.findViewById(cb_media_delete);
+                        if (!cbMediaDelete.isChecked()) {
+                            msgFiles.clear();
+                        }
                         EntityListHelper mErase = new EntityListHelper();
                         mErase.new doEraseEntityChatHistory(caller, msgUUIDs, msgFiles).execute(desc);
                         return true;
@@ -229,7 +238,7 @@ public class EntityListHelper
                     public void onDialogCancelled(DialogActivity dialog)
                     {
                     }
-                });
+                }, null);
     }
 
     /**

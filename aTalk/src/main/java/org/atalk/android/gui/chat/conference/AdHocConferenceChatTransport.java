@@ -5,28 +5,26 @@
  */
 package org.atalk.android.gui.chat.conference;
 
-import net.java.sip.communicator.service.protocol.AdHocChatRoom;
-import net.java.sip.communicator.service.protocol.FileTransfer;
-import net.java.sip.communicator.service.protocol.Message;
-import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
-import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
-import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.chat.ChatMessage;
-import org.atalk.android.gui.chat.ChatSession;
-import org.atalk.android.gui.chat.ChatTransport;
+import org.atalk.android.gui.chat.*;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.chatstates.ChatState;
+import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
+import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jxmpp.jid.EntityBareJid;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 /**
- * The conference implementation of the <tt>ChatTransport</tt> interface that provides abstraction to access to protocol providers.
+ * The conference implementation of the <tt>ChatTransport</tt> interface that provides
+ * abstraction to access to protocol providers.
  *
  * @author Valentin Martinet
  * @author Eng Chong Meng
@@ -37,10 +35,13 @@ public class AdHocConferenceChatTransport implements ChatTransport
 
     private final AdHocChatRoom adHocChatRoom;
     private final ProtocolProviderService mPPS;
+    private HttpFileUploadManager httpFileUploadManager;
+
+    private static URL mURL = null;
 
     /**
-     * Creates an instance of <tt>ConferenceChatTransport</tt> by specifying the parent chat session and the ad-hoc chat room associated
-     * with this transport.
+     * Creates an instance of <tt>ConferenceChatTransport</tt> by specifying the parent chat
+     * session and the ad-hoc chat room associated with this transport.
      *
      * @param chatSession the parent chat session.
      * @param chatRoom the ad-hoc chat room associated with this conference transport.
@@ -50,6 +51,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
         this.chatSession = chatSession;
         this.adHocChatRoom = chatRoom;
         mPPS = adHocChatRoom.getParentProvider();
+        httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
     }
 
     /**
@@ -73,7 +75,8 @@ public class AdHocConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns the resource name of this chat transport. This is for example the name of the user agent from which the contact is logged.
+     * Returns the resource name of this chat transport. This is for example the name of the user
+     * agent from which the contact is logged.
      *
      * @return The display name of this chat transport resource.
      */
@@ -113,9 +116,11 @@ public class AdHocConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports instant messaging, otherwise returns <code>false</code> .
+     * Returns <code>true</code> if this chat transport supports instant messaging,
+     * otherwise returns <code>false</code>.
      *
-     * @return <code>true</code> if this chat transport supports instant messaging, otherwise returns <code>false</code> .
+     * @return <code>true</code> if this chat transport supports instant messaging,
+     * otherwise returns <code>false</code>.
      */
     public boolean allowsInstantMessage()
     {
@@ -123,9 +128,11 @@ public class AdHocConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports sms messaging, otherwise returns <code>false</code>.
+     * Returns <code>true</code> if this chat transport supports sms messaging,
+     * otherwise returns <code>false</code>.
      *
-     * @return <code>true</code> if this chat transport supports sms messaging, otherwise returns <code>false</code>.
+     * @return <code>true</code> if this chat transport supports sms messaging,
+     * otherwise returns <code>false</code>.
      */
     public boolean allowsSmsMessage()
     {
@@ -142,15 +149,12 @@ public class AdHocConferenceChatTransport implements ChatTransport
     public boolean allowsChatStateNotifications()
     {
         Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
-
-        if (tnOpSet != null)
-            return true;
-        else
-            return false;
+        return tnOpSet != null;
     }
 
     /**
-     * Sends the given instant message trough this chat transport, by specifying the mime type (html or plain text).
+     * Sends the given instant message trough this chat transport, by specifying the mime type
+     * (html or plain text).
      *
      * @param messageText The message to send.
      * @param encryptionType The encryptionType of the message to send: @see ChatMessage Encryption Type
@@ -163,8 +167,15 @@ public class AdHocConferenceChatTransport implements ChatTransport
             aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, getName());
             return;
         }
-        Message message = adHocChatRoom.createMessage(messageText);
-        adHocChatRoom.sendMessage(message);
+
+        Message message = adHocChatRoom.createMessage(messageText, encryptionType, mimeType, null);
+        if (ChatMessage.ENCRYPTION_OMEMO == encryptionType) {
+            OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
+            adHocChatRoom.sendMessage(message, omemoManager);
+        }
+        else {
+            adHocChatRoom.sendMessage(message);
+        }
     }
 
     /**
@@ -227,7 +238,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
     /**
      * Not used.
      *
-     * @return
+     * @return status
      */
     public boolean askForSMSNumber()
     {
@@ -244,10 +255,44 @@ public class AdHocConferenceChatTransport implements ChatTransport
     /**
      * Sending files through a chat room is not yet supported by this chat transport implementation.
      */
-    public FileTransfer sendFile(File file)
+    public URL sendFile(File file)
             throws Exception
     {
-        return null;
+        // If this chat transport does not support file transfer we do nothing and just return.
+        if (!allowsFileTransfer())
+            return null;
+
+        if (httpFileUploadManager.isUploadServiceDiscovered()) {
+            try {
+                return httpFileUploadManager.uploadFile(file, null);
+            } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
+                throw new OperationNotSupportedException(e.getMessage());
+            }
+        }
+        else
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
+    }
+
+    /**
+     * Returns <code>true</code> if this chat transport supports file transfer, otherwise returns
+     * <code>false</code>.
+     *
+     * @return <code>true</code> if this chat transport supports file transfer, otherwise returns
+     * <code>false</code>.
+     */
+    public boolean allowsFileTransfer()
+    {
+        return httpFileUploadManager.isUploadServiceDiscovered();
+    }
+
+    /**
+     * Returns the maximum file length supported by the protocol in bytes.
+     *
+     * @return the file length that is supported.
+     */
+    public long getMaximumFileLength()
+    {
+        return httpFileUploadManager.getDefaultUploadService().getMaxFileSize();
     }
 
     /**
@@ -263,7 +308,8 @@ public class AdHocConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns the parent session of this chat transport. A <tt>ChatSession</tt> could contain more than one transports.
+     * Returns the parent session of this chat transport. A <tt>ChatSession</tt> could contain
+     * more than one transports.
      *
      * @return the parent session of this chat transport
      */
@@ -279,8 +325,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
      */
     public void addSmsMessageListener(MessageListener l)
     {
-        // If this chat transport does not support sms messaging we do
-        // nothing here.
+        // If this chat transport does not support sms messaging we do nothing here.
         if (!allowsSmsMessage())
             return;
 
@@ -345,12 +390,6 @@ public class AdHocConferenceChatTransport implements ChatTransport
     public Object getDescriptor()
     {
         return adHocChatRoom;
-    }
-
-    public long getMaximumFileLength()
-    {
-        // TODO Auto-generated method stub
-        return 0;
     }
 
     /**
