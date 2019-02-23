@@ -17,28 +17,23 @@ package net.java.sip.communicator.impl.provdisc.mdns;
 
 import net.java.sip.communicator.service.provdisc.event.DiscoveryEvent;
 import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
-import net.java.sip.communicator.util.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
+
+import timber.log.Timber;
 
 /**
  * Class that will perform mDNS provisioning discovery.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public class MDNSProvisioningDiscover implements Runnable
 {
-    /**
-     * Logger.
-     */
-    private final Logger logger = Logger.getLogger(MDNSProvisioningDiscover.class);
-
     /**
      * MDNS timeout (in milliseconds).
      */
@@ -90,7 +85,7 @@ public class MDNSProvisioningDiscover implements Runnable
         try {
             jmdns = JmDNS.create();
         } catch (IOException e) {
-            logger.info("Failed to create JmDNS", e);
+            Timber.i(e, "Failed to create JmDNS");
             return null;
         }
 
@@ -129,7 +124,7 @@ public class MDNSProvisioningDiscover implements Runnable
             jmdns.close();
             jmdns = null;
         } catch (Exception e) {
-            logger.warn("Failed to close JmDNS", e);
+            Timber.w(e, "Failed to close JmDNS");
         }
         return (url.toString().length() > 0) ? url.toString() : null;
     }

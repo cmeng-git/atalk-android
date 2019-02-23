@@ -7,9 +7,9 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.aTalkApp;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -34,6 +34,8 @@ import org.jxmpp.util.cache.LruCache;
 import java.io.File;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * An wrapper to smack's default {@link ServiceDiscoveryManager} that adds support for
  * XEP-0030: Service Discovery.
@@ -47,11 +49,6 @@ import java.util.*;
  */
 public class ScServiceDiscoveryManager implements NodeInformationProvider
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>ScServiceDiscoveryManager</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(ScServiceDiscoveryManager.class);
-
     /**
      * The flag which indicates whether we are currently storing non-caps.
      */
@@ -311,13 +308,13 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         if (discoverInfo != null) {
             // store in local nonCapsCache
             if ((nvh == null) && cacheNonCaps) {
-                // logger.warn("Add discoverInfo with null nvh for: " + entityID);
+                // Timber.w("Add discoverInfo with null nvh for: " + entityID);
                 addDiscoverInfoByEntity(entityID, discoverInfo);
             }
             return discoverInfo;
         }
 
-        logger.warn("Failed to get DiscoverInfo for: " + entityID);
+        Timber.w("Failed to get DiscoverInfo for: %s", entityID);
         return discoverInfo;
     }
 
@@ -371,7 +368,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         // reply @ 28 seconds after disco#info is sent
         connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
-        // logger.warn("### Remote discovery for: " + entityID);
+        // Timber.w("### Remote discovery for: " + entityID);
         DiscoverInfo discoInfo = discoveryManager.discoverInfo(entityID);
 
         connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
@@ -419,8 +416,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      *
      * @param jid the jabber ID we'd like to test for support
      * @param feature the URN feature we are interested in
-     * @return true if <tt>jid</tt> is discovered to support <tt>feature</tt> and <tt>false</tt>
-     * otherwise.
+     * @return true if <tt>jid</tt> is discovered to support <tt>feature</tt> and <tt>false</tt> otherwise.
      */
     public boolean supportsFeature(Jid jid, String feature)
     {
@@ -432,7 +428,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
                 e.printStackTrace();
             }
         } catch (XMPPException ex) {
-            logger.info("failed to retrieve disco info for " + jid + " feature " + feature, ex);
+            Timber.i(ex, "failed to retrieve disco info for %s feature %s", jid, feature);
             return false;
         }
         return ((info != null) && info.containsFeature(feature));
@@ -598,7 +594,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         }
     }
 
-//==================================================================
+    //==================================================================
 
     /**
      * Setup the SimpleDirectoryPersistentCache store to support EntityCapsManager persistent
@@ -616,7 +612,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 
         if (!entityStoreDirectory.exists()) {
             if (!entityStoreDirectory.mkdir())
-                logger.error("Entity Store directory creation error: " + entityStoreDirectory.getAbsolutePath());
+                Timber.e("Entity Store directory creation error: %s", entityStoreDirectory.getAbsolutePath());
         }
 
         if (entityStoreDirectory.exists()) {
@@ -644,7 +640,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 
         if (!discoInfoStoreDirectory.exists()) {
             if (!discoInfoStoreDirectory.mkdir())
-                logger.error("DiscoInfo Store directory creation error: " + discoInfoStoreDirectory.getAbsolutePath());
+                Timber.e("DiscoInfo Store directory creation error: %s", discoInfoStoreDirectory.getAbsolutePath());
         }
 
         if (discoInfoStoreDirectory.exists()) {
@@ -726,7 +722,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
                     entityToProcess = null;
                 }
             } catch (Throwable t) {
-                logger.error("Error requesting discovery info, thread ended unexpectedly", t);
+                Timber.e(t, "Error requesting discovery info, thread ended unexpectedly");
             }
         }
 
@@ -746,14 +742,14 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
                 if ((nvh != null)
                         && !EntityCapsManager.verifyDiscoverInfoVersion(nvh.getVer(), nvh.getHash(), discoverInfo)) {
                     // Force nvh to null if nodeVersion is invalid and log error
-                    logger.error("Invalid DiscoverInfo NodeVersion for " + nvh.getNodeVer());
+                    Timber.e("Invalid DiscoverInfo NodeVersion for %s", nvh.getNodeVer());
                     nvh = null;
                 }
 
                 // (discoverInfo = null) if iq result with "item-not-found"
                 if (discoverInfo != null) {
                     if ((nvh == null) && cacheNonCaps) {
-                        // logger.warn("Add discoverInfo with null nvh for: " + entityID);
+                        // Timber.w("Add discoverInfo with null nvh for: %s", entityID);
                         addDiscoverInfoByEntity(entityID, discoverInfo);
                     }
 
@@ -764,8 +760,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
                 }
             } catch (NoResponseException | NotConnectedException | XMPPException | InterruptedException e) {
                 // print discovery info errors only when trace is enabled
-                if (logger.isTraceEnabled())
-                    logger.error("Error requesting discover info for " + entityID, e);
+                Timber.log(TimberLog.FINER, e, "Error requesting discover info for %s", entityID);
             }
         }
 

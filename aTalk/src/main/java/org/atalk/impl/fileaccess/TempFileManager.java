@@ -8,6 +8,8 @@ package org.atalk.impl.fileaccess;
 import java.io.*;
 import java.util.logging.*;
 
+import timber.log.Timber;
+
 /**
  * Generates and properly cleans up temporary files. Similar to
  * {@link File#createTempFile(java.lang.String, java.lang.String)}, this class provides a static method to create
@@ -154,9 +156,8 @@ public class TempFileManager
             // Create a file to represent the lock and test.
             File lockFile = new File(tmpFile.getParent(), tmpFile.getName() + ".lck");
             if (!lockFile.exists()) {
-                // Delete the contents of the directory since
-                // it is no longer locked.
-                Logger.getLogger("default").log(Level.FINE, "TempFileManager::deleting old temp directory " + tmpFile);
+                // Delete the contents of the directory since it is no longer locked.
+                Timber.log(Level.FINE.intValue(), "TempFileManager::deleting old temp directory %s", tmpFile);
 
                 try {
                     recursiveDelete(tmpFile);

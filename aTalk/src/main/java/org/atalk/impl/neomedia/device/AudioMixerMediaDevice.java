@@ -16,7 +16,6 @@ import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.device.MediaDeviceWrapper;
 import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.Logger;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -31,21 +30,18 @@ import javax.media.protocol.DataSource;
 import javax.media.protocol.PushBufferStream;
 import javax.media.rtp.ReceiveStream;
 
+import timber.log.Timber;
+
 /**
  * Implements a <tt>MediaDevice</tt> which performs audio mixing using {@link AudioMixer}.
  *
  * @author Lyubomir Marinov
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public class AudioMixerMediaDevice extends AbstractMediaDevice
         implements MediaDeviceWrapper
 {
-    /**
-     * The <tt>Logger</tt> used by <tt>AudioMixerMediaDevice</tt> and its instances for logging
-     * output.
-     */
-    private static final Logger logger = Logger.getLogger(AudioMixerMediaDevice.class);
-
     /**
      * The <tt>AudioMixer</tt> which performs audio mixing in this <tt>MediaDevice</tt> (and rather
      * the session that it represents).
@@ -400,8 +396,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
                 // can't happen since CSRC_AUDIO_LEVEL_URN is a valid URI and never changes.
                 csrcAudioLevelURN = null;
                 ssrcAudioLevelURN = null;
-                if (logger.isInfoEnabled())
-                    logger.info("Aha! Someone messed with the source!", e);
+                Timber.i(e, "Aha! Someone messed with the source!");
             }
 
             if (csrcAudioLevelURN != null) {

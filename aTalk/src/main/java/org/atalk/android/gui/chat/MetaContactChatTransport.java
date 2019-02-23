@@ -12,7 +12,8 @@ import android.media.ThumbnailUtils;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetFileTransferJabberImpl;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
+import net.java.sip.communicator.util.FileUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -26,6 +27,8 @@ import org.jxmpp.jid.EntityBareJid;
 import java.io.*;
 import java.net.URL;
 
+import timber.log.Timber;
+
 /**
  * The single chat implementation of the <tt>ChatTransport</tt> interface that provides abstraction
  * to protocol provider access and its supported features available to the metaContact.
@@ -35,11 +38,6 @@ import java.net.URL;
  */
 public class MetaContactChatTransport implements ChatTransport, ContactPresenceStatusListener
 {
-    /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(MetaContactChatTransport.class);
-
     /**
      * The parent <tt>ChatSession</tt>, where this transport is available.
      */
@@ -56,7 +54,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * The associated protocol provider service for the <tt>Contact</tt>.
      */
     private final ProtocolProviderService mPPS;
-    
+
     private HttpFileUploadManager httpFileUploadManager;
 
     /**
@@ -415,7 +413,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     {
         // If this chat transport does not support sms messaging we do nothing here.
         if (allowsSmsMessage()) {
-            logger.warn("Method not implemented");
+            Timber.w("Method not implemented");
             // SMSManager.sendSMS(mPPS, phoneNumber, messageText);}
         }
     }
@@ -446,7 +444,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     {
         // If this chat transport does not support sms messaging we do nothing here.
         if (allowsSmsMessage()) {
-            logger.warn("Method not implemented");
+            Timber.w("Method not implemented");
             // SMSManager.sendSMS(contact, message);
         }
     }
@@ -471,7 +469,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 try {
                     tnOperationSet.sendChatStateNotification(contact, chatState);
                 } catch (Exception ex) {
-                    logger.error("Failed to send chat state notifications.", ex);
+                    Timber.e(ex, "Failed to send chat state notifications.");
                 }
             }
         }
@@ -743,8 +741,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                     imageData = baos.toByteArray();
                 }
             } catch (FileNotFoundException e) {
-                if (logger.isDebugEnabled())
-                    logger.debug("Could not locate image file.", e);
+                Timber.d(e, "Could not locate image file.");
                 e.printStackTrace();
             }
         }

@@ -15,9 +15,11 @@
  */
 package org.atalk.impl.neomedia.transform;
 
-import org.atalk.impl.neomedia.*;
-import org.atalk.service.neomedia.*;
-import org.atalk.util.*;
+import org.atalk.impl.neomedia.RTPPacketPredicate;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.util.RTPUtils;
+
+import timber.log.Timber;
 
 /**
  * Appends an Original Header Block packet extension to incoming packets.
@@ -42,15 +44,8 @@ import org.atalk.util.*;
  * @author Boris Grozev
  */
 public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerAdapter
-    implements TransformEngine
+        implements TransformEngine
 {
-    /**
-     * The <tt>Logger</tt> used by the
-     * {@link OriginalHeaderBlockTransformEngine} class and its instances.
-     */
-    private static final Logger logger
-        = Logger.getLogger(OriginalHeaderBlockTransformEngine.class);
-
     /**
      * The ID of the OHB RTP header extension, or -1 if it is not enabled.
      */
@@ -70,8 +65,7 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
     @Override
     public RawPacket reverseTransform(RawPacket pkt)
     {
-        if (extensionID != -1)
-        {
+        if (extensionID != -1) {
             // TODO: check if an OHB ext already exists.
             addExtension(pkt);
         }
@@ -104,6 +98,7 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
     /**
      * Removes any unmodified fields from the OHB header extension of a
      * {@link RawPacket}.
+     *
      * @param pkt the packet.
      * @param ohb the OHB header extension.
      */
@@ -116,9 +111,8 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
         // came from elsewhere (i.e. the sender), we should handle it in
         // another way.
         int len = ohb.getExtLength();
-        if (len != 11)
-        {
-            logger.warn("Unexpected OHB length.");
+        if (len != 11) {
+            Timber.w("Unexpected OHB length.");
             return;
         }
 
@@ -135,12 +129,11 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
         long origSsrc = RTPUtils.readUint32AsLong(buf, off + 8);
 
         int newLen
-            = getLength(pt != origPt, seq != origSeq,
-                        ts != origTs, ssrc != origSsrc);
+                = getLength(pt != origPt, seq != origSeq,
+                ts != origTs, ssrc != origSsrc);
 
         // If the lengths match, we don't have anything to change.
-        if (newLen != len)
-        {
+        if (newLen != len) {
             // TODO:
             // 1. remove the old extension
             // 2. maybe add a new one
@@ -148,19 +141,19 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
     }
 
     /**
-     * @return the length of the OHB extension, given the fields which differ
-     * from the original packet.
      * @param pt whether the PR was modified.
      * @param seq whether the sequence number was modified.
      * @param ts whether the timestamp was modified.
      * @param ssrc whether the SSRC was modified.
+     * @return the length of the OHB extension, given the fields which differ
+     * from the original packet.
      */
     private int getLength(boolean pt, boolean seq, boolean ts, boolean ssrc)
     {
         if (!pt && !seq && !ts && !ssrc)
             return 0;
         else if (pt && !seq && !ts && !ssrc)
-            return  1;
+            return 1;
         else if (!pt && seq && !ts && !ssrc)
             return 2;
         else if (!pt && !seq && ts && !ssrc)
@@ -208,7 +201,6 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
      * Implements {@link TransformEngine#getRTCPTransformer()}.
      *
      * This <tt>TransformEngine</tt> does not transform RTCP packets.
-     *
      */
     @Override
     public PacketTransformer getRTCPTransformer()
@@ -220,6 +212,7 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
      * Adds an abs-send-time RTP header extension with an ID of {@link
      * #extensionID} and value derived from the current system time to the
      * packet {@code pkt}.
+     *
      * @param pkt the packet to add an extension to.
      */
     private void addExtension(RawPacket pkt)
@@ -239,6 +232,7 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
     /**
      * Sets the ID of the abs-send-time RTP extension. Set to -1 to effectively
      * disable this transformer.
+     *
      * @param id the ID to set.
      */
     public void setExtensionID(int id)

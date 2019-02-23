@@ -14,6 +14,8 @@ import org.atalk.impl.neomedia.RTPConnectorTCPInputStream;
 import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.util.Logger;
 
+import timber.log.Timber;
+
 /**
  * TransformConnector implements the RTPConnector interface. RTPConnector is originally designed for
  * programmers to abstract the underlying transport mechanism for RTP control and data from the
@@ -34,15 +36,10 @@ import org.atalk.util.Logger;
  *
  * @author Bing SU (nova.su@gmail.com)
  * @author Lubomir Marinov
+ * @author Eng Chong Meng
  */
 public class RTPTransformTCPConnector extends RTPConnectorTCPImpl
 {
-	/**
-	 * The <tt>Logger</tt> used by the <tt>TransformConnector</tt> class and its instances for
-	 * logging output.
-	 */
-	private static final Logger logger = Logger.getLogger(RTPTransformUDPConnector.class);
-
 	/**
 	 * The customized <tt>TransformEngine</tt> which contains the concrete transform logic.
 	 */
@@ -176,7 +173,7 @@ public class RTPTransformTCPConnector extends RTPConnectorTCPImpl
 				controlInputStream = (RTPConnectorTCPInputStream) getControlInputStream(false);
 			}
 			catch (IOException ioex) {
-				logger.error("The impossible happened", ioex);
+				Timber.e(ioex, "The impossible happened");
 				controlInputStream = null;
 			}
 			if (controlInputStream != null)
@@ -186,7 +183,7 @@ public class RTPTransformTCPConnector extends RTPConnectorTCPImpl
 				controlOutputStream = (TransformTCPOutputStream) getControlOutputStream(false);
 			}
 			catch (IOException ioex) {
-				logger.error("The impossible happened", ioex);
+				Timber.e(ioex, "The impossible happened");
 				controlOutputStream = null;
 			}
 			if (controlOutputStream != null)
@@ -196,7 +193,7 @@ public class RTPTransformTCPConnector extends RTPConnectorTCPImpl
 				dataInputStream = (RTPConnectorTCPInputStream) getDataInputStream(false);
 			}
 			catch (IOException ioex) {
-				logger.error("The impossible happened", ioex);
+				Timber.e(ioex, "The impossible happened");
 				dataInputStream = null;
 			}
 			if (dataInputStream != null)
@@ -206,7 +203,7 @@ public class RTPTransformTCPConnector extends RTPConnectorTCPImpl
 				dataOutputStream = (TransformTCPOutputStream) getDataOutputStream(false);
 			}
 			catch (IOException ioex) {
-				logger.error("The impossible happened", ioex);
+				Timber.e(ioex, "The impossible happened");
 				dataOutputStream = null;
 			}
 			if (dataOutputStream != null)

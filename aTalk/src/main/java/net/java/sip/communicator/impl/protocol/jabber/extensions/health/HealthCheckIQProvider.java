@@ -14,8 +14,11 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.health;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.*;
 import org.xmlpull.v1.*;
 
@@ -42,8 +45,8 @@ public class HealthCheckIQProvider extends IQProvider<HealthCheckIQ>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HealthCheckIQ parse(XmlPullParser parser, int depth)
-        throws Exception
+	public HealthCheckIQ parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException, SmackParsingException
 	{
 		String namespace = parser.getNamespace();
 		HealthCheckIQ iq = null;

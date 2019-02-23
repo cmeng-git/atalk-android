@@ -7,10 +7,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
-
-import net.java.sip.communicator.util.Logger;
 
 import org.apache.commons.io.IOUtils;
 
@@ -19,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 /**
  * File Backend utilities
  *
@@ -26,9 +25,6 @@ import java.util.Locale;
  */
 public class FileBackend
 {
-    // The logger
-    private final static Logger logger = Logger.getLogger(FileBackend.class);
-
     private static final String FILE_PROVIDER = ".files";
 
     public static final int MEDIA_TYPE_IMAGE = 1;
@@ -156,7 +152,8 @@ public class FileBackend
      * @param filePath full path of file or directory to be deleted
      * @throws IOException throws exception if any
      */
-    public static void deleteRecursive(File filePath) throws IOException
+    public static void deleteRecursive(File filePath)
+            throws IOException
     {
         if ((filePath != null) && filePath.exists()) {
             // If the file is a directory, we will recursively call deleteRecursive on it.
@@ -188,7 +185,7 @@ public class FileBackend
         File atalkDLDir
                 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filePath);
         if (!atalkDLDir.exists() && !atalkDLDir.mkdirs()) {
-            logger.error("Could not create atalk folder: " + atalkDLDir);
+            Timber.e("Could not create atalk folder: %s", atalkDLDir);
         }
         return atalkDLDir;
     }
@@ -201,7 +198,7 @@ public class FileBackend
         File appMediaDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         File aTalkMediaDir = new File(appMediaDir, FP_aTALK);
         if (!aTalkMediaDir.exists() && !aTalkMediaDir.mkdirs()) {
-            Log.d("MyCameraApp", "failed to create directory");
+            Timber.d("MyCameraApp failed to create directory");
             return null;
         }
 

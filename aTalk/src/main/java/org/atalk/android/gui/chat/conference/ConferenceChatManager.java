@@ -10,12 +10,11 @@ import android.os.*;
 
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.muc.*;
-import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -24,12 +23,15 @@ import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chat.history.HistoryWindow;
 import org.atalk.android.gui.chatroomslist.*;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.util.StringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.*;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+
+import timber.log.Timber;
 
 import static org.atalk.android.aTalkApp.getCurrentActivity;
 
@@ -49,11 +51,6 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         LocalUserChatRoomPresenceListener, LocalUserAdHocChatRoomPresenceListener,
         ServiceListener, ChatRoomLocalUserRoleListener
 {
-    /**
-     * The object used for logging.
-     */
-    private static final Logger logger = Logger.getLogger(ConferenceChatManager.class);
-
     /**
      * Maps each history window to a <tt>ChatRoomWrapper</tt>.
      */
@@ -148,8 +145,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     {
         ChatRoom sourceChatRoom = evt.getSourceChatRoom();
 
-        if (logger.isTraceEnabled())
-            logger.trace("MESSAGE DELIVERED to chat room: " + sourceChatRoom.getName());
+        Timber.log(TimberLog.FINER, "MESSAGE DELIVERED to chat room: %s", sourceChatRoom.getName());
 
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, false);
         if (chatPanel != null) {
@@ -197,9 +193,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 break;
         }
 
-        if (logger.isTraceEnabled())
-            logger.trace("MESSAGE RECEIVED from contact: " + sourceMember.getContactAddress());
-
+        Timber.d("Message received from contact: %s", sourceMember.getContact());
         Message message = evt.getMessage();
         ChatPanel chatPanel;
 
@@ -234,7 +228,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                             ? System.currentTimeMillis() - 10000 : timeStamp.getTime()), 20);
             boolean hasMatch = false;
             for (Object o : c) {
-                // cmeng:never match and should be implemented in ChatRoomMessageDeliveredEvent
+                // cmeng: never match and should be implemented in ChatRoomMessageDeliveredEvent
                 if (o instanceof ChatRoomMessageDeliveredEvent) {
                     ChatRoomMessageDeliveredEvent ev = (ChatRoomMessageDeliveredEvent) o;
                     if ((evt.getTimestamp() != null) && evt.getTimestamp().equals(ev.getTimestamp())) {
@@ -258,7 +252,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             //			if (hasMatch)
             //				return; // cmeng disable for now
         }
-        String jabberID = sourceMember.getContactAddress();
+        String jabberID = sourceMember.getContact().getAddress();
         String displayName = sourceMember.getNickName();
         chatPanel.addMessage(jabberID, displayName, evt.getTimestamp(), messageType, message.getMimeType(),
                 messageContent, message.getEncryptionType(), message.getMessageUID(), null);
@@ -788,8 +782,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 chatRoom.join();
                 return SUCCESS;
             } catch (OperationFailedException e) {
-                if (logger.isTraceEnabled())
-                    logger.trace("Failed to join ad-hoc chat room: " + chatRoom.getName(), e);
+                Timber.log(TimberLog.FINER, e, "Failed to join ad-hoc chat room: %s", chatRoom.getName());
 
                 switch (e.getErrorCode()) {
                     case OperationFailedException.AUTHENTICATION_FAILED:
@@ -850,9 +843,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      */
     public void invitationReceived(AdHocChatRoomInvitationReceivedEvent evt)
     {
-        if (logger.isInfoEnabled())
-            logger.info("Invitation received: " + evt.toString());
-
+        Timber.i("Invitation received: %s", evt.toString());
         final OperationSetAdHocMultiUserChat multiUserChatOpSet = evt.getSourceOperationSet();
         final AdHocChatRoomInvitation invitationAdHoc = evt.getInvitation();
 
@@ -874,8 +865,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     {
         AdHocChatRoom sourceChatRoom = (AdHocChatRoom) evt.getSource();
 
-        if (logger.isInfoEnabled())
-            logger.info("MESSAGE DELIVERED to ad-hoc chat room: " + sourceChatRoom.getName());
+        Timber.i("Message delivered to ad-hoc chat room: %s", sourceChatRoom.getName());
 
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, false);
         if (chatPanel != null) {
@@ -897,7 +887,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                     msg.getEncryptionType(), msg.getMessageUID(), null);
         }
         else {
-            logger.error("chat panel is null, message NOT DELIVERED !");
+            Timber.e("chat panel is null, message NOT DELIVERED !");
         }
     }
 
@@ -970,8 +960,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 break;
         }
 
-        if (logger.isInfoEnabled())
-            logger.info("MESSAGE RECEIVED from contact: " + sourceParticipant.getAddress());
+        Timber.i("Message received from contact: %s", sourceParticipant.getAddress());
 
         Message message = evt.getMessage();
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, true, message.getMessageUID());

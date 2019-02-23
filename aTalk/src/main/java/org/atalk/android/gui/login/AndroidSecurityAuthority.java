@@ -12,12 +12,13 @@ import android.view.View;
 import android.widget.Spinner;
 
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
+
+import timber.log.Timber;
 
 /**
  * Android <tt>SecurityAuthority</tt> implementation.
@@ -33,11 +34,6 @@ import org.atalk.android.gui.util.ViewUtil;
  */
 public class AndroidSecurityAuthority implements SecurityAuthority
 {
-    /**
-     * The logger.
-     */
-    private Logger logger = Logger.getLogger(AndroidSecurityAuthority.class);
-
     /**
      * If user name should be editable when asked for credentials.
      */
@@ -79,7 +75,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
             final UserCredentials credentials, final Boolean isShowServerOption)
     {
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            logger.error("Cannot obtain credentials from the main thread!");
+            Timber.e("Cannot obtain credentials from the main thread!");
             return credentials;
         }
         // Insert DialogActivity arguments

@@ -5,6 +5,7 @@
  */
 package org.atalk.impl.neomedia.device;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
@@ -13,7 +14,6 @@ import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.MediaUseCase;
 import org.atalk.service.neomedia.codec.Constants;
-import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 
@@ -24,6 +24,8 @@ import java.util.*;
 
 import javax.media.*;
 import javax.media.format.VideoFormat;
+
+import timber.log.Timber;
 
 /**
  * This class aims to provide a simple configuration interface for JMF. It retrieves stored
@@ -237,11 +239,6 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     private int frameRate = DEFAULT_VIDEO_FRAMERATE;
 
     /**
-     * The <tt>Logger</tt> used by this instance for logging output.
-     */
-    private final Logger logger = Logger.getLogger(DeviceConfiguration.class);
-
-    /**
      * The value of the <tt>ConfigurationService</tt> property\
      * {@link MediaServiceImpl#DISABLE_SET_AUDIO_SYSTEM_PNAME} at the time of the initialization of this instance.
      */
@@ -282,7 +279,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
             DeviceSystem.initializeDeviceSystems();
             extractConfiguredCaptureDevices();
         } catch (Exception ex) {
-            logger.error("Failed to initialize media.", ex);
+            Timber.e(ex, "Failed to initialize media.");
         }
 
         if (cfg != null) {
@@ -335,9 +332,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
         if (!MediaServiceImpl.isMediaTypeSupportEnabled(MediaType.AUDIO))
             return;
 
-        if (logger.isInfoEnabled())
-            logger.info("Looking for configured audio devices.");
-
+        Timber.i("Looking for configured audio devices.");
         AudioSystem[] availableAudioSystems = getAvailableAudioSystems();
 
         if ((availableAudioSystems != null) && (availableAudioSystems.length != 0)) {
@@ -432,9 +427,8 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                 }
             }
 
-            if ((videoCaptureDevice != null) && logger.isInfoEnabled()) {
-                logger.info("Found " + videoCaptureDevice.getName() + " as a " + format
-                        + " video capture device.");
+            if (videoCaptureDevice != null) {
+                Timber.i("Found %s as a %s video capture device.", videoCaptureDevice.getName(), format);
             }
         }
         return videoCaptureDevice;
@@ -455,9 +449,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
             videoCaptureDevice = null;
         }
         else {
-            if (logger.isInfoEnabled())
-                logger.info("Scanning for configured Video Devices.");
-
+            Timber.i("Scanning for configured Video Devices.");
             Format[] formats = new Format[]{
                     new AVFrameFormat(),
                     new VideoFormat(Constants.ANDROID_SURFACE),
@@ -471,8 +463,8 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                 if (videoCaptureDevice != null)
                     break;
             }
-            if ((videoCaptureDevice == null) && logger.isInfoEnabled())
-                logger.info("No Video Device was found.");
+            if (videoCaptureDevice == null)
+                Timber.i("No Video Device was found.");
         }
     }
 
@@ -834,7 +826,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                             null, PlugInManager.RENDERER);
                     commit = true;
                 } catch (Throwable t) {
-                    logger.error("Failed to register custom Renderer " + customRenderer + " with JMF.", t);
+                    Timber.e(t, "Failed to register custom Renderer %s with JMF.", customRenderer);
                 }
             }
         }
@@ -864,15 +856,14 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                     pluginIndex--;
             }
             PlugInManager.setPlugInList(plugins, pluginType);
-            if (logger.isTraceEnabled())
-                logger.trace("Reordered plug-in list:" + plugins);
+            Timber.log(TimberLog.FINER, "Reordered plug-in list:%s", plugins);
         }
 
         if (commit && !MediaServiceImpl.isJmfRegistryDisableLoad()) {
             try {
                 PlugInManager.commit();
             } catch (IOException ioex) {
-                logger.warn("Failed to commit changes to the JMF plug-in list.");
+                Timber.w("Failed to commit changes to the JMF plug-in list.");
             }
         }
     }

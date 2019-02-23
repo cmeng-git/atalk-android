@@ -8,8 +8,8 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.Thumbnail;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.ThumbnailFile;
-import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
@@ -35,6 +35,8 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * The Jabber implementation of the <tt>OperationSetFileTransfer</tt> interface.
  *
@@ -45,11 +47,6 @@ import java.util.*;
  */
 public class OperationSetFileTransferJabberImpl implements OperationSetFileTransfer
 {
-    /**
-     * The logger for this class.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetFileTransferJabberImpl.class);
-
     // Change max to 20 MBytes. Original max 2GBytes i.e. 2147483648l = 2048*1024*1024;
     private final long MAX_FILE_LENGTH = 2147483648L;
 
@@ -172,7 +169,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             transfer.sendFile(file, "Sending file");
             new FileTransferProgressThread(transfer, outgoingTransfer).start();
         } catch (SmackException e) {
-            logger.error("Failed to send file.", e);
+            Timber.e(e, "Failed to send file.");
             throw new OperationNotSupportedException(
                     aTalkApp.getResString(R.string.service_gui_FILE_UNABLE_TO_SEND, fullJid));
         }
@@ -275,7 +272,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                 if (ftrListener == null) {
                     ftManager = FileTransferManager.getInstanceFor(connection);
                     ftrListener = new FileTransferRequestListener();
-                    // logger.warn("Add FileTransferListener: " + ftrListener);
+                    // Timber.w("Add FileTransferListener: %s", ftrListener);
                     ftManager.addFileTransferListener(ftrListener);
                 }
             }
@@ -283,7 +280,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             else if (evt.getNewState() == RegistrationState.UNREGISTERED) {
                 // Must unregistered ftrListener on protocolProvider disconnection to avoid any ghost listener
                 if (ftrListener != null) {
-                    // logger.warn("Remove FileTransferListener: " + ftrListener);
+                    // Timber.w("Remove FileTransferListener: %s", ftrListener);
                     ftManager.removeFileTransferListener(ftrListener);
                     ftrListener = null;
                     ftManager = null;
@@ -305,7 +302,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                 gsi.setAccessible(true);
                 return (StreamInitiation) gsi.invoke(request);
             } catch (Exception e) {
-                logger.error("Cannot invoke getStreamInitiation", e);
+                Timber.e(e, "Cannot invoke getStreamInitiation");
                 return null;
             }
         }
@@ -318,8 +315,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         @Override
         public void fileTransferRequest(final FileTransferRequest request)
         {
-            if (logger.isDebugEnabled())
-                logger.debug("Received incoming Jabber file transfer request.");
+            Timber.d("Received incoming Jabber file transfer request.");
 
             // Create a global incoming file transfer request.
             IncomingFileTransferRequestJabberImpl incomingFileTransferRequest = new IncomingFileTransferRequestJabberImpl(
@@ -470,18 +466,17 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                     fileTransfer.fireStatusChangeEvent(status, "Status changed");
                     fileTransfer.fireProgressChangeEvent(System.currentTimeMillis(), progress);
                 } catch (InterruptedException e) {
-                    if (logger.isDebugEnabled())
-                        logger.debug("Unable to sleep thread.", e);
+                    Timber.d(e, "Unable to sleep thread.");
                 }
             }
 
             if (jabberTransfer.getError() != null) {
-                logger.error("An error occurred while transferring file: " + jabberTransfer.getError().getMessage());
+                Timber.e("An error occurred while transferring file: %s", jabberTransfer.getError().getMessage());
             }
 
             Exception transferException = jabberTransfer.getException();
             if (transferException != null) {
-                logger.error("An exception occurred while transferring file: ", jabberTransfer.getException());
+                Timber.e(jabberTransfer.getException(), "An exception occurred while transferring file.");
                 statusReason = transferException.getMessage();
 
                 if (transferException instanceof XMPPErrorException) {

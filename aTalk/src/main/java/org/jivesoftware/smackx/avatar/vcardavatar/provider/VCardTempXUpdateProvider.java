@@ -43,9 +43,13 @@
 */
 package org.jivesoftware.smackx.avatar.vcardavatar.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
  * An ExtensionElementProvider to parse the VcardTempXUpdate photo data. XML namespace "vcard-temp:x:update"
@@ -54,11 +58,12 @@ import org.xmlpull.v1.XmlPullParser;
 public class VCardTempXUpdateProvider extends ExtensionElementProvider
 {
     @Override
-    public VCardTempXUpdate parse(XmlPullParser parser, int initialDepth)
-            throws Exception
+    public VCardTempXUpdate parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException
     {
         VCardTempXUpdate avatar = null;
-        outerloop: while (true) {
+        outerloop:
+        while (true) {
             int eventType = parser.next();
             switch (eventType) {
                 case XmlPullParser.START_TAG:

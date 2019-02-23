@@ -122,6 +122,7 @@ Libraries used in this project
 * [sdp-api](https://mvnrepository.com/artifact/org.opentelecoms.sdp/sdp-api)
 * [Smack](https://github.com/igniterealtime/Smack)
 * [speex](https://github.com/xiph/speex)
+* [Timber](https://github.com/JakeWharton/timber)
 * [TokenAutoComplete](https://github.com/splitwise/TokenAutoComplete)
 * [uCrop](https://github.com/Yalantis/uCrop)
 * [weupnp](https://github.com/bitletorg/weupnp)

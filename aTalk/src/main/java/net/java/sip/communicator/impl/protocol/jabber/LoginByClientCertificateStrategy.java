@@ -9,7 +9,6 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.*;
 
-import org.atalk.util.Logger;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.sasl.provided.SASLExternalMechanism;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
@@ -21,6 +20,8 @@ import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
 
+import timber.log.Timber;
+
 /**
  * Login to Jabber using a client certificate (as defined in the account configuration)
  *
@@ -29,7 +30,6 @@ import javax.net.ssl.X509TrustManager;
  */
 class LoginByClientCertificateStrategy implements JabberLoginStrategy
 {
-    private static final Logger logger = Logger.getLogger(LoginByClientCertificateStrategy.class);
     private AccountID accountID;
 
     /**
@@ -116,7 +116,7 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
             return true;
         } catch (XMPPException | SmackException ex) {
             if (ex.getMessage().contains("EXTERNAL failed: not-authorized")) {
-                logger.error("Certificate login failed", ex);
+                Timber.e(ex, "Certificate login failed");
                 return false;
             }
             throw ex;

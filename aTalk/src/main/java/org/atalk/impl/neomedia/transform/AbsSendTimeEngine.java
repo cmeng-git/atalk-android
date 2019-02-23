@@ -24,6 +24,7 @@ import org.atalk.util.*;
  * See http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time
  *
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class AbsSendTimeEngine extends SinglePacketTransformerAdapter
 		implements TransformEngine
@@ -37,11 +38,6 @@ public class AbsSendTimeEngine extends SinglePacketTransformerAdapter
      * The length of the data in the abs-send-time extension (see the draft).
      */
     private static final int EXT_LENGTH = 3;
-
-    /**
-	 * The <tt>Logger</tt> used by the {@link AbsSendTimeEngine} class and its instances.
-	 */
-	private static final Logger logger = Logger.getLogger(AbsSendTimeEngine.class);
 
 	/**
 	 * The ID of the abs-send-time RTP header extension.

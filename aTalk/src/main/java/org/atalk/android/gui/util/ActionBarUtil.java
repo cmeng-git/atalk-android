@@ -13,9 +13,9 @@ import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.R;
+
+import timber.log.Timber;
 
 /**
  * The <tt>ActionBarUtil</tt> provides utility methods for setting action bar avatar and display
@@ -26,11 +26,6 @@ import org.atalk.android.R;
  */
 public class ActionBarUtil
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(ActionBarUtil.class);
-
     /**
      * The avatar drawable for display on ActionBar
      */
@@ -44,12 +39,12 @@ public class ActionBarUtil
      */
     public static void setTitle(Activity activity, CharSequence title)
     {
-            ActionBar actionBar = activity.getActionBar();
-            // Some activities don't have ActionBar
-            if (actionBar != null) {
-                TextView actionBarText = actionBar.getCustomView().findViewById(R.id.actionBarText);
-                actionBarText.setText(title);
-            }
+        ActionBar actionBar = activity.getActionBar();
+        // Some activities don't have ActionBar
+        if (actionBar != null) {
+            TextView actionBarText = actionBar.getCustomView().findViewById(R.id.actionBarText);
+            actionBarText.setText(title);
+        }
     }
 
     /**
@@ -126,13 +121,13 @@ public class ActionBarUtil
                 avatarBmp = AndroidImageUtil.roundedDrawableFromBytes(avatar);
             }
             else {
-                logger.error("Avatar image is too large: " + avatar.length);
+                Timber.e("Avatar image is too large: %s", avatar.length);
             }
             if (avatarBmp != null) {
                 avatarDrawable.setDrawableByLayerId(R.id.avatarDrawable, avatarBmp);
             }
             else {
-                logger.error("Failed to get avatar drawable from bytes");
+                Timber.e("Failed to get avatar drawable from bytes");
             }
         }
         // set Logo not supported prior API 14

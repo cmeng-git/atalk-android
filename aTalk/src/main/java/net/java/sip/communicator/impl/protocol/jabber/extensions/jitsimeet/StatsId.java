@@ -18,8 +18,12 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
  * A implementation of a {@link ExtensionElement} for the jitsi-meet "stats-id" element.
@@ -86,7 +90,7 @@ public class StatsId implements ExtensionElement
      * Returns xml representation of this extension.
      * @return xml representation of this extension.
      */
-    public String toXML(String enclosingNamespace)
+    public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
         final StringBuilder buf = new StringBuilder();
         buf.append("<").append(ELEMENT_NAME).append(">");
@@ -102,8 +106,8 @@ public class StatsId implements ExtensionElement
     public static class Provider extends ExtensionElementProvider<StatsId>
     {
         @Override
-        public StatsId parse(XmlPullParser parser, int depth)
-                throws Exception
+        public StatsId parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+                throws IOException, XmlPullParserException
         {
             parser.next();
             final String address = parser.getText();

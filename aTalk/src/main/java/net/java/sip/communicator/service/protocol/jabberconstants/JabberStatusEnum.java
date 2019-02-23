@@ -7,18 +7,15 @@ package net.java.sip.communicator.service.protocol.jabberconstants;
 
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderActivator;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.service.resources.ResourceManagementService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * The <tt>JabberStatusEnum</tt> gives access to presence states for the Sip protocol. All status
@@ -31,11 +28,6 @@ import java.util.Map;
  */
 public class JabberStatusEnum
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>JabberStatusEnum</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(JabberStatusEnum.class);
-
     /**
      * The Online status. Indicate that the user is able and willing to communicate.
      */
@@ -276,7 +268,7 @@ public class JabberStatusEnum
             icon = new byte[is.available()];
             is.read(icon);
         } catch (IOException exc) {
-            logger.error("Failed to load icon: " + imagePath, exc);
+            Timber.e(exc, "Failed to load icon: %s", imagePath);
         } finally {
             try {
                 is.close();
@@ -285,7 +277,7 @@ public class JabberStatusEnum
                  * We're closing an InputStream so there shouldn't be data loss because of it (in
                  * contrast to an OutputStream) and a warning in the log should be enough.
                  */
-                logger.warn("Failed to close the InputStream of icon: " + imagePath, ex);
+                Timber.w(ex, "Failed to close the InputStream of icon: %s", imagePath);
             }
         }
         return icon;

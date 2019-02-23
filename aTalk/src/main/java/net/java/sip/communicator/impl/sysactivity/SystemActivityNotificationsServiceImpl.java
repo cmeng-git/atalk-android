@@ -18,11 +18,12 @@ package net.java.sip.communicator.impl.sysactivity;
 import net.java.sip.communicator.service.sysactivity.SystemActivityChangeListener;
 import net.java.sip.communicator.service.sysactivity.SystemActivityNotificationsService;
 import net.java.sip.communicator.service.sysactivity.event.SystemActivityEvent;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.util.OSUtils;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Service implementation listens for computer changes as sleeping, network change, inactivity.
@@ -33,11 +34,6 @@ import java.util.*;
 public class SystemActivityNotificationsServiceImpl
         implements SystemActivityNotifications.NotificationsDelegate, SystemActivityNotificationsService, Runnable
 {
-    /**
-     * The <tt>Logger</tt> used by this <tt>SystemActivityNotificationsServiceImpl</tt> for logging output.
-     */
-    private final Logger logger = Logger.getLogger(SystemActivityNotificationsServiceImpl.class);
-
     /**
      * The thread dispatcher of network change events.
      */
@@ -115,14 +111,11 @@ public class SystemActivityNotificationsServiceImpl
         running = true;
 
         // set the delegate and start notification in new thread make sure we don't block startup process
-        Thread notifystartThread = new Thread(new Runnable()
-        {
-            public void run()
-            {
-                SystemActivityNotifications.setDelegate(SystemActivityNotificationsServiceImpl.this);
-                SystemActivityNotifications.start();
-            }
+        Thread notifystartThread = new Thread(() -> {
+            SystemActivityNotifications.setDelegate(SystemActivityNotificationsServiceImpl.this);
+            SystemActivityNotifications.start();
         }, "SystemActivityNotificationsServiceImpl");
+
         notifystartThread.setDaemon(true);
         notifystartThread.start();
 
@@ -377,10 +370,10 @@ public class SystemActivityNotificationsServiceImpl
                     this.wait(idleStateCheckDelay);
                 }
             } catch (UnsatisfiedLinkError t) {
-                logger.error("Missing native impl", t);
+                Timber.e(t, "Missing native impl");
                 return;
             } catch (Throwable t) {
-                logger.error("Error checking for idle", t);
+                Timber.e(t, "Error checking for idle");
             }
         }
     }
@@ -395,10 +388,9 @@ public class SystemActivityNotificationsServiceImpl
         int eventID = evt.getEventID();
 
         // Add network activity info to track wake up problems.
-        if (logger.isInfoEnabled()
-                && ((eventID == SystemActivityEvent.EVENT_NETWORK_CHANGE)
+        if (((eventID == SystemActivityEvent.EVENT_NETWORK_CHANGE)
                 || (eventID == SystemActivityEvent.EVENT_DNS_CHANGE))) {
-            logger.info("Received system activity event: " + evt);
+            Timber.d("Received system activity event: %s", evt);
         }
 
         if (eventID == SystemActivityEvent.EVENT_NETWORK_CHANGE) {
@@ -418,8 +410,7 @@ public class SystemActivityNotificationsServiceImpl
     {
         SystemActivityEvent evt = new SystemActivityEvent(this, SystemActivityEvent.EVENT_SYSTEM_IDLE);
 
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching SystemActivityEvent evt=" + evt);
+        Timber.d("Dispatching SystemActivityEvent evt=%s", evt);
 
         try {
             listener.activityChanged(evt);
@@ -427,7 +418,7 @@ public class SystemActivityNotificationsServiceImpl
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else
-                logger.error("Error delivering event", t);
+                Timber.e(t, "Error delivering event");
         }
     }
 
@@ -439,9 +430,7 @@ public class SystemActivityNotificationsServiceImpl
     protected void fireSystemIdleEndEvent(SystemActivityChangeListener listener)
     {
         SystemActivityEvent evt = new SystemActivityEvent(this, SystemActivityEvent.EVENT_SYSTEM_IDLE_END);
-
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching SystemActivityEvent evt=" + evt);
+        Timber.d("Dispatching SystemActivityEvent evt = %s", evt);
 
         try {
             listener.activityChanged(evt);
@@ -449,7 +438,7 @@ public class SystemActivityNotificationsServiceImpl
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else
-                logger.error("Error delivering event", t);
+                Timber.e(t, "Error delivering event");
         }
     }
 
@@ -515,7 +504,7 @@ public class SystemActivityNotificationsServiceImpl
                 if (className != null)
                     currentRunningManager = (SystemActivityManager) Class.forName(className).newInstance();
             } catch (Throwable t) {
-                logger.error("Error creating manager", t);
+                Timber.e(t, "Error creating manager");
             }
         }
         return currentRunningManager;

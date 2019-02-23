@@ -21,7 +21,6 @@ import android.view.*;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -38,8 +37,6 @@ import java.util.Calendar;
  */
 public class SendFileConversation extends FileTransferConversation implements FileTransferStatusListener
 {
-    private static final Logger logger = Logger.getLogger(SendFileConversation.class);
-
     // private final FileTransfer fileTransfer;
     private String mSendTo;
     private String mDate;

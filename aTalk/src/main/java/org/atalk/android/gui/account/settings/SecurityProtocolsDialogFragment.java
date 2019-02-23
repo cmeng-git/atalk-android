@@ -12,7 +12,6 @@ import android.view.*;
 import android.widget.*;
 
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.widgets.TouchInterceptor;
@@ -27,11 +26,6 @@ import java.util.Map;
  */
 public class SecurityProtocolsDialogFragment extends DialogFragment
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(SecurityProtocolsDialogFragment.class);
-
     /**
      * The encryption protocols managed by this dialog.
      */

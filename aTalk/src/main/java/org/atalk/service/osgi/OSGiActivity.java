@@ -13,8 +13,6 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -27,6 +25,8 @@ import org.osgi.framework.BundleContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Implements a base <tt>Activity</tt> which employs OSGi.
  *
@@ -36,11 +36,6 @@ import java.util.List;
  */
 public class OSGiActivity extends FragmentActivity
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(OSGiActivity.class);
-
     /**
      * UI thread handler
      */
@@ -310,7 +305,7 @@ public class OSGiActivity extends FragmentActivity
             try {
                 fragment.start(bundleContext);
             } catch (Exception e) {
-                logger.error("Error starting OSGiFragment", e);
+                Timber.e(e, "Error starting OSGiFragment");
             }
         }
     }
@@ -326,7 +321,7 @@ public class OSGiActivity extends FragmentActivity
             try {
                 fragment.stop(bundleContext);
             } catch (Exception e) {
-                logger.error("Error while trying to stop OSGiFragment", e);
+                Timber.e(e, "Error while trying to stop OSGiFragment");
             }
         }
         osgiFrgaments.remove(fragment);
@@ -376,11 +371,11 @@ public class OSGiActivity extends FragmentActivity
             case android.R.id.home:
                 Intent upIntent = NavUtils.getParentActivityIntent(this);
                 if (upIntent != null) {
-                    logger.warn("Process UpIntent for: " + this.getLocalClassName());
+                    Timber.w("Process UpIntent for: %s", this.getLocalClassName());
                     NavUtils.navigateUpTo(this, upIntent);
                 }
                 else {
-                    logger.warn("Replace Up with BackKeyPress for: " + this.getLocalClassName());
+                    Timber.w("Replace Up with BackKeyPress for: %s", this.getLocalClassName());
                     super.onBackPressed();
                     // Class<?> homeActivity = aTalkApp.getHomeScreenActivityClass();
                     // if (!this.getClass().equals(homeActivity)) {

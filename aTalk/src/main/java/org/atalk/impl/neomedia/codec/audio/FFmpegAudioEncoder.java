@@ -1,30 +1,26 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.codec.audio;
 
 import org.atalk.impl.neomedia.codec.FFmpeg;
-import org.atalk.util.Logger;
 
 import javax.media.Buffer;
 import javax.media.Format;
 import javax.media.format.AudioFormat;
 
+import timber.log.Timber;
+
 /**
  * Implements an audio <tt>Codec</tt> using the FFmpeg library.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class FFmpegAudioEncoder extends AbstractFFmpegAudioCodec
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>FFmpegAudioEncoder</tt> class and its instances for
-     * logging output.
-     */
-    private static final Logger logger = Logger.getLogger(FFmpegAudioEncoder.class);
-
     /**
      * Asserts that an encoder with a specific <tt>AVCodecID</tt> is found by FFmpeg.
      *
@@ -74,7 +70,7 @@ public class FFmpegAudioEncoder extends AbstractFFmpegAudioCodec
         try {
             FFmpeg.avcodeccontext_set_sample_fmt(avctx, FFmpeg.AV_SAMPLE_FMT_S16P);
         } catch (UnsatisfiedLinkError ule) {
-            logger.warn("The FFmpeg JNI library is out-of-date.");
+            Timber.w("The FFmpeg JNI library is out-of-date.");
         }
     }
 

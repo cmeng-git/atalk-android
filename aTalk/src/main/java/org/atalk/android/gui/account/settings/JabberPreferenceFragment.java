@@ -15,11 +15,12 @@ import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJab
 import net.java.sip.communicator.plugin.jabberaccregwizz.AccountRegistrationImpl;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.settings.util.SummaryMapper;
+
+import timber.log.Timber;
 
 /**
  * Preferences fragment for Jabber settings. It maps Jabber specific properties to the
@@ -33,11 +34,6 @@ import org.atalk.android.gui.settings.util.SummaryMapper;
  */
 public class JabberPreferenceFragment extends AccountPreferenceFragment
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(JabberPreferenceFragment.class);
-
     /**
      * The key identifying edit jingle nodes request
      */
@@ -448,7 +444,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
             accWizard.setModification(true);
             accWizard.signin(jbrReg.getUserID(), jbrReg.getPassword(), jbrReg.getAccountProperties());
         } catch (OperationFailedException e) {
-            logger.error("Failed to store account modifications: " + e.getLocalizedMessage(), e);
+            Timber.e(e, "Failed to store account modifications: %s", e.getLocalizedMessage());
         }
     }
 }

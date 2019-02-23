@@ -16,12 +16,16 @@
  */
 package org.jivesoftware.smackx.bob.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.bob.BoBData;
 import org.jivesoftware.smackx.bob.BoBHash;
 import org.jivesoftware.smackx.bob.packet.BoBExt;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
  * The <tt>BoBExtensionProvider</tt> is an extension element provider that is meant to be used for
@@ -48,8 +52,8 @@ public class BoBExtensionProvider extends ExtensionElementProvider<BoBExt>
      * @see ExtensionElementProvider#parse(XmlPullParser, int)
      */
     @Override
-    public BoBExt parse(XmlPullParser parser, int initialDepth)
-            throws Exception
+    public BoBExt parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException
     {
         String cid = parser.getAttributeValue("", BoBExt.ATTR_CID);
         BoBHash bobHash = BoBHash.fromCid(cid);

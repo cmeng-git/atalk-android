@@ -11,17 +11,14 @@ import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 
+import timber.log.Timber;
+
 public class FilePathHelper
 {
-    /// The logger used by this class
-    static final private Logger logger = Logger.getLogger(FilePathHelper.class);
-
     /* Get uri related content real local file path. */
     public static String getPath(Context ctx, Uri uri)
     {
@@ -36,7 +33,7 @@ public class FilePathHelper
                 filePath = getRealPath(ctx.getContentResolver(), uri, null);
             }
         } catch (Exception e) {
-            logger.debug("FilePath Catch: " + uri.toString());
+            Timber.d("FilePath Catch: %s", uri.toString());
             filePath = getFilePathFromURI(ctx, uri);
         }
         return filePath;
@@ -48,7 +45,7 @@ public class FilePathHelper
         String fileName = getFileName(contentUri);
         if (!TextUtils.isEmpty(fileName)) {
             File destFile = new File(FileBackend.getaTalkStore(FileBackend.TMP), fileName);
-            logger.debug("FilePath copyFile: " + destFile);
+            Timber.d("FilePath copyFile: %s", destFile);
             copy(context, contentUri, destFile);
             return destFile.getAbsolutePath();
         }

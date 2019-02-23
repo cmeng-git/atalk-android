@@ -5,34 +5,27 @@
  */
 package net.java.sip.communicator.plugin.sipaccregwizz;
 
-import java.util.Hashtable;
-
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.protocol.ProtocolNames;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.service.configuration.ConfigurationService;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
+
+import java.util.Hashtable;
+
+import static timber.log.Timber.e;
 
 /**
  * Registers the <tt>SIPAccountRegistrationWizard</tt> in the UI Service.
  *
  * @author Yana Stamcheva
  */
-public class SIPAccountRegistrationActivator
-    implements BundleActivator
+public class SIPAccountRegistrationActivator implements BundleActivator
 {
-
     public static BundleContext bundleContext;
-
-    private static final Logger logger =
-        Logger.getLogger(SIPAccountRegistrationActivator.class);
 
     /**
      * A reference to the configuration service.
@@ -49,29 +42,31 @@ public class SIPAccountRegistrationActivator
      * @param bc BundleContext
      * @throws Exception
      */
-    public void start(BundleContext bc) throws Exception
+    public void start(BundleContext bc)
+            throws Exception
     {
         bundleContext = bc;
 
         ServiceReference<?> uiServiceRef =
-            bundleContext.getServiceReference(UIService.class.getName());
+                bundleContext.getServiceReference(UIService.class.getName());
 
         sipWizard = new AccountRegistrationImpl();
 
         Hashtable<String, String> containerFilter
-            = new Hashtable<String, String>();
+                = new Hashtable<String, String>();
 
         containerFilter.put(
                 ProtocolProviderFactory.PROTOCOL,
                 ProtocolNames.SIP);
 
         bundleContext.registerService(
-            AccountRegistrationWizard.class.getName(),
-            sipWizard,
-            containerFilter);
+                AccountRegistrationWizard.class.getName(),
+                sipWizard,
+                containerFilter);
     }
 
-    public void stop(BundleContext bundleContext) throws Exception
+    public void stop(BundleContext bundleContext)
+            throws Exception
     {
     }
 
@@ -86,18 +81,15 @@ public class SIPAccountRegistrationActivator
         ServiceReference<?>[] serRefs = null;
 
         String osgiFilter =
-            "(" + ProtocolProviderFactory.PROTOCOL + "=" + ProtocolNames.SIP
-                + ")";
+                "(" + ProtocolProviderFactory.PROTOCOL + "=" + ProtocolNames.SIP
+                        + ")";
 
-        try
-        {
+        try {
             serRefs =
-                bundleContext.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), osgiFilter);
-        }
-        catch (InvalidSyntaxException ex)
-        {
-            logger.error("SIPAccRegWizzActivator : " + ex);
+                    bundleContext.getServiceReferences(
+                            ProtocolProviderFactory.class.getName(), osgiFilter);
+        } catch (InvalidSyntaxException ex) {
+            e("SIPAccRegWizzActivator: %s", ex.getMessage());
             return null;
         }
 
@@ -107,15 +99,15 @@ public class SIPAccountRegistrationActivator
     /**
      * Returns the <tt>ConfigurationService</tt> obtained from the bundle
      * context.
+     *
      * @return the <tt>ConfigurationService</tt> obtained from the bundle
      * context
      */
     public static ConfigurationService getConfigurationService()
     {
-        if (configService == null)
-        {
+        if (configService == null) {
             ServiceReference<?> serviceReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
-            configService = (ConfigurationService)bundleContext.getService(serviceReference);
+            configService = (ConfigurationService) bundleContext.getService(serviceReference);
         }
 
         return configService;
@@ -124,18 +116,18 @@ public class SIPAccountRegistrationActivator
     /**
      * Returns the <tt>CertificateService</tt> obtained from the bundle
      * context.
+     *
      * @return the <tt>CertificateService</tt> obtained from the bundle
      * context
      */
     public static CertificateService getCertificateService()
     {
-        if (certService == null)
-        {
+        if (certService == null) {
             ServiceReference<?> serviceReference = bundleContext
-                .getServiceReference(CertificateService.class.getName());
+                    .getServiceReference(CertificateService.class.getName());
 
-            certService = (CertificateService)bundleContext
-                .getService(serviceReference);
+            certService = (CertificateService) bundleContext
+                    .getService(serviceReference);
         }
 
         return certService;

@@ -73,7 +73,7 @@ public class JinglePacketFactory
     public static JingleIQ createSessionInfo(Jid from, Jid to, String sid, SessionInfoType type)
     {
         JingleIQ ringing = createSessionInfo(from, to, sid);
-        SessionInfoPacketExtension sessionInfoType = new SessionInfoPacketExtension(type);
+        SessionInfoExtensionElement sessionInfoType = new SessionInfoExtensionElement(type);
 
         ringing.setSessionInfo(sessionInfoType);
         return ringing;
@@ -155,7 +155,7 @@ public class JinglePacketFactory
      * @param contentList the content elements containing media and transport descriptions.
      * @return the newly constructed {@link JingleIQ} <tt>session-accept</tt> packet.
      */
-    public static JingleIQ createSessionAccept(Jid from, Jid to, String sid, Iterable<ContentPacketExtension> contentList)
+    public static JingleIQ createSessionAccept(Jid from, Jid to, String sid, Iterable<ContentExtensionElement> contentList)
     {
         JingleIQ sessionAccept = new JingleIQ(SESSION_ACCEPT, sid);
 
@@ -164,7 +164,7 @@ public class JinglePacketFactory
         sessionAccept.setResponder(from);
         sessionAccept.setType(IQ.Type.set);
 
-        for (ContentPacketExtension content : contentList)
+        for (ContentExtensionElement content : contentList)
             sessionAccept.addContent(content);
         return sessionAccept;
     }
@@ -181,7 +181,7 @@ public class JinglePacketFactory
      * @return the newly constructed {@link JingleIQ} <tt>description-info</tt> packet.
      */
     public static JingleIQ createDescriptionInfo(Jid from, Jid to, String sid,
-            Iterable<ContentPacketExtension> contentList)
+            Iterable<ContentExtensionElement> contentList)
     {
         JingleIQ descriptionInfo = new JingleIQ(DESCRIPTION_INFO, sid);
 
@@ -190,7 +190,7 @@ public class JinglePacketFactory
         descriptionInfo.setResponder(from);
         descriptionInfo.setType(IQ.Type.set);
 
-        for (ContentPacketExtension content : contentList)
+        for (ContentExtensionElement content : contentList)
             descriptionInfo.addContent(content);
         return descriptionInfo;
     }
@@ -207,7 +207,7 @@ public class JinglePacketFactory
      * @param contentList the content elements containing media transport descriptions.
      * @return the newly constructed {@link JingleIQ} <tt>transport-info</tt> packet.
      */
-    public static JingleIQ createTransportInfo(Jid from, Jid to, String sid, Iterable<ContentPacketExtension> contentList)
+    public static JingleIQ createTransportInfo(Jid from, Jid to, String sid, Iterable<ContentExtensionElement> contentList)
     {
         JingleIQ transportInfo = new JingleIQ(TRANSPORT_INFO, sid);
 
@@ -215,7 +215,7 @@ public class JinglePacketFactory
         transportInfo.setFrom(from);
         transportInfo.setInitiator(from);
         transportInfo.setType(IQ.Type.set);
-        for (ContentPacketExtension content : contentList)
+        for (ContentExtensionElement content : contentList)
             transportInfo.addContent(content);
         return transportInfo;
     }
@@ -229,7 +229,7 @@ public class JinglePacketFactory
      * @param contentList the content elements containing media and transport descriptions.
      * @return the newly constructed {@link JingleIQ} <tt>session-initiate</tt> packet.
      */
-    public static JingleIQ createSessionInitiate(Jid from, Jid to, String sid, List<ContentPacketExtension> contentList)
+    public static JingleIQ createSessionInitiate(Jid from, Jid to, String sid, List<ContentExtensionElement> contentList)
     {
         JingleIQ sessionInitiate = new JingleIQ(SESSION_INITIATE, sid);
 
@@ -238,7 +238,7 @@ public class JinglePacketFactory
         sessionInitiate.setInitiator(from);
         sessionInitiate.setType(IQ.Type.set);
 
-        for (ContentPacketExtension content : contentList) {
+        for (ContentExtensionElement content : contentList) {
             sessionInitiate.addContent(content);
         }
         return sessionInitiate;
@@ -253,7 +253,7 @@ public class JinglePacketFactory
      * @param contentList the content elements containing media and transport descriptions.
      * @return the newly constructed {@link JingleIQ} <tt>content-add</tt> packet.
      */
-    public static JingleIQ createContentAdd(Jid from, Jid to, String sid, List<ContentPacketExtension> contentList)
+    public static JingleIQ createContentAdd(Jid from, Jid to, String sid, List<ContentExtensionElement> contentList)
     {
         JingleIQ contentAdd = new JingleIQ(CONTENT_ADD, sid);
 
@@ -261,7 +261,7 @@ public class JinglePacketFactory
         contentAdd.setFrom(from);
         contentAdd.setType(IQ.Type.set);
 
-        for (ContentPacketExtension content : contentList)
+        for (ContentExtensionElement content : contentList)
             contentAdd.addContent(content);
         return contentAdd;
     }
@@ -275,7 +275,7 @@ public class JinglePacketFactory
      * @param contentList the content elements containing media and transport descriptions.
      * @return the newly constructed {@link JingleIQ} <tt>content-accept</tt> packet.
      */
-    public static JingleIQ createContentAccept(Jid from, Jid to, String sid, Iterable<ContentPacketExtension> contentList)
+    public static JingleIQ createContentAccept(Jid from, Jid to, String sid, Iterable<ContentExtensionElement> contentList)
     {
         JingleIQ contentAccept = new JingleIQ(CONTENT_ACCEPT, sid);
 
@@ -283,7 +283,7 @@ public class JinglePacketFactory
         contentAccept.setFrom(from);
         contentAccept.setType(IQ.Type.set);
 
-        for (ContentPacketExtension content : contentList)
+        for (ContentExtensionElement content : contentList)
             contentAccept.addContent(content);
         return contentAccept;
     }
@@ -297,7 +297,7 @@ public class JinglePacketFactory
      * @param contentList the content elements containing media and transport descriptions.
      * @return the newly constructed {@link JingleIQ} <tt>content-reject</tt> packet.
      */
-    public static JingleIQ createContentReject(Jid from, Jid to, String sid, Iterable<ContentPacketExtension> contentList)
+    public static JingleIQ createContentReject(Jid from, Jid to, String sid, Iterable<ContentExtensionElement> contentList)
     {
         JingleIQ contentReject = new JingleIQ(CONTENT_REJECT, sid);
 
@@ -306,7 +306,7 @@ public class JinglePacketFactory
         contentReject.setType(IQ.Type.set);
 
         if (contentList != null) {
-            for (ContentPacketExtension content : contentList)
+            for (ContentExtensionElement content : contentList)
                 contentReject.addContent(content);
         }
         return contentReject;
@@ -321,7 +321,7 @@ public class JinglePacketFactory
      * @param content the content element containing media and transport description.
      * @return the newly constructed {@link JingleIQ} <tt>content-modify</tt> packet.
      */
-    public static JingleIQ createContentModify(Jid from, Jid to, String sid, ContentPacketExtension content)
+    public static JingleIQ createContentModify(Jid from, Jid to, String sid, ContentExtensionElement content)
     {
         JingleIQ contentModify = new JingleIQ(CONTENT_MODIFY, sid);
 
@@ -342,7 +342,7 @@ public class JinglePacketFactory
      * @param contentList the content elements containing media and transport descriptions.
      * @return the newly constructed {@link JingleIQ} <tt>content-remove</tt> packet.
      */
-    public static JingleIQ createContentRemove(Jid from, Jid to, String sid, Iterable<ContentPacketExtension> contentList)
+    public static JingleIQ createContentRemove(Jid from, Jid to, String sid, Iterable<ContentExtensionElement> contentList)
     {
         JingleIQ contentRemove = new JingleIQ(CONTENT_REMOVE, sid);
 
@@ -350,7 +350,7 @@ public class JinglePacketFactory
         contentRemove.setFrom(from);
         contentRemove.setType(IQ.Type.set);
 
-        for (ContentPacketExtension content : contentList)
+        for (ContentExtensionElement content : contentList)
             contentRemove.addContent(content);
         return contentRemove;
     }

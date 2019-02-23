@@ -94,7 +94,7 @@ public class LauncherActivity extends OSGiActivity
 
         // Starts fade in animation
         ImageView myImageView = findViewById(R.id.loadingImage);
-        Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fadein);
+        Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         myImageView.startAnimation(myFadeInAnimation);
 
         View restoreView = findViewById(R.id.restoring);

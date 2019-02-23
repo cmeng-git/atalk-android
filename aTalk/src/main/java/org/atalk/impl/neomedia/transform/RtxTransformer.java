@@ -15,32 +15,21 @@
  */
 package org.atalk.impl.neomedia.transform;
 
-import org.atalk.impl.neomedia.MediaStreamImpl;
-import org.atalk.impl.neomedia.RTCPPacketPredicate;
-import org.atalk.impl.neomedia.RTPPacketPredicate;
+import org.atalk.impl.neomedia.*;
 import org.atalk.impl.neomedia.rtcp.NACKPacket;
 import org.atalk.impl.neomedia.rtcp.RTCPIterator;
-import org.atalk.impl.neomedia.rtp.MediaStreamTrackReceiver;
-import org.atalk.impl.neomedia.rtp.RTPEncodingDesc;
-import org.atalk.impl.neomedia.rtp.RawPacketCache;
-import org.atalk.impl.neomedia.rtp.StreamRTPManager;
+import org.atalk.impl.neomedia.rtp.*;
 import org.atalk.impl.neomedia.stats.MediaStreamStats2Impl;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.ByteArrayBuffer;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.neomedia.TransmissionFailedException;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.Logger;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Intercepts RTX (RFC-4588) packets coming from an {@link MediaStream}, and
@@ -51,6 +40,7 @@ import java.util.Set;
  *
  * @author Boris Grozev
  * @author George Politis
+ * @author Eng Chong Meng
  */
 public class RtxTransformer implements TransformEngine
 {
@@ -68,11 +58,6 @@ public class RtxTransformer implements TransformEngine
      * Maps an RTX SSRC to the last RTP sequence number sent with that SSRC.
      */
     private final Map<Long, Integer> rtxSequenceNumbers = new HashMap<>();
-
-    /**
-     * The {@link Logger} to be used by this instance to print debug information.
-     */
-    private final Logger logger = Logger.getLogger(RtxTransformer.class);
 
     /**
      * The payload type number configured for RTX (RFC-4588), mapped by the
@@ -107,8 +92,7 @@ public class RtxTransformer implements TransformEngine
         ConfigurationService cfg = LibJitsi.getConfigurationService();
 
         if (cfg == null) {
-            logger.warn("NOT initializing RTCP n' NACK termination because "
-                    + "the configuration service was not found.");
+            Timber.w("NOT initializing RTCP n' NACK termination because  the configuration service was not found.");
             return;
         }
 
@@ -119,7 +103,7 @@ public class RtxTransformer implements TransformEngine
                 cache.setEnabled(true);
             }
             else {
-                logger.warn("NACK termination is enabled, but we don't have a packet cache.");
+                Timber.w("NACK termination is enabled, but we don't have a packet cache.");
             }
         }
     }
@@ -205,8 +189,7 @@ public class RtxTransformer implements TransformEngine
 
         RTPEncodingDesc encoding = receiver.findRTPEncodingDesc(pkt);
         if (encoding == null) {
-            logger.warn("encoding_not_found,stream_hash = " + mediaStream.hashCode()
-                    + " ssrc = " + pkt.getSSRCAsLong());
+            Timber.w("Encoding not found, stream_hash = %s; ssrc = %s", mediaStream.hashCode(), pkt.getSSRCAsLong());
             return -1;
         }
         return encoding.getSecondarySsrc(Constants.RTX);
@@ -233,7 +216,7 @@ public class RtxTransformer implements TransformEngine
             long rtxSsrc = getRtxSsrc(pkt);
 
             if (rtxSsrc == -1) {
-                logger.warn("Cannot find SSRC for RTX, retransmitting plain. SSRC = " + pkt.getSSRCAsLong());
+                Timber.w("Cannot find SSRC for RTX, retransmitting plain. SSRC = %s", pkt.getSSRCAsLong());
                 retransmitPlain = true;
             }
             else {
@@ -249,7 +232,7 @@ public class RtxTransformer implements TransformEngine
                 try {
                     mediaStream.injectPacket(pkt, /* data */ true, after);
                 } catch (TransmissionFailedException tfe) {
-                    logger.warn("Failed to retransmit a packet.");
+                    Timber.w("Failed to retransmit a packet.");
                     return false;
                 }
             }
@@ -283,7 +266,7 @@ public class RtxTransformer implements TransformEngine
             try {
                 apt = Byte.parseByte(aptString);
             } catch (NumberFormatException nfe) {
-                logger.error("Failed to parse apt: " + aptString);
+                Timber.e("Failed to parse apt: %s", aptString);
                 continue;
             }
 
@@ -340,7 +323,7 @@ public class RtxTransformer implements TransformEngine
             try {
                 mediaStream.injectPacket(rtxPkt, /* data */ true, after);
             } catch (TransmissionFailedException tfe) {
-                logger.warn("Failed to transmit an RTX packet.");
+                Timber.w("Failed to transmit an RTX packet.");
                 return false;
             }
         }
@@ -360,17 +343,13 @@ public class RtxTransformer implements TransformEngine
                 = mediaStream.getMediaStreamTrackReceiver();
 
         if (receiver == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Dropping an incoming RTX packet from an unknown source.");
-            }
+            Timber.d("Dropping an incoming RTX packet from an unknown source.");
             return -1;
         }
 
         RTPEncodingDesc encoding = receiver.findRTPEncodingDesc(rtxSSRC);
         if (encoding == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Dropping an incoming RTX packet from an unknown source.");
-            }
+            Timber.d("Dropping an incoming RTX packet from an unknown source.");
             return -1;
         }
 
@@ -389,12 +368,8 @@ public class RtxTransformer implements TransformEngine
      */
     private void nackReceived(long mediaSSRC, Collection<Integer> lostPackets)
     {
-        if (logger.isDebugEnabled()) {
-            logger.debug(Logger.Category.STATISTICS, "nack_received,stream = "
-                    + mediaStream.hashCode()
-                    + " ssrc = " + mediaSSRC
-                    + ",lost_packets = " + lostPackets);
-        }
+        Timber.d("%s nack_received,stream = %d; ssrc = %s; lost_packets = %s",
+                Logger.Category.STATISTICS, mediaStream.hashCode(), mediaSSRC, lostPackets);
         RawPacketCache cache = getCache();
 
         if (cache != null) {
@@ -424,12 +399,8 @@ public class RtxTransformer implements TransformEngine
                     long delay = now - container.timeAdded;
                     boolean send = (rtt == -1) || (delay >= Math.min(rtt * 0.9, rtt - 5));
 
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(Logger.Category.STATISTICS, "retransmitting,stream=" + mediaStream.hashCode()
-                                + " ssrc=" + mediaSSRC
-                                + ",seq=" + seq
-                                + ",send=" + send);
-                    }
+                    Timber.d("%s retransmitting stream = %d, ssrc = %s,seq = %d,send = %s",
+                            Logger.Category.STATISTICS, mediaStream.hashCode(), mediaSSRC, seq, send);
 
                     Byte rtxPt = apt2rtx.get(container.pkt.getPayloadType());
                     if (send && retransmit(container.pkt, rtxPt, after)) {
@@ -454,10 +425,10 @@ public class RtxTransformer implements TransformEngine
             }
         }
 
-        if (!lostPackets.isEmpty() && logger.isDebugEnabled()) {
+        if (!lostPackets.isEmpty()) {
             // If retransmission requests are enabled, videobridge assumes
             // the responsibility of requesting missing packets.
-            logger.debug("Packets missing from the cache.");
+            Timber.d("Packets missing from the cache.");
         }
     }
 
@@ -475,13 +446,13 @@ public class RtxTransformer implements TransformEngine
                 .findStreamRTPManagerByReceiveSSRC((int) ssrc);
 
         if (receiveRTPManager == null) {
-            logger.warn("rtp_manager_not_found, stream_hash=" + mediaStream.hashCode() + " ssrc=" + ssrc);
+            Timber.w("rtp_manager_not_found, stream_hash = %s; ssrc = %s", mediaStream.hashCode(), ssrc);
             return bytes;
         }
 
         MediaStream receiveStream = receiveRTPManager.getMediaStream();
         if (receiveStream == null) {
-            logger.warn("stream_not_found, stream_hash=" + mediaStream.hashCode() + " ssrc=" + ssrc);
+            Timber.w("stream_not_found, stream_hash = %s;  ssrc = %s", mediaStream.hashCode(), ssrc);
             return bytes;
         }
 
@@ -489,13 +460,13 @@ public class RtxTransformer implements TransformEngine
         MediaStreamTrackReceiver receiver
                 = receiveStream.getMediaStreamTrackReceiver();
         if (receiver == null) {
-            logger.warn("receiver_not_found, stream_hash=" + mediaStream.hashCode() + " ssrc=" + ssrc);
+            Timber.w("receiver_not_found, stream_hash = %s; ssrc = %s", mediaStream.hashCode(), ssrc);
             return bytes;
         }
 
         RTPEncodingDesc encoding = receiver.findRTPEncodingDesc(ssrc);
         if (encoding == null) {
-            logger.warn("encoding_not_found, stream_hash=" + mediaStream.hashCode() + " ssrc=" + ssrc);
+            Timber.w("encoding_not_found, stream_hash = %s; ssrc = %s", mediaStream.hashCode(), ssrc);
             return bytes;
         }
 
@@ -572,9 +543,7 @@ public class RtxTransformer implements TransformEngine
 
             if (pkt.getPayloadLength() - pkt.getPaddingSize() < 2) {
                 // We need at least 2 bytes to read the OSN field.
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Dropping an incoming RTX packet with padding only: " + pkt);
-                }
+                Timber.d("Dropping an incoming RTX packet with padding only: %s", pkt);
                 return null;
             }
 

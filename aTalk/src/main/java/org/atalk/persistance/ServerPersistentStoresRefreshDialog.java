@@ -46,6 +46,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
+import timber.log.Timber;
+
 import static net.java.sip.communicator.plugin.loggingutils.LogsCollector.LOGGING_DIR_NAME;
 import static org.atalk.android.R.id.cb_avatar;
 import static org.atalk.android.R.id.cb_caps;
@@ -63,9 +65,6 @@ import static org.atalk.android.R.id.cb_roster;
  */
 public class ServerPersistentStoresRefreshDialog extends OSGiFragment
 {
-    // The logger
-    private final static Logger logger = Logger.getLogger(ServerPersistentStoresRefreshDialog.class);
-
     /**
      * {@inheritDoc}
      */
@@ -191,8 +190,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
                 try {
                     FileBackend.deleteRecursive(rosterStoreDirectory);
                 } catch (IOException e) {
-                    logger.error("Failed to purchase store for: "
-                            + R.string.service_gui_REFRESH_STORES_ROSTER);
+                    Timber.e("Failed to purchase store for: %s",  R.string.service_gui_REFRESH_STORES_ROSTER);
                 }
                 jabberProvider.initRosterStore();
             }
@@ -214,8 +212,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
             try {
                 FileBackend.deleteRecursive(entityStoreDirectory);
             } catch (IOException e) {
-                logger.error("Failed to purchase store for: "
-                        + R.string.service_gui_REFRESH_STORES_CAPS);
+                Timber.e("Failed to purchase store for: %s", R.string.service_gui_REFRESH_STORES_CAPS);
             }
             ScServiceDiscoveryManager.initEntityPersistentStore();
         }
@@ -248,8 +245,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
                 try {
                     FileBackend.deleteRecursive(discoInfoStoreDirectory);
                 } catch (IOException e) {
-                    logger.error("Failed to purchase store for: "
-                            + R.string.service_gui_REFRESH_STORES_DISCINFO);
+                    Timber.e("Failed to purchase store for: %s", R.string.service_gui_REFRESH_STORES_DISCINFO);
                 }
                 discoveryInfoManager.initDiscoInfoPersistentStore();
             }
@@ -307,7 +303,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
             AccountID accountId = pps.getAccountID();
             ((SQLiteOmemoStore) omemoStore).regenerate(accountId);
         }
-        logger.info("### Omemo store has been refreshed!");
+        Timber.i("### Omemo store has been refreshed!");
     }
 
     private static void exportDB()
@@ -332,7 +328,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
             // Clean up old contents before create new
             FileBackend.deleteRecursive(atalkExportDir);
             if (!atalkExportDir.mkdirs()) {
-                logger.error("Could not create atalk dir: " + atalkExportDir);
+                Timber.e("Could not create atalk dir: %s", atalkExportDir);
             }
             // To copy everything under files (large amount of data).
             // FileBackend.copyRecursive(appDBDir, atalkDLDir, null);
@@ -350,7 +346,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
                 FileBackend.copyRecursive(appXmlFP, atalkExportDir, clFileName);
             }
         } catch (Exception e) {
-            logger.warn("Export database exception: " + e.getMessage());
+            Timber.w("Export database exception: %s", e.getMessage());
         }
     }
 
@@ -376,7 +372,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
                 }
             }
         } catch (Exception ex) {
-            logger.error("Couldn't delete log file directory.", ex);
+            Timber.e(ex, "Couldn't delete log file directory.");
         }
     }
 }

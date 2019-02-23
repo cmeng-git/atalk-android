@@ -5,13 +5,14 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.colibri;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentExtensionElement;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.service.neomedia.MediaType;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Utility class for extracting info from responses received from the JVB and keeping track of
@@ -22,11 +23,6 @@ import java.util.*;
  */
 public class ColibriAnalyser
 {
-    /**
-     * The logger used by this instance.
-     */
-    private final static Logger logger = Logger.getLogger(ColibriAnalyser.class);
-
     /**
      * Colibri IQ instance used to store conference state.
      */
@@ -106,7 +102,7 @@ public class ColibriAnalyser
      * @return the Colibri IQ that describes allocated channels.
      */
     public static ColibriConferenceIQ getResponseContents(ColibriConferenceIQ conferenceResponse,
-            List<ContentPacketExtension> peerContents)
+            List<ContentExtensionElement> peerContents)
     {
         ColibriConferenceIQ conferenceResult = new ColibriConferenceIQ();
 
@@ -118,7 +114,7 @@ public class ColibriAnalyser
         // FIXME: we support single bundle for all channels
         String bundleId = null;
         Set<String> endpointIds = new HashSet<>();
-        for (ContentPacketExtension content : peerContents) {
+        for (ContentExtensionElement content : peerContents) {
             MediaType mediaType = JingleUtils.getMediaType(content);
 
             ColibriConferenceIQ.Content contentResponse = conferenceResponse.getContent(mediaType.toString());
@@ -179,7 +175,7 @@ public class ColibriAnalyser
         else {
             // Compare to detect problems
             if (!currentBundle.equals(channelBundle)) {
-                logger.error("Replaced bundle: " + currentBundle + " with " + channelBundle);
+                Timber.e("Replaced bundle: %s with %s", currentBundle, channelBundle);
             }
             return channelBundle;
         }

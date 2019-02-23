@@ -20,6 +20,7 @@ import net.java.sip.communicator.service.gui.Chat;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatPanel;
+import org.atalk.android.plugin.timberlog.TimberLog;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -28,10 +29,10 @@ import java.nio.ByteBuffer;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.crypto.interfaces.DHPublicKey;
+
+import timber.log.Timber;
 
 /**
  * @author George Politis
@@ -40,8 +41,6 @@ import javax.crypto.interfaces.DHPublicKey;
  */
 public class SessionImpl implements Session
 {
-    private static Logger logger = Logger.getLogger(SessionImpl.class.getName());
-
     private final SelectableMap<InstanceTag, SessionImpl> slaveSessions;
     private final boolean isMasterSession;
     private SessionID sessionID;
@@ -113,26 +112,25 @@ public class SessionImpl implements Session
 
     private SessionKeys getEncryptionSessionKeys()
     {
-        logger.finest("Getting encryption keys");
+        Timber.log(TimberLog.FINER, "Getting encryption keys");
         return getSessionKeysByIndex(SessionKeys.Previous, SessionKeys.Current);
     }
 
     private SessionKeys getMostRecentSessionKeys()
     {
-        logger.finest("Getting most recent keys.");
+        Timber.log(TimberLog.FINER, "Getting most recent keys.");
         return getSessionKeysByIndex(SessionKeys.Current, SessionKeys.Current);
     }
 
     private SessionKeys getSessionKeysByID(int localKeyID, int remoteKeyID)
     {
-        logger.log(Level.FINEST, "Searching for session keys with (localKeyID, remoteKeyID)" +
-                " = ({0},{1})", new Object[]{localKeyID, remoteKeyID});
+        Timber.log(TimberLog.FINER, "Searching for session keys with (localKeyID, remoteKeyID) = (%s, %s)", localKeyID, remoteKeyID);
 
         for (int i = 0; i < getSessionKeys().length; i++) {
             for (int j = 0; j < getSessionKeys()[i].length; j++) {
                 SessionKeys current = getSessionKeysByIndex(i, j);
                 if (current.getLocalKeyID() == localKeyID && current.getRemoteKeyID() == remoteKeyID) {
-                    logger.finest("Matching keys found.");
+                    Timber.log(TimberLog.FINER, "Matching keys found.");
                     return current;
                 }
             }
@@ -150,16 +148,16 @@ public class SessionImpl implements Session
     private void rotateRemoteSessionKeys(DHPublicKey pubKey)
             throws OtrException
     {
-        logger.finest("Rotating remote keys.");
+        Timber.log(TimberLog.FINER, "Rotating remote keys.");
         SessionKeys sess1 = getSessionKeysByIndex(SessionKeys.Current, SessionKeys.Previous);
         if (sess1.getIsUsedReceivingMACKey()) {
-            logger.finest("Detected used Receiving MAC key. Adding to old MAC keys to reveal it.");
+            Timber.log(TimberLog.FINER, "Detected used Receiving MAC key. Adding to old MAC keys to reveal it.");
             getOldMacKeys().add(sess1.getReceivingMACKey());
         }
 
         SessionKeys sess2 = getSessionKeysByIndex(SessionKeys.Previous, SessionKeys.Previous);
         if (sess2.getIsUsedReceivingMACKey()) {
-            logger.finest("Detected used Receiving MAC key. Adding to old MAC keys to reveal it.");
+            Timber.log(TimberLog.FINER, "Detected used Receiving MAC key. Adding to old MAC keys to reveal it.");
             getOldMacKeys().add(sess2.getReceivingMACKey());
         }
 
@@ -175,16 +173,16 @@ public class SessionImpl implements Session
     private void rotateLocalSessionKeys()
             throws OtrException
     {
-        logger.finest("Rotating local keys.");
+        Timber.log(TimberLog.FINER, "Rotating local keys.");
         SessionKeys sess1 = getSessionKeysByIndex(SessionKeys.Previous, SessionKeys.Current);
         if (sess1.getIsUsedReceivingMACKey()) {
-            logger.finest("Detected used Receiving MAC key. Adding to old MAC keys to reveal it.");
+            Timber.log(TimberLog.FINER, "Detected used Receiving MAC key. Adding to old MAC keys to reveal it.");
             getOldMacKeys().add(sess1.getReceivingMACKey());
         }
 
         SessionKeys sess2 = getSessionKeysByIndex(SessionKeys.Previous, SessionKeys.Previous);
         if (sess2.getIsUsedReceivingMACKey()) {
-            logger.finest("Detected used Receiving MAC key. Adding to old MAC keys to reveal it.");
+            Timber.log(TimberLog.FINER, "Detected used Receiving MAC key. Adding to old MAC keys to reveal it.");
             getOldMacKeys().add(sess2.getReceivingMACKey());
         }
 
@@ -200,7 +198,7 @@ public class SessionImpl implements Session
 
     private byte[] collectOldMacKeys()
     {
-        logger.finest("Collecting old MAC keys to be revealed.");
+        Timber.log(TimberLog.FINER, "Collecting old MAC keys to be revealed.");
         int len = 0;
         for (int i = 0; i < getOldMacKeys().size(); i++)
             len += getOldMacKeys().get(i).length;
@@ -220,7 +218,7 @@ public class SessionImpl implements Session
             case ENCRYPTED:
                 AuthContext auth = this.getAuthContext();
                 ess = auth.getS();
-                logger.finest("Setting most recent session keys from auth.");
+                Timber.log(TimberLog.FINER, "Setting most recent session keys from auth.");
                 for (int i = 0; i < this.getSessionKeys()[0].length; i++) {
                     SessionKeys current = getSessionKeysByIndex(0, i);
                     current.setLocalPair(auth.getLocalDHKeyPair(), 1);
@@ -313,7 +311,7 @@ public class SessionImpl implements Session
 
         OtrPolicy policy = getSessionPolicy();
         if (!policy.getAllowV1() && !policy.getAllowV2() && !policy.getAllowV3()) {
-            logger.finest("Policy does not allow neither V1 nor V2 & V3, ignoring message.");
+            Timber.log(TimberLog.FINER, "Policy does not allow neither V1 nor V2 & V3, ignoring message.");
             return msgText;
         }
 
@@ -321,11 +319,11 @@ public class SessionImpl implements Session
             msgText = assembler.accumulate(msgText);
         } catch (UnknownInstanceException e) {
             // The fragment is not intended for us
-            logger.finest(e.getMessage());
+            Timber.log(TimberLog.FINER, "%s", e.getMessage());
             getHost().messageFromAnotherInstanceReceived(getSessionID());
             return null;
         } catch (ProtocolException e) {
-            logger.warning("An invalid message fragment was discarded.");
+            Timber.w("An invalid message fragment was discarded.");
             return null;
         }
 
@@ -353,7 +351,7 @@ public class SessionImpl implements Session
                         && !(encodedM.messageType == AbstractEncodedMessage.MESSAGE_DH_COMMIT
                         && encodedM.receiverInstanceTag == 0)) {
                     // The message is not intended for us. Discarding...
-                    logger.finest("Received an encoded message with receiver instance tag"
+                    Timber.log(TimberLog.FINER, "Received an encoded message with receiver instance tag"
                             + " that is different from ours, ignore this message");
                     getHost().messageFromAnotherInstanceReceived(getSessionID());
                     return null;
@@ -364,7 +362,7 @@ public class SessionImpl implements Session
                     && this.getReceiverInstanceTag().getValue() != 0) {
                 // Message is intended for us but is coming from a different instance.
                 // We relay this message to the appropriate session for transforming.
-                logger.finest("Received an encoded message from a different instance. "
+                Timber.log(TimberLog.FINER, "Received an encoded message from a different instance. "
                         + "Our buddy may  be logged from multiple locations.");
 
                 InstanceTag newReceiverTag = new InstanceTag(encodedM.senderInstanceTag);
@@ -427,7 +425,7 @@ public class SessionImpl implements Session
                 auth.handleReceivingMessage(m);
                 if (auth.getIsSecure()) {
                     this.setSessionStatus(SessionStatus.ENCRYPTED);
-                    logger.finest("Gone Secure.");
+                    Timber.log(TimberLog.FINER, "Gone Secure.");
                 }
                 return null;
             default:
@@ -452,7 +450,7 @@ public class SessionImpl implements Session
 
         OtrPolicy policy = getSessionPolicy();
         if (queryMessage.versions.contains(OTRv.THREE) && policy.getAllowV3()) {
-            logger.finest("V3 message tag found and supported.");
+            Timber.log(TimberLog.FINER, "V3 message tag found and supported.");
             DHCommitMessage dhCommit = getAuthContext().respondAuth(OTRv.THREE);
             if (isMasterSession) {
                 for (SessionImpl session : slaveSessions.values()) {
@@ -460,21 +458,21 @@ public class SessionImpl implements Session
                     session.getAuthContext().set(this.getAuthContext());
                 }
             }
-            logger.finest("Sending D-H Commit Message");
+            Timber.log(TimberLog.FINER, "Sending D-H Commit Message");
             injectMessage(dhCommit);
         }
         else if (queryMessage.versions.contains(OTRv.TWO) && policy.getAllowV2()) {
-            logger.finest("V2 message tag found and supported.");
+            Timber.log(TimberLog.FINER, "V2 message tag found and supported.");
             DHCommitMessage dhCommit = getAuthContext().respondAuth(OTRv.TWO);
-            logger.finest("Sending D-H Commit Message");
+            Timber.log(TimberLog.FINER, "Sending D-H Commit Message");
             injectMessage(dhCommit);
         }
         else if (queryMessage.versions.contains(OTRv.ONE) && policy.getAllowV1()) {
             if (supportV1) {
-                logger.finest("V1 message tag found and supported. - ignoring.");
+                Timber.log(TimberLog.FINER, "V1 message tag found and supported. - ignoring.");
             }
             else {
-                logger.finest("V1 message tag found but not supported.");
+                Timber.log(TimberLog.FINER, "V1 message tag found but not supported.");
                 throw new UnsupportedOperationException();
             }
         }
@@ -483,23 +481,23 @@ public class SessionImpl implements Session
     private void handleQueryMessage(QueryMessage queryMessage)
             throws OtrException
     {
-        logger.log(Level.FINEST, "{0} received a query message from {1} through {2}.",
-                new Object[]{getSessionID().getAccountID(), getSessionID().getUserID(),
-                        getSessionID().getProtocolName()});
+        Timber.log(TimberLog.FINER, "%s received a query message from %s through %s.",
+                getSessionID().getAccountID(), getSessionID().getUserID(),
+                getSessionID().getProtocolName());
         sendingDHCommitMessage(queryMessage, true);
     }
 
     private void handleErrorMessage(ErrorMessage errorMessage)
             throws OtrException
     {
-        logger.log(Level.FINEST, "{0} received an error message from {1} through {2}.",
-                new Object[]{getSessionID().getAccountID(), getSessionID().getUserID(), getSessionID().getProtocolName()});
+        Timber.log(TimberLog.FINER, "%s received an error message from %s through %s.",
+                getSessionID().getAccountID(), getSessionID().getUserID(), getSessionID().getProtocolName());
 
         getHost().showError(this.getSessionID(), errorMessage.error);
 
         OtrPolicy policy = getSessionPolicy();
         if (policy.getErrorStartAKE()) {
-            logger.finest("Error message starts AKE.");
+            Timber.log(TimberLog.FINER, "Error message starts AKE.");
             List<Integer> versions = new ArrayList<>();
             if (policy.getAllowV1())
                 versions.add(OTRv.ONE);
@@ -510,7 +508,7 @@ public class SessionImpl implements Session
             if (policy.getAllowV3())
                 versions.add(OTRv.THREE);
 
-            logger.finest("Sending Query");
+            Timber.log(TimberLog.FINER, "Sending Query");
             injectMessage(new QueryMessage(versions));
         }
     }
@@ -518,19 +516,19 @@ public class SessionImpl implements Session
     private String handleDataMessage(DataMessage data)
             throws OtrException
     {
-        logger.log(Level.FINEST, "{0} received a data message from {1}.",
-                new Object[]{getSessionID().getAccountID(), getSessionID().getUserID()});
+        Timber.log(TimberLog.FINER, "%s received a data message from %s.",
+                getSessionID().getAccountID(), getSessionID().getUserID());
 
         switch (this.getSessionStatus()) {
             case ENCRYPTED:
-                logger.finest("Message state is ENCRYPTED. Trying to decrypt message.");
+                Timber.log(TimberLog.FINER, "Message state is ENCRYPTED. Trying to decrypt message.");
                 // Find matching session keys.
                 int senderKeyID = data.senderKeyID;
                 int recipientKeyID = data.recipientKeyID;
                 SessionKeys matchingKeys = this.getSessionKeysByID(recipientKeyID, senderKeyID);
 
                 if (matchingKeys == null) {
-                    logger.finest("No matching keys found.");
+                    Timber.log(TimberLog.FINER, "No matching keys found.");
                     getHost().unreadableMessageReceived(this.getSessionID());
                     injectMessage(new ErrorMessage(AbstractMessage.MESSAGE_ERROR,
                             getHost().getReplyForUnreadableMessage(getSessionID())));
@@ -538,7 +536,7 @@ public class SessionImpl implements Session
                 }
 
                 // Verify received MAC with a locally calculated MAC.
-                logger.finest("Transforming T to byte[] to calculate it's HmacSHA1.");
+                Timber.log(TimberLog.FINER, "Transforming T to byte[] to calculate it's HmacSHA1.");
                 byte[] serializedT;
                 try {
                     serializedT = SerializationUtils.toByteArray(data.getT());
@@ -550,13 +548,13 @@ public class SessionImpl implements Session
                 byte[] computedMAC = otrCryptoEngine.sha1Hmac(serializedT,
                         matchingKeys.getReceivingMACKey(), SerializationConstants.TYPE_LEN_MAC);
                 if (!Arrays.equals(computedMAC, data.mac)) {
-                    logger.finest("MAC verification failed, ignoring message");
+                    Timber.log(TimberLog.FINER, "MAC verification failed, ignoring message");
                     getHost().unreadableMessageReceived(this.getSessionID());
                     injectMessage(new ErrorMessage(AbstractMessage.MESSAGE_ERROR,
                             getHost().getReplyForUnreadableMessage(getSessionID())));
                     return null;
                 }
-                logger.finest("Computed HmacSHA1 value matches sent one.");
+                Timber.log(TimberLog.FINER, "Computed HmacSHA1 value matches sent one.");
 
                 // Mark this MAC key as old to be revealed.
                 matchingKeys.setIsUsedReceivingMACKey(true);
@@ -571,7 +569,7 @@ public class SessionImpl implements Session
                 } catch (UnsupportedEncodingException e) {
                     throw new OtrException(e);
                 }
-                logger.finest("Decrypted message: \"" + decryptedMsgContent + "\"");
+                Timber.log(TimberLog.FINER, "Decrypted message: '%s", decryptedMsgContent);
 
                 // Rotate keys if necessary.
                 SessionKeys mostRecent = this.getMostRecentSessionKeys();
@@ -653,7 +651,7 @@ public class SessionImpl implements Session
                     getHost().injectMessage(getSessionID(), fragment);
                 }
             } catch (IOException e) {
-                logger.warning("Failed to fragment message according to provided instructions.");
+                Timber.w("Failed to fragment message according to provided instructions.");
                 throw new OtrException(e);
             }
         }
@@ -665,14 +663,13 @@ public class SessionImpl implements Session
     private String handlePlainTextMessage(PlainTextMessage plainTextMessage)
             throws OtrException
     {
-        logger.log(Level.FINEST, "{0} received a plaintext message from {1} through {2}.",
-                new Object[]{getSessionID().getAccountID(), getSessionID().getUserID(),
-                        getSessionID().getProtocolName()});
+        Timber.log(TimberLog.FINER, "%s received a plaintext message from %s through %s.",
+                getSessionID().getAccountID(), getSessionID().getUserID(), getSessionID().getProtocolName());
 
         OtrPolicy policy = getSessionPolicy();
         List<Integer> versions = plainTextMessage.versions;
         if (versions == null || versions.size() < 1) {
-            logger.finest("Received plaintext message without the whitespace tag.");
+            Timber.log(TimberLog.FINER, "Received plaintext message without the whitespace tag.");
 
             switch (this.getSessionStatus()) {
                 case ENCRYPTED:
@@ -693,7 +690,7 @@ public class SessionImpl implements Session
             }
         }
         else {
-            logger.finest("Received plaintext message with the whitespace tag.");
+            Timber.log(TimberLog.FINER, "Received plaintext message with the whitespace tag.");
             switch (this.getSessionStatus()) {
                 case ENCRYPTED:
                 case FINISHED:
@@ -712,7 +709,7 @@ public class SessionImpl implements Session
                     throw new UnsupportedOperationException("What to do for this state?");
             }
             if (policy.getWhitespaceStartAKE()) {
-                logger.finest("WHITESPACE_START_AKE is set");
+                Timber.log(TimberLog.FINER, "WHITESPACE_START_AKE is set");
                 try {
                     sendingDHCommitMessage(plainTextMessage, false);
                 } catch (OtrException ex) {
@@ -770,9 +767,8 @@ public class SessionImpl implements Session
                     }
                 }
             case ENCRYPTED:
-                logger.log(Level.FINEST, "{0} sends an encrypted message to {1} through {2}.",
-                        new Object[]{getSessionID().getAccountID(), getSessionID().getUserID(),
-                                getSessionID().getProtocolName()});
+                Timber.log(TimberLog.FINER, "%s sends an encrypted message to %s through %s.",
+                        getSessionID().getAccountID(), getSessionID().getUserID(), getSessionID().getProtocolName());
 
                 // Get encryption keys.
                 SessionKeys encryptionKeys = this.getEncryptionSessionKeys();
@@ -809,8 +805,8 @@ public class SessionImpl implements Session
                 OtrCryptoEngine otrCryptoEngine = new OtrCryptoEngineImpl();
                 byte[] data = out.toByteArray();
                 // Encrypt message.
-                logger.log(Level.FINEST, "Encrypting message with keyids (localKeyID, remoteKeyID) = ({0}, {1})",
-                        new Object[]{senderKeyID, recipientKeyID});
+                Timber.log(TimberLog.FINER, "Encrypting message with keyids (localKeyID, remoteKeyID) = (%s, %s)",
+                        senderKeyID, recipientKeyID);
                 byte[] encryptedMsg = otrCryptoEngine.aesEncrypt(encryptionKeys.getSendingAESKey(), ctr, data);
 
                 // Get most recent keys to get the next D-H public key.
@@ -825,7 +821,7 @@ public class SessionImpl implements Session
                 // Calculate T hash.
                 byte[] sendingMACKey = encryptionKeys.getSendingMACKey();
 
-                logger.finest("Transforming T to byte[] to calculate it's HmacSHA1.");
+                Timber.log(TimberLog.FINER, "Transforming T to byte[] to calculate it's HmacSHA1.");
                 byte[] serializedT;
                 try {
                     serializedT = SerializationUtils.toByteArray(t);
@@ -851,7 +847,7 @@ public class SessionImpl implements Session
                 getHost().finishedSessionMessage(sessionID, msgText);
                 return null;
             default:
-                logger.finest("Unknown message state, not processing.");
+                Timber.log(TimberLog.FINER, "Unknown message state, not processing.");
                 return new String[]{msgText};
         }
     }

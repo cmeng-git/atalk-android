@@ -11,14 +11,18 @@ import net.java.sip.communicator.service.gui.*;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.AbstractServiceDependentActivator;
+import net.java.sip.communicator.util.ServiceUtils;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.OSUtils;
 import org.osgi.framework.*;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * @author George Politis
@@ -36,11 +40,6 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
      * A property specifying whether private messaging should be made mandatory.
      */
     public static final String OTR_MANDATORY_PROP = "otr.PRIVATE_MESSAGING_MANDATORY";
-    /**
-     * The <tt>Logger</tt> used by the <tt>OtrActivator</tt> class and its
-     * instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(OtrActivator.class);
 
     /**
      * Indicates if the security/chat config form should be disabled, i.e.
@@ -75,9 +74,8 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
     public static ScOtrKeyManager scOtrKeyManager = new ScOtrKeyManagerImpl();
 
     /**
-     * The {@link UIService} of the {@link OtrActivator}. Can also be obtained
-     * from the {@link OtrActivator#bundleContext} on demand, but we add it here
-     * for convenience.
+     * The {@link UIService} of the {@link OtrActivator}. Can also be obtained from the
+     * {@link OtrActivator#bundleContext} on demand, but we add it here for convenience.
      */
     public static UIService uiService;
 
@@ -137,8 +135,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
         List<AccountID> accountIDs = new Vector<>();
 
         for (ProtocolProviderFactory providerFactory : providerFactoriesMap.values()) {
-            for (AccountID accountID : providerFactory.getRegisteredAccounts())
-                accountIDs.add(accountID);
+            accountIDs.addAll(providerFactory.getRegisteredAccounts());
         }
         return accountIDs;
     }
@@ -148,18 +145,16 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
         ServiceReference[] serRefs;
 
         try {
-            serRefs = bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(),
-                    null);
+            serRefs = bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), null);
         } catch (InvalidSyntaxException ex) {
-            logger.error("Error while retrieving service refs", ex);
+            Timber.e(ex, "Error while retrieving service refs");
             return null;
         }
         Map<Object, ProtocolProviderFactory> providerFactoriesMap = new Hashtable();
 
         if (serRefs != null) {
             for (ServiceReference serRef : serRefs) {
-                ProtocolProviderFactory providerFactory
-                        = (ProtocolProviderFactory) bundleContext.getService(serRef);
+                ProtocolProviderFactory providerFactory = (ProtocolProviderFactory) bundleContext.getService(serRef);
                 providerFactoriesMap.put(serRef.getProperty("PROTOCOL_NAME"), providerFactory);
             }
         }
@@ -176,8 +171,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
     public static MetaContactListService getContactListService()
     {
         if (metaCListService == null) {
-            metaCListService = ServiceUtils.getService(bundleContext,
-                    MetaContactListService.class);
+            metaCListService = ServiceUtils.getService(bundleContext, MetaContactListService.class);
         }
         return metaCListService;
     }
@@ -190,8 +184,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
     public static MessageHistoryService getMessageHistoryService()
     {
         if (messageHistoryService == null) {
-            messageHistoryService = ServiceUtils.getService(bundleContext,
-                    MessageHistoryService.class);
+            messageHistoryService = ServiceUtils.getService(bundleContext, MessageHistoryService.class);
         }
         return messageHistoryService;
     }
@@ -214,8 +207,8 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
 
         if (opSetMessageTransform != null)
             opSetMessageTransform.addTransformLayer(this.otrTransformLayer);
-        else if (logger.isTraceEnabled())
-            logger.trace("Service did not have a transform op. set.");
+        else
+            Timber.log(TimberLog.FINER, "Service did not have a transform op. set.");
     }
 
     private void handleProviderRemoved(ProtocolProviderService provider)
@@ -236,20 +229,17 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
     {
         Object sService = bundleContext.getService(serviceEvent.getServiceReference());
 
-        if (logger.isTraceEnabled()) {
-            logger.trace("Received a service event for: " + sService.getClass().getName());
+        if (TimberLog.isTraceEnabled()) {
+            Timber.log(TimberLog.FINER, "Received a service event for: %s", sService.getClass().getName());
         }
 
         // we don't care if the source service is not a protocol provider
         if (!(sService instanceof ProtocolProviderService))
             return;
 
-        if (logger.isDebugEnabled())
-            logger.debug("Service is a protocol provider.");
+        Timber.d("Service is a protocol provider.");
         if (serviceEvent.getType() == ServiceEvent.REGISTERED) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Handling registration of a new Protocol Provider.");
-            }
+            Timber.d("Handling registration of a new Protocol Provider.");
             this.handleProviderAdded((ProtocolProviderService) sService);
         }
         else if (serviceEvent.getType() == ServiceEvent.UNREGISTERING) {
@@ -303,12 +293,8 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
                 = ServiceUtils.getServiceReferences(bundleContext, ProtocolProviderService.class);
 
         if ((protocolProviderRefs != null) && (protocolProviderRefs.length > 0)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Found " + protocolProviderRefs.length
-                        + " already installed providers.");
-            }
-            for (ServiceReference<ProtocolProviderService> protocolProviderRef
-                    : protocolProviderRefs) {
+            Timber.d("Found %d already installed providers.", protocolProviderRefs.length);
+            for (ServiceReference<ProtocolProviderService> protocolProviderRef : protocolProviderRefs) {
                 ProtocolProviderService provider = bundleContext.getService(protocolProviderRef);
                 handleProviderAdded(provider);
             }
@@ -345,18 +331,16 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
 
         ServiceReference[] protocolProviderRefs;
         try {
-            protocolProviderRefs
-                    = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
+            protocolProviderRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException ex) {
-            logger.error("Error while retrieving service refs", ex);
+            Timber.e(ex, "Error while retrieving service refs");
             return;
         }
 
         if ((protocolProviderRefs != null) && (protocolProviderRefs.length > 0)) {
             // in case we found any
             for (ServiceReference protocolProviderRef : protocolProviderRefs) {
-                ProtocolProviderService provider
-                        = (ProtocolProviderService) bundleContext.getService(protocolProviderRef);
+                ProtocolProviderService provider = (ProtocolProviderService) bundleContext.getService(protocolProviderRef);
                 handleProviderRemoved(provider);
             }
         }

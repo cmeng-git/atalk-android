@@ -17,16 +17,18 @@ package org.atalk.impl.neomedia.transform;
 
 import net.sf.fmj.media.rtp.RTCPPacket;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.rtp.ResumableStreamRewriter;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.Logger;
 import org.atalk.util.RTCPUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.media.Buffer;
+
+import timber.log.Timber;
 
 /**
  * As the name suggests, the DiscardTransformEngine discards packets that are
@@ -41,12 +43,6 @@ import javax.media.Buffer;
  */
 public class DiscardTransformEngine implements TransformEngine
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>DiscardTransformEngine</tt> class and
-     * its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(DiscardTransformEngine.class);
-
     /**
      * A map of source ssrc to {@link ResumableStreamRewriter}.
      */
@@ -93,15 +89,11 @@ public class DiscardTransformEngine implements TransformEngine
                     ssrcToRewriter.put(ssrc, rewriter);
                 }
             }
-
             rewriter.rewriteRTP(!dropPkt, pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
 
-            if (logger.isDebugEnabled()) {
-                logger.debug((dropPkt ? "discarding " : "passing through ")
-                        + " RTP ssrc=" + pkt.getSSRCAsLong() + ", seqnum="
-                        + pkt.getSequenceNumber() + ", ts=" + pkt.getTimestamp()
-                        + ", streamHashCode=" + stream.hashCode());
-            }
+            Timber.log(TimberLog.FINER, "%s RTP ssrc = %s, seqnum = %s, ts = %s, streamHashCode = %s",
+                    (dropPkt ? "discarding " : "passing through "), pkt.getSSRCAsLong(),
+                    pkt.getSequenceNumber(), pkt.getTimestamp(),  stream.hashCode());
             return dropPkt ? null : pkt;
         }
     };

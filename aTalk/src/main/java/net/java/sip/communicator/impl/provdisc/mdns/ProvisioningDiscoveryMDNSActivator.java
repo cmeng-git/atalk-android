@@ -15,64 +15,51 @@
  */
 package net.java.sip.communicator.impl.provdisc.mdns;
 
-import net.java.sip.communicator.service.provdisc.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.provdisc.ProvisioningDiscoveryService;
 
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+import timber.log.Timber;
 
 /**
  * Implements <tt>BundleActivator</tt> for the mDNS provisioning bundle.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public class ProvisioningDiscoveryMDNSActivator
-    implements BundleActivator
+        implements BundleActivator
 {
-    /**
-     * <tt>Logger</tt> used by this <tt>ProvisioningDiscoveryMDNSActivator</tt>
-     * instance for logging output.
-     */
-    private final Logger logger
-        = Logger.getLogger(ProvisioningDiscoveryMDNSActivator.class);
-
     /**
      * MDNS provisioning service.
      */
     private static ProvisioningDiscoveryServiceMDNSImpl provisioningService =
-        new ProvisioningDiscoveryServiceMDNSImpl();
+            new ProvisioningDiscoveryServiceMDNSImpl();
 
-     /**
-      * Starts the mDNS provisioning service
-      *
-      * @param bundleContext the <tt>BundleContext</tt> as provided by the OSGi
-      * framework.
-      * @throws Exception if anything goes wrong
-      */
-     public void start(BundleContext bundleContext)
-         throws Exception
-     {
-         if (logger.isDebugEnabled())
-             logger.debug("mDNS provisioning discovery Service [STARTED]");
+    /**
+     * Starts the mDNS provisioning service
+     *
+     * @param bundleContext the <tt>BundleContext</tt> as provided by the OSGi framework.
+     * @throws Exception if anything goes wrong
+     */
+    public void start(BundleContext bundleContext)
+            throws Exception
+    {
+        bundleContext.registerService(ProvisioningDiscoveryService.class.getName(),
+                provisioningService, null);
+        Timber.i("DNS provisioning discovery Service [REGISTERED]");
+    }
 
-         bundleContext.registerService(
-                 ProvisioningDiscoveryService.class.getName(),
-                 provisioningService,
-                 null);
-
-         if (logger.isDebugEnabled())
-             logger.debug("mDNS provisioning discovery Service [REGISTERED]");
-     }
-
-     /**
-      * Stops the mDNS provisioning service.
-      *
-      *  @param bundleContext the <tt>BundleContext</tt> as provided by the OSGi
-      * framework.
-      * @throws Exception if anything goes wrong
-      */
-     public void stop(BundleContext bundleContext) throws Exception
-     {
-         if (logger.isInfoEnabled())
-             logger.info("mDNS provisioning discovery Service ...[STOPPED]");
-     }
+    /**
+     * Stops the mDNS provisioning service.
+     *
+     * @param bundleContext the <tt>BundleContext</tt> as provided by the OSGi framework.
+     * @throws Exception if anything goes wrong
+     */
+    public void stop(BundleContext bundleContext)
+            throws Exception
+    {
+        Timber.i("mDNS provisioning discovery Service ...[STOPPED]");
+    }
 }

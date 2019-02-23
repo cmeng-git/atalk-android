@@ -12,35 +12,32 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package net.java.sip.communicator.impl.phonenumbers;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.*;
-import org.osgi.framework.*;
+import net.java.sip.communicator.service.protocol.PhoneNumberI18nService;
+
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+import timber.log.Timber;
 
 /**
  * Activates PhoneNumberI18nService implementation.
  *
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
 public class PhoneNumberServiceActivator implements BundleActivator
 {
-	/**
-	 * Our logging.
-	 */
-	private static Logger logger = Logger.getLogger(PhoneNumberServiceActivator.class);
+    @Override
+    public void start(BundleContext bundleContext)
+            throws Exception
+    {
+        bundleContext.registerService(PhoneNumberI18nService.class.getName(), new PhoneNumberI18nServiceImpl(), null);
+        Timber.i("Packet Logging Service ...[REGISTERED]");
+    }
 
-	@Override
-	public void start(BundleContext bundleContext)
-		throws Exception
-	{
-		bundleContext.registerService(PhoneNumberI18nService.class.getName(), new PhoneNumberI18nServiceImpl(), null);
-
-		if (logger.isInfoEnabled())
-			logger.info("Packet Logging Service ...[REGISTERED]");
-	}
-
-	@Override
-	public void stop(BundleContext bundleContext)
-		throws Exception
-	{
-	}
+    @Override
+    public void stop(BundleContext bundleContext)
+            throws Exception
+    {
+    }
 }

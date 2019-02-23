@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.recording;
@@ -14,91 +14,45 @@ import org.atalk.impl.neomedia.device.MediaDeviceImpl;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
 import org.atalk.impl.neomedia.rtp.translator.RTCPFeedbackMessageSender;
 import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
-import org.atalk.impl.neomedia.transform.PacketTransformer;
-import org.atalk.impl.neomedia.transform.REDTransformEngine;
-import org.atalk.impl.neomedia.transform.SinglePacketTransformer;
-import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
-import org.atalk.impl.neomedia.transform.TransformEngine;
-import org.atalk.impl.neomedia.transform.TransformEngineChain;
+import org.atalk.impl.neomedia.transform.*;
 import org.atalk.impl.neomedia.transform.fec.FECTransformEngine;
 import org.atalk.impl.neomedia.transform.rtcp.CompoundPacketEngine;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.ActiveSpeakerDetector;
 import org.atalk.service.neomedia.MediaException;
-import org.atalk.service.neomedia.MediaService;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.RTPTranslator;
-import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.FlushableControl;
 import org.atalk.service.neomedia.control.KeyFrameControlAdapter;
 import org.atalk.service.neomedia.event.ActiveSpeakerChangedListener;
-import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
-import org.atalk.service.neomedia.recording.Recorder;
-import org.atalk.service.neomedia.recording.RecorderEvent;
-import org.atalk.service.neomedia.recording.RecorderEventHandler;
-import org.atalk.service.neomedia.recording.Synchronizer;
+import org.atalk.service.neomedia.recording.*;
 import org.atalk.util.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import javax.media.CaptureDeviceInfo;
-import javax.media.Codec;
-import javax.media.ConfigureCompleteEvent;
-import javax.media.ControllerEvent;
-import javax.media.ControllerListener;
-import javax.media.DataSink;
-import javax.media.Format;
-import javax.media.Manager;
-import javax.media.MediaLocator;
-import javax.media.NoDataSinkException;
-import javax.media.NoProcessorException;
-import javax.media.Processor;
-import javax.media.RealizeCompleteEvent;
-import javax.media.UnsupportedPlugInException;
+import javax.media.*;
 import javax.media.control.TrackControl;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
-import javax.media.protocol.ContentDescriptor;
-import javax.media.protocol.DataSource;
-import javax.media.protocol.FileTypeDescriptor;
-import javax.media.protocol.PushBufferDataSource;
-import javax.media.protocol.PushBufferStream;
-import javax.media.protocol.PushSourceStream;
-import javax.media.protocol.SourceTransferHandler;
-import javax.media.rtp.OutputDataStream;
-import javax.media.rtp.RTPConnector;
-import javax.media.rtp.RTPManager;
-import javax.media.rtp.ReceiveStream;
-import javax.media.rtp.ReceiveStreamListener;
-import javax.media.rtp.event.NewReceiveStreamEvent;
-import javax.media.rtp.event.ReceiveStreamEvent;
-import javax.media.rtp.event.TimeoutEvent;
+import javax.media.protocol.*;
+import javax.media.rtp.*;
+import javax.media.rtp.event.*;
+
+import timber.log.Timber;
 
 /**
  * A <tt>Recorder</tt> implementation which attaches to an <tt>RTPTranslator</tt>.
  *
  * @author Vladimir Marinov
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         ActiveSpeakerChangedListener, ControllerListener
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>RecorderRtpImpl</tt> class and its instances for logging
-     * output.
-     */
-    private static final Logger logger = Logger.getLogger(RecorderRtpImpl.class);
-
     /**
      * The <tt>ConfigurationService</tt> used to load recorder configuration.
      */
@@ -239,9 +193,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     /**
      * Constructor.
      *
-     * @param translator
-     *         the <tt>RTPTranslator</tt> to which this instance will attach in order to record
-     *         media.
+     * @param translator the <tt>RTPTranslator</tt> to which this instance will attach in order to record
+     * media.
      */
     public RecorderRtpImpl(RTPTranslator translator)
     {
@@ -325,19 +278,16 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     /**
      * {@inheritDoc}
      *
-     * @param format
-     *         unused, since this implementation records multiple streams using potentially different
-     *         formats.
-     * @param dirname
-     *         the path to the directory into which this <tt>Recorder</tt> will store the recorded
-     *         media files.
+     * @param format unused, since this implementation records multiple streams using potentially different
+     * formats.
+     * @param dirname the path to the directory into which this <tt>Recorder</tt> will store the recorded
+     * media files.
      */
     @Override
     public void start(String format, String dirname)
             throws IOException, MediaException
     {
-        if (logger.isInfoEnabled())
-            logger.info("Starting, format=" + format + " " + hashCode());
+        Timber.i("Starting, format = %s %s", format, hashCode());
         path = dirname;
 
         MediaService mediaService = LibJitsi.getMediaService();
@@ -347,32 +297,32 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             activeSpeakerDetector.addActiveSpeakerChangedListener(this);
         }
 
-		/*
+        /*
          * Note that we use only one RTPConnector for both the RTPTranslator and the RTPManager
-		 * instances. The this.translator will write to its output streams, and this.rtpManager
-		 * will read from its input streams.
-		 */
+         * instances. The this.translator will write to its output streams, and this.rtpManager
+         * will read from its input streams.
+         */
         rtpConnector = new RTPConnectorImpl(redPayloadType, ulpfecPayloadType);
 
         rtpManager = RTPManager.newInstance();
 
-		/*
-		 * Add the formats that we know about.
-		 */
+        /*
+         * Add the formats that we know about.
+         */
         rtpManager.addFormat(vp8RtpFormat, vp8PayloadType);
         rtpManager.addFormat(opusFormat, opusPayloadType);
         rtpManager.addReceiveStreamListener(this);
 
-		/*
-		 * Note: When this.rtpManager sends RTCP sender/receiver reports, they will end up being
-		 * written to its own input stream. This is not expected to cause problems, but might be
-		 * something to keep an eye on.
-		 */
+        /*
+         * Note: When this.rtpManager sends RTCP sender/receiver reports, they will end up being
+         * written to its own input stream. This is not expected to cause problems, but might be
+         * something to keep an eye on.
+         */
         rtpManager.initialize(rtpConnector);
 
-		/*
-		 * Register a fake call participant. TODO: can we use a more generic MediaStream here?
-		 */
+        /*
+         * Register a fake call participant. TODO: can we use a more generic MediaStream here?
+         */
         mediaStream = mediaService.createMediaStream(new MediaDeviceImpl(
                 new CaptureDeviceInfo(), MediaType.VIDEO));
         streamRTPManager = new StreamRTPManager(mediaStream, translator);
@@ -400,8 +350,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     public void stop()
     {
         if (started) {
-            if (logger.isInfoEnabled())
-                logger.info("Stopping " + hashCode());
+            Timber.i("Stopping %s", hashCode());
 
             // remove the recorder from the translator (e.g. stop new packets from
             // being written to rtpConnector
@@ -442,7 +391,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
         if (event instanceof NewReceiveStreamEvent) {
             if (receiveStream == null) {
-                logger.warn("NewReceiveStreamEvent: null");
+                Timber.w("NewReceiveStreamEvent: null");
                 return;
             }
 
@@ -454,14 +403,13 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                 String s = "NewReceiveStreamEvent for an existing SSRC. ";
                 if (receiveStream != receiveStreamDesc.receiveStream)
                     s += "(but different ReceiveStream object)";
-                logger.warn(s);
+                Timber.w("%s", s);
                 return;
             }
             else
                 receiveStreamDesc = new ReceiveStreamDesc(receiveStream);
 
-            if (logger.isInfoEnabled())
-                logger.info("New ReceiveStream, ssrc=" + ssrc);
+            Timber.i("New ReceiveStream, ssrc = %s", ssrc);
 
             // Find the format of the ReceiveStream
             DataSource dataSource = receiveStream.getDataSource();
@@ -474,14 +422,13 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                 }
 
                 if (format == null) {
-                    logger.error("Failed to handle new ReceiveStream: "
-                            + "Failed to determine format");
+                    Timber.e("Failed to handle new ReceiveStream: Failed to determine format");
                     return;
                 }
                 receiveStreamDesc.format = format;
             }
             else {
-                logger.error("Failed to handle new ReceiveStream: Unsupported DataSource");
+                Timber.e("Failed to handle new ReceiveStream: Unsupported DataSource");
                 return;
             }
 
@@ -497,13 +444,11 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             try {
                 processor = Manager.createProcessor(receiveStream.getDataSource());
             } catch (NoProcessorException | IOException npe) {
-                logger.error("Failed to create Processor: ", npe);
+                Timber.e(npe, "Failed to create Processor.");
                 return;
             }
 
-            if (logger.isInfoEnabled())
-                logger.info("Created processor for SSRC=" + ssrc);
-
+            Timber.i("Created processor for SSRC = %s", ssrc);
             processor.addControllerListener(this);
             receiveStreamDesc.processor = processor;
 
@@ -513,12 +458,12 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                 streamCount = receiveStreams.size();
             }
 
-			/*
-			 * XXX TODO IRBABOON This is a terrible hack which works around a failure to realize()
-			 * some of the Processor-s for audio streams, when multiple streams start nearly
-			 * simultaneously. The cause of the problem is currently unknown (and synchronizing all
-			 * FMJ calls in RecorderRtpImpl does not help). XXX TODO NOOBABRI
-			 */
+            /*
+             * XXX TODO IRBABOON This is a terrible hack which works around a failure to realize()
+             * some of the Processor-s for audio streams, when multiple streams start nearly
+             * simultaneously. The cause of the problem is currently unknown (and synchronizing all
+             * FMJ calls in RecorderRtpImpl does not help). XXX TODO NOOBABRI
+             */
             if (receiveStreamDesc.format instanceof AudioFormat) {
                 final Processor p = processor;
                 new Thread()
@@ -530,9 +475,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                         // decrease the probability that they run together.
                         try {
                             int ms = 450 * (streamCount - 1);
-                            logger.warn("Sleeping for " + ms + "ms before"
-                                    + " configuring processor for SSRC=" + ssrc + " "
-                                    + System.currentTimeMillis());
+                            Timber.w("Sleeping for %d ms before configuring processor for SSRC = %d %d",
+                                    ms, ssrc, System.currentTimeMillis());
                             Thread.sleep(ms);
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -549,7 +493,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             if (receiveStream == null) {
                 // TODO: we might want to get the list of ReceiveStream-s from
                 // rtpManager and compare it to our list, to see if we should remove a stream.
-                logger.warn("TimeoutEvent: null.");
+                Timber.w("TimeoutEvent: null.");
                 return;
             }
 
@@ -558,21 +502,16 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             ReceiveStreamDesc receiveStreamDesc = findReceiveStream(
                     getReceiveStreamSSRC(receiveStream));
             if (receiveStreamDesc != null) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("ReceiveStream timeout, ssrc=" + receiveStreamDesc.ssrc);
-                }
+                Timber.i("ReceiveStream timeout, ssrc = %s", receiveStreamDesc.ssrc);
                 removeReceiveStream(receiveStreamDesc, true);
             }
             else {
-                if (logger.isInfoEnabled()) {
-                    logger.info("ReceiveStream timeout for an unknown stream"
-                            + " (already removed?) " + getReceiveStreamSSRC(receiveStream));
-                }
+                Timber.i("ReceiveStream timeout for an unknown stream (already removed?) %s",
+                        getReceiveStreamSSRC(receiveStream));
             }
         }
-        else if (event != null && logger.isInfoEnabled()) {
-            logger.info("Unhandled ReceiveStreamEvent (" + event.getClass().getName() + "): "
-                    + event);
+        else {
+            Timber.i("Unhandled ReceiveStreamEvent (%s): %s", event.getClass().getName(), event);
         }
     }
 
@@ -584,12 +523,12 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             rtpConnector.packetBuffer.disable(ssrc);
             emptyPacketBuffer(ssrc);
 
-			/*
-			 * Workaround an issue with Chrome resetting the RTP timestamps after a stream's
-			 * direction changes: if the stream with the same SSRC starts again later, we will
-			 * obtain new mappings based on the new Sender Reports. See
-			 * https://code.google.com/p/webrtc/issues/detail?id=3597
-			 */
+            /*
+             * Workaround an issue with Chrome resetting the RTP timestamps after a stream's
+             * direction changes: if the stream with the same SSRC starts again later, we will
+             * obtain new mappings based on the new Sender Reports. See
+             * https://code.google.com/p/webrtc/issues/detail?id=3597
+             */
             getSynchronizer().removeMapping(ssrc);
 
             // Continue accepting packets with this SSRC
@@ -600,7 +539,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             try {
                 receiveStream.dataSink.stop();
             } catch (IOException e) {
-                logger.error("Failed to stop DataSink " + e);
+                Timber.e("Failed to stop DataSink %s", e.getMessage());
             }
 
             receiveStream.dataSink.close();
@@ -616,7 +555,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             try {
                 dataSource.stop();
             } catch (IOException ioe) {
-                logger.warn("Failed to stop DataSource");
+                Timber.w("Failed to stop DataSource");
             }
             dataSource.disconnect();
         }
@@ -626,8 +565,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         }
 
         synchronized (activeVideoSsrcs) {
-            if (activeVideoSsrcs.contains(ssrc))
-                activeVideoSsrcs.remove(ssrc);
+            activeVideoSsrcs.remove(ssrc);
         }
     }
 
@@ -635,8 +573,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * Implements {@link ControllerListener#controllerUpdate(ControllerEvent)}. Handles events from
      * the <tt>Processor</tt>s that this instance uses to transcode media.
      *
-     * @param ev
-     *         the event to handle.
+     * @param ev the event to handle.
      */
     public void controllerUpdate(ControllerEvent ev)
     {
@@ -648,23 +585,20 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         ReceiveStreamDesc desc = findReceiveStream(processor);
 
         if (desc == null) {
-            logger.warn("Event from an orphaned processor, ignoring: " + ev);
+            Timber.w("Event from an orphaned processor, ignoring: %s", ev);
             return;
         }
 
         if (ev instanceof ConfigureCompleteEvent) {
-            if (logger.isInfoEnabled()) {
-                logger.info("Configured processor for ReceiveStream ssrc=" + desc.ssrc + " ("
-                        + desc.format + ")" + " " + System.currentTimeMillis());
-            }
+            Timber.i("Configured processor for ReceiveStream ssrc = %s (%s) %s",
+                    desc.ssrc, desc.format, System.currentTimeMillis());
 
             boolean audio = desc.format instanceof AudioFormat;
-
             if (audio) {
                 ContentDescriptor cd = processor.setContentDescriptor(AUDIO_CONTENT_DESCRIPTOR);
                 if (!AUDIO_CONTENT_DESCRIPTOR.equals(cd)) {
-                    logger.error("Failed to set the Processor content " + "descriptor to "
-                            + AUDIO_CONTENT_DESCRIPTOR + ". Actual result: " + cd);
+                    Timber.e("Failed to set the Processor content descriptor to %s. Actual result: %s",
+                            AUDIO_CONTENT_DESCRIPTOR, cd);
                     removeReceiveStream(desc, false);
                     return;
                 }
@@ -722,7 +656,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                         // We add an effect, which will insert "silence" in place of lost packets.
                         track.setCodecChain(codecList.toArray(new Codec[codecList.size()]));
                     } catch (UnsupportedPlugInException upie) {
-                        logger.warn("Failed to insert silence effect: " + upie);
+                        Timber.w("Failed to insert silence effect: %s", upie.getMessage());
                         // But do go on, a recording without extra silence is better than nothing
                     }
                 }
@@ -731,8 +665,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                     if (trackFormat.matches(vp8RtpFormat))
                         track.setFormat(vp8Format);
                     else {
-                        logger.error("Unsupported track format: " + trackFormat + " for ssrc="
-                                + desc.ssrc);
+                        Timber.e("Unsupported track format: %s for ssrc = %s", trackFormat, desc.ssrc);
                         // we currently only support vp8
                         removeReceiveStream(desc, false);
                         return;
@@ -758,7 +691,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                     dataSink = Manager.createDataSink(desc.dataSource,
                             new MediaLocator("file:" + filename));
                 } catch (NoDataSinkException ndse) {
-                    logger.error("Could not create DataSink: " + ndse);
+                    Timber.e("Could not create DataSink: %s", ndse.getMessage());
                     removeReceiveStream(desc, false);
                     return;
                 }
@@ -768,14 +701,11 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                 dataSink = new WebmDataSink(filename, desc.dataSource);
             }
 
-            if (logger.isInfoEnabled())
-                logger.info("Created DataSink (" + dataSink + ") for SSRC=" + ssrc
-                        + ". Output filename: " + filename);
+            Timber.i("Created DataSink (%s) for SSRC: %s. Output filename: %s", dataSink, ssrc, filename);
             try {
                 dataSink.open();
             } catch (IOException e) {
-                logger.error("Failed to open DataSink (" + dataSink + ") for" + " SSRC=" + ssrc
-                        + ": " + e);
+                Timber.i("Failed to open DataSink (%s) for SSRC = %s: %s", dataSink, ssrc, e.getMessage());
                 removeReceiveStream(desc, false);
                 return;
             }
@@ -797,30 +727,25 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             try {
                 dataSink.start();
             } catch (IOException e) {
-                logger.error("Failed to start DataSink (" + dataSink + ") for" + " SSRC=" + ssrc
-                        + ". " + e);
+                Timber.e("Failed to start DataSink (%s) for SSRC = %s. %s", dataSink, ssrc, e.getMessage());
                 removeReceiveStream(desc, false);
                 return;
             }
 
-            if (logger.isInfoEnabled())
-                logger.info("Started DataSink for SSRC=" + ssrc);
-
+            Timber.i("Started DataSink for SSRC = %s", ssrc);
             desc.dataSink = dataSink;
-
             processor.start();
         }
-        else if (logger.isDebugEnabled()) {
-            logger.debug("Unhandled ControllerEvent from the Processor for ssrc=" + desc.ssrc
-                    + ": " + ev);
+        else {
+            Timber.d("Unhandled ControllerEvent from the Processor for ssrc = %d: %s",
+                    desc.ssrc, ev);
         }
     }
 
     /**
      * Restarts the recording for a specific SSRC.
      *
-     * @param ssrc
-     *         the SSRC for which to restart recording. RTP packet of the new recording).
+     * @param ssrc the SSRC for which to restart recording. RTP packet of the new recording).
      */
     private void resetRecording(long ssrc, long timestamp)
     {
@@ -840,11 +765,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                 }
             }
 
-            if (logger.isInfoEnabled()) {
-                logger.info("Restarting recording for SSRC=" + ssrc + ". New filename: "
-                        + newFilename);
-            }
-
+            Timber.i("Restarting recording for SSRC = %s. New filename: %s", ssrc, newFilename);
             receiveStream.dataSink.close();
             receiveStream.dataSink = null;
 
@@ -858,7 +779,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                 receiveStream.dataSink = Manager.createDataSink(receiveStream.dataSource,
                         new MediaLocator("file:" + newFilename));
             } catch (NoDataSinkException ndse) {
-                logger.warn("Could not reset recording for SSRC=" + ssrc + ": " + ndse);
+                Timber.w("Could not reset recording for SSRC=%s: %s", ssrc, ndse.getMessage());
                 removeReceiveStream(receiveStream, false);
             }
 
@@ -866,7 +787,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                 receiveStream.dataSink.open();
                 receiveStream.dataSink.start();
             } catch (IOException ioe) {
-                logger.warn("Could not reset recording for SSRC=" + ssrc + ": " + ioe);
+                Timber.w("Could not reset recording for SSRC=%s: %s", ssrc, ioe.getMessage());
                 removeReceiveStream(receiveStream, false);
             }
             audioRecordingStarted(ssrc, timestamp);
@@ -894,8 +815,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * Handles a request from a specific <tt>DataSink</tt> to request a keyframe by sending an RTCP
      * feedback FIR message to the media source.
      *
-     * @param dataSink
-     *         the <tt>DataSink</tt> which requests that a keyframe be requested with a FIR message.
+     * @param dataSink the <tt>DataSink</tt> which requests that a keyframe be requested with a FIR message.
      * @return <tt>true</tt> if a keyframe was successfully requested, <tt>false</tt> otherwise
      */
     private boolean requestFIR(WebmDataSink dataSink)
@@ -936,8 +856,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     /**
      * Finds the <tt>ReceiveStreamDesc</tt> with a particular <tt>Processor</tt>
      *
-     * @param processor
-     *         The <tt>Processor</tt> to match.
+     * @param processor The <tt>Processor</tt> to match.
      * @return the <tt>ReceiveStreamDesc</tt> with a particular <tt>Processor</tt>, or
      * <tt>null</tt>
      * .
@@ -958,8 +877,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     /**
      * Finds the <tt>ReceiveStreamDesc</tt> with a particular <tt>DataSink</tt>
      *
-     * @param dataSink
-     *         The <tt>DataSink</tt> to match.
+     * @param dataSink The <tt>DataSink</tt> to match.
      * @return the <tt>ReceiveStreamDesc</tt> with a particular <tt>DataSink</tt>, or
      * <tt>null</tt>.
      */
@@ -979,8 +897,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     /**
      * Finds the <tt>ReceiveStreamDesc</tt> with a particular SSRC.
      *
-     * @param ssrc
-     *         The SSRC to match.
+     * @param ssrc The SSRC to match.
      * @return the <tt>ReceiveStreamDesc</tt> with a particular SSRC, or <tt>null</tt>.
      */
     private ReceiveStreamDesc findReceiveStream(long ssrc)
@@ -1002,8 +919,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * resulting from reading of a 32-bit field into the correct unsigned <tt>long</tt> value.
      * So do the conversion here.
      *
-     * @param receiveStream
-     *         the <tt>ReceiveStream</tt> for which to get the SSRC.
+     * @param receiveStream the <tt>ReceiveStream</tt> for which to get the SSRC.
      * @return the SSRC of <tt>receiveStream</tt> an a (non-negative) <tt>long</tt>.
      */
     private long getReceiveStreamSSRC(ReceiveStream receiveStream)
@@ -1016,8 +932,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * <tt>RecorderRtpImpl</tt> that the audio <tt>ReceiveStream</tt> considered active has
      * changed, and that the new active stream has SSRC <tt>ssrc</tt>.
      *
-     * @param ssrc
-     *         the SSRC of the new active stream.
+     * @param ssrc the SSRC of the new active stream.
      */
     @Override
     public void activeSpeakerChanged(long ssrc)
@@ -1086,7 +1001,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         try {
             dataStream = rtpConnector.getDataOutputStream();
         } catch (IOException ioe) {
-            logger.error("Failed to empty packet buffer for SSRC=" + ssrc + ": " + ioe);
+            Timber.e("Failed to empty packet buffer for SSRC=%s: %s", ssrc, ioe.getMessage());
             return;
         }
         for (RawPacket pkt : pkts)
@@ -1483,8 +1398,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                         // because we want to, for example, flush the packet buffer before that.
 
                         long ssrc = pkt.getRTCPSSRC();
-                        if (logger.isInfoEnabled())
-                            logger.info("RTCP BYE for SSRC=" + ssrc);
+                        Timber.i("RTCP BYE for SSRC = %s", ssrc);
 
                         ReceiveStreamDesc receiveStream = findReceiveStream(ssrc);
                         if (receiveStream != null)

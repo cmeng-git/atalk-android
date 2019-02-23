@@ -7,33 +7,21 @@ package org.atalk.android.gui.account;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
+import android.view.*;
+import android.widget.*;
 
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.AccountManager;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.dialogs.ProgressDialogFragment;
 import org.atalk.android.gui.account.settings.AccountPreferenceActivity;
 import org.atalk.android.gui.contactlist.AddGroupDialog;
 import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.android.gui.dialogs.ProgressDialogFragment;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
@@ -46,6 +34,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
+import timber.log.Timber;
+
 /**
  * The activity display list of currently stored accounts showing it's protocol and current status.
  *
@@ -54,10 +44,6 @@ import java.util.Collection;
  */
 public class AccountsListActivity extends OSGiActivity
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(AccountsListActivity.class);
     /**
      * The list adapter for accounts
      */
@@ -89,7 +75,7 @@ public class AccountsListActivity extends OSGiActivity
         super.onCreate(savedInstanceState);
         if (AndroidGUIActivator.bundleContext == null) {
             // No OSGi Exists
-            logger.error("OSGi not initialized");
+            Timber.e("OSGi not initialized");
             finish();
             return;
         }
@@ -245,7 +231,7 @@ public class AccountsListActivity extends OSGiActivity
             try {
                 VCardAvatarManager.clearPersistentStorage(userId.asBareJid());
             } catch (XmppStringprepException e) {
-                logger.error("Failed to purge store for: " + R.string.service_gui_REFRESH_STORES_AVATAR);
+                Timber.e("Failed to purge store for: %s", R.string.service_gui_REFRESH_STORES_AVATAR);
             }
 
             File rosterStoreDirectory = jabberProvider.getRosterStoreDirectory();
@@ -253,18 +239,18 @@ public class AccountsListActivity extends OSGiActivity
                 if (rosterStoreDirectory != null)
                     FileBackend.deleteRecursive(rosterStoreDirectory);
             } catch (IOException e) {
-                logger.error("Failed to purge store for: " + R.string.service_gui_REFRESH_STORES_ROSTER);
+                Timber.e("Failed to purge store for: %s", R.string.service_gui_REFRESH_STORES_ROSTER);
             }
 
             // Account in unRegistering so discoveryInfoManager == null
-			// ScServiceDiscoveryManager discoveryInfoManager = jabberProvider.getDiscoveryManager();
-			// File discoInfoStoreDirectory = discoveryInfoManager.getDiscoInfoPersistentStore();
+            // ScServiceDiscoveryManager discoveryInfoManager = jabberProvider.getDiscoveryManager();
+            // File discoInfoStoreDirectory = discoveryInfoManager.getDiscoInfoPersistentStore();
             File discoInfoStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir()
                     + "/discoInfoStore_" + userId);
             try {
                 FileBackend.deleteRecursive(discoInfoStoreDirectory);
             } catch (IOException e) {
-                logger.error("Failed to purge store for: " + R.string.service_gui_REFRESH_STORES_DISCINFO);
+                Timber.e("Failed to purge store for: %s", R.string.service_gui_REFRESH_STORES_DISCINFO);
             }
         }
     }
@@ -335,10 +321,10 @@ public class AccountsListActivity extends OSGiActivity
                 public void onCheckedChanged(CompoundButton compoundButton, boolean enable)
                 {
                     if (accEnableThread != null) {
-                        logger.error("Ongoing operation in progress");
+                        Timber.e("Ongoing operation in progress");
                         return;
                     }
-                    logger.debug("Toggle " + account + " -> " + enable);
+                    Timber.d("Toggle %s -> %s", account, enable);
 
                     // Prevents from switching the state after key pressed. Refresh will be
                     // triggered by the thread when it finishes the operation.
@@ -393,13 +379,13 @@ public class AccountsListActivity extends OSGiActivity
             } catch (OperationFailedException e) {
                 AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), getString(R.string.service_gui_ERROR),
                         "Failed to " + (enable ? "load" : "unload") + " " + account);
-                logger.error(e.getMessage(), e);
+                Timber.e(e, "%s", e.getMessage());
             } finally {
                 if (DialogActivity.waitForDialogOpened(progressDialog)) {
                     DialogActivity.closeDialog(progressDialog);
                 }
                 else {
-                    logger.error("Failed to wait for the dialog: " + progressDialog);
+                    Timber.e("Failed to wait for the dialog: %s", progressDialog);
                 }
                 accEnableThread = null;
             }

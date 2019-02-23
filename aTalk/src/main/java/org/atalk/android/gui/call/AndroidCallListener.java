@@ -13,7 +13,8 @@ import net.java.sip.communicator.service.notification.NotificationData;
 import net.java.sip.communicator.service.notification.NotificationService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.GuiUtils;
+import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -22,6 +23,8 @@ import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * A utility implementation of the {@link CallListener} interface which delivers the <tt>CallEvent</tt>s to the AWT
@@ -33,11 +36,6 @@ import java.util.*;
  */
 public class AndroidCallListener implements CallListener, CallChangeListener
 {
-    /**
-     * The logger.
-     */
-    private final static Logger logger = Logger.getLogger(AndroidCallListener.class);
-
     /**
      * The application context.
      */
@@ -134,7 +132,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     {
         AudioManager audioManager = aTalkApp.getAudioManager();
         this.speakerPhoneBeforeCall = audioManager.isSpeakerphoneOn();
-        logger.debug("Storing speakerphone status: " + speakerPhoneBeforeCall);
+        Timber.d("Storing speakerphone status: %s", speakerPhoneBeforeCall);
     }
 
     /**
@@ -145,7 +143,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
         if (speakerPhoneBeforeCall != null) {
             AudioManager audioManager = aTalkApp.getAudioManager();
             audioManager.setSpeakerphoneOn(speakerPhoneBeforeCall);
-            logger.debug("Restoring speakerphone to: " + speakerPhoneBeforeCall);
+            Timber.d("Restoring speakerphone to: %s", speakerPhoneBeforeCall);
             speakerPhoneBeforeCall = null;
         }
     }
@@ -237,7 +235,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
 
         Contact contact = evt.getCause().getSourceCallPeer().getContact();
         if ((contact == null) || (notificationService == null)) {
-            logger.warn("No contact found - missed call notification skipped");
+            Timber.w("No contact found - missed call notification skipped");
             return;
         }
 

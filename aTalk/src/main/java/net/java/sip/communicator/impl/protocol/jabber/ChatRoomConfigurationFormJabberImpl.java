@@ -6,8 +6,8 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
@@ -17,6 +17,8 @@ import org.jivesoftware.smackx.xdata.FormField;
 
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * The Jabber implementation of the <tt>ChatRoomConfigurationForm</tt> interface.
  *
@@ -25,11 +27,6 @@ import java.util.*;
  */
 public class ChatRoomConfigurationFormJabberImpl implements ChatRoomConfigurationForm
 {
-    /**
-     * The logger of this class.
-     */
-    private Logger logger = Logger.getLogger(ChatRoomConfigurationFormJabberImpl.class);
-
     /**
      * The smack chat room configuration form.
      */
@@ -73,8 +70,8 @@ public class ChatRoomConfigurationFormJabberImpl implements ChatRoomConfiguratio
             if (smackFormField == null || smackFormField.getType() == FormField.Type.hidden)
                 continue;
 
-            ChatRoomConfigurationFormFieldJabberImpl jabberConfigField = new ChatRoomConfigurationFormFieldJabberImpl(
-                    smackFormField, smackSubmitForm);
+            ChatRoomConfigurationFormFieldJabberImpl jabberConfigField
+                    = new ChatRoomConfigurationFormFieldJabberImpl(smackFormField, smackSubmitForm);
             configFormFields.add(jabberConfigField);
         }
 
@@ -87,14 +84,13 @@ public class ChatRoomConfigurationFormJabberImpl implements ChatRoomConfiguratio
     public void submit()
             throws OperationFailedException
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Sends chat room configuration form to the server.");
+        Timber.log(TimberLog.FINER, "Sends chat room configuration form to the server.");
 
         try {
             smackMultiUserChat.sendConfigurationForm(smackSubmitForm);
         } catch (XMPPException | NoResponseException | InterruptedException
                 | NotConnectedException e) {
-            logger.error("Failed to submit the configuration form.", e);
+            Timber.e(e, "Failed to submit the configuration form.");
             throw new OperationFailedException("Failed to submit the configuration form.",
                     OperationFailedException.GENERAL_ERROR);
         }

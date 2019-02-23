@@ -19,11 +19,12 @@ import org.atalk.impl.neomedia.transform.PacketTransformer;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.Logger;
 import org.atalk.util.RTPUtils;
 
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import timber.log.Timber;
 
 /**
  * A {@link PacketTransformer} which handles incoming fec packets.  This class
@@ -31,15 +32,10 @@ import java.util.TreeMap;
  *
  * @author bgrozev
  * @author bbaldino
+ * @author Eng Chong Meng
  */
 public abstract class AbstractFECReceiver implements PacketTransformer
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AbstractFECReceiver</tt> class and
-     * its instances to print debug information.
-     */
-    private static final Logger logger = Logger.getLogger(AbstractFECReceiver.class);
-
     /**
      * Statistics for this fec receiver
      */
@@ -139,10 +135,8 @@ public abstract class AbstractFECReceiver implements PacketTransformer
     /**
      * Initialize the FEC receiver
      *
-     * @param ssrc
-     *         the ssrc of the stream on which fec packets will be received
-     * @param payloadType
-     *         the payload type of the fec packets
+     * @param ssrc the ssrc of the stream on which fec packets will be received
+     * @param payloadType the payload type of the fec packets
      */
     AbstractFECReceiver(long ssrc, byte payloadType)
     {
@@ -155,8 +149,7 @@ public abstract class AbstractFECReceiver implements PacketTransformer
      * <tt>fecPackets</tt> has reached <tt>FEC_BUFF_SIZE</tt> discards the
      * oldest packet from it.
      *
-     * @param p
-     *         the packet to save.
+     * @param p the packet to save.
      */
     private void saveFec(RawPacket p)
     {
@@ -171,8 +164,7 @@ public abstract class AbstractFECReceiver implements PacketTransformer
      * <tt>mediaPackets</tt> has reached <tt>MEDIA_BUFF_SIZE</tt> discards
      * the oldest packet from it and reuses it.
      *
-     * @param p
-     *         the packet to copy.
+     * @param p the packet to copy.
      */
     protected void saveMedia(RawPacket p)
     {
@@ -191,7 +183,7 @@ public abstract class AbstractFECReceiver implements PacketTransformer
             newMedia.setBuffer(new byte[pLen]);
         }
 
-        System.arraycopy(p.getBuffer(), p.getOffset(), newMedia.getBuffer(),0, pLen);
+        System.arraycopy(p.getBuffer(), p.getOffset(), newMedia.getBuffer(), 0, pLen);
         newMedia.setLength(pLen);
         newMedia.setOffset(0);
 
@@ -201,10 +193,9 @@ public abstract class AbstractFECReceiver implements PacketTransformer
     /**
      * Sets the ulpfec payload type.
      *
-     * @param payloadType
-     *         the payload type.
-     *         FIXME(brian): do we need both this and the ability to pass the payload
-     *         type in the ctor? Can we get rid of this or get rid of the arg in the ctor?
+     * @param payloadType the payload type.
+     * FIXME(brian): do we need both this and the ability to pass the payload
+     * type in the ctor? Can we get rid of this or get rid of the arg in the ctor?
      */
     public void setPayloadType(byte payloadType)
     {
@@ -257,19 +248,14 @@ public abstract class AbstractFECReceiver implements PacketTransformer
     @Override
     public void close()
     {
-        if (logger.isInfoEnabled()) {
-            logger.info("Closing AbstractFECReceiver for SSRC=" + ssrc
-                    + ". Received " + statistics.numRxFecPackets + " fec packets, recovered "
-                    + statistics.numRecoveredPackets + " media packets. Recovery "
-                    + "failed " + statistics.failedRecoveries + " times");
-        }
+        Timber.i("Closing FEC-Receiver for SSRC: %d. Received %d FEC packets, recovered %s media packets. Recovery failed %d times",
+                ssrc, statistics.numRxFecPackets, statistics.numRecoveredPackets, statistics.failedRecoveries);
     }
 
     /**
      * Perform fec receive logic specific to the fec implementation
      *
-     * @param pkts
-     *         the input media packets
+     * @param pkts the input media packets
      * @return a RawPacket[] containing the given media packets as well as any
      * media packets that were recovered
      */

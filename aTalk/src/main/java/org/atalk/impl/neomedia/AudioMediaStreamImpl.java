@@ -5,6 +5,7 @@
  */
 package org.atalk.impl.neomedia;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.device.AudioMediaDeviceSession;
 import org.atalk.impl.neomedia.device.MediaDeviceSession;
 import org.atalk.impl.neomedia.rtcp.AudioRTCPTermination;
@@ -21,7 +22,6 @@ import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.event.*;
-import org.atalk.util.Logger;
 import org.atalk.util.event.PropertyChangeNotifier;
 
 import java.beans.PropertyChangeEvent;
@@ -32,12 +32,15 @@ import javax.media.Format;
 import javax.media.control.BufferControl;
 import javax.media.format.AudioFormat;
 
+import timber.log.Timber;
+
 /**
  * Extends <tt>MediaStreamImpl</tt> in order to provide an implementation of
  * <tt>AudioMediaStream</tt>.
  *
  * @author Lyubomir Marinov
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaStream, PropertyChangeListener
 {
@@ -64,11 +67,6 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
                     Format.NOT_SPECIFIED /* sampleSizeInBits */,
                     1)
     };
-
-    /**
-     * The <tt>Logger</tt> used by the <tt>AudioMediaStreamImpl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AudioMediaStreamImpl.class);
 
     /**
      * A <tt>PropertyChangeNotifier<tt> which will inform this <tt>AudioStream</tt> if a selected
@@ -287,13 +285,12 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
                 if ((bufferLengthStr != null) && (bufferLengthStr.length() > 0))
                     bufferLength = Long.parseLong(bufferLengthStr);
             } catch (NumberFormatException nfe) {
-                logger.warn(bufferLengthStr + " is not a valid receive buffer length/long value", nfe);
+                Timber.w(nfe, "%s is not a valid receive buffer length/long value", bufferLengthStr);
             }
         }
 
         bufferLength = bufferControl.setBufferLength(bufferLength);
-        if (logger.isTraceEnabled())
-            logger.trace("Set receiver buffer length to " + bufferLength);
+        Timber.log(TimberLog.FINER, "Set receiver buffer length to %s", bufferLength);
 
         /*
          * The threshold should better be half of the bufferLength rather than equal to it (as it
@@ -470,9 +467,7 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     {
         super.registerCustomCodecFormats(rtpManager);
         for (AudioFormat format : CUSTOM_CODEC_FORMATS) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("registering format " + format + " with RTPManager");
-            }
+            Timber.d("registering format %s with RTPManager", format);
             /*
              * NOTE (mkoch@rowa.de): com.sun.media.rtp.RtpSessionMgr.addFormat leaks memory, since
              * it stores the Format in a static Vector. AFAIK there is no easy way around it, but

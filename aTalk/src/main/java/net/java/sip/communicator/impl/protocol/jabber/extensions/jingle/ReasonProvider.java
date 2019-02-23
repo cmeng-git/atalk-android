@@ -6,6 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jingle;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -29,12 +30,12 @@ public class ReasonProvider extends ExtensionElementProvider<ReasonPacketExtensi
      *
      * @param parser an XML parser positioned at the opening <tt>reason</tt> element.
      * @return a new {@link ReasonPacketExtension} instance.
-     * @throws java.lang.Exception if an error occurs parsing the XML.
+     * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
 
     @Override
-    public ReasonPacketExtension parse(XmlPullParser parser, int initDepth)
-        throws Exception
+    public ReasonPacketExtension parse(XmlPullParser parser, int initDepth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException
     {
         String text = null;
         Reason reason = null;
@@ -76,10 +77,10 @@ public class ReasonProvider extends ExtensionElementProvider<ReasonPacketExtensi
      * @param parser the parse that we'll be probing for text.
      * @return the content of the next {@link XmlPullParser#TEXT} element we come across or
      * <tt>null</tt> if we encounter a closing tag first.
-     * @throws java.lang.Exception if an error occurs parsing the XML.
+     * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     public String parseText(XmlPullParser parser)
-            throws Exception
+            throws IOException, XmlPullParserException
     {
         boolean done = false;
 

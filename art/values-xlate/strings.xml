@@ -1449,6 +1449,7 @@
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">Battery Optimization</string>
     <string name="battery_optimizations_dialog">Your device has battery usage optimization on aTalk; this may lead to delayed notifications or message lost.\n\nIt is recommended that you disable this optimization for aTalk.</string>
+    <string name="battery_optimization_on">aTalk will be put to sleep when device goes into doze-standby. Manually restart aTalk to receive new messages.</string>
     <string name="device_does_not_support_battery_op">Your device does not support opting out of battery optimization</string>
     <string name="disable">Disable</string>
     <string name="next">Next</string>

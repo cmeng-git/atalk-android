@@ -1469,6 +1469,7 @@
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">Optimización de la batería</string>
     <string name="battery_optimizations_dialog">Su dispositivo tiene una optimización del uso de la batería en un Talk; esto puede ocasionar que se pierdan las notificaciones o que se pierda el mensaje.\n\nSe recomienda deshabilitar esta optimización para aTalk.</string>
+    <string name="battery_optimization_on">aTalk se pondrá en suspensión cuando el dispositivo entre en modo de espera. Reinicie manualmente aTalk para recibir nuevos mensajes.</string>
     <string name="device_does_not_support_battery_op">Su dispositivo no admite optar por la optimización de la batería</string>
     <string name="disable">Inhabilitar</string>
     <string name="next">Siguiente</string>

@@ -1,5 +1,27 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.7.0 (1070)
+Author:         cmeng
+Upload Date:	02/24/2019
+
+- Disable info Retrieval for contact avatar fetching on first login even when local cache is empty
+  ejabberd will auto send VCardTempXUpdate in <presence/> stanza when user come online
+- Replace LOGGER with Timber for improve debug messages logging
+- Upgrade jarjar-gradle:1.0.0=>1.0.1 to allow gradle jarjar.repackage in gradle
+- Improve create chatRoom dialog UI error messages
+- Enhance user permission request process - always prompt for battery optimization if disabled
+- Remove VCardAvatarManager#processStanza(Stanza) stanza interceptor to add VCardTempXUpdate ElementExtension;
+  Not required as ejabberd server will auto add the VCardTempXUpdate ElementExtension.
+- Rename all file names containing PacketExtension to ExtensionElement to be consistent with Smack
+- Update to use smack 4.4.0-alpha2 release 20190223
+- Update to use org.jxmpp:jxmpp-jid:0.7.0-alpha5 required by smack
+- Replace public XmlStringBuilder toXML(String enclosingNamespace) with new smack Element implementation
+  i.e Public CharSequence toXML(XmlEnvironment xmlEnvironment);
+- Update dexter:4.2.0=>5.0.0;  libraries libphonenumber:7.5.1=>8.10.5; commons-lang3:3.6=>3.8.1;
+  apache-mime4j-core:0.8.1=>0.8.2; bcpkix-jdk15on:1.58=>1.61
+- Provide full instruction on how to build lib/*.jar from source in lib/src_reference/README.md
+
+=========================================================================
 Version:		1.6.6 (1066)
 Author:         cmeng
 Upload Date:	01/31/2019
@@ -14,6 +36,7 @@ Upload Date:	01/31/2019
 
 - fix ChatController: initChatController() must precede showSendModeButton() to init mChatTransport
   before use and mChatTransport must check against MetaContactChatTransport
+
 =========================================================================
 Version:		1.6.5 (1065)
 Author:         cmeng

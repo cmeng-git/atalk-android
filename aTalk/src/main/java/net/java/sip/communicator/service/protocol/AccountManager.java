@@ -14,7 +14,6 @@ import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.protocol.event.AccountManagerEvent;
 import net.java.sip.communicator.service.protocol.event.AccountManagerListener;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.persistance.DatabaseBackend;
@@ -25,6 +24,8 @@ import org.osgi.framework.*;
 
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * Represents an implementation of <tt>AccountManager</tt> which loads the accounts in a separate thread.
  *
@@ -34,11 +35,6 @@ import java.util.*;
  */
 public class AccountManager
 {
-    /**
-     * The <tt>Logger</tt> used by this <tt>AccountManagerImpl</tt> instance for logging output.
-     */
-    private final Logger logger = Logger.getLogger(AccountManager.class);
-
     /**
      * The delay in milliseconds the background <tt>Thread</tt> loading the stored accounts should wait
      * before dying so that it doesn't get recreated for each <tt>ProtocolProviderFactory</tt> registration.
@@ -92,13 +88,7 @@ public class AccountManager
         databaseBackend = DatabaseBackend.getInstance(context);
         configurationService = ProtocolProviderActivator.getConfigurationService();
 
-        this.bundleContext.addServiceListener(new ServiceListener()
-        {
-            public void serviceChanged(ServiceEvent serviceEvent)
-            {
-                AccountManager.this.serviceChanged(serviceEvent);
-            }
-        });
+        this.bundleContext.addServiceListener(serviceEvent -> AccountManager.this.serviceChanged(serviceEvent));
     }
 
     /**
@@ -122,16 +112,13 @@ public class AccountManager
     private void doLoadStoredAccounts(ProtocolProviderFactory factory)
     {
         List<AccountID> accountIDs = databaseBackend.getAccounts(factory);
-        if (logger.isDebugEnabled())
-            logger.debug("Found " + accountIDs.size() + factory.getProtocolName() + " accounts");
+        Timber.d("Found %s %s accounts", accountIDs.size(), factory.getProtocolName());
 
         CredentialsStorageService credentialsStorage
                 = ServiceUtils.getService(bundleContext, CredentialsStorageService.class);
 
         for (AccountID accountID : accountIDs) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Loading account " + accountID.getAccountJid());
-            }
+            Timber.d("Loading account %s", accountID.getAccountJid());
             synchronized (storedAccounts) {
                 storedAccounts.add(accountID);
             }
@@ -164,7 +151,7 @@ public class AccountManager
     {
         AccountManagerListener[] listeners;
         synchronized (this.listeners) {
-            listeners = this.listeners.toArray(new AccountManagerListener[this.listeners.size()]);
+            listeners = this.listeners.toArray(new AccountManagerListener[0]);
         }
 
         int listenerCount = listeners.length;
@@ -221,7 +208,7 @@ public class AccountManager
         try {
             factoryRefs = this.bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), null);
         } catch (InvalidSyntaxException ex) {
-            this.logger.error("Failed to retrieve the registered ProtocolProviderFactories", ex);
+            Timber.e(ex, "Failed to retrieve the registered ProtocolProviderFactories");
             return false;
         }
 
@@ -266,12 +253,12 @@ public class AccountManager
     public AccountID findAccountID(String uid)
     {
         Map<String, String> accounts;
-        ServiceReference[] factoryRefs = null;
+        ServiceReference[] factoryRefs;
 
         try {
             factoryRefs = this.bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), null);
         } catch (InvalidSyntaxException ex) {
-            this.logger.error("Failed to retrieve the registered ProtocolProviderFactories", ex);
+            Timber.e(ex, "Failed to retrieve the registered ProtocolProviderFactories");
             return null;
         }
 
@@ -383,7 +370,7 @@ public class AccountManager
                         try {
                             loadStoredAccountsQueue.wait(LOAD_STORED_ACCOUNTS_TIMEOUT);
                         } catch (InterruptedException ex) {
-                            logger.warn("The loading of the stored accounts has been interrupted", ex);
+                            Timber.w(ex, "The loading of the stored accounts has been interrupted");
                             interrupted = true;
                             synchronized (this.loadStoredAccountsQueue) {
                                 if ((!interrupted) && (this.loadStoredAccountsQueue.size() <= 0)) {
@@ -411,7 +398,7 @@ public class AccountManager
                          * Swallow the exception in order to prevent a single factory from halting
                          * the loading of subsequent factories.
                          */
-                        logger.error("Failed to load accounts for " + factory, ex);
+                        Timber.e(ex, "Failed to load accounts for %s", factory);
                     }
                 }
 
@@ -431,7 +418,6 @@ public class AccountManager
                             loadStoredAccountsThread = null;
                             loadStoredAccountsQueue.notifyAll();
                         }
-                        break;
                     }
                 }
             }
@@ -516,10 +502,12 @@ public class AccountManager
             if (accountID.isPasswordPersistent()) {
                 String password = accountProperties.get(ProtocolProviderFactory.PASSWORD);
                 credentialsStorage.storePassword(accountUuid, password);
-            } else {
+            }
+            else {
                 credentialsStorage.removePassword(accountUuid);
             }
-        } else {
+        }
+        else {
             throw new OperationFailedException("CredentialsStorageService failed to storePassword",
                     OperationFailedException.GENERAL_ERROR);
         }
@@ -528,8 +516,7 @@ public class AccountManager
         if (configurationProperties.size() > 0)
             configurationService.setProperties(configurationProperties);
 
-        if (logger.isDebugEnabled())
-            logger.debug("Stored account for id " + accountUid);
+        Timber.d("Stored account for id %s", accountUid);
     }
 
     /**
@@ -541,7 +528,7 @@ public class AccountManager
      */
     public String getStoredAccountUUID(ProtocolProviderFactory factory, String accountUID)
     {
-        Map<String, String> accounts = new Hashtable<>();
+        Map<String, String> accounts;
         accounts = getStoredAccounts(factory);
         if (accounts.containsKey(accountUID))
             return accounts.get(accountUID);
@@ -560,8 +547,7 @@ public class AccountManager
     public boolean removeStoredAccount(ProtocolProviderFactory factory, AccountID accountID)
     {
         synchronized (storedAccounts) {
-            if (storedAccounts.contains(accountID))
-                storedAccounts.remove(accountID);
+            storedAccounts.remove(accountID);
         }
         /*
          * We're already doing it in #unloadAccount(AccountID) - we're figuring out the

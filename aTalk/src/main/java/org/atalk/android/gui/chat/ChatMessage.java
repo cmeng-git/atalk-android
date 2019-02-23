@@ -11,6 +11,8 @@ import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
 
 import java.util.Date;
 
+import timber.log.Timber;
+
 /**
  * The <tt>ChatMessage</tt> interface is used to display a chat message.
  *

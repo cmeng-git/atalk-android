@@ -16,21 +16,19 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.Callable;
 
+import timber.log.Timber;
+
 /**
  * An implementation of the <tt>SoundNotificationHandler</tt> interface.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class SoundNotificationHandlerImpl implements SoundNotificationHandler
 {
 	/**
-	 * The logger that will be used to log messages.
-	 */
-	private static Logger logger = Logger.getLogger(SoundNotificationHandlerImpl.class);
-
-	/**
-	 * The indicator which determines whether this <tt>SoundNotificationHandler</tt> is currently muted i.e. the sounds
-	 * are off.
+	 * The indicator which determines whether this <tt>SoundNotificationHandler</tt> is currently muted
+     * i.e. the sounds are off.
 	 */
 	private boolean mute;
 
@@ -216,7 +214,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
 					clip.stop();
 				}
 				catch (Throwable t) {
-					logger.error("Error stopping audio clip", t);
+					Timber.e(t, "Error stopping audio clip");
 				}
 			}
 		}
@@ -277,7 +275,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
 				beepMethod = toolkit.getClass().getMethod("beep");
 			}
 			catch (Throwable t) {
-				logger.error("Cannot load awt.Toolkit", t);
+				Timber.e(t, "Cannot load awt.Toolkit");
 			}
 		}
 

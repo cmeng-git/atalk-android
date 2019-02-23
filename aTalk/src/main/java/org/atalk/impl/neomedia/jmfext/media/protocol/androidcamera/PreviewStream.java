@@ -8,8 +8,6 @@ package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
 import android.hardware.Camera;
 import android.view.SurfaceHolder;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 
@@ -18,6 +16,8 @@ import java.util.LinkedList;
 
 import javax.media.Buffer;
 import javax.media.control.FormatControl;
+
+import timber.log.Timber;
 
 /**
  * Video stream that captures frames using camera preview callbacks in YUV format. As an input
@@ -30,11 +30,6 @@ import javax.media.control.FormatControl;
 @SuppressWarnings("deprecation")
 public class PreviewStream extends CameraStreamBase implements Camera.PreviewCallback
 {
-    /**
-     * The logger.
-     */
-    private final static Logger logger = Logger.getLogger(PreviewStream.class);
-
     /**
      * Buffers queue
      */
@@ -91,9 +86,8 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         Camera.Size previewSize = params.getPreviewSize();
         int bufferSize = calcYV12Size(previewSize, swap);
 
-        logger.info("Camera captured preview = " + previewSize.width + "x" + previewSize.height + " @ "
-                + cameraRotation + "-DEG with buffer size: " + bufferSize
-                + " for image format: 0x" + Integer.toString(params.getPreviewFormat(), 16));
+        Timber.i("Camera captured preview = %dx%d @%d-DEG with buffer size: %d for image format: %08x",
+                previewSize.width, previewSize.height, cameraRotation, bufferSize, params.getPreviewFormat());
 
         mCamera.addCallbackBuffer(new byte[bufferSize]);
 
@@ -137,7 +131,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     public void onPreviewFrame(byte[] data, Camera camera)
     {
         if (data == null) {
-            logger.error("Null data received on callback, invalid buffer size?");
+            Timber.e("Null data received on callback, invalid buffer size?");
             return;
         }
         // Calculate statistics for average frame rate
@@ -267,50 +261,50 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         return (int) (ySize + uvSize * 2);
     }
 
-//    /**
-//     * Converts Android YV12 format to YUV420 planar without rotation support
-//     *
-//     * @param input
-//     *         input YV12 image bytes.
-//     * @param output
-//     *         output buffer.
-//     * @param width
-//     *         image width.
-//     * @param height
-//     *         image height.
-//     */
-//    static void YV12toYUV420Planar(final byte[] input, final byte[] output, final int width, final int height)
-//    {
-//        if (width % 16 != 0)
-//            throw new IllegalArgumentException("Unsupported width: " + width);
-//
-//        int yStride = (int) Math.ceil(width / 16.0) * 16;
-//        int uvStride = (int) Math.ceil((yStride / 2) / 16.0) * 16;
-//        int ySize = yStride * height;
-//        int uvSize = uvStride * height / 2;
-//
-//        int I420uvStride = (int) (((yStride / 2) / 16.0) * 16);
-//        int I420uvSize = width * height / 4;
-//        int uvStridePadding = uvStride - I420uvStride;
-//
-//        System.arraycopy(input, 0, output, 0, ySize); // Y
-//
-//        // If padding is 0 then just swap U and V planes
-//        if (uvStridePadding == 0) {
-//            System.arraycopy(input, ySize, output, ySize + uvSize, uvSize); // Cr (V)
-//            System.arraycopy(input, ySize + uvSize, output, ySize, uvSize); // Cb (U)
-//        }
-//        else {
-//            logger.warn("Not recommended resolution: " + width + "x" + height);
-//            int src = ySize;
-//            int dst = ySize;
-//            // Copy without padding
-//            for (int y = 0; y < height / 2; y++) {
-//                System.arraycopy(input, src + uvSize, output, dst, I420uvStride); // Cb (U)
-//                System.arraycopy(input, src, output, dst + I420uvSize, I420uvStride); // Cr (V)
-//                src += uvStride;
-//                dst += I420uvStride;
-//            }
-//        }
-//    }
+    //    /**
+    //     * Converts Android YV12 format to YUV420 planar without rotation support
+    //     *
+    //     * @param input
+    //     *         input YV12 image bytes.
+    //     * @param output
+    //     *         output buffer.
+    //     * @param width
+    //     *         image width.
+    //     * @param height
+    //     *         image height.
+    //     */
+    //    static void YV12toYUV420Planar(final byte[] input, final byte[] output, final int width, final int height)
+    //    {
+    //        if (width % 16 != 0)
+    //            throw new IllegalArgumentException("Unsupported width: " + width);
+    //
+    //        int yStride = (int) Math.ceil(width / 16.0) * 16;
+    //        int uvStride = (int) Math.ceil((yStride / 2) / 16.0) * 16;
+    //        int ySize = yStride * height;
+    //        int uvSize = uvStride * height / 2;
+    //
+    //        int I420uvStride = (int) (((yStride / 2) / 16.0) * 16);
+    //        int I420uvSize = width * height / 4;
+    //        int uvStridePadding = uvStride - I420uvStride;
+    //
+    //        System.arraycopy(input, 0, output, 0, ySize); // Y
+    //
+    //        // If padding is 0 then just swap U and V planes
+    //        if (uvStridePadding == 0) {
+    //            System.arraycopy(input, ySize, output, ySize + uvSize, uvSize); // Cr (V)
+    //            System.arraycopy(input, ySize + uvSize, output, ySize, uvSize); // Cb (U)
+    //        }
+    //        else {
+    //            Timber.w("Not recommended resolution: %sx%s", width, height);
+    //            int src = ySize;
+    //            int dst = ySize;
+    //            // Copy without padding
+    //            for (int y = 0; y < height / 2; y++) {
+    //                System.arraycopy(input, src + uvSize, output, dst, I420uvStride); // Cb (U)
+    //                System.arraycopy(input, src, output, dst + I420uvSize, I420uvStride); // Cr (V)
+    //                src += uvStride;
+    //                dst += I420uvStride;
+    //            }
+    //        }
+    //    }
 }

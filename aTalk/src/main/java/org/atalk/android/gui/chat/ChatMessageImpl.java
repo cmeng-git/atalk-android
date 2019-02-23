@@ -1,24 +1,28 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.chat;
 
-import android.text.*;
+import android.text.TextUtils;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.GuiUtils;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.atalk.android.*;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.Html;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+
+import timber.log.Timber;
 
 /**
  * The <tt>ChatMessageImpl</tt> class encapsulates message information in order to provide a
@@ -30,11 +34,6 @@ import java.util.*;
  */
 public class ChatMessageImpl implements ChatMessage
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(ChatMessageImpl.class);
-
     /**
      * The name of the contact sending the message.
      */
@@ -128,7 +127,7 @@ public class ChatMessageImpl implements ChatMessage
      */
     public ChatMessageImpl(String contactName, Date date, int messageType, int mimeType, String message, int encryptionType)
     {
-        this(contactName, null, date, messageType, mimeType , message, encryptionType,
+        this(contactName, null, date, messageType, mimeType, message, encryptionType,
                 null, null, null, null, null);
     }
 
@@ -430,7 +429,7 @@ public class ChatMessageImpl implements ChatMessage
                 && (messageType == nextMsg.getMessageType())
                 && contactName.equals(nextMsg.getContactName()));
         // same message encryption type
-        boolean encTypeSame =  (encryptionType == nextMsg.getEncryptionType());
+        boolean encTypeSame = (encryptionType == nextMsg.getEncryptionType());
         // true if the new message is within a minute from the last one
         boolean inElapseTime = ((nextMsg.getDate().getTime() - getDate().getTime()) < 60000);
 
@@ -540,7 +539,7 @@ public class ChatMessageImpl implements ChatMessage
                     return displayName;
             }
         } catch (Exception e) {
-            logger.warn("Cannot obtain display name through OPSet");
+            Timber.w("Cannot obtain display name through OPSet");
         }
         return protocolProvider.getAccountID().getDisplayName();
     }

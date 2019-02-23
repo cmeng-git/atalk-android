@@ -6,8 +6,6 @@
  */
 package org.atalk.impl.osgi.framework.launch;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.impl.osgi.framework.ServiceRegistrationImpl;
 import org.atalk.impl.osgi.framework.startlevel.FrameworkStartLevelImpl;
@@ -19,17 +17,14 @@ import org.osgi.framework.startlevel.FrameworkStartLevel;
 import java.io.InputStream;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
 public class FrameworkImpl extends BundleImpl implements Framework
 {
-    /**
-     * The logger
-     */
-    private final Logger logger = Logger.getLogger(FrameworkImpl.class);
-
     private final List<BundleImpl> bundles = new LinkedList<BundleImpl>();
 
     private final Map<String, String> configuration;
@@ -104,7 +99,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
                     if (type != FrameworkEvent.ERROR) {
                         // TODO Auto-generated method stub
                     }
-                    logger.error("Error firing framework event", t);
+                    Timber.e(t, "Error firing framework event");
                 }
         }
     }
@@ -344,7 +339,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
                 } catch (Throwable t) {
                     if (t instanceof ThreadDeath)
                         throw (ThreadDeath) t;
-                    logger.error("Error changing start level", t);
+                    Timber.e(t, "Error changing start level");
                 }
             }
         }
@@ -360,7 +355,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
                 } catch (Throwable t) {
                     if (t instanceof ThreadDeath)
                         throw (ThreadDeath) t;
-                    logger.error("Error changing start level", t);
+                    Timber.e(t, "Error changing start level");
                 }
             }
         }

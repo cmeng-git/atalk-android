@@ -15,7 +15,7 @@
  */
 package org.atalk.sctp4j;
 
-import org.atalk.util.Logger;
+import timber.log.Timber;
 
 /**
  * Sample SCTP server that uses UDP socket for transfers.
@@ -24,10 +24,6 @@ import org.atalk.util.Logger;
  */
 public class SampleServer
 {
-	/**
-	 * The logger.
-	 */
-	private final static Logger logger = Logger.getLogger(SampleServer.class);
 
 	public static void main(String[] args)
 			throws Exception
@@ -58,9 +54,8 @@ public class SampleServer
 					long ppid,
 					int context, int flags)
 			{
-				logger.info("Server got some data: " + data.length
-						+ " stream: " + sid
-						+ " payload protocol id: " + ppid);
+				Timber.i("Server got some data: %d; stream: %s; payload protocol id: %s",
+                        data.length, sid, ppid);
 			}
 		});
 

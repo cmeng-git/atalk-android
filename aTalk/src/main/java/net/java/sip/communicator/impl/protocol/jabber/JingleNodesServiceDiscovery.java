@@ -5,8 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -25,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import timber.log.Timber;
+
 /**
  * Search for jingle nodes.
  *
@@ -33,11 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JingleNodesServiceDiscovery implements Runnable
 {
-    /**
-     * Logger of this class
-     */
-    private static final Logger logger = Logger.getLogger(JingleNodesServiceDiscovery.class);
-
     /**
      * Property containing jingle nodes prefix to search for.
      */
@@ -93,13 +88,10 @@ public class JingleNodesServiceDiscovery implements Runnable
     {
         synchronized (jingleNodesSyncRoot) {
             long start = System.currentTimeMillis();
-            if (logger.isInfoEnabled()) {
-                logger.info("Start Jingle Nodes discovery!");
-            }
+            Timber.i("Start Jingle Nodes discovery!");
 
             SmackServiceNode.MappedNodes nodes = null;
-            String searchNodesWithPrefix
-                    = JabberActivator.getResources().getSettingsString(JINGLE_NODES_SEARCH_PREFIX_PROP);
+            String searchNodesWithPrefix = JabberActivator.getResources().getSettingsString(JINGLE_NODES_SEARCH_PREFIX_PROP);
             if (searchNodesWithPrefix == null || searchNodesWithPrefix.length() == 0)
                 searchNodesWithPrefix = JabberActivator.getConfigurationService().getString(JINGLE_NODES_SEARCH_PREFIX_PROP);
 
@@ -115,15 +107,12 @@ public class JingleNodesServiceDiscovery implements Runnable
                         accountID.isJingleNodesSearchBuddiesEnabled(),
                         accountID.isJingleNodesAutoDiscoveryEnabled(), searchNodesWithPrefix);
             } catch (NotConnectedException | InterruptedException e) {
-                logger.error("Search failed", e);
+                Timber.e(e, "Search failed");
             }
 
-            if (logger.isInfoEnabled()) {
-                logger.info("End of Jingle Nodes discovery!");
-                logger.info("Found " + (nodes != null ? nodes.getRelayEntries().size() : "0")
-                        + " Jingle Nodes relay for account: " + accountID.getAccountJid()
-                        + " in " + (System.currentTimeMillis() - start) + " ms.");
-            }
+            Timber.i("End of Jingle Nodes discovery!\nFound %s Jingle Nodes relay for account: %s in %s ms",
+                    (nodes != null ? nodes.getRelayEntries().size() : "0"), accountID.getAccountJid(),
+                    (System.currentTimeMillis() - start));
             if (nodes != null)
                 service.addEntries(nodes);
         }

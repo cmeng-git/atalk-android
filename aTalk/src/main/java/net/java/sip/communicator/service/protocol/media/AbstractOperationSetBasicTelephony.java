@@ -8,7 +8,6 @@ package net.java.sip.communicator.service.protocol.media;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.CallEvent;
 import net.java.sip.communicator.service.protocol.event.CallListener;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.service.neomedia.MediaType;
@@ -16,6 +15,8 @@ import org.atalk.service.neomedia.recording.Recorder;
 
 import java.text.ParseException;
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Represents a default implementation of <tt>OperationSetBasicTelephony</tt> in order to make it
@@ -26,16 +27,11 @@ import java.util.*;
  * @author Lyubomir Marinov
  * @author Emil Ivov
  * @author Dmitri Melnikov
+ * @author Eng Chong Meng
  */
 public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProviderService>
         implements OperationSetBasicTelephony<T>
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AbstractOperationSetBasicTelephony</tt> class and its
-     * instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AbstractOperationSetBasicTelephony.class);
-
     /**
      * A list of listeners registered for call events.
      */
@@ -79,8 +75,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
         try {
             return createCall(callee.getAddress(), conference);
         } catch (ParseException pe) {
-            throw new OperationFailedException(pe.getMessage(),
-                    OperationFailedException.ILLEGAL_ARGUMENT, pe);
+            throw new OperationFailedException(pe.getMessage(), OperationFailedException.ILLEGAL_ARGUMENT, pe);
         }
     }
 
@@ -129,8 +124,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      * @param sourceCall the call on which the event has occurred.
      * @param mediaDirections direction map for media types
      */
-    public void fireCallEvent(int eventID, Call sourceCall,
-            Map<MediaType, MediaDirection> mediaDirections)
+    public void fireCallEvent(int eventID, Call sourceCall, Map<MediaType, MediaDirection> mediaDirections)
     {
         fireCallEvent(new CallEvent(sourceCall, eventID, mediaDirections));
     }
@@ -148,14 +142,9 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
         synchronized (callListeners) {
             listeners = new ArrayList<CallListener>(callListeners);
         }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Dispatching a CallEvent to " + listeners.size() + " listeners. The event is: " + event);
-        }
-
+        Timber.d("Dispatching a CallEvent to %d listeners. The event is: %s", listeners.size(), event);
         for (CallListener listener : listeners) {
-            if (logger.isDebugEnabled())
-                logger.debug("Dispatching a CallEvent to " + listener.getClass() + " . The event is: " + event);
+            Timber.d("Dispatching a CallEvent to %s. The event is: %s", listener.getClass(), event);
 
             switch (event.getEventID()) {
                 case CallEvent.CALL_INITIATED:

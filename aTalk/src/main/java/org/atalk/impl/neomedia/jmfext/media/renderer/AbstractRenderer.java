@@ -6,10 +6,11 @@
 package org.atalk.impl.neomedia.jmfext.media.renderer;
 
 import org.atalk.impl.neomedia.control.ControlsAdapter;
-import org.atalk.util.Logger;
 
 import javax.media.Format;
 import javax.media.Renderer;
+
+import timber.log.Timber;
 
 /**
  * Provides an abstract base implementation of <tt>Renderer</tt> in order to facilitate extenders.
@@ -17,16 +18,11 @@ import javax.media.Renderer;
  * @param <T> the type of <tt>Format</tt> of the media data processed as input by
  * <tt>AbstractRenderer</tt>
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public abstract class AbstractRenderer<T extends Format> extends ControlsAdapter
         implements Renderer
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AbstractRenderer</tt> class and its instance to print
-     * debugging information.
-     */
-    private static final Logger logger = Logger.getLogger(AbstractRenderer.class);
-
     /**
      * The <tt>Format</tt> of the media data processed as input by this <tt>Renderer</tt>.
      */
@@ -80,7 +76,7 @@ public abstract class AbstractRenderer<T extends Format> extends ControlsAdapter
             throwable = iae;
         }
         if (throwable != null) {
-            logger.warn("Failed to use thread priority: " + threadPriority, throwable);
+            Timber.w(throwable, "Failed to use thread priority: %s", threadPriority);
         }
     }
 }

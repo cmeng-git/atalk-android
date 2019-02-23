@@ -13,10 +13,10 @@
  */
 package org.atalk.impl.neomedia;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.AbstractActiveSpeakerDetector;
 import org.atalk.service.neomedia.ActiveSpeakerDetector;
 import org.atalk.util.ExecutorUtils;
-import org.atalk.util.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,12 +52,6 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     private static final double C3 = 0;
 
     /**
-     * The indicator which determines whether the <tt>DominantSpeakerIdentification</tt> class and
-     * its instances are to execute in debug mode.
-     */
-    private static final boolean DEBUG;
-
-    /**
      * The interval in milliseconds of the activation of the identification of the dominant speaker
      * in a multipoint conference.
      */
@@ -86,12 +80,6 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
      * <tt>30</tt>.
      */
     private static final long LEVEL_IDLE_TIMEOUT = 40;
-
-    /**
-     * The <tt>Logger</tt> used by the <tt>DominantSpeakerIdentification</tt> class and its
-     * instances to print debug information.
-     */
-    private static final Logger logger = Logger.getLogger(DominantSpeakerIdentification.class);
 
     /**
      * The (total) number of long time-intervals used for speech activity score evaluation at a
@@ -174,10 +162,6 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
      */
     private static final ExecutorService threadPool
             = ExecutorUtils.newCachedThreadPool(true, "DominantSpeakerIdentification");
-
-    static {
-        DEBUG = logger.isDebugEnabled();
-    }
 
     /**
      * Computes the binomial coefficient indexed by <tt>n</tt> and <tt>r</tt> i.e. the number of
@@ -333,7 +317,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     public JSONObject doGetJSON()
     {
         JSONObject jsonObject;
-        if (DEBUG) {
+        if (TimberLog.isTraceEnabled()) {
             synchronized (this) {
                 jsonObject = new JSONObject();
 

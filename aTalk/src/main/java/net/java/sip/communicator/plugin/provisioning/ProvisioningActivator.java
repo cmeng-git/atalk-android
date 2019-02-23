@@ -10,7 +10,6 @@ import net.java.sip.communicator.service.gui.*;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.provdisc.ProvisioningDiscoveryService;
 import net.java.sip.communicator.service.provisioning.ProvisioningService;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
@@ -20,6 +19,8 @@ import org.osgi.framework.*;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import timber.log.Timber;
+
 /**
  * Activator the provisioning system. It will gather provisioning URL depending on the
  * configuration (DHCP, manual, ...), retrieve configuration file and push properties to the
@@ -27,11 +28,6 @@ import java.util.Hashtable;
  */
 public class ProvisioningActivator implements BundleActivator
 {
-    /**
-     * Logger of this class
-     */
-    private static final Logger logger = Logger.getLogger(ProvisioningActivator.class);
-
     /**
      * The current BundleContext.
      */
@@ -84,8 +80,6 @@ public class ProvisioningActivator implements BundleActivator
     public void start(BundleContext bundleContext)
             throws Exception
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Provisioning discovery [STARTED]");
         ProvisioningActivator.bundleContext = bundleContext;
         String url = null;
         provisioningService = new ProvisioningServiceImpl();
@@ -127,8 +121,7 @@ public class ProvisioningActivator implements BundleActivator
         provisioningService.start(url);
         bundleContext.registerService(ProvisioningService.class.getName(), provisioningService, null);
 
-        if (logger.isDebugEnabled())
-            logger.debug("Provisioning discovery [REGISTERED]");
+        Timber.d("Provisioning discovery [REGISTERED]");
     }
 
     /**
@@ -141,9 +134,7 @@ public class ProvisioningActivator implements BundleActivator
             throws Exception
     {
         ProvisioningActivator.bundleContext = null;
-
-        if (logger.isDebugEnabled())
-            logger.debug("Provisioning discovery [STOPPED]");
+        Timber.d("Provisioning discovery [STOPPED]");
     }
 
     /**

@@ -19,7 +19,6 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.systray.PopupMessage;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -33,6 +32,8 @@ import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import timber.log.Timber;
+
 /**
  * Class manages displayed notification for given <tt>PopupMessage</tt>.
  *
@@ -41,11 +42,6 @@ import java.util.TimerTask;
  */
 public class AndroidPopup
 {
-    /**
-     * The logger.
-     */
-    private final static Logger logger = Logger.getLogger(AndroidPopup.class);
-
     /**
      * Parent notifications handler
      */
@@ -325,7 +321,7 @@ public class AndroidPopup
                 Contact contact = (Contact) tag;
                 MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
                 if (metaContact == null) {
-                    logger.error("Meta contact not found for " + contact);
+                    Timber.e("Meta contact not found for %s", contact);
                 }
                 else {
                     targetIntent = ChatSessionManager.getChatIntent(metaContact);
@@ -336,7 +332,7 @@ public class AndroidPopup
                 ChatRoomWrapper chatRoomWrapper
                         = AndroidGUIActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, true);
                 if (chatRoomWrapper == null) {
-                    logger.error("ChatRoomWrapper not found for " + chatRoom.getIdentifier());
+                    Timber.e("ChatRoomWrapper not found for %s", chatRoom.getIdentifier());
                 }
                 else {
                     targetIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
@@ -368,7 +364,7 @@ public class AndroidPopup
     {
         inboxStyle.addLine(popupMessage.getMessage());
         // Summary
-        if ((mDescriptor != null) && mDescriptor instanceof Contact) {
+        if (mDescriptor instanceof Contact) {
             ProtocolProviderService pps = ((Contact) mDescriptor).getProtocolProvider();
             if (pps != null) {
                 inboxStyle.setSummaryText(pps.getAccountID().getDisplayName());
@@ -383,7 +379,7 @@ public class AndroidPopup
     {
         // Remove timeout handler
         if (timeoutHandler != null) {
-            logger.debug("Removing timeout from notification: " + id);
+            Timber.d("Removing timeout from notification: %s", id);
 
             timeoutHandler.cancel();
             timeoutHandler = null;
@@ -398,7 +394,7 @@ public class AndroidPopup
         cancelTimeout();
         long timeout = popupMessage.getTimeout();
         if (timeout > 0) {
-            logger.debug("Setting timeout " + timeout + " on notification: " + id);
+            Timber.d("Setting timeout %d; on notification: %d", timeout, id);
 
             timeoutHandler = new Timer();
             timeoutHandler.schedule(new TimerTask()

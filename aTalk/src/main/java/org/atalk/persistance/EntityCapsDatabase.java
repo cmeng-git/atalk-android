@@ -18,8 +18,6 @@ package org.atalk.persistance;
 
 import android.content.ContentValues;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 
 /**
@@ -33,24 +31,19 @@ import org.jivesoftware.smackx.caps.EntityCapsManager;
  */
 public class EntityCapsDatabase
 {
-	public static final String TABLE_NAME = "discoveryCaps";
-	public static final String HASH = "hash";
-	public static final String VER = "ver";
-	public static final String RESULT = "result";
+    public static final String TABLE_NAME = "discoveryCaps";
+    public static final String HASH = "hash";
+    public static final String VER = "ver";
+    public static final String RESULT = "result";
 
-	/**
-	 * The <tt>Logger</tt> used by the <tt>EntityCapsManager</tt> class and its instances for
-	 * logging output.
-	 */
-	private static final Logger logger = Logger.getLogger(EntityCapsDatabase.class.getName());
+    public ContentValues getContentValues()
+    {
+        String currentCapsVersion = EntityCapsManager.getNodeVersionByJid(null);
+        final ContentValues values = new ContentValues();
 
-	public ContentValues getContentValues() {
-		String currentCapsVersion = EntityCapsManager.getNodeVersionByJid(null);
-		final ContentValues values = new ContentValues();
-
-		values.put(HASH, HASH);
-		values.put(VER, currentCapsVersion);
-		values.put(RESULT, this.toString());
-		return values;
-	}
+        values.put(HASH, HASH);
+        values.put(VER, currentCapsVersion);
+        values.put(RESULT, this.toString());
+        return values;
+    }
 }

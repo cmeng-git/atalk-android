@@ -5,72 +5,77 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.coin;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultPacketExtensionProvider;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultExtensionElementProvider;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
- * Parser for EndpointPacketExtension.
+ * Parser for EndpointExtensionElement.
  *
  * @author Sebastien Vincent
  */
-public class EndpointProvider extends ExtensionElementProvider<EndpointPacketExtension>
+public class EndpointProvider extends ExtensionElementProvider<EndpointExtensionElement>
 {
     /**
-     * Parses a endpoint extension sub-packet and creates a {@link EndpointPacketExtension}
+     * Parses a endpoint extension sub-packet and creates a {@link EndpointExtensionElement}
      * instance. At the beginning of the method call, the xml parser will be positioned on the
      * opening element of the packet extension. As required by the smack API, at the end of the
      * method call, the parser will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>Endpoint</tt> element.
-     * @return a new {@link EndpointPacketExtension} instance.
-     * @throws java.lang.Exception if an error occurs parsing the XML.
+     * @return a new {@link EndpointExtensionElement} instance.
+     * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */
     @Override
-    public EndpointPacketExtension parse(XmlPullParser parser, int depth)
-            throws Exception
+    public EndpointExtensionElement parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException, SmackParsingException
     {
         boolean done = false;
         int eventType;
         String elementName = null;
-        String entity = parser.getAttributeValue("", EndpointPacketExtension.ENTITY_ATTR_NAME);
+        String entity = parser.getAttributeValue("", EndpointExtensionElement.ENTITY_ATTR_NAME);
         StateType state = StateType.full;
-        String stateStr = parser.getAttributeValue("", EndpointPacketExtension.STATE_ATTR_NAME);
+        String stateStr = parser.getAttributeValue("", EndpointExtensionElement.STATE_ATTR_NAME);
 
         if (stateStr != null) {
             state = StateType.parseString(stateStr);
         }
 
-        EndpointPacketExtension ext = new EndpointPacketExtension(entity);
-        ext.setAttribute(EndpointPacketExtension.STATE_ATTR_NAME, state);
+        EndpointExtensionElement ext = new EndpointExtensionElement(entity);
+        ext.setAttribute(EndpointExtensionElement.STATE_ATTR_NAME, state);
 
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
             if (eventType == XmlPullParser.START_TAG) {
                 switch (elementName) {
-                    case EndpointPacketExtension.ELEMENT_DISPLAY_TEXT:
+                    case EndpointExtensionElement.ELEMENT_DISPLAY_TEXT:
                         ext.setDisplayText(CoinIQProvider.parseText(parser));
                         break;
-                    case EndpointPacketExtension.ELEMENT_DISCONNECTION:
+                    case EndpointExtensionElement.ELEMENT_DISCONNECTION:
                         ext.setDisconnectionType(DisconnectionType.parseString(parser.getText()));
                         break;
-                    case EndpointPacketExtension.ELEMENT_JOINING:
+                    case EndpointExtensionElement.ELEMENT_JOINING:
                         ext.setJoiningType(JoiningType.parseString(CoinIQProvider.parseText(parser)));
                         break;
-                    case EndpointPacketExtension.ELEMENT_STATUS:
+                    case EndpointExtensionElement.ELEMENT_STATUS:
                         ext.setStatus(EndpointStatusType.parseString(CoinIQProvider.parseText(parser)));
                         break;
-                    case CallInfoPacketExtension.ELEMENT_NAME: {
-                        DefaultPacketExtensionProvider<CallInfoPacketExtension> provider
-                                = new DefaultPacketExtensionProvider<>(CallInfoPacketExtension.class);
+                    case CallInfoExtensionElement.ELEMENT_NAME: {
+                        DefaultExtensionElementProvider<CallInfoExtensionElement> provider
+                                = new DefaultExtensionElementProvider<>(CallInfoExtensionElement.class);
                         ExtensionElement childExtension = provider.parse(parser);
                         ext.addChildExtension(childExtension);
                         break;
                     }
-                    case MediaPacketExtension.ELEMENT_NAME: {
+                    case MediaExtensionElement.ELEMENT_NAME: {
                         MediaProvider provider = new MediaProvider();
                         ExtensionElement childExtension = provider.parse(parser);
                         ext.addChildExtension(childExtension);
@@ -79,7 +84,7 @@ public class EndpointProvider extends ExtensionElementProvider<EndpointPacketExt
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(EndpointPacketExtension.ELEMENT_NAME)) {
+                if (parser.getName().equals(EndpointExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }
             }

@@ -12,7 +12,6 @@ import android.content.Context;
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.util.GuiUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -24,13 +23,10 @@ import java.util.Iterator;
  * Class runs the thread that updates call control notification.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 class CtrlNotificationThread
 {
-    /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(CtrlNotificationThread.class);
     /**
      * Notification update interval.
      */
@@ -91,7 +87,7 @@ class CtrlNotificationThread
                 = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
         while (run) {
-            // logger.trace("Running control notification thread " + hashCode());
+            // Timber.log(TimberLog.FINER, "Running control notification thread " + hashCode());
 
             // Update call duration timer on call notification
             long callStartDate = CallPeer.CALL_DURATION_START_TIME_UNKNOWN;

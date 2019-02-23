@@ -8,21 +8,18 @@ package org.atalk.impl.neomedia;
 import org.atalk.impl.neomedia.device.*;
 import org.atalk.service.neomedia.BasicVolumeControl;
 import org.atalk.service.neomedia.VolumeControl;
-import org.atalk.util.Logger;
+
+import timber.log.Timber;
 
 /**
  * Implementation of VolumeControl which uses system sound architecture (MacOsX or Windows
  * CoreAudio) to change input/output hardware volume.
  *
  * @author Vincent Lucas
+ * @author Eng Chong Meng
  */
 public class HardwareVolumeControl extends BasicVolumeControl
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>HarwareVolumeControl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(HardwareVolumeControl.class);
-
     /**
      * The media service implementation.
      */
@@ -96,7 +93,7 @@ public class HardwareVolumeControl extends BasicVolumeControl
 
         // Changes the input volume of the capture device.
         if (this.setInputDeviceVolume(deviceUID, hardwareVolumeLevel) != 0) {
-            logger.debug("Could not change hardware input device level");
+            Timber.d("Could not change hardware input device level");
         }
     }
 
@@ -129,13 +126,13 @@ public class HardwareVolumeControl extends BasicVolumeControl
 
         if (CoreAudioDevice.initDevices() == -1) {
             CoreAudioDevice.freeDevices();
-            logger.debug("Could not initialize CoreAudio input devices");
+            Timber.d("Could not initialize CoreAudio input devices");
             return -1;
         }
         // Change the input volume of the capture device.
         if (CoreAudioDevice.setInputDeviceVolume(deviceUID, volume) != 0) {
             CoreAudioDevice.freeDevices();
-            logger.debug("Could not change CoreAudio input device level");
+            Timber.d("Could not change CoreAudio input device level");
             return -1;
         }
         CoreAudioDevice.freeDevices();
@@ -158,13 +155,13 @@ public class HardwareVolumeControl extends BasicVolumeControl
 
         if (CoreAudioDevice.initDevices() == -1) {
             CoreAudioDevice.freeDevices();
-            logger.debug("Could not initialize CoreAudio input devices");
+            Timber.d("Could not initialize CoreAudio input devices");
             return -1;
         }
         // Get the input volume of the capture device.
         if ((volume = CoreAudioDevice.getInputDeviceVolume(deviceUID)) == -1) {
             CoreAudioDevice.freeDevices();
-            logger.debug("Could not get CoreAudio input device level");
+            Timber.d("Could not get CoreAudio input device level");
             return -1;
         }
         CoreAudioDevice.freeDevices();

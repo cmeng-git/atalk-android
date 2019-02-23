@@ -16,35 +16,23 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
-import android.widget.ListPopupWindow;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.tokenautocomplete.TokenCompleteTextView;
-
-import net.java.sip.communicator.util.Logger;
 
 import org.apache.james.mime4j.util.CharsetUtil;
 import org.atalk.android.R;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectView.Recipient>
         implements LoaderCallbacks<List<RecipientSelectView.Recipient>>, AlternateRecipientAdapter.AlternateRecipientListener
 {
-    /* The logger */
-    private final static Logger logger = Logger.getLogger(RecipientSelectView.class);
-
     private static final int MINIMUM_LENGTH_FOR_FILTERING = 2;
     private static final String ARG_QUERY = "query";
     private static final int LOADER_ID_FILTERING = 0;
@@ -428,7 +416,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         List<Recipient> currentRecipients = getObjects();
         int indexOfRecipient = currentRecipients.indexOf(recipientToReplace);
         if (indexOfRecipient == -1) {
-            logger.error("Tried to refresh invalid view token!");
+            Timber.e("Tried to refresh invalid view token!");
             return;
         }
         Recipient currentRecipient = currentRecipients.get(indexOfRecipient);
@@ -437,7 +425,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
 
         View recipientTokenView = getTokenViewForRecipient(currentRecipient);
         if (recipientTokenView == null) {
-            logger.error("Tried to refresh invalid view token!");
+            Timber.e("Tried to refresh invalid view token!");
             return;
         }
 

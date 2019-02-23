@@ -8,7 +8,6 @@ package org.atalk.impl.neomedia;
 import net.java.sip.communicator.service.gui.ConfigurationForm;
 import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
@@ -27,6 +26,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * Implements <tt>BundleActivator</tt> for the neomedia bundle.
  *
@@ -38,12 +39,6 @@ import java.util.*;
  */
 public class NeomediaActivator implements BundleActivator
 {
-
-    /**
-     * The <tt>Logger</tt> used by the <tt>NeomediaActivator</tt> class and its instances for logging output.
-     */
-    private final Logger logger = Logger.getLogger(NeomediaActivator.class);
-
     /**
      * Indicates if the audio configuration form should be disabled, i.e. not visible to the user.
      */
@@ -135,76 +130,72 @@ public class NeomediaActivator implements BundleActivator
         if (aTalk.disableMediaServiceOnFault)
             return;
 
-        if (logger.isDebugEnabled())
-            logger.debug("Started.");
 
         // MediaService
         NeomediaActivator.bundleContext = bundleContext;
         mediaServiceImpl = (MediaServiceImpl) LibJitsi.getMediaService();
         if (mediaServiceImpl == null) {
-            logger.warn("Media Service startup failed - jnlibffmpeg failed to load?");
+            Timber.w("Media Service startup failed - jnlibffmpeg failed to load?");
             return;
         }
 
         bundleContext.registerService(MediaService.class.getName(), mediaServiceImpl, null);
-        if (logger.isDebugEnabled())
-            logger.debug("Media Service ... [REGISTERED]");
+        Timber.d("Media Service ... [REGISTERED]");
 
         // mediaConfiguration = new MediaConfigurationImpl();
         // bundleContext.registerService(MediaConfigurationService.class.getName(), getMediaConfiguration(), null);
-        if (logger.isDebugEnabled())
-            logger.debug("Media Configuration ... [REGISTERED]");
+        // Timber.d("Media Configuration ... [REGISTERED]");
 
         ConfigurationService cfg = NeomediaActivator.getConfigurationService();
         Dictionary<String, String> mediaProps = new Hashtable<>();
         mediaProps.put(ConfigurationForm.FORM_TYPE, ConfigurationForm.GENERAL_TYPE);
 
         // If the audio configuration form is disabled don't register it.
-//        if ((cfg == null) || !cfg.getBoolean(AUDIO_CONFIG_DISABLED_PROP, false)) {
-//            audioConfigurationForm = new LazyConfigurationForm(AudioConfigurationPanel.class.getName(),
-//                    getClass().getClassLoader(), "plugin.mediaconfig.AUDIO_ICON", "impl.neomedia.configform.AUDIO", 3);
-//
-//            bundleContext.registerService(ConfigurationForm.class.getName(), audioConfigurationForm, mediaProps);
-//
-//            if (deviceConfigurationPropertyChangeListener == null) {
-//                // Initializes and registers the changed device configuration event for the notification service.
-//                getNotificationService();
-//
-//                deviceConfigurationPropertyChangeListener = new AudioDeviceConfigurationListener();
-//                mediaServiceImpl.getDeviceConfiguration().addPropertyChangeListener(deviceConfigurationPropertyChangeListener);
-//            }
-//        }
+        //        if ((cfg == null) || !cfg.getBoolean(AUDIO_CONFIG_DISABLED_PROP, false)) {
+        //            audioConfigurationForm = new LazyConfigurationForm(AudioConfigurationPanel.class.getName(),
+        //                    getClass().getClassLoader(), "plugin.mediaconfig.AUDIO_ICON", "impl.neomedia.configform.AUDIO", 3);
+        //
+        //            bundleContext.registerService(ConfigurationForm.class.getName(), audioConfigurationForm, mediaProps);
+        //
+        //            if (deviceConfigurationPropertyChangeListener == null) {
+        //                // Initializes and registers the changed device configuration event for the notification service.
+        //                getNotificationService();
+        //
+        //                deviceConfigurationPropertyChangeListener = new AudioDeviceConfigurationListener();
+        //                mediaServiceImpl.getDeviceConfiguration().addPropertyChangeListener(deviceConfigurationPropertyChangeListener);
+        //            }
+        //        }
 
-//        // If the video configuration form is disabled don't register it.
-//        if ((cfg == null) || !cfg.getBoolean(VIDEO_CONFIG_DISABLED_PROP, false)) {
-//            bundleContext.registerService(ConfigurationForm.class.getName(),
-//                    new LazyConfigurationForm(VideoConfigurationPanel.class.getName(), etClass().getClassLoader(),
-//                            "plugin.mediaconfig.VIDEO_ICON", "impl.neomedia.configform.VIDEO", 4), mediaProps);
-//        }
+        //        // If the video configuration form is disabled don't register it.
+        //        if ((cfg == null) || !cfg.getBoolean(VIDEO_CONFIG_DISABLED_PROP, false)) {
+        //            bundleContext.registerService(ConfigurationForm.class.getName(),
+        //                    new LazyConfigurationForm(VideoConfigurationPanel.class.getName(), etClass().getClassLoader(),
+        //                            "plugin.mediaconfig.VIDEO_ICON", "impl.neomedia.configform.VIDEO", 4), mediaProps);
+        //        }
 
         // H.264
         // If the H.264 configuration form is disabled don't register it.
-//        if ((cfg == null) || !cfg.getBoolean(H264_CONFIG_DISABLED_PROP, false)) {
-//            Dictionary<String, String> h264Props
-//                    = new Hashtable<String, String>();
-//
-//            h264Props.put(ConfigurationForm.FORM_TYPE, ConfigurationForm.ADVANCED_TYPE);
-//            bundleContext.registerService(
-//                    ConfigurationForm.class.getName(),
-//                    new LazyConfigurationForm(ConfigurationPanel.class.getName(), getClass().getClassLoader(),
-//                            "plugin.mediaconfig.VIDEO_ICON", "impl.neomedia.configform.H264", -1, true), h264Props);
-//        }
+        //        if ((cfg == null) || !cfg.getBoolean(H264_CONFIG_DISABLED_PROP, false)) {
+        //            Dictionary<String, String> h264Props
+        //                    = new Hashtable<String, String>();
+        //
+        //            h264Props.put(ConfigurationForm.FORM_TYPE, ConfigurationForm.ADVANCED_TYPE);
+        //            bundleContext.registerService(
+        //                    ConfigurationForm.class.getName(),
+        //                    new LazyConfigurationForm(ConfigurationPanel.class.getName(), getClass().getClassLoader(),
+        //                            "plugin.mediaconfig.VIDEO_ICON", "impl.neomedia.configform.H264", -1, true), h264Props);
+        //        }
 
         // ZRTP
         // If the ZRTP configuration form is disabled don't register it.
-//        if ((cfg == null) || !cfg.getBoolean(ZRTP_CONFIG_DISABLED_PROP, false)) {
-//            Dictionary<String, String> securityProps = new Hashtable<String, String>();
-//
-//            securityProps.put(ConfigurationForm.FORM_TYPE, ConfigurationForm.SECURITY_TYPE);
-//            bundleContext.registerService(ConfigurationForm.class.getName(),
-//                    new LazyConfigurationForm(SecurityConfigForm.class.getName(), getClass().getClassLoader(),
-//                            "impl.media.security.zrtp.CONF_ICON", "impl.media.security.zrtp.TITLE", 0), securityProps);
-//        }
+        //        if ((cfg == null) || !cfg.getBoolean(ZRTP_CONFIG_DISABLED_PROP, false)) {
+        //            Dictionary<String, String> securityProps = new Hashtable<String, String>();
+        //
+        //            securityProps.put(ConfigurationForm.FORM_TYPE, ConfigurationForm.SECURITY_TYPE);
+        //            bundleContext.registerService(ConfigurationForm.class.getName(),
+        //                    new LazyConfigurationForm(SecurityConfigForm.class.getName(), getClass().getClassLoader(),
+        //                            "impl.media.security.zrtp.CONF_ICON", "impl.media.security.zrtp.TITLE", 0), securityProps);
+        //        }
 
         // we use the nist-sdp stack to make parse sdp and we need to set the following property to make
         // sure that it would accept java generated IPv6 addresses that contain address scope zones.
@@ -217,19 +208,18 @@ public class NeomediaActivator implements BundleActivator
                 || !cfg.getBoolean("media.sound.isSoundEnabled", true));
         bundleContext.registerService(AudioNotifierService.class.getName(), audioNotifierService, null);
 
-        if (logger.isInfoEnabled())
-            logger.info("Audio Notifier Service ...[REGISTERED]");
+        Timber.i("Audio Notifier Service ...[REGISTERED]");
 
-//        Call Recording
-//        If the call recording configuration form is disabled don 't continue.
-//        if ((cfg == null) || !cfg.getBoolean(CALL_RECORDING_CONFIG_DISABLED_PROP, false)) {
-//            Dictionary<String, String> callRecordingProps = new Hashtable<String, String>();
-//
-//            callRecordingProps.put(ConfigurationForm.FORM_TYPE, ConfigurationForm.ADVANCED_TYPE);
-//            bundleContext.registerService(ConfigurationForm.class.getName(),
-//                    new LazyConfigurationForm(CallRecordingConfigForm.class.getName(), getClass().getClassLoader(),
-//                            null, "plugin.callrecordingconfig.CALL_RECORDING_CONFIG", 1100, true), callRecordingProps);
-//        }
+        //        Call Recording
+        //        If the call recording configuration form is disabled don 't continue.
+        //        if ((cfg == null) || !cfg.getBoolean(CALL_RECORDING_CONFIG_DISABLED_PROP, false)) {
+        //            Dictionary<String, String> callRecordingProps = new Hashtable<String, String>();
+        //
+        //            callRecordingProps.put(ConfigurationForm.FORM_TYPE, ConfigurationForm.ADVANCED_TYPE);
+        //            bundleContext.registerService(ConfigurationForm.class.getName(),
+        //                    new LazyConfigurationForm(CallRecordingConfigForm.class.getName(), getClass().getClassLoader(),
+        //                            null, "plugin.callrecordingconfig.CALL_RECORDING_CONFIG", 1100, true), callRecordingProps);
+        //        }
     }
 
     /**
@@ -411,23 +401,23 @@ public class NeomediaActivator implements BundleActivator
          *
          * @param evt the event triggered when user clicks on the systray popup message
          */
-//        public void popupMessageClicked(SystrayPopupMessageEvent evt)
-//        {
-//            // Checks if this event is fired from one click on one of our popup  message.
-//            if (evt.getTag() == deviceConfigurationPropertyChangeListener) {
-//                // Get the UI service
-//                ServiceReference uiReference = bundleContext.getServiceReference(UIService.class.getName());
-//
-//                UIService uiService = (UIService) bundleContext.getService(uiReference);
-//
-//                if (uiService != null) {
-//                    // Shows the audio configuration window.
-//                    ConfigurationContainer configurationContainer = uiService.getConfigurationContainer();
-//                    configurationContainer.setSelected(audioConfigurationForm);
-//                    configurationContainer.setVisible(true);
-//                }
-//            }
-//        }
+        //        public void popupMessageClicked(SystrayPopupMessageEvent evt)
+        //        {
+        //            // Checks if this event is fired from one click on one of our popup  message.
+        //            if (evt.getTag() == deviceConfigurationPropertyChangeListener) {
+        //                // Get the UI service
+        //                ServiceReference uiReference = bundleContext.getServiceReference(UIService.class.getName());
+        //
+        //                UIService uiService = (UIService) bundleContext.getService(uiReference);
+        //
+        //                if (uiService != null) {
+        //                    // Shows the audio configuration window.
+        //                    ConfigurationContainer configurationContainer = uiService.getConfigurationContainer();
+        //                    configurationContainer.setSelected(audioConfigurationForm);
+        //                    configurationContainer.setVisible(true);
+        //                }
+        //            }
+        //        }
     }
 
     public static BundleContext getBundleContext()

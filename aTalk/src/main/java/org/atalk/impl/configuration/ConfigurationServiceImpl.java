@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.configuration;
 
-import org.atalk.android.aTalkApp;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.configuration.xml.XMLConfigurationStore;
 import org.atalk.service.configuration.*;
 import org.atalk.service.fileaccess.FailSafeTransaction;
@@ -18,6 +18,8 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 /**
  * A straightforward implementation of the <tt>ConfigurationService</tt> using an XML or a
@@ -34,11 +36,6 @@ import java.util.regex.Pattern;
  */
 public class ConfigurationServiceImpl implements ConfigurationService
 {
-    /**
-     * The <tt>Logger</tt> used by this <tt>ConfigurationServiceImpl</tt> instance for logging  output.
-     */
-    private final Logger logger = Logger.getLogger(ConfigurationServiceImpl.class);
-
     /**
      * The name of the <tt>ConfigurationStore</tt> class to be used as the default when no
      * specific <tt>ConfigurationStore</tt> class is determined as necessary.
@@ -113,9 +110,9 @@ public class ConfigurationServiceImpl implements ConfigurationService
     private boolean faServiceIsAssigned = false;
 
     /**
-     * The <code>ConfigurationStore</code> implementation which contains the property name-value
-     * associations of this <code>ConfigurationService</code> and performs their actual storing in
-     * <code>configurationFile</code>.
+     * The {@code ConfigurationStore} implementation which contains the property name-value
+     * associations of this {@code ConfigurationService} and performs their actual storing in
+     * {@code configurationFile}.
      */
     private ConfigurationStore store;
 
@@ -134,7 +131,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
             loadDefaultProperties();
             reloadConfiguration();
         } catch (IOException ex) {
-            logger.error("Failed to load the configuration file", ex);
+            Timber.e(ex, "Failed to load the configuration file");
         }
     }
 
@@ -185,7 +182,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         try {
             storeConfiguration();
         } catch (IOException ex) {
-            logger.error("Failed to store configuration after a property change");
+            Timber.e("Failed to store configuration after a property change");
         }
 
         if (changeEventDispatcher.hasPropertyChangeListeners(propertyName))
@@ -221,7 +218,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         try {
             storeConfiguration();
         } catch (IOException ex) {
-            logger.error("Failed to store configuration after property changes");
+            Timber.e("Failed to store configuration after property changes");
         }
 
         for (Map.Entry<String, Object> property : properties.entrySet()) {
@@ -234,8 +231,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
     /**
      * Performs the actual setting of a property with a specific name to a specific new value
-     * without asking <code>VetoableChangeListener</code>, storing into the configuration file
-     * and notifying <code>PropertyChangeListener</code>s.
+     * without asking {@code VetoableChangeListener}, storing into the configuration file
+     * and notifying {@code PropertyChangeListener}s.
      *
      * @param propertyName the name of the property which is to be set to a specific value
      * @param property the value to be assigned to the property with the specified name
@@ -292,7 +289,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         try {
             storeConfiguration();
         } catch (IOException ex) {
-            logger.error("Failed to store configuration after a property change");
+            Timber.e("Failed to store configuration after a property change");
         }
     }
 
@@ -315,8 +312,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
             changeEventDispatcher.fireVetoableChange(propertyName, oldValue, null);
 
         // no exception was thrown - lets change the property and fire a change event
-        if (logger.isTraceEnabled())
-            logger.trace("Will remove prop: " + propertyName + ".");
+        Timber.log(TimberLog.FINER, "Will remove prop: %", propertyName);
 
         store.removeProperty(propertyName);
         if (changeEventDispatcher.hasPropertyChangeListeners(propertyName))
@@ -324,8 +320,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Returns the value of the property with the specified name or null if no such property
-     * exists.
+     * Returns the value of the property with the specified name or null if no such property exists.
      *
      * @param propertyName the name of the property that is being queried.
      * @return the value of the property with the specified name.
@@ -343,7 +338,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
         // cmeng - will enable for more testing later
 //		if (result == null)
-//			logger.warn("Found empty or null property value for: " + propertyName);
+//			Timber.w("Found empty or null property value for: %s", propertyName);
 
         return result;
     }
@@ -402,7 +397,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
         if (immutableDefaultProperties.size() > 0) {
             propertyNameSet = immutableDefaultProperties.keySet();
-            namesArray = propertyNameSet.toArray(new String[propertyNameSet.size()]);
+            namesArray = propertyNameSet.toArray(new String[0]);
             getPropertyNamesByPrefix(prefix, exactPrefixMatch, namesArray, resultKeySet);
         }
 
@@ -413,7 +408,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         // finally, get property names from mutable default property set.
         if (defaultProperties.size() > 0) {
             propertyNameSet = defaultProperties.keySet();
-            namesArray = propertyNameSet.toArray(new String[propertyNameSet.size()]);
+            namesArray = propertyNameSet.toArray(new String[0]);
             getPropertyNamesByPrefix(prefix, exactPrefixMatch, namesArray, resultKeySet);
         }
         return new ArrayList<>(resultKeySet);
@@ -462,10 +457,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * For example, imagine a configuration service instance containing two properties only:
      *
-     * <code>
+     * {@code
      * net.java.sip.communicator.PROP1=value1
      * net.java.sip.communicator.service.protocol.PROP1=value2
-     * </code>
+     * }
      *
      * A call to this method with <tt>suffix</tt> equal to "PROP1" will return both properties,
      * whereas the call with <tt>suffix</tt> equal to "communicator.PROP1" or "PROP2" will return
@@ -601,7 +596,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
                 try {
                     trans.restoreFile();
                 } catch (Exception e) {
-                    logger.error("Failed to restore configuration file " + file, e);
+                    Timber.e(e, "Failed to restore configuration file %s", file);
                 }
             }
         }
@@ -670,7 +665,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
             exception = ex;
         }
         if (exception != null) {
-            logger.error("can't write data in the configuration file", exception);
+            Timber.e(exception, "can't write data in the configuration file");
             if (trans != null)
                 trans.rollback();
         }
@@ -690,7 +685,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
             if (file != null)
                 return file.getName();
         } catch (IOException ex) {
-            logger.error("Error loading configuration file", ex);
+            Timber.e(ex, "Error loading configuration file");
         }
         return null;
     }
@@ -931,8 +926,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         // try to open the file in current directory
         File configFileInCurrentDir = new File(pFileName);
         if (configFileInCurrentDir.exists()) {
-            if (logger.isDebugEnabled())
-                logger.debug("Using config file in current dir: " + configFileInCurrentDir.getAbsolutePath());
+            Timber.d("Using config file in current dir: %s", configFileInCurrentDir.getAbsolutePath());
             return configFileInCurrentDir;
         }
 
@@ -943,9 +937,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         File configFileInUserHomeDir = new File(configDir, pFileName);
 
         if (configFileInUserHomeDir.exists()) {
-            if (logger.isDebugEnabled())
-                logger.debug("Using config file in $HOME/.sip-communicator: "
-                        + configFileInUserHomeDir.getAbsolutePath());
+            Timber.d("Using config file in $HOME/.sip-communicator: %s", configFileInUserHomeDir.getAbsolutePath());
             return configFileInUserHomeDir;
         }
 
@@ -957,14 +949,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
             if (create) {
                 configDir.mkdirs();
                 configFileInUserHomeDir.createNewFile();
-                if (logger.isDebugEnabled())
-                    logger.debug("Created an empty file in $HOME: " + configFileInUserHomeDir.getAbsolutePath());
+                Timber.d("Created an empty file in $HOME: %s", configFileInUserHomeDir.getAbsolutePath());
             }
             return configFileInUserHomeDir;
         }
 
-        if (logger.isTraceEnabled())
-            logger.trace("Copying config file from JAR into " + configFileInUserHomeDir.getAbsolutePath());
+        Timber.log(TimberLog.FINER, "Copying config file from JAR into %s", configFileInUserHomeDir.getAbsolutePath());
         configDir.mkdirs();
         try {
             copy(in, configFileInUserHomeDir);
@@ -1019,13 +1009,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Copies the contents of a specific <code>InputStream</code> as bytes into a specific output
-     * <code>File</code>.
+     * Copies the contents of a specific {@code InputStream} as bytes into a specific output {@code File}.
      *
-     * @param inputStream the <code>InputStream</code> the contents of which is to be output in the specified
-     * <code>File</code>
-     * @param outputFile the <code>File</code> to write the contents of the specified <code>InputStream</code>
-     * into
+     * @param inputStream the {@code InputStream} the contents of which is to be output in the specified {@code File}
+     * @param outputFile the {@code File} to write the contents of the specified {@code InputStream} into
      * @throws IOException
      */
     private static void copy(InputStream inputStream, File outputFile)
@@ -1091,9 +1078,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param propertyName the name of the property that is being queried.
      * @param defaultValue the value to be returned if the specified property name is not associated with a value
-     * in this
-     * <code>ConfigurationService</code>
-     * @return the result of calling the property's toString method and <code>defaultValue</code>
+     * in this {@code ConfigurationService}
+     * @return the result of calling the property's toString method and {@code defaultValue}
      * in case there was no value mapped against the specified <tt>propertyName</tt>, or the
      * returned string had zero length or contained whitespaces only.
      */
@@ -1156,8 +1142,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
             try {
                 intValue = Integer.parseInt(stringValue);
             } catch (NumberFormatException ex) {
-                logger.error(propertyName + " does not appear to be an integer. Defaulting to "
-                        + defaultValue + ".", ex);
+                Timber.e(ex, " %sdoes not appear to be an integer. Defaulting to %s",
+                        propertyName, defaultValue);
             }
         }
         return intValue;
@@ -1176,8 +1162,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
             try {
                 doubleValue = Double.parseDouble(stringValue);
             } catch (NumberFormatException ex) {
-                logger.error(propertyName + " does not appear to be a double. Defaulting to "
-                        + defaultValue + ".", ex);
+                Timber.e(ex,"%s does not appear to be a double. Defaulting to %s",
+                        propertyName, defaultValue);
             }
         }
         return doubleValue;
@@ -1211,8 +1197,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
             try {
                 longValue = Long.parseLong(stringValue);
             } catch (NumberFormatException ex) {
-                logger.error(propertyName + " does not appear to be a longinteger. Defaulting to "
-                        + defaultValue + ".", ex);
+                Timber.e(ex, "%s does not appear to be a longinteger. Defaulting to %s",
+                        propertyName, defaultValue);
             }
         }
         return longValue;
@@ -1255,7 +1241,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      */
     private void debugPrintSystemProperties()
     {
-        if (!logger.isInfoEnabled())
+        if (!TimberLog.isTraceEnabled())
             return;
 
         try {
@@ -1280,10 +1266,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
                 if (passwordArgs != null && "sun.java.command".equals(key)) {
                     value = PasswordUtil.replacePasswords(value, passwordArgs);
                 }
-                logger.info(key + "=" + value);
+                Timber.d("%s = %s", key, value);
             }
         } catch (RuntimeException e) {
-            logger.warn("An exception occurred while writing debug info", e);
+            Timber.w(e, "An exception occurred while writing debug info");
         }
     }
 
@@ -1293,7 +1279,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
     @Override
     public void logConfigurationProperties(String excludePattern)
     {
-        if (!logger.isInfoEnabled())
+        if (!TimberLog.isTraceEnabled())
             return;
 
         Pattern exclusion = null;
@@ -1311,7 +1297,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
             if (exclusion != null && exclusion.matcher(p).find()) {
                 v = "**********";
             }
-            logger.info(p + "=" + v);
+            Timber.i("%s = %s", p, v);
         }
     }
 
@@ -1355,7 +1341,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
                 // application so we'll afford ourselves to kind of silence all possible
                 // exceptions (which would most often be IOExceptions). We will however log them
                 // in case anyone would be interested.
-                logger.error("Failed to load property file: " + fileName, ex);
+                Timber.e(ex, "Failed to load property file: %s", fileName);
             }
         }
     }
@@ -1441,16 +1427,16 @@ public class ConfigurationServiceImpl implements ConfigurationService
                 fileStream = getClass().getClassLoader().getResourceAsStream(fileName);
             }
             else if (isLaunchedByWebStart()) {
-                logger.info("WebStart classloader");
+                Timber.i("WebStart classloader");
                 fileStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
             }
             else {
-                logger.info("Normal classloader");
+                Timber.i("Normal classloader");
                 fileStream = ClassLoader.getSystemResourceAsStream(fileName);
             }
 
             if (fileStream == null) {
-                logger.info("failed to find " + fileName + " with class loader, will continue without it.");
+                Timber.i("Failed to find '%s' with class loader, will continue without it.", fileName);
                 return;
             }
 
@@ -1488,10 +1474,9 @@ public class ConfigurationServiceImpl implements ConfigurationService
             }
         } catch (Exception ex) {
             // we can function without defaults so we are just logging those.
-            logger.info("No defaults property file loaded: " + fileName + ". Not a problem.");
+            Timber.i("No defaults property file loaded: %s. Not a problem.", fileName);
 
-            if (logger.isDebugEnabled())
-                logger.debug("load exception", ex);
+            Timber.d(ex, "load exception");
         }
     }
 }

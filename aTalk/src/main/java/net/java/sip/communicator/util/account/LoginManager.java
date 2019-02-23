@@ -9,12 +9,14 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.osgi.framework.*;
+
+import timber.log.Timber;
 
 /**
  * The <tt>LoginManager</tt> manages the login operation. Here we obtain the
@@ -32,7 +34,6 @@ import org.osgi.framework.*;
  */
 public class LoginManager implements ServiceListener, RegistrationStateChangeListener //,AccountManagerListener
 {
-    private static final Logger logger = Logger.getLogger(LoginManager.class);
     private boolean manuallyDisconnected = false;
     private final LoginRenderer loginRenderer;
 
@@ -64,7 +65,7 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
      */
     public void login(ProtocolProviderService protocolProvider)
     {
-        // logger.warn("SMACK stack access: " + Log.getStackTraceString(new Exception()));
+        // Timber.log(TimberLog.FINER, "SMACK stack access: %s", Log.getStackTraceString(new Exception()));
         loginRenderer.startConnectingUI(protocolProvider);
         new RegisterProvider(protocolProvider, loginRenderer.getSecurityAuthorityImpl(protocolProvider)).start();
     }
@@ -106,9 +107,9 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
         ProtocolProviderService protocolProvider = evt.getProvider();
         AccountID accountID = protocolProvider.getAccountID();
 
-        if (logger.isTraceEnabled())
-            logger.trace("Protocol provider: " + protocolProvider
-                    + " changes state to: " + evt.getNewState().getStateName() + " Reason: " + evt.getReason());
+        if (TimberLog.isTraceEnabled())
+            Timber.log(TimberLog.FINER, "Protocol provider: %s changes state to: %s Reason: %s",
+                    protocolProvider, evt.getNewState().getStateName(), evt.getReason());
 
         if (newState.equals(RegistrationState.REGISTERED)
                 || newState.equals(RegistrationState.UNREGISTERED)
@@ -122,69 +123,67 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
         if (newState.equals(RegistrationState.REGISTERED)) {
             loginRenderer.protocolProviderConnected(protocolProvider, System.currentTimeMillis());
         }
-//		else {
-//			ResourceManagementService mRMS = UtilActivator.getResources();
-//			String msgText = null;
-//
-//			if (newState.equals(RegistrationState.AUTHENTICATION_FAILED)) {
-//				switch (evt.getReasonCode()) {
-//					case RegistrationStateChangeEvent.REASON_RECONNECTION_RATE_LIMIT_EXCEEDED:
-//						msgText = mRMS.getI18NString("service.gui.RECONNECTION_LIMIT_EXCEEDED",
-//								new String[]{accountID.getUserID(), accountID.getService()});
-//						break;
-//
-//					case RegistrationStateChangeEvent.REASON_NON_EXISTING_USER_ID:
-//						msgText = mRMS.getI18NString("service.gui.NON_EXISTING_USER_ID",
-//								new String[]{protocolProvider.getProtocolDisplayName()});
-//						break;
-//					case RegistrationStateChangeEvent.REASON_TLS_REQUIRED:
-//						msgText = mRMS.getI18NString("service.gui.NON_SECURE_CONNECTION",
-//								new String[]{accountID.getAccountJid()});
-//						break;
-//					default:
-//						break;
-//				}
-//
-//				if (logger.isTraceEnabled())
-//					logger.trace(evt.getReason());
-//			}
-//			// CONNECTION_FAILED events are now dispatched in reconnect plugin
-////			else if (newState.equals(RegistrationState.CONNECTION_FAILED)) {
-////				loginRenderer.protocolProviderConnectionFailed(
-////						protocolProvider, this);
-////				logger.trace(evt.getReason());
-////			}
-//			else if (newState.equals(RegistrationState.EXPIRED)) {
-//				msgText = mRMS.getI18NString("service.gui.CONNECTION_EXPIRED_MSG",
-//						new String[]{protocolProvider.getProtocolDisplayName()});
-//				logger.error(evt.getReason());
-//			}
-//			else if (newState.equals(RegistrationState.UNREGISTERED)) {
-//				if (!manuallyDisconnected) {
-//					switch (evt.getReasonCode()) {
-//						case RegistrationStateChangeEvent.REASON_MULTIPLE_LOGIN:
-//							msgText = aTalkApp.getResString(R.string.service_gui_MULTIPLE_LOGIN,
-//									accountID.getUserID(), accountID.getService());
-//							break;
-//						case RegistrationStateChangeEvent.REASON_CLIENT_LIMIT_REACHED_FOR_IP:
-//							msgText = mRMS.getI18NString("service.gui.LIMIT_REACHED_FOR_IP",
-//									new String[]{protocolProvider.getProtocolDisplayName()});
-//							break;
-//						case RegistrationStateChangeEvent.REASON_USER_REQUEST:
-//							// do nothing
-//							break;
-//						default:
-//							msgText = aTalkApp.getResString(R.string.service_gui_UNREGISTERED_MESSAGE,
-//									accountID.getUserID(), accountID.getServerAddress());
-//					}
-//					if (logger.isTraceEnabled())
-//						logger.trace(evt.getReason());
-//				}
-//			}
-//			if (msgText != null)
-//				UtilActivator.getAlertUIService()
-//						.showAlertDialog(mRMS.getI18NString("service.gui.ERROR"), msgText);
-//		}
+        //		else {
+        //			ResourceManagementService mRMS = UtilActivator.getResources();
+        //			String msgText = null;
+        //
+        //			if (newState.equals(RegistrationState.AUTHENTICATION_FAILED)) {
+        //				switch (evt.getReasonCode()) {
+        //					case RegistrationStateChangeEvent.REASON_RECONNECTION_RATE_LIMIT_EXCEEDED:
+        //						msgText = mRMS.getI18NString("service.gui.RECONNECTION_LIMIT_EXCEEDED",
+        //								new String[]{accountID.getUserID(), accountID.getService()});
+        //						break;
+        //
+        //					case RegistrationStateChangeEvent.REASON_NON_EXISTING_USER_ID:
+        //						msgText = mRMS.getI18NString("service.gui.NON_EXISTING_USER_ID",
+        //								new String[]{protocolProvider.getProtocolDisplayName()});
+        //						break;
+        //					case RegistrationStateChangeEvent.REASON_TLS_REQUIRED:
+        //						msgText = mRMS.getI18NString("service.gui.NON_SECURE_CONNECTION",
+        //								new String[]{accountID.getAccountJid()});
+        //						break;
+        //					default:
+        //						break;
+        //				}
+        //
+        //  		Timber.log(TimberLog.FINER, "%s", evt.getReason());
+        //			}
+        //			// CONNECTION_FAILED events are now dispatched in reconnect plugin
+        ////			else if (newState.equals(RegistrationState.CONNECTION_FAILED)) {
+        ////				loginRenderer.protocolProviderConnectionFailed(
+        ////						protocolProvider, this);
+        ////				Timber.log(TimberLog.FINER, evt.getReason());
+        ////			}
+        //			else if (newState.equals(RegistrationState.EXPIRED)) {
+        //				msgText = mRMS.getI18NString("service.gui.CONNECTION_EXPIRED_MSG",
+        //						new String[]{protocolProvider.getProtocolDisplayName()});
+        //				Timber.e(evt.getReason());
+        //			}
+        //			else if (newState.equals(RegistrationState.UNREGISTERED)) {
+        //				if (!manuallyDisconnected) {
+        //					switch (evt.getReasonCode()) {
+        //						case RegistrationStateChangeEvent.REASON_MULTIPLE_LOGIN:
+        //							msgText = aTalkApp.getResString(R.string.service_gui_MULTIPLE_LOGIN,
+        //									accountID.getUserID(), accountID.getService());
+        //							break;
+        //						case RegistrationStateChangeEvent.REASON_CLIENT_LIMIT_REACHED_FOR_IP:
+        //							msgText = mRMS.getI18NString("service.gui.LIMIT_REACHED_FOR_IP",
+        //									new String[]{protocolProvider.getProtocolDisplayName()});
+        //							break;
+        //						case RegistrationStateChangeEvent.REASON_USER_REQUEST:
+        //							// do nothing
+        //							break;
+        //						default:
+        //							msgText = aTalkApp.getResString(R.string.service_gui_UNREGISTERED_MESSAGE,
+        //									accountID.getUserID(), accountID.getServerAddress());
+        //					}
+        //						Timber.log(TimberLog.FINER, evt.getReason());
+        //				}
+        //			}
+        //			if (msgText != null)
+        //				UtilActivator.getAlertUIService()
+        //						.showAlertDialog(mRMS.getI18NString("service.gui.ERROR"), msgText);
+        //		}
     }
 
     /**
@@ -225,9 +224,8 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
      */
     private void handleProviderAdded(ProtocolProviderService protocolProvider)
     {
-        if (logger.isTraceEnabled())
-            logger.trace("The following protocol provider was just added: "
-                    + protocolProvider.getAccountID().getAccountJid());
+        Timber.log(TimberLog.FINER, "The following protocol provider was just added: "
+                + protocolProvider.getAccountID().getAccountJid());
 
         synchronized (loginRenderer) {
             if (!loginRenderer.containsProtocolProviderUI(protocolProvider)) {
@@ -260,11 +258,9 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
     }
 
     /**
-     * Returns <tt>true</tt> to indicate the atalk has been manually disconnected,
-     * <tt>false</tt> - otherwise.
+     * Returns <tt>true</tt> to indicate the atalk has been manually disconnected, <tt>false</tt> - otherwise.
      *
-     * @return <tt>true</tt> to indicate the atalk has been manually disconnected,
-     * <tt>false</tt> - otherwise
+     * @return <tt>true</tt> to indicate the atalk has been manually disconnected, <tt>false</tt> - otherwise
      */
     public boolean isManuallyDisconnected()
     {
@@ -295,10 +291,8 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
             this.protocolProvider = protocolProvider;
             this.secAuth = secAuth;
 
-//			if (logger.isTraceEnabled())
-//				logger.trace("Registering provider: "
-//								+ protocolProvider.getAccountID().getAccountJid(),
-//						new Exception("Not an error! Just tracing for provider registering."));
+//			Timber.log(TimberLog.FINER, new Exception("Not an error! Just tracing for provider registering."),
+//	    		"Registering provider: %s", protocolProvider.getAccountID().getAccountJid());
         }
 
         /**
@@ -315,13 +309,13 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
                 handleOperationFailedException(ex);
             } catch (Throwable ex) {
                 // cmeng: all exceptions will be handled within pps
-                logger.error("Failed to register protocol provider. ", ex);
+                Timber.e(ex, "Failed to register protocol provider. ");
             }
         }
 
         private void handleOperationFailedException(OperationFailedException ex)
         {
-            logger.error("Provider failed to register with: ", ex);
+            Timber.e(ex, "Provider failed to register with: ");
             if (OperationFailedException.NETWORK_FAILURE == ex.getErrorCode()) {
                 loginRenderer.protocolProviderConnectionFailed(protocolProvider, LoginManager.this);
             }
@@ -350,18 +344,18 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
             try {
                 protocolProvider.unregister(true);
             } catch (OperationFailedException ex) {
-                logger.error("Provider failed unRegistration with error: " + ex);
+                Timber.e("Provider failed unRegistration with error: %s", ex);
 
 //				String alertMsg = "Provider could not be unregistered due to ";
 //				int errorCode = ex.getErrorCode();
 //				if (errorCode == OperationFailedException.GENERAL_ERROR) {
-//					logger.error(alertMsg + "general error: " + ex);
+//					Timber.e(alertMsg + "general error: " + ex);
 //				}
 //				else if (errorCode == OperationFailedException.INTERNAL_ERROR) {
-//					logger.error(alertMsg + "internal error: " + ex);
+//					Timber.e(alertMsg + "internal error: " + ex);
 //				}
 //				else if (errorCode == OperationFailedException.NETWORK_FAILURE) {
-//					logger.error(alertMsg + "network failure: " + ex);
+//					Timber.e(alertMsg + "network failure: " + ex);
 //				}
                 UtilActivator.getAlertUIService().showAlertDialog(
                         aTalkApp.getResString(R.string.service_gui_ERROR),

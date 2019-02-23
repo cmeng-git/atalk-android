@@ -6,11 +6,9 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
-import net.java.sip.communicator.util.Logger;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.BareJid;
@@ -21,6 +19,8 @@ import java.net.URL;
 import java.text.*;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * Handles and retrieves all info of our contacts or account info
  *
@@ -29,8 +29,6 @@ import java.util.*;
  */
 public class InfoRetriever
 {
-    private static final Logger logger = Logger.getLogger(InfoRetriever.class);
-
     /**
      * A callback to the Jabber provider that created us.
      */
@@ -142,7 +140,7 @@ public class InfoRetriever
         // Set the timeout to wait before considering vCard has time out
         connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
-        logger.info("Start loading VCard information for: " + bareJid);
+        Timber.i("Start loading VCard information for: %s", bareJid);
         VCardAvatarManager vCardAvatarManager = VCardAvatarManager.getInstanceFor(connection);
         VCard card = vCardAvatarManager.downloadVCard(bareJid);
 
@@ -152,7 +150,7 @@ public class InfoRetriever
         // cmeng - vCard can be null due to smack request response timeout (2017/11/29)
         // return an empty list if VCard fetching from server failed
         if (card == null) {
-            logger.warn("Failed to download Vcard from server!");
+            Timber.w("Failed to download Vcard from server!");
             return result;
         }
 
@@ -191,7 +189,7 @@ public class InfoRetriever
                     DateFormat dateFormatShort = new SimpleDateFormat(BDAY_FORMAT_SHORT, Locale.US);
                     birthDate = dateFormatShort.parse(tmp);
                 } catch (ParseException e) {
-                    logger.warn(msg + ex.getMessage());
+                    Timber.w("%s %s",msg, ex.getMessage());
                 }
             }
             if (birthDate != null) {
@@ -333,11 +331,11 @@ public class InfoRetriever
             if (tmp != null)
                 result.add(new URLDetail("URL", new URL(tmp)));
         } catch (MalformedURLException ex) {
-            logger.warn(msg + ex.getMessage());
+            Timber.w("%s %s", msg, ex.getMessage());
         }
 
         retrievedDetails.put(bareJid, result);
-        logger.info("Added retrievedDetails for: " + bareJid + " size: " + result.size());
+        Timber.i("Added retrievedDetails for: %s; size: %d", bareJid, result.size());
         return result;
     }
 
@@ -371,7 +369,7 @@ public class InfoRetriever
      */
     String checkForFullName(VCard card)
     {
-        String vcardXml = card.toXML(null).toString();
+        String vcardXml = card.toXML(XmlEnvironment.EMPTY).toString();
         int indexOpen = vcardXml.indexOf(TAG_FN_OPEN);
 
         if (indexOpen == -1)

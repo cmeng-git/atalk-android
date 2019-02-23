@@ -7,11 +7,12 @@ package org.atalk.impl.neomedia.transform;
 
 import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.Logger;
 import org.atalk.util.function.Predicate;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+
+import timber.log.Timber;
 
 /**
  * Extends the <tt>PacketTransformer</tt> interface with methods which allow the transformation of a
@@ -23,6 +24,7 @@ import java.util.function.Function;
  *
  * @author Boris Grozev
  * @author George Politis
+ * @author Eng Chong Meng
  */
 public abstract class SinglePacketTransformer implements PacketTransformer
 {
@@ -32,12 +34,6 @@ public abstract class SinglePacketTransformer implements PacketTransformer
      * {@link #transform(RawPacket)}, the logging may be overwhelming.
      */
     private static final int EXCEPTIONS_TO_LOG = 1000;
-
-    /**
-     * The <tt>Logger</tt> used by the <tt>SinglePacketTransformer</tt> class and its instances to
-     * print debug information.
-     */
-    private static final Logger logger = Logger.getLogger(SinglePacketTransformer.class);
 
     /**
      * The number of exceptions caught in {@link #reverseTransform(RawPacket)}.
@@ -118,7 +114,7 @@ public abstract class SinglePacketTransformer implements PacketTransformer
                     } catch (Throwable t) {
                         exceptionsInReverseTransform++;
                         if ((exceptionsInReverseTransform % EXCEPTIONS_TO_LOG) == 0 || exceptionsInReverseTransform == 1) {
-                            logger.error("Failed to reverse-transform RawPacket(s)!", t);
+                            Timber.e(t, "Failed to reverse-transform RawPacket(s)!");
                         }
                         if (t instanceof Error)
                             throw (Error) t;
@@ -157,7 +153,7 @@ public abstract class SinglePacketTransformer implements PacketTransformer
                     } catch (Throwable t) {
                         exceptionsInTransform++;
                         if ((exceptionsInTransform % EXCEPTIONS_TO_LOG) == 0 || exceptionsInTransform == 1) {
-                            logger.error("Failed to transform RawPacket(s)!", t);
+                            Timber.e(t, "Failed to transform RawPacket(s)!");
                         }
                         if (t instanceof Error)
                             throw (Error) t;
@@ -172,6 +168,7 @@ public abstract class SinglePacketTransformer implements PacketTransformer
 
     /**
      * Applies a specific transformation function to an array of {@link RawPacket}s.
+     *
      * @param pkts the array to transform.
      * @param transformFunction the function to apply to each (non-null) element
      * of the array.
@@ -181,24 +178,23 @@ public abstract class SinglePacketTransformer implements PacketTransformer
      * @return {@code pkts}.
      */
     private RawPacket[] transformArray(
-        RawPacket[] pkts,
-        Function<RawPacket, RawPacket> transformFunction,
-        AtomicInteger exceptionCounter,
-        String logMessage)
+            RawPacket[] pkts,
+            Function<RawPacket, RawPacket> transformFunction,
+            AtomicInteger exceptionCounter,
+            String logMessage)
     {
         if (pkts != null) {
             for (int i = 0; i < pkts.length; i++) {
                 RawPacket pkt = pkts[i];
                 if (pkt != null
-                    && (packetPredicate == null || packetPredicate.test(pkt))) {
+                        && (packetPredicate == null || packetPredicate.test(pkt))) {
                     try {
                         pkts[i] = transformFunction.apply(pkt);
-                    }
-                    catch (Throwable t) {
+                    } catch (Throwable t) {
                         exceptionCounter.incrementAndGet();
                         if ((exceptionCounter.get() % EXCEPTIONS_TO_LOG) == 0
-                            || exceptionCounter.get() == 1) {
-                            logger.error("Failed to " + logMessage + " RawPacket(s)!", t);
+                                || exceptionCounter.get() == 1) {
+                            Timber.e(t, "Failed to %s RawPacket(s)!", logMessage);
                         }
                         if (t instanceof Error) {
                             throw (Error) t;

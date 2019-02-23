@@ -5,20 +5,21 @@
  */
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.util.DiagnosticContext;
-import org.atalk.util.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import timber.log.Timber;
 
 /**
  * webrtc/modules/remote_bitrate_estimator/overuse_detector.cc
  * webrtc/modules/remote_bitrate_estimator/overuse_detector.h
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 class OveruseDetector
 {
-    private static final Logger logger = Logger.getLogger(OveruseDetector.class);
-
     private static final double kMaxAdaptOffsetMs = 15.0;
 
     private static final int kOverUsingTimeThreshold = 100;
@@ -113,8 +114,8 @@ class OveruseDetector
             newHypothesis = true;
         }
 
-        if (newHypothesis && logger.isTraceEnabled()) {
-            logger.trace(diagnosticContext
+        if (newHypothesis) {
+            Timber.log(TimberLog.FINER, "%s", diagnosticContext
                     .makeTimeSeriesPoint("utilization_hypothesis", nowMs)
                     .addField("detector", hashCode())
                     .addField("offset", offset)

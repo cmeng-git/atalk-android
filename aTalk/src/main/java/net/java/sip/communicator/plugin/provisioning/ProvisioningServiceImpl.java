@@ -2,7 +2,6 @@ package net.java.sip.communicator.plugin.provisioning;
 
 import net.java.sip.communicator.service.httputil.HttpUtils;
 import net.java.sip.communicator.service.provisioning.ProvisioningService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.OrderedProperties;
 
 import org.atalk.android.R;
@@ -22,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.NameValuePair;
+import timber.log.Timber;
 
 // disambiguation
 
@@ -29,14 +29,10 @@ import cz.msebera.android.httpclient.NameValuePair;
  * Provisioning service.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public class ProvisioningServiceImpl implements ProvisioningService
 {
-    /**
-     * Logger of this class
-     */
-    private static final Logger logger = Logger.getLogger(ProvisioningServiceImpl.class);
-
     /**
      * Name of the UUID property.
      */
@@ -452,10 +448,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
                         paramValues.add(s.substring(equalsIndex + 1));
                     }
                     else {
-                        if (logger.isInfoEnabled()) {
-                            logger.info("Invalid provisioning request parameter: \""
-                                    + s + "\", is replaced by \"" + s + "=\"");
-                        }
+                        Timber.i("Invalid provisioning request parameter: '%s', is replaced by '%s='", s, s);
                         paramNames.add(s);
                         paramValues.add("");
                     }
@@ -488,7 +481,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
                 //						}
                 //					});
             } catch (Throwable t) {
-                logger.error("Error posting form", t);
+                Timber.e(t, "Error posting form");
                 errorWhileProvisioning = t;
             }
 
@@ -518,7 +511,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
                                 }
                                 b.stop();
                             } catch (BundleException ex) {
-                                logger.error("Failed to being gentle stop " + b.getLocation(), ex);
+                                Timber.e(ex, "Failed to being gentle stop %s", b.getLocation());
                             }
                         }
                     }
@@ -553,8 +546,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
 
             return in;
         } catch (Exception e) {
-            if (logger.isInfoEnabled())
-                logger.info("Error retrieving provisioning file!", e);
+            Timber.i(e, "Error retrieving provisioning file!");
             return null;
         }
     }
@@ -626,10 +618,10 @@ public class ProvisioningServiceImpl implements ProvisioningService
                 ProvisioningActivator.getConfigurationService().storeConfiguration();
                 ProvisioningActivator.getConfigurationService().reloadConfiguration();
             } catch (Exception e) {
-                logger.error("Cannot reload configuration");
+                Timber.e("Cannot reload configuration");
             }
         } catch (IOException e) {
-            logger.warn("Error during load of provisioning file");
+            Timber.w("Error during load of provisioning file");
         } finally {
             try {
                 in.close();
@@ -681,8 +673,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
             ProvisioningActivator.getCredentialsStorageService()
                     .storePassword(key.substring(0, key.lastIndexOf(".")), (String) value);
 
-            if (logger.isInfoEnabled())
-                logger.info(key + "=<password hidden>");
+            Timber.i("%s = <password hidden>", key);
 
             return;
         }
@@ -694,8 +685,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
             ProvisioningActivator.getConfigurationService().setProperty(key, value);
         }
 
-        if (logger.isInfoEnabled())
-            logger.info(key + "=" + value);
+        Timber.i("%s = %s", key, value);
     }
 
     /**

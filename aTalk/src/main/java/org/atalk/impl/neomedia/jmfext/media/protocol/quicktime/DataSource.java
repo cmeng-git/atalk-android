@@ -5,39 +5,32 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.quicktime;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
-
-import javax.media.*;
-import javax.media.control.*;
-import javax.media.format.*;
-
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.control.FrameRateControlAdapter;
 import org.atalk.impl.neomedia.device.DeviceSystem;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractVideoPushBufferCaptureDevice;
-import org.atalk.impl.neomedia.quicktime.NSErrorException;
-import org.atalk.impl.neomedia.quicktime.QTCaptureDevice;
-import org.atalk.impl.neomedia.quicktime.QTCaptureDeviceInput;
-import org.atalk.impl.neomedia.quicktime.QTCaptureSession;
-import org.atalk.util.Logger;
+import org.atalk.impl.neomedia.quicktime.*;
+
+import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.*;
+
+import javax.media.*;
+import javax.media.control.FormatControl;
+import javax.media.control.FrameRateControl;
+import javax.media.format.VideoFormat;
+
+import timber.log.Timber;
 
 /**
  * Implements a <tt>PushBufferDataSource</tt> and <tt>CaptureDevice</tt> using QuickTime/QTKit.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class DataSource extends AbstractVideoPushBufferCaptureDevice
 {
-
-	/**
-	 * The <tt>Logger</tt> used by the <tt>DataSource</tt> class and its instances for logging
-	 * output.
-	 */
-	private static final Logger logger = Logger.getLogger(DataSource.class);
-
 	/**
 	 * The <tt>QTCaptureSession</tt> which captures from {@link #device} and pushes media data to
 	 * the <tt>PushBufferStream</tt>s of this <tt>PushBufferDataSource</tt>.
@@ -182,7 +175,7 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 				captureSession.addOutput(stream.captureOutput);
 			}
 			catch (NSErrorException nseex) {
-				logger.error("Failed to addOutput to QTCaptureSession", nseex);
+				Timber.e(nseex, "Failed to addOutput to QTCaptureSession");
 				throw new UndeclaredThrowableException(nseex);
 			}
 		return stream;
@@ -244,7 +237,7 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 							captureSession.addOutput(((QuickTimeStream) stream).captureOutput);
 						}
 						catch (NSErrorException nseex) {
-							logger.error("Failed to addOutput to QTCaptureSession", nseex);
+							Timber.e(nseex, "Failed to addOutput to QTCaptureSession");
 
 							IOException ioex = new IOException();
 

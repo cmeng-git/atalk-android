@@ -6,6 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.7.0 (02/22/2019)" versioncode="1070">
+        <change>Use Timber for better control of debug info logging</change>
+        <change>Improve login process; delaying contacts info retrieval for avatar fetching until contacts go online</change>
+        <change>Enhance user permission request process, prompt for battery optimization if enabled</change>
+        <change>Improve chatRoom creation dialog UI error messages</change>
+        <change>Remove all static libraries dependency to allow build from source for F-Droid aTalk release</change>
+        <change>Update to use smack 4.4.0-alpha2 release 20190223</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.6.6 (01/31/2019)" versioncode="1066">
         <change>Improve IB Registration process with optional Captcha challenge etc</change>
         <change>Enhance purge messages with option to delete received media files on local device</change>

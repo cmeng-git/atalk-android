@@ -29,7 +29,6 @@ import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -57,6 +56,8 @@ import java.net.URI;
 import java.security.PublicKey;
 import java.util.*;
 
+import timber.log.Timber;
+
 import static net.java.sip.communicator.plugin.otr.OtrActivator.scOtrEngine;
 import static net.java.sip.communicator.plugin.otr.OtrActivator.scOtrKeyManager;
 import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_MUC_NORMAL;
@@ -73,11 +74,6 @@ import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_OTR_UA;
 public class CryptoFragment extends OSGiFragment
         implements ChatSessionManager.CurrentChatListener, ChatRoomMemberPresenceListener
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(CryptoFragment.class);
-
     /**
      * A map of the user selected encryption menu ItemId. The stored key is the chatId. The
      * information is used to restore the last user selected encryption choice when a chat window
@@ -163,7 +159,7 @@ public class CryptoFragment extends OSGiFragment
         // This happens when Activity is recreated by the system after OSGi service has been
         // killed (and the whole process)
         if (AndroidGUIActivator.bundleContext == null) {
-            logger.error("OSGi service probably not initialized");
+            Timber.e("OSGi service probably not initialized");
             return;
         }
         mOmemoStore = OmemoService.getInstance().getOmemoStoreBackend();
@@ -299,14 +295,14 @@ public class CryptoFragment extends OSGiFragment
             } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException
                     | InterruptedException | SmackException.NoResponseException e) {
-                logger.warn("Fetching active fingerPrints has failed: " + e.getMessage());
+                Timber.w("Fetching active fingerPrints has failed: %s", e.getMessage());
             }
 
             try {
                 mOmemoManager.encrypt(bareJid, "Hi buddy!");
             } catch (UndecidedOmemoIdentityException e) {
-                HashSet<OmemoDevice> omemoDevices = e.getUndecidedDevices();
-                logger.warn("There are undecided Omemo devices: " + omemoDevices);
+                Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
+                Timber.w("There are undecided Omemo devices: %s", omemoDevices);
                 startActivity(OmemoAuthenticateDialog.createIntent(mOmemoManager, omemoDevices, this));
                 allTrusted = false;
             } catch (InterruptedException | SmackException.NoResponseException | CryptoFailedException
@@ -314,14 +310,14 @@ public class CryptoFragment extends OSGiFragment
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
                 activeChat.addMessage(mEntity, new Date(), Chat.ERROR_MESSAGE, ChatMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
-                logger.info("OMEMO changes mChatType to: " + mChatType);
+                Timber.i("OMEMO changes mChatType to: %s", mChatType);
                 return;
             } catch (Exception e) { // catch any non-advertised exception
-                logger.warn("UndecidedOmemoIdentity check failed: " + e.getMessage());
+                Timber.w("UndecidedOmemoIdentity check failed: %s", e.getMessage());
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
                 activeChat.addMessage(mEntity, new Date(), Chat.ERROR_MESSAGE, ChatMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
-                logger.info("OMEMO changes mChatType to: " + mChatType);
+                Timber.w("Revert OMEMO mChatType to: %s", mChatType);
                 return;
             }
 
@@ -361,8 +357,8 @@ public class CryptoFragment extends OSGiFragment
             try {
                 mOmemoManager.encrypt(mMultiUserChat, "Hi everybody!");
             } catch (UndecidedOmemoIdentityException e) {
-                HashSet<OmemoDevice> omemoDevices = e.getUndecidedDevices();
-                logger.warn("There are undecided Omemo devices: " + omemoDevices);
+                Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
+                Timber.w("There are undecided Omemo devices: %s", omemoDevices);
                 startActivity(OmemoAuthenticateDialog.createIntent(mOmemoManager, omemoDevices, this));
                 allTrusted = false;
             } catch (NoOmemoSupportException | InterruptedException | SmackException.NoResponseException
@@ -373,7 +369,7 @@ public class CryptoFragment extends OSGiFragment
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
                 return;
             } catch (Exception e) { // catch any non-advertised exception
-                logger.warn("UndecidedOmemoIdentity check failed: " + e.getMessage());
+                Timber.w("UndecidedOmemoIdentity check failed: %s", e.getMessage());
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
                 activeChat.addMessage(mEntity, new Date(), Chat.ERROR_MESSAGE, ChatMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
@@ -389,7 +385,7 @@ public class CryptoFragment extends OSGiFragment
                         getString(R.string.crypto_msg_OMEMO_SESSION_UNVERIFIED_UNTRUSTED));
             }
         }
-        logger.info("OMEMO changes mChatType to: " + mChatType);
+        Timber.d("OMEMO changes mChatType to: %s", mChatType);
         // else Let calling method or OTR Listener to decide what to set
     }
 
@@ -416,7 +412,7 @@ public class CryptoFragment extends OSGiFragment
                     allTrusted = mOmemoManager.isTrustedOmemoIdentity(recipientDevice, fingerPrint)
                             && allTrusted;
                 } catch (CannotEstablishOmemoSessionException e1) {
-                    logger.warn("AllTrusted check exception: " + e1.getMessage());
+                    Timber.w("AllTrusted check exception: %s", e1.getMessage());
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 } catch (SmackException.NotLoggedInException e1) {
@@ -447,13 +443,13 @@ public class CryptoFragment extends OSGiFragment
             try {
                 mOmemoManager.encrypt(mMultiUserChat, "Hi everybody!");
             } catch (UndecidedOmemoIdentityException e) {
-                HashSet<OmemoDevice> omemoDevices = e.getUndecidedDevices();
-                logger.warn("There are undecided Omemo devices: " + omemoDevices);
+                Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
+                Timber.w("There are undecided Omemo devices: %s", omemoDevices);
                 startActivity(OmemoAuthenticateDialog.createIntent(mOmemoManager, omemoDevices, this));
             } catch (NoOmemoSupportException | InterruptedException | SmackException.NoResponseException
                     | XMPPException.XMPPErrorException | CryptoFailedException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {
-                logger.warn("UndecidedOmemoIdentity check failed: " + e.getMessage());
+                Timber.w("UndecidedOmemoIdentity check failed: %s", e.getMessage());
             }
         }
     }
@@ -664,10 +660,8 @@ public class CryptoFragment extends OSGiFragment
         }
         isOmemoMode = (mItem == mOmemo);
 
-//		logger.warn("ChatSession ID: " + chatSessionId
-//				+ "\nEncryption choice: " + encryptionChoice
-//				+ "\nmItem: " + mItem
-//				+ "\nChatType: " + activeChat.getChatType());
+//		Timber.w("ChatSession ID: %s\nEncryption choice: %s\nmItem: %s\nChatType: %s", chatSessionId,
+//				encryptionChoice, mItem, activeChat.getChatType());
     }
 
     /**
@@ -716,14 +710,10 @@ public class CryptoFragment extends OSGiFragment
     /**
      * OTR key manager listener.
      */
-    private final ScOtrKeyManagerListener scOtrKeyManagerListener = new ScOtrKeyManagerListener()
-    {
-        public void contactVerificationStatusChanged(OtrContact otrContact)
-        {
-            // this.otrContact can be null - equals order is important..
-            if (otrContact.equals(currentOtrContact)) {
-                setStatusOtr(scOtrEngine.getSessionStatus(otrContact));
-            }
+    private final ScOtrKeyManagerListener scOtrKeyManagerListener = otrContact -> {
+        // this.otrContact can be null - equals order is important..
+        if (otrContact.equals(currentOtrContact)) {
+            setStatusOtr(scOtrEngine.getSessionStatus(otrContact));
         }
     };
 
@@ -806,7 +796,7 @@ public class CryptoFragment extends OSGiFragment
             // setStatusOmemo() will always get executed. So skip if same chatType
             if (chatType != mChatType) {
                 mChatType = chatType;
-                // logger.warn("OTR listener change mChatType to: " + mChatType);
+                // Timber.w("OTR listener change mChatType to: %s", mChatType);
                 notifyCryptoModeChanged(mChatType);
             }
         }
@@ -849,7 +839,7 @@ public class CryptoFragment extends OSGiFragment
             mCryptoChoice.setIcon(iconId);
             mCryptoChoice.setTitle(tipKey);
         });
-        // logger.warn("Omemo CryptMode change to: " + chatType + " for " + mDescriptor);
+        // Timber.w("Omemo CryptMode change to: %s for %s", chatType, mDescriptor);
         notifyCryptoModeChanged(mChatType);
     }
 
@@ -979,7 +969,7 @@ public class CryptoFragment extends OSGiFragment
         }
 
         if (listener != null) {
-            // logger.warn("CryptMode Listener changed: " + listener + "=>" + mDescriptor);
+            // Timber.w("CryptMode Listener changed: %s => %s", listener, mDescriptor);
             listener.onCryptoModeChange(chatType);
         }
     }
@@ -993,7 +983,7 @@ public class CryptoFragment extends OSGiFragment
      */
     public void addCryptoModeListener(Object descriptor, CryptoModeChangeListener listener)
     {
-        // logger.warn("CryptMode Listener added: " + listener + "<=" + mDescriptor);
+        // Timber.w("CryptMode Listener added: %s <= %s", listener, mDescriptor);
         cryptoModeChangeListeners.put(descriptor, listener);
     }
 }

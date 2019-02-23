@@ -18,13 +18,17 @@
 package org.jivesoftware.smackx.iqregisterx.provider;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.bob.packet.BoBExt;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -38,8 +42,8 @@ import java.util.*;
 public class RegistrationProvider extends IQProvider<Registration>
 {
     @Override
-    public Registration parse(XmlPullParser parser, int initialDepth)
-            throws Exception
+    public Registration parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException, SmackParsingException
     {
         String instruction = null;
         Map<String, String> fields = new HashMap<>();
@@ -81,14 +85,14 @@ public class RegistrationProvider extends IQProvider<Registration>
                             break;
                         case DataForm.NAMESPACE:
                             dataForm = (DataForm)
-                                    PacketParserUtils.parseExtensionElement(DataForm.ELEMENT, DataForm.NAMESPACE, parser);
+                                    PacketParserUtils.parseExtensionElement(DataForm.ELEMENT, DataForm.NAMESPACE, parser, xmlEnvironment);
                             break;
                         case BoBExt.NAMESPACE:
-                            boBExt = (BoBExt) PacketParserUtils.parseExtensionElement(BoBExt.ELEMENT, BoBExt.NAMESPACE, parser);
+                            boBExt = (BoBExt) PacketParserUtils.parseExtensionElement(BoBExt.ELEMENT, BoBExt.NAMESPACE, parser, xmlEnvironment);
                             break;
                         // In case there are more packet extension.
                         default:
-                            PacketParserUtils.addExtensionElement(packetExtensions, parser);
+                            PacketParserUtils.addExtensionElement(packetExtensions, parser, xmlEnvironment);
                             break;
                     }
                     break;

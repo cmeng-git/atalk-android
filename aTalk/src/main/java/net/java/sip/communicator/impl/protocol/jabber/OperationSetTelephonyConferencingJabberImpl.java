@@ -6,28 +6,11 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.coin.CoinIQ;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CoinPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CoinExtensionElement;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.JingleIQ;
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.CallPeerState;
-import net.java.sip.communicator.service.protocol.CallState;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ConferenceDescription;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
-import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
-import net.java.sip.communicator.service.protocol.event.CallChangeListener;
-import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
-import net.java.sip.communicator.service.protocol.media.AbstractOperationSetTelephonyConferencing;
-import net.java.sip.communicator.service.protocol.media.ConferenceInfoDocument;
-import net.java.sip.communicator.service.protocol.media.MediaAwareCallConference;
-import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.media.*;
 
 import org.atalk.util.xml.XMLException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -36,11 +19,8 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.*;
@@ -49,6 +29,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.Arrays;
 import java.util.Iterator;
+
+import timber.log.Timber;
 
 /**
  * Implements <tt>OperationSetTelephonyConferencing</tt> for Jabber.
@@ -64,12 +46,6 @@ public class OperationSetTelephonyConferencingJabberImpl
         OperationSetBasicTelephonyJabberImpl, CallJabberImpl, CallPeerJabberImpl, String>
         implements RegistrationStateChangeListener, StanzaFilter
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>OperationSetTelephonyConferencingJabberImpl</tt> class
-     * and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetTelephonyConferencingJabberImpl.class);
-
     /**
      * The Jabber Incoming Conference Call IQRequest Handler.
      */
@@ -92,7 +68,7 @@ public class OperationSetTelephonyConferencingJabberImpl
     /**
      * Field indicates whether COIN notification are disabled or not.
      */
-    private boolean isCoinDisabled = false;
+    private boolean isCoinDisabled;
 
     /**
      * Initializes a new <tt>OperationSetTelephonyConferencingJabberImpl</tt> instance which is to
@@ -125,13 +101,11 @@ public class OperationSetTelephonyConferencingJabberImpl
         RegistrationState registrationState = evt.getNewState();
         if (RegistrationState.REGISTERED.equals(registrationState)) {
             subscribeForCoinPackets();
-            if (logger.isDebugEnabled())
-                logger.debug("Subscribes to Coin packets");
+            Timber.d("Subscribes to Coin packets");
         }
         else if (RegistrationState.UNREGISTERED.equals(registrationState)) {
             unsubscribeForCoinPackets();
-            if (logger.isDebugEnabled())
-                logger.debug("Unsubscribes to Coin packets");
+            Timber.d("Unsubscribes to Coin packets");
         }
     }
 
@@ -183,20 +157,15 @@ public class OperationSetTelephonyConferencingJabberImpl
             if (callPeerJabber.isConfInfoScheduled())
                 return;
 
-            logger.info("Scheduling to send a COIN to " + callPeerJabber);
+            Timber.i("Scheduling to send a COIN to %s", callPeerJabber);
             callPeerJabber.setConfInfoScheduled(true);
-            new Thread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    try {
-                        Thread.sleep(1 + COIN_MIN_INTERVAL - timeSinceLastCoin);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
-                    OperationSetTelephonyConferencingJabberImpl.this.notify(callPeerJabber);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1 + COIN_MIN_INTERVAL - timeSinceLastCoin);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
                 }
+                OperationSetTelephonyConferencingJabberImpl.this.notify(callPeerJabber);
             }).start();
             return;
         }
@@ -214,12 +183,12 @@ public class OperationSetTelephonyConferencingJabberImpl
             }
 
             if (!discoverInfo.containsFeature(ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_COIN)) {
-                logger.info(callPeer.getAddress() + " does not support COIN");
+                Timber.i("%s does not support COIN", callPeer.getAddress());
                 callPeerJabber.setConfInfoScheduled(false);
                 return;
             }
         } catch (XMPPException xmppe) {
-            logger.warn("Failed to retrieve DiscoverInfo for " + to, xmppe);
+            Timber.w(xmppe, "Failed to retrieve DiscoverInfo for %s", to);
         }
 
         ConferenceInfoDocument currentConfInfo = getCurrentConferenceInfo(callPeerJabber);
@@ -239,7 +208,7 @@ public class OperationSetTelephonyConferencingJabberImpl
                 try {
                     parentProvider.getConnection().sendStanza(iq);
                 } catch (NotConnectedException | InterruptedException e) {
-                    logger.error("Could not send conference IQ", e);
+                    Timber.e(e, "Could not send conference IQ");
                     return;
                 }
 
@@ -315,7 +284,7 @@ public class OperationSetTelephonyConferencingJabberImpl
             throws OperationFailedException
     {
         return getBasicTelephony().createOutgoingCall(call, calleeAddress,
-                Arrays.asList(new ExtensionElement[]{new CoinPacketExtension(true)}));
+                Arrays.asList(new ExtensionElement[]{new CoinExtensionElement(true)}));
     }
 
     /**
@@ -406,26 +375,22 @@ public class OperationSetTelephonyConferencingJabberImpl
                 StanzaError error = coinIQ.getError();
                 if (error != null) {
                     String msg = error.getConditionText();
-                    errorMessage = ((msg != null) ? (msg + " ") : "") + "Error code: "
-                            + error.getCondition();
+                    errorMessage = ((msg != null) ? (msg + " ") : "") + "Error code: " + error.getCondition();
                 }
-                logger.error("Received error in COIN packet. " + errorMessage);
+                Timber.e("Received error in COIN packet. %s", errorMessage);
                 return null;
             }
 
             String sid = coinIQ.getSID();
             if (sid != null) {
-                CallPeerJabberImpl callPeer = getBasicTelephony().getActiveCallsRepository()
-                        .findCallPeer(sid);
+                CallPeerJabberImpl callPeer = getBasicTelephony().getActiveCallsRepository().findCallPeer(sid);
                 if (callPeer != null) {
                     if (type == IQ.Type.error) {
                         callPeer.fireConferenceMemberErrorEvent(errorMessage);
                     }
                     else {
                         handleCoin(callPeer, coinIQ);
-                        if (logger.isDebugEnabled())
-                            logger.debug("Processing COIN from " + coinIQ.getFrom()
-                                    + " (version=" + coinIQ.getVersion() + ")");
+                        Timber.d("Processing COIN from %s (version = %s)", coinIQ.getFrom(), coinIQ.getVersion());
                     }
                 }
             }
@@ -444,7 +409,7 @@ public class OperationSetTelephonyConferencingJabberImpl
             try {
                 setConferenceInfoXML(callPeer, mCoinIQ.toString());
             } catch (XMLException e) {
-                logger.error("Could not handle received COIN from " + callPeer + "; ResultCoinIQ: " + mCoinIQ);
+                Timber.e("Could not handle received COIN from %s; ResultCoinIQ: %s", callPeer, mCoinIQ);
             }
         }
     }
@@ -485,7 +450,7 @@ public class OperationSetTelephonyConferencingJabberImpl
             if (opSetMUC != null)
                 room = opSetMUC.getChatRoom(chatRoomName);
 
-            logger.info("### RoomName creation (result): " + callPeer.toString() + " (" + chatRoomName + ")");
+            Timber.i("### RoomName creation (result): %s (%s)", callPeer.toString(), chatRoomName);
             if (room != null)
                 return "xmpp:" + chatRoomName + "/" + room.getUserNickname();
         }
@@ -549,11 +514,8 @@ public class OperationSetTelephonyConferencingJabberImpl
             // we leave them empty (meaning both RAW-UDP and ICE could be used)
             cd.addTransport(ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_RAW_UDP_0);
         }
-
-        if (logger.isInfoEnabled()) {
-            logger.info("Setup a conference with uri=" + uri + " and callid=" + call.getCallID()
-                    + ". Videobridge in use: " + isVideobridge);
-        }
+        Timber.i("Setup a conference with uri = %s and callid = %s. Videobridge in use: %s",
+                uri, call.getCallID(), isVideobridge);
         return cd;
     }
 }

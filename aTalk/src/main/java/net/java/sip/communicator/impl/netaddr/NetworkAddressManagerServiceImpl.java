@@ -17,9 +17,9 @@ package net.java.sip.communicator.impl.netaddr;
 
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.netaddr.event.NetworkConfigurationChangeListener;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.NetworkUtils;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.OSUtils;
 import org.ice4j.Transport;
@@ -37,6 +37,8 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.util.Enumeration;
 
+import timber.log.Timber;
+
 /**
  * This implementation of the Network Address Manager allows you to intelligently retrieve the
  * address of your localhost according to the destinations that you will be trying to reach. It
@@ -47,11 +49,6 @@ import java.util.Enumeration;
  */
 public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerService
 {
-    /**
-     * Our class logger.
-     */
-    private static Logger logger = Logger.getLogger(NetworkAddressManagerServiceImpl.class);
-
     /**
      * The socket that we use for dummy connections during selection of a local address that has
      * to be used when communicating with a specific location.
@@ -98,12 +95,8 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
      */
     public void stop()
     {
-        try {
-            if (networkConfigurationWatcher != null)
-                networkConfigurationWatcher.stop();
-        } finally {
-            logger.logExit();
-        }
+        if (networkConfigurationWatcher != null)
+            networkConfigurationWatcher.stop();
     }
 
     /**
@@ -117,9 +110,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
     public synchronized InetAddress getLocalHost(InetAddress intendedDestination)
     {
         InetAddress localHost = null;
-        if (logger.isTraceEnabled()) {
-            logger.trace("Querying for a localhost address for intended destination '" + intendedDestination + "'");
-        }
+        Timber.log(TimberLog.FINER, "Querying for a localhost address for intended destination '%s", intendedDestination);
 
         /*
          * use native code (JNI) to find source address for a specific destination address on Windows XP SP1 and over.
@@ -131,25 +122,25 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
         String osVersion;
         if (OSUtils.IS_WINDOWS && !(osVersion = System.getProperty("os.version")).startsWith("4") /* 95/98/Me/NT */
                 && !osVersion.startsWith("5.0")) /* 2000 */ {
-//            byte[] src = Win32LocalhostRetriever.getSourceForDestination(intendedDestination.getAddress());
-//            if (src == null) {
-//                logger.warn("Failed to get localhost ");
-//            }
-//            else {
-//                try {
-//                    localHost = InetAddress.getByAddress(src);
-//                } catch (UnknownHostException uhe) {
-//                    logger.warn("Failed to get localhost", uhe);
-//                }
-//            }
+            //            byte[] src = Win32LocalhostRetriever.getSourceForDestination(intendedDestination.getAddress());
+            //            if (src == null) {
+            //                Timber.w("Failed to get localhost ");
+            //            }
+            //            else {
+            //                try {
+            //                    localHost = InetAddress.getByAddress(src);
+            //                } catch (UnknownHostException uhe) {
+            //                    Timber.w("Failed to get localhost", uhe);
+            //                }
+            //            }
         }
         else if (OSUtils.IS_MAC) {
-//            try {
-//                localHost = BsdLocalhostRetriever.getLocalSocketAddress(
-//                        new InetSocketAddress(intendedDestination, RANDOM_ADDR_DISC_PORT));
-//            } catch (IOException e) {
-//                logger.warn("Failed to get localhost", e);
-//            }
+            //            try {
+            //                localHost = BsdLocalhostRetriever.getLocalSocketAddress(
+            //                        new InetSocketAddress(intendedDestination, RANDOM_ADDR_DISC_PORT));
+            //            } catch (IOException e) {
+            //                Timber.w("Failed to get localhost", e);
+            //            }
         }
         else {
             // no point in making sure that the localHostFinderSocket is initialized.
@@ -165,13 +156,11 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
             try {
                 localHost = InetAddress.getLocalHost();
             } catch (UnknownHostException e) {
-                logger.warn("Failed to get localhost ", e);
+                Timber.w(e, "Failed to get localhost");
             }
         }
         if (localHost.isAnyLocalAddress()) {
-            if (logger.isTraceEnabled()) {
-                logger.trace("Socket returned the ANY local address. Trying a workaround.");
-            }
+            Timber.log(TimberLog.FINER, "Socket returned the ANY local address. Trying a workaround.");
             try {
                 // all that's inside the if is an ugly IPv6 hack (good ol' IPv6 - always causing
                 // more problems than it solves.)
@@ -222,11 +211,10 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
                 }
             } catch (Exception e) {
                 // sigh ... ok return 0.0.0.0
-                logger.warn("Failed to get localhost", e);
+                Timber.w(e, "Failed to get localhost");
             }
         }
-        if (logger.isTraceEnabled())
-            logger.trace("Returning the localhost address '" + localHost + "'");
+        Timber.log(TimberLog.FINER, "Returning the localhost address '%s'", localHost);
         return localHost;
     }
 
@@ -290,8 +278,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
     /**
      * This method gets called when a bound property is changed.
      *
-     * @param evt A PropertyChangeEvent object describing the event source and the property that has
-     * changed.
+     * @param evt A PropertyChangeEvent object describing the event source and the property that has changed.
      */
     public void propertyChange(PropertyChangeEvent evt)
     {
@@ -321,8 +308,8 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
             try {
                 bindRetries = Integer.parseInt(bindRetriesStr);
             } catch (NumberFormatException ex) {
-                logger.error(bindRetriesStr + " does not appear to be an integer. Defaulting port bind retries to "
-                        + bindRetries, ex);
+                Timber.e(ex, "%s does not appear to be an integer. Defaulting port bind retries to %s",
+                        bindRetriesStr, bindRetries);
             }
         }
         int currentlyTriedPort = NetworkUtils.getRandomPortNumber();
@@ -336,15 +323,13 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
                 break;
             } catch (SocketException exc) {
                 if (!exc.getMessage().contains("Address already in use")) {
-                    logger.fatal("An exception occurred while trying to create a local host discovery socket.", exc);
+                    Timber.e(exc, "An exception occurred while trying to create a local host discovery socket.");
                     return null;
                 }
                 // port seems to be taken. try another one.
-                if (logger.isDebugEnabled())
-                    logger.debug("Port " + currentlyTriedPort + " seems in use.");
+                Timber.d("Port %d seems to be in use.", currentlyTriedPort);
                 currentlyTriedPort = NetworkUtils.getRandomPortNumber();
-                if (logger.isDebugEnabled())
-                    logger.debug("Retrying bind on port " + currentlyTriedPort);
+                Timber.d("Retrying bind on port %s", currentlyTriedPort);
             }
         }
         return resultSocket;
@@ -402,11 +387,8 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
             try {
                 return new DatagramSocket(port, laddr);
             } catch (SocketException se) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Retrying a bind because of a failure to bind to address " + laddr + " and port " + port);
-                    if (logger.isTraceEnabled())
-                        logger.trace("Since you seem, here's a stack:", se);
-                }
+                Timber.i("Retrying a bind because of a failure to bind to address: %s and port: %d", laddr, port);
+                Timber.log(TimberLog.FINER, se, "Since you seem, here's a stack");
             }
             port++;
             if (port > maxPort)
@@ -470,7 +452,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
         try {
             InetAddress inetAddress = InetAddress.getByName(domainName);
         } catch (UnknownHostException e) {
-            logger.warn("Unreachable host for TURN/STUN discovery: " + domainName);
+            Timber.w("Unreachable host for TURN/STUN discovery: %s", domainName);
             return null;
         }
 
@@ -495,7 +477,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
                 port = srvRecords[0].port;
             }
         } catch (IOException e) {
-            logger.warn("Failed to fetch STUN/TURN SRV RR for " + domainName + ": " + e.getMessage());
+            Timber.w("Failed to fetch STUN/TURN SRV RR for %s: %s", domainName, e.getMessage());
         }
 
         if (srvrAddress != null) {

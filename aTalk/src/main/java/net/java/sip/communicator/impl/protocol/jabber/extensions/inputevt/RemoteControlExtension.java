@@ -8,6 +8,7 @@ package net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.android.util.java.awt.event.ComponentEvent;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -107,7 +108,7 @@ public class RemoteControlExtension implements ExtensionElement
      * @return XML representation of the item
      */
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace)
+    public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
 

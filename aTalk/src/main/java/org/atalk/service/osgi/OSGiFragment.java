@@ -9,22 +9,16 @@ import android.app.Activity;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.osgi.framework.BundleContext;
 
 /**
  * Class can be used to build {@link Fragment}s that require OSGI services access.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class OSGiFragment extends Fragment implements OSGiUiPart
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(OSGiFragment.class);
-
     /**
      * {@inheritDoc}
      */

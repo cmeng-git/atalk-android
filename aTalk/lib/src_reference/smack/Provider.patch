@@ -1,0 +1,18 @@
+--- /home/cmeng/source/smack/Smack/trunk/smack-core/src/main/java/org/jivesoftware/smack/provider/Provider.java	2019-02-18 18:39:49.000000000 
++++ /home/cmeng/workspace/android/smack/smack-core/src/main/java/org/jivesoftware/smack/provider/Provider.java	2019-02-19 09:54:40.000000000 
+@@ -52,12 +52,15 @@
+             currentType = currentClass.getGenericSuperclass();
+         }
+         ParameterizedType parameterizedGenericSuperclass = (ParameterizedType) currentType;
+         Type[] actualTypeArguments = parameterizedGenericSuperclass.getActualTypeArguments();
+         Type elementType = actualTypeArguments[0];
+ 
++        if (!(elementType instanceof Class))
++            elementType = elementType.getClass();
++
+         elementClass =  (Class<E>) elementType;
+     }
+ 
+     public final Class<E> getElementClass() {
+         return elementClass;
+     }

@@ -8,8 +8,6 @@ package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
 import android.graphics.SurfaceTexture;
 import android.view.Surface;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.impl.neomedia.device.util.*;
 import org.atalk.service.osgi.OSGiActivity;
 
@@ -17,6 +15,8 @@ import java.io.IOException;
 
 import javax.media.Buffer;
 import javax.media.control.FormatControl;
+
+import timber.log.Timber;
 
 /**
  * Camera stream that uses <tt>Surface</tt> to capture video. First input <tt>Surface</tt> is
@@ -33,11 +33,6 @@ import javax.media.control.FormatControl;
  */
 public class SurfaceStream extends CameraStreamBase
 {
-    /**
-     * The logger.
-     */
-    private final static Logger logger = Logger.getLogger(SurfaceStream.class);
-
     /**
      * Codec input surface obtained from <tt>MediaCodec</tt>.
      */
@@ -150,7 +145,7 @@ public class SurfaceStream extends CameraStreamBase
             if (delay < 80) {
                 try {
                     long wait = 80 - delay;
-                    logger.debug("Delaying frame: " + wait);
+                    Timber.d("Delaying frame: %s", wait);
                     Thread.sleep(wait);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -183,8 +178,8 @@ public class SurfaceStream extends CameraStreamBase
                  * current context. We skip the frame in this case.
                  */
                 if (previewCtx == null || !myCtxProvider.textureUpdated) {
-                    logger.warn("Skipped preview frame, ctx: " + previewCtx
-                            + " textureUpdated: " + myCtxProvider.textureUpdated);
+                    Timber.w("Skipped preview frame, ctx: %s textureUpdated: %s",
+                            previewCtx, myCtxProvider.textureUpdated);
                 }
                 else {
                     previewCtx.ensureIsCurrentCtx();

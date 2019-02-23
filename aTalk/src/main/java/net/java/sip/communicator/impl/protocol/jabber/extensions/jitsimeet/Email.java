@@ -18,9 +18,13 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
  * A implementation of a {@link ExtensionElement} for emails.
@@ -86,7 +90,7 @@ public class Email implements ExtensionElement
      * @return xml representation of this extension.
      */
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace)
+    public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.element(ELEMENT_NAME, getAddress());
@@ -98,8 +102,8 @@ public class Email implements ExtensionElement
      */
     public static class EmailProvider extends ExtensionElementProvider<Email>
     {
-        public Email parse(XmlPullParser parser, int initialDepth)
-                throws Exception
+        public Email parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+                throws IOException, XmlPullParserException
         {
             parser.next();
             final String address = parser.getText();
@@ -108,7 +112,6 @@ public class Email implements ExtensionElement
             while (parser.getEventType() != XmlPullParser.END_TAG) {
                 parser.next();
             }
-
             return new Email(address);
         }
     }

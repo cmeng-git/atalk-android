@@ -16,7 +16,6 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.protocol.OperationSetUserSearch;
 import net.java.sip.communicator.service.protocol.RegistrationState;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -31,7 +30,10 @@ import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * This operation set provides utility methods for user search implementation.
@@ -41,11 +43,6 @@ import java.util.*;
  */
 public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch, RegistrationStateChangeListener
 {
-    /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetUserSearchJabberImpl.class);
-
     /**
      * The <tt>UserSearchManager</tt> instance which actually implements the user search.
      */
@@ -161,7 +158,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
                     try {
                         serviceNames = searchManager.getSearchServices();
                     } catch (NoResponseException | InterruptedException | NotConnectedException | XMPPErrorException e) {
-                        logger.error("Failed to search for service names", e);
+                        Timber.e(e, "Failed to search for service names");
                     }
                     if (!serviceNames.isEmpty()) {
                         serviceName = serviceNames.iterator().next();
@@ -206,18 +203,18 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
             Form form = searchManager.getSearchForm(serviceName);
             data = searchManager.getSearchResults(form, serviceName);
         } catch (XMPPException | NotConnectedException | InterruptedException | NoResponseException e) {
-            logger.error(e);
+            Timber.e(e);
             return null;
         }
 
         if (data == null) {
-            logger.error("No data have been received from server.");
+            Timber.e("No data have been received from server.");
             return null;
         }
         List<Column> columns = data.getColumns();
         List<Row> rows = data.getRows();
         if (columns == null || rows == null) {
-            logger.error("The received data is corrupted.");
+            Timber.e("The received data is corrupted.");
             return null;
         }
 
@@ -230,7 +227,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
         }
 
         if (jidColumn == null) {
-            logger.error("No jid collumn provided by the server.");
+            Timber.e("No jid collumn provided by the server.");
             return null;
         }
         List<CharSequence> result = new ArrayList<>();

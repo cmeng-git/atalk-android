@@ -13,10 +13,12 @@
  */
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.rtp.RemoteBitrateEstimator;
 import org.atalk.util.DiagnosticContext;
-import org.atalk.util.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import timber.log.Timber;
 
 /**
  * A rate control implementation based on additive increases of bitrate when no over-use is detected
@@ -27,60 +29,35 @@ import org.jetbrains.annotations.NotNull;
  * webrtc/modules/remote_bitrate_estimator/aimd_rate_control.h
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 class AimdRateControl
 {
-    /**
-     * The <tt>Logger</tt> used by the
-     * <tt>RemoteBitrateEstimatorAbsSendTime</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AimdRateControl.class);
-
     private static final int kDefaultRttMs = 200;
-
     private static final long kInitializationTimeMs = 5000;
-
     private static final long kLogIntervalMs = 1000;
-
     private static final long kMaxFeedbackIntervalMs = 1000;
-
     private static final long kMinFeedbackIntervalMs = 200;
-
     private static final int kRtcpSize = 80;
-
     private static final double kWithinIncomingBitrateHysteresis = 1.05;
-
     private final DiagnosticContext diagnosticContext;
-
     private float avgMaxBitrateKbps;
-
     private float beta;
-
     private boolean bitrateIsInitialized;
-
     private long currentBitrateBps;
 
     private final RateControlInput currentInput
             = new RateControlInput(BandwidthUsage.kBwNormal, 0L, 0D);
 
     private boolean inExperiment;
-
     private long minConfiguredBitrateBps;
-
     private RateControlRegion rateControlRegion;
-
     private RateControlState rateControlState;
-
     private long rtt;
-
     private long timeFirstIncomingEstimate;
-
     private long timeLastBitrateChange;
-
     private long timeOfLastLog;
-
     private boolean updated;
-
     private float varMaxBitrateKbps;
 
     public AimdRateControl(@NotNull DiagnosticContext diagnosticContext)
@@ -200,12 +177,10 @@ class AimdRateControl
         }
 
         rateControlRegion = region;
-        if (logger.isTraceEnabled()) {
-            logger.trace(diagnosticContext
-                    .makeTimeSeriesPoint("aimd_region", nowMs)
-                    .addField("aimd_id", hashCode())
-                    .addField("region", region));
-        }
+        Timber.log(TimberLog.FINER, "%s", diagnosticContext
+                .makeTimeSeriesPoint("aimd_region", nowMs)
+                .addField("aimd_id", hashCode())
+                .addField("region", region));
     }
 
     private void changeState(RateControlInput input, long nowMs)
@@ -237,12 +212,10 @@ class AimdRateControl
         }
 
         rateControlState = newState;
-        if (logger.isTraceEnabled()) {
-            logger.trace(diagnosticContext
-                    .makeTimeSeriesPoint("aimd_state", nowMs)
-                    .addField("aimd_id", hashCode())
-                    .addField("state", rateControlState));
-        }
+        Timber.log(TimberLog.FINER, "%s", diagnosticContext
+                .makeTimeSeriesPoint("aimd_state", nowMs)
+                .addField("aimd_id", hashCode())
+                .addField("state", rateControlState));
     }
 
     public long getFeedBackInterval()
@@ -250,7 +223,6 @@ class AimdRateControl
         // Estimate how often we can send RTCP if we allocate up to 5% of
         // bandwidth to feedback.
         long interval = (long) (kRtcpSize * 8.0 * 1000.0 / (0.05 * currentBitrateBps) + 0.5);
-
         return Math.min(Math.max(interval, kMinFeedbackIntervalMs), kMaxFeedbackIntervalMs);
     }
 
@@ -344,12 +316,10 @@ class AimdRateControl
 
     public void setRtt(long rtt)
     {
-        if (logger.isTraceEnabled()) {
-            logger.trace(diagnosticContext
-                    .makeTimeSeriesPoint("aimd_rtt", System.currentTimeMillis())
-                    .addField("aimd_id", hashCode())
-                    .addField("rtt", rtt));
-        }
+        Timber.log(TimberLog.FINER, "%s", diagnosticContext
+                .makeTimeSeriesPoint("aimd_rtt", System.currentTimeMillis())
+                .addField("aimd_id", hashCode())
+                .addField("rtt", rtt));
         this.rtt = rtt;
     }
 
@@ -387,8 +357,8 @@ class AimdRateControl
     public long updateBandwidthEstimate(long nowMs)
     {
         currentBitrateBps = changeBitrate(currentBitrateBps, currentInput.incomingBitRate, nowMs);
-        if (logger.isTraceEnabled() && isValidEstimate()) {
-            logger.trace(diagnosticContext
+        if (isValidEstimate()) {
+            Timber.log(TimberLog.FINER, "%s", diagnosticContext
                     .makeTimeSeriesPoint("aimd_estimate", nowMs)
                     .addField("aimd_id", hashCode())
                     .addField("estimate_bps", currentBitrateBps)

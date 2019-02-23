@@ -11,7 +11,6 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.service.neomedia.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -34,11 +33,6 @@ import java.util.*;
  */
 public abstract class TransportManagerJabberImpl extends TransportManager<CallPeerJabberImpl>
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>TransportManagerJabberImpl</tt> class and its instances
-     */
-    private static final Logger logger = Logger.getLogger(TransportManagerJabberImpl.class);
-
     /**
      * The ID that we will be assigning to our next candidate. We use <tt>int</tt>s for
      * inter-operability reasons (Emil: I believe that GTalk uses <tt>int</tt>s. If that turns out
@@ -154,24 +148,24 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * Videobridge in order to update the (remote) <tt>ColibriConferenceIQ.Channel</tt> associated
      * with this <tt>TransportManager</tt> instance.
      *
-     * @param map a <tt>Map</tt> of media-IceUdpTransportPacketExtension pairs which represents the
+     * @param map a <tt>Map</tt> of media-IceUdpTransportExtensionElement pairs which represents the
      * transport-related information which has been received from the remote peer and which
      * is to be sent to the associated Jitsi Videobridge
      */
-    protected void sendTransportInfoToJitsiVideobridge(Map<String, IceUdpTransportPacketExtension> map)
+    protected void sendTransportInfoToJitsiVideobridge(Map<String, IceUdpTransportExtensionElement> map)
             throws OperationFailedException
     {
         CallPeerJabberImpl peer = getCallPeer();
         boolean initiator = !peer.isInitiator();
         ColibriConferenceIQ conferenceRequest = null;
 
-        for (Map.Entry<String, IceUdpTransportPacketExtension> e : map.entrySet()) {
+        for (Map.Entry<String, IceUdpTransportExtensionElement> e : map.entrySet()) {
             String media = e.getKey();
             MediaType mediaType = MediaType.parseString(media);
             ColibriConferenceIQ.Channel channel = getColibriChannel(mediaType, false /* remote */);
 
             if (channel != null) {
-                IceUdpTransportPacketExtension transport;
+                IceUdpTransportExtensionElement transport;
                 try {
                     transport = cloneTransportAndCandidates(e.getValue());
                 } catch (OperationFailedException ofe) {
@@ -215,21 +209,21 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Starts transport candidate harvest for a specific <tt>ContentPacketExtension</tt> that we are
+     * Starts transport candidate harvest for a specific <tt>ContentExtensionElement</tt> that we are
      * going to offer or answer with.
      *
-     * @param theirContent the <tt>ContentPacketExtension</tt> offered by the remote peer to which we are going
+     * @param theirContent the <tt>ContentExtensionElement</tt> offered by the remote peer to which we are going
      * to answer with <tt>ourContent</tt> or <tt>null</tt> if <tt>ourContent</tt> will be an offer to the remote peer
-     * @param ourContent the <tt>ContentPacketExtension</tt> for which transport candidate harvest is to be started
+     * @param ourContent the <tt>ContentExtensionElement</tt> for which transport candidate harvest is to be started
      * @param transportInfoSender a <tt>TransportInfoSender</tt> if the harvested transport candidates are to be sent in
      * a <tt>transport-info</tt> rather than in <tt>ourContent</tt>; otherwise, <tt>null</tt>
-     * @param media the media of the <tt>RtpDescriptionPacketExtension</tt> child of <tt>ourContent</tt>
+     * @param media the media of the <tt>RtpDescriptionExtensionElement</tt> child of <tt>ourContent</tt>
      * @return a <tt>ExtensionElement</tt> to be added as a child to <tt>ourContent</tt>; otherwise, <tt>null</tt>
      * @throws OperationFailedException if anything goes wrong while starting transport candidate harvest for
      * the specified <tt>ourContent</tt>
      */
-    protected abstract ExtensionElement startCandidateHarvest(ContentPacketExtension theirContent,
-            ContentPacketExtension ourContent, TransportInfoSender transportInfoSender, String media)
+    protected abstract ExtensionElement startCandidateHarvest(ContentExtensionElement theirContent,
+            ContentExtensionElement ourContent, TransportInfoSender transportInfoSender, String media)
             throws OperationFailedException;
 
     /**
@@ -250,23 +244,23 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * included in the result of {@link #wrapupCandidateHarvest()}.
      * @throws OperationFailedException if we fail to allocate a port number.
      */
-    public void startCandidateHarvest(List<ContentPacketExtension> theirOffer,
-            List<ContentPacketExtension> ourAnswer, TransportInfoSender transportInfoSender)
+    public void startCandidateHarvest(List<ContentExtensionElement> theirOffer,
+            List<ContentExtensionElement> ourAnswer, TransportInfoSender transportInfoSender)
             throws OperationFailedException
     {
         CallPeerJabberImpl peer = getCallPeer();
         CallJabberImpl call = peer.getCall();
         boolean isJitsiVideobridge = call.getConference().isJitsiVideobridge();
-        List<ContentPacketExtension> cpes = (theirOffer == null) ? ourAnswer : theirOffer;
+        List<ContentExtensionElement> cpes = (theirOffer == null) ? ourAnswer : theirOffer;
 
         /*
          * If Jitsi Videobridge is to be used, determine which channels are to be allocated and
          * attempt to allocate them now.
          */
         if (isJitsiVideobridge) {
-            Map<ContentPacketExtension, ContentPacketExtension> contentMap = new LinkedHashMap<ContentPacketExtension, ContentPacketExtension>();
+            Map<ContentExtensionElement, ContentExtensionElement> contentMap = new LinkedHashMap<ContentExtensionElement, ContentExtensionElement>();
 
-            for (ContentPacketExtension cpe : cpes) {
+            for (ContentExtensionElement cpe : cpes) {
                 MediaType mediaType = JingleUtils.getMediaType(cpe);
 
                 /*
@@ -275,7 +269,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                  * for that mediaType.
                  */
                 if ((colibri == null) || (colibri.getContent(mediaType.toString()) == null)) {
-                    ContentPacketExtension local, remote;
+                    ContentExtensionElement local, remote;
                     if (cpes == ourAnswer) {
                         local = cpe;
                         remote = (theirOffer == null) ? null : findContentByName(theirOffer, cpe.getName());
@@ -294,8 +288,8 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                  */
                 if (colibri == null)
                     colibri = new ColibriConferenceIQ();
-                for (Map.Entry<ContentPacketExtension, ContentPacketExtension> e : contentMap.entrySet()) {
-                    ContentPacketExtension cpe = e.getValue();
+                for (Map.Entry<ContentExtensionElement, ContentExtensionElement> e : contentMap.entrySet()) {
+                    ContentExtensionElement cpe = e.getValue();
                     if (cpe == null)
                         cpe = e.getKey();
                     colibri.getOrCreateContent(JingleUtils.getMediaType(cpe).toString());
@@ -332,21 +326,21 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                      * the conference packet times out or it can't be built.
                      */
                     ProtocolProviderServiceJabberImpl.throwOperationFailedException(
-                            "Failed to allocate colibri channel.", OperationFailedException.GENERAL_ERROR, null, logger);
+                            "Failed to allocate colibri channel.", OperationFailedException.GENERAL_ERROR, null);
                 }
             }
         }
 
-        for (ContentPacketExtension cpe : cpes) {
+        for (ContentExtensionElement cpe : cpes) {
             String contentName = cpe.getName();
-            ContentPacketExtension ourContent = findContentByName(ourAnswer, contentName);
+            ContentExtensionElement ourContent = findContentByName(ourAnswer, contentName);
 
             // it might be that we decided not to reply to this content
             if (ourContent != null) {
-                ContentPacketExtension theirContent = (theirOffer == null)
+                ContentExtensionElement theirContent = (theirOffer == null)
                         ? null : findContentByName(theirOffer, contentName);
-                RtpDescriptionPacketExtension rtpDesc
-                        = ourContent.getFirstChildOfType(RtpDescriptionPacketExtension.class);
+                RtpDescriptionExtensionElement rtpDesc
+                        = ourContent.getFirstChildOfType(RtpDescriptionExtensionElement.class);
                 String media = rtpDesc.getMedia();
                 ExtensionElement pe = startCandidateHarvest(theirContent, ourContent, transportInfoSender, media);
 
@@ -372,7 +366,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * included in the result of {@link #wrapupCandidateHarvest()}.
      * @throws OperationFailedException if we fail to allocate a port number.
      */
-    public void startCandidateHarvest(List<ContentPacketExtension> ourOffer, TransportInfoSender transportInfoSender)
+    public void startCandidateHarvest(List<ContentExtensionElement> ourOffer, TransportInfoSender transportInfoSender)
             throws OperationFailedException
     {
         startCandidateHarvest(null, ourOffer, transportInfoSender);
@@ -385,19 +379,19 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * @return the content list that we received earlier (possibly cloned into a new instance) and
      * that we have updated with transport lists.
      */
-    public abstract List<ContentPacketExtension> wrapupCandidateHarvest();
+    public abstract List<ContentExtensionElement> wrapupCandidateHarvest();
 
     /**
-     * Looks through the <tt>cpExtList</tt> and returns the {@link ContentPacketExtension} with the specified name.
+     * Looks through the <tt>cpExtList</tt> and returns the {@link ContentExtensionElement} with the specified name.
      *
      * @param cpExtList the list that we will be searching for a specific content.
      * @param name the name of the content element we are looking for.
-     * @return the {@link ContentPacketExtension} with the specified name or <tt>null</tt> if no
+     * @return the {@link ContentExtensionElement} with the specified name or <tt>null</tt> if no
      * such content element exists.
      */
-    public static ContentPacketExtension findContentByName(Iterable<ContentPacketExtension> cpExtList, String name)
+    public static ContentExtensionElement findContentByName(Iterable<ContentExtensionElement> cpExtList, String name)
     {
-        for (ContentPacketExtension cpExt : cpExtList) {
+        for (ContentExtensionElement cpExt : cpExtList) {
             if (cpExt.getName().equals(name))
                 return cpExt;
         }
@@ -409,14 +403,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * the connectivity between the local and the remote peers given the remote counterpart of the
      * negotiation between them.
      *
-     * @param remote the collection of <tt>ContentPacketExtension</tt>s which represents the remote
+     * @param remote the collection of <tt>ContentExtensionElement</tt>s which represents the remote
      * counterpart of the negotiation between the local and the remote peer
      * @return <tt>true</tt> if connectivity establishment has been started in response to the call;
      * otherwise, <tt>false</tt>. <tt>TransportManagerJabberImpl</tt> implementations which
      * do not perform connectivity checks (e.g. raw UDP) should return <tt>true</tt>. The
      * default implementation does not perform connectivity checks and always returns <tt>true</tt>.
      */
-    public boolean startConnectivityEstablishment(Iterable<ContentPacketExtension> remote)
+    public boolean startConnectivityEstablishment(Iterable<ContentExtensionElement> remote)
             throws OperationFailedException
     {
         return true;
@@ -427,14 +421,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * the connectivity between the local and the remote peers given the remote counterpart of the
      * negotiation between them.
      *
-     * @param remote a <tt>Map</tt> of media-<tt>IceUdpTransportPacketExtension</tt> pairs which represents
+     * @param remote a <tt>Map</tt> of media-<tt>IceUdpTransportExtensionElement</tt> pairs which represents
      * the remote counterpart of the negotiation between the local and the remote peers
      * @return <tt>true</tt> if connectivity establishment has been started in response to the call;
      * otherwise, <tt>false</tt>. <tt>TransportManagerJabberImpl</tt> implementations which
      * do not perform connectivity checks (e.g. raw UDP) should return <tt>true</tt>. The
      * default implementation does not perform connectivity checks and always returns <tt>true</tt>.
      */
-    protected boolean startConnectivityEstablishment(Map<String, IceUdpTransportPacketExtension> remote)
+    protected boolean startConnectivityEstablishment(Map<String, IceUdpTransportExtensionElement> remote)
     {
         return true;
     }
@@ -470,12 +464,12 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      *
      * @param contents the collection of contents to remove the content with the specified name from
      * @param name the name of the content to remove
-     * @return the removed <tt>ContentPacketExtension</tt> if any; otherwise, <tt>null</tt>
+     * @return the removed <tt>ContentExtensionElement</tt> if any; otherwise, <tt>null</tt>
      */
-    protected ContentPacketExtension removeContent(Iterable<ContentPacketExtension> contents, String name)
+    protected ContentExtensionElement removeContent(Iterable<ContentExtensionElement> contents, String name)
     {
-        for (Iterator<ContentPacketExtension> contentIter = contents.iterator(); contentIter.hasNext(); ) {
-            ContentPacketExtension content = contentIter.next();
+        for (Iterator<ContentExtensionElement> contentIter = contents.iterator(); contentIter.hasNext(); ) {
+            ContentExtensionElement content = contentIter.next();
 
             if (name.equals(content.getName())) {
                 contentIter.remove();
@@ -492,22 +486,21 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Clones a specific <tt>IceUdpTransportPacketExtension</tt> and its candidates.
+     * Clones a specific <tt>IceUdpTransportExtensionElement</tt> and its candidates.
      *
-     * @param src the <tt>IceUdpTransportPacketExtension</tt> to be cloned
-     * @return a new <tt>IceUdpTransportPacketExtension</tt> instance which has the same run-time
+     * @param src the <tt>IceUdpTransportExtensionElement</tt> to be cloned
+     * @return a new <tt>IceUdpTransportExtensionElement</tt> instance which has the same run-time
      * type, attributes, namespace, text and candidates as the specified <tt>src</tt>
      * @throws OperationFailedException if an error occurs during the cloing of the specified <tt>src</tt> and its candidates
      */
-    static IceUdpTransportPacketExtension cloneTransportAndCandidates(IceUdpTransportPacketExtension src)
+    static IceUdpTransportExtensionElement cloneTransportAndCandidates(IceUdpTransportExtensionElement src)
             throws OperationFailedException
     {
         try {
-            return IceUdpTransportPacketExtension.cloneTransportAndCandidates(src);
+            return IceUdpTransportExtensionElement.cloneTransportAndCandidates(src);
         } catch (Exception e) {
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
-                    "Failed to close transport and candidates.",
-                    OperationFailedException.GENERAL_ERROR, e, logger);
+                    "Failed to close transport and candidates.", OperationFailedException.GENERAL_ERROR, e);
         }
         return null;
     }

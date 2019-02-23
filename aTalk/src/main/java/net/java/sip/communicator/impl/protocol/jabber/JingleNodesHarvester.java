@@ -5,8 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
 import org.ice4j.ice.Component;
@@ -19,6 +17,8 @@ import org.xmpp.jnodes.smack.*;
 import java.util.Collection;
 import java.util.HashSet;
 
+import timber.log.Timber;
+
 /**
  * Implements a <tt>CandidateHarvester</tt> which gathers <tt>Candidate</tt>s for a specified
  * {@link Component} using Jingle Nodes as defined in XEP 278 "Jingle Relay Nodes".
@@ -29,14 +29,9 @@ import java.util.HashSet;
 public class JingleNodesHarvester extends AbstractCandidateHarvester
 {
     /**
-     * The <tt>Logger</tt> used by the <tt>JingleNodesHarvester</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(JingleNodesHarvester.class.getName());
-
-    /**
      * XMPPTCPConnection
      */
-    private SmackServiceNode serviceNode = null;
+    private SmackServiceNode serviceNode;
 
     /**
      * JingleNodes relay allocate two address/port couple for us. Due to the architecture of Ice4j
@@ -72,9 +67,9 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
     @Override
     public synchronized Collection<LocalCandidate> harvest(Component component)
     {
-        logger.info("harvest Jingle Nodes");
-        Collection<LocalCandidate> candidates = new HashSet<LocalCandidate>();
-        String ip = null;
+        Timber.i("harvest Jingle Nodes");
+        Collection<LocalCandidate> candidates = new HashSet<>();
+        String ip;
         int port = -1;
 
         /* if we have already a candidate (RTCP) allocated, get it */
@@ -105,12 +100,10 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
             ip = ciq.getHost();
             port = ciq.getRemoteport();
 
-            if (logger.isInfoEnabled()) {
-                logger.info("JN relay: " + ip + " remote port:" + port + " local port: " + ciq.getLocalport());
-            }
+            Timber.i("JN relay: %s remote port: %s local port: %s", ip, port, ciq.getLocalport());
 
             if (ip == null || ciq.getRemoteport() == 0) {
-                logger.warn("JN relay ignored because ip was null or port 0");
+                Timber.w("JN relay ignored because ip was null or port 0");
                 return candidates;
             }
 
@@ -118,7 +111,7 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
             // The scope/ifname is only valid on host that owns the IP and we don't need it here.
             int scopeIndex = ip.indexOf('%');
             if (scopeIndex > 0) {
-                logger.warn("Dropping scope from assumed IPv6 address " + ip);
+                Timber.w("Dropping scope from assumed IPv6 address %s", ip);
                 ip = ip.substring(0, scopeIndex);
             }
 
@@ -161,7 +154,7 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
             candidate.getStunStack().addSocket(stunSocket);
             // cmeng v2.0 - component.getComponentSocket().add(candidate.getCandidateIceSocketWrapper());
         } catch (Throwable e) {
-            logger.debug("Exception occurred when creating JingleNodesCandidate: " + e);
+            Timber.i("Exception occurred when creating JingleNodesCandidate: %s", e.getMessage());
         }
         return candidate;
     }

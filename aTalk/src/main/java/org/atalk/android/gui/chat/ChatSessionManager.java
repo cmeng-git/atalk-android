@@ -15,7 +15,6 @@ import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
 import net.java.sip.communicator.service.gui.event.ChatListener;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -25,6 +24,8 @@ import org.atalk.android.gui.chatroomslist.AdHocChatRoomList;
 import java.net.URI;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * The <tt>ChatSessionManager</tt> managing active chat sessions.
  *
@@ -33,11 +34,6 @@ import java.util.*;
  */
 public class ChatSessionManager
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(ChatSessionManager.class);
-
     /**
      * The chat identifier property. It corresponds to chat's meta contact UID.
      */
@@ -181,7 +177,7 @@ public class ChatSessionManager
             ChatPanel currChat = getActiveChat(currentChatId);
             if (currChat != null) {
                 lastDescriptor = currChat.getChatSession().getDescriptor();
-                logger.debug("Current chat with: " + currChat.getChatSession().getCurrentChatTransport().getDisplayName());
+                Timber.d("Current chat with: %s", currChat.getChatSession().getCurrentChatTransport().getDisplayName());
             }
 
             // Notifies about new current chat session
@@ -375,6 +371,7 @@ public class ChatSessionManager
     }
 
     // ###########################################################
+
     /**
      * Finds the chat for given <tt>Contact</tt>.
      *
@@ -388,13 +385,13 @@ public class ChatSessionManager
         MetaContact metaContact;
 
         if (contact == null) {
-            logger.error("Failed to obtain chat instance for null contact");
+            Timber.e("Failed to obtain chat instance for null contact");
             return null;
         }
         else {
             metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
             if (metaContact == null) {
-                logger.warn("No meta contact found for " + contact);
+                Timber.w("No meta contact found for %s", contact);
                 return null;
             }
         }
@@ -410,7 +407,7 @@ public class ChatSessionManager
      * @param chatId A string identifier that uniquely represents the caller in the containing chat
      * session database
      * @param chatMode can have one of the value as shown in below code
-     * @return An existing <code>ChatPanel</code> or newly created.
+     * @return An existing {@code ChatPanel} or newly created.
      */
 
     public synchronized static ChatPanel createChatForChatId(String chatId, int chatMode)

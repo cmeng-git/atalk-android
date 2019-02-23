@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.account;
@@ -11,17 +11,16 @@ import android.os.Bundle;
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.menu.ExitMenuActivity;
 import org.atalk.android.gui.util.AndroidUtils;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * The <tt>AccountLoginActivity</tt> is the activity responsible for creating or
@@ -34,8 +33,6 @@ import java.util.Map;
 public class AccountLoginActivity extends ExitMenuActivity
         implements AccountLoginFragment.AccountLoginListener
 {
-    Logger logger = Logger.getLogger(AccountLoginActivity.class);
-
     /**
      * The username property name.
      */
@@ -87,17 +84,16 @@ public class AccountLoginActivity extends ExitMenuActivity
             accountWizardRefs = bundleContext.getServiceReferences(AccountRegistrationWizard.class.getName(), null);
         } catch (InvalidSyntaxException ex) {
             // this shouldn't happen since we have provided all parameter string
-            logger.error("Error while retrieving service refs", ex);
+            Timber.e(ex, "Error while retrieving service refs");
         }
 
         // in case we found none, then exit.
         if (accountWizardRefs == null) {
-            logger.error("No registered account registration wizards found");
+            Timber.e("No registered account registration wizards found");
             return null;
         }
 
-        if (logger.isDebugEnabled())
-            logger.debug("Found " + accountWizardRefs.length + " already installed providers.");
+        Timber.d("Found %s already installed providers.", accountWizardRefs.length);
 
         // Get the user selected AccountRegistrationWizard for account registration
         AccountRegistrationWizard selectedWizard = null;
@@ -109,14 +105,14 @@ public class AccountLoginActivity extends ExitMenuActivity
             }
         }
         if (selectedWizard == null) {
-            logger.warn("No account registration wizard found for protocol name: " + protocolName);
+            Timber.w("No account registration wizard found for protocol name: %s", protocolName);
             return null;
         }
         try {
             selectedWizard.setModification(false);
             return selectedWizard.signin(userName, password, accountProperties);
         } catch (OperationFailedException e) {
-            logger.error("Account creation operation failed.", e);
+            Timber.e(e, "Account creation operation failed.");
 
             switch (e.getErrorCode()) {
                 case OperationFailedException.ILLEGAL_ARGUMENT:
@@ -137,7 +133,7 @@ public class AccountLoginActivity extends ExitMenuActivity
                                     e.getMessage()));
             }
         } catch (Exception e) {
-            logger.error("Exception while adding account: " + e.getMessage(), e);
+            Timber.e(e, "Exception while adding account: %s", e.getMessage());
             AndroidUtils.showAlertDialog(this, getString(R.string.service_gui_ERROR),
                     getString(R.string.service_gui_ACCOUNT_CREATION_FAILED, e.getMessage()));
         }

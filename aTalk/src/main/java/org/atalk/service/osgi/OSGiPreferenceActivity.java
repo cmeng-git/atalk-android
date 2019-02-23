@@ -16,8 +16,6 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ActionBarUtil;
 import org.atalk.android.plugin.errorhandler.ExceptionHandler;
@@ -27,6 +25,8 @@ import org.osgi.framework.BundleContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Copy of <tt>OSGiActivity</tt> that extends <tt>PreferenceActivity</tt>.
  *
@@ -35,11 +35,6 @@ import java.util.List;
  */
 public class OSGiPreferenceActivity extends PreferenceActivity
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(OSGiActivity.class);
-
     private BundleActivator bundleActivator;
 
     private BundleContext bundleContext;
@@ -264,7 +259,7 @@ public class OSGiPreferenceActivity extends PreferenceActivity
             try {
                 fragment.start(bundleContext);
             } catch (Exception e) {
-                logger.error("Error starting OSGiFragment", e);
+                Timber.e(e, "Error starting OSGiFragment");
             }
         }
     }
@@ -280,7 +275,7 @@ public class OSGiPreferenceActivity extends PreferenceActivity
             try {
                 fragment.stop(bundleContext);
             } catch (Exception e) {
-                logger.error("Error while trying to stop OSGiFragment", e);
+                Timber.e(e, "Error while trying to stop OSGiFragment");
             }
         }
         osgiFrgaments.remove(fragment);
@@ -330,11 +325,11 @@ public class OSGiPreferenceActivity extends PreferenceActivity
             case android.R.id.home:
                 Intent upIntent = NavUtils.getParentActivityIntent(this);
                 if (upIntent != null) {
-                    logger.warn("Process UpIntent for: " + this.getLocalClassName());
+                    Timber.w("Process UpIntent for: %s", this.getLocalClassName());
                     NavUtils.navigateUpTo(this, upIntent);
                 }
                 else {
-                    logger.warn("Replace Up with BackKeyPress for: " + this.getLocalClassName());
+                    Timber.w("Replace Up with BackKeyPress for: %s", this.getLocalClassName());
                     super.onBackPressed();
                     // Class<?> homeActivity = aTalkApp.getHomeScreenActivityClass();
                     // if (!this.getClass().equals(homeActivity)) {

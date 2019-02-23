@@ -12,8 +12,6 @@ import android.net.LocalSocket;
 import android.os.Process;
 import android.view.Surface;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.aTalkApp;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.FFmpeg;
@@ -33,19 +31,17 @@ import javax.media.format.VideoFormat;
 import javax.media.protocol.BufferTransferHandler;
 import javax.media.protocol.PushBufferStream;
 
+import timber.log.Timber;
+
 /**
  * Implements <tt>PushBufferDataSource</tt> and <tt>CaptureDevice</tt> using Android's <tt>MediaRecorder</tt>.
  *
  * @author Lyubomir Marinov
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class DataSource extends AbstractPushBufferCaptureDevice
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>DataSource</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(DataSource.class);
-
     /**
      * The path of the file into which the bytes read from {@link #mediaRecorder} are to be dumped.
      * If the value is not <tt>null</tt>, the bytes in question will only be dumped to the specified
@@ -377,7 +373,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 exception = re;
             }
             if (exception != null) {
-                logger.error("Error configuring data source: " + exception.getMessage(), exception);
+                Timber.e(exception, "Error configuring data source: %s", exception.getMessage());
 
                 mediaRecorder.release();
                 this.mediaRecorder = null;
@@ -432,8 +428,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 
         if ((videoSize != null) && (videoSize.height > 0) && (videoSize.width > 0)) {
-            logger.warn("Will attempt to capture from " + getLocator() + " in " + videoSize.width
-                    + "x" + videoSize.height + ". May not be supported.");
+            Timber.w("Will attempt to capture from %s in %sx%s. May not be supported.",
+                    getLocator(), videoSize.width, videoSize.height);
 
             mediaRecorder.setVideoSize(videoSize.width, videoSize.height);
         }
@@ -456,7 +452,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 
         Surface previewSurface = CameraUtils.obtainPreviewSurface().getSurface();
         if (previewSurface == null) {
-            logger.error("Preview surface must not be null", new NullPointerException());
+            Timber.e(new NullPointerException(), "Preview surface must not be null");
         }
         mediaRecorder.setPreviewDisplay(previewSurface);
     }
@@ -474,7 +470,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
             throws IOException
     {
         final String sampleFile = aTalkApp.getGlobalContext().getCacheDir().getPath() + "/atalk-test.mpeg4";
-        logger.info("Sample file saved at: " + sampleFile);
+        Timber.i("Sample file saved at: %s", sampleFile);
         mediaRecorder.setOutputFile(sampleFile);
 
         // Limit recording time to 1 sec
@@ -491,7 +487,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED
                         || what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
                     synchronized (limitMonitor) {
-                        logger.debug("Limit monitor notified");
+                        Timber.d("Limit monitor notified");
                         limitMonitor.notifyAll();
                     }
                 }
@@ -523,7 +519,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         // Remove sample video
         File file = new File(sampleFile);
         if (!file.delete()) {
-            logger.error("Sample file could not be removed");
+            Timber.e("Sample file could not be removed");
         }
         return config;
     }
@@ -561,7 +557,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 try {
                     localSocket.close();
                 } catch (IOException ioe) {
-                    logger.warn("Failed to close LocalSocket.", ioe);
+                    Timber.w(ioe, "Failed to close LocalSocket.");
                 } finally {
                     localSocket = null;
                     localSocketKey = null;
@@ -604,10 +600,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 }
                 if (interrupted)
                     Thread.currentThread().interrupt();
-                if (logger.isDebugEnabled()
-                        && (mediaRecorderStopState[0] != MEDIA_RECORDER_STOPPED)) {
-                    logger.debug("Stopping and/or releasing MediaRecorder seemed to take a long time"
-                            + " and we decided to give up; otherwise, we may have had to wait forever.");
+                if (mediaRecorderStopState[0] != MEDIA_RECORDER_STOPPED) {
+                    Timber.d("Stopping/releasing MediaRecorder seemed to take a long time - give up.");
                 }
             }
 
@@ -750,7 +744,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                         // Some devices write ASCII ???? ???? at this point
                         // we can retry here
                         if (nalLength == 1061109567) {
-                            logger.warn("Detected ???? ???? NAL length, " + "trying to discard...");
+                            Timber.w("Detected ???? ???? NAL length, trying to discard...");
                             // Currently read only 4(????) need 4 more
                             discard(inputStream, 4);
                             // Try to read nal length again
@@ -790,9 +784,9 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 }
             }
         } catch (IllegalArgumentException iae) {
-            logger.error("Failed to read from MediaRecorder.", iae);
+            Timber.e(iae, "Failed to read from MediaRecorder.");
         } catch (IOException ioe) {
-            logger.error("Failed to read from MediaRecorder.", ioe);
+            Timber.e(ioe, "Failed to read from MediaRecorder.");
         } finally {
             try {
                 localSocket.close();
@@ -1160,23 +1154,15 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                         state[0] = MEDIA_RECORDER_STOPPING;
                         state.notify();
                     }
-
-                    boolean trace = logger.isTraceEnabled();
-                    if (trace)
-                        logger.trace("Stopping MediaRecorder in " + this);
+                    Timber.d("Stopping MediaRecorder in %s", this);
                     mediaRecorder.stop();
-                    if (trace) {
-                        logger.trace("Stopped MediaRecorder in " + this);
-                        logger.trace("Releasing MediaRecorder in " + this);
-                    }
+                    Timber.d("Releasing MediaRecorder in %s", this);
                     mediaRecorder.release();
-                    if (trace)
-                        logger.trace("Released MediaRecorder in " + this);
                 } catch (Throwable t) {
                     if (t instanceof ThreadDeath)
                         throw (ThreadDeath) t;
-                    else if (logger.isDebugEnabled()) {
-                        logger.debug("Failed to stop and release MediaRecorder", t);
+                    else {
+                        Timber.d("Failed to stop and release MediaRecorder: %s", t.getMessage());
                     }
                 } finally {
                     synchronized (state) {

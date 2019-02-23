@@ -13,17 +13,21 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail;
 
-import net.java.sip.communicator.util.Logger;
-
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.jxmpp.util.XmppDateTime;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+
+import timber.log.Timber;
 
 /**
  * The ThumbnailStreamInitiationProvider parses StreamInitiation packets.
@@ -33,16 +37,14 @@ import java.util.Date;
  */
 public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiation>
 {
-    private static final Logger logger = Logger.getLogger(ThumbnailStreamInitiationProvider.class);
-
     /**
      * Parses the given <tt>parser</tt> in order to create a <tt>FileElement</tt> from it.
      *
      * @param parser the parser to parse
      */
     @Override
-    public StreamInitiation parse(XmlPullParser parser, int initialDepth)
-            throws Exception
+    public StreamInitiation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException, SmackParsingException
     {
         boolean done = false;
 
@@ -104,7 +106,7 @@ public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiati
                         try {
                             fileSize = Long.parseLong(size);
                         } catch (NumberFormatException e) {
-                            logger.warn("Received an invalid file size, continuing with fileSize set to 0", e);
+                            Timber.w(e, "Received an invalid file size, continuing with fileSize set to 0");
                         }
                     }
                     ThumbnailFile file = new ThumbnailFile(name, fileSize);
@@ -114,7 +116,7 @@ public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiati
                         try {
                             file.setDate(XmppDateTime.parseDate(date));
                         } catch (ParseException e) {
-                            logger.warn("Unknown dateformat on incoming file transfer: " + date);
+                            Timber.w("Unknown dateformat on incoming file transfer: %s", date);
                         }
                     }
                     else {

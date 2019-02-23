@@ -6,6 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +79,7 @@ public class InputEvtIQ extends IQ
         if (remoteControls.size() > 0) {
             xml.append('>');
             for (RemoteControlExtension p : remoteControls)
-                xml.append(p.toXML(null));
+                xml.append(p.toXML(XmlEnvironment.EMPTY));
             xml.closeElement(ELEMENT_NAME);
         }
         else {

@@ -5,6 +5,7 @@
  */
 package org.atalk.impl.neomedia.device;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.ProcessorUtility;
@@ -18,7 +19,6 @@ import org.atalk.service.neomedia.control.AdvancedAttributesAwareCodec;
 import org.atalk.service.neomedia.control.FormatParametersAwareCodec;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 
@@ -34,6 +34,8 @@ import javax.media.format.VideoFormat;
 import javax.media.protocol.*;
 import javax.media.rtp.ReceiveStream;
 
+import timber.log.Timber;
+
 /**
  * Represents the use of a specific <tt>MediaDevice</tt> by a <tt>MediaStream</tt>.
  *
@@ -45,12 +47,6 @@ import javax.media.rtp.ReceiveStream;
  */
 public class MediaDeviceSession extends PropertyChangeNotifier
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>MediaDeviceSession</tt> class and its instances for
-     * logging output.
-     */
-    private static final Logger logger = Logger.getLogger(MediaDeviceSession.class);
-
     /**
      * The name of the <tt>MediaDeviceSession</tt> instance property the value of which represents
      * the output <tt>DataSource</tt> of the <tt>MediaDeviceSession</tt> instance which provides
@@ -346,8 +342,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 processor.removeControllerListener(processorControllerListener);
 
             processor.stop();
-            if (logger.isTraceEnabled())
-                logger.trace("Stopped Processor with hashCode " + processor.hashCode());
+            Timber.log(TimberLog.FINER, "Stopped Processor with hashCode %s", processor.hashCode());
 
             if (processor.getState() == Processor.Realized) {
                 DataSource dataOutput;
@@ -417,8 +412,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
             exception = ex;
         }
         if (exception != null) {
-            logger.error("Failed to create Player for "
-                    + MediaStreamImpl.toString(dataSource), exception);
+            Timber.e(exception, "Failed to create Player for %s", MediaStreamImpl.toString(dataSource));
         }
         else if (player != null) {
             /*
@@ -429,10 +423,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
             player.addControllerListener(playerControllerListener);
 
             player.configure();
-            if (logger.isTraceEnabled()) {
-                logger.trace("Created Player with hashCode " + player.hashCode() + " for "
-                        + MediaStreamImpl.toString(dataSource));
-            }
+            Timber.log(TimberLog.FINER, "Created Player with hashCode %s for %s",
+                    player.hashCode(), MediaStreamImpl.toString(dataSource));
         }
         return player;
     }
@@ -458,7 +450,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
             }
 
             if (exception != null)
-                logger.error("Failed to create Processor for " + captureDevice, exception);
+                Timber.e(exception, "Failed to create Processor for %s", captureDevice);
             else {
                 if (processorControllerListener == null) {
                     processorControllerListener = new ControllerListener()
@@ -544,7 +536,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                  * We cannot do much about the exception because we're not really interested in the
                  * stopping but rather in calling DataSource#disconnect() anyway.
                  */
-                logger.error("Failed to properly stop captureDevice " + captureDevice, ioe);
+                Timber.e(ioe, "Failed to properly stop captureDevice %s", captureDevice);
             }
             captureDevice.disconnect();
             captureDeviceIsConnected = false;
@@ -665,8 +657,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 if (this.format != null)
                     setCaptureDeviceFormat(captureDevice, this.format);
             } catch (Throwable t) {
-                logger.warn("Failed to setup an optimized media codec chain by setting the output Format"
-                        + " on the input CaptureDevice", t);
+                Timber.w(t, "Failed to setup an optimized media codec chain by setting the output Format on the input CaptureDevice");
             }
             Throwable exception = null;
 
@@ -679,7 +670,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
             if (exception == null)
                 captureDeviceIsConnected = true;
             else {
-                logger.error("Failed to connect to " + MediaStreamImpl.toString(captureDevice), exception);
+                Timber.e(exception, "Failed to connect to %s", MediaStreamImpl.toString(captureDevice));
                 captureDevice = null;
             }
         }
@@ -734,15 +725,15 @@ public class MediaDeviceSession extends PropertyChangeNotifier
          * If the Format of the processor is different than the format of this MediaDeviceSession,
          * we'll likely run into unexpected issues so debug whether there are such cases.
          */
-        if (logger.isDebugEnabled() && (processor != null)) {
+        if (processor != null) {
             Format processorFormat = getProcessorFormat();
             Format format = (this.format == null) ? null : this.format.getFormat();
             boolean processorFormatMatchesFormat = (processorFormat == null)
                     ? (format == null) : processorFormat.matches(format);
 
             if (!processorFormatMatchesFormat) {
-                logger.debug("processorFormat != format; processorFormat= `" + processorFormat
-                        + "`; format= `" + format + "`");
+                Timber.d("processorFormat != format; processorFormat = `%s`; format = `%s'",
+                        processorFormat, format);
             }
         }
         return format;
@@ -776,9 +767,9 @@ public class MediaDeviceSession extends PropertyChangeNotifier
             outputDataSource = null;
         else {
             outputDataSource = processor.getDataOutput();
-            if (logger.isTraceEnabled() && (outputDataSource != null)) {
-                logger.trace("Processor with hashCode " + processor.hashCode() + " provided "
-                        + MediaStreamImpl.toString(outputDataSource));
+            if (outputDataSource != null) {
+                Timber.log(TimberLog.FINER, "Processor with hashCode %s provided %s",
+                        processor.hashCode(), MediaStreamImpl.toString(outputDataSource));
             }
 
             /*
@@ -1083,8 +1074,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                     try {
                         tc.setRenderer(renderer);
                     } catch (UnsupportedPlugInException upie) {
-                        logger.warn("Failed to set " + renderer.getClass().getName()
-                                + " renderer on track " + i, upie);
+                        Timber.w(upie, "Failed to set %s renderer on track %s", renderer.getClass().getName(), i);
                     }
                 }
             }
@@ -1115,7 +1105,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 try {
                     player.setContentDescriptor(null);
                 } catch (NotConfiguredError nce) {
-                    logger.error("Failed to set ContentDescriptor to Player.", nce);
+                    Timber.e(nce, "Failed to set ContentDescriptor to Player.");
                     return;
                 }
                 player.realize();
@@ -1155,7 +1145,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 try {
                     processor.setContentDescriptor(createProcessorContentDescriptor(processor));
                 } catch (NotConfiguredError nce) {
-                    logger.error("Failed to set ContentDescriptor to Processor.", nce);
+                    Timber.e(nce, "Failed to set ContentDescriptor to Processor.");
                 }
                 if (format != null)
                     setProcessorFormat(processor, format);
@@ -1168,7 +1158,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
              * If everything goes according to plan, we should've removed the ControllerListener
              * from the processor by now.
              */
-            logger.warn(ev);
+            Timber.w("%s", ev.toString());
 
             // TODO Should the access to processor be synchronized?
             if ((processor != null) && (this.processor == processor))
@@ -1347,9 +1337,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
         MediaFormatImpl<? extends Format> mediaFormatImpl = (MediaFormatImpl<? extends Format>) format;
 
         this.format = mediaFormatImpl;
-        if (logger.isTraceEnabled()) {
-            logger.trace("Set format " + this.format + " on " + getClass().getSimpleName() + " " + hashCode());
-        }
+        Timber.log(TimberLog.FINER, "Set format %s on %s %s", this.format, getClass().getSimpleName(), hashCode());
 
         /*
          * If the processor is after Configured, setting a different format will silently fail.
@@ -1434,14 +1422,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 Format setFormat = setProcessorFormat(trackControl, mediaFormat, supportedFormat);
 
                 if (setFormat == null)
-                    logger.error("Failed to set format of track " + trackIndex + " to "
-                            + supportedFormat + ". Processor is in state " + processor.getState());
+                    Timber.e("Failed to set format of track %s to %s. Processor is in state %s",
+                            trackIndex, supportedFormat, processor.getState());
                 else if (setFormat != supportedFormat)
-                    logger.warn("Failed to change format of track " + trackIndex + " from "
-                            + setFormat + " to " + supportedFormat + ". Processor is in state "
-                            + processor.getState());
-                else if (logger.isTraceEnabled())
-                    logger.trace("Set format of track " + trackIndex + " to " + setFormat);
+                    Timber.w("Failed to change format of track %d from %s to %s. Processor is in state %s",
+                            +trackIndex, setFormat, supportedFormat, processor.getState());
+                else
+                    Timber.log(TimberLog.FINER, "Set format of track %s to %s", trackIndex, setFormat);
             }
         }
     }
@@ -1644,10 +1631,9 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                                 true);
                     }
                     else {
-                        logger.warn("Adding ReceiveStream with DataSource not of type PushBufferDataSource but "
-                                + receiveStreamDataSource.getClass().getSimpleName()
-                                + " which may prevent the ReceiveStream from properly transferring to another"
-                                + " MediaDevice if such a need arises.");
+                        Timber.w("Adding ReceiveStream with DataSource not of type PushBufferDataSource but "
+                                + "%s which may prevent the ReceiveStream from properly transferring to another"
+                                + " MediaDevice if such a need arises.", receiveStreamDataSource.getClass().getSimpleName());
                     }
                     addPlaybackDataSource(receiveStreamDataSource);
                 }
@@ -1691,7 +1677,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                     removePlaybackDataSource(playback.dataSource);
 
                 if (playback.dataSource != null) {
-                    logger.warn("Removing ReceiveStream with an associated" + " DataSource.");
+                    Timber.w("Removing ReceiveStream with an associated DataSource.");
                 }
                 playbacks.remove(playback);
 
@@ -1765,9 +1751,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
         }
         else if ((processor != null) && (processor.getState() > Processor.Configured)) {
             processor.stop();
-            if (logger.isTraceEnabled()) {
-                logger.trace("Stopped Processor with hashCode " + processor.hashCode());
-            }
+            Timber.log(TimberLog.FINER, "Stopped Processor with hashCode %s", processor.hashCode());
         }
     }
 
@@ -1782,9 +1766,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     {
         if (startedDirection.allowsSending() && (processor.getState() != Processor.Started)) {
             processor.start();
-            if (logger.isTraceEnabled()) {
-                logger.trace("Started Processor with hashCode " + processor.hashCode());
-            }
+            Timber.log(TimberLog.FINER, "Started Processor with hashCode %s", processor.hashCode());
         }
     }
 
@@ -1855,7 +1837,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     public void copyPlayback(MediaDeviceSession deviceSession)
     {
         if (deviceSession.disposePlayerOnClose) {
-            logger.error("Cannot copy playback if MediaDeviceSession has closed it");
+            Timber.e("Cannot copy playback if MediaDeviceSession has closed it");
         }
         else {
             /*
@@ -1915,6 +1897,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
         {
             this.receiveStream = receiveStream;
         }
+
     }
 
     /**

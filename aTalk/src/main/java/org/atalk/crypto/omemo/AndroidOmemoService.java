@@ -18,21 +18,18 @@ package org.atalk.crypto.omemo;
 
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicInstantMessagingJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetMultiUserChatJabberImpl;
-import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.OmemoService;
-import org.jivesoftware.smackx.omemo.OmemoStore;
+import org.jivesoftware.smackx.omemo.*;
 import org.jxmpp.jid.BareJid;
 
 import java.util.SortedSet;
+
+import timber.log.Timber;
 
 /**
  * Android Omemo service.
@@ -41,12 +38,6 @@ import java.util.SortedSet;
  */
 public class AndroidOmemoService implements OmemoManager.InitializationFinishedCallback
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AndroidOmemoService</tt> class and its
-     * instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AndroidOmemoService.class);
-
     private OmemoManager mOmemoManager;
     private OmemoStore mOmemoStore;
     private XMPPConnection mConnection;
@@ -59,7 +50,7 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
         mConnection = pps.getConnection();
         mOmemoManager = initOmemoManager(pps);
 
-        logger.info("### Registered omemo messageListener for: " + pps.getAccountID().getUserID());
+        Timber.i("### Registered omemo messageListener for: %s", pps.getAccountID().getUserID());
         imOpSet = (OperationSetBasicInstantMessagingJabberImpl) pps.getOperationSet(OperationSetBasicInstantMessaging.class);
         imOpSet.registerOmemoListener(mOmemoManager);
 
@@ -100,7 +91,7 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
         try {
             omemoManager.setTrustCallback(((SQLiteOmemoStore) mOmemoStore).getTrustCallBack());
         } catch (Exception e) {
-            logger.warn("SetTrustCallBack Exception: " + e.getMessage());
+            Timber.w("SetTrustCallBack Exception: %s", e.getMessage());
         }
         return omemoManager;
     }
@@ -117,14 +108,14 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
     @Override
     public void initializationFinished(OmemoManager manager)
     {
-        logger.info("Initialize OmemoManager successful for " + mConnection.getUser());
+        Timber.i("Initialize OmemoManager successful for %s", mConnection.getUser());
     }
 
     @Override
     public void initializationFailed(Exception cause)
     {
         String title = aTalkApp.getResString(R.string.omemo_init_failed_title);
-        logger.error(title, cause);
+        Timber.e(cause, "%s", title);
         String errMsg = cause.getMessage();
         if (errMsg != null) {
             if (errMsg.contains("CorruptedOmemoKeyException")) {

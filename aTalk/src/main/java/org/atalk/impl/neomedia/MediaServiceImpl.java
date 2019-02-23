@@ -49,6 +49,8 @@ import javax.media.control.TrackControl;
 import javax.media.format.RGBFormat;
 import javax.media.protocol.DataSource;
 
+import timber.log.Timber;
+
 /**
  * Implements <tt>MediaService</tt> for JMF.
  *
@@ -58,11 +60,6 @@ import javax.media.protocol.DataSource;
  */
 public class MediaServiceImpl extends PropertyChangeNotifier implements MediaService
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>MediaServiceImpl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(MediaServiceImpl.class);
-
     /**
      * The name of the <tt>boolean</tt> <tt>ConfigurationService</tt> property which indicates
      * whether the detection of audio <tt>CaptureDevice</tt>s is to be disabled. The default value
@@ -781,8 +778,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
                         exception = ioobe;
                     }
                     if (exception != null) {
-                        logger.warn("Ignoring dynamic payload type preference which could not be parsed: "
-                                + propertyName, exception);
+                        Timber.w(exception, "Ignoring dynamic payload type preference which could not be parsed: %s", propertyName);
                         continue;
                     }
 
@@ -810,8 +806,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
                                 dynamicPayloadTypePreferences.put(mediaFormat, dynamicPayloadTypePreference);
                             }
                         } catch (Throwable jsone) {
-                            logger.warn("Ignoring dynamic payload type preference which could not be parsed: "
-                                    + source, jsone);
+                            Timber.w(jsone, "Ignoring dynamic payload type preference which could not be parsed: %s", source);
                         }
                     }
                 }
@@ -880,7 +875,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else
-                logger.error("Failed to create video preview", t);
+                Timber.e(t, "Failed to create video preview");
         }
         return videoContainer;
     }
@@ -921,14 +916,14 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
                         break;
                     }
                 } catch (UnsupportedPlugInException upiex) {
-                    logger.warn("Failed to add SwScale/VideoFlipEffect to codec chain", upiex);
+                    Timber.w(upiex, "Failed to add SwScale/VideoFlipEffect to codec chain");
                 }
 
             // Turn the Processor into a Player.
             try {
                 player.setContentDescriptor(null);
             } catch (NotConfiguredError nce) {
-                logger.error("Failed to set ContentDescriptor of Processor", nce);
+                Timber.e(nce, "Failed to set ContentDescriptor of Processor");
             }
             player.realize();
         }
@@ -1230,11 +1225,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
          * on first use. Call SecureRandom early to avoid blocking when establishing
          * a connection for example.
          */
-        logger.info("Warming up SecureRandom...");
         SecureRandom rnd = new SecureRandom();
         byte[] b = new byte[20];
         rnd.nextBytes(b);
-        logger.info("Warming up SecureRandom finished.");
+        Timber.d("Warming up SecureRandom completed.");
     }
 
     /**

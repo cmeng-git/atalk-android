@@ -36,11 +36,12 @@ import org.atalk.android.gui.util.ContentEditText;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.audioservice.SoundMeter;
 import org.atalk.persistance.FilePathHelper;
-import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.chatstates.ChatState;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Class is used to separate the logic of send message editing process from <tt>ChatFragment</tt>.
@@ -53,10 +54,6 @@ import java.util.*;
 public class ChatController implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener,
         TextWatcher, ContentEditText.CommitListener
 {
-    /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(ChatController.class);
     /**
      * The chat fragment used by this instance.
      */
@@ -162,7 +159,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         if (!isAttached) {
             this.isAttached = true;
 
-            logger.debug("ChatController attached to " + chatFragment.hashCode());
+            Timber.d("ChatController attached to %s", chatFragment.hashCode());
             chatPanel = chatFragment.getChatPanel();
 
             // Gets message edit view
@@ -194,7 +191,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 audioBtn.setOnTouchListener(this);
             }
             else {
-                logger.warn("Audio recording is not allowed - permission denied!");
+                Timber.w("Audio recording is not allowed - permission denied!");
             }
 
             // Gets the call switch button
@@ -232,8 +229,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     private void initChatController()
     {
         if (!chatFragment.isVisible()) {
-            logger.warn("Skip init current Chat Transport to: " + mChatTransport
-                    + "; with visible State: " + chatFragment.isVisible());
+            Timber.w("Skip init current Chat Transport to: %s; with visible State: %s",
+                    mChatTransport, chatFragment.isVisible());
             return;
         }
 
@@ -293,7 +290,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         if (TextUtils.isEmpty(content)) {
             if (correctionUID != null) {
                 content = " ";
-            } else
+            }
+            else
                 return;
         }
 
@@ -444,12 +442,12 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     {
         switch (v.getId()) {
             case R.id.audioRecordButton:
-                logger.warn("Current Chat Transport for audio: " + mChatTransport.toString());
+                Timber.w("Current Chat Transport for audio: %s", mChatTransport.toString());
                 if (!(mChatTransport instanceof MetaContactChatTransport) || !mChatTransport.getStatus().isOnline()) {
                     aTalkApp.showToastMessage(R.string.chat_noaudio_buddyOffline);
                 }
                 else {
-                    logger.info("Audio recording started!!!");
+                    Timber.d("Audio recording started!!!");
                     isRecording = true;
                     // Hide normal edit text view
                     msgEdit.setVisibility(View.GONE);
@@ -493,7 +491,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 //Swipe horizontal detected
                 if (Math.abs(deltaX) > min_distance) {
                     if (isRecording && (deltaX > 0)) { // right to left
-                        logger.info("Audio recording cancelled!!!");
+                        Timber.d("Audio recording cancelled!!!");
                         isRecording = false;
                         audioBtn.setEnabled(false); // disable while in animation
                         LocalBroadcastManager.getInstance(parent).unregisterReceiver(mReceiver);
@@ -513,7 +511,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 }
                 else {
                     if (isRecording) {
-                        logger.info("Audio recording sending!!!");
+                        Timber.d("Audio recording sending!!!");
                         isRecording = false;
                         startAudioService(AudioBgService.ACTION_SEND);
                         onAnimationEnd(10);
@@ -545,7 +543,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     audioBtn.setEnabled(true);
                 });
             } catch (Exception ex) {
-                logger.error("Exception: ", ex);
+                Timber.e("Exception: %s", ex.getMessage());
             }
         }).start();
     }
@@ -573,7 +571,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 mRecordTimer.setText(mDuration);
             }
             else if (AudioBgService.ACTION_AUDIO_RECORD.equals(intent.getAction())) {
-                logger.info("Sending audio recorded file!!!");
+                Timber.i("Sending audio recorded file!!!");
                 LocalBroadcastManager.getInstance(parent).unregisterReceiver(mReceiver);
                 String filePath = intent.getStringExtra(AudioBgService.URI);
                 // String filePath = intent.getData().getPath();
@@ -690,7 +688,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
     /**
      * Method called by <tt>ChatFragment</tt> when user closes the chat window.
-     * Update that user is no logger in this chat session and end state ctrl thread
+     * Update that user is no longer in this chat session and end state ctrl thread
      */
     public void onChatCloseAction()
     {
@@ -704,7 +702,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     private void setNewChatState(ChatState newState)
     {
-        // logger.warn("Chat state changes from: " + mChatState + " => " + newState);
+        // Timber.w("Chat state changes from: " + mChatState + " => " + newState);
         if (mChatState != newState) {
             mChatState = newState;
 

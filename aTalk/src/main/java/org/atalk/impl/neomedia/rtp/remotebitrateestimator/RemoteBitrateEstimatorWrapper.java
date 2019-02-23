@@ -15,16 +15,12 @@
  */
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 
-import org.atalk.impl.neomedia.transform.AbsSendTimeEngine;
-import org.atalk.impl.neomedia.transform.PacketTransformer;
-import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
-import org.atalk.impl.neomedia.transform.TransformEngine;
+import org.atalk.impl.neomedia.transform.*;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.rtp.RemoteBitrateEstimator;
 import org.atalk.util.DiagnosticContext;
-import org.atalk.util.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -38,16 +34,11 @@ import java.util.Collection;
  * {@link RemoteBitrateEstimatorSingleStream}.
  *
  * @author George Politis
+ * @author Eng Chong Meng
  */
 public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapter
         implements RemoteBitrateEstimator, TransformEngine
 {
-    /**
-     * The {@link Logger} used by the {@link RemoteBitrateEstimatorWrapper}
-     * class to print debug information.
-     */
-    private static final Logger logger = Logger.getLogger(RemoteBitrateEstimatorWrapper.class);
-
     /**
      * The name of the property that determines whether or not to activate the
      * abs-send-time remote bitrate estimator.

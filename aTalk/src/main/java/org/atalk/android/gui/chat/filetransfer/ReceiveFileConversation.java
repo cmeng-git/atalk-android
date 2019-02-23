@@ -22,7 +22,6 @@ import android.view.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -33,6 +32,8 @@ import org.jivesoftware.smack.util.StringUtils;
 import java.io.File;
 import java.util.Date;
 
+import timber.log.Timber;
+
 /**
  * The <tt>ReceiveFileConversationComponent</tt> is the component shown in the conversation area
  * of the chat window to display a incoming file transfer.
@@ -42,8 +43,6 @@ import java.util.Date;
 public class ReceiveFileConversation extends FileTransferConversation
         implements ScFileTransferListener, FileTransferStatusListener
 {
-    private final Logger logger = Logger.getLogger(ReceiveFileConversation.class);
-
     private IncomingFileTransferRequest fileTransferRequest;
     private OperationSetFileTransfer fileTransferOpSet;
     private String mDate;
@@ -129,7 +128,7 @@ public class ReceiveFileConversation extends FileTransferConversation
                 try {
                     fileTransferRequest.rejectFile();
                 } catch (OperationFailedException e) {
-                    logger.error("Reject file exception: " + e.getMessage());
+                    Timber.e("Reject file exception: %s", e.getMessage());
                 }
                 // need to update status here as chatFragment statusListener is enabled for
                 // fileTransfer and only after accept
@@ -255,7 +254,7 @@ public class ReceiveFileConversation extends FileTransferConversation
 
         File downloadDir = FileBackend.getaTalkStore(downloadPath);
         if (!downloadDir.exists() && !downloadDir.mkdirs()) {
-            logger.error("Could not create the download directory : " + downloadDir.getAbsolutePath());
+            Timber.e("Could not create the download directory: %s", downloadDir.getAbsolutePath());
         }
 
         mXferFile = new File(downloadDir, incomingFileName);

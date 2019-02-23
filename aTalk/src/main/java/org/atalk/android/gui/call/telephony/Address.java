@@ -5,14 +5,14 @@ import android.text.TextUtils;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.apache.james.mime4j.codec.EncoderUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 /*
  *  Implementation of Address as [mAddress, mPerson] where:
@@ -21,9 +21,6 @@ import java.util.regex.Pattern;
  */
 public class Address implements Serializable
 {
-    /* The logger */
-    private final static Logger logger = Logger.getLogger(Address.class);
-
     private static final Pattern ATOM = Pattern.compile("^(?:[a-zA-Z0-9!#$%&'*+\\-/=?^_`{|}~]|\\s)+$");
 
     /**
@@ -60,7 +57,7 @@ public class Address implements Serializable
                 }
             }
             else {
-                logger.error("Invalid address: %s" + address);
+                Timber.e("Invalid address: %s", address);
             }
         }
         else {

@@ -16,8 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -26,6 +24,8 @@ import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 import org.atalk.service.osgi.OSGiService;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * The <tt>AndroidUtils</tt> class provides a set of utility methods allowing an easy way to show
@@ -37,11 +37,6 @@ import java.util.List;
  */
 public class AndroidUtils
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(AndroidUtils.class);
-
     /**
      * Api level constant. Change it here to simulate lower api on new devices.
      *
@@ -110,7 +105,7 @@ public class AndroidUtils
     {
         int id = OSGiService.getGeneralNotificationId();
         if (id < 0) {
-            logger.warn("There's no global notification icon bound");
+            Timber.w("There's no global notification icon bound");
             return;
         }
 

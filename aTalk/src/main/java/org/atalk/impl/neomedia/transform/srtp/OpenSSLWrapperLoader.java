@@ -15,16 +15,10 @@
  */
 package org.atalk.impl.neomedia.transform.srtp;
 
-import org.atalk.util.*;
+import timber.log.Timber;
 
 public class OpenSSLWrapperLoader
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>OpenSSLWrapperLoader</tt> class to
-     * print out debug information.
-     */
-    private static final Logger logger = Logger.getLogger(OpenSSLWrapperLoader.class);
-
     /**
      * The indicator which determines whether OpenSSL (Crypto) library wrapper
      * was loaded.
@@ -33,28 +27,24 @@ public class OpenSSLWrapperLoader
 
     private static native boolean OpenSSL_Init();
 
-    static
-    {
-        try
-        {
+    static {
+        try {
             System.loadLibrary("jnopenssl");
-            if (OpenSSL_Init())
-            {
-                logger.info("jnopenssl successfully loaded");
+            if (OpenSSL_Init()) {
+                Timber.i("jnopenssl successfully loaded");
                 libraryLoaded = true;
             }
-            else
-            {
-                logger.warn("OpenSSL_Init failed");
+            else {
+                Timber.w("OpenSSL_Init failed");
             }
-        }
-        catch (Throwable t)
-        {
-            logger.warn("Unable to load jnopenssl: " + t.toString());
+        } catch (Throwable t) {
+            Timber.w("Unable to load jnopenssl: %s", t.getMessage());
         }
     }
 
-    private OpenSSLWrapperLoader() {}
+    private OpenSSLWrapperLoader()
+    {
+    }
 
     public static boolean isLoaded()
     {

@@ -15,19 +15,17 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package net.java.sip.communicator.impl.contactlist;
 
+import android.support.annotation.NonNull;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ContactGroup;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.*;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.Vector;
+import org.atalk.android.plugin.timberlog.TimberLog;
+
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * A straightforward implementation of the meta contact group. The group implements a simple
@@ -39,12 +37,6 @@ import java.util.Vector;
  */
 public class MetaContactGroupImpl implements MetaContactGroup
 {
-    /**
-     * The <tt>Logger</tt> used by the class <tt>MetaContactGroupImpl</tt> and its instances for
-     * logging output.
-     */
-    private static final Logger logger = Logger.getLogger(MetaContactGroupImpl.class);
-
     /**
      * All the subgroups that this group contains.
      */
@@ -63,12 +55,12 @@ public class MetaContactGroupImpl implements MetaContactGroup
     /**
      * An id uniquely identifying the meta contact group in this contact list.
      */
-    private String groupUID = null;
+    private String groupUID;
 
     /**
      * The name of the group (fixed for root groups since it won't show).
      */
-    private String groupName = null;
+    private String groupName;
 
     /**
      * We use this copy for returning iterators and searching over the list in order to avoid
@@ -97,9 +89,9 @@ public class MetaContactGroupImpl implements MetaContactGroup
      * The user-specific key-value associations stored in this instance.
      * <p>
      * Like the Widget implementation of Eclipse SWT, the storage type takes into account that
-     * there are likely to be many <code>MetaContactGroupImpl</code> instances and
-     * <code>Map</code>s are thus likely to impose increased memory use. While an array may
-     * very well perform worse than a <code>Map</code> with respect to search, the mechanism of
+     * there are likely to be many {@code MetaContactGroupImpl} instances and
+     * {@code Map}s are thus likely to impose increased memory use. While an array may
+     * very well perform worse than a {@code Map} with respect to search, the mechanism of
      * user-defined key-value associations explicitly states that it is not guaranteed to be
      * optimized for any particular use and only covers the most basic cases and
      * performance-savvy code will likely implement a more optimized solution anyway.
@@ -204,10 +196,8 @@ public class MetaContactGroupImpl implements MetaContactGroup
                 }
             }
         } catch (Exception e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Failed to count online contacts.", e);
+            Timber.d(e, "Failed to count online contacts.");
         }
-
         return onlineContactsNumber;
     }
 
@@ -634,7 +624,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
         synchronized (childContacts) {
             this.childContacts.add(metaContact);
             // no need to synch it's not a disaster if s.o. else reads the old copy.
-            childContactsOrderedCopy = new LinkedList<MetaContact>(childContacts);
+            childContactsOrderedCopy = new LinkedList<>(childContacts);
             return childContactsOrderedCopy.indexOf(metaContact);
         }
     }
@@ -653,7 +643,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
         synchronized (childContacts) {
             this.childContacts.remove(metaContact);
             // no need to sync it's not a disaster if s.o. else reads the old copy.
-            childContactsOrderedCopy = new LinkedList<MetaContact>(childContacts);
+            childContactsOrderedCopy = new LinkedList<>(childContacts);
         }
     }
 
@@ -788,10 +778,11 @@ public class MetaContactGroupImpl implements MetaContactGroup
      *
      * @return a String representing this group and its child contacts.
      */
+    @NonNull
     @Override
     public String toString()
     {
-        StringBuffer buff = new StringBuffer(getGroupName());
+        StringBuilder buff = new StringBuilder(getGroupName());
         buff.append(".subGroups=" + countSubgroups() + ":\n");
 
         Iterator<MetaContactGroup> subGroups = getSubgroups();
@@ -855,12 +846,11 @@ public class MetaContactGroupImpl implements MetaContactGroup
      */
     void addSubgroup(MetaContactGroup subgroup)
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Adding subgroup " + subgroup.getGroupName() + " to" + getGroupName());
+        Timber.log(TimberLog.FINER, "Adding subgroup %s to %s", subgroup.getGroupName(), getGroupName());
         this.subgroups.add((MetaContactGroupImpl) subgroup);
         ((MetaContactGroupImpl) subgroup).parentMetaContactGroup = this;
 
-        this.subgroupsOrderedCopy = new LinkedList<MetaContactGroup>(subgroups);
+        this.subgroupsOrderedCopy = new LinkedList<>(subgroups);
     }
 
     /**
@@ -876,7 +866,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
         if (subgroups.remove(subgroup))
             subgroup.parentMetaContactGroup = null;
 
-        subgroupsOrderedCopy = new LinkedList<MetaContactGroup>(subgroups);
+        subgroupsOrderedCopy = new LinkedList<>(subgroups);
         return subgroup;
     }
 
@@ -898,8 +888,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
     }
 
     /**
-     * Returns the implementation of the <tt>MetaContactListService</tt>, to which this group
-     * belongs.
+     * Returns the implementation of the <tt>MetaContactListService</tt>, to which this group belongs.
      *
      * @return the implementation of the <tt>MetaContactListService</tt>
      */
@@ -991,12 +980,12 @@ public class MetaContactGroupImpl implements MetaContactGroup
     }
 
     /**
-     * Determines the index in <code>#data</code> of a specific key.
+     * Determines the index in {@code #data} of a specific key.
      *
-     * @param key the key to retrieve the index in <code>#data</code> of
-     * @return the index in <code>#data</code> of the specified <code>key</code> if it is
-     * contained; <tt>-1</tt> if <code>key</code> is not
-     * contained in <code>#data</code>
+     * @param key the key to retrieve the index in {@code #data} of
+     * @return the index in {@code #data} of the specified {@code key} if it is
+     * contained; <tt>-1</tt> if {@code key} is not
+     * contained in {@code #data}
      */
     private int dataIndexOf(Object key)
     {
@@ -1021,7 +1010,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
      * (in order to avoid equalities) be the fairly random meta contact group metaUID.
      * <p>
      *
-     * @param target the <code>MetaContactGroup</code> to be compared.
+     * @param target the {@code MetaContactGroup} to be compared.
      * @return a negative integer, zero, or a positive integer as this object is less than, equal
      * to, or greater than the specified object.
      */

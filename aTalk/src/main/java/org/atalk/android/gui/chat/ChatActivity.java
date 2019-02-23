@@ -25,7 +25,6 @@ import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -51,6 +50,8 @@ import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import java.io.File;
 import java.util.*;
 
+import timber.log.Timber;
+
 import static org.atalk.persistance.FileBackend.getMimeType;
 
 /**
@@ -63,11 +64,6 @@ import static org.atalk.persistance.FileBackend.getMimeType;
 public class ChatActivity extends OSGiActivity implements OnPageChangeListener, TaskCompleted
 {
     public final static String CRYPTO_FRAGMENT = "crypto_fragment";
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(ChatActivity.class);
-
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access
      * previous and next wizard steps.
@@ -196,7 +192,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
 
         ChatPanel chatPanel = ChatSessionManager.createChatForChatId(chatId, currentChatMode);
         if (chatPanel == null) {
-            logger.error("Failed to create chat session for " + currentChatMode + ": " + chatId);
+            Timber.e("Failed to create chat session for %s: %s", currentChatMode, chatId);
             return;
         }
         // Synchronize ChatActivity & ChatPager
@@ -220,7 +216,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             updateSelectedChatInfo(chatPager.getCurrentItem());
         }
         else {
-            logger.warn("ChatId can't be null - finishing & exist ChatActivity");
+            Timber.w("ChatId can't be null - finishing & exist ChatActivity");
             finish();
         }
     }
@@ -562,7 +558,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             }
 
             if (chatSession == null) {
-                logger.error("Cannot continue without the default chatSession");
+                Timber.e("Cannot continue without the default chatSession");
                 return;
             }
 
@@ -594,16 +590,16 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     public void sendFile(String filePath)
     {
         Date date = Calendar.getInstance().getTime();
-//        UIService uiService = AndroidGUIActivator.getUIService();
-//        if (uiService != null) {
-//            if (mRecipient != null) {
-//                String sendTo = mRecipient.getAddress();
-//                ChatPanel chatPanel = (ChatPanel) uiService.getChat(mRecipient);
-//                if (chatPanel != null) {
-//                    chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, ChatMessage.ENCODE_PLAIN, filePath);
-//                }
-//            }
-//        }
+        //        UIService uiService = AndroidGUIActivator.getUIService();
+        //        if (uiService != null) {
+        //            if (mRecipient != null) {
+        //                String sendTo = mRecipient.getAddress();
+        //                ChatPanel chatPanel = (ChatPanel) uiService.getChat(mRecipient);
+        //                if (chatPanel != null) {
+        //                    chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, ChatMessage.ENCODE_PLAIN, filePath);
+        //                }
+        //            }
+        //        }
         String sendTo = selectedChatPanel.getChatSession().getCurrentChatTransport().getName();
         selectedChatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, ChatMessage.ENCODE_PLAIN, filePath);
     }
@@ -810,7 +806,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         try {
             uri = FileBackend.getUriForFile(this, file);
         } catch (SecurityException e) {
-            logger.debug("No permission to access " + file.getAbsolutePath(), e);
+            Timber.i("No permission to access %s: %s", file.getAbsolutePath(), e.getMessage());
             showToastMessage(R.string.service_gui_FILE_OPEN_NO_PERMISSION);
             return;
         }

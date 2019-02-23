@@ -9,12 +9,12 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.Thumb
 import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.ThumbnailFile;
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.bob.*;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
@@ -22,6 +22,8 @@ import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
 import java.io.File;
+
+import timber.log.Timber;
 
 /**
  * The Jabber protocol extension of the <tt>AbstractFileTransfer</tt>.
@@ -32,10 +34,6 @@ import java.io.File;
 
 public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer implements StanzaListener
 {
-    /**
-     * The logger of this class.
-     */
-    private final Logger logger = Logger.getLogger(OutgoingFileTransferJabberImpl.class);
     private final String id;
     private final Contact receiver;
     private final File file;
@@ -176,7 +174,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
         if (!(file instanceof ThumbnailedFile))
             return;
 
-        logger.debug("File transfer packet intercepted in order to add thumbnail.");
+        Timber.d("File transfer packet intercepted in order to add thumbnail.");
 
         XMPPTCPConnection connection = protocolProvider.getConnection();
         StreamInitiation fileTransferPacket = (StreamInitiation) stanza;
@@ -199,8 +197,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
             ThumbnailFile fileElement = new ThumbnailFile(file, thumbnail);
             fileTransferPacket.setFile(fileElement);
 
-            if (logger.isDebugEnabled())
-                logger.debug("The file transfer packet with thumbnail: " + fileTransferPacket.toXML(null));
+            Timber.d("The file transfer packet with thumbnail: %s", fileTransferPacket.toXML(XmlEnvironment.EMPTY));
         }
 
         // Remove this packet interceptor after we're done.

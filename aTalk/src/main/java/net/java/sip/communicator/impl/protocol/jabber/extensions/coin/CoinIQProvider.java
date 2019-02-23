@@ -5,13 +5,17 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.coin;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultPacketExtensionProvider;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultExtensionElementProvider;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
  * An implementation of a Coin IQ provider that parses incoming Coin IQs.
@@ -39,14 +43,14 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
     /**
      * Provider for URIs packet extension.
      */
-    private final DefaultPacketExtensionProvider<URIsPacketExtension> urisProvider
-            = new DefaultPacketExtensionProvider<>(URIsPacketExtension.class);
+    private final DefaultExtensionElementProvider<URIsExtensionElement> urisProvider
+            = new DefaultExtensionElementProvider<>(URIsExtensionElement.class);
 
     /**
      * Provider for sidebars by val packet extension.
      */
-    private final DefaultPacketExtensionProvider<SidebarsByValPacketExtension> sidebarsByValProvider
-            = new DefaultPacketExtensionProvider<>(SidebarsByValPacketExtension.class);
+    private final DefaultExtensionElementProvider<SidebarsByValExtensionElement> sidebarsByValProvider
+            = new DefaultExtensionElementProvider<>(SidebarsByValExtensionElement.class);
 
     /**
      * Constructor.
@@ -54,28 +58,28 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
     public CoinIQProvider()
     {
         ProviderManager.addExtensionProvider(
-                UserRolesPacketExtension.ELEMENT_NAME, UserRolesPacketExtension.NAMESPACE,
-                new DefaultPacketExtensionProvider<>(UserRolesPacketExtension.class));
+                UserRolesExtensionElement.ELEMENT_NAME, UserRolesExtensionElement.NAMESPACE,
+                new DefaultExtensionElementProvider<>(UserRolesExtensionElement.class));
 
         ProviderManager.addExtensionProvider(
-                URIPacketExtension.ELEMENT_NAME, URIPacketExtension.NAMESPACE,
-                new DefaultPacketExtensionProvider<>(URIPacketExtension.class));
+                URIExtensionElement.ELEMENT_NAME, URIExtensionElement.NAMESPACE,
+                new DefaultExtensionElementProvider<>(URIExtensionElement.class));
 
         ProviderManager.addExtensionProvider(
-                SIPDialogIDPacketExtension.ELEMENT_NAME, SIPDialogIDPacketExtension.NAMESPACE,
-                new DefaultPacketExtensionProvider<>(SIPDialogIDPacketExtension.class));
+                SIPDialogIDExtensionElement.ELEMENT_NAME, SIPDialogIDExtensionElement.NAMESPACE,
+                new DefaultExtensionElementProvider<>(SIPDialogIDExtensionElement.class));
 
         ProviderManager.addExtensionProvider(
-                ConferenceMediumPacketExtension.ELEMENT_NAME, ConferenceMediumPacketExtension.NAMESPACE,
+                ConferenceMediumExtensionElement.ELEMENT_NAME, ConferenceMediumExtensionElement.NAMESPACE,
                 new ConferenceMediumProvider());
 
         ProviderManager.addExtensionProvider(
-                ConferenceMediaPacketExtension.ELEMENT_NAME, ConferenceMediaPacketExtension.NAMESPACE,
-                new DefaultPacketExtensionProvider<>(ConferenceMediaPacketExtension.class));
+                ConferenceMediaExtensionElement.ELEMENT_NAME, ConferenceMediaExtensionElement.NAMESPACE,
+                new DefaultExtensionElementProvider<>(ConferenceMediaExtensionElement.class));
 
         ProviderManager.addExtensionProvider(
-                CallInfoPacketExtension.ELEMENT_NAME, CallInfoPacketExtension.NAMESPACE,
-                new DefaultPacketExtensionProvider<>(CallInfoPacketExtension.class));
+                CallInfoExtensionElement.ELEMENT_NAME, CallInfoExtensionElement.NAMESPACE,
+                new DefaultExtensionElementProvider<>(CallInfoExtensionElement.class));
     }
 
     /**
@@ -83,12 +87,12 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
      *
      * @param parser XML parser
      * @return <tt>CoinIQ</tt>
-     * @throws Exception if something goes wrong during parsing
+     * @throws IOException, XmlPullParserException, ParseException if something goes wrong during parsing
      */
 
     @Override
-    public CoinIQ parse(XmlPullParser parser, int initialDepth)
-            throws Exception
+    public CoinIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException, SmackParsingException
     {
         CoinIQ coinIQ = new CoinIQ();
 
@@ -118,27 +122,27 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
 
             if (eventType == XmlPullParser.START_TAG) {
                 switch (elementName) {
-                    case DescriptionPacketExtension.ELEMENT_NAME: {
+                    case DescriptionExtensionElement.ELEMENT_NAME: {
                         ExtensionElement childExtension = descriptionProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
-                    case UsersPacketExtension.ELEMENT_NAME: {
+                    case UsersExtensionElement.ELEMENT_NAME: {
                         ExtensionElement childExtension = usersProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
-                    case StatePacketExtension.ELEMENT_NAME: {
-                        ExtensionElement childExtension = stateProvider.parse(parser, 0);
+                    case StateExtensionElement.ELEMENT_NAME: {
+                        ExtensionElement childExtension = stateProvider.parse(parser, xmlEnvironment);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
-                    case URIsPacketExtension.ELEMENT_NAME: {
+                    case URIsExtensionElement.ELEMENT_NAME: {
                         ExtensionElement childExtension = urisProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
-                    case SidebarsByValPacketExtension.ELEMENT_NAME: {
+                    case SidebarsByValExtensionElement.ELEMENT_NAME: {
                         ExtensionElement childExtension = sidebarsByValProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
@@ -161,10 +165,10 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
      * @param parser the parse that we'll be probing for text.
      * @return the content of the next {@link XmlPullParser#TEXT} element we come across or
      * <tt>null</tt> if we encounter a closing tag first.
-     * @throws java.lang.Exception if an error occurs parsing the XML.
+     * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     public static String parseText(XmlPullParser parser)
-            throws Exception
+            throws IOException, XmlPullParserException
     {
         boolean done = false;
 

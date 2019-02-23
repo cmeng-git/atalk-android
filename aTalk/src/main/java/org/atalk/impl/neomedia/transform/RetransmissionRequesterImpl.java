@@ -17,14 +17,13 @@ package org.atalk.impl.neomedia.transform;
 
 import org.atalk.impl.neomedia.rtp.MediaStreamTrackReceiver;
 import org.atalk.impl.neomedia.rtp.RTPEncodingDesc;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.neomedia.RetransmissionRequester;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.Logger;
 import org.atalk.util.TimeProvider;
 import org.atalk.util.concurrent.RecurringRunnableExecutor;
+
+import timber.log.Timber;
 
 /**
  * Detects lost RTP packets for a particular <tt>RtpChannel</tt> and requests their retransmission
@@ -36,12 +35,6 @@ import org.atalk.util.concurrent.RecurringRunnableExecutor;
 public class RetransmissionRequesterImpl extends SinglePacketTransformerAdapter
         implements TransformEngine, RetransmissionRequester
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>RetransmissionRequester</tt> class and its instances to
-     * print debug information.
-     */
-    private static final Logger logger = Logger.getLogger(RetransmissionRequesterImpl.class);
-
     /**
      * Whether this {@link RetransmissionRequester} is enabled or not.
      */
@@ -99,7 +92,7 @@ public class RetransmissionRequesterImpl extends SinglePacketTransformerAdapter
             if (format == null) {
                 ssrc = null;
                 seq = -1;
-                logger.warn("format_not_found, stream_hash = " + stream.hashCode());
+                Timber.w("format_not_found, stream_hash = %s", stream.hashCode());
             }
             else if (Constants.RTX.equalsIgnoreCase(format.getEncoding())) {
                 MediaStreamTrackReceiver receiver = stream.getMediaStreamTrackReceiver();
@@ -112,7 +105,7 @@ public class RetransmissionRequesterImpl extends SinglePacketTransformerAdapter
                 else {
                     ssrc = null;
                     seq = -1;
-                    logger.warn("encoding_not_found, stream_hash = " + stream.hashCode());
+                    Timber.w("encoding_not_found, stream_hash = %s", stream.hashCode());
                 }
             }
             else {

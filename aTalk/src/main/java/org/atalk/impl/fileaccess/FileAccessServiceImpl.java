@@ -8,7 +8,6 @@ package org.atalk.impl.fileaccess;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.*;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 
 import java.io.File;
@@ -16,19 +15,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import timber.log.Timber;
+
 /**
  * Default FileAccessService implementation.
  *
  * @author Alexander Pelov
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class FileAccessServiceImpl implements FileAccessService
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>FileAccessServiceImpl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(FileAccessServiceImpl.class);
-
     /**
      * The file prefix for all temp files.
      */
@@ -67,14 +64,7 @@ public class FileAccessServiceImpl implements FileAccessService
             throws IOException
     {
         File retVal = null;
-
-        try {
-            logger.logEntry();
-
-            retVal = TempFileManager.createTempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX);
-        } finally {
-            logger.logExit();
-        }
+        retVal = TempFileManager.createTempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX);
 
         return retVal;
     }
@@ -127,16 +117,11 @@ public class FileAccessServiceImpl implements FileAccessService
     public File getPrivatePersistentFile(String fileName, FileCategory category)
             throws Exception
     {
-        logger.logEntry();
         File file = null;
-        try {
-            file = accessibleFile(getFullPath(category), fileName);
-            if (file == null) {
-                throw new SecurityException("Insufficient rights to access this file in current user's home directory: "
-                        + new File(getFullPath(category), fileName).getPath());
-            }
-        } finally {
-            logger.logExit();
+        file = accessibleFile(getFullPath(category), fileName);
+        if (file == null) {
+            throw new SecurityException("Insufficient rights to access this file in current user's home directory: "
+                    + new File(getFullPath(category), fileName).getPath());
         }
         return file;
     }
@@ -249,44 +234,33 @@ public class FileAccessServiceImpl implements FileAccessService
     {
         File file = null;
 
-        try {
-            logger.logEntry();
-
-            file = new File(homedir, fileName);
-            if (file.canRead() || file.canWrite()) {
-                return file;
-            }
-
-            if (!homedir.exists()) {
-                if (logger.isDebugEnabled())
-                    logger.debug("Creating home directory : " + homedir.getAbsolutePath());
-                if (!homedir.mkdirs()) {
-                    String message = "Could not create the home directory : " + homedir.getAbsolutePath();
-
-                    if (logger.isDebugEnabled())
-                        logger.debug(message);
-                    throw new IOException(message);
-                }
-                if (logger.isDebugEnabled())
-                    logger.debug("Home directory created : " + homedir.getAbsolutePath());
-            }
-            else if (!homedir.canWrite()) {
-                file = null;
-            }
-
-            if (file != null && !file.getParentFile().exists()) {
-                if (!file.getParentFile().mkdirs()) {
-                    String message = "Could not create the parent directory : " + homedir.getAbsolutePath();
-
-                    logger.debug(message);
-                    throw new IOException(message);
-                }
-            }
-
-        } finally {
-            logger.logExit();
+        file = new File(homedir, fileName);
+        if (file.canRead() || file.canWrite()) {
+            return file;
         }
 
+        if (!homedir.exists()) {
+            Timber.d("Creating home directory : %s", homedir.getAbsolutePath());
+            if (!homedir.mkdirs()) {
+                String message = "Could not create the home directory : " + homedir.getAbsolutePath();
+
+                Timber.d("%s", message);
+                throw new IOException(message);
+            }
+            Timber.d("Home directory created : %s", homedir.getAbsolutePath());
+        }
+        else if (!homedir.canWrite()) {
+            file = null;
+        }
+
+        if (file != null && !file.getParentFile().exists()) {
+            if (!file.getParentFile().mkdirs()) {
+                String message = "Could not create the parent directory : " + homedir.getAbsolutePath();
+
+                Timber.d("%s", message);
+                throw new IOException(message);
+            }
+        }
         return file;
     }
 

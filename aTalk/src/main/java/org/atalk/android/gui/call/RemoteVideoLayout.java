@@ -11,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.util.java.awt.Dimension;
+
+import timber.log.Timber;
 
 /**
  * Layout that aligns remote video <tt>View</tt> by stretching it to screen width or height. It also controls whether
@@ -27,11 +27,6 @@ import org.atalk.android.util.java.awt.Dimension;
  */
 public class RemoteVideoLayout extends LinearLayout
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(RemoteVideoLayout.class);
-
     /**
      * Preferred video size used to calculate the ratio.
      * Default to 640x480. (1x1) causes GLSurfaceView Invalid Operation
@@ -83,8 +78,8 @@ public class RemoteVideoLayout extends LinearLayout
                 remoteVideoContainerSizeChange = !(params.width == params2.width && params.height == params2.height);
 
                 if (remoteVideoContainerSizeChange)
-                    logger.warn("Params wxh compare: " + params.width + "==" + params2.width + "; "
-                            + params.height + "==" + params2.height);
+                    Timber.w("Params wxh compare: %s == %s; %s == %s",
+                            params.width, params2.width, params.height, params2.height);
             }
         }
         return remoteVideoContainerSizeChange;
@@ -119,7 +114,7 @@ public class RemoteVideoLayout extends LinearLayout
 
             // Stretch to match height
             if (parentHeight <= parentWidth) {
-                logger.info("Stretch to device max height");
+                Timber.i("Stretch to device max height");
                 double ratio = width / height;
                 height = parentHeight;
                 // width = height * ratio;
@@ -128,7 +123,7 @@ public class RemoteVideoLayout extends LinearLayout
             }
             // Stretch to match width
             else {
-                logger.info("Stretch to device max width");
+                Timber.i("Stretch to device max width");
                 double ratio = height / width;
                 width = parentWidth;
                 // height = width * ratio;
@@ -136,7 +131,7 @@ public class RemoteVideoLayout extends LinearLayout
                 videoActivity.ensureAutoHideFragmentDetached();
             }
 
-            logger.info("Remote video view dimension: width=" + width + ", height=" + height);
+            Timber.i("Remote video view dimension size: %sx%s", width, height);
             this.setMeasuredDimension((int) width, (int) height);
 
             ViewGroup.LayoutParams params = getLayoutParams();

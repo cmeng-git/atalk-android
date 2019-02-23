@@ -9,20 +9,17 @@ import org.atalk.util.Logger;
 
 import javax.media.Controls;
 
+import timber.log.Timber;
+
 /**
  * Provides an abstract implementation of <tt>Controls</tt> which facilitates implementers by
  * requiring them to only implement {@link Controls#getControls()}.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public abstract class AbstractControls implements Controls
 {
-	/**
-	 * The <tt>Logger</tt> used by the <tt>AbstractControls</tt> class and its instances for
-	 * logging output.
-	 */
-	private static final Logger logger = Logger.getLogger(AbstractControls.class);
-
 	/**
 	 * Implements {@link Controls#getControl(String)}. Invokes {@link #getControls()} and then
 	 * looks for a control of the specified type in the returned array of controls.
@@ -64,7 +61,7 @@ public abstract class AbstractControls implements Controls
 			}
 			catch (ClassNotFoundException cnfe) {
 				controlClass = null;
-				logger.warn("Failed to find control class " + controlType, cnfe);
+				Timber.w(cnfe, "Failed to find control class %s", controlType);
 			}
 			if (controlClass != null) {
 				for (Object control : controls) {
@@ -140,7 +137,7 @@ public abstract class AbstractControls implements Controls
 				}
 				catch (ClassNotFoundException cnfe) {
 					controlClass = null;
-					logger.warn("Failed to find control class " + controlType, cnfe);
+					Timber.w(cnfe, "Failed to find control class %s", controlType);
 				}
 				if ((controlClass != null) && controlClass.isInstance(controlsImpl)) {
 					control = controlsImpl;

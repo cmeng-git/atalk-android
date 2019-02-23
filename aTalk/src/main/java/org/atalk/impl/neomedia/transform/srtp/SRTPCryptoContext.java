@@ -38,12 +38,13 @@ import org.atalk.bccontrib.params.ParametersForSkein;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.Logger;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 import java.util.Arrays;
 
 import javax.media.Buffer;
+
+import timber.log.Timber;
 
 /**
  * SRTPCryptoContext class is the core class of SRTP implementation. There can be multiple SRTP
@@ -68,12 +69,6 @@ import javax.media.Buffer;
  */
 public class SRTPCryptoContext extends BaseSRTPCryptoContext
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>SRTPCryptoContext</tt> class and its instances to print
-     * out debug information.
-     */
-    private static final Logger logger = Logger.getLogger(SRTPCryptoContext.class);
-
     /**
      * The name of the <tt>boolean</tt> <tt>ConfigurationService</tt> property which indicates
      * whether protection against replay attacks is to be activated. The default value is <tt>true</tt>.
@@ -242,7 +237,7 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
 
         // if video call is just resume from pause, then igore the first result if failed
         //        if (((seqNo - s_l) > 10 || (seqNo < s_l)) && VideoCallActivity.isBackToChat()) {
-        //            logger.error("CheckReplay state: " + Long.toString(0xFFFFFFFFL & ssrc) + ": seqNo: "
+        //            Timber.e("CheckReplay state: " + Long.toString(0xFFFFFFFFL & ssrc) + ": seqNo: "
         //                    + seqNo + ", s_l: " + s_l + ", state: " + isAuthPacket);
         //            VideoCallActivity.setBackToChat(false);
         //            if (!isAuthPacket)
@@ -260,19 +255,17 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
         }
         else if (-delta > REPLAY_WINDOW_SIZE) {
             if (sender) {
-                logger.error("Discarding RTP packet with sequence number " + seqNo + ", SSRC "
-                        + Long.toString(0xFFFFFFFFL & ssrc)
-                        + " because it is outside the replay window! (roc " + roc + ", s_l " + s_l
-                        + "), guessedROC " + guessedROC);
+                Timber.e("Discarding RTP packet with sequence number %d, SSRC %d"
+                                + " because it is outside the replay window! (roc %d, s_l %d), guessedROC %d",
+                        seqNo, (0xFFFFFFFFL & ssrc), roc, s_l, guessedROC);
             }
             return false;
         }
         else if (((replayWindow >> (-delta)) & 0x1) != 0) {
             if (sender) {
-                logger.error("Discarding RTP packet with sequence number " + seqNo + ", SSRC "
-                        + Long.toString(0xFFFFFFFFL & ssrc)
-                        + " because it has been received already! (roc " + roc + ", s_l " + s_l
-                        + "), guessedROC " + guessedROC);
+                Timber.e("Discarding RTP packet with sequence number %d, SSRC %d"
+                                + " because it has been received already! (roc %d, s_l %d), guessedROC %d",
+                        seqNo, (0xFFFFFFFFL & ssrc), roc, s_l, guessedROC);
             }
             return false; // Packet received already!
         }
@@ -467,11 +460,8 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
      */
     synchronized public boolean reverseTransformPacket(RawPacket pkt)
     {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Reverse transform for SSRC " + this.ssrc + " SeqNo="
-                    + pkt.getSequenceNumber() + " s_l=" + s_l + " seqNumSet=" + seqNumSet
-                    + " guessedROC=" + guessedROC + " roc=" + roc);
-        }
+        Timber.d("Reverse transform for SSRC %s SeqNo = %s s_l = %s seqNumSet = %s roc = %s guessedROC = %s",
+                this.ssrc, pkt.getSequenceNumber(), s_l, seqNumSet,  guessedROC, roc);
 
         int seqNo = pkt.getSequenceNumber();
         boolean seqNumWasJustSet = false;
@@ -515,8 +505,8 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
                 update(seqNo, guessedIndex);
                 b = true;
             }
-            else if (logger.isDebugEnabled()) {
-                logger.debug("SRTP auth failed for SSRC " + ssrc);
+            else {
+                Timber.d("SRTP auth failed for SSRC %s", ssrc);
             }
         }
 
@@ -562,7 +552,7 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
             return false;
         }
         // if (seqNo % 500 == 0)
-        //    logger.error("transform checkReply #" + seqNo + ": " + Long.toString(0xFFFFFFFFL & ssrc));
+        //    Timber.e("transform checkReply #" + seqNo + ": " + Long.toString(0xFFFFFFFFL & ssrc));
         //    new Exception("transform checkReply #" + seqNo + ": " + Long.toString(0xFFFFFFFFL & ssrc)).printStackTrace();
 
         switch (policy.getEncType()) {

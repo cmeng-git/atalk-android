@@ -31,7 +31,6 @@ import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
-import org.atalk.util.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
@@ -41,10 +40,9 @@ import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+
+import timber.log.Timber;
 
 import static org.atalk.android.R.id.fingerprint;
 
@@ -55,13 +53,8 @@ import static org.atalk.android.R.id.fingerprint;
  */
 public class OmemoAuthenticateDialog extends OSGiActivity
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(OmemoAuthenticateDialog.class);
-
     private static OmemoManager mOmemoManager;
-    private static HashSet<OmemoDevice> mOmemoDevices;
+    private static Set<OmemoDevice> mOmemoDevices;
     private static CryptoFragment mCryptoFragment;
     private SQLiteOmemoStore mOmemoStore;
 
@@ -163,7 +156,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
             }
             else {
                 /* Do not change original fingerprint trust state */
-                logger.warn("Leaving the fingerprintStatus as it: " + omemoDevice);
+                Timber.w("Leaving the fingerprintStatus as it: %s", omemoDevice);
             }
         }
 
@@ -200,7 +193,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
      * @param omemoManager the UUID of OTR session.
      * @return buddy authenticate dialog parametrized with given OTR session's UUID.
      */
-    public static Intent createIntent(OmemoManager omemoManager, HashSet<OmemoDevice> omemoDevices,
+    public static Intent createIntent(OmemoManager omemoManager, Set<OmemoDevice> omemoDevices,
             CryptoFragment fragment)
     {
         Intent intent = new Intent(aTalkApp.getGlobalContext(), OmemoAuthenticateDialog.class);
@@ -296,7 +289,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
             ViewUtil.setTextViewValue(rowView, fingerprint, CryptoHelper.prettifyFingerprint(remoteFingerprint));
 
             boolean isVerified = isOmemoFPVerified(device, remoteFingerprint);
-            final CheckBox cb_fingerprint = (CheckBox) rowView.findViewById(R.id.fingerprint);
+            final CheckBox cb_fingerprint = rowView.findViewById(R.id.fingerprint);
             cb_fingerprint.setChecked(isVerified);
 
             cb_fingerprint.setOnClickListener(v -> fingerprintCheck.put(device, cb_fingerprint.isChecked()));

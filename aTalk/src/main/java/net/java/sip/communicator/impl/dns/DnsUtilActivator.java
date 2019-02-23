@@ -17,12 +17,12 @@
 
 package net.java.sip.communicator.impl.dns;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.aTalkApp;
 import org.atalk.android.util.AndroidUsingLinkProperties;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+
+import timber.log.Timber;
 
 /**
  * The DNS Util activator.
@@ -31,11 +31,6 @@ import org.osgi.framework.BundleContext;
  */
 public class DnsUtilActivator implements BundleActivator
 {
-    /**
-     * Class logger
-     */
-    private static final Logger logger = Logger.getLogger(DnsUtilActivator.class);
-
     /**
      * Calls <tt>Thread.setUncaughtExceptionHandler()</tt>
      *
@@ -47,14 +42,13 @@ public class DnsUtilActivator implements BundleActivator
     public void start(BundleContext context)
             throws Exception
     {
-        logger.info("DNS service ... [STARTING]");
-
         // Fall back to use miniDns 0.3.2 AndroidUsingExec instead
         // Init miniDNS Resolver for android 21/23 requirements
         // DnsClient.removeDNSServerLookupMechanism(AndroidUsingExec.INSTANCE);
         // DnsClient.addDnsServerLookupMechanism(AndroidUsingExecLowPriority.INSTANCE);
 
         AndroidUsingLinkProperties.setup(aTalkApp.getGlobalContext());
+        Timber.i("Mini DNS service ... [STARTED]");
     }
 
     /**

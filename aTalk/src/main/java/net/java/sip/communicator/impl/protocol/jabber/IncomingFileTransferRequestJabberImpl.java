@@ -6,8 +6,8 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import timber.log.Timber;
+
 /**
  * Jabber implementation of the incoming file transfer request
  *
@@ -34,11 +36,6 @@ import java.util.concurrent.Executors;
 
 public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransferRequest
 {
-    /**
-     * The logger for this class.
-     */
-    private static final Logger logger = Logger.getLogger(IncomingFileTransferRequestJabberImpl.class);
-
     /**
      * Thread to fetch thumbnails in the background, one at a time
      */
@@ -162,7 +159,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
             new OperationSetFileTransferJabberImpl.FileTransferProgressThread(jabberTransfer,
                     incomingTransfer, getFileSize()).start();
         } catch (IOException | SmackException e) {
-            logger.error("Receiving file failed.", e);
+            Timber.e(e, "Receiving file failed.");
         }
         return incomingTransfer;
     }
@@ -219,7 +216,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
             @Override
             public void run()
             {
-                logger.debug("Sending thumbnail request");
+                Timber.d("Sending thumbnail request");
                 try {
                     thumbnail = bobManager.requestBoB(fromJid, cid).getContent();
                 } catch (SmackException.NotLoggedInException
@@ -227,7 +224,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
                         | XMPPException.XMPPErrorException
                         | NotConnectedException
                         | InterruptedException e) {
-                    logger.error("Could not get thumbnail", e);
+                    Timber.e(e, "Could not get thumbnail");
                 } finally {
                     // Notify the global listener that a request has arrived.
                     fileTransferOpSet.fireFileTransferRequest(IncomingFileTransferRequestJabberImpl.this);

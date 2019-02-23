@@ -5,43 +5,18 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import net.java.sip.communicator.service.protocol.AbstractCallPeer;
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.CallPeerState;
-import net.java.sip.communicator.service.protocol.CallState;
-import net.java.sip.communicator.service.protocol.ConferenceMember;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerConferenceEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerConferenceListener;
-import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityNegotiationStartedEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOffEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOnEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityStatusEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutEvent;
-import net.java.sip.communicator.service.protocol.event.ConferenceMembersSoundLevelEvent;
-import net.java.sip.communicator.service.protocol.event.ConferenceMembersSoundLevelListener;
-import net.java.sip.communicator.service.protocol.event.SoundLevelListener;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 
-import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.SrtpControl;
-import org.atalk.service.neomedia.event.CsrcAudioLevelListener;
-import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
-import org.atalk.service.neomedia.event.SrtpListener;
+import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.event.*;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * A utility class implementing media control code shared between current telephony implementations.
@@ -53,7 +28,6 @@ import java.util.Map;
  * <tt>CallPeerMediaHandlerJabberImpl</tt>
  * @param <V> the provider extension class like for example <tt>ProtocolProviderServiceSipImpl</tt> or
  * <tt>ProtocolProviderServiceJabberImpl</tt>
- * 
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Boris Grozev
@@ -62,11 +36,6 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
         V extends ProtocolProviderService> extends AbstractCallPeer<T, V>
         implements SrtpListener, CallPeerConferenceListener, CsrcAudioLevelListener, SimpleAudioLevelListener
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>MediaAwareCallPeer</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(MediaAwareCallPeer.class);
-
     /**
      * The call this peer belongs to.
      */
@@ -599,7 +568,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
      */
     public void logAndFail(String message, Throwable throwable)
     {
-        logger.error(message, throwable);
+        Timber.e(throwable, "%s", message);
         setState(CallPeerState.FAILED, message);
     }
 

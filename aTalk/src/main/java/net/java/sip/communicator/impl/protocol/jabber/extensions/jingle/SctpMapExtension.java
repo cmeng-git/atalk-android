@@ -6,6 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jingle;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -80,7 +81,7 @@ public class SctpMapExtension implements ExtensionElement
      * {@inheritDoc}
      */
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace)
+    public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.prelude(getElementName(), getNamespace());

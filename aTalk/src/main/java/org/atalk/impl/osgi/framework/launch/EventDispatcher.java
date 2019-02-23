@@ -6,8 +6,6 @@
  */
 package org.atalk.impl.osgi.framework.launch;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.impl.osgi.framework.AsyncExecutor;
 import org.osgi.framework.*;
 
@@ -15,14 +13,14 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.concurrent.RejectedExecutionException;
 
+import timber.log.Timber;
+
 /**
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
 public class EventDispatcher
 {
-    private static final Logger logger = Logger.getLogger(EventDispatcher.class);
-
     private final AsyncExecutor<Command> executor = new AsyncExecutor<>();
 
     private final EventListenerList listeners = new EventListenerList();
@@ -45,7 +43,7 @@ public class EventDispatcher
             try {
                 executor.execute(new Command(clazz, event));
             } catch (RejectedExecutionException ree) {
-                logger.error("Error firing event", ree);
+                Timber.e(ree, "Error firing event");
             }
     }
 
@@ -94,7 +92,7 @@ public class EventDispatcher
                         ((ServiceListener) listener).serviceChanged((ServiceEvent) event);
                     }
                 } catch (Throwable t) {
-                    logger.error("Error dispatching event", t);
+                    Timber.e(t, "Error dispatching event");
                     if (FrameworkListener.class.equals(clazz)
                             && ((FrameworkEvent) event).getType() != FrameworkEvent.ERROR) {
                         // TODO Auto-generated method stub

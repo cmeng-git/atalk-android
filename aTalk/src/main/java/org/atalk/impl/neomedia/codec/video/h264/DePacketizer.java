@@ -17,18 +17,20 @@ package org.atalk.impl.neomedia.codec.video.h264;
 
 import net.sf.fmj.media.AbstractCodec;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
 import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.KeyFrameControl;
-import org.atalk.util.Logger;
 
 import java.util.*;
 
 import javax.media.*;
 import javax.media.format.VideoFormat;
+
+import timber.log.Timber;
 
 import static org.atalk.impl.neomedia.codec.video.h264.H264.NAL_PREFIX;
 import static org.atalk.impl.neomedia.codec.video.h264.H264.kFuA;
@@ -53,11 +55,6 @@ import static org.atalk.impl.neomedia.codec.video.h264.H264.verifyStapANaluLengt
  */
 public class DePacketizer extends AbstractCodec2
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>DePacketizer</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(DePacketizer.class);
-
     /**
      * The indicator which determines whether incomplete NAL units are output
      * from the H.264 <tt>DePacketizer</tt> to the decoder. It is advisable to
@@ -343,9 +340,8 @@ public class DePacketizer extends AbstractCodec2
              * reached their maximum value and wrapped around starting from
              * their minimum value again.
              */
-            if (logger.isTraceEnabled())
-                logger.trace("Dropped RTP packets up to sequenceNumber " + lastSequenceNumber
-                        + " and continuing with sequenceNumber " + sequenceNumber);
+            Timber.log(TimberLog.FINER, "Dropped RTP packets up to sequenceNumber %s and continuing with sequenceNumber %s",
+                    lastSequenceNumber, sequenceNumber);
 
             /*
              * If a frame has been lost, then we may be in a need of a key frame.
@@ -400,7 +396,7 @@ public class DePacketizer extends AbstractCodec2
                 fuaStartedAndNotEnded = false;
         }
         else {
-            logger.warn("Dropping NAL unit of unsupported type " + nal_unit_type);
+            Timber.w("Dropping NAL unit of unsupported type %s", nal_unit_type);
             this.nal_unit_type = nal_unit_type;
 
             fuaStartedAndNotEnded = false;
@@ -486,11 +482,11 @@ public class DePacketizer extends AbstractCodec2
         if (nalType == kStapA) {
             // Skip the StapA header (StapA nal type + length).
             if (len <= kStapAHeaderSize) {
-                logger.error("StapA header truncated.");
+                Timber.e("StapA header truncated.");
                 return false;
             }
             if (!verifyStapANaluLengths(buf, naluStart, naluLength)) {
-                logger.error("StapA packet with incorrect NALU packet lengths.");
+                Timber.e("StapA packet with incorrect NALU packet lengths.");
                 return false;
             }
             nalType = buf[off + kStapAHeaderSize] & kTypeMask;

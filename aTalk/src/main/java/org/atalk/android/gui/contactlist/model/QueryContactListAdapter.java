@@ -8,7 +8,6 @@ package org.atalk.android.gui.contactlist.model;
 import android.os.Handler;
 
 import net.java.sip.communicator.service.contactsource.*;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -18,6 +17,8 @@ import org.osgi.framework.ServiceReference;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * Class implements adapter that can be used to search contact sources and the contact list. Meta contact list
@@ -29,11 +30,6 @@ import java.util.List;
 public class QueryContactListAdapter extends BaseContactListAdapter
         implements UIGroupRenderer, ContactQueryListener
 {
-    /**
-     * The logger
-     */
-    private final Logger logger = Logger.getLogger(QueryContactListAdapter.class);
-
     /**
      * Handler used to execute stuff on UI thread.
      */
@@ -220,7 +216,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
 
             uiHandler.post(() -> {
                 if (!queries.contains(query)) {
-                    logger.warn("Received event for cancelled query: " + query);
+                    Timber.w("Received event for cancelled query: %s", query);
                     return;
                 }
                 results.add(resultGroup);
@@ -233,13 +229,13 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     @Override
     public void contactRemoved(ContactRemovedEvent contactRemovedEvent)
     {
-        logger.error("CONTACT REMOVED NOT IMPLEMENTED");
+        Timber.e("CONTACT REMOVED NOT IMPLEMENTED");
     }
 
     @Override
     public void contactChanged(ContactChangedEvent contactChangedEvent)
     {
-        logger.error("CONTACT CHANGED NOT IMPLEMENTED");
+        Timber.e("CONTACT CHANGED NOT IMPLEMENTED");
     }
 
     private class ResultGroup

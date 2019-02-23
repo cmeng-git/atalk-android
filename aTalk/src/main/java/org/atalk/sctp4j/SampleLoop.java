@@ -15,9 +15,9 @@
  */
 package org.atalk.sctp4j;
 
-import org.atalk.util.Logger;
-
 import java.io.IOException;
+
+import timber.log.Timber;
 
 /**
  * Sample that uses two <tt>SctpSocket</tt>s with {@link DirectLink}.
@@ -26,72 +26,64 @@ import java.io.IOException;
  */
 public class SampleLoop
 {
-	/**
-	 * The logger.
-	 */
-	private final static Logger logger = Logger.getLogger(SampleLoop.class);
+    public static void main(String[] args)
+            throws Exception
+    {
+        Sctp.init();
 
-	public static void main(String[] args)
-			throws Exception
-	{
-		Sctp.init();
+        final SctpSocket server = Sctp.createSocket(5001);
+        final SctpSocket client = Sctp.createSocket(5002);
 
-		final SctpSocket server = Sctp.createSocket(5001);
-		final SctpSocket client = Sctp.createSocket(5002);
+        DirectLink link = new DirectLink(server, client);
+        server.setLink(link);
+        client.setLink(link);
 
-		DirectLink link = new DirectLink(server, client);
-		server.setLink(link);
-		client.setLink(link);
+        // Make server passive
+        server.listen();
 
-		// Make server passive
-		server.listen();
+        // Client thread
+        new Thread(
+                new Runnable()
+                {
+                    public void run()
+                    {
+                        try {
+                            client.connect(server.getPort());
+                            Timber.i("Client: connect");
 
-		// Client thread
-		new Thread(
-				new Runnable()
-				{
-					public void run()
-					{
-						try {
-							client.connect(server.getPort());
-							logger.info("Client: connect");
+                            try {
+                                Thread.sleep(1000);
+                            } catch (Exception e) {
+                            }
 
-							try {
-								Thread.sleep(1000);
-							}
-							catch (Exception e) {
-							}
+                            int sent = client.send(new byte[200], false, 0, 0);
+                            Timber.i("Client sent: %s", sent);
 
-							int sent = client.send(new byte[200], false, 0, 0);
-							logger.info("Client sent: " + sent);
+                        } catch (IOException e) {
+                            Timber.e("%s", e.getMessage());
+                        }
+                    }
+                }
+        ).start();
 
-						}
-						catch (IOException e) {
-							logger.error(e, e);
-						}
-					}
-				}
-		).start();
+        server.setDataCallback(
+                new SctpDataCallback()
+                {
+                    @Override
+                    public void onSctpPacket(byte[] data, int sid, int ssn, int tsn,
+                            long ppid,
+                            int context, int flags)
+                    {
+                        Timber.i("Server got some data: %s stream: %s payload protocol id: %s",
+                                data.length, sid, ppid);
+                    }
+                }
+        );
 
-		server.setDataCallback(
-				new SctpDataCallback()
-				{
-					@Override
-					public void onSctpPacket(byte[] data, int sid, int ssn, int tsn,
-							long ppid,
-							int context, int flags)
-					{
-						logger.info("Server got some data: " + data.length
-								+ " stream: " + sid
-								+ " payload protocol id: " + ppid);
-					}
-				}
-		);
+        Thread.sleep(5 * 1000);
 
-		Thread.sleep(5 * 1000);
-
-		server.close();
-		client.close();
-		Sctp.finish();
-	}
+        server.close();
+        client.close();
+        Sctp.finish();
+    }
 }

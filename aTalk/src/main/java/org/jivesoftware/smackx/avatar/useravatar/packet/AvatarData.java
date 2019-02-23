@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.avatar.useravatar.packet;
 import net.iharder.Base64;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.logging.Logger;
@@ -104,7 +105,7 @@ public class AvatarData implements ExtensionElement
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace)
+    public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();

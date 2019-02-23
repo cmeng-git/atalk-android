@@ -6,11 +6,11 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriConferenceIQ;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.SourcePacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.SourceExtensionElement;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension.SendersEnum;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet.MediaPresenceExtension;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet.SSRCInfoPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentExtensionElement.SendersEnum;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet.MediaPresenceExtensionElement;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet.SSRCInfoExtensionElement;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
@@ -19,6 +19,7 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.*;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -30,6 +31,8 @@ import org.jxmpp.jid.Jid;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Implements a Jabber <tt>CallPeer</tt>.
@@ -43,11 +46,6 @@ import java.util.*;
 public class CallPeerJabberImpl
         extends MediaAwareCallPeer<CallJabberImpl, CallPeerMediaHandlerJabberImpl, ProtocolProviderServiceJabberImpl>
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>CallPeerJabberImpl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(CallPeerJabberImpl.class);
-
     /**
      * If the call is cancelled before session-initiate is sent.
      */
@@ -147,16 +145,16 @@ public class CallPeerJabberImpl
     public synchronized void answer()
             throws OperationFailedException
     {
-        Iterable<ContentPacketExtension> answer;
+        Iterable<ContentExtensionElement> answer;
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
 
         try {
             mediaHandler.getTransportManager().wrapupConnectivityEstablishment();
             answer = mediaHandler.generateSessionAccept();
-            for (ContentPacketExtension c : answer)
+            for (ContentExtensionElement c : answer)
                 setSenders(getMediaType(c), c.getSenders());
         } catch (Exception exc) {
-            logger.info("Failed to answer an incoming call", exc);
+            Timber.i(exc, "Failed to answer an incoming call");
 
             // send an error response
             String reasonText = "Error: " + exc.getMessage();
@@ -190,7 +188,7 @@ public class CallPeerJabberImpl
             mediaHandler.start();
         } catch (UndeclaredThrowableException e) {
             Throwable exc = e.getUndeclaredThrowable();
-            logger.info("Failed to establish a connection", exc);
+            Timber.i(exc, "Failed to establish a connection");
 
             // send an error response
             String reasonText = "Error: " + exc.getMessage();
@@ -251,8 +249,7 @@ public class CallPeerJabberImpl
         // do nothing if the call is already ended
         if (CallPeerState.DISCONNECTED.equals(prevPeerState)
                 || CallPeerState.FAILED.equals(prevPeerState)) {
-            if (logger.isDebugEnabled())
-                logger.debug("Ignoring a request to hangup a call peer that is already DISCONNECTED");
+            Timber.d("Ignoring a request to hangup a call peer that is already DISCONNECTED");
             return;
         }
 
@@ -286,7 +283,7 @@ public class CallPeerJabberImpl
             // For FAILED and BUSY we only need to update CALL_STATUS as everything else has been done already.
         }
         else {
-            logger.info("Could not determine call peer state!");
+            Timber.i("Could not determine call peer state!");
         }
 
         if (responseIQ != null) {
@@ -319,7 +316,7 @@ public class CallPeerJabberImpl
         initiator = false;
 
         // Create the media description that we'd like to send to the other side.
-        List<ContentPacketExtension> offer = getMediaHandler().createContentList();
+        List<ContentExtensionElement> offer = getMediaHandler().createContentList();
 
         synchronized (sidSyncRoot) {
             sessionInitIQ = JinglePacketFactory.createSessionInitiate(mProtocolProvider.getOurJID(),
@@ -371,16 +368,16 @@ public class CallPeerJabberImpl
     public void processContentAccept(JingleIQ content)
             throws NotConnectedException, InterruptedException
     {
-        List<ContentPacketExtension> contents = content.getContentList();
+        List<ContentExtensionElement> contents = content.getContentList();
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
 
         try {
             mediaHandler.getTransportManager().wrapupConnectivityEstablishment();
             mediaHandler.processSessionAcceptContent(contents);
-            for (ContentPacketExtension c : contents)
+            for (ContentExtensionElement c : contents)
                 setSenders(getMediaType(c), c.getSenders());
         } catch (Exception e) {
-            logger.warn("Failed to process a content-accept", e);
+            Timber.w(e, "Failed to process a content-accept");
 
             // Send an error response.
             String reason = "Error: " + e.getMessage();
@@ -404,20 +401,19 @@ public class CallPeerJabberImpl
             throws NotConnectedException, InterruptedException
     {
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
-        List<ContentPacketExtension> contents = content.getContentList();
-        Iterable<ContentPacketExtension> answerContents;
+        List<ContentExtensionElement> contents = content.getContentList();
+        Iterable<ContentExtensionElement> answerContents;
         JingleIQ contentIQ;
         boolean noCands = false;
         MediaStream oldVideoStream = mediaHandler.getStream(MediaType.VIDEO);
 
-        if (logger.isInfoEnabled())
-            logger.info("Looking for candidates in content-add.");
+        Timber.i("Looking for candidates in content-add.");
         try {
             if (!contentAddWithNoCands) {
                 mediaHandler.processOffer(contents);
 
                 // Jingle transport will not put candidate in session-initiate and content-add.
-                for (ContentPacketExtension c : contents) {
+                for (ContentExtensionElement c : contents) {
                     if (JingleUtils.getFirstCandidate(c, 1) == null) {
                         contentAddWithNoCands = true;
                         noCands = true;
@@ -444,18 +440,16 @@ public class CallPeerJabberImpl
                         }
                     }
                 }.start();
-                if (logger.isInfoEnabled())
-                    logger.info("No candidates found in content-add, started new thread.");
+                Timber.i("No candidates found in content-add, started new thread.");
                 return;
             }
 
             mediaHandler.getTransportManager().wrapupConnectivityEstablishment();
-            if (logger.isInfoEnabled())
-                logger.info("Wrapping up connectivity establishment");
+            Timber.i("Wrapping up connectivity establishment");
             answerContents = mediaHandler.generateSessionAccept();
             contentIQ = null;
         } catch (Exception e) {
-            logger.warn("Exception occurred", e);
+            Timber.w(e, "Exception occurred");
             answerContents = null;
             contentIQ = JinglePacketFactory.createContentReject(mProtocolProvider.getOurJID(),
                     mPeerJid, getSID(), answerContents);
@@ -465,7 +459,7 @@ public class CallPeerJabberImpl
             /* send content-accept */
             contentIQ = JinglePacketFactory.createContentAccept(mProtocolProvider.getOurJID(),
                     mPeerJid, getSID(), answerContents);
-            for (ContentPacketExtension c : answerContents)
+            for (ContentExtensionElement c : answerContents)
                 setSenders(getMediaType(c), c.getSenders());
         }
         mConnection.sendStanza(contentIQ);
@@ -483,7 +477,7 @@ public class CallPeerJabberImpl
                 try {
                     getCall().modifyVideoContent();
                 } catch (OperationFailedException ofe) {
-                    logger.error("Failed to enable RTP translation", ofe);
+                    Timber.e(ofe, "Failed to enable RTP translation");
                 }
             }
         }
@@ -497,18 +491,18 @@ public class CallPeerJabberImpl
     public void processContentModify(JingleIQ content)
             throws NotConnectedException, InterruptedException
     {
-        ContentPacketExtension ext = content.getContentList().get(0);
+        ContentExtensionElement ext = content.getContentList().get(0);
         MediaType mediaType = getMediaType(ext);
 
         try {
-            boolean modify = (ext.getFirstChildOfType(RtpDescriptionPacketExtension.class) != null);
+            boolean modify = (ext.getFirstChildOfType(RtpDescriptionExtensionElement.class) != null);
             getMediaHandler().reinitContent(ext.getName(), ext, modify);
             setSenders(mediaType, ext.getSenders());
 
             if (MediaType.VIDEO.equals(mediaType))
                 getCall().modifyVideoContent();
         } catch (Exception e) {
-            logger.info("Failed to process an incoming content-modify", e);
+            Timber.i(e, "Failed to process an incoming content-modify");
 
             // Send an error response.
             String reason = "Error: " + e.getMessage();
@@ -547,13 +541,13 @@ public class CallPeerJabberImpl
      */
     public void processContentRemove(JingleIQ content)
     {
-        List<ContentPacketExtension> contents = content.getContentList();
+        List<ContentExtensionElement> contents = content.getContentList();
         boolean videoContentRemoved = false;
 
         if (!contents.isEmpty()) {
             CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
 
-            for (ContentPacketExtension c : contents) {
+            for (ContentExtensionElement c : contents) {
                 mediaHandler.removeContent(c.getName());
 
                 MediaType mediaType = getMediaType(c);
@@ -576,7 +570,7 @@ public class CallPeerJabberImpl
             try {
                 getCall().modifyVideoContent();
             } catch (Exception e) {
-                logger.warn("Failed to update Jingle sessions");
+                Timber.w("Failed to update Jingle sessions");
             }
         }
     }
@@ -595,7 +589,7 @@ public class CallPeerJabberImpl
          * <content creator='initiator' name='audio'>
          * <content creator='initiator' name='video' senders='both'>
          */
-        List<ContentPacketExtension> contentList = sessionInitIQ.getContentList();
+        List<ContentExtensionElement> contentList = sessionInitIQ.getContentList();
 
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
         try {
@@ -605,11 +599,10 @@ public class CallPeerJabberImpl
 
             transportManager.wrapupConnectivityEstablishment();
             mediaHandler.processSessionAcceptContent(contentList);
-            for (ContentPacketExtension c : contentList)
+            for (ContentExtensionElement c : contentList)
                 setSenders(getMediaType(c), c.getSenders());
         } catch (Exception exc) {
-            if (logger.isInfoEnabled())
-                logger.info("Failed to process a session-accept", exc);
+            Timber.i(exc, "Failed to process a session-accept");
 
             // send an error response;
             JingleIQ errResp = JinglePacketFactory.createSessionTerminate(
@@ -638,9 +631,9 @@ public class CallPeerJabberImpl
     /**
      * Handles the specified session <tt>info</tt> packet according to its content.
      *
-     * @param info the {@link SessionInfoPacketExtension} that we just received.
+     * @param info the {@link SessionInfoExtensionElement} that we just received.
      */
-    public void processSessionInfo(SessionInfoPacketExtension info)
+    public void processSessionInfo(SessionInfoExtensionElement info)
             throws NotConnectedException, InterruptedException
     {
         switch (info.getType()) {
@@ -657,7 +650,7 @@ public class CallPeerJabberImpl
                 reevalRemoteHoldStatus();
                 break;
             default:
-                logger.warn("Received SessionInfoPacketExtension of unknown type");
+                Timber.w("Received SessionInfoExtensionElement of unknown type");
         }
     }
 
@@ -678,14 +671,14 @@ public class CallPeerJabberImpl
         // This is the SDP offer that came from the initial session-initiate. Contrary to SIP,
         // we are guaranteed to have content because
         // XEP-0166says: "A session consists of at least one content type at a time."
-        List<ContentPacketExtension> offer = sessionInitIQ.getContentList();
+        List<ContentExtensionElement> offer = sessionInitIQ.getContentList();
         try {
             getMediaHandler().processOffer(offer);
-            CoinPacketExtension coin = null;
+            CoinExtensionElement coin = null;
 
             for (ExtensionElement ext : sessionInitIQ.getExtensions()) {
-                if (ext.getElementName().equals(CoinPacketExtension.ELEMENT_NAME)) {
-                    coin = (CoinPacketExtension) ext;
+                if (ext.getElementName().equals(CoinExtensionElement.ELEMENT_NAME)) {
+                    coin = (CoinExtensionElement) ext;
                     break;
                 }
             }
@@ -695,7 +688,7 @@ public class CallPeerJabberImpl
                 setConferenceFocus(Boolean.parseBoolean((String) coin.getAttribute("isfocus")));
             }
         } catch (Exception ex) {
-            logger.info("Failed to process an incoming session initiate", ex);
+            Timber.i(ex, "Failed to process an incoming session initiate");
 
             // send an error response;
             String reasonText = "Error: " + ex.getMessage();
@@ -717,9 +710,7 @@ public class CallPeerJabberImpl
         }
 
         // send a ringing response
-        if (logger.isTraceEnabled())
-            logger.trace("will send ringing response: ");
-
+        Timber.log(TimberLog.FINER, "Will send ringing response.");
         mConnection.sendStanza(JinglePacketFactory.createRinging(sessionInitIQ));
 
         // set flag to indicates that session-initiate process has completed.
@@ -773,7 +764,7 @@ public class CallPeerJabberImpl
      * @throws OperationFailedException if anything goes wrong while processing the specified <tt>transfer</tt>
      * packet (extension)
      */
-    public void processTransfer(TransferPacketExtension transfer)
+    public void processTransfer(TransferExtensionElement transfer)
             throws OperationFailedException
     {
         Jid attendantAddress = transfer.getFrom();
@@ -794,13 +785,13 @@ public class CallPeerJabberImpl
             String failedMessage = "Transfer impossible:\nAccount roster does not contain transfer peer: "
                     + calleeAddress.asBareJid();
             setState(CallPeerState.FAILED, failedMessage);
-            logger.info(failedMessage);
+            Timber.i(failedMessage);
         }
 
         OperationSetBasicTelephonyJabberImpl basicTelephony = (OperationSetBasicTelephonyJabberImpl)
                 mProtocolProvider.getOperationSet(OperationSetBasicTelephony.class);
         CallJabberImpl calleeCall = new CallJabberImpl(basicTelephony);
-        TransferPacketExtension calleeTransfer = new TransferPacketExtension();
+        TransferExtensionElement calleeTransfer = new TransferExtensionElement();
         String sid = transfer.getSID();
 
         calleeTransfer.setFrom(attendantAddress);
@@ -838,7 +829,7 @@ public class CallPeerJabberImpl
             }
             getMediaHandler().processTransportInfo(jingleIQ.getContentList());
         } catch (OperationFailedException ofe) {
-            logger.warn("Failed to process an incoming transport-info", ofe);
+            Timber.w(ofe, "Failed to process an incoming transport-info");
 
             // send an error response
             String reasonText = "Error: " + ofe.getMessage();
@@ -899,11 +890,11 @@ public class CallPeerJabberImpl
     private void sendAddVideoContent()
             throws NotConnectedException, InterruptedException
     {
-        List<ContentPacketExtension> contents;
+        List<ContentExtensionElement> contents;
         try {
             contents = getMediaHandler().createContentList(MediaType.VIDEO);
         } catch (Exception exc) {
-            logger.warn("Failed to gather content for video type", exc);
+            Timber.w(exc, "Failed to gather content for video type");
             return;
         }
 
@@ -921,7 +912,7 @@ public class CallPeerJabberImpl
     {
         JingleIQ sessionInfoIQ = JinglePacketFactory.createSessionInfo(mProtocolProvider.getOurJID(),
                 mPeerJid, getSID());
-        CoinPacketExtension coinExt = new CoinPacketExtension(getCall().isConferenceFocus());
+        CoinExtensionElement coinExt = new CoinExtensionElement(getCall().isConferenceFocus());
 
         sessionInfoIQ.addExtension(coinExt);
         mConnection.sendStanza(sessionInfoIQ);
@@ -989,7 +980,7 @@ public class CallPeerJabberImpl
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
         MediaDirection direction = getDirectionForJingle(MediaType.VIDEO);
 
-        ContentPacketExtension remoteContent = mediaHandler.getLocalContent(MediaType.VIDEO.toString());
+        ContentExtensionElement remoteContent = mediaHandler.getLocalContent(MediaType.VIDEO.toString());
         if (remoteContent == null) {
             if (direction == MediaDirection.INACTIVE) {
                 // no video content, none needed
@@ -997,8 +988,7 @@ public class CallPeerJabberImpl
             }
             else { // no remote video and local video added
                 if (getState() == CallPeerState.CONNECTED) {
-                    if (logger.isInfoEnabled())
-                        logger.info("Adding video content for " + this);
+                    Timber.i("Adding video content for %s", this);
                     sendAddVideoContent();
                     return true;
                 }
@@ -1027,7 +1017,7 @@ public class CallPeerJabberImpl
         /*
          * Send Content-Modify
          */
-        ContentPacketExtension ext = new ContentPacketExtension();
+        ContentExtensionElement ext = new ContentExtensionElement();
         String remoteContentName = remoteContent.getName();
 
         ext.setSenders(newSenders);
@@ -1036,8 +1026,7 @@ public class CallPeerJabberImpl
 
         // cmeng (2016/9/14) only send content-modify if there is a change in own video streaming state
         if (newSenders != senders) {
-            if (logger.isInfoEnabled())
-                logger.info("Sending content modify, senders: " + senders + "->" + newSenders);
+            Timber.i("Sending content modify, senders: %s -> %s", senders, newSenders);
 
             // cmeng: must update local videoSenders for content-modify
             setSenders(MediaType.VIDEO, newSenders);
@@ -1051,7 +1040,7 @@ public class CallPeerJabberImpl
             mediaHandler.reinitContent(remoteContentName, ext, false);
             mediaHandler.start();
         } catch (Exception e) {
-            logger.warn("Exception occurred during media reinitialization", e);
+            Timber.w(e, "Exception occurred during media reinitialization");
         }
         return (newSenders != senders);
     }
@@ -1063,16 +1052,16 @@ public class CallPeerJabberImpl
             throws NotConnectedException, InterruptedException
     {
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
-        ContentPacketExtension remoteContent = mediaHandler.getRemoteContent(MediaType.VIDEO.toString());
-        ContentPacketExtension content;
-        logger.info("send modify-content to change resolution");
+        ContentExtensionElement remoteContent = mediaHandler.getRemoteContent(MediaType.VIDEO.toString());
+        ContentExtensionElement content;
+        Timber.i("send modify-content to change resolution");
 
         // send content-modify with RTP description
         // create content list with resolution
         try {
             content = mediaHandler.createContentForMedia(MediaType.VIDEO);
         } catch (Exception e) {
-            logger.warn("Failed to gather content for video type", e);
+            Timber.w(e, "Failed to gather content for video type");
             return;
         }
 
@@ -1089,7 +1078,7 @@ public class CallPeerJabberImpl
             mediaHandler.reinitContent(remoteContent.getName(), content, false);
             mediaHandler.start();
         } catch (Exception e) {
-            logger.warn("Exception occurred when media reinitialization", e);
+            Timber.w(e, "Exception occurred when media reinitialization");
         }
     }
 
@@ -1101,8 +1090,8 @@ public class CallPeerJabberImpl
     {
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
 
-        ContentPacketExtension content = new ContentPacketExtension();
-        ContentPacketExtension remoteContent = mediaHandler.getRemoteContent(MediaType.VIDEO.toString());
+        ContentExtensionElement content = new ContentExtensionElement();
+        ContentExtensionElement remoteContent = mediaHandler.getRemoteContent(MediaType.VIDEO.toString());
         if (remoteContent == null)
             return;
         String remoteContentName = remoteContent.getName();
@@ -1125,7 +1114,7 @@ public class CallPeerJabberImpl
      * @param contents the local candidate addresses to be sent from the local peer to the remote peer using
      * the <tt>transport-info</tt> {@link JingleIQ}
      */
-    protected void sendTransportInfo(Iterable<ContentPacketExtension> contents)
+    protected void sendTransportInfo(Iterable<ContentExtensionElement> contents)
             throws NotConnectedException, InterruptedException
     {
         // if the call is canceled, do not start sending candidates in transport-info
@@ -1134,7 +1123,7 @@ public class CallPeerJabberImpl
 
         JingleIQ transportInfo = new JingleIQ(JingleAction.TRANSPORT_INFO, getSID());
 
-        for (ContentPacketExtension content : contents)
+        for (ContentExtensionElement content : contents)
             transportInfo.addContent(content);
 
         transportInfo.setFrom(mProtocolProvider.getOurJID());
@@ -1176,7 +1165,7 @@ public class CallPeerJabberImpl
             try {
                 getCall().modifyVideoContent();
             } catch (OperationFailedException ofe) {
-                logger.error("Failed to update call video state after 'hold' status removed for " + this);
+                Timber.e("Failed to update call video state after 'hold' status removed for %s", this);
             }
         }
     }
@@ -1198,7 +1187,7 @@ public class CallPeerJabberImpl
         transferSessionInfo.setTo(mPeerJid);
         transferSessionInfo.setType(IQ.Type.set);
 
-        TransferPacketExtension transfer = new TransferPacketExtension();
+        TransferExtensionElement transfer = new TransferExtensionElement();
         // Attended transfer.
         if (sid != null) {
             /*
@@ -1250,7 +1239,7 @@ public class CallPeerJabberImpl
         // Implements the SIP behavior: once the transfer is accepted, the current call is closed.
         try {
             hangup(false, message, new ReasonPacketExtension(Reason.SUCCESS, message,
-                    new TransferredPacketExtension()));
+                    new TransferredExtensionElement()));
         } catch (NotConnectedException | InterruptedException e) {
             throw new OperationFailedException("Could not send transfer", 0, e);
         }
@@ -1336,10 +1325,10 @@ public class CallPeerJabberImpl
      * tries to take the <tt>MediaType</tt> from the session's already established contents with the
      * same name as <tt>content</tt>
      *
-     * @param content the <tt>ContentPacketExtension</tt> for which to get the <tt>MediaType</tt>
+     * @param content the <tt>ContentExtensionElement</tt> for which to get the <tt>MediaType</tt>
      * @return the <tt>MediaType</tt> of <tt>content</tt>.
      */
-    public MediaType getMediaType(ContentPacketExtension content)
+    public MediaType getMediaType(ContentExtensionElement content)
     {
         String contentName = content.getName();
         if (contentName == null)
@@ -1349,7 +1338,7 @@ public class CallPeerJabberImpl
         if (mediaType == null) {
             CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
             for (MediaType m : MediaType.values()) {
-                ContentPacketExtension sessionContent = mediaHandler.getRemoteContent(m.toString());
+                ContentExtensionElement sessionContent = mediaHandler.getRemoteContent(m.toString());
                 if (sessionContent == null)
                     sessionContent = mediaHandler.getLocalContent(m.toString());
 
@@ -1373,16 +1362,16 @@ public class CallPeerJabberImpl
      */
     public void processSourceAdd(final JingleIQ content)
     {
-        for (ContentPacketExtension c : content.getContentList()) {
+        for (ContentExtensionElement c : content.getContentList()) {
             // we are parsing only audio
             if (!MediaType.AUDIO.equals(JingleUtils.getMediaType(c))) {
                 continue;
             }
 
-            RtpDescriptionPacketExtension rtpDesc = JingleUtils.getRtpDescription(c);
-            for (MediaPresenceExtension.Source src
-                    : rtpDesc.getChildExtensionsOfType(MediaPresenceExtension.Source.class)) {
-                SSRCInfoPacketExtension ssrcInfo = src.getFirstChildOfType(SSRCInfoPacketExtension.class);
+            RtpDescriptionExtensionElement rtpDesc = JingleUtils.getRtpDescription(c);
+            for (MediaPresenceExtensionElement.Source src
+                    : rtpDesc.getChildExtensionsOfType(MediaPresenceExtensionElement.Source.class)) {
+                SSRCInfoExtensionElement ssrcInfo = src.getFirstChildOfType(SSRCInfoExtensionElement.class);
                 if (ssrcInfo == null)
                     continue;
 
@@ -1410,15 +1399,15 @@ public class CallPeerJabberImpl
      */
     public void processSourceRemove(final JingleIQ content)
     {
-        for (ContentPacketExtension c : content.getContentList()) {
+        for (ContentExtensionElement c : content.getContentList()) {
             // we are parsing only audio
             if (!MediaType.AUDIO.equals(JingleUtils.getMediaType(c))) {
                 continue;
             }
 
-            RtpDescriptionPacketExtension rtpDesc = JingleUtils.getRtpDescription(c);
-            for (SourcePacketExtension src : rtpDesc.getChildExtensionsOfType(SourcePacketExtension.class)) {
-                SSRCInfoPacketExtension ssrcInfo = src.getFirstChildOfType(SSRCInfoPacketExtension.class);
+            RtpDescriptionExtensionElement rtpDesc = JingleUtils.getRtpDescription(c);
+            for (SourceExtensionElement src : rtpDesc.getChildExtensionsOfType(SourceExtensionElement.class)) {
+                SSRCInfoExtensionElement ssrcInfo = src.getFirstChildOfType(SSRCInfoExtensionElement.class);
 
                 if (ssrcInfo == null)
                     continue;
@@ -1539,7 +1528,7 @@ public class CallPeerJabberImpl
                 | InterruptedException
                 | SmackException.NoResponseException
                 | NotConnectedException xmppex) {
-            logger.warn("Could not retrieve info for " + calleeURI, xmppex);
+            Timber.w(xmppex, "Could not retrieve info for %s", calleeURI);
         }
     }
 

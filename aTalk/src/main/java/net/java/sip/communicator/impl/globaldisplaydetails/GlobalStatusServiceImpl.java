@@ -11,7 +11,6 @@ import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeE
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.account.*;
 
 import org.atalk.android.R;
@@ -19,7 +18,9 @@ import org.atalk.android.aTalkApp;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
 
-import java.util.*;
+import java.util.Collection;
+
+import timber.log.Timber;
 
 import static net.java.sip.communicator.util.account.AccountUtils.getRegisteredProviders;
 
@@ -36,11 +37,6 @@ import static net.java.sip.communicator.util.account.AccountUtils.getRegisteredP
  */
 public class GlobalStatusServiceImpl implements GlobalStatusService, RegistrationStateChangeListener
 {
-    /**
-     * The object used for logging.
-     */
-    private final Logger logger = Logger.getLogger(GlobalStatusServiceImpl.class);
-
     /**
      * Handles newly added providers.
      *
@@ -279,8 +275,8 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
                 // If provider fires registered, and while dispatching the registered event a fatal
                 // error rise in the connection and the provider goes in connection_failed we can
                 // end up here calling login and going over the same cycle over and over again
-                logger.warn("Called publish status for provider in wrong state provider: " + protocolProvider
-                        + " registrationState: " + registrationState + " status: " + status);
+                Timber.w("Called publish status for provider in wrong state provider: %s " + protocolProvider
+                        + " registrationState: %s status: %s", protocolProvider, registrationState, status);
                 return;
             }
             else {
@@ -527,7 +523,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
             try {
                 presence.publishPresenceStatus(status, "");
             } catch (IllegalArgumentException | IllegalStateException e1) {
-                logger.error("Error - changing status", e1);
+                Timber.e(e1, "Error - changing status");
             } catch (OperationFailedException e1) {
                 if (e1.getErrorCode() == OperationFailedException.GENERAL_ERROR) {
                     String msgText = aTalkApp.getResString(R.string.service_gui_STATUS_CHANGE_GENERAL_ERROR,
@@ -550,7 +546,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
                     GlobalDisplayDetailsActivator.getAlertUIService().showAlertDialog(
                             aTalkApp.getResString(R.string.service_gui_NETWORK_FAILURE), msgText, e1);
                 }
-                logger.error("Error - changing status", e1);
+                Timber.e(e1, "Error - changing status");
             }
         }
     }

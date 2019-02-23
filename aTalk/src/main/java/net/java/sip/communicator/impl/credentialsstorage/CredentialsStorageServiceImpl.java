@@ -16,7 +16,6 @@
 package net.java.sip.communicator.impl.credentialsstorage;
 
 import net.java.sip.communicator.service.credentialsstorage.*;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
@@ -24,6 +23,8 @@ import org.bouncycastle.util.encoders.Base64;
 import org.osgi.framework.BundleContext;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Implements {@link CredentialsStorageService} to load and store user credentials from/to the
@@ -34,11 +35,6 @@ import java.util.*;
  */
 public class CredentialsStorageServiceImpl implements CredentialsStorageService
 {
-    /**
-     * The <tt>Logger</tt> used by this <tt>CredentialsStorageServiceImpl</tt> for logging output.
-     */
-    private final Logger logger = Logger.getLogger(CredentialsStorageServiceImpl.class);
-
     /**
      * The name of a property which represents an encrypted password.
      */
@@ -122,7 +118,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
                 }
                 return true;
             } catch (Exception ex) {
-                logger.error("Encryption failed, password not saved", ex);
+                Timber.e(ex, "Encryption failed, password not saved");
                 return false;
             }
         }
@@ -150,7 +146,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
                 password = crypto.decrypt(getEncrypted(accountUuid));
             } catch (Exception ex) {
                 // password stays null
-                logger.error("Decryption with master password failed", ex);
+                Timber.e(ex, "Decryption with master password failed");
             }
         }
         return password;
@@ -167,8 +163,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
     public boolean removePassword(String accountUuid)
     {
         setEncrypted(accountUuid, null);
-        if (logger.isDebugEnabled())
-            logger.debug("Password for '" + accountUuid + "' removed");
+        Timber.d("Password for '%s' removed", accountUuid);
         return true;
     }
 
@@ -205,7 +200,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
             return correct;
         } catch (CryptoException e) {
             if (e.getErrorCode() == CryptoException.WRONG_KEY) {
-                logger.debug("Incorrect master pass", e);
+                Timber.d(e, "Incorrect master pass");
                 return false;
             }
             else {
@@ -250,7 +245,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
             // or remove it if the newPassword is null (we are unsetting MP)
             writeVerificationValue(newPassword == null);
         } catch (CryptoException ce) {
-            logger.debug(ce);
+            Timber.d(ce);
             crypto = null;
             passwords = null;
             return false;
@@ -292,7 +287,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
                     setUnencrypted(prefix, null);
                 }
                 else if (!movePasswordProperty(prefix, new String(Base64.decode(encodedPassword)))) {
-                    logger.warn("Failed to move password for prefix " + prefix);
+                    Timber.w("Failed to move password for prefix %s", prefix);
                 }
             }
         }
@@ -314,7 +309,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
                 setUnencrypted(accountUuid, null);
                 return true;
             } catch (CryptoException cex) {
-                logger.debug("Encryption failed", cex);
+                Timber.d(cex, "Encryption failed");
             }
         }
         // properties are not moved
@@ -335,7 +330,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
             try {
                 configurationService.setProperty(MASTER_PROP, crypto.encrypt(MASTER_PROP_VALUE));
             } catch (CryptoException cex) {
-                logger.error("Failed to encrypt and write verification value", cex);
+                Timber.e(cex, "Failed to encrypt and write verification value");
             }
         }
     }
@@ -356,7 +351,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
          */
 
         if (crypto == null) {
-            logger.debug("Crypto instance is null, creating.");
+            Timber.d("Crypto instance is null, creating.");
             if (isUsingMasterPassword()) {
                 String master = showPasswordPrompt();
                 if (master == null) {
@@ -372,7 +367,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
                 moveAllPasswordProperties();
             }
             else {
-                logger.debug("Master password not set");
+                Timber.d("Master password not set");
                 /*
                  * Setting the master password to null means we shall still be using
                  * encryption/decryption but using some default value, not something specified by the user.
@@ -397,7 +392,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
         MasterPasswordInputService masterPasswordInputService = CredentialsStorageActivator.getMasterPasswordInputService();
 
         if (masterPasswordInputService == null) {
-            logger.error("Missing MasterPasswordInputService to show input dialog");
+            Timber.e("Missing MasterPasswordInputService to show input dialog");
             return null;
         }
         do {

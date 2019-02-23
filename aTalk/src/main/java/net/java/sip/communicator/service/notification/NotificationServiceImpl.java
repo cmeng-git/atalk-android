@@ -7,11 +7,12 @@ package net.java.sip.communicator.service.notification;
 
 import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
 import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.service.configuration.ConfigurationService;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 import static net.java.sip.communicator.service.notification.NotificationAction.ACTION_COMMAND;
 import static net.java.sip.communicator.service.notification.NotificationAction.ACTION_LOG_MESSAGE;
@@ -33,8 +34,6 @@ import static net.java.sip.communicator.service.notification.event.NotificationE
  */
 class NotificationServiceImpl implements NotificationService
 {
-    private final Logger logger = Logger.getLogger(NotificationServiceImpl.class);
-
     private static final String NOTIFICATIONS_PREFIX = "notifications";
 
     /**
@@ -225,7 +224,7 @@ class NotificationServiceImpl implements NotificationService
                         break;
                 }
             } catch (Exception e) {
-                logger.error("Error dispatching notification of type" + actionType + " from " + handler, e);
+                Timber.e(e, "Error dispatching notification of type %s from %s", actionType, handler);
             }
         }
     }
@@ -328,12 +327,10 @@ class NotificationServiceImpl implements NotificationService
      */
     private void fireNotificationEventTypeEvent(String eventType, String sourceEventType)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching NotificationEventType Change. Listeners="
-                    + changeListeners.size() + " evt=" + eventType);
+        Timber.d("Dispatching NotificationEventType Change. Listeners = %s evt = %s",
+                changeListeners.size(), eventType);
 
         NotificationEventTypeEvent event = new NotificationEventTypeEvent(this, eventType, sourceEventType);
-
         for (NotificationChangeListener listener : changeListeners) {
             if (eventType.equals(EVENT_TYPE_ADDED)) {
                 listener.eventTypeAdded(event);
@@ -443,9 +440,9 @@ class NotificationServiceImpl implements NotificationService
      *
      * @param eventType the name of the event (as defined by the plugin that's registered it) that we are
      * checking.
-     * @return <code>true</code> if actions for the specified <tt>eventType</tt> are activated,
-     * <code>false</code> - otherwise. If the given <tt>eventType</tt> is not contained in the
-     * list of registered event types - returns <code>false</code>.
+     * @return {@code true} if actions for the specified <tt>eventType</tt> are activated,
+     * {@code false} - otherwise. If the given <tt>eventType</tt> is not contained in the
+     * list of registered event types - returns {@code false}.
      */
     public boolean isActive(String eventType)
     {
@@ -533,7 +530,7 @@ class NotificationServiceImpl implements NotificationService
                         String descriptor = configService.getString(actionPropName + ".descriptor");
                         int patternLen = configService.getInt(actionPropName + ".patternLength", -1);
                         if (patternLen == -1) {
-                            logger.error("Invalid pattern length: " + patternLen);
+                            Timber.e("Invalid pattern length: %s", patternLen);
                             continue;
                         }
 
@@ -541,7 +538,7 @@ class NotificationServiceImpl implements NotificationService
                         for (int pIdx = 0; pIdx < patternLen; pIdx++) {
                             pattern[pIdx] = configService.getLong(actionPropName + ".patternItem" + pIdx, -1);
                             if (pattern[pIdx] == -1) {
-                                logger.error("Invalid pattern interval: " + pattern);
+                                Timber.e("Invalid pattern interval: %s", (Object) pattern);
                                 continue;
                             }
                         }
@@ -626,9 +623,8 @@ class NotificationServiceImpl implements NotificationService
     public void registerDefaultNotificationForEvent(String eventType, String actionType,
             String actionDescriptor, String defaultMessage)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Registering default event " + eventType + "/" + actionType + "/"
-                    + actionDescriptor + "/" + defaultMessage);
+        Timber.d("Registering default event Type: %s; Action: %s; Descriptor: %s; Message: %s",
+                eventType, actionType, actionDescriptor, defaultMessage);
 
         if (isDefault(eventType, actionType)) {
             NotificationAction action = getEventNotificationAction(eventType, actionType);
@@ -744,9 +740,8 @@ class NotificationServiceImpl implements NotificationService
     public void registerNotificationForEvent(String eventType, String actionType,
             String actionDescriptor, String defaultMessage)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Registering event " + eventType + "/" + actionType + "/"
-                    + actionDescriptor + "/" + defaultMessage);
+        Timber.d("Registering event Type: %s; Action: %s; Descriptor: %s; Message: %s",
+                eventType, actionType, actionDescriptor, defaultMessage);
 
         switch (actionType) {
             case ACTION_SOUND:
@@ -874,7 +869,7 @@ class NotificationServiceImpl implements NotificationService
 
         // If we didn't find the given event type in the configuration we save it here.
         if (eventTypeNodeName == null) {
-            eventTypeNodeName = NOTIFICATIONS_PREFIX + ".eventType" + Long.toString(System.currentTimeMillis());
+            eventTypeNodeName = NOTIFICATIONS_PREFIX + ".eventType" + System.currentTimeMillis();
             configService.setProperty(eventTypeNodeName, eventType);
         }
 
@@ -898,7 +893,7 @@ class NotificationServiceImpl implements NotificationService
 
         // If we didn't find the given actionType in the configuration we save it here.
         if (actionTypeNodeName == null) {
-            actionTypeNodeName = actionPrefix + ".actionType" + Long.toString(System.currentTimeMillis());
+            actionTypeNodeName = actionPrefix + ".actionType" + System.currentTimeMillis();
 
             configProperties.put(actionTypeNodeName, action.getActionType());
         }

@@ -19,13 +19,12 @@ import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 
 import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.service.neomedia.ByteArrayBufferImpl;
-import org.atalk.util.DiagnosticContext;
-import org.atalk.util.Logger;
-import org.atalk.util.RTCPUtils;
-import org.atalk.util.RTPUtils;
+import org.atalk.util.*;
 
 import java.util.Map;
 import java.util.TreeMap;
+
+import timber.log.Timber;
 
 /**
  * A class which represents an RTCP packet carrying transport-wide congestion
@@ -62,6 +61,7 @@ import java.util.TreeMap;
  *
  * @author Boris Grozev
  * @author George Politis
+ * @author Eng Chong Meng
  */
 public class RTCPTCCPacket extends RTCPFBPacket
 {
@@ -155,7 +155,7 @@ public class RTCPTCCPacket extends RTCPFBPacket
     {
         int fciLen = -1;
         if (fciBuffer == null || (fciLen = fciBuffer.getLength()) < MIN_FCI_LENGTH) {
-            logger.warn(PARSE_ERROR + "buffer is null or length too small: " + fciLen);
+            Timber.w("%s buffer is null or length too small: %s", PARSE_ERROR, fciLen);
             return null;
         }
 
@@ -176,7 +176,7 @@ public class RTCPTCCPacket extends RTCPFBPacket
         int packetsRemaining = packetStatusCount;
         while (packetsRemaining > 0) {
             if (currentPscOff + CHUNK_SIZE_BYTES > fciOff + fciLen) {
-                logger.warn(PARSE_ERROR + "reached the end while reading chunks");
+                Timber.w("% sreached the end while reading chunks", PARSE_ERROR);
                 return null;
             }
 
@@ -225,7 +225,7 @@ public class RTCPTCCPacket extends RTCPFBPacket
                         case SYMBOL_SMALL_DELTA:
                             // The delta is an 8-bit unsigned integer.
                             if (currentDeltaOff >= fciOff + fciLen) {
-                                logger.warn(PARSE_ERROR + "reached the end while reading delta.");
+                                Timber.w("%s reached the end while reading delta.", PARSE_ERROR);
                                 return null;
                             }
                             delta = fciBuf[currentDeltaOff++] & 0xff;
@@ -234,7 +234,7 @@ public class RTCPTCCPacket extends RTCPFBPacket
                             // The delta is a 16-bit signed integer.
                             // we're about to read 2 bytes
                             if (currentDeltaOff + 1 >= fciOff + fciLen) {
-                                logger.warn(PARSE_ERROR + "reached the end while reading long delta.");
+                                Timber.w("%s reached the end while reading long delta.", PARSE_ERROR);
                                 return null;
                             }
                             delta = RTPUtils.readInt16AsInt(fciBuf, currentDeltaOff);
@@ -244,7 +244,7 @@ public class RTCPTCCPacket extends RTCPFBPacket
                             delta = -1;
                             break;
                         default:
-                            logger.warn(PARSE_ERROR + " invalid symbol: " + symbol);
+                            Timber.w("%s invalid symbol: %s", PARSE_ERROR, symbol);
                             return null;
                     }
 
@@ -274,8 +274,7 @@ public class RTCPTCCPacket extends RTCPFBPacket
         }
 
         if (packetsRemaining > 0) {
-            logger.warn("Reached the end of the buffer before having read all expected"
-                    + " packets. Ill-formatted RTCP packet?");
+            Timber.w("Reached the end of the buffer before having read all expected packets. Ill-formatted RTCP packet?");
         }
         return packets;
     }
@@ -399,12 +398,6 @@ public class RTCPTCCPacket extends RTCPFBPacket
         throw new IllegalStateException(
                 "The one-bit chunk type is neither 0 nor 1. A superposition is not a valid chunk type.");
     }
-
-    /**
-     * The {@link Logger} used by the {@link RTCPTCCPacket} class and its
-     * instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(RTCPTCCPacket.class);
 
     /**
      * The value of the "fmt" field for a transport-cc RTCP feedback packet.
@@ -590,14 +583,12 @@ public class RTCPTCCPacket extends RTCPFBPacket
                     // The small delta is an 8-bit unsigned with a resolution of
                     // 250µs. Our deltas are all in milliseconds (hence << 2).
                     deltas[deltaOff++] = (byte) ((tsDelta << 2) & 0xff);
-                    if (logger.isTraceEnabled()) {
-                        logger.trace(diagnosticContext
-                                .makeTimeSeriesPoint("small_delta")
-                                .addField("seq", seq)
-                                .addField("arrival_time_ms", ts)
-                                .addField("ref_time_ms", nextReferenceTime)
-                                .addField("delta", tsDelta));
-                    }
+                    Timber.d("%s", diagnosticContext
+                            .makeTimeSeriesPoint("small_delta")
+                            .addField("seq", seq)
+                            .addField("arrival_time_ms", ts)
+                            .addField("ref_time_ms", nextReferenceTime)
+                            .addField("delta", tsDelta));
                 }
                 else if (tsDelta < 8191 && tsDelta > -8192) {
                     symbol = SYMBOL_LARGE_DELTA;
@@ -607,14 +598,12 @@ public class RTCPTCCPacket extends RTCPFBPacket
                     short d = (short) (tsDelta << 2);
                     deltas[deltaOff++] = (byte) ((d >> 8) & 0xff);
                     deltas[deltaOff++] = (byte) ((d) & 0xff);
-                    if (logger.isTraceEnabled()) {
-                        logger.trace(diagnosticContext
-                                .makeTimeSeriesPoint("large_delta")
-                                .addField("seq", seq)
-                                .addField("arrival_time_ms", ts)
-                                .addField("ref_time_ms", nextReferenceTime)
-                                .addField("delta", tsDelta));
-                    }
+                    Timber.d("%s", diagnosticContext
+                            .makeTimeSeriesPoint("large_delta")
+                            .addField("seq", seq)
+                            .addField("arrival_time_ms", ts)
+                            .addField("ref_time_ms", nextReferenceTime)
+                            .addField("delta", tsDelta));
                 }
                 else {
                     // The RTCP packet format does not support deltas bigger

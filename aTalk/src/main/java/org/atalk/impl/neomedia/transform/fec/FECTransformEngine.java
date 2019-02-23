@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.transform.fec;
@@ -11,11 +11,10 @@ import org.atalk.impl.neomedia.transform.PacketTransformer;
 import org.atalk.impl.neomedia.transform.TransformEngine;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.Logger;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Implements a {@link PacketTransformer} and
@@ -23,6 +22,7 @@ import java.util.Map;
  *
  * @author Boris Grozev
  * @author bbaldino
+ * @author Eng Chong Meng
  */
 public class FECTransformEngine implements TransformEngine, PacketTransformer
 {
@@ -31,12 +31,6 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
         ULPFEC,
         FLEXFEC_03
     }
-
-    /**
-     * The <tt>Logger</tt> used by the <tt>FECTransformEngine</tt> class and its instances to print
-     * debug information.
-     */
-    private static final Logger logger = Logger.getLogger(FECTransformEngine.class);
 
     /**
      * Initial size for newly allocated byte arrays.
@@ -84,10 +78,8 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
     /**
      * Initializes a new <tt>FECTransformEngine</tt> instance.
      *
-     * @param incomingPT
-     *         the RTP payload type number for incoming ulpfec packet.
-     * @param outgoingPT
-     *         the RTP payload type number for outgoing ulpfec packet.
+     * @param incomingPT the RTP payload type number for incoming ulpfec packet.
+     * @param outgoingPT the RTP payload type number for outgoing ulpfec packet.
      */
     public FECTransformEngine(FecType fecType, byte incomingPT, byte outgoingPT, MediaStream mediaStream)
     {
@@ -146,7 +138,7 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
                     fecReceiver = new FlexFec03Receiver(primarySsrc, incomingPT);
                 }
                 else {
-                    logger.error("Unknown fec type set: " + fecType);
+                    Timber.e("Unknown fec type set: %s", fecType);
                     return pkts;
                 }
                 fecReceivers.put(primarySsrc, fecReceiver);
@@ -229,8 +221,7 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
     /**
      * Sets the payload type for incoming ulpfec packets.
      *
-     * @param incomingPT
-     *         the payload type to set
+     * @param incomingPT the payload type to set
      */
     public void setIncomingPT(byte incomingPT)
     {
@@ -239,15 +230,13 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
             for (AbstractFECReceiver f : fecReceivers.values())
                 f.setPayloadType(incomingPT);
         }
-        if (logger.isDebugEnabled())
-            logger.debug("Setting payload type for incoming ulpfec: " + incomingPT);
+        Timber.d("Setting payload type for incoming ulpfec: %s", incomingPT);
     }
 
     /**
      * Sets the payload type for outgoing ulpfec packets.
      *
-     * @param outgoingPT
-     *         the payload type to set
+     * @param outgoingPT the payload type to set
      */
     public void setOutgoingPT(byte outgoingPT)
     {
@@ -256,16 +245,14 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
             for (FECSender f : fecSenders.values())
                 f.setUlpfecPT(outgoingPT);
         }
-        if (logger.isDebugEnabled())
-            logger.debug("Setting payload type for outgoing ulpfec: " + outgoingPT);
+        Timber.d("Setting payload type for outgoing ulpfec: %s", outgoingPT);
     }
 
     /**
      * Sets the rate at which ulpfec packets will be generated and added to the stream by this
      * <tt>PacketTransformer</tt>.
      *
-     * @param fecRate
-     *         the rate to set, should be in [0, 16]
+     * @param fecRate the rate to set, should be in [0, 16]
      */
     public void setFecRate(int fecRate)
     {
@@ -292,8 +279,7 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
      * Returns the SSRC in the first non-null element of <tt>pkts</tt> or
      * <tt>null</tt> if all elements of <tt>pkts</tt> are <tt>null</tt>
      *
-     * @param pkts
-     *         array of to search for SSRC
+     * @param pkts array of to search for SSRC
      * @return the SSRC in the first non-null element of <tt>pkts</tt> or
      * <tt>null</tt> if all elements of <tt>pkts</tt> are <tt>null</tt>
      */

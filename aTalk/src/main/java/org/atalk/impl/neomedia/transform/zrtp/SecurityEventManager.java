@@ -11,13 +11,13 @@ import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.resources.ResourceManagementService;
-import org.atalk.util.Logger;
 
 import java.util.EnumSet;
 import java.util.Iterator;
 
 import gnu.java.zrtp.ZrtpCodes;
 import gnu.java.zrtp.ZrtpUserCallback;
+import timber.log.Timber;
 
 /**
  * The user callback class for ZRTP4J.
@@ -32,16 +32,10 @@ import gnu.java.zrtp.ZrtpUserCallback;
  * @author Werner Dittmann
  * @author Yana Stamcheva
  * @author Eng Chong Meng
- *
  * @see // net.java.sip.communicator.impl.gui.main.call.ZrtpSecurityPanel
  */
 public class SecurityEventManager extends ZrtpUserCallback
 {
-    /**
-     * Our class logger.
-     */
-    private static final Logger logger = Logger.getLogger(SecurityEventManager.class);
-
     /**
      * A warning <tt>String</tt> that we display to the user.
      */
@@ -132,9 +126,7 @@ public class SecurityEventManager extends ZrtpUserCallback
     @Override
     public void secureOn(String cipher)
     {
-        if (logger.isDebugEnabled()) {
-            logger.debug(sessionTypeToString(sessionType) + ": cipher enabled: " + cipher);
-        }
+        Timber.d("%s: cipher enabled: %s", sessionTypeToString(sessionType), cipher);
         this.cipher = cipher;
     }
 
@@ -148,8 +140,7 @@ public class SecurityEventManager extends ZrtpUserCallback
     @Override
     public void showSAS(String sas, boolean isVerified)
     {
-        if (logger.isDebugEnabled())
-            logger.debug(sessionTypeToString(sessionType) + ": SAS is: " + sas);
+        Timber.d("%s: SAS is: %s", sessionTypeToString(sessionType), sas);
         this.sas = sas;
         this.isSasVerified = isVerified;
     }
@@ -257,11 +248,8 @@ public class SecurityEventManager extends ZrtpUserCallback
 
         if (sendEvent)
             securityListener.securityMessageReceived(message, i18nMessage, severity);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug(sessionTypeToString(sessionType) + ": ZRTP message: severity: " + sev
-                    + ", sub code: " + msgCode + ", multi: " + multiStreams);
-        }
+        Timber.d("%s: ZRTP message: severity: %s, sub code: %s, multi: %s",
+                sessionTypeToString(sessionType), sev, msgCode, multiStreams);
     }
 
     /**
@@ -276,9 +264,7 @@ public class SecurityEventManager extends ZrtpUserCallback
         Iterator<?> ii = subCode.iterator();
         Object msgCode = ii.next();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(sessionTypeToString(sessionType) + ": ZRTP key negotiation failed, sub code: " + msgCode);
-        }
+        Timber.d("%s: ZRTP key negotiation failed, sub code: %s", sessionTypeToString(sessionType), msgCode);
     }
 
     /**
@@ -287,8 +273,7 @@ public class SecurityEventManager extends ZrtpUserCallback
     @Override
     public void secureOff()
     {
-        if (logger.isDebugEnabled())
-            logger.debug(sessionTypeToString(sessionType) + ": Security off");
+        Timber.d("%s: Security off", sessionTypeToString(sessionType));
         securityListener.securityTurnedOff(sessionType);
     }
 
@@ -298,11 +283,8 @@ public class SecurityEventManager extends ZrtpUserCallback
     @Override
     public void zrtpNotSuppOther()
     {
-        if (logger.isDebugEnabled()) {
-            logger.debug(sessionTypeToString(sessionType)
-                    + ": Other party does not support ZRTP key negotiation protocol, no secure calls possible.");
-        }
-
+        Timber.d("%s: Other party does not support ZRTP key negotiation protocol, no secure calls possible.",
+                sessionTypeToString(sessionType));
         securityListener.securityTimeout(sessionType);
     }
 
@@ -312,9 +294,7 @@ public class SecurityEventManager extends ZrtpUserCallback
     @Override
     public void confirmGoClear()
     {
-        if (logger.isDebugEnabled()) {
-            logger.debug(sessionTypeToString(sessionType) + ": GoClear confirmation requested.");
-        }
+            Timber.d("%s: GoClear confirmation requested.", sessionTypeToString(sessionType));
     }
 
     /**
@@ -346,7 +326,6 @@ public class SecurityEventManager extends ZrtpUserCallback
     private static String getI18NString(String key, String param)
     {
         ResourceManagementService resources = LibJitsi.getResourceManagementService();
-
         if (resources == null)
             return null;
         else {
@@ -411,7 +390,7 @@ public class SecurityEventManager extends ZrtpUserCallback
         try {
             this.securityListener.securityNegotiationStarted(sessionType, zrtpControl);
         } catch (Throwable t) {
-            logger.error("Error processing security started.");
+            Timber.e("Error processing security started.");
         }
     }
 }

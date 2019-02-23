@@ -9,8 +9,9 @@ import net.java.sip.communicator.service.protocol.media.AbstractQualityControlWr
 
 import org.atalk.service.neomedia.QualityControl;
 import org.atalk.service.neomedia.QualityPreset;
-import org.atalk.util.Logger;
 import org.jivesoftware.smack.SmackException;
+
+import timber.log.Timber;
 
 /**
  * A wrapper of media quality control.
@@ -21,8 +22,6 @@ import org.jivesoftware.smack.SmackException;
  */
 public class QualityControlWrapper extends AbstractQualityControlWrapper<CallPeerJabberImpl>
 {
-    private final static Logger logger = Logger.getLogger(QualityControlWrapper.class);
-
     /**
      * Creates quality control for peer.
      *
@@ -51,7 +50,7 @@ public class QualityControlWrapper extends AbstractQualityControlWrapper<CallPee
             try {
                 peer.sendModifyVideoResolutionContent();
             } catch (SmackException.NotConnectedException | InterruptedException e) {
-                logger.error("Could not send modify video resolution of peer", e);
+                Timber.e(e, "Could not send modify video resolution of peer");
             }
         }
     }

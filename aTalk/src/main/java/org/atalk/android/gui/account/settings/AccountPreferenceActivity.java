@@ -12,7 +12,6 @@ import android.view.KeyEvent;
 
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolNames;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.aTalkApp;
@@ -27,11 +26,6 @@ import org.atalk.service.osgi.OSGiActivity;
  */
 public class AccountPreferenceActivity extends OSGiActivity
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(AccountPreferenceActivity.class);
-
     /**
      * Extra key used to pass the unique user ID using {@link android.content.Intent}
      */

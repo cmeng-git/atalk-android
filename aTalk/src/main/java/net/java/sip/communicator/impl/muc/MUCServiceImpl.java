@@ -15,19 +15,22 @@ import net.java.sip.communicator.service.gui.AuthenticationWindowService.Authent
 import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
+import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
-import org.atalk.util.StringUtils;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jivesoftware.smack.SmackException;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_AUTHENTICATION_FAILED_PROP;
 import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_CAPTCHA_VERIFICATION_PROP;
@@ -45,11 +48,6 @@ import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_UNKNOWN
  */
 public class MUCServiceImpl extends MUCService
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>MUCServiceImpl</tt> class and its instances for logging output.
-     */
-    private static Logger logger = Logger.getLogger(MUCServiceImpl.class);
-
     /**
      * The list of persistent chat rooms.
      */
@@ -237,8 +235,7 @@ public class MUCServiceImpl extends MUCService
         try {
             chatRoom = groupChatOpSet.findRoom(chatRoomName);
         } catch (Exception e) {
-            if (logger.isTraceEnabled())
-                logger.trace("Exception occurred while searching for room:" + chatRoomName, e);
+            Timber.log(TimberLog.FINER, e, "Exception occurred while searching for room:%s", chatRoomName);
         }
 
         if (chatRoom != null) {
@@ -333,7 +330,7 @@ public class MUCServiceImpl extends MUCService
             }
         } catch (OperationFailedException | OperationNotSupportedException | XmppStringprepException
                 | SmackException.NotConnectedException | InterruptedException ex) {
-            logger.error("Failed to create chat room.", ex);
+            Timber.e(ex, "Failed to create chat room.");
             MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_ERROR),
                     aTalkApp.getResString(R.string.service_gui_CREATE_CHAT_ROOM_ERROR, protocolProvider.getAccountID()), ex);
         }
@@ -393,9 +390,8 @@ public class MUCServiceImpl extends MUCService
                 chatRooms.add(chatRoom.toString());
             }
         } catch (OperationFailedException | OperationNotSupportedException e) {
-            if (logger.isTraceEnabled())
-                logger.trace("Failed to obtain existing chat rooms for server: "
-                        + protocolProvider.getAccountID().getService(), e);
+            Timber.log(TimberLog.FINER, e, "Failed to obtain existing chat rooms for server: %s",
+                    protocolProvider.getAccountID().getService());
         }
         return chatRooms;
     }
@@ -520,8 +516,7 @@ public class MUCServiceImpl extends MUCService
                 done(JOIN_SUCCESS_PROP, "");
 
             } catch (OperationFailedException e) {
-                if (logger.isTraceEnabled())
-                    logger.trace("Failed to join chat room: " + chatRoom.getName(), e);
+                Timber.log(TimberLog.FINER, e, "Failed to join chat room: %s", chatRoom.getName());
 
                 String message = e.getMessage();
                 switch (e.getErrorCode()) {
@@ -558,7 +553,7 @@ public class MUCServiceImpl extends MUCService
                 aTalkApp.getGlobalContext().startActivity(chatIntent);
             }
             else {
-                logger.warn("Failed to start chat with " + descriptor);
+                Timber.w("Failed to start chat with %s", descriptor);
             }
         }
 
@@ -620,7 +615,7 @@ public class MUCServiceImpl extends MUCService
                         try {
                             chatRoomWrapper.getChatRoom().setSubject(subject);
                         } catch (OperationFailedException ex) {
-                            logger.warn("Failed to set subject.");
+                            Timber.w("Failed to set subject.");
                         }
                     }
                     break;

@@ -19,18 +19,16 @@ import org.atalk.util.Logger;
 
 import java.io.IOException;
 
+import timber.log.Timber;
+
 /**
  * A direct connection that passes packets between two <tt>SctpSocket</tt> instances.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class DirectLink implements NetworkLink
 {
-	/**
-	 * The logger used by this class instances.
-	 */
-	private static final Logger logger = Logger.getLogger(DirectLink.class);
-
 	/**
 	 * Instance "a" of this direct connection.
 	 */
@@ -59,7 +57,7 @@ public class DirectLink implements NetworkLink
                 dest.onConnIn(packet, 0, packet.length);
             }
             catch (IOException e) {
-                logger.error(e, e);
+                Timber.e(e, "%s", e.getMessage());
             }
         }).start();
 	}

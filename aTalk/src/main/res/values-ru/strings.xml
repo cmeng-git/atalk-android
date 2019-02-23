@@ -1459,8 +1459,8 @@
 
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">Оптимизация аккумулятора</string>
-    <string name="battery_optimizations_dialog">У вашего устройства оптимизация использования аккумулятора на aTalk; это может
-        привести к задержке уведомлений или потерям сообщения.\n\nРекомендуется отключить эту оптимизацию для aTalk.</string>
+    <string name="battery_optimizations_dialog">У вашего устройства оптимизация использования аккумулятора на aTalk; это может привести к задержке уведомлений или потерям сообщения.\n\nРекомендуется отключить эту оптимизацию для aTalk.</string>
+    <string name="battery_optimization_on">aTalk будет переведен в режим сна, когда устройство перейдет в режим ожидания. Перезапустите aTalk вручную, чтобы получать новые сообщения.</string>
     <string name="device_does_not_support_battery_op">Ваше устройство не поддерживает отказ от оптимизации батареи</string>
     <string name="disable">Отключить</string>
     <string name="next">Далее</string>

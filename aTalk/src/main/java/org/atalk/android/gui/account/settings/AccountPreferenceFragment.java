@@ -23,8 +23,9 @@ import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
-import org.atalk.util.Logger;
 import org.osgi.framework.*;
+
+import timber.log.Timber;
 
 /**
  * The fragment shares common parts for all protocols settings. It handles security and encoding preferences.
@@ -63,11 +64,6 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * The key identifying edit security details request
      */
     protected static final int EDIT_SECURITY = 2;
-
-    /**
-     * The logger
-     */
-    Logger logger = Logger.getLogger(AccountPreferenceFragment.class);
 
     /**
      * Edited {@link AccountID}
@@ -189,7 +185,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
 
         ProtocolProviderService pps = AccountUtils.getRegisteredProviderForAccount(account);
         if (pps == null) {
-            logger.warn("No protocol provider registered for " + account);
+            Timber.w("No protocol provider registered for %s", account);
             mActivity.finish();
             return;
         }
@@ -352,7 +348,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
             }
         } catch (InvalidSyntaxException ex) {
             // this shouldn't happen since we're providing no parameter string but let's log just in case.
-            logger.error("Error while retrieving service refs", ex);
+            Timber.e(ex, "Error while retrieving service refs");
         }
         throw new RuntimeException("No wizard found for protocol: " + protocolName);
     }
@@ -501,7 +497,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
 
             mActivity.runOnUiThread(() -> dismissOperationInProgressDialog());
         } catch (Exception e) {
-            logger.error("Error occurred while trying to commit changes", e);
+            Timber.e(e, "Error occurred while trying to commit changes");
         }
     }
 

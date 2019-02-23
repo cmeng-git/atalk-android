@@ -18,13 +18,15 @@ package org.atalk.android.gui.chat.filetransfer;
 
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.osgi.framework.*;
 
 import java.util.Date;
+
+import timber.log.Timber;
 
 /**
  * Android FileTransferActivator activator which registers <tt>ScFileTransferListener</tt>
@@ -38,11 +40,6 @@ import java.util.Date;
  */
 public class FileTransferActivator implements BundleActivator, ServiceListener, ScFileTransferListener
 {
-    /**
-     * The logger for this class.
-     */
-    private static final Logger logger = Logger.getLogger(FileTransferActivator.class);
-
     /**
      * The BundleContext that we got from the OSGI bus.
      */
@@ -142,8 +139,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
             opSetFileTransfer.addFileTransferListener(this);
         }
         else {
-            if (logger.isTraceEnabled())
-                logger.trace("Service did not have a file transfer op. set: " + provider.toString());
+            Timber.log(TimberLog.FINER, "Service did not have a file transfer op. set: %s", provider.toString());
         }
     }
 

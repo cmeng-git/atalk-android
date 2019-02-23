@@ -5,13 +5,13 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.ice4j.TransportAddress;
 import org.ice4j.socket.StunDatagramPacketFilter;
 
 import java.io.IOException;
 import java.net.*;
+
+import timber.log.Timber;
 
 /**
  * Represents an application-purposed (as opposed to an ICE-specific) <tt>DatagramSocket</tt> for a
@@ -21,12 +21,6 @@ import java.net.*;
  */
 public class JingleNodesCandidateDatagramSocket extends DatagramSocket
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>JingleNodesCandidateDatagramSocket</tt> class and its
-     * instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(JingleNodesCandidateDatagramSocket.class);
-
     /**
      * Logs information about RTP losses if there is more then 5% of RTP packet lost (at most every
      * 5 seconds).
@@ -44,7 +38,7 @@ public class JingleNodesCandidateDatagramSocket extends DatagramSocket
         if (percentLost > 0.05) {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastLogTime >= 5000) {
-                logger.info("RTP lost > 5%: " + percentLost);
+                Timber.i("RTP lost > 5%: %s", percentLost);
                 return currentTime;
             }
         }

@@ -17,7 +17,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jibri;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractExtensionElement;
 
 /**
  * Jicofo adds one <tt>SipCallState</tt> packet extension for each Jibri SIP
@@ -32,7 +32,7 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketE
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class SipCallState extends AbstractPacketExtension
+public class SipCallState extends AbstractExtensionElement
 {
     /**
      * XML element name of this packet extension.

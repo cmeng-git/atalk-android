@@ -11,7 +11,6 @@ import net.java.sip.communicator.util.ServiceUtils;
 import org.atalk.android.gui.aTalk;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
-import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.BundleContext;
@@ -29,8 +28,6 @@ import java.util.*;
  */
 public class JabberAccountRegistration extends JabberAccountID implements Serializable
 {
-    private static final Logger logger = Logger.getLogger(JabberAccountRegistration.class);
-
     private static final long serialVersionUID = 1L;
 
     /**

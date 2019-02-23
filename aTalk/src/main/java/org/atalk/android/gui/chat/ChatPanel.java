@@ -7,7 +7,6 @@ package org.atalk.android.gui.chat;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -25,12 +24,13 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.conference.*;
 import org.atalk.android.gui.util.ActionBarUtil;
-import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * The <tt>ChatPanel</tt>, <tt>ChatActivity</tt>, <tt>ChatController</tt> and <tt>ChatFragment</tt>
@@ -46,11 +46,6 @@ import java.util.*;
  */
 public class ChatPanel implements Chat, MessageListener
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(ChatPanel.class);
-
     /**
      * Number of history messages to be returned from loadHistory call.
      * Limits the amount of messages being loaded at one time.
@@ -474,7 +469,7 @@ public class ChatPanel implements Chat, MessageListener
                 historyMsgs.add(ChatMessageImpl.getMsgForEvent((FileRecord) o));
             }
             else {
-                logger.error("Unexpected event in history: " + o);
+                Timber.e("Unexpected event in history: %s", o);
             }
         }
 
@@ -793,7 +788,7 @@ public class ChatPanel implements Chat, MessageListener
             l.messageDeliveryFailed(evt);
         }
         // Insert error message
-        logger.error(evt.getReason());
+        Timber.e("%s", evt.getReason());
 
         String errorMsg;
         Message sourceMessage = (Message) evt.getSource();
@@ -913,24 +908,24 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void updateChatContactStatus(final ChatContact<?> chatContact, final String statusMessage)
     {
-//        if (isChatFocused()) {
-//            final Activity activity = aTalkApp.getCurrentActivity();
-//            activity.runOnUiThread(() -> {
-//                // cmeng: check instanceof just in case
-//                if (mChatSession instanceof ConferenceChatSession) {
-//                    ActionBarUtil.setStatus(activity, mChatSession.getChatStatusIcon());
-//
-//                    StringBuilder mSubTitle = new StringBuilder();
-//                    mSubTitle.append(((ConferenceChatSession) mChatSession).getChatSubject());
-//                    mSubTitle.append(": ");
-//                    Iterator<ChatContact<?>> mParticipants = mChatSession.getParticipants();
-//                    while (mParticipants.hasNext()) {
-//                        mSubTitle.append(mParticipants.next().getName()).append(", ");
-//                    }
-//                    ActionBarUtil.setSubtitle(activity, mSubTitle.toString());
-//                }
-//            });
-//        }
+        //        if (isChatFocused()) {
+        //            final Activity activity = aTalkApp.getCurrentActivity();
+        //            activity.runOnUiThread(() -> {
+        //                // cmeng: check instanceof just in case
+        //                if (mChatSession instanceof ConferenceChatSession) {
+        //                    ActionBarUtil.setStatus(activity, mChatSession.getChatStatusIcon());
+        //
+        //                    StringBuilder mSubTitle = new StringBuilder();
+        //                    mSubTitle.append(((ConferenceChatSession) mChatSession).getChatSubject());
+        //                    mSubTitle.append(": ");
+        //                    Iterator<ChatContact<?>> mParticipants = mChatSession.getParticipants();
+        //                    while (mParticipants.hasNext()) {
+        //                        mSubTitle.append(mParticipants.next().getName()).append(", ");
+        //                    }
+        //                    ActionBarUtil.setSubtitle(activity, mSubTitle.toString());
+        //                }
+        //            });
+        //        }
         if (!StringUtils.isNullOrEmpty(statusMessage)) {
             String contactName = ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getContactAddress();
             this.addMessage(contactName, chatContact.getName(), new Date(), Chat.STATUS_MESSAGE, ChatMessage.ENCODE_PLAIN,
@@ -991,7 +986,7 @@ public class ChatPanel implements Chat, MessageListener
                     aTalkApp.getGlobalContext().startActivity(chatIntent);
                 }
                 else {
-                    logger.error("Failed to create chatroom");
+                    Timber.e("Failed to create chatroom");
                 }
             }
             else if (pps.getOperationSet(OperationSetAdHocMultiUserChat.class) != null) {

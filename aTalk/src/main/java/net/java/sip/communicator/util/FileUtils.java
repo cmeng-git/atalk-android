@@ -15,11 +15,6 @@ package net.java.sip.communicator.util;
 public class FileUtils
 {
     /**
-     * Logger.
-     */
-    private static final Logger logger = Logger.getLogger(FileUtils.class);
-
-    /**
      * Returns <code>true</code> if the file given by <tt>fileName</tt> is an
      * image, <tt>false</tt> - otherwise.
      *

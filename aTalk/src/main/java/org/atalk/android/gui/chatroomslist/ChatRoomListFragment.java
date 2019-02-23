@@ -17,7 +17,6 @@
 package org.atalk.android.gui.chatroomslist;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +29,6 @@ import android.widget.ExpandableListView.*;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -45,6 +43,8 @@ import org.jxmpp.util.XmppStringUtils;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Class to display the ChatRoom in Expandable List View
  *
@@ -53,11 +53,6 @@ import java.util.List;
 public class ChatRoomListFragment extends OSGiFragment
         implements OnChildClickListener, OnGroupClickListener
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(ChatRoomListFragment.class);
-
     /**
      * Search options menu items.
      */
@@ -443,7 +438,7 @@ public class ChatRoomListFragment extends OSGiFragment
             return true;
         }
         else {
-            logger.debug("No a chatRoomWrapper @: " + groupPosition + ", " + childPosition);
+            Timber.d("No a chatRoomWrapper @: %d: %d", groupPosition, childPosition);
             return false;
         }
     }

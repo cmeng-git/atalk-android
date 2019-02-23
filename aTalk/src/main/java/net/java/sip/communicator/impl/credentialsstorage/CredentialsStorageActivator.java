@@ -17,19 +17,20 @@ package net.java.sip.communicator.impl.credentialsstorage;
 
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.credentialsstorage.MasterPasswordInputService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import timber.log.Timber;
+
 /**
  * Activator for the {@link CredentialsStorageService}.
  *
  * @author Dmitri Melnikov
+ * @author Eng Chong Meng
  */
-public class CredentialsStorageActivator
-    implements BundleActivator
+public class CredentialsStorageActivator implements BundleActivator
 {
     /**
      * The {@link BundleContext}.
@@ -37,22 +38,13 @@ public class CredentialsStorageActivator
     private static BundleContext bundleContext;
 
     /**
-     * The <tt>Logger</tt> used by the <tt>CredentialsStorageActivator</tt>
-     * class and its instances.
-     */
-    private static final Logger logger
-        = Logger.getLogger(CredentialsStorageActivator.class);
-
-    /**
      * Returns service to show master password input dialog.
+     *
      * @return return master password service to display input dialog.
      */
     public static MasterPasswordInputService getMasterPasswordInputService()
     {
-        return
-            ServiceUtils.getService(
-                    bundleContext,
-                    MasterPasswordInputService.class);
+        return ServiceUtils.getService(bundleContext, MasterPasswordInputService.class);
     }
 
     /**
@@ -63,24 +55,20 @@ public class CredentialsStorageActivator
     /**
      * Starts the credentials storage service
      *
-     * @param bundleContext the <tt>BundleContext</tt> as provided from the OSGi
-     * framework
+     * @param bundleContext the <tt>BundleContext</tt> as provided from the OSGi framework
      * @throws Exception if anything goes wrong
      */
-    public void start(BundleContext bundleContext) throws Exception
+    public void start(BundleContext bundleContext)
+            throws Exception
     {
         CredentialsStorageActivator.bundleContext = bundleContext;
         impl = new CredentialsStorageServiceImpl();
         impl.start(bundleContext);
 
         bundleContext.registerService(
-            CredentialsStorageService.class.getName(), impl, null);
+                CredentialsStorageService.class.getName(), impl, null);
 
-        if (logger.isDebugEnabled())
-        {
-            logger.debug(
-                    "Service Impl: " + getClass().getName() + " [REGISTERED]");
-        }
+        Timber.i("Service Impl: %s [REGISTERED]", getClass().getName());
     }
 
     /**
@@ -89,11 +77,10 @@ public class CredentialsStorageActivator
      * @param bundleContext BundleContext
      * @throws Exception if anything goes wrong
      */
-    public void stop(BundleContext bundleContext) throws Exception
+    public void stop(BundleContext bundleContext)
+            throws Exception
     {
-        logger.logEntry();
         impl.stop();
-        logger.info(
-                "The CredentialsStorageService stop method has been called.");
+        Timber.i("The CredentialsStorageService stop method has been called.");
     }
 }

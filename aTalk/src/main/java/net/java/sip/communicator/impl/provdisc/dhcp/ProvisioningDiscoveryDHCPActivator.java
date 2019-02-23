@@ -15,43 +15,35 @@
  */
 package net.java.sip.communicator.impl.provdisc.dhcp;
 
-import net.java.sip.communicator.service.netaddr.*;
-import net.java.sip.communicator.service.provdisc.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
+import net.java.sip.communicator.service.provdisc.ProvisioningDiscoveryService;
 
 import org.osgi.framework.*;
+
+import timber.log.Timber;
 
 /**
  * Implements <tt>BundleActivator</tt> for the DHCP provisioning bundle.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
-public class ProvisioningDiscoveryDHCPActivator
-    implements BundleActivator
+public class ProvisioningDiscoveryDHCPActivator implements BundleActivator
 {
-   /**
-    * <tt>Logger</tt> used by this <tt>ProvisioningDiscoveryDHCPActivator</tt>
-    * instance for logging output.
-    */
-   private final Logger logger
-       = Logger.getLogger(ProvisioningDiscoveryDHCPActivator.class);
+    /**
+     * DHCP provisioning service.
+     */
+    private static ProvisioningDiscoveryServiceDHCPImpl provisioningService = new ProvisioningDiscoveryServiceDHCPImpl();
 
-   /**
-    * DHCP provisioning service.
-    */
-   private static ProvisioningDiscoveryServiceDHCPImpl provisioningService =
-       new ProvisioningDiscoveryServiceDHCPImpl();
+    /**
+     * A reference to the currently valid {@link NetworkAddressManagerService}.
+     */
+    private static NetworkAddressManagerService networkAddressManagerService = null;
 
-   /**
-    * A reference to the currently valid {@link NetworkAddressManagerService}.
-    */
-   private static NetworkAddressManagerService
-                                       networkAddressManagerService = null;
-
-   /**
-    * Bundle context from OSGi.
-    */
-   private static BundleContext bundleContext = null;
+    /**
+     * Bundle context from OSGi.
+     */
+    private static BundleContext bundleContext = null;
 
     /**
      * Starts the DHCP provisioning service
@@ -61,35 +53,26 @@ public class ProvisioningDiscoveryDHCPActivator
      * @throws Exception if anything goes wrong
      */
     public void start(BundleContext bundleContext)
-        throws Exception
+            throws Exception
     {
-        if (logger.isDebugEnabled())
-            logger.debug("DHCP provisioning discovery Service [STARTED]");
-
-        bundleContext.registerService(
-                ProvisioningDiscoveryService.class.getName(),
-                provisioningService,
-                null);
+        bundleContext.registerService(ProvisioningDiscoveryService.class.getName(), provisioningService, null);
 
         ProvisioningDiscoveryDHCPActivator.bundleContext = bundleContext;
-
-        if (logger.isDebugEnabled())
-            logger.debug("DHCP provisioning discovery Service [REGISTERED]");
+        Timber.i("DHCP provisioning discovery Service [REGISTERED]");
     }
 
     /**
      * Stops the DHCP provisioning service.
      *
-     *  @param bundleContext the <tt>BundleContext</tt> as provided by the OSGi
+     * @param bundleContext the <tt>BundleContext</tt> as provided by the OSGi
      * framework.
      * @throws Exception if anything goes wrong
      */
-    public void stop(BundleContext bundleContext) throws Exception
+    public void stop(BundleContext bundleContext)
+            throws Exception
     {
         ProvisioningDiscoveryDHCPActivator.bundleContext = null;
-
-        if (logger.isInfoEnabled())
-            logger.info("DHCP provisioning discovery Service ...[STOPPED]");
+        Timber.i("DHCP provisioning discovery Service ...[STOPPED]");
     }
 
     /**
@@ -102,13 +85,9 @@ public class ProvisioningDiscoveryDHCPActivator
      */
     public static NetworkAddressManagerService getNetworkAddressManagerService()
     {
-        if(networkAddressManagerService == null)
-        {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    NetworkAddressManagerService.class.getName());
-            networkAddressManagerService = (NetworkAddressManagerService)
-                bundleContext.getService(confReference);
+        if (networkAddressManagerService == null) {
+            ServiceReference confReference = bundleContext.getServiceReference(NetworkAddressManagerService.class.getName());
+            networkAddressManagerService = (NetworkAddressManagerService) bundleContext.getService(confReference);
         }
         return networkAddressManagerService;
     }

@@ -6,22 +6,16 @@
 package net.java.sip.communicator.service.protocol;
 
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.*;
 
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * The ProtocolProviderFactory is what actually creates instances of a ProtocolProviderService
@@ -37,11 +31,6 @@ import java.util.Map;
  */
 public abstract class ProtocolProviderFactory
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>ProtocolProviderFactory</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(ProtocolProviderFactory.class);
-
     /**
      * The name of a property which represents a password.
      */
@@ -596,9 +585,9 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Gets the <code>BundleContext</code> containing (or to contain) the service registration of this factory.
+     * Gets the {@code BundleContext} containing (or to contain) the service registration of this factory.
      *
-     * @return the <code>BundleContext</code> containing (or to contain) the service registration of this factory
+     * @return the {@code BundleContext} containing (or to contain) the service registration of this factory
      */
     public BundleContext getBundleContext()
     {
@@ -698,7 +687,8 @@ public abstract class ProtocolProviderFactory
             try {
                 protocolProvider.unregister();
             } catch (OperationFailedException ex) {
-                logger.error("Failed to unregister protocol provider for account: " + accountID + " caused by: " + ex);
+                Timber.e("Failed to unregister protocol provider for account: %s caused by: %s",
+                        accountID, ex.getMessage());
             }
         }
 
@@ -766,7 +756,7 @@ public abstract class ProtocolProviderFactory
      *
      * @param accountID the AccountID for the account whose password we're storing
      * @param password the password itself
-     * @throws IllegalArgumentException if no account corresponding to <code>accountID</code> has been previously stored
+     * @throws IllegalArgumentException if no account corresponding to {@code accountID} has been previously stored
      */
     public void storePassword(AccountID accountID, String password)
             throws IllegalArgumentException
@@ -817,7 +807,7 @@ public abstract class ProtocolProviderFactory
      *
      * @param accountID the AccountID for the account whose password we're storing
      * @param dnssecMode see DNSSEC_MODE definition
-     * @throws IllegalArgumentException if no account corresponding to <code>accountID</code> has been previously stored
+     * @throws IllegalArgumentException if no account corresponding to {@code accountID} has been previously stored
      */
     public void storeDnssecMode(AccountID accountID, String dnssecMode)
             throws IllegalArgumentException
@@ -962,7 +952,8 @@ public abstract class ProtocolProviderFactory
         try {
             protocolProvider.unregister();
         } catch (OperationFailedException ex) {
-            logger.error("Failed to unregister protocol provider for account: " + accountID + " caused by: " + ex);
+            Timber.e("Failed to unregister protocol provider for account: %s caused by: %s",
+                    accountID, ex.getMessage());
         }
 
         ServiceRegistration<ProtocolProviderService> registration;
@@ -1006,27 +997,27 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Creates a new <code>AccountID</code> instance with a specific user ID to represent a given
+     * Creates a new {@code AccountID} instance with a specific user ID to represent a given
      * set of account properties.
      *
      * The method is a pure factory allowing implementers to specify the runtime type of the created
-     * <code>AccountID</code> and customize the instance. The returned <code>AccountID</code> will
-     * later be associated with a <code>ProtocolProviderService</code> by the caller (e.g. using
+     * {@code AccountID} and customize the instance. The returned {@code AccountID} will
+     * later be associated with a {@code ProtocolProviderService} by the caller (e.g. using
      * {@link #createService(String, AccountID)}).
      *
      * @param userID the user ID of the new instance
      * @param accountProperties the set of properties to be represented by the new instance
-     * @return a new <code>AccountID</code> instance with the specified user ID representing the
+     * @return a new {@code AccountID} instance with the specified user ID representing the
      * given set of account properties
      */
     protected abstract AccountID createAccountID(String userID, Map<String, String> accountProperties);
 
     /**
-     * Gets the name of the protocol this factory registers its <code>ProtocolProviderService</code>s
+     * Gets the name of the protocol this factory registers its {@code ProtocolProviderService}s
      * with and to be placed in the properties of the accounts created by this factory.
      *
      * @return the name of the protocol this factory registers its
-     * <code>ProtocolProviderService</code>s with and to be placed in the properties of the
+     * {@code ProtocolProviderService}s with and to be placed in the properties of the
      * accounts created by this factory
      */
     public String getProtocolName()
@@ -1035,17 +1026,17 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Initializes a new <code>ProtocolProviderService</code> instance with a specific user ID to
-     * represent a specific <code>AccountID</code>.
+     * Initializes a new {@code ProtocolProviderService} instance with a specific user ID to
+     * represent a specific {@code AccountID}.
      *
      * The method is a pure factory allowing implementers to specify the runtime type of the created
-     * <code>ProtocolProviderService</code> and customize the instance. The caller will later
-     * register the returned service with the <code>BundleContext</code> of this factory.
+     * {@code ProtocolProviderService} and customize the instance. The caller will later
+     * register the returned service with the {@code BundleContext} of this factory.
      *
      * @param userID the user ID to initialize the new instance with
-     * @param accountID the <code>AccountID</code> to be represented by the new instance
-     * @return a new <code>ProtocolProviderService</code> instance with the specific user ID
-     * representing the specified <code>AccountID</code>
+     * @param accountID the {@code AccountID} to be represented by the new instance
+     * @return a new {@code ProtocolProviderService} instance with the specific user ID
+     * representing the specified {@code AccountID}
      */
     protected abstract ProtocolProviderService createService(String userID, AccountID accountID);
 
@@ -1110,9 +1101,7 @@ public abstract class ProtocolProviderFactory
      */
     public void stop()
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Preparing to stop all protocol providers of: " + this);
-
+        Timber.log(TimberLog.FINER, "Preparing to stop all protocol providers of: %s", this);
         synchronized (registeredAccounts) {
             for (ServiceRegistration<ProtocolProviderService> reg : registeredAccounts.values()) {
                 stop(reg);
@@ -1123,10 +1112,10 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Shuts down the <code>ProtocolProviderService</code> representing an account registered with
+     * Shuts down the {@code ProtocolProviderService} representing an account registered with
      * this factory.
      *
-     * @param registeredAccount the <code>ServiceRegistration</code> of the <code>ProtocolProviderService</code>
+     * @param registeredAccount the {@code ServiceRegistration} of the {@code ProtocolProviderService}
      * representing an account registered with this factory
      */
     protected void stop(ServiceRegistration<ProtocolProviderService> registeredAccount)
@@ -1163,7 +1152,7 @@ public abstract class ProtocolProviderFactory
         try {
             serRefs = bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), osgiFilter);
         } catch (InvalidSyntaxException ex) {
-            logger.error(ex);
+            Timber.e(ex);
             return null;
         }
         return (ProtocolProviderFactory) bundleContext.getService(serRefs[0]);

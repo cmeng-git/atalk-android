@@ -23,7 +23,6 @@ import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.GuiUtils;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.skin.Skinnable;
 
 import org.atalk.android.R;
@@ -46,8 +45,6 @@ import java.util.*;
  */
 public class HistoryWindow implements HistorySearchProgressListener, MessageListener, ChatRoomMessageListener, Skinnable
 {
-    private static final Logger logger = Logger.getLogger(HistoryWindow.class);
-
     // Note: FileHistoryService.class is now handle within the MessageHistoryService.class
     // new String[]{MessageHistoryService.class.getName(), FileHistoryService.class.getName()};
     private static final String[] HISTORY_FILTER = ChatSession.chatHistoryFilter;

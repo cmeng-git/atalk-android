@@ -11,35 +11,28 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.ConfigUtils;
-import org.atalk.util.Logger;
 import org.ice4j.util.QueueStatistics;
 import org.ice4j.util.RateStatistics;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.LockSupport;
 
 import javax.media.rtp.OutputDataStream;
+
+import timber.log.Timber;
 
 /**
  * @author Bing SU (nova.su@gmail.com)
  * @author Lyubomir Marinov
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public abstract class RTPConnectorOutputStream implements OutputDataStream
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>RTPConnectorOutputStream</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(RTPConnectorOutputStream.class);
-
     /**
      * The maximum number of packets to be sent to be kept in the queue of
      * {@link RTPConnectorOutputStream}. When the maximum is reached, the next attempt to write a
@@ -112,13 +105,8 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         }
 
         PACKET_QUEUE_CAPACITY = packetQueueCapacity >= 0 ? packetQueueCapacity : 256;
-        if (logger.isDebugEnabled()) {
-            logger.debug("Initialized configuration. "
-                    + "Send thread: " + USE_SEND_THREAD
-                    + ". Pool capacity: " + POOL_CAPACITY
-                    + ". Queue capacity: " + PACKET_QUEUE_CAPACITY
-                    + ". Avg bitrate window: " + AVERAGE_BITRATE_WINDOW_MS);
-        }
+        Timber.d("Initialized configuration. Send thread: %s. Pool capacity: %s. Queue capacity: %s. Avg bitrate window: %s",
+                USE_SEND_THREAD, POOL_CAPACITY, PACKET_QUEUE_CAPACITY, AVERAGE_BITRATE_WINDOW_MS);
     }
 
     /**
@@ -344,7 +332,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
                 rawPacketPool.offer(packet);
                 // too many msg hangs the system, show only 1 in 50
                 if ((numberOfPackets % 50) == 0)
-                    logger.warn("Failed to send a packet to target " + target + ":" + ioe);
+                    Timber.w("Failed to send a packet to target %s: %s", target, ioe.getMessage());
                 return false;
             }
         }
@@ -375,8 +363,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     public void setEnabled(boolean enabled)
     {
         if (this.enabled != enabled) {
-            if (logger.isDebugEnabled())
-                logger.debug("setEnabled: " + enabled);
+            Timber.d("setEnabled: %s", enabled);
 
             this.enabled = enabled;
         }
@@ -397,7 +384,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
             queue.setMaxPacketsPerMillis(maxPackets, perMillis);
         }
         else {
-            logger.error("Cannot enable pacing: send thread is not enabled.");
+            Timber.e("Cannot enable pacing: send thread is not enabled.");
         }
         return queue != null;
     }
@@ -489,8 +476,8 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
             // problem, such a situation may be a symptom of a problem. For
             // example, it was discovered during testing that RTCP was
             // seemingly endlessly sent after hanging up a call.
-            if (logger.isDebugEnabled() && targets.isEmpty())
-                logger.debug("Write called without targets!", new Throwable());
+            if (targets.isEmpty())
+                Timber.d(new Throwable(), "Write called without targets!");
 
             if (queue != null) {
                 queue.write(buf, off, len, context);
@@ -608,10 +595,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
          */
         private Queue()
         {
-            if (logger.isTraceEnabled()) {
-                queueStats = new QueueStatistics(getClass().getSimpleName() + "-" + hashCode());
-            }
-
+            queueStats = new QueueStatistics(getClass().getSimpleName() + "-" + hashCode());
             sendThread = new Thread()
             {
                 @Override
@@ -656,13 +640,13 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
                     pool.offer(b);
                     numDroppedPackets++;
                     if (logDroppedPacket(numDroppedPackets)) {
-                        logger.warn("Packets dropped (hashCode=" + hashCode() + "): " + numDroppedPackets);
+                        Timber.w("Packets dropped (hashCode = %s): %s", hashCode(), numDroppedPackets);
                     }
                 }
             }
-//            if (queue.size() % 200 == 0) {
-//                new Exception("queue check #" + buffer.context).printStackTrace();
-//            }
+            //            if (queue.size() % 200 == 0) {
+            //                new Exception("queue check #" + buffer.context).printStackTrace();
+            //            }
             if (queue.offer(buffer) && queueStats != null) {
                 queueStats.add(now);
             }
@@ -682,8 +666,8 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         private void runInSendThread()
         {
             if (!Thread.currentThread().equals(sendThread)) {
-                logger.warn("runInSendThread executing in the wrong thread: " + Thread.currentThread().getName(),
-                        new Throwable());
+                Timber.w(new Throwable(), "runInSendThread executing in the wrong thread: %s",
+                        Thread.currentThread().getName());
                 return;
             }
 
@@ -716,7 +700,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
                         // The sending thread must not die because of a failure
                         // in the conversion to RawPacket[] or any of the
                         // transformations (because of e.g. parsing errors).
-                        logger.error("Failed to handle an outgoing packet: ", e);
+                        Timber.e(e, "Failed to handle an outgoing packet.");
                         continue;
                     } finally {
                         pool.offer(buffer);
@@ -738,7 +722,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
                     try {
                         RTPConnectorOutputStream.this.write(pkts);
                     } catch (Exception e) {
-                        logger.error("Failed to send a packet: ", e);
+                        Timber.e(e, "Failed to send a packet.");
                         continue;
                     }
                     buffersProcessedInCurrentInterval++;

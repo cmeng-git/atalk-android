@@ -15,18 +15,16 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.util.StringUtils;
 
+import timber.log.Timber;
+
 /**
  * An implementation of the <tt>CommandNotificationHandler</tt> interface.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class CommandNotificationHandlerImpl implements CommandNotificationHandler
 {
-	/**
-	 * The <tt>Logger</tt> used by this <tt>CommandNotificationHandlerImpl</tt> instance to log debugging information.
-	 */
-	private Logger logger = Logger.getLogger(CommandNotificationHandlerImpl.class);
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -60,7 +58,7 @@ public class CommandNotificationHandlerImpl implements CommandNotificationHandle
 			Runtime.getRuntime().exec(actionDescriptor);
 		}
 		catch (IOException ioe) {
-			logger.error("Failed to execute the following command: " + action.getDescriptor(), ioe);
+			Timber.e(ioe, "Failed to execute the following command: %s", action.getDescriptor());
 		}
 	}
 }

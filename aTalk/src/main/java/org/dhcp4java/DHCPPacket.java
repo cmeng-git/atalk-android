@@ -18,30 +18,30 @@
  */
 package org.dhcp4java;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.DatagramPacket;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.atalk.android.plugin.timberlog.TimberLog;
 
-import static org.dhcp4java.DHCPConstants.*;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+import timber.log.Timber;
+
+import static org.dhcp4java.DHCPConstants.BOOTREPLY;
+import static org.dhcp4java.DHCPConstants.DHO_DHCP_MESSAGE_TYPE;
+import static org.dhcp4java.DHCPConstants.DHO_END;
+import static org.dhcp4java.DHCPConstants.DHO_PAD;
+import static org.dhcp4java.DHCPConstants.HTYPE_ETHER;
+import static org.dhcp4java.DHCPConstants._BOOTP_ABSOLUTE_MIN_LEN;
+import static org.dhcp4java.DHCPConstants._BOOTP_VEND_SIZE;
+import static org.dhcp4java.DHCPConstants._BOOT_NAMES;
+import static org.dhcp4java.DHCPConstants._DHCP_DEFAULT_MAX_LEN;
+import static org.dhcp4java.DHCPConstants._DHCP_MAX_MTU;
+import static org.dhcp4java.DHCPConstants._HTYPE_NAMES;
+import static org.dhcp4java.DHCPConstants._MAGIC_COOKIE;
 
 /**
  * The basic class for manipulating DHCP packets.
- * 
+ *
  * @author Stephan Hadinger
  * @version 1.00
  *
@@ -49,7 +49,7 @@ import static org.dhcp4java.DHCPConstants.*;
  * <p>First one is to build an object from scratch using the constructor and setters.
  * If you need to set repeatedly the same set of parameters and options,
  * you can create a "master" object and clone it many times.
- * 
+ *
  * <pre>
  * DHCPPacket discover = new DHCPPacket();
  * discover.setOp(DHCPPacket.BOOTREQUEST);
@@ -61,7 +61,7 @@ import static org.dhcp4java.DHCPConstants.*;
  * </pre>
  * Second is to decode a DHCP datagram received from the network.
  * In this case, the object is created through a factory.
- * 
+ *
  * <p>Example: simple DHCP sniffer
  * <pre>
  * DatagramSocket socket = new DatagramSocket(67);
@@ -74,77 +74,77 @@ import static org.dhcp4java.DHCPConstants.*;
  * </pre>
  * In this second way, beware that a <tt>BadPacketExpcetion</tt> is thrown
  * if the datagram contains invalid DHCP data.
- * 
- * 
+ *
+ *
  * <p><b>Getters and Setters</b>: methods are provided with high-level data structures
  * wherever it is possible (String, InetAddress...). However there are also low-overhead
  * version (suffix <tt>Raw</tt>) dealing directly with <tt>byte[]</tt> for maximum performance.
  * They are useful in servers for copying parameters in a servers from a request to a response without
  * any type conversion. All parameters are copies, you may modify them as you like without
  * any side-effect on the <tt>DHCPPacket</tt> object.
- * 
+ *
  * <h4>DHCP datagram format description:</h4>
  * <blockquote><table cellspacing=2>
- * 	<tr><th>Field</th><th>Octets</th><th>Description</th></tr>
- * 	<tr><td valign=top><tt>op</tt></td><td valign=top>1</td>
- * 						<td>Message op code / message type.<br>
- * 						use constants
- * 						<tt>BOOTREQUEST</tt>,
- * 						<tt>BOOTREPLY</tt></td></tr>
- * 	<tr><td valign=top><tt>htype</tt></td>
- * 						<td valign=top>1</td><td>Hardware address type, see ARP section in
- * 						"Assigned Numbers" RFC<br>
- * 						use constants
- * 						<tt>HTYPE_ETHER</tt>,
- * 						<tt>HTYPE_IEEE802</tt>,
- * 						<tt>HTYPE_FDDI</tt></td></tr>
- * 	<tr><td valign=top><tt>hlen</tt></td><td>1</td><td>Hardware address length 
- * 						(e.g.  '6' for ethernet).</td></tr>
- * 	<tr><td valign=top><tt>hops</tt></td><td valign=top>1</td><td>Client sets to zero, optionally used 
- * 						by relay agents when booting via a relay agent.</td></tr>
- * 	<tr><td valign=top><tt>xid</tt></td><td valign=top>4</td>
- * 						<td>Transaction ID, a random number chosen by the 
- * 						client, used by the client and server to associate
- * 						messages and responses between a client and a
- * 						server.</td></tr>
- * 	<tr><td valign=top><tt>secs</tt></td><td valign=top>2</td>
- * 						<td>Filled in by client, seconds elapsed since client
- * 						began address acquisition or renewal process.</td></tr>
- * 	<tr><td valign=top><tt>flags</tt></td><td valign=top>2</td>
- * 						<td>Flags (see below).</td></tr>
- * 	<tr><td valign=top><tt>ciaddr</tt></td><td valign=top>4</td>
- * 						<td>Client IP address; only filled in if client is in
- * 						BOUND, RENEW or REBINDING state and can respond
- * 						to ARP requests.</td></tr>
- * 	<tr><td valign=top><tt>yiaddr</tt></td><td valign=top>4</td>
- * 						<td>'your' (client) IP address.</td></tr>
- * 	<tr><td valign=top><tt>siaddr</tt></td><td valign=top>4</td>
- * 						<td>IP address of next server to use in bootstrap;
- * 						returned in DHCPOFFER, DHCPACK by server.</td></tr>
- * 	<tr><td valign=top><tt>giaddr</tt></td><td valign=top>4</td>
- * 						<td>Relay agent IP address, used in booting via a
- * 						relay agent.</td></tr>
- * 	<tr><td valign=top><tt>chaddr</tt></td><td valign=top>16</td>
- * 						<td>Client hardware address.</td></tr>
- * 	<tr><td valign=top><tt>sname</tt></td><td valign=top>64</td>
- * 						<td>Optional server host name, null terminated string.</td></tr>
- * 	<tr><td valign=top><tt>file</tt></td><td valign=top>128</td>
- * 						<td>Boot file name, null terminated string; "generic"
- * 						name or null in DHCPDISCOVER, fully qualified
- * 						directory-path name in DHCPOFFER.</td></tr>
- * 	<tr><td valign=top><tt>isDhcp</tt></td><td valign=top>4</td>
- * 						<td>Controls whether the packet is BOOTP or DHCP.
- * 						DHCP contains the "magic cookie" of 4 bytes.
- * 						0x63 0x82 0x53 0x63.</td></tr>
- * 	<tr><td valign=top><tt>DHO_*code*</tt></td><td valign=top>*</td>
- * 						<td>Optional parameters field.  See the options
- * 						documents for a list of defined options. See below.</td></tr>
- * 	<tr><td valign=top><tt>padding</tt></td><td valign=top>*</td>
- * 						<td>Optional padding at the end of the packet.</td></tr>
+ * <tr><th>Field</th><th>Octets</th><th>Description</th></tr>
+ * <tr><td valign=top><tt>op</tt></td><td valign=top>1</td>
+ * <td>Message op code / message type.<br>
+ * use constants
+ * <tt>BOOTREQUEST</tt>,
+ * <tt>BOOTREPLY</tt></td></tr>
+ * <tr><td valign=top><tt>htype</tt></td>
+ * <td valign=top>1</td><td>Hardware address type, see ARP section in
+ * "Assigned Numbers" RFC<br>
+ * use constants
+ * <tt>HTYPE_ETHER</tt>,
+ * <tt>HTYPE_IEEE802</tt>,
+ * <tt>HTYPE_FDDI</tt></td></tr>
+ * <tr><td valign=top><tt>hlen</tt></td><td>1</td><td>Hardware address length
+ * (e.g.  '6' for ethernet).</td></tr>
+ * <tr><td valign=top><tt>hops</tt></td><td valign=top>1</td><td>Client sets to zero, optionally used
+ * by relay agents when booting via a relay agent.</td></tr>
+ * <tr><td valign=top><tt>xid</tt></td><td valign=top>4</td>
+ * <td>Transaction ID, a random number chosen by the
+ * client, used by the client and server to associate
+ * messages and responses between a client and a
+ * server.</td></tr>
+ * <tr><td valign=top><tt>secs</tt></td><td valign=top>2</td>
+ * <td>Filled in by client, seconds elapsed since client
+ * began address acquisition or renewal process.</td></tr>
+ * <tr><td valign=top><tt>flags</tt></td><td valign=top>2</td>
+ * <td>Flags (see below).</td></tr>
+ * <tr><td valign=top><tt>ciaddr</tt></td><td valign=top>4</td>
+ * <td>Client IP address; only filled in if client is in
+ * BOUND, RENEW or REBINDING state and can respond
+ * to ARP requests.</td></tr>
+ * <tr><td valign=top><tt>yiaddr</tt></td><td valign=top>4</td>
+ * <td>'your' (client) IP address.</td></tr>
+ * <tr><td valign=top><tt>siaddr</tt></td><td valign=top>4</td>
+ * <td>IP address of next server to use in bootstrap;
+ * returned in DHCPOFFER, DHCPACK by server.</td></tr>
+ * <tr><td valign=top><tt>giaddr</tt></td><td valign=top>4</td>
+ * <td>Relay agent IP address, used in booting via a
+ * relay agent.</td></tr>
+ * <tr><td valign=top><tt>chaddr</tt></td><td valign=top>16</td>
+ * <td>Client hardware address.</td></tr>
+ * <tr><td valign=top><tt>sname</tt></td><td valign=top>64</td>
+ * <td>Optional server host name, null terminated string.</td></tr>
+ * <tr><td valign=top><tt>file</tt></td><td valign=top>128</td>
+ * <td>Boot file name, null terminated string; "generic"
+ * name or null in DHCPDISCOVER, fully qualified
+ * directory-path name in DHCPOFFER.</td></tr>
+ * <tr><td valign=top><tt>isDhcp</tt></td><td valign=top>4</td>
+ * <td>Controls whether the packet is BOOTP or DHCP.
+ * DHCP contains the "magic cookie" of 4 bytes.
+ * 0x63 0x82 0x53 0x63.</td></tr>
+ * <tr><td valign=top><tt>DHO_*code*</tt></td><td valign=top>*</td>
+ * <td>Optional parameters field.  See the options
+ * documents for a list of defined options. See below.</td></tr>
+ * <tr><td valign=top><tt>padding</tt></td><td valign=top>*</td>
+ * <td>Optional padding at the end of the packet.</td></tr>
  * </table></blockquote>
- * 
+ *
  * <h4>DHCP Option</h4>
- * 
+ *
  * The following options are codes are supported:
  * <pre>
  * DHO_SUBNET_MASK(1)
@@ -232,13 +232,13 @@ import static org.dhcp4java.DHCPConstants.*;
  * DHO_NAME_SERVICE_SEARCH(117)
  * DHO_SUBNET_SELECTION(118)
  * </pre>
- * 
+ *
  * <p>These options can be set and get through basic low-level <tt>getOptionRaw</tt> and
  * <tt>setOptionRaw</tt> passing <tt>byte[]</tt> structures. Using these functions, data formats
  * are under your responsibility. Arrays are always passed by copies (clones) so you can modify
  * them freely without side-effects. These functions allow maximum performance, especially
  * when copying options from a request datagram to a response datagram.
- * 
+ *
  * <h4>Special case: DHO_DHCP_MESSAGE_TYPE</h4>
  * The DHCP Message Type (option 53) is supported for the following values
  * <pre>
@@ -253,13 +253,13 @@ import static org.dhcp4java.DHCPConstants.*;
  * DHCPFORCERENEW(9)
  * DHCPLEASEQUERY(13)
  * </pre>
- * 
+ *
  * <h4>DHCP option formats</h4>
- * 
+ *
  * A limited set of higher level data-structures are supported. Type checking is enforced
  * according to rfc 2132. Check corresponding methods for a list of option codes allowed for
  * each datatype.
- * 
+ *
  * <blockquote>
  * <br>Inet (4 bytes - IPv4 address)
  * <br>Inets (X*4 bytes - list of IPv4 addresses)
@@ -270,48 +270,46 @@ import static org.dhcp4java.DHCPConstants.*;
  * <br>String (X bytes - ASCII string)
  * <br>
  * </blockquote>
- * 
- * 
+ *
+ *
  * <p><b>Note</b>: this class is not synchronized for maximum performance.
- * However, it is unlikely that the same <tt>DHCPPacket</tt> is used in two different 
+ * However, it is unlikely that the same <tt>DHCPPacket</tt> is used in two different
  * threads in real life DHPC servers or clients. Multi-threading acces
  * to an instance of this class is at your own risk.
- * 
+ *
  * <p><b>Limitations</b>: this class doesn't support spanned options or options longer than 256 bytes.
  * It does not support options stored in <tt>sname</tt> or <tt>file</tt> fields.
- * 
+ *
  * <p>This API is originally a port from my PERL
  * <tt><a href="http://search.cpan.org/~shadinger/">Net::DHCP</a></tt> api.
- * 
+ *
  * <p><b>Future extensions</b>: IPv6 support, extended data structure TODO...
- * 
  */
-public class DHCPPacket implements Cloneable, Serializable {
-	private static final long   serialVersionUID = 1L;
+public class DHCPPacket implements Cloneable, Serializable
+{
+    private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = Logger.getLogger(DHCPPacket.class.getName().toLowerCase());
-    
     // ----------------------------------------------------------------------
     // user defined comment
-    private String  comment;   // Free user-defined comment
+    private String comment;   // Free user-defined comment
 
     // ----------------------------------------------------------------------
     // static structure of the packet
-    private byte    op;        // Op code
-    private byte    htype;     // HW address Type
-    private byte    hlen;      // hardware address length
-    private byte    hops;      // Hw options
-    private int     xid;       // transaction id
-    private short   secs;      // elapsed time from trying to boot
-    private short   flags;     // flags
-    private byte[]  ciaddr;    // client IP
-    private byte[]  yiaddr;    // your client IP
-    private byte[]  siaddr;    // Server IP
-    private byte[]  giaddr;    // relay agent IP
-    private byte[]  chaddr;    // Client HW address
-    private byte[]  sname;     // Optional server host name
-    private byte[]  file;      // Boot file name
-    
+    private byte op;        // Op code
+    private byte htype;     // HW address Type
+    private byte hlen;      // hardware address length
+    private byte hops;      // Hw options
+    private int xid;       // transaction id
+    private short secs;      // elapsed time from trying to boot
+    private short flags;     // flags
+    private byte[] ciaddr;    // client IP
+    private byte[] yiaddr;    // your client IP
+    private byte[] siaddr;    // Server IP
+    private byte[] giaddr;    // relay agent IP
+    private byte[] chaddr;    // Client HW address
+    private byte[] sname;     // Optional server host name
+    private byte[] file;      // Boot file name
+
     // ----------------------------------------------------------------------
     // options part of the packet
 
@@ -320,19 +318,19 @@ public class DHCPPacket implements Cloneable, Serializable {
     // Invariant 2: V.value is never <tt>null</tt>
     // Invariant 3; K is not 0 (PAD) and not -1 (END)
     private Map<Byte, DHCPOption> options;
-    private boolean               isDhcp;    // well-formed DHCP Packet ?
-    private boolean               truncated; // are the option truncated
+    private boolean isDhcp;    // well-formed DHCP Packet ?
+    private boolean truncated; // are the option truncated
     // ----------------------------------------------------------------------
     // extra bytes for padding
-    private byte[]      padding;	// end of packet padding
-    
+    private byte[] padding;    // end of packet padding
+
     // ----------------------------------------------------------------------
     // Address/port address of the machine, which this datagram is being sent to
     // or received from.
     private InetAddress address;
-    private int         port;
-    
-    
+    private int port;
+
+
     /**
      * Constructor for the <tt>DHCPPacket</tt> class.
      *
@@ -340,20 +338,21 @@ public class DHCPPacket implements Cloneable, Serializable {
      * All data is default values and the packet is still lacking key data
      * to be sent on the wire.
      */
-    public DHCPPacket() {
+    public DHCPPacket()
+    {
         this.comment = "";
-        this.op      = BOOTREPLY;
-        this.htype   = HTYPE_ETHER;
-        this.hlen    = 6;
-        this.ciaddr  = new byte[  4];
-        this.yiaddr  = new byte[  4];
-        this.siaddr  = new byte[  4];
-        this.giaddr  = new byte[  4];
-        this.chaddr  = new byte[ 16];
-        this.sname   = new byte[ 64];
-        this.file    = new byte[128];
+        this.op = BOOTREPLY;
+        this.htype = HTYPE_ETHER;
+        this.hlen = 6;
+        this.ciaddr = new byte[4];
+        this.yiaddr = new byte[4];
+        this.siaddr = new byte[4];
+        this.giaddr = new byte[4];
+        this.chaddr = new byte[16];
+        this.sname = new byte[64];
+        this.file = new byte[128];
         this.padding = new byte[0];
-        this.isDhcp  = true;
+        this.isDhcp = true;
         this.options = new LinkedHashMap<Byte, DHCPOption>();
     }
 
@@ -367,22 +366,24 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @throws IllegalArgumentException datagram is <tt>null</tt>
      * @throws IOException
      */
-    public static DHCPPacket getPacket(DatagramPacket datagram) throws DHCPBadPacketException {
-    	if (datagram == null) {
+    public static DHCPPacket getPacket(DatagramPacket datagram)
+            throws DHCPBadPacketException
+    {
+        if (datagram == null) {
             throw new IllegalArgumentException("datagram is null");
         }
         DHCPPacket packet = new DHCPPacket();
         // all parameters are checked in marshall()
         packet.marshall(datagram.getData(), datagram.getOffset(), datagram.getLength(),
-                        datagram.getAddress(), datagram.getPort(),
-                        true);		// strict mode by default
+                datagram.getAddress(), datagram.getPort(),
+                true);        // strict mode by default
         return packet;
     }
 
     /**
      * Factory for creating <tt>DHCPPacket</tt> objects by parsing a
      * <tt>byte[]</tt> e.g. from a datagram.
-     * 
+     *
      * <p>This method allows you to specify non-strict mode which is much more
      * tolerant for packet options. By default, any problem seen during DHCP option
      * parsing causes a DHCPBadPacketException to be thrown.
@@ -394,7 +395,9 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @return the newly create <tt>DHCPPacket</tt> instance
      * @throws DHCPBadPacketException the datagram is malformed.
      */
-    public static DHCPPacket getPacket(byte[] buf, int offset, int length, boolean strict) throws DHCPBadPacketException {
+    public static DHCPPacket getPacket(byte[] buf, int offset, int length, boolean strict)
+            throws DHCPBadPacketException
+    {
         DHCPPacket packet = new DHCPPacket();
         // all parameters are checked in marshall()
         packet.marshall(buf, offset, length, null, 0, strict);
@@ -403,13 +406,14 @@ public class DHCPPacket implements Cloneable, Serializable {
 
     /**
      * Returns a copy of this <tt>DHCPPacket</tt>.
-     * 
+     *
      * <p>The <tt>truncated</tt> flag is reset.
-     * 
+     *
      * @return a copy of the <tt>DHCPPacket</tt> instance.
      */
     @Override
-    public DHCPPacket clone() {
+    public DHCPPacket clone()
+    {
         try {
             DHCPPacket p = (DHCPPacket) super.clone();
 
@@ -419,8 +423,8 @@ public class DHCPPacket implements Cloneable, Serializable {
             p.siaddr = this.siaddr.clone();
             p.giaddr = this.giaddr.clone();
             p.chaddr = this.chaddr.clone();
-            p.sname  = this.sname .clone();
-            p.file   = this.file  .clone();
+            p.sname = this.sname.clone();
+            p.file = this.file.clone();
             //p.options = this.options.clone();
             p.options = new LinkedHashMap<Byte, DHCPOption>(this.options);
             p.padding = this.padding.clone();
@@ -433,13 +437,15 @@ public class DHCPPacket implements Cloneable, Serializable {
             throw new InternalError();
         }
     }
+
     /**
      * Returns true if 2 instances of <tt>DHCPPacket</tt> represent the same DHCP packet.
-     * 
+     *
      * <p>This is a field by field comparison, except <tt>truncated</tt> which is ignored.
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (o == this) {
             return true;
         }
@@ -448,120 +454,124 @@ public class DHCPPacket implements Cloneable, Serializable {
         }
 
         DHCPPacket p = (DHCPPacket) o;
-        boolean    b;
+        boolean b;
 
-        b  = (this.comment.equals(p.comment));
-        b &= (this.op    == p.op);
+        b = (this.comment.equals(p.comment));
+        b &= (this.op == p.op);
         b &= (this.htype == p.htype);
-        b &= (this.hlen  == p.hlen);
-        b &= (this.hops  == p.hops);
-        b &= (this.xid   == p.xid);
-        b &= (this.secs  == p.secs);
+        b &= (this.hlen == p.hlen);
+        b &= (this.hops == p.hops);
+        b &= (this.xid == p.xid);
+        b &= (this.secs == p.secs);
         b &= (this.flags == p.flags);
         b &= (Arrays.equals(this.ciaddr, p.ciaddr));
         b &= (Arrays.equals(this.yiaddr, p.yiaddr));
         b &= (Arrays.equals(this.siaddr, p.siaddr));
         b &= (Arrays.equals(this.giaddr, p.giaddr));
         b &= (Arrays.equals(this.chaddr, p.chaddr));
-        b &= (Arrays.equals(this.sname,  p.sname));
-        b &= (Arrays.equals(this.file,   p.file));
+        b &= (Arrays.equals(this.sname, p.sname));
+        b &= (Arrays.equals(this.file, p.file));
         b &= (this.options.equals(p.options));
         b &= (this.isDhcp == p.isDhcp);
         // we deliberately ignore "truncated" since it is reset when cloning
         b &= (Arrays.equals(this.padding, p.padding));
-        b &= (equalsStatic (this.address, p.address));
+        b &= (equalsStatic(this.address, p.address));
         b &= (this.port == p.port);
 
         return b;
     }
-    
+
     /**
      * Returns a hash code value for the object.
      */
-	@Override
-	public int hashCode() {
-		int h = -1;
-		h ^= this.comment.hashCode();
-		h += this.op;
-		h += this.htype;
-		h += this.hlen;
-		h += this.hops;
-		h += this.xid;
-		h += this.secs;
-		h ^= this.flags;
-		h ^= Arrays.hashCode(this.ciaddr);
-		h ^= Arrays.hashCode(this.yiaddr);
-		h ^= Arrays.hashCode(this.siaddr);
-		h ^= Arrays.hashCode(this.giaddr);
-		h ^= Arrays.hashCode(this.chaddr);
-		h ^= Arrays.hashCode(this.sname);
-		h ^= Arrays.hashCode(this.file);
-		h ^= this.options.hashCode();
-		h += this.isDhcp ? 1 : 0;
-//		h += this.truncated ? 1 : 0;
-		h ^= Arrays.hashCode(this.padding);
-		h ^= (this.address != null) ? this.address.hashCode() : 0;
-		h += this.port;
-		return h;
-	}
+    @Override
+    public int hashCode()
+    {
+        int h = -1;
+        h ^= this.comment.hashCode();
+        h += this.op;
+        h += this.htype;
+        h += this.hlen;
+        h += this.hops;
+        h += this.xid;
+        h += this.secs;
+        h ^= this.flags;
+        h ^= Arrays.hashCode(this.ciaddr);
+        h ^= Arrays.hashCode(this.yiaddr);
+        h ^= Arrays.hashCode(this.siaddr);
+        h ^= Arrays.hashCode(this.giaddr);
+        h ^= Arrays.hashCode(this.chaddr);
+        h ^= Arrays.hashCode(this.sname);
+        h ^= Arrays.hashCode(this.file);
+        h ^= this.options.hashCode();
+        h += this.isDhcp ? 1 : 0;
+        //		h += this.truncated ? 1 : 0;
+        h ^= Arrays.hashCode(this.padding);
+        h ^= (this.address != null) ? this.address.hashCode() : 0;
+        h += this.port;
+        return h;
+    }
 
-	private static boolean equalsStatic(Object a, Object b) {
+    private static boolean equalsStatic(Object a, Object b)
+    {
         return ((a == null) ? (b == null) : a.equals(b));
     }
 
     /**
      * Assert all the invariants of the object. For debug purpose only.
-     *
      */
-    private void assertInvariants() {
-        assert(this.comment != null);
-        assert(this.ciaddr != null);
-        assert(this.ciaddr.length == 4);
-        assert(this.yiaddr != null);
-        assert(this.yiaddr.length == 4);
-        assert(this.siaddr != null);
-        assert(this.siaddr.length == 4);
-        assert(this.giaddr != null);
-        assert(this.giaddr.length == 4);
+    private void assertInvariants()
+    {
+        assert (this.comment != null);
+        assert (this.ciaddr != null);
+        assert (this.ciaddr.length == 4);
+        assert (this.yiaddr != null);
+        assert (this.yiaddr.length == 4);
+        assert (this.siaddr != null);
+        assert (this.siaddr.length == 4);
+        assert (this.giaddr != null);
+        assert (this.giaddr.length == 4);
         // strings
-        assert(this.chaddr != null);
-        assert(this.chaddr.length == 16);
-        assert(this.sname != null);
-        assert(this.sname.length == 64);
-        assert(this.file != null);
-        assert(this.file.length == 128);
-        assert(this.padding != null);    // length is free for padding
+        assert (this.chaddr != null);
+        assert (this.chaddr.length == 16);
+        assert (this.sname != null);
+        assert (this.sname.length == 64);
+        assert (this.file != null);
+        assert (this.file.length == 128);
+        assert (this.padding != null);    // length is free for padding
         // options
-        assert(this.options != null);
+        assert (this.options != null);
         for (Map.Entry<Byte, DHCPOption> mapEntry : this.options.entrySet()) {
-            Byte       key = mapEntry.getKey();
+            Byte key = mapEntry.getKey();
             DHCPOption opt = mapEntry.getValue();
 
-            assert(key != null);
-            assert(key != DHO_PAD);
-            assert(key != DHO_END);
-            assert(opt != null);
-            assert(opt.getCode() == key);
-            assert(opt.getValueFast() != null);
+            assert (key != null);
+            assert (key != DHO_PAD);
+            assert (key != DHO_END);
+            assert (opt != null);
+            assert (opt.getCode() == key);
+            assert (opt.getValueFast() != null);
         }
     }
-    /** 
+
+    /**
      * Convert a specified byte array containing a DHCP message into a
      * DHCPMessage object.
-     * 
+     *
+     * @param buffer byte array to convert to a DHCPMessage object
+     * @param offset starting offset for the buffer
+     * @param length length of the buffer
+     * @param address0 the address from which the packet was sent, or <tt>null</tt>
+     * @param port0 the port from which the packet was sent
+     * @param strict do we read in strict mode?
      * @return a DHCPMessage object with information from byte array.
-     * @param  buffer  byte array to convert to a DHCPMessage object
-     * @param  offset starting offset for the buffer
-     * @param  length length of the buffer
-     * @param  address0 the address from which the packet was sent, or <tt>null</tt>
-     * @param  port0 the port from which the packet was sent
-     * @param  strict do we read in strict mode?
      * @throws IllegalArgumentException if buffer is <tt>null</tt>...
      * @throws IndexOutOfBoundsException offset..offset+length is out of buffer bounds
      * @throws DHCPBadPacketException datagram is malformed
      */
     protected DHCPPacket marshall(byte[] buffer, int offset, int length,
-                                  InetAddress address0, int port0, boolean strict) {
+            InetAddress address0, int port0, boolean strict)
+    {
         // do some basic sanity checks
         // ibuff, offset & length are valid?
         if (buffer == null) {
@@ -576,7 +586,7 @@ public class DHCPPacket implements Cloneable, Serializable {
         if (buffer.length < offset + length) {
             throw new IndexOutOfBoundsException("offset+length exceeds buffer length");
         }
-        
+
         // absolute minimum size for a valid packet
         if (length < _BOOTP_ABSOLUTE_MIN_LEN) {
             throw new DHCPBadPacketException("DHCP Packet too small (" + length +
@@ -587,31 +597,31 @@ public class DHCPPacket implements Cloneable, Serializable {
             throw new DHCPBadPacketException("DHCP Packet too big (" + length +
                     ") max MTU is " + _DHCP_MAX_MTU);
         }
-        
+
         // copy address and port
         this.address = address0; // no need to clone, InetAddress is immutable
-        this.port    = port0;
-        
+        this.port = port0;
+
         try {
             // turn buffer into a readable stream
             ByteArrayInputStream inBStream = new ByteArrayInputStream(buffer, offset, length);
-            DataInputStream      inStream  = new DataInputStream(inBStream);
+            DataInputStream inStream = new DataInputStream(inBStream);
 
             // parse static part of packet
-            this.op    = inStream.readByte ();
-            this.htype = inStream.readByte ();
-            this.hlen  = inStream.readByte ();
-            this.hops  = inStream.readByte ();
-            this.xid   = inStream.readInt  ();
-            this.secs  = inStream.readShort();
+            this.op = inStream.readByte();
+            this.htype = inStream.readByte();
+            this.hlen = inStream.readByte();
+            this.hops = inStream.readByte();
+            this.xid = inStream.readInt();
+            this.secs = inStream.readShort();
             this.flags = inStream.readShort();
-            inStream.readFully(this.ciaddr, 0,   4);
-            inStream.readFully(this.yiaddr, 0,   4);
-            inStream.readFully(this.siaddr, 0,   4);
-            inStream.readFully(this.giaddr, 0,   4);
-            inStream.readFully(this.chaddr, 0,  16);
-            inStream.readFully(this.sname,  0,  64);
-            inStream.readFully(this.file,   0, 128);
+            inStream.readFully(this.ciaddr, 0, 4);
+            inStream.readFully(this.yiaddr, 0, 4);
+            inStream.readFully(this.siaddr, 0, 4);
+            inStream.readFully(this.giaddr, 0, 4);
+            inStream.readFully(this.chaddr, 0, 16);
+            inStream.readFully(this.sname, 0, 64);
+            inStream.readFully(this.file, 0, 128);
 
             // check for DHCP MAGIC_COOKIE
             this.isDhcp = true;
@@ -627,17 +637,25 @@ public class DHCPPacket implements Cloneable, Serializable {
 
                 while (true) {
                     int r = inBStream.read();
-                    if (r < 0) { break; } // EOF
+                    if (r < 0) {
+                        break;
+                    } // EOF
 
                     type = (byte) r;
 
-                    if (type == DHO_PAD) { continue; } // skip Padding
-                    if (type == DHO_END) { break;    } // break if end of options
+                    if (type == DHO_PAD) {
+                        continue;
+                    } // skip Padding
+                    if (type == DHO_END) {
+                        break;
+                    } // break if end of options
 
                     r = inBStream.read();
-                    if (r < 0) { break; } // EOF
+                    if (r < 0) {
+                        break;
+                    } // EOF
 
-                    int    len      = Math.min(r, inBStream.available());
+                    int len = Math.min(r, inBStream.available());
                     byte[] unit_opt = new byte[len];
                     inBStream.read(unit_opt);
 
@@ -645,7 +663,7 @@ public class DHCPPacket implements Cloneable, Serializable {
                 }
                 this.truncated = (type != DHO_END); // truncated options?
                 if (strict && this.truncated) {
-                	throw new DHCPBadPacketException("Packet seams to be truncated");
+                    throw new DHCPBadPacketException("Packet seams to be truncated");
                 }
             }
 
@@ -658,29 +676,30 @@ public class DHCPPacket implements Cloneable, Serializable {
             return this;
         } catch (IOException e) {
             // unlikely with ByteArrayInputStream
-            throw new DHCPBadPacketException("IOException: "+e.toString(), e);
+            throw new DHCPBadPacketException("IOException: " + e.toString(), e);
         }
     }
 
     /**
      * Converts the object to a byte array ready to be sent on the wire.
-     * 
+     *
      * <p>Default max size of resulting packet is 576, which is the maximum
      * size a client can accept without explicit notice (option XXX)
      *
      * @return a byte array with information from DHCPMessage object.
      * @throws DHCPBadPacketException the datagram would be malformed (too small, too big...)
      */
-    public byte[] serialize() {
-    	int minLen = _BOOTP_ABSOLUTE_MIN_LEN;
-    	
+    public byte[] serialize()
+    {
+        int minLen = _BOOTP_ABSOLUTE_MIN_LEN;
+
         if (this.isDhcp) {
-        	// most other DHCP software seems to ensure that the BOOTP 'vend'
-        	// field is padded to at least 64 bytes
-        	minLen += _BOOTP_VEND_SIZE;
+            // most other DHCP software seems to ensure that the BOOTP 'vend'
+            // field is padded to at least 64 bytes
+            minLen += _BOOTP_VEND_SIZE;
         }
-    	
-    	return serialize(minLen, _DHCP_DEFAULT_MAX_LEN);
+
+        return serialize(minLen, _DHCP_DEFAULT_MAX_LEN);
     }
 
     /**
@@ -690,28 +709,29 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @return a byte array with information from DHCPMessage object.
      * @throws DHCPBadPacketException the datagram would be malformed (too small, too big...)
      */
-    public byte[] serialize(int minSize, int maxSize) {
+    public byte[] serialize(int minSize, int maxSize)
+    {
         this.assertInvariants();
         // prepare output buffer, pre-sized to maximum buffer length
         // default buffer is half the maximum size of possible packet
         // (this seams reasonable for most uses, worst case only doubles the buffer size once
         ByteArrayOutputStream outBStream = new ByteArrayOutputStream(_DHCP_MAX_MTU / 2);
-        DataOutputStream      outStream  = new DataOutputStream(outBStream);
+        DataOutputStream outStream = new DataOutputStream(outBStream);
         try {
-            outStream.writeByte (this.op);
-            outStream.writeByte (this.htype);
-            outStream.writeByte (this.hlen);
-            outStream.writeByte (this.hops);
-            outStream.writeInt  (this.xid);
+            outStream.writeByte(this.op);
+            outStream.writeByte(this.htype);
+            outStream.writeByte(this.hlen);
+            outStream.writeByte(this.hops);
+            outStream.writeInt(this.xid);
             outStream.writeShort(this.secs);
             outStream.writeShort(this.flags);
-            outStream.write(this.ciaddr, 0,   4);
-            outStream.write(this.yiaddr, 0,   4);
-            outStream.write(this.siaddr, 0,   4);
-            outStream.write(this.giaddr, 0,   4);
-            outStream.write(this.chaddr, 0,  16);
-            outStream.write(this.sname,  0,  64);
-            outStream.write(this.file,   0, 128);
+            outStream.write(this.ciaddr, 0, 4);
+            outStream.write(this.yiaddr, 0, 4);
+            outStream.write(this.siaddr, 0, 4);
+            outStream.write(this.giaddr, 0, 4);
+            outStream.write(this.chaddr, 0, 16);
+            outStream.write(this.sname, 0, 64);
+            outStream.write(this.file, 0, 128);
 
             if (this.isDhcp) {
                 // DHCP and not BOOTP -> magic cookie required
@@ -726,7 +746,7 @@ public class DHCPPacket implements Cloneable, Serializable {
                     int size = opt.getValueFast().length;
                     assert (size >= 0);
                     if (size > 255) {
-                    	throw new DHCPBadPacketException("Options larger than 255 bytes are not yet supported");
+                        throw new DHCPBadPacketException("Options larger than 255 bytes are not yet supported");
                     }
                     outStream.writeByte(opt.getCode());        // output option code
                     outStream.writeByte(size);    // output option length
@@ -757,8 +777,8 @@ public class DHCPPacket implements Cloneable, Serializable {
             return data;
         } catch (IOException e) {
             // nomrally impossible with ByteArrayOutputStream
-            logger.log(Level.SEVERE, "Unexpected Exception", e);
-            throw new DHCPBadPacketException("IOException raised: "+e.toString());
+            Timber.e(e, "Unexpected Exception");
+            throw new DHCPBadPacketException("IOException raised: " + e.toString());
         }
     }
 
@@ -767,34 +787,36 @@ public class DHCPPacket implements Cloneable, Serializable {
 
     /**
      * Returns a detailed string representation of the DHCP datagram.
-     * 
+     *
      * <p>This multi-line string details: the static, options and padding parts
      * of the object. This is useful for debugging, but not efficient.
-     * 
+     *
      * @return a string representation of the object.
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder buffer = new StringBuilder(); // output buffer
 
         try {
             buffer.append(this.isDhcp ? "DHCP Packet" : "BOOTP Packet")
-                  .append("\ncomment=")
-                  .append(this.comment)
-                  .append("\naddress=")
-                  .append(this.address != null ? this.address.getHostAddress() : "")
-                  .append('(')
-                  .append(this.port)
-                  .append(')')
-                  .append("\nop=");
+                    .append("\ncomment=")
+                    .append(this.comment)
+                    .append("\naddress=")
+                    .append(this.address != null ? this.address.getHostAddress() : "")
+                    .append('(')
+                    .append(this.port)
+                    .append(')')
+                    .append("\nop=");
 
             final Object bootName = _BOOT_NAMES.get(this.op);
             if (bootName != null) {
                 buffer.append(bootName)
-                      .append('(')
-                      .append(this.op)
-                      .append(')');
-            } else {
+                        .append('(')
+                        .append(this.op)
+                        .append(')');
+            }
+            else {
                 buffer.append(this.op);
             }
 
@@ -803,24 +825,25 @@ public class DHCPPacket implements Cloneable, Serializable {
             final Object htypeName = _HTYPE_NAMES.get(this.htype);
             if (htypeName != null) {
                 buffer.append(htypeName)
-                      .append('(')
-                      .append(this.htype)
-                      .append(')');
-            } else {
+                        .append('(')
+                        .append(this.htype)
+                        .append(')');
+            }
+            else {
                 buffer.append(this.htype);
             }
 
             buffer.append("\nhlen=")
-                  .append(this.hlen)
-                  .append("\nhops=")
-                  .append(this.hops)
-                  .append("\nxid=0x");
+                    .append(this.hlen)
+                    .append("\nhops=")
+                    .append(this.hops)
+                    .append("\nxid=0x");
             appendHex(buffer, this.xid);
             buffer.append("\nsecs=")
-                  .append(this.secs)
-                  .append("\nflags=0x")
-                  .append(Integer.toHexString(this.flags))
-                  .append("\nciaddr=");
+                    .append(this.secs)
+                    .append("\nflags=0x")
+                    .append(Integer.toHexString(this.flags))
+                    .append("\nciaddr=");
             appendHostAddress(buffer, InetAddress.getByAddress(this.ciaddr));
             buffer.append("\nyiaddr=");
             appendHostAddress(buffer, InetAddress.getByAddress(this.yiaddr));
@@ -831,9 +854,9 @@ public class DHCPPacket implements Cloneable, Serializable {
             buffer.append("\nchaddr=0x");
             this.appendChaddrAsHex(buffer);
             buffer.append("\nsname=")
-                  .append(this.getSname())
-                  .append("\nfile=")
-                  .append(this.getFile());
+                    .append(this.getSname())
+                    .append("\nfile=")
+                    .append(this.getFile());
 
             if (this.isDhcp) {
                 buffer.append("\nOptions follows:");
@@ -847,8 +870,8 @@ public class DHCPPacket implements Cloneable, Serializable {
 
             // padding
             buffer.append("\npadding[")
-                  .append(this.padding.length)
-                  .append("]=");
+                    .append(this.padding.length)
+                    .append("]=");
             appendHex(buffer, this.padding);
         } catch (Exception e) {
             // what to do ???
@@ -868,9 +891,11 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the _comment field.
      */
-    public String getComment() {
+    public String getComment()
+    {
         return this.comment;
     }
+
     /**
      * Sets the comment associated to this packet.
      *
@@ -879,9 +904,11 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param comment The comment to set.
      */
-    public void setComment(String comment) {
+    public void setComment(String comment)
+    {
         this.comment = comment;
     }
+
     /**
      * Returns the chaddr field (Client hardware address - typically MAC address).
      *
@@ -889,7 +916,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the chaddr field.
      */
-    public byte[] getChaddr() {
+    public byte[] getChaddr()
+    {
         return this.chaddr.clone();
     }
 
@@ -902,37 +930,41 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param buffer this string buffer
      * @return the string buffer.
      */
-    private StringBuilder appendChaddrAsHex(StringBuilder buffer) {
+    private StringBuilder appendChaddrAsHex(StringBuilder buffer)
+    {
         appendHex(buffer, this.chaddr, 0, this.hlen & 0xFF);
         return buffer;
     }
-    
+
     /**
      * Return the hardware address (@MAC) as an <tt>HardwareAddress</tt> object.
-     * 
+     *
      * @return the <tt>HardwareAddress</tt> object
      */
-    public HardwareAddress getHardwareAddress() {
-    	int len = this.hlen & 0xff;
-    	if (len > 16) {
-    		len = 16;
-    	}
-    	byte[] buf = new byte[len];
-    	System.arraycopy(this.chaddr, 0, buf, 0, len);
-    	return new HardwareAddress(this.htype, buf);
+    public HardwareAddress getHardwareAddress()
+    {
+        int len = this.hlen & 0xff;
+        if (len > 16) {
+            len = 16;
+        }
+        byte[] buf = new byte[len];
+        System.arraycopy(this.chaddr, 0, buf, 0, len);
+        return new HardwareAddress(this.htype, buf);
     }
 
     /**
-     * Returns the chaddr field (Client hardware address - typically MAC address) as 
+     * Returns the chaddr field (Client hardware address - typically MAC address) as
      * a hex string.
      *
      * <p>Only first <tt>hlen</tt> bytes are printed, as uppercase hex string.
      *
      * @return the chaddr field as hex string.
      */
-    public String getChaddrAsHex() {
+    public String getChaddrAsHex()
+    {
         return this.appendChaddrAsHex(new StringBuilder(this.hlen & 0xFF)).toString();
     }
+
     /**
      * Sets the chaddr field (Client hardware address - typically MAC address).
      *
@@ -944,36 +976,42 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param chaddr The chaddr to set.
      * @throws IllegalArgumentException chaddr buffer is longer than 16 bytes.
      */
-    public void setChaddr(byte[] chaddr) {
+    public void setChaddr(byte[] chaddr)
+    {
         if (chaddr != null) {
             if (chaddr.length > this.chaddr.length) {
                 throw new IllegalArgumentException("chaddr is too long: " + chaddr.length +
-                                                   ", max is: " + this.chaddr.length);
+                        ", max is: " + this.chaddr.length);
             }
             Arrays.fill(this.chaddr, (byte) 0);
             System.arraycopy(chaddr, 0, this.chaddr, 0, chaddr.length);
-        } else {
+        }
+        else {
             Arrays.fill(this.chaddr, (byte) 0);
         }
     }
+
     /**
      * Sets the chaddr field - from an hex String.
-     * 
+     *
      * @param hex the chaddr in hex format
      */
-    public void setChaddrHex(String hex) {
+    public void setChaddrHex(String hex)
+    {
         this.setChaddr(hex2Bytes(hex));
     }
+
     /**
      * Returns the ciaddr field (Client IP Address).
-     * 
+     *
      * @return the ciaddr field converted to <tt>InetAddress</tt> object.
      */
-    public InetAddress getCiaddr() {
+    public InetAddress getCiaddr()
+    {
         try {
             return InetAddress.getByAddress(this.getCiaddrRaw());
         } catch (UnknownHostException e) {
-            logger.log(Level.SEVERE, "Unexpected UnknownHostException", e);
+            Timber.e(e, "Unexpected UnknownHostException");
             return null;    // normaly impossible
         }
     }
@@ -985,7 +1023,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return Returns the ciaddr as raw byte[4].
      */
-    public byte[] getCiaddrRaw() {
+    public byte[] getCiaddrRaw()
+    {
         return this.ciaddr.clone();
     }
 
@@ -997,21 +1036,26 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param ciaddr The ciaddr to set.
      */
-    public void setCiaddr(InetAddress ciaddr) {
+    public void setCiaddr(InetAddress ciaddr)
+    {
         if (!(ciaddr instanceof Inet4Address)) {
             throw new IllegalArgumentException("Inet4Address required");
         }
         this.setCiaddrRaw(ciaddr.getAddress());
     }
+
     /**
      * Sets the ciaddr field (Client IP Address).
      *
      * @param ciaddr The ciaddr to set.
      * @throws UnknownHostException
      */
-    public void setCiaddr(String ciaddr) throws UnknownHostException {
+    public void setCiaddr(String ciaddr)
+            throws UnknownHostException
+    {
         this.setCiaddr(InetAddress.getByName(ciaddr));
     }
+
     /**
      * Sets the ciaddr field (Client IP Address).
      *
@@ -1024,12 +1068,14 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param ciaddr The ciaddr to set.
      */
-    public void setCiaddrRaw(byte[] ciaddr) {
+    public void setCiaddrRaw(byte[] ciaddr)
+    {
         if (ciaddr.length != 4) {
             throw new IllegalArgumentException("4-byte array required");
         }
         System.arraycopy(ciaddr, 0, this.ciaddr, 0, 4);
     }
+
     /**
      * Returns the file field (Boot File Name).
      *
@@ -1039,7 +1085,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the file field.
      */
-    public byte[] getFileRaw() {
+    public byte[] getFileRaw()
+    {
         return this.file.clone();
     }
 
@@ -1048,9 +1095,11 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the file converted to a String (transparent encoding).
      */
-    public String getFile() {
+    public String getFile()
+    {
         return bytesToString(this.getFileRaw());
     }
+
     /**
      * Sets the file field (Boot File Name) as String.
      *
@@ -1063,7 +1112,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param file The file field to set.
      * @throws IllegalArgumentException string too long
      */
-    public void setFile(String file) {
+    public void setFile(String file)
+    {
         this.setFileRaw(stringToBytes(file));
     }
 
@@ -1080,14 +1130,16 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param file The file field to set.
      * @throws IllegalArgumentException string too long
      */
-    public void setFileRaw(byte[] file) {
+    public void setFileRaw(byte[] file)
+    {
         if (file != null) {
             if (file.length > this.file.length) {
                 throw new IllegalArgumentException("File is too long:" + file.length + " max is:" + this.file.length);
             }
             Arrays.fill(this.file, (byte) 0);
             System.arraycopy(file, 0, this.file, 0, file.length);
-        } else {
+        }
+        else {
             Arrays.fill(this.file, (byte) 0);
         }
     }
@@ -1097,7 +1149,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the flags field.
      */
-    public short getFlags() {
+    public short getFlags()
+    {
         return this.flags;
     }
 
@@ -1106,7 +1159,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param flags The flags field to set.
      */
-    public void setFlags(short flags) {
+    public void setFlags(short flags)
+    {
         this.flags = flags;
     }
 
@@ -1115,11 +1169,12 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the giaddr field converted to <tt>InetAddress</tt> object.
      */
-    public InetAddress getGiaddr() {
+    public InetAddress getGiaddr()
+    {
         try {
             return InetAddress.getByAddress(this.getGiaddrRaw());
         } catch (UnknownHostException e) {
-            logger.log(Level.SEVERE, "Unexpected UnknownHostException", e);
+            Timber.e(e, "Unexpected UnknownHostException");
             return null;    // normaly impossible
         }
     }
@@ -1131,7 +1186,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return Returns the giaddr as raw byte[4].
      */
-    public byte[] getGiaddrRaw() {
+    public byte[] getGiaddrRaw()
+    {
         return this.giaddr.clone();
     }
 
@@ -1143,7 +1199,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param giaddr The giaddr to set.
      */
-    public void setGiaddr(InetAddress giaddr) {
+    public void setGiaddr(InetAddress giaddr)
+    {
         if (!(giaddr instanceof Inet4Address)) {
             throw new IllegalArgumentException("Inet4Address required");
         }
@@ -1156,7 +1213,9 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param giaddr The giaddr to set.
      * @throws UnknownHostException
      */
-    public void setGiaddr(String giaddr) throws UnknownHostException {
+    public void setGiaddr(String giaddr)
+            throws UnknownHostException
+    {
         this.setGiaddr(InetAddress.getByName(giaddr));
     }
 
@@ -1172,7 +1231,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param giaddr The giaddr to set.
      */
-    public void setGiaddrRaw(byte[] giaddr) {
+    public void setGiaddrRaw(byte[] giaddr)
+    {
         if (giaddr.length != 4) {
             throw new IllegalArgumentException("4-byte array required");
         }
@@ -1186,7 +1246,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the hlen field.
      */
-    public byte getHlen() {
+    public byte getHlen()
+    {
         return this.hlen;
     }
 
@@ -1199,7 +1260,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param hlen The hlen to set.
      */
-    public void setHlen(byte hlen) {
+    public void setHlen(byte hlen)
+    {
         this.hlen = hlen;
     }
 
@@ -1208,7 +1270,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the hops field.
      */
-    public byte getHops() {
+    public byte getHops()
+    {
         return this.hops;
     }
 
@@ -1217,7 +1280,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param hops The hops to set.
      */
-    public void setHops(byte hops) {
+    public void setHops(byte hops)
+    {
         this.hops = hops;
     }
 
@@ -1235,7 +1299,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the htype field.
      */
-    public byte getHtype() {
+    public byte getHtype()
+    {
         return this.htype;
     }
 
@@ -1253,7 +1318,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param htype The htype to set.
      */
-    public void setHtype(byte htype) {
+    public void setHtype(byte htype)
+    {
         this.htype = htype;
     }
 
@@ -1267,7 +1333,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return Returns the isDhcp.
      */
-    public boolean isDhcp() {
+    public boolean isDhcp()
+    {
         return this.isDhcp;
     }
 
@@ -1280,12 +1347,13 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * <p>If <tt>isDhcp</tt> if false, all DHCP options are ignored when calling
      * <tt>serialize()</tt>.
-     * 
+     *
      * <p>Default value is <tt>true</tt>.
      *
      * @param isDhcp The isDhcp to set.
      */
-    public void setDhcp(boolean isDhcp) {
+    public void setDhcp(boolean isDhcp)
+    {
         this.isDhcp = isDhcp;
     }
 
@@ -1300,7 +1368,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the op field.
      */
-    public byte getOp() {
+    public byte getOp()
+    {
         return this.op;
     }
 
@@ -1314,10 +1383,11 @@ public class DHCPPacket implements Cloneable, Serializable {
      * </pre>
      *
      * <p>Default value is <tt>BOOTREPLY</tt>, suitable for server replies.
-     * 
+     *
      * @param op The op to set.
      */
-    public void setOp(byte op) {
+    public void setOp(byte op)
+    {
         this.op = op;
     }
 
@@ -1329,7 +1399,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return Returns the padding.
      */
-    public byte[] getPadding() {
+    public byte[] getPadding()
+    {
         return this.padding.clone();
     }
 
@@ -1343,21 +1414,23 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * <p>Padding is automatically added at the end of the datagram when calling
      * <tt>serialize()</tt> to match DHCP minimal packet size.
-     * 
+     *
      * @param padding The padding to set.
      */
-    public void setPadding(byte[] padding) {
+    public void setPadding(byte[] padding)
+    {
         this.padding = ((padding == null) ? new byte[0] : padding.clone());
     }
 
     /**
      * Sets the padding buffer with <tt>length</tt> zero bytes.
-     * 
+     *
      * <p>This is a short cut for <tt>setPadding(new byte[length])</tt>.
-     * 
+     *
      * @param length size of the padding buffer
      */
-    public void setPaddingWithZeroes(int length) {
+    public void setPaddingWithZeroes(int length)
+    {
         if (length < 0) {
             length = 0;
         }
@@ -1372,7 +1445,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the secs field.
      */
-    public short getSecs() {
+    public short getSecs()
+    {
         return this.secs;
     }
 
@@ -1381,7 +1455,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param secs The secs to set.
      */
-    public void setSecs(short secs) {
+    public void setSecs(short secs)
+    {
         this.secs = secs;
     }
 
@@ -1390,11 +1465,12 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the siaddr field converted to <tt>InetAddress</tt> object.
      */
-    public InetAddress getSiaddr() {
+    public InetAddress getSiaddr()
+    {
         try {
             return InetAddress.getByAddress(this.getSiaddrRaw());
         } catch (UnknownHostException e) {
-            logger.log(Level.SEVERE, "Unexpected UnknownHostException", e);
+            Timber.log(TimberLog.FINER, e, "Unexpected UnknownHostException");
             return null;    // normaly impossible
         }
     }
@@ -1406,7 +1482,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return Returns the siaddr as raw byte[4].
      */
-    public byte[] getSiaddrRaw() {
+    public byte[] getSiaddrRaw()
+    {
         return this.siaddr.clone();
     }
 
@@ -1418,7 +1495,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param siaddr The siaddr to set.
      */
-    public void setSiaddr(InetAddress siaddr) {
+    public void setSiaddr(InetAddress siaddr)
+    {
         if (!(siaddr instanceof Inet4Address)) {
             throw new IllegalArgumentException("Inet4Address required");
         }
@@ -1431,7 +1509,9 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param siaddr The siaddr to set.
      * @throws UnknownHostException
      */
-    public void setSiaddr(String siaddr) throws UnknownHostException {
+    public void setSiaddr(String siaddr)
+            throws UnknownHostException
+    {
         this.setSiaddr(InetAddress.getByName(siaddr));
     }
 
@@ -1447,7 +1527,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param siaddr The siaddr to set.
      */
-    public void setSiaddrRaw(byte[] siaddr) {
+    public void setSiaddrRaw(byte[] siaddr)
+    {
         if (siaddr.length != 4) {
             throw new IllegalArgumentException("4-byte array required");
         }
@@ -1463,7 +1544,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the sname field.
      */
-    public byte[] getSnameRaw() {
+    public byte[] getSnameRaw()
+    {
         return this.sname.clone();
     }
 
@@ -1472,7 +1554,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the sname converted to a String (transparent encoding).
      */
-    public String getSname() {
+    public String getSname()
+    {
         return bytesToString(this.getSnameRaw());
     }
 
@@ -1488,7 +1571,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param sname The sname field to set.
      * @throws IllegalArgumentException string too long
      */
-    public void setSname(String sname) {
+    public void setSname(String sname)
+    {
         this.setSnameRaw(stringToBytes(sname));
     }
 
@@ -1505,14 +1589,16 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param sname The sname field to set.
      * @throws IllegalArgumentException string too long
      */
-    public void setSnameRaw(byte[] sname) {
+    public void setSnameRaw(byte[] sname)
+    {
         if (sname != null) {
             if (sname.length > this.sname.length) {
                 throw new IllegalArgumentException("Sname is too long:" + sname.length + " max is:" + this.sname.length);
             }
             Arrays.fill(this.sname, (byte) 0);
             System.arraycopy(sname, 0, this.sname, 0, sname.length);
-        } else {
+        }
+        else {
             Arrays.fill(this.sname, (byte) 0);
         }
     }
@@ -1522,7 +1608,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return Returns the xid.
      */
-    public int getXid() {
+    public int getXid()
+    {
         return this.xid;
     }
 
@@ -1534,7 +1621,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param xid The xid to set.
      */
-    public void setXid(int xid) {
+    public void setXid(int xid)
+    {
         this.xid = xid;
     }
 
@@ -1543,11 +1631,12 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the yiaddr field converted to <tt>InetAddress</tt> object.
      */
-    public InetAddress getYiaddr() {
+    public InetAddress getYiaddr()
+    {
         try {
             return InetAddress.getByAddress(this.getYiaddrRaw());
         } catch (UnknownHostException e) {
-            logger.log(Level.SEVERE, "Unexpected UnknownHostException", e);
+            Timber.e(e,"Unexpected UnknownHostException");
             return null;    // normaly impossible
         }
     }
@@ -1559,7 +1648,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return Returns the yiaddr as raw byte[4].
      */
-    public byte[] getYiaddrRaw() {
+    public byte[] getYiaddrRaw()
+    {
         return this.yiaddr.clone();
     }
 
@@ -1571,7 +1661,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param yiaddr The yiaddr to set.
      */
-    public void setYiaddr(InetAddress yiaddr) {
+    public void setYiaddr(InetAddress yiaddr)
+    {
         if (!(yiaddr instanceof Inet4Address)) {
             throw new IllegalArgumentException("Inet4Address required");
         }
@@ -1584,7 +1675,9 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param yiaddr The yiaddr to set.
      * @throws UnknownHostException
      */
-    public void setYiaddr(String yiaddr) throws UnknownHostException {
+    public void setYiaddr(String yiaddr)
+            throws UnknownHostException
+    {
         this.setYiaddr(InetAddress.getByName(yiaddr));
     }
 
@@ -1600,31 +1693,35 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param yiaddr The yiaddr to set.
      */
-    public void setYiaddrRaw(byte[] yiaddr) {
+    public void setYiaddrRaw(byte[] yiaddr)
+    {
         if (yiaddr.length != 4) {
             throw new IllegalArgumentException("4-byte array required");
         }
         System.arraycopy(yiaddr, 0, this.yiaddr, 0, 4);
     }
+
     /**
      * Return the DHCP Option Type.
-     * 
+     *
      * <p>This is a short-cut for <tt>getOptionAsByte(DHO_DHCP_MESSAGE_TYPE)</tt>.
-     * 
+     *
      * @return option type, of <tt>null</tt> if not present.
      */
-    public Byte getDHCPMessageType() {
+    public Byte getDHCPMessageType()
+    {
         return this.getOptionAsByte(DHO_DHCP_MESSAGE_TYPE);
     }
 
     /**
      * Sets the DHCP Option Type.
-     * 
+     *
      * <p>This is a short-cur for <tt>setOptionAsByte(DHO_DHCP_MESSAGE_TYPE, optionType);</tt>.
-     * 
+     *
      * @param optionType
      */
-    public void setDHCPMessageType(byte optionType) {
+    public void setDHCPMessageType(byte optionType)
+    {
         this.setOptionAsByte(DHO_DHCP_MESSAGE_TYPE, optionType);
     }
 
@@ -1640,21 +1737,23 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the truncated field.
      */
-    public boolean isTruncated() {
+    public boolean isTruncated()
+    {
         return this.truncated;
     }
 
     /**
      * Wrapper function for getValueAsNum() in DHCPOption. Returns a numerical option: int, short or byte.
-     * 
+     *
      * @param code DHCP option code
      * @return Integer object or <tt>null</tt>
      */
-    public Integer getOptionAsNum(byte code) {
-    	DHCPOption opt = this.getOption(code);
-    	return (opt != null) ? opt.getValueAsNum() : null; 
+    public Integer getOptionAsNum(byte code)
+    {
+        DHCPOption opt = this.getOption(code);
+        return (opt != null) ? opt.getValueAsNum() : null;
     }
-    
+
     /**
      * Returns a DHCP Option as Byte format.
      *
@@ -1682,7 +1781,9 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
-    public Byte getOptionAsByte(byte code) throws IllegalArgumentException {
+    public Byte getOptionAsByte(byte code)
+            throws IllegalArgumentException
+    {
         DHCPOption opt = this.getOption(code);
         return (opt == null) ? null : opt.getValueAsByte();
     }
@@ -1703,14 +1804,16 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
-    public Short getOptionAsShort(byte code) throws IllegalArgumentException {
+    public Short getOptionAsShort(byte code)
+            throws IllegalArgumentException
+    {
         DHCPOption opt = this.getOption(code);
         return (opt == null) ? null : opt.getValueAsShort();
     }
 
     /**
      * Returns a DHCP Option as Integer format.
-     * 
+     *
      * <p>This method is only allowed for the following option codes:
      * <pre>
      * DHO_TIME_OFFSET(2)
@@ -1721,13 +1824,15 @@ public class DHCPPacket implements Cloneable, Serializable {
      * DHO_DHCP_RENEWAL_TIME(58)
      * DHO_DHCP_REBINDING_TIME(59)
      * </pre>
-     * 
+     *
      * @param code the option code.
      * @return the option value, <tt>null</tt> if option is not present.
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
-    public Integer getOptionAsInteger(byte code) throws IllegalArgumentException {
+    public Integer getOptionAsInteger(byte code)
+            throws IllegalArgumentException
+    {
         DHCPOption opt = this.getOption(code);
         return (opt == null) ? null : opt.getValueAsInt();
     }
@@ -1751,7 +1856,9 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
-    public InetAddress getOptionAsInetAddr(byte code) throws IllegalArgumentException {
+    public InetAddress getOptionAsInetAddr(byte code)
+            throws IllegalArgumentException
+    {
         DHCPOption opt = this.getOption(code);
         return (opt == null) ? null : opt.getValueAsInetAddr();
     }
@@ -1782,7 +1889,9 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @return the option value, <tt>null</tt> if option is not present.
      * @throws IllegalArgumentException the option code is not in the list above.
      */
-    public String getOptionAsString(byte code) throws IllegalArgumentException {
+    public String getOptionAsString(byte code)
+            throws IllegalArgumentException
+    {
         DHCPOption opt = this.getOption(code);
         return (opt == null) ? null : opt.getValueAsString();
     }
@@ -1801,7 +1910,9 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
-    public short[] getOptionAsShorts(byte code) throws IllegalArgumentException {
+    public short[] getOptionAsShorts(byte code)
+            throws IllegalArgumentException
+    {
         DHCPOption opt = this.getOption(code);
         return (opt == null) ? null : opt.getValueAsShorts();
     }
@@ -1845,7 +1956,9 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
-    public InetAddress[] getOptionAsInetAddrs(byte code) throws IllegalArgumentException {
+    public InetAddress[] getOptionAsInetAddrs(byte code)
+            throws IllegalArgumentException
+    {
         DHCPOption opt = this.getOption(code);
         return (opt == null) ? null : opt.getValueAsInetAddrs();
     }
@@ -1864,7 +1977,9 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @return the option value array, <tt>null</tt> if option is not present.
      * @throws IllegalArgumentException the option code is not in the list above.
      */
-    public byte[] getOptionAsBytes(byte code) throws IllegalArgumentException {
+    public byte[] getOptionAsBytes(byte code)
+            throws IllegalArgumentException
+    {
         DHCPOption opt = this.getOption(code);
         return (opt == null) ? null : opt.getValueAsBytes();
     }
@@ -1878,7 +1993,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param val the value
      * @throws IllegalArgumentException the option code is not in the list above.
      */
-    public void setOptionAsByte(byte code, byte val) {
+    public void setOptionAsByte(byte code, byte val)
+    {
         this.setOption(DHCPOption.newOptionAsByte(code, val));
     }
 
@@ -1891,7 +2007,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param val the value
      * @throws IllegalArgumentException the option code is not in the list above.
      */
-    public void setOptionAsShort(byte code, short val) {
+    public void setOptionAsShort(byte code, short val)
+    {
         this.setOption(DHCPOption.newOptionAsShort(code, val));
     }
 
@@ -1904,7 +2021,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param val the value
      * @throws IllegalArgumentException the option code is not in the list above.
      */
-    public void setOptionAsInt(byte code, int val) {
+    public void setOptionAsInt(byte code, int val)
+    {
         this.setOption(DHCPOption.newOptionAsInt(code, val));
     }
 
@@ -1917,7 +2035,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param val the value
      * @throws IllegalArgumentException the option code is not in the list above.
      */
-    public void setOptionAsInetAddress(byte code, InetAddress val) {
+    public void setOptionAsInetAddress(byte code, InetAddress val)
+    {
         this.setOption(DHCPOption.newOptionAsInetAddress(code, val));
     }
 
@@ -1931,7 +2050,9 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @throws UnknownHostException cannot find the address
      * @throws IllegalArgumentException the option code is not in the list above.
      */
-    public void setOptionAsInetAddress(byte code, String val) throws UnknownHostException {
+    public void setOptionAsInetAddress(byte code, String val)
+            throws UnknownHostException
+    {
         this.setOption(DHCPOption.newOptionAsInetAddress(code, InetAddress.getByName(val)));
     }
 
@@ -1944,7 +2065,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param val the value array
      * @throws IllegalArgumentException the option code is not in the list above.
      */
-    public void setOptionAsInetAddresses(byte code, InetAddress[] val) {
+    public void setOptionAsInetAddresses(byte code, InetAddress[] val)
+    {
         this.setOption(DHCPOption.newOptionAsInetAddresses(code, val));
     }
 
@@ -1957,7 +2079,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param val the value
      * @throws IllegalArgumentException the option code is not in the list above.
      */
-    public void setOptionAsString(byte code, String val) {
+    public void setOptionAsString(byte code, String val)
+    {
         this.setOption(DHCPOption.newOptionAsString(code, val));
     }
 
@@ -1971,7 +2094,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @return Returns the option as raw <tt>byte[]</tt>, or <tt>null</tt> if
      * the option is not present.
      */
-    public byte[] getOptionRaw(byte code) {
+    public byte[] getOptionRaw(byte code)
+    {
         final DHCPOption opt = this.getOption(code);
         return ((opt == null) ? null : opt.getValueFast());
     }
@@ -1986,14 +2110,15 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @return Returns the option as <tt>DHCPOption</tt>, or <tt>null</tt> if
      * the option is not present.
      */
-    public DHCPOption getOption(byte code) {
+    public DHCPOption getOption(byte code)
+    {
         DHCPOption opt = this.options.get(code);
         // Sanity checks
         if (opt == null) {
             return null;
         }
-        assert(opt.getCode() == code);
-        assert(opt.getValueFast() != null);
+        assert (opt.getCode() == code);
+        assert (opt.getValueFast() != null);
         return opt;
     }
 
@@ -2003,7 +2128,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param code DHCP option code
      * @return true if option is present
      */
-    public boolean containsOption(byte code) {
+    public boolean containsOption(byte code)
+    {
         return this.options.containsKey(code);
     }
 
@@ -2014,7 +2140,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return collection of <tt>DHCPOption</tt>.
      */
-    public Collection<DHCPOption> getOptionsCollection() {
+    public Collection<DHCPOption> getOptionsCollection()
+    {
         return Collections.unmodifiableCollection(this.options.values());    // read only
     }
 
@@ -2023,7 +2150,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return the options array
      */
-    public DHCPOption[] getOptionsArray() {
+    public DHCPOption[] getOptionsArray()
+    {
         return this.options.values().toArray(new DHCPOption[this.options.size()]);
     }
 
@@ -2036,16 +2164,19 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * <p>This is the low-level maximum performance setter for options.
      *
-     * @param    code opt    option code, use <tt>DHO_*</tt> for predefined values.
-     * @param    buf    raw buffer value (cloned). If null, the option is removed.
+     * @param code opt    option code, use <tt>DHO_*</tt> for predefined values.
+     * @param buf raw buffer value (cloned). If null, the option is removed.
      */
-    public void setOptionRaw(byte code, byte[] buf) {
+    public void setOptionRaw(byte code, byte[] buf)
+    {
         if (buf == null) {        // clear parameter
             this.removeOption(code);
-        } else {
+        }
+        else {
             this.setOption(new DHCPOption(code, buf));    // exception here if code=0 or code=-1
         }
     }
+
     /**
      * Sets the option specified for the option.
      *
@@ -2057,13 +2188,15 @@ public class DHCPPacket implements Cloneable, Serializable {
      * <p>This is the low-level maximum performance setter for options.
      * This method is called by all setter methods in this class.
      *
-     * @param    opt    option code, use <tt>DHO_*</tt> for predefined values.
+     * @param opt option code, use <tt>DHO_*</tt> for predefined values.
      */
-    public void setOption(DHCPOption opt) {
+    public void setOption(DHCPOption opt)
+    {
         if (opt != null) {
             if (opt.getValueFast() == null) {
                 this.removeOption(opt.getCode());
-            } else {
+            }
+            else {
                 this.options.put(opt.getCode(), opt);
             }
         }
@@ -2072,9 +2205,10 @@ public class DHCPPacket implements Cloneable, Serializable {
     /**
      * Sets an array of options. Calles repeatedly setOption on each element of the array.
      *
-     * @param    opts    array of options.
+     * @param opts array of options.
      */
-    public void setOptions(DHCPOption[] opts) {
+    public void setOptions(DHCPOption[] opts)
+    {
         if (opts != null) {
             for (DHCPOption opt : opts) {
                 this.setOption(opt);
@@ -2085,9 +2219,10 @@ public class DHCPPacket implements Cloneable, Serializable {
     /**
      * Sets a Collection of options. Calles repeatedly setOption on each element of the List.
      *
-     * @param    opts    List of options.
+     * @param opts List of options.
      */
-    public void setOptions(Collection<DHCPOption> opts) {
+    public void setOptions(Collection<DHCPOption> opts)
+    {
         if (opts != null) {
             for (DHCPOption opt : opts) {
                 this.setOption(opt);
@@ -2100,25 +2235,28 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param opt the option code to remove.
      */
-    public void removeOption(byte opt) {
+    public void removeOption(byte opt)
+    {
         this.options.remove(opt);
     }
 
     /**
      * Remove all options.
      */
-    public void removeAllOptions() {
+    public void removeAllOptions()
+    {
         this.options.clear();
     }
 
     /**
-     * Returns the IP address of the machine to which this datagram is being sent 
+     * Returns the IP address of the machine to which this datagram is being sent
      * or from which the datagram was received.
      *
      * @return the IP address of the machine to which this datagram is being sent
      * or from which the datagram was received. <tt>null</tt> if no address.
      */
-    public InetAddress getAddress() {
+    public InetAddress getAddress()
+    {
         return this.address;
     }
 
@@ -2128,24 +2266,28 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param address the <tt>InetAddress</tt>.
      * @throws IllegalArgumentException address is not of <tt>Inet4Address</tt> class.
      */
-    public void setAddress(InetAddress address) {
-    	if (address == null) {
-    		this.address = null;
-    	} else if (!(address instanceof Inet4Address)) {
+    public void setAddress(InetAddress address)
+    {
+        if (address == null) {
+            this.address = null;
+        }
+        else if (!(address instanceof Inet4Address)) {
             throw new IllegalArgumentException("only IPv4 addresses accepted");
-        } else {
-        	this.address = address;
+        }
+        else {
+            this.address = address;
         }
     }
 
     /**
-     * Returns the port number on the remote host to which this datagram is being sent 
+     * Returns the port number on the remote host to which this datagram is being sent
      * or from which the datagram was received.
      *
-     * @return the port number on the remote host to which this datagram is being sent 
+     * @return the port number on the remote host to which this datagram is being sent
      * or from which the datagram was received.
      */
-    public int getPort() {
+    public int getPort()
+    {
         return this.port;
     }
 
@@ -2154,32 +2296,36 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @param port the port number.
      */
-    public void setPort(int port) {
+    public void setPort(int port)
+    {
         this.port = port;
     }
-    
+
     /**
      * Syntactic sugar for getAddress/getPort.
-     * 
+     *
      * @return address + port.
      */
-    public InetSocketAddress getAddrPort() {
-    	return new InetSocketAddress(address, port);
+    public InetSocketAddress getAddrPort()
+    {
+        return new InetSocketAddress(address, port);
     }
-    
+
     /**
      * Syntactic sugar for setAddress/setPort.
-     * 
+     *
      * @param addrPort address and port, if <tt>null</t> address is set to null and port to 0
      */
-    public void setAddrPort(InetSocketAddress addrPort) {
-    	if (addrPort == null) {
-    		setAddress(null);
-    		setPort(0);
-    	} else {
-    		setAddress(addrPort.getAddress());
-    		setPort(addrPort.getPort());
-    	}
+    public void setAddrPort(InetSocketAddress addrPort)
+    {
+        if (addrPort == null) {
+            setAddress(null);
+            setPort(0);
+        }
+        else {
+            setAddress(addrPort.getAddress());
+            setPort(addrPort.getPort());
+        }
     }
 
     // ========================================================================
@@ -2191,23 +2337,35 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * Faster version than String.getBytes()
      */
-    static String bytesToString(byte[] buf) {
-        if (buf == null) { return ""; }
+    static String bytesToString(byte[] buf)
+    {
+        if (buf == null) {
+            return "";
+        }
         return bytesToString(buf, 0, buf.length);
     }
 
-    static String bytesToString(byte[] buf, int src, int len) {
-        if (buf == null) { return ""; }
+    static String bytesToString(byte[] buf, int src, int len)
+    {
+        if (buf == null) {
+            return "";
+        }
         if (src < 0) {
             len += src;    // reduce length
             src = 0;
         }
-        if (len <= 0) { return ""; }
-        if (src >= buf.length) { return ""; }
-        if (src + len > buf.length) { len = buf.length - src; }
+        if (len <= 0) {
+            return "";
+        }
+        if (src >= buf.length) {
+            return "";
+        }
+        if (src + len > buf.length) {
+            len = buf.length - src;
+        }
         // string should be null terminated or whole buffer
         // first find the real lentgh
-        for (int i=src; i<src+len; i++) {
+        for (int i = src; i < src + len; i++) {
             if (buf[i] == 0) {
                 len = i - src;
                 break;
@@ -2225,26 +2383,34 @@ public class DHCPPacket implements Cloneable, Serializable {
     /**
      * Converts byte to hex string (2 chars) (uppercase)
      */
-    private static final char[] hex = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+    private static final char[] hex = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-    static void appendHex(StringBuilder sbuf, byte b) {
+    static void appendHex(StringBuilder sbuf, byte b)
+    {
         int i = (b & 0xFF);
         sbuf.append(hex[(i & 0xF0) >> 4])
-            .append(hex[i & 0x0F]);
+                .append(hex[i & 0x0F]);
     }
 
     /**
      * Converts a byte[] to a sequence of hex chars (uppercase), limited to <tt>len</tt> bytes
      * and appends them to a string buffer
      */
-    static void appendHex(StringBuilder sbuf, final byte[] buf, int src, int len) {
-        if (buf == null) { return; }
+    static void appendHex(StringBuilder sbuf, final byte[] buf, int src, int len)
+    {
+        if (buf == null) {
+            return;
+        }
         if (src < 0) {
             len += src;    // reduce length
             src = 0;
         }
-        if (len <= 0 || src >= buf.length) { return; }
-        if (src + len > buf.length) { len = buf.length - src; }
+        if (len <= 0 || src >= buf.length) {
+            return;
+        }
+        if (src + len > buf.length) {
+            len = buf.length - src;
+        }
 
         for (int i = src; i < src + len; i++) {
             appendHex(sbuf, buf[i]);
@@ -2254,29 +2420,32 @@ public class DHCPPacket implements Cloneable, Serializable {
     /**
      * Convert plain byte[] to hex string (uppercase)
      */
-    static void appendHex(StringBuilder sbuf, final byte[] buf) {
+    static void appendHex(StringBuilder sbuf, final byte[] buf)
+    {
         appendHex(sbuf, buf, 0, buf.length);
     }
 
     /**
      * Convert bytes to hex string.
-     * 
+     *
      * @param buf
      * @return hex string (lowercase) or "" if buf is <tt>null</tt>
      */
-    static String bytes2Hex(byte[] buf) {
-    	if (buf == null) {
-    		return "";
-    	}
-    	StringBuilder sb = new StringBuilder(buf.length * 2);
-    	appendHex(sb, buf);
-    	return sb.toString();
+    static String bytes2Hex(byte[] buf)
+    {
+        if (buf == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder(buf.length * 2);
+        appendHex(sb, buf);
+        return sb.toString();
     }
-    
+
     /**
      * Convert hes String to byte[]
      */
-    static byte[] hex2Bytes(String s) {
+    static byte[] hex2Bytes(String s)
+    {
         if ((s.length() & 1) != 0) {
             throw new IllegalArgumentException("String length must be even: " + s.length());
         }
@@ -2293,19 +2462,23 @@ public class DHCPPacket implements Cloneable, Serializable {
     /**
      * Convert integer to hex chars (uppercase) and appends them to a string builder
      */
-    private static void appendHex(StringBuilder sbuf, int i) {
+    private static void appendHex(StringBuilder sbuf, int i)
+    {
         appendHex(sbuf, (byte) ((i & 0xff000000) >>> 24));
         appendHex(sbuf, (byte) ((i & 0x00ff0000) >>> 16));
-        appendHex(sbuf, (byte) ((i & 0x0000ff00) >>>  8));
-        appendHex(sbuf, (byte) ((i & 0x000000ff)       ));
+        appendHex(sbuf, (byte) ((i & 0x0000ff00) >>> 8));
+        appendHex(sbuf, (byte) ((i & 0x000000ff)));
     }
 
-    public static byte[] stringToBytes(String str) {
-        if (str == null) { return null; }
+    public static byte[] stringToBytes(String str)
+    {
+        if (str == null) {
+            return null;
+        }
 
         char[] chars = str.toCharArray();
-        int    len   = chars.length;
-        byte[] buf   = new byte[len];
+        int len = chars.length;
+        byte[] buf = new byte[len];
 
         for (int i = 0; i < len; i++) {
             buf[i] = (byte) chars[i];
@@ -2320,7 +2493,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      * @param sbuf the string builder
      * @param addr the Internet address
      */
-    public static void appendHostAddress(StringBuilder sbuf, InetAddress addr) {
+    public static void appendHostAddress(StringBuilder sbuf, InetAddress addr)
+    {
         if (addr == null) {
             throw new IllegalArgumentException("addr must not be null");
         }
@@ -2331,12 +2505,12 @@ public class DHCPPacket implements Cloneable, Serializable {
         byte[] src = addr.getAddress();
 
         sbuf.append(src[0] & 0xFF)
-            .append('.')
-            .append(src[1] & 0xFF)
-            .append('.')
-            .append(src[2] & 0xFF)
-            .append('.')
-            .append(src[3] & 0xFF);
+                .append('.')
+                .append(src[1] & 0xFF)
+                .append('.')
+                .append(src[2] & 0xFF)
+                .append('.')
+                .append(src[3] & 0xFF);
     }
 
     /**
@@ -2344,7 +2518,8 @@ public class DHCPPacket implements Cloneable, Serializable {
      *
      * @return String representation of address.
      */
-    public static String getHostAddress(InetAddress addr) {
+    public static String getHostAddress(InetAddress addr)
+    {
         StringBuilder sbuf = new StringBuilder(15);
         appendHostAddress(sbuf, addr);
         return sbuf.toString();

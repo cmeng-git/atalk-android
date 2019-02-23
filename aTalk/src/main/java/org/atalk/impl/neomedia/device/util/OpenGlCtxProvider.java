@@ -14,21 +14,21 @@ import android.view.*;
 
 import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
+
+import timber.log.Timber;
+
 /**
  * Provider of Open GL context. Currently used to provide shared context for recorded video that
  * will be used to draw local preview.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
         implements TextureView.SurfaceTextureListener
 {
-    /**
-     * The logger.
-     */
-    private final static Logger logger = Logger.getLogger(OpenGlCtxProvider.class);
-
     /**
      * The <tt>OpenGLContext</tt>.
      */
@@ -86,7 +86,7 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface)
     {
-        logger.trace("onSurfaceTextureUpdated");
+        Timber.log(TimberLog.FINER, "onSurfaceTextureUpdated");
         this.textureUpdated = true;
     }
 }

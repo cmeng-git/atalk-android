@@ -6,9 +6,7 @@
  */
 package net.java.sip.communicator.impl.metahistory;
 
-import net.java.sip.communicator.service.callhistory.CallHistoryService;
-import net.java.sip.communicator.service.callhistory.CallPeerRecord;
-import net.java.sip.communicator.service.callhistory.CallRecord;
+import net.java.sip.communicator.service.callhistory.*;
 import net.java.sip.communicator.service.callhistory.event.CallHistorySearchProgressListener;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
@@ -19,26 +17,13 @@ import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.msghistory.event.MessageHistorySearchProgressListener;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedEvent;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.event.*;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * The Meta History Service is wrapper around the other known history services. Query them all at
@@ -49,11 +34,6 @@ import java.util.TreeSet;
  */
 public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListener
 {
-    /**
-     * The logger for this class.
-     */
-    private static final Logger logger = Logger.getLogger(MetaHistoryServiceImpl.class);
-
     /**
      * The BundleContext that we got from the OSGI bus.
      */
@@ -159,8 +139,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      * @param endDate Date the date of the last record to return
      * @return Collection sorted result that consists of records returned from the services we wrap
      */
-    public Collection<Object> findByPeriod(String[] services, Object descriptor, Date startDate,
-            Date endDate)
+    public Collection<Object> findByPeriod(String[] services, Object descriptor, Date startDate, Date endDate)
     {
         MessageProgressWrapper listenWrapper = new MessageProgressWrapper(services.length);
 
@@ -610,8 +589,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
      */
     public void start(BundleContext bc)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Starting the call history implementation.");
+        Timber.d("Starting the call history implementation.");
         this.bundleContext = bc;
         services.clear();
 

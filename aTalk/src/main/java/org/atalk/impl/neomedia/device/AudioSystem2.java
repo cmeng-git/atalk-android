@@ -11,18 +11,16 @@ import java.util.regex.*;
 
 import org.atalk.util.Logger;
 
+import timber.log.Timber;
+
 /**
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public abstract class AudioSystem2 extends AudioSystem
 {
 	/**
-	 * The <tt>Logger</tt> used by the <tt>AudioSystem2</tt> class and its instances for logging
-	 * output.
-	 */
-	private static final Logger logger = Logger.getLogger(AudioSystem2.class);
-
 	/**
 	 * The number of times that {@link #willOpenStream()} has been invoked without an intervening
 	 * {@link #didOpenStream()} i.e. the number of API clients who are currently executing a
@@ -197,8 +195,7 @@ public abstract class AudioSystem2 extends AudioSystem
 							throw (ThreadDeath) t;
 						}
 						else {
-							logger.error("UpdateAvailableDeviceListListener."
-								+ (will ? "will" : "did") + "UpdateAvailableDeviceList failed.", t);
+							Timber.e(t, "UpdateAvailableDeviceListListener. %s failed. %s", (will ? "will" : "did"));
 						}
 					}
 				}

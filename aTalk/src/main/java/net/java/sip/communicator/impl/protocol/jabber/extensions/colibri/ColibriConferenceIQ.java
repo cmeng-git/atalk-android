@@ -5,19 +5,19 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.colibri;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractExtensionElement;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 
 import org.atalk.android.util.ApiLib;
 import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.util.Logger;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jxmpp.jid.parts.Localpart;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import timber.log.Timber;
 
 /**
  * Implements the Jitsi Videobridge <tt>conference</tt> IQ within the COnferencing with LIghtweight
@@ -62,11 +62,6 @@ public class ColibriConferenceIQ extends IQ
      * property of <tt>ColibriConferenceIQ</tt> if available.
      */
     public static final String NAME_ATTR_NAME = "name";
-
-    /**
-     * The logger instance used by this class.
-     */
-    private final static Logger logger = Logger.getLogger(ColibriConferenceIQ.class);
 
     /**
      * An array of <tt>int</tt>s which represents the lack of any (RTP) SSRCs seen/received on a
@@ -135,10 +130,10 @@ public class ColibriConferenceIQ extends IQ
     public static IQ createGracefulShutdownErrorResponse(final IQ request)
     {
         final StanzaError error = StanzaError.getBuilder()
-            .setCondition(Condition.service_unavailable)
-            .setType(StanzaError.Type.CANCEL)
-            .addExtension(new GracefulShutdown())
-            .build();
+                .setCondition(Condition.service_unavailable)
+                .setType(StanzaError.Type.CANCEL)
+                .addExtension(new GracefulShutdown())
+                .build();
 
         final IQ result = IQ.createErrorResponse(request, error);
         result.setType(Type.error);
@@ -196,6 +191,7 @@ public class ColibriConferenceIQ extends IQ
      * endpoint must be non-null and must have a non-null ID. If an
      * {@link Endpoint} with the same ID as the given {@link Endpoint} already
      * exists it is replaced and the previous one is returned.
+     *
      * @param endpoint the {@link Endpoint} to add.
      * @return The previous {@link Endpoint} with the same ID, or {@code null}.
      */
@@ -278,7 +274,7 @@ public class ColibriConferenceIQ extends IQ
             if (rtcpTerminationStrategy != null)
                 rtcpTerminationStrategy.toXML(xml);
             if (gracefulShutdown)
-                xml.append(new GracefulShutdown().toXML(null));
+                xml.append(new GracefulShutdown().toXML(XmlEnvironment.EMPTY));
         }
         return xml;
     }
@@ -583,13 +579,13 @@ public class ColibriConferenceIQ extends IQ
          * The <tt>payload-type</tt> elements defined by XEP-0167: Jingle RTP Sessions associated
          * with this <tt>channel</tt>.
          */
-        private final List<PayloadTypePacketExtension> payloadTypes = new ArrayList<>();
+        private final List<PayloadTypeExtensionElement> payloadTypes = new ArrayList<>();
 
         /**
          * The <tt>rtp-hdrext</tt> elements defined by XEP-0294: Jingle RTP Header Extensions
          * Negotiation associated with this channel.
          */
-        private final Map<Integer, RTPHdrExtPacketExtension> rtpHeaderExtensions = new HashMap<>();
+        private final Map<Integer, RTPHdrExtExtensionElement> rtpHeaderExtensions = new HashMap<>();
 
         /**
          * The target quality of the simulcast subStreams to be sent from Jitsi Videobridge to the
@@ -623,14 +619,14 @@ public class ColibriConferenceIQ extends IQ
         private int rtpPort;
 
         /**
-         * The <tt>SourceGroupPacketExtension</tt>s of this channel.
+         * The <tt>SourceGroupExtensionElement</tt>s of this channel.
          */
-        private List<SourceGroupPacketExtension> sourceGroups;
+        private List<SourceGroupExtensionElement> sourceGroups;
 
         /**
-         * The <tt>SourcePacketExtension</tt>s of this channel.
+         * The <tt>SourceExtensionElement</tt>s of this channel.
          */
-        private final List<SourcePacketExtension> sources = new LinkedList<>();
+        private final List<SourceExtensionElement> sources = new LinkedList<>();
         /**
          * The list of (RTP) SSRCs which have been seen/received on this <tt>Channel</tt> by now.
          * These may exclude SSRCs which are no longer active. Set by the Jitsi Videobridge server,
@@ -654,13 +650,13 @@ public class ColibriConferenceIQ extends IQ
          * <tt>channel</tt> has been modified as part of the method call; otherwise, <tt>false</tt>
          * @throws NullPointerException if the specified <tt>payloadType</tt> is <tt>null</tt>
          */
-        public boolean addPayloadType(PayloadTypePacketExtension payloadType)
+        public boolean addPayloadType(PayloadTypeExtensionElement payloadType)
         {
             ApiLib.requireNonNull(payloadType, "payloadType");
 
             // Make sure that the COLIBRI namespace is used.
             payloadType.setNamespace(null);
-            for (ParameterPacketExtension p : payloadType.getParameters())
+            for (ParameterExtensionElement p : payloadType.getParameters())
                 p.setNamespace(null);
 
             return !payloadTypes.contains(payloadType) && payloadTypes.add(payloadType);
@@ -673,12 +669,12 @@ public class ColibriConferenceIQ extends IQ
          * @param ext the <tt>payload-type</tt> element to be added to this <tt>channel</tt>
          * @throws NullPointerException if the specified <tt>ext</tt> is <tt>null</tt>
          */
-        public void addRtpHeaderExtension(RTPHdrExtPacketExtension ext)
+        public void addRtpHeaderExtension(RTPHdrExtExtensionElement ext)
         {
             ApiLib.requireNonNull(ext, "ext");
 
             // Create a new instance, because we are going to modify the NS
-            RTPHdrExtPacketExtension newExt = RTPHdrExtPacketExtension.clone(ext);
+            RTPHdrExtExtensionElement newExt = RTPHdrExtExtensionElement.clone(ext);
 
             // Make sure that the parent namespace (COLIBRI) is used.
             newExt.setNamespace(null);
@@ -691,37 +687,37 @@ public class ColibriConferenceIQ extends IQ
 
             // Only accept valid extension IDs (4-bits, 0xF reserved)
             if (id < 0 || id > 14) {
-                logger.warn("Failed to add an RTP header extension element with an invalid ID: " + newExt.getID());
+                Timber.w("Failed to add an RTP header extension element with an invalid ID: %s", newExt.getID());
                 return;
             }
             rtpHeaderExtensions.put(id, newExt);
         }
 
         /**
-         * Adds a <tt>SourcePacketExtension</tt> to the list of sources of this channel.
+         * Adds a <tt>SourceExtensionElement</tt> to the list of sources of this channel.
          *
-         * @param source the <tt>SourcePacketExtension</tt> to add to the list of sources of this channel
+         * @param source the <tt>SourceExtensionElement</tt> to add to the list of sources of this channel
          * @return <tt>true</tt> if the list of sources of this channel changed as a result of the
          * execution of the method; otherwise, <tt>false</tt>
          */
-        public synchronized boolean addSource(SourcePacketExtension source)
+        public synchronized boolean addSource(SourceExtensionElement source)
         {
             ApiLib.requireNonNull(source, "source");
             return !sources.contains(source) && sources.add(source);
         }
 
         /**
-         * Adds a <tt>SourceGroupPacketExtension</tt> to the list of source groups of this channel.
+         * Adds a <tt>SourceGroupExtensionElement</tt> to the list of source groups of this channel.
          *
-         * @param sourceGroup the <tt>SourcePacketExtension</tt> to add to the list of sources of this channel
+         * @param sourceGroup the <tt>SourceExtensionElement</tt> to add to the list of sources of this channel
          * @return <tt>true</tt> if the list of sources of this channel changed as a result of the
          * execution of the method; otherwise, <tt>false</tt>
          */
-        public synchronized boolean addSourceGroup(SourceGroupPacketExtension sourceGroup)
+        public synchronized boolean addSourceGroup(SourceGroupExtensionElement sourceGroup)
         {
             ApiLib.requireNonNull(sourceGroup, "sourceGroup");
             if (sourceGroups == null)
-                sourceGroups = new LinkedList<SourceGroupPacketExtension>();
+                sourceGroups = new LinkedList<SourceGroupExtensionElement>();
 
             return !sourceGroups.contains(sourceGroup) && sourceGroups.add(sourceGroup);
         }
@@ -816,7 +812,7 @@ public class ColibriConferenceIQ extends IQ
          * @return an unmodifiable <tt>List</tt> of <tt>payload-type</tt> elements defined by
          * XEP-0167: Jingle RTP Sessions added to this <tt>channel</tt>
          */
-        public List<PayloadTypePacketExtension> getPayloadTypes()
+        public List<PayloadTypeExtensionElement> getPayloadTypes()
         {
             return Collections.unmodifiableList(payloadTypes);
         }
@@ -828,7 +824,7 @@ public class ColibriConferenceIQ extends IQ
          * @return an unmodifiable <tt>List</tt> of <tt>rtp-hdrext</tt> elements defined by
          * XEP-0294: Jingle RTP Header Extensions Negotiation added to this <tt>channel</tt>
          */
-        public Collection<RTPHdrExtPacketExtension> getRtpHeaderExtensions()
+        public Collection<RTPHdrExtExtensionElement> getRtpHeaderExtensions()
         {
             return Collections.unmodifiableCollection(rtpHeaderExtensions.values());
         }
@@ -889,10 +885,10 @@ public class ColibriConferenceIQ extends IQ
         /**
          * Gets the list of <tt>SourceGroupPacketExtensions</tt>s which represent the source groups of this channel.
          *
-         * @return a <tt>List</tt> of <tt>SourceGroupPacketExtension</tt>s which represent the
+         * @return a <tt>List</tt> of <tt>SourceGroupExtensionElement</tt>s which represent the
          * source groups of this channel
          */
-        public synchronized List<SourceGroupPacketExtension> getSourceGroups()
+        public synchronized List<SourceGroupExtensionElement> getSourceGroups()
         {
             return (sourceGroups == null) ? null : new ArrayList<>(sourceGroups);
         }
@@ -900,9 +896,9 @@ public class ColibriConferenceIQ extends IQ
         /**
          * Gets the list of <tt>SourcePacketExtensions</tt>s which represent the sources of this channel.
          *
-         * @return a <tt>List</tt> of <tt>SourcePacketExtension</tt>s which represent the sources of this channel
+         * @return a <tt>List</tt> of <tt>SourceExtensionElement</tt>s which represent the sources of this channel
          */
-        public synchronized List<SourcePacketExtension> getSources()
+        public synchronized List<SourceExtensionElement> getSources()
         {
             return new ArrayList<>(sources);
         }
@@ -921,15 +917,15 @@ public class ColibriConferenceIQ extends IQ
         @Override
         protected boolean hasContent()
         {
-            List<PayloadTypePacketExtension> payloadTypes = getPayloadTypes();
+            List<PayloadTypeExtensionElement> payloadTypes = getPayloadTypes();
             if (!payloadTypes.isEmpty())
                 return true;
 
-            List<SourceGroupPacketExtension> sourceGroups = getSourceGroups();
+            List<SourceGroupExtensionElement> sourceGroups = getSourceGroups();
             if (sourceGroups != null && !getSourceGroups().isEmpty())
                 return true;
 
-            List<SourcePacketExtension> sources = getSources();
+            List<SourceExtensionElement> sources = getSources();
             if (!sources.isEmpty())
                 return true;
 
@@ -989,24 +985,24 @@ public class ColibriConferenceIQ extends IQ
         @Override
         protected IQChildElementXmlStringBuilder printContent(IQChildElementXmlStringBuilder xml)
         {
-            List<PayloadTypePacketExtension> payloadTypes = getPayloadTypes();
-            Collection<RTPHdrExtPacketExtension> rtpHdrExtPacketExtensions = getRtpHeaderExtensions();
-            List<SourcePacketExtension> sources = getSources();
-            List<SourceGroupPacketExtension> sourceGroups = getSourceGroups();
+            List<PayloadTypeExtensionElement> payloadTypes = getPayloadTypes();
+            Collection<RTPHdrExtExtensionElement> rtpHdrExtPacketExtensions = getRtpHeaderExtensions();
+            List<SourceExtensionElement> sources = getSources();
+            List<SourceGroupExtensionElement> sourceGroups = getSourceGroups();
             int[] ssrcs = getSSRCs();
 
-            for (PayloadTypePacketExtension payloadType : payloadTypes)
-                xml.append(payloadType.toXML(null));
+            for (PayloadTypeExtensionElement payloadType : payloadTypes)
+                xml.append(payloadType.toXML(XmlEnvironment.EMPTY));
 
-            for (RTPHdrExtPacketExtension ext : rtpHdrExtPacketExtensions)
-                xml.append(ext.toXML(null));
+            for (RTPHdrExtExtensionElement ext : rtpHdrExtPacketExtensions)
+                xml.append(ext.toXML(XmlEnvironment.EMPTY));
 
-            for (SourcePacketExtension source : sources)
-                xml.append(source.toXML(null));
+            for (SourceExtensionElement source : sources)
+                xml.append(source.toXML(XmlEnvironment.EMPTY));
 
             if (sourceGroups != null && sourceGroups.size() != 0)
-                for (SourceGroupPacketExtension sourceGroup : sourceGroups)
-                    xml.append(sourceGroup.toXML(null));
+                for (SourceGroupExtensionElement sourceGroup : sourceGroups)
+                    xml.append(sourceGroup.toXML(XmlEnvironment.EMPTY));
 
             for (int ssrc : ssrcs) {
                 xml.openElement(SSRC_ELEMENT_NAME);
@@ -1022,7 +1018,7 @@ public class ColibriConferenceIQ extends IQ
          * @return <tt>true</tt> if the list of <tt>payload-type</tt> elements associated with this
          * <tt>channel</tt> has been modified as part of the method call; otherwise, <tt>false</tt>
          */
-        public boolean removePayloadType(PayloadTypePacketExtension payloadType)
+        public boolean removePayloadType(PayloadTypeExtensionElement payloadType)
         {
             return payloadTypes.remove(payloadType);
         }
@@ -1033,26 +1029,26 @@ public class ColibriConferenceIQ extends IQ
          *
          * @param ext the <tt>rtp-hdrext</tt> element to be removed from this <tt>channel</tt>
          */
-        public void removeRtpHeaderExtension(RTPHdrExtPacketExtension ext)
+        public void removeRtpHeaderExtension(RTPHdrExtExtensionElement ext)
         {
             int id;
             try {
                 id = Integer.valueOf(ext.getID());
             } catch (NumberFormatException nfe) {
-                logger.warn("Invalid ID: " + ext.getID());
+                Timber.w("Invalid ID: %s", ext.getID());
                 return;
             }
             rtpHeaderExtensions.remove(id);
         }
 
         /**
-         * Removes a <tt>SourcePacketExtension</tt> from the list of sources of this channel.
+         * Removes a <tt>SourceExtensionElement</tt> from the list of sources of this channel.
          *
-         * @param source the <tt>SourcePacketExtension</tt> to remove from the list of sources of this channel
+         * @param source the <tt>SourceExtensionElement</tt> to remove from the list of sources of this channel
          * @return <tt>true</tt> if the list of sources of this channel changed as a result of the
          * execution of the method; otherwise, <tt>false</tt>
          */
-        public synchronized boolean removeSource(SourcePacketExtension source)
+        public synchronized boolean removeSource(SourceExtensionElement source)
         {
             return sources.remove(source);
         }
@@ -1352,7 +1348,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * The transport element of this <tt>ChannelBundle</tt>.
          */
-        private IceUdpTransportPacketExtension transport;
+        private IceUdpTransportExtensionElement transport;
 
         /**
          * Initializes a new <tt>ChannelBundle</tt> with the given ID.
@@ -1379,7 +1375,7 @@ public class ColibriConferenceIQ extends IQ
          *
          * @return the transport element of this <tt>ChannelBundle</tt>.
          */
-        public IceUdpTransportPacketExtension getTransport()
+        public IceUdpTransportExtensionElement getTransport()
         {
             return transport;
         }
@@ -1399,7 +1395,7 @@ public class ColibriConferenceIQ extends IQ
          *
          * @param transport the transport to set.
          */
-        public void setTransport(IceUdpTransportPacketExtension transport)
+        public void setTransport(IceUdpTransportExtensionElement transport)
         {
             this.transport = transport;
         }
@@ -1416,7 +1412,7 @@ public class ColibriConferenceIQ extends IQ
 
             if (transport != null) {
                 xml.rightAngleBracket();
-                xml.append(transport.toXML(null));
+                xml.append(transport.toXML(XmlEnvironment.EMPTY));
                 xml.closeElement(ELEMENT_NAME);
             }
             else {
@@ -1515,7 +1511,7 @@ public class ColibriConferenceIQ extends IQ
          */
         private Boolean initiator;
 
-        private IceUdpTransportPacketExtension transport;
+        private IceUdpTransportExtensionElement transport;
 
         /**
          * Initializes this class with given XML <tt>elementName</tt>.
@@ -1578,7 +1574,7 @@ public class ColibriConferenceIQ extends IQ
             return id;
         }
 
-        public IceUdpTransportPacketExtension getTransport()
+        public IceUdpTransportExtensionElement getTransport()
         {
             return transport;
         }
@@ -1695,7 +1691,7 @@ public class ColibriConferenceIQ extends IQ
             this.initiator = initiator;
         }
 
-        public void setTransport(IceUdpTransportPacketExtension transport)
+        public void setTransport(IceUdpTransportExtensionElement transport)
         {
             this.transport = transport;
         }
@@ -1727,7 +1723,7 @@ public class ColibriConferenceIQ extends IQ
             // Print derived class attributes
             printAttributes(xml);
 
-            IceUdpTransportPacketExtension transport = getTransport();
+            IceUdpTransportExtensionElement transport = getTransport();
             boolean hasTransport = (transport != null);
             if (hasTransport || hasContent()) {
                 xml.rightAngleBracket();
@@ -1735,7 +1731,7 @@ public class ColibriConferenceIQ extends IQ
                     printContent(xml);
                 }
                 if (hasTransport) {
-                    xml.append(transport.toXML(null));
+                    xml.append(transport.toXML(XmlEnvironment.EMPTY));
                 }
                 xml.closeElement(elementName);
             }
@@ -2317,7 +2313,7 @@ public class ColibriConferenceIQ extends IQ
     /**
      * Packet extension indicating graceful shutdown in progress status.
      */
-    public static class GracefulShutdown extends AbstractPacketExtension
+    public static class GracefulShutdown extends AbstractExtensionElement
     {
         public static final String ELEMENT_NAME = "graceful-shutdown";
 

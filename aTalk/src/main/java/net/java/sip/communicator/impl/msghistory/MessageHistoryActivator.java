@@ -9,17 +9,19 @@ package net.java.sip.communicator.impl.msghistory;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.history.HistoryService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.*;
 
+import timber.log.Timber;
+
 /**
  * Activates the MessageHistoryService
  *
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
 public class MessageHistoryActivator implements BundleActivator
 {
@@ -27,11 +29,6 @@ public class MessageHistoryActivator implements BundleActivator
      * The <tt>BundleContext</tt> of the service.
      */
     static BundleContext bundleContext;
-    /**
-     * The <tt>Logger</tt> instance used by the <tt>MessageHistoryActivator</tt> class and its
-     * instances for logging output.
-     */
-    private static Logger logger = Logger.getLogger(MessageHistoryActivator.class);
     /**
      * The <tt>MessageHistoryService</tt> reference.
      */
@@ -108,25 +105,17 @@ public class MessageHistoryActivator implements BundleActivator
             throws Exception
     {
         bundleContext = bc;
-        try {
-            logger.logEntry();
+        ServiceReference refHistory = bundleContext.getServiceReference(HistoryService.class.getName());
+        HistoryService historyService = (HistoryService) bundleContext.getService(refHistory);
 
-            ServiceReference refHistory = bundleContext.getServiceReference(HistoryService.class.getName());
-            HistoryService historyService = (HistoryService) bundleContext.getService(refHistory);
+        // Create and start the message history service.
+        msgHistoryService = new MessageHistoryServiceImpl();
+        msgHistoryService.setHistoryService(historyService);
+        msgHistoryService.start(bundleContext);
 
-            // Create and start the message history service.
-            msgHistoryService = new MessageHistoryServiceImpl();
-            msgHistoryService.setHistoryService(historyService);
-            msgHistoryService.start(bundleContext);
+        bundleContext.registerService(MessageHistoryService.class.getName(), msgHistoryService, null);
 
-            bundleContext.registerService(MessageHistoryService.class.getName(), msgHistoryService, null);
-
-            if (logger.isInfoEnabled())
-                logger.info("Message History Service ...[REGISTERED]");
-        } finally {
-            logger.logExit();
-        }
-
+        Timber.i("Message History Service ...[REGISTERED]");
     }
 
     /**

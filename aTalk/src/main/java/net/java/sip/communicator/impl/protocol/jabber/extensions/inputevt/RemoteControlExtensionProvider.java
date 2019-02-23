@@ -7,6 +7,7 @@ package net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -87,7 +88,6 @@ public class RemoteControlExtensionProvider extends ExtensionElementProvider<Rem
      * @throws Exception if an error occurs during XML parsing
      */
     public ExtensionElement parseExtension(XmlPullParser parser)
-            throws Exception
     {
         RemoteControlExtension result = null;
         boolean done = false;
@@ -302,8 +302,8 @@ public class RemoteControlExtensionProvider extends ExtensionElementProvider<Rem
     }
 
     @Override
-    public RemoteControlExtension parse(XmlPullParser paramXmlPullParser, int paramInt)
-            throws XmlPullParserException, IOException, SmackException
+    public RemoteControlExtension parse(XmlPullParser paramXmlPullParser, int paramInt, XmlEnvironment xmlEnvironment)
+            throws XmlPullParserException, IOException
     {
         // TODO Auto-generated method stub
         return null;

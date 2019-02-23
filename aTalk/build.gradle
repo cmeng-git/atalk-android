@@ -5,13 +5,13 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
-        classpath "org.anarres.jarjar:jarjar-gradle:1.0.0" // jarjar.repackage
+        classpath 'com.android.tools.build:gradle:3.4.0-beta05'
+        classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'org.anarres.jarjar' // jarjar.repackage tool
+apply plugin: 'org.anarres.jarjar'
 
 repositories {
     google()
@@ -29,7 +29,7 @@ repositories {
 //        url 'https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots'
 //    }
     maven {
-        // Include the library as local library project for ucrop
+        // Git project library as local library project (ucrop) - see https://jitpack.io/docs/
         url 'https://jitpack.io'
     }
 }
@@ -37,13 +37,14 @@ repositories {
 configurations {
     fdroidImplementation
     playstoreImplementation
+    // arjar_ant
 
-    jarjar2
     // libraries duplication conflict
     all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     all*.exclude group: 'xpp3', module: 'xpp3'
 
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
+    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
 }
 
 android {
@@ -57,8 +58,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1066
-        versionName "1.6.6" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1070
+        versionName "1.7.0" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -123,13 +124,16 @@ android {
 
             // This is necessary if you have pre-compiled libraries .jar/.so in your project.
             jniLibs.srcDirs = ['libs']
+            java.srcDirs = ['src/main/java']
         }
+        release { java.srcDirs = ['src/release/java'] }
+        debug { java.srcDirs = ['src/debug/java'] }
 
         // Move the tests to tests/java, tests/res, etc...
-        androidTest.setRoot('tests')
+        // androidTest.setRoot('tests')
 
         // Move the build types to build-types/<type>
-        release.setRoot('build-types/release')
+        // release.setRoot('build-types/release')
     }
 
     lintOptions {
@@ -157,14 +161,14 @@ ext {
     // for official maven release
     // smackVersion = '4.4.0-alpha2'
 
-    // For smack own respository release
+    // For smack own repository release
     smackVersion = '4.4.0-alpha2-SNAPSHOT'
 }
 
 dependencies {
-    jarjar2 'com.googlecode.jarjar:jarjar:1.3'
+    // jarjar_ant 'org.anarres.jarjar:jarjar-ant:1.0.1'
 
-    // Java implementation dependency: ndkBuild & jarRepackage (avoid class conflict)
+    // Java compilation dependency: ndkBuild & jarRepackage (avoid class conflict)
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -178,27 +182,32 @@ dependencies {
     implementation 'ch.imvs:sdes4j:1.1.4'
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
+    // butterknife >=9.0.0 uses androidx - incompatible
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    implementation 'com.karumi:dexter:4.2.0'
+
+    implementation('com.jakewharton.timber:timber:4.7.1') {
+        transitive = false
+    }
+    implementation 'com.karumi:dexter:5.0.0'
 
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.2'
 
-    implementation 'com.googlecode.libphonenumber:libphonenumber:7.5.1'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.5'
     implementation 'com.splitwise:tokenautocomplete:2.0.8'
 
     // when targeting Android API 23 and newer - class obsoleted
     implementation 'cz.msebera.android:httpclient:4.4.1.2' // duplicate class
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
 
-    implementation 'org.apache.commons:commons-lang3:3.6'
+    implementation 'org.apache.commons:commons-lang3:3.8.1'
     implementation 'org.apache.commons:commons-io:1.3.2'
-    implementation 'org.apache.james:apache-mime4j-core:0.8.1'
+    implementation 'org.apache.james:apache-mime4j-core:0.8.2'
     implementation 'org.bitlet:weupnp:0.1.4'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.58'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.61'
     // (dependencies = core + prov)
 
     // Use by provisioning Discover
@@ -208,13 +217,14 @@ dependencies {
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
     // Smack local libraries with patches or enhance features
-    implementation files('lib/smack/smack-extensions-4.4.0-alpha2-SNAPSHOT.jar')
+    // implementation files('lib/smack/smack-core-4.4.0-alpha2-SNAPSHOT.jar')
+    // implementation files('lib/smack/smack-extensions-4.4.0-alpha2-SNAPSHOT.jar')
 
     // Smack 4.4.0-alpha2 has moved to use minidns v0.4.0-alpha3
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
     implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
     implementation "org.igniterealtime.smack:smack-compression-jzlib:$smackVersion"
-    implementation "org.igniterealtime.smack:smack-core:$smackVersion"
+    // implementation "org.igniterealtime.smack:smack-core:$smackVersion"
     implementation "org.igniterealtime.smack:smack-experimental:$smackVersion"
     // implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
     implementation "org.igniterealtime.smack:smack-im:$smackVersion"
@@ -226,21 +236,7 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
-    // Use jarjar.repackage in place of a dependency notation (destination file?).
-//    implementation 'org.jitsi:ice4j:2.0.0-SNAPSHOT'
-//    implementation jarjar.repackage {
-//        from 'org.jitsi:ice4j:2.0.0-SNAPSHOT'
-//        // classRename 'java.util.Objects' 'org.jivesoftware.smack.util.Objects' // not supported
-//        classDelete 'org.jivesoftware.smackx.omemo.OmemoManager'
-//    }
-
-    // Use jarjar.repackage in place of a dependency notation (destination file?).
-    //    implementation jarjar.repackage {
-    //        from "org.igniterealtime.smack:smack-omemo:$smackVersion"
-    //        classDelete 'org.jivesoftware.smackx.omemo.OmemoManager'
-    //    }
-
-    implementation 'org.jxmpp:jxmpp-jid:0.6.3'
+    implementation 'org.jxmpp:jxmpp-jid:0.7.0-alpha5'
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
 
     implementation 'org.jetbrains:annotations-java5:15.0'
@@ -249,6 +245,84 @@ dependencies {
     playstoreImplementation "com.google.android.gms:play-services-location:${rootProject.gmsPlayServicesVersion}"
     playstoreImplementation "com.google.android.gms:play-services-maps:${rootProject.gmsPlayServicesVersion}"
     playstoreImplementation "com.google.android.gms:play-services-panorama:${rootProject.gmsPlayServicesVersion}"
+
+    /*
+     * jarjar.repackage with generated dir/filename specified - default in build/jarjar/jarjar-xxx.jar
+     * filename must not contains colon i.e. ":" colon, treated as URL and will failed missing classes
+     * destinationName may use relative i.e. "../../libs/fileName.jar to $buildDir/jarjar
+     * classDelete must check actual jar to see if end ** is required - due to multiple components
+     * May use className and className$** to delete only the related, but excluding classes with same prefix
+     */
+    implementation jarjar.repackage {
+        from("org.igniterealtime.smack:smack-core:$smackVersion") {
+            transitive = false
+        }
+        destinationDir new File("${projectDir}/libs")
+        destinationName "smack-core_${smackVersion}.jar"
+
+        classDelete 'org.jivesoftware.smack.provider.Provider'
+    }
+
+    implementation jarjar.repackage {
+        from("org.igniterealtime.smack:smack-extensions:$smackVersion") {
+            transitive = false
+        }
+        destinationDir new File("${projectDir}/libs")
+        destinationName "smack-extensions_${smackVersion}.jar"
+
+        classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager**'
+        classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
+        classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
+        classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
+    }
+
+    implementation jarjar.repackage {
+        from files('lib/bundles/fmj-1.0-SNAPSHOT.jar')
+        destinationDir new File("${projectDir}/libs")
+        destinationName "fmj-1.0-SNAPSHOT.jar"
+
+        classRename 'java.awt.**', 'org.atalk.android.util.java.awt.@1'
+        classRename 'java.beans.**', 'org.atalk.android.util.java.beans.@1'
+        classRename 'javax.swing.**', 'org.atalk.android.util.javax.swing.@1'
+        classRename 'javax.sound.**', 'org.atalk.android.util.javax.sound.@1'
+        classRename 'javax.imageio.**', 'org.atalk.android.util.javax.imageio.@1'
+
+        // remove extracted modules for changes
+        classDelete 'net.sf.fmj.media.RegistryDefaults'
+        classDelete 'javax.media.format.VideoFormat'
+        classDelete 'javax.media.Manager**'
+    }
+
+    // ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
+    // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
+    // Objects class only available in API-19 and above
+    implementation jarjar.repackage {
+        // from files('lib/bundles/ice4j-2.0.0-20181024.160538-12.jar') // (revision 730)
+
+        // Do not use the latest master-SNAPSHOT => not compatible with aTalk
+        // use only ba7e30c189 i.e. the release version of ice4j-2.0.0-20181024.160538-12.jar
+        from('com.github.jitsi:ice4j:ba7e30c18980556f126e5e72ecbdb637616dd1bf') {
+            transitive = false
+        }
+        destinationDir new File("${projectDir}/libs")
+        destinationName "ice4j-2.0.0-SNAPSHOT.jar"
+
+        classRename 'java.util.Objects', 'org.jivesoftware.smack.util.Objects'
+    }
+
+    // implementation 'com.github.jitsi:zrtp4j:master-SNAPSHOT'
+
+    implementation jarjar.repackage {
+        // Source not found either in master-SNAPSHOT or
+        // from('com.github.jitsi:zrtp4j:beb6723b2e13e27710e38ea9b64f2da8d9a395a3') {
+        //    transitive = false
+        // }
+        from files('lib/bundles/zrtp4j-light-4.1.0-jitsi-1-SNAPSHOT.jar')
+        destinationDir new File("${projectDir}/libs")
+        destinationName "zrtp4j-light-4.1.0.jar"
+
+        classRename 'org.jitsi.**', 'org.atalk.@1'
+    }
 }
 
 task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
@@ -276,48 +350,48 @@ task ndkClean(type: Exec, description: 'Clean JNI object files') {
             'clean'
 }
 
-// renames packages to be compatiable with aTalk apk build
-task jarRepackage(type: Copy, description: 'Repackage jar to avoid conflict') {
-
-    project.ant {
-        taskdef name: "jarjar2", classname: 'com.tonicsystems.jarjar.JarJarTask',
-                classpath: configurations.jarjar2.asPath
-
-        jarjar2(jarfile: 'libs/fmj-1.0.jar') {
-            zipfileset(src: 'lib/bundles/fmj-1.0-20170519.163031-24.jar')
-            rule pattern: 'java.awt.**',
-                    result: 'org.atalk.android.util.java.awt.@1'
-            rule pattern: 'java.beans.**',
-                    result: 'org.atalk.android.util.java.beans.@1'
-            rule pattern: 'javax.swing.**',
-                    result: 'org.atalk.android.util.javax.swing.@1'
-            rule pattern: 'javax.sound.**',
-                    result: 'org.atalk.android.util.javax.sound.@1'
-            rule pattern: 'javax.imageio.**',
-                    result: 'org.atalk.android.util.javax.imageio.@1'
-            // remove extracted modules for changes
-            zap pattern: 'net.sf.fmj.media.RegistryDefaults'
-            zap pattern: 'javax.media.format.VideoFormat'
-            zap pattern: 'javax.media.Manager'
-            zap pattern: 'javax.media.Manager**'
-        }
-
-        // ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
-        // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
-        // Objects class only available in API-19 and above
-        jarjar2(jarfile: 'libs/ice4j-2.0.0.jar') {
-            zipfileset(src: 'lib/bundles/ice4j-2.0.0-20181024.160538-12.jar')
-            rule pattern: 'java.util.Objects',
-                    result: 'org.jivesoftware.smack.util.Objects'
-        }
-
-        jarjar2(jarfile: 'libs/zrtp4j-light-4.1.0.jar') {
-            zipfileset(src: 'lib/bundles/zrtp4j-light-4.1.0.jar')
-            rule pattern: 'org.jitsi.**',
-                    result: 'org.atalk.@1'
-        }
-    }
-}
+// renames packages to be compatible with aTalk apk build
+//task jarRepackage(type: Copy, description: 'Repackage jar to avoid conflict') {
+//
+//    project.ant {
+//        taskdef name: "jarjar_ant", classname: 'com.tonicsystems.jarjar.JarJarTask',
+//                classpath: configurations.jarjar_ant.asPath
+//
+//        jarjar_ant(jarfile: 'libs/fmj-1.0.jar') {
+//            zipfileset(src: 'lib/bundles/fmj-1.0-20170519.163031-24.jar')
+//            rule pattern: 'java.awt.**',
+//                    result: 'org.atalk.android.util.java.awt.@1'
+//            rule pattern: 'java.beans.**',
+//                    result: 'org.atalk.android.util.java.beans.@1'
+//            rule pattern: 'javax.swing.**',
+//                    result: 'org.atalk.android.util.javax.swing.@1'
+//            rule pattern: 'javax.sound.**',
+//                    result: 'org.atalk.android.util.javax.sound.@1'
+//            rule pattern: 'javax.imageio.**',
+//                    result: 'org.atalk.android.util.javax.imageio.@1'
+//            // remove extracted modules for changes
+//            zap pattern: 'net.sf.fmj.media.RegistryDefaults'
+//            zap pattern: 'javax.media.format.VideoFormat'
+//            zap pattern: 'javax.media.Manager'
+//            zap pattern: 'javax.media.Manager**'
+//        }
+//
+//        // ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
+//        // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
+//        // Objects class only available in API-19 and above
+//        jarjar_ant(jarfile: 'libs/ice4j-2.0.0.jar') {
+//            zipfileset(src: 'lib/bundles/ice4j-2.0.0-20181024.160538-12.jar')
+//            rule pattern: 'java.util.Objects',
+//                    result: 'org.jivesoftware.smack.util.Objects'
+//        }
+//
+//        jarjar_ant(jarfile: 'libs/zrtp4j-light-4.1.0.jar') {
+//            zipfileset(src: 'lib/bundles/zrtp4j-light-4.1.0-jitsi-1-SNAPSHOT.jar')
+//            rule pattern: 'org.jitsi.**',
+//                    result: 'org.atalk.@1'
+//        }
+//    }
+//}
 
 task updateVersionFile(type: Copy) {
     description '<!-- Generate versionupdate.properties file -->'
@@ -341,11 +415,19 @@ task updateVersionFile(type: Copy) {
     into 'build/outputs/apk'
 }
 
+//task copyJars(type: Copy) {
+//    from "$buildDir/jarjar"
+//    include "*.jar"
+//    into "$projectDir/libs/"
+//    println "Copy jars from: $buildDir/jarjar"
+//}
+
+// cmeng - need to perform setup libs (first time & after clean)
 tasks.withType(JavaCompile) {
-        // cmeng - need to perform setup libs (first time & after clean)
-    compileTask -> compileTask.dependsOn ndkBuild, jarRepackage
+    compileTask -> compileTask.dependsOn ndkBuild //, jarRepackage
 }
 
 // will clean /libs/armeabi/*.so
 clean.dependsOn 'ndkClean'
+// preBuild.dependsOn 'copyJars'
 build.dependsOn 'updateVersionFile'

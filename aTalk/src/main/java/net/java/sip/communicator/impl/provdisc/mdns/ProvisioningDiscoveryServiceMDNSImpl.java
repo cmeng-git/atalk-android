@@ -15,25 +15,22 @@
  */
 package net.java.sip.communicator.impl.provdisc.mdns;
 
-import net.java.sip.communicator.service.provdisc.*;
-import net.java.sip.communicator.service.provdisc.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.provdisc.AbstractProvisioningDiscoveryService;
+import net.java.sip.communicator.service.provdisc.event.DiscoveryEvent;
+import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
+
+import timber.log.Timber;
 
 /**
  * Class that uses mDNS to retrieve provisioning URL.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public class ProvisioningDiscoveryServiceMDNSImpl
-    extends AbstractProvisioningDiscoveryService
-    implements DiscoveryListener
+        extends AbstractProvisioningDiscoveryService
+        implements DiscoveryListener
 {
-    /**
-     * Logger.
-     */
-    private final Logger logger
-        = Logger.getLogger(ProvisioningDiscoveryServiceMDNSImpl.class);
-
     /**
      * Name of the method used to retrieve provisioning URL.
      */
@@ -49,14 +46,11 @@ public class ProvisioningDiscoveryServiceMDNSImpl
      */
     public ProvisioningDiscoveryServiceMDNSImpl()
     {
-        try
-        {
+        try {
             discover = new MDNSProvisioningDiscover();
             discover.addDiscoveryListener(this);
-        }
-        catch(Exception e)
-        {
-            logger.warn("Cannot create JmDNS instance", e);
+        } catch (Exception e) {
+            Timber.w(e, "Cannot create JmDNS instance");
         }
     }
 
@@ -81,8 +75,7 @@ public class ProvisioningDiscoveryServiceMDNSImpl
     @Override
     public String discoverURL()
     {
-        if(discover != null)
-        {
+        if (discover != null) {
             return discover.discoverProvisioningURL();
         }
 
@@ -98,8 +91,7 @@ public class ProvisioningDiscoveryServiceMDNSImpl
     @Override
     public void startDiscovery()
     {
-        if(discover != null)
-        {
+        if (discover != null) {
             new Thread(discover).start();
         }
     }

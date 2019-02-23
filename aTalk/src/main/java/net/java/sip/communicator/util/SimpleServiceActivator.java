@@ -6,25 +6,22 @@
  */
 package net.java.sip.communicator.util;
 
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+import timber.log.Timber;
 
 /**
  * Base class for activators which only register new service in bundle context.
- * Service registration activity is logged on <tt>INFO</tt> level.
+ * Service registration activity is logged on <tt>Debug</tt> level.
  *
- * @param <T> service implementation template type
- *           (for convenient instance access)
+ * @param <T> service implementation template type (for convenient instance access)
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
-public abstract class SimpleServiceActivator<T>
-    implements BundleActivator
+public abstract class SimpleServiceActivator<T> implements BundleActivator
 {
-    /**
-     * The <tt>Logger</tt> instance used for logging output.
-     */
-    private final Logger logger;
-
     /**
      * Class of the service
      */
@@ -43,15 +40,13 @@ public abstract class SimpleServiceActivator<T>
     /**
      * Creates new instance of <tt>SimpleServiceActivator</tt>
      *
-     * @param serviceClass class of service that will be registered on bundle
-     *                     startup
-     * @param serviceName  service name that wil be used in log messages
+     * @param serviceClass class of service that will be registered on bundle startup
+     * @param serviceName service name that wil be used in log messages
      */
     public SimpleServiceActivator(Class<?> serviceClass, String serviceName)
     {
         this.serviceClass = serviceClass;
         this.serviceName = serviceName;
-        logger = Logger.getLogger(this.getClass().getName());
     }
 
     /**
@@ -63,27 +58,16 @@ public abstract class SimpleServiceActivator<T>
     public void start(BundleContext bundleContext)
             throws Exception
     {
-        //Create the service impl
         serviceImpl = createServiceImpl();
-
-        if (logger.isInfoEnabled())
-            logger.info(serviceName+" STARTED");
-
-        bundleContext
-                .registerService(
-                        serviceClass.getName(),
-                        serviceImpl,
-                        null);
-
-        if (logger.isInfoEnabled())
-            logger.info(serviceName+" REGISTERED");
+        bundleContext.registerService(serviceClass.getName(), serviceImpl, null);
+        Timber.i("%s REGISTERED", serviceName);
     }
 
     /**
      * Stops this bundle.
      *
      * @param bundleContext the <tt>BundleContext</tt>
-     * @throws Exception if the stop operation goes wrong
+     * @throws @Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)
             throws Exception
@@ -91,8 +75,7 @@ public abstract class SimpleServiceActivator<T>
     }
 
     /**
-     * Called on bundle startup in order to create service implementation
-     * instance.
+     * Called on bundle startup in order to create service implementation instance.
      *
      * @return should return new instance of service implementation.
      */

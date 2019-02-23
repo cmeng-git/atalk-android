@@ -8,13 +8,14 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import android.os.Build;
 import android.text.Html;
 
-import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -47,7 +48,7 @@ import org.jxmpp.jid.*;
 
 import java.util.*;
 
-import butterknife.BuildConfig;
+import timber.log.Timber;
 
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 
@@ -65,11 +66,6 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_
 public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperationSetBasicInstantMessaging
         implements OperationSetMessageCorrection, IncomingChatMessageListener, CarbonCopyReceivedListener, OmemoMessageListener
 {
-    /**
-     * Our class logger
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetBasicInstantMessagingJabberImpl.class);
-
     /**
      * A table mapping contact addresses to message threads that can be used to target a specific
      * resource (rather than sending a message to all logged instances of a user).
@@ -273,12 +269,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     public void purgeGoneJidThreads(BareJid bareJid)
     {
-        if (jidThreads.containsKey(bareJid)) {
-            jidThreads.remove(bareJid);
-        }
-        else if (jidThreads.containsKey(bareJid)) {
-            jidThreads.remove(bareJid);
-        }
+        jidThreads.remove(bareJid);
     }
 
     /**
@@ -374,9 +365,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         for (ExtensionElement ext : extensions) {
             msg.addExtension(ext);
         }
-
-        if (logger.isTraceEnabled())
-            logger.trace("Will send a message to: " + toJid + " chat.jid = " + toJid);
+        Timber.log(TimberLog.FINER, "Will send a message to: %s chat.jid = %s", toJid, toJid);
 
         MessageDeliveredEvent msgDeliveryPendingEvt = new MessageDeliveredEvent(message, to, toResource);
         MessageDeliveredEvent[] transformedEvents = messageDeliveryPendingTransform(msgDeliveryPendingEvt);
@@ -506,7 +495,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             mChat = mChatManager.chatWith(toJid.asEntityBareJidIfPossible());
             mChat.send(sendMessage);
         } catch (UndecidedOmemoIdentityException e) {
-            HashSet<OmemoDevice> omemoDevices = e.getUndecidedDevices();
+            Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
             aTalkApp.getGlobalContext().startActivity(
                     OmemoAuthenticateDialog.createIntent(omemoManager, omemoDevices, null));
         } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException e) {
@@ -515,7 +504,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             msg = "User must login to send omemo message: " + e.getMessage();
         }
         if (!StringUtils.isNullOrEmpty(msg)) {
-            logger.warn(msg);
+            Timber.w("%s", msg);
             aTalkApp.showToastMessage(msg);
         }
 
@@ -624,10 +613,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 isCarbonEnabled = false;
                 mCarbonManager = null;
             }
-            logger.info("Successfully setting carbon new state for: " + userJid + " to " + isCarbonEnabled);
+            Timber.i("Successfully setting carbon new state for: %s to %s", userJid, isCarbonEnabled);
         } catch (NoResponseException | InterruptedException | NotConnectedException
                 | XMPPException.XMPPErrorException e) {
-            logger.error("Failed to set carbon state for: " + userJid + " to " + enableCarbon, e);
+            Timber.e(e, "Failed to set carbon state for: %s to %S", userJid, enableCarbon);
         }
     }
 
@@ -670,7 +659,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         BareJid userBareID = userFullJId.asBareJid();
 
         boolean isPrivateMessaging = false;
-        ChatRoom privateContactRoom = null;
+        ChatRoomJabberImpl privateContactRoom = null;
         OperationSetMultiUserChatJabberImpl mucOpSet
                 = (OperationSetMultiUserChatJabberImpl) jabberProvider.getOperationSet(OperationSetMultiUserChat.class);
         if (mucOpSet != null) {
@@ -679,9 +668,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 isPrivateMessaging = true;
             }
         }
-
-        if (logger.isDebugEnabled())
-            logger.debug("Received from " + userBareID + " the message " + message.toString());
+        Timber.d("Received from %s the message %s", userBareID, message.toString());
 
         String msgID = message.getStanzaId();
         String correctedMessageUID = getCorrectionMessageId(message);
@@ -736,12 +723,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 String errorReason = (error != null) ? error.toString() : "";
                 ChatRoomMessageDeliveryFailedEvent evt = new ChatRoomMessageDeliveryFailedEvent(privateContactRoom,
                         null, errorResultCode, errorReason, new Date(), newMessage);
-                ((ChatRoomJabberImpl) privateContactRoom).fireMessageEvent(evt);
+                privateContactRoom.fireMessageEvent(evt);
                 return;
             }
 
-            if (logger.isInfoEnabled())
-                logger.info("Message error received from " + userBareID);
+            Timber.i("Message error received from %s", userBareID);
 
             int errorResultCode = MessageDeliveryFailedEvent.UNKNOWN_ERROR;
             if (error != null) {
@@ -766,8 +752,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         // In the second condition we filter all group chat messages, because they are managed
         // by the multi user chat operation set.
         if (sourceContact == null) {
-            if (logger.isDebugEnabled())
-                logger.debug("received a message from an unknown contact: " + userBareID);
+            Timber.d("received a message from an unknown contact: %s", userBareID);
             // create the volatile contact
             sourceContact = opSetPersPresence.createVolatileContact(userFullJId, isPrivateMessaging);
         }
@@ -835,7 +820,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     private static synchronized String nextThreadID()
     {
-        return prefix + Long.toString(id++);
+        return prefix + id++;
     }
 
     /**

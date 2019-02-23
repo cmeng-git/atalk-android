@@ -8,24 +8,15 @@ package net.java.sip.communicator.service.protocol.media;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.PortTracker;
 
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.neomedia.DefaultStreamConnector;
-import org.atalk.service.neomedia.MediaStreamTarget;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.neomedia.StreamConnector;
-import org.ice4j.ice.Agent;
-import org.ice4j.ice.IceMediaStream;
-import org.ice4j.ice.LocalCandidate;
+import org.atalk.service.neomedia.*;
+import org.ice4j.ice.*;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.net.*;
+
+import timber.log.Timber;
 
 /**
  * <tt>TransportManager</tt>s are responsible for allocating ports, gathering local candidates and
@@ -39,11 +30,6 @@ import java.net.Socket;
  */
 public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>TransportManager</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(TransportManager.class);
-
     /**
      * The port tracker that we should use when binding generic media streams.
      *
@@ -140,7 +126,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
         try {
             return getPortTracker(MediaType.parseString(mediaTypeStr));
         } catch (Exception e) {
-            logger.info("Returning default port tracker for unrecognized media type: " + mediaTypeStr);
+            Timber.i("Returning default port tracker for unrecognized media type: %s", mediaTypeStr);
             return defaultPortTracker;
         }
     }
@@ -218,7 +204,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
             try {
                 closeStreamConnector(mediaType, streamConnector);
             } catch (OperationFailedException e) {
-                logger.error("Failed to close stream connector for " + mediaType, e);
+                Timber.e(e, "Failed to close stream connector for %s", mediaType);
             }
             streamConnectors[index] = null;
         }
@@ -403,7 +389,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
      */
     public void sendHolePunchPacket(MediaStreamTarget target, MediaType type, RawPacket packet)
     {
-        logger.info("Send NAT hole punch packets");
+        Timber.i("Send NAT hole punch packets");
         // target may have been closed by remote action
         if (target == null)
             return;
@@ -447,7 +433,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
                 }
             }
         } catch (Exception e) {
-            logger.error("Error cannot send to remote peer", e);
+            Timber.e(e, "Error cannot send to remote peer");
         }
     }
 
@@ -464,9 +450,8 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
 
         if (trafficClass <= 0)
             return;
+        Timber.i("Set traffic class for %s to %s", type, trafficClass);
 
-        if (logger.isInfoEnabled())
-            logger.info("Set traffic class for " + type + " to " + trafficClass);
         try {
             StreamConnector connector = getStreamConnector(type);
 
@@ -489,7 +474,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
                 }
             }
         } catch (Exception e) {
-            logger.error("Failed to set traffic class for " + type + " to " + trafficClass, e);
+            Timber.e(e, "Failed to set traffic class for %s to %s", type, trafficClass);
         }
     }
 

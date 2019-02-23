@@ -5,14 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.jivesoftware.smack.util.SHA1;
 import org.jivesoftware.smackx.bob.BoBHash;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 
 /**
  * The <tt>Thumbnail</tt> represents a "thumbnail" XML element, that is contained in the file
@@ -24,8 +19,6 @@ import java.io.IOException;
  */
 public class Thumbnail
 {
-    private static final Logger logger = Logger.getLogger(Thumbnail.class);
-
     /**
      * The name of the XML element used for transport of thumbnail parameters.
      */
@@ -91,13 +84,10 @@ public class Thumbnail
         mimeType = parser.getAttributeValue("", MIME_TYPE);
         String parserWidth = parser.getAttributeValue("", WIDTH);
         String parserHeight = parser.getAttributeValue("", HEIGHT);
-        try
-        {
+        try {
             width = Integer.parseInt(parserWidth);
             height = Integer.parseInt(parserHeight);
-        }
-        catch (NumberFormatException nfe)
-        {
+        } catch (NumberFormatException nfe) {
             // ignore, width and height are optional
         }
     }

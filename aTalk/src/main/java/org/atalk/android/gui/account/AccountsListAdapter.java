@@ -12,7 +12,6 @@ import android.widget.*;
 
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -23,6 +22,8 @@ import org.osgi.framework.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import timber.log.Timber;
 
 /**
  * This is a convenience class which implements an {@link Adapter} interface to put the list of
@@ -42,11 +43,6 @@ import java.util.Collection;
 public class AccountsListAdapter extends CollectionAdapter<Account>
         implements EventListener<AccountEvent>, ServiceListener
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(AccountsListAdapter.class);
-
     /**
      * The {@link View} resources ID describing list's row
      */
@@ -235,7 +231,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
         if (account.getAccountID().isHidden())
             return;
 
-        logger.debug("Account added: " + account.getAccountName());
+        Timber.d("Account added: %s", account.getAccountName());
         add(account);
         account.addAccountEventListener(this);
     }
@@ -251,7 +247,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
         if (account != null) {
             account.removeAccountEventListener(this);
             remove(account);
-            logger.debug("Account removed: " + accountID.getDisplayName());
+            Timber.d("Account removed: %s", accountID.getDisplayName());
         }
     }
 
@@ -262,11 +258,9 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      */
     public void onChangeEvent(AccountEvent accountEvent)
     {
-//		if (logger.isTraceEnabled()) {
-//			logger.trace("Not an Error! Received accountEvent update for: "
-//					+ accountEvent.getSource().getAccountName() + " "
-//					+ accountEvent.toString(), new Throwable());
-//		}
+        //			Timber.log(TimberLog.FINE, "Not an Error! Received accountEvent update for: "
+        //					+ accountEvent.getSource().getAccountName() + " "
+        //					+ accountEvent.toString(), new Throwable());
         doRefreshList();
     }
 }

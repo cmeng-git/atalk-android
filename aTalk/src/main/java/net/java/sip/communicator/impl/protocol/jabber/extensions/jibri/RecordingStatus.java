@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jibri;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.AbstractExtensionElement;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.StanzaError;
@@ -32,7 +32,7 @@ import java.util.List;
  * <tt>{@link JibriIq.Status#PENDING}</tt> - starting recording
  * <tt>{@link JibriIq.Status#ON}</tt> - recording in progress
  */
-public class RecordingStatus extends AbstractPacketExtension
+public class RecordingStatus extends AbstractExtensionElement
 {
     /**
      * The namespace of this packet extension.

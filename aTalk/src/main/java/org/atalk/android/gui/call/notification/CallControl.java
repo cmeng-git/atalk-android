@@ -9,10 +9,12 @@ import android.content.*;
 import android.media.AudioManager;
 
 import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.CallManager;
+import org.atalk.android.plugin.timberlog.TimberLog;
+
+import timber.log.Timber;
 
 /**
  * <tt>BroadcastReceiver</tt> that listens for {@link #CALL_CTRL_ACTION} action and performs
@@ -30,11 +32,6 @@ import org.atalk.android.gui.call.CallManager;
  */
 public class CallControl extends BroadcastReceiver
 {
-    /**
-     * The logger
-     */
-    private Logger logger = Logger.getLogger(CallControl.class);
-
     /**
      * Call control action name
      */
@@ -78,48 +75,48 @@ public class CallControl extends BroadcastReceiver
     {
         String callID = intent.getStringExtra(EXTRA_CALL_ID);
         if (callID == null) {
-            logger.error("Extra call ID is null");
+            Timber.e("Extra call ID is null");
             return;
         }
 
         Call call = CallManager.getActiveCall(callID);
         if (call == null) {
-            logger.error("Call with id: " + callID + " does not exists");
+            Timber.e("Call with id: %s does not exists", callID );
             return;
         }
 
         int action = intent.getIntExtra(EXTRA_ACTION, -1);
         if (action == -1) {
-            logger.error("No action supplied");
+            Timber.e("No action supplied");
             return;
         }
 
         switch (action) {
             case ACTION_TOGGLE_SPEAKER:
-                logger.trace("Action TOGGLE SPEAKER");
+                Timber.log(TimberLog.FINER, "Action TOGGLE SPEAKER");
                 AudioManager audio = (AudioManager) aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
                 audio.setSpeakerphoneOn(!audio.isSpeakerphoneOn());
                 break;
 
             case ACTION_TOGGLE_MUTE:
-                logger.trace("Action TOGGLE MUTE");
+                Timber.log(TimberLog.FINER, "Action TOGGLE MUTE");
                 boolean isMute = CallManager.isMute(call);
                 CallManager.setMute(call, !isMute);
                 break;
 
             case ACTION_TOGGLE_ON_HOLD:
-                logger.trace("Action TOGGLE ON HOLD");
+                Timber.log(TimberLog.FINER, "Action TOGGLE ON HOLD");
                 boolean isOnHold = CallManager.isLocallyOnHold(call);
                 CallManager.putOnHold(call, !isOnHold);
                 break;
 
             case ACTION_HANGUP:
-                logger.trace("Action HANGUP");
+                Timber.log(TimberLog.FINER, "Action HANGUP");
                 CallManager.hangupCall(call);
                 break;
 
             default:
-                logger.warn("No valid action supplied");
+                Timber.w("No valid action supplied");
         }
     }
 

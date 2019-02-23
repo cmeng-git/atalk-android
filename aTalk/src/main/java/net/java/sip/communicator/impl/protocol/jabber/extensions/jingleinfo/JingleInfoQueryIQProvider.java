@@ -5,12 +5,15 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jingleinfo;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultPacketExtensionProvider;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultExtensionElementProvider;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.*;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
  * Provider for the <tt>JingleInfoQueryIQ</tt>.
@@ -37,8 +40,8 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
      */
     public JingleInfoQueryIQProvider()
     {
-        ProviderManager.addExtensionProvider(ServerPacketExtension.ELEMENT_NAME, ServerPacketExtension.NAMESPACE,
-                new DefaultPacketExtensionProvider<>(ServerPacketExtension.class));
+        ProviderManager.addExtensionProvider(ServerExtensionElement.ELEMENT_NAME, ServerExtensionElement.NAMESPACE,
+                new DefaultExtensionElementProvider<>(ServerExtensionElement.class));
     }
 
     /**
@@ -49,8 +52,8 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
      * @throws XmlPullParserException, IOException, SmackException if an error occurs parsing the XML.
      */
     @Override
-    public JingleInfoQueryIQ parse(XmlPullParser parser, int depth)
-            throws Exception
+    public JingleInfoQueryIQ parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+            throws XmlPullParserException, IOException, SmackParsingException
     {
         boolean done = false;
         JingleInfoQueryIQ iq = new JingleInfoQueryIQ();
@@ -61,11 +64,11 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
             String elementName = parser.getName();
 
             if (eventType == XmlPullParser.START_TAG) {
-                if (elementName.equals(StunPacketExtension.ELEMENT_NAME)) {
-                    iq.addExtension((StunPacketExtension) stunProvider.parse(parser));
+                if (elementName.equals(StunExtensionElement.ELEMENT_NAME)) {
+                    iq.addExtension((StunExtensionElement) stunProvider.parse(parser));
                 }
-                else if (elementName.equals(RelayPacketExtension.ELEMENT_NAME)) {
-                    iq.addExtension((RelayPacketExtension) relayProvider.parse(parser));
+                else if (elementName.equals(RelayExtensionElement.ELEMENT_NAME)) {
+                    iq.addExtension((RelayExtensionElement) relayProvider.parse(parser));
                 }
             }
             if (eventType == XmlPullParser.END_TAG) {

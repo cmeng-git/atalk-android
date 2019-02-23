@@ -5,32 +5,29 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import java.io.IOException;
-import java.io.InputStream;
+import android.content.Context;
+import android.net.Uri;
 
-import javax.media.format.AudioFormat;
-
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.service.osgi.OSGiService;
 
-import android.content.Context;
-import android.net.Uri;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.media.format.AudioFormat;
+
+import timber.log.Timber;
 
 /**
  * Utils that obtain audio resource input stream and its format.
  *
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
 public class AudioStreamUtils
 {
-	/**
-	 * The <tt>Logger</tt> used by the <tt>CredentialsStorageActivator</tt> class and its instances.
-	 */
-	private static final Logger logger = Logger.getLogger(AudioStreamUtils.class);
-
 	/**
 	 * Obtains an audio input stream from the URL provided.
 	 * 
@@ -65,9 +62,8 @@ public class AudioStreamUtils
 		catch (Throwable t) {
 			if (t instanceof ThreadDeath)
 				throw (ThreadDeath) t;
-			logger.error("Error opening file:" + url, t);
+			Timber.e(t, "Error opening file:%s", url);
 		}
-
 		return audioStream;
 	}
 

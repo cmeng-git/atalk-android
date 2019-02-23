@@ -13,26 +13,23 @@
  */
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.util.DiagnosticContext;
-import org.atalk.util.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+
+import timber.log.Timber;
 
 /**
  * webrtc/modules/remote_bitrate_estimator/overuse_estimator.cc
  * webrtc/modules/remote_bitrate_estimator/overuse_estimator.h
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 class OveruseEstimator
 {
-    /**
-     * The <tt>Logger</tt> used by the
-     * <tt>RemoteBitrateEstimatorAbsSendTime</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(OveruseEstimator.class);
-
     private static final int kDeltaCounterMax = 1000;
 
     private static final int kMinFramePeriodHistoryLength = 60;
@@ -228,16 +225,14 @@ class OveruseEstimator
         slope = slope + K[0] * residual;
         prevOffset = offset;
         offset = offset + K[1] * residual;
-        if (logger.isTraceEnabled()) {
-            logger.trace(diagnosticContext
-                    .makeTimeSeriesPoint("delay_variation_estimation", systemTimeMs)
-                    .addField("estimator", hashCode())
-                    .addField("time_delta", tDelta)
-                    .addField("ts_delta", tsDelta)
-                    .addField("tts_delta", tTsDelta)
-                    .addField("offset", offset)
-                    .addField("hypothesis", currentHypothesis.getValue()));
-        }
+        Timber.log(TimberLog.FINER, "%s", diagnosticContext
+                .makeTimeSeriesPoint("delay_variation_estimation", systemTimeMs)
+                .addField("estimator", hashCode())
+                .addField("time_delta", tDelta)
+                .addField("ts_delta", tsDelta)
+                .addField("tts_delta", tTsDelta)
+                .addField("offset", offset)
+                .addField("hypothesis", currentHypothesis.getValue()));
     }
 
     private double updateMinFramePeriod(double tsDelta)

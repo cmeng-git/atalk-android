@@ -20,7 +20,6 @@ import net.java.sip.communicator.service.netaddr.event.NetworkConfigurationChang
 import net.java.sip.communicator.service.sysactivity.SystemActivityChangeListener;
 import net.java.sip.communicator.service.sysactivity.SystemActivityNotificationsService;
 import net.java.sip.communicator.service.sysactivity.event.SystemActivityEvent;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.osgi.framework.*;
@@ -28,18 +27,16 @@ import org.osgi.framework.*;
 import java.net.*;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * Periodically checks the current network interfaces to track changes and fire events on those changes.
  *
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
 public class NetworkConfigurationWatcher implements SystemActivityChangeListener, ServiceListener, Runnable
 {
-    /**
-     * Our class logger.
-     */
-    private static Logger logger = Logger.getLogger(NetworkConfigurationWatcher.class);
-
     /**
      * The current active interfaces.
      */
@@ -73,7 +70,7 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
         try {
             checkNetworkInterfaces(false, 0, true);
         } catch (SocketException e) {
-            logger.error("Error checking network interfaces", e);
+            Timber.e(e, "Error checking network interfaces");
         }
     }
 
@@ -133,7 +130,7 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
                 }
             }
         } catch (SocketException e) {
-            logger.error("Error checking network interfaces", e);
+            Timber.e(e, "Error checking network interfaces");
         }
     }
 
@@ -238,14 +235,14 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
             try {
                 checkNetworkInterfaces(true, 0, true);
             } catch (SocketException e) {
-                logger.error("Error checking network interfaces", e);
+                Timber.e(e, "Error checking network interfaces");
             }
         }
         else if (event.getEventID() == SystemActivityEvent.EVENT_DNS_CHANGE) {
             try {
                 eventDispatcher.fireChangeEvent(new ChangeEvent(event.getSource(), ChangeEvent.DNS_CHANGE));
             } catch (Throwable t) {
-                logger.error("Error dispatching dns change.");
+                Timber.e("Error dispatching dns change.");
             }
         }
     }
@@ -255,9 +252,7 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
      */
     private void downAllInterfaces()
     {
-        Iterator<String> iter = activeInterfaces.keySet().iterator();
-        while (iter.hasNext()) {
-            String niface = iter.next();
+        for (String niface : activeInterfaces.keySet()) {
             eventDispatcher.fireChangeEvent(new ChangeEvent(niface, ChangeEvent.IFACE_DOWN, true));
         }
         activeInterfaces.clear();
@@ -304,13 +299,13 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
         }
 
         // add network debug info, to track wake up problems
-        if (logger.isInfoEnabled() && printDebugInfo) {
+        if (printDebugInfo) {
             for (Map.Entry<String, List<InetAddress>> en : activeInterfaces.entrySet()) {
-                logger.info("Previously Active " + en.getKey() + ":" + en.getValue());
+                Timber.i("Previously Active %s:%s", en.getKey(), en.getValue());
             }
 
             for (Map.Entry<String, List<InetAddress>> en : currentActiveInterfaces.entrySet()) {
-                logger.info("Currently Active " + en.getKey() + ":" + en.getValue());
+                Timber.i("Currently Active %s:%s", en.getKey(), en.getValue());
             }
         }
 
@@ -377,9 +372,8 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
         }
 
         // now we leave with only with the new and up interfaces in currentActiveInterfaces Map
-        Iterator<String> ifaceIter = activeInterfaces.keySet().iterator();
-        while (ifaceIter.hasNext()) {
-            currentActiveInterfaces.remove(ifaceIter.next());
+        for (String s : activeInterfaces.keySet()) {
+            currentActiveInterfaces.remove(s);
         }
 
         // fire that interface has gone up
@@ -450,7 +444,7 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
                 // save the last time that we checked
                 last = System.currentTimeMillis();
             } catch (SocketException e) {
-                logger.error("Error checking network interfaces", e);
+                Timber.e(e, "Error checking network interfaces");
             }
             synchronized (this) {
                 try {

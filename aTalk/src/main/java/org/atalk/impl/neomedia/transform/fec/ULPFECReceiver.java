@@ -22,20 +22,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import timber.log.Timber;
+
 /**
  * This class handles the reception of incoming ULPFEC (RFC 5109) packets
  *
  * @author bgrozev
  * @author bbaldino
+ * @author Eng Chong Meng
  */
 public class ULPFECReceiver extends AbstractFECReceiver
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>ULPFECReceiver</tt> class and
-     * its instances to print debug information.
-     */
-    private static final Logger logger
-            = Logger.getLogger(ULPFECReceiver.class);
     /**
      * A <tt>Set</tt> of packets which will be reused every time a
      * packet is recovered. Defined here to avoid recreating it on every call
@@ -275,7 +272,7 @@ public class ULPFECReceiver extends AbstractFECReceiver
             if (protectionLength < lengthRecovery) {
                 // The FEC Level 0 payload only covers part of the media
                 // packet, which isn't useful for us.
-                logger.warn("Recovered only a partial RTP packet. Discarding.");
+                Timber.w("Recovered only a partial RTP packet. Discarding.");
                 return null;
             }
 

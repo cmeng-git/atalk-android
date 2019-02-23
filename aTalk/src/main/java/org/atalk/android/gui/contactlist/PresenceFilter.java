@@ -22,7 +22,6 @@ import net.java.sip.communicator.service.gui.event.MetaContactQueryStatusEvent;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.AndroidGUIActivator;
 
@@ -37,11 +36,6 @@ import java.util.List;
  */
 public class PresenceFilter implements ContactListFilter
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>PresenceFilter</tt> class and its instances to print debugging information.
-     */
-    private static final Logger logger = Logger.getLogger(PresenceFilter.class);
-
     /**
      * Indicates if this presence filter shows or hides the offline contacts.
      */
@@ -82,20 +76,20 @@ public class PresenceFilter implements ContactListFilter
                 maxIndex = currIx;
         }
 
-//		contactListAdapter.getMetaContactListSource().setIndex(maxIndex + 1);
-//		for (ContactSourceService filterSource : filterSources) {
-//			filterSource.setContactSourceIndex(filterSource.getIndex());
-//			ContactSourceService sourceService = filterSource.getContactSourceService();
-//
-//			ContactQuery contactQuery = sourceService.createContactQuery(null);
-//			if (contactQuery == null)
-//				continue;
-//
-//			// Add this query to the filterQuery.
-//			filterQuery.addContactQuery(contactQuery);
-//			// contactQuery.addContactQueryListener(contactList);
-//			contactQuery.start();
-//		}
+        //		contactListAdapter.getMetaContactListSource().setIndex(maxIndex + 1);
+        //		for (ContactSourceService filterSource : filterSources) {
+        //			filterSource.setContactSourceIndex(filterSource.getIndex());
+        //			ContactSourceService sourceService = filterSource.getContactSourceService();
+        //
+        //			ContactQuery contactQuery = sourceService.createContactQuery(null);
+        //			if (contactQuery == null)
+        //				continue;
+        //
+        //			// Add this query to the filterQuery.
+        //			filterQuery.addContactQuery(contactQuery);
+        //			// contactQuery.addContactQueryListener(contactList);
+        //			contactQuery.start();
+        //		}
 
         // Closes this filter to indicate that we finished adding queries to it.
         filterQuery.close();
@@ -234,41 +228,40 @@ public class PresenceFilter implements ContactListFilter
     {
         Iterator<MetaContact> childContacts = metaGroup.getChildContacts();
 
-//		while (childContacts.hasNext() && !query.isCanceled()) {
-//			MetaContact metaContact = childContacts.next();
+        //		while (childContacts.hasNext() && !query.isCanceled()) {
+        //			MetaContact metaContact = childContacts.next();
 
-//			if (isMatching(metaContact)) {
-//				resultCount++;
-//				if (resultCount <= INITIAL_CONTACT_COUNT) {
-//					UIGroup uiGroup = null;
+        //			if (isMatching(metaContact)) {
+        //				resultCount++;
+        //				if (resultCount <= INITIAL_CONTACT_COUNT) {
+        //					UIGroup uiGroup = null;
 
-//					if (!MetaContactListSource.isRootGroup(metaGroup)) {
-//						synchronized (metaGroup) {
-//							uiGroup = MetaContactListSource.getUIGroup(metaGroup);
-//							if (uiGroup == null)
-//								uiGroup = MetaContactListSource.createUIGroup(metaGroup);
-//						}
-//					}
-//
-//					if (logger.isDebugEnabled())
-//						logger.debug("Presence filter contact added: " + metaContact.getDisplayName());
-//
-//					UIContactImpl newUIContact;
-//					synchronized (metaContact) {
-//						newUIContact = MetaContactListSource.getUIContact(metaContact);
-//						if (newUIContact == null) {
-//							newUIContact = MetaContactListSource.createUIContact(metaContact);
-//						}
-//					}
+        //					if (!MetaContactListSource.isRootGroup(metaGroup)) {
+        //						synchronized (metaGroup) {
+        //							uiGroup = MetaContactListSource.getUIGroup(metaGroup);
+        //							if (uiGroup == null)
+        //								uiGroup = MetaContactListSource.createUIGroup(metaGroup);
+        //						}
+        //					}
+        //
+        //						Timber.d("Presence filter contact added: " + metaContact.getDisplayName());
+        //
+        //					UIContactImpl newUIContact;
+        //					synchronized (metaContact) {
+        //						newUIContact = MetaContactListSource.getUIContact(metaContact);
+        //						if (newUIContact == null) {
+        //							newUIContact = MetaContactListSource.createUIContact(metaContact);
+        //						}
+        //					}
 
         // AndroidGUIActivator.getContactList().addContact(newUIContact, uiGroup, true, true);
-//					query.setInitialResultCount(resultCount);
-//				}
-//				else {
-//					query.fireQueryEvent(metaContact);
-//				}
-//			}
-//		}
+        //					query.setInitialResultCount(resultCount);
+        //				}
+        //				else {
+        //					query.fireQueryEvent(metaContact);
+        //				}
+        //			}
+        //		}
 
         // If in the meantime the filtering has been stopped we return here.
         if (query.isCanceled())
@@ -278,17 +271,17 @@ public class PresenceFilter implements ContactListFilter
         while (subgroups.hasNext() && !query.isCanceled()) {
             MetaContactGroup subgroup = subgroups.next();
 
-//			if (isMatching(subgroup)) {
-//				UIGroup uiGroup;
-//				synchronized (subgroup) {
-//					uiGroup = MetaContactListSource.getUIGroup(subgroup);
-//					if (uiGroup == null)
-//						uiGroup = MetaContactListSource.createUIGroup(subgroup);
-//				}
-//
-//				AndroidGUIActivator.getContactList().addGroup(uiGroup, true);
-//				addMatching(subgroup, query, resultCount);
-//			}
+            //			if (isMatching(subgroup)) {
+            //				UIGroup uiGroup;
+            //				synchronized (subgroup) {
+            //					uiGroup = MetaContactListSource.getUIGroup(subgroup);
+            //					if (uiGroup == null)
+            //						uiGroup = MetaContactListSource.createUIGroup(subgroup);
+            //				}
+            //
+            //				AndroidGUIActivator.getContactList().addGroup(uiGroup, true);
+            //				addMatching(subgroup, query, resultCount);
+            //			}
         }
     }
 }

@@ -6,64 +6,74 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.coin;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.text.ParseException;
 
 /**
- * Parser for UserPacketExtension.
+ * Parser for UserExtensionElement.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class UserProvider extends ExtensionElementProvider<UserPacketExtension>
+public class UserProvider extends ExtensionElementProvider<UserExtensionElement>
 {
     /**
-     * Parses a User extension sub-packet and creates a {@link UserPacketExtension} instance. At the
+     * Parses a User extension sub-packet and creates a {@link UserExtensionElement} instance. At the
      * beginning of the method call, the xml parser will be positioned on the opening element of the
      * packet extension. As required by the smack API, at the end of the method call, the parser
      * will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>User</tt> element.
-     * @return a new {@link UserPacketExtension} instance.
-     * @throws java.lang.Exception if an error occurs parsing the XML.
+     * @return a new {@link UserExtensionElement} instance.
+     * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */
     @Override
-    public UserPacketExtension parse(XmlPullParser parser, int depth)
-            throws Exception
+    public UserExtensionElement parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException, SmackParsingException
     {
         boolean done = false;
         int eventType;
         String elementName = null;
-        String entity = parser.getAttributeValue("", UserPacketExtension.ENTITY_ATTR_NAME);
+        String entity = parser.getAttributeValue("", UserExtensionElement.ENTITY_ATTR_NAME);
         StateType state = StateType.full;
-        String stateStr = parser.getAttributeValue("", UserPacketExtension.STATE_ATTR_NAME);
+        String stateStr = parser.getAttributeValue("", UserExtensionElement.STATE_ATTR_NAME);
 
         if (stateStr != null) {
             state = StateType.parseString(stateStr);
         }
 
         if (entity == null) {
-            throw new Exception("Coin user element must contain entity attribute");
+            throw new XmlPullParserException("Coin user element must contain entity attribute");
         }
 
-        UserPacketExtension ext = new UserPacketExtension(entity);
-        ext.setAttribute(UserPacketExtension.STATE_ATTR_NAME, state);
+        UserExtensionElement ext = new UserExtensionElement(entity);
+        ext.setAttribute(UserExtensionElement.STATE_ATTR_NAME, state);
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
 
             if (eventType == XmlPullParser.START_TAG) {
-                if (elementName.equals(UserPacketExtension.ELEMENT_DISPLAY_TEXT)) {
+                if (elementName.equals(UserExtensionElement.ELEMENT_DISPLAY_TEXT)) {
+                    try {
                         ext.setDisplayText(CoinIQProvider.parseText(parser));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-                else if (elementName.equals(EndpointPacketExtension.ELEMENT_NAME)) {
+                else if (elementName.equals(EndpointExtensionElement.ELEMENT_NAME)) {
                     EndpointProvider provider = new EndpointProvider();
                     ExtensionElement childExtension = provider.parse(parser);
                     ext.addChildExtension(childExtension);
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(UserPacketExtension.ELEMENT_NAME)) {
+                if (parser.getName().equals(UserExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }
             }
