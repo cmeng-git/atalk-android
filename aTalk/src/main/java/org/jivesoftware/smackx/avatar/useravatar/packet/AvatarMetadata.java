@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.avatar.useravatar.packet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.LinkedList;
@@ -93,12 +94,12 @@ public class AvatarMetadata implements ExtensionElement
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace)
+    public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         for (Info info : mInfo) {
-            xml.append(info.toXML(null));
+            xml.append(info.toXML(XmlEnvironment.EMPTY));
         }
         xml.closeElement(this);
         return xml;
@@ -277,7 +278,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @return an xml element representing this information
          */
-        public XmlStringBuilder toXML(String enclosingNamespace)
+        public CharSequence toXML(XmlEnvironment xmlEnvironment)
         {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(ELEMENT_INFO);

@@ -11,14 +11,16 @@ import android.text.TextUtils;
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
-import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.ServiceReference;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import timber.log.Timber;
 
 /**
  * The <tt>AccountRegistrationImpl</tt> is an implementation of the <tt>AccountRegistrationWizard</tt> for the
@@ -33,11 +35,6 @@ import java.util.Map.Entry;
  */
 public class AccountRegistrationImpl extends AccountRegistrationWizard
 {
-    /*
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(JabberAccountRegistration.class);
-
     /*
      * The protocol provider.
      */
@@ -84,9 +81,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
             String userName, String password, Map<String, String> accountProperties)
             throws OperationFailedException
     {
-        if (logger.isTraceEnabled()) {
-            logger.trace("Preparing to install account for user " + userName);
-        }
+        Timber.log(TimberLog.FINER, "Preparing to install account for user %s", userName);
 
         // if server address is null, just extract it from userID even for when server override option is set
         if (accountProperties.get(ProtocolProviderFactory.SERVER_ADDRESS) == null) {
@@ -121,22 +116,21 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
 
         /* Process to create new account and return the newly created protocolProvider */
         try {
-            logger.info("Installing new account created for user " + userName);
+            Timber.i("Installing new account created for user %s", userName);
 
             AccountID accountID = providerFactory.installAccount(userName, accountProperties);
             ServiceReference serRef = providerFactory.getProviderForAccount(accountID);
-            protocolProvider
-                    = (ProtocolProviderService) JabberAccountRegistrationActivator.bundleContext.getService(serRef);
+            protocolProvider = (ProtocolProviderService) JabberAccountRegistrationActivator.bundleContext.getService(serRef);
         } catch (IllegalArgumentException exc) {
-            logger.warn(exc.getMessage());
+            Timber.w("%s", exc.getMessage());
             throw new OperationFailedException("Username, password or server is null.",
                     OperationFailedException.ILLEGAL_ARGUMENT);
         } catch (IllegalStateException exc) {
-            logger.warn(exc.getMessage());
+            Timber.w("%s", exc.getMessage());
             throw new OperationFailedException("Account already exists.",
                     OperationFailedException.IDENTIFICATION_CONFLICT);
         } catch (Throwable exc) {
-            logger.warn(exc.getMessage());
+            Timber.w("%s", exc.getMessage());
             throw new OperationFailedException("Failed to add account.", OperationFailedException.GENERAL_ERROR);
         }
         return protocolProvider;
@@ -159,12 +153,12 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      */
     public boolean isPreferredProtocol()
     {
-        // Check for preferred account through the PREFERRED_ACCOUNT_WIZARD property.
-        //        String prefWName = JabberAccountRegistrationActivator.getResources().
-        //            getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
-        //
-        //        if(!TextUtils.isEmpty(prefWName) > 0 && prefWName.equals(this.getClass().getName()))
-        //            return true;
+          // Check for preferred account through the PREFERRED_ACCOUNT_WIZARD property.
+//        String prefWName = JabberAccountRegistrationActivator.getResources().
+//            getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
+//
+//        if(!TextUtils.isEmpty(prefWName) > 0 && prefWName.equals(this.getClass().getName()))
+//            return true;
 
         return true;
     }

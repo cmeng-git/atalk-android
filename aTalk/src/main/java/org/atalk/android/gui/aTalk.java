@@ -26,7 +26,6 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -42,6 +41,7 @@ import org.osgi.framework.BundleContext;
 import java.util.List;
 
 import de.cketti.library.changelog.ChangeLog;
+import timber.log.Timber;
 
 /**
  * The main <tt>Activity</tt> for aTalk application with pager slider for both contact and chatRoom list windows.
@@ -50,11 +50,6 @@ import de.cketti.library.changelog.ChangeLog;
  */
 public class aTalk extends MainMenuActivity implements EntityListHelper.TaskCompleted
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(aTalk.class);
-
     /**
      * The action that will show contacts.
      */
@@ -116,13 +111,14 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
         handleIntent(getIntent(), savedInstanceState);
 
+        // allow 15 seconds for first launch login to complete before showing history log if the activity is still active
         runOnUiThread(() -> {
             new Handler().postDelayed(() -> {
                 ChangeLog cl = new ChangeLog(aTalk.this);
-                if (cl.isFirstRun()) {
+                if (cl.isFirstRun() && !isFinishing()) {
                     cl.getLogDialog().show();
                 }
-            }, 15000); // allow 15 seconds for first launch login to complete
+            }, 15000);
         });
     }
 
@@ -149,7 +145,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         String action = intent.getAction();
         if (Intent.ACTION_SEARCH.equals(action)) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            logger.warn("Search intent not handled for query: " + query);
+            Timber.w("Search intent not handled for query: %s", query);
         }
     }
 
@@ -193,7 +189,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
                 try {
                     stop(bundleContext);
                 } catch (Throwable t) {
-                    logger.error("Error stopping application:" + t.getLocalizedMessage(), t);
+                    Timber.e(t, "Error stopping application:%s", t.getLocalizedMessage());
                     if (t instanceof ThreadDeath)
                         throw (ThreadDeath) t;
                 }

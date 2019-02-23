@@ -6,46 +6,52 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jingleinfo;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.text.ParseException;
 
 /**
- * Parser for RelayPacketExtension.
+ * Parser for RelayExtensionElement.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class RelayProvider extends ExtensionElementProvider<RelayPacketExtension>
+public class RelayProvider extends ExtensionElementProvider<RelayExtensionElement>
 {
     /**
-     * Parses a users extension sub-packet and creates a {@link StunPacketExtension} instance. At
+     * Parses a users extension sub-packet and creates a {@link StunExtensionElement} instance. At
      * the beginning of the method call, the xml parser will be positioned on the opening
      * element of the packet extension. As required by the smack API, at the end of the method
      * call, the parser will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>Server</tt> element.
-     * @return a new {@link RelayPacketExtension} instance.
-     * @throws java.lang.Exception if an error occurs parsing the XML.
+     * @return a new {@link RelayExtensionElement} instance.
+     * @throws ParseException, XmlPullParserException, IOException if an error occurs parsing the XML.
      */
 
     @Override
-    public RelayPacketExtension parse(XmlPullParser parser, int depth)
-            throws Exception
+    public RelayExtensionElement parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+            throws XmlPullParserException, IOException, SmackParsingException
     {
         boolean done = false;
         int eventType;
         String elementName = null;
-        RelayPacketExtension ext = new RelayPacketExtension();
+        RelayExtensionElement ext = new RelayExtensionElement();
 
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
 
             if (eventType == XmlPullParser.START_TAG) {
-                if (elementName.equals(ServerPacketExtension.ELEMENT_NAME)) {
+                if (elementName.equals(ServerExtensionElement.ELEMENT_NAME)) {
                     ExtensionElementProvider provider = ProviderManager.getExtensionProvider(
-                            ServerPacketExtension.ELEMENT_NAME, ServerPacketExtension.NAMESPACE);
+                            ServerExtensionElement.ELEMENT_NAME, ServerExtensionElement.NAMESPACE);
                     ExtensionElement childExtension = (ExtensionElement) provider.parse(parser);
                     ext.addChildExtension(childExtension);
                 }
@@ -54,7 +60,7 @@ public class RelayProvider extends ExtensionElementProvider<RelayPacketExtension
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(RelayPacketExtension.ELEMENT_NAME)) {
+                if (parser.getName().equals(RelayExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }
             }
@@ -69,10 +75,10 @@ public class RelayProvider extends ExtensionElementProvider<RelayPacketExtension
      * @param parser the parse that we'll be probing for text.
      * @return the content of the next {@link XmlPullParser#TEXT} element we come across or
      * <tt>null</tt> if we encounter a closing tag first.
-     * @throws java.lang.Exception if an error occurs parsing the XML.
+     * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     public static String parseText(XmlPullParser parser)
-            throws Exception
+            throws IOException, XmlPullParserException
     {
         boolean done = false;
         int eventType;

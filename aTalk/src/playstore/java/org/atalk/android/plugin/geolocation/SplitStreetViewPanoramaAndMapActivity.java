@@ -16,38 +16,23 @@
 
 package org.atalk.android.plugin.geolocation;
 
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
+import android.hardware.*;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Surface;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
-import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanorama.OnStreetViewPanoramaChangeListener;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.SupportStreetViewPanoramaFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
-import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
-
-import net.java.sip.communicator.util.Logger;
+import com.google.android.gms.maps.model.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
 import java.util.ArrayList;
+
+import timber.log.Timber;
 
 import static org.atalk.android.R.id.map;
 
@@ -57,11 +42,6 @@ import static org.atalk.android.R.id.map;
 public class SplitStreetViewPanoramaAndMapActivity extends FragmentActivity
         implements OnMarkerDragListener, OnStreetViewPanoramaChangeListener, SensorEventListener
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(SplitStreetViewPanoramaAndMapActivity.class);
-
     public static final String MARKER_POSITION_KEY = "MarkerPosition";
     public static final String MARKER_LIST = "MarkerList";
 
@@ -94,38 +74,28 @@ public class SplitStreetViewPanoramaAndMapActivity extends FragmentActivity
         SupportStreetViewPanoramaFragment streetViewPanoramaFragment =
                 (SupportStreetViewPanoramaFragment) getSupportFragmentManager().findFragmentById(R.id.streetviewpanorama);
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(
-                new OnStreetViewPanoramaReadyCallback()
-                {
-                    @Override
-                    public void onStreetViewPanoramaReady(StreetViewPanorama panorama)
-                    {
-                        mStreetViewPanorama = panorama;
-                        mStreetViewPanorama.setOnStreetViewPanoramaChangeListener(
-                                SplitStreetViewPanoramaAndMapActivity.this);
-                        // Only need to set the position once as the streetView fragment will
-                        // maintain its state.
-                        mStreetViewPanorama.setPosition(markerPosition);
-                    }
+                panorama -> {
+                    mStreetViewPanorama = panorama;
+                    mStreetViewPanorama.setOnStreetViewPanoramaChangeListener(
+                            SplitStreetViewPanoramaAndMapActivity.this);
+                    // Only need to set the position once as the streetView fragment will
+                    // maintain its state.
+                    mStreetViewPanorama.setPosition(markerPosition);
                 });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(map);
-        mapFragment.getMapAsync(new OnMapReadyCallback()
-        {
-            @Override
-            public void onMapReady(GoogleMap map)
-            {
-                mMap = map;
-                map.setOnMarkerDragListener(SplitStreetViewPanoramaAndMapActivity.this);
-                // Creates a draggable marker. Long press to drag.
-                mMarker = map.addMarker(new MarkerOptions()
-                        .position(markerPosition)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pegman))
-                        .draggable(true));
+        mapFragment.getMapAsync(map -> {
+            mMap = map;
+            map.setOnMarkerDragListener(SplitStreetViewPanoramaAndMapActivity.this);
+            // Creates a draggable marker. Long press to drag.
+            mMarker = map.addMarker(new MarkerOptions()
+                    .position(markerPosition)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pegman))
+                    .draggable(true));
 
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15.5f));
-                if (markerList != null && !markerList.isEmpty()) {
-                    startLocationUpdate(markerList);
-                }
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15.5f));
+            if (markerList != null && !markerList.isEmpty()) {
+                startLocationUpdate(markerList);
             }
         });
     }
@@ -285,27 +255,15 @@ public class SplitStreetViewPanoramaAndMapActivity extends FragmentActivity
      */
     private void startLocationUpdate(final ArrayList<LatLng> mList)
     {
-        mThread = new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                for (final LatLng mLatLng : mList) {
-                    try {
-                        Thread.sleep(2000);
-                        runOnUiThread(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                onLocationChanged(mLatLng);
-                            }
-                        });
-                    } catch (InterruptedException ex) {
-                        break;
-                    } catch (Exception ex) {
-                        logger.error("Exception: ", ex);
-                    }
+        mThread = new Thread(() -> {
+            for (final LatLng mLatLng : mList) {
+                try {
+                    Thread.sleep(2000);
+                    runOnUiThread(() -> onLocationChanged(mLatLng));
+                } catch (InterruptedException ex) {
+                    break;
+                } catch (Exception ex) {
+                    Timber.e("Exception: %s", ex.getMessage());
                 }
             }
         });

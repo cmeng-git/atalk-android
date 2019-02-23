@@ -15,36 +15,26 @@
  */
 package net.java.sip.communicator.plugin.loggingutils;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.util.OSUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import timber.log.Timber;
+
 /**
  * Collects logs and save them in compressed zip file.
  *
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
 public class LogsCollector
 {
-    /**
-     * Our Logger.
-     */
-    private static final Logger logger = Logger.getLogger(LogsCollector.class);
-
     /**
      * The name of the log dir.
      */
@@ -99,9 +89,9 @@ public class LogsCollector
             out.close();
             return destination;
         } catch (FileNotFoundException ex) {
-            logger.error("Error creating logs file archive", ex);
+            Timber.e(ex, "Error creating logs file archive");
         } catch (IOException ex) {
-            logger.error("Error closing archive file", ex);
+            Timber.e(ex, "Error closing archive file");
         }
         return null;
     }
@@ -134,7 +124,7 @@ public class LogsCollector
                 addFileToZip(f, out);
             }
         } catch (Exception e) {
-            logger.error("Error obtaining logs folder", e);
+            Timber.e(e, "Error obtaining logs folder");
         }
     }
 
@@ -151,7 +141,7 @@ public class LogsCollector
         try {
             FileInputStream in = new FileInputStream(file);
             // new ZIP entry
-            out.putNextEntry(new ZipEntry( LOGGING_DIR_NAME + File.separator + file.getName()));
+            out.putNextEntry(new ZipEntry(LOGGING_DIR_NAME + File.separator + file.getName()));
 
             // transfer bytes
             int len;
@@ -162,9 +152,9 @@ public class LogsCollector
             out.closeEntry();
             in.close();
         } catch (FileNotFoundException ex) {
-            logger.error("Error obtaining file to archive", ex);
+            Timber.e(ex, "Error obtaining file to archive");
         } catch (IOException ex) {
-            logger.error("Error saving file to archive", ex);
+            Timber.e(ex, "Error saving file to archive");
         }
     }
 

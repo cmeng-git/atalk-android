@@ -13,7 +13,6 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
 package net.java.sip.communicator.plugin.defaultresourcepack;
 
 import net.java.sip.communicator.service.resources.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -21,14 +20,14 @@ import org.osgi.framework.BundleContext;
 import java.net.URL;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * @author damencho
  * @author Eng Chong Meng
  */
 public class DefaultResourcePackActivator implements BundleActivator
 {
-    private Logger logger = Logger.getLogger(DefaultResourcePackActivator.class);
-
     static BundleContext bundleContext;
 
     // buffer for ressource files found
@@ -64,8 +63,7 @@ public class DefaultResourcePackActivator implements BundleActivator
         sndProps.put(ResourcePack.RESOURCE_NAME, SoundPack.RESOURCE_NAME_DEFAULT_VALUE);
         bundleContext.registerService(SoundPack.class.getName(), sndPackImpl, sndProps);
 
-        if (logger.isInfoEnabled())
-            logger.info("Default resources ... [REGISTERED]");
+        Timber.i("Default resources ... [REGISTERED]");
     }
 
     public void stop(BundleContext bc)

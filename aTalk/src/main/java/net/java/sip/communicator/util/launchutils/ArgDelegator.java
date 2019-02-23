@@ -5,9 +5,12 @@
  */
 package net.java.sip.communicator.util.launchutils;
 
-import java.util.*;
+import org.atalk.android.plugin.timberlog.TimberLog;
 
-import net.java.sip.communicator.util.*;
+import java.util.LinkedList;
+import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * The <tt>ArgDelegator</tt> implements an utility for handling args that have
@@ -19,41 +22,33 @@ import net.java.sip.communicator.util.*;
  * until the corresponding <tt>DelegationPeer</tt> has registered here.
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 class ArgDelegator
 {
     /**
-     * The <tt>Logger</tt> used by the <tt>ArgDelegator</tt> class and its
-     * instances for logging output.
+     * The delegation peer that we pass arguments to. This peer is going to
+     * get set only after Felix starts and all its services have been properly loaded.
      */
-    private static final Logger logger = Logger.getLogger(ArgDelegator.class);
-
-    /**
-    * The delegation peer that we pass arguments to. This peer is going to
-    * get set only after Felix starts and all its services have been properly
-    * loaded.
-    */
     private ArgDelegationPeer uriDelegationPeer = null;
 
     /**
-    * We use this list to store arguments that we have been asked to handle
-    * before we had a registered delegation peer.
-    */
-    private List<String> recordedArgs = new LinkedList<String>();
+     * We use this list to store arguments that we have been asked to handle
+     * before we had a registered delegation peer.
+     */
+    private List<String> recordedArgs = new LinkedList<>();
 
     /**
-    * Passes the <tt>uriArg</tt> to the uri delegation peer or, in case
-    * no peer is currently registered, stores it and keeps it until one
-    * appears.
-    *
-    * @param uriArg the uri argument that we'd like to delegate to our peer.
-    */
+     * Passes the <tt>uriArg</tt> to the uri delegation peer or, in case
+     * no peer is currently registered, stores it and keeps it until one
+     * appears.
+     *
+     * @param uriArg the uri argument that we'd like to delegate to our peer.
+     */
     protected void handleUri(String uriArg)
     {
-        synchronized(recordedArgs)
-        {
-            if(uriDelegationPeer == null)
-            {
+        synchronized (recordedArgs) {
+            if (uriDelegationPeer == null) {
                 recordedArgs.add(uriArg);
                 return;
             }
@@ -71,17 +66,12 @@ class ArgDelegator
      */
     public void setDelegationPeer(ArgDelegationPeer delegationPeer)
     {
-        synchronized(recordedArgs)
-        {
-            if (logger.isTraceEnabled())
-                logger.trace("Someone set a delegationPeer. "
-                            +"Will dispatch "+ recordedArgs.size() +" args");
+        synchronized (recordedArgs) {
+            Timber.log(TimberLog.FINER, "Someone set a delegationPeer. Will dispatch %s args", recordedArgs.size());
             this.uriDelegationPeer = delegationPeer;
 
-            for (String arg : recordedArgs)
-            {
-                if (logger.isTraceEnabled())
-                    logger.trace("Dispatching arg: " + arg);
+            for (String arg : recordedArgs) {
+                Timber.log(TimberLog.FINER, "Dispatching arg: %s", arg);
                 uriDelegationPeer.handleUri(arg);
             }
 
@@ -97,9 +87,8 @@ class ArgDelegator
      */
     public void handleConcurrentInvocationRequest()
     {
-        synchronized(recordedArgs)
-        {
-            if(uriDelegationPeer != null)
+        synchronized (recordedArgs) {
+            if (uriDelegationPeer != null)
                 uriDelegationPeer.handleConcurrentInvocationRequest();
         }
     }

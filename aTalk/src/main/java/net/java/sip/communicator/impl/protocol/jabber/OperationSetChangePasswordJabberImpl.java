@@ -7,7 +7,6 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetChangePassword;
-import net.java.sip.communicator.util.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -15,6 +14,8 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jxmpp.jid.impl.JidCreate;
+
+import timber.log.Timber;
 
 /**
  * A jabber implementation of the password change operation set.
@@ -28,11 +29,6 @@ public class OperationSetChangePasswordJabberImpl implements OperationSetChangeP
      * The <tt>ProtocolProviderService</tt> whose password we'll change.
      */
     private ProtocolProviderServiceJabberImpl protocolProvider;
-
-    /**
-     * The logger used by <tt>OperationSetChangePasswordJabberImpl</tt>.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetChangePasswordJabberImpl.class);
 
     /**
      * Sets the object protocolProvider to the one given.
@@ -62,10 +58,7 @@ public class OperationSetChangePasswordJabberImpl implements OperationSetChangeP
                 e.printStackTrace();
             }
         } catch (XMPPException e) {
-            if (logger.isInfoEnabled()) {
-                logger.info("Tried to change jabber password, but the server does not support "
-                        + "inband password changes", e);
-            }
+            Timber.i(e, "Tried to change jabber password, but the server does not support inband password changes");
             throw new OperationFailedException("In-band password changes not supported",
                     OperationFailedException.NOT_SUPPORTED_OPERATION, e);
         }
@@ -84,9 +77,7 @@ public class OperationSetChangePasswordJabberImpl implements OperationSetChangeP
                     JidCreate.from(protocolProvider.getAccountID().getService()));
             return discoverInfo.containsFeature(ProtocolProviderServiceJabberImpl.URN_REGISTER);
         } catch (Exception e) {
-            if (logger.isInfoEnabled())
-                logger.info("Exception occurred while trying to find out if inband registrations"
-                        + " are supported. Returning true anyway.");
+            Timber.i("Exception occurred while checking InBand registration is are supported. Returning true anyway.");
             /*
              * It makes sense to return true if something goes wrong, because failing later on is
              * not fatal, and registrations are very likely to be supported.

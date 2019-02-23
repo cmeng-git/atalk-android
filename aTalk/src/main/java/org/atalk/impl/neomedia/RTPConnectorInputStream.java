@@ -7,11 +7,11 @@ package org.atalk.impl.neomedia;
 
 import net.sf.fmj.media.util.MediaThread;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 import org.atalk.impl.neomedia.protocol.PushBufferStreamAdapter;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.ArrayUtils;
-import org.atalk.util.Logger;
 import org.ice4j.socket.DatagramPacketFilter;
 
 import java.io.Closeable;
@@ -22,6 +22,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.media.Buffer;
 import javax.media.protocol.*;
+
+import timber.log.Timber;
 
 /**
  * @author Bing SU (nova.su@gmail.com)
@@ -36,12 +38,6 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
      * are no controls. Explicitly defined in order to reduce unnecessary allocations.
      */
     private static final Object[] EMPTY_CONTROLS = new Object[0];
-
-    /**
-     * The <tt>Logger</tt> used by the <tt>RTPConnectorInputStream</tt> class and its instances to
-     * print debug information.
-     */
-    private static final Logger logger = Logger.getLogger(RTPConnectorInputStream.class);
 
     /**
      * The length in bytes of the buffers of <tt>RTPConnectorInputStream</tt> receiving packets
@@ -68,14 +64,12 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
                 throwable = iae;
             }
             if (throwable != null) {
-                logger.warn("Failed to use Thread priority: " + priority);
+                Timber.w("Failed to use Thread priority: %s", priority);
             }
-            if (logger.isDebugEnabled()) {
-                int newPriority = thread.getPriority();
-                if (priority != newPriority) {
-                    logger.debug("Did not change Thread priority from " + oldPriority
-                            + " to " + priority + ", " + newPriority + " instead.");
-                }
+            int newPriority = thread.getPriority();
+            if (priority != newPriority) {
+                Timber.d("Did not change Thread priority from %s => %s; keep %s instead.",
+                        oldPriority, priority, newPriority);
             }
         }
     }
@@ -234,8 +228,8 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
         }
         else {
             accept = false;
-            if (logger.isTraceEnabled() && !closed) {
-                logger.trace("Will drop received packet because this is disabled: " + p.getLength() + " bytes.");
+            if (!closed) {
+                Timber.log(TimberLog.FINER, "Will drop received packet because this is disabled: " + p.getLength() + " bytes.");
             }
         }
         return accept;
@@ -574,9 +568,7 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
             } catch (SocketTimeoutException ste) {
                 // We need to handle these, because some of our implementations
                 // of DatagramSocket#receive are unable to throw a SocketClosed exception.
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Socket timeout, closed=" + closed);
-                }
+                Timber.log(TimberLog.FINER, "Socket timeout, closed = %s", closed);
                 continue;
             } catch (IOException e) {
                 ioError = true;
@@ -594,7 +586,7 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
                 // The receive thread should not die as a result of a failure in
                 // the packetization (converting to RawPacket[] and transforming)
                 // or a failure in any of the DatagramPacketFilters.
-                logger.error("Failed to receive a packet: ", e);
+                Timber.e(e, "Failed to receive a packet: ");
             }
         }
     }
@@ -608,8 +600,7 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
     public void setEnabled(boolean enabled)
     {
         if (this.enabled != enabled) {
-            if (logger.isDebugEnabled())
-                logger.debug("setEnabled: " + enabled);
+            Timber.log(TimberLog.FINER, "setEnabled: " + enabled);
 
             this.enabled = enabled;
         }
@@ -695,7 +686,7 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
                                 throw (ThreadDeath) t;
                             }
                             else {
-                                logger.warn("An RTP packet may have not been fully" + " handled.", t);
+                                Timber.w(t, "An RTP packet may have not been fully" + " handled.");
                             }
                         }
                     }

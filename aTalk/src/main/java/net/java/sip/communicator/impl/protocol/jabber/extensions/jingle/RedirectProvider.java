@@ -5,30 +5,34 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jingle;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
- * The <tt>RedirectProvider</tt> parses "redirect" elements into {@link RedirectPacketExtension} instances.
+ * The <tt>RedirectProvider</tt> parses "redirect" elements into {@link RedirectExtensionElement} instances.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class RedirectProvider extends ExtensionElementProvider<RedirectPacketExtension>
+public class RedirectProvider extends ExtensionElementProvider<RedirectExtensionElement>
 {
     /**
-     * Parses a reason extension sub-packet and creates a {@link RedirectPacketExtension} instance.
+     * Parses a reason extension sub-packet and creates a {@link RedirectExtensionElement} instance.
      * At the beginning of the method call, the xml parser will be positioned on the opening element
      * of the packet extension. As required by the smack API, at the end of the method call, the
      * parser will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>redirect</tt> element.
-     * @return a new {@link RedirectPacketExtension} instance.
-     * @throws java.lang.Exception if an error occurs parsing the XML.
+     * @return a new {@link RedirectExtensionElement} instance.
+     * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     @Override
-    public RedirectPacketExtension parse(XmlPullParser parser, int depth)
-            throws Exception
+    public RedirectExtensionElement parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException
     {
         String text = null;
         boolean done = false;
@@ -41,13 +45,13 @@ public class RedirectProvider extends ExtensionElementProvider<RedirectPacketExt
             if (eventType == XmlPullParser.START_TAG) {
             }
             else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(RedirectPacketExtension.ELEMENT_NAME)) {
+                if (parser.getName().equals(RedirectExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }
             }
         }
 
-        RedirectPacketExtension redirectExt = new RedirectPacketExtension();
+        RedirectExtensionElement redirectExt = new RedirectExtensionElement();
         redirectExt.setText(text);
         redirectExt.setRedir(text);
         return redirectExt;
@@ -60,10 +64,10 @@ public class RedirectProvider extends ExtensionElementProvider<RedirectPacketExt
      * @param parser the parse that we'll be probing for text.
      * @return the content of the next {@link XmlPullParser#TEXT} element we come across or
      * <tt>null</tt> if we encounter a closing tag first.
-     * @throws java.lang.Exception if an error occurs parsing the XML.
+     * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     public String parseText(XmlPullParser parser)
-            throws Exception
+            throws IOException, XmlPullParserException
     {
         boolean done = false;
 

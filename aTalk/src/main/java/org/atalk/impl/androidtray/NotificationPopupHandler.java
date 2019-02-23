@@ -11,7 +11,6 @@ import android.support.v4.app.NotificationCompat;
 import net.java.sip.communicator.service.systray.AbstractPopupMessageHandler;
 import net.java.sip.communicator.service.systray.PopupMessage;
 import net.java.sip.communicator.service.systray.event.SystrayPopupMessageEvent;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -22,6 +21,8 @@ import org.atalk.service.osgi.OSGiService;
 
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * Displays popup messages as Android status bar notifications.
  *
@@ -31,11 +32,6 @@ import java.util.*;
 public class NotificationPopupHandler extends AbstractPopupMessageHandler
         implements ChatSessionManager.CurrentChatListener
 {
-    /**
-     * The logger
-     */
-    private final Logger logger = Logger.getLogger(NotificationPopupHandler.class);
-
     /**
      * Map of currently displayed <tt>AndroidPopup</tt>s. Value is removed when
      * corresponding notification is clicked or discarded.
@@ -93,17 +89,17 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
      */
     void fireNotificationClicked(int notificationId)
     {
-        logger.debug("Notification clicked: " + notificationId);
+        Timber.d("Notification clicked: %s", notificationId);
 
         AndroidPopup popup = notificationMap.get(notificationId);
         if (popup == null) {
-            logger.error("No valid notification exists for " + notificationId);
+            Timber.e("No valid notification exists for %s", notificationId);
             return;
         }
 
         PopupMessage msg = popup.getPopupMessage();
         if (msg == null) {
-            logger.error("No popup message found for " + notificationId);
+            Timber.e("No popup message found for %s", notificationId);
             return;
         }
 
@@ -133,11 +129,11 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
         }
         AndroidPopup popup = notificationMap.get(notificationId);
         if (popup == null) {
-            logger.warn("Notification for id: " + notificationId + " already removed");
+            Timber.w("Notification for id: %s already removed", notificationId);
             return;
         }
 
-        logger.debug("Removing notification: " + notificationId);
+        Timber.d("Removing notification: %s", notificationId);
         popup.removeNotification();
         notificationMap.remove(notificationId);
     }

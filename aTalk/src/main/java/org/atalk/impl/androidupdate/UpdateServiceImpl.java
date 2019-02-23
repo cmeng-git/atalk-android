@@ -13,7 +13,6 @@ import android.os.Environment;
 
 import net.java.sip.communicator.service.httputil.HttpUtils;
 import net.java.sip.communicator.service.update.UpdateService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.*;
@@ -26,6 +25,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * Android update service implementation. It checks for update and schedules .apk download using
  * <tt>DownloadManager</tt>.
@@ -35,11 +36,6 @@ import java.util.*;
  */
 public class UpdateServiceImpl implements UpdateService
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(UpdateServiceImpl.class);
-
     /**
      * The name of the property which specifies the update link in the configuration file.
      */
@@ -92,11 +88,9 @@ public class UpdateServiceImpl implements UpdateService
     public void checkForUpdates(boolean notifyAboutNewestVersion)
     {
         boolean isLatest = isLatestVersion();
-        logger.info("Is latest: " + isLatest);
-        logger.info("Current version: " + currentVersion);
-        logger.info("Latest version: " + latestVersion);
-        logger.info("Download link: " + downloadLink);
-        // logger.info("Changes link: " + changesLink);
+        Timber.i("Is latest: %s\nCurrent version: %s\nLatest version: %s\nDownload link: %s",
+                isLatest, currentVersion, latestVersion, downloadLink);
+        // Timber.i("Changes link: %s", changesLink);
 
         // cmeng: reverse the logic for !isLast for testing
         if (!isLatest && (downloadLink != null)) {
@@ -258,7 +252,7 @@ public class UpdateServiceImpl implements UpdateService
                 if (!idStr.isEmpty())
                     apkIds.add(Long.parseLong(idStr));
             } catch (NumberFormatException e) {
-                logger.error("Error parsing apk id for string: " + idStr + " [" + storeStr + "]");
+                Timber.e("Error parsing apk id for string: %s [%s]", idStr, storeStr);
             }
         }
         return apkIds;
@@ -273,7 +267,7 @@ public class UpdateServiceImpl implements UpdateService
 
         DownloadManager downloadManager = aTalkApp.getDownloadManager();
         for (long id : apkIds) {
-            logger.debug("Removing .apk for id " + id);
+            Timber.d("Removing .apk for id %s", id);
             downloadManager.remove(id);
         }
         getStore().edit().remove(ENTRY_NAME).apply();
@@ -328,8 +322,7 @@ public class UpdateServiceImpl implements UpdateService
         try {
             String updateLink = UpdateActivator.getConfiguration().getString(PROP_UPDATE_LINK);
             if (updateLink == null) {
-                if (logger.isDebugEnabled())
-                    logger.debug("Updates are disabled, faking latest version.");
+                Timber.d("Updates are disabled, faking latest version.");
             }
             else {
                 aLinks = updateLink.split(",");
@@ -365,7 +358,7 @@ public class UpdateServiceImpl implements UpdateService
                 }
             }
         } catch (Exception e) {
-            logger.warn("Could not retrieve latest version for checking! ", e);
+            Timber.w(e, "Could not retrieve latest version for checking! ");
             return false;
         }
         return true;

@@ -6,6 +6,8 @@
  */
 package net.java.sip.communicator.util;
 
+import timber.log.Timber;
+
 /**
  * The <tt>PortTracker</tt> class allows for a controlled selection of bind
  * ports. This is typically useful in cases where we would like to set bounds
@@ -15,14 +17,10 @@ package net.java.sip.communicator.util;
  * is also used to allow for different port ranges for Audio and Video streams.
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public class PortTracker
 {
-    /**
-     * The local logger.
-     */
-    private static final Logger logger = Logger.getLogger(NetworkUtils.class);
-
     /**
      * The minimum port number that this allocator would be allocate to return.
      */
@@ -69,21 +67,17 @@ public class PortTracker
      *
      * @param newMinPort the minimum port that we would like to bind on
      * @param newMaxPort the maximum port that we would like to bind on
-     *
      * @throws IllegalArgumentException if the arguments do not correspond to
      * valid port numbers, or in case newMaxPort < newMinPort
      */
     public void setRange(int newMinPort, int newMaxPort)
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
         //validate
-        if((newMaxPort < newMinPort)
+        if ((newMaxPort < newMinPort)
                 || !NetworkUtils.isValidPortNumber(newMinPort)
-                || !NetworkUtils.isValidPortNumber(newMaxPort))
-        {
-            throw new IllegalArgumentException(
-                    "[" + newMinPort + ", " + newMaxPort
-                        + "] is not a valid port range.");
+                || !NetworkUtils.isValidPortNumber(newMaxPort)) {
+            throw new IllegalArgumentException("[" + newMinPort + ", " + newMaxPort + "] is not a valid port range.");
         }
 
         //reset bounds
@@ -109,50 +103,41 @@ public class PortTracker
      */
     public void tryRange(String newMinPort, String newMaxPort)
     {
-        try
-        {
+        try {
             setRange(
                     Integer.parseInt(newMinPort),
                     Integer.parseInt(newMaxPort));
-        }
-        catch(Exception e)//Null, NumberFormat, IllegalArgument
+        } catch (Exception e)//Null, NumberFormat, IllegalArgument
         {
-            logger.info(
-                    "Ignoring invalid port range [" + newMinPort + ", "
-                        + newMaxPort + "]");
-            if (logger.isDebugEnabled())
-                logger.debug("Cause: ", e);
+            Timber.i("Ignoring invalid port range [%s, %s]", newMinPort, newMaxPort);
+            Timber.d(e, "Cause: ");
         }
     }
 
     /**
      * Sets the next port to specified value unless allowing the caller to
-     * request validation and force the port into the range that this tracker
-     * operates in.
+     * request validation and force the port into the range that this tracker operates in.
      *
      * @param nextPort the next port we'd like this tracker to return.
      * @param validate determines whether this tracker should bring the new
      * value into its current range.
      */
-    public void setNextPort(int nextPort, boolean  validate)
+    public void setNextPort(int nextPort, boolean validate)
     {
         /*
          * Make sure that nextPort is within the specified range unless
          */
-        if ((nextPort < minPort || nextPort > maxPort ) && validate)
-        {
+        if ((nextPort < minPort || nextPort > maxPort) && validate) {
             port = minPort;
         }
-        else
-        {
+        else {
             this.port = nextPort;
         }
     }
 
     /**
      * Sets the next port to specified value unless it is outside the range that
-     * this tracker operates in, in which case it sets it to the minimal
-     * possible.
+     * this tracker operates in, in which case it sets it to the minimal possible.
      *
      * @param nextPort the next port we'd like this tracker to return.
      */
@@ -184,34 +169,27 @@ public class PortTracker
     /**
      * Attempts to create a port tracker that uses the min and max values
      * indicated by the <tt>newMinPortString</tt> and <tt>newMinPortString</tt>
-     * strings and returns it if successful. The method fails silently
-     * (returning <tt>null</tt>) otherwise.
+     * strings and returns it if successful. The method fails silently (returning <tt>null</tt>) otherwise.
      *
      * @param newMinPortString the {@link String} containing the minimum port
      * number that this tracker should allow.
      * @param newMaxPortString the {@link String} containing the minimum port
      * number that this tracker should allow.
-     *
      * @return the newly created port tracker or <tt>null</tt> if the string
      * params do not contain valid port numbers.
      */
     public static PortTracker createTracker(String newMinPortString,
-                                            String newMaxPortString)
+            String newMaxPortString)
     {
-        try
-        {
+        try {
             int minPort = Integer.parseInt(newMinPortString);
             int maxPort = Integer.parseInt(newMaxPortString);
 
             return new PortTracker(minPort, maxPort);
-        }
-        catch(Exception exc)//Null, NumberFormat, IllegalArgument
+        } catch (Exception exc)//Null, NumberFormat, IllegalArgument
         {
-            logger.info("Ignoring invalid port range ["+ newMinPortString
-                                              + " to " + newMaxPortString +"]");
-
-
-            logger.debug("Cause: ", exc);
+            Timber.i("Ignoring invalid port range [%s to %s]", newMinPortString, newMaxPortString);
+            Timber.d(exc, "Cause: ");
             return null;
         }
     }

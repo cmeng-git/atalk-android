@@ -13,10 +13,12 @@
  */
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.rtp.TimestampUtils;
 import org.atalk.util.DiagnosticContext;
-import org.atalk.util.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import timber.log.Timber;
 
 /**
  * Helper class to compute the inter-arrival time delta and the size delta between two timestamp
@@ -28,12 +30,11 @@ import org.jetbrains.annotations.NotNull;
  * @author Lyubomir Marinov
  * @author Julian Chukwu
  * @author George Politis
+ * @author Eng Chong Meng
  */
 class InterArrival
 {
     private static final int kBurstDeltaThresholdMs = 5;
-
-    private static final Logger logger = Logger.getLogger(InterArrival.class);
 
     /**
      * webrtc/modules/include/module_common_types.h
@@ -161,8 +162,8 @@ class InterArrival
                         && currentTimestampGroup.lastSystemTimeMs != -1L
                         && arrivalTimeDeltaMs - systemTimeDeltaMs >=
                         kArrivalTimeOffsetThresholdMs) {
-                    logger.warn("The arrival time clock offset has changed (diff = "
-                            + String.valueOf(arrivalTimeDeltaMs - systemTimeDeltaMs) + " ms), resetting.");
+                    Timber.w("The arrival time clock offset has changed (diff = %d ms), resetting.",
+                            (arrivalTimeDeltaMs - systemTimeDeltaMs));
                     Reset();
                     return false;
                 }
@@ -172,7 +173,7 @@ class InterArrival
                     if (numConsecutiveReorderedPackets >= kReorderedResetThreshold) {
                         // The group of packets has been reordered since receiving
                         // its local arrival timestamp.
-                        logger.warn("Packets are being reordered on the path from the "
+                        Timber.w("Packets are being reordered on the path from the "
                                 + "socket to the bandwidth estimator. Ignoring this packet for bandwidth estimation.");
                         Reset();
                     }
@@ -183,16 +184,13 @@ class InterArrival
                 }
                 /* int packetSizeDelta */
                 deltas[2] = (int) (currentTimestampGroup.size - prevTimestampGroup.size);
-
-                if (logger.isTraceEnabled()) {
-                    logger.trace(diagnosticContext
-                            .makeTimeSeriesPoint("computed_deltas")
-                            .addField("inter_arrival", hashCode())
-                            .addField("arrival_time_ms", arrivalTimeMs)
-                            .addField("timestamp_delta", deltas[0])
-                            .addField("arrival_time_ms_delta", deltas[1])
-                            .addField("payload_size_delta", deltas[2]));
-                }
+                Timber.log(TimberLog.FINER, "%s", diagnosticContext
+                        .makeTimeSeriesPoint("computed_deltas")
+                        .addField("inter_arrival", hashCode())
+                        .addField("arrival_time_ms", arrivalTimeMs)
+                        .addField("timestamp_delta", deltas[0])
+                        .addField("arrival_time_ms_delta", deltas[1])
+                        .addField("payload_size_delta", deltas[2]));
                 calculatedDeltas = true;
             }
             prevTimestampGroup.copy(currentTimestampGroup);
@@ -255,8 +253,8 @@ class InterArrival
             long tsDeltaMs = (long) (timestampToMsCoeff * timestampDiff + 0.5);
             boolean inOrder = timestampDiff < 0x80000000L;
 
-            if (!inOrder && logger.isTraceEnabled()) {
-                logger.trace(diagnosticContext
+            if (!inOrder) {
+                Timber.log(TimberLog.FINER, "%s", diagnosticContext
                         .makeTimeSeriesPoint("reordered_packet")
                         .addField("inter_arrival", hashCode())
                         .addField("ts_delta_ms", tsDeltaMs));

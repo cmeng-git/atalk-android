@@ -11,7 +11,6 @@ import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.*;
 import org.atalk.impl.neomedia.imgstreaming.*;
 import org.atalk.impl.neomedia.jmfext.media.protocol.*;
-import org.atalk.util.Logger;
 
 import java.io.IOException;
 
@@ -20,21 +19,18 @@ import javax.media.Format;
 import javax.media.control.FormatControl;
 import javax.media.format.VideoFormat;
 
+import timber.log.Timber;
+
 /**
  * The stream used by JMF for our image streaming.
  *
  * @author Sebastien Vincent
  * @author Lyubomir Marinov
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
 public class ImageStream extends AbstractVideoPullBufferStream<DataSource>
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>ImageStream</tt> class and its instances for logging
-     * output.
-     */
-    private static final Logger logger = Logger.getLogger(ImageStream.class);
-
     /**
      * The pool of <tt>ByteBuffer</tt>s this instances is using to optimize the allocations and
      * de-allocations of <tt>ByteBuffer</tt>s.
@@ -225,7 +221,7 @@ public class ImageStream extends AbstractVideoPullBufferStream<DataSource>
             }
             else {
                 b = false;
-                // logger.error("Failed to grab screen!", t);
+                // Timber.e(t, "Failed to grab screen!");
             }
         }
         if (!b) {
@@ -271,7 +267,7 @@ public class ImageStream extends AbstractVideoPullBufferStream<DataSource>
             try {
                 desktopInteract = new DesktopInteractImpl();
             } catch (Exception e) {
-                logger.warn("Cannot create DesktopInteract object!");
+                Timber.w("Cannot create DesktopInteract object!");
             }
         }
     }
@@ -285,12 +281,8 @@ public class ImageStream extends AbstractVideoPullBufferStream<DataSource>
     public void stop()
             throws IOException
     {
-        try {
-            if (logger.isInfoEnabled())
-                logger.info("Stop stream");
-        } finally {
-            super.stop();
-            byteBufferPool.drain();
-        }
+        Timber.i("Stop stream");
+        super.stop();
+        byteBufferPool.drain();
     }
 }

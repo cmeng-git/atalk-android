@@ -4,14 +4,16 @@ package org.atalk.impl.neomedia.stats;
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.MediaStreamStatsImpl;
 import org.atalk.service.neomedia.stats.*;
-import org.atalk.util.Logger;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import timber.log.Timber;
+
 /**
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class MediaStreamStats2Impl extends MediaStreamStatsImpl
         implements MediaStreamStats2
@@ -20,12 +22,6 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * Window over which rates will be computed.
      */
     private static int INTERVAL = 1000;
-
-    /**
-     * The {@link Logger} used by the {@link MediaStreamStats2Impl} class and its
-     * instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(MediaStreamStatsImpl.class);
 
     /**
      * Hold per-SSRC statistics for received streams.
@@ -253,7 +249,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
     public ReceiveTrackStatsImpl getReceiveStats(long ssrc)
     {
         if (ssrc < 0) {
-            logger.error("No received stats for an invalid SSRC: " + ssrc);
+            Timber.e("No received stats for an invalid SSRC: %s", ssrc);
             // We don't want to lose the data (and trigger an NPE), but at
             // least we collect all invalid SSRC under the value of -1;
             ssrc = -1;
@@ -279,7 +275,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
     public SendTrackStatsImpl getSendStats(long ssrc)
     {
         if (ssrc < 0) {
-            logger.error("No send stats for an invalid SSRC: " + ssrc);
+            Timber.e("No send stats for an invalid SSRC: %s", ssrc);
             // We don't want to lose the data (and trigger an NPE), but at
             // least we collect all invalid SSRC under the value of -1;
             ssrc = -1;

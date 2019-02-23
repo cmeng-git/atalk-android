@@ -5,6 +5,7 @@
  */
 package org.atalk.impl.neomedia;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.codec.REDBlock;
 import org.atalk.impl.neomedia.codec.REDBlockIterator;
 import org.atalk.impl.neomedia.device.*;
@@ -28,7 +29,8 @@ import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.PacketLossAwareEncoder;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.*;
+import org.atalk.util.DiagnosticContext;
+import org.atalk.util.RTPUtils;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -47,6 +49,8 @@ import javax.media.rtp.*;
 import javax.media.rtp.event.*;
 import javax.media.rtp.rtcp.*;
 
+import timber.log.Timber;
+
 /**
  * Implements <tt>MediaStream</tt> using JMF.
  *
@@ -60,11 +64,6 @@ import javax.media.rtp.rtcp.*;
 public class MediaStreamImpl extends AbstractMediaStream
         implements ReceiveStreamListener, SendStreamListener, SessionListener, RemoteListener
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>MediaStreamImpl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(MediaStreamImpl.class);
-
     /**
      * The name of the property indicating the length of our receive buffer.
      */
@@ -113,18 +112,13 @@ public class MediaStreamImpl extends AbstractMediaStream
      * The <tt>PropertyChangeListener</tt> which listens to {@link #deviceSession} and changes in
      * the values of its {@link MediaDeviceSession#OUTPUT_DATA_SOURCE} property.
      */
-    private final PropertyChangeListener deviceSessionPropertyChangeListener = new PropertyChangeListener()
-    {
-        @Override
-        public void propertyChange(PropertyChangeEvent ev)
-        {
-            String propertyName = ev.getPropertyName();
+    private final PropertyChangeListener deviceSessionPropertyChangeListener = ev -> {
+        String propertyName = ev.getPropertyName();
 
-            if (MediaDeviceSession.OUTPUT_DATA_SOURCE.equals(propertyName))
-                deviceSessionOutputDataSourceChanged();
-            else if (MediaDeviceSession.SSRC_LIST.equals(propertyName))
-                deviceSessionSsrcListChanged(ev);
-        }
+        if (MediaDeviceSession.OUTPUT_DATA_SOURCE.equals(propertyName))
+            deviceSessionOutputDataSourceChanged();
+        else if (MediaDeviceSession.SSRC_LIST.equals(propertyName))
+            deviceSessionSsrcListChanged(ev);
     };
 
     /**
@@ -355,9 +349,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         if (connector != null)
             setConnector(connector);
 
-        if (logger.isTraceEnabled()) {
-            logger.trace("Created " + getClass().getSimpleName() + " with hashCode " + hashCode());
-        }
+        Timber.log(TimberLog.FINER, "Created %S with hashCode %S", getClass().getSimpleName(), hashCode());
         diagnosticContext.put("stream", hashCode());
     }
 
@@ -383,7 +375,6 @@ public class MediaStreamImpl extends AbstractMediaStream
     @Override
     public void addDynamicRTPPayloadType(byte rtpPayloadType, MediaFormat format)
     {
-        @SuppressWarnings("unchecked")
         MediaFormatImpl<? extends Format> mediaFormatImpl = (MediaFormatImpl<? extends Format>) format;
 
         synchronized (dynamicRTPPayloadTypes) {
@@ -411,12 +402,12 @@ public class MediaStreamImpl extends AbstractMediaStream
         else if (Constants.FLEXFEC_03.equals(encoding)) {
             TransformEngineWrapper<FECTransformEngine> fecTransformEngineWrapper = getFecTransformEngine();
             if (fecTransformEngineWrapper.getWrapped() != null) {
-                logger.info("Updating existing FlexFEC-03 transform engine with payload type " + rtpPayloadType);
+                Timber.i("Updating existing FlexFEC-03 transform engine with payload type %s", rtpPayloadType);
                 fecTransformEngineWrapper.getWrapped().setIncomingPT(rtpPayloadType);
                 fecTransformEngineWrapper.getWrapped().setOutgoingPT(rtpPayloadType);
             }
             else {
-                logger.info("Creating FlexFEC-03 transform engine with payload type " + rtpPayloadType);
+                Timber.i("Creating FlexFEC-03 transform engine with payload type %s", rtpPayloadType);
                 FECTransformEngine flexFecTransformEngine
                         = new FECTransformEngine(FECTransformEngine.FecType.FLEXFEC_03,
                         rtpPayloadType, rtpPayloadType, this);
@@ -571,10 +562,7 @@ public class MediaStreamImpl extends AbstractMediaStream
             if (transportCCEngine != null) {
                 transportCCEngine.setExtensionID(-1);
             }
-
-            if (ohbEngine != null) {
-                ohbEngine.setExtensionID(-1);
-            }
+            ohbEngine.setExtensionID(-1);
 
             RemoteBitrateEstimatorWrapper remoteBitrateEstimatorWrapper = getRemoteBitrateEstimator();
             if (remoteBitrateEstimatorWrapper != null) {
@@ -612,27 +600,31 @@ public class MediaStreamImpl extends AbstractMediaStream
         int effectiveId = active ? RTPUtils.as16Bits(extensionID) : -1;
 
         String uri = rtpExtension.getURI().toString();
-        if (RTPExtension.ABS_SEND_TIME_URN.equals(uri)) {
-            if (absSendTimeEngine != null) {
-                absSendTimeEngine.setExtensionID(effectiveId);
-            }
+        switch (uri) {
+            case RTPExtension.ABS_SEND_TIME_URN: {
+                if (absSendTimeEngine != null) {
+                    absSendTimeEngine.setExtensionID(effectiveId);
+                }
 
-            RemoteBitrateEstimatorWrapper remoteBitrateEstimatorWrapper = getRemoteBitrateEstimator();
-            if (remoteBitrateEstimatorWrapper != null) {
-                remoteBitrateEstimatorWrapper.setAstExtensionID(effectiveId);
+                RemoteBitrateEstimatorWrapper remoteBitrateEstimatorWrapper = getRemoteBitrateEstimator();
+                if (remoteBitrateEstimatorWrapper != null) {
+                    remoteBitrateEstimatorWrapper.setAstExtensionID(effectiveId);
+                }
+                break;
             }
-        }
-        else if (RTPExtension.FRAME_MARKING_URN.equals(uri)) {
-            frameMarkingsExtensionId = effectiveId;
-        }
-        else if (RTPExtension.ORIGINAL_HEADER_BLOCK_URN.equals(uri)) {
-            ohbEngine.setExtensionID(effectiveId);
-        }
-        else if (RTPExtension.TRANSPORT_CC_URN.equals(uri)) {
-            transportCCEngine.setExtensionID(effectiveId);
-            RemoteBitrateEstimatorWrapper remoteBitrateEstimatorWrapper = getRemoteBitrateEstimator();
-            if (remoteBitrateEstimatorWrapper != null) {
-                remoteBitrateEstimatorWrapper.setTccExtensionID(effectiveId);
+            case RTPExtension.FRAME_MARKING_URN:
+                frameMarkingsExtensionId = effectiveId;
+                break;
+            case RTPExtension.ORIGINAL_HEADER_BLOCK_URN:
+                ohbEngine.setExtensionID(effectiveId);
+                break;
+            case RTPExtension.TRANSPORT_CC_URN: {
+                transportCCEngine.setExtensionID(effectiveId);
+                RemoteBitrateEstimatorWrapper remoteBitrateEstimatorWrapper = getRemoteBitrateEstimator();
+                if (remoteBitrateEstimatorWrapper != null) {
+                    remoteBitrateEstimatorWrapper.setTccExtensionID(effectiveId);
+                }
+                break;
             }
         }
     }
@@ -650,8 +642,7 @@ public class MediaStreamImpl extends AbstractMediaStream
          * Some statistics cannot be taken from the RTP manager and have to be gathered from the
          * ReceiveStream. We need to do this before calling stop().
          */
-        if (logger.isDebugEnabled())
-            printReceiveStreamStatistics();
+        printReceiveStreamStatistics();
 
         stop();
         closeSendStreams();
@@ -685,8 +676,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         }
 
         if (rtpManager != null) {
-            if (logger.isInfoEnabled())
-                printFlowStatistics(rtpManager);
+            printFlowStatistics(rtpManager);
 
             rtpManager.removeReceiveStreamListener(this);
             rtpManager.removeSendStreamListener(this);
@@ -710,7 +700,7 @@ public class MediaStreamImpl extends AbstractMediaStream
                  * exception is thrown for the audio stream in a call, its capture device will
                  * not be released and any video stream will not get its #close() method called at all.
                  */
-                logger.error("Failed to dispose of RTPManager", t);
+                Timber.e(t, "Failed to dispose of RTPManager");
             }
         }
 
@@ -824,11 +814,8 @@ public class MediaStreamImpl extends AbstractMediaStream
             try {
                 SendStream sendStream = rtpManager.createSendStream(dataSource, streamIndex);
 
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Created SendStream with hashCode " + sendStream.hashCode()
-                            + " for " + toString(dataSource) + " and streamIndex " + streamIndex
-                            + " in RTPManager with hashCode " + rtpManager.hashCode());
-                }
+                Timber.log(TimberLog.FINER, "Created SendStream with hashCode %s for %s and streamIndex %s in RTPManager with hashCode %s",
+                        sendStream.hashCode(), toString(dataSource), streamIndex, rtpManager.hashCode());
 
                 /*
                  * JMF stores the synchronization source (SSRC) identifier as a 32-bit signed
@@ -839,24 +826,22 @@ public class MediaStreamImpl extends AbstractMediaStream
                 if (getLocalSourceID() != localSSRC)
                     setLocalSourceID(localSSRC);
             } catch (IOException ioe) {
-                logger.error("Failed to create send stream for data source " + dataSource
-                        + " and stream index " + streamIndex, ioe);
+                Timber.e(ioe, "Failed to create send stream for data source %s  and stream index %s",
+                        dataSource, streamIndex);
             } catch (UnsupportedFormatException ufe) {
-                logger.error(
-                        "Failed to create send stream for data source " + dataSource
-                                + " and stream index " + streamIndex + " because of failed format "
-                                + ufe.getFailedFormat(), ufe);
+                Timber.e(ufe, "Failed to create send stream for data source %s and stream" +
+                        " index %s because of failed format %s", dataSource, streamIndex, ufe.getFailedFormat());
             }
         }
         sendStreamsAreCreated = true;
 
-        if (logger.isTraceEnabled()) {
+        if (TimberLog.isTraceEnabled()) {
             @SuppressWarnings("unchecked")
             Vector<SendStream> sendStreams = rtpManager.getSendStreams();
             int sendStreamCount = (sendStreams == null) ? 0 : sendStreams.size();
 
-            logger.trace("Total number of SendStreams in RTPManager with hashCode "
-                    + rtpManager.hashCode() + " is " + sendStreamCount);
+            Timber.log(TimberLog.FINER, "Total number of SendStreams in RTPManager with hashCode 5s is %s",
+                    rtpManager.hashCode(), sendStreamCount);
         }
     }
 
@@ -1018,7 +1003,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         // RTP extensions may be implemented in some of the engines just created (e.g.
         // created (e.g. abs-send-time). So take into account their configuration.
         enableRTPExtensions();
-        return new TransformEngineChain(engineChain.toArray(new TransformEngine[engineChain.size()]));
+        return new TransformEngineChain(engineChain.toArray(new TransformEngine[0]));
     }
 
     /**
@@ -1175,16 +1160,14 @@ public class MediaStreamImpl extends AbstractMediaStream
                 targetIsSet = true;
             } catch (IOException ioe) {
                 targetIsSet = false;
-                logger.error("Failed to set target " + target, ioe);
+                Timber.e(ioe, "Failed to set target %s", target);
             }
         }
         if (targetIsSet) {
             rtpConnectorTarget = target;
 
-            if (logger.isTraceEnabled()) {
-                logger.trace("Set target of " + getClass().getSimpleName() + " with hashCode "
-                        + hashCode() + " to " + target);
-            }
+            Timber.log(TimberLog.FINER, "Set target of %s with hashCode %s to %s",
+                    getClass().getSimpleName(), hashCode(), target);
         }
     }
 
@@ -1801,7 +1784,6 @@ public class MediaStreamImpl extends AbstractMediaStream
         if (!(mediaFormat instanceof MediaFormatImpl))
             return;
 
-        @SuppressWarnings("unchecked")
         MediaFormatImpl<? extends Format> mediaFormatImpl = (MediaFormatImpl<? extends Format>) mediaFormat;
         Format format = mediaFormatImpl.getFormat();
 
@@ -1814,7 +1796,6 @@ public class MediaStreamImpl extends AbstractMediaStream
             if (!(dynamicMediaFormat instanceof MediaFormatImpl))
                 continue;
 
-            @SuppressWarnings("unchecked")
             MediaFormatImpl<? extends Format> dynamicMediaFormatImpl
                     = (MediaFormatImpl<? extends Format>) dynamicMediaFormat;
             Format dynamicFormat = dynamicMediaFormatImpl.getFormat();
@@ -1833,7 +1814,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     private void printFlowStatistics(StreamRTPManager rtpManager)
     {
         try {
-            if (!logger.isDebugEnabled())
+            if (!TimberLog.isTraceEnabled())
                 return;
 
             // print flow statistics.
@@ -1861,7 +1842,7 @@ public class MediaStreamImpl extends AbstractMediaStream
                     .append("RTCP sent: ").append(s.getRTCPSent()).append(eol)
                     .append("transmit failed: ").append(s.getTransmitFailed());
 
-            logger.debug(buff);
+            Timber.log(TimberLog.FINER, "%s", buff);
 
             GlobalReceptionStats rs = rtpManager.getGlobalReceptionStats();
             MediaFormat format = getFormat();
@@ -1910,9 +1891,9 @@ public class MediaStreamImpl extends AbstractMediaStream
                     .append(eol)
                     .append("unknown types: ").append(rs.getUnknownTypes());
 
-            logger.debug(buff);
+            Timber.log(TimberLog.FINER, "%s", buff);
         } catch (Throwable t) {
-            logger.error("Error writing statistics", t);
+            Timber.e(t, "Error writing statistics");
         }
     }
 
@@ -1920,14 +1901,13 @@ public class MediaStreamImpl extends AbstractMediaStream
     {
         mediaStreamStatsImpl.updateStats();
 
-        if (logger.isDebugEnabled())
-        {
+        if (TimberLog.isTraceEnabled()) {
             StringBuilder buff = new StringBuilder("\nReceive stream stats: discarded RTP packets: ")
                     .append(mediaStreamStatsImpl.getNbDiscarded())
                     .append("\nReceive stream stats: decoded with FEC: ")
                     .append(mediaStreamStatsImpl.getNbFec());
 
-            logger.debug(buff);
+            Timber.log(TimberLog.FINER, "%s", buff);
         }
     }
 
@@ -1973,7 +1953,6 @@ public class MediaStreamImpl extends AbstractMediaStream
     protected void registerCustomCodecFormats(StreamRTPManager rtpManager)
     {
         for (Map.Entry<Byte, MediaFormat> dynamicRTPPayloadType : getDynamicRTPPayloadTypes().entrySet()) {
-            @SuppressWarnings("unchecked")
             MediaFormatImpl<? extends Format> mediaFormatImpl
                     = (MediaFormatImpl<? extends Format>) dynamicRTPPayloadType.getValue();
             Format format = mediaFormatImpl.getFormat();
@@ -2075,12 +2054,10 @@ public class MediaStreamImpl extends AbstractMediaStream
         try {
             firePropertyChange(MediaStreamImpl.class.getName() + ".rtpConnector", oldValue, newValue);
         } catch (Throwable t) {
-            if (t instanceof InterruptedException)
-                Thread.currentThread().interrupt();
-            else if (t instanceof ThreadDeath)
+            if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else
-                logger.error(t);
+                Timber.e(t);
         }
     }
 
@@ -2105,12 +2082,10 @@ public class MediaStreamImpl extends AbstractMediaStream
             firePropertyChange(MediaStreamImpl.class.getName() + ".rtpConnector."
                     + (data ? "data" : "control") + "InputStream", null, inputStream);
         } catch (Throwable t) {
-            if (t instanceof InterruptedException)
-                Thread.currentThread().interrupt();
-            else if (t instanceof ThreadDeath)
+            if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else
-                logger.error(t);
+                Timber.e(t);
         }
     }
 
@@ -2307,10 +2282,8 @@ public class MediaStreamImpl extends AbstractMediaStream
         if (this.direction == direction)
             return;
 
-        if (logger.isTraceEnabled()) {
-            logger.trace("Changing direction of stream " + hashCode() + " from:" + this.direction
-                    + " to:" + direction);
-        }
+        Timber.log(TimberLog.FINER, "Changing direction of stream %s from: %s to: %s",
+                hashCode(), this.direction, direction);
 
         /*
          * Make sure that the specified direction is in accord with the direction of the
@@ -2367,10 +2340,8 @@ public class MediaStreamImpl extends AbstractMediaStream
                 return;
             }
         }
-
-        if (logger.isTraceEnabled()) {
-            logger.trace("Changing format of stream " + hashCode() + " from: " + thisFormat + " to: " + format);
-        }
+        Timber.log(TimberLog.FINER, "Changing format of stream %s from: %S to: %S",
+                hashCode(), thisFormat, format);
 
         handleAttributes(format, format.getAdvancedAttributes());
         handleAttributes(format, format.getFormatParameters());
@@ -2419,8 +2390,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     public void setMute(boolean mute)
     {
         if (this.mute != mute) {
-            if (logger.isTraceEnabled())
-                logger.trace((mute ? "Muting" : "Unmuting") + " stream with hashcode " + hashCode());
+            Timber.d("%s stream with hashcode %s", (mute ? "Muting" : "Unmuting"), hashCode());
 
             this.mute = mute;
             MediaDeviceSession deviceSession = getDeviceSession();
@@ -2522,14 +2492,12 @@ public class MediaStreamImpl extends AbstractMediaStream
             else if (startedDirection == null)
                 startedDirection = MediaDirection.SENDONLY;
 
-            if (logger.isInfoEnabled()) {
+            if (TimberLog.isTraceEnabled()) {
                 MediaType mediaType = getMediaType();
                 MediaStreamStats stats = getMediaStreamStats();
 
-                logger.info(mediaType + " codec/freq: " + stats.getEncoding() + "/"
-                        + stats.getEncodingClockRate() + " Hz");
-                logger.info(mediaType + " remote IP/port: " + stats.getRemoteIPAddress() + "/"
-                        + stats.getRemotePort());
+                Timber.i("%s codec/freq: %s/%s Hz", mediaType, stats.getEncoding(), stats.getEncodingClockRate());
+                Timber.i("%s remote IP/port: %s/%s", mediaType, stats.getRemoteIPAddress(), stats.getRemotePort());
             }
         }
 
@@ -2586,7 +2554,7 @@ public class MediaStreamImpl extends AbstractMediaStream
                 if (receiveStreamDataSource != null)
                     receiveStreamDataSource.start();
             } catch (IOException ioex) {
-                logger.warn("Failed to start receive stream " + receiveStream, ioex);
+                Timber.w(ioex, "Failed to start receive stream %s", receiveStream);
             }
         }
     }
@@ -2618,11 +2586,9 @@ public class MediaStreamImpl extends AbstractMediaStream
                     sendStream.start();
                     sendStreamDataSource.start();
 
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Started SendStream with hashCode " + sendStream.hashCode());
-                    }
+                    Timber.log(TimberLog.FINER, "Started SendStream with hashCode %s", sendStream.hashCode());
                 } catch (IOException ioe) {
-                    logger.warn("Failed to start stream " + sendStream, ioe);
+                    Timber.w(ioe, "Failed to start stream %s", sendStream);
                 }
             }
         }
@@ -2714,9 +2680,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     {
         for (ReceiveStream receiveStream : getReceiveStreams()) {
             try {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Stopping receive stream with hashcode " + receiveStream.hashCode());
-                }
+                Timber.log(TimberLog.FINER, "Stopping receive stream with hashcode %s", receiveStream.hashCode());
                 DataSource receiveStreamDataSource = receiveStream.getDataSource();
 
                 /*
@@ -2726,7 +2690,7 @@ public class MediaStreamImpl extends AbstractMediaStream
                 if (receiveStreamDataSource != null)
                     receiveStreamDataSource.stop();
             } catch (IOException ioex) {
-                logger.warn("Failed to stop receive stream " + receiveStream, ioex);
+                Timber.w(ioex, "Failed to stop receive stream %s", receiveStream);
             }
         }
     }
@@ -2767,9 +2731,7 @@ public class MediaStreamImpl extends AbstractMediaStream
 
         for (SendStream sendStream : sendStreams) {
             try {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Stopping send stream with hashcode " + sendStream.hashCode());
-                }
+                Timber.log(TimberLog.FINER, "Stopping send stream with hashcode %s", sendStream.hashCode());
 
                 sendStream.getDataSource().stop();
                 sendStream.stop();
@@ -2787,11 +2749,11 @@ public class MediaStreamImpl extends AbstractMediaStream
                          * Though we are now closing such SendStreams, ignore the exception here
                          * just in case because we already ignore IOExceptions.
                          */
-                        logger.error("Failed to close send stream " + sendStream, npe);
+                        Timber.e(npe, "Failed to close send stream %s", sendStream);
                     }
                 }
             } catch (IOException ioe) {
-                logger.warn("Failed to stop send stream " + sendStream, ioe);
+                Timber.w(ioe, "Failed to stop send stream %s", sendStream);
             }
         }
         return sendStreams;
@@ -2815,10 +2777,7 @@ public class MediaStreamImpl extends AbstractMediaStream
             ReceiveStream receiveStream = ev.getReceiveStream();
             if (receiveStream != null) {
                 long receiveStreamSSRC = 0xFFFFFFFFL & receiveStream.getSSRC();
-
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Received new ReceiveStream with ssrc " + receiveStreamSSRC);
-                }
+                Timber.log(TimberLog.FINER, "Received new ReceiveStream with ssrc %s", receiveStreamSSRC);
 
                 addRemoteSourceID(receiveStreamSSRC);
                 addReceiveStream(receiveStream);
@@ -2839,7 +2798,7 @@ public class MediaStreamImpl extends AbstractMediaStream
             List<ReceiveStream> receiveStreamsToRemove = new ArrayList<>();
             if (evReceiveStream != null) {
                 receiveStreamsToRemove.add(evReceiveStream);
-                logger.warn("### Receiving stream TimeoutEvent occurred for: " + evReceiveStream);
+                Timber.w("### Receiving stream TimeoutEvent occurred for: %s", evReceiveStream);
             }
             else if (participant != null) {
                 Collection<ReceiveStream> receiveStreams = getReceiveStreams();
@@ -2890,9 +2849,9 @@ public class MediaStreamImpl extends AbstractMediaStream
 
                         // as output streams of the DataSource are recreated we
                         // need to update mixers and everything that are using them
-                        devSess.playbackDataSourceChanged( receiveStream.getDataSource());
+                        devSess.playbackDataSourceChanged(receiveStream.getDataSource());
                     } catch (IOException e) {
-                        logger.error("Error re-creating TranscodingDataSource's processor!", e);
+                        Timber.e(e, "Error re-creating TranscodingDataSource's processor!");
                     }
                 }
             }
@@ -2951,7 +2910,7 @@ public class MediaStreamImpl extends AbstractMediaStream
              * The level of logger used here is in accord with the level of
              * logger used in StatisticsEngine where sent reports are logged.
              */
-            if (logger.isTraceEnabled()) {
+            if (TimberLog.isTraceEnabled()) {
                 // As reports are received on every 5 seconds
                 // print every 4th packet, on every 20 seconds
                 if ((numberOfReceivedSenderReports + numberOfReceivedReceiverReports) % 4 != 1)
@@ -2984,7 +2943,7 @@ public class MediaStreamImpl extends AbstractMediaStream
                             .append("ms");
                 }
                 buff.append(" ]");
-                logger.trace(buff);
+                Timber.log(TimberLog.FINER, "%s", buff);
             }
         }
     }

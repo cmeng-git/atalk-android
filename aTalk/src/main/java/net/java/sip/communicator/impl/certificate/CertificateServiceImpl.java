@@ -21,15 +21,15 @@ import net.java.sip.communicator.service.certificate.*;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
 import net.java.sip.communicator.service.httputil.HttpUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.OSUtils;
 import org.bouncycastle.asn1.DERIA5String;
-import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.*;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.x509.extension.X509ExtensionUtil;
 
 import java.beans.PropertyChangeEvent;
@@ -46,6 +46,8 @@ import java.util.*;
 
 import javax.net.ssl.*;
 import javax.security.auth.callback.*;
+
+import timber.log.Timber;
 
 /**
  * Implementation of the CertificateService. It asks the user to trust a certificate when
@@ -66,7 +68,6 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
          * Serial version UID.
          */
         private static final long serialVersionUID = 0L;
-
         {
             if (!OSUtils.IS_WINDOWS64) {
                 add(new KeyStoreType("PKCS11", new String[]{".dll", ".so"}, false));
@@ -79,8 +80,6 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     // ------------------------------------------------------------------------
     // services
     // ------------------------------------------------------------------------
-    private static final Logger logger = Logger.getLogger(CertificateServiceImpl.class);
-
     private final ConfigurationService config = CertificateVerificationActivator.getConfigurationService();
 
     private final CredentialsStorageService credService = CertificateVerificationActivator.getCredService();
@@ -311,8 +310,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                     break;
 
                 String newValue = thumbprint;
-                if (current != null)
-                    newValue += "," + current;
+                newValue += "," + current;
                 config.setProperty(propName, newValue);
                 break;
             case TRUST_THIS_SESSION_ONLY:
@@ -326,12 +324,14 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      *
      * @return all the server authenticated certificates
      */
-    public  List<String> getAllServerAuthCertificates() {
+    public List<String> getAllServerAuthCertificates()
+    {
         return config.getPropertyNamesByPrefix(PNAME_CERT_TRUST_PREFIX, false);
     }
 
     /**
      * Remove server certificate for the given certEntry
+     *
      * @param certEntry to be removed
      */
     public void removeCertificateEntry(String certEntry)
@@ -390,7 +390,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 Provider p = (Provider) c.newInstance(new ByteArrayInputStream(config.getBytes()));
                 Security.insertProviderAt(p, 0);
             } catch (Exception e) {
-                logger.error("Tried to access the PKCS11 provider on an unsupported platform or the load failed", e);
+                Timber.e(e, "Tried to access the PKCS11 provider on an unsupported platform or the load failed");
             }
         }
 
@@ -414,7 +414,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                                         = CertificateVerificationActivator.getAuthenticationWindowService();
 
                                 if (authenticationWindowService == null) {
-                                    logger.error("No AuthenticationWindowService implementation");
+                                    Timber.e("No AuthenticationWindowService implementation");
                                     throw new IOException("User cancel");
                                 }
 
@@ -541,7 +541,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 ks = KeyStore.getInstance(tsType);
                 ks.load(null, null);
             } catch (Exception e) {
-                logger.error("Could not rename Windows-ROOT aliases", e);
+                Timber.e(e, "Could not rename Windows-ROOT aliases");
             }
         }
 
@@ -569,7 +569,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      * The trust manager which asks the client whether to trust particular certificate which is not
      * android root's CA trusted.
      *
-     * @return TrustManager to use in an SSLContext
+     * Return TrustManager to use in an SSLContext
      */
     private class EntityTrustManager implements X509TrustManager
     {
@@ -746,7 +746,6 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 byte[] aiaBytes = current.getExtensionValue(Extension.authorityInfoAccess.getId());
                 if (aiaBytes == null)
                     break;
-
                 AuthorityInformationAccess aia
                         = AuthorityInformationAccess.getInstance(X509ExtensionUtil.fromExtensionValue(aiaBytes));
 
@@ -776,14 +775,13 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                     }
                     else {
                         // download if no cache entry or if it has expired
-                        if (logger.isDebugEnabled())
-                            logger.debug("Downloading parent certificate for <"
-                                    + current.getSubjectDN() + "> from <" + uri + ">");
+                        Timber.d("Downloading parent certificate for <%s> from <%s>",
+                                current.getSubjectDN(), uri);
                         try {
                             InputStream is = HttpUtils.openURLConnection(uri.toString()).getContent();
                             cert = (X509Certificate) certFactory.generateCertificate(is);
                         } catch (Exception e) {
-                            logger.debug("Could not download from <" + uri + ">");
+                            Timber.d("Could not download from <" + uri + ">");
                         }
                         // cache for 10mins
                         aiaCache.put(uri, new AiaCacheEntry(new Date(new Date().getTime() + 10 * 60 * 1000), cert));
@@ -796,7 +794,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                             break; // an AD was valid, ignore others
                         }
                         else
-                            logger.debug("Parent is self-signed, ignoring");
+                            Timber.d("Parent is self-signed, ignoring");
                     }
                 }
                 chainLookupCount++;
@@ -867,7 +865,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
             return DO_NOT_TRUST;
 
         if (CertificateVerificationActivator.getCertificateDialogService() == null) {
-            logger.error("Missing CertificateDialogService by default will not trust!");
+            Timber.e("Missing CertificateDialogService by default will not trust!");
             return DO_NOT_TRUST;
         }
 

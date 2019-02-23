@@ -14,21 +14,25 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import android.support.annotation.NonNull;
+
 import net.java.sip.communicator.service.argdelegation.UriHandler;
 import net.java.sip.communicator.service.gui.ExportedWindow;
 import net.java.sip.communicator.service.gui.PopupDialog;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.*;
 
 import java.beans.PropertyChangeEvent;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 /**
  * The jabber implementation of the URI handler. This class handles xmpp URIs by trying to establish
@@ -40,11 +44,6 @@ import java.util.regex.Pattern;
  */
 public class UriHandlerJabberImpl implements UriHandler, ServiceListener, AccountManagerListener
 {
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = Logger.getLogger(UriHandlerJabberImpl.class);
-
     /**
      * The protocol provider factory that created us.
      */
@@ -61,7 +60,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
     private final Object registrationLock = new Object();
 
     /**
-     * The <code>AccountManager</code> which loads the stored accounts of {@link #protoFactory} and
+     * The {@code AccountManager} which loads the stored accounts of {@link #protoFactory} and
      * to be monitored when the mentioned loading is complete so that any pending {@link #uris} can be handled
      */
     private AccountManager accountManager;
@@ -71,7 +70,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
      * {@link #protoFactory} have already been loaded.
      *
      * Before the loading of the stored accounts (even if there're none) of the
-     * <code>protoFactory</code> is completed, no handling of URIs is to be performed because
+     * {@code protoFactory} is completed, no handling of URIs is to be performed because
      * there's neither information which account to handle the URI in case there're stored accounts
      * available nor ground for warning the user a registered account is necessary to handle
      * URIs at all in case there're no stored accounts.
@@ -240,7 +239,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
         synchronized (storedAccountsAreLoaded) {
             if (!storedAccountsAreLoaded[0]) {
                 if (uris == null) {
-                    uris = new LinkedList<String>();
+                    uris = new LinkedList<>();
                 }
                 uris.add(uri);
                 return;
@@ -252,8 +251,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
             provider = selectHandlingProvider(uri);
         } catch (OperationFailedException exc) {
             // The operation has been canceled by the user. Bail out.
-            if (logger.isTraceEnabled())
-                logger.trace("User canceled handling of uri " + uri);
+            Timber.log(TimberLog.FINER, "User canceled handling of uri %s", uri);
             return;
         }
 
@@ -293,9 +291,9 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
             JabberActivator.getUIService().getChat(contact).setChatVisible(true);
         }
         else {
-            String cRoom = uri.replaceFirst(getProtocol() + ":", "");
+            String cRoom = uri.replaceFirst(Arrays.toString(getProtocol()) + ":", "");
             int ix = cRoom.indexOf("?");
-            String param = cRoom.substring(ix + 1, cRoom.length());
+            String param = cRoom.substring(ix + 1);
             cRoom = cRoom.substring(0, ix);
 
             if (param.equalsIgnoreCase("join")) {
@@ -368,12 +366,12 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
      */
     private void showErrorMessage(String message, Exception exc)
     {
-//		JabberActivator.getUIService().getPopupDialog()
-//				.showMessagePopupDialog(message, "Failed to create chat!",
-//						PopupDialog.ERROR_MESSAGE);
+        //		JabberActivator.getUIService().getPopupDialog()
+        //				.showMessagePopupDialog(message, "Failed to create chat!",
+        //						PopupDialog.ERROR_MESSAGE);
 
         AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), "Failed to create chat!", message);
-        logger.error(message, exc);
+        Timber.e(exc, "%s", message);
     }
 
 
@@ -403,7 +401,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
         }
 
         // otherwise - ask the user.
-        ArrayList<ProviderComboBoxEntry> providers = new ArrayList<ProviderComboBoxEntry>();
+        ArrayList<ProviderComboBoxEntry> providers = new ArrayList<>();
         for (AccountID accountID : registeredAccounts) {
             ServiceReference providerReference = protoFactory.getProviderForAccount(accountID);
 
@@ -443,6 +441,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
          *
          * @return a human readable string representing the provider.
          */
+        @NonNull
         @Override
         public String toString()
         {

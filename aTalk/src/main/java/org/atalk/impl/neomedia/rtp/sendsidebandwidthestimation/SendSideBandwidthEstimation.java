@@ -20,11 +20,13 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.rtp.BandwidthEstimator;
-import org.atalk.util.*;
 import org.atalk.util.IntSummaryStatistics;
 import org.atalk.util.LongSummaryStatistics;
+import org.atalk.util.*;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Implements the send-side bandwidth estimation described in
@@ -32,6 +34,7 @@ import java.util.*;
  * (send_side_bandwidth_estimation.cc, commit ID 7ad9e661f8a035d49d049ccdb87c77ae8ecdfa35).
  *
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 class SendSideBandwidthEstimation extends RTCPPacketListenerAdapter implements BandwidthEstimator
 {
@@ -158,12 +161,6 @@ class SendSideBandwidthEstimation extends RTCPPacketListenerAdapter implements B
      * The random number generator for all instances of this class.
      */
     private static final Random kRandom = new Random();
-
-    /*
-     * The <tt>Logger</tt> used by the {@link SendSideBandwidthEstimation} class and its instances
-     * for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(SendSideBandwidthEstimation.class);
 
     /**
      * The {@link TimeSeriesLogger} to be used by this instance to print time series.
@@ -587,8 +584,7 @@ class SendSideBandwidthEstimation extends RTCPPacketListenerAdapter implements B
     {
         long rtt = mediaStream.getMediaStreamStats().getSendStats().getRtt();
         if (rtt < 0 || rtt > 1000) {
-            logger.warn("RTT not calculated, or has a suspiciously high value ("
-                    + rtt + "). Using the default of 100ms.");
+            Timber.w("RTT not calculated, or has a suspiciously high value (%d). Using the default of 100ms.", rtt);
             rtt = 100;
         }
         return rtt;

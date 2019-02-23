@@ -10,6 +10,7 @@ package org.atalk.impl.neomedia.codec.audio.opus;
  *
  * @author Boris Grozev
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class Opus
 {
@@ -60,7 +61,7 @@ public class Opus
 	 */
 	public static final int OPUS_OK = 0;
 
-	/**
+	/*
 	 * Loads the native JNI library.
 	 */
 	static {

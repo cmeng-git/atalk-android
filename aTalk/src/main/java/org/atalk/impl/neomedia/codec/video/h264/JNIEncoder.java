@@ -7,6 +7,7 @@ package org.atalk.impl.neomedia.codec.video.h264;
 
 import net.sf.fmj.media.AbstractCodec;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
@@ -19,7 +20,6 @@ import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageListener;
-import org.atalk.util.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.media.*;
 import javax.media.format.VideoFormat;
 import javax.media.format.YUVFormat;
+
+import timber.log.Timber;
 
 /**
  * Implements an FMJ H.264 encoder using FFmpeg (and x264).
@@ -120,11 +122,6 @@ public class JNIEncoder extends AbstractCodec
      * <tt>gop_size</tt>, x264 refers to it as <tt>keyint</tt> or <tt>i_keyint_max</tt>.
      */
     public static final String KEYINT_PNAME = "neomedia.codec.video.h264.keyint";
-
-    /**
-     * The logger used by the <tt>JNIEncoder</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(JNIEncoder.class);
 
     /**
      * Minimum interval between two PLI request processing (in milliseconds).
@@ -549,7 +546,7 @@ public class JNIEncoder extends AbstractCodec
         try {
             FFmpeg.avcodeccontext_set_profile(avctx, getProfileForConfig(profile));
         } catch (UnsatisfiedLinkError ule) {
-            logger.warn("The FFmpeg JNI library is out-of-date.");
+            Timber.w("The FFmpeg JNI library is out-of-date.");
         }
 
         /*
@@ -682,9 +679,7 @@ public class JNIEncoder extends AbstractCodec
             switch (ev.getFeedbackMessageType()) {
                 case RTCPFeedbackMessageEvent.FMT_PLI:
                 case RTCPFeedbackMessageEvent.FMT_FIR:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Scheduling a key-frame, because we received an RTCP PLI or FIR.");
-                    }
+                    Timber.log(TimberLog.FINER, "Scheduling a key-frame, because we received an RTCP PLI or FIR.");
                     keyFrameRequest();
                     break;
                 default:

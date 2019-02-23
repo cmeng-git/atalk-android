@@ -7,9 +7,6 @@ package net.java.sip.communicator.plugin.loggingutils;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
-
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -22,6 +19,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Send/upload logs, to specified destination.
  *
@@ -31,11 +30,6 @@ import java.util.List;
  */
 public class LogUploadServiceImpl implements LogUploadService
 {
-    /**
-     * The logger.
-     */
-    private Logger logger = Logger.getLogger(LogUploadServiceImpl.class.getName());
-
     /**
      * List of log files created for sending logs purpose. There is no easy way of waiting until
      * email is sent and deleting temp log file, so they are cached and removed on OSGI service stop action.
@@ -60,7 +54,7 @@ public class LogUploadServiceImpl implements LogUploadService
                 logcatFile = LoggingUtilsActivator.getFileAccessService().getPrivatePersistentFile(logcatFN, FileCategory.LOG);
                 Runtime.getRuntime().exec("logcat -v time -f " + logcatFile);
             } catch (Exception e) {
-                logger.error("Couldn't save current logcat file.");
+                Timber.e("Couldn't save current logcat file.");
             }
             // Stores file name to remove it on service shutdown
             File externalStorageFile = LogsCollector.collectLogs(logStorageDir, null);
@@ -83,7 +77,7 @@ public class LogUploadServiceImpl implements LogUploadService
             aTalkApp.getGlobalContext().startActivity(chooserIntent);
         }
         else {
-            logger.error("Error sending debug log files");
+            Timber.e("Error sending debug log files");
         }
     }
 

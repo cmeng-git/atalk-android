@@ -5,23 +5,12 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
-import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusListener;
-import net.java.sip.communicator.service.protocol.event.ServerStoredGroupEvent;
-import net.java.sip.communicator.service.protocol.event.ServerStoredGroupListener;
-import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
-import net.java.sip.communicator.service.protocol.event.SubscriptionListener;
-import net.java.sip.communicator.service.protocol.event.SubscriptionMovedEvent;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.event.*;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Represents a default implementation of <tt>OperationSetPersistentPresence</tt> in order to make
@@ -33,12 +22,6 @@ import java.util.Vector;
 public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolProviderService>
         implements OperationSetPersistentPresence
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AbstractOperationSetPersistentPresence</tt> class and its
-     * instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AbstractOperationSetPersistentPresence.class);
-
     /**
      * A list of listeners registered for <tt>ContactPresenceStatusChangeEvent</tt>s.
      */
@@ -135,8 +118,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         PresenceStatus newValue = source.getPresenceStatus();
 
         if (oldValue.equals(newValue)) {
-            if (logger.isDebugEnabled())
-                logger.debug("Ignored prov stat. change evt. old==new = " + oldValue);
+            Timber.d("Ignored prov status change evt. old==new: %s", oldValue);
             return;
         }
 
@@ -159,9 +141,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         synchronized (contactPresenceStatusListeners) {
             listeners = new ArrayList<>(contactPresenceStatusListeners);
         }
-
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching Contact Status Change. Listeners=" + listeners.size() + " evt = " + evt);
+        Timber.d("Dispatching Contact Status Change. Listeners = %s evt = %s", listeners.size(), evt);
 
         for (ContactPresenceStatusListener listener : listeners)
             listener.contactPresenceStatusChanged(evt);
@@ -183,10 +163,8 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         synchronized (subscriptionListeners) {
             listeners = new ArrayList<>(subscriptionListeners);
         }
-
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching a Contact Property Change Event to" + listeners.size()
-                    + " listeners. Evt = " + evt);
+        Timber.d("Dispatching a Contact Property Change Event to %d listeners. Evt = %S",
+                listeners.size(), evt);
 
         for (SubscriptionListener listener : listeners)
             listener.contactModified(evt);
@@ -217,14 +195,13 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
             listeners = new ArrayList<>(providerPresenceStatusListeners);
         }
 
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching Provider Status Change. Listeners = " + listeners.size() + " evt = " + evt);
+        Timber.d("Dispatching Provider Status Change. Listeners = %d evt = %s",
+                listeners.size(), evt);
 
         for (ProviderPresenceStatusListener listener : listeners)
             listener.providerStatusChanged(evt);
 
-        if (logger.isDebugEnabled())
-            logger.debug("status dispatching done.");
+        Timber.d("status dispatching done.");
     }
 
     /**
@@ -242,9 +219,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         synchronized (providerPresenceStatusListeners) {
             listeners = new ArrayList<>(providerPresenceStatusListeners);
         }
-
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching  stat. msg change. Listeners = " + listeners.size() + " evt = " + evt);
+        Timber.d("Dispatching  stat. msg change. Listeners = %d evt = %s", listeners.size(), evt);
 
         for (ProviderPresenceStatusListener listener : listeners)
             listener.providerStatusMessageChanged(evt);
@@ -303,9 +278,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         synchronized (subscriptionListeners) {
             listeners = new ArrayList<>(subscriptionListeners);
         }
-
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching a Subscription Event to" + listeners.size() + " listeners. Evt = " + evt);
+        Timber.d("Dispatching a Subscription Event to %d listeners. Evt = %s", listeners.size(), evt);
 
         for (SubscriptionListener listener : listeners)
             switch (eventID) {
@@ -341,9 +314,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         synchronized (subscriptionListeners) {
             listeners = new ArrayList<>(subscriptionListeners);
         }
-
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching a Subscription Event to" + listeners.size() + " listeners. Evt = " + evt);
+        Timber.d("Dispatching a Subscription Event to %d listeners. Evt = %s", listeners.size(), evt);
 
         for (SubscriptionListener listener : listeners)
             listener.subscriptionMoved(evt);

@@ -7,9 +7,9 @@ package org.atalk.impl.neomedia.device;
 
 import android.support.annotation.NonNull;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.service.neomedia.MediaType;
-import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 
@@ -21,6 +21,8 @@ import javax.media.*;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 
+import timber.log.Timber;
+
 /**
  * Represents the base of a supported device system/backend such as DirectShow, PortAudio,
  * PulseAudio, QuickTime, video4linux2. A <tt>DeviceSystem</tt> is initialized at a certain time
@@ -31,6 +33,7 @@ import javax.media.format.VideoFormat;
  * {@link #createRenderer()} method.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public abstract class DeviceSystem extends PropertyChangeNotifier
 {
@@ -58,12 +61,6 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     public static final String LOCATOR_PROTOCOL_QUICKTIME = "quicktime";
 
     public static final String LOCATOR_PROTOCOL_VIDEO4LINUX2 = "video4linux2";
-
-    /**
-     * The <tt>Logger</tt> used by the <tt>DeviceSystem</tt> class and its instances for logging
-     * output.
-     */
-    private static final Logger logger = Logger.getLogger(DeviceSystem.class);
 
     /**
      * The list of <tt>CaptureDeviceInfo</tt>s representing the devices of this instance at the time
@@ -130,9 +127,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
          * to not be detected.
          */
         if (MediaServiceImpl.isMediaTypeSupportEnabled(MediaType.AUDIO)) {
-            if (logger.isInfoEnabled())
-                logger.info("Initializing audio devices");
-
+            Timber.i("Initializing audio devices");
             initializeDeviceSystems(MediaType.AUDIO);
         }
 
@@ -141,9 +136,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
          * to not be detected.
          */
         if (MediaServiceImpl.isMediaTypeSupportEnabled(MediaType.VIDEO)) {
-            if (logger.isInfoEnabled())
-                logger.info("Initializing video devices");
-
+            Timber.i("Initializing video devices");
             initializeDeviceSystems(MediaType.VIDEO);
         }
     }
@@ -242,7 +235,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                         if (t instanceof ThreadDeath)
                             throw (ThreadDeath) t;
                         else {
-                            logger.warn("Failed to initialize " + className, t);
+                            Timber.w(t, "Failed to initialize %s", className);
                         }
                     }
                     if (o instanceof DeviceSystem) {
@@ -263,7 +256,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                         if (t instanceof ThreadDeath)
                             throw (ThreadDeath) t;
                         else {
-                            logger.warn("Failed to reinitialize " + className, t);
+                            Timber.w(t, "Failed to reinitialize %s", className);
                         }
                     }
                 }
@@ -313,13 +306,10 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                 @Override
                 public void run()
                 {
-                    boolean loggerIsTraceEnabled = logger.isTraceEnabled();
                     try {
-                        if (loggerIsTraceEnabled)
-                            logger.trace("Will initialize " + className);
+                        Timber.log(TimberLog.FINER, "Will initialize %s", className);
                         deviceSystem.initialize();
-                        if (loggerIsTraceEnabled)
-                            logger.trace("Did initialize " + className);
+                        Timber.log(TimberLog.FINER, "Did initialize %s", className);
                     } catch (Throwable t) {
                         exception[0] = t;
                         if (t instanceof ThreadDeath)
@@ -425,7 +415,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                 if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;
                 else {
-                    logger.error("Failed to initialize a new " + className + " instance", t);
+                    Timber.e(t, "Failed to initialize a new %s instance", className);
                 }
             }
         }
@@ -609,9 +599,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                         /*
                          * We do not really need commit but we have it for historical reasons.
                          */
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Failed to commit CaptureDeviceManager", ioe);
-                        }
+                        Timber.d(ioe, "Failed to commit CaptureDeviceManager");
                     }
                 }
             }

@@ -5,12 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
-import net.java.sip.communicator.service.protocol.ProtocolNames;
-import net.java.sip.communicator.service.protocol.ProtocolProviderActivator;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.jxmpp.jid.BareJid;
@@ -18,10 +13,9 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * The Jabber implementation of a sip-communicator AccountID
@@ -33,11 +27,6 @@ import java.util.Map;
  */
 public class JabberAccountID extends AccountID
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AccountID</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(JabberAccountID.class);
-
     /**
      * Default properties prefix used in atalk-defaults.properties file for Jabber protocol.
      */
@@ -86,7 +75,7 @@ public class JabberAccountID extends AccountID
      * Indicates if Google Contacts should be enabled.
      */
     public static final String GOOGLE_CONTACTS_ENABLED = "GOOGLE_CONTACTS_ENABLED";
-    
+
     /**
      * Domain name that will bypass GTalk caps.
      */
@@ -116,7 +105,7 @@ public class JabberAccountID extends AccountID
                 BareJid bareJid = JidCreate.bareFrom(id);
                 setBareJid(bareJid);
             } catch (XmppStringprepException e) {
-                logger.error("Unable to create BareJid for user account: " + id);
+                Timber.e("Unable to create BareJid for user account: %s", id);
             }
         }
     }

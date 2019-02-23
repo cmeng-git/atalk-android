@@ -11,8 +11,6 @@ import android.media.audiofx.*;
 import android.os.Build;
 import android.os.Process;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
@@ -25,18 +23,16 @@ import java.io.IOException;
 import javax.media.*;
 import javax.media.control.FormatControl;
 
+import timber.log.Timber;
+
 /**
  * Implements an audio <tt>CaptureDevice</tt> using {@link AudioRecord}.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class DataSource extends AbstractPullBufferCaptureDevice
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>DataSource</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(DataSource.class);
-
     /**
      * The priority to be set to the thread executing the {@link AudioRecordStream#read(Buffer)}
      * method of a given <tt>AudioRecordStream</tt>.
@@ -138,7 +134,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
             exception = se;
         }
         if (exception != null)
-            logger.warn("Failed to set thread priority.", exception);
+            Timber.w(exception, "Failed to set thread priority.");
     }
 
     /**
@@ -292,7 +288,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
                 if (echoCanceller != null) {
                     echoCanceller.setEnableStatusListener(this);
                     echoCanceller.setEnabled(audioSystem.isEchoCancel());
-                    logger.info("Echo cancellation: " + echoCanceller.getEnabled());
+                    Timber.i("Echo cancellation: %s", echoCanceller.getEnabled());
                 }
             }
 
@@ -302,7 +298,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
                 if (agc != null) {
                     agc.setEnableStatusListener(this);
                     agc.setEnabled(audioSystem.isAutomaticGainControl());
-                    logger.info("Auto gain control: " + agc.getEnabled());
+                    Timber.i("Auto gain control: %s", agc.getEnabled());
                 }
             }
 
@@ -312,7 +308,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
                 if (noiseSuppressor != null) {
                     noiseSuppressor.setEnableStatusListener(this);
                     noiseSuppressor.setEnabled(audioSystem.isDenoise());
-                    logger.info("Noise suppressor: " + noiseSuppressor.getEnabled());
+                    Timber.i("Noise suppressor: %s", noiseSuppressor.getEnabled());
                 }
             }
         }
@@ -454,7 +450,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
         @Override
         public void onEnableStatusChange(AudioEffect effect, boolean enabled)
         {
-            logger.info(effect.getDescriptor() + " : " + enabled);
+            Timber.i("%s: %s", effect.getDescriptor(), enabled);
         }
     }
 }

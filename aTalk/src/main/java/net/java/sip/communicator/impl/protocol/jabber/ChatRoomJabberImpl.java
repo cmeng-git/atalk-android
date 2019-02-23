@@ -10,14 +10,13 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.condesc.ConferenceDescriptionExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.condesc.ConferenceDescriptionExtensionElement;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet.*;
-import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -25,6 +24,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.CaptchaDialog;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.MessageListener;
@@ -60,6 +60,8 @@ import org.jxmpp.util.XmppStringUtils;
 import java.beans.PropertyChangeEvent;
 import java.util.*;
 
+import timber.log.Timber;
+
 import static net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10;
 
 /**
@@ -75,11 +77,6 @@ import static net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderSer
 
 public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialog.CaptchaDialogListener
 {
-    /**
-     * The logger of this class.
-     */
-    private static final Logger logger = Logger.getLogger(ChatRoomJabberImpl.class);
-
     /**
      * The multi user chat smack object that we encapsulate in this room.
      */
@@ -167,7 +164,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * The <tt>ConferenceAnnouncementPacketExtension</tt> corresponding to <tt>publishedConference</tt> which we
      * add to all our presence updates. This MUST be kept in sync with <tt>publishedConference</tt>
      */
-    private ConferenceDescriptionExtension publishedConferenceExt = null;
+    private ConferenceDescriptionExtensionElement publishedConferenceExt = null;
 
     /**
      * The last <tt>Presence</tt> packet we sent to the MUC.
@@ -228,21 +225,16 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         StanzaFilter fromRoomFilter = FromMatchesFilter.create(multiUserChat.getRoom());
         StanzaFilter fromRoomCaptchaFilter = new AndFilter(fromRoomFilter, MessageTypeFilter.NORMAL);
 
-        provider.getConnection().addAsyncStanzaListener(new StanzaListener()
-        {
-            @Override
-            public void processStanza(Stanza packet)
-            {
-                sMessage = (org.jivesoftware.smack.packet.Message) packet;
-                if (sMessage.getExtension(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE) != null) {
-                    initCaptchaProcess(sMessage);
-                }
-                // Show message to user in chat window
-                else {
-                    messageListener.processMessage(sMessage);
-                }
-
+        provider.getConnection().addAsyncStanzaListener(packet -> {
+            sMessage = (org.jivesoftware.smack.packet.Message) packet;
+            if (sMessage.getExtension(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE) != null) {
+                initCaptchaProcess(sMessage);
             }
+            // Show message to user in chat window
+            else {
+                messageListener.processMessage(sMessage);
+            }
+
         }, fromRoomCaptchaFilter);
 
         ConferenceChatManager conferenceChatManager = AndroidGUIActivator.getUIService().getConferenceChatManager();
@@ -256,14 +248,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     private void initCaptchaProcess(final org.jivesoftware.smack.packet.Message message)
     {
-        new Handler(Looper.getMainLooper()).post(new Runnable()
-        {
-            public void run()
-            {
-                CaptchaDialog captchaDialog = new CaptchaDialog(aTalkApp.getCurrentActivity(),
-                        mProvider, message, ChatRoomJabberImpl.this);
-                captchaDialog.show();
-            }
+        new Handler(Looper.getMainLooper()).post(() -> {
+            CaptchaDialog captchaDialog = new CaptchaDialog(aTalkApp.getCurrentActivity(),
+                    mProvider, message, ChatRoomJabberImpl.this);
+            captchaDialog.show();
         });
     }
 
@@ -440,7 +428,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     public List<ChatRoomMember> getMembers()
     {
         synchronized (members) {
-            return new LinkedList<ChatRoomMember>(members.values());
+            return new LinkedList<>(members.values());
         }
     }
 
@@ -635,11 +623,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             StanzaError xmppError = ex.getStanzaError();
             errorMessage += "\n" + ex.getMessage() + "\n";
             if (xmppError == null) {
-                logger.error(errorMessage, ex);
+                Timber.e(ex, "%s", errorMessage);
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
             }
             else if (xmppError.getCondition().equals(Condition.not_authorized)) {
-                logger.error(errorMessage, ex);
+                Timber.e(ex, "%s", errorMessage);
                 if (mCaptchaState == CaptchaDialog.unknown) {
                     errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD);
                     throw new OperationFailedException(errorMessage, OperationFailedException.AUTHENTICATION_FAILED, ex);
@@ -655,16 +643,16 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION);
                 else
                     errorMessage += errText;
-                logger.error(errorMessage, ex);
+                Timber.e(ex, "%s", errorMessage);
                 // initRegistrationRequest();
                 throw new OperationFailedException(errorMessage, OperationFailedException.REGISTRATION_REQUIRED, ex);
             }
             else {
-                logger.error(errorMessage, ex);
+                Timber.e(ex, "%s", errorMessage);
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
             }
         } catch (Throwable ex) {
-            logger.error(errorMessage, ex);
+            Timber.e(ex, "%s", errorMessage);
             if (mCaptchaState == CaptchaDialog.unknown) {
                 errorMessage = ex.getMessage();
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
@@ -804,7 +792,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     try {
                         peer.hangup(false, null, null);
                     } catch (NotConnectedException | InterruptedException e) {
-                        logger.error("Could not hangup peer " + peer.getAddress(), e);
+                        Timber.e(e, "Could not hangup peer %s", peer.getAddress());
                     }
                 }
             }
@@ -821,7 +809,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 try {
                     peer.hangup(false, null, null);
                 } catch (NotConnectedException | InterruptedException e) {
-                    logger.error("Could not hangup peer " + peer.getAddress(), e);
+                    Timber.e(e, "Could not hangup peer %s", peer.getAddress());
                 }
         }
 
@@ -832,7 +820,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             if (connection != null)
                 mMultiUserChat.leave();
         } catch (Throwable e) {
-            logger.warn("Error occurred while leaving, maybe just disconnected before leaving", e);
+            Timber.w(e, "Error occurred while leaving, maybe just disconnected before leaving");
             return;
         }
 
@@ -846,9 +834,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         }
 
         // connection can be null if we are leaving due to connection failed
-        if ((connection != null) && (mMultiUserChat != null))
-
-        {
+        if ((connection != null) && (mMultiUserChat != null)) {
             if (presenceInterceptor != null) {
                 mMultiUserChat.removePresenceInterceptor(presenceInterceptor);
                 presenceInterceptor = null;
@@ -885,7 +871,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             throws OperationFailedException
     {
         org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message();
-        msg.addExtension(new JsonMessageExtension(json));
+        msg.addExtension(new JsonMessageExtensionElement(json));
         sendMessage(msg);
     }
 
@@ -906,7 +892,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             // MessageEventManager.addNotificationsRequests(msg, true, false, false, true);
             mMultiUserChat.sendMessage(message);
         } catch (NotConnectedException | InterruptedException e) {
-            logger.error("Failed to send message " + message, e);
+            Timber.e(e, "Failed to send message %s", message);
             throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_SEND_MESSAGE_FAIL, message),
                     OperationFailedException.GENERAL_ERROR, e);
         }
@@ -922,7 +908,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             encryptedMucMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
             mMultiUserChat.sendMessage(encryptedMucMessage.asMessage(this.getIdentifier()));
         } catch (UndecidedOmemoIdentityException e) {
-            HashSet<OmemoDevice> omemoDevices = e.getUndecidedDevices();
+            Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
             aTalkApp.getGlobalContext().startActivity(
                     OmemoAuthenticateDialog.createIntent(omemoManager, omemoDevices, null));
         } catch (CryptoFailedException | InterruptedException
@@ -933,7 +919,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             msg = "User must login to send omemo message: " + e.getMessage();
         }
         if (!StringUtils.isNullOrEmpty(msg)) {
-            logger.warn(msg);
+            Timber.w("%s", msg);
             aTalkApp.showToastMessage(msg);
         }
 
@@ -957,7 +943,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mMultiUserChat.changeSubject(subject);
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
             String errMsg = "Failed to change subject for chat room" + getName();
-            logger.error(errMsg, ex);
+            Timber.e(ex, "%s", errMsg);
             throw new OperationFailedException(errMsg, OperationFailedException.FORBIDDEN, ex);
         }
     }
@@ -1036,8 +1022,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         @Override
         public void banned(EntityFullJid participant, Jid actor, String reason)
         {
-            if (logger.isInfoEnabled())
-                logger.info(participant + " has been banned from chat room: " + getName());
+            Timber.i("%s has been banned from chat room: %s", participant, getName());
 
             ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
             if (member != null) {
@@ -1093,8 +1078,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         @Override
         public void joined(EntityFullJid participant)
         {
-            if (logger.isInfoEnabled())
-                logger.info(participant + " has joined chatRoom: " + getName());
+            Timber.i("%s has joined chatRoom: %s", participant, getName());
 
             // We try to get the nickname of the participantName in case it's in the form john@servicename.com,
             // because the nickname we keep in the nickname property is just the user name like "john".
@@ -1125,8 +1109,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         @Override
         public void left(EntityFullJid participant)
         {
-            if (logger.isInfoEnabled())
-                logger.info(participant + " has left the chat room: " + getName());
+            Timber.i("%s has left the chat room: %s", participant, getName());
 
             ChatRoomMember member = findMemberFromParticipant(participant);
             if (member != null) {
@@ -1400,7 +1383,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 | MultiUserChatException.MucNotJoinedException | InterruptedException e) {
 
             String msg = "Failed to change nickname for chat room: " + getName() + " => " + e.getMessage();
-            logger.error(msg);
+            Timber.e("%s", msg);
             throw new OperationFailedException(msg, OperationFailedException.IDENTIFICATION_CONFLICT);
         }
     }
@@ -1422,7 +1405,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             Jid jid = ((ChatRoomMemberJabberImpl) member).getJabberID();
             mMultiUserChat.banUser(jid, reason);
         } catch (XMPPErrorException e) {
-            logger.error("Failed to ban participant.", e);
+            Timber.e(e, "Failed to ban participant.");
 
             // If a moderator or a user with an affiliation of "owner" or "admin" was intended to be kicked.
             if (e.getStanzaError().getCondition().equals(Condition.not_allowed)) {
@@ -1456,7 +1439,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             Resourcepart nick = ((ChatRoomMemberJabberImpl) member).getNickNameAsResourcepart();
             mMultiUserChat.kickParticipant(nick, reason);
         } catch (XMPPErrorException e) {
-            logger.error("Failed to kick participant.", e);
+            Timber.e(e, "Failed to kick participant.");
 
             // If a moderator or a user with an affiliation of "owner" or "admin" was intended to be kicked.
             if (e.getStanzaError().getCondition().equals(Condition.not_allowed)) {
@@ -1494,8 +1477,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         ChatRoomMemberPresenceChangeEvent evt
                 = new ChatRoomMemberPresenceChangeEvent(this, member, eventID, eventReason);
 
-        if (logger.isTraceEnabled())
-            logger.trace("Will dispatch the following ChatRoom event: " + evt);
+        Timber.log(TimberLog.FINER, "Will dispatch the following ChatRoom event: %s", evt);
 
         Iterable<ChatRoomMemberPresenceListener> listeners;
         synchronized (memberListeners) {
@@ -1521,8 +1503,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         ChatRoomMemberPresenceChangeEvent evt = new ChatRoomMemberPresenceChangeEvent(this, member,
                 actor, eventID, eventReason);
 
-        if (logger.isTraceEnabled())
-            logger.trace("Will dispatch the following ChatRoom event: " + evt);
+        Timber.log(TimberLog.FINER, "Will dispatch the following ChatRoom event: %s", evt);
 
         Iterable<ChatRoomMemberPresenceListener> listeners;
         synchronized (memberListeners) {
@@ -1545,8 +1526,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         member.setRole(newRole);
         ChatRoomMemberRoleChangeEvent evt = new ChatRoomMemberRoleChangeEvent(this, member, previousRole, newRole);
 
-        if (logger.isTraceEnabled())
-            logger.trace("Will dispatch the following ChatRoom event: " + evt);
+        Timber.log(TimberLog.FINER, "Will dispatch the following ChatRoom event: %s", evt);
 
         Iterable<ChatRoomMemberRoleListener> listeners;
         synchronized (memberRoleListeners) {
@@ -1580,14 +1560,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     listener.messageDeliveryFailed((ChatRoomMessageDeliveryFailedEvent) evt);
                 }
             } catch (Throwable e) {
-                logger.error("Error delivering multi chat message for " + listener, e);
+                Timber.e(e, "Error delivering multi chat message for %s", listener);
             }
         }
     }
 
     /**
      * Publishes a conference to the room by sending a <tt>Presence</tt> IQ which contains a
-     * <tt>ConferenceDescriptionExtension</tt>
+     * <tt>ConferenceDescriptionExtensionElement</tt>
      *
      * @param cd the description of the conference to announce
      * @param name the name of the conference
@@ -1612,17 +1592,17 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             cd.setDisplayName(displayName);
         }
 
-        ConferenceDescriptionExtension ext = new ConferenceDescriptionExtension(cd);
+        ConferenceDescriptionExtensionElement ext = new ConferenceDescriptionExtensionElement(cd);
         if (lastPresenceSent != null) {
-            setPacketExtension(lastPresenceSent, ext, ConferenceDescriptionExtension.NAMESPACE);
+            setPacketExtension(lastPresenceSent, ext, ConferenceDescriptionExtensionElement.NAMESPACE);
             try {
                 mProvider.getConnection().sendStanza(lastPresenceSent);
             } catch (NotConnectedException | InterruptedException e) {
-                logger.warn("Could not publish conference", e);
+                Timber.w(e, "Could not publish conference");
             }
         }
         else {
-            logger.warn("Could not publish conference, lastPresenceSent is null.");
+            Timber.w("Could not publish conference, lastPresenceSent is null.");
             publishedConference = null;
             publishedConferenceExt = null;
             return null;
@@ -1698,7 +1678,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             try {
                 mProvider.getConnection().sendStanza(lastPresenceSent);
             } catch (NotConnectedException | InterruptedException e) {
-                logger.error("Could not publish presence", e);
+                Timber.e(e, "Could not publish presence");
             }
         }
     }
@@ -1715,7 +1695,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             try {
                 mProvider.getConnection().sendStanza(lastPresenceSent);
             } catch (NotConnectedException | InterruptedException e) {
-                logger.error("Could not send presence", e);
+                Timber.e(e, "Could not send presence");
             }
         }
     }
@@ -1732,7 +1712,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             try {
                 mProvider.getConnection().sendStanza(lastPresenceSent);
             } catch (NotConnectedException | InterruptedException e) {
-                logger.error("Could not remove presence", e);
+                Timber.e(e, "Could not remove presence");
             }
         }
     }
@@ -1751,7 +1731,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 res.add(a.getJid());
             }
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException e) {
-            logger.error("Cannot obtain members list", e);
+            Timber.e(e, "Cannot obtain members list");
         }
         return res;
     }
@@ -1775,7 +1755,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 mMultiUserChat.grantMembership(members);
         } catch (XMPPException | NoResponseException | NotConnectedException
                 | InterruptedException e) {
-            logger.error("Cannot modify members list", e);
+            Timber.e(e, "Cannot modify members list");
         }
     }
 
@@ -1821,12 +1801,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     String sTimestamp = ConfigurationUtils.getChatRoomProperty(mProvider,
                             getName(), LAST_SEEN_DELAYED_MESSAGE_PROP);
 
-                        try {
-                                lastSeenDelayedMessage = new Date(Long.parseLong(sTimestamp));
-                        } catch (Throwable ex) {
-                            logger.warn("TimeStamp property is null! " + timeStamp);
-                        }
+                    try {
+                        lastSeenDelayedMessage = new Date(Long.parseLong(sTimestamp));
+                    } catch (Throwable ex) {
+                        Timber.w("TimeStamp property is null! %s", timeStamp);
                     }
+                }
 
                 if (lastSeenDelayedMessage != null && !timeStamp.after(lastSeenDelayedMessage))
                     return;
@@ -1872,15 +1852,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, fromNick, jabberID);
             }
 
-            if (logger.isDebugEnabled()) {
-                if (logger.isDebugEnabled())
-                    logger.debug("Received from " + fromNick + " the message " + msg.toString());
-            }
+            Timber.d("Received from %s the message %s", fromNick, msg.toString());
 
             Message newMessage = createMessage(msgBody);
             if (msg.getType() == org.jivesoftware.smack.packet.Message.Type.error) {
-                if (logger.isInfoEnabled())
-                    logger.info("Message error received from: " + fromNick);
+                Timber.i("Message error received from: %s", fromNick);
 
                 StanzaError error = msg.getError();
                 Condition errorCode = error.getCondition();
@@ -1945,8 +1921,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         {
             // only fire event if subject has really changed, not for new one
             if (subject != null && !subject.equals(oldSubject)) {
-                if (logger.isDebugEnabled())
-                    logger.debug("ChatRoom subject updated to '" + subject + "'");
+                Timber.d("ChatRoom subject updated to '%s'", subject);
                 ChatRoomPropertyChangeEvent evt = new ChatRoomPropertyChangeEvent(
                         ChatRoomJabberImpl.this, ChatRoomPropertyChangeEvent.CHAT_ROOM_SUBJECT, oldSubject, subject);
                 firePropertyChangeEvent(evt);
@@ -2125,8 +2100,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         ChatRoomLocalUserRoleChangeEvent evt
                 = new ChatRoomLocalUserRoleChangeEvent(this, previousRole, newRole, isInitial);
 
-        if (logger.isTraceEnabled())
-            logger.trace("Will dispatch the following ChatRoom event: " + evt);
+        Timber.log(TimberLog.FINER, "Will dispatch the following ChatRoom event: %s", evt);
 
         Iterable<ChatRoomLocalUserRoleListener> listeners;
         synchronized (localUserRoleListeners) {
@@ -2249,7 +2223,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             if (info != null)
                 persistent = info.containsFeature("muc_persistent");
         } catch (Exception ex) {
-            logger.warn("could not get persistent state for room :" + roomName + "\n", ex);
+            Timber.w(ex, "could not get persistent state for room : %s", roomName);
         }
         return persistent;
     }
@@ -2279,7 +2253,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         try {
             mMultiUserChat.grantAdmin(jid);
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
-            logger.error("An error occurs granting administrator privileges to a user.", ex);
+            Timber.e(ex, "An error occurs granting administrator privileges to a user.");
         }
     }
 
@@ -2295,7 +2269,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         try {
             mMultiUserChat.grantMembership(jid);
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
-            logger.error("An error occurs granting membership to a user", ex);
+            Timber.e(ex, "An error occurs granting membership to a user");
         }
     }
 
@@ -2312,7 +2286,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mMultiUserChat.grantModerator(Resourcepart.from(nickname));
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException
                 | XmppStringprepException ex) {
-            logger.error("An error occurs granting moderator " + "privileges to a user", ex);
+            Timber.e(ex, "An error occurs granting moderator privileges to a user");
         }
     }
 
@@ -2329,7 +2303,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mMultiUserChat.grantOwnership(JidCreate.from(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException
                 | XmppStringprepException ex) {
-            logger.error("An error occurs granting ownership privileges to a user", ex);
+            Timber.e(ex, "An error occurs granting ownership privileges to a user");
         }
     }
 
@@ -2351,7 +2325,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mMultiUserChat.grantVoice(Resourcepart.from(nickname));
         } catch (XMPPException | NoResponseException | NotConnectedException
                 | InterruptedException | XmppStringprepException ex) {
-            logger.error("An error occurs granting voice to a visitor", ex);
+            Timber.e(ex, "An error occurs granting voice to a visitor");
         }
     }
 
@@ -2368,7 +2342,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mMultiUserChat.revokeAdmin((EntityJid) JidCreate.from(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException
                 | XmppStringprepException | InterruptedException ex) {
-            logger.error("n error occurs revoking administrator " + "privileges to a user", ex);
+            Timber.e(ex, "n error occurs revoking administrator privileges to a user");
         }
     }
 
@@ -2386,7 +2360,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mMultiUserChat.revokeMembership(JidCreate.from(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException
                 | InterruptedException | XmppStringprepException ex) {
-            logger.error("An error occurs revoking membership to a user", ex);
+            Timber.e(ex, "An error occurs revoking membership to a user");
         }
     }
 
@@ -2404,7 +2378,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mMultiUserChat.revokeModerator(Resourcepart.from(nickname));
         } catch (XMPPException | NoResponseException | NotConnectedException
                 | InterruptedException | XmppStringprepException ex) {
-            logger.error("n error occurs revoking moderator privileges from a user", ex);
+            Timber.e(ex, "An error occurs revoking moderator privileges from a user");
         }
     }
 
@@ -2421,7 +2395,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mMultiUserChat.revokeOwnership(JidCreate.from(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException
                 | InterruptedException | XmppStringprepException ex) {
-            logger.error("An error occurs revoking ownership privileges from a user", ex);
+            Timber.e(ex, "An error occurs revoking ownership privileges from a user");
         }
     }
 
@@ -2443,7 +2417,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mMultiUserChat.revokeVoice(Resourcepart.from(nickname));
         } catch (XMPPException | NoResponseException | NotConnectedException
                 | InterruptedException | XmppStringprepException ex) {
-            logger.info("An error occurs revoking voice from a participant", ex);
+            Timber.i(ex, "An error occurs revoking voice from a participant");
         }
     }
 
@@ -2473,7 +2447,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         public void processPresence(Presence presence)
         {
             if (presence != null) {
-                setPacketExtension(presence, publishedConferenceExt, ConferenceDescriptionExtension.NAMESPACE);
+                setPacketExtension(presence, publishedConferenceExt, ConferenceDescriptionExtensionElement.NAMESPACE);
                 lastPresenceSent = presence;
             }
         }
@@ -2516,7 +2490,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     try {
                         mMultiUserChat.sendConfigurationForm(new Form(DataForm.Type.submit));
                     } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException e) {
-                        logger.error("Failed to send config form.", e);
+                        Timber.e(e, "Failed to send config form.");
                     }
 
                     opSetMuc.addSmackInvitationRejectionListener(mMultiUserChat, ChatRoomJabberImpl.this);
@@ -2563,22 +2537,21 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             }
             ChatRoomMemberJabberImpl member = (participantNick == null) ? null : members.get(participantNick);
 
-            ExtensionElement ext = presence.getExtension(ConferenceDescriptionExtension.NAMESPACE);
+            ExtensionElement ext = presence.getExtension(ConferenceDescriptionExtensionElement.NAMESPACE);
             if (presence.isAvailable() && ext != null) {
-                ConferenceDescriptionExtension cdExt = (ConferenceDescriptionExtension) ext;
+                ConferenceDescriptionExtensionElement cdExt = (ConferenceDescriptionExtensionElement) ext;
                 ConferenceDescription cd = cdExt.toConferenceDescription();
 
                 if (!processConferenceDescription(cd, participantNick))
                     return;
 
                 if (member != null) {
-                    if (logger.isDebugEnabled())
-                        logger.debug("Received " + cd + " from " + participantNick + " in " + mMultiUserChat.getRoom());
+                    Timber.d("Received %s from %s in %s", cd, participantNick, mMultiUserChat.getRoom());
                     fireConferencePublishedEvent(member, cd, ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_RECEIVED);
                 }
                 else {
-                    logger.warn("Received a ConferenceDescription from an unknown member ("
-                            + participantNick + ") in " + mMultiUserChat.getRoom());
+                    Timber.w("Received a ConferenceDescription from an unknown member (%s) in %s",
+                            participantNick, mMultiUserChat.getRoom());
                 }
             }
 
@@ -2699,7 +2672,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         try {
             nickname = JidCreate.from(contact.getAddress()).getResourceOrEmpty();
         } catch (XmppStringprepException e) {
-            logger.error("Invalid contact address: " + contact.getAddress());
+            Timber.e("Invalid contact address: %s", contact.getAddress());
             return;
         }
 

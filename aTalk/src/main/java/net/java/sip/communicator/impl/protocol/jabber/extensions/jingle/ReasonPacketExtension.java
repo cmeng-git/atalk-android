@@ -6,6 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jingle;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -153,7 +154,7 @@ public class ReasonPacketExtension implements ExtensionElement
      *
      * @return the packet extension as XML.
      */
-    public XmlStringBuilder toXML(String enclosingNamespace)
+    public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.openElement(getElementName());
@@ -165,7 +166,7 @@ public class ReasonPacketExtension implements ExtensionElement
 
         // add the extra element if it has been specified.
         if (getOtherExtension() != null) {
-            xml.append(getOtherExtension().toXML(null));
+            xml.append(getOtherExtension().toXML(XmlEnvironment.EMPTY));
         }
         xml.closeElement(getElementName());
         return xml;

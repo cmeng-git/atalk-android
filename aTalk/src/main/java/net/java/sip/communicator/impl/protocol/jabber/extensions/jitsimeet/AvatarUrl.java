@@ -18,9 +18,13 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
  * A implementation of a {@link ExtensionElement} for the jitsi-meet "avatar-url" element.
@@ -32,7 +36,7 @@ public class AvatarUrl implements ExtensionElement
     public static final String ELEMENT_NAME = "avatar-url";
     public static final String NAMESPACE = "jabber:client";
 
-    private String avatarUrl = null;
+    private String avatarUrl;
 
     /**
      * Initializes an {@link AvatarUrl} instance with a given string value.
@@ -87,7 +91,7 @@ public class AvatarUrl implements ExtensionElement
      * @return xml representation of this extension.
      */
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace)
+    public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.element(ELEMENT_NAME, getAvatarUrl());
@@ -100,17 +104,17 @@ public class AvatarUrl implements ExtensionElement
     public static class Provider extends ExtensionElementProvider<AvatarUrl>
     {
         @Override
-        public AvatarUrl parse(XmlPullParser parser, int initialDepth)
-                throws Exception
+        public AvatarUrl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+                throws IOException, XmlPullParserException
         {
-            parser.next();
-            final String address = parser.getText();
-
-            // Advance to end of extension.
-            while (parser.getEventType() != XmlPullParser.END_TAG) {
                 parser.next();
-            }
-            return new AvatarUrl(address);
+                final String address = parser.getText();
+
+                // Advance to end of extension.
+                while (parser.getEventType() != XmlPullParser.END_TAG) {
+                    parser.next();
+                }
+                return new AvatarUrl(address);
         }
     }
 }

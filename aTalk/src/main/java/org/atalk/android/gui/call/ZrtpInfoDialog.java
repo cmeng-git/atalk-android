@@ -27,6 +27,8 @@ import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * The dialog shows security information for ZRTP protocol. Allows user to verify/clear security authentication string.
  * It will be shown only if the call is secured(there is security control available).
@@ -38,11 +40,6 @@ import java.util.List;
  */
 public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecurityListener, VideoListener
 {
-    /**
-     * The logger.
-     */
-    private final static Logger logger = Logger.getLogger(ZrtpInfoDialog.class);
-
     /**
      * The extra key for call ID managed by {@link CallManager}.
      */
@@ -184,7 +181,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     private void updateVerificationStatus()
     {
         boolean verified = masterControl.isSecurityVerified();
-        logger.trace("Is sas verified? " + verified);
+        Timber.d("Is sas verified? %s", verified);
 
         String txt = verified ? getString(R.string.service_gui_security_STRING_COMPARED) : getString(R.string.service_gui_security_COMPARE_WITH_PARTNER_SHORT);
         ViewUtil.setTextViewValue(getView(), R.id.security_compare, txt);
@@ -354,7 +351,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      */
     public void securityMessageReceived(CallPeerSecurityMessageEvent event)
     {
-        logger.info("### ZRTP security Message Received: " + event.getMessage());
+        Timber.i("### ZRTP security Message Received: %s", event.getMessage());
     }
 
     /**

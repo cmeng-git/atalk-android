@@ -6,12 +6,13 @@
 package net.java.sip.communicator.service.protocol;
 
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.util.event.PropertyChangeNotifier;
 
 import java.net.URL;
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Provides a default implementation for most of the <tt>CallPeer</tt> methods with the purpose of
@@ -25,14 +26,9 @@ import java.util.*;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProviderService> extends PropertyChangeNotifier
-        implements CallPeer
+public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProviderService>
+        extends PropertyChangeNotifier implements CallPeer
 {
-    /**
-     * Our class logger.
-     */
-    private static final Logger logger = Logger.getLogger(AbstractCallPeer.class);
-
     /**
      * The constant which describes an empty set of <tt>ConferenceMember</tt>s (and which can be
      * used to reduce allocations).
@@ -230,7 +226,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     public void fireConferenceMemberErrorEvent(String errorMessage)
     {
         if (errorMessage == null || errorMessage.length() == 0) {
-            logger.warn("The error message for " + this.getDisplayName() + " null or empty string.");
+            Timber.w("The error message for %  is null or empty string.", this.getDisplayName());
             return;
         }
 
@@ -301,9 +297,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     protected void fireCallPeerChangeEvent(String eventType, Object oldValue, Object newValue, String reason, int reasonCode)
     {
         CallPeerChangeEvent evt = new CallPeerChangeEvent(this, eventType, oldValue, newValue, reason, reasonCode);
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching a CallPeerChangeEvent event to " + callPeerListeners.size()
-                    + " listeners. event is: " + evt.toString());
+        Timber.d("Dispatching a CallPeerChangeEvent to %s listeners. Event is: %s",
+                callPeerListeners.size(), evt.toString());
 
         Iterator<CallPeerListener> listeners;
         synchronized (callPeerListeners) {
@@ -313,9 +308,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
         while (listeners.hasNext()) {
             CallPeerListener listener = listeners.next();
 
-            if (logger.isDebugEnabled())
-                logger.debug("Dispatching a CallPeerChangeEvent event to " + listener.getClass()
-                        + " . event is: " + evt.toString());
+            Timber.d("Dispatching CallPeerChangeEvent event to %s. Event is: %s",
+                    listener.getClass(), evt.toString());
 
             // catch any possible errors, so we are sure we dispatch events to all listeners
             try {
@@ -334,7 +328,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
                         break;
                 }
             } catch (Throwable t) {
-                logger.error("Error dispatching event of type" + eventType + " in " + listener, t);
+                Timber.e(t, "Error dispatching event of type %s in %s", eventType, listener);
             }
         }
     }
@@ -354,28 +348,25 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
         }
 
         int eventID = conferenceEvent.getEventID();
-        if (logger.isDebugEnabled()) {
-            String eventIDString;
-            switch (eventID) {
-                case CallPeerConferenceEvent.CONFERENCE_FOCUS_CHANGED:
-                    eventIDString = "CONFERENCE_FOCUS_CHANGED";
-                    break;
-                case CallPeerConferenceEvent.CONFERENCE_MEMBER_ADDED:
-                    eventIDString = "CONFERENCE_MEMBER_ADDED";
-                    break;
-                case CallPeerConferenceEvent.CONFERENCE_MEMBER_REMOVED:
-                    eventIDString = "CONFERENCE_MEMBER_REMOVED";
-                    break;
-                case CallPeerConferenceEvent.CONFERENCE_MEMBER_ERROR_RECEIVED:
-                    eventIDString = "CONFERENCE_MEMBER_ERROR_RECEIVED";
-                    break;
-                default:
-                    eventIDString = "UNKNOWN";
-                    break;
-            }
-            logger.debug("Firing CallPeerConferenceEvent with ID " + eventIDString + " to "
-                    + listeners.length + " listeners");
+        String eventIDString;
+        switch (eventID) {
+            case CallPeerConferenceEvent.CONFERENCE_FOCUS_CHANGED:
+                eventIDString = "CONFERENCE_FOCUS_CHANGED";
+                break;
+            case CallPeerConferenceEvent.CONFERENCE_MEMBER_ADDED:
+                eventIDString = "CONFERENCE_MEMBER_ADDED";
+                break;
+            case CallPeerConferenceEvent.CONFERENCE_MEMBER_REMOVED:
+                eventIDString = "CONFERENCE_MEMBER_REMOVED";
+                break;
+            case CallPeerConferenceEvent.CONFERENCE_MEMBER_ERROR_RECEIVED:
+                eventIDString = "CONFERENCE_MEMBER_ERROR_RECEIVED";
+                break;
+            default:
+                eventIDString = "UNKNOWN";
+                break;
         }
+        Timber.d("Firing CallPeerConferenceEvent with ID %s to %s listeners", eventIDString, listeners.length);
 
         for (CallPeerConferenceListener listener : listeners)
             switch (eventID) {
@@ -406,9 +397,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     {
         CallPeerSecurityMessageEvent evt = new CallPeerSecurityMessageEvent(this, messageType, i18nMessage, severity);
 
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching a CallPeerSecurityFailedEvent event to "
-                    + callPeerSecurityListeners.size() + " listeners. event is: " + evt.toString());
+        Timber.d("Dispatching a CallPeerSecurityFailedEvent event to %s listeners. event is: %s",
+                callPeerSecurityListeners.size(), evt.toString());
 
         Iterator<CallPeerSecurityListener> listeners;
         synchronized (callPeerSecurityListeners) {
@@ -431,9 +421,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     {
         lastSecurityEvent = evt;
 
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching a CallPeerSecurityStatusEvent event to "
-                    + callPeerSecurityListeners.size() + " listeners. event is: " + evt.toString());
+        Timber.d("Dispatching a CallPeerSecurityStatusEvent event to %s listeners. event is: %s",
+                callPeerSecurityListeners.size(), evt.toString());
 
         List<CallPeerSecurityListener> listeners;
         synchronized (callPeerSecurityListeners) {
@@ -453,10 +442,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     protected void fireCallPeerSecurityOffEvent(CallPeerSecurityOffEvent evt)
     {
         lastSecurityEvent = evt;
-
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching a CallPeerSecurityAuthenticationEvent event to "
-                    + callPeerSecurityListeners.size() + " listeners. event is: " + evt.toString());
+        Timber.d("Dispatching a CallPeerSecurityAuthenticationEvent event to %s listeners. event is: %s",
+                callPeerSecurityListeners.size(), evt.toString());
 
         List<CallPeerSecurityListener> listeners;
         synchronized (callPeerSecurityListeners) {
@@ -477,10 +464,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     protected void fireCallPeerSecurityOnEvent(CallPeerSecurityOnEvent evt)
     {
         lastSecurityEvent = evt;
-
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching a CallPeerSecurityStatusEvent event to "
-                    + callPeerSecurityListeners.size() + " listeners. event is: " + evt.toString());
+            Timber.d("Dispatching a CallPeerSecurityStatusEvent event to %s listeners. event is: %s",
+                    callPeerSecurityListeners.size(), evt.toString());
 
         List<CallPeerSecurityListener> listeners;
         synchronized (callPeerSecurityListeners) {
@@ -503,9 +488,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     {
         lastSecurityEvent = evt;
 
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching a CallPeerSecurityStatusEvent event to "
-                    + callPeerSecurityListeners.size() + " listeners. event is: " + evt.toString());
+            Timber.d("Dispatching a CallPeerSecurityStatusEvent event to %s listeners. event is: %s",
+                    callPeerSecurityListeners.size(), evt.toString());
 
         List<CallPeerSecurityListener> listeners;
         synchronized (callPeerSecurityListeners) {

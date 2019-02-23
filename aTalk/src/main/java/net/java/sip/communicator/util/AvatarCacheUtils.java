@@ -14,19 +14,17 @@ import org.atalk.service.fileaccess.FileCategory;
 
 import java.io.*;
 
+import timber.log.Timber;
+
 /**
  * The <tt>AvatarCacheUtils</tt> allows to cache an avatar or to obtain the
  * image of a cached avatar by specifying a contact or an account address.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class AvatarCacheUtils
 {
-    /**
-     * The logger for this class.
-     */
-    private final static Logger logger = Logger.getLogger(AvatarCacheUtils.class);
-
     /**
      * The name (i.e. not the whole path) of the directory in which the avatar
      * files are to be cached for later reuse.
@@ -172,7 +170,7 @@ public class AvatarCacheUtils
                     return bs;
             }
         } catch (Exception ex) {
-            logger.error("Could not read avatar image from file " + avatarPath, ex);
+            Timber.e(ex, "Could not read avatar image from file %s", avatarPath);
         }
         return null;
     }
@@ -187,8 +185,8 @@ public class AvatarCacheUtils
     {
         String resultId = id;
 
-        for (int j = 0; j < ESCAPE_SEQUENCES.length; j++) {
-            resultId = resultId.replaceAll(ESCAPE_SEQUENCES[j][0], ESCAPE_SEQUENCES[j][1]);
+        for (String[] escapeSequence : ESCAPE_SEQUENCES) {
+            resultId = resultId.replaceAll(escapeSequence[0], escapeSequence[1]);
         }
         return resultId;
     }
@@ -259,7 +257,7 @@ public class AvatarCacheUtils
                 fileOutStream.close();
             }
         } catch (Exception ex) {
-            logger.error("Failed to store avatar. dir =" + avatarDir + " file=" + avatarFile, ex);
+            Timber.e(ex, "Failed to store avatar. dir = %s file = %s", avatarDir, avatarFile);
         }
     }
 }

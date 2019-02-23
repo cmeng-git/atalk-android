@@ -14,6 +14,8 @@ import org.atalk.service.fileaccess.FileCategory;
 
 import java.io.File;
 
+import timber.log.Timber;
+
 /**
  * The <tt>ExceptionHandler</tt> is used to catch unhandled exceptions which occur on the UI
  * <tt>Thread</tt>. Those exceptions normally cause current <tt>Activity</tt> to freeze and the
@@ -74,8 +76,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler
 		markCrashedEvent();
 		parent.uncaughtException(thread, ex);
 
-		Logger logger = Logger.getLogger(ExceptionHandler.class);
-		logger.fatal("uncaughtException occurred, killing the process...", ex);
+		Timber.e(ex, "uncaughtException occurred, killing the process...");
 
 		// Save logcat for more information.
 		File logcatFile;
@@ -86,7 +87,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler
 			Runtime.getRuntime().exec("logcat -v time -f " + logcatFile.getAbsolutePath());
 		}
 		catch (Exception e) {
-			logger.error("Couldn't save crash logcat file.");
+			Timber.e("Couldn't save crash logcat file.");
 		}
 		android.os.Process.killProcess(android.os.Process.myPid());
 		System.exit(10);

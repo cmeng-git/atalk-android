@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.captcha.packet;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
@@ -52,7 +53,7 @@ public class CaptchaIQ extends IQ
     {
         xml.rightAngleBracket();
         if (mDataForm != null) {
-            xml.append(mDataForm.toXML(null));
+            xml.append(mDataForm.toXML(XmlEnvironment.EMPTY));
         }
         return xml;
     }

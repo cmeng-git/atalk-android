@@ -7,7 +7,6 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.ChatMessage;
 import org.jivesoftware.smack.*;
@@ -35,6 +34,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * A jabber implementation of the multi user chat operation set.
  *
@@ -46,11 +47,6 @@ import java.util.*;
 public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMultiUserChat
         implements SubscriptionListener, OmemoMucMessageListener
 {
-    /**
-     * This class logger.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetMultiUserChatJabberImpl.class);
-
     /**
      * The currently valid Jabber protocol provider service implementation.
      */
@@ -144,7 +140,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                         .getDisplayName(jabberProvider));
                 muc.create(nick);
             } catch (XMPPException | SmackException | XmppStringprepException | InterruptedException ex) {
-                logger.error("Failed to create chat room.", ex);
+                Timber.e(ex, "Failed to create chat room.");
                 throw new OperationFailedException("Failed to create chat room",
                         OperationFailedException.GENERAL_ERROR, ex);
             }
@@ -193,7 +189,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 muc.sendConfigurationForm(form);
             } catch (XMPPException | NoResponseException | NotConnectedException |
                     InterruptedException e) {
-                logger.error("Failed to send config form.", e);
+                Timber.e(e,"Failed to send config form.");
             }
             room = createLocalChatRoomInstance(muc);
             // as we are creating the room we are the owner of it at least that's what MultiUserChat.create says
@@ -257,8 +253,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     public List<ChatRoom> getCurrentlyJoinedChatRooms()
     {
         synchronized (chatRoomCache) {
-            List<ChatRoom> joinedRooms = new LinkedList<>();
-            joinedRooms.addAll(this.chatRoomCache.values());
+            List<ChatRoom> joinedRooms = new LinkedList<>(this.chatRoomCache.values());
             Iterator<ChatRoom> joinedRoomsIter = joinedRooms.iterator();
 
             while (joinedRoomsIter.hasNext()) {
@@ -327,22 +322,17 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                         OperationFailedException.GENERAL_ERROR, ex);
             }
 
-            // now retrieve all chat rooms currently available for every service name
+            // Now retrieve all hostedRooms available for each service name and add the room EntityBareJid
+            // the list of room names we are returning
             if (serviceNames != null) {
                 for (DomainBareJid serviceName : serviceNames) {
-                    List<HostedRoom> roomsOnThisService = new LinkedList<>();
-
                     try {
-                        roomsOnThisService.addAll(mMucMgr.getHostedRooms(serviceName));
+                        Map<EntityBareJid, HostedRoom> hostedRooms = mMucMgr.getRoomsHostedBy(serviceName);
+                        list.addAll(hostedRooms.keySet());
                     } catch (XMPPException | NoResponseException | NotConnectedException
                             | MultiUserChatException.NotAMucServiceException | InterruptedException ex) {
-                        logger.error("Failed to retrieve rooms for serviceName=" + serviceName, ex);
-                        continue;
+                        Timber.e(ex, "Failed to retrieve rooms for serviceName = %s", serviceName);
                     }
-                    // Now go through all rooms available on this service and add the room name to
-                    // the list of names we are returning
-                    for (HostedRoom aRoomsOnThisService : roomsOnThisService)
-                        list.add(aRoomsOnThisService.getJid());
                 }
             }
         }
@@ -372,7 +362,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             Jid jid = JidCreate.from(contactAddress);
             return opSetPersPresence.isPrivateMessagingContact(jid);
         } catch (XmppStringprepException e) {
-            logger.error(contactAddress + " is not a valid JID", e);
+            Timber.e(e, "%s is not a valid JID", contactAddress);
             return false;
         }
     }
@@ -440,11 +430,11 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             AccountID accountId = jabberProvider.getAccountID();
             String errMsg = "Failed to retrieve conference service name for user: "
                     + accountId.getUserID() + " on server: " + accountId.getService();
-            logger.error(errMsg, ex);
+            Timber.e(ex, "%s", errMsg);
             throw new OperationFailedException(errMsg, OperationFailedException.GENERAL_ERROR, ex);
         }
 
-        if (serviceNames != null) {
+        if ((serviceNames != null) && !serviceNames.isEmpty()) {
             try {
                 return JidCreate.entityBareFrom(Localpart.from(roomName), serviceNames.get(0));
             } catch (XmppStringprepException e) {
@@ -539,7 +529,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             ChatRoomJabberImpl chatRoom;
             String room = muc.getRoom().toString();
             if (muc.isJoined()) {
-                logger.warn("Decline invitation! Already in the chat Room: " + room);
+                Timber.w("Decline invitation! Already in the chat Room: %s", room);
                 return;
             }
 
@@ -550,7 +540,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 else
                     fireInvitationEvent(chatRoom, inviter, reason, null);
             } catch (OperationFailedException | OperationNotSupportedException e) {
-                logger.error("Failed to find room with name: " + room, e);
+                Timber.e(e, "Failed to find room with name: %s", room);
             }
         }
     }
@@ -604,8 +594,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         public void registrationStateChanged(RegistrationStateChangeEvent evt)
         {
             if (evt.getNewState() == RegistrationState.REGISTERED) {
-                if (logger.isDebugEnabled())
-                    logger.debug("adding an Invitation listener to the smack muc");
+                Timber.d("adding an Invitation listener to the smack muc");
 
                 mConnection = jabberProvider.getConnection();
                 mMucMgr = MultiUserChatManager.getInstanceFor(mConnection);

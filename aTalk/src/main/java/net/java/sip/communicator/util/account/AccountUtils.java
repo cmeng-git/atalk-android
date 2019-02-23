@@ -6,12 +6,15 @@
 package net.java.sip.communicator.util.account;
 
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ServiceUtils;
+import net.java.sip.communicator.util.UtilActivator;
 
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * The <tt>AccountUtils</tt> provides utility methods helping us to easily obtain an account or
@@ -22,11 +25,6 @@ import java.util.*;
  */
 public class AccountUtils
 {
-    /**
-     * The logger.
-     */
-    private static Logger logger = Logger.getLogger(AccountUtils.class);
-
     /**
      * Returns an iterator over a list of all stored <tt>AccountID</tt>-s.
      *
@@ -222,7 +220,7 @@ public class AccountUtils
                 protocolProviderFactory = UtilActivator.bundleContext.getService(refs.iterator().next());
             }
         } catch (InvalidSyntaxException ex) {
-            logger.error("AccountUtils : " + ex);
+            Timber.e("AccountUtils : %s", ex.getMessage());
         }
         return protocolProviderFactory;
     }

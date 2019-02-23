@@ -9,12 +9,12 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultPacketExtensionProvider;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultExtensionElementProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.coin.CoinIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.coin.CoinIQProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriConferenceIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriIQProvider;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.condesc.ConferenceDescriptionExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.condesc.ConferenceDescriptionExtensionElement;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.condesc.ConferenceDescriptionExtensionProvider;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt.InputEvtIQ;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt.InputEvtIQProvider;
@@ -30,11 +30,13 @@ import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
+import net.java.sip.communicator.util.NetworkUtils;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
@@ -127,6 +129,8 @@ import java.util.*;
 import javax.net.SocketFactory;
 import javax.net.ssl.*;
 
+import timber.log.Timber;
+
 /**
  * An implementation of the protocol provider service over the Jabber protocol
  *
@@ -142,11 +146,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         implements PingFailedListener
 {
     /**
-     * Logger of this class
-     */
-    private static final Logger logger = Logger.getLogger(ProtocolProviderServiceJabberImpl.class);
-
-    /**
      * Jingle's Discovery Info common URN.
      */
     public static final String URN_XMPP_JINGLE = JingleIQ.NAMESPACE;
@@ -154,7 +153,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Jingle's Discovery Info URN for RTP support.
      */
-    public static final String URN_XMPP_JINGLE_RTP = RtpDescriptionPacketExtension.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_RTP = RtpDescriptionExtensionElement.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for RTP support with audio.
@@ -169,17 +168,17 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Jingle's Discovery Info URN for ZRTP support with RTP.
      */
-    public static final String URN_XMPP_JINGLE_RTP_ZRTP = ZrtpHashPacketExtension.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_RTP_ZRTP = ZrtpHashExtensionElement.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for ICE_UDP transport support.
      */
-    public static final String URN_XMPP_JINGLE_RAW_UDP_0 = RawUdpTransportPacketExtension.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_RAW_UDP_0 = RawUdpTransportExtensionElement.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for ICE_UDP transport support.
      */
-    public static final String URN_XMPP_JINGLE_ICE_UDP_1 = IceUdpTransportPacketExtension.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_ICE_UDP_1 = IceUdpTransportExtensionElement.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for Jingle Nodes support.
@@ -189,7 +188,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Jingle's Discovery Info URN for "XEP-0251: Jingle Session Transfer" support.
      */
-    public static final String URN_XMPP_JINGLE_TRANSFER_0 = TransferPacketExtension.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_TRANSFER_0 = TransferExtensionElement.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for
@@ -587,7 +586,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             String loginReason = "User Authentication Required!";
             initializeConnectAndLogin(authority, SecurityAuthority.AUTHENTICATION_REQUIRED, loginReason, false);
         } catch (XMPPException | SmackException ex) {
-            logger.error("Error registering: ", ex);
+            Timber.e("Error registering: %s", ex.getMessage());
             eventDuringLogin = null;
             fireRegistrationStateChanged(ex);
         } finally {
@@ -619,7 +618,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private void reRegister(int authReasonCode, String loginReason)
     {
         try {
-            logger.info("SMACK: Trying to re-register account!");
+            Timber.i("SMACK: Trying to re-register account!");
 
             // set to indicate the account has not registered during the registration process
             this.unregisterInternal(false);
@@ -632,13 +631,13 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             }
             initializeConnectAndLogin(mAuthority, authReasonCode, loginReason, true);
         } catch (OperationFailedException ex) {
-            logger.error("Error reRegistering: ", ex);
+            Timber.e("Error reRegistering: %s", ex.getMessage());
             eventDuringLogin = null;
             disconnectAndCleanConnection();
             fireRegistrationStateChanged(getRegistrationState(),
                     RegistrationState.CONNECTION_FAILED, RegistrationStateChangeEvent.REASON_INTERNAL_ERROR, null);
         } catch (XMPPException | SmackException ex) {
-            logger.error("Error ReRegistering: ", ex);
+            Timber.e("Error ReRegistering: %s", ex.getMessage());
             eventDuringLogin = null;
             fireRegistrationStateChanged(ex);
         } finally {
@@ -824,7 +823,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 proxy = new ProxyInfo(ProxyInfo.ProxyType.valueOf(proxyType),
                         proxyAddress, proxyPort, proxyUsername, proxyPassword);
             } catch (IllegalStateException e) {
-                logger.error("Invalid Proxy Type not support by smack: ", e);
+                Timber.e(e, "Invalid Proxy Type not support by smack");
                 proxy = null;
             }
         }
@@ -869,7 +868,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             if (customXMPPDomain != null) {
                 inetAddresses = Arrays.asList(InetAddress.getAllByName(customXMPPDomain));
                 mHostAddress = new HostAddress(DnsName.from(customXMPPDomain), 5222, inetAddresses);
-                logger.info("Connect using custom XMPP domain: " + mHostAddress);
+                Timber.i("Connect using custom XMPP domain: %s", mHostAddress);
 
                 config.setHostAddress(inetAddresses.get(0));
                 config.setPort(DEFAULT_PORT);
@@ -881,7 +880,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 int port = mAccountID.getAccountPropertyInt(ProtocolProviderFactory.SERVER_PORT, DEFAULT_PORT);
                 inetAddresses = Arrays.asList(InetAddress.getAllByName(host));
                 mHostAddress = new HostAddress(DnsName.from(host), port, inetAddresses);
-                logger.info("Connect using server override: " + mHostAddress);
+                Timber.i("Connect using server override: %s", mHostAddress);
 
                 // For host given as ip address, then no DNSSEC authentication support
                 if (Character.digit(host.charAt(0), 16) != -1) {
@@ -895,7 +894,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             else {
                 inetAddresses = Arrays.asList(InetAddress.getAllByName(serviceName.toString()));
                 mHostAddress = new HostAddress(DnsName.from(serviceName.toString()), DEFAULT_PORT, inetAddresses);
-                logger.info("Connect using service SRV Resource Record: " + mHostAddress);
+                Timber.i("Connect using service SRV Resource Record: %s", mHostAddress);
 
                 DnsName dnsHost = null;
                 config.setHost(dnsHost);
@@ -905,7 +904,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         } catch (UnknownHostException ex) {
             String errMsg = ex.getMessage() + "\nYou may need to use 'Override server setting' option if " +
                     "XMPP service and server hostname is different.";
-            logger.error(errMsg);
+            Timber.e("%s", errMsg);
             StanzaError stanzaError = StanzaError.from(StanzaError.Condition.remote_server_not_found, errMsg).build();
             throw new XMPPErrorException(null, stanzaError);
         }
@@ -917,7 +916,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             config.setSendPresence(false);
 
         if (mConnection != null && mConnection.isConnected()) {
-            logger.warn("Attempt on connection that is not null and isConnected " + mAccountID.getAccountJid());
+            Timber.w("Attempt on connection that is not null and isConnected %s", mAccountID.getAccountJid());
             disconnectAndCleanConnection();
         }
         config.setSocketFactory(SocketFactory.getDefault());
@@ -943,7 +942,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     // config.setHostnameVerifier() => use smack default
 
                 } catch (GeneralSecurityException e) {
-                    logger.error("Error creating custom trust manager", e);
+                    Timber.e(e, "Error creating custom trust manager");
                     StanzaError stanzaError = StanzaError.getBuilder(Condition.service_unavailable).build();
                     throw new XMPPErrorException(null, stanzaError);
                 }
@@ -989,14 +988,14 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         // Init the connection SynchronizedPoints
         xmppConnected = new LoginSynchronizationPoint<>(this, "connection connected");
 
-        logger.info("Starting XMPP Connection...: " + mHostAddress);
+        Timber.i("Starting XMPP Connection...: %s", mHostAddress);
         try {
             mConnection.connect();
         } catch (StreamErrorException ex) {
             String errMsg = ex.getMessage();
             if (StringUtils.isNullOrEmpty(errMsg))
                 errMsg = ex.getStreamError().getDescriptiveText();
-            logger.error("Encounter problem during XMPPConnection: " + errMsg);
+            Timber.e("Encounter problem during XMPPConnection: %s", errMsg);
             StanzaError stanzaError = StanzaError.from(Condition.policy_violation, errMsg).build();
             throw new XMPPErrorException(null, stanzaError);
             // } catch (DnssecValidationFailedException | IllegalArgumentException ex) {
@@ -1015,11 +1014,11 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             StanzaError stanzaError = StanzaError.from(Condition.service_unavailable, errMsg).build();
             throw new XMPPErrorException(null, stanzaError);
         } catch (XMPPException | SmackException | IOException | InterruptedException ex) {
-            //            if (ex.getCause() instanceof SSLHandshakeException) {
-            //                logger.error(ex.getCause());
-            //            }
+//            if (ex.getCause() instanceof SSLHandshakeException) {
+//                Timber.e(ex.getCause());
+//            }
             String errMsg = "Encounter problem during XMPPConnection: " + ex.getMessage();
-            logger.error(errMsg);
+            Timber.e("%s", errMsg);
             StanzaError stanzaError = StanzaError.from(Condition.remote_server_timeout, errMsg).build();
             throw new XMPPErrorException(null, stanzaError);
         }
@@ -1040,7 +1039,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         }
 
         if (!mConnection.isConnected()) {
-            logger.error("XMPPConnection establishment has failed!");
+            Timber.e("XMPPConnection establishment has failed!");
 
             // mConnection is not connected, lets set the mConnection state as failed;
             disconnectAndCleanConnection();
@@ -1061,7 +1060,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             success = loginStrategy.login(mConnection, userName, mResource);
         } catch (StreamErrorException ex) {
             String errMsg = ex.getStreamError().getDescriptiveText();
-            logger.error("Encounter problem during XMPPConnection: " + errMsg);
+            Timber.e("Encounter problem during XMPPConnection: %s", errMsg);
             StanzaError stanzaError = StanzaError.from(Condition.policy_violation, errMsg).build();
             throw new XMPPErrorException(null, stanzaError);
         } catch (SmackException | XMPPException el) {
@@ -1087,7 +1086,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                         return ConnectState.STOP_TRYING;
                     } catch (StreamErrorException ex) {
                         errMsg = ex.getStreamError().getDescriptiveText();
-                        logger.error("Encounter problem during XMPPConnection: " + errMsg);
+                        Timber.e("Encounter problem during XMPPConnection: %s", errMsg);
                         StanzaError stanzaError = StanzaError.from(Condition.policy_violation, errMsg).build();
                         throw new XMPPErrorException(null, stanzaError);
                     } catch (SmackException | XMPPException | InterruptedException | IOException err) {
@@ -1100,12 +1099,12 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                         errMsg = err.getMessage();
                         if (!errMsg.contains("registration-required")) {
                             errMsg = "Error in account registration on server: " + errMsg;
-                            logger.error(errMsg);
+                            Timber.e("%s", errMsg);
                             StanzaError stanzaError = StanzaError.from(Condition.forbidden, errMsg).build();
                             throw new XMPPErrorException(null, stanzaError);
                         }
                         else {
-                            logger.error(errMsg);
+                            Timber.e("%s", errMsg);
                             StanzaError stanzaError = StanzaError.from(Condition.registration_required, errMsg).build();
                             throw new XMPPErrorException(null, stanzaError);
                         }
@@ -1222,7 +1221,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 regEvent = RegistrationStateChangeEvent.REASON_AUTHENTICATION_FAILED;
             }
 
-            // logger.error("Smack connection Closed OnError: " + errMsg, exception);
+            // Timber.e(exception, "Smack connection Closed OnError: %s", errMsg);
             StanzaError stanzaError = StanzaError.from(Condition.remote_server_not_found, errMsg).build();
             XMPPErrorException xmppException = new XMPPErrorException(null, stanzaError);
             xmppConnected.reportFailure(xmppException);
@@ -1338,8 +1337,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     public void pingFailed()
     {
-        //        logger.warn("Ping failed! isLastConnectionMobile: " + isLastConnectionMobile
-        //                + "; isConnectedMobile: " + isConnectedMobile());
+//        Timber.w("Ping failed! isLastConnectionMobile: %s; isConnectedMobile: %s", isLastConnectionMobile,
+//                isConnectedMobile());
         isMobilePingClosedOnError = isLastConnectionMobile && isConnectedMobile();
     }
 
@@ -1367,10 +1366,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         // kept lowest limit at 120S ping interval
         if (pingInterval >= 120) {
             mAccountID.storeAccountProperty(ProtocolProviderFactory.PING_INTERVAL, pingInterval);
-            logger.warn("Auto tunning ping interval to: " + pingInterval);
+            Timber.w("Auto tunning ping interval to: %s", pingInterval);
         }
         else {
-            logger.error("Connection closed on error with ping interval of 120 second!!!");
+            Timber.e("Connection closed on error with ping interval of 120 second!!!");
         }
     }
 
@@ -1430,7 +1429,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             }
             mConnection.disconnect(unavailablePresence);
         } catch (Exception ex) {
-            logger.warn("Exception while disconnect and clean connection!!!");
+            Timber.w("Exception while disconnect and clean connection!!!");
         }
 
         try {
@@ -1541,7 +1540,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         if (!rosterStoreDirectory.exists()) {
             if (!rosterStoreDirectory.mkdir())
-                logger.error("Roster Store directory creation error: " + rosterStoreDirectory.getAbsolutePath());
+                Timber.e("Roster Store directory creation error: %s", rosterStoreDirectory.getAbsolutePath());
         }
         if (rosterStoreDirectory.exists()) {
             RosterStore rosterStore = DirectoryRosterStore.open(rosterStoreDirectory);
@@ -1613,7 +1612,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     private void addSupportedCapsFeatures()
     {
-        String NOTIFY = "+notify";
         supportedFeatures.clear();
 
         boolean isCallingDisabled = JabberActivator.getConfigurationService()
@@ -1853,7 +1851,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 {
                     @Override
                     public void handleUnparsableStanza(UnparseableStanza packetData)
-                            throws Exception
                     {
                         String errMsg = packetData.getContent().toString();
                         // StanzaErrorException xmppException = null;
@@ -1869,7 +1866,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                         // if (xmppException != null)
                         //     throw xmppException;
                         // else
-                        logger.warn("UnparseableStanza Error: " + errMsg, packetData.getParsingException());
+                        Timber.w(packetData.getParsingException(), "UnparseableStanza Error: %s", errMsg);
                     }
                 }
         );
@@ -1933,7 +1930,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addIQProvider(Registration.ELEMENT, Registration.NAMESPACE, new RegistrationProvider());
 
             ProviderManager.addExtensionProvider(
-                    ConferenceDescriptionExtension.ELEMENT_NAME, ConferenceDescriptionExtension.NAMESPACE,
+                    ConferenceDescriptionExtensionElement.ELEMENT_NAME, ConferenceDescriptionExtensionElement.NAMESPACE,
                     new ConferenceDescriptionExtensionProvider());
 
             ProviderManager.addExtensionProvider(Nick.ELEMENT_NAME, Nick.NAMESPACE, new NickProvider());
@@ -1942,30 +1939,30 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             ProviderManager.addExtensionProvider(StatsId.ELEMENT_NAME, StatsId.NAMESPACE, new StatsId.Provider());
 
-            ProviderManager.addExtensionProvider(IdentityPacketExtension.ELEMENT_NAME, IdentityPacketExtension.NAMESPACE,
-                    new IdentityPacketExtension.Provider());
+            ProviderManager.addExtensionProvider(IdentityExtensionElement.ELEMENT_NAME, IdentityExtensionElement.NAMESPACE,
+                    new IdentityExtensionElement.Provider());
 
-            ProviderManager.addExtensionProvider(AvatarIdPacketExtension.ELEMENT_NAME, AvatarIdPacketExtension.NAMESPACE,
-                    new DefaultPacketExtensionProvider<>(AvatarIdPacketExtension.class));
+            ProviderManager.addExtensionProvider(AvatarIdExtensionElement.ELEMENT_NAME, AvatarIdExtensionElement.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(AvatarIdExtensionElement.class));
 
-            ProviderManager.addExtensionProvider(JsonMessageExtension.ELEMENT_NAME, JsonMessageExtension.NAMESPACE,
-                    new DefaultPacketExtensionProvider<>(JsonMessageExtension.class));
+            ProviderManager.addExtensionProvider(JsonMessageExtensionElement.ELEMENT_NAME, JsonMessageExtensionElement.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(JsonMessageExtensionElement.class));
 
-            ProviderManager.addExtensionProvider(TranslationLanguageExtension.ELEMENT_NAME,
-                    TranslationLanguageExtension.NAMESPACE,
-                    new DefaultPacketExtensionProvider<>(TranslationLanguageExtension.class));
-
-            ProviderManager.addExtensionProvider(
-                    TranscriptionLanguageExtension.ELEMENT_NAME, TranscriptionLanguageExtension.NAMESPACE,
-                    new DefaultPacketExtensionProvider<>(TranscriptionLanguageExtension.class));
+            ProviderManager.addExtensionProvider(TranslationLanguageExtensionElement.ELEMENT_NAME,
+                    TranslationLanguageExtensionElement.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(TranslationLanguageExtensionElement.class));
 
             ProviderManager.addExtensionProvider(
-                    TranscriptionStatusExtension.ELEMENT_NAME, TranscriptionStatusExtension.NAMESPACE,
-                    new DefaultPacketExtensionProvider<>(TranscriptionStatusExtension.class));
+                    TranscriptionLanguageExtensionElement.ELEMENT_NAME, TranscriptionLanguageExtensionElement.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(TranscriptionLanguageExtensionElement.class));
 
             ProviderManager.addExtensionProvider(
-                    TranscriptionRequestExtension.ELEMENT_NAME, TranscriptionRequestExtension.NAMESPACE,
-                    new DefaultPacketExtensionProvider<>(TranscriptionRequestExtension.class));
+                    TranscriptionStatusExtensionElement.ELEMENT_NAME, TranscriptionStatusExtensionElement.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(TranscriptionStatusExtensionElement.class));
+
+            ProviderManager.addExtensionProvider(
+                    TranscriptionRequestExtensionElement.ELEMENT_NAME, TranscriptionRequestExtensionElement.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(TranscriptionRequestExtensionElement.class));
 
             /*
              * Tell Smack what are the additional StreamFeatureProvider and ExtensionProviders that aTalk can support
@@ -2154,8 +2151,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     public void shutdown()
     {
         synchronized (initializationLock) {
-            if (logger.isTraceEnabled())
-                logger.trace("Killing the Jabber Protocol Provider.");
+            Timber.log(TimberLog.FINER, "Killing the Jabber Protocol Provider.");
 
             // kill all active calls
             OperationSetBasicTelephonyJabberImpl telephony
@@ -2423,8 +2419,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             }
             return true;
         } catch (XMPPException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Failed to retrieve discovery info.", e);
+            Timber.d(e, "Failed to retrieve discovery info.");
         }
         return false;
     }
@@ -2531,15 +2526,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             } catch (CertificateException e) {
                 // notify in a separate thread to avoid a deadlock when a reg state listener
                 // accesses a synchronized XMPPConnection method (like getRoster)
-                new Thread(new Runnable()
-                {
-                    public void run()
-                    {
-                        fireRegistrationStateChanged(getRegistrationState(),
-                                RegistrationState.UNREGISTERED, RegistrationStateChangeEvent.REASON_USER_REQUEST,
-                                "Not trusted certificate");
-                    }
-                }).start();
+                new Thread(() -> fireRegistrationStateChanged(getRegistrationState(),
+                        RegistrationState.UNREGISTERED, RegistrationStateChangeEvent.REASON_USER_REQUEST,
+                        "Not trusted certificate")).start();
                 throw e;
             }
 
@@ -2551,13 +2540,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 // in this situation connect method has finished and it was disconnected so we
                 // wont to connect. register.connect in new thread so we can release the current
                 // connecting thread, otherwise this blocks jabber
-                new Thread(new Runnable()
-                {
-                    public void run()
-                    {
-                        reRegister(SecurityAuthority.CONNECTION_FAILED, null);
-                    }
-                }).start();
+                new Thread(() -> reRegister(SecurityAuthority.CONNECTION_FAILED, null)).start();
             }
         }
 
@@ -2623,8 +2606,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         } catch (UnknownHostException ex) {
             throw new IllegalArgumentException("seems we don't have a valid next hop.", ex);
         }
-        if (logger.isDebugEnabled())
-            logger.debug("Returning address " + nextHop + " as next hop.");
+        Timber.d("Returning address %s as next hop.", nextHop);
         return nextHop;
     }
 
@@ -2676,14 +2658,12 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * @param errorCode the error code to be assigned to the new <tt>OperationFailedException</tt>
      * @param cause the <tt>Throwable</tt> that has caused the necessity to log an error and have a new
      * <tt>OperationFailedException</tt> thrown
-     * @param logger the logger that we'd like to log the error <tt>message</tt> and <tt>cause</tt>.
      * @throws OperationFailedException the exception that we wanted this method to throw.
      */
-    public static void throwOperationFailedException(String message, int errorCode,
-            Throwable cause, Logger logger)
+    public static void throwOperationFailedException(String message, int errorCode, Throwable cause)
             throws OperationFailedException
     {
-        logger.error(message, cause);
+        Timber.e(cause, "%s", message);
         if (cause == null)
             throw new OperationFailedException(message, errorCode);
         else
@@ -2738,7 +2718,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 }
             }
         } catch (IOException e) {
-            logger.error("Failed when checking for google account: " + e.getMessage());
+            Timber.e("Failed when checking for google account: %s", e.getMessage());
         }
         return false;
     }
@@ -2761,9 +2741,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 discoverItems = discoveryManager.discoverItems(serviceName);
             } catch (NoResponseException | NotConnectedException | XMPPException
                     | InterruptedException ex) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Failed to discover the items associated with Jabber entity: " + serviceName, ex);
-                }
+                Timber.d(ex, "Failed to discover the items associated with Jabber entity: %s", serviceName);
             }
 
             if ((discoverItems != null) && !isLastVbNoResponse) {
@@ -2776,7 +2754,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     try {
                         discoverInfo = discoveryManager.discoverInfo(entityID);
                     } catch (NoResponseException | NotConnectedException | XMPPException | InterruptedException ex) {
-                        logger.warn("Failed to discover information about Jabber entity: " + entityID, ex);
+                        Timber.w(ex, "Failed to discover information about Jabber entity: %s", entityID);
                         if (ex instanceof NoResponseException) {
                             isLastVbNoResponse = true;
                         }
@@ -2806,7 +2784,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             Class.forName(XHTMLManager.class.getName());
             Class.forName(InBandBytestreamManager.class.getName());
         } catch (ClassNotFoundException e) {
-            logger.error("Error loading classes in smack", e);
+            Timber.e(e, "Error loading classes in smack");
         }
     }
 
@@ -2826,7 +2804,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     if (dscpInt > 0)
                         s.setTrafficClass(dscpInt);
                 } catch (Exception e) {
-                    logger.info("Failed to set trafficClass", e);
+                    Timber.i(e, "Failed to set trafficClass");
                 }
             }
         }
@@ -2847,7 +2825,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 field.setAccessible(true);
                 secureSocket = (SSLSocket) field.get(mConnection);
             } catch (Exception e) {
-                logger.warn("Access to XMPPTCPConnection.secureSocket not found!");
+                Timber.w("Access to XMPPTCPConnection.secureSocket not found!");
             }
         }
         return secureSocket;
@@ -2868,7 +2846,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 field.setAccessible(true);
                 socket = (Socket) field.get(mConnection);
             } catch (Exception e) {
-                logger.warn("Access to XMPPTCPConnection.socket not found!");
+                Timber.w("Access to XMPPTCPConnection.socket not found!");
             }
         }
         return socket;

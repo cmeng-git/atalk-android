@@ -12,7 +12,6 @@ import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.resources.ImageID;
-import net.java.sip.communicator.util.Logger;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.atalk.android.R;
@@ -33,6 +32,8 @@ import org.osgi.framework.*;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.Callable;
+
+import timber.log.Timber;
 
 /**
  * Listens to various events which are related to the display and/or playback of notifications
@@ -109,10 +110,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      * Default event type when a secure message received.
      */
     public static final String SECURITY_MESSAGE = "SecurityMessage";
-    /**
-     * The <tt>Logger</tt> used by the <tt>NotificationManager</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(NotificationManager.class);
+
     /**
      * Stores notification references to stop them if a notification has expired (e.g. to stop the dialing sound).
      */
@@ -288,7 +286,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             serRefs = NotificationWiringActivator.bundleContext
                     .getServiceReferences(ProtocolProviderFactory.class.getName(), null);
         } catch (InvalidSyntaxException e) {
-            logger.error("NotificationManager : " + e);
+            Timber.e("NotificationManager : %s", e.getMessage());
         }
 
         Map<Object, ProtocolProviderFactory> providerFactoriesMap = new Hashtable<>();
@@ -315,7 +313,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             serRefs = NotificationWiringActivator.bundleContext
                     .getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException e) {
-            logger.error("NotificationManager : " + e);
+            Timber.e("NotificationManager : %s", e.getMessage());
         }
 
         List<ProtocolProviderService> providersList = new ArrayList<>();
@@ -330,26 +328,38 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     }
 
     /**
-     * Determines whether a specific <code>ChatRoom</code> is private i.e. represents a one-to-one
+     * Determines whether a specific {@code ChatRoom} is private i.e. represents a one-to-one
      * conversation which is not a channel. Since the interface {@link ChatRoom} does not expose
      * the private property, an heuristic is used as a workaround: (1) a system
-     * <code>ChatRoom</code> is obviously not private and (2) a <code>ChatRoom</code> is private
-     * if it has only one <code>ChatRoomMember</code> who is not the local user.
+     * {@code ChatRoom} is obviously not private and (2) a {@code ChatRoom} is private
+     * if it has only one {@code ChatRoomMember} who is not the local user.
      *
-     * @param chatRoom the <code>ChatRoom</code> to be determined as private or not
-     * @return <tt>true</tt> if the specified <code>ChatRoom</code> is private; otherwise, <tt>false</tt>
+     * @return <tt>true</tt> if the specified {@code ChatRoom} is private; otherwise, <tt>false</tt>
+     */
+    private static boolean isPrivate()
+    {
+        return isPrivate();
+    }
+
+    /**
+     * Determines whether a specific {@code ChatRoom} is private i.e. represents a one-to-one
+     * conversation which is not a channel. Since the interface {@link ChatRoom} does not expose
+     * the private property, an heuristic is used as a workaround: (1) a system
+     * {@code ChatRoom} is obviously not private and (2) a {@code ChatRoom} is private
+     * if it has only one {@code ChatRoomMember} who is not the local user.
+     *
+     * @param chatRoom the {@code ChatRoom} to be determined as private or not
+     * @return <tt>true</tt> if the specified {@code ChatRoom} is private; otherwise, <tt>false</tt>
      */
     private static boolean isPrivate(ChatRoom chatRoom)
     {
         if (!chatRoom.isSystem() && chatRoom.isJoined() && (chatRoom.getMembersCount() == 1)) {
             String nickname = chatRoom.getUserNickname().toString();
 
-            if (nickname != null) {
-                for (ChatRoomMember member : chatRoom.getMembers())
-                    if (nickname.equals(member.getNickName()))
-                        return false;
-                return true;
-            }
+            for (ChatRoomMember member : chatRoom.getMembers())
+                if (nickname.equals(member.getNickName()))
+                    return false;
+            return true;
         }
         return false;
     }
@@ -427,7 +437,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                logger.error("An error occurred while trying to notify about the end of a call.", t);
+                Timber.e(t, "An error occurred while trying to notify about the end of a call.");
             }
         }
     }
@@ -500,7 +510,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else
-                logger.error("Error notifying for secured call member", t);
+                Timber.e(t, "Error notifying for secured call member");
         }
     }
 
@@ -550,7 +560,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     {
         try {
             IncomingFileTransferRequest request = event.getRequest();
-            String message = request.getFileName() + "  (size: " + String.valueOf(request.getFileSize()) + ")";
+            String message = request.getFileName() + "  (size: " + request.getFileSize() + ")";
             Contact sourceContact = request.getSender();
 
             // Fire notification
@@ -558,7 +568,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
                     sourceContact.getDisplayName());
             fireChatNotification(sourceContact, INCOMING_FILE, title, message, request.getID());
         } catch (Throwable t) {
-            logger.error("Error notifying for file transfer request received", t);
+            Timber.e(t, "Error notifying for file transfer request received");
         }
     }
 
@@ -743,30 +753,25 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
              */
             final WeakReference<Call> weakCall = new WeakReference<>(call);
             NotificationData notification = fireNotification(INCOMING_CALL, "",
-                    aTalkApp.getResString(R.string.service_gui_INCOMING_CALL, peerName), peerInfo,
-                    new Callable<Boolean>()
-                    {
-                        public Boolean call()
-                        {
-                            Call call = weakCall.get();
-                            if (call == null)
-                                return false;
+                    aTalkApp.getResString(R.string.service_gui_INCOMING_CALL, peerName), peerInfo, () -> {
+                        Call call1 = weakCall.get();
+                        if (call1 == null)
+                            return false;
 
-                            /*
-                             * INCOMING_CALL should be played for a Call only while there is a
-                             * CallPeer in the INCOMING_CALL state.
-                             */
-                            Iterator<? extends CallPeer> peerIter = call.getCallPeers();
-                            boolean loop = false;
-                            while (peerIter.hasNext()) {
-                                CallPeer peer = peerIter.next();
-                                if (CallPeerState.INCOMING_CALL.equals(peer.getState())) {
-                                    loop = true;
-                                    break;
-                                }
+                        /*
+                         * INCOMING_CALL should be played for a Call only while there is a
+                         * CallPeer in the INCOMING_CALL state.
+                         */
+                        Iterator<? extends CallPeer> peerIter = call1.getCallPeers();
+                        boolean loop = false;
+                        while (peerIter.hasNext()) {
+                            CallPeer peer1 = peerIter.next();
+                            if (CallPeerState.INCOMING_CALL.equals(peer1.getState())) {
+                                loop = true;
+                                break;
                             }
-                            return loop;
                         }
+                        return loop;
                     });
 
             if (notification != null)
@@ -780,7 +785,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                logger.error("An error occurred while trying to notify about an incoming call", t);
+                Timber.e(t, "An error occurred while trying to notify about an incoming call");
             }
         }
     }
@@ -802,7 +807,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
 
         MediaService mediaServiceImpl = NotificationWiringActivator.getMediaService();
         if (mediaServiceImpl == null) {
-            logger.warn("Media Service record listener init failed - jnlibffmpeg failed to load?");
+            Timber.w("Media Service record listener init failed - jnlibffmpeg failed to load?");
         }
         else
             mediaServiceImpl.addRecorderListener(this);
@@ -812,7 +817,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      * Checks if the contained call is a conference call.
      *
      * @param call the call to check
-     * @return <code>true</code> if the contained <tt>Call</tt> is a conference call, otherwise returns <code>false</code>.
+     * @return {@code true} if the contained <tt>Call</tt> is a conference call, otherwise returns {@code false}.
      */
     public boolean isConference(Call call)
     {
@@ -957,7 +962,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
                 fireChatNotification(sourceChatRoom, INCOMING_MESSAGE, title, htmlContent, evt.getMessage().getMessageUID());
             }
         } catch (Throwable t) {
-            logger.error("Error notifying for adHoc message received", t);
+            Timber.e(t, "Error notifying for adHoc message received");
         }
     }
 
@@ -1006,7 +1011,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
                 fireChatNotification(sourceChatRoom, INCOMING_MESSAGE, title, htmlContent, sourceMsg.getMessageUID());
             }
         } catch (Throwable t) {
-            logger.error("Error notifying for chat room message received", t);
+            Timber.e(t, "Error notifying for chat room message received");
         }
     }
 
@@ -1031,7 +1036,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             }
             fireChatNotification(evt.getSourceContact(), INCOMING_MESSAGE, title, htmlContent, sourceMsg.getMessageUID());
         } catch (Throwable t) {
-            logger.error("Error notifying for message received", t);
+            Timber.e(t, "Error notifying for message received");
         }
     }
 
@@ -1108,13 +1113,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
                 /* We want to play the dialing once for multiple CallPeers. */
                 if (shouldPlayDialingSound(weakPeer)) {
                     NotificationData notification = fireNotification(DIALING,
-                            new Callable<Boolean>()
-                            {
-                                public Boolean call()
-                                {
-                                    return shouldPlayDialingSound(weakPeer);
-                                }
-                            });
+                            () -> shouldPlayDialingSound(weakPeer));
 
                     if (notification != null)
                         callNotifications.put(call, notification);
@@ -1132,15 +1131,10 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
                     // of playing the notifications so we don't need to fire a notification here.
                     && oldState != CallPeerState.CONNECTING_WITH_EARLY_MEDIA) {
                 final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
-                NotificationData notification = fireNotification(OUTGOING_CALL,
-                        new Callable<Boolean>()
-                        {
-                            public Boolean call()
-                            {
-                                CallPeer peer = weakPeer.get();
-                                return (peer != null) && CallPeerState.ALERTING_REMOTE_SIDE.equals(peer.getState());
-                            }
-                        });
+                NotificationData notification = fireNotification(OUTGOING_CALL, () -> {
+                    CallPeer peer1 = weakPeer.get();
+                    return (peer1 != null) && CallPeerState.ALERTING_REMOTE_SIDE.equals(peer1.getState());
+                });
 
                 if (notification != null)
                     callNotifications.put(call, notification);
@@ -1149,13 +1143,9 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
                 // We start the busy sound only if we're in a simple call.
                 if (!isConference(call)) {
                     final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
-                    NotificationData notification = fireNotification(BUSY_CALL, new Callable<Boolean>()
-                    {
-                        public Boolean call()
-                        {
-                            CallPeer peer = weakPeer.get();
-                            return (peer != null) && CallPeerState.BUSY.equals(peer.getState());
-                        }
+                    NotificationData notification = fireNotification(BUSY_CALL, () -> {
+                        CallPeer peer12 = weakPeer.get();
+                        return (peer12 != null) && CallPeerState.BUSY.equals(peer12.getState());
                     });
                     if (notification != null)
                         callNotifications.put(call, notification);
@@ -1168,7 +1158,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                logger.error("An error occurred while trying to notify about a change in the state of a call peer.", t);
+                Timber.e(t, "An error occurred while trying to notify about a change in the state of a call peer.");
             }
         }
     }
@@ -1199,7 +1189,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                logger.error("An error occurred while trying to notify that the recording of a call has stopped.", t);
+                Timber.e(t, "An error occurred while trying to notify that the recording of a call has stopped.");
             }
         }
     }
@@ -1314,7 +1304,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                logger.error("An error occurred while trying to notify about a security message", t);
+                Timber.e(t, "An error occurred while trying to notify about a security message");
             }
         }
     }
@@ -1356,9 +1346,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                logger.error(
-                        "An error occurred while trying to notify about a security-related event",
-                        t);
+                Timber.e(t, "An error occurred while trying to notify about a security-related event");
             }
         }
     }
@@ -1374,8 +1362,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
 
     /**
      * Implements the <tt>ServiceListener</tt> method. Verifies whether the passed event concerns
-     * a <tt>ProtocolProviderService</tt> and
-     * adds the corresponding listeners.
+     * a <tt>ProtocolProviderService</tt> and adds the corresponding listeners.
      *
      * @param event The <tt>ServiceEvent</tt> object.
      */
@@ -1425,12 +1412,9 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
              * purposes of the stopSound method so the stopSound method should dissociate them
              * upon stopping a specific NotificationData.
              */
-            Iterator<Map.Entry<Call, NotificationData>> i = callNotifications.entrySet()
-                    .iterator();
-
+            Iterator<Map.Entry<Call, NotificationData>> i = callNotifications.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry<Call, NotificationData> e = i.next();
-
                 if (data.equals(e.getValue()))
                     i.remove();
             }
@@ -1469,8 +1453,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
 
             if (uiService != null) {
                 Chat chat = uiService.getCurrentChat();
-                if ((chat != null) && (((ChatPanel) chat)
-                        .getChatSession() instanceof MetaContactChatSession)) {
+                if ((chat != null) && (((ChatPanel) chat).getChatSession() instanceof MetaContactChatSession)) {
                     MetaContact metaContact = uiService.getChatContact(chat);
                     if ((metaContact != null) && metaContact.containsContact(contact) && chat.isChatFocused()) {
                         return;
@@ -1480,16 +1463,15 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
 
             long currentTime = System.currentTimeMillis();
             if (proactiveTimer.size() > 0) {
-                // first remove contacts that have been here longer than the timeout to avoid
-                // memory leaks
+                // first remove contacts that have been here longer than the timeout to avoid memory leaks
                 Iterator<Map.Entry<Contact, Long>> entries = proactiveTimer.entrySet().iterator();
 
                 while (entries.hasNext()) {
                     Map.Entry<Contact, Long> entry = entries.next();
                     Long lastNotificationDate = entry.getValue();
 
+                    // The entry is outdated
                     if (lastNotificationDate + 30000 < currentTime) {
-                        // The entry is outdated
                         entries.remove();
                     }
                 }
@@ -1508,7 +1490,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                logger.error("An error occurred while handling a chat state notification.", t);
+                Timber.e(t, "An error occurred while handling a chat state notification.");
             }
         }
     }

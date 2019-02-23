@@ -12,10 +12,10 @@ import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiActivity;
+
+import timber.log.Timber;
 
 /**
  * Activity displays the certificate to the user and asks him whether to trust the certificate or
@@ -27,11 +27,6 @@ import org.atalk.service.osgi.OSGiActivity;
 public class VerifyCertificateActivity extends OSGiActivity
         implements CertificateShowDialog.CertInfoDialogListener
 {
-    /**
-     * The logger.
-     */
-    private final static Logger logger = Logger.getLogger(VerifyCertificateActivity.class);
-
     /**
      * Request identifier extra key.
      */
@@ -63,7 +58,7 @@ public class VerifyCertificateActivity extends OSGiActivity
 
         this.certDialog = CertificateDialogActivator.getDialog(requestId);
         if (certDialog == null) {
-            logger.error("No dialog instance found for " + requestId);
+            Timber.e("No dialog instance found for %s", requestId);
             finish();
             return;
         }

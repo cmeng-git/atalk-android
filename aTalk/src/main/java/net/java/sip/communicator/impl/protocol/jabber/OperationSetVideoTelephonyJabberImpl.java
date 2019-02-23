@@ -7,26 +7,22 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.AbstractOperationSetVideoTelephony;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.service.neomedia.QualityControl;
+
+import timber.log.Timber;
 
 /**
  * Implements <tt>OperationSetVideoTelephony</tt> in order to give access to video-specific
  * functionality in the Jabber protocol implementation.
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public class OperationSetVideoTelephonyJabberImpl
         extends AbstractOperationSetVideoTelephony<OperationSetBasicTelephonyJabberImpl,
         ProtocolProviderServiceJabberImpl, CallJabberImpl, CallPeerJabberImpl>
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>OperationSetTelephonyConferencingJabberImpl</tt> class
-     * and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetVideoTelephonyJabberImpl.class);
-
     /**
      * Initializes a new <tt>OperationSetVideoTelephonyJabberImpl</tt> instance which builds upon
      * the telephony-related functionality of a specific
@@ -96,9 +92,7 @@ public class OperationSetVideoTelephonyJabberImpl
     protected Call createOutgoingVideoCall(String calleeAddress)
             throws OperationFailedException
     {
-        if (logger.isInfoEnabled())
-            logger.info("creating outgoing video call...");
-
+        Timber.i("creating outgoing video call...");
         if (parentProvider.getConnection() == null) {
             throw new OperationFailedException("Failed to create OutgoingJingleSession.\n"
                     + "we don't have a valid XMPPConnection.", OperationFailedException.INTERNAL_ERROR);

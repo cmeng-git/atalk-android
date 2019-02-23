@@ -21,12 +21,12 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.*;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.*;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -41,30 +41,23 @@ import com.karumi.dexter.listener.*;
 import com.karumi.dexter.listener.multi.*;
 import com.karumi.dexter.listener.single.*;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.Splash;
-import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.service.EventReceiver;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.*;
+import timber.log.Timber;
 
 /**
  * Sample activity showing the permission request process with Dexter.
  */
 public class PermissionsActivity extends Activity
 {
-    private static final Logger logger = Logger.getLogger(PermissionsActivity.class);
-
     private static final int REQUEST_BATTERY_OP = 100;
-
-    // startLauncher is set ot false when user click the "Done" button
-    private static boolean startLauncher = false;
 
     @BindView(R.id.camera_permission_feedback)
     TextView cameraPermissionFeedbackView;
@@ -112,34 +105,24 @@ public class PermissionsActivity extends Activity
             }
 
             setContentView(R.layout.permissions_activity);
-            logger.info("Launching user permission request for aTalk.");
+            Timber.i("Launching dynamic permission request for aTalk.");
             aTalkApp.permissionFirstRequest = false;
 
             // Request user to add aTalk to BatteryOptimization whitelist
-            openBatteryOptimizationDialogIfNeeded();
+            // Otherwise aTalk will be put to sleep on system doze-standby
+            boolean showBatteryOptimizationDialog = openBatteryOptimizationDialogIfNeeded();
 
             ButterKnife.bind(this);
             createPermissionListeners();
-            if (!getPackagePermissionsStatus())
-                startLauncher();
+            boolean permissionRequest = getPackagePermissionsStatus();
             permissionsStatusUpdate();
+
+            if ((!permissionRequest) && !showBatteryOptimizationDialog) {
+                startLauncher();
+            }
         }
         else
             startLauncher();
-    }
-
-    /**
-     * Start Launcher only after user has done with the permission request
-     * Note: pause will get call when user clicks on each permission request box
-     */
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        if (startLauncher) {
-            startLauncher = false;
-            startLauncher();
-        }
     }
 
     private void startLauncher()
@@ -150,6 +133,19 @@ public class PermissionsActivity extends Activity
         i.putExtra(EventReceiver.AUTO_START_ONBOOT, false);
         startActivity(i);
         finish();
+    }
+
+    @OnClick(R.id.button_done)
+    public void onDoneButtonClicked()
+    {
+        startLauncher();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startLauncher();
     }
 
     public void onAllPermissionsCheck()
@@ -259,44 +255,20 @@ public class PermissionsActivity extends Activity
         startActivity(myAppSettings);
     }
 
-    @OnClick(R.id.button_done)
-    public void onDoneButtonClicked()
-    {
-        startLauncher = true;
-        finish();
-    }
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void showPermissionRationale(final PermissionToken token)
     {
         new AlertDialog.Builder(this).setTitle(R.string.permission_rationale_title)
                 .setMessage(R.string.permission_rationale_message)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                        token.cancelPermissionRequest();
-                    }
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                    dialog.dismiss();
+                    token.cancelPermissionRequest();
                 })
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                        token.continuePermissionRequest();
-                    }
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    dialog.dismiss();
+                    token.continuePermissionRequest();
                 })
-                .setOnDismissListener(new DialogInterface.OnDismissListener()
-                {
-                    @Override
-                    public void onDismiss(DialogInterface dialog)
-                    {
-                        token.cancelPermissionRequest();
-                    }
-                })
+                .setOnDismissListener(dialog -> token.cancelPermissionRequest())
                 .show();
     }
 
@@ -349,16 +321,11 @@ public class PermissionsActivity extends Activity
         /*
          * It seems that some android devices have init all requested permissions to permanently denied states
          * i.e. incorrect return value for: ActivityCompat.shouldShowRequestPermissionRationale == false
-         * Must warn user if < 3 permission has been granted to aTalk - will not work in almost cases;
-         * and bug user and request for it anyway, otherwise aTalk will not work properly.
+         * Must prompt user if < 3 permission has been granted to aTalk - will not work in almost cases;
+         *
+         * Do not disturb user, if he has chosen partially granted the permissions.
          */
-        if (grantedPermissionResponses.size() < 3) {
-            DialogActivity.showDialog(this, getResources().getString(R.string.service_gui_WARNING),
-                    getResources().getString(R.string.permission_denied_all_alert));
-            return true;
-        }
-        // Do not disturb user, if he has chosen partially granted the permissions.
-        return false;
+        return grantedPermissionResponses.size() < 3;
     }
 
     /**
@@ -534,16 +501,16 @@ public class PermissionsActivity extends Activity
      * Android Battery Usage Optimization Request
      ************************************************/
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void openBatteryOptimizationDialogIfNeeded()
+    private boolean openBatteryOptimizationDialogIfNeeded()
     {
-        // Will always request for battery optimzation disable for aTalk if not so on aTalk new launch
-        // if (isOptimizingBattery() && getPreferences().getBoolean(getBatteryOptimizationPreferenceKey(), true)) {
+        // Will always request for battery optimization disable for aTalk if not so on aTalk new launch
         if (isOptimizingBattery()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.battery_optimizations);
             builder.setMessage(R.string.battery_optimizations_dialog);
 
             builder.setPositiveButton(R.string.next, (dialog, which) -> {
+                dialog.dismiss();
                 Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 Uri uri = Uri.parse("package:" + getPackageName());
                 intent.setData(uri);
@@ -554,13 +521,13 @@ public class PermissionsActivity extends Activity
                 }
             });
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                builder.setOnDismissListener(dialog -> setAskForBatteryOptimizations(true));
-            }
-
             AlertDialog dialog = builder.create();
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
@@ -577,7 +544,9 @@ public class PermissionsActivity extends Activity
         super.onActivityResult(requestCode, resultCode, data);
         // RESULT_OK is returned if disable optimization is alloed
         if (requestCode == REQUEST_BATTERY_OP) {
-            setAskForBatteryOptimizations((resultCode != RESULT_OK));
+            if (resultCode != RESULT_OK) {
+                aTalkApp.showToastMessage(R.string.battery_optimization_on);
+            }
         }
     }
 
@@ -586,16 +555,5 @@ public class PermissionsActivity extends Activity
         @SuppressLint("HardwareIds")
         String device = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         return "pref_key_show_battery_optimization_" + (device == null ? "" : device);
-    }
-
-    // cmeng: save value is not use in new aTalk release
-    private void setAskForBatteryOptimizations(boolean state)
-    {
-        getPreferences().edit().putBoolean(getBatteryOptimizationPreferenceKey(), state).apply();
-    }
-
-    protected SharedPreferences getPreferences()
-    {
-        return PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 }

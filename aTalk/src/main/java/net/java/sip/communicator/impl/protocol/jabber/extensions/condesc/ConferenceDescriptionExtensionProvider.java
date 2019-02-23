@@ -1,27 +1,31 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.condesc;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
- * Parses elements with the {@value ConferenceDescriptionExtension#NAMESPACE}
+ * Parses elements with the {@value ConferenceDescriptionExtensionElement#NAMESPACE}
  * namespace.
  */
 public class ConferenceDescriptionExtensionProvider
-        extends ExtensionElementProvider<ConferenceDescriptionExtension>
+        extends ExtensionElementProvider<ConferenceDescriptionExtensionElement>
 {
     /**
      * Creates a <tt>ConferenceDescriptionPacketExtension</tt> by parsing an XML document.
      *
      * @param parser the parser to use.
      * @return the created <tt>ConferenceDescriptionPacketExtension</tt>.
-     * @throws Exception
+     * @throws IOException, XmlPullParserException if error
      */
     @Override
-    public ConferenceDescriptionExtension parse(XmlPullParser parser, int depth)
-            throws Exception
+    public ConferenceDescriptionExtensionElement parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException
     {
-        ConferenceDescriptionExtension packetExtension = new ConferenceDescriptionExtension();
+        ConferenceDescriptionExtensionElement packetExtension = new ConferenceDescriptionExtensionElement();
 
         //first, set all attributes
         int attrCount = parser.getAttributeCount();
@@ -32,27 +36,27 @@ public class ConferenceDescriptionExtensionProvider
         //now parse the sub elements
         boolean done = false;
         String elementName;
-        TransportExtension transportExt = null;
+        TransportExtensionElement transportExt = null;
 
         while (!done) {
             switch (parser.next()) {
                 case XmlPullParser.START_TAG:
                     elementName = parser.getName();
-                    if (TransportExtension.ELEMENT_NAME.equals(elementName)) {
+                    if (TransportExtensionElement.ELEMENT_NAME.equals(elementName)) {
                         String transportNs = parser.getNamespace();
                         if (transportNs != null) {
-                            transportExt = new TransportExtension(transportNs);
+                            transportExt = new TransportExtensionElement(transportNs);
                         }
                     }
                     break;
 
                 case XmlPullParser.END_TAG:
                     switch (parser.getName()) {
-                        case ConferenceDescriptionExtension.ELEMENT_NAME:
+                        case ConferenceDescriptionExtensionElement.ELEMENT_NAME:
                             done = true;
                             break;
 
-                        case TransportExtension.ELEMENT_NAME:
+                        case TransportExtensionElement.ELEMENT_NAME:
                             if (transportExt != null) {
                                 packetExtension.addChildExtension(transportExt);
                             }

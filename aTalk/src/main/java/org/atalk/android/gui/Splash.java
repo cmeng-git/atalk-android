@@ -45,7 +45,7 @@ public class Splash extends Activity
 
         // Starts fade in animation
         ImageView myImageView = findViewById(R.id.loadingImage);
-        Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fadein);
+        Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         myImageView.startAnimation(myFadeInAnimation);
         mFirstRun = false;
 

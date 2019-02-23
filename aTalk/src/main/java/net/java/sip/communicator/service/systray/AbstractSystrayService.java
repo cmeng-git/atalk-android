@@ -7,13 +7,14 @@
 package net.java.sip.communicator.service.systray;
 
 import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListener;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.osgi.framework.*;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Base implementation of {@link SystrayService}. Manages
@@ -28,12 +29,6 @@ import java.util.*;
  */
 public abstract class AbstractSystrayService implements SystrayService
 {
-
-    /**
-     * The logger
-     */
-    private final Logger logger = Logger.getLogger(AbstractSystrayService.class);
-
     /**
      * OSGI bundle context
      */
@@ -158,10 +153,8 @@ public abstract class AbstractSystrayService implements SystrayService
     public PopupMessageHandler setActivePopupMessageHandler(PopupMessageHandler newHandler)
     {
         PopupMessageHandler oldHandler = activePopupHandler;
+        Timber.i("setting the following popup handler as active: %s", newHandler);
 
-        if (logger.isInfoEnabled()) {
-            logger.info("setting the following popup handler as active: " + newHandler);
-        }
         activePopupHandler = newHandler;
         // if we have received calls to addPopupMessageListener before
         // the UIService is registered we should add those listeners
@@ -219,7 +212,7 @@ public abstract class AbstractSystrayService implements SystrayService
             bundleContext.addServiceListener(new ServiceListenerImpl(),
                     "(objectclass=" + PopupMessageHandler.class.getName() + ")");
         } catch (Exception e) {
-            logger.warn(e);
+            Timber.w(e);
         }
 
         // now we look if some handler has been registered before we start to listen
@@ -236,9 +229,7 @@ public abstract class AbstractSystrayService implements SystrayService
 
                 if (!containsHandler(handlerName)) {
                     addPopupHandler(handler);
-                    if (logger.isInfoEnabled()) {
-                        logger.info("added the following popup handler : " + handler);
-                    }
+                    Timber.i("added the following popup handler : %s", handler);
                     if ((configuredHandler != null)
                             && configuredHandler.equals(handler.getClass().getName())) {
                         setActivePopupMessageHandler(handler);
@@ -274,13 +265,11 @@ public abstract class AbstractSystrayService implements SystrayService
 
                 if (serviceEvent.getType() == ServiceEvent.REGISTERED) {
                     if (!containsHandler(handler.getClass().getName())) {
-                        if (logger.isInfoEnabled())
-                            logger.info("adding the following popup handler : " + handler);
+                        Timber.i("adding the following popup handler : %s", handler);
                         addPopupHandler(handler);
                     }
                     else
-                        logger.warn("the following popup handler has not " +
-                                "been added since it is already known : " + handler);
+                        Timber.w("the following popup handler has not been added since it is already known : %s", handler);
 
                     ConfigurationService cfg = ServiceUtils.getService(bundleContext, ConfigurationService.class);
                     String configuredHandler = cfg.getString("systray.POPUP_HANDLER");
@@ -301,8 +290,7 @@ public abstract class AbstractSystrayService implements SystrayService
                     }
                 }
                 else if (serviceEvent.getType() == ServiceEvent.UNREGISTERING) {
-                    if (logger.isInfoEnabled())
-                        logger.info("removing the following popup handler : " + handler);
+                    Timber.i("removing the following popup handler : %s", handler);
                     removePopupHandler(handler);
                     PopupMessageHandler activeHandler = getActivePopupHandler();
                     if (activeHandler == handler) {
@@ -314,8 +302,7 @@ public abstract class AbstractSystrayService implements SystrayService
                     }
                 }
             } catch (IllegalStateException e) {
-                if (logger.isDebugEnabled())
-                    logger.debug(e);
+                Timber.d(e);
             }
         }
     }

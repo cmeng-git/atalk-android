@@ -16,11 +16,10 @@ import android.support.multidex.MultiDex;
 import android.widget.Toast;
 
 import net.java.sip.communicator.service.protocol.AccountManager;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.gui.*;
 import org.atalk.android.gui.LauncherActivity;
+import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.account.AccountsListActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
@@ -29,11 +28,14 @@ import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.DrawableCache;
+import org.atalk.android.plugin.timberlog.TimberLogImpl;
 import org.atalk.impl.androidcertdialog.VerifyCertificateActivity;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
+
+import timber.log.Timber;
 
 /**
  * <tt>aTalkApp</tt> is used, as a global context and utility class for global actions (like EXIT broadcast).
@@ -43,11 +45,6 @@ import org.osgi.framework.BundleContext;
  */
 public class aTalkApp extends Application
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(aTalkApp.class);
-
     /**
      * Name of config property that indicates whether foreground icon should be displayed.
      */
@@ -114,6 +111,7 @@ public class aTalkApp extends Application
     {
         super.onCreate();
         mInstance = this;
+        TimberLogImpl.init();
     }
 
     @Override
@@ -407,7 +405,7 @@ public class aTalkApp extends Application
     public static void setCurrentActivity(Activity a)
     {
         synchronized (currentActivityMonitor) {
-            // logger.info("Current activity set to " + a);
+            // Timber.i("Current activity set to %s", a);
             currentActivity = a;
 
             if (currentActivity == null) {
@@ -553,13 +551,13 @@ public class aTalkApp extends Application
                         break;
                     }
                     else {
-                        logger.warn("Login dialog waiting for Activity to finish: " + activity);
+                        Timber.w("Login dialog waiting for Activity to finish: %s", activity);
                     }
                 }
                 try {
                     currentActivityMonitor.wait(3000);
                 } catch (InterruptedException e) {
-                    logger.error(e, e);
+                    Timber.e(e, "%s", e.getMessage());
                 }
             }
         }

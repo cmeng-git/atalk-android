@@ -15,24 +15,20 @@
  */
 package net.java.sip.communicator.impl.provdisc.dhcp;
 
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.util.*;
 
-import net.java.sip.communicator.util.*;
+import timber.log.Timber;
 
 /**
  * DHCP transaction class.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public class DHCPTransaction
 {
-    /**
-     * Logger.
-     */
-    private final Logger logger
-        = Logger.getLogger(DHCPTransaction.class);
-
     /**
      * Number of retransmission before giving up.
      */
@@ -82,7 +78,8 @@ public class DHCPTransaction
      *
      * @throws Exception if message cannot be sent on the socket
      */
-    public void schedule() throws Exception
+    public void schedule()
+            throws Exception
     {
         sock.send(message);
 
@@ -125,7 +122,7 @@ public class DHCPTransaction
      * @author Sebastien Vincent
      */
     private class RetransmissionHandler
-        extends TimerTask
+            extends TimerTask
     {
         /**
          * Thread entry point.
@@ -135,21 +132,19 @@ public class DHCPTransaction
         {
             int rand = new Random().nextInt(2) - 1;
 
-            try
-            {
+            try {
                 sock.send(message);
-            }
-            catch(Exception e)
-            {
-                logger.warn("Failed to send DHCP packet", e);
+            } catch (Exception e) {
+                Timber.w(e, "Failed to send DHCP packet");
             }
 
             nbRetransmit++;
-            if(nbRetransmit < maxRetransmit)
-            {
+            if (nbRetransmit < maxRetransmit) {
                 timer.schedule(new RetransmissionHandler(),
                         (interval + rand) * 1000);
             }
         }
-    };
+    }
+
+    ;
 }

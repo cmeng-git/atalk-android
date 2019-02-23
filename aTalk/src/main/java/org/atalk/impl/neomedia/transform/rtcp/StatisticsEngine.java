@@ -19,6 +19,7 @@ import net.sf.fmj.media.rtp.*;
 import net.sf.fmj.media.rtp.util.BadFormatException;
 import net.sf.fmj.utility.ByteBufferOutputStream;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.*;
 import org.atalk.impl.neomedia.device.MediaDeviceSession;
 import org.atalk.impl.neomedia.rtcp.*;
@@ -30,7 +31,8 @@ import org.atalk.service.neomedia.control.FECDecoderControl;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.rtp.RTCPExtendedReport;
 import org.atalk.service.neomedia.rtp.RTCPReports;
-import org.atalk.util.*;
+import org.atalk.util.RTCPUtils;
+import org.atalk.util.RTPUtils;
 
 import java.io.*;
 import java.util.*;
@@ -38,6 +40,8 @@ import java.util.*;
 import javax.media.control.JitterBufferControl;
 import javax.media.rtp.ReceiveStream;
 import javax.media.rtp.ReceptionStats;
+
+import timber.log.Timber;
 
 /**
  * Implements a <tt>TransformEngine</tt> monitors the incoming and outgoing RTCP
@@ -50,12 +54,6 @@ import javax.media.rtp.ReceptionStats;
  */
 public class StatisticsEngine extends SinglePacketTransformer implements TransformEngine
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>StatisticsEngine</tt> class and its
-     * instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(StatisticsEngine.class);
-
     /**
      * The RTP statistics prefix we use for every log.
      * Simplifies parsing and searching for statistics info in log files.
@@ -320,8 +318,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
      * packet
      * @param sourceSSRCs the SSRCs of the RTP data packet sources to be reported upon by the new RTCP XR packet
      * @param sdpParams
-     * @return a new RTCP XR packet with originator <tt>senderSSRC</tt> and reporting upon
-     * <tt>sourceSSRCs</tt>
+     * @return a new RTCP XR packet with originator <tt>senderSSRC</tt> and reporting upon <tt>sourceSSRCs</tt>
      */
     private RTCPExtendedReport createRTCPExtendedReport(int senderSSRC, int[] sourceSSRCs, String sdpParams)
     {
@@ -425,8 +422,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
          * decoding, and playout buffer delay associated with the receiving
          * direction. Collectively, these cover the whole path from the network
          * to the very playback of the audio. We cannot guarantee latency pretty
-         * much anywhere along the path and, consequently, the metric will be
-         * "extremely variable".
+         * much anywhere along the path and, consequently, the metric will be "extremely variable".
          */
 
         // signal level
@@ -471,8 +467,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
         /*
          * The metric may be calculated by converting an R factor determined
          * according to ITU-T G.107 or ETSI TS 101 329-5 into an estimated MOS
-         * using the equation specified in G.107. However, we do not have R
-         * factor.
+         * using the equation specified in G.107. However, we do not have R factor.
          */
 
         // receiver configuration byte (RX config)
@@ -621,8 +616,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
         long numberOfRTCPReports = getCumulativeValue(numberOfRTCPReportsMap);
         long jitterSum = getCumulativeValue(jitterSumMap);
 
-        return numberOfRTCPReports == 0
-                ? 0 : ((double) jitterSum) / numberOfRTCPReports;
+        return numberOfRTCPReports == 0 ? 0 : ((double) jitterSum) / numberOfRTCPReports;
     }
 
     /**
@@ -725,8 +719,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
             if (compound == null
                     || compound.packets == null
                     || compound.packets.length == 0) {
-                logger.info(
-                        "Failed to parse an incoming RTCP packet: " + (ex == null ? "null" : ex.getMessage()));
+                Timber.i("Failed to parse an incoming RTCP packet: %s", (ex == null ? "null" : ex.getMessage()));
 
                 // Either this is an empty packet, or parsing failed. In any
                 // case, drop the packet to make sure we're not forwarding
@@ -738,14 +731,11 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
             try {
                 updateReceivedMediaStreamStats(compound.packets);
             } catch (Throwable t) {
-                if (t instanceof InterruptedException) {
-                    Thread.currentThread().interrupt();
-                }
                 if (t instanceof ThreadDeath) {
                     throw (ThreadDeath) t;
                 }
                 else {
-                    logger.error("Failed to analyze an incoming RTCP packet for the purposes of statistics.", t);
+                    Timber.e(t, "Failed to analyze an incoming RTCP packet for the purposes of statistics.");
                 }
             }
         }
@@ -768,13 +758,8 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
                 case RTCPFBPacket.PSFB:
                     if (rtcp instanceof RTCPREMBPacket) {
                         RTCPREMBPacket remb = (RTCPREMBPacket) rtcp;
-
-                        if (logger.isTraceEnabled()) {
-                            logger.trace("remb_received,stream="
-                                    + mediaStream.hashCode() + " bps="
-                                    + remb.getBitrate() + ", dest= "
-                                    + Arrays.toString(remb.getDest()));
-                        }
+                        Timber.log(TimberLog.FINER, "remb_received,stream = %s bps = %s, dest = %s",
+                                mediaStream.hashCode(), remb.getBitrate(), Arrays.toString(remb.getDest()));
                         streamStats.rembReceived(remb);
                     }
                     break;
@@ -791,7 +776,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
                         byte[] buf = baos.toByteArray();
                         report = parseRTCPReport(rtcp.type, buf, 0, buf.length);
                     } catch (IOException ioe) {
-                        logger.error("Failed to assemble an RTCP report: " + ioe);
+                        Timber.e(ioe, "Failed to assemble an RTCP report.");
                         report = null;
                     }
                     if (report != null) {
@@ -852,7 +837,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
                     throw (ThreadDeath) t;
                 }
                 else {
-                    logger.error("Failed to analyze an outgoing RTCP packet for the purposes of statistics.", t);
+                    Timber.e(t, "Failed to analyze an outgoing RTCP packet for the purposes of statistics.");
                 }
             }
 
@@ -868,8 +853,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
 
                 if (o != null) {
                     String sdpParams = o.toString();
-
-                    if ((sdpParams != null) && (sdpParams.length() != 0)) {
+                    if (sdpParams.length() != 0) {
                         List<RTCPExtendedReport> xrs = addRTCPExtendedReports(pkt, sdpParams);
 
                         if (xrs != null) {
@@ -916,7 +900,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
 
                 incrementSSRCCounter(jitterSumMap, ssrc, jitter);
 
-                if (logger.isTraceEnabled()) {
+                if (TimberLog.isTraceEnabled()) {
                     long numberOfRTCPReports = getMapValue(numberOfRTCPReportsMap, ssrc);
                     // As sender reports are sent on every 5 seconds, print
                     // every 4th packet, on every 20 seconds.
@@ -936,13 +920,13 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
                                     .append(", bytes:")
                                     .append(sr.getSenderByteCount()).append(", ");
                         }
-                        buff.append("interarrival jitter:").append(jitter)
+                        buff.append("inter-arrival jitter:").append(jitter)
                                 .append(", lost packets:")
                                 .append(feedback.getNumLost())
                                 .append(", time since previous report:")
                                 .append((int) (feedback.getDLSR() / 65.536))
                                 .append("ms]");
-                        logger.trace(buff);
+                        Timber.log(TimberLog.FINER, "%s", buff);
                     }
                 }
             }

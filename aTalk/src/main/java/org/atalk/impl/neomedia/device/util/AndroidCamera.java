@@ -7,8 +7,6 @@ package org.atalk.impl.neomedia.device.util;
 
 import android.hardware.Camera;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.service.neomedia.MediaUseCase;
@@ -17,19 +15,17 @@ import java.util.List;
 
 import javax.media.*;
 
+import timber.log.Timber;
+
 /**
  * Class used to represent camera device in Android device systems.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 @SuppressWarnings("deprecation")
 public class AndroidCamera extends CaptureDeviceInfo
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(AndroidCamera.class);
-
     /**
      * The constant value for camera facing front.
      */
@@ -190,7 +186,7 @@ public class AndroidCamera extends CaptureDeviceInfo
             return selectedCamera;
         }
         else {
-            logger.warn("No camera found for name: " + cameraLocator);
+            Timber.w("No camera found for name: %s", cameraLocator);
             return null;
         }
     }

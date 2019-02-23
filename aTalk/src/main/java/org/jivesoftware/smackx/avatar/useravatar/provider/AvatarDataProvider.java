@@ -43,9 +43,13 @@
 */
 package org.jivesoftware.smackx.avatar.useravatar.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarData;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
  * A PacketExtensionProvider to parse the Avatar data.
@@ -56,8 +60,8 @@ import org.xmlpull.v1.XmlPullParser;
 public class AvatarDataProvider extends ExtensionElementProvider
 {
     @Override
-    public AvatarData parse(XmlPullParser parser, int initialDepth)
-            throws Exception
+    public AvatarData parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException
     {
         AvatarData avatarData = null;
         if (AvatarData.ELEMENT.equals(parser.getName())) {

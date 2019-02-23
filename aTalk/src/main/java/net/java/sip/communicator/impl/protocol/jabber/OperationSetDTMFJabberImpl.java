@@ -8,9 +8,10 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.media.AbstractOperationSetDTMF;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.service.neomedia.*;
+
+import timber.log.Timber;
 
 /**
  * Class responsible for sending a DTMF Tone using using rfc4733 or Inband.
@@ -19,11 +20,6 @@ import org.atalk.service.neomedia.*;
  */
 public class OperationSetDTMFJabberImpl extends AbstractOperationSetDTMF
 {
-    /**
-     * Our class logger.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetDTMFJabberImpl.class);
-
     /**
      * Constructor.
      *
@@ -72,7 +68,7 @@ public class OperationSetDTMFJabberImpl extends AbstractOperationSetDTMF
         // If the account is configured to use RTP DTMF method and the call
         // does not manage telephone events. Then, we log it for future debugging.
         if (this.dtmfMethod == DTMFMethod.RTP_DTMF && !isRFC4733Active(cp)) {
-            logger.debug("RTP DTMF used without telephone-event capacities");
+            Timber.d("RTP DTMF used without telephone-event capacities");
         }
         ((AudioMediaStream) cp.getMediaHandler().getStream(MediaType.AUDIO)).startSendingDTMF(tone,
                 cpDTMFMethod, minimalToneDuration, maximalToneDuration, volume);
@@ -109,7 +105,7 @@ public class OperationSetDTMFJabberImpl extends AbstractOperationSetDTMF
         // If the account is configured to use RTP DTMF method and the call
         // does not manage telephone events. Then, we log it for future debugging.
         if (this.dtmfMethod == DTMFMethod.RTP_DTMF && !isRFC4733Active(cp)) {
-            logger.debug("RTP DTMF used without telephone-event capacities");
+            Timber.d("RTP DTMF used without telephone-event capacities");
         }
 
         ((AudioMediaStream) cp.getMediaHandler().getStream(MediaType.AUDIO))

@@ -22,10 +22,11 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.PresenceFilter;
-import org.atalk.util.Logger;
 
 import java.util.*;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 /**
  * Contact list model is responsible for caching current contact list obtained from contact
@@ -38,11 +39,6 @@ import java.util.regex.Pattern;
 public class MetaContactListAdapter extends BaseContactListAdapter
         implements MetaContactListListener, ContactPresenceStatusListener, UIGroupRenderer
 {
-    /**
-     * The logger for this class.
-     */
-    private final Logger logger = Logger.getLogger(MetaContactListAdapter.class);
-
     /**
      * The list of contact list groups for view display
      */
@@ -337,8 +333,8 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         if (isMatchingQuery) {
             TreeSet<MetaContact> contactList = getContactList(groupIndex);
             if ((contactList != null) && (getChildIndex(contactList, metaContact) < 0)) {
-//				// do no allow duplication with multiple accounts registration on same server
-//				if (!contactList.contains(metaContact)) ??? not correct test
+                //				// do no allow duplication with multiple accounts registration on same server
+                //				if (!contactList.contains(metaContact)) ??? not correct test
                 contactList.add(metaContact);
             }
         }
@@ -450,8 +446,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactAdded(MetaContactEvent evt)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("CONTACT ADDED: " + evt.getSourceMetaContact());
+        Timber.d("CONTACT ADDED: %s", evt.getSourceMetaContact());
 
         addContact(evt.getParentGroup(), evt.getSourceMetaContact());
         uiChangeUpdate();
@@ -464,8 +459,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactModified(MetaContactModifiedEvent evt)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("META CONTACT MODIFIED: " + evt.getSourceMetaContact());
+        Timber.d("META CONTACT MODIFIED: %s", evt.getSourceMetaContact());
 
         invalidateViews();
     }
@@ -477,8 +471,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactRemoved(MetaContactEvent evt)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("CONTACT REMOVED: " + evt.getSourceMetaContact());
+        Timber.d("CONTACT REMOVED: %s", evt.getSourceMetaContact());
 
         removeContact(evt.getParentGroup(), evt.getSourceMetaContact());
         uiChangeUpdate();
@@ -491,8 +484,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactMoved(MetaContactMovedEvent evt)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("CONTACT MOVED: " + evt.getSourceMetaContact());
+        Timber.d("CONTACT MOVED: %s", evt.getSourceMetaContact());
 
         MetaContactGroup oldParent = evt.getOldParent();
         MetaContactGroup newParent = evt.getNewParent();
@@ -500,8 +492,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         int oldGroupIdx = originalGroups.indexOf(oldParent);
         int newGroupIdx = originalGroups.indexOf(newParent);
         if (oldGroupIdx < 0 || newGroupIdx < 0) {
-            logger.error("Move group error - original list, srcGroupIdx: " + oldGroupIdx
-                    + ", dstGroupIdx: " + newGroupIdx);
+            Timber.e("Move group error - original list, srcGroupIdx: %s, dstGroupIdx: %s", oldGroupIdx, newGroupIdx);
         }
         else {
             TreeSet<MetaContact> srcGroup = getOriginalCList(oldGroupIdx);
@@ -517,8 +508,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         oldGroupIdx = groups.indexOf(oldParent);
         newGroupIdx = groups.indexOf(newParent);
         if (oldGroupIdx < 0 || newGroupIdx < 0) {
-            logger.error("Move group error, srcGroupIdx: " + oldGroupIdx + "," +
-                    " dstGroupIdx: " + newGroupIdx);
+            Timber.e("Move group error, srcGroupIdx: %s. dstGroupIdx: %s", oldGroupIdx, newGroupIdx);
         }
         else {
             TreeSet<MetaContact> srcGroup = getContactList(oldGroupIdx);
@@ -541,9 +531,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void metaContactRenamed(final MetaContactRenamedEvent evt)
     {
         uiHandler.post(() -> {
-            if (logger.isDebugEnabled())
-                logger.debug("CONTACT RENAMED: " + evt.getSourceMetaContact());
-
+            Timber.d("CONTACT RENAMED: %s", evt.getSourceMetaContact());
             updateDisplayName(evt.getSourceMetaContact());
         });
     }
@@ -556,9 +544,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void protoContactAdded(final ProtoContactEvent evt)
     {
         uiHandler.post(() -> {
-            if (logger.isDebugEnabled())
-                logger.debug("PROTO CONTACT ADDED: " + evt.getNewParent());
-
+            Timber.d("PROTO CONTACT ADDED: %s", evt.getNewParent());
             updateStatus(evt.getNewParent());
         });
     }
@@ -570,9 +556,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void protoContactRenamed(ProtoContactEvent evt)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("PROTO CONTACT RENAMED: " + evt.getProtoContact().getAddress());
-
+        Timber.d("PROTO CONTACT RENAMED: %s", evt.getProtoContact().getAddress());
         invalidateViews();
     }
 
@@ -584,9 +568,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void protoContactModified(ProtoContactEvent evt)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("PROTO CONTACT MODIFIED: " + evt.getProtoContact().getAddress());
-
+        Timber.d("PROTO CONTACT MODIFIED: %s", evt.getProtoContact().getAddress());
         invalidateViews();
     }
 
@@ -598,9 +580,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void protoContactRemoved(final ProtoContactEvent evt)
     {
         uiHandler.post(() -> {
-            if (logger.isDebugEnabled())
-                logger.debug("PROTO CONTACT REMOVED: " + evt.getProtoContact().getAddress());
-
+            Timber.d("PROTO CONTACT REMOVED: %s", evt.getProtoContact().getAddress());
             updateStatus(evt.getOldParent());
         });
     }
@@ -613,9 +593,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void protoContactMoved(final ProtoContactEvent evt)
     {
         uiHandler.post(() -> {
-            if (logger.isDebugEnabled())
-                logger.debug("PROTO CONTACT MOVED: " + evt.getProtoContact().getAddress());
-
+            Timber.d("PROTO CONTACT MOVED: %s", evt.getProtoContact().getAddress());
             updateStatus(evt.getOldParent());
             updateStatus(evt.getNewParent());
         });
@@ -628,9 +606,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactGroupAdded(MetaContactGroupEvent evt)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("GROUP ADDED: " + evt.getSourceMetaContactGroup());
-
+        Timber.d("GROUP ADDED: %s", evt.getSourceMetaContactGroup());
         addContacts(evt.getSourceMetaContactGroup());
         uiChangeUpdate();
     }
@@ -642,9 +618,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactGroupModified(MetaContactGroupEvent evt)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("GROUP MODIFIED: " + evt.getSourceMetaContactGroup());
-
+        Timber.d("GROUP MODIFIED: %s", evt.getSourceMetaContactGroup());
         invalidateViews();
     }
 
@@ -655,9 +629,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactGroupRemoved(MetaContactGroupEvent evt)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("GROUP REMOVED: " + evt.getSourceMetaContactGroup());
-
+        Timber.d("GROUP REMOVED: %s", evt.getSourceMetaContactGroup());
         removeGroup(evt.getSourceMetaContactGroup());
         uiChangeUpdate();
     }
@@ -672,8 +644,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void childContactsReordered(MetaContactGroupEvent evt)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("CHILD CONTACTS REORDERED: " + evt.getSourceMetaContactGroup());
+        Timber.d("CHILD CONTACTS REORDERED: %s", evt.getSourceMetaContactGroup());
 
         MetaContactGroup group = evt.getSourceMetaContactGroup();
         int origGroupIndex = originalGroups.indexOf(group);
@@ -683,7 +654,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
             TreeSet<MetaContact> contactList = getOriginalCList(origGroupIndex);
 
             if (contactList != null) {
-                // logger.warn("Modify originalGroups: " + origGroupIndex + " / " + originalGroups.size());
+                // Timber.w("Modify originalGroups: " + origGroupIndex + " / " + originalGroups.size());
                 synchronized (originalContacts) {
                     originalContacts.add(origGroupIndex, new TreeSet<>(contactList));
                     originalContacts.remove(origGroupIndex + 1);
@@ -695,7 +666,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
             TreeSet<MetaContact> contactList = getContactList(groupIndex);
 
             if (contactList != null) {
-                // logger.warn("Modify groups: " + groupIndex + " / " + groups.size());
+                // Timber.w("Modify groups: " + groupIndex + " / " + groups.size());
                 synchronized (contacts) {
                     contacts.add(groupIndex, new TreeSet<>(contactList));
                     contacts.remove(groupIndex + 1);
@@ -713,9 +684,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void metaContactAvatarUpdated(final MetaContactAvatarUpdateEvent evt)
     {
         uiHandler.post(() -> {
-            if (logger.isDebugEnabled())
-                logger.debug("META CONTACT AVATAR UPDATED: " + evt.getSourceMetaContact());
-
+            Timber.d("META CONTACT AVATAR UPDATED: %s", evt.getSourceMetaContact());
             updateAvatar(evt.getSourceMetaContact());
         });
     }
@@ -908,12 +877,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     {
         uiHandler.post(() -> {
             Contact sourceContact = event.getSourceContact();
+            Timber.d("Contact presence status changed: %s", sourceContact.getAddress());
 
-            if (logger.isDebugEnabled())
-                logger.debug("Contact presence status changed: " + sourceContact.getAddress());
-
-            MetaContact metaContact
-                    = contactListService.findMetaContactByContact(sourceContact);
+            MetaContact metaContact = contactListService.findMetaContactByContact(sourceContact);
             // metaContact is already existing, just update it
             if (metaContact != null) {
                 if (mDialogMode || presenceFilter.isShowOffline())
@@ -1004,157 +970,157 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         uiHandler.post(() -> notifyDataSetChanged());
     }
 
-//	/**
-//	 * Sets the default filter to the given <tt>filter</tt>.
-//	 *
-//	 * @param filter
-//	 * 		the <tt>ContactListFilter</tt> to set as default
-//	 */
-//	public void setDefaultFilter(ContactListFilter filter) {
-//		this.defaultFilter = filter;
-//		this.currentFilter = defaultFilter;
-//	}
-//
-//	/**
-//	 * Gets the default filter for this contact list.
-//	 *
-//	 * @return the default filter for this contact list
-//	 */
-//	public ContactListFilter getDefaultFilter() {
-//		return defaultFilter;
-//	}
-//
-//	/**
-//	 * Returns the currently applied filter.
-//	 *
-//	 * @return the currently applied filter
-//	 */
-//	public ContactListFilter getCurrentFilter() {
-//		return currentFilter;
-//	}
-//
-//	/**
-//	 * Returns the currently applied filter.
-//	 *
-//	 * @return the currently applied filter
-//	 */
-//
-//	public String getCurrentFilterQuery() {
-//		return currentFilterQuery;
-//	}
-//
-//	/**
-//	 * Initializes the list of available contact sources for this contact list.
-//	 */
-//	private void initContactSources() {
-//		List<ContactSourceService> contactSources = AndroidGUIActivator.getContactSources();
-//		for (ContactSourceService contactSource : contactSources) {
-//			if (!(contactSource instanceof AsyncContactSourceService)
-//					|| ((AsyncContactSourceService) contactSource).canBeUsedToSearchContacts()) {
-//
-//				// ExternalContactSource extContactSource = new ExternalContactSource
-// (contactSource, this);
-//				int sourceIndex = contactSource.getIndex();
-////				if (sourceIndex >= 0 && mContactSources.size() >= sourceIndex)
-////					mContactSources.add(sourceIndex, extContactSource);
-////				else
-////					mContactSources.add(extContactSource);
-//			}
-//		}
-////		AndroidGUIActivator.bundleContext.addServiceListener(new ContactSourceServiceListener
-// ());
-//	}
-//
-//	/**
-//	 * Returns the list of registered contact sources to search in.
-//	 *
-//	 * @return the list of registered contact sources to search in
-//	 */
-//	public List<ContactSourceService> getContactSources() {
-//		return mContactSources;
-//	}
-//
-//
-//	/**
-//	 * Adds the given contact source to the list of available contact sources.
-//	 *
-//	 * @param contactSource
-//	 * 		the <tt>ContactSourceService</tt>
-//	 */
-//	public void addContactSource(ContactSourceService contactSource) {
-////		if (!(contactSource instanceof AsyncContactSourceService)
-////				|| ((AsyncContactSourceService) contactSource).canBeUsedToSearchContacts()) {
-////			mContactSources.add(new ExternalContactSource(contactSource, this));
-////		}
-//	}
-//
-//	/**
-//	 * Removes the given contact source from the list of available contact
-//	 * sources.
-//	 *
-//	 * @param contactSource
-//	 */
-//	public void removeContactSource(ContactSourceService contactSource) {
-////		for (ContactSourceService extSource : mContactSources) {
-////			if (extSource.getContactSourceService().equals(contactSource)) {
-////				mContactSources.remove(extSource);
-////				break;
-////			}
-////		}
-//	}
-//
-//	/**
-//	 * Removes all stored contact sources.
-//	 */
-//	public void removeAllContactSources() {
-//		mContactSources.clear();
-//	}
-//
-//	/**
-//	 * Returns the notification contact source.
-//	 *
-//	 * @return the notification contact source
-//	 */
-////	public static NotificationContactSource getNotificationContactSource()
-////	{
-////		if (notificationSource == null)
-////			notificationSource = new NotificationContactSource();
-////		return notificationSource;
-////	}
-//
-//	/**
-//	 * Returns the <tt>ExternalContactSource</tt> corresponding to the given
-//	 * <tt>ContactSourceService</tt>.
-//	 *
-//	 * @param contactSource
-//	 * 		the <tt>ContactSourceService</tt>, which
-//	 * 		corresponding external source implementation we're looking for
-//	 * @return the <tt>ExternalContactSource</tt> corresponding to the given
-//	 * <tt>ContactSourceService</tt>
-//	 */
-//	public ContactSourceService getContactSource(ContactSourceService contactSource) {
-////		for (ContactSourceService extSource : mContactSources) {
-////			if (extSource.getContactSourceService().equals(contactSource)) {
-////				return extSource;
-////			}
-////		}
-//		return null;
-//	}
-//
-//	/**
-//	 * Returns all <tt>UIContactSource</tt>s of the given type.
-//	 *
-//	 * @param type
-//	 * 		the type of sources we're looking for
-//	 * @return a list of all <tt>UIContactSource</tt>s of the given type
-//	 */
-//	public List<ContactSourceService> getContactSources(int type) {
-////		List<ContactSourceService> sources = new ArrayList<>();
-//
-////		for (ContactSourceService extSource : mContactSources) {
-////			if (extSource.getContactSourceService().getType() == type)
-////				sources.add(extSource);
-////		}
-//		return null; // sources;
-//	}
+    //	/**
+    //	 * Sets the default filter to the given <tt>filter</tt>.
+    //	 *
+    //	 * @param filter
+    //	 * 		the <tt>ContactListFilter</tt> to set as default
+    //	 */
+    //	public void setDefaultFilter(ContactListFilter filter) {
+    //		this.defaultFilter = filter;
+    //		this.currentFilter = defaultFilter;
+    //	}
+    //
+    //	/**
+    //	 * Gets the default filter for this contact list.
+    //	 *
+    //	 * @return the default filter for this contact list
+    //	 */
+    //	public ContactListFilter getDefaultFilter() {
+    //		return defaultFilter;
+    //	}
+    //
+    //	/**
+    //	 * Returns the currently applied filter.
+    //	 *
+    //	 * @return the currently applied filter
+    //	 */
+    //	public ContactListFilter getCurrentFilter() {
+    //		return currentFilter;
+    //	}
+    //
+    //	/**
+    //	 * Returns the currently applied filter.
+    //	 *
+    //	 * @return the currently applied filter
+    //	 */
+    //
+    //	public String getCurrentFilterQuery() {
+    //		return currentFilterQuery;
+    //	}
+    //
+    //	/**
+    //	 * Initializes the list of available contact sources for this contact list.
+    //	 */
+    //	private void initContactSources() {
+    //		List<ContactSourceService> contactSources = AndroidGUIActivator.getContactSources();
+    //		for (ContactSourceService contactSource : contactSources) {
+    //			if (!(contactSource instanceof AsyncContactSourceService)
+    //					|| ((AsyncContactSourceService) contactSource).canBeUsedToSearchContacts()) {
+    //
+    //				// ExternalContactSource extContactSource = new ExternalContactSource
+    // (contactSource, this);
+    //				int sourceIndex = contactSource.getIndex();
+    ////				if (sourceIndex >= 0 && mContactSources.size() >= sourceIndex)
+    ////					mContactSources.add(sourceIndex, extContactSource);
+    ////				else
+    ////					mContactSources.add(extContactSource);
+    //			}
+    //		}
+    ////		AndroidGUIActivator.bundleContext.addServiceListener(new ContactSourceServiceListener
+    // ());
+    //	}
+    //
+    //	/**
+    //	 * Returns the list of registered contact sources to search in.
+    //	 *
+    //	 * @return the list of registered contact sources to search in
+    //	 */
+    //	public List<ContactSourceService> getContactSources() {
+    //		return mContactSources;
+    //	}
+    //
+    //
+    //	/**
+    //	 * Adds the given contact source to the list of available contact sources.
+    //	 *
+    //	 * @param contactSource
+    //	 * 		the <tt>ContactSourceService</tt>
+    //	 */
+    //	public void addContactSource(ContactSourceService contactSource) {
+    ////		if (!(contactSource instanceof AsyncContactSourceService)
+    ////				|| ((AsyncContactSourceService) contactSource).canBeUsedToSearchContacts()) {
+    ////			mContactSources.add(new ExternalContactSource(contactSource, this));
+    ////		}
+    //	}
+    //
+    //	/**
+    //	 * Removes the given contact source from the list of available contact
+    //	 * sources.
+    //	 *
+    //	 * @param contactSource
+    //	 */
+    //	public void removeContactSource(ContactSourceService contactSource) {
+    ////		for (ContactSourceService extSource : mContactSources) {
+    ////			if (extSource.getContactSourceService().equals(contactSource)) {
+    ////				mContactSources.remove(extSource);
+    ////				break;
+    ////			}
+    ////		}
+    //	}
+    //
+    //	/**
+    //	 * Removes all stored contact sources.
+    //	 */
+    //	public void removeAllContactSources() {
+    //		mContactSources.clear();
+    //	}
+    //
+    //	/**
+    //	 * Returns the notification contact source.
+    //	 *
+    //	 * @return the notification contact source
+    //	 */
+    ////	public static NotificationContactSource getNotificationContactSource()
+    ////	{
+    ////		if (notificationSource == null)
+    ////			notificationSource = new NotificationContactSource();
+    ////		return notificationSource;
+    ////	}
+    //
+    //	/**
+    //	 * Returns the <tt>ExternalContactSource</tt> corresponding to the given
+    //	 * <tt>ContactSourceService</tt>.
+    //	 *
+    //	 * @param contactSource
+    //	 * 		the <tt>ContactSourceService</tt>, which
+    //	 * 		corresponding external source implementation we're looking for
+    //	 * @return the <tt>ExternalContactSource</tt> corresponding to the given
+    //	 * <tt>ContactSourceService</tt>
+    //	 */
+    //	public ContactSourceService getContactSource(ContactSourceService contactSource) {
+    ////		for (ContactSourceService extSource : mContactSources) {
+    ////			if (extSource.getContactSourceService().equals(contactSource)) {
+    ////				return extSource;
+    ////			}
+    ////		}
+    //		return null;
+    //	}
+    //
+    //	/**
+    //	 * Returns all <tt>UIContactSource</tt>s of the given type.
+    //	 *
+    //	 * @param type
+    //	 * 		the type of sources we're looking for
+    //	 * @return a list of all <tt>UIContactSource</tt>s of the given type
+    //	 */
+    //	public List<ContactSourceService> getContactSources(int type) {
+    ////		List<ContactSourceService> sources = new ArrayList<>();
+    //
+    ////		for (ContactSourceService extSource : mContactSources) {
+    ////			if (extSource.getContactSourceService().getType() == type)
+    ////				sources.add(extSource);
+    ////		}
+    //		return null; // sources;
+    //	}
 }

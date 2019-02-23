@@ -11,7 +11,6 @@ import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetai
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
@@ -36,6 +35,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * The Jabber implementation of a Persistent Presence Operation set. This class manages our own
  * presence status as well as subscriptions for the presence status of our buddies. It also offers methods
@@ -50,11 +51,6 @@ public class OperationSetPersistentPresenceJabberImpl
         extends AbstractOperationSetPersistentPresence<ProtocolProviderServiceJabberImpl>
         implements VCardAvatarListener, UserAvatarListener, SubscribeListener, PresenceEventListener
 {
-    /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetPersistentPresenceJabberImpl.class);
-
     /**
      * Contains our current status message. Note that this field would only be changed once the
      * server has confirmed the new status message and not immediately upon setting a new one..
@@ -146,6 +142,12 @@ public class OperationSetPersistentPresenceJabberImpl
      * @see InfoRetriever#retrieveDetails(BareJid contactAddress)
      */
     private InfoRetriever mInfoRetriever;
+
+    /*
+     * Disable info Retrieval on first login even when local cache is empty
+     * cmeng: 20190212seems ejabberd will send VCardTempXUpdate with photo attr in <presence/>
+     */
+    private boolean infoRetrieveOnStart = true;
 
     /**
      * Creates the OperationSet.
@@ -333,7 +335,7 @@ public class OperationSetPersistentPresenceJabberImpl
         try {
             return ssContactList.findContactById(JidCreate.from(contactID));
         } catch (XmppStringprepException e) {
-            logger.error("Could not parse contact into Jid: " + contactID, e);
+            Timber.e(e, "Could not parse contact into Jid: %s", contactID);
             return null;
         }
     }
@@ -418,9 +420,8 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     *
      * @param status the JabberStatusEnum
-     * @return  JabberPresenceStatus#getStatus(String statusName)
+     * @return JabberPresenceStatus#getStatus(String statusName)
      */
     public PresenceStatus getPresenceStatus(String status)
     {
@@ -489,7 +490,7 @@ public class OperationSetPersistentPresenceJabberImpl
     {
         assertConnected();
         JabberStatusEnum jabberStatusEnum = parentProvider.getJabberStatusEnum();
-        List <PresenceStatus> supportedStatuses = jabberStatusEnum.getSupportedStatusSet();
+        List<PresenceStatus> supportedStatuses = jabberStatusEnum.getSupportedStatusSet();
         boolean isValidStatus = supportedStatuses.contains(status);
 
         if (!isValidStatus)
@@ -504,7 +505,7 @@ public class OperationSetPersistentPresenceJabberImpl
                 // store it
                 ssContactList.setInitialStatus(status);
                 ssContactList.setInitialStatusMessage(statusMessage);
-                logger.info("Smack: In roster fetching-hold <presence:available/>");
+                Timber.i("Smack: In roster fetching-hold <presence:available/>");
                 return;
             }
         }
@@ -531,7 +532,7 @@ public class OperationSetPersistentPresenceJabberImpl
             try {
                 parentProvider.getConnection().sendStanza(presence);
             } catch (NotConnectedException | InterruptedException e) {
-                logger.error("Could not send new presense status", e);
+                Timber.e(e, "Could not send new presence status");
             }
             if (localContact != null)
                 updateResource(localContact, parentProvider.getOurJID(), presence);
@@ -873,7 +874,7 @@ public class OperationSetPersistentPresenceJabberImpl
                     mRoster.addSubscribeListener(OperationSetPersistentPresenceJabberImpl.this);
                     mRoster.addPresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
                     handleSubsribeEvent = true;
-                    logger.info("SubscribeListener and PresenceEventListener added");
+                    Timber.i("SubscribeListener and PresenceEventListener added");
                 }
 
                 if (vCardAvatarManager == null) {
@@ -898,7 +899,7 @@ public class OperationSetPersistentPresenceJabberImpl
                      */
                     OperationSetServerStoredAccountInfo accountInfoOpSet
                             = parentProvider.getOperationSet(OperationSetServerStoredAccountInfo.class);
-                    if (accountInfoOpSet != null) {
+                    if (infoRetrieveOnStart && (accountInfoOpSet != null)) {
                         accountInfoOpSet.getAllAvailableDetails();
                     }
                 }
@@ -937,7 +938,7 @@ public class OperationSetPersistentPresenceJabberImpl
                         mRoster.removePresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
                         mRoster.removeRosterListener(contactChangesListener);
                         mRoster = null;
-                        logger.info("SubscribeListener and PresenceEventListener removed");
+                        Timber.i("SubscribeListener and PresenceEventListener removed");
                     }
 
                     // vCardAvatarManager can be null for unRegistered account
@@ -1116,10 +1117,8 @@ public class OperationSetPersistentPresenceJabberImpl
         }
 
         contact.updatePresenceStatus(newStatus);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Dispatching contact status update event for " + contact.getJid()
-                    + ": " + newStatus.getStatusName());
-        }
+        Timber.d("Dispatching contact status update event for %s: %s",
+                contact.getJid(), newStatus.getStatusName());
         fireContactPresenceStatusChangeEvent(contact, contact.getParentContactGroup(),
                 oldStatus, newStatus, resourceUpdated);
     }
@@ -1231,34 +1230,30 @@ public class OperationSetPersistentPresenceJabberImpl
                                 }
                             }
                         }
-                        logger.info("Smack presence update for: " + userJid + " - " + presence.getType());
+                        Timber.i("Smack presence update for: %s - %s", userJid, presence.getType());
 
                         // all contact statuses that are received from all its resources ordered by priority (higher first)
                         // and those with equal priorities order with the one that is most connected as first
                         TreeSet<Presence> userStats = statuses.get(userJid);
                         if (userStats == null) {
-                            userStats = new TreeSet<>(new Comparator<Presence>()
-                            {
-                                public int compare(Presence o1, Presence o2)
-                                {
-                                    int res = o2.getPriority() - o1.getPriority();
+                            userStats = new TreeSet<>((o1, o2) -> {
+                                int res = o2.getPriority() - o1.getPriority();
 
-                                    // if statuses are with same priorities return which one is more
-                                    // available counts the JabberStatusEnum order
+                                // if statuses are with same priorities return which one is more
+                                // available counts the JabberStatusEnum order
+                                if (res == 0) {
+                                    res = jabberStatusToPresenceStatus(o2, parentProvider).getStatus()
+                                            - jabberStatusToPresenceStatus(o1, parentProvider).getStatus();
+                                    // We have run out of "logical" ways to order the presences inside
+                                    // the TreeSet. We have make sure we are consistent with equals.
+                                    // We do this by comparing the unique resource names. If this
+                                    // evaluates to 0 again, then we can safely assume this presence
+                                    // object represents the same resource and by that the same client.
                                     if (res == 0) {
-                                        res = jabberStatusToPresenceStatus(o2, parentProvider).getStatus()
-                                                - jabberStatusToPresenceStatus(o1, parentProvider).getStatus();
-                                        // We have run out of "logical" ways to order the presences inside
-                                        // the TreeSet. We have make sure we are consistent with equals.
-                                        // We do this by comparing the unique resource names. If this
-                                        // evaluates to 0 again, then we can safely assume this presence
-                                        // object represents the same resource and by that the same client.
-                                        if (res == 0) {
-                                            res = o1.getFrom().compareTo(o2.getFrom());
-                                        }
+                                        res = o1.getFrom().compareTo(o2.getFrom());
                                     }
-                                    return res;
                                 }
+                                return res;
                             });
                             statuses.put(userJid, userStats);
                         }
@@ -1291,7 +1286,7 @@ public class OperationSetPersistentPresenceJabberImpl
 
                         ContactJabberImpl sourceContact = ssContactList.findContactById(userJid);
                         if (sourceContact == null) {
-                            logger.warn("Ignore own or no source contact found for id = " + userJid);
+                            Timber.w("Ignore own or no source contact found for id = %s", userJid);
                             return;
                         }
 
@@ -1299,7 +1294,7 @@ public class OperationSetPersistentPresenceJabberImpl
                         sourceContact.setStatusMessage(currentPresence.getStatus());
                         updateContactStatus(sourceContact, jabberStatusToPresenceStatus(currentPresence, parentProvider));
                     } catch (IllegalStateException | IllegalArgumentException ex) {
-                        logger.error("Failed changing status", ex);
+                        Timber.e(ex, "Failed changing status");
                     }
                 }
             }).start();
@@ -1348,63 +1343,57 @@ public class OperationSetPersistentPresenceJabberImpl
      */
     private void handleSubscribeReceived(final Jid fromJid, final String displayName)
     {
-        new Thread(new Runnable()
-        {
-            public void run()
-            {
-                logger.info(fromJid + " wants to add you to its contact list");
+        new Thread(() -> {
+            Timber.i("%s wants to add you to its contact list", fromJid);
 
-                // buddy wants to add you to its roster contact
-                ContactJabberImpl srcContact = ssContactList.findContactById(fromJid);
-                Presence.Type responsePresenceType = null;
+            // buddy wants to add you to its roster contact
+            ContactJabberImpl srcContact = ssContactList.findContactById(fromJid);
+            Presence.Type responsePresenceType = null;
 
-                if (srcContact == null) {
-                    srcContact = createVolatileContact(fromJid, displayName);
+            if (srcContact == null) {
+                srcContact = createVolatileContact(fromJid, displayName);
+            }
+            else {
+                if (srcContact.isPersistent()) {
+                    responsePresenceType = Presence.Type.subscribed;
+                    Timber.i("Auto accept for persistent contact: %s", fromJid);
                 }
-                else {
-                    if (srcContact.isPersistent()) {
+            }
+
+            if (responsePresenceType == null) {
+                AuthorizationRequest req = new AuthorizationRequest();
+                AuthorizationResponse response = handler.processAuthorisationRequest(req, srcContact);
+
+                if (response != null) {
+                    if (response.getResponseCode().equals(AuthorizationResponse.ACCEPT)) {
                         responsePresenceType = Presence.Type.subscribed;
-                        logger.info("Auto accept for persistent contact: " + fromJid);
+                        // return request for presence subscription
+                        try {
+                            RosterUtil.askForSubscriptionIfRequired(mRoster, fromJid.asBareJid());
+                        } catch (NotConnectedException | InterruptedException e) {
+                            Timber.e(e, "Return presence subscription request failed");
+                        } catch (SmackException.NotLoggedInException e) {
+                            e.printStackTrace();
+                        }
+                        Timber.i("Sending Accepted Subscription");
+                    }
+                    else if (response.getResponseCode().equals(AuthorizationResponse.REJECT)) {
+                        responsePresenceType = Presence.Type.unsubscribed;
+                        Timber.i("Sending Rejected Subscription");
                     }
                 }
+            }
 
-                if (responsePresenceType == null) {
-                    AuthorizationRequest req = new AuthorizationRequest();
-                    AuthorizationResponse response = handler.processAuthorisationRequest(req, srcContact);
+            // subscription ignored
+            if (responsePresenceType == null)
+                return;
 
-                    if (response != null) {
-                        if (response.getResponseCode().equals(AuthorizationResponse.ACCEPT)) {
-                            responsePresenceType = Presence.Type.subscribed;
-                            // return request for presence subscription
-                            try {
-                                RosterUtil.askForSubscriptionIfRequired(mRoster, fromJid.asBareJid());
-                            } catch (NotConnectedException | InterruptedException e) {
-                                logger.error("Return presence subscription request failed: ", e);
-                            } catch (SmackException.NotLoggedInException e) {
-                                e.printStackTrace();
-                            }
-                            if (logger.isInfoEnabled())
-                                logger.info("Sending Accepted Subscription");
-                        }
-                        else if (response.getResponseCode().equals(AuthorizationResponse.REJECT)) {
-                            responsePresenceType = Presence.Type.unsubscribed;
-                            if (logger.isInfoEnabled())
-                                logger.info("Sending Rejected Subscription");
-                        }
-                    }
-                }
-
-                // subscription ignored
-                if (responsePresenceType == null)
-                    return;
-
-                Presence responsePacket = new Presence(responsePresenceType);
-                responsePacket.setTo(fromJid);
-                try {
-                    parentProvider.getConnection().sendStanza(responsePacket);
-                } catch (NotConnectedException | InterruptedException e) {
-                    logger.error("Sending presence subscription response failed: ", e);
-                }
+            Presence responsePacket = new Presence(responsePresenceType);
+            responsePacket.setTo(fromJid);
+            try {
+                parentProvider.getConnection().sendStanza(responsePacket);
+            } catch (NotConnectedException | InterruptedException e) {
+                Timber.e(e, "Sending presence subscription response failed.");
             }
         }).start();
     }
@@ -1414,7 +1403,7 @@ public class OperationSetPersistentPresenceJabberImpl
      *
      * @param from the JID requesting the subscription.
      * @param subscribeRequest the presence stanza used for the request.
-     * @return an answer to the request for smack process, or <code>null</code>
+     * @return an answer to the request for smack process, or {@code null}
      */
     @Override
     public SubscribeAnswer processSubscribe(Jid from, Presence subscribeRequest)
@@ -1427,7 +1416,7 @@ public class OperationSetPersistentPresenceJabberImpl
         ContactJabberImpl srcContact = ssContactList.findContactById(fromJid);
         if (ConfigurationUtils.isPresenceSubscribeAuto()
                 || ((srcContact != null) && srcContact.isPersistent())) {
-            logger.info("Approve and return request if required for contact: " + fromJid);
+            Timber.i("Approve and return request if required for contact: %s", fromJid);
             return SubscribeAnswer.ApproveAndAlsoRequestIfRequired;
         }
 
@@ -1436,7 +1425,7 @@ public class OperationSetPersistentPresenceJabberImpl
         if (ext != null)
             displayName = ext.getName();
 
-        logger.info("Subscription authorization request from: " + fromJid);
+        Timber.i("Subscription authorization request from: %s", fromJid);
         synchronized (this) {
             // keep the request for later process when handler becomes ready
             if (handler == null) {
@@ -1467,7 +1456,7 @@ public class OperationSetPersistentPresenceJabberImpl
         // Update resource if receive from own presence and localContact is not null
         FullJid ownJid = parentProvider.getOurJID();
         if ((localContact != null) && (address != null) && address.isParentOf(ownJid)) {
-            logger.info("Smack presence update own: = " + address);
+            Timber.i("Smack presence update own: = %s", address);
             updateResource(localContact, address, availablePresence);
         }
     }
@@ -1493,11 +1482,11 @@ public class OperationSetPersistentPresenceJabberImpl
     {
         Jid fromID = subscribedPresence.getFrom();
         if (handler == null) {
-            logger.warn("No AuthorizationHandler to handle subscribed for " + fromID);
+            Timber.w("No AuthorizationHandler to handle subscribed for %s", fromID);
             return;
         }
 
-        logger.info("Smack presence subscription accepted by: " + address);
+        Timber.i("Smack presence subscription accepted by: %s", address);
         ContactJabberImpl contact = ssContactList.findContactById(fromID);
         AuthorizationResponse response = new AuthorizationResponse(AuthorizationResponse.ACCEPT, "");
         handler.processAuthorizationResponse(response, contact);
@@ -1513,10 +1502,10 @@ public class OperationSetPersistentPresenceJabberImpl
     public void presenceUnsubscribed(BareJid address, Presence unsubscribedPresence)
     {
         Jid fromID = unsubscribedPresence.getFrom();
-        logger.info("Smack presence subscription rejected by: " + address);
+        Timber.i("Smack presence subscription rejected by: %s", address);
 
         if (handler == null) {
-            logger.warn("No unsubscribed Authorization Handler for " + address);
+            Timber.w("No unsubscribed Authorization Handler for %s", address);
             return;
         }
 
@@ -1527,7 +1516,7 @@ public class OperationSetPersistentPresenceJabberImpl
             try {
                 ssContactList.removeContact(contact);
             } catch (OperationFailedException e) {
-                logger.error("Cannot remove contact that is unsubscribed.");
+                Timber.e("Cannot remove contact that is unsubscribed.");
             }
         }
     }
@@ -1563,7 +1552,7 @@ public class OperationSetPersistentPresenceJabberImpl
         public void onRosterLoaded(Roster roster)
         {
             mRoster = roster;
-            logger.info("Roster loaded completed at startup!");
+            Timber.i("Roster loaded completed at startup!");
             if (!ssContactList.isRosterInitialized()) {
                 new Thread(this, getClass().getName()).start();
             }
@@ -1572,7 +1561,7 @@ public class OperationSetPersistentPresenceJabberImpl
         @Override
         public void onRosterLoadingFailed(Exception exception)
         {
-            logger.warn("Roster loading failed at startup!");
+            Timber.w("Roster loading failed at startup!");
         }
     }
 
@@ -1593,7 +1582,7 @@ public class OperationSetPersistentPresenceJabberImpl
 //			}
 //		}
 //		catch (OperationFailedException ex) {
-//			logger.info("Can not send presence extension to broadcast photo update", ex);
+//			Timber.i(ex, "Can not send presence extension to broadcast photo update");
 //		}
 //	}
 
@@ -1620,13 +1609,11 @@ public class OperationSetPersistentPresenceJabberImpl
         ContactJabberImpl sourceContact = ssContactList.findContactById(userID);
 
         /*
-         * If this contact is not yet in our contact list, then there is no need to manage this
-         * avatar update.
+         * If this contact is not yet in our contact list, then there is no need to manage this avatar update.
          */
         if (sourceContact == null) {
             return;
         }
-
         byte[] currentAvatar = sourceContact.getImage(false);
 
         /*
@@ -1728,7 +1715,7 @@ public class OperationSetPersistentPresenceJabberImpl
             this.resourcePriorityAvailable = Integer.parseInt(parentProvider.getAccountID()
                     .getAccountPropertyString(ProtocolProviderFactory.RESOURCE_PRIORITY));
         } catch (NumberFormatException ex) {
-            logger.error("Wrong value for resource priority", ex);
+            Timber.e(ex, "Wrong value for resource priority");
         }
 
         addDefaultValue(JabberStatusEnum.AWAY, -5);
@@ -1753,7 +1740,7 @@ public class OperationSetPersistentPresenceJabberImpl
             try {
                 addPresenceToPriorityMapping(statusName, Integer.parseInt(resourcePriority));
             } catch (NumberFormatException ex) {
-                logger.error("Wrong value for resource priority for status: " + statusName, ex);
+                Timber.e(ex, "Wrong value for resource priority for status: %s", statusName);
             }
         }
         else {

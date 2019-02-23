@@ -27,15 +27,17 @@ import net.java.sip.communicator.service.history.HistoryService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.gui.chat.*;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.osgi.framework.*;
 
 import java.io.IOException;
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * File History Service stores info for file transfers from various protocols.
@@ -48,11 +50,6 @@ import java.util.*;
 public class FileHistoryServiceImpl implements FileHistoryService, ServiceListener,
         FileTransferStatusListener, ScFileTransferListener
 {
-    /**
-     * The logger for this class.
-     */
-    private static final Logger logger = Logger.getLogger(FileHistoryServiceImpl.class);
-
     /**
      * The BundleContext that we got from the OSGI bus.
      */
@@ -75,8 +72,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      */
     public void start(BundleContext bc)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Starting the file history implementation.");
+        Timber.d("Starting the file history implementation.");
         this.bundleContext = bc;
 
         // start listening for newly register or removed protocol providers
@@ -90,9 +86,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
 
         // in case we found any
         if ((ppsRefs != null) && (ppsRefs.length != 0)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Found " + ppsRefs.length + " installed providers.");
-            }
+            Timber.d("Found %s installed providers.",ppsRefs.length);
             for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {
                 ProtocolProviderService pps = bc.getService(ppsRef);
                 handleProviderAdded(pps);
@@ -140,20 +134,16 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     public void serviceChanged(ServiceEvent serviceEvent)
     {
         Object sService = bundleContext.getService(serviceEvent.getServiceReference());
-
-        if (logger.isTraceEnabled())
-            logger.trace("Received a service event for: " + sService.getClass().getName());
+        Timber.log(TimberLog.FINER, "Received a service event for: %s", sService.getClass().getName());
 
         // we don't care if the source service is not a protocol provider
         if (!(sService instanceof ProtocolProviderService)) {
             return;
         }
 
-        if (logger.isDebugEnabled())
-            logger.debug("Service is a protocol provider.");
+        Timber.d("Service is a protocol provider.");
         if (serviceEvent.getType() == ServiceEvent.REGISTERED) {
-            if (logger.isDebugEnabled())
-                logger.debug("Handling registration of a new Protocol Provider.");
+            Timber.d("Handling registration of a new Protocol Provider.");
 
             this.handleProviderAdded((ProtocolProviderService) sService);
         }
@@ -170,19 +160,15 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      */
     private void handleProviderAdded(ProtocolProviderService provider)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Adding protocol provider " + provider.getProtocolName());
+        Timber.d("Adding protocol provider %s", provider.getProtocolName());
 
         // check whether the provider has a file transfer operation set
-        OperationSetFileTransfer opSetFileTransfer
-                = provider.getOperationSet(OperationSetFileTransfer.class);
-
+        OperationSetFileTransfer opSetFileTransfer  = provider.getOperationSet(OperationSetFileTransfer.class);
         if (opSetFileTransfer != null) {
             opSetFileTransfer.addFileTransferListener(this);
         }
         else {
-            if (logger.isTraceEnabled())
-                logger.trace("Service did not have a file transfer op. set.");
+            Timber.log(TimberLog.FINER, "Service did not have a file transfer op. set.");
         }
     }
 
@@ -218,7 +204,6 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     {
         IncomingFileTransferRequest req = event.getRequest();
         String fileName = req.getFileName();
-
         insertRecordToDB(event, fileName);
     }
 
@@ -246,7 +231,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
                 insertRecordToDB(event, fileName);
             }
         } catch (IOException e) {
-            logger.error("Could not add file transfer log to history", e);
+            Timber.e(e, "Could not add file transfer log to history");
         }
     }
 
@@ -343,7 +328,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      */
     private void updateFTStatusToDB(String msgUuid, String status)
     {
-        // logger.warn("### File in/out transfer status changes to: " + status);
+        // Timber.w("### File in/out transfer status changes to: " + status);
         String[] args = {msgUuid};
 
         contentValues.clear();

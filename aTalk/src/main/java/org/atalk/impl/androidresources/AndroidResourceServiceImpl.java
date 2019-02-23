@@ -11,8 +11,8 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import net.java.sip.communicator.service.resources.AbstractResourcesService;
-import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.osgi.OSGiService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.BundleContext;
@@ -22,6 +22,8 @@ import java.io.*;
 import java.net.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import timber.log.Timber;
 
 /**
  * An Android implementation of the {@link ResourceManagementService}.
@@ -55,14 +57,10 @@ import java.util.ResourceBundle;
  * resources/images/protocol/sip/sip64x64.png=sip_logo
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class AndroidResourceServiceImpl extends AbstractResourcesService
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AndroidResourceServiceImpl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AndroidResourceServiceImpl.class);
-
     /**
      * Path to the .properties file containing image path's translations to android drawable resources
      */
@@ -70,7 +68,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     /**
      * Android image path translation resource TODO: Remove direct path requests for resources
      */
-    private ResourceBundle androidImagePathPack = null;
+    private ResourceBundle androidImagePathPack;
 
     /**
      * The {@link Resources} object for application context
@@ -80,12 +78,12 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     /**
      * The application package name(org.atalk)
      */
-    private String packageName = null;
+    private String packageName;
 
     /**
      * The Android application context
      */
-    private Context androidContext = null;
+    private Context androidContext;
 
     /**
      * The {@link Resources} cache for language other than default
@@ -107,7 +105,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
         super(AndroidResourceManagementActivator.bundleContext);
 
         androidImagePathPack = ResourceBundle.getBundle(IMAGE_PATH_RESOURCE);
-        logger.trace("Loaded image path resource: " + androidImagePathPack);
+        Timber.log(TimberLog.FINER, "Loaded image path resource: %s", androidImagePathPack);
 
         BundleContext bundleContext = AndroidResourceManagementActivator.bundleContext;
         ServiceReference<OSGiService> serviceRef = bundleContext.getServiceReference(OSGiService.class);
@@ -191,7 +189,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     {
         int id = resources.getIdentifier(key, typeName, packageName);
         if (id == 0)
-            logger.error("Unresolved " + typeName + " key: " + key);
+            Timber.e("Unresolved %s key: %s", typeName, key);
         return id;
     }
 
@@ -203,14 +201,11 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      */
     public InputStream getImageInputStreamForPath(String path)
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Request for resource path: " + path);
+        Timber.log(TimberLog.FINER, "Request for resource path: %s", path);
 
         if (androidImagePathPack.containsKey(path)) {
             String translatedPath = androidImagePathPack.getString(path);
-
-            if (logger.isTraceEnabled())
-                logger.trace("Translated path: " + translatedPath);
+            Timber.log(TimberLog.FINER, "Translated path: %s", translatedPath);
 
             if (translatedPath != null) {
                 return getImageInputStream(translatedPath);
@@ -322,7 +317,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
             usedRes = cachedLocaleResources;
         }
 
-        /**
+        /*
          * Does replace the "." with "_" as they do not work in strings.xml, they are replaced
          * anyway during the resources generation process
          */
@@ -392,7 +387,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
 
         int id = getSoundId(reference);
         if (id == 0) {
-            logger.error("No sound defined for: " + soundKey);
+            Timber.e("No sound defined for: %s", soundKey);
             return null;
         }
         return AndroidResourceURLHandlerFactory.PROTOCOL + "://" + id;

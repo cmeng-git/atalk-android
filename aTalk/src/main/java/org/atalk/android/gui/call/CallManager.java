@@ -30,17 +30,14 @@ import org.jxmpp.jid.BareJid;
 import java.text.ParseException;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
 public class CallManager
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>CallManager</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(CallManager.class);
-
     public static final String CALLEE_DISPLAY_NAME = "CalleeDisplayName";
     public static final String CALLEE_ADDRESS = "CalleeAddress";
     public static final String CALLEE_AVATAR = "CalleeAvatar";
@@ -497,7 +494,7 @@ public class CallManager
             try {
                 telephony.transfer(peer, target);
             } catch (OperationFailedException ex) {
-                logger.error("Failed to transfer " + peer.getAddress() + " to " + target, ex);
+                Timber.e(ex, "Failed to transfer %s to %s", peer.getAddress(), target);
             }
         }
     }
@@ -517,7 +514,7 @@ public class CallManager
             try {
                 telephony.transfer(peer, target);
             } catch (OperationFailedException ex) {
-                logger.error("Failed to transfer " + peer.getAddress() + " to " + target, ex);
+                Timber.e(ex, "Failed to transfer %s to %s", peer.getAddress(), target);
             }
         }
     }
@@ -664,7 +661,7 @@ public class CallManager
      */
     public static void setMute(Call call, boolean isMute)
     {
-        logger.trace("Set mute to " + isMute);
+        Timber.d("Set mute to %s", isMute);
         new MuteThread(call, isMute).start();
     }
 
@@ -707,7 +704,7 @@ public class CallManager
             onHold = CallPeerState.ON_HOLD_LOCALLY.equals(peerState) || CallPeerState.ON_HOLD_MUTUALLY.equals(peerState);
         }
         else {
-            logger.warn("No peer belongs to call: " + call.toString());
+            Timber.w("No peer belongs to call: %s", call.toString());
         }
         return onHold;
     }
@@ -924,7 +921,7 @@ public class CallManager
                 if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;
 
-                logger.error("The call could not be created: ", t);
+                Timber.e(t, "The call could not be created: ");
                 String message = aTalkApp.getResString(R.string.service_gui_CREATE_CALL_FAILED);
 
                 if (t.getMessage() != null)
@@ -1123,7 +1120,7 @@ public class CallManager
                 exception = e;
             }
             if (exception != null) {
-                logger.error("The call could not be created: ", exception);
+                Timber.e("The call could not be created: %s", exception.getMessage());
                 AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
                         aTalkApp.getResString(R.string.service_gui_ERROR), exception.getMessage());
             }
@@ -1185,7 +1182,8 @@ public class CallManager
                     try {
                         telephony.answerVideoCallPeer(peer);
                     } catch (OperationFailedException ofe) {
-                        logger.error("Could not answer " + peer + " with video because of the following exception: " + ofe);
+                        Timber.e("Could not answer %s with video because of the following exception: %s",
+                                peer, ofe.getMessage());
                     }
                 }
                 else {
@@ -1193,7 +1191,7 @@ public class CallManager
                     try {
                         telephony.answerCallPeer(peer);
                     } catch (OperationFailedException ofe) {
-                        logger.error("Could not answer " + peer + " because of the following exception: ", ofe);
+                        Timber.e("Could not answer %s because of the following exception: %s", peer, ofe.getMessage());
                     }
                 }
             }
@@ -1334,7 +1332,7 @@ public class CallManager
                         }
                     }
                 } catch (Exception e) {
-                    logger.error("Failed to invite callees: " + Arrays.toString(contactArray), e);
+                    Timber.e(e, "Failed to invite callees: %s", Arrays.toString(contactArray));
                     AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
                             aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
                 }
@@ -1381,7 +1379,7 @@ public class CallManager
                         opSetVideoBridge.inviteCalleeToCall(contact, call);
                 }
             } catch (Exception e) {
-                logger.error("Failed to invite callees: " + Arrays.toString(callees), e);
+                Timber.e(e, "Failed to invite callees: %s", Arrays.toString(callees));
                 AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
                         aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
             }
@@ -1480,7 +1478,7 @@ public class CallManager
                 try {
                     basicTelephony.hangupCallPeer(peer);
                 } catch (OperationFailedException ofe) {
-                    logger.error("Could not hang up: " + peer, ofe);
+                    Timber.e(ofe, "Could not hang up: %s", peer);
                 }
             }
             removeActiveCall(call);
@@ -1516,7 +1514,7 @@ public class CallManager
                 try {
                     videoTelephony.setLocalVideoAllowed(call, enable);
                 } catch (OperationFailedException ex) {
-                    logger.error("Failed to toggle the streaming of local video.", ex);
+                    Timber.e("Failed to toggle the streaming of local video. %s", ex.getMessage());
                 }
             }
         }
@@ -1547,7 +1545,7 @@ public class CallManager
                 else
                     telephony.putOffHold(callPeer);
             } catch (OperationFailedException ex) {
-                logger.error("Failed to put" + callPeer.getAddress() + (isOnHold ? " on hold." : " off hold. "), ex);
+                Timber.e(ex, "Failed to put %s %s", callPeer.getAddress(), (isOnHold ? " on hold." : " off hold. "));
             }
         }
     }
@@ -1604,7 +1602,7 @@ public class CallManager
                         telephony.putOffHold(callPeer);
                         Thread.sleep(400);
                     } catch (Exception ofe) {
-                        logger.error("Failed to put off hold.", ofe);
+                        Timber.e("Failed to put off hold. %s", ofe.getMessage());
                     }
                 }
             }

@@ -31,6 +31,8 @@ import org.osgi.framework.*;
 
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * The <tt>ChatRoomsList</tt> is the list containing all chat rooms.
  *
@@ -40,11 +42,6 @@ import java.util.*;
  */
 public class ChatRoomListImpl implements RegistrationStateChangeListener, ServiceListener
 {
-    /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(ChatRoomListImpl.class);
-
     /**
      * The list containing all chat servers and rooms.
      */
@@ -94,7 +91,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
                 }
             }
         } catch (InvalidSyntaxException e) {
-            logger.error("Failed to obtain service references.", e);
+            Timber.e(e, "Failed to obtain service references.");
         }
     }
 

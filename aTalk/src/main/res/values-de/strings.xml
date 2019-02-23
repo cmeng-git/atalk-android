@@ -1437,6 +1437,7 @@
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">Batterieoptimierung</string>
     <string name="battery_optimizations_dialog">Dein Gerät hat eine Optimierung der Akkuauslastung für aTalk aktiviert. Dies kann zu verzögerten Benachrichtigungen oder Nachrichtenverlust führen.\n\nEs wird empfohlen, diese Optimierung für aTalk zu deaktivieren.</string>
+    <string name="battery_optimization_on">aTalk wird in den Ruhezustand versetzt, wenn das Gerät in den Ruhezustand wechselt. Starten Sie aTalk manuell neu, um neue Nachrichten zu erhalten.</string>
     <string name="device_does_not_support_battery_op">Dein Gerät unterstützt das Deaktivieren der Batterieoptimierung nicht</string>
     <string name="disable">Deaktivieren</string>
     <string name="next">Weiter</string>

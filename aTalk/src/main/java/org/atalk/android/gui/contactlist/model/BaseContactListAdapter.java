@@ -19,7 +19,8 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.util.*;
 import org.atalk.service.osgi.OSGiActivity;
-import org.atalk.util.Logger;
+
+import timber.log.Timber;
 
 /**
  * Base class for contact list adapter implementations.
@@ -30,11 +31,6 @@ import org.atalk.util.Logger;
  */
 public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 {
-    /**
-     * The logger for this class.
-     */
-    private final Logger logger = Logger.getLogger(BaseContactListAdapter.class);
-
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
      * it's accessed from the single thread.
@@ -187,7 +183,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             ImageView statusView = contactView.findViewById(R.id.contactStatusIcon);
 
             if (statusView == null) {
-                logger.warn("No status view found for " + contactImpl);
+                Timber.w("No status view found for %s", contactImpl);
                 return;
             }
             statusView.setImageDrawable(getContactRenderer(groupIndex).getStatusImage(contactImpl));
@@ -436,8 +432,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             ContactViewHolder viewHolder = (ContactViewHolder) view.getTag();
             Object contact = getChild(viewHolder.groupPosition, viewHolder.childPosition);
             if (contact == null) {
-                logger.warn("No contact to make a call at " + viewHolder.groupPosition + ", "
-                        + viewHolder.childPosition);
+                Timber.w("No contact to make a call at %d:%d", viewHolder.groupPosition, viewHolder.childPosition);
                 return;
             }
 
@@ -461,7 +456,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             int childPos = viewHolder.childPosition;
             Object contact = getChild(groupPos, childPos);
             if (contact == null) {
-                logger.warn("No contact found at " + groupPos + ", " + childPos);
+                Timber.w("No contact found at %s, %s", groupPos, childPos);
             }
             else {
                 String contactAddress = getContactRenderer(groupPos).getDefaultAddress(contact);

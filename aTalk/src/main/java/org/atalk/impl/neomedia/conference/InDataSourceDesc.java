@@ -1,11 +1,9 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.conference;
-
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.protocol.TranscodingDataSource;
@@ -14,6 +12,8 @@ import java.io.IOException;
 
 import javax.media.Format;
 import javax.media.protocol.*;
+
+import timber.log.Timber;
 
 /**
  * Describes additional information about a specific input <tt>DataSource</tt> of an
@@ -30,270 +30,252 @@ import javax.media.protocol.*;
  */
 class InDataSourceDesc
 {
+    /**
+     * The constant which represents an empty array with <tt>SourceStream</tt> element type.
+     * Explicitly defined in order to avoid unnecessary allocations.
+     */
+    private static final SourceStream[] EMPTY_STREAMS = new SourceStream[0];
 
-	/**
-	 * The constant which represents an empty array with <tt>SourceStream</tt> element type.
-	 * Explicitly defined in order to avoid unnecessary allocations.
-	 */
-	private static final SourceStream[] EMPTY_STREAMS = new SourceStream[0];
+    /**
+     * The indicator which determines whether the effective input <tt>DataSource</tt> described by
+     * this instance is currently connected.
+     */
+    private boolean connected;
 
-	/**
-	 * The <tt>Logger</tt> used by the <tt>InDataSourceDesc</tt> class and its instances for logging output.
-	 */
-	private static final Logger logger = Logger.getLogger(InDataSourceDesc.class);
+    /**
+     * The <tt>Thread</tt> which currently executes {@link DataSource#connect()} on the effective
+     * input <tt>DataSource</tt> described by this instance.
+     */
+    private Thread connectThread;
 
-	/**
-	 * The indicator which determines whether the effective input <tt>DataSource</tt> described by
-	 * this instance is currently connected.
-	 */
-	private boolean connected;
+    /**
+     * The <tt>DataSource</tt> for which additional information is described by this instance.
+     */
+    public final DataSource inDataSource;
 
-	/**
-	 * The <tt>Thread</tt> which currently executes {@link DataSource#connect()} on the effective
-	 * input <tt>DataSource</tt> described by this instance.
-	 */
-	private Thread connectThread;
+    /**
+     * The <tt>AudioMixingPushBufferDataSource</tt> in which the mix contributions of
+     * {@link #inDataSource} are to not be included.
+     */
+    public final AudioMixingPushBufferDataSource outDataSource;
 
-	/**
-	 * The <tt>DataSource</tt> for which additional information is described by this instance.
-	 */
-	public final DataSource inDataSource;
+    /**
+     * The <tt>DataSource</tt>, if any, which transcodes the tracks of {@link #inDataSource} in the
+     * output <tt>Format</tt> of the associated <tt>AudioMixer</tt>.
+     */
+    private DataSource transcodingDataSource;
 
-	/**
-	 * The <tt>AudioMixingPushBufferDataSource</tt> in which the mix contributions of
-	 * {@link #inDataSource} are to not be included.
-	 */
-	public final AudioMixingPushBufferDataSource outDataSource;
+    /**
+     * Initializes a new <tt>InDataSourceDesc</tt> instance which is to describe additional
+     * information about a specific input <tt>DataSource</tt> of an <tt>AudioMixer</tt>. Associates
+     * the specified <tt>DataSource</tt> with the <tt>AudioMixingPushBufferDataSource</tt> in which
+     * the mix contributions of the specified input <tt>DataSource</tt> are to not be included.
+     *
+     * @param inDataSource a <tt>DataSource</tt> for which additional information is to be described by the new
+     * instance
+     * @param outDataSource the <tt>AudioMixingPushBufferDataSource</tt> in which the mix contributions of
+     * <tt>inDataSource</tt> are to not be included
+     */
+    public InDataSourceDesc(DataSource inDataSource, AudioMixingPushBufferDataSource outDataSource)
+    {
+        this.inDataSource = inDataSource;
+        this.outDataSource = outDataSource;
+    }
 
-	/**
-	 * The <tt>DataSource</tt>, if any, which transcodes the tracks of {@link #inDataSource} in the
-	 * output <tt>Format</tt> of the associated <tt>AudioMixer</tt>.
-	 */
-	private DataSource transcodingDataSource;
+    /**
+     * Connects the effective input <tt>DataSource</tt> described by this instance upon request
+     * from a specific <tt>AudioMixer</tt>. If the effective input <tt>DataSource</tt> is to be
+     * asynchronously connected, the completion of the connect procedure will be reported to the
+     * specified <tt>AudioMixer</tt> by calling its {@link AudioMixer#connected(InDataSourceDesc)}.
+     *
+     * @param audioMixer the <tt>AudioMixer</tt> requesting the effective input <tt>DataSource</tt> described
+     * by this instance to be connected
+     * @throws IOException if anything wrong happens while connecting the effective input <tt>DataSource</tt>
+     * described by this instance
+     */
+    synchronized void connect(final AudioMixer audioMixer)
+            throws IOException
+    {
+        final DataSource effectiveInDataSource = (transcodingDataSource == null)
+                ? inDataSource : transcodingDataSource;
 
-	/**
-	 * Initializes a new <tt>InDataSourceDesc</tt> instance which is to describe additional
-	 * information about a specific input <tt>DataSource</tt> of an <tt>AudioMixer</tt>. Associates
-	 * the specified <tt>DataSource</tt> with the <tt>AudioMixingPushBufferDataSource</tt> in which
-	 * the mix contributions of the specified input <tt>DataSource</tt> are to not be included.
-	 *
-	 * @param inDataSource
-	 * 		a <tt>DataSource</tt> for which additional information is to be described by the new
-	 * 		instance
-	 * @param outDataSource
-	 * 		the <tt>AudioMixingPushBufferDataSource</tt> in which the mix contributions of
-	 * 		<tt>inDataSource</tt> are to not be included
-	 */
-	public InDataSourceDesc(DataSource inDataSource, AudioMixingPushBufferDataSource outDataSource)
-	{
-		this.inDataSource = inDataSource;
-		this.outDataSource = outDataSource;
-	}
+        if (effectiveInDataSource instanceof TranscodingDataSource) {
+            if (connectThread == null) {
+                connectThread = new Thread()
+                {
+                    @Override
+                    public void run()
+                    {
+                        try {
+                            audioMixer.connect(effectiveInDataSource, inDataSource);
+                            synchronized (InDataSourceDesc.this) {
+                                connected = true;
+                            }
+                            audioMixer.connected(InDataSourceDesc.this);
+                        } catch (IOException ioex) {
+                            Timber.e(ioex, "Failed to connect to inDataSource %s", MediaStreamImpl.toString(inDataSource));
+                        } finally {
+                            synchronized (InDataSourceDesc.this) {
+                                if (connectThread == Thread.currentThread())
+                                    connectThread = null;
+                            }
+                        }
+                    }
+                };
+                connectThread.setDaemon(true);
+                connectThread.start();
+            }
+        }
+        else {
+            audioMixer.connect(effectiveInDataSource, inDataSource);
+            connected = true;
+        }
+    }
 
-	/**
-	 * Connects the effective input <tt>DataSource</tt> described by this instance upon request
-	 * from a specific <tt>AudioMixer</tt>. If the effective input <tt>DataSource</tt> is to be
-	 * asynchronously connected, the completion of the connect procedure will be reported to the
-	 * specified <tt>AudioMixer</tt> by calling its {@link AudioMixer#connected(InDataSourceDesc)}.
-	 *
-	 * @param audioMixer
-	 * 		the <tt>AudioMixer</tt> requesting the effective input <tt>DataSource</tt> described
-	 * 		by this instance to be connected
-	 * @throws IOException
-	 * 		if anything wrong happens while connecting the effective input <tt>DataSource</tt>
-	 * 		described by this instance
-	 */
-	synchronized void connect(final AudioMixer audioMixer)
-			throws IOException
-	{
-		final DataSource effectiveInDataSource = (transcodingDataSource == null)
-				? inDataSource : transcodingDataSource;
+    /**
+     * Creates a <tt>DataSource</tt> which attempts to transcode the tracks of the input
+     * <tt>DataSource</tt> described by this instance into a specific output <tt>Format</tt>.
+     *
+     * @param outFormat the <tt>Format</tt> in which the tracks of the input <tt>DataSource</tt> described by
+     * this instance are to be transcoded
+     * @return <tt>true</tt> if a new transcoding <tt>DataSource</tt> has been created for the
+     * input <tt>DataSource</tt> described by this instance; otherwise, <tt>false</tt>
+     */
+    synchronized boolean createTranscodingDataSource(Format outFormat)
+    {
+        if (transcodingDataSource == null) {
+            setTranscodingDataSource(new TranscodingDataSource(inDataSource, outFormat));
+            return true;
+        }
+        else
+            return false;
+    }
 
-		if (effectiveInDataSource instanceof TranscodingDataSource) {
-			if (connectThread == null) {
-				connectThread = new Thread()
-				{
-					@Override
-					public void run()
-					{
-						try {
-							audioMixer.connect(effectiveInDataSource, inDataSource);
-							synchronized (InDataSourceDesc.this) {
-								connected = true;
-							}
-							audioMixer.connected(InDataSourceDesc.this);
-						}
-						catch (IOException ioex) {
-							logger.error(
-									"Failed to connect to inDataSource "
-											+ MediaStreamImpl.toString(inDataSource), ioex);
-						} finally {
-							synchronized (InDataSourceDesc.this) {
-								if (connectThread == Thread.currentThread())
-									connectThread = null;
-							}
-						}
-					}
-				};
-				connectThread.setDaemon(true);
-				connectThread.start();
-			}
-		}
-		else {
-			audioMixer.connect(effectiveInDataSource, inDataSource);
-			connected = true;
-		}
-	}
+    /**
+     * Disconnects the effective input <tt>DataSource</tt> described by this instance if it is
+     * already connected.
+     */
+    synchronized void disconnect()
+    {
+        if (connected) {
+            getEffectiveInDataSource().disconnect();
+            connected = false;
+        }
+    }
 
-	/**
-	 * Creates a <tt>DataSource</tt> which attempts to transcode the tracks of the input
-	 * <tt>DataSource</tt> described by this instance into a specific output <tt>Format</tt>.
-	 *
-	 * @param outFormat
-	 * 		the <tt>Format</tt> in which the tracks of the input <tt>DataSource</tt> described by
-	 * 		this instance are to be transcoded
-	 * @return <tt>true</tt> if a new transcoding <tt>DataSource</tt> has been created for the
-	 * input <tt>DataSource</tt> described by this instance; otherwise, <tt>false</tt>
-	 */
-	synchronized boolean createTranscodingDataSource(Format outFormat)
-	{
-		if (transcodingDataSource == null) {
-			setTranscodingDataSource(new TranscodingDataSource(inDataSource, outFormat));
-			return true;
-		}
-		else
-			return false;
-	}
+    /**
+     * Gets the control available for the effective input <tt>DataSource</tt> described by this
+     * instance with a specific type.
+     *
+     * @param controlType a <tt>String</tt> value which specifies the type of the control to be retrieved
+     * @return an <tt>Object</tt> which represents the control available for the effective input
+     * <tt>DataSource</tt> described by this instance with the specified
+     * <tt>controlType</tt> if such a control exists; otherwise, <tt>null</tt>
+     */
+    public synchronized Object getControl(String controlType)
+    {
+        DataSource effectiveInDataSource = getEffectiveInDataSource();
 
-	/**
-	 * Disconnects the effective input <tt>DataSource</tt> described by this instance if it is
-	 * already connected.
-	 */
-	synchronized void disconnect()
-	{
-		if (connected) {
-			getEffectiveInDataSource().disconnect();
-			connected = false;
-		}
-	}
+        return (effectiveInDataSource == null)
+                ? null : effectiveInDataSource.getControl(controlType);
+    }
 
-	/**
-	 * Gets the control available for the effective input <tt>DataSource</tt> described by this
-	 * instance with a specific type.
-	 *
-	 * @param controlType
-	 * 		a <tt>String</tt> value which specifies the type of the control to be retrieved
-	 * @return an <tt>Object</tt> which represents the control available for the effective input
-	 * <tt>DataSource</tt> described by this instance with the specified
-	 * <tt>controlType</tt> if such a control exists; otherwise, <tt>null</tt>
-	 */
-	public synchronized Object getControl(String controlType)
-	{
-		DataSource effectiveInDataSource = getEffectiveInDataSource();
+    /**
+     * Gets the actual <tt>DataSource</tt> from which the associated <tt>AudioMixer</tt> directly
+     * reads in order to retrieve the mix contribution of the <tt>DataSource</tt> described by this
+     * instance.
+     *
+     * @return the actual <tt>DataSource</tt> from which the associated <tt>AudioMixer</tt>
+     * directly reads in order to retrieve the mix contribution of the <tt>DataSource</tt> described
+     * by this instance
+     */
+    public synchronized DataSource getEffectiveInDataSource()
+    {
+        return (transcodingDataSource == null)
+                ? inDataSource : (connected ? transcodingDataSource : null);
+    }
 
-		return (effectiveInDataSource == null)
-				? null : effectiveInDataSource.getControl(controlType);
-	}
+    /**
+     * Returns this instance's <tt>inDataSource</tt>
+     *
+     * @return this instance's <tt>inDataSource</tt>
+     */
+    public DataSource getInDataSource()
+    {
+        return inDataSource;
+    }
 
-	/**
-	 * Gets the actual <tt>DataSource</tt> from which the associated <tt>AudioMixer</tt> directly
-	 * reads in order to retrieve the mix contribution of the <tt>DataSource</tt> described by this
-	 * instance.
-	 *
-	 * @return the actual <tt>DataSource</tt> from which the associated <tt>AudioMixer</tt>
-	 * directly reads in order to retrieve the mix contribution of the <tt>DataSource</tt> described
-	 * by this instance
-	 */
-	public synchronized DataSource getEffectiveInDataSource()
-	{
-		return (transcodingDataSource == null)
-				? inDataSource : (connected ? transcodingDataSource : null);
-	}
+    /**
+     * Gets the <tt>SourceStream</tt>s of the effective input <tt>DataSource</tt> described by this
+     * instance.
+     *
+     * @return an array of the <tt>SourceStream</tt>s of the effective input <tt>DataSource</tt>
+     * described by this instance
+     */
+    public synchronized SourceStream[] getStreams()
+    {
+        if (!connected)
+            return EMPTY_STREAMS;
 
-	/**
-	 * Returns this instance's <tt>inDataSource</tt>
-	 *
-	 * @return this instance's <tt>inDataSource</tt>
-	 */
-	public DataSource getInDataSource()
-	{
-		return inDataSource;
-	}
+        DataSource inDataSource = getEffectiveInDataSource();
 
-	/**
-	 * Gets the <tt>SourceStream</tt>s of the effective input <tt>DataSource</tt> described by this
-	 * instance.
-	 *
-	 * @return an array of the <tt>SourceStream</tt>s of the effective input <tt>DataSource</tt>
-	 * described by this instance
-	 */
-	public synchronized SourceStream[] getStreams()
-	{
-		if (!connected)
-			return EMPTY_STREAMS;
+        if (inDataSource instanceof PushBufferDataSource)
+            return ((PushBufferDataSource) inDataSource).getStreams();
+        else if (inDataSource instanceof PullBufferDataSource)
+            return ((PullBufferDataSource) inDataSource).getStreams();
+        else if (inDataSource instanceof TranscodingDataSource)
+            return ((TranscodingDataSource) inDataSource).getStreams();
+        else
+            return null;
+    }
 
-		DataSource inDataSource = getEffectiveInDataSource();
+    /**
+     * Returns the <tt>TranscodingDataSource</tt> object used in this instance.
+     *
+     * @return the <tt>TranscodingDataSource</tt> object used in this instance.
+     */
+    public TranscodingDataSource getTranscodingDataSource()
+    {
+        return (transcodingDataSource == null) ? null
+                : (TranscodingDataSource) transcodingDataSource;
+    }
 
-		if (inDataSource instanceof PushBufferDataSource)
-			return ((PushBufferDataSource) inDataSource).getStreams();
-		else if (inDataSource instanceof PullBufferDataSource)
-			return ((PullBufferDataSource) inDataSource).getStreams();
-		else if (inDataSource instanceof TranscodingDataSource)
-			return ((TranscodingDataSource) inDataSource).getStreams();
-		else
-			return null;
-	}
+    /**
+     * Sets the <tt>DataSource</tt>, if any, which transcodes the tracks of the input
+     * <tt>DataSource</tt> described by this instance in the output <tt>Format</tt> of the
+     * associated <tt>AudioMixer</tt>.
+     *
+     * @param transcodingDataSource the <tt>DataSource</tt> which transcodes the tracks of the input <tt>DataSource</tt>
+     * described by this instance in the output <tt>Format</tt> of the associated
+     * <tt>AudioMixer</tt>
+     */
+    private synchronized void setTranscodingDataSource(DataSource transcodingDataSource)
+    {
+        this.transcodingDataSource = transcodingDataSource;
+        connected = false;
+    }
 
-	/**
-	 * Returns the <tt>TranscodingDataSource</tt> object used in this instance.
-	 *
-	 * @return the <tt>TranscodingDataSource</tt> object used in this instance.
-	 */
-	public TranscodingDataSource getTranscodingDataSource()
-	{
-		return (transcodingDataSource == null) ? null
-				: (TranscodingDataSource) transcodingDataSource;
-	}
+    /**
+     * Starts the effective input <tt>DataSource</tt> described by this instance if it is connected.
+     *
+     * @throws IOException if starting the effective input <tt>DataSource</tt> described by this instance fails
+     */
+    synchronized void start()
+            throws IOException
+    {
+        if (connected)
+            getEffectiveInDataSource().start();
+    }
 
-	/**
-	 * Sets the <tt>DataSource</tt>, if any, which transcodes the tracks of the input
-	 * <tt>DataSource</tt> described by this instance in the output <tt>Format</tt> of the
-	 * associated <tt>AudioMixer</tt>.
-	 *
-	 * @param transcodingDataSource
-	 * 		the <tt>DataSource</tt> which transcodes the tracks of the input <tt>DataSource</tt>
-	 * 		described by this instance in the output <tt>Format</tt> of the associated
-	 * 		<tt>AudioMixer</tt>
-	 */
-	private synchronized void setTranscodingDataSource(DataSource transcodingDataSource)
-	{
-		this.transcodingDataSource = transcodingDataSource;
-		connected = false;
-	}
-
-	/**
-	 * Starts the effective input <tt>DataSource</tt> described by this instance if it is connected.
-	 *
-	 * @throws IOException
-	 * 		if starting the effective input <tt>DataSource</tt> described by this instance fails
-	 */
-	synchronized void start()
-			throws IOException
-	{
-		if (connected)
-			getEffectiveInDataSource().start();
-	}
-
-	/**
-	 * Stops the effective input <tt>DataSource</tt> described by this instance if it is connected.
-	 *
-	 * @throws IOException
-	 * 		if stopping the effective input <tt>DataSource</tt> described by this instance fails
-	 */
-	synchronized void stop()
-			throws IOException
-	{
-		if (connected)
-			getEffectiveInDataSource().stop();
-	}
+    /**
+     * Stops the effective input <tt>DataSource</tt> described by this instance if it is connected.
+     *
+     * @throws IOException if stopping the effective input <tt>DataSource</tt> described by this instance fails
+     */
+    synchronized void stop()
+            throws IOException
+    {
+        if (connected)
+            getEffectiveInDataSource().stop();
+    }
 }

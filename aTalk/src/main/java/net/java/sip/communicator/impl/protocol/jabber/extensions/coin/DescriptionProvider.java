@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.coin;
 
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -13,51 +13,51 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 
 /**
- * Parser for DescriptionPacketExtension.
+ * Parser for DescriptionExtensionElement.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class DescriptionProvider extends ExtensionElementProvider<DescriptionPacketExtension>
+public class DescriptionProvider extends ExtensionElementProvider<DescriptionExtensionElement>
 {
     /**
-     * Parses a description extension sub-packet and creates a {@link DescriptionPacketExtension}
+     * Parses a description extension sub-packet and creates a {@link DescriptionExtensionElement}
      * instance. At the beginning of the method call, the xml parser will be positioned on the
      * opening element of the packet extension. As required by the smack API, at the end of the
      * method call, the parser will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>description</tt> element.
-     * @return a new {@link DescriptionPacketExtension} instance.
-     * @throws java.lang.Exception if an error occurs parsing the XML.
+     * @return a new {@link DescriptionExtensionElement} instance.
+     * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
 
     @Override
-    public DescriptionPacketExtension parse(XmlPullParser parser, int initialDepth)
-            throws Exception
+    public DescriptionExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException
     {
         boolean done = false;
         int eventType;
         String elementName = null;
-        DescriptionPacketExtension ext = new DescriptionPacketExtension();
+        DescriptionExtensionElement ext = new DescriptionExtensionElement();
 
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
             if (eventType == XmlPullParser.START_TAG) {
                     switch (elementName) {
-                        case DescriptionPacketExtension.ELEMENT_SUBJECT:
+                        case DescriptionExtensionElement.ELEMENT_SUBJECT:
                             ext.setSubject(CoinIQProvider.parseText(parser));
                             break;
-                        case DescriptionPacketExtension.ELEMENT_FREE_TEXT:
+                        case DescriptionExtensionElement.ELEMENT_FREE_TEXT:
                             ext.setFreeText(CoinIQProvider.parseText(parser));
                             break;
-                        case DescriptionPacketExtension.ELEMENT_DISPLAY_TEXT:
+                        case DescriptionExtensionElement.ELEMENT_DISPLAY_TEXT:
                             ext.setDisplayText(CoinIQProvider.parseText(parser));
                             break;
                     }
             }
             else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(DescriptionPacketExtension.ELEMENT_NAME)) {
+                if (parser.getName().equals(DescriptionExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }
             }

@@ -1451,6 +1451,7 @@
     <!-- Android Battery Usage Optimization -->
     <string name="battery_optimizations">Optimasi Baterai</string>
     <string name="battery_optimizations_dialog">Perangkat anda memiliki optimalisasi penggunaan baterai pada aTalk;ini dapat menyebabkan pemberitahuan tertunda atau pesan hilang.\n\nSebaiknya anda menonaktifkan pengoptimalan ini untuk aTalk.</string>
+    <string name="battery_optimization_on">aTalk akan dimatikan ketika perangkat masuk ke mode siaga-tidur. Restart aTalk secara manual untuk menerima pesan baru.</string>
     <string name="device_does_not_support_battery_op">Perangkat anda tidak mendukung memilih keluar dari optimalisasi baterai</string>
     <string name="disable">Nonaktifkan</string>
     <string name="next">Next</string>

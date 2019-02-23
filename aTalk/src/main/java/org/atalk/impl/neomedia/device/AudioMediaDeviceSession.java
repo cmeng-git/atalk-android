@@ -10,11 +10,12 @@ import org.atalk.impl.neomedia.audiolevel.AudioLevelEffect2;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
 import org.atalk.service.neomedia.VolumeControl;
 import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
-import org.atalk.util.Logger;
 
 import javax.media.*;
 import javax.media.control.TrackControl;
 import javax.media.format.AudioFormat;
+
+import timber.log.Timber;
 
 /**
  * Extends <tt>MediaDeviceSession</tt> to add audio-specific functionality.
@@ -27,11 +28,6 @@ import javax.media.format.AudioFormat;
  */
 public class AudioMediaDeviceSession extends MediaDeviceSession
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AudioMediaDeviceSession</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AudioMediaDeviceSession.class);
-
     /**
      * The <tt>Effect</tt> that we will register with our <tt>DataSource</tt> in order to measure
      * the audio levels of the local user.
@@ -137,7 +133,7 @@ public class AudioMediaDeviceSession extends MediaDeviceSession
                     try {
                         registerStreamAudioLevelJMFEffect(tc);
                     } catch (UnsupportedPlugInException upie) {
-                        logger.error("Failed to register stream audio level Effect", upie);
+                        Timber.e(upie, "Failed to register stream audio level Effect");
                     }
                     break;
                 }
@@ -191,7 +187,7 @@ public class AudioMediaDeviceSession extends MediaDeviceSession
                 }
             }
         } catch (UnsupportedPlugInException ex) {
-            logger.error("Effects are not supported by the datasource.", ex);
+            Timber.e(ex,"Effects are not supported by the datasource.");
         }
     }
 
@@ -289,8 +285,7 @@ public class AudioMediaDeviceSession extends MediaDeviceSession
                     try {
                         track.setCodecChain(new Codec[]{outputAudioLevelEffect});
                     } catch (UnsupportedPlugInException upie) {
-                        logger.warn("Failed to insert the audio level Effect. "
-                                + "Output levels will not be included. " + upie);
+                        Timber.w(upie, "Failed to insert the audio level Effect. Output levels will not be included.");
                     }
                 }
             }

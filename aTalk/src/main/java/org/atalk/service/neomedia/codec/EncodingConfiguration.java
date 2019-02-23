@@ -8,9 +8,10 @@ package org.atalk.service.neomedia.codec;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.format.MediaFormatFactory;
-import org.atalk.util.Logger;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * A base class that manages encoding configurations. It holds information about supported formats.
@@ -22,11 +23,6 @@ import java.util.*;
  */
 public abstract class EncodingConfiguration
 {
-    /**
-     * The <tt>Logger</tt> used by this <tt>EncodingConfiguration</tt> instance for logging output.
-     */
-    private final Logger logger = Logger.getLogger(EncodingConfiguration.class);
-
     /**
      * The <tt>Comparator</tt> which sorts the sets according to the settings in <tt>encodingPreferences</tt>.
      */
@@ -290,8 +286,7 @@ public abstract class EncodingConfiguration
                     clockRate = MediaFormatFactory.CLOCK_RATE_NOT_SPECIFIED;
                 }
             } catch (NumberFormatException nfe) {
-                logger.warn("Failed to parse format (" + fmtName + ") or preference (" + prefStr
-                        + ").", nfe);
+                Timber.w(nfe, "Failed to parse format (%s) of preference (%s).", fmtName, prefStr);
                 continue;
             }
             setEncodingPreference(encoding, clockRate, preference);

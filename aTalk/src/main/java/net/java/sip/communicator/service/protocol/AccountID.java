@@ -12,7 +12,6 @@ import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
@@ -27,13 +26,9 @@ import org.json.JSONObject;
 import org.jxmpp.jid.BareJid;
 import org.osgi.framework.BundleContext;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * The AccountID is an account identifier that, uniquely represents a specific user account over a
@@ -100,11 +95,6 @@ public class AccountID
 
     // private OtrService mOtrService = null;
     private XMPPTCPConnection xmppConnection = null;
-
-    /**
-     * The <tt>Logger</tt> used by the <tt>AccountID</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AccountID.class);
 
     /**
      * The default properties common key prefix used in lib/atalk-defaults.properties which are
@@ -195,11 +185,11 @@ public class AccountID
             try {
                 tmp = new JSONObject(strKeys);
             } catch (JSONException e) {
-                logger.warn("Cannot convert JSONObject from: " + strKeys);
+                Timber.w("Cannot convert JSONObject from: %s", strKeys);
             }
         }
         mKeys = tmp;
-        logger.info("### Set Account UUID to: " + uuid + ": " + accountUID + " for " + userID);
+        Timber.i("### Set Account UUID to: %s: %s for %s", uuid, accountUID, userID);
     }
 
     /**
@@ -382,8 +372,8 @@ public class AccountID
             try {
                 intValue = Integer.parseInt(stringValue);
             } catch (NumberFormatException ex) {
-                logger.error("Failed to parse account property " + key + " value " + stringValue
-                        + " as an integer", ex);
+                Timber.e("Failed to parse account property %s value %s as an integer: %s",
+                        key, stringValue, ex.getMessage());
             }
         }
         return intValue;
@@ -1247,8 +1237,7 @@ public class AccountID
                 try {
                     sortedEncryptionProtocols.add(index, SrtpControlType.valueOf(name));
                 } catch (IllegalArgumentException exc) {
-                    logger.error("Failed to get SRTP control type for name: '" + name + "'," +
-                            " key: '" + e.getKey() + "'", exc);
+                    Timber.e(exc, "Failed to get SRTP control type for name: '%s', key: '%s'", name, e.getKey());
                 }
             }
         }

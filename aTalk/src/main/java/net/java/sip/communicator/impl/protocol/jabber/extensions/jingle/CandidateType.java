@@ -6,7 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jingle;
 
 /**
- * An enumeration containing allowed types for {@link CandidatePacketExtension}s.
+ * An enumeration containing allowed types for {@link CandidateExtensionElement}s.
  *
  * @author Emil Ivov
  */

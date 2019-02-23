@@ -5,12 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.ProtocolNames;
-import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 
-import org.atalk.util.Logger;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -21,6 +17,8 @@ import org.osgi.framework.ServiceRegistration;
 import java.util.Hashtable;
 import java.util.Map;
 
+import timber.log.Timber;
+
 /**
  * The Jabber implementation of the ProtocolProviderFactory.
  *
@@ -29,8 +27,6 @@ import java.util.Map;
  */
 public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
 {
-    private static final Logger logger = Logger.getLogger(ProtocolProviderFactoryJabberImpl.class);
-
     /**
      * Indicates if ICE should be used.
      */
@@ -132,7 +128,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
             service.initialize(jid, accountID);
             return service;
         } catch (XmppStringprepException e) {
-            logger.error(userID + " is not a valid JID", e);
+            Timber.e(e, userID + " is not a valid JID");
         }
         return null;
     }
@@ -198,7 +194,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
             EntityBareJid jid = JidCreate.entityBareFrom(accountID.getUserID());
             ((ProtocolProviderServiceJabberImpl) protocolProvider).initialize(jid, accountID);
         } catch (XmppStringprepException e) {
-            logger.error(accountID.getUserID() + " is not a valid JID", e);
+            Timber.e(e, accountID.getUserID() + " is not a valid JID");
             throw new IllegalArgumentException("UserID is not a valid JID");
         }
 

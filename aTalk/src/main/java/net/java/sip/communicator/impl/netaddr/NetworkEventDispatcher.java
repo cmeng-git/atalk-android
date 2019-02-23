@@ -15,10 +15,14 @@
  */
 package net.java.sip.communicator.impl.netaddr;
 
+import net.java.sip.communicator.service.netaddr.event.ChangeEvent;
+import net.java.sip.communicator.service.netaddr.event.NetworkConfigurationChangeListener;
+
+import org.atalk.android.plugin.timberlog.TimberLog;
+
 import java.util.*;
 
-import net.java.sip.communicator.service.netaddr.event.*;
-import net.java.sip.communicator.util.*;
+import timber.log.Timber;
 
 /**
  * The class implements a dispatch event thread. The thread will
@@ -30,27 +34,19 @@ import net.java.sip.communicator.util.*;
  * <p>
  *
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
-public class NetworkEventDispatcher
-    implements Runnable
+public class NetworkEventDispatcher implements Runnable
 {
-    /**
-     * Our class logger.
-     */
-    private static Logger logger =
-        Logger.getLogger(NetworkEventDispatcher.class);
-
     /**
      * Listeners for network configuration changes.
      */
-    private final List<NetworkConfigurationChangeListener> listeners =
-        new ArrayList<NetworkConfigurationChangeListener>();
+    private final List<NetworkConfigurationChangeListener> listeners = new ArrayList<>();
 
     /**
      * The events to dispatch.
      */
-    private Map<ChangeEvent, Integer> eventsToDispatch
-            = new LinkedHashMap<ChangeEvent, Integer>();
+    private Map<ChangeEvent, Integer> eventsToDispatch = new LinkedHashMap<>();
 
     /**
      * start/stop indicator.
@@ -64,18 +60,16 @@ public class NetworkEventDispatcher
 
     /**
      * Adds new <tt>NetworkConfigurationChangeListener</tt> which will be informed for network configuration changes.
+     *
      * @param listener the listener.
      */
     void addNetworkConfigurationChangeListener(NetworkConfigurationChangeListener listener)
     {
-        synchronized(listeners)
-        {
-            if(!listeners.contains(listener))
-            {
+        synchronized (listeners) {
+            if (!listeners.contains(listener)) {
                 listeners.add(listener);
 
-                if(dispatcherThread == null)
-                {
+                if (dispatcherThread == null) {
                     dispatcherThread = new Thread(this);
                     dispatcherThread.start();
                 }
@@ -85,19 +79,20 @@ public class NetworkEventDispatcher
 
     /**
      * Remove <tt>NetworkConfigurationChangeListener</tt>.
+     *
      * @param listener the listener.
      */
     void removeNetworkConfigurationChangeListener(
-        NetworkConfigurationChangeListener listener)
+            NetworkConfigurationChangeListener listener)
     {
-        synchronized(listeners)
-        {
+        synchronized (listeners) {
             listeners.remove(listener);
         }
     }
 
     /**
      * Fire ChangeEvent.
+     *
      * @param evt the event to fire.
      */
     protected void fireChangeEvent(ChangeEvent evt)
@@ -107,16 +102,15 @@ public class NetworkEventDispatcher
 
     /**
      * Fire ChangeEvent.
+     *
      * @param evt the event to fire.
      */
     protected void fireChangeEvent(ChangeEvent evt, int wait)
     {
-        synchronized(eventsToDispatch)
-        {
+        synchronized (eventsToDispatch) {
             eventsToDispatch.put(evt, wait);
             eventsToDispatch.notifyAll();
-            if(dispatcherThread == null && listeners.size() > 0)
-            {
+            if (dispatcherThread == null && listeners.size() > 0) {
                 dispatcherThread = new Thread(this);
                 dispatcherThread.start();
             }
@@ -125,19 +119,16 @@ public class NetworkEventDispatcher
 
     /**
      * Fire ChangeEvent.
+     *
      * @param evt the event to fire.
      */
     static void fireChangeEvent(ChangeEvent evt, NetworkConfigurationChangeListener listener)
     {
-        try
-        {
-            if(logger.isTraceEnabled())
-                logger.trace("firing event to " + listener + " evt=" + evt);
+        try {
+            Timber.log(TimberLog.FINER, "firing event to %s evt = %s", listener, evt);
             listener.configurationChanged(evt);
-        } catch (Throwable e)
-        {
-            logger
-                .warn("Error delivering event:" + evt + ", to:" + listener, e);
+        } catch (Throwable e) {
+            Timber.w(e, "Error delivering event: %s, to: %s", evt, listener);
         }
     }
 
@@ -146,23 +137,19 @@ public class NetworkEventDispatcher
      */
     public void run()
     {
-        try
-        {
+        try {
             stopped = false;
 
-            while(!stopped)
-            {
+            while (!stopped) {
                 Map.Entry<ChangeEvent, Integer> eventToProcess = null;
                 List<NetworkConfigurationChangeListener> listenersCopy;
 
-                synchronized(eventsToDispatch)
-                {
-                    if(eventsToDispatch.size() == 0)
-                    {
+                synchronized (eventsToDispatch) {
+                    if (eventsToDispatch.size() == 0) {
                         try {
                             eventsToDispatch.wait();
+                        } catch (InterruptedException iex) {
                         }
-                        catch (InterruptedException iex){}
                     }
 
                     //no point in dispatching if there's no one listening
@@ -176,36 +163,32 @@ public class NetworkEventDispatcher
 
                     Iterator<Map.Entry<ChangeEvent, Integer>> iter =
                             eventsToDispatch.entrySet().iterator();
-                    if(iter.hasNext())
-                    {
+                    if (iter.hasNext()) {
                         eventToProcess = iter.next();
                         iter.remove();
                     }
                 }
 
-                if(eventToProcess != null && listenersCopy != null)
-                {
-                    if(eventToProcess.getValue() > 0)
-                        synchronized(this)
-                        {
-                            try{
+                if (eventToProcess != null) {
+                    if (eventToProcess.getValue() > 0)
+                        synchronized (this) {
+                            try {
                                 wait(eventToProcess.getValue());
-                            }catch(Throwable t){}
+                            } catch (Throwable t) {
+                            }
                         }
 
-                    for (int i = 0; i < listenersCopy.size(); i++)
-                    {
+                    for (int i = 0; i < listenersCopy.size(); i++) {
                         fireChangeEvent(eventToProcess.getKey(),
-                                        listenersCopy.get(i));
+                                listenersCopy.get(i));
                     }
                 }
 
                 eventToProcess = null;
                 listenersCopy = null;
             }
-        } catch(Throwable t)
-        {
-            logger.error("Error dispatching thread ended unexpectedly", t);
+        } catch (Throwable t) {
+            Timber.e(t, "Error dispatching thread ended unexpectedly");
         }
     }
 
@@ -214,11 +197,9 @@ public class NetworkEventDispatcher
      */
     public void stop()
     {
-        synchronized(eventsToDispatch)
-        {
+        synchronized (eventsToDispatch) {
             stopped = true;
             eventsToDispatch.notifyAll();
-
             dispatcherThread = null;
         }
     }
@@ -229,8 +210,7 @@ public class NetworkEventDispatcher
      * otherwise.
      *
      * @return <tt>true</tt> if this dispatcher is currently running and
-     * delivering events when available and <tt>false</tt>
-     * otherwise.
+     * delivering events when available and <tt>false</tt> otherwise.
      */
     public boolean isRunning()
     {

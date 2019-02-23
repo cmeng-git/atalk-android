@@ -7,6 +7,7 @@ package net.java.sip.communicator.impl.protocol.jabber.extensions.jibri;
 
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -24,8 +25,8 @@ public class JibriIqProvider extends IQProvider<JibriIq>
      * {@inheritDoc}
      */
     @Override
-    public JibriIq parse(XmlPullParser parser, int initialDepth)
-            throws XmlPullParserException, IOException, SmackException
+    public JibriIq parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws XmlPullParserException, IOException
     {
         String namespace = parser.getNamespace();
 

@@ -5,8 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.jingle;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.*;
 import org.jxmpp.jid.Jid;
 
 import java.math.BigInteger;
@@ -87,12 +86,12 @@ public class JingleIQ extends IQ
     /**
      * Any session info extensions that this packet may contain.
      */
-    private SessionInfoPacketExtension sessionInfo;
+    private SessionInfoExtensionElement sessionInfo;
 
     /**
      * The list of "content" elements included in this IQ.
      */
-    private final List<ContentPacketExtension> contentList = new ArrayList<ContentPacketExtension>();
+    private final List<ContentExtensionElement> contentList = new ArrayList<ContentExtensionElement>();
 
     public JingleIQ()
     {
@@ -143,17 +142,17 @@ public class JingleIQ extends IQ
             xml.rightAngleBracket();
 
             // content
-            for (ContentPacketExtension cpe : contentList) {
-                xml.append(cpe.toXML(null));
+            for (ContentExtensionElement cpe : contentList) {
+                xml.append(cpe.toXML(XmlEnvironment.EMPTY));
             }
 
             // reason
             if (reason != null)
-                xml.append(reason.toXML(null));
+                xml.append(reason.toXML(XmlEnvironment.EMPTY));
 
             // session-info // XXX: this is RTP specific so we should probably handle it in a subclass
             if (sessionInfo != null)
-                xml.append(sessionInfo.toXML(null));
+                xml.append(sessionInfo.toXML(XmlEnvironment.EMPTY));
         }
         return xml;
     }
@@ -268,7 +267,7 @@ public class JingleIQ extends IQ
      *
      * @return a reference to this element's content list.
      */
-    public List<ContentPacketExtension> getContentList()
+    public List<ContentExtensionElement> getContentList()
     {
         synchronized (contentList) {
             return new ArrayList<>(contentList);
@@ -280,7 +279,7 @@ public class JingleIQ extends IQ
      *
      * @param contentPacket the content packet extension we'd like to add to this element's content list.
      */
-    public void addContent(ContentPacketExtension contentPacket)
+    public void addContent(ContentExtensionElement contentPacket)
     {
         synchronized (contentList) {
             this.contentList.add(contentPacket);
@@ -291,7 +290,7 @@ public class JingleIQ extends IQ
      * Determines if this packet contains a <tt>content</tt> with a child matching the specified
      * <tt>contentType</tt>. The method is meant to allow to easily determine the purpose of a
      * jingle IQ. A telephony initiation IQ would for example contain a <tt>content</tt> element of
-     * type {@link RtpDescriptionPacketExtension}.
+     * type {@link RtpDescriptionExtensionElement}.
      *
      * @param contentType the type of the content child we are looking for.
      * @return <tt>true</tt> if one of this IQ's <tt>content</tt> elements contains a child of the
@@ -311,10 +310,10 @@ public class JingleIQ extends IQ
      * @return a reference to the content element that has a child of the specified
      * <tt>contentType</tt> or <tt>null</tt> if no such child was found.
      */
-    public ContentPacketExtension getContentForType(Class<? extends ExtensionElement> contentType)
+    public ContentExtensionElement getContentForType(Class<? extends ExtensionElement> contentType)
     {
         synchronized (contentList) {
-            for (ContentPacketExtension content : contentList) {
+            for (ContentExtensionElement content : contentList) {
                 ExtensionElement child = content.getFirstChildOfType(contentType);
                 if (child != null)
                     return content;
@@ -324,16 +323,16 @@ public class JingleIQ extends IQ
     }
 
     /**
-     * Finds <tt>ContentPacketExtension</tt> that matches given <tt>contentName</tt>.
+     * Finds <tt>ContentExtensionElement</tt> that matches given <tt>contentName</tt>.
      *
      * @param contentName the name of the content for which extension will be returned
-     * @return <tt>ContentPacketExtension</tt> that matches given <tt>contentName</tt> or
+     * @return <tt>ContentExtensionElement</tt> that matches given <tt>contentName</tt> or
      * <tt>null</tt> if not found.
      */
-    public ContentPacketExtension getContentByName(String contentName)
+    public ContentExtensionElement getContentByName(String contentName)
     {
         synchronized (contentList) {
-            for (ContentPacketExtension content : contentList) {
+            for (ContentExtensionElement content : contentList) {
                 if (contentName.equals(content.getName())) {
                     return content;
                 }
@@ -345,21 +344,21 @@ public class JingleIQ extends IQ
     /**
      * Sets <tt>si</tt> as the session info extension for this packet.
      *
-     * @param si a {@link SessionInfoPacketExtension} that we'd like to add here.
+     * @param si a {@link SessionInfoExtensionElement} that we'd like to add here.
      */
-    public void setSessionInfo(SessionInfoPacketExtension si)
+    public void setSessionInfo(SessionInfoExtensionElement si)
     {
         this.sessionInfo = si;
     }
 
     /**
-     * Returns a {@link SessionInfoPacketExtension} if this <tt>JingleIQ</tt> contains one and
+     * Returns a {@link SessionInfoExtensionElement} if this <tt>JingleIQ</tt> contains one and
      * <tt>null</tt> otherwise.
      *
-     * @return a {@link SessionInfoPacketExtension} if this <tt>JingleIQ</tt> contains one and
+     * @return a {@link SessionInfoExtensionElement} if this <tt>JingleIQ</tt> contains one and
      * <tt>null</tt> otherwise.
      */
-    public SessionInfoPacketExtension getSessionInfo()
+    public SessionInfoExtensionElement getSessionInfo()
     {
         return this.sessionInfo;
     }

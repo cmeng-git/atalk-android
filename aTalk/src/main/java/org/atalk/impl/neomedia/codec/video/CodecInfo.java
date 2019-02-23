@@ -6,36 +6,28 @@
  */
 package org.atalk.impl.neomedia.codec.video;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import net.java.sip.communicator.util.Logger;
-
-import org.atalk.service.neomedia.codec.Constants;
-
 import android.annotation.TargetApi;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 import android.os.Build;
 
+import org.atalk.service.neomedia.codec.Constants;
+
+import java.util.*;
+
+import timber.log.Timber;
+
 /**
  * Class used to manage codecs information for <tt>MediaCodec</tt>.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public abstract class CodecInfo
 {
     /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(CodecInfo.class);
-
-    /**
-     * The mime type of H.264-encoded media data as defined by Android's
-     * <tt>MediaCodec</tt> class.
+     * The mime type of H.264-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
      */
     public static final String MEDIA_CODEC_TYPE_H264 = "video/avc";
 
@@ -46,8 +38,7 @@ public abstract class CodecInfo
     public static final String MEDIA_CODEC_TYPE_VP8 = "video/x-vnd.on2.vp8";
 
     /**
-     * The mime type of H.263-encoded media data as defined by Android's
-     * <tt>MediaCodec</tt> class.
+     * The mime type of H.263-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
      */
     public static final String MEDIA_CODEC_TYPE_H263 = "video/3gpp";
 
@@ -61,8 +52,7 @@ public abstract class CodecInfo
      */
     private static final List<CodecInfo> codecs = new ArrayList<CodecInfo>();
 
-    static
-    {
+    static {
 
         bannedYuvCodecs = new ArrayList<String>();
 
@@ -79,41 +69,21 @@ public abstract class CodecInfo
         // This one works only for res 176x144
         bannedYuvCodecs.add("OMX.google.vpx.encoder");
 
-        for (int codecIndex = 0, codecCount = MediaCodecList.getCodecCount();
-             codecIndex < codecCount;
-             codecIndex++)
-        {
-            MediaCodecInfo codecInfo
-                    = MediaCodecList.getCodecInfoAt(codecIndex);
-            logger.info("Discovered codec: "
-                                + codecInfo.getName() + "/"
-                                + Arrays.toString(
-                                        codecInfo.getSupportedTypes()));
+        for (int codecIndex = 0, codecCount = MediaCodecList.getCodecCount(); codecIndex < codecCount; codecIndex++) {
+            MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(codecIndex);
+            Timber.i("Discovered codec: %s/%s", codecInfo.getName(), Arrays.toString(codecInfo.getSupportedTypes()));
             CodecInfo ci = CodecInfo.getCodecInfo(codecInfo);
-            if(ci != null)
-            {
+            if (ci != null) {
                 codecs.add(ci);
                 ci.setBanned(bannedYuvCodecs.contains(ci.getName()));
             }
         }
-        logger.info(
-                "Selected H264 encoder: "
-                        + getCodecForType(MEDIA_CODEC_TYPE_H264, true));
-        logger.info(
-                "Selected H264 decoder: "
-                        + getCodecForType(MEDIA_CODEC_TYPE_H264, false));
-        logger.info(
-                "Selected H263 encoder: "
-                        + getCodecForType(MEDIA_CODEC_TYPE_H263, true));
-        logger.info(
-                "Selected H263 decoder: "
-                        + getCodecForType(MEDIA_CODEC_TYPE_H263, false));
-        logger.info(
-                "Selected VP8 encoder: "
-                        + getCodecForType(MEDIA_CODEC_TYPE_VP8, true));
-        logger.info(
-                "Selected VP8 decoder: "
-                        + getCodecForType(MEDIA_CODEC_TYPE_VP8, false));
+        Timber.i("Selected H264 encoder: %s", getCodecForType(MEDIA_CODEC_TYPE_H264, true));
+        Timber.i("Selected H264 decoder: %s", getCodecForType(MEDIA_CODEC_TYPE_H264, false));
+        Timber.i("Selected H263 encoder: %s", getCodecForType(MEDIA_CODEC_TYPE_H263, true));
+        Timber.i("Selected H263 decoder: %s", getCodecForType(MEDIA_CODEC_TYPE_H263, false));
+        Timber.i("Selected VP8 encoder: %s", getCodecForType(MEDIA_CODEC_TYPE_VP8, true));
+        Timber.i("Selected VP8 decoder: %s", getCodecForType(MEDIA_CODEC_TYPE_VP8, false));
     }
 
     /**
@@ -150,6 +120,7 @@ public abstract class CodecInfo
     /**
      * Creates new instance of <tt>CodecInfo</tt> that will encapsulate given
      * <tt>codecInfo</tt>.
+     *
      * @param codecInfo the codec info object to encapsulate.
      * @param mediaType media type of the codec
      */
@@ -161,14 +132,14 @@ public abstract class CodecInfo
 
         this.colors = new ArrayList<CodecColorFormat>();
         int[] colorFormats = caps.colorFormats;
-        for(int colorFormat : colorFormats)
-        {
+        for (int colorFormat : colorFormats) {
             colors.add(CodecColorFormat.fromInt(colorFormat));
         }
     }
 
     /**
      * Returns codec name that can be used to obtain <tt>MediaCodec</tt>.
+     *
      * @return codec name that can be used to obtain <tt>MediaCodec</tt>.
      */
     public String getName()
@@ -178,19 +149,18 @@ public abstract class CodecInfo
 
     /**
      * Finds the codec for given <tt>mimeType</tt>.
+     *
      * @param mimeType mime type of the codec.
      * @param isEncoder <tt>true</tt> if encoder should be returned or
-     *                  <tt>false</tt> for decoder.
+     * <tt>false</tt> for decoder.
      * @return the codec for given <tt>mimeType</tt>.
      */
     public static CodecInfo getCodecForType(String mimeType, boolean isEncoder)
     {
-        for(CodecInfo codec : codecs)
-        {
-            if( !codec.isBanned()
-                && codec.mediaType.equals(mimeType)
-                && codec.codecInfo.isEncoder() == isEncoder )
-            {
+        for (CodecInfo codec : codecs) {
+            if (!codec.isBanned()
+                    && codec.mediaType.equals(mimeType)
+                    && codec.codecInfo.isEncoder() == isEncoder) {
                 return codec;
             }
         }
@@ -199,6 +169,7 @@ public abstract class CodecInfo
 
     /**
      * Returns the list of detected codecs.
+     *
      * @return the list of detected codecs.
      */
     public static List<CodecInfo> getSupportedCodecs()
@@ -208,21 +179,22 @@ public abstract class CodecInfo
 
     /**
      * Returns the list of profiles supported.
+     *
      * @return the list of profiles supported.
      */
     protected abstract Profile[] getProfileSet();
 
     /**
      * Returns the list supported levels.
+     *
      * @return the list supported levels.
      */
     protected abstract Level[] getLevelSet();
 
     private Profile getProfile(int profileInt)
     {
-        for(Profile p : getProfileSet())
-        {
-            if(p.value == profileInt)
+        for (Profile p : getProfileSet()) {
+            if (p.value == profileInt)
                 return p;
         }
         return new Profile("Unknown", profileInt);
@@ -230,9 +202,8 @@ public abstract class CodecInfo
 
     private Level getLevel(int levelInt)
     {
-        for(Level l : getLevelSet())
-        {
-            if(l.value == levelInt)
+        for (Level l : getLevelSet()) {
+            if (l.value == levelInt)
                 return l;
         }
         return new Level("Unknown", levelInt);
@@ -240,12 +211,10 @@ public abstract class CodecInfo
 
     public ProfileLevel[] getProfileLevels()
     {
-        if(profileLevels == null)
-        {
+        if (profileLevels == null) {
             MediaCodecInfo.CodecProfileLevel[] plArray = caps.profileLevels;
             profileLevels = new ProfileLevel[plArray.length];
-            for(int i=0; i<profileLevels.length; i++)
-            {
+            for (int i = 0; i < profileLevels.length; i++) {
                 Profile p = getProfile(plArray[i].profile);
                 Level l = getLevel(plArray[i].level);
                 profileLevels[i] = new ProfileLevel(p, l);
@@ -258,19 +227,17 @@ public abstract class CodecInfo
     public String toString()
     {
         StringBuilder colorStr = new StringBuilder("\ncolors:\n");
-        for(int i=0; i<colors.size(); i++)
-        {
+        for (int i = 0; i < colors.size(); i++) {
             colorStr.append(colors.get(i));
-            if(i != colors.size()-1)
+            if (i != colors.size() - 1)
                 colorStr.append(", \n");
         }
 
         StringBuilder plStr = new StringBuilder("\nprofiles:\n");
         ProfileLevel[] profiles = getProfileLevels();
-        for(int i=0; i<profiles.length; i++)
-        {
+        for (int i = 0; i < profiles.length; i++) {
             plStr.append(profiles[i].toString());
-            if(i != profiles.length-1)
+            if (i != profiles.length - 1)
                 plStr.append(", \n");
         }
 
@@ -281,22 +248,16 @@ public abstract class CodecInfo
     public static CodecInfo getCodecInfo(MediaCodecInfo codecInfo)
     {
         String[] types = codecInfo.getSupportedTypes();
-        for(String type : types)
-        {
-            try
-            {
-                if(type.equals(MEDIA_CODEC_TYPE_H263))
+        for (String type : types) {
+            try {
+                if (type.equals(MEDIA_CODEC_TYPE_H263))
                     return new H263CodecInfo(codecInfo);
-                else if(type.equals(MEDIA_CODEC_TYPE_H264))
+                else if (type.equals(MEDIA_CODEC_TYPE_H264))
                     return new H264CodecInfo(codecInfo);
-                else if(type.equals(MEDIA_CODEC_TYPE_VP8))
+                else if (type.equals(MEDIA_CODEC_TYPE_VP8))
                     return new VP8CodecInfo(codecInfo);
-            }
-            catch(IllegalArgumentException e)
-            {
-                logger.error(
-                    "Error initializing codec info: "
-                        + codecInfo.getName() + ", type: " + type, e);
+            } catch (IllegalArgumentException e) {
+                Timber.e(e, "Error initializing codec info: %s, type: %s", codecInfo.getName(), type);
             }
         }
         return null;
@@ -324,20 +285,16 @@ public abstract class CodecInfo
 
     public String getLibjitsiEncoding()
     {
-        if(mediaType.equals(MEDIA_CODEC_TYPE_H263))
-        {
+        if (mediaType.equals(MEDIA_CODEC_TYPE_H263)) {
             return Constants.H263P;
         }
-        else if(mediaType.equals(MEDIA_CODEC_TYPE_H264))
-        {
+        else if (mediaType.equals(MEDIA_CODEC_TYPE_H264)) {
             return Constants.H264;
         }
-        else if(mediaType.equals(MEDIA_CODEC_TYPE_VP8))
-        {
+        else if (mediaType.equals(MEDIA_CODEC_TYPE_VP8)) {
             return Constants.VP8;
         }
-        else
-        {
+        else {
             return mediaType;
         }
     }
@@ -356,7 +313,7 @@ public abstract class CodecInfo
         @Override
         public String toString()
         {
-            return "P: "+profile.toString()+" L: "+level.toString();
+            return "P: " + profile.toString() + " L: " + level.toString();
         }
     }
 
@@ -375,7 +332,7 @@ public abstract class CodecInfo
         @Override
         public String toString()
         {
-            return name + "(0x"+Integer.toString(value,16)+")";
+            return name + "(0x" + Integer.toString(value, 16) + ")";
         }
     }
 
@@ -394,7 +351,7 @@ public abstract class CodecInfo
         @Override
         public String toString()
         {
-            return name + "(0x"+Integer.toString(value,16)+")";
+            return name + "(0x" + Integer.toString(value, 16) + ")";
         }
     }
 
@@ -403,34 +360,34 @@ public abstract class CodecInfo
         private final CodecInfo.Profile[] PROFILES = new CodecInfo.Profile[]
                 {
                         // from OMX_VIDEO_AVCPROFILETYPE
-                        new Profile("ProfileBaseline",0x01),
-                        new Profile("ProfileMain",0x02),
-                        new Profile("ProfileExtended",0x04),
-                        new Profile("ProfileHigh",0x08),
-                        new Profile("ProfileHigh10",0x10),
-                        new Profile("ProfileHigh422",0x20),
-                        new Profile("ProfileHigh444",0x40)
+                        new Profile("ProfileBaseline", 0x01),
+                        new Profile("ProfileMain", 0x02),
+                        new Profile("ProfileExtended", 0x04),
+                        new Profile("ProfileHigh", 0x08),
+                        new Profile("ProfileHigh10", 0x10),
+                        new Profile("ProfileHigh422", 0x20),
+                        new Profile("ProfileHigh444", 0x40)
                 };
 
         private final CodecInfo.Level[] LEVELS = new CodecInfo.Level[]
                 {
                         // from OMX_VIDEO_AVCLEVELTYPE
-                        new Level("Level1",0x01),
-                        new Level("Level1b",0x02),
-                        new Level("Level11",0x04),
-                        new Level("Level12",0x08),
-                        new Level("Level13",0x10),
-                        new Level("Level2",0x20),
-                        new Level("Level21",0x40),
-                        new Level("Level22",0x80),
-                        new Level("Level3",0x100),
-                        new Level("Level31",0x200),
-                        new Level("Level32",0x400),
-                        new Level("Level4",0x800),
-                        new Level("Level41",0x1000),
-                        new Level("Level42",0x2000),
-                        new Level("Level5",0x4000),
-                        new Level("Level51",0x8000)
+                        new Level("Level1", 0x01),
+                        new Level("Level1b", 0x02),
+                        new Level("Level11", 0x04),
+                        new Level("Level12", 0x08),
+                        new Level("Level13", 0x10),
+                        new Level("Level2", 0x20),
+                        new Level("Level21", 0x40),
+                        new Level("Level22", 0x80),
+                        new Level("Level3", 0x100),
+                        new Level("Level31", 0x200),
+                        new Level("Level32", 0x400),
+                        new Level("Level4", 0x800),
+                        new Level("Level41", 0x1000),
+                        new Level("Level42", 0x2000),
+                        new Level("Level5", 0x4000),
+                        new Level("Level51", 0x8000)
                 };
 
         public H264CodecInfo(MediaCodecInfo codecInfo)
@@ -456,28 +413,28 @@ public abstract class CodecInfo
         private final CodecInfo.Profile[] PROFILES = new CodecInfo.Profile[]
                 {
                         // from OMX_VIDEO_H263PROFILETYPE
-                        new Profile("Baseline",0x01),
-                        new Profile("H320Coding",0x02),
-                        new Profile("BackwardCompatible",0x04),
-                        new Profile("ISWV2",0x08),
-                        new Profile("ISWV3",0x10),
-                        new Profile("HighCompression",0x20),
-                        new Profile("Internet",0x40),
-                        new Profile("Interlace",0x80),
-                        new Profile("HighLatency",0x100)
+                        new Profile("Baseline", 0x01),
+                        new Profile("H320Coding", 0x02),
+                        new Profile("BackwardCompatible", 0x04),
+                        new Profile("ISWV2", 0x08),
+                        new Profile("ISWV3", 0x10),
+                        new Profile("HighCompression", 0x20),
+                        new Profile("Internet", 0x40),
+                        new Profile("Interlace", 0x80),
+                        new Profile("HighLatency", 0x100)
                 };
 
         private final CodecInfo.Level[] LEVELS = new CodecInfo.Level[]
                 {
                         // from OMX_VIDEO_H263LEVELTYPE
-                        new Level("Level10",0x01),
-                        new Level("Level20",0x02),
-                        new Level("Level30",0x04),
-                        new Level("Level40",0x08),
-                        new Level("Level45",0x10),
-                        new Level("Level50",0x20),
-                        new Level("Level60",0x40),
-                        new Level("Level70",0x80)
+                        new Level("Level10", 0x01),
+                        new Level("Level20", 0x02),
+                        new Level("Level30", 0x04),
+                        new Level("Level40", 0x08),
+                        new Level("Level45", 0x10),
+                        new Level("Level50", 0x20),
+                        new Level("Level60", 0x40),
+                        new Level("Level70", 0x80)
                 };
 
         public H263CodecInfo(MediaCodecInfo codecInfo)
@@ -509,10 +466,10 @@ public abstract class CodecInfo
         private final Level[] LEVELS = new Level[]
                 {
                         // from OMX_VIDEO_VP8LEVELTYPE
-                        new Level("Version0",0x01),
-                        new Level("Version1",0x02),
-                        new Level("Version2",0x04),
-                        new Level("Version3",0x08)
+                        new Level("Version0", 0x01),
+                        new Level("Version1", 0x02),
+                        new Level("Version2", 0x04),
+                        new Level("Version3", 0x08)
                 };
 
         public VP8CodecInfo(MediaCodecInfo codecInfo)

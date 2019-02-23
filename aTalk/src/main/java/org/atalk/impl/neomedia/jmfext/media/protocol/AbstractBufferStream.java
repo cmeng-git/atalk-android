@@ -14,25 +14,22 @@ import javax.media.Format;
 import javax.media.control.FormatControl;
 import javax.media.protocol.*;
 
+import timber.log.Timber;
+
 /**
  * Provides a base implementation of <tt>SourceStream</tt> in order to facilitate implementers by
  * taking care of boilerplate in the most common cases.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 abstract class AbstractBufferStream<T extends DataSource> extends AbstractControls
 		implements SourceStream
 {
 	/**
-	 * The <tt>Logger</tt> used by the <tt>AbstractBufferStream</tt> class and its instances.
-	 */
-	private static final Logger logger = Logger.getLogger(AbstractBufferStream.class);
-
-	/**
 	 * The (default) <tt>ContentDescriptor</tt> of the <tt>AbstractBufferStream</tt> instances.
 	 */
-	private static final ContentDescriptor CONTENT_DESCRIPTOR
-			= new ContentDescriptor(ContentDescriptor.RAW);
+	private static final ContentDescriptor CONTENT_DESCRIPTOR = new ContentDescriptor(ContentDescriptor.RAW);
 
 	/**
 	 * The <tt>DataSource</tt> which has created this instance and which contains it as one of its
@@ -77,7 +74,7 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 			stop();
 		}
 		catch (IOException ioex) {
-			logger.error("Failed to stop " + getClass().getSimpleName(), ioex);
+			Timber.e(ioex, "Failed to stop %s", getClass().getSimpleName());
 		}
 	}
 

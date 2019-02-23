@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.login.IBRCaptchaProcessDialog;
@@ -39,11 +38,6 @@ import javax.net.ssl.X509TrustManager;
  */
 public class LoginByPasswordStrategy implements JabberLoginStrategy
 {
-    /**
-     * Logger of this class
-     */
-    private static final Logger logger = Logger.getLogger(LoginByPasswordStrategy.class);
-
     private final AbstractProtocolProviderService protocolProvider;
     private final AccountID accountID;
     private String password;

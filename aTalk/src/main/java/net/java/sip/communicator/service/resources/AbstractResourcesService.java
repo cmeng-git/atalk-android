@@ -15,7 +15,6 @@
  */
 package net.java.sip.communicator.service.resources;
 
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.util.javax.swing.ImageIcon;
@@ -29,6 +28,8 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * The abstract class for ResourceManagementService. It listens for
  * {@link ResourcePack} that are registered and exposes them later for use by
@@ -36,11 +37,6 @@ import java.util.*;
  */
 public abstract class AbstractResourcesService implements ResourceManagementService, ServiceListener
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(AbstractResourcesService.class);
-
     /**
      * The OSGI BundleContext
      */
@@ -170,8 +166,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
         ResourcePack resourcePack = (ResourcePack) sService;
 
         if (event.getType() == ServiceEvent.REGISTERED) {
-            if (logger.isInfoEnabled())
-                logger.info("Resource registered " + resourcePack);
+            Timber.i("Resource registered %s", resourcePack);
 
             Map<String, String> resources = getResources(resourcePack);
 
@@ -284,7 +279,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
             serRefs = bundleContext.getServiceReferences(clazz, osgiFilter);
         } catch (InvalidSyntaxException ex) {
             serRefs = null;
-            logger.error("Could not obtain resource packs reference.", ex);
+            Timber.e(ex, "Could not obtain resource packs reference.");
         }
 
         if ((serRefs != null) && !serRefs.isEmpty()) {
@@ -415,7 +410,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     {
         String resourceString = doGetI18String(key, locale);
         if (resourceString == null) {
-            logger.warn("Missing resource for key: " + key);
+            Timber.w("Missing resource for key: %s", key);
             return '!' + key + '!';
         }
         if (params != null) {
@@ -447,7 +442,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
         String resourceString = doGetI18String(key, locale);
 
         if (resourceString == null) {
-            logger.warn("Missing resource for key: " + key);
+            Timber.w("Missing resource for key: %s", key);
             return 0;
         }
 
@@ -479,7 +474,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     {
         String resourceString = getSettingsString(key);
         if (resourceString == null) {
-            logger.warn("Missing resource for key: " + key);
+            Timber.w("Missing resource for key: %s", key);
             return 0;
         }
         return Integer.parseInt(resourceString);
@@ -495,7 +490,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     {
         String path = getSettingsString(urlKey);
         if (path == null || path.length() == 0) {
-            logger.warn("Missing resource for key: " + urlKey);
+            Timber.w("Missing resource for key: %s", urlKey);
             return null;
         }
         return settingsPack.getClass().getClassLoader().getResource(path);
@@ -524,7 +519,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     {
         String path = getSettingsString(streamKey);
         if (path == null || path.length() == 0) {
-            logger.warn("Missing resource for key: " + streamKey);
+            Timber.w("Missing resource for key: %s", streamKey);
             return null;
         }
         return resourceClass.getClassLoader().getResourceAsStream(path);
@@ -558,7 +553,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
             image = new byte[in.available()];
             in.read(image);
         } catch (IOException e) {
-            logger.error("Failed to load image:" + imageID, e);
+            Timber.e(e, "Failed to load image:%s", imageID);
         }
         return image;
     }

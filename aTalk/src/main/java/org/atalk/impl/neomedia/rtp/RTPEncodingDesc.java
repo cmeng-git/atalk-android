@@ -15,13 +15,17 @@
  */
 package org.atalk.impl.neomedia.rtp;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.neomedia.codec.*;
-import org.atalk.util.*;
+import org.atalk.service.neomedia.codec.Constants;
+import org.atalk.util.ArrayUtils;
+import org.atalk.util.RTPUtils;
 import org.ice4j.util.RateStatistics;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import timber.log.Timber;
 
 /**
  * Keeps track of how many channels receive it, its subjective quality index,
@@ -38,11 +42,6 @@ public class RTPEncodingDesc
      * The quality that is used to represent that forwarding is suspended.
      */
     public static final int SUSPENDED_INDEX = -1;
-
-    /**
-     * The {@link Logger} used by the {@link RTPEncodingDesc} class to print debug information.
-     */
-    private static final Logger logger = Logger.getLogger(RTPEncodingDesc.class);
 
     /**
      * A value used to designate the absence of height information.
@@ -320,14 +319,9 @@ public class RTPEncodingDesc
         }
 
         if (guessed) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Guessed frame boundaries ts=" + olderFrame.getTimestamp()
-                        + ",start=" + olderFrame.getStart()
-                        + ",end=" + olderFrame.getEnd()
-                        + ",ts=" + newerFrame.getTimestamp()
-                        + ",start=" + newerFrame.getStart()
-                        + ",end=" + newerFrame.getEnd());
-            }
+            Timber.d("Guessed frame boundaries ts=%d, start=%d, end=%d, ts=%d, start=%d, end=%d",
+                    olderFrame.getTimestamp(), olderFrame.getStart(), olderFrame.getEnd(),
+                    newerFrame.getTimestamp(), newerFrame.getStart(), newerFrame.getEnd());
         }
     }
 
@@ -613,14 +607,14 @@ public class RTPEncodingDesc
      * in the buffer passed in as a parameter, or null if there is no matching
      * {@link FrameDesc}.
      */
-//    FrameDesc findFrameDesc(byte[] buf, int off, int len)
-//    {
-//        long ts = RawPacket.getTimestamp(buf, off, len);
-//        synchronized (base.streamFrames)
-//        {
-//            return base.streamFrames.get(ts);
-//        }
-//    }
+    //    FrameDesc findFrameDesc(byte[] buf, int off, int len)
+    //    {
+    //        long ts = RawPacket.getTimestamp(buf, off, len);
+    //        synchronized (base.streamFrames)
+    //        {
+    //            return base.streamFrames.get(ts);
+    //        }
+    //    }
 
     /**
      * Finds the {@link FrameDesc} that matches the RTP packet specified
@@ -708,12 +702,8 @@ public class RTPEncodingDesc
     public void incrReceivers()
     {
         numOfReceivers.incrementAndGet();
-        if (logger.isTraceEnabled()) {
-            logger.trace("increment_receivers,hash="
-                    + track.getMediaStreamTrackReceiver().getStream().hashCode()
-                    + ",idx=" + idx
-                    + ",receivers=" + numOfReceivers);
-        }
+        Timber.log(TimberLog.FINER, "increment_receivers,hash = %s, idx = %s, receivers = %s",
+                track.getMediaStreamTrackReceiver().getStream().hashCode(), idx, numOfReceivers);
     }
 
     /**
@@ -722,11 +712,7 @@ public class RTPEncodingDesc
     public void decrReceivers()
     {
         numOfReceivers.decrementAndGet();
-        if (logger.isTraceEnabled()) {
-            logger.trace("decrement_receivers,hash="
-                    + track.getMediaStreamTrackReceiver().getStream().hashCode()
-                    + ",idx=" + idx
-                    + ",receivers=" + numOfReceivers);
-        }
+        Timber.log(TimberLog.FINER, "decrement_receivers,hash = %s, idx = %s, receivers = %s",
+                track.getMediaStreamTrackReceiver().getStream().hashCode(), idx, numOfReceivers);
     }
 }

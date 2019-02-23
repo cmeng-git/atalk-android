@@ -7,24 +7,20 @@ package net.java.sip.communicator.service.protocol;
 
 import net.java.sip.communicator.service.protocol.event.CallPeerAdapter;
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
-import net.java.sip.communicator.util.Logger;
 
 import java.util.Iterator;
+
+import timber.log.Timber;
 
 /**
  * An Abstract Operation Set defining option to unconditionally auto answer incoming calls.
  *
  * @author Damian Minkov
  * @author Vincent Lucas
+ * @author Eng Chong Meng
  */
 public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSetBasicAutoAnswer
 {
-    /**
-     * Our class logger.
-     */
-    private static final Logger logger = Logger
-            .getLogger(AbstractOperationSetBasicAutoAnswer.class);
-
     /**
      * The parent Protocol Provider.
      */
@@ -232,8 +228,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
                     opSetBasicTelephony.answerCallPeer(peer);
                 }
             } catch (OperationFailedException e) {
-                logger.error("Could not answer to : " + peer
-                        + " caused by the following exception: " + e);
+                Timber.e("Could not answer to: %s: Exception: %s", peer, e.getMessage());
             }
         }
 

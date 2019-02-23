@@ -15,9 +15,13 @@
  */
 package org.atalk.impl.neomedia.rtp;
 
-import org.atalk.impl.neomedia.*;
-import org.atalk.service.neomedia.*;
-import org.atalk.util.*;
+import org.atalk.impl.neomedia.MediaStreamImpl;
+import org.atalk.impl.neomedia.RTPPacketPredicate;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.util.Logger;
+import org.atalk.util.RTPUtils;
+
+import timber.log.Timber;
 
 /**
  * Describes a frame of an RTP stream.
@@ -25,15 +29,10 @@ import org.atalk.util.*;
  * TODO rename to LayerFrame.
  *
  * @author George Politis
+ * @author Eng Chong Meng
  */
 public class FrameDesc
 {
-    /**
-     * The {@link Logger} used by the {@link FrameDesc} class to print
-     * debug information.
-     */
-    private static final Logger logger = Logger.getLogger(FrameDesc.class);
-
     /**
      * The time in (millis) when the first packet of this frame was received.
      * Currently used in stream suspension detection.
@@ -250,6 +249,7 @@ public class FrameDesc
 
     /**
      * Determines whether a packet belongs to this frame or not.
+     *
      * @param pkt the {@link RawPacket} to determine whether or not it belongs
      * to this frame.
      * @return true if the {@link RawPacket} passed as an argument belongs to
@@ -258,15 +258,14 @@ public class FrameDesc
     public boolean matches(RawPacket pkt)
     {
         if (!RTPPacketPredicate.INSTANCE.test(pkt)
-            || ts != pkt.getTimestamp()
-            || minSeen == -1 /* <=> maxSeen == -1 */)
-        {
+                || ts != pkt.getTimestamp()
+                || minSeen == -1 /* <=> maxSeen == -1 */) {
             return false;
         }
 
         int seqNum = pkt.getSequenceNumber();
         return RTPUtils.getSequenceNumberDelta(seqNum, minSeen) >= 0
-            && RTPUtils.getSequenceNumberDelta(seqNum, maxSeen) <= 0;
+                && RTPUtils.getSequenceNumberDelta(seqNum, maxSeen) <= 0;
     }
 
 
@@ -284,49 +283,37 @@ public class FrameDesc
         int seqNum = pkt.getSequenceNumber();
 
         MediaStreamImpl stream = rtpEncoding.getMediaStreamTrack()
-            .getMediaStreamTrackReceiver().getStream();
+                .getMediaStreamTrackReceiver().getStream();
 
-        if (minSeen == -1 || RTPUtils.getSequenceNumberDelta(minSeen, seqNum) > 0)
-        {
+        if (minSeen == -1 || RTPUtils.getSequenceNumberDelta(minSeen, seqNum) > 0) {
             changed = true;
             minSeen = seqNum;
         }
 
-        if (maxSeen == -1 || RTPUtils.getSequenceNumberDelta(maxSeen, seqNum) < 0)
-        {
+        if (maxSeen == -1 || RTPUtils.getSequenceNumberDelta(maxSeen, seqNum) < 0) {
             changed = true;
             maxSeen = seqNum;
         }
 
-        if (end == -1 && stream.isEndOfFrame(pkt))
-        {
+        if (end == -1 && stream.isEndOfFrame(pkt)) {
             changed = true;
             end = seqNum;
         }
 
         boolean isSOF = stream.isStartOfFrame(pkt);
-        if (start == -1 && isSOF)
-        {
+        if (start == -1 && isSOF) {
             changed = true;
             start = seqNum;
         }
 
-        if (independent == null)
-        {
+        if (independent == null) {
             // XXX we check for key frame outside the above if statement
             // because for some codecs (e.g. for H264) we can detect keyframes
             // but we cannot detect the start of a frame.
             independent = stream.isKeyFrame(pkt);
-
-            if (independent)
-            {
-                if (logger.isInfoEnabled())
-                {
-                    logger.info("keyframe,stream=" + stream.hashCode()
-                        + " ssrc=" + rtpEncoding.getPrimarySSRC()
-                        + ",idx=" + rtpEncoding.getIndex()
-                        + "," + toString());
-                }
+            if (independent) {
+                Timber.i("keyframe,stream = %s ssrc = %s,idx = %s, %s",
+                        stream.hashCode(), rtpEncoding.getPrimarySSRC(), rtpEncoding.getIndex(), toString());
             }
         }
 
@@ -337,10 +324,10 @@ public class FrameDesc
     public String toString()
     {
         return "ts=" + ts +
-            ",independent=" + independent +
-            ",min_seen=" + minSeen +
-            ",max_seen=" + maxSeen +
-            ",start=" + start +
-            ",end=" + end;
+                ",independent=" + independent +
+                ",min_seen=" + minSeen +
+                ",max_seen=" + maxSeen +
+                ",start=" + start +
+                ",end=" + end;
     }
 }

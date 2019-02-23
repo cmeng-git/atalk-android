@@ -16,13 +16,14 @@
 package net.java.sip.communicator.impl.netaddr;
 
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.ice4j.ice.harvest.MappingCandidateHarvesters;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+
+import timber.log.Timber;
 
 /**
  * The activator manage the the bundles between OSGi framework and the Network address manager
@@ -32,11 +33,6 @@ import org.osgi.framework.BundleContext;
  */
 public class NetaddrActivator implements BundleActivator
 {
-    /**
-     * The logger for this class.
-     */
-    private static Logger logger = Logger.getLogger(NetworkAddressManagerServiceImpl.class);
-
     /**
      * The OSGi bundle context.
      */
@@ -61,38 +57,25 @@ public class NetaddrActivator implements BundleActivator
     public void start(BundleContext bundleContext)
             throws Exception
     {
-        try {
+        //in here we load static properties that should be else where
+        //System.setProperty("java.net.preferIPv4Stack", "false");
+        //System.setProperty("java.net.preferIPv6Addresses", "true");
 
-            logger.logEntry();
+        // cmeng: ice4j 2.0.0 settings for aTalk - must set this to true otherwise ice4j hangs
+        System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true");
+        //end ugly property set
 
-            //in here we load static properties that should be else where
-            //System.setProperty("java.net.preferIPv4Stack", "false");
-            //System.setProperty("java.net.preferIPv6Addresses", "true");
+        //keep a reference to the bundle context for later usage.
+        NetaddrActivator.bundleContext = bundleContext;
 
-            // cmeng: ice4j 2.0.0 settings for aTalk - must set this to true otherwise ice4j hangs
-            System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true");
-            //end ugly property set
+        //Create and start the network address manager.
+        networkAMS = new NetworkAddressManagerServiceImpl();
 
-            //keep a reference to the bundle context for later usage.
-            NetaddrActivator.bundleContext = bundleContext;
+        // give references to the NetworkAddressManager implementation
+        networkAMS.start();
 
-            //Create and start the network address manager.
-            networkAMS = new NetworkAddressManagerServiceImpl();
-
-            // give references to the NetworkAddressManager implementation
-            networkAMS.start();
-
-            if (logger.isInfoEnabled())
-                logger.info("Network Address Manager         ...[  STARTED ]");
-
-            bundleContext.registerService(
-                    NetworkAddressManagerService.class.getName(), networkAMS, null);
-
-            if (logger.isInfoEnabled())
-                logger.info("Network Address Manager Service ...[REGISTERED]");
-        } finally {
-            logger.logExit();
-        }
+        bundleContext.registerService(NetworkAddressManagerService.class.getName(), networkAMS, null);
+        Timber.i("Network Address Manager ICE Service ...[REGISTERED]");
     }
 
     /**
@@ -119,8 +102,7 @@ public class NetaddrActivator implements BundleActivator
     {
         if (networkAMS != null)
             networkAMS.stop();
-        if (logger.isInfoEnabled())
-            logger.info("Network Address Manager Service ...[STOPPED]");
+        Timber.d("Network Address Manager Service ...[STOPPED]");
 
         configurationService = null;
     }

@@ -17,6 +17,7 @@ package org.atalk.impl.neomedia.rtcp;
 
 import net.sf.fmj.media.rtp.*;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.RTCPPacketPredicate;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
@@ -25,7 +26,8 @@ import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
 import org.atalk.impl.neomedia.transform.*;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
-import org.atalk.util.*;
+import org.atalk.util.ArrayUtils;
+import org.atalk.util.RTCPUtils;
 import org.atalk.util.concurrent.PeriodicRunnable;
 import org.atalk.util.function.RTCPGenerator;
 
@@ -33,14 +35,16 @@ import java.util.*;
 
 import javax.media.rtp.ReceiveStream;
 
+import timber.log.Timber;
+
 /**
  * Terminates RRs and REMBs.
  *
  * @author George Politis
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
-public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
-        implements TransformEngine
+public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements TransformEngine
 {
     /**
      * The maximum number of RTCP report blocks that an RR can contain.
@@ -67,12 +71,6 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
      */
     private static final RTCPReportBlock[] MIN_RTCP_REPORT_BLOCKS_ARRAY
             = new RTCPReportBlock[MIN_RTCP_REPORT_BLOCKS];
-
-    /**
-     * The {@link Logger} used by the {@link RTCPReceiverFeedbackTermination}
-     * class to print debug information.
-     */
-    private static final Logger logger = Logger.getLogger(RTCPReceiverFeedbackTermination.class);
 
     /**
      * The {@link MediaStream} that owns this instance.
@@ -142,7 +140,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
         try {
             stream.injectPacket(pkt, false, this);
         } catch (TransmissionFailedException e) {
-            logger.error("transmission of an RTCP packet failed.", e);
+            Timber.e(e, "transmission of an RTCP packet failed.");
         }
     }
 
@@ -210,13 +208,13 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
     {
         // State validation.
         if (stream == null) {
-            logger.warn("stream is null.");
+            Timber.w("stream is null.");
             return MIN_RTCP_REPORT_BLOCKS_ARRAY;
         }
 
         StreamRTPManager streamRTPManager = stream.getStreamRTPManager();
         if (streamRTPManager == null) {
-            logger.warn("streamRTPManager is null.");
+            Timber.w("streamRTPManager is null.");
             return MIN_RTCP_REPORT_BLOCKS_ARRAY;
         }
 
@@ -231,7 +229,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
         Collection<ReceiveStream> receiveStreams = stream.getReceiveStreams();
 
         if (receiveStreams == null || receiveStreams.isEmpty()) {
-            logger.debug("There are no receive streams to build report blocks for.");
+            Timber.d("There are no receive streams to build report blocks for.");
             return MIN_RTCP_REPORT_BLOCKS_ARRAY;
         }
 
@@ -239,7 +237,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
         SSRCCache cache = rtpTranslator.getSSRCCache();
         // SSRCCache cache = stream.getRTPTranslator().getSSRCCache();
         if (cache == null) {
-            logger.info("cache is null.");
+            Timber.i("cache is null.");
             return MIN_RTCP_REPORT_BLOCKS_ARRAY;
         }
         // Create and populate the return object.
@@ -250,23 +248,21 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
             SSRCInfo info = cache.cache.get((int) receiveStream.getSSRC());
 
             if (info == null) {
-                logger.warn("We have a ReceiveStream but not an SSRCInfo for that ReceiveStream.");
+                Timber.w("We have a ReceiveStream but not an SSRCInfo for that ReceiveStream.");
                 continue;
             }
             if (!info.ours && info.sender) {
                 RTCPReportBlock reportBlock = info.makeReceiverReport(getLastProcessTime());
                 reportBlocks.add(reportBlock);
 
-                if (logger.isTraceEnabled()) {
-                    logger.trace(stream.getDiagnosticContext()
-                            .makeTimeSeriesPoint("created_report_block")
-                            .addField("rtcp_termination", hashCode())
-                            .addField("ssrc", reportBlock.getSSRC())
-                            .addField("num_lost", reportBlock.getNumLost())
-                            .addField("fraction_lost", reportBlock.getFractionLost() / 256D)
-                            .addField("jitter", reportBlock.getJitter())
-                            .addField("xtnd_seqnum", reportBlock.getXtndSeqNum()));
-                }
+                Timber.log(TimberLog.FINER, "%s", stream.getDiagnosticContext()
+                        .makeTimeSeriesPoint("created_report_block")
+                        .addField("rtcp_termination", hashCode())
+                        .addField("ssrc", reportBlock.getSSRC())
+                        .addField("num_lost", reportBlock.getNumLost())
+                        .addField("fraction_lost", reportBlock.getFractionLost() / 256D)
+                        .addField("jitter", reportBlock.getJitter())
+                        .addField("xtnd_seqnum", reportBlock.getXtndSeqNum()));
             }
         }
         return reportBlocks.toArray(new RTCPReportBlock[reportBlocks.size()]);
@@ -300,11 +296,8 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable
         // Exp & mantissa
         long bitrate = remoteBitrateEstimator.getLatestEstimate();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Estimated bitrate (bps): " + bitrate + ", dest: "
-                    + Arrays.toString(dest) + ", time (ms): "
-                    + System.currentTimeMillis());
-        }
+        Timber.d("Estimated bitrate (bps): %s, dest: %s, time (ms): %s",
+                bitrate, Arrays.toString(dest), System.currentTimeMillis());
         if (bitrate == -1) {
             return null;
         }

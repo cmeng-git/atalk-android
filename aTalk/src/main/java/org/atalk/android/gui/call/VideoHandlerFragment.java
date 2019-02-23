@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -37,6 +36,8 @@ import org.atalk.util.event.*;
 import java.util.Iterator;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Fragment takes care of handling call UI parts related to the video - both local and remote.
  *
@@ -46,11 +47,6 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class VideoHandlerFragment extends OSGiFragment implements View.OnLongClickListener
 {
-    /**
-     * The logger
-     */
-    protected final static Logger logger = Logger.getLogger(VideoHandlerFragment.class);
-
     /**
      * The callee avatar.
      */
@@ -205,7 +201,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     {
         super.onResume();
         if (call == null) {
-            logger.error("Call is null");
+            Timber.e("Call is null");
             return;
         }
 
@@ -258,7 +254,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             initRemoteVideo(callPeer);
         }
         else {
-            logger.error("There aren't any peers in the call");
+            Timber.e("There aren't any peers in the call");
         }
     }
 
@@ -276,14 +272,14 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             }
         }
         if (call == null) {
-            logger.error("Call is null");
+            Timber.e("Call is null");
             return;
         }
 
         removeVideoListener();
         if (call.getCallState() != CallState.CALL_ENDED) {
             wasVideoEnabled = isLocalVideoEnabled();
-            // logger.error("Was local enabled ? " + wasVideoEnabled);
+            // Timber.e("Was local enabled ? %s", wasVideoEnabled);
 
             /*
              * Disables local video to stop the camera and release the surface.
@@ -456,10 +452,10 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     private void setLocalVideoEnabled(boolean enable)
     {
         if (call == null) {
-            logger.error("Call instance is null(the call has ended already ?)");
+            Timber.e("Call instance is null(the call has ended already ?)");
             return;
         }
-        // logger.warn("Set local Video enable state: " + enable);
+        // Timber.w("Set local Video enable state: %s", enable);
         CallManager.enableLocalVideo(call, enable);
     }
 
@@ -597,7 +593,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             // null evaluates to false, so need to check here before warn
             // Report component is not compatible
             if (visualComponent != null) {
-                logger.error("Remote video component is not Android compatible.");
+                Timber.e("Remote video component is not Android compatible.");
             }
         }
 
@@ -608,7 +604,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             if (remoteVideoAccessor != null) {
                 View view = remoteVideoAccessor.getView(mCallback);
                 Dimension preferredSize = selectRemotePreferredSize(visualComponent, view, scvEvent);
-                logger.warn("Remote video content changed @ size: " + preferredSize.toString());
+                Timber.w("Remote video content changed @ size: %s", preferredSize.toString());
                 doAlignRemoteVideo(view, preferredSize);
             }
             /*
@@ -624,7 +620,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
              * remote video chane event.
              */
             else {
-                logger.warn("Remote video removed.");
+                Timber.w("Remote video removed.");
                 doAlignRemoteVideo(null, null);
             }
         });
@@ -689,7 +685,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             // GLSurfaceView frequent changes can cause error, so change only if absolutely necessary
             boolean sizeChange = remoteVideoContainer.setVideoPreferredSize(remoteVideoView, preferredSize);
             if (!sizeChange && !initOnPhoneOrientationChange) {
-                logger.info("No change in remote video viewContainer dimension!");
+                Timber.d("No change in remote video viewContainer dimension!");
                 return;
             }
             // reset the flag after use

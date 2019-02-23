@@ -31,7 +31,6 @@ import net.java.sip.communicator.service.contactsource.SourceContact;
 import net.java.sip.communicator.service.gui.ContactList;
 import net.java.sip.communicator.service.gui.UIContact;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -41,6 +40,8 @@ import org.atalk.android.gui.contactlist.model.*;
 
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * The invite dialog is the one shown when the user clicks on the conference button in the chat toolbar.
  *
@@ -49,10 +50,6 @@ import java.util.*;
 public class ChatInviteDialog extends Dialog
         implements OnChildClickListener, OnGroupClickListener, DialogInterface.OnShowListener
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(ChatInviteDialog.class);
     private static boolean MUC_OFFLINE_ALLOW = true;
 
     private ChatActivity mParent;
@@ -237,13 +234,13 @@ public class ChatInviteDialog extends Dialog
         menu.setHeaderTitle(clickedContact.getDisplayName());
         Contact contact = clickedContact.getDefaultContact();
         if (contact == null) {
-            logger.warn("No default contact for: " + clickedContact);
+            Timber.w("No default contact for: %s", clickedContact);
             return;
         }
 
         ProtocolProviderService pps = contact.getProtocolProvider();
         if (pps == null) {
-            logger.warn("No protocol provider found for: " + contact);
+            Timber.w("No protocol provider found for: %s", contact);
         }
     }
 

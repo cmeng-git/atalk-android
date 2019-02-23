@@ -19,19 +19,17 @@ import javax.media.control.FormatControl;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.BufferTransferHandler;
 
+import timber.log.Timber;
+
 /**
  * Implements a <tt>CaptureDevice</tt> which provides silence in the form of audio media.
  *
  * @author Lyubomir Marinov
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class DataSource extends AbstractPushBufferCaptureDevice
 {
-    /**
-     * The logger.
-     */
-    private final static Logger logger = Logger.getLogger(DataSource.class);
-
     /**
      * The compile-time flag which determines whether <tt>AudioSilenceCaptureDevice</tt> and, more
      * specifically, <tt>AudioSilenceStream</tt> are to be used by <tt>AudioMixer</tt> for the mere
@@ -253,7 +251,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                                 if (t instanceof ThreadDeath)
                                     throw (ThreadDeath) t;
                                 else {
-                                    logger.error(t, t);
+                                    Timber.e("%s", t.getMessage());
                                 }
                             }
                         }

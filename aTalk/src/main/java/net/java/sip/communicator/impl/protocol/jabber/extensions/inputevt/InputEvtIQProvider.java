@@ -5,8 +5,12 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
  * Implements an <tt>IQProvider</tt> which parses incoming <tt>InputEvtIQ</tt>s.
@@ -21,11 +25,11 @@ public class InputEvtIQProvider extends IQProvider<InputEvtIQ>
      *
      * @param parser XML parser
      * @return <tt>InputEvtIQ</tt>
-     * @throws Exception if something goes wrong during parsing
+     * @throws IOException, XmlPullParserException if something goes wrong during parsing
      */
     @Override
-    public InputEvtIQ parse(XmlPullParser parser, int depth)
-            throws Exception
+    public InputEvtIQ parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException
     {
         InputEvtIQ inputEvtIQ = new InputEvtIQ();
         InputEvtAction action = InputEvtAction.parseString(parser.getAttributeValue("",

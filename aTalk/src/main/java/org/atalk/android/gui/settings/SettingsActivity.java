@@ -13,7 +13,8 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.systray.PopupMessageHandler;
 import net.java.sip.communicator.service.systray.SystrayService;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
+import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -37,6 +38,8 @@ import java.util.*;
 
 import javax.media.MediaLocator;
 
+import timber.log.Timber;
+
 /**
  * <tt>Activity</tt> implements Jitsi settings.
  *
@@ -45,11 +48,6 @@ import javax.media.MediaLocator;
  */
 public class SettingsActivity extends OSGiActivity
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(SettingsActivity.class);
-
     // PreferenceScreen and PreferenceCategories
     static private final String PC_KEY_CALL = aTalkApp.getResString(R.string.pref_cat_settings_call);
     static private final String PC_KEY_AUDIO = aTalkApp.getResString(R.string.pref_cat_settings_audio);
@@ -363,7 +361,7 @@ public class SettingsActivity extends OSGiActivity
             ServiceReference<PopupMessageHandler>[] handlerRefs
                     = ServiceUtils.getServiceReferences(bc, PopupMessageHandler.class);
             if (handlerRefs == null) {
-                logger.warn("No popup handlers found");
+                Timber.w("No popup handlers found");
                 handlerRefs = new ServiceReference[0]; // Collections.emptyList();
             }
 
@@ -650,7 +648,7 @@ public class SettingsActivity extends OSGiActivity
                     ConfigurationUtils.setPopupHandlerConfig(handler);
                     PopupMessageHandler handlerInstance = getHandlerForClassName(handler);
                     if (handlerInstance == null) {
-                        logger.warn("No handler found for name: " + handler);
+                        Timber.w("No handler found for name: %s", handler);
                     }
                     else {
                         systray.setActivePopupMessageHandler(handlerInstance);

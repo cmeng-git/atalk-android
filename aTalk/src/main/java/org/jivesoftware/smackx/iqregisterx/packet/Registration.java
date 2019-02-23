@@ -61,7 +61,7 @@ public class Registration extends IQ {
     public static final String NAMESPACE = "jabber:iq:register";
     public static final String ELEMENT_REGISTERED = "registered";
 
-    private String instructions;
+    private final String instructions;
     private final Map<String, String> attributes;
 
     private final DataForm mDataForm;
@@ -156,7 +156,7 @@ public class Registration extends IQ {
             }
         }
         else if (mDataForm != null) {
-            xml.append(mDataForm.toXML(null));
+            xml.append(mDataForm.toXML(XmlEnvironment.EMPTY));
         }
         return xml;
     }
@@ -175,7 +175,7 @@ public class Registration extends IQ {
         }
 
         @Override
-        public CharSequence toXML(String enclosingNamespace) {
+        public CharSequence toXML(XmlEnvironment xmlEnvironment) {
             return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
 
@@ -183,5 +183,6 @@ public class Registration extends IQ {
         public String getNamespace() {
             return NAMESPACE;
         }
+
     }
 }

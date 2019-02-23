@@ -13,26 +13,22 @@
  */
 package org.atalk.impl.neomedia.codec;
 
-import org.atalk.util.Logger;
 import org.atalk.util.function.Predicate;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import timber.log.Timber;
 // import java.util.function.Predicate*; => need API-24
 
 /**
  * An <tt>Iterator</tt> that iterates RED blocks (primary and non-primary).
  *
  * @author George Politis
+ * @author Eng Chong Meng
  */
 public class REDBlockIterator implements Iterator<REDBlock>
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>SsrcRewritingEngine</tt> class and its instances to print
-     * debug information.
-     */
-    private static final Logger logger = Logger.getLogger(REDBlockIterator.class);
-
     /**
      * The byte buffer that holds the RED payload that this instance is dissecting.
      */
@@ -119,7 +115,7 @@ public class REDBlockIterator implements Iterator<REDBlock>
             }
 
             if (block == null) {
-                logger.warn("No primary block found.");
+                Timber.w("No primary block found.");
             }
 
             return block;
@@ -127,8 +123,7 @@ public class REDBlockIterator implements Iterator<REDBlock>
         else {
             if (buffer == null || offset < 0 || length < 1
                     || buffer.length < offset + length) {
-                logger.warn("Prevented an array out of bounds exception."
-                        + " offset: " + offset + ", length: " + length);
+                Timber.w("Prevented an array out of bounds exception. offset: %s, length: %d", offset, length);
                 return null;
             }
 
@@ -152,12 +147,12 @@ public class REDBlockIterator implements Iterator<REDBlock>
     public static boolean isMultiBlock(byte[] buffer, int offset, int length)
     {
         if (buffer == null || buffer.length == 0) {
-            logger.warn("The buffer appears to be empty.");
+            Timber.w("The buffer appears to be empty.");
             return false;
         }
 
         if (offset < 0 || buffer.length <= offset) {
-            logger.warn("Prevented array out of bounds exception.");
+            Timber.w("Prevented array out of bounds exception.");
             return false;
         }
 
@@ -195,7 +190,7 @@ public class REDBlockIterator implements Iterator<REDBlock>
         cntRemainingBlocks--;
 
         if (buffer == null || buffer.length <= offNextBlockHeader) {
-            logger.warn("Prevented an array out of bounds exception.");
+            Timber.w("Prevented an array out of bounds exception.");
             return null;
         }
 
@@ -204,7 +199,7 @@ public class REDBlockIterator implements Iterator<REDBlock>
         int blockLen;
         if (hasNext()) {
             if (buffer.length < offNextBlockHeader + 4) {
-                logger.warn("Prevented an array out of bounds exception.");
+                Timber.w("Prevented an array out of bounds exception.");
                 return null;
             }
 

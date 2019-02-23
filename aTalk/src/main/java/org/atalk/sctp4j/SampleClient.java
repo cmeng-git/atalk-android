@@ -15,7 +15,7 @@
  */
 package org.atalk.sctp4j;
 
-import org.atalk.util.Logger;
+import timber.log.Timber;
 
 /**
  * Sample SCTP client that uses UDP socket for transfers.
@@ -24,11 +24,6 @@ import org.atalk.util.Logger;
  */
 public class SampleClient
 {
-	/**
-	 * The logger.
-	 */
-	private final static Logger logger = Logger.getLogger(SampleClient.class);
-
 	public static void main(String[] args)
 			throws Exception
 	{
@@ -55,7 +50,7 @@ public class SampleClient
 		}
 
 		int sent = client.send(new byte[200], false, 0, 0);
-		logger.info("Client sent: " + sent);
+		Timber.i("Client sent: %s", sent);
 
 		Thread.sleep(4000);
 		client.close();

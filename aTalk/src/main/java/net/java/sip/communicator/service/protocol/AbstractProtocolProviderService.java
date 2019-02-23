@@ -7,11 +7,14 @@ package net.java.sip.communicator.service.protocol;
 
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
-import net.java.sip.communicator.util.Logger;
+
+import org.atalk.android.plugin.timberlog.TimberLog;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import timber.log.Timber;
 
 /**
  * Implements standard functionality of <tt>ProtocolProviderService</tt> in order to make it easier
@@ -22,12 +25,6 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public abstract class AbstractProtocolProviderService implements ProtocolProviderService
 {
-    /**
-     * The <tt>Logger</tt> instances used by the <tt>AbstractProtocolProviderService</tt> class and
-     * its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AbstractProtocolProviderService.class);
-
     /**
      * A list of all listeners registered for <tt>RegistrationStateChangeEvent</tt>s.
      */
@@ -137,12 +134,10 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     {
         // no change - throws exception to trace the root; otherwise too many unnecessary events
         if (newState == oldState) {
-            String msg = "The provider state unchange" +  newState + ". Reason: " + reason;
+            String msg = "The provider state unchange" + newState + ". Reason: " + reason;
             (new Exception(msg)).printStackTrace();
         }
-
-        if (logger.isDebugEnabled())
-            logger.debug("The provider state changed: " + oldState + " to: " + newState + ". Reason: " + reason);
+        Timber.d("The provider state changed: %s => %s. Reason: %s", oldState, newState, reason);
 
         RegistrationStateChangeEvent event
                 = new RegistrationStateChangeEvent(this, oldState, newState, reasonCode, reason);
@@ -151,9 +146,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
         synchronized (registrationListeners) {
             listeners = registrationListeners.toArray(new RegistrationStateChangeListener[registrationListeners.size()]);
         }
-
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching " + event + " to " + listeners.length + " listeners.");
+        Timber.d("Dispatching %s to %s listeners.", event, listeners.length);
 
         for (RegistrationStateChangeListener listener : listeners)
             try {
@@ -168,12 +161,11 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
                  */
                 if (throwable instanceof ThreadDeath)
                     throw (ThreadDeath) throwable;
-                logger.error("An error occurred while executing "
+                Timber.e(throwable, "An error occurred while executing "
                         + "RegistrationStateChangeListener#registrationStateChanged"
-                        + "(RegistrationStateChangeEvent) of " + listener, throwable);
+                        + "(RegistrationStateChangeEvent) of %s", listener);
             }
-        if (logger.isTraceEnabled())
-            logger.trace("Done.");
+        Timber.log(TimberLog.FINER, "Done.");
     }
 
     /**

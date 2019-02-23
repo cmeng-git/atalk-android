@@ -5,33 +5,21 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ProgressBar;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
-import com.akhgupta.easylocation.EasyLocationActivity;
-import com.akhgupta.easylocation.EasyLocationRequest;
-import com.akhgupta.easylocation.EasyLocationRequestBuilder;
+import com.akhgupta.easylocation.*;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.LatLng;
-
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatActivity;
 
+import timber.log.Timber;
+
 public class GeoLocation extends EasyLocationActivity
         implements View.OnClickListener, SeekBar.OnSeekBarChangeListener
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(GeoLocation.class);
-
     public static String SEND_LOCATION = "Send_Location";
     private static String SEND_CONT = "Send_Continuous";
 
@@ -100,18 +88,13 @@ public class GeoLocation extends EasyLocationActivity
         mSeekTimeInterval.setOnSeekBarChangeListener(this);
 
         // Long press for demo at 0m and 2S interval
-        mSendCont.setOnLongClickListener(new View.OnLongClickListener()
-        {
-            @Override
-            public boolean onLongClick(View v)
-            {
-                demo = true;
-                mGpsTrack.setChecked(true);
-                mSeekDistanceInterval.setProgress(0);
-                sendTimeInterval = 2;
-                mSendCont.performClick();
-                return true;
-            }
+        mSendCont.setOnLongClickListener(v -> {
+            demo = true;
+            mGpsTrack.setChecked(true);
+            mSeekDistanceInterval.setProgress(0);
+            sendTimeInterval = 2;
+            mSendCont.performClick();
+            return true;
         });
     }
 
@@ -154,26 +137,16 @@ public class GeoLocation extends EasyLocationActivity
      */
     private void performContButtonClick(final GeoLocation geoLoc, final Button sendButton)
     {
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try {
-                    // Wait for any in progress activity to complete
-                    Thread.sleep(1000);
-                    geoLoc.runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            logger.info("Send continuous location updates @ " + sendTimeInterval);
-                            sendButton.performClick();
-                        }
-                    });
-                } catch (Exception ex) {
-                    logger.error("Exception: ", ex);
-                }
+        new Thread(() -> {
+            try {
+                // Wait for any in progress activity to complete
+                Thread.sleep(1000);
+                geoLoc.runOnUiThread(() -> {
+                    Timber.i("Send continuous location updates @ %s", sendTimeInterval);
+                    sendButton.performClick();
+                });
+            } catch (Exception ex) {
+                Timber.e(ex);
             }
         }).start();
     }

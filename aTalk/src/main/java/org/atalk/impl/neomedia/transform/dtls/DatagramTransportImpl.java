@@ -16,20 +16,17 @@ import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.*;
 
+import timber.log.Timber;
+
 /**
  * Implements {@link DatagramTransport} in order to integrate the Bouncy Castle Crypto APIs in
  * libjitsi for the purposes of implementing DTLS-SRTP.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class DatagramTransportImpl implements DatagramTransport
 {
-	/**
-	 * The <tt>Logger</tt> used by the <tt>DatagramTransportImpl</tt> class and its instances to
-	 * print debug information.
-	 */
-	private static final Logger logger = Logger.getLogger(DatagramTransportImpl.class);
-
 	/**
 	 * The ID of the component which this instance works for/is associated with.
 	 */
@@ -163,8 +160,7 @@ public class DatagramTransportImpl implements DatagramTransport
 			default:
 				String msg = "componentID";
 				IllegalStateException ise = new IllegalStateException(msg);
-
-				logger.error(msg, ise);
+				Timber.e(ise, "%s", msg);
 				throw ise;
 		}
 
@@ -448,7 +444,7 @@ public class DatagramTransportImpl implements DatagramTransport
                     break;
 						default:
 							endOfFlight = true;
-                    		logger.warn("Unknown DTLS handshake message type: " + msg_type);
+                    		Timber.w("Unknown DTLS handshake message type: %s", msg_type);
 							break;
 					}
 					// Do fall through!

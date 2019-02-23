@@ -156,17 +156,12 @@ public abstract class PermissionUtils
 
             return new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.permission_rationale_location)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            // After click on Ok, request the permission.
-                            ActivityCompat.requestPermissions(getActivity(),
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, requestCode);
-                            // Do not finish the Activity while requesting permission.
-                            mFinishActivity = false;
-                        }
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        // After click on Ok, request the permission.
+                        ActivityCompat.requestPermissions(getActivity(),
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, requestCode);
+                        // Do not finish the Activity while requesting permission.
+                        mFinishActivity = false;
                     })
                     .setNegativeButton(android.R.string.cancel, null)
                     .create();

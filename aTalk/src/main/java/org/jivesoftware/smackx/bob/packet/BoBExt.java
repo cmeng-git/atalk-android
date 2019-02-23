@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bob.packet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.bob.BoBData;
@@ -152,7 +153,7 @@ public class BoBExt implements ExtensionElement
      * </data>
      */
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace)
+    public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute(ATTR_CID, boBHash.getCid());

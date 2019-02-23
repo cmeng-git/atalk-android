@@ -15,19 +15,17 @@ import java.io.*;
 import javax.media.*;
 import javax.media.format.AudioFormat;
 
+import timber.log.Timber;
+
 /**
  * Implementation of SCAudioClip using PortAudio.
  *
  * @author Damyian Minkov
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class AudioSystemClipImpl extends AbstractSCAudioClip
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AudioSystemClipImpl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AudioSystemClipImpl.class);
-
     /**
      * The default length of {@link #bufferData}.
      */
@@ -114,7 +112,7 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
         try {
             audioStream = audioSystem.getAudioInputStream(uri);
         } catch (IOException ioex) {
-            logger.error("Failed to get audio stream " + uri, ioex);
+            Timber.e(ioex, "Failed to get audio stream %s", uri);
         }
         if (audioStream == null)
             return false;
@@ -195,7 +193,7 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
                     do {
                         rendererProcess = renderer.process(rendererBuffer);
                         if (rendererProcess == Renderer.BUFFER_PROCESSED_FAILED) {
-                            logger.error("Failed to render audio stream " + uri);
+                            Timber.e("Failed to render audio stream %s", uri);
                             success = false;
                             break;
                         }
@@ -204,15 +202,15 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
                             == Renderer.INPUT_BUFFER_NOT_CONSUMED);
                 }
             } catch (IOException ioex) {
-                logger.error("Failed to read from audio stream " + uri, ioex);
+                Timber.e(ioex, "Failed to read from audio stream %s", uri);
                 success = false;
             } catch (ResourceUnavailableException ruex) {
-                logger.error("Failed to open " + renderer.getClass().getName(), ruex);
+                Timber.e(ruex, "Failed to open %s", renderer.getClass().getName());
                 success = false;
             }
         } catch (ResourceUnavailableException ruex) {
             if (resampler != null) {
-                logger.error("Failed to open " + resampler.getClass().getName(), ruex);
+                Timber.e("ruex, Failed to open %s", resampler.getClass().getName());
                 success = false;
             }
         } finally {

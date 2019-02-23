@@ -35,12 +35,13 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * The source contact service. This will show most recent messages.
@@ -60,11 +61,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     public static final String ENTITY_JID = "entityJid";    // contact Jid
     public static final String TIME_STAMP = "timeStamp";    // callEnd TimeStamp
     public static final String VERSION = "version";         // version
-
-    /**
-     * The logger for this class.
-     */
-    private static Logger logger = Logger.getLogger(MessageSourceService.class);
 
     /**
      * Whether to show recent messages in history or in contactList. By default we show it in
@@ -176,7 +172,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      */
     public void handleProviderAdded(final ProtocolProviderService provider, final boolean isStatusChanged)
     {
-        logger.info("Handle new provider added and status changed to online: " + provider.getAccountID().getUserID());
+        Timber.i("Handle new provider added and status changed to online: %s", provider.getAccountID().getUserID());
         new Thread(new Runnable()
         {
             @Override
@@ -360,7 +356,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
                         providerID, contactID, isSMSEnabled);
                 processEventObjects(res, cachedRecentMessages, isStatusChanged);
             } catch (Exception e) { // IndexOutOfBound
-                logger.warn("Get cache recent message exception for: " + contactID + " => " + e);
+                Timber.w("Get cache recent message exception for: %s => %s", contactID, e.getMessage());
             }
         }
         return cachedRecentMessages;

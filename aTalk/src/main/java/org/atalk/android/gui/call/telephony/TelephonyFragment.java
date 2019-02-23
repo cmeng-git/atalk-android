@@ -25,7 +25,6 @@ import android.widget.*;
 
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
@@ -52,9 +51,6 @@ import static net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTe
  */
 public class TelephonyFragment extends OSGiFragment
 {
-    /* The logger */
-    private final static Logger logger = Logger.getLogger(TelephonyFragment.class);
-
     private static String mLastJid = null;
     private static String mDomainJid;
 

@@ -19,7 +19,7 @@ package net.java.sip.communicator.util;
 
 import android.text.TextUtils;
 
-import org.minidns.dnsmessage.DnsMessage;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.minidns.dnsqueryresult.DnsQueryResult;
 import org.minidns.hla.ResolverApi;
 import org.minidns.hla.ResolverResult;
@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.net.*;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * Utility methods and fields to use when working with network addresses.
  *
@@ -38,11 +40,6 @@ import java.util.*;
  */
 public class NetworkUtils
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>NetworkUtils</tt> class for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(NetworkUtils.class);
-
     /**
      * A string containing the "any" local address for IPv6.
      */
@@ -109,8 +106,7 @@ public class NetworkUtils
     static {
         String prefer6 = System.getProperty("java.net.preferIPv6Addresses");
         String prefer4 = System.getProperty("java.net.preferIPv4Stack");
-        logger.info("java.net.preferIPv6Addresses=" + prefer6);
-        logger.info("java.net.preferIPv4Stack=" + prefer4);
+        Timber.i("java.net.preferIPv6Addresses=%s; java.net.preferIPv4Stack=%s", prefer6, prefer4);
     }
 
     /**
@@ -162,7 +158,7 @@ public class NetworkUtils
             ResolverResult<SRV> result = ResolverApi.INSTANCE.resolve(domain, SRV.class);
             Set<SRV> records = result.getAnswersOrEmptySet();
             if (!records.isEmpty()) {
-                SRV[] srvRecords = records.toArray(new SRV[records.size()]);
+                SRV[] srvRecords = records.toArray(new SRV[0]);
                 // Sort the SRV RRs by priority (lower is preferred) and weight.
                 sortSrvRecord(srvRecords);
                 return srvRecords;
@@ -171,7 +167,7 @@ public class NetworkUtils
                 return null;
             }
         } catch (IOException e) {
-            logger.error("No SRV record found for " + domain + ": " + e.getMessage());
+            Timber.e("No SRV record found for %s: %s", domain, e.getMessage());
             throw new IOException(e);
         }
     }
@@ -209,12 +205,12 @@ public class NetworkUtils
      */
     public static String[][] getNAPTRRecords(String domain)
     {
-        List<Record<? extends Data>> records = null;
+        List<Record<? extends Data>> records;
         try {
             DnsQueryResult dnsQueryResult = ResolverApi.INSTANCE.getClient().query(domain, TYPE.NAPTR);
             records = dnsQueryResult.query.answerSection;
         } catch (IOException tpe) {
-            logger.trace("No A record found for " + domain);
+            Timber.log(TimberLog.FINER, "No A record found for " + domain);
             // throw new ParseException(tpe.getMessage(), 0);
             return null;
         }
@@ -249,7 +245,7 @@ public class NetworkUtils
             {
                 // Sorts NAPTR records by ORDER (low number first), PREFERENCE (low number first) and
                 // PROTOCOL (0-TLS, 1-TCP, 2-UDP).
-                public int compare(String array1[], String array2[])
+                public int compare(String[] array1, String[] array2)
                 {
                     // First tries to define the priority with the NAPTR order.
                     int order = Integer.parseInt(array1[0]) - Integer.parseInt(array2[0]);
@@ -269,8 +265,7 @@ public class NetworkUtils
 
             String[][] arrayResult = new String[recVals.size()][4];
             arrayResult = recVals.toArray(arrayResult);
-            if (logger.isTraceEnabled())
-                logger.trace("NAPTRs for " + domain + " = " + Arrays.toString(arrayResult));
+            Timber.log(TimberLog.FINER, "NAPTRs for " + domain + " = " + Arrays.toString(arrayResult));
             return arrayResult;
         }
         return null;
@@ -343,7 +338,7 @@ public class NetworkUtils
         }
 
         // if not IPv6, then parse as IPv4 address else throws
-        InetAddress inetAddress = null;
+        InetAddress inetAddress;
         try {
             inetAddress = InetAddressUtil.ipv6From(hostAddress);
         } catch (IllegalArgumentException e) {
@@ -377,10 +372,10 @@ public class NetworkUtils
             return inetSocketAddresses;
         }
         else
-            logger.info("Unable to create InetAddress for <" + domain + ">; Try using A/AAAA RR.");
+            Timber.i("Unable to create InetAddress for <%s>; Try using A/AAAA RR.", domain);
 
-        ResolverResult<A> resultA = null;
-        ResolverResult<AAAA> resultAAAA = null;
+        ResolverResult<A> resultA;
+        ResolverResult<AAAA> resultAAAA;
         boolean v6lookup = Boolean.getBoolean("java.net.preferIPv6Addresses");
 
         for (int i = 0; i < 2; i++) {
@@ -428,7 +423,7 @@ public class NetworkUtils
             inetSocketAddresses.add(new InetSocketAddress(InetAddress.getByAddress(domain, address), port));
             return inetSocketAddresses;
         } catch (IllegalArgumentException e) {
-            logger.error("Unable to create InetAddress for <" + domain + ">", e);
+            Timber.e(e, "Unable to create InetAddress for <%s>", domain);
         }
 
         ResolverResult<A> result = ResolverApi.INSTANCE.resolve(domain, A.class);
@@ -462,7 +457,7 @@ public class NetworkUtils
             inetSocketAddresses.add(new InetSocketAddress(InetAddress.getByAddress(domain, address), port));
             return inetSocketAddresses;
         } catch (IllegalArgumentException e) {
-            logger.error("Unable to create InetAddress for <" + domain + ">", e);
+            Timber.e(e, "Unable to create InetAddress for <%s>", domain);
         }
 
         ResolverResult<AAAA> result = ResolverApi.INSTANCE.resolve(domain, AAAA.class);
@@ -497,8 +492,7 @@ public class NetworkUtils
         try {
             ifaces = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Couldn't retrieve local interfaces.", e);
+            Timber.d(e, "Couldn't retrieve local interfaces.");
             return IN4_ADDR_ANY;
         }
 
@@ -548,7 +542,7 @@ public class NetworkUtils
                     inetAddress = InetAddressUtil.ipv4From(address);
                     return (inetAddress != null);
                 } catch (IllegalArgumentException e4) {
-                    logger.warn("The given IP address is an unkownHost: " + address);
+                    Timber.w("The given IP address is an unkownHost: %s", address);
                     return false;
                 }
             }
@@ -617,13 +611,7 @@ public class NetworkUtils
     private static void sortSrvRecord(SRV[] srvRecords)
     {
         // Sort the SRV RRs by priority (lower is preferred).
-        Arrays.sort(srvRecords, new Comparator<SRV>()
-        {
-            public int compare(SRV obj1, SRV obj2)
-            {
-                return (obj1.priority - obj2.priority);
-            }
-        });
+        Arrays.sort(srvRecords, (obj1, obj2) -> (obj1.priority - obj2.priority));
 
         // Sort the SRV RRs by weight (larger weight has a proportionately higher probability of being selected).
         sortSrvRecordByWeight(srvRecords);

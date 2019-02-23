@@ -23,6 +23,8 @@ import javax.media.protocol.DataSource;
 import javax.media.rtp.*;
 import javax.media.rtp.event.ReceiveStreamEvent;
 
+import timber.log.Timber;
+
 /**
  * Implements <tt>RTPTranslator</tt> which represents an RTP translator which forwards RTP and RTCP
  * traffic between multiple <tt>MediaStream</tt>s.
@@ -260,7 +262,7 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
 				catch (NullPointerException npe) {
 					// Refer to MediaStreamImpl#stopSendStreams(Iterable<SendStream>, boolean) for
 					// an explanation about the swallowing of the exception.
-					LOGGER.error("Failed to close send stream", npe);
+					Timber.e(npe, "Failed to close send stream");
 				}
 				sendStreams.remove(sendStreamDesc);
 			}
@@ -453,7 +455,7 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
 				else {
 					// RTPManager.dispose() often throws at least a
 					// NullPointerException in relation to some RTP BYE.
-					LOGGER.error("Failed to dispose of RTPManager", t);
+					Timber.e(t,"Failed to dispose of RTPManager");
 				}
 			}
 

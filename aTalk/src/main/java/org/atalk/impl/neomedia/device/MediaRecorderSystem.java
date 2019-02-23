@@ -11,8 +11,6 @@ import android.content.res.Resources;
 import android.hardware.Camera;
 import android.support.v4.content.ContextCompat;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.util.java.awt.Dimension;
@@ -27,6 +25,8 @@ import java.util.*;
 
 import javax.media.*;
 
+import timber.log.Timber;
+
 /**
  * Discovers and registers <tt>MediaRecorder</tt> capture devices with FMJ.
  *
@@ -35,12 +35,6 @@ import javax.media.*;
  */
 public class MediaRecorderSystem extends DeviceSystem
 {
-    /**
-     * The logger used by the <tt>MediaRecorderSystem</tt> class and its instances for logging
-     * output.
-     */
-    private static final Logger logger = Logger.getLogger(MediaRecorderSystem.class);
-
     private static final String CAMERA_FACING_BACK = "CAMERA_FACING_BACK";
 
     private static final String CAMERA_FACING_FRONT = "CAMERA_FACING_FRONT";
@@ -94,7 +88,7 @@ public class MediaRecorderSystem extends DeviceSystem
 
         if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
                 Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            logger.warn("Camera Init has no permission to start!");
+            Timber.w("Camera Init has no permission to start!");
             return;
         }
 
@@ -136,14 +130,14 @@ public class MediaRecorderSystem extends DeviceSystem
                      * logcat and not throw an exception (in DataSource.doStart()).
                      */
                     supportedSizes = params.getSupportedPreviewSizes();
-                    if (logger.isDebugEnabled() && (supportedSizes != null)) {
-                        logger.debug("Preview sizes supported by " + locator + ": "
-                                + CameraUtils.cameraSizesToString(supportedSizes));
+                    if (supportedSizes != null) {
+                        Timber.d("Preview sizes supported by %s: %s",
+                                locator, CameraUtils.cameraSizesToString(supportedSizes));
                     }
                 }
-                else if (logger.isDebugEnabled()) {
-                    logger.debug("Video sizes supported by " + locator + ": "
-                            + CameraUtils.cameraSizesToString(supportedSizes));
+                else {
+                    Timber.d("Video sizes supported by %s: %s",
+                            locator, CameraUtils.cameraSizesToString(supportedSizes));
                 }
                 if (supportedSizes != null) {
                     // Keep a copy of the video resolution supportSizes for cameraId
@@ -157,9 +151,7 @@ public class MediaRecorderSystem extends DeviceSystem
                             }
                         }
                     }
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Sizes supported by " + locator + ": " + dimensionsToString(sizes));
-                    }
+                    Timber.d("Sizes supported by %s: %s", locator, dimensionsToString(sizes));
                 }
             } finally {
                 camera.release();

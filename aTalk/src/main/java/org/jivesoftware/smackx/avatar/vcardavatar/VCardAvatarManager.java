@@ -24,8 +24,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.listener.VCardAvatarListener;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
@@ -45,7 +44,7 @@ import java.util.logging.Logger;
  *
  * @author Eng Chong Meng
  */
-public class VCardAvatarManager extends AvatarManager implements StanzaListener
+public class VCardAvatarManager extends AvatarManager
 {
     /**
      * The logger.
@@ -85,6 +84,14 @@ public class VCardAvatarManager extends AvatarManager implements StanzaListener
      */
     private static final StanzaFilter PRESENCES_WITH_VCARD
             = new AndFilter(new StanzaTypeFilter(Presence.class), new StanzaExtensionFilter(ELEMENT, NAMESPACE));
+
+//    /**
+//     * Creates a filter to only listen to presence stanza with the element name "x" but without the
+//     * namespace "vcard-temp:x:update".
+//     * cmeng (20190298) - ejabberd will auto add - so remove
+//     */
+//    private static final StanzaFilter PRESENCES_WITHOUT_VCARD
+//            = new AndFilter(PresenceTypeFilter.AVAILABLE, new NotFilter(new StanzaExtensionFilter(ELEMENT, NAMESPACE)));
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener()
@@ -142,24 +149,15 @@ public class VCardAvatarManager extends AvatarManager implements StanzaListener
 
         /*
          * The Presence stanza interceptor with type=available to insert VCardTempXUpdate element
+         * cmeng (20190298) - ejabberd will auto add - so remove
          */
-        // if (!isUserAvatarEnable) {
-        connection.addStanzaInterceptor(this, PresenceTypeFilter.AVAILABLE);
-        //}
+        // connection.addStanzaInterceptor(this, PRESENCES_WITHOUT_VCARD);
 
         /*
          * Listen for remote presence stanzas with the vCardTemp:x:update extension. If we
          * receive such a stanza, process the stanza and acts if necessary
          */
-        connection.addAsyncStanzaListener(new StanzaListener()
-        {
-            @Override
-            public void processStanza(Stanza stanza)
-            {
-                processContactPhotoPresence(stanza);
-            }
-
-        }, PRESENCES_WITH_VCARD);
+        connection.addAsyncStanzaListener(stanza -> processContactPhotoPresence(stanza), PRESENCES_WITH_VCARD);
     }
 
     /**
@@ -283,19 +281,19 @@ public class VCardAvatarManager extends AvatarManager implements StanzaListener
                  */
                 if (mAutoDownload) {
                     mVCard = downloadVCard(jidFrom.asBareJid());
+
+                    if (mVCard.getAvatar() != null) {
+                        LOGGER.log(Level.INFO, "Presence with new avatarHash received (old => new) from: "
+                                + jidFrom + "\n" + currentAvatarHash + "\n" + avatarHash);
+                        fireListeners(jidFrom, avatarHash);
+                    }
+                    else {
+                        LOGGER.warning("vCard contains no avatar information!");
+                    }
                 }
                 else {
                     // Invalid mVcard on new avatarHash received
                     mVCard = null;
-                }
-
-                if (mVCard.getAvatar() != null) {
-                    LOGGER.log(Level.INFO, "Presence with new avatarHash received (old => new) from: "
-                            + jidFrom + "\n" + currentAvatarHash + "\n" + avatarHash);
-                    fireListeners(jidFrom, avatarHash);
-                }
-                else {
-                    LOGGER.warning("vCard contains no avatar information!");
                 }
             }
         }
@@ -303,19 +301,23 @@ public class VCardAvatarManager extends AvatarManager implements StanzaListener
 
     /* ===================================================================================== */
 
-    /**
-     * Intercepts sent presence packets in order to add VCardTempXUpdate extension.
-     * Remove existing x-extension if any before adding
-     *
-     * @param stanza The sent presence packet.
-     */
-    @Override
-    public void processStanza(Stanza stanza)
-            throws SmackException.NotConnectedException
-    {
-        stanza.removeExtension(vCardTempXUpdate);
-        stanza.addExtension(vCardTempXUpdate);
-    }
+//    /**
+//     * Intercepts sent presence packets in order to add VCardTempXUpdate extension.
+//     * cmeng (20190298) - ejabberd will auto add - so remove
+//     *
+//     * @param stanza The sent presence packet.
+//     */
+//    @Override
+//    public void processStanza(Stanza stanza)
+//    {
+//        // Do not add an elementExtension without hash value
+//        if (vCardTempXUpdate.getAvatarHash() != null) {
+//            LOGGER.warning("Stanza EE before add: " + stanza.toXML(XmlEnvironment.EMPTY) + "\n" + stanza.getExtensions()
+//                    + "\n" + vCardTempXUpdate.toXML(XmlEnvironment.EMPTY));
+//            stanza.addExtension(vCardTempXUpdate);
+//            LOGGER.warning("New Stanza EE after add: " + stanza.toXML(XmlEnvironment.EMPTY) + "\n"  + stanza.getExtensions());
+//        }
+//    }
 
     /* ===================================================================================== */
 

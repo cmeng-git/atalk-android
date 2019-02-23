@@ -14,12 +14,10 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package net.java.sip.communicator.impl.protocol.jabber.extensions.rayo;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultPacketExtensionProvider;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.DefaultExtensionElementProvider;
 
 import org.atalk.util.StringUtils;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jxmpp.jid.Jid;
@@ -56,19 +54,19 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         // <hangup>
         ProviderManager.addIQProvider(HangUp.ELEMENT_NAME, NAMESPACE, this);
         // <end> presence extension
-        ProviderManager.addExtensionProvider(EndExtension.ELEMENT_NAME, NAMESPACE,
-                new DefaultPacketExtensionProvider<>(EndExtension.class));
+        ProviderManager.addExtensionProvider(EndExtensionElement.ELEMENT_NAME, NAMESPACE,
+                new DefaultExtensionElementProvider<>(EndExtensionElement.class));
         // <header> extension
-        ProviderManager.addExtensionProvider(HeaderExtension.ELEMENT_NAME, "",
-                new DefaultPacketExtensionProvider<>(HeaderExtension.class));
+        ProviderManager.addExtensionProvider(HeaderExtensionElement.ELEMENT_NAME, "",
+                new DefaultExtensionElementProvider<>(HeaderExtensionElement.class));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public RayoIq parse(XmlPullParser parser, int initialDepth)
-        throws Exception
+    public RayoIq parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException
     {
         String namespace = parser.getNamespace();
 
@@ -113,8 +111,8 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         boolean done = false;
-        HeaderExtension header = null;
-        // ReasonExtension reason = null;
+        HeaderExtensionElement header = null;
+        // ReasonExtensionElement reason = null;
 
         while (!done) {
             switch (parser.next()) {
@@ -123,7 +121,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
                     if (rootElement.equals(name)) {
                         done = true;
                     }
-                    else if (HeaderExtension.ELEMENT_NAME.equals(name)) {
+                    else if (HeaderExtensionElement.ELEMENT_NAME.equals(name)) {
                         if (header != null) {
                             iq.addExtension(header);
                             header = null;
@@ -139,13 +137,13 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
                 case XmlPullParser.START_TAG: {
                     String name = parser.getName();
 
-                    if (HeaderExtension.ELEMENT_NAME.equals(name)) {
-                        header = new HeaderExtension();
+                    if (HeaderExtensionElement.ELEMENT_NAME.equals(name)) {
+                        header = new HeaderExtensionElement();
                         String nameAttr = parser.getAttributeValue("",
-                                HeaderExtension.NAME_ATTR_NAME);
+                                HeaderExtensionElement.NAME_ATTR_NAME);
                         header.setName(nameAttr);
                         String valueAttr = parser.getAttributeValue("",
-                                HeaderExtension.VALUE_ATTR_NAME);
+                                HeaderExtensionElement.VALUE_ATTR_NAME);
                         header.setValue(valueAttr);
                     }
                     /*
@@ -204,15 +202,15 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
          */
         public String getHeader(String name)
         {
-            HeaderExtension header = findHeader(name);
+            HeaderExtensionElement header = findHeader(name);
             return header != null ? header.getValue() : null;
         }
 
-        private HeaderExtension findHeader(String name)
+        private HeaderExtensionElement findHeader(String name)
         {
             for (ExtensionElement ext : getExtensions()) {
-                if (ext instanceof HeaderExtension) {
-                    HeaderExtension header = (HeaderExtension) ext;
+                if (ext instanceof HeaderExtensionElement) {
+                    HeaderExtensionElement header = (HeaderExtensionElement) ext;
 
                     if (name.equals(header.getName()))
                         return header;
@@ -229,10 +227,10 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
          */
         public void setHeader(String name, String value)
         {
-            HeaderExtension headerExt = findHeader(name);
+            HeaderExtensionElement headerExt = findHeader(name);
 
             if (headerExt == null) {
-                headerExt = new HeaderExtension();
+                headerExt = new HeaderExtensionElement();
                 headerExt.setName(name);
                 addExtension(headerExt);
             }
@@ -455,7 +453,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
      * Rayo hangup IQ is sent by the controlling agent to tell the server that call whose resource
      * is mentioned in IQ's 'to' attribute should be terminated. Server immediately replies with
      * result IQ which means that hangup operation is now scheduled. After it is actually executed
-     * presence indication with {@link EndExtension} is sent through the presence to confirm the operation.
+     * presence indication with {@link EndExtensionElement} is sent through the presence to confirm the operation.
      */
     public static class HangUp extends RayoIq
     {

@@ -22,12 +22,15 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactlist.event.MetaContactModifiedEvent;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.AvatarCacheUtils;
+import net.java.sip.communicator.util.DataObject;
 
 import org.json.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import timber.log.Timber;
 
 /**
  * A default implementation of the <code>MetaContact</code> interface.
@@ -38,11 +41,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MetaContactImpl extends DataObject implements MetaContact
 {
-    /**
-     * Logger for <tt>MetaContactImpl</tt>.
-     */
-    private static final Logger logger = Logger.getLogger(MetaContactImpl.class);
-
     /**
      * A vector containing all protocol specific contacts merged in this MetaContact.
      */
@@ -477,7 +475,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
             if ((contactImage != null) && (contactImage.length > 0))
                 return contactImage;
         } catch (Exception ex) {
-            logger.error("Failed to get the photo of contact " + contact, ex);
+            Timber.e(ex, "Failed to get the photo of contact %s", contact);
         }
         return null;
     }

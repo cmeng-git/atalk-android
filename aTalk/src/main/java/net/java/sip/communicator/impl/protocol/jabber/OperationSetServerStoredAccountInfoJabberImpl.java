@@ -8,35 +8,9 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import net.java.sip.communicator.service.protocol.AbstractOperationSetServerStoredAccountInfo;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.AboutMeDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.AddressDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.BirthDateDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.CityDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.CountryDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.DisplayNameDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.EmailAddressDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.FirstNameDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.JobTitleDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.LastNameDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.MiddleNameDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.MobilePhoneDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.NicknameDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.PhoneNumberDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.PostalCodeDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.ProvinceDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.URLDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.VideoDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkEmailAddressDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkOrganizationNameDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkPhoneDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkVideoDetail;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
 import net.java.sip.communicator.service.protocol.event.ServerStoredDetailsChangeEvent;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -49,14 +23,11 @@ import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.BareJid;
 
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * The Account Info Operation set is a means of accessing and modifying detailed information on the
@@ -70,19 +41,14 @@ import java.util.Locale;
 public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOperationSetServerStoredAccountInfo
 {
     /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetServerStoredAccountInfoJabberImpl.class);
-
-    /**
      * The info retriever.
      */
-    private InfoRetriever infoRetriever = null;
+    private InfoRetriever infoRetriever;
 
     /**
      * The jabber provider that created us.
      */
-    private ProtocolProviderServiceJabberImpl jabberProvider = null;
+    private ProtocolProviderServiceJabberImpl jabberProvider;
 
     /**
      * List of all supported <tt>ServerStoredDetails</tt> for this implementation.
@@ -117,7 +83,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
     /**
      * Our account UIN.
      */
-    private BareJid uin = null;
+    private BareJid uin;
 
     protected OperationSetServerStoredAccountInfoJabberImpl(
             ProtocolProviderServiceJabberImpl jabberProvider, InfoRetriever infoRetriever, BareJid uin)
@@ -141,8 +107,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      */
     public <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(Class<T> detailClass)
     {
-        return (assertConnected())
-                ? infoRetriever.getDetailsAndDescendants(uin, detailClass) : null;
+        return (assertConnected()) ? infoRetriever.getDetailsAndDescendants(uin, detailClass) : null;
     }
 
     /**
@@ -186,8 +151,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
     /**
      * Returns all detail Class-es that the underlying implementation supports setting. Note
      * that if you call one of the modification methods (add remove or replace) with a detail not
-     * contained by the iterator returned by this method, an IllegalArgumentException will be
-     * thrown.
+     * contained by the iterator returned by this method, an IllegalArgumentException will be thrown.
      * <p>
      *
      * @return a java.util.Iterator over all detail classes supported by the implementation.
@@ -206,8 +170,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      *
      * @param detailClass the class the support for which we'd like to determine.
      * <p>
-     * @return true if the underlying implementation supports setting details of this type and
-     * false otherwise.
+     * @return true if the underlying implementation supports setting details of this type and false otherwise.
      */
     public boolean isDetailClassSupported(Class<? extends GenericDetail> detailClass)
     {
@@ -249,8 +212,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
             throws IllegalArgumentException, ArrayIndexOutOfBoundsException
     {
         if (!isDetailClassSupported(detail.getClass())) {
-            throw new IllegalArgumentException("implementation does not support such details "
-                    + detail.getClass());
+            throw new IllegalArgumentException("implementation does not support such details " + detail.getClass());
         }
 
         Iterator<GenericDetail> iter = getDetails(detail.getClass());
@@ -261,8 +223,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
         }
 
         if (currentDetailsSize > getMaxDetailInstances(detail.getClass())) {
-            throw new ArrayIndexOutOfBoundsException(
-                    "Max count for this detail is already reached");
+            throw new ArrayIndexOutOfBoundsException("Max count for this detail is already reached");
         }
         infoRetriever.getCachedUserDetails(uin).add(detail);
     }
@@ -273,8 +234,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      * <p>
      *
      * @param detail the detail to remove
-     * @return true if the specified detail existed and was successfully removed and false
-     * otherwise.
+     * @return true if the specified detail existed and was successfully removed and false otherwise.
      */
     public boolean removeDetail(ServerStoredDetails.GenericDetail detail)
     {
@@ -306,8 +266,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
         }
 
         boolean isFound = false;
-        Iterator<GenericDetail> iter
-                = infoRetriever.getDetails(uin, currentDetailValue.getClass());
+        Iterator<GenericDetail> iter = infoRetriever.getDetails(uin, currentDetailValue.getClass());
         while (iter.hasNext()) {
             GenericDetail item = iter.next();
             if (item.equals(currentDetailValue)) {
@@ -378,7 +337,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
                 vCard.setNickName((String) detail.getDetailValue());
             else if (detail.getClass().equals(URLDetail.class)) {
                 if (detail.getDetailValue() != null)
-                    vCard.setField("URL", ((URL) detail.getDetailValue()).toString());
+                    vCard.setField("URL", detail.getDetailValue().toString());
             }
             else if (detail.getClass().equals(BirthDateDetail.class)) {
                 if (detail.getDetailValue() != null) {
@@ -425,8 +384,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
         tmp = infoRetriever.checkForFullName(vCard);
         if (tmp != null) {
             DisplayNameDetail displayNameDetail = new DisplayNameDetail(tmp);
-            Iterator<GenericDetail> detailIt
-                    = infoRetriever.getDetails(uin, DisplayNameDetail.class);
+            Iterator<GenericDetail> detailIt = infoRetriever.getDetails(uin, DisplayNameDetail.class);
             while (detailIt.hasNext()) {
                 infoRetriever.getCachedUserDetails(uin).remove(detailIt.next());
             }
@@ -443,7 +401,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
             // Reset to SMACK_PACKET_REPLY_TIMEOUT_10
             xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
 
-            logger.error("Error loading/saving vcard: ", e);
+            Timber.e(e, "Error loading/saving vcard");
             throw new OperationFailedException("Error loading/saving vcard: ", 1, e);
         }
         // Reset to SMACK_PACKET_REPLY_TIMEOUT_10
@@ -455,8 +413,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      * <p>
      *
      * @param detailClass the class whose edition we'd like to determine if it's possible
-     * @return true if the underlying implementation supports edition of this type of detail and
-     * false otherwise.
+     * @return true if the underlying implementation supports edition of this type of detail and false otherwise.
      */
     public boolean isDetailClassEditable(Class<? extends GenericDetail> detailClass)
     {
@@ -473,7 +430,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
     private boolean assertConnected()
     {
         if (((jabberProvider == null) || !jabberProvider.isRegistered())) {
-            logger.warn(aTalkApp.getResString(R.string.service_gui_NETOWRK_ASSERTION_ERROR));
+            Timber.w(aTalkApp.getResString(R.string.service_gui_NETOWRK_ASSERTION_ERROR));
             return false;
         }
         return true;

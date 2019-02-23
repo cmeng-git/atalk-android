@@ -22,18 +22,16 @@ import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.service.osgi.OSGiFragment;
 
+import timber.log.Timber;
+
 /**
  * Dialog allowing user to create new contact group.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class AddGroupDialog extends OSGiFragment
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(AddGroupDialog.class);
-
     /**
      * {@inheritDoc}
      */
@@ -199,7 +197,7 @@ public class AddGroupDialog extends OSGiFragment
                 try {
                     newMetaGroup = mcl.createMetaContactGroup(mcl.getRoot(), groupName);
                 } catch (MetaContactListException ex) {
-                    logger.error(ex);
+                    Timber.e(ex);
                     Context ctx = aTalkApp.getGlobalContext();
 
                     int errorCode = ex.getErrorCode();

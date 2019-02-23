@@ -9,22 +9,18 @@ import javax.media.*;
 
 import org.atalk.util.Logger;
 
+import timber.log.Timber;
+
 /**
  * A utility class that provides utility functions when working with processors.
  *
  * @author Emil Ivov
  * @author Ken Larson
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class ProcessorUtility implements ControllerListener
 {
-
-	/**
-	 * The <tt>Logger</tt> used by the <tt>ProcessorUtility</tt> class and its instances for logging
-	 * output.
-	 */
-	private static final Logger logger = Logger.getLogger(ProcessorUtility.class);
-
 	/**
 	 * The <tt>Object</tt> used for syncing when waiting for a processor to enter a specific state.
 	 */
@@ -80,9 +76,9 @@ public class ProcessorUtility implements ControllerListener
 		// realize, the processor will be closed
 		if (ce instanceof ControllerClosedEvent) {
 			if (ce instanceof ControllerErrorEvent)
-				logger.warn("ControllerErrorEvent: " + ce);
-			else if (logger.isDebugEnabled())
-				logger.debug("ControllerClosedEvent: " + ce);
+				Timber.w("ControllerErrorEvent: %s", ce);
+			else
+				Timber.d("ControllerClosedEvent: %s", ce);
 
 			setFailed(true);
 
@@ -131,8 +127,7 @@ public class ProcessorUtility implements ControllerListener
 					stateLock.wait();
 				}
 				catch (InterruptedException ie) {
-					logger.warn("Interrupted while waiting on Processor " + processor
-						+ " for state " + state, ie);
+					Timber.w(ie, "Interrupted while waiting on Processor %s for state %s", processor, state);
 					/*
 					 * XXX It is not really clear what we should do. It seems that an
 					 * InterruptedException may be thrown and the Processor will still work fine.

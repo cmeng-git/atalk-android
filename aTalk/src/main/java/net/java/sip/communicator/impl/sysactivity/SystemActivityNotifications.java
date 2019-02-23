@@ -15,9 +15,9 @@
  */
 package net.java.sip.communicator.impl.sysactivity;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.util.OSUtils;
+
+import timber.log.Timber;
 
 /**
  * @author Damian Minkov
@@ -25,12 +25,6 @@ import org.atalk.util.OSUtils;
  */
 public class SystemActivityNotifications
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>SystemActivityNotifications</tt>
-     * class to log debugging information.
-     */
-    private static final Logger logger = Logger.getLogger(SystemActivityNotifications.class);
-
     /**
      * Computer display has stand by.
      */
@@ -108,7 +102,7 @@ public class SystemActivityNotifications
         try {
             // Don't load native library on Android to prevent the exception
             if (!OSUtils.IS_ANDROID) {
-//                System.loadLibrary("sysactivitynotifications", SystemActivityNotifications.class.getClassLoader());
+                //                System.loadLibrary("sysactivitynotifications", SystemActivityNotifications.class.getClassLoader());
 
                 ptr = allocAndInit();
                 if (ptr == -1)
@@ -118,7 +112,7 @@ public class SystemActivityNotifications
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else
-                logger.warn("Failed to initialize native counterpart", t);
+                Timber.w(t, "Failed to initialize native counterpart");
         }
     }
 

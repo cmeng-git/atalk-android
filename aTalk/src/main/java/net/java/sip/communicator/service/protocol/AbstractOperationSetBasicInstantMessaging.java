@@ -5,22 +5,13 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.MessageListener;
-import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
-import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.android.gui.chat.ChatMessage;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EventObject;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Represents a default implementation of {@link OperationSetBasicInstantMessaging} in order to make
@@ -30,14 +21,8 @@ import java.util.Vector;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractOperationSetBasicInstantMessaging implements  OperationSetBasicInstantMessaging
+public abstract class AbstractOperationSetBasicInstantMessaging implements OperationSetBasicInstantMessaging
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AbstractOperationSetBasicInstantMessaging</tt> class and
-     * its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AbstractOperationSetBasicInstantMessaging.class);
-
     /**
      * A list of listeners registered for message events.
      */
@@ -135,9 +120,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements  Oper
         synchronized (this.messageListeners) {
             listeners = new ArrayList<>(this.messageListeners);
         }
-
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching Message Listeners = " + listeners.size() + " evt = " + evt);
+        Timber.d("Dispatching Message Listeners = %d evt = %s", listeners.size(), evt);
 
         /*
          * TODO Create a super class like this MessageEventObject that would contain the
@@ -182,7 +165,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements  Oper
                     }
                 }
             } catch (Throwable e) {
-                logger.error("Error delivering message", e);
+                Timber.e(e, "Error delivering message");
             }
         }
     }

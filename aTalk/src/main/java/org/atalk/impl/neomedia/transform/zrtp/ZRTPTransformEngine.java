@@ -6,35 +6,22 @@
 package org.atalk.impl.neomedia.transform.zrtp;
 
 import org.atalk.impl.neomedia.AbstractRTPConnector;
-import org.atalk.impl.neomedia.transform.PacketTransformer;
-import org.atalk.impl.neomedia.transform.SinglePacketTransformer;
-import org.atalk.impl.neomedia.transform.TransformEngine;
-import org.atalk.impl.neomedia.transform.srtp.SRTCPTransformer;
-import org.atalk.impl.neomedia.transform.srtp.SRTPContextFactory;
-import org.atalk.impl.neomedia.transform.srtp.SRTPPolicy;
-import org.atalk.impl.neomedia.transform.srtp.SRTPTransformer;
+import org.atalk.impl.neomedia.transform.*;
+import org.atalk.impl.neomedia.transform.srtp.*;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.SrtpControl;
-import org.atalk.util.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.util.EnumSet;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
-import gnu.java.zrtp.ZRtp;
-import gnu.java.zrtp.ZrtpCallback;
-import gnu.java.zrtp.ZrtpCodes;
-import gnu.java.zrtp.ZrtpConfigure;
-import gnu.java.zrtp.ZrtpConstants;
-import gnu.java.zrtp.ZrtpSrtpSecrets;
-import gnu.java.zrtp.ZrtpStateClass;
+import gnu.java.zrtp.*;
 import gnu.java.zrtp.zidfile.ZidFile;
+import timber.log.Timber;
 
 /**
  * JMF extension/connector to support GNU ZRTP4J.
@@ -148,8 +135,7 @@ import gnu.java.zrtp.zidfile.ZidFile;
  *
  * @author Werner Dittmann &lt;Werner.Dittmann@t-online.de>
  */
-public class ZRTPTransformEngine extends SinglePacketTransformer
-        implements SrtpControl.TransformEngine, ZrtpCallback
+public class ZRTPTransformEngine extends SinglePacketTransformer implements SrtpControl.TransformEngine, ZrtpCallback
 {
     /**
      * Very simple Timeout provider class.
@@ -264,11 +250,6 @@ public class ZRTPTransformEngine extends SinglePacketTransformer
     }
 
     /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(ZRTPTransformEngine.class);
-
-    /**
      * Each ZRTP packet has a fixed header of 12 bytes.
      */
     protected static final int ZRTP_PACKET_HEADER = 12;
@@ -349,11 +330,11 @@ public class ZRTPTransformEngine extends SinglePacketTransformer
      * <li>Force the SAS verify flag to be false at srtpSecretsOn() callback. This gives the user
      * interface (UI) the indication to handle the SAS as <b>not verified</b>. See implementation
      * note below.</li>
-     * <li>Don't set the SAS verify flag in the <code>Confirm</code> packets, thus the other also
+     * <li>Don't set the SAS verify flag in the {@code Confirm} packets, thus the other also
      * must report the SAS as <b>not verified</b>.</li>
-     * <li>ignore the <code>SASVerified()</code> function, thus do not set the SAS to verified in
+     * <li>ignore the {@code SASVerified()} function, thus do not set the SAS to verified in
      * the ZRTP cache.</li>
-     * <li>Disable the <b>Trusted PBX MitM</b> feature. Just send the <code>SASRelay</code> packet
+     * <li>Disable the <b>Trusted PBX MitM</b> feature. Just send the {@code SASRelay} packet
      * but do not process the relayed data. This protects the user from a malicious "trusted PBX"
      * .</li>
      * </ul>
@@ -363,7 +344,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer
      * breaking the key continuity data.
      *
      * <b>Implementation note:</b></br> An application shall always display the SAS code if the SAS
-     * verify flag is <code>false</code>. The application shall also use mechanisms to remind the
+     * verify flag is {@code false}. The application shall also use mechanisms to remind the
      * user to compare the SAS code, for example using larger fonts, different colours and other
      * display features.
      */
@@ -483,7 +464,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer
                 // Create the zid file
                 file = faService.getPrivatePersistentFile(zidFilename, FileCategory.PROFILE);
             } catch (Exception e) {
-                logger.warn("Failed to create the zid file.");
+                Timber.w("Failed to create the zid file.");
             }
         }
 
@@ -493,9 +474,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer
             if (file != null)
                 zidFilePath = file.getAbsolutePath();
         } catch (SecurityException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Failed to obtain the absolute path of the zid file.", e);
-            }
+            Timber.d(e, "Failed to obtain the absolute path of the zid file.");
         }
 
         ZidFile zf = ZidFile.getInstance();
@@ -503,7 +482,6 @@ public class ZRTPTransformEngine extends SinglePacketTransformer
             if (zidFilePath == null) {
                 String home = System.getenv("HOME");
                 String baseDir = ((home == null) || (home.length() < 1)) ? "" : (home + "/");
-
                 zidFilePath = baseDir + ".GNUZRTP4J.zid";
             }
             if (zf.open(zidFilePath) < 0)
@@ -536,8 +514,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer
     {
         muted = startMuted;
         if (startMuted) {
-            // make sure we don't mute for long time as secure communication
-            // may fail.
+            // make sure we don't mute for long time as secure communication may fail.
             new Timer().schedule(new TimerTask()
             {
                 @Override
@@ -745,10 +722,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer
             zrtpConnector.getDataOutputStream()
                     .write(packet.getBuffer(), packet.getOffset(), packet.getLength());
         } catch (IOException e) {
-            logger.warn("Failed to send ZRTP data.");
-            if (logger.isDebugEnabled())
-                logger.debug("Failed to send ZRTP data.", e);
-
+            Timber.w("Failed to send ZRTP data.");
             return false;
         }
         return true;
@@ -1115,7 +1089,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer
      * SUPPORTED_ZRTP_VERSIONS.
      * @return String array containing the version string at offset 0, the Hello hash value as
      * hex-digits at offset 1. Hello hash is available immediately after class
-     * instantiation. Returns <code>null</code> if ZRTP is not available.
+     * instantiation. Returns {@code null} if ZRTP is not available.
      */
     public String[] getHelloHashSep(int index)
     {

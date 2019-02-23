@@ -18,7 +18,6 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -32,6 +31,8 @@ import java.security.PublicKey;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import timber.log.Timber;
+
 /**
  * @author George Politis
  * @author Lyubomir Marinov
@@ -42,11 +43,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, ServiceListener
 {
-    /**
-     * The logger
-     */
-    private final Logger logger = Logger.getLogger(ScOtrEngineImpl.class);
-
     private static String CONTACT_POLICY = ".contact_policy";
     private static String GLOBAL_POLICY = "GLOBAL_POLICY";
 
@@ -112,7 +108,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
                         try {
                             remoteFingerprint = new OtrCryptoEngineImpl().getFingerprint(remotePubKey);
                         } catch (OtrCryptoException e) {
-                            logger.debug("Could not get the fingerprint from the public key for: " + contact);
+                            Timber.d("Could not get the fingerprint from the public key for: %s", contact);
                         }
 
                         List<String> allFingerprintsOfContact
@@ -221,8 +217,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
      * Returns the <tt>ScSessionID</tt> for given <tt>UUID</tt>.
      *
      * @param guid the <tt>UUID</tt> identifying <tt>ScSessionID</tt>.
-     * @return the <tt>ScSessionID</tt> for given <tt>UUID</tt> or <tt>null</tt> if no matching
-     * session found.
+     * @return the <tt>ScSessionID</tt> for given <tt>UUID</tt> or <tt>null</tt> if no matching session found.
      */
     public static ScSessionID getScSessionForGuid(UUID guid)
     {
@@ -286,14 +281,14 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
                 throw new RuntimeException("No UUID found in OTR authenticate URL");
 
             // Looks for registered action handler
-            OtrActionHandler actionHandler = (OtrActionHandler) net.java.sip.communicator.util
+            OtrActionHandler actionHandler = net.java.sip.communicator.util
                     .ServiceUtils.getService(OtrActivator.bundleContext, OtrActionHandler.class);
 
             if (actionHandler != null) {
                 actionHandler.onAuthenticateLinkClicked(guid);
             }
             else {
-                logger.error("No OtrActionHandler registered");
+                Timber.e("No OtrActionHandler registered");
             }
         }
     }
@@ -355,7 +350,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
     private ScOtrEngineListener[] getListeners()
     {
         synchronized (listeners) {
-            return listeners.toArray(new ScOtrEngineListener[listeners.size()]);
+            return listeners.toArray(new ScOtrEngineListener[0]);
         }
     }
 
@@ -414,7 +409,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
         try {
             otrEngine.getSession(sessionID).refreshSession();
         } catch (OtrException e) {
-            logger.error("Error refreshing session", e);
+            Timber.e(e, "Error refreshing session");
             showError(sessionID, e.getMessage());
         }
     }
@@ -439,15 +434,11 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             return;
 
         if (ev.getType() == ServiceEvent.UNREGISTERING) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Unregistering a ProtocolProviderService, cleaning OTR's ScSessionID to Contact map.");
-                logger.debug("Unregistering a ProtocolProviderService, cleaning OTR's Contact to SpmProgressDialog map.");
-            }
+            Timber.d("Unregister a PPS, cleaning OTR's ScSessionID (Contact map); and Contact (SpmProgressDialog map).");
             ProtocolProviderService provider = (ProtocolProviderService) service;
 
             synchronized (contactsMap) {
                 Iterator<OtrContact> i = contactsMap.values().iterator();
-
                 while (i.hasNext()) {
                     OtrContact otrContact = i.next();
                     if (provider.equals(otrContact.contact.getProtocolProvider())) {
@@ -508,7 +499,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
         try {
             otrEngine.getSession(sessionID).startSession();
         } catch (OtrException e) {
-            logger.error("Error starting session", e);
+            Timber.e(e, "Error starting session");
             showError(sessionID, e.getMessage());
         }
     }
@@ -520,7 +511,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
         try {
             return otrEngine.getSession(sessionID).transformReceiving(msgText);
         } catch (OtrException e) {
-            logger.error("Error receiving the message", e);
+            Timber.e(e, "Error receiving the message");
             showError(sessionID, e.getMessage());
             return null;
         }
@@ -533,7 +524,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
         try {
             return otrEngine.getSession(sessionID).transformSending(msgText);
         } catch (OtrException e) {
-            logger.error("Error transforming the message", e);
+            Timber.e(e, "Error transforming the message");
             showError(sessionID, e.getMessage());
             return null;
         }
@@ -560,14 +551,13 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             progressDialog.init();
             progressDialog.setVisible(true);
         } catch (OtrException e) {
-            logger.error("Error initializing SMP session with contact " + otrContact.contact.getDisplayName(), e);
+            Timber.e(e, "Error initializing SMP session with contact %s", otrContact.contact.getDisplayName());
             showError(session.getSessionID(), e.getMessage());
         }
     }
 
     @Override
-    public void respondSmp(OtrContact otrContact, InstanceTag receiverTag, String question,
-            String secret)
+    public void respondSmp(OtrContact otrContact, InstanceTag receiverTag, String question, String secret)
     {
         Session session = getSession(otrContact);
         try {
@@ -581,7 +571,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             progressDialog.incrementProgress();
             progressDialog.setVisible(true);
         } catch (OtrException e) {
-            logger.error("Error occurred when sending SMP response to contact " + otrContact.contact.getDisplayName(), e);
+            Timber.e(e, "Error occurred when sending SMP response to contact %s", otrContact.contact.getDisplayName());
             showError(session.getSessionID(), e.getMessage());
         }
     }
@@ -600,7 +590,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             }
             progressDialog.dispose();
         } catch (OtrException e) {
-            logger.error("Error aborting SMP session with contact " + otrContact.contact.getDisplayName(), e);
+            Timber.e(e, "Error aborting SMP session with contact %s", otrContact.contact.getDisplayName());
             showError(session.getSessionID(), e.getMessage());
         }
     }
@@ -757,8 +747,8 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
                 return;
 
             Contact contact = otrContact.contact;
-            logger.debug("SMP error occurred" + ". Contact: " + contact.getDisplayName()
-                    + ". TLV type: " + tlvType + ". Cheated: " + cheated);
+            Timber.d("SMP error occurred. Contact: %s. TLV type: %s. Cheated: %s",
+                    contact.getDisplayName(), tlvType, cheated);
 
             String error = aTalkApp.getResString(R.string.plugin_otr_activator_smperror);
             OtrActivator.uiService.getChat(contact).addMessage(contact.getDisplayName(),
@@ -906,7 +896,8 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
         public String getFallbackMessage(SessionID sessionID)
         {
             AccountID accountID = OtrActivator.getAccountIDByUID(sessionID.getAccountID());
-            return aTalkApp.getResString(R.string.plugin_otr_activator_fallbackmessage, accountID.getDisplayName());
+            return aTalkApp.getResString(R.string.plugin_otr_activator_fallbackmessage,
+                    accountID.getDisplayName());
         }
 
         @Override
@@ -953,10 +944,8 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             if (transport == null) {
                 // There is no operation set for querying transport parameters.
                 // Assuming transport capabilities are unlimited.
-                if (logger.isDebugEnabled()) {
-                    logger.debug("No implementation of BasicInstantMessagingTransport available."
-                            + " Assuming OTR defaults for OTR fragmentation instructions.");
-                }
+                Timber.d("No implementation of BasicInstantMessagingTransport available."
+                        + " Assuming OTR defaults for OTR fragmentation instructions.");
                 return null;
             }
 
@@ -969,12 +958,8 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             if (numberOfMessages == OperationSetBasicInstantMessagingTransport.UNLIMITED) {
                 numberOfMessages = FragmenterInstructions.UNLIMITED;
             }
-            if (logger.isDebugEnabled()) {
-                logger.debug("OTR fragmentation instructions for sending a message to "
-                        + otrContact.contact.getDisplayName() + " ("
-                        + otrContact.contact.getAddress() + "). Maximum number of " + "messages: "
-                        + numberOfMessages + ", maximum message size: " + messageSize);
-            }
+            Timber.d("OTR fragmentation instructions for sending a message to %s (%s). Max messages no: %s, Max message size: %s",
+                    otrContact.contact.getDisplayName(), otrContact.contact.getAddress(), numberOfMessages, messageSize);
             return new FragmenterInstructions(numberOfMessages, messageSize);
         }
     }

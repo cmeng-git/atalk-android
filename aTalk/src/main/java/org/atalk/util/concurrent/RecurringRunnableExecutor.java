@@ -21,6 +21,8 @@ import org.atalk.util.Logger;
 import java.util.*;
 import java.util.concurrent.*;
 
+import timber.log.Timber;
+
 /**
  * Implements a single-threaded {@link Executor} of {@link RecurringRunnable}s i.e. asynchronous
  * tasks which determine by themselves the intervals (the lengths of which may vary) at which
@@ -32,15 +34,10 @@ import java.util.concurrent.*;
  *
  * @author Lyubomir Marinov
  * @author George Politis
+ * @author Eng Chong Meng
  */
 public class RecurringRunnableExecutor implements Executor
 {
-	/**
-	 * The <tt>Logger</tt> used by the <tt>RecurringRunnableExecutor</tt>
-	 * class and its instances to print debug information.
-	 */
-	private static final Logger logger = Logger.getLogger(RecurringRunnableExecutor.class);
-
 	/**
 	 * The {@code RecurringRunnable}s registered with this instance which are
 	 * to be invoked in {@link #thread}.
@@ -186,9 +183,8 @@ public class RecurringRunnableExecutor implements Executor
 							throw (ThreadDeath) t;
 						}
 						else {
-							logger.error("The invocation of the method "
-									+ recurringRunnable.getClass().getName()
-									+ ".run() threw an exception.", t);
+							Timber.e(t, "The invocation of the method %s.run() threw an exception.",
+                                    recurringRunnable.getClass().getName());
 						}
 					}
 				}

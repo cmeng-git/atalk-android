@@ -23,11 +23,9 @@ import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.*;
 
-import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiFragment;
@@ -41,6 +39,8 @@ import org.jxmpp.util.XmppStringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * This fragment that show the chatRoom information retrieve from the server
  *
@@ -48,11 +48,6 @@ import java.util.List;
  */
 public class ChatRoomInfoFragment extends OSGiFragment
 {
-    /**
-     * Logger of this class
-     */
-    private static final Logger logger = Logger.getLogger(ChatRoomInfoFragment.class);
-
     private View mContent;
     private static ChatRoomWrapper mChatRoomWrapper;
 
@@ -165,7 +160,7 @@ public class ChatRoomInfoFragment extends OSGiFragment
                 try {
                     contactJids = chatRoomInfo.getContactJids();
                 } catch (NullPointerException e) {
-                    logger.error("Contact Jids excepiton: " + e.getMessage());
+                    Timber.e("Contact Jids excepiton: %s", e.getMessage());
                 }
                 textValue = contactJids.toString();
                 textView.setText(textValue);

@@ -14,20 +14,17 @@ import org.atalk.util.Logger;
 import org.bouncycastle.crypto.*;
 import org.bouncycastle.crypto.params.*;
 
+import timber.log.Timber;
+
 /**
  * Adapts the <tt>javax.crypto.Cipher</tt> class to the <tt>org.bouncycastle.crypto.BlockCipher</tt>
  * interface.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class BlockCipherAdapter implements BlockCipher
 {
-	/**
-	 * The <tt>Logger</tt> used by the <tt>BlockCipherAdapter</tt> class and its instance to print
-	 * out debug information.
-	 */
-	private static final Logger logger = Logger.getLogger(BlockCipherAdapter.class);
-
 	/**
 	 * The name of the algorithm implemented by this instance.
 	 */
@@ -135,7 +132,7 @@ public class BlockCipherAdapter implements BlockCipher
 			cipher.init(forEncryption ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE, key);
 		}
 		catch (InvalidKeyException ike) {
-			logger.error(ike, ike);
+			Timber.e(ike, "%s", ike.getMessage());
 			throw new IllegalArgumentException(ike);
 		}
 	}
@@ -151,10 +148,9 @@ public class BlockCipherAdapter implements BlockCipher
 			return cipher.update(in, inOff, getBlockSize(), out, outOff);
 		}
 		catch (ShortBufferException sbe) {
-			logger.error(sbe, sbe);
+			Timber.e(sbe, "%s", sbe.getMessage());
 
 			DataLengthException dle = new DataLengthException();
-
 			dle.initCause(sbe);
 			throw dle;
 		}
@@ -170,7 +166,7 @@ public class BlockCipherAdapter implements BlockCipher
 			cipher.doFinal();
 		}
 		catch (GeneralSecurityException gse) {
-			logger.error(gse, gse);
+			Timber.e(gse, "%s", gse.getMessage());
 		}
 	}
 }

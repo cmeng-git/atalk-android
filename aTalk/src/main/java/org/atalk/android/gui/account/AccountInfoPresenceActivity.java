@@ -24,7 +24,6 @@ import com.yalantis.ucrop.UCrop;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
@@ -49,6 +48,8 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
+import timber.log.Timber;
+
 /**
  * Activity allows user to set presence status, status message, change the avatar
  * and all the vCard-temp information for the {@link #mAccount}.
@@ -71,11 +72,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         implements EventListener<AccountEvent>, AdapterView.OnItemSelectedListener,
         SoftKeyboard.SoftKeyboardChanged, CalendarDatePickerDialogFragment.OnDateSetListener
 {
-    /**
-     * The logger used by this class
-     */
-    static final private Logger logger = Logger.getLogger(AccountInfoPresenceActivity.class);
-
     /**
      * Calender Date Picker parameters
      */
@@ -204,7 +200,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         AccountID accountID = AccountUtils.getAccountIDForUID(accountIDStr);
 
         if (accountID == null) {
-            logger.error("No account found for: " + accountIDStr);
+            Timber.e("No account found for: %s", accountIDStr);
             finish();
             return;
         }
@@ -226,9 +222,9 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
-                    logger.error("Account Registration State wait error: " + protocolProvider.getRegistrationState());
+                    Timber.e("Account Registration State wait error: %s", protocolProvider.getRegistrationState());
                 }
-                logger.warn("Account Registration State: " + protocolProvider.getRegistrationState());
+                Timber.w("Account Registration State: %s", protocolProvider.getRegistrationState());
             }
 
             isRegistered = protocolProvider.isRegistered();
@@ -796,7 +792,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                         else
                             showAvatarChangeError();
                     } catch (IOException e) {
-                        logger.error(e, e);
+                        Timber.e(e, "%s", e.getMessage());
                         showAvatarChangeError();
                     }
                 }
@@ -866,7 +862,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 try {
                     url = new URL(text);
                 } catch (MalformedURLException e1) {
-                    logger.debug("Failed to update URL detail due to malformed URL.");
+                    Timber.d("Failed to update URL detail due to malformed URL.");
                 }
 
             URLDetail newDetail = null;
@@ -1079,7 +1075,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 accountInfoOpSet.replaceDetail(oldDetail, newDetail);
             }
         } catch (ArrayIndexOutOfBoundsException | OperationFailedException e1) {
-            logger.debug("Failed to update account details. " + mAccount.getAccountName() + " " + e1);
+            Timber.d("Failed to update account details.%s %s", mAccount.getAccountName(), e1.getMessage());
         }
     }
 
@@ -1161,7 +1157,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     public void onAvatarClicked(View avatarView)
     {
         if (mAccount.getAvatarOpSet() == null) {
-            logger.warn("Avatar operation set is not supported by " + mAccount.getAccountName());
+            Timber.w("Avatar operation set is not supported by %s", mAccount.getAccountName());
             return;
         }
         // Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
@@ -1188,14 +1184,14 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             case SELECT_IMAGE:
                 final OperationSetAvatar avatarOpSet = mAccount.getAvatarOpSet();
                 if (avatarOpSet == null) {
-                    logger.warn("No avatar operation set found for " + mAccount.getAccountName());
+                    Timber.w("No avatar operation set found for %s", mAccount.getAccountName());
                     showAvatarChangeError();
                     break;
                 }
 
                 Uri uri = data.getData();
                 if (uri == null) {
-                    logger.error("No image data selected: " + data);
+                    Timber.e("No image data selected: %s", data);
                     showAvatarChangeError();
                 }
                 else {
@@ -1217,7 +1213,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                     Bitmap bmp = AndroidImageUtil.scaledBitmapFromContentUri(this, resultUri,
                             AVATAR_PREFERRED_SIZE, AVATAR_PREFERRED_SIZE);
                     if (bmp == null) {
-                        logger.error("Failed to obtain bitmap from: " + data);
+                        Timber.e("Failed to obtain bitmap from: %s", data);
                         showAvatarChangeError();
                     }
                     else {
@@ -1226,7 +1222,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                         hasChanges = true;
                     }
                 } catch (IOException e) {
-                    logger.error(e, e);
+                    Timber.e(e, "%s", e.getMessage());
                     showAvatarChangeError();
                 }
                 break;
@@ -1236,7 +1232,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 String errMsg = "Image crop error: ";
                 if (cropError != null)
                     errMsg += cropError.getMessage();
-                logger.error(errMsg);
+                Timber.e("%s", errMsg);
                 showAvatarChangeError();
                 break;
         }
@@ -1258,7 +1254,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         new Thread(() -> {
             try {
                 // Try to publish selected status
-                logger.trace("Publishing status " + status + " msg: " + text);
+                Timber.d("Publishing status %s msg: %s", status, text);
                 GlobalStatusService globalStatus
                         = ServiceUtils.getService(AndroidGUIActivator.bundleContext, GlobalStatusService.class);
 
@@ -1269,7 +1265,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 if (pps.isRegistered())
                     accountPresence.publishPresenceStatus(status, text);
             } catch (Exception e) {
-                logger.error(e);
+                Timber.e(e);
             }
         }).start();
     }

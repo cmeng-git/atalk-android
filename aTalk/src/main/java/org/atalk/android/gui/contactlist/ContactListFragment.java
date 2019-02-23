@@ -6,7 +6,6 @@
 package org.atalk.android.gui.contactlist;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +22,6 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -42,6 +40,8 @@ import org.jxmpp.jid.DomainJid;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Class to display the MetaContacts in Expandable List View
  *
@@ -51,11 +51,6 @@ import java.util.List;
 public class ContactListFragment extends OSGiFragment
         implements OnChildClickListener, OnGroupClickListener
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(ContactListFragment.class);
-
     /**
      * Search options menu items.
      */
@@ -332,13 +327,13 @@ public class ContactListFragment extends OSGiFragment
         // Checks if the re-request authorization item should be visible
         Contact contact = clickedContact.getDefaultContact();
         if (contact == null) {
-            logger.warn("No default contact for: " + clickedContact);
+            Timber.w("No default contact for: %s", clickedContact);
             return;
         }
 
         ProtocolProviderService pps = contact.getProtocolProvider();
         if (pps == null) {
-            logger.warn("No protocol provider found for: " + contact);
+            Timber.w("No protocol provider found for: %s", contact);
             return;
         }
 
@@ -524,13 +519,13 @@ public class ContactListFragment extends OSGiFragment
 
         Object clicked = adapter.getChild(groupPosition, childPosition);
         if (!(clicked instanceof MetaContact)) {
-            logger.debug("No metaContact at position: " + groupPosition + ", " + childPosition);
+            Timber.d("No metaContact at position: %s, %s", groupPosition, childPosition);
             return false;
         }
 
         MetaContact metaContact = (MetaContact) clicked;
         if (metaContact.getDefaultContact() == null) {
-            aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID,  metaContact.getDisplayName());
+            aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, metaContact.getDisplayName());
             return false;
         }
 
@@ -585,7 +580,7 @@ public class ContactListFragment extends OSGiFragment
             startActivity(chatIntent);
         }
         else {
-            logger.warn("Failed to start chat with " + descriptor);
+            Timber.w("Failed to start chat with %s", descriptor);
         }
     }
 

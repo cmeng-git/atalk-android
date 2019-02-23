@@ -8,9 +8,10 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
-import net.java.sip.communicator.util.Logger;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * @author Damian Minkov
@@ -18,12 +19,7 @@ import java.util.*;
  */
 public class OperationSetServerStoredContactInfoJabberImpl implements OperationSetServerStoredContactInfo
 {
-    /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetServerStoredContactInfoJabberImpl.class);
-
-    private InfoRetriever infoRetriever = null;
+    private InfoRetriever infoRetriever;
 
     /**
      * If we got several listeners for the same contact lets retrieve once but deliver result to all.
@@ -121,8 +117,8 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
     }
 
     /**
-     * Requests all details existing for the specified contact. Always fetch online info: do not
-     * use cached info as any contact vcard changes is not event triggered; user must logout and
+     * Requests all details for the specified contact. Always fetch online info: do not
+     * use cached info as any contact vCard changes is not event triggered; user must logout and
      * login to retrieve any new update from an online contact
      *
      * @param contact the specified contact or account
@@ -152,26 +148,22 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
                 return null;
         }
 
-        new Thread(new Runnable()
-        {
-            public void run()
-            {
-                List<GenericDetail> result = infoRetriever.retrieveDetails(contact.getJid().asBareJid());
+        new Thread(() -> {
+            List<GenericDetail> result = infoRetriever.retrieveDetails(contact.getJid().asBareJid());
 
-                List<DetailsResponseListener> listeners;
-                synchronized (listenersForDetails) {
-                    listeners = listenersForDetails.remove(contact.getAddress());
-                }
+            List<DetailsResponseListener> listeners;
+            synchronized (listenersForDetails) {
+                listeners = listenersForDetails.remove(contact.getAddress());
+            }
 
-                if (listeners == null || result == null)
-                    return;
+            if (listeners == null || result == null)
+                return;
 
-                for (DetailsResponseListener l : listeners) {
-                    try {
-                        l.detailsRetrieved(result.iterator());
-                    } catch (Throwable t) {
-                        logger.error("Error delivering for retrieved details", t);
-                    }
+            for (DetailsResponseListener l : listeners) {
+                try {
+                    l.detailsRetrieved(result.iterator());
+                } catch (Throwable t) {
+                    Timber.e(t, "Error delivering for retrieved details");
                 }
             }
         }, getClass().getName() + ".RetrieveDetails").start();
@@ -190,7 +182,6 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
     {
         if (contact instanceof VolatileContactJabberImpl)
             return ((VolatileContactJabberImpl) contact).isPrivateMessagingContact();
-
         return false;
     }
 }

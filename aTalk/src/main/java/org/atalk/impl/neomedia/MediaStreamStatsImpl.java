@@ -20,7 +20,8 @@ import org.atalk.service.neomedia.control.FECDecoderControl;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.rtp.*;
 import org.atalk.service.neomedia.stats.TrackStats;
-import org.atalk.util.*;
+import org.atalk.util.LRUCache;
+import org.atalk.util.TimeUtils;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -30,6 +31,8 @@ import javax.media.control.JitterBufferControl;
 import javax.media.format.VideoFormat;
 import javax.media.protocol.*;
 import javax.media.rtp.ReceiveStream;
+
+import timber.log.Timber;
 
 /**
  * Class used to compute stats concerning a MediaStream.
@@ -52,11 +55,6 @@ public class MediaStreamStatsImpl implements MediaStreamStats
         DOWNLOAD,
         UPLOAD
     }
-
-    /**
-     * The <tt>Logger</tt> used by the <tt>MediaStreamImpl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(MediaStreamStatsImpl.class);
 
     /**
      * Keeps track of when a given Network Time Protocol (NTP) time (found in an SR) has been
@@ -320,13 +318,8 @@ public class MediaStreamStatsImpl implements MediaStreamStats
                     // know about the RTX SSRC because of the de-RTXification step. In the
                     // translator case if we can't map an emission time to a receipt time, we're
                     // bound to compute the wrong RTT, so here we return -1.
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("invalid_rtt: stream=" + mediaStreamImpl.hashCode()
-                                + " ssrc=" + feedback.getSSRC()
-                                + ",now=" + arrivalMs
-                                + ",lsr=" + lsr
-                                + ",dlsr=" + dlsr);
-                    }
+                    Timber.d("invalid_rtt: stream = %s, ssrc = %s,now = %s,lsr = %s,dlsr = %s",
+                            mediaStreamImpl.hashCode(), feedback.getSSRC(), arrivalMs, lsr, dlsr);
                     return -1;
                 }
             }
@@ -340,30 +333,22 @@ public class MediaStreamStatsImpl implements MediaStreamStats
             long ntprtd = arrival - lsr - dlsr;
             long rttLong = TimeUtils.ntpShortToMs(ntprtd);
 
-            //            logger.error("Calculated RTT (ms) = " + rttLong
+            //            Timber.e("Calculated RTT (ms) = " + rttLong
             //                    + "\narrival=" + Long.toHexString(arrival)
             //                    + ",lsr=" + Long.toHexString(lsr)
             //                    + ",dlsr=" + Long.toHexString(dlsr));
 
             // Values over 3s are suspicious and likely indicate a bug.
             if (rttLong < 0 || rttLong >= 3000) {
-                logger.warn("invalid_rtt: stream=" + mediaStreamImpl.hashCode()
-                        + " ssrc=" + feedback.getSSRC()
-                        + ",rtt(ms)=" + rttLong
-                        + ",now=" + Long.toHexString(arrival)
-                        + ",lsr=" + Long.toHexString(lsr)
-                        + ",dlsr=" + Long.toHexString(dlsr));
+                Timber.w("invalid_rtt: stream=%s ssrc=%s, rtt(ms)=%s, now=%s, lsr=%s, dlsr=%s",
+                        mediaStreamImpl.hashCode(), feedback.getSSRC(), rttLong,
+                        Long.toHexString(arrival), Long.toHexString(lsr), Long.toHexString(dlsr));
                 rtt = -1;
             }
             else {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("rtt: stream= " + mediaStreamImpl.hashCode()
-                            + " ssrc=" + feedback.getSSRC()
-                            + ",rtt(ms)=" + rttLong
-                            + ",now=" + Long.toHexString(arrival)
-                            + ",lsr=" + Long.toHexString(lsr)
-                            + ",dlsr=" + Long.toHexString(dlsr));
-                }
+                Timber.d("rtt: stream=%s ssrc=%s, rtt(ms)=%s, now=%s, lsr=%s, dlsr=%s",
+                        mediaStreamImpl.hashCode(), feedback.getSSRC(), rttLong,
+                        Long.toHexString(arrival), Long.toHexString(lsr), Long.toHexString(dlsr));
                 rtt = (int) rttLong;
             }
         }
@@ -1388,7 +1373,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
                     }
                 }
             } catch (IOException ioe) {
-                logger.warn("Failed to get sending bitrate: ", ioe);
+                Timber.w(ioe, "Failed to get sending bitrate.");
             }
         }
         return sbr;

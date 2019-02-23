@@ -18,6 +18,7 @@ package org.atalk.impl.androidcertdialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -129,8 +130,14 @@ public class X509CertificateView extends Dialog
             for (Map.Entry<String, String> name : rdnNames.entrySet()) {
                 String nameType = name.getKey();
                 String lblKey = "service_gui_CERT_INFO_" + nameType;
+                String lbl;
+
                 int resID = mContext.getResources().getIdentifier(lblKey, "string", mContext.getPackageName());
-                String lbl = mContext.getString(resID);
+                try {
+                    lbl = mContext.getString(resID);
+                } catch (Resources.NotFoundException e) {
+                    lbl = nameType;
+                }
 
                 if (("!" + lblKey + "!").equals(lbl))
                     lbl = nameType;

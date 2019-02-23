@@ -7,22 +7,22 @@ package net.java.sip.communicator.plugin.notificationwiring;
 
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.notification.NotificationService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.*;
 
+import timber.log.Timber;
+
 /**
  * The <tt>NotificationActivator</tt> is the activator of the notification bundle.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class NotificationWiringActivator implements BundleActivator
 {
-    private final Logger logger = Logger.getLogger(NotificationWiringActivator.class);
-
     protected static BundleContext bundleContext;
     private static NotificationService notificationService;
     private static ResourceManagementService resourcesService;
@@ -62,7 +62,6 @@ public class NotificationWiringActivator implements BundleActivator
         if (uiService == null) {
             uiService = ServiceUtils.getService(bundleContext, UIService.class);
         }
-
         return uiService;
     }
 
@@ -83,22 +82,16 @@ public class NotificationWiringActivator implements BundleActivator
             throws Exception
     {
         bundleContext = bc;
-        try {
-            logger.logEntry();
-
-            // Get the notification service implementation
-            ServiceReference notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
-            notificationService = (NotificationService) bundleContext.getService(notifReference);
-            new NotificationManager().init();
-            logger.info("Notification wiring plugin ...[REGISTERED]");
-        } finally {
-            logger.logExit();
-        }
+        // Get the notification service implementation
+        ServiceReference notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
+        notificationService = (NotificationService) bundleContext.getService(notifReference);
+        new NotificationManager().init();
+        Timber.i("Notification wiring plugin ...[REGISTERED]");
     }
 
     public void stop(BundleContext bc)
             throws Exception
     {
-        logger.info("Notification handler Service ...[STOPPED]");
+        Timber.i("Notification handler Service ...[STOPPED]");
     }
 }

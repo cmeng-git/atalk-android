@@ -8,7 +8,6 @@ package org.atalk.impl.neomedia.device;
 import org.atalk.impl.neomedia.MediaUtils;
 import org.atalk.impl.neomedia.conference.AudioMixer;
 import org.atalk.service.neomedia.*;
-import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 
 import java.io.IOException;
@@ -24,6 +23,8 @@ import javax.media.format.AudioFormat;
 import javax.media.protocol.CaptureDevice;
 import javax.media.protocol.DataSource;
 
+import timber.log.Timber;
+
 /**
  * Extends <tt>MediaDeviceImpl</tt> with audio-specific functionality.
  *
@@ -32,11 +33,6 @@ import javax.media.protocol.DataSource;
  */
 public class AudioMediaDeviceImpl extends MediaDeviceImpl
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AudioMediaDeviceImpl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AudioMediaDeviceImpl.class);
-
     /**
      * The <tt>AudioMixer</tt> which enables sharing an exclusive <tt>CaptureDevice</tt> such as
      * JavaSound between multiple <tt>CaptureDevice</tt> users.
@@ -90,7 +86,7 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
          * value of 30 ms for the buffer length fixes the problem and is OK when using some PSTN gateways.
          *
          * 2. Changing to 60 ms. When it is 30 ms, there are some issues with Asterisk and NAT (we don't start to
-          * send a/the stream and Asterisk's RTP functionality doesn't notice that we're behind NAT).
+         * send a/the stream and Asterisk's RTP functionality doesn't notice that we're behind NAT).
          *
          * 3. Do not set buffer length on Linux as it completely breaks audio capture.
          */
@@ -210,10 +206,8 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
             try {
                 csrcAudioLevelURN = new URI(RTPExtension.CSRC_AUDIO_LEVEL_URN);
             } catch (URISyntaxException e) {
-                // can't happen since CSRC_AUDIO_LEVEL_URN is a valid URI and
-                // never changes.
-                if (logger.isInfoEnabled())
-                    logger.info("Aha! Someone messed with the source!", e);
+                // can't happen since CSRC_AUDIO_LEVEL_URN is a valid URI and never changes.
+                Timber.i(e, "Aha! Someone messed with the source!");
                 csrcAudioLevelURN = null;
             }
             if (csrcAudioLevelURN != null) {

@@ -20,7 +20,6 @@ import net.java.sip.communicator.service.gui.call.CallRenderer;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.call.CallPeerAdapter;
 
 import org.atalk.android.R;
@@ -42,6 +41,8 @@ import java.beans.PropertyChangeListener;
 import java.util.EventObject;
 import java.util.Iterator;
 
+import timber.log.Timber;
+
 /**
  * The <tt>VideoCallActivity</tt> corresponds the call screen.
  *
@@ -54,11 +55,6 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         AutoHideController.AutoHideListener, View.OnClickListener, View.OnLongClickListener,
         VideoHandlerFragment.OnRemoteVideoChangeListener
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(VideoCallActivity.class);
-
     /**
      * Tag name for fragment that handles proximity sensor in order to turn the screen on and off.
      */
@@ -168,7 +164,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
         call = CallManager.getActiveCall(callIdentifier);
         if (call == null) {
-            logger.error("There's no call with id: " + callIdentifier);
+            Timber.e("There's no call with id: %s", callIdentifier);
             return;
         }
         // Registers as the call state listener
@@ -283,7 +279,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         }
         else {
             if (!callState.callEnded) {
-                logger.error("There aren't any peers in the call");
+                Timber.e("There aren't any peers in the call");
                 finish();
             }
             return;
@@ -637,8 +633,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
     public void setErrorReason(final String reason)
     {
-        logger.info("Error reason: " + reason);
-
+        Timber.i("Error reason: %s", reason);
         runOnUiThread(() -> {
             callState.errorReason = reason;
 
@@ -666,7 +661,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                     peerState) || CallPeerState.ON_HOLD_MUTUALLY.equals(peerState);
         }
         else {
-            logger.warn("No peer belongs to call: " + call.toString());
+            Timber.w("No peer belongs to call: %s", call.toString());
         }
         return onHold;
     }

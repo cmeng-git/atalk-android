@@ -23,6 +23,7 @@ import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEn
 import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.MetaContactChatTransport;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.filter.*;
@@ -38,6 +39,8 @@ import org.jxmpp.jid.Jid;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * OperationSet that handle chat state notifications
  *
@@ -49,11 +52,6 @@ import java.util.List;
 public class OperationSetChatStateNotificationsJabberImpl extends
         AbstractOperationSetChatStateNotifications<ProtocolProviderServiceJabberImpl>
 {
-    /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetChatStateNotificationsJabberImpl.class);
-
     /**
      * An active instance of the opSetPeersPresence operation set. We're using it to map incoming
      * events to contacts in our contact list.
@@ -114,12 +112,12 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         if (!(contact instanceof ContactJabberImpl))
             throw new IllegalArgumentException("The specified contact is not a Jabber contact." + contact);
 
-        // now handle XEP-0085 chat state sending
-        //		Chat chat = opSetBasicIM.getChat((EntityJid) contact.getJid());
-        //		if (opSetBasicIM != null && mConnection != null && chat != null) {
-        //			logger.info("Sending Chat State for : " + chatState.toString());
-        //			chatStateManager.setCurrentState(chatState, chat);
-        //		}
+            // now handle XEP-0085 chat state sending
+    //		Chat chat = opSetBasicIM.getChat((EntityJid) contact.getJid());
+    //		if (opSetBasicIM != null && mConnection != null && chat != null) {
+    //			Timber.i("Sending Chat State for : " + chatState.toString());
+    //			chatStateManager.setCurrentState(chatState, chat);
+    //		}
 
         if (opSetBasicIM != null && mConnection != null) {
             Jid toJid = opSetBasicIM.getRecentFullJidForContactIfPossible(contact);
@@ -133,8 +131,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
             if (toJid == null)
                 return;
 
-            if (logger.isTraceEnabled())
-                logger.trace("Sending XEP-0085 chat state=" + chatState + " to " + toJid);
+            Timber.log(TimberLog.FINER, "Sending XEP-0085 chat state=%s to %s", chatState, toJid);
 
             setCurrentState(chatState, toJid);
         }
@@ -326,8 +323,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
     private void stateChanged(ChatState state, Message message)
     {
         Jid fromJid = message.getFrom();
-        if (logger.isTraceEnabled())
-            logger.trace(fromJid + " entered the " + state.name() + " state.");
+        Timber.log(TimberLog.FINER, "%s entered the %s state.", fromJid, state.name());
 
         boolean isPrivateMessagingAddress = false;
         OperationSetMultiUserChat mucOpSet = parentProvider.getOperationSet(OperationSetMultiUserChat.class);
@@ -369,11 +365,9 @@ public class OperationSetChatStateNotificationsJabberImpl extends
 
     /**
      * Handles incoming messages and dispatches whatever events are necessary.
+     * The listener that we use to track chat state notifications according to XEP-0085.
      *
      * @param message the message that we need to handle.
-     */
-    /**
-     * The listener that we use to track chat state notifications according to XEP-0085.
      */
     private class SmackChatStateListener implements StanzaListener
     {

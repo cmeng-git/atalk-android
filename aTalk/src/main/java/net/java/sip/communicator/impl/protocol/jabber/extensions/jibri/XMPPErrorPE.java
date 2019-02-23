@@ -19,8 +19,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 
 import org.atalk.android.util.ApiLib;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.*;
 
 /**
  * Wraps Smack's <tt>XMPPError</tt> into <tt>PacketExtension</tt>, so that it
@@ -84,13 +83,12 @@ public class XMPPErrorPE implements ExtensionElement
         return "";
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public CharSequence toXML(String enclosingNamespace)
+    public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
-        return error.toXML(null).toString();
+        return error.toXML(XmlEnvironment.EMPTY).toString();
     }
 }

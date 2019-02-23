@@ -19,11 +19,12 @@ import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * @author Yana Stamcheva
@@ -33,7 +34,6 @@ import java.util.*;
  */
 public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
 {
-    private static final Logger logger = Logger.getLogger(ChatRoomProviderWrapperImpl.class);
     private final ProtocolProviderService protocolProvider;
     private final ChatRoomWrapper systemRoomWrapper;
     private final List<ChatRoomWrapper> chatRoomsOrderedCopy = new LinkedList<>();
@@ -321,7 +321,7 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
                     try {
                         chatRoom = groupChatOpSet.findRoom(chatRoomWrapper.getChatRoomName());
                     } catch (OperationFailedException | OperationNotSupportedException | XmppStringprepException e1) {
-                        logger.error("Failed to find chat room with name:" + chatRoomWrapper.getChatRoomName(), e1);
+                        Timber.e(e1, "Failed to find chat room with name:%s", chatRoomWrapper.getChatRoomName());
                     }
 
                     if (chatRoom != null) {

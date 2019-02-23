@@ -5,16 +5,16 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CandidateType;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.PortTracker;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.*;
 import org.atalk.util.StringUtils;
 import org.ice4j.Transport;
@@ -31,6 +31,8 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * A {@link TransportManagerJabberImpl} implementation that would use ICE for candidate management.
  *
@@ -41,11 +43,6 @@ import java.util.*;
  */
 public class IceUdpTransportManager extends TransportManagerJabberImpl implements PropertyChangeListener
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>IceUdpTransportManager</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(IceUdpTransportManager.class);
-
     // The default STUN servers that will be used in the peer to peer connections if none is specified
     List<InetSocketAddress> stunServers = Arrays.asList(
             new InetSocketAddress("stun1.l.google.com", 19302),
@@ -62,7 +59,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     /**
      * This is where we keep our answer between the time we get the offer and are ready with the answer.
      */
-    protected List<ContentPacketExtension> cpeList;
+    protected List<ContentExtensionElement> cpeList;
 
     /**
      * The ICE agent that this transport manager would be using for ICE negotiation.
@@ -124,7 +121,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
 
                 // in case user has canceled the login window
                 if (credentials == null) {
-                    logger.info("Credentials were null. User has most likely canceled the login operation");
+                    Timber.i("Credentials were null. User has most likely canceled the login operation");
                     return null;
                 }
 
@@ -133,7 +130,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
 
                 // the user didn't provide us a password (i.e. canceled the operation)
                 if (pass == null) {
-                    logger.info("Password was null. User has most likely canceled the login operation");
+                    Timber.i("Password was null. User has most likely canceled the login operation");
                     return null;
                 }
                 password = new String(pass);
@@ -145,8 +142,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             StunCandidateHarvester autoHarvester = namSer.discoverStunServer(accID.getService(),
                     StringUtils.getUTF8Bytes(username), StringUtils.getUTF8Bytes(password));
 
-            if (logger.isInfoEnabled())
-                logger.info("Auto discovered STUN/TURN-server harvester is " + autoHarvester);
+            Timber.i("Auto discovered STUN/TURN-server harvester is %s", autoHarvester);
 
             if (autoHarvester != null) {
                 atLeastOneStunServer = true;
@@ -160,7 +156,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             // if we get STUN server from automatic discovery, it may just be server name (i.e.
             // stun.domain.org) and it may be possible that it cannot be resolved
             if (addr.getAddress() == null) {
-                logger.info("Unresolved STUN server address for " + addr);
+                Timber.i("Unresolved STUN server address for %s", addr);
                 continue;
             }
             StunCandidateHarvester harvester;
@@ -172,8 +168,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 // this is a STUN only server
                 harvester = new StunCandidateHarvester(addr);
             }
-            if (logger.isInfoEnabled())
-                logger.info("Adding pre-configured harvester " + harvester);
+            Timber.i("Adding pre-configured harvester %s", harvester);
             atLeastOneStunServer = true;
             agent.addCandidateHarvester(harvester);
         }
@@ -201,11 +196,9 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             agent.addCandidateHarvester(new UPNPHarvester());
 
         long stopGatheringHarvesterTime = System.currentTimeMillis();
-        if (logger.isInfoEnabled()) {
-            long gatheringHarvesterTime = stopGatheringHarvesterTime - startGatheringHarvesterTime;
-            logger.info("End gathering harvester within " + gatheringHarvesterTime + " ms; Size: "
-                    + agent.getHarvestCount());
-        }
+        long gatheringHarvesterTime = stopGatheringHarvesterTime - startGatheringHarvesterTime;
+        Timber.i("End gathering harvester within %d ms; Size: %s",
+                gatheringHarvesterTime, agent.getHarvestCount());
         return agent;
     }
 
@@ -306,8 +299,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                         if (streamConnectorSocket != null) {
                             streamConnectorSockets[i] = streamConnectorSocket;
                             streamConnectorSocketCount++;
-                            logger.trace("Added a streamConnectorSocket to the array StreamConnectorSocket and increase "
-                                    + "the count of streamConnectorSocketCount by one to " + streamConnectorSocketCount);
+                            Timber.log(TimberLog.FINER, "Added a streamConnectorSocket to StreamConnectorSocket list"
+                                    + " and increase streamConnectorSocketCount to " + streamConnectorSocketCount);
                         }
                     }
                 }
@@ -392,14 +385,14 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     protected ExtensionElement createTransportPacketExtension()
     {
-        return new IceUdpTransportPacketExtension();
+        return new IceUdpTransportExtensionElement();
     }
 
     /**
      * {@inheritDoc}
      */
-    protected ExtensionElement startCandidateHarvest(ContentPacketExtension theirContent,
-            ContentPacketExtension ourContent, TransportInfoSender transportInfoSender, String media)
+    protected ExtensionElement startCandidateHarvest(ContentExtensionElement theirContent,
+            ContentExtensionElement ourContent, TransportInfoSender transportInfoSender, String media)
             throws OperationFailedException
     {
         ExtensionElement pe;
@@ -420,7 +413,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
              * extension to be sent in transport-info so the content has the same attributes as in
              * our answer and none of its non-transport extensions.
              */
-            ContentPacketExtension transportInfoContent = new ContentPacketExtension();
+            ContentExtensionElement transportInfoContent = new ContentExtensionElement();
 
             for (String name : ourContent.getAttributeNames()) {
                 Object value = ourContent.getAttribute(name);
@@ -440,7 +433,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
              * with Empathy right now. In the future, we will get back to the original behavior:
              * sending all content in one transport-info.
              */
-            Collection<ContentPacketExtension> transportInfoContents = new LinkedList<>();
+            Collection<ContentExtensionElement> transportInfoContents = new LinkedList<>();
             transportInfoContents.add(transportInfoContent);
             transportInfoSender.sendTransportInfo(transportInfoContents);
         }
@@ -467,8 +460,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @see TransportManagerJabberImpl#startCandidateHarvest(List, List, TransportInfoSender)
      */
     @Override
-    public void startCandidateHarvest(List<ContentPacketExtension> theirOffer,
-            List<ContentPacketExtension> ourAnswer, TransportInfoSender transportInfoSender)
+    public void startCandidateHarvest(List<ContentExtensionElement> theirOffer,
+            List<ContentExtensionElement> ourAnswer, TransportInfoSender transportInfoSender)
             throws OperationFailedException
     {
         this.cpeList = ourAnswer;
@@ -477,14 +470,14 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
 
     /**
      * Converts the ICE media <tt>stream</tt> and its local candidates into a
-     * {@link IceUdpTransportPacketExtension}.
+     * {@link IceUdpTransportExtensionElement}.
      *
      * @param stream the {@link IceMediaStream} that we'd like to describe in XML.
-     * @return the {@link IceUdpTransportPacketExtension} that we
+     * @return the {@link IceUdpTransportExtensionElement} that we
      */
     protected ExtensionElement createTransport(IceMediaStream stream)
     {
-        IceUdpTransportPacketExtension transport = new IceUdpTransportPacketExtension();
+        IceUdpTransportExtensionElement transport = new IceUdpTransportExtensionElement();
         Agent iceAgent = stream.getParentAgent();
         transport.setUfrag(iceAgent.getLocalUfrag());
         transport.setPassword(iceAgent.getLocalPassword());
@@ -509,16 +502,16 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     }
 
     /**
-     * Creates a {@link CandidatePacketExtension} and initializes it so that it would describe the
+     * Creates a {@link CandidateExtensionElement} and initializes it so that it would describe the
      * state of <tt>candidate</tt>
      *
      * @param candidate the ICE4J {@link Candidate} that we'd like to convert into an XMPP packet extension.
-     * @return a new {@link CandidatePacketExtension} corresponding to the state of the
+     * @return a new {@link CandidateExtensionElement} corresponding to the state of the
      * <tt>candidate</tt> candidate.
      */
-    private CandidatePacketExtension createCandidate(Candidate<?> candidate)
+    private CandidateExtensionElement createCandidate(Candidate<?> candidate)
     {
-        CandidatePacketExtension packet = new CandidatePacketExtension();
+        CandidateExtensionElement packet = new CandidateExtensionElement();
         packet.setFoundation(candidate.getFoundation());
         Component component = candidate.getParentComponent();
 
@@ -580,12 +573,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             if (maxAllocatedPort > 0) {
                 int nextPort = 1 + maxAllocatedPort;
                 portTracker.setNextPort(nextPort);
-                logger.debug("Updating the port tracker min port: " + nextPort);
+                Timber.d("Updating the port tracker min port: %s", nextPort);
             }
         } catch (Throwable t) {
             //hey, we were just trying to be nice. if that didn't work for
             //some reason we really can't be held responsible!
-            logger.debug("Determining next port didn't work: ", t);
+            Timber.d(t, "Determining next port didn't work.");
         }
         return stream;
     }
@@ -628,7 +621,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @see TransportManagerJabberImpl#wrapupCandidateHarvest()
      */
     @Override
-    public List<ContentPacketExtension> wrapupCandidateHarvest()
+    public List<ContentExtensionElement> wrapupCandidateHarvest()
     {
         return cpeList;
     }
@@ -648,29 +641,29 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     /**
      * Starts the connectivity establishment of the associated ICE <tt>Agent</tt>.
      *
-     * @param remote the collection of <tt>ContentPacketExtension</tt>s which represents the remote
+     * @param remote the collection of <tt>ContentExtensionElement</tt>s which represents the remote
      * counterpart of the negotiation between the local and the remote peers
      * @return <tt>true</tt> if connectivity establishment has been started in response to the call;
      * otherwise, <tt>false</tt>
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Iterable)
      */
     @Override
-    public synchronized boolean startConnectivityEstablishment(Iterable<ContentPacketExtension> remote)
+    public synchronized boolean startConnectivityEstablishment(Iterable<ContentExtensionElement> remote)
             throws OperationFailedException
     {
-        Map<String, IceUdpTransportPacketExtension> map = new LinkedHashMap<>();
-        for (ContentPacketExtension content : remote) {
-            IceUdpTransportPacketExtension transport = content.getFirstChildOfType(IceUdpTransportPacketExtension.class);
+        Map<String, IceUdpTransportExtensionElement> map = new LinkedHashMap<>();
+        for (ContentExtensionElement content : remote) {
+            IceUdpTransportExtensionElement transport = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
             /*
              * If we cannot associate an IceMediaStream with the remote content, we will not have
              * anything to add the remote candidates to.
              */
-            RtpDescriptionPacketExtension description = content.getFirstChildOfType(RtpDescriptionPacketExtension.class);
+            RtpDescriptionExtensionElement description = content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
             if ((description == null) && (cpeList != null)) {
-                ContentPacketExtension localContent = findContentByName(cpeList, content.getName());
+                ContentExtensionElement localContent = findContentByName(cpeList, content.getName());
 
                 if (localContent != null) {
-                    description = localContent.getFirstChildOfType(RtpDescriptionPacketExtension.class);
+                    description = localContent.getFirstChildOfType(RtpDescriptionExtensionElement.class);
                 }
             }
             if (description != null) {
@@ -695,39 +688,39 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     /**
      * Starts the connectivity establishment of the associated ICE <tt>Agent</tt>.
      *
-     * @param remote a <tt>Map</tt> of media-<tt>IceUdpTransportPacketExtension</tt> pairs which represents
+     * @param remote a <tt>Map</tt> of media-<tt>IceUdpTransportExtensionElement</tt> pairs which represents
      * the remote counterpart of the negotiation between the local and the remote peers
      * @return <tt>true</tt> if connectivity establishment has been started in response to the call;
      * otherwise, <tt>false</tt>
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Map)
      */
     @Override
-    protected synchronized boolean startConnectivityEstablishment(Map<String, IceUdpTransportPacketExtension> remote)
+    protected synchronized boolean startConnectivityEstablishment(Map<String, IceUdpTransportExtensionElement> remote)
     {
         /*
          * If ICE is running already, we try to update the checklists with the candidates. Note that
          * this is a best effort.
          */
         boolean iceAgentStateIsRunning = IceProcessingState.RUNNING.equals(iceAgent.getState());
-        if (iceAgentStateIsRunning && logger.isInfoEnabled())
-            logger.info("Update ICE remote candidates");
+        if (iceAgentStateIsRunning)
+            Timber.i("Update ICE remote candidates");
 
         int generation = iceAgent.getGeneration();
         boolean startConnectivityEstablishment = false;
 
-        for (Map.Entry<String, IceUdpTransportPacketExtension> e : remote.entrySet()) {
-            IceUdpTransportPacketExtension transport = e.getValue();
-            List<CandidatePacketExtension> candidates = transport.getChildExtensionsOfType(CandidatePacketExtension.class);
+        for (Map.Entry<String, IceUdpTransportExtensionElement> e : remote.entrySet()) {
+            IceUdpTransportExtensionElement transport = e.getValue();
+            List<CandidateExtensionElement> candidates = transport.getChildExtensionsOfType(CandidateExtensionElement.class);
 
             if (iceAgentStateIsRunning && (candidates.size() == 0)) {
-                logger.info("connectivity establishment has not been started because candidate list is empty");
+                Timber.i("connectivity establishment has not been started because candidate list is empty");
                 return false;
             }
 
             String media = e.getKey();
             IceMediaStream stream = iceAgent.getStream(media);
             if (stream == null) {
-                logger.warn("No ICE media stream for media: " + media + " - ignored candidates.");
+                Timber.w("No ICE media stream for media: %s - ignored candidates.", media);
                 continue;
             }
 
@@ -745,14 +738,14 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             if (password != null)
                 stream.setRemotePassword(password);
 
-            for (CandidatePacketExtension candidate : candidates) {
+            for (CandidateExtensionElement candidate : candidates) {
                 /*
                  * Is the remote candidate from the current generation of the iceAgent?
                  */
                 if (candidate.getGeneration() != generation)
                     continue;
                 if (candidate.getIP() == null || "".equals(candidate.getIP())) {
-                    logger.warn("Skipped ICE candidate with empty IP");
+                    Timber.w("Skipped ICE candidate with empty IP");
                     continue;
                 }
                 Component component = stream.getComponent(candidate.getComponent());
@@ -799,8 +792,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             for (IceMediaStream stream : iceAgent.getStreams()) {
                 for (Component component : stream.getComponents()) {
                     if (component.getRemoteCandidateCount() < 1) {
-                        logger.warn("### Insufficient remote candidates to startConnectivityEstablishment! "
-                                + component.toShortString() + ": " + component.getRemoteCandidateCount());
+                        Timber.w("### Insufficient remote candidates to startConnectivityEstablishment! %s: %d",
+                                component.toShortString(), component.getRemoteCandidateCount());
                         startConnectivityEstablishment = false;
                         break;
                     }
@@ -835,7 +828,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 {
                     Agent iceAgent = (Agent) evt.getSource();
                     if (iceAgent.isOver()) {
-                        logger.warn("Current IceProcessingState: " + evt.getNewValue());
+                        Timber.w("Current IceProcessingState: %s", evt.getNewValue());
                         iceAgent.removeStateChangeListener(this);
                         if (iceAgent == IceUdpTransportManager.this.iceAgent) {
                             synchronized (iceProcessingStateSyncRoot) {
@@ -889,17 +882,17 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
          * have been sent in transport-info already.
          */
         if (cpeList != null) {
-            for (ContentPacketExtension content : cpeList) {
-                IceUdpTransportPacketExtension transport
-                        = content.getFirstChildOfType(IceUdpTransportPacketExtension.class);
+            for (ContentExtensionElement content : cpeList) {
+                IceUdpTransportExtensionElement transport
+                        = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
                 if (transport != null) {
-                    for (CandidatePacketExtension candidate : transport.getCandidateList())
+                    for (CandidateExtensionElement candidate : transport.getCandidateList())
                         transport.removeCandidate(candidate);
 
-                    Collection<?> childExtensions = transport.getChildExtensionsOfType(CandidatePacketExtension.class);
+                    Collection<?> childExtensions = transport.getChildExtensionsOfType(CandidateExtensionElement.class);
                     if ((childExtensions == null) || childExtensions.isEmpty()) {
-                        transport.removeAttribute(IceUdpTransportPacketExtension.UFRAG_ATTR_NAME);
-                        transport.removeAttribute(IceUdpTransportPacketExtension.PWD_ATTR_NAME);
+                        transport.removeAttribute(IceUdpTransportExtensionElement.UFRAG_ATTR_NAME);
+                        transport.removeAttribute(IceUdpTransportExtensionElement.PWD_ATTR_NAME);
                     }
                 }
             }
@@ -919,10 +912,10 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     @Override
     public void removeContent(String name)
     {
-        ContentPacketExtension content = removeContent(cpeList, name);
+        ContentExtensionElement content = removeContent(cpeList, name);
         if (content != null) {
-            RtpDescriptionPacketExtension rtpDescription
-                    = content.getFirstChildOfType(RtpDescriptionPacketExtension.class);
+            RtpDescriptionExtensionElement rtpDescription
+                    = content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
 
             if (rtpDescription != null) {
                 IceMediaStream stream = iceAgent.getStream(rtpDescription.getMedia());

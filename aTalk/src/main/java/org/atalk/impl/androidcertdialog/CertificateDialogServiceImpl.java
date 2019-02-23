@@ -6,7 +6,6 @@
 package org.atalk.impl.androidcertdialog;
 
 import net.java.sip.communicator.service.certificate.VerifyCertificateDialogService;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -14,6 +13,8 @@ import org.atalk.android.aTalkApp;
 import java.security.cert.Certificate;
 import java.util.HashMap;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * Android implementation of <tt>VerifyCertificateDialogService</tt>.
@@ -23,11 +24,6 @@ import java.util.Map;
  */
 class CertificateDialogServiceImpl implements VerifyCertificateDialogService
 {
-    /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(CertificateDialogServiceImpl.class);
-
     /**
      * Maps request ids to <tt>VerifyCertDialog</tt> so that they can be retrieved by Android
      * <tt>Activity</tt> or <tt>Fragments</tt>.
@@ -47,7 +43,7 @@ class CertificateDialogServiceImpl implements VerifyCertificateDialogService
         VerifyCertDialog verifyCertDialog = new VerifyCertDialog(requestId, certs[0], title, message);
 
         requestMap.put(requestId, verifyCertDialog);
-        logger.debug(hashCode() + " creating dialog: " + requestId);
+        Timber.d("%d creating dialog: %s", hashCode(), requestId);
         // Prevents from closing the dialog on outside touch
 
         return verifyCertDialog;
@@ -61,7 +57,7 @@ class CertificateDialogServiceImpl implements VerifyCertificateDialogService
      */
     public VerifyCertDialog retrieveDialog(Long requestId)
     {
-        logger.debug(hashCode() + " getting dialog: " + requestId);
+        Timber.d("%d getting dialog: %d", hashCode(), requestId);
         return requestMap.get(requestId);
     }
 }

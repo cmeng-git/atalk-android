@@ -16,23 +16,20 @@
 package net.java.sip.communicator.impl.sysactivity;
 
 import net.java.sip.communicator.service.sysactivity.SystemActivityNotificationsService;
-import net.java.sip.communicator.util.Logger;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+
+import timber.log.Timber;
 
 /**
  * Listens for system activity changes like sleep, network change, inactivity and informs all its listeners.
  *
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
 public class SysActivityActivator implements BundleActivator
 {
-    /**
-     * The <tt>Logger</tt> used by this <tt>SysActivityActivator</tt> for logging output.
-     */
-    private final Logger logger = Logger.getLogger(SysActivityActivator.class);
-
     /**
      * The OSGi <tt>BundleContext</tt>.
      */
@@ -56,9 +53,7 @@ public class SysActivityActivator implements BundleActivator
             throws Exception
     {
         SysActivityActivator.bundleContext = bundleContext;
-
-        if (logger.isDebugEnabled())
-            logger.debug("Started.");
+        Timber.d("Started.");
 
         sysActivitiesServiceImpl = new SystemActivityNotificationsServiceImpl();
         sysActivitiesServiceImpl.start();

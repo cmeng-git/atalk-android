@@ -17,7 +17,6 @@ import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.device.ScreenDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 
 import java.util.*;
@@ -33,14 +32,10 @@ import javax.sdp.SdpConstants;
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class MediaUtils
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>MediaUtils</tt> class for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(MediaUtils.class);
-
     /**
      * An empty array with <tt>MediaFormat</tt> element type. Explicitly defined in order to reduce
      * unnecessary allocations, garbage collection.

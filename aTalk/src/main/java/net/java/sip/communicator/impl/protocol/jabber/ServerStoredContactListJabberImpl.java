@@ -12,10 +12,10 @@ import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.customavatar.CustomAvatarService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.jivesoftware.smack.SmackException.*;
 import org.jivesoftware.smack.*;
@@ -34,6 +34,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.ServiceReference;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.both;
 import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.from;
@@ -55,17 +57,12 @@ import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.to;
 public class ServerStoredContactListJabberImpl
 {
     /**
-     * The logger.
-     */
-    private static final Logger logger = Logger.getLogger(ServerStoredContactListJabberImpl.class);
-
-    /**
      * The jabber list that we encapsulate
      */
     private Roster mRoster = null;
 
     /**
-     * The root <code>ContactGroup</code>. The container for all jabber buddies and groups.
+     * The root {@code ContactGroup}. The container for all jabber buddies and groups.
      */
     private final RootContactGroupJabberImpl rootGroup;
 
@@ -104,6 +101,12 @@ public class ServerStoredContactListJabberImpl
      * Retrieve contact information.
      */
     private InfoRetriever infoRetriever;
+
+    /*
+     * Disable info Retrieval on first login even when local cache is empty
+     * cmeng: 20190212seems ejabberd will send VCardTempXUpdate with photo attr in <presence/>
+     */
+    private boolean infoRetrieveOnStart = false;
 
     /**
      * Whether roster has been requested and dispatched.
@@ -218,16 +221,14 @@ public class ServerStoredContactListJabberImpl
     {
         // bail out if no one's listening
         if (parentOperationSet == null) {
-            if (logger.isDebugEnabled())
-                logger.debug("No presence op. set available. Bailing out.");
+            Timber.d("No presence opSet available. Bailing out.");
             return;
         }
 
         ServerStoredGroupEvent evt = new ServerStoredGroupEvent(group, eventID,
                 parentOperationSet.getServerStoredContactListRoot(), jabberProvider, parentOperationSet);
 
-        if (logger.isTraceEnabled())
-            logger.trace("Will dispatch the following grp event: " + evt);
+        Timber.log(TimberLog.FINER, "Will dispatch the following grp event: %s", evt);
 
         Iterable<ServerStoredGroupListener> listeners;
         synchronized (serverStoredGroupListeners) {
@@ -273,12 +274,10 @@ public class ServerStoredContactListJabberImpl
     {
         // bail out if no one's listening
         if (parentOperationSet == null) {
-            if (logger.isDebugEnabled())
-                logger.debug("No presence op. set available. Bailing out.");
+            Timber.d("No presence opSet available. Bailing out.");
             return;
         }
-        if (logger.isTraceEnabled())
-            logger.trace("Removing " + contact.getAddress() + " from " + parentGroup.getGroupName());
+        Timber.log(TimberLog.FINER, "Removing %s from %s", contact.getAddress(), parentGroup.getGroupName());
 
         // dispatch
         parentOperationSet.fireSubscriptionEvent(contact, parentGroup, SubscriptionEvent.SUBSCRIPTION_REMOVED);
@@ -295,8 +294,7 @@ public class ServerStoredContactListJabberImpl
     {
         // bail out if no one's listening
         if (parentOperationSet == null) {
-            if (logger.isDebugEnabled())
-                logger.debug("No presence op. set available. Bailing out.");
+            Timber.d("No presence opSet available. Bailing out.");
             return;
         }
         // dispatch
@@ -436,9 +434,7 @@ public class ServerStoredContactListJabberImpl
     public void addContact(final ContactGroup parent, String id)
             throws OperationFailedException
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Adding contact " + id + " to parent=" + parent);
-
+        Timber.log(TimberLog.FINER, "Adding contact %s to parent = %s", id, parent);
         final BareJid contactJid = parseAddressString(id);
 
         // if the contact is already in the contact list and is not volatile, then only broadcast an event
@@ -460,14 +456,14 @@ public class ServerStoredContactListJabberImpl
         if (cursor.getCount() > 0) {
             cursor.close();
 
-            logger.warn("Contact " + contactJid + " already exists in group " + findContactGroup(contactJid.toString()));
+            Timber.w("Contact %s already exists in group %s", contactJid, findContactGroup(contactJid.toString()));
             throw new OperationFailedException("Contact " + contactJid + " already exist",
                     OperationFailedException.SUBSCRIPTION_ALREADY_EXISTS);
         }
         cursor.close();
 
         String[] parentNames = null;
-        if (parent != null && parent != getRootGroup()) {
+        if (parent != getRootGroup()) {
             parentNames = new String[]{parent.getGroupName()};
         }
 
@@ -497,7 +493,7 @@ public class ServerStoredContactListJabberImpl
             mRoster.createEntry(contactJid, contactJid.toString(), parentNames);
         } catch (XMPPErrorException ex) {
             String errTxt = "Error adding new jabber roster entry";
-            logger.error(errTxt, ex);
+            Timber.e(ex, "%s", errTxt);
             int errorCode = OperationFailedException.INTERNAL_ERROR;
             StanzaError error = ex.getStanzaError();
             if (error != null) {
@@ -630,14 +626,11 @@ public class ServerStoredContactListJabberImpl
     public void createGroup(String groupName)
             throws OperationFailedException
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Creating group: " + groupName);
-
+        Timber.d("Creating group: %s", groupName);
         ContactGroupJabberImpl existingGroup = findContactGroup(groupName);
 
         if (existingGroup != null && existingGroup.isPersistent()) {
-            if (logger.isDebugEnabled())
-                logger.debug("ContactGroup " + groupName + " already exists.");
+            Timber.d("ContactGroup %s already exists.", groupName);
             throw new OperationFailedException("ContactGroup " + groupName + " already exists.",
                     OperationFailedException.CONTACT_GROUP_ALREADY_EXISTS);
         }
@@ -648,8 +641,7 @@ public class ServerStoredContactListJabberImpl
         rootGroup.addSubGroup(newGroup);
 
         fireGroupEvent(newGroup, ServerStoredGroupEvent.GROUP_CREATED_EVENT);
-        if (logger.isTraceEnabled())
-            logger.trace("Group " + groupName + " created.");
+        Timber.log(TimberLog.FINER, "Group %s created.", groupName);
     }
 
     /**
@@ -677,7 +669,7 @@ public class ServerStoredContactListJabberImpl
                     mRoster.removeEntry(item.getSourceEntry());
             }
         } catch (XMPPException ex) {
-            logger.error("Error removing group", ex);
+            Timber.e(ex, "Error removing group");
             throw new OperationFailedException(ex.getMessage(), OperationFailedException.GENERAL_ERROR, ex);
         } catch (NotLoggedInException | NoResponseException | NotConnectedException | InterruptedException e) {
             e.printStackTrace();
@@ -715,7 +707,7 @@ public class ServerStoredContactListJabberImpl
                     else if (error.getCondition().equals(Condition.bad_request))
                         errorCode = OperationFailedException.ILLEGAL_ARGUMENT;
                 }
-                logger.error(errTxt, ex);
+                Timber.e(ex, "%s", errTxt);
                 throw new OperationFailedException(errTxt, errorCode, ex);
             } catch (NotLoggedInException | NoResponseException | NotConnectedException | InterruptedException ex) {
                 ex.printStackTrace();
@@ -735,7 +727,7 @@ public class ServerStoredContactListJabberImpl
             groupToRename.getSourceGroup().setName(newName);
             groupToRename.setNameCopy(newName);
         } catch (NotConnectedException | NoResponseException | XMPPErrorException | InterruptedException e) {
-            logger.error("Could not rename " + groupToRename + " to " + newName);
+            Timber.e("Could not rename %s to %s", groupToRename, newName);
         }
         groupToRename.setNameCopy(newName);
     }
@@ -764,7 +756,7 @@ public class ServerStoredContactListJabberImpl
                 addContact(newParent, contactAddress);
                 return;
             } catch (OperationFailedException ex) {
-                logger.error("Cannot move contact! ", ex);
+                Timber.e(ex, "Cannot move contact!");
                 throw new OperationFailedException(ex.getMessage(), OperationFailedException.GENERAL_ERROR, ex);
             }
         }
@@ -778,7 +770,7 @@ public class ServerStoredContactListJabberImpl
                     new String[]{newParent.getGroupName()});
             newParent.addContact(contact);
         } catch (XMPPException ex) {
-            logger.error("Cannot move contact! ", ex);
+            Timber.e(ex, "Cannot move contact!");
             throw new OperationFailedException(ex.getMessage(), OperationFailedException.GENERAL_ERROR, ex);
         } catch (NotLoggedInException | NoResponseException | NotConnectedException | InterruptedException e) {
             e.printStackTrace();
@@ -833,14 +825,14 @@ public class ServerStoredContactListJabberImpl
             try {
                 parentOperationSet.publishPresenceStatus(initialStatus, initialStatusMessage);
             } catch (Exception ex) {
-                logger.error("Error publishing initial presence", ex);
+                Timber.e(ex, "Error publishing initial presence");
             }
         }
         // Send <presence/> only we do not have OperationSetPersistentPresence feature, which are
         // more readily to support <Presence/> sending with <photo/> tag
         else if (jabberProvider.getOperationSet(OperationSetPersistentPresence.class) == null) {
             try {
-                logger.warn("Smack sending presence without OpSetPP support!");
+                Timber.w("Smack sending presence without OpSetPP support!");
                 Presence presence = new Presence(Presence.Type.available);
                 getParentProvider().getConnection().sendStanza(presence);
             } catch (NotConnectedException | InterruptedException e) {
@@ -1046,8 +1038,7 @@ public class ServerStoredContactListJabberImpl
     {
         // bail out if no one's listening
         if (parentOperationSet == null) {
-            if (logger.isDebugEnabled())
-                logger.debug("No presence op. set available. Bailing out.");
+            Timber.d("No presence op. set available. Bailing out.");
             return;
         }
 
@@ -1072,8 +1063,7 @@ public class ServerStoredContactListJabberImpl
     {
         // bail out if no one's listening
         if (parentOperationSet == null) {
-            if (logger.isDebugEnabled())
-                logger.debug("No presence op. set available. Bailing out.");
+            Timber.d("No presence op. set available. Bailing out.");
             return;
         }
 
@@ -1140,8 +1130,7 @@ public class ServerStoredContactListJabberImpl
     {
         ContactGroup group = findContactGroup(contact);
         if (group == null) {
-            if (logger.isTraceEnabled())
-                logger.trace("Could not find ParentGroup for deleted entry:" + contact.getAddress());
+            Timber.log(TimberLog.FINER, "Could not find ParentGroup for deleted entry:%s", contact.getAddress());
             return;
         }
 
@@ -1180,8 +1169,7 @@ public class ServerStoredContactListJabberImpl
          */
         public void entriesAdded(Collection<Jid> addresses)
         {
-            if (logger.isTraceEnabled())
-                logger.trace("entriesAdded " + addresses);
+            Timber.log(TimberLog.FINER, "entriesAdded %s", addresses);
 
             for (Jid id : addresses) {
                 addEntryToContactList(id);
@@ -1288,8 +1276,7 @@ public class ServerStoredContactListJabberImpl
          */
         public void entriesUpdated(Collection<Jid> addresses)
         {
-            if (logger.isTraceEnabled())
-                logger.trace("entriesUpdated  " + addresses);
+            Timber.log(TimberLog.FINER, "entriesUpdated %s", addresses);
 
             // will search for group renamed
             for (Jid contactJid : addresses) {
@@ -1399,14 +1386,12 @@ public class ServerStoredContactListJabberImpl
         public void entriesDeleted(Collection<Jid> addresses)
         {
             for (Jid contactJid : addresses) {
-                if (logger.isTraceEnabled())
-                    logger.trace("entry deleted " + contactJid);
+                Timber.log(TimberLog.FINER, "entry deleted %s", contactJid);
 
                 ContactJabberImpl contact = findContactById(contactJid);
 
                 if (contact == null) {
-                    if (logger.isTraceEnabled())
-                        logger.trace("Could not find contact for deleted entry:" + contactJid);
+                    Timber.log(TimberLog.FINER, "Could not find contact for deleted entry: %s", contactJid);
                     continue;
                 }
                 contactDeleted(contact);
@@ -1469,7 +1454,6 @@ public class ServerStoredContactListJabberImpl
 
                     for (ContactJabberImpl contact : copyContactsForUpdate) {
                         byte[] imgBytes = getAvatar(contact);
-
                         if (imgBytes != null) {
                             byte[] oldImage = contact.getImage(false);
 
@@ -1483,7 +1467,7 @@ public class ServerStoredContactListJabberImpl
                     }
                 }
             } catch (InterruptedException ex) {
-                logger.error("ImageRetriever error waiting will stop now!", ex);
+                Timber.e(ex, "ImageRetriever error waiting will stop now!");
             }
         }
 
@@ -1528,8 +1512,8 @@ public class ServerStoredContactListJabberImpl
             String userId = userJid.toString();
             byte[] result = VCardAvatarManager.getAvatarImageByJid(userJid);
 
-            if (result == null) {
-                logger.info("Proceed to getAvatar for: " + userId);
+            if ((result == null) && infoRetrieveOnStart) {
+                Timber.i("Proceed to getAvatar for: %s", userId);
                 try {
                     Iterator<ServerStoredDetails.GenericDetail> iter
                             = infoRetriever.getDetails(userJid, ServerStoredDetails.ImageDetail.class);
@@ -1539,9 +1523,7 @@ public class ServerStoredContactListJabberImpl
                         result = imgDetail.getBytes();
                     }
                 } catch (Exception ex) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Cannot load image for contact " + contact + ": " + ex.getMessage(), ex);
-                    }
+                    Timber.d(ex, "Cannot load image for contact %s: %s", contact, ex.getMessage());
                 }
                 if (result == null) {
                     result = searchForCustomAvatar(userId);

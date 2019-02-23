@@ -2,17 +2,20 @@ package org.xmpp.jnodes.smack;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.*;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.IllegalFormatException;
 
 public class JingleNodesProvider extends IQProvider
 {
 	@Override
-	public Element parse(XmlPullParser parser, int depth)
-			throws XmlPullParserException, IOException, SmackException
+	public Element parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+			throws IOException, XmlPullParserException, SmackParsingException
 	{
 		JingleChannelIQ iq = null;
 

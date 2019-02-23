@@ -32,7 +32,6 @@ import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJab
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -57,6 +56,8 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * The dialog pops up when the user account login return with "not-authorized" i.e. not
  * registered on server, and user has select the InBand Registration option.
@@ -68,11 +69,6 @@ import java.util.*;
  */
 public class IBRCaptchaProcessDialog extends Dialog
 {
-    /**
-     * Logger of this class
-     */
-    private static final Logger logger = Logger.getLogger(IBRCaptchaProcessDialog.class);
-
     /**
      * Listens for connection closes or errors.
      */
@@ -287,7 +283,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                     TextView viewLabel = fieldEntry.findViewById(R.id.field_label);
                     ImageView viewRequired = fieldEntry.findViewById(R.id.star);
 
-                    logger.warn("New entry field: " + label + " = " + var);
+                    Timber.w("New entry field: %s = %s", label, var);
                     // Keep copy of the variable field for later extracting the user entered value
                     varMap.put(label, var);
 
@@ -337,7 +333,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                     showCaptchaContent();
                 }
             } catch (IOException e) {
-                logger.error(e, e);
+                Timber.e(e, "%s", e.getMessage());
             }
         }).start();
     }
@@ -481,7 +477,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                 else {
                     xmppError = StanzaError.from(Condition.not_acceptable, errMsg).build();
                 }
-                logger.error("Exception: " + errMsg + ": " + errDetails);
+                Timber.e("Exception: %s; %s", errMsg, errDetails);
                 if (errMsg.contains("conflict") && errDetails.contains("exists"))
                     mAccountId.setIbRegistration(false);
                 mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
@@ -621,7 +617,7 @@ public class IBRCaptchaProcessDialog extends Dialog
         public void connectionClosedOnError(Exception exception)
         {
             String errMsg = exception.getMessage();
-            logger.error("Captcha-Exception: " + errMsg);
+            Timber.e("Captcha-Exception: %s", errMsg);
 
             StanzaError xmppError = StanzaError.from(Condition.remote_server_timeout, errMsg).build();
             mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));

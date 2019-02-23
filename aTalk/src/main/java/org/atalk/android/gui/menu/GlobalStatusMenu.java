@@ -17,7 +17,6 @@ import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusCh
 import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
@@ -30,14 +29,11 @@ import org.osgi.framework.*;
 import java.beans.PropertyChangeEvent;
 import java.util.*;
 
+import timber.log.Timber;
+
 public class GlobalStatusMenu extends FragmentActivity
         implements OnDismissListener, ServiceListener, ProviderPresenceStatusListener
 {
-    /**
-     * The logger used by this class
-     */
-    static final private Logger logger = Logger.getLogger(GlobalStatusMenu.class);
-
     private FragmentActivity mActivity;
     private LayoutInflater mInflater;
     private PopupWindow mWindow;
@@ -99,7 +95,7 @@ public class GlobalStatusMenu extends FragmentActivity
         // This happens when Activity is recreated by the system after OSGi service has been
         // killed (and the whole process)
         if (AndroidGUIActivator.bundleContext == null) {
-            logger.error("OSGi service probably not initialized");
+            Timber.e("OSGi service probably not initialized");
             return;
         }
         AndroidGUIActivator.bundleContext.addServiceListener(this);
@@ -371,14 +367,14 @@ public class GlobalStatusMenu extends FragmentActivity
                         // cmeng: set state to false to force it to execute offline->online
                         if (globalStatus != null) {
                             globalStatus.publishStatus(pps, selectedStatus, false);
-                            // logger.warn("## Publish global presence status: " + selectedStatus.getStatusName() + ": " + pps);
+                            // Timber.w("## Publish global presence status: " + selectedStatus.getStatusName() + ": " + pps);
                         }
                         if (pps.isRegistered()) {
                             accountPresence.publishPresenceStatus(selectedStatus, statusMessage);
-                            // logger.warn("## Publish account presence status: " + selectedStatus.getStatusName() + ": " + pps);
+                            // Timber.w("## Publish account presence status: " + selectedStatus.getStatusName() + ": " + pps);
                         }
                     } catch (Exception e) {
-                        logger.error("Account presence publish error: ", e);
+                        Timber.e(e, "Account presence publish error.");
                     }
                 }).start();
             }
@@ -523,12 +519,12 @@ public class GlobalStatusMenu extends FragmentActivity
     public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt)
     {
         ProtocolProviderService pps = evt.getProvider();
-        // logger.warn("### PPS presence status change: " + pps + " => " + evt.getNewStatus());
+        // Timber.w("### PPS presence status change: " + pps + " => " + evt.getNewStatus());
 
         // do not proceed if spinnerContainer is null
         View spinnerContainer = accountSpinner.get(pps);
         if (spinnerContainer == null) {
-            logger.error("No presence status spinner setup for: " + pps);
+            Timber.e("No presence status spinner setup for: %s", pps);
             return;
         }
 
@@ -542,7 +538,7 @@ public class GlobalStatusMenu extends FragmentActivity
     @Override
     public void providerStatusMessageChanged(PropertyChangeEvent evt)
     {
-        // logger.warn("### PPS Status message change: " + evt.getSource() + " => " + evt.getNewValue());
+        // Timber.w("### PPS Status message change: " + evt.getSource() + " => " + evt.getNewValue());
     }
 
     /**
@@ -566,7 +562,7 @@ public class GlobalStatusMenu extends FragmentActivity
 
         // we don't care if the source service is not a protocol provider
         if (service instanceof ProtocolProviderService) {
-            // logger.warn("## ProtocolServiceProvider Add or Remove: " + event.getType());
+            // Timber.w("## ProtocolServiceProvider Add or Remove: " + event.getType());
             ProtocolProviderService pps = (ProtocolProviderService) service;
 
             switch (event.getType()) {
@@ -589,7 +585,7 @@ public class GlobalStatusMenu extends FragmentActivity
     private void addMenuItemPPS(ProtocolProviderService pps)
     {
         if ((!accountSpinner.containsKey(pps))) {
-            // logger.warn("## ProtocolServiceProvider Added: " + pps);
+            // Timber.w("## ProtocolServiceProvider Added: " + pps);
             AccountID accountId = pps.getAccountID();
             String userJid = accountId.getAccountJid();
             Drawable icon = aTalkApp.getAppResources().getDrawable(R.drawable.jabber_status_online);

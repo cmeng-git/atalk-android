@@ -8,8 +8,8 @@ package net.java.sip.communicator.service.protocol.media;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.event.DTMFListener;
 import net.java.sip.communicator.service.protocol.event.DTMFReceivedEvent;
-import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.Component;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.control.KeyFrameControl;
@@ -22,6 +22,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * Implements media control code which allows state sharing among multiple <tt>CallPeerMediaHandler</tt>s.
  *
@@ -30,11 +32,6 @@ import java.util.*;
  */
 public class MediaHandler extends PropertyChangeNotifier
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>MediaHandler</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(MediaHandler.class);
-
     /**
      * The <tt>AudioMediaStream</tt> which this instance uses to send and receive audio.
      */
@@ -751,8 +748,8 @@ public class MediaHandler extends PropertyChangeNotifier
         MediaStream stream = getStream(callPeerMediaHandler, mediaType);
 
         if (stream == null) {
-            if (logger.isTraceEnabled() && (mediaType != format.getMediaType()))
-                logger.trace("The media types of device and format differ: " + mediaType.toString());
+            if (mediaType != format.getMediaType())
+                Timber.log(TimberLog.FINER, "The media types of device and format differ: " + mediaType.toString());
 
             MediaService mediaService = ProtocolMediaActivator.getMediaService();
             SrtpControl srtpControl = srtpControls.findFirst(mediaType);
@@ -774,8 +771,7 @@ public class MediaHandler extends PropertyChangeNotifier
             }
         }
         else {
-            if (logger.isDebugEnabled())
-                logger.debug("Reinitializing stream: " + stream);
+            Timber.log(TimberLog.FINER, "Reinitializing stream: " + stream);
         }
         // cmeng: sream can still be null in testing. why?
         return configureStream(callPeerMediaHandler, device, format, target, direction,
@@ -817,7 +813,7 @@ public class MediaHandler extends PropertyChangeNotifier
             dbgMessage.append(pt).append("=").append(fmt).append("; ");
             stream.addDynamicRTPPayloadType(pt, fmt);
         }
-        logger.info(dbgMessage);
+        Timber.i("%s", dbgMessage);
 
         dbgMessage = new StringBuffer("PT overrides [");
         // now register whatever overrides we have for the above mappings
@@ -830,7 +826,7 @@ public class MediaHandler extends PropertyChangeNotifier
             stream.addDynamicRTPPayloadTypeOverride(originalPt, overridePt);
         }
         dbgMessage.append("]");
-        logger.info(dbgMessage);
+        Timber.i("%s", dbgMessage);
 
     }
 

@@ -133,7 +133,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
          * not implemented in android aTalk. Hence no action is required.
          * Note: the event get trigger whenever there is an init of the local video preview
          * e.g. init or toggle camera
-         * logger.warn("Preview surface change size: " + width + " x " + height);
+         * Timber.w("Preview surface change size: %s x %s", width, height);
          */
         // if (mHolder.getSurface() == null){
         // // preview surface does not exist
@@ -155,7 +155,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
         // mCamera.startPreview();
         //
         // } catch (Exception e){
-        // logger.error("Error starting camera preview: " + e.getMessage());
+        // Timber.e("Error starting camera preview: %s", e.getMessage());
         // }
     }
 

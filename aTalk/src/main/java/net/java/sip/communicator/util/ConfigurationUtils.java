@@ -46,6 +46,8 @@ import java.util.*;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+import timber.log.Timber;
+
 /**
  * Cares about all common configurations. Storing and retrieving configuration values.
  *
@@ -55,11 +57,6 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class ConfigurationUtils
 {
-    /**
-     * The logger for this class.
-     */
-    private static final Logger logger = Logger.getLogger(ConfigurationUtils.class);
-
     /**
      * The send message command defined by the Enter key.
      */
@@ -2070,7 +2067,7 @@ public class ConfigurationUtils
             else
                 attributes.put(property, value);
         } catch (JSONException e) {
-            logger.warn("ChatRoom property update failed: " + chatRoomId + ": " + property);
+            Timber.w("ChatRoom property update failed: %s: %s", chatRoomId, property);
             e.printStackTrace();
         }
 
@@ -2098,7 +2095,7 @@ public class ConfigurationUtils
         try {
             return attributes.getString(property);
         } catch (JSONException e) {
-            // logger.info("ChatRoom property not found for: " + chatRoomId + ": " + property);
+            // Timber.i("ChatRoom property not found for: " + chatRoomId + ": " + property);
         }
         return null;
     }
@@ -2155,7 +2152,7 @@ public class ConfigurationUtils
         String sessionUuid = mhs.getSessionUuidByJid(accountID, chatRoomID);
 
         if (StringUtils.isNullOrEmpty(sessionUuid)) {
-            logger.warn("Failed to get MUC prefix for chatRoom: " + chatRoomID);
+            Timber.w("Failed to get MUC prefix for chatRoom: %s", chatRoomID);
             return null;
         }
 
@@ -2382,7 +2379,7 @@ public class ConfigurationUtils
                 temp = (SSLSocket) SSLSocketFactory.getDefault().createSocket();
                 return temp.getEnabledProtocols();
             } catch (IOException e) {
-                logger.error(e);
+                Timber.e(e);
                 return getAvailableSslProtocols();
             }
         }
@@ -2401,7 +2398,7 @@ public class ConfigurationUtils
             temp = (SSLSocket) SSLSocketFactory.getDefault().createSocket();
             return temp.getSupportedProtocols();
         } catch (IOException e) {
-            logger.error(e);
+            Timber.e(e);
             return new String[]{};
         }
     }

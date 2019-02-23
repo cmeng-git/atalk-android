@@ -7,13 +7,15 @@ package net.java.sip.communicator.service.protocol;
 
 import net.java.sip.communicator.service.calendar.CalendarService;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.Logger;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.osgi.framework.*;
 
 import java.util.*;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 import static net.java.sip.communicator.service.protocol.OperationSetBasicTelephony.HANGUP_REASON_BUSY_HERE;
 
@@ -32,11 +34,6 @@ public class SingleCallInProgressPolicy
      * Account property to enable per account rejecting calls if the account presence is in DND or OnThePhone status.
      */
     private static final String ACCOUNT_PROPERTY_REJECT_IN_CALL_ON_DND = "RejectIncomingCallsWhenDnD";
-
-    /**
-     * Our class logger
-     */
-    private static final Logger logger = Logger.getLogger(SingleCallInProgressPolicy.class);
 
     /**
      * The name of the configuration property which specifies whether call waiting is disabled i.e.
@@ -107,9 +104,7 @@ public class SingleCallInProgressPolicy
      */
     private void addCallListener(Call call)
     {
-        if (logger.isTraceEnabled()) {
-            logger.trace("Add call change listener");
-        }
+        Timber.log(TimberLog.FINER, "Add call change listener");
 
         synchronized (calls) {
             if (!calls.contains(call)) {
@@ -134,9 +129,7 @@ public class SingleCallInProgressPolicy
     private void addOperationSetBasicTelephonyListener(
             OperationSetBasicTelephony<? extends ProtocolProviderService> telephony)
     {
-        if (logger.isTraceEnabled()) {
-            logger.trace("Call listener added to provider.");
-        }
+        Timber.log(TimberLog.FINER, "Call listener added to provider.");
         telephony.addCallListener(listener);
     }
 
@@ -149,9 +142,7 @@ public class SingleCallInProgressPolicy
     private void callStateChanged(CallChangeEvent ev)
     {
         Call call = ev.getSourceCall();
-        if (logger.isTraceEnabled()) {
-            logger.trace("Call state changed.");
-        }
+        Timber.log(TimberLog.FINER, "Call state changed.");
 
         if (CallState.CALL_INITIALIZATION.equals(ev.getOldValue())
                 && CallState.CALL_IN_PROGRESS.equals(call.getCallState())
@@ -181,8 +172,7 @@ public class SingleCallInProgressPolicy
                 }
             }
         }
-        else if (CallState.CALL_ENDED.equals(ev.getNewValue()))
-        {
+        else if (CallState.CALL_ENDED.equals(ev.getNewValue())) {
             this.handleCallEvent(CallEvent.CALL_ENDED, call);
         }
 
@@ -214,9 +204,8 @@ public class SingleCallInProgressPolicy
      */
     private void handleCallEvent(int type, Call call)
     {
-        if (logger.isTraceEnabled()) {
-            logger.trace("Call event fired.");
-        }
+        Timber.log(TimberLog.FINER, "Call event fired.");
+
         switch (type) {
             case CallEvent.CALL_ENDED:
                 removeCallListener(call);
@@ -322,7 +311,7 @@ public class SingleCallInProgressPolicy
                     try {
                         telephony.putOnHold(peer);
                     } catch (OperationFailedException ex) {
-                        logger.error("Failed to put " + peer + " on hold.", ex);
+                        Timber.e(ex, "Failed to put %s on hold.", peer);
                     }
                 }
             }
@@ -347,7 +336,7 @@ public class SingleCallInProgressPolicy
                 try {
                     telephony.hangupCallPeer(peer, HANGUP_REASON_BUSY_HERE, null);
                 } catch (OperationFailedException ex) {
-                    logger.error("Failed to reject " + peer, ex);
+                    Timber.e(ex, "Failed to reject %s", peer);
                 }
             }
         }
@@ -362,12 +351,9 @@ public class SingleCallInProgressPolicy
      */
     private void removeCallListener(Call call)
     {
-        if (logger.isTraceEnabled()) {
-            logger.trace("Remove call change listener.");
-        }
+        Timber.log(TimberLog.FINER, "Remove call change listener.");
 
         call.removeCallChangeListener(listener);
-
         synchronized (calls) {
             calls.remove(call);
         }
@@ -398,9 +384,7 @@ public class SingleCallInProgressPolicy
     {
         Object service = bundleContext.getService(ev.getServiceReference());
         if (service instanceof ProtocolProviderService) {
-            if (logger.isTraceEnabled()) {
-                logger.trace("Protocol provider service changed.");
-            }
+            Timber.log(TimberLog.FINER, "Protocol provider service changed.");
 
             OperationSetBasicTelephony<?> telephony
                     = ((ProtocolProviderService) service).getOperationSet(OperationSetBasicTelephony.class);
@@ -416,10 +400,7 @@ public class SingleCallInProgressPolicy
                 }
             }
             else {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("The protocol provider service doesn't support " + "telephony.");
-                }
-
+                Timber.log(TimberLog.FINER, "The protocol provider service doesn't support " + "telephony.");
             }
         }
     }
@@ -445,7 +426,7 @@ public class SingleCallInProgressPolicy
          * last <tt>Call</tt> in progress ends.
          */
         private final Map<ProtocolProviderService, PresenceStatus> presenceStatuses
-                = Collections.synchronizedMap(new WeakHashMap<ProtocolProviderService, PresenceStatus>());
+                = Collections.synchronizedMap(new WeakHashMap<>());
 
         /**
          * Notifies this instance that the <tt>callState</tt> of a specific <tt>Call</tt> has changed.
@@ -455,9 +436,7 @@ public class SingleCallInProgressPolicy
          */
         public void callStateChanged(CallChangeEvent ev)
         {
-            if (logger.isTraceEnabled()) {
-                logger.trace("Call state changed.[2]");
-            }
+            Timber.log(TimberLog.FINER, "Call state changed.[2]");
 
             Call call = ev.getSourceCall();
             Object oldCallState = ev.getOldValue();
@@ -468,10 +447,7 @@ public class SingleCallInProgressPolicy
                 run();
             }
             else {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Not applicable call state.");
-                }
-
+                Timber.log(TimberLog.FINER, "Not applicable call state.");
             }
         }
 
@@ -586,15 +562,10 @@ public class SingleCallInProgressPolicy
          */
         private void run()
         {
-            if (logger.isTraceEnabled()) {
-                logger.trace("On the phone status policy run.");
-            }
-
+            Timber.log(TimberLog.FINER, "On the phone status policy run.");
             if (!ProtocolProviderActivator.getConfigurationService().getBoolean(
                     PNAME_ON_THE_PHONE_STATUS_ENABLED, false)) {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("On the phone status is not enabled.");
-                }
+                Timber.log(TimberLog.FINER, "On the phone status is not enabled.");
                 forgetPresenceStatuses();
                 return;
             }
@@ -603,9 +574,7 @@ public class SingleCallInProgressPolicy
             try {
                 ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
             } catch (InvalidSyntaxException ise) {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Can't access protocol providers refences.");
-                }
+                Timber.log(TimberLog.FINER, "Can't access protocol providers refences.");
                 ppsRefs = null;
             }
 
@@ -618,9 +587,8 @@ public class SingleCallInProgressPolicy
 
                 if (!isOnThePhone && calendar != null
                         && calendar.onThePhoneStatusChanged(presenceStatuses)) {
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("We are not on the phone.");
-                    }
+
+                    Timber.log(TimberLog.FINER, "We are not on the phone.");
                     forgetPresenceStatuses();
                     return;
                 }
@@ -629,17 +597,13 @@ public class SingleCallInProgressPolicy
                     ProtocolProviderService pps = (ProtocolProviderService) bundleContext.getService(ppsRef);
 
                     if (pps == null) {
-                        if (logger.isTraceEnabled()) {
-                            logger.trace("Provider is null.");
-                        }
+                        Timber.log(TimberLog.FINER, "Provider is null.");
                         continue;
                     }
 
                     OperationSetPresence presence = pps.getOperationSet(OperationSetPresence.class);
                     if (presence == null) {
-                        if (logger.isTraceEnabled()) {
-                            logger.trace("Presence is null.");
-                        }
+                        Timber.log(TimberLog.FINER, "Presence is null.");
                         /*
                          * "On the phone" is a PresenceStatus so it is available only to accounts
                          * which support presence in the first place.
@@ -647,14 +611,10 @@ public class SingleCallInProgressPolicy
                         forgetPresenceStatus(pps);
                     }
                     else if (pps.isRegistered()) {
-                        if (logger.isTraceEnabled()) {
-                            logger.trace("Provider is registered.");
-                        }
+                        Timber.log(TimberLog.FINER, "Provider is registered.");
                         PresenceStatus onThePhonePresenceStatus = findOnThePhonePresenceStatus(presence);
                         if (onThePhonePresenceStatus == null) {
-                            if (logger.isTraceEnabled()) {
-                                logger.trace("Can't find on the phone status.");
-                            }
+                            Timber.log(TimberLog.FINER, "Can't find on the phone status.");
                             /*
                              * If do not know how to define "On the phone" for an OperationSetPresence,
                              * then we'd better not mess with it in the first place.
@@ -662,15 +622,11 @@ public class SingleCallInProgressPolicy
                             forgetPresenceStatus(pps);
                         }
                         else if (isOnThePhone) {
-                            if (logger.isTraceEnabled()) {
-                                logger.trace("Setting the status to on the phone.");
-                            }
+                            Timber.log(TimberLog.FINER, "Setting the status to on the phone.");
                             PresenceStatus presenceStatus = presence.getPresenceStatus();
 
                             if (presenceStatus == null) {
-                                if (logger.isTraceEnabled()) {
-                                    logger.trace("Presence status is null.");
-                                }
+                                Timber.log(TimberLog.FINER, "Presence status is null.");
                                 /*
                                  * It is strange that an OperationSetPresence does not have a
                                  * PresenceStatus so it may be safer to not mess with it.
@@ -678,9 +634,7 @@ public class SingleCallInProgressPolicy
                                 forgetPresenceStatus(pps);
                             }
                             else if (!onThePhonePresenceStatus.equals(presenceStatus)) {
-                                if (logger.isTraceEnabled()) {
-                                    logger.trace("On the phone status is published.");
-                                }
+                                Timber.log(TimberLog.FINER, "On the phone status is published.");
                                 publishPresenceStatus(presence, onThePhonePresenceStatus);
 
                                 if (presenceStatus.equals(findInMeetingPresenceStatus(presence))
@@ -698,30 +652,22 @@ public class SingleCallInProgressPolicy
                                 }
                             }
                             else {
-                                if (logger.isTraceEnabled()) {
-                                    logger.trace("Currently the status is on the phone.");
-                                }
+                                Timber.log(TimberLog.FINER, "Currently the status is on the phone.");
                             }
                         }
                         else {
-                            if (logger.isTraceEnabled()) {
-                                logger.trace("Unset on the phone status.");
-                            }
+                            Timber.log(TimberLog.FINER, "Unset on the phone status.");
                             PresenceStatus presenceStatus = forgetPresenceStatus(pps);
 
                             if ((presenceStatus != null)
                                     && onThePhonePresenceStatus.equals(presence.getPresenceStatus())) {
-                                if (logger.isTraceEnabled()) {
-                                    logger.trace("Unset on the phone status.[2]");
-                                }
+                                Timber.log(TimberLog.FINER, "Unset on the phone status.[2]");
                                 publishPresenceStatus(presence, presenceStatus);
                             }
                         }
                     }
                     else {
-                        if (logger.isTraceEnabled()) {
-                            logger.trace("Protocol provider is not registered");
-                        }
+                        Timber.log(TimberLog.FINER, "Protocol provider is not registered");
                         /*
                          * Offline accounts do not get their PresenceStatus modified for the purposes of "On the phone".
                          */
@@ -830,9 +776,7 @@ public class SingleCallInProgressPolicy
          */
         public void serviceChanged(ServiceEvent ev)
         {
-            if (logger.isTraceEnabled()) {
-                logger.trace("Service changed.");
-            }
+            Timber.log(TimberLog.FINER, "Service changed.");
             SingleCallInProgressPolicy.this.serviceChanged(ev);
         }
     }

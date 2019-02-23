@@ -17,9 +17,10 @@ package net.java.sip.communicator.impl.sysactivity;
 
 import net.java.sip.communicator.service.sysactivity.SystemActivityChangeListener;
 import net.java.sip.communicator.service.sysactivity.event.SystemActivityEvent;
-import net.java.sip.communicator.util.Logger;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * The class implements a dispatch event thread. The thread will
@@ -31,14 +32,8 @@ import java.util.*;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class SystemActivityEventDispatcher
-        implements Runnable
+public class SystemActivityEventDispatcher implements Runnable
 {
-    /**
-     * Our class logger.
-     */
-    private static Logger logger = Logger.getLogger(SystemActivityEventDispatcher.class);
-
     /**
      * A list of listeners registered for system activity events.
      */
@@ -163,19 +158,17 @@ public class SystemActivityEventDispatcher
      */
     private void fireSystemActivityEvent(SystemActivityEvent evt, SystemActivityChangeListener listener)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching SystemActivityEvent Listeners=" + listeners.size() + " evt=" + evt);
+        Timber.d("Dispatching SystemActivityEvent Listeners=" + listeners.size() + " evt=" + evt);
 
-        if (logger.isInfoEnabled() &&
-                (evt.getEventID() == SystemActivityEvent.EVENT_NETWORK_CHANGE
-                        || evt.getEventID() == SystemActivityEvent.EVENT_DNS_CHANGE)) {
-            logger.info("Dispatching SystemActivityEvent Listeners=" + listeners.size() + " evt=" + evt);
+        if ((evt.getEventID() == SystemActivityEvent.EVENT_NETWORK_CHANGE
+                || evt.getEventID() == SystemActivityEvent.EVENT_DNS_CHANGE)) {
+            Timber.i("Dispatching SystemActivityEvent Listeners = %s evt = %s", listeners.size(), evt);
         }
 
         try {
             listener.activityChanged(evt);
         } catch (Throwable e) {
-            logger.error("Error delivering event", e);
+            Timber.e(e, "Error delivering event");
         }
     }
 
@@ -232,7 +225,7 @@ public class SystemActivityEventDispatcher
                 listenersCopy = null;
             }
         } catch (Throwable t) {
-            logger.error("Error dispatching thread ended unexpectedly", t);
+            Timber.e(t, "Error dispatching thread ended unexpectedly");
         }
     }
 }

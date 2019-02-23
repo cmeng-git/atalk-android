@@ -17,12 +17,13 @@ import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
 import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.KeyFrameControl;
-import org.atalk.util.Logger;
 
 import java.io.ByteArrayOutputStream;
 
 import javax.media.*;
 import javax.media.format.VideoFormat;
+
+import timber.log.Timber;
 
 /**
  * Decodes H.264 NAL units and returns the resulting frames as FFmpeg <tt>AVFrame</tt>s (i.e. in
@@ -31,15 +32,10 @@ import javax.media.format.VideoFormat;
  * @author Damian Minkov
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public class JNIDecoder extends AbstractCodec
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>JNIDecoder</tt> class and its instances to print
-     * debug-related information.
-     */
-    private static final Logger logger = Logger.getLogger(JNIDecoder.class);
-
     /**
      * The default output <tt>VideoFormat</tt>.
      */
@@ -262,7 +258,7 @@ public class JNIDecoder extends AbstractCodec
             else if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else
-                logger.error("Failed to handle format parameters", t);
+                Timber.e(t, "Failed to handle format parameters");
         }
     }
 
@@ -351,7 +347,7 @@ public class JNIDecoder extends AbstractCodec
         int width = FFmpeg.avcodeccontext_get_width(avctx);
         int height = FFmpeg.avcodeccontext_get_height(avctx);
 
-        // logger.warn("H264 video input size compare: " + this.width +"=" + width + "; " + this.height + "=" +height);
+        // Timber.w("H264 video input size compare: " + this.width +"=" + width + "; " + this.height + "=" +height);
         if ((width > 0) && (height > 0) && ((this.width != width) || (this.height != height))) {
             this.width = width;
             this.height = height;

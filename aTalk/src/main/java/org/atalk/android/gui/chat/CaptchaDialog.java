@@ -43,6 +43,8 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import java.io.*;
 import java.net.URL;
 
+import timber.log.Timber;
+
 /**
  * The dialog pops up when the user joining chat room receive a normal message containing
  * captcha challenge for spam protection
@@ -51,11 +53,6 @@ import java.net.URL;
  */
 public class CaptchaDialog extends Dialog
 {
-    /**
-     * Logger of this class
-     */
-    private static final Logger logger = Logger.getLogger(CaptchaDialog.class);
-
     public static final int unknown = -1;
     public static final int validated = 0;
     public static final int awaiting = 1;
@@ -212,7 +209,7 @@ public class CaptchaDialog extends Dialog
                 StanzaError xmppError = ((XMPPException.XMPPErrorException) ex).getStanzaError();
                 errMsg += "\n" + xmppError.getDescriptiveText();
             }
-            logger.error("Exception: " + errMsg);
+            Timber.e("Exception: %s", errMsg);
             mReasonText = errMsg;
             callBack.onResult(failed);
         }

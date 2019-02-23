@@ -8,12 +8,13 @@ package net.java.sip.communicator.impl.notification;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.service.systray.SystrayService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.audionotifier.AudioNotifierService;
 import org.atalk.service.configuration.ConfigurationService;
 import org.osgi.framework.*;
+
+import timber.log.Timber;
 
 /**
  * The <tt>NotificationActivator</tt> is the activator of the notification bundle.
@@ -22,8 +23,6 @@ import org.osgi.framework.*;
  */
 public class NotificationActivator implements BundleActivator
 {
-    private final Logger logger = Logger.getLogger(NotificationActivator.class);
-
     protected static BundleContext bundleContext;
 
     private static AudioNotifierService audioNotifierService;
@@ -50,27 +49,21 @@ public class NotificationActivator implements BundleActivator
             throws Exception
     {
         bundleContext = bc;
-        try {
-            logger.logEntry();
+        // Get the notification service implementation
+        ServiceReference notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
+        notificationService = (NotificationService) bundleContext.getService(notifReference);
 
-            // Get the notification service implementation
-            ServiceReference notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
-            notificationService = (NotificationService) bundleContext.getService(notifReference);
+        commandHandler = new CommandNotificationHandlerImpl();
+        logMessageHandler = new LogMessageNotificationHandlerImpl();
+        popupMessageHandler = new PopupMessageNotificationHandlerImpl();
+        soundHandler = new SoundNotificationHandlerImpl();
 
-            commandHandler = new CommandNotificationHandlerImpl();
-            logMessageHandler = new LogMessageNotificationHandlerImpl();
-            popupMessageHandler = new PopupMessageNotificationHandlerImpl();
-            soundHandler = new SoundNotificationHandlerImpl();
+        notificationService.addActionHandler(commandHandler);
+        notificationService.addActionHandler(logMessageHandler);
+        notificationService.addActionHandler(popupMessageHandler);
+        notificationService.addActionHandler(soundHandler);
 
-            notificationService.addActionHandler(commandHandler);
-            notificationService.addActionHandler(logMessageHandler);
-            notificationService.addActionHandler(popupMessageHandler);
-            notificationService.addActionHandler(soundHandler);
-
-            logger.info("Notification handler Service ...[REGISTERED]");
-        } finally {
-            logger.logExit();
-        }
+        Timber.i("Notification handler Service ...[REGISTERED]");
     }
 
     public void stop(BundleContext bc)
@@ -81,7 +74,7 @@ public class NotificationActivator implements BundleActivator
         notificationService.removeActionHandler(popupMessageHandler.getActionType());
         notificationService.removeActionHandler(soundHandler.getActionType());
 
-        logger.info("Notification handler Service ...[STOPPED]");
+        Timber.i("Notification handler Service ...[STOPPED]");
     }
 
     /**

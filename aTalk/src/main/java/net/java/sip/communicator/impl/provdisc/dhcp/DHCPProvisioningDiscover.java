@@ -18,12 +18,13 @@ package net.java.sip.communicator.impl.provdisc.dhcp;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.provdisc.event.DiscoveryEvent;
 import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
-import net.java.sip.communicator.util.Logger;
 
 import org.dhcp4java.*;
 
 import java.net.*;
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Class that will perform DHCP provisioning discovery.
@@ -33,11 +34,6 @@ import java.util.*;
  */
 public class DHCPProvisioningDiscover implements Runnable
 {
-    /**
-     * Logger.
-     */
-    private final Logger logger = Logger.getLogger(DHCPProvisioningDiscover.class);
-
     /**
      * DHCP socket timeout (in milliseconds).
      */
@@ -75,7 +71,8 @@ public class DHCPProvisioningDiscover implements Runnable
      * @param option code of the specific provisioning option
      * @throws Exception if anything goes wrong during initialization
      */
-    public DHCPProvisioningDiscover(int port, byte option) throws Exception
+    public DHCPProvisioningDiscover(int port, byte option)
+            throws Exception
     {
         this.port = port;
         this.option = option;
@@ -185,10 +182,10 @@ public class DHCPProvisioningDiscover implements Runnable
                     }
                 }
             } catch (SocketTimeoutException est) {
-                logger.warn("Timeout, no DHCP answer received", est);
+                Timber.w(est, "Timeout, no DHCP answer received");
             }
         } catch (Exception e) {
-            logger.warn("Exception occurred during DHCP discover", e);
+            Timber.w(e, "Exception occurred during DHCP discover");
         }
 
         for (DHCPTransaction t : transactions) {

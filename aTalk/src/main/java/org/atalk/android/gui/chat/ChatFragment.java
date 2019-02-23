@@ -18,8 +18,8 @@ package org.atalk.android.gui.chat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.*;
 import android.content.ClipboardManager;
+import android.content.*;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -54,6 +54,7 @@ import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.HtmlImageGetter;
 import org.atalk.android.gui.util.event.EventListener;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.crypto.listener.CryptoModeChangeListener;
 import org.atalk.service.osgi.OSGiFragment;
@@ -64,6 +65,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 /**
  * The <tt>ChatFragment</tt> working in conjunction with ChatActivity, ChatPanel, ChatController
@@ -76,11 +79,6 @@ import java.util.regex.Pattern;
 public class ChatFragment extends OSGiFragment
         implements ChatSessionManager.CurrentChatListener, FileTransferStatusListener, CryptoModeChangeListener
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(ChatFragment.class);
-
     /**
      * The session adapter for the contained <tt>ChatPanel</tt>.
      */
@@ -237,7 +235,7 @@ public class ChatFragment extends OSGiFragment
 
         chatPanel = ChatSessionManager.getActiveChat(chatId);
         if (chatPanel == null) {
-            logger.error("Chat for given id: " + chatId + " not exists");
+            Timber.e("Chat for given id: %s not exists", chatId);
             return null;
         }
 
@@ -404,9 +402,7 @@ public class ChatFragment extends OSGiFragment
      */
     public void onDetach()
     {
-        if (logger.isDebugEnabled())
-            logger.debug("DETACH CHAT FRAGMENT: " + this);
-
+        Timber.d("Detach chatFragment: %s", this);
         super.onDetach();
         this.chatController = null;
 
@@ -431,7 +427,7 @@ public class ChatFragment extends OSGiFragment
      */
     public void setPrimarySelected(boolean isSelected)
     {
-        logger.debug("Primary page selected: " + hashCode() + " " + isSelected);
+        Timber.d("Primary page selected: %s %s", hashCode(), isSelected);
         primarySelected = isSelected;
         initChatController(isSelected);
     }
@@ -447,7 +443,7 @@ public class ChatFragment extends OSGiFragment
     private void initChatController(boolean inFocus)
     {
         if (inFocus && chatListView != null) {
-            logger.debug("Init controller: " + hashCode());
+            Timber.d("Init controller: %s", hashCode());
             chatController.onShow();
             // Also register global status listener
             AndroidGUIActivator.getLoginRenderer().addGlobalStatusListener(globalStatusListener);
@@ -467,7 +463,7 @@ public class ChatFragment extends OSGiFragment
             AndroidGUIActivator.getLoginRenderer().removeGlobalStatusListener(globalStatusListener);
         }
         else {
-            logger.debug("Skipping controller init... " + hashCode());
+            Timber.d("Skipping controller init... %s", hashCode());
         }
     }
 
@@ -794,7 +790,7 @@ public class ChatFragment extends OSGiFragment
         {
             runOnUiThread(() -> {
                 if (chatListAdapter == null) {
-                    logger.warn("Add message handled, when there's no adapter - possibly after onDetach()");
+                    Timber.w("Add message handled, when there's no adapter - possibly after onDetach()");
                     return;
                 }
                 addMessageImpl(newMessage, update);
@@ -1275,15 +1271,13 @@ public class ChatFragment extends OSGiFragment
             final Contact contact = evt.getDestinationContact();
             final MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
 
-            if (logger.isTraceEnabled())
-                logger.trace("MESSAGE DELIVERED to contact: " + contact.getAddress());
+            Timber.log(TimberLog.FINER, "MESSAGE DELIVERED to contact: %s", contact.getAddress());
 
             if ((metaContact != null) && metaContact.equals(chatPanel.getMetaContact())) {
                 final ChatMessageImpl msg = ChatMessageImpl.getMsgForEvent(evt);
 
-                if (logger.isTraceEnabled())
-                    logger.trace("MESSAGE DELIVERED: process message to chat for contact: " +
-                            contact.getAddress() + " MESSAGE: " + msg.getMessage());
+                Timber.log(TimberLog.FINER, "MESSAGE DELIVERED: process message to chat for contact: %s MESSAGE: %d",
+                        contact.getAddress(), msg.getMessage());
                 addMessage(msg, true);
             }
         }
@@ -1305,8 +1299,7 @@ public class ChatFragment extends OSGiFragment
                 addMessage(msg, true);
             }
             else {
-                if (logger.isTraceEnabled())
-                    logger.trace("MetaContact not found for protocol contact: " + protocolContact + ".");
+                Timber.log(TimberLog.FINER, "MetaContact not found for protocol contact: %s", protocolContact);
             }
         }
 
@@ -1324,8 +1317,7 @@ public class ChatFragment extends OSGiFragment
         public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
         {
             Contact sourceContact = evt.getSourceContact();
-            if (logger.isDebugEnabled())
-                logger.debug("Contact presence status changed: " + sourceContact.getAddress());
+            Timber.d("Contact presence status changed: %s", sourceContact.getAddress());
 
             if ((chatPanel.getMetaContact() != null) && chatPanel.getMetaContact().containsContact(sourceContact)) {
                 new UpdateStatusTask().execute();
@@ -1340,9 +1332,7 @@ public class ChatFragment extends OSGiFragment
         @Override
         public void chatStateNotificationReceived(ChatStateNotificationEvent evt)
         {
-            if (logger.isDebugEnabled())
-                logger.debug("Typing notification received: " + evt.getSourceContact().getAddress());
-
+            Timber.d("Typing notification received: %s", evt.getSourceContact().getAddress());
             ChatStateNotificationHandler.handleChatStateNotificationReceived(evt, ChatFragment.this);
         }
 
@@ -1849,7 +1839,7 @@ public class ChatFragment extends OSGiFragment
                     ((FileTransfer) descriptor).cancel();
                 }
             } catch (Throwable t) {
-                logger.error("Cannot initActive file transfer.", t);
+                Timber.e(t,"Cannot initActive file transfer.");
             }
         }
     }
@@ -2033,7 +2023,7 @@ public class ChatFragment extends OSGiFragment
         protected void onPostExecute(Exception ex)
         {
             if (ex != null) {
-                logger.error("Failed to send file.", ex);
+                Timber.e(ex, "Failed to send file.");
 
                 if (ex instanceof IllegalStateException) {
                     chatPanel.addMessage(currentChatTransport.getDisplayName(), new Date(), Chat.ERROR_MESSAGE,

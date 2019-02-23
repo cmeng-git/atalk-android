@@ -1,82 +1,70 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.device;
 
-import javax.media.*;
-import javax.media.format.*;
-
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
-import org.atalk.impl.neomedia.quicktime.QTCaptureDevice;
-import org.atalk.impl.neomedia.quicktime.QTFormatDescription;
-import org.atalk.impl.neomedia.quicktime.QTMediaType;
+import org.atalk.impl.neomedia.quicktime.*;
 import org.atalk.service.neomedia.MediaType;
-import org.atalk.util.Logger;
+
+import javax.media.*;
+import javax.media.format.RGBFormat;
+
+import timber.log.Timber;
 
 /**
  * Discovers and registers QuickTime/QTKit capture devices with JMF.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class QuickTimeSystem extends DeviceSystem
 {
+    /**
+     * The protocol of the <tt>MediaLocator</tt>s identifying QuickTime/QTKit capture devices.
+     */
+    private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_QUICKTIME;
 
-	/**
-	 * The <tt>Logger</tt> used by the <tt>QuickTimeSystem</tt> class and its instances for logging
-	 * output.
-	 */
-	private static final Logger logger = Logger.getLogger(QuickTimeSystem.class);
+    /**
+     * Initializes a new <tt>QuickTimeSystem</tt> instance which discovers and registers
+     * QuickTime/QTKit capture devices with JMF.
+     *
+     * @throws Exception if anything goes wrong while discovering and registering QuickTime/QTKit capture
+     * defines with JMF
+     */
+    public QuickTimeSystem()
+            throws Exception
+    {
+        super(MediaType.VIDEO, LOCATOR_PROTOCOL);
+    }
 
-	/**
-	 * The protocol of the <tt>MediaLocator</tt>s identifying QuickTime/QTKit capture devices.
-	 */
-	private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_QUICKTIME;
+    @Override
+    protected void doInitialize()
+            throws Exception
+    {
+        QTCaptureDevice[] inputDevices = QTCaptureDevice
+                .inputDevicesWithMediaType(QTMediaType.Video);
+        boolean captureDeviceInfoIsAdded = false;
 
-	/**
-	 * Initializes a new <tt>QuickTimeSystem</tt> instance which discovers and registers
-	 * QuickTime/QTKit capture devices with JMF.
-	 *
-	 * @throws Exception
-	 *         if anything goes wrong while discovering and registering QuickTime/QTKit capture
-	 *         defines with JMF
-	 */
-	public QuickTimeSystem()
-		throws Exception
-	{
-		super(MediaType.VIDEO, LOCATOR_PROTOCOL);
-	}
+        for (QTCaptureDevice inputDevice : inputDevices) {
+            CaptureDeviceInfo device = new CaptureDeviceInfo(inputDevice.localizedDisplayName(),
+                    new MediaLocator(LOCATOR_PROTOCOL + ':' + inputDevice.uniqueID()), new Format[]{
+                    new AVFrameFormat(FFmpeg.PIX_FMT_ARGB), new RGBFormat()});
 
-	@Override
-	protected void doInitialize()
-		throws Exception
-	{
-		QTCaptureDevice[] inputDevices = QTCaptureDevice
-			.inputDevicesWithMediaType(QTMediaType.Video);
-		boolean captureDeviceInfoIsAdded = false;
+            for (QTFormatDescription f : inputDevice.formatDescriptions()) {
+                Timber.i("Webcam available resolution for %s:%s", inputDevice.localizedDisplayName(),
+                        f.sizeForKey(QTFormatDescription.VideoEncodedPixelsSizeAttribute));
+            }
 
-		for (QTCaptureDevice inputDevice : inputDevices) {
-			CaptureDeviceInfo device = new CaptureDeviceInfo(inputDevice.localizedDisplayName(),
-				new MediaLocator(LOCATOR_PROTOCOL + ':' + inputDevice.uniqueID()), new Format[] {
-					new AVFrameFormat(FFmpeg.PIX_FMT_ARGB), new RGBFormat() });
-
-			if (logger.isInfoEnabled()) {
-				for (QTFormatDescription f : inputDevice.formatDescriptions()) {
-					logger.info("Webcam available resolution for "
-						+ inputDevice.localizedDisplayName() + ":"
-						+ f.sizeForKey(QTFormatDescription.VideoEncodedPixelsSizeAttribute));
-				}
-			}
-
-			CaptureDeviceManager.addDevice(device);
-			captureDeviceInfoIsAdded = true;
-			if (logger.isDebugEnabled())
-				logger.debug("Added CaptureDeviceInfo " + device);
-		}
-		if (captureDeviceInfoIsAdded && !MediaServiceImpl.isJmfRegistryDisableLoad())
-			CaptureDeviceManager.commit();
-	}
+            CaptureDeviceManager.addDevice(device);
+            captureDeviceInfoIsAdded = true;
+            Timber.d("Added CaptureDeviceInfo %s", device);
+        }
+        if (captureDeviceInfoIsAdded && !MediaServiceImpl.isJmfRegistryDisableLoad())
+            CaptureDeviceManager.commit();
+    }
 }

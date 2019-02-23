@@ -8,27 +8,23 @@ package org.atalk.impl.neomedia.recording;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.recording.RecorderEvent;
 import org.atalk.service.neomedia.recording.RecorderEventHandler;
-import org.atalk.util.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * Implements a <tt>RecorderEventHandler</tt> which handles <tt>RecorderEvents</tt> by writing them
  * to a file in JSON format.
  *
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class RecorderEventHandlerJSONImpl implements RecorderEventHandler
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>RecorderEventHandlerJSONImpl</tt> class and its instances
-     * for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(RecorderEventHandlerJSONImpl.class);
-
     /**
      * Compares <tt>RecorderEvent</tt>s by their instant (e.g. timestamp).
      */
@@ -106,7 +102,7 @@ public class RecorderEventHandlerJSONImpl implements RecorderEventHandler
         try {
             writeAllEvents();
         } catch (IOException ioe) {
-            logger.warn("Failed to write recorder events to file: ", ioe);
+            Timber.w("Failed to write recorder events to file: %s", ioe.getMessage());
             return false;
         }
 
@@ -123,7 +119,7 @@ public class RecorderEventHandlerJSONImpl implements RecorderEventHandler
         try {
             writeAllEvents();
         } catch (IOException ioe) {
-            logger.warn("Failed to write recorder events to file: " + ioe);
+            Timber.w("Failed to write recorder events to file: %s", ioe.getMessage());
         } finally {
             closed = true;
         }

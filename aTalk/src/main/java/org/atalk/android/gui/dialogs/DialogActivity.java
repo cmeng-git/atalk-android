@@ -12,8 +12,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.KeyEvent;
 import android.view.View;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
@@ -36,11 +34,6 @@ import java.util.*;
  */
 public class DialogActivity extends OSGiActivity
 {
-    /**
-     * The logger
-     */
-    private static final Logger logger = Logger.getLogger(DialogActivity.class);
-
     /**
      * Dialog title extra.
      */

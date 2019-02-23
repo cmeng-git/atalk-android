@@ -8,8 +8,6 @@ package org.atalk.impl.neomedia.jmfext.media.renderer.audio;
 import android.media.*;
 import android.os.Build;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.gui.call.CallVolumeCtrlFragment;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
@@ -21,6 +19,8 @@ import org.atalk.service.neomedia.codec.Constants;
 import javax.media.*;
 import javax.media.format.AudioFormat;
 
+import timber.log.Timber;
+
 /**
  * Implements an audio <tt>Renderer</tt> which uses {@link AudioTrack}.
  *
@@ -28,11 +28,6 @@ import javax.media.format.AudioFormat;
  */
 public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AudioTrackRenderer</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(AudioTrackRenderer.class);
-
     private static final int ABSTRACT_VOLUME_CONTROL_PERCENT_RANGE
             = (BasicVolumeControl.MAX_VOLUME_PERCENT - BasicVolumeControl.MIN_VOLUME_PERCENT) / 100;
 
@@ -160,7 +155,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
          * type here to use different native volume control.
          */
         streamType = enableGainControl ? AudioManager.STREAM_VOICE_CALL : AudioManager.STREAM_NOTIFICATION;
-        logger.trace("Created stream for stream: " + streamType);
+        Timber.d("Created stream for type: %s", streamType);
 
         if (enableGainControl) {
             MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
@@ -367,8 +362,8 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
                 audioTrack = new AudioTrack(streamType, (int) sampleRate, channelConfig, audioFormat, bufferSize,
                         AudioTrack.MODE_STREAM);
             }
-//            new Exception("Open AudioTrack Encode PCM: " + audioFormat + "; Channels: " + channelConfig
-//                    + ": " + sampleRate + "\n" + audioAttribute.toString()).printStackTrace();
+            //            new Exception("Open AudioTrack Encode PCM: " + audioFormat + "; Channels: " + channelConfig
+            //                    + ": " + sampleRate + "\n" + audioAttribute.toString()).printStackTrace();
 
             setThreadPriority = true;
             if (USE_SOFTWARE_GAIN) {
@@ -378,7 +373,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
                 float volume = MAX_AUDIO_TRACK_VOLUME;
                 int setStereoVolume = audioTrack.setStereoVolume(volume, volume);
                 if (setStereoVolume != AudioTrack.SUCCESS) {
-                    logger.warn("AudioTrack.setStereoVolume() failed with return value " + setStereoVolume);
+                    Timber.w("AudioTrack.setStereoVolume() failed with return value %s", setStereoVolume);
                 }
             }
             else {
@@ -586,7 +581,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
                                  * will not return INPUT_BUFFER_NOT_CONSUMED (which will
                                  * effectively drop the input Buffer).
                                  */
-                                logger.warn("Dropping " + length + " bytes of audio data!");
+                                Timber.w("Dropping %d bytes of audio data!", length);
                             }
                             else if (written < length) {
                                 processed |= PlugIn.INPUT_BUFFER_NOT_CONSUMED;

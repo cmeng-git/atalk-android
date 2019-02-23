@@ -15,10 +15,10 @@
  */
 package org.atalk.sctp4j;
 
-import org.atalk.util.Logger;
-
 import java.io.IOException;
 import java.net.*;
+
+import timber.log.Timber;
 
 /**
  * Class used in code samples to send SCTP packets through UDP sockets.
@@ -26,14 +26,10 @@ import java.net.*;
  * FIXME: fix receiving loop
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class UdpLink implements NetworkLink
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(UdpLink.class);
-
     /**
      * <tt>SctpSocket</tt> instance that is used in this connection.
      */
@@ -86,7 +82,7 @@ public class UdpLink implements NetworkLink
                     UdpLink.this.sctpSocket.onConnIn(p.getData(), p.getOffset(), p.getLength());
                 }
             } catch (IOException e) {
-                logger.error(e, e);
+                Timber.e(e);
             }
         }
         ).start();

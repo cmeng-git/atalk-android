@@ -36,6 +36,8 @@ import java.security.*;
 import java.util.*;
 import java.util.logging.*;
 
+import timber.log.Timber;
+
 /**
  * An AvatarManager for aTalk. Base class for both the
  * XEP-0153: vCard-Based Avatar protocol Implementation
@@ -481,7 +483,7 @@ public class AvatarManager extends Manager
 			}
 		}
 		catch (NoSuchAlgorithmException ex) {
-			LOGGER.log(Level.SEVERE, "Failed to getHashForJid message digest: " + ex);
+			Timber.e("Failed to getHashForJid message digest: %s", ex.getMessage());
 		}
 
 		if (imageHash != null)
@@ -522,8 +524,7 @@ public class AvatarManager extends Manager
 				// Note: user does not have photo if avatar == ""
 				addJidToAvatarHashIndex(mAccount, avatarHash);
 
-				LOGGER.log(Level.INFO, "Avatar Hash updated for : " + mAccount + "; Hash = "
-						+ avatarHash);
+				LOGGER.log(Level.INFO, "Avatar Hash updated for : " + mAccount + "; Hash = " + avatarHash);
 				isImageUpdated = true;
 			}
 		}

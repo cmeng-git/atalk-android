@@ -5,6 +5,7 @@
  */
 package org.atalk.impl.neomedia.device;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.*;
 import org.atalk.android.util.java.awt.event.ComponentAdapter;
 import org.atalk.android.util.java.awt.event.ComponentEvent;
@@ -27,7 +28,6 @@ import org.atalk.service.neomedia.event.*;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.format.VideoMediaFormat;
 import org.atalk.service.resources.ResourceManagementService;
-import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.*;
 import org.atalk.util.swing.VideoLayout;
@@ -39,6 +39,8 @@ import javax.media.*;
 import javax.media.control.*;
 import javax.media.format.VideoFormat;
 import javax.media.protocol.*;
+
+import timber.log.Timber;
 
 /**
  * Extends <tt>MediaDeviceSession</tt> to add video-specific functionality.
@@ -59,12 +61,6 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     private static final String DESKTOP_STREAMING_ICON = "impl.media.DESKTOP_STREAMING_ICON";
 
     /**
-     * The <tt>Logger</tt> used by the <tt>VideoMediaDeviceSession</tt> class and its instances for
-     * logging output.
-     */
-    private static final Logger logger = Logger.getLogger(VideoMediaDeviceSession.class);
-
-    /**
      * Gets the visual <tt>Component</tt> of a specific <tt>Player</tt> if it has one and
      * ignores the failure to access it if the specified <tt>Player</tt> is unrealized.
      *
@@ -81,8 +77,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
             try {
                 visualComponent = player.getVisualComponent();
             } catch (NotRealizedError nre) {
-                if (logger.isDebugEnabled())
-                    logger.debug("Called Player#getVisualComponent() on unrealized player " + player, nre);
+                Timber.w("Called Player#getVisualComponent on unrealized player %s: %s", player, nre.getMessage());
             }
         }
         return visualComponent;
@@ -252,7 +247,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
                         break;
                     }
                 } catch (UnsupportedPlugInException upiex) {
-                    logger.warn("Failed to add HFlip/SwScale Effect", upiex);
+                    Timber.w(upiex, "Failed to add HFlip/SwScale Effect");
                 }
             }
 
@@ -260,7 +255,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
             try {
                 player.setContentDescriptor(null);
             } catch (NotConfiguredError nce) {
-                logger.error("Failed to set ContentDescriptor of Processor", nce);
+                Timber.e(nce, "Failed to set ContentDescriptor of Processor");
             }
             player.realize();
         }
@@ -338,8 +333,8 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
                 frameRate = deviceConfig.getFrameRate();
 
                 // print initial video resolution, when starting video
-                if (logger.isInfoEnabled() && dim != null)
-                    logger.info("video send resolution: " + dim.width + "x" + dim.height);
+                if (dim != null)
+                    Timber.i("video send resolution: %dx%d", dim.width, dim.height);
             }
 
             FrameRateControl frameRateControl
@@ -353,9 +348,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
                     frameRateControl.setFrameRate(frameRate);
 
                 // print initial video frame rate, when starting video
-                if (logger.isInfoEnabled()) {
-                    logger.info("video send FPS: " + (frameRate == -1 ? "default(no restriction)" : frameRate));
-                }
+                Timber.i("video send FPS: %s", (frameRate == -1 ? "default(no restriction)" : frameRate));
             }
 
             if (!(captureDevice instanceof SourceCloneable)) {
@@ -416,7 +409,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
                 }
             }
             else {
-                logger.error("Failed to connect to " + MediaStreamImpl.toString(dataSource), exception);
+                Timber.e(exception, "Failed to connect to %s", MediaStreamImpl.toString(dataSource));
             }
         }
         return localPlayer;
@@ -667,10 +660,8 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
      */
     protected boolean fireVideoEvent(int type, Component visualComponent, int origin, boolean wait)
     {
-        if (logger.isTraceEnabled()) {
-            logger.trace("Firing VideoEvent with type " + VideoEvent.typeToString(type)
-                    + ", originated from " + VideoEvent.originToString(origin) + " and Wait is " + wait);
-        }
+        Timber.log(TimberLog.FINER, "Firing VideoEvent with type %s, originated from %s and Wait is %s",
+                VideoEvent.typeToString(type), VideoEvent.originToString(origin), wait);
         return videoNotifierSupport.fireVideoEvent(type, visualComponent, origin, wait);
     }
 
@@ -855,7 +846,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
                 ((ControlTransformInputStream) rtpConnector.getControlInputStream())
                         .addRTCPFeedbackMessageListener(rtcpFeedbackMessageListener);
             } catch (IOException ioe) {
-                logger.error("Error cannot get RTCP input stream", ioe);
+                Timber.e(ioe, "Error cannot get RTCP input stream");
             }
         }
     }
@@ -916,7 +907,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
                     break;
                 }
             } catch (UnsupportedPlugInException upiex) {
-                logger.error("Failed to add SwScale or H.264 DePacketizer to codec chain", upiex);
+                Timber.e(upiex, "Failed to add SwScale or H.264 DePacketizer to codec chain");
                 playerScaler = null;
             }
         }
@@ -1025,7 +1016,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
             } finally {
                 fireVideoEvent(
                         new SizeChangeVideoEvent(this, visualComponent, origin, width, height), false);
-                logger.info("Size Change Video Event: " + width + "x" + height);
+                Timber.i("Size Change Video Event: %dx%d", width, height);
             }
         }
     }
@@ -1185,10 +1176,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
                     frameRate = maxSupportedFrameRate;
                 if (frameRate > 0) {
                     frameRateControl.setFrameRate(frameRate);
-
-                    if (logger.isInfoEnabled()) {
-                        logger.info("video send FPS: " + frameRate);
-                    }
+                    Timber.i("video send FPS: %s", frameRate);
                 }
             }
         }
@@ -1385,7 +1373,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
             try {
                 trackControl.setCodecChain(codecs);
             } catch (UnsupportedPlugInException upiex) {
-                logger.error("Failed to add SwScale/JNIEncoder to codec chain", upiex);
+                Timber.e(upiex, "Failed to add SwScale/JNIEncoder to codec chain");
             }
         }
         return super.setProcessorFormat(trackControl, mediaFormat, format);
@@ -1464,7 +1452,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
             else {
-                logger.error("Failed to start/stop the preview of the local video", t);
+                Timber.e(t, "Failed to start/stop the preview of the local video");
             }
         }
 

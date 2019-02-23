@@ -30,7 +30,8 @@ import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.model.UIGroupRenderer;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiActivity;
-import org.atalk.util.Logger;
+
+import timber.log.Timber;
 
 /**
  * Base class for chatRoom list adapter implementations.
@@ -39,11 +40,6 @@ import org.atalk.util.Logger;
  */
 public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 {
-    /**
-     * The logger for this class.
-     */
-    private final Logger logger = Logger.getLogger(BaseChatRoomListAdapter.class);
-
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
      * it's accessed from the single thread.
@@ -364,7 +360,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
             int childPos = viewHolder.childPosition;
             Object chatRoomWrapper = getChild(groupPos, childPos);
             if (chatRoomWrapper == null) {
-                logger.warn("No chatRoom found at " + groupPos + ", " + childPos);
+                Timber.w("No chatRoom found at %d:%d", groupPos, childPos);
             }
             else {
                 String chatRoomName = getChatRoomRenderer(groupPos).getChatRoomID(chatRoomWrapper);

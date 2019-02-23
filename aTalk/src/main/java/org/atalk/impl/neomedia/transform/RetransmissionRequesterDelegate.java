@@ -15,25 +15,18 @@
  */
 package org.atalk.impl.neomedia.transform;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.rtcp.NACKPacket;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.neomedia.TransmissionFailedException;
-import org.atalk.util.Logger;
-import org.atalk.util.RTPUtils;
-import org.atalk.util.TimeProvider;
+import org.atalk.service.neomedia.*;
+import org.atalk.util.*;
 import org.atalk.util.concurrent.RecurringRunnable;
 import org.atalk.util.concurrent.RecurringRunnableExecutor;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Detects lost RTP packets for a particular <tt>RtpChannel</tt> and requests
@@ -42,6 +35,7 @@ import java.util.Set;
  * @author Boris Grozev
  * @author George Politis
  * @author bbaldino
+ * @author Eng Chong Meng
  */
 public class RetransmissionRequesterDelegate implements RecurringRunnable
 {
@@ -52,8 +46,7 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
     public static final int MAX_MISSING = 100;
 
     /**
-     * The maximum number of retransmission requests to be sent for a single
-     * RTP packet.
+     * The maximum number of retransmission requests to be sent for a single RTP packet.
      */
     public static final int MAX_REQUESTS = 10;
 
@@ -71,12 +64,6 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
      * just rely on scheduled work and the 'work ready now' callback
      */
     public static final long WAKEUP_INTERVAL_MILLIS = 1000;
-
-    /**
-     * The <tt>Logger</tt> used by the <tt>RetransmissionRequesterDelegate</tt> class
-     * and its instances to print debug information.
-     */
-    private static final Logger logger = Logger.getLogger(RetransmissionRequesterDelegate.class);
 
     /**
      * Maps an SSRC to the <tt>Requester</tt> instance corresponding to it.
@@ -99,14 +86,12 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
     protected final TimeProvider timeProvider;
 
     /**
-     * A callback which allows this class to signal it has nack work that is ready
-     * to be run
+     * A callback which allows this class to signal it has nack work that is ready to be run
      */
     protected Runnable workReadyCallback = null;
 
     /**
-     * Initializes a new <tt>RetransmissionRequesterDelegate</tt> for the given
-     * <tt>RtpChannel</tt>.
+     * Initializes a new <tt>RetransmissionRequesterDelegate</tt> for the given <tt>RtpChannel</tt>.
      *
      * @param stream the {@link MediaStream} that the instance belongs to.
      */
@@ -144,11 +129,8 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
             return WAKEUP_INTERVAL_MILLIS;
         }
         else {
-            if (logger.isTraceEnabled()) {
-                logger.trace(hashCode() + ": Next nack is scheduled for ssrc " +
-                        nextDueRequester.ssrc + " at " + Math.max(nextDueRequester.nextRequestAt, 0) +
-                        ". (current time is " + now + ")");
-            }
+            Timber.log(TimberLog.FINER, hashCode() + "%s: Next nack is scheduled for ssrc %s at %s. (current time is %s)",
+                    nextDueRequester.ssrc, Math.max(nextDueRequester.nextRequestAt, 0), now);
             return Math.max(nextDueRequester.nextRequestAt - now, 0);
         }
     }
@@ -165,18 +147,12 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
     public void run()
     {
         long now = timeProvider.currentTimeMillis();
-        if (logger.isTraceEnabled()) {
-            logger.trace(hashCode() + " running at " + now);
-        }
+        Timber.log(TimberLog.FINER, "%s running at %s", hashCode(), now);
         List<Requester> dueRequesters = getDueRequesters(now);
-        if (logger.isTraceEnabled()) {
-            logger.trace(hashCode() + " has " + dueRequesters.size() + " due requesters");
-        }
+        Timber.log(TimberLog.FINER, "%s has %s due requesters", hashCode(), dueRequesters.size());
         if (!dueRequesters.isEmpty()) {
             List<NACKPacket> nackPackets = createNackPackets(now, dueRequesters);
-            if (logger.isTraceEnabled()) {
-                logger.trace(hashCode() + " injecting " + nackPackets.size() + " nack packets");
-            }
+            Timber.log(TimberLog.FINER, "%s injecting %s nack packets", hashCode(), nackPackets.size());
             if (!nackPackets.isEmpty()) {
                 injectNackPackets(nackPackets);
             }
@@ -189,9 +165,7 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
         synchronized (requesters) {
             requester = requesters.get(ssrc);
             if (requester == null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug( "Creating new Requester for SSRC " + ssrc);
-                }
+                Timber.d("Creating new Requester for SSRC %s", ssrc);
                 requester = new Requester(ssrc);
                 requesters.put(ssrc, requester);
             }
@@ -227,12 +201,9 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
         synchronized (requesters) {
             for (Requester requester : requesters.values()) {
                 if (requester.isDue(currentTime)) {
-                    if (logger.isTraceEnabled()) {
-                        logger.trace(hashCode() + " requester for ssrc " +
-                                requester.ssrc + " has work due at " + requester.nextRequestAt +
-                                " (now = " + currentTime + ") and is missing packets: " +
-                                requester.getMissingSeqNums());
-                    }
+                    Timber.log(TimberLog.FINER, hashCode() + "%s requester for ssrc %s has work due at %s(now = %s) and is missing packets: %s",
+                            requester.ssrc, requester.nextRequestAt, currentTime, requester.getMissingSeqNums());
+
                     dueRequesters.add(requester);
                 }
             }
@@ -253,17 +224,14 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
                 try {
                     packet = nackPacket.toRawPacket();
                 } catch (IOException ioe) {
-                    logger.warn("Failed to create a NACK packet: " + ioe);
+                    Timber.w(ioe, "Failed to create a NACK packet");
                     continue;
                 }
 
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Sending a NACK: " + nackPacket);
-                }
-
+                Timber.log(TimberLog.FINER, "Sending a NACK: %s", nackPacket);
                 stream.injectPacket(packet, /* data */ false, /* after */ null);
             } catch (TransmissionFailedException e) {
-                logger.warn("Failed to inject packet in MediaStream: ", e.getCause());
+                Timber.w(e.getCause(), "Failed to inject packet in MediaStream.");
             }
         }
     }
@@ -282,10 +250,8 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
             synchronized (dueRequester) {
                 Set<Integer> missingPackets = dueRequester.getMissingSeqNums();
                 if (!missingPackets.isEmpty()) {
-                    if (logger.isTraceEnabled()) {
-                        logger.trace(hashCode() + " Sending nack with packets " + missingPackets
-                                + " for ssrc " + dueRequester.ssrc);
-                    }
+                    Timber.log(TimberLog.FINER, "%S Sending nack with packets %S for ssrc %S",
+                            hashCode(), missingPackets, dueRequester.ssrc);
                     packetsToRequest.put(dueRequester.ssrc, missingPackets);
                     dueRequester.notifyNackCreated(now, missingPackets);
                 }
@@ -370,9 +336,8 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
                     nextRequestAt = -1;
                 }
 
-                if (r != null && logger.isDebugEnabled()) {
-                    long rtt
-                            = stream.getMediaStreamStats().getSendStats().getRtt();
+                if (r != null) {
+                    long rtt = stream.getMediaStreamStats().getSendStats().getRtt();
                     if (rtt > 0) {
 
                         // firstRequestSentAt is if we created a Request, but
@@ -382,8 +347,8 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
                         long delta = firstRequestSentAt > 0
                                 ? timeProvider.currentTimeMillis() - r.firstRequestSentAt : 0;
 
-                        logger.debug(Logger.Category.STATISTICS,
-                                "retr_received,stream=" + stream.hashCode() + " delay=" + delta + ",rtt=" + rtt);
+                        Timber.d("%s retr_received,stream = %d; delay = %d; rtt = %d",
+                                Logger.Category.STATISTICS, stream.hashCode(), delta, rtt);
                     }
                 }
             }
@@ -408,14 +373,8 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
             {
                 // Too many packets missing. Reset.
                 lastReceivedSeq = seq;
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Resetting retransmission requester state. "
-                            + "SSRC: " + ssrc
-                            + ", last received: " + lastReceivedSeq
-                            + ", current: " + seq
-                            + ". Removing " + requests.size()
-                            + " unsatisfied requests.");
-                }
+                Timber.d("Resetting retransmission requester state. SSRC: %S, last received: %S, current: %S. Removing %S unsatisfied requests.",
+                        ssrc, lastReceivedSeq, seq, requests.size());
                 requests.clear();
                 nextRequestAt = -1;
             }
@@ -449,12 +408,8 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
                 Request request = requests.get(seqNum);
                 request.timesRequested++;
                 if (request.timesRequested == MAX_REQUESTS) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(
-                                "Generated the last NACK for SSRC=" + ssrc + " seq="
-                                        + request.seq + ". Time since the first request: "
-                                        + (time - request.firstRequestSentAt));
-                    }
+                    Timber.d("Generated the last NACK for SSRC = %S seq = %S. Time since the first request: %S",
+                            ssrc, request.seq, (time - request.firstRequestSentAt));
                     requests.remove(seqNum);
                     continue;
                 }

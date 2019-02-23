@@ -18,7 +18,6 @@ package net.java.sip.communicator.impl.resources;
 import net.java.sip.communicator.impl.resources.util.SkinJarBuilder;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.resources.*;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.util.javax.swing.ImageIcon;
@@ -27,6 +26,8 @@ import org.osgi.framework.ServiceEvent;
 import java.io.*;
 import java.net.URL;
 
+import timber.log.Timber;
+
 /**
  * A default implementation of the <tt>ResourceManagementService</tt>.
  *
@@ -34,15 +35,10 @@ import java.net.URL;
  * @author Yana Stamcheva
  * @author Lubomir Marinov
  * @author Adam Netocny
+ * @author Eng Chong Meng
  */
 public class ResourceManagementServiceImpl extends AbstractResourcesService
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>ResourceManagementServiceImpl</tt>
-     * class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(ResourceManagementServiceImpl.class);
-
     /**
      * UI Service reference.
      */
@@ -120,7 +116,7 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     {
         String res = getColorResources().get(key);
         if (res == null) {
-            logger.error("Missing color resource for key: " + key);
+            Timber.e("Missing color resource for key: %s", key);
             return 0xFFFFFF;
         }
         else
@@ -139,7 +135,7 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     {
         String res = getColorResources().get(key);
         if (res == null) {
-            logger.error("Missing color resource for key: " + key);
+            Timber.e("Missing color resource for key: %s", key);
             return "0xFFFFFF";
         }
         else
@@ -178,7 +174,7 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
         String path = getImagePath(streamKey);
 
         if (path == null || path.length() == 0) {
-            logger.warn("Missing resource for key: " + streamKey);
+            Timber.w("Missing resource for key: %s", streamKey);
             return null;
         }
         return getImageInputStreamForPath(path);
@@ -194,8 +190,7 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     {
         String path = getImagePath(urlKey);
         if (path == null || path.length() == 0) {
-            if (logger.isInfoEnabled())
-                logger.info("Missing resource for key: " + urlKey);
+            Timber.i("Missing resource for key: %s", urlKey);
             return null;
         }
         return getImageURLForPath(path);
@@ -229,7 +224,7 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
         String path = getSoundPath(urlKey);
 
         if (path == null || path.length() == 0) {
-            logger.warn("Missing resource for key: " + urlKey);
+            Timber.w("Missing resource for key: %s", urlKey);
             return null;
         }
         return getSoundURLForPath(path);
@@ -264,7 +259,7 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
             image = new byte[in.available()];
             in.read(image);
         } catch (IOException e) {
-            logger.error("Failed to load image:" + imageID, e);
+            Timber.e(e, "Failed to load image:%s", imageID);
         }
         return image;
     }

@@ -19,30 +19,17 @@ import org.atalk.impl.neomedia.RTPPacketPredicate;
 import org.atalk.impl.neomedia.rtcp.RTCPTCCPacket;
 import org.atalk.impl.neomedia.rtp.remotebitrateestimator.RemoteBitrateEstimatorAbsSendTime;
 import org.atalk.impl.neomedia.rtp.remotebitrateestimator.RemoteBitrateObserver;
-import org.atalk.impl.neomedia.transform.PacketTransformer;
-import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
-import org.atalk.impl.neomedia.transform.TransformEngine;
-import org.atalk.service.neomedia.ByteArrayBufferImpl;
-import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.MediaStreamStats;
-import org.atalk.service.neomedia.RawPacket;
-import org.atalk.service.neomedia.TransmissionFailedException;
-import org.atalk.service.neomedia.VideoMediaStream;
+import org.atalk.impl.neomedia.transform.*;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.rtp.CallStatsObserver;
-import org.atalk.util.DiagnosticContext;
-import org.atalk.util.LRUCache;
-import org.atalk.util.Logger;
-import org.atalk.util.RTPUtils;
-import org.atalk.util.TimeSeriesLogger;
+import org.atalk.util.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import timber.log.Timber;
 
 /**
  * Implements transport-cc functionality as a {@link TransformEngine}. The
@@ -53,9 +40,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Boris Grozev
  * @author Julian Chukwu
  * @author George Politis
+ * @author Eng Chong Meng
  */
-public class TransportCCEngine extends RTCPPacketListenerAdapter
-        implements RemoteBitrateObserver, CallStatsObserver
+public class TransportCCEngine extends RTCPPacketListenerAdapter implements RemoteBitrateObserver, CallStatsObserver
 {
     /**
      * The maximum number of received packets and their timestamps to save.
@@ -68,12 +55,6 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
      * XXX this is an uninformed value.
      */
     private static final int MAX_OUTGOING_PACKETS_HISTORY = 1000;
-
-    /**
-     * The {@link Logger} used by the {@link TransportCCEngine} class and its
-     * instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(TransportCCEngine.class);
 
     /**
      * The {@link TimeSeriesLogger} to be used by this instance to print time series.
@@ -205,7 +186,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
                 }
 
                 // This shouldn't happen, because we will send feedback often.
-                logger.info("Reached max size, removing an entry.");
+                Timber.i("Reached max size, removing an entry.");
             }
 
             if (incomingPackets.isEmpty()) {
@@ -301,21 +282,21 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
         if (packets != null) {
             MediaStream stream = getMediaStream();
             if (stream == null) {
-                logger.warn("No media stream, can't send RTCP.");
+                Timber.w("No media stream, can't send RTCP.");
                 return;
             }
 
             try {
                 long senderSSRC = anyVideoMediaStream.getStreamRTPManager().getLocalSSRC();
                 if (senderSSRC == -1) {
-                    logger.warn("No sender SSRC, can't send RTCP.");
+                    Timber.w("No sender SSRC, can't send RTCP.");
                     return;
                 }
 
 
                 long sourceSSRC = getSourceSSRC();
                 if (sourceSSRC == -1) {
-                    logger.warn("No source SSRC, can't send RTCP.");
+                    Timber.w("No source SSRC, can't send RTCP.");
                     return;
                 }
                 RTCPTCCPacket rtcpPacket = new RTCPTCCPacket(
@@ -338,9 +319,9 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter
                 // receiver stops sending packets for over 8s or there is a
                 // significant gap in the received sequence numbers. In this
                 // case we will fail to send one feedback message.
-                logger.warn("Not sending transport-cc feedback, delta or packet count too big.");
+                Timber.w("Not sending transport-cc feedback, delta or packet count too big.");
             } catch (IOException | TransmissionFailedException e) {
-                logger.error("Failed to send transport feedback RTCP: ", e);
+                Timber.e(e, "Failed to send transport feedback RTCP");
             }
         }
     }

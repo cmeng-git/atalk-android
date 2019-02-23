@@ -15,9 +15,11 @@
  */
 package net.java.sip.communicator.impl.provdisc.dhcp;
 
-import net.java.sip.communicator.service.provdisc.*;
-import net.java.sip.communicator.service.provdisc.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.provdisc.AbstractProvisioningDiscoveryService;
+import net.java.sip.communicator.service.provdisc.event.DiscoveryEvent;
+import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
+
+import timber.log.Timber;
 
 /**
  * Class that uses DHCP to retrieve provisioning URL. Basically it sends a
@@ -27,17 +29,11 @@ import net.java.sip.communicator.util.*;
  * answer with a HTTP/HTTPS URL.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
-public class ProvisioningDiscoveryServiceDHCPImpl
-    extends AbstractProvisioningDiscoveryService
-    implements DiscoveryListener
+public class ProvisioningDiscoveryServiceDHCPImpl extends AbstractProvisioningDiscoveryService
+        implements DiscoveryListener
 {
-    /**
-     * Logger.
-     */
-    private final Logger logger
-        = Logger.getLogger(ProvisioningDiscoveryServiceDHCPImpl.class);
-
     /**
      * DHCP provisioning discover object.
      */
@@ -64,14 +60,11 @@ public class ProvisioningDiscoveryServiceDHCPImpl
      */
     public ProvisioningDiscoveryServiceDHCPImpl()
     {
-        try
-        {
-            discover = new DHCPProvisioningDiscover(6768, (byte)224);
+        try {
+            discover = new DHCPProvisioningDiscover(6768, (byte) 224);
             discover.addDiscoveryListener(this);
-        }
-        catch(Exception e)
-        {
-            logger.warn("Cannot create DHCP client socket", e);
+        } catch (Exception e) {
+            Timber.w(e, "Cannot create DHCP client socket");
         }
     }
 
@@ -85,8 +78,7 @@ public class ProvisioningDiscoveryServiceDHCPImpl
     @Override
     public String discoverURL()
     {
-        if(discover != null)
-        {
+        if (discover != null) {
             return discover.discoverProvisioningURL();
         }
 
@@ -103,8 +95,7 @@ public class ProvisioningDiscoveryServiceDHCPImpl
     @Override
     public void startDiscovery()
     {
-        if(discover != null)
-        {
+        if (discover != null) {
             new Thread(discover).start();
         }
     }

@@ -12,18 +12,19 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.dialogs.ProgressDialogFragment;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.android.gui.dialogs.ProgressDialogFragment;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
+
+import timber.log.Timber;
 
 /**
  * @author Yana Stamcheva
@@ -32,11 +33,6 @@ import org.jxmpp.stringprep.XmppStringprepException;
  */
 public class AndroidCallUtil
 {
-    /**
-     * The logger for this class.
-     */
-    private final static Logger logger = Logger.getLogger(AndroidCallUtil.class);
-
     /**
      * Field used to track the thread used to create outgoing calls.
      */
@@ -139,14 +135,14 @@ public class AndroidCallUtil
                     else
                         CallManager.createCall(provider, destination);
                 } catch (Throwable t) {
-                    logger.error("Error creating the call: " + t.getMessage(), t);
+                    Timber.e(t, "Error creating the call: %s", t.getMessage());
                     AndroidUtils.showAlertDialog(context, context.getString(R.string.service_gui_ERROR), t.getMessage());
                 } finally {
                     if (DialogActivity.waitForDialogOpened(dialogId)) {
                         DialogActivity.closeDialog(dialogId);
                     }
                     else {
-                        logger.error("Failed to wait for the dialog: " + dialogId);
+                        Timber.e("Failed to wait for the dialog: %s", dialogId);
                     }
                     createCallThread = null;
                 }
@@ -164,7 +160,7 @@ public class AndroidCallUtil
     public static boolean checkCallInProgress(Activity activity)
     {
         if (CallManager.getActiveCallsCount() > 0) {
-            logger.warn("Call is in progress");
+            Timber.w("Call is in progress");
             Toast.makeText(activity, R.string.service_gui_WARN_CALL_IN_PROGRESS, Toast.LENGTH_SHORT).show();
             activity.finish();
             return true;

@@ -16,11 +16,17 @@
  */
 package org.jivesoftware.smackx.captcha.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.captcha.packet.Captcha;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * The <tt>CaptchaProvider</tt> is an extension element provider that is meant to be used for
@@ -38,8 +44,8 @@ public class CaptchaProvider extends ExtensionElementProvider<Captcha>
      * @see ExtensionElementProvider#parse(XmlPullParser, int)
      */
     @Override
-    public Captcha parse(XmlPullParser parser, int initialDepth)
-            throws Exception
+    public Captcha parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException, SmackParsingException
     {
         // feature
         DataForm form = null;

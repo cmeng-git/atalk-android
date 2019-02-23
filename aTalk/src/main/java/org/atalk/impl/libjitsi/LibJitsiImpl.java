@@ -10,10 +10,11 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * Represents an implementation of the <tt>libjitsi</tt> library which is stand-alone and does not utilize OSGi.
@@ -23,11 +24,6 @@ import java.util.Map;
  */
 public class LibJitsiImpl extends LibJitsi
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>LibJitsiImpl</tt> class and its instances.
-     */
-    private static final Logger logger = Logger.getLogger(LibJitsiImpl.class);
-
     /**
      * The service instances associated with this implementation of the <tt>libjitsi</tt> library mapped by their
      * respective type/class names.
@@ -78,7 +74,7 @@ public class LibJitsiImpl extends LibJitsi
 
         /*
          * Allow the service implementation class names to be specified as System properties akin to standard
-          * Java class factory names.
+         * Java class factory names.
          */
         String serviceImplClassName = System.getProperty(serviceClassName);
         boolean suppressClassNotFoundException = false;
@@ -134,10 +130,7 @@ public class LibJitsiImpl extends LibJitsi
             }
         }
         else {
-            if (logger.isInfoEnabled()) {
-                logger.warn("Failed to initialize service implementation " + serviceImplClassName
-                        + ". Will continue without it.", exception);
-            }
+            Timber.w(exception, "Failed to initialize service implementation %s. Will continue without it.", serviceImplClassName);
             if (serviceImplClassName.contains("MediaServiceImpl")) {
                 DialogActivity.showDialog(aTalkApp.getGlobalContext(), aTalkApp.getResString(R.string.service_gui_ERROR),
                         aTalkApp.getResString(R.string.service_gui_CALL_DISABLE_ON_FAULT, serviceImplClassName, exception));

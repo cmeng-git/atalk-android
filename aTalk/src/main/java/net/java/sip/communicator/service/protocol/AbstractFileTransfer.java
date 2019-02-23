@@ -6,9 +6,10 @@
 package net.java.sip.communicator.service.protocol;
 
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.Logger;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * An abstract implementation of the <tt>FileTransfer</tt> interface providing implementation of
@@ -21,8 +22,6 @@ import java.util.*;
  */
 public abstract class AbstractFileTransfer implements FileTransfer
 {
-    private static final Logger logger = Logger.getLogger(AbstractFileTransfer.class);
-
     /**
      * A list of listeners registered for file transfer status events.
      */
@@ -136,11 +135,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
         synchronized (statusListeners) {
             listeners = new ArrayList<>(statusListeners);
         }
-
-        if (logger.isDebugEnabled())
-            logger.debug("Dispatching a FileTransfer Event to" + listeners.size()
-                    + " listeners. Status=" + newStatus);
-
+        Timber.d("Dispatching a FileTransfer Event to %d listeners. Status = %s", listeners.size(), newStatus);
         FileTransferStatusChangeEvent statusEvent = new FileTransferStatusChangeEvent(this, mStatus,
                 newStatus, reason);
 

@@ -11,19 +11,16 @@ import org.bouncycastle.crypto.tls.*;
 import java.io.IOException;
 import java.util.Hashtable;
 
+import timber.log.Timber;
+
 /**
  * Implements {@link TlsServer} for the purposes of supporting DTLS-SRTP.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class TlsServerImpl extends DefaultTlsServer
 {
-	/**
-	 * The <tt>Logger</tt> used by the <tt>TlsServerImpl</tt> class and its instances to print
-	 * debug information.
-	 */
-	private static final Logger logger = Logger.getLogger(TlsServerImpl.class);
-
 	/**
 	 * @see TlsServer#getCertificateRequest()
 	 */
@@ -234,7 +231,7 @@ public class TlsServerImpl extends DefaultTlsServer
 				String msg = "No chosen SRTP protection profile!";
 				TlsFatalAlert tfa = new TlsFatalAlert(AlertDescription.internal_error);
 
-				logger.error(msg, tfa);
+				Timber.e(tfa, "%s", msg);
 				throw tfa;
 			}
 			else {
@@ -352,7 +349,7 @@ public class TlsServerImpl extends DefaultTlsServer
 			getDtlsControl().verifyAndValidateCertificate(clientCertificate);
 		}
 		catch (Exception e) {
-			logger.error("Failed to verify and/or validate client certificate!", e);
+			Timber.e(e, "Failed to verify and/or validate client certificate!");
 			if (e instanceof IOException)
 				throw (IOException) e;
 			else
@@ -381,7 +378,7 @@ public class TlsServerImpl extends DefaultTlsServer
 			String msg = "DTLS extended client hello does not include the use_srtp extension!";
 			IOException ioe = new IOException(msg);
 
-			logger.error(msg, ioe);
+			Timber.e(ioe, "%s", msg);
 			throw ioe;
 		}
 		else {
@@ -396,7 +393,7 @@ public class TlsServerImpl extends DefaultTlsServer
 				String msg = "No chosen SRTP protection profile!";
 				TlsFatalAlert tfa = new TlsFatalAlert(AlertDescription.illegal_parameter);
 
-				logger.error(msg, tfa);
+				Timber.e(tfa, "%s", msg);
 				throw tfa;
 			}
 			else

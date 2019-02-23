@@ -9,10 +9,9 @@ import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
@@ -27,6 +26,8 @@ import javax.media.Format;
 import javax.media.control.FormatControl;
 import javax.media.format.VideoFormat;
 
+import timber.log.Timber;
+
 /**
  * Base class for camera streams.
  *
@@ -37,11 +38,6 @@ import javax.media.format.VideoFormat;
 @SuppressWarnings("deprecation")
 abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
 {
-    /**
-     * The logger
-     */
-    private final static Logger logger = Logger.getLogger(CameraStreamBase.class);
-
     /**
      * ID of the camera used by this instance.
      */
@@ -131,7 +127,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
 
             // Streaming video always send in dimension according to the phone orientation
             mFormat.setVideoSize(mPreviewSize);
-            logger.info("Camera stream format: " + mFormat);
+            Timber.i("Camera stream format: %s", mFormat);
 
             params.setRotation(mRotation);
             // Always set camera capture in its native dimension - otherwise may not be supported.
@@ -144,7 +140,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
             onInitPreview();
             mCamera.startPreview();
         } catch (Exception e) {
-            logger.error("Set camera preview failed: ", e);
+            Timber.e("Set camera preview failed: %s", e.getMessage());
             aTalkApp.showAlertDialogOnUI(aTalkApp.getResString(R.string.service_gui_ERROR),
                     R.string.service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED, mPreviewSize.toString(), e.getMessage());
 
@@ -229,7 +225,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
         long delay = (current - last);
         last = System.currentTimeMillis();
         // Measure moving average
-        if (logger.isDebugEnabled()) {
+        if (TimberLog.isTraceEnabled()) {
             avg[idx] = delay;
             if (++idx == avg.length)
                 idx = 0;
@@ -237,7 +233,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
             for (long anAvg : avg) {
                 movAvg += anAvg;
             }
-            logger.debug("Avg frame rate: " + (1000 / (movAvg / avg.length)));
+            Timber.log(TimberLog.FINER, "Avg frame rate: %d", (1000 / (movAvg / avg.length)));
         }
         return delay;
     }

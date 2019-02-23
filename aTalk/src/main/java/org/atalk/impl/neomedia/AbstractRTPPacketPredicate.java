@@ -14,7 +14,6 @@
 package org.atalk.impl.neomedia;
 
 import org.atalk.service.neomedia.ByteArrayBuffer;
-import org.atalk.util.Logger;
 import org.atalk.util.RTCPUtils;
 import org.atalk.util.function.Predicate;
 // import java.util.function.Predicate; => need API-24
@@ -25,11 +24,6 @@ import org.atalk.util.function.Predicate;
  */
 public class AbstractRTPPacketPredicate implements Predicate<ByteArrayBuffer>
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>AbstractRTPPacketPredicate</tt> class.
-     */
-    private static final Logger logger = Logger.getLogger(AbstractRTPPacketPredicate.class);
-
     /**
      * True if this predicate should test for RTCP, false for RTP.
      */

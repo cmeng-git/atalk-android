@@ -6,7 +6,6 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.ProtocolIcon;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.ServiceReference;
@@ -17,20 +16,18 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import timber.log.Timber;
+
 /**
  * Represents the Jabber protocol icon. Implements the <tt>ProtocolIcon</tt> interface in order to
  * provide a Jabber icon image in two different sizes.
  *
  * @author Yana Stamcheva
  * @author Lubomir Marinov
+ * @author Eng Chong Meng
  */
 public class ProtocolIconJabberImpl implements ProtocolIcon
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>ProtocolIconJabberImpl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(ProtocolIconJabberImpl.class);
-
     /**
      * The path where all protocol icons are placed.
      */
@@ -58,15 +55,10 @@ public class ProtocolIconJabberImpl implements ProtocolIcon
         this.iconPath = iconPath;
 
         iconsTable.put(ProtocolIcon.ICON_SIZE_16x16, loadIcon(iconPath + "/status16x16-online.png"));
-
         iconsTable.put(ProtocolIcon.ICON_SIZE_32x32, loadIcon(iconPath + "/logo32x32.png"));
-
         iconsTable.put(ProtocolIcon.ICON_SIZE_48x48, loadIcon(iconPath + "/logo48x48.png"));
-
         iconPathsTable.put(ProtocolIcon.ICON_SIZE_16x16, iconPath + "/status16x16-online.png");
-
         iconPathsTable.put(ProtocolIcon.ICON_SIZE_32x32, iconPath + "/logo32x32.png");
-
         iconPathsTable.put(ProtocolIcon.ICON_SIZE_48x48, iconPath + "/logo48x48.png");
     }
 
@@ -148,7 +140,7 @@ public class ProtocolIconJabberImpl implements ProtocolIcon
             icon = new byte[is.available()];
             is.read(icon);
         } catch (IOException e) {
-            logger.error("Failed to load icon: " + imagePath, e);
+            Timber.e(e, "Failed to load icon: %s", imagePath);
         }
         return icon;
     }

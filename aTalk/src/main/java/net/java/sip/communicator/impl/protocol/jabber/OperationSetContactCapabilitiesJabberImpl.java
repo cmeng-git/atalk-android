@@ -9,7 +9,6 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.caps.UserCapsNo
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
@@ -18,6 +17,8 @@ import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jxmpp.jid.Jid;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Represents an <tt>OperationSet</tt> to query the <tt>OperationSet</tt>s supported for a specific
@@ -33,12 +34,6 @@ public class OperationSetContactCapabilitiesJabberImpl
         extends AbstractOperationSetContactCapabilities<ProtocolProviderServiceJabberImpl>
         implements UserCapsNodeListener, ContactPresenceStatusListener
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>OperationSetContactCapabilitiesJabberImpl</tt> class and
-     * its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(OperationSetContactCapabilitiesJabberImpl.class);
-
     /**
      * The list of <tt>OperationSet</tt> capabilities presumed to be supported by a
      * <tt>Contact</tt> when it is offline.
@@ -186,7 +181,7 @@ public class OperationSetContactCapabilitiesJabberImpl
                     opsetClass = (Class<? extends OperationSet>) Class.forName(opsetClassName);
                 } catch (ClassNotFoundException cnfex) {
                     opsetClass = null;
-                    logger.error("Failed to get OperationSet class for name: " + opsetClassName, cnfex);
+                    Timber.e(cnfex, "Failed to get OperationSet class for name: %s", opsetClassName);
                 }
                 if (opsetClass != null) {
                     OperationSet opset = getOperationSet(jid, opsetClass, online);

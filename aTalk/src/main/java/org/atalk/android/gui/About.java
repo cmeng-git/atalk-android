@@ -73,6 +73,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"sdp-api", "https://mvnrepository.com/artifact/org.opentelecoms.sdp/sdp-api"},
             new String[]{"Smack", "https://github.com/igniterealtime/Smack"},
             new String[]{"speex", "https://github.com/xiph/speex"},
+            new String[]{"Timber", "https://github.com/JakeWharton/timber"},
             new String[]{"TokenAutoComplete", "https://github.com/splitwise/TokenAutoComplete"},
             new String[]{"uCrop", "https://github.com/Yalantis/uCrop"},
             new String[]{"weupnp", "https://github.com/bitletorg/weupnp"},
@@ -127,6 +128,14 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"XEP-0364: Off-the-Record Messaging (V2/3)", "https://xmpp.org/extensions/xep-0364.html"},
             new String[]{"XEP-0384: OMEMO Encryption", "https://xmpp.org/extensions/xep-0384.html"},
     };
+
+    /**
+     * Default CSS styles used to format the change log.
+     */
+    public static final String DEFAULT_CSS =
+            "h1 { margin-left: 0px; font-size: 1.2em; }" + "\n" +
+                    "li { margin-left: 0px; font-size: 0.9em;}" + "\n" +
+                    "ul { padding-left: 2em; }";
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -203,7 +212,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
                 aTalkApp.showSendLogsDialog();
                 break;
             case R.id.history_log:
-                ChangeLog cl = new ChangeLog(this);
+                ChangeLog cl = new ChangeLog(this, DEFAULT_CSS);
                 cl.getFullLogDialog().show();
                 break;
             case R.id.atalk_help:
@@ -247,7 +256,11 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
     private String getAboutInfo()
     {
         StringBuilder html = new StringBuilder()
-                .append("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>");
+                .append("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>")
+                .append("<html><head><style type=\"text/css\">")
+                .append(DEFAULT_CSS)
+                .append("</style></head><body>");
+
 
         StringBuilder xeps = new StringBuilder().append("<ul>");
         for (String[] feature : SUPPORTED_XEP) {
@@ -274,6 +287,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
 
         html.append(String.format(getString(R.string.app_libraries), libs.toString()))
                 .append("</p><hr/><p>");
+        html.append("</body></html>");
 
         return html.toString();
     }

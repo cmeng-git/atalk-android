@@ -5,6 +5,7 @@
  */
 package org.atalk.impl.neomedia;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.*;
 import org.atalk.impl.neomedia.control.ImgStreamingControl;
 import org.atalk.impl.neomedia.device.*;
@@ -39,6 +40,8 @@ import javax.media.control.FormatControl;
 import javax.media.format.VideoFormat;
 import javax.media.protocol.DataSource;
 
+import timber.log.Timber;
+
 /**
  * Extends <tt>MediaStreamImpl</tt> in order to provide an implementation of <tt>VideoMediaStream</tt>.
  *
@@ -48,11 +51,6 @@ import javax.media.protocol.DataSource;
  */
 public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaStream
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>VideoMediaStreamImpl</tt> class and its instances for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(VideoMediaStreamImpl.class);
-
     /**
      * The indicator which determines whether RTCP feedback Picture Loss Indication messages are to be used.
      */
@@ -714,9 +712,8 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
      */
     protected boolean fireVideoEvent(int type, Component visualComponent, int origin, boolean wait)
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Firing VideoEvent with type " + VideoEvent.typeToString(type)
-                    + " and origin " + VideoEvent.originToString(origin));
+            Timber.log(TimberLog.FINER, "Firing VideoEvent with type %s and origin %s",
+                    VideoEvent.typeToString(type), VideoEvent.originToString(origin));
 
         return videoNotifierSupport.fireVideoEvent(type, visualComponent, origin, wait);
     }
@@ -1129,7 +1126,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
         if (bandwidthEstimator == null) {
             bandwidthEstimator = new BandwidthEstimatorImpl(this);
             recurringRunnableExecutor.registerRecurringRunnable(bandwidthEstimator);
-            logger.info("Creating a BandwidthEstimator for stream " + this);
+            Timber.i("Creating a BandwidthEstimator for stream %s", this);
         }
         return bandwidthEstimator;
     }

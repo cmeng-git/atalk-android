@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.captcha.packet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -108,12 +109,12 @@ public class Captcha implements ExtensionElement
      * </captcha>
      */
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace)
+    public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.append('>');
         if (mForm != null) {
-            xml.append(mForm.toXML(null));
+            xml.append(mForm.toXML(XmlEnvironment.EMPTY));
         }
         xml.closeElement(this);
         return xml;

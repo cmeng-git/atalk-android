@@ -13,6 +13,8 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.aTalkApp;
 
+import timber.log.Timber;
+
 /**
  * Utility class that implements <tt>Html.ImageGetter</tt> interface and can be used to display images in
  * <tt>TextView</tt> through the HTML syntax.<br/>
@@ -23,14 +25,10 @@ import org.atalk.android.aTalkApp;
  * This format is used by Android <tt>ResourceManagementService</tt> to return image URLs.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class HtmlImageGetter implements Html.ImageGetter
 {
-	/**
-	 * The logger
-	 */
-	private static final Logger logger = Logger.getLogger(HtmlImageGetter.class);
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -50,17 +48,17 @@ public class HtmlImageGetter implements Html.ImageGetter
 		}
 		catch (IndexOutOfBoundsException e) {
 			// Invalid string format for source.substring(17)
-			logger.error("Error parsing: " + source, e);
+			Timber.e(e, "Error parsing: %s", source);
 			return null;
 		}
 		catch (NumberFormatException e) {
 			// Error parsing Integer.parseInt(source.substring(17))
-			logger.error("Error parsing: " + source, e);
+			Timber.e(e, "Error parsing: %s", source);
 			return null;
 		}
 		catch (Resources.NotFoundException e) {
 			// Resource for given id is not found
-			logger.error("Error parsing: " + source, e);
+			Timber.e(e, "Error parsing: %s", source);
 			return null;
 		}
 	}

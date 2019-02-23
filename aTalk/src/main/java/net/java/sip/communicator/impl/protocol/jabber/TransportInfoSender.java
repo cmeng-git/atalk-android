@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension;
+import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentExtensionElement;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.JingleIQ;
 
 /**
@@ -17,11 +17,11 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.JingleIQ
 public interface TransportInfoSender
 {
     /**
-     * Sends specific {@link ContentPacketExtension}s in a <tt>transport-info</tt> {@link JingleIQ}
+     * Sends specific {@link ContentExtensionElement}s in a <tt>transport-info</tt> {@link JingleIQ}
      * from the local peer to the remote peer.
      *
-     * @param contents the <tt>ContentPacketExtension</tt>s to be sent in a <tt>transport-info</tt>
+     * @param contents the <tt>ContentExtensionElement</tt>s to be sent in a <tt>transport-info</tt>
      * <tt>JingleIQ</tt> from the local peer to the remote peer
      */
-    void sendTransportInfo(Iterable<ContentPacketExtension> contents);
+    void sendTransportInfo(Iterable<ContentExtensionElement> contents);
 }

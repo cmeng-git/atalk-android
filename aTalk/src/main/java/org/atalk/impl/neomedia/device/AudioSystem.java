@@ -11,7 +11,6 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.resources.ResourceManagementService;
-import org.atalk.util.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.media.*;
+
+import timber.log.Timber;
 
 /**
  * Represents a <tt>DeviceSystem</tt> which provides support for the devices to capture and play
@@ -103,11 +104,6 @@ public abstract class AudioSystem extends DeviceSystem
      * contributed by <tt>WASAPISystem</tt>.
      */
     public static final String LOCATOR_PROTOCOL_WASAPI = "wasapi";
-
-    /**
-     * The <tt>Logger</tt> used by this instance for logging output.
-     */
-    private static Logger logger = Logger.getLogger(AudioSystem.class);
 
     /**
      * The (base) name of the <tt>ConfigurationService</tt> property which indicates whether
@@ -221,7 +217,7 @@ public abstract class AudioSystem extends DeviceSystem
                     throw (ThreadDeath) t;
                 else {
                     clazz = null;
-                    logger.error("Failed to get class " + className, t);
+                    Timber.e(t, "Failed to get class %s", className);
                 }
             }
             if (clazz == null) {
@@ -251,8 +247,7 @@ public abstract class AudioSystem extends DeviceSystem
                          * and the super's createRenderer() will be invoked.
                          */
                     } catch (SecurityException se) {
-                        logger.error("SecurityException: Failed to initialize " + className
-                                + " instance", se);
+                        Timber.e(se, "SecurityException: Failed to initialize %s instance", className);
                     }
                     if ((constructor != null)) {
                         superCreateRenderer = false;
@@ -263,8 +258,7 @@ public abstract class AudioSystem extends DeviceSystem
                                 throw (ThreadDeath) t;
                             else {
                                 renderer = null;
-                                logger.error("Failed to initialize a new " + className
-                                        + " instance", t);
+                                Timber.e(t, "Failed to initialize a new %s instance", className);
                             }
                         }
                         if ((renderer != null) && !playback) {
@@ -332,7 +326,7 @@ public abstract class AudioSystem extends DeviceSystem
         } catch (MalformedURLException murle) {
             // Do nothing, the value of audioStream will remain equal to null.
         } catch (UnsupportedAudioFileException uafe) {
-            logger.error("Unsupported format of audio stream " + url, uafe);
+            Timber.e(uafe, "Unsupported format of audio stream %s", url);
         }
         return audioStream;
     }

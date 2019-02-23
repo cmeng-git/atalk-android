@@ -6,15 +6,14 @@
  */
 package org.atalk.impl.neomedia.codec.video;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.FFmpeg;
-import org.atalk.util.Logger;
 
-import javax.media.Buffer;
-import javax.media.Effect;
-import javax.media.Format;
-import javax.media.ResourceUnavailableException;
+import javax.media.*;
+
+import timber.log.Timber;
 
 /**
  * Implements a video <tt>Effect</tt> which horizontally flips
@@ -22,16 +21,11 @@ import javax.media.ResourceUnavailableException;
  *
  * @author Sebastien Vincent
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class HFlip extends AbstractCodec2
         implements Effect
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>HFlip</tt> class and its instances
-     * for logging output.
-     */
-    private static final Logger logger = Logger.getLogger(HFlip.class);
-
     /**
      * The list of <tt>Format</tt>s supported by <tt>HFlip</tt> instances as
      * input and output.
@@ -139,7 +133,7 @@ public class HFlip extends AbstractCodec2
         if (outputFrame == 0) {
             String reason = "avcodec_alloc_frame: " + outputFrame;
 
-            logger.error(reason);
+            Timber.e("%s", reason);
             throw new ResourceUnavailableException(reason);
         }
     }
@@ -176,12 +170,8 @@ public class HFlip extends AbstractCodec2
          */
         long inputFrame = ((AVFrame) inputBuffer.getData()).getPtr();
 
-        long filterResult
-                = FFmpeg.get_filtered_video_frame(
-                inputFrame, this.width, this.height, this.pixFmt,
-                buffer,
-                ffsink,
-                outputFrame);
+        long filterResult = FFmpeg.get_filtered_video_frame(
+                inputFrame, this.width, this.height, this.pixFmt, buffer, ffsink, outputFrame);
         if (filterResult < 0) {
             /*
              * If get_filtered_video_frame fails, it is likely to fail for any
@@ -189,8 +179,7 @@ public class HFlip extends AbstractCodec2
              * lot of repeating logging output. Since the failure in question
              * will be visible in the UI anyway, just debug it.
              */
-            if (logger.isTraceEnabled())
-                logger.trace("get_filtered_video_frame: " + FFmpeg.av_strerror((int) filterResult));
+            Timber.log(TimberLog.FINER, "get_filtered_video_frame: %s", FFmpeg.av_strerror((int) filterResult));
             return BUFFER_PROCESSED_FAILED;
         }
 
@@ -239,12 +228,7 @@ public class HFlip extends AbstractCodec2
                         + VSINK_FFSINK_NAME;
                 long log_ctx = 0;
 
-                error
-                        = FFmpeg.avfilter_graph_parse(
-                        graph,
-                        filters,
-                        0, 0,
-                        log_ctx);
+                error = FFmpeg.avfilter_graph_parse(graph, filters, 0, 0, log_ctx);
                 if (error == 0) {
                     /*
                      * Unfortunately, the name of an AVFilterContext created by
@@ -287,7 +271,7 @@ public class HFlip extends AbstractCodec2
                     msg.append(": ").append(error);
                 }
                 msg.append(", format ").append(format);
-                logger.error(msg);
+                Timber.e("%s", msg);
             }
 
             return false;

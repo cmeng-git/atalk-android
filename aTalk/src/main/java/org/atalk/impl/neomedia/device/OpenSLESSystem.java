@@ -5,9 +5,6 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import net.java.sip.communicator.util.Logger;
-
-import org.atalk.impl.androidcontacts.AndroidContact;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.OpenSLESRenderer;
 import org.atalk.service.neomedia.codec.Constants;
 
@@ -23,11 +20,10 @@ import javax.media.format.AudioFormat;
  * Discovers and registers OpenSL ES capture devices with FMJ.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class OpenSLESSystem extends AudioSystem
 {
-    private final static Logger logger = Logger.getLogger(OpenSLESSystem.class);
-
     /**
      * The protocol of the <tt>MediaLocator</tt>s identifying OpenSL ES capture devices.
      */

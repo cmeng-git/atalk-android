@@ -16,9 +16,12 @@
 
 package org.atalk.util;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+
+import timber.log.Timber;
 
 /**
  * @author George Politis
@@ -92,7 +95,7 @@ public class TimeSeriesLogger
      */
     public void trace(HashMap<String, Object> point)
     {
-        logger.trace(new JSONObject(point).toString());
+        Timber.log(TimberLog.FINER, "%s", new JSONObject(point).toString());
     }
 
     /**
@@ -102,7 +105,7 @@ public class TimeSeriesLogger
      */
     public void warn(HashMap<String, Object> point)
     {
-        logger.warn(new JSONObject(point).toString());
+        Timber.w("%s", new JSONObject(point).toString());
     }
 
     /**
@@ -112,6 +115,6 @@ public class TimeSeriesLogger
      */
     public void info(HashMap<String, Object> point)
     {
-        logger.info(new JSONObject(point).toString());
+        Timber.i("Point info: %s", new JSONObject(point).toString());
     }
 }

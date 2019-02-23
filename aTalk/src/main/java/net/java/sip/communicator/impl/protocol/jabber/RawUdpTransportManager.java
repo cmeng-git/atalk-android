@@ -29,16 +29,16 @@ import java.util.*;
 public class RawUdpTransportManager extends TransportManagerJabberImpl
 {
     /**
-     * The list of <tt>ContentPacketExtension</tt>s which represents the local counterpart of the
+     * The list of <tt>ContentExtensionElement</tt>s which represents the local counterpart of the
      * negotiation between the local and the remote peers.
      */
-    private List<ContentPacketExtension> local;
+    private List<ContentExtensionElement> local;
 
     /**
-     * The collection of <tt>ContentPacketExtension</tt>s which represents the remote counterpart of
+     * The collection of <tt>ContentExtensionElement</tt>s which represents the remote counterpart of
      * the negotiation between the local and the remote peers.
      */
-    private final List<Iterable<ContentPacketExtension>> remotes = new LinkedList<>();
+    private final List<Iterable<ContentExtensionElement>> remotes = new LinkedList<>();
 
     /**
      * Creates a new instance of this transport manager, binding it to the specified peer.
@@ -66,19 +66,19 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> which uses the specified
      * <tt>connector</tt> or <tt>channel</tt>
      * @param connector the <tt>StreamConnector</tt> to be described within the transport element
-     * @return a {@link RawUdpTransportPacketExtension} containing the RTP and RTCP candidates of
+     * @return a {@link RawUdpTransportExtensionElement} containing the RTP and RTCP candidates of
      * the specified <tt>connector</tt>
      */
-    private RawUdpTransportPacketExtension createTransport(MediaType mediaType, StreamConnector connector)
+    private RawUdpTransportExtensionElement createTransport(MediaType mediaType, StreamConnector connector)
     {
-        RawUdpTransportPacketExtension ourTransport = new RawUdpTransportPacketExtension();
+        RawUdpTransportExtensionElement ourTransport = new RawUdpTransportExtensionElement();
         int generation = getCurrentGeneration();
 
         // create and add candidates that correspond to the stream connector
         // RTP
-        CandidatePacketExtension rtpCand = new CandidatePacketExtension();
+        CandidateExtensionElement rtpCand = new CandidateExtensionElement();
 
-        rtpCand.setComponent(CandidatePacketExtension.RTP_COMPONENT_ID);
+        rtpCand.setComponent(CandidateExtensionElement.RTP_COMPONENT_ID);
         rtpCand.setGeneration(generation);
         rtpCand.setID(getNextID());
         rtpCand.setType(CandidateType.host);
@@ -91,9 +91,9 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
         ourTransport.addCandidate(rtpCand);
 
         // RTCP
-        CandidatePacketExtension rtcpCand = new CandidatePacketExtension();
+        CandidateExtensionElement rtcpCand = new CandidateExtensionElement();
 
-        rtcpCand.setComponent(CandidatePacketExtension.RTCP_COMPONENT_ID);
+        rtcpCand.setComponent(CandidateExtensionElement.RTCP_COMPONENT_ID);
         rtcpCand.setGeneration(generation);
         rtcpCand.setID(getNextID());
         rtcpCand.setType(CandidateType.host);
@@ -113,7 +113,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      */
     protected ExtensionElement createTransportPacketExtension()
     {
-        return new RawUdpTransportPacketExtension();
+        return new RawUdpTransportExtensionElement();
     }
 
     /**
@@ -136,10 +136,10 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
         if (channel == null) {
             String media = mediaType.toString();
 
-            for (Iterable<ContentPacketExtension> remote : remotes) {
-                for (ContentPacketExtension content : remote) {
-                    RtpDescriptionPacketExtension rtpDescription
-                        = content.getFirstChildOfType(RtpDescriptionPacketExtension.class);
+            for (Iterable<ContentExtensionElement> remote : remotes) {
+                for (ContentExtensionElement content : remote) {
+                    RtpDescriptionExtensionElement rtpDescription
+                        = content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
 
                     if (media.equals(rtpDescription.getMedia())) {
                         streamTarget = JingleUtils.extractDefaultTarget(content);
@@ -149,7 +149,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
             }
         }
         else {
-            IceUdpTransportPacketExtension transport = channel.getTransport();
+            IceUdpTransportExtensionElement transport = channel.getTransport();
 
             if (transport != null)
                 streamTarget = JingleUtils.extractDefaultTarget(transport);
@@ -214,8 +214,8 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      */
     private void removeRemoteContent(String name)
     {
-        for (Iterator<Iterable<ContentPacketExtension>> remoteIter = remotes.iterator(); remoteIter.hasNext(); ) {
-            Iterable<ContentPacketExtension> remote = remoteIter.next();
+        for (Iterator<Iterable<ContentExtensionElement>> remoteIter = remotes.iterator(); remoteIter.hasNext(); ) {
+            Iterable<ContentExtensionElement> remote = remoteIter.next();
 
             /*
              * Once the remote content is removed, make sure that we are not retaining sets which do
@@ -230,8 +230,8 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
     /**
      * {@inheritDoc}
      */
-    protected ExtensionElement startCandidateHarvest(ContentPacketExtension theirContent,
-            ContentPacketExtension ourContent, TransportInfoSender transportInfoSender, String media)
+    protected ExtensionElement startCandidateHarvest(ContentExtensionElement theirContent,
+            ContentExtensionElement ourContent, TransportInfoSender transportInfoSender, String media)
             throws OperationFailedException
     {
         return createTransportForStartCandidateHarvest(media);
@@ -257,8 +257,8 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * @see TransportManagerJabberImpl#startCandidateHarvest(List, List, TransportInfoSender)
      */
     @Override
-    public void startCandidateHarvest(List<ContentPacketExtension> theirOffer,
-            List<ContentPacketExtension> ourAnswer, TransportInfoSender transportInfoSender)
+    public void startCandidateHarvest(List<ContentExtensionElement> theirOffer,
+            List<ContentExtensionElement> ourAnswer, TransportInfoSender transportInfoSender)
             throws OperationFailedException
     {
         this.local = ourAnswer;
@@ -270,13 +270,13 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * negotiation between the local and the remote peer for subsequent calls to
      * {@link #getStreamTarget(MediaType)}.
      *
-     * @param remote the collection of <tt>ContentPacketExtension</tt>s which represents the remote
+     * @param remote the collection of <tt>ContentExtensionElement</tt>s which represents the remote
      * counterpart of the negotiation between the local and the remote peer
      * @return <tt>true</tt> because <tt>RawUdpTransportManager</tt> does not perform connectivity checks
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Iterable)
      */
     @Override
-    public boolean startConnectivityEstablishment(Iterable<ContentPacketExtension> remote)
+    public boolean startConnectivityEstablishment(Iterable<ContentExtensionElement> remote)
         throws OperationFailedException
     {
         if ((remote != null) && !remotes.contains(remote)) {
@@ -287,7 +287,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
              * peer tells us about a specific set of contents, make sure that it is the only record
              * we will have with respect to the specified set of contents.
              */
-            for (ContentPacketExtension content : remote)
+            for (ContentExtensionElement content : remote)
                 removeRemoteContent(content.getName());
 
             remotes.add(remote);
@@ -303,7 +303,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * @see TransportManagerJabberImpl#wrapupCandidateHarvest()
      */
     @Override
-    public List<ContentPacketExtension> wrapupCandidateHarvest()
+    public List<ContentExtensionElement> wrapupCandidateHarvest()
     {
         return local;
     }

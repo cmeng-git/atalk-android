@@ -6,11 +6,16 @@
  */
 package net.java.sip.communicator.util.launchutils;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import net.java.sip.communicator.util.ScStdOut;
 
-import net.java.sip.communicator.util.*;
+import org.atalk.android.plugin.timberlog.TimberLog;
+
+import java.io.*;
+import java.util.Properties;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+
+import timber.log.Timber;
 
 /**
  * The <tt>LauncherArgHandler</tt> class handles invocation arguments that have
@@ -18,42 +23,36 @@ import net.java.sip.communicator.util.*;
  * set of options and also allows for registration of delegates.
  *
  * @author Emil Ivov <emcho at sip-communicator.org>
+ * @author Eng Chong Meng
  */
 public class LaunchArgHandler
 {
     /**
      * Our class logger.
      */
-     private static final net.java.sip.communicator.util.Logger logger =
-        net.java.sip.communicator.util.Logger.getLogger(LaunchArgHandler.class);
+    private static final net.java.sip.communicator.util.Logger logger =
+            net.java.sip.communicator.util.Logger.getLogger(LaunchArgHandler.class);
 
-     /**
-      * The name of the property that contains the location of the SC
-      * configuration directory.
-      */
-     private static final String PNAME_SC_HOME_DIR_LOCATION =
-         "net.java.sip.communicator.SC_HOME_DIR_LOCATION";
+    /**
+     * The name of the property that contains the location of the SC configuration directory.
+     */
+    private static final String PNAME_SC_HOME_DIR_LOCATION = "net.java.sip.communicator.SC_HOME_DIR_LOCATION";
 
-     /**
-      * The name of the property that stores the home dir for cache data, such
-      * as avatars or spelling dictionaries.
-      */
-     private static final String PNAME_SC_CACHE_DIR_LOCATION =
-         "net.java.sip.communicator.SC_CACHE_DIR_LOCATION";
+    /**
+     * The name of the property that stores the home dir for cache data, such
+     * as avatars or spelling dictionaries.
+     */
+    private static final String PNAME_SC_CACHE_DIR_LOCATION = "net.java.sip.communicator.SC_CACHE_DIR_LOCATION";
 
-     /**
-      * The name of the property that stores the home dir for application logs
-      * (not history).
-      */
-     private static final String PNAME_SC_LOG_DIR_LOCATION =
-         "net.java.sip.communicator.SC_LOG_DIR_LOCATION";
+    /**
+     * The name of the property that stores the home dir for application logs (not history).
+     */
+    private static final String PNAME_SC_LOG_DIR_LOCATION = "net.java.sip.communicator.SC_LOG_DIR_LOCATION";
 
-     /**
-      * The name of the property that contains the name of the SC configuration
-      * directory.
-      */
-     private static final String PNAME_SC_HOME_DIR_NAME =
-         "net.java.sip.communicator.SC_HOME_DIR_NAME";
+    /**
+     * The name of the property that contains the name of the SC configuration directory.
+     */
+    private static final String PNAME_SC_HOME_DIR_NAME = "net.java.sip.communicator.SC_HOME_DIR_NAME";
 
     /**
      * Returned by the <tt>handleArgs</tt> methods when the arguments that have
@@ -108,12 +107,12 @@ public class LaunchArgHandler
      * The property name containing the name of the application
      * (e.g. SIP Communicator)
      */
-    private  static final String PNAME_APPLICATION_NAME = "APPLICATION_NAME";
+    private static final String PNAME_APPLICATION_NAME = "APPLICATION_NAME";
 
     /**
      * The package name of the applications (e.g. atalk).
      */
-    private  static final String PNAME_PACKAGE_NAME = "PACKAGE_NAME";
+    private static final String PNAME_PACKAGE_NAME = "PACKAGE_NAME";
 
     /**
      * The property name containing the current version.
@@ -152,32 +151,22 @@ public class LaunchArgHandler
      */
     private LaunchArgHandler()
     {
-        InputStream versionPropertiesStream =
-            getClass().getResourceAsStream(VERSION_PROPERTIES);
+        InputStream versionPropertiesStream = getClass().getResourceAsStream(VERSION_PROPERTIES);
         boolean versionPropertiesAreLoaded = false;
-        if (versionPropertiesStream != null)
-        {
-            try
-            {
-                try
-                {
+        if (versionPropertiesStream != null) {
+            try {
+                try {
                     versionProperties.load(versionPropertiesStream);
                     versionPropertiesAreLoaded = true;
-                }
-                finally
-                {
+                } finally {
                     versionPropertiesStream.close();
                 }
-            }
-            catch (IOException exc)
-            {
+            } catch (IOException exc) {
                 // no need to worry the user, so only print if we're in FINEST
             }
         }
-        if (!versionPropertiesAreLoaded)
-        {
-            if (logger.isTraceEnabled())
-                logger.trace("Couldn't open version.properties");
+        if (!versionPropertiesAreLoaded) {
+            Timber.log(TimberLog.FINER,"Couldn't open version.properties");
         }
 
         // Start url handler for Mac OS X.
@@ -200,8 +189,7 @@ public class LaunchArgHandler
      */
     public static LaunchArgHandler getInstance()
     {
-        if(argHandler == null)
-        {
+        if (argHandler == null) {
             argHandler = new LaunchArgHandler();
         }
 
@@ -213,7 +201,6 @@ public class LaunchArgHandler
      *
      * @param args the arguments the way we have received them from the main()
      * method.
-     *
      * @return one of the ACTION_XXX fields defined here, intended to indicate
      * to the caller they action that they are supposed as a result of the arg
      * handling.
@@ -222,86 +209,70 @@ public class LaunchArgHandler
     {
         int returnAction = ACTION_CONTINUE;
 
-        for(int i = 0; i < args.length; i++)
-        {
-            if (logger.isTraceEnabled())
-                logger.trace("handling arg " + i);
+        for (int i = 0; i < args.length; i++) {
+            Timber.log(TimberLog.FINER, "handling arg %s", i);
 
-            if (args[i].equals("--version") || args[i].equals("-v"))
-            {
+            if (args[i].equals("--version") || args[i].equals("-v")) {
                 handleVersionArg();
                 //we're supposed to exit after printing version info
                 returnAction = ACTION_EXIT;
                 break;
             }
-            else if (args[i].equals("--help") || args[i].equals("-h"))
-            {
+            else if (args[i].equals("--help") || args[i].equals("-h")) {
                 handleHelpArg();
                 //we're supposed to exit after printing the help message
                 returnAction = ACTION_EXIT;
                 break;
             }
-            else if (args[i].equals("--debug") || args[i].equals("-d"))
-            {
+            else if (args[i].equals("--debug") || args[i].equals("-d")) {
                 handleDebugArg(args[i]);
                 continue;
             }
-            else if (args[i].equals("--ipv6") || args[i].equals("-6"))
-            {
+            else if (args[i].equals("--ipv6") || args[i].equals("-6")) {
                 handleIPv6Enforcement();
                 break;
             }
-            else if (args[i].equals("--ipv4") || args[i].equals("-4"))
-            {
+            else if (args[i].equals("--ipv4") || args[i].equals("-4")) {
                 handleIPv4Enforcement();
                 break;
             }
-            else if (args[i].startsWith("--config="))
-            {
+            else if (args[i].startsWith("--config=")) {
                 returnAction = handleConfigArg(args[i]);
 
-                if(returnAction == ACTION_ERROR)
+                if (returnAction == ACTION_ERROR)
                     break;
                 else
                     continue;
             }
-            else if (args[i].equals("-c"))
-            {
+            else if (args[i].equals("-c")) {
                 //make sure we have at least one more argument left.
-                if( i == args.length - 1)
-                {
-                    System.out.println(
-                        "The \"-c\" option expects a directory parameter.");
+                if (i == args.length - 1) {
+                    System.out.println("The \"-c\" option expects a directory parameter.");
                     returnAction = ACTION_ERROR;
                     break;
                 }
                 handleConfigArg(args[++i]);
                 continue;
             }
-            else if (args[i].equals("--multiple") || args[i].equals("-m"))
-            {
+            else if (args[i].equals("--multiple") || args[i].equals("-m")) {
                 returnAction = ACTION_CONTINUE_LOCK_DISABLED;
                 continue;
             }
-            else if (args[i].startsWith("--splash="))
-            {
+            else if (args[i].startsWith("--splash=")) {
                 // do nothing already handled by startup script/binary
                 continue;
             }
-            else if (args[i].startsWith("--notray"))
-            {
+            else if (args[i].startsWith("--notray")) {
                 System.setProperty("disable-tray", "true");
                 continue;
             }
             //if this is the last arg and it's not an option then it's probably
             //an URI
-            else if ( i == args.length - 1
-                    && !args[i].startsWith("-"))
-            {
+            else if (i == args.length - 1
+                    && !args[i].startsWith("-")) {
                 handleUri(args[i]);
             }
-            else
-            {
+            else {
                 handleUnknownArg(args[i]);
 
                 errorCode = ERROR_CODE_UNKNOWN_ARG;
@@ -309,7 +280,6 @@ public class LaunchArgHandler
                 break;
             }
         }
-
         return returnAction;
     }
 
@@ -339,8 +309,7 @@ public class LaunchArgHandler
      */
     private void handleUri(String uri)
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Handling uri "+ uri);
+        Timber.log(TimberLog.FINER, "Handling uri %s", uri);
         argDelegator.handleUri(uri);
     }
 
@@ -356,24 +325,19 @@ public class LaunchArgHandler
 
         //then find a console handler (or create a new one) and set its level
         //to FINEST
-        java.util.logging.Logger rootLogger
-            = java.util.logging.Logger.getAnonymousLogger().getParent();
+        java.util.logging.Logger rootLogger = java.util.logging.Logger.getAnonymousLogger().getParent();
         ConsoleHandler conHan = null;
 
-        for (Handler handler : rootLogger.getHandlers())
-        {
-            if(handler instanceof ConsoleHandler)
-            {
+        for (Handler handler : rootLogger.getHandlers()) {
+            if (handler instanceof ConsoleHandler) {
                 conHan = (ConsoleHandler) handler;
                 break;
             }
         }
-        if(conHan == null)
-        {
+        if (conHan == null) {
             conHan = new ConsoleHandler();
             rootLogger.addHandler(conHan);
         }
-
         //conHan.setLevel(Level.SEVERE);
     }
 
@@ -381,24 +345,19 @@ public class LaunchArgHandler
      * Instructs SIP Communicator change the location of its home dir.
      *
      * @param configArg the arg containing the location of the new dir.
-     *
      * @return either ACTION_ERROR or ACTION_CONTINUE depending on whether or
      * not parsing the option went fine.
      */
     private int handleConfigArg(String configArg)
     {
-        if (configArg.startsWith("--config="))
-        {
+        if (configArg.startsWith("--config=")) {
             configArg = configArg.substring("--config=".length());
 
         }
-
         File configDir = new File(configArg);
-
         configDir.mkdirs();
 
-        if(!configDir.isDirectory())
-        {
+        if (!configDir.isDirectory()) {
             System.out.println("Failed to create directory " + configArg);
             errorCode = ERROR_CODE_CREATE_DIR_FAILED;
             return ACTION_ERROR;
@@ -427,13 +386,11 @@ public class LaunchArgHandler
         String name = getApplicationName();
         String version = getVersion();
 
-        if (name == null || name.trim().length() == 0)
-        {
+        if (name == null || name.trim().length() == 0) {
             name = "atalk";
         }
 
-        if (version == null || version.trim().length() == 0)
-        {
+        if (version == null || version.trim().length() == 0) {
             version = "build.by.SVN";
         }
         System.out.println(name + " " + version);
@@ -450,13 +407,11 @@ public class LaunchArgHandler
     private String getVersion()
     {
         String version = versionProperties.getProperty(PNAME_VERSION);
-
-        return  version == null ? "build.by.SVN" : version;
+        return version == null ? "build.by.SVN" : version;
     }
 
     /**
-     * Returns the name of the application. That should be Jitsi
-     * most of the time but who knows ..
+     * Returns the name of the application. That should be aTalk most of the time but who knows ..
      *
      * @return the name of the application (i.e. SIP Communicator until we
      * change our name some day.)
@@ -464,8 +419,7 @@ public class LaunchArgHandler
     private String getApplicationName()
     {
         String name = versionProperties.getProperty(PNAME_APPLICATION_NAME);
-
-        return  name == null ? "atalk" : name;
+        return name == null ? "atalk" : name;
     }
 
     /**
@@ -478,7 +432,7 @@ public class LaunchArgHandler
     {
         String name = versionProperties.getProperty(PNAME_PACKAGE_NAME);
 
-        return  name == null ? "atalk" : name;
+        return name == null ? "atalk" : name;
     }
 
     /**
@@ -551,15 +505,13 @@ public class LaunchArgHandler
         //the only interinstance arg we currently know how to handle are URIs.
         //Change this if one day we implement fun stuff like inter instance
         //command execution.
-        if(args.length >=1
-             && !args[args.length -1].startsWith("-"))
-        {
-            this.argDelegator.handleUri(args[args.length -1]);
+        if (args.length >= 1
+                && !args[args.length - 1].startsWith("-")) {
+            this.argDelegator.handleUri(args[args.length - 1]);
         }
         //otherwise, we simply notify SC of the request so that it could do
         //stuff like showing the contact list for example.
-        else
-        {
+        else {
             this.argDelegator.handleConcurrentInvocationRequest();
         }
     }
