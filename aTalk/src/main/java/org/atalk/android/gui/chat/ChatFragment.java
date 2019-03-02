@@ -1276,7 +1276,7 @@ public class ChatFragment extends OSGiFragment
             if ((metaContact != null) && metaContact.equals(chatPanel.getMetaContact())) {
                 final ChatMessageImpl msg = ChatMessageImpl.getMsgForEvent(evt);
 
-                Timber.log(TimberLog.FINER, "MESSAGE DELIVERED: process message to chat for contact: %s MESSAGE: %d",
+                Timber.log(TimberLog.FINER, "MESSAGE DELIVERED: process message to chat for contact: %s MESSAGE: %s",
                         contact.getAddress(), msg.getMessage());
                 addMessage(msg, true);
             }

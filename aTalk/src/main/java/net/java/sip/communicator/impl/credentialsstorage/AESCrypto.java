@@ -19,10 +19,12 @@ import net.java.sip.communicator.service.credentialsstorage.CryptoException;
 import net.java.sip.communicator.util.Base64;
 
 import java.security.*;
-import java.security.spec.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 
 import javax.crypto.*;
-import javax.crypto.spec.*;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Performs encryption and decryption of text using AES algorithm.
@@ -30,7 +32,7 @@ import javax.crypto.spec.*;
  * @author Dmitri Melnikov
  */
 public class AESCrypto
-    implements Crypto
+        implements Crypto
 {
     /**
      * The algorithm associated with the key.
@@ -46,7 +48,7 @@ public class AESCrypto
      * Salt used when creating the key.
      */
     private static byte[] SALT =
-    { 0x0C, 0x0A, 0x0F, 0x0E, 0x0B, 0x0E, 0x0E, 0x0F };
+            {0x0C, 0x0A, 0x0F, 0x0E, 0x0B, 0x0E, 0x0E, 0x0F};
 
     /**
      * Possible length of the keys in bits.
@@ -80,43 +82,30 @@ public class AESCrypto
      */
     public AESCrypto(String masterPassword)
     {
-        try
-        {
+        try {
             // we try init of key with suupplied lengths
             // we stop after the first successful attempt
-            for (int i = 0; i < KEY_LENGTHS.length; i++)
-            {
+            for (int i = 0; i < KEY_LENGTHS.length; i++) {
                 decryptCipher = Cipher.getInstance(CIPHER_ALGORITHM);
                 encryptCipher = Cipher.getInstance(CIPHER_ALGORITHM);
 
-                try
-                {
+                try {
                     initKey(masterPassword, KEY_LENGTHS[i]);
 
                     // its ok stop trying
                     break;
-                }
-                catch (InvalidKeyException e)
-                {
-                    if(i == KEY_LENGTHS.length - 1)
+                } catch (InvalidKeyException e) {
+                    if (i == KEY_LENGTHS.length - 1)
                         throw e;
                 }
             }
-        }
-        catch (InvalidKeyException e)
-        {
+        } catch (InvalidKeyException e) {
             throw new RuntimeException("Invalid key", e);
-        }
-        catch (InvalidKeySpecException e)
-        {
+        } catch (InvalidKeySpecException e) {
             throw new RuntimeException("Invalid key specification", e);
-        }
-        catch (NoSuchAlgorithmException e)
-        {
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Algorithm not found", e);
-        }
-        catch (NoSuchPaddingException e)
-        {
+        } catch (NoSuchPaddingException e) {
             throw new RuntimeException("Padding not found", e);
         }
     }
@@ -132,13 +121,12 @@ public class AESCrypto
      * @throws InvalidKeySpecException if the key specifications are invalid
      */
     private void initKey(String masterPassword, int keyLength)
-        throws  InvalidKeyException,
-                NoSuchAlgorithmException,
-                InvalidKeySpecException
+            throws InvalidKeyException,
+            NoSuchAlgorithmException,
+            InvalidKeySpecException
     {
         // if the password is empty, we get an exception constructing the key
-        if (masterPassword == null)
-        {
+        if (masterPassword == null) {
             // here a default password can be set,
             // cannot be an empty string
             masterPassword = " ";
@@ -147,11 +135,11 @@ public class AESCrypto
         // Password-Based Key Derivation Function found in PKCS5 v2.0.
         // This is only available with java 6.
         SecretKeyFactory factory =
-            SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+                SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         // Make a key from the master password
         KeySpec spec =
-            new PBEKeySpec(masterPassword.toCharArray(), SALT,
-                ITERATION_COUNT, keyLength);
+                new PBEKeySpec(masterPassword.toCharArray(), SALT,
+                        ITERATION_COUNT, keyLength);
         SecretKey tmp = factory.generateSecret(spec);
         // Make an algorithm specific key
         key = new SecretKeySpec(tmp.getEncoded(), KEY_ALGORITHM);
@@ -167,22 +155,18 @@ public class AESCrypto
      * @param ciphertext base64 encoded encrypted data
      * @return decrypted data
      * @throws CryptoException when the ciphertext cannot be decrypted with the
-     *             key or on decryption error.
+     * key or on decryption error.
      */
-    public String decrypt(String ciphertext) throws CryptoException
+    public String decrypt(String ciphertext)
+            throws CryptoException
     {
-        try
-        {
+        try {
             decryptCipher.init(Cipher.DECRYPT_MODE, key);
             return new String(decryptCipher.doFinal(Base64.decode(ciphertext)),
-                "UTF-8");
-        }
-        catch (BadPaddingException e)
-        {
+                    "UTF-8");
+        } catch (BadPaddingException e) {
             throw new CryptoException(CryptoException.WRONG_KEY, e);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new CryptoException(CryptoException.DECRYPTION_ERROR, e);
         }
     }
@@ -194,16 +178,14 @@ public class AESCrypto
      * @return base64 encoded encrypted data
      * @throws CryptoException on encryption error
      */
-    public String encrypt(String plaintext) throws CryptoException
+    public String encrypt(String plaintext)
+            throws CryptoException
     {
-        try
-        {
+        try {
             encryptCipher.init(Cipher.ENCRYPT_MODE, key);
             return new String(Base64.encode(encryptCipher.doFinal(plaintext
-                .getBytes("UTF-8"))));
-        }
-        catch (Exception e)
-        {
+                    .getBytes("UTF-8"))));
+        } catch (Exception e) {
             throw new CryptoException(CryptoException.ENCRYPTION_ERROR, e);
         }
     }

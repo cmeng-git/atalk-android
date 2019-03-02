@@ -686,7 +686,7 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
                                 throw (ThreadDeath) t;
                             }
                             else {
-                                Timber.w(t, "An RTP packet may have not been fully" + " handled.");
+                                Timber.w(t, "An RTP packet may have not been fully handled.");
                             }
                         }
                     }

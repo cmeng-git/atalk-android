@@ -60,10 +60,10 @@ public class RegistrationProvider extends IQProvider<Registration>
                 case XmlPullParser.START_TAG:
                     // Any element that's in the jabber:iq:register namespace,
                     // attempt to parse it if it's in the form <name>value</name>.
+                    String name = parser.getName();
                     String nameSpace = parser.getNamespace();
                     switch (nameSpace) {
                         case Registration.NAMESPACE:
-                            String name = parser.getName();
                             String value = "";
 
                             // Ignore instructions, but anything else should be added to the map.
@@ -85,14 +85,14 @@ public class RegistrationProvider extends IQProvider<Registration>
                             break;
                         case DataForm.NAMESPACE:
                             dataForm = (DataForm)
-                                    PacketParserUtils.parseExtensionElement(DataForm.ELEMENT, DataForm.NAMESPACE, parser, xmlEnvironment);
+                                    PacketParserUtils.parseExtensionElement(DataForm.ELEMENT, DataForm.NAMESPACE, parser);
                             break;
                         case BoBExt.NAMESPACE:
-                            boBExt = (BoBExt) PacketParserUtils.parseExtensionElement(BoBExt.ELEMENT, BoBExt.NAMESPACE, parser, xmlEnvironment);
+                            boBExt = (BoBExt) PacketParserUtils.parseExtensionElement(BoBExt.ELEMENT, BoBExt.NAMESPACE, parser);
                             break;
                         // In case there are more packet extension.
                         default:
-                            PacketParserUtils.addExtensionElement(packetExtensions, parser, xmlEnvironment);
+                            PacketParserUtils.addExtensionElement(packetExtensions, parser, name, nameSpace);
                             break;
                     }
                     break;

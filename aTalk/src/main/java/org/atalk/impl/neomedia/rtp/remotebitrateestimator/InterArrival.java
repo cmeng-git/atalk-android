@@ -173,8 +173,7 @@ class InterArrival
                     if (numConsecutiveReorderedPackets >= kReorderedResetThreshold) {
                         // The group of packets has been reordered since receiving
                         // its local arrival timestamp.
-                        Timber.w("Packets are being reordered on the path from the "
-                                + "socket to the bandwidth estimator. Ignoring this packet for bandwidth estimation.");
+                        Timber.w("Packets are being reordered on the path from the socket to the bandwidth estimator. Ignoring this packet for bandwidth estimation.");
                         Reset();
                     }
                     return false;

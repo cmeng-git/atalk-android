@@ -46,7 +46,7 @@ import org.atalk.util.function.IntConsumer;
  * <pre> {@code
  * IntSummaryStatistics stats = people.stream()
  *                                    .collect(Collectors.summarizingInt(Person::getDependents));
- *}</pre>
+ * }</pre>
  *
  * This computes, in a single pass, the count of people, as well as the minimum,
  * maximum, sum, and average of their number of dependents.
@@ -73,7 +73,9 @@ public class IntSummaryStatistics implements IntConsumer
      * {@code Integer.MAX_VALUE} min, {@code Integer.MIN_VALUE} max and zero
      * average.
      */
-    public IntSummaryStatistics() { }
+    public IntSummaryStatistics()
+    {
+    }
 
     /**
      * Records a new value into the summary information
@@ -81,7 +83,8 @@ public class IntSummaryStatistics implements IntConsumer
      * @param value the input value
      */
     @Override
-    public void accept(int value) {
+    public void accept(int value)
+    {
         ++count;
         sum += value;
         min = Math.min(min, value);
@@ -94,7 +97,8 @@ public class IntSummaryStatistics implements IntConsumer
      * @param other another {@code IntSummaryStatistics}
      * @throws NullPointerException if {@code other} is null
      */
-    public void combine(IntSummaryStatistics other) {
+    public void combine(IntSummaryStatistics other)
+    {
         count += other.count;
         sum += other.sum;
         min = Math.min(min, other.min);
@@ -106,7 +110,8 @@ public class IntSummaryStatistics implements IntConsumer
      *
      * @return the count of values
      */
-    public final long getCount() {
+    public final long getCount()
+    {
         return count;
     }
 
@@ -116,7 +121,8 @@ public class IntSummaryStatistics implements IntConsumer
      *
      * @return the sum of values, or zero if none
      */
-    public final long getSum() {
+    public final long getSum()
+    {
         return sum;
     }
 
@@ -126,7 +132,8 @@ public class IntSummaryStatistics implements IntConsumer
      *
      * @return the minimum value, or {@code Integer.MAX_VALUE} if none
      */
-    public final int getMin() {
+    public final int getMin()
+    {
         return min;
     }
 
@@ -136,7 +143,8 @@ public class IntSummaryStatistics implements IntConsumer
      *
      * @return the maximum value, or {@code Integer.MIN_VALUE} if none
      */
-    public final int getMax() {
+    public final int getMax()
+    {
         return max;
     }
 
@@ -146,7 +154,8 @@ public class IntSummaryStatistics implements IntConsumer
      *
      * @return the arithmetic mean of values, or zero if none
      */
-    public final double getAverage() {
+    public final double getAverage()
+    {
         return getCount() > 0 ? (double) getSum() / getCount() : 0.0d;
     }
 
@@ -158,14 +167,14 @@ public class IntSummaryStatistics implements IntConsumer
      * debugging. The exact presentation format is unspecified and may vary
      * between implementations and versions.
      */
-    public String toString() {
-        return String.format(
-            "%s{count=%d, sum=%d, min=%d, average=%f, max=%d}",
-            this.getClass().getSimpleName(),
-            getCount(),
-            getSum(),
-            getMin(),
-            getAverage(),
-            getMax());
+    public String toString()
+    {
+        return String.format("%s{count=%d, sum=%d, min=%d, average=%f, max=%d}",
+                this.getClass().getSimpleName(),
+                getCount(),
+                getSum(),
+                getMin(),
+                getAverage(),
+                getMax());
     }
 }

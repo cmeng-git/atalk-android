@@ -132,10 +132,7 @@ public class AndroidUtils
         }
 
         NotificationCompat.Builder nBuilder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            nBuilder = new NotificationCompat.Builder(context, AndroidNotifications.DEFAULT_GROUP);
-        else
-            nBuilder = new NotificationCompat.Builder(context, null);
+        nBuilder = new NotificationCompat.Builder(context, AndroidNotifications.DEFAULT_GROUP);
 
         nBuilder.setContentTitle(title)
                 .setContentText(message)

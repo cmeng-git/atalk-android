@@ -133,7 +133,7 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
                         break;
                     }
                     case StateExtensionElement.ELEMENT_NAME: {
-                        ExtensionElement childExtension = stateProvider.parse(parser, xmlEnvironment);
+                        ExtensionElement childExtension = stateProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }

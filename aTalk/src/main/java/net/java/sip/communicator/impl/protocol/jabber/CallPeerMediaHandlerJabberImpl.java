@@ -728,8 +728,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                             }
                         }
                         if (transportManager == null) {
-                            Timber.w("Could not find a supported TransportManager in"
-                                    + " supportedTransports. Will try to select one based on disco#info.");
+                            Timber.w("Could not find a supported TransportManager in supportedTransports. Will try to select one based on disco#info.");
                         }
                     }
                 }

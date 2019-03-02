@@ -1,9 +1,18 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.7.1 (1071)
+Author:         cmeng
+Upload Date:	03/02/2019
+- Add user option to access Application Notification Settings
+- Clean up unused notification channels
+- Fix send message no shown in local chat window
+- Fix NPE in CredentialsFragment#initializeViewListeners
+- Revert smack update to compile with official Smack 4.4-alpha2 release on 20190225
+
+=========================================================================
 Version:		1.7.0 (1070)
 Author:         cmeng
 Upload Date:	02/24/2019
-
 - Disable info Retrieval for contact avatar fetching on first login even when local cache is empty
   ejabberd will auto send VCardTempXUpdate in <presence/> stanza when user come online
 - Replace LOGGER with Timber for improve debug messages logging

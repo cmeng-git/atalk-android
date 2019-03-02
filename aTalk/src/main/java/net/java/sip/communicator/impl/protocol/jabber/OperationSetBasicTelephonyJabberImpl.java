@@ -792,8 +792,7 @@ public class OperationSetBasicTelephonyJabberImpl
                     call = getActiveCallsRepository().findCallId(callid);
             }
             if (transfer != null && callidExt != null)
-                Timber.w("Received a session-initiate with both 'transfer'"
-                        + " and 'callid' extensions. Ignored 'transfer' and used 'callid'.");
+                Timber.w("Received a session-initiate with both 'transfer' and 'callid' extensions. Ignored 'transfer' and used 'callid'.");
 
             // start init new call if not already in call conference
             if (call == null)

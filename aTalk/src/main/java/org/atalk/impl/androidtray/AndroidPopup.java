@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
@@ -261,10 +260,7 @@ public class AndroidPopup
     NotificationCompat.Builder buildNotification()
     {
         NotificationCompat.Builder builder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            builder = new NotificationCompat.Builder(mContext, group);
-        else
-            builder = new NotificationCompat.Builder(mContext, null);
+        builder = new NotificationCompat.Builder(mContext, group);
 
         builder.setSmallIcon(mSmallIcon)
                 .setContentTitle(popupMessage.getMessageTitle())

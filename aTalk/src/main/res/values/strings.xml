@@ -54,6 +54,7 @@
     <string name="hold">Put call on hold</string>
     <string name="in_call_with">In call with </string>
     <string name="network">Network</string>
+    <string name="notification_setting">Notification Settings&#8230;</string>
     <string name="password">password</string>
     <string name="password_label">Password:</string>
     <string name="reason_label">Reason:</string>
@@ -63,6 +64,7 @@
     <string name="stop_osgi_framework">Stop OSGi Framework</string>
     <string name="store_password">Save password</string>
     <string name="system_settings">Settings&#8230;</string>
+
     <string name="username_hint">username@example.com</string>
     <string name="username_label">Username:</string>
     <string name="video_resolution">Video resolution</string>
@@ -165,12 +167,12 @@
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s conference</string>
     <string name="service_gui_CHAT_CONFERENCE_LABEL">Conferences</string>
     <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">You have already joined the %1$s chat room.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION">{0} chat room configuration</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Failed to obtain the {0} chat room configuration form.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Could not obtain the {0} chat room configuration form. Only owners of the chat room can see and change the configuration form.</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION">%1$s chat room configuration</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Failed to obtain the %1$s chat room configuration form.</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Could not obtain the %1$s chat room configuration form. Only owners of the chat room can see and change the configuration form.</string>
     <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">List on the right contains users that have member role in this chat room. When chat room is \'Members-only\' those will be the users that are allowed to join.</string>
     <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Edit Members List</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">An error occurred while trying to submit the configuration form for chat room {0}.</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">An error occurred while trying to submit the configuration form for chat room %1$s.</string>
     <string name="service_gui_CHAT_ROOM_JOIN">Join Chat Room</string>
     <string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Removes the selected room from the list of saved rooms</string>
     <string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Saves the chat room for future use</string>
@@ -191,7 +193,7 @@
     <string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s has changed the subject to %2$s</string>
     <string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">You can continue the conversation in the following chat room: %1$s</string>
     <string name="service_gui_CHAT_ROOMS">Chat rooms</string>
-    <string name="service_gui_CHAT_NICKNAME_CHANGE">{0} is now known as {1}</string>
+    <string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s is now known as %2$s</string>
     <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Clear custom messages</string>
     <string name="service_gui_CLOSE">Close</string>
     <string name="service_gui_CLOSE_ALL_CHATS">Close all active chats</string>
@@ -463,9 +465,9 @@
     <string name="service_gui_DONT_JOIN_AUTOMATICALLY">Don\'t join automatically</string>
     <string name="service_gui_KICK">Kick</string>
     <string name="service_gui_KICK_FAILED">Kick failed</string>
-    <string name="service_gui_KICK_FAILED_GENERAL_ERROR">Failed to kick {0}. A general server error occurred.</string>
-    <string name="service_gui_KICK_FAILED_NOT_ALLOWED">Failed to kick {0}. The owner and the administrator of the room could not be kicked.</string>
-    <string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Failed to kick {0}. You do not have enough privileges to do that.</string>
+    <string name="service_gui_KICK_FAILED_GENERAL_ERROR">Failed to kick %1$s. A general server error occurred.</string>
+    <string name="service_gui_KICK_FAILED_NOT_ALLOWED">Failed to kick %1$s. The owner and the administrator of the room could not be kicked.</string>
+    <string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Failed to kick %1$s. You do not have enough privileges to do that.</string>
     <string name="service_gui_LAST">Last</string>
     <string name="service_gui_LAST_MSG_CORRECTION">Last message correction</string>
     <string name="service_gui_LAST_NAME">Last name</string>

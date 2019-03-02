@@ -6,6 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.7.1 (03/02/2019)" versioncode="1071">
+        <change>Add user option to access Application Notification Settings</change>
+        <change>Clean up unused notification channels</change>
+        <change>Fix send message no shown in local chat window</change>
+        <change>Fix NPE in user credentials fragment display</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.7.0 (02/22/2019)" versioncode="1070">
         <change>Use Timber for better control of debug info logging</change>
         <change>Improve login process; delaying contacts info retrieval for avatar fetching until contacts go online</change>

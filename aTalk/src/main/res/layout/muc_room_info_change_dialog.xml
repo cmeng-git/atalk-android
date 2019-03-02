@@ -18,7 +18,6 @@
         style="@style/EntryTextView"
         android:layout_width="match_parent"
         android:text="@string/service_gui_CHAT_ROOM"
-        android:editable="false"
         android:layout_marginBottom="5dp" />
 
     <LinearLayout

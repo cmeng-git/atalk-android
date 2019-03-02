@@ -26,6 +26,7 @@ package org.atalk.util;
 
 import org.atalk.util.function.IntConsumer;
 import org.atalk.util.function.LongConsumer;
+
 import java.util.stream.Collector;
 
 /**
@@ -48,7 +49,7 @@ import java.util.stream.Collector;
  * <pre> {@code
  * LongSummaryStatistics stats = people.stream()
  *                                     .collect(Collectors.summarizingLong(Person::getAge));
- *}</pre>
+ * }</pre>
  *
  * This computes, in a single pass, the count of people, as well as the minimum,
  * maximum, sum, and average of their ages.
@@ -75,7 +76,9 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer
      * {@code Long.MAX_VALUE} min, {@code Long.MIN_VALUE} max and zero
      * average.
      */
-    public LongSummaryStatistics() { }
+    public LongSummaryStatistics()
+    {
+    }
 
     /**
      * Records a new {@code int} value into the summary information.
@@ -83,7 +86,8 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer
      * @param value the input value
      */
     @Override
-    public void accept(int value) {
+    public void accept(int value)
+    {
         accept((long) value);
     }
 
@@ -93,7 +97,8 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer
      * @param value the input value
      */
     @Override
-    public void accept(long value) {
+    public void accept(long value)
+    {
         ++count;
         sum += value;
         min = Math.min(min, value);
@@ -107,7 +112,8 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer
      * @param other another {@code LongSummaryStatistics}
      * @throws NullPointerException if {@code other} is null
      */
-    public void combine(LongSummaryStatistics other) {
+    public void combine(LongSummaryStatistics other)
+    {
         count += other.count;
         sum += other.sum;
         min = Math.min(min, other.min);
@@ -119,7 +125,8 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer
      *
      * @return the count of values
      */
-    public final long getCount() {
+    public final long getCount()
+    {
         return count;
     }
 
@@ -129,7 +136,8 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer
      *
      * @return the sum of values, or zero if none
      */
-    public final long getSum() {
+    public final long getSum()
+    {
         return sum;
     }
 
@@ -139,7 +147,8 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer
      *
      * @return the minimum value, or {@code Long.MAX_VALUE} if none
      */
-    public final long getMin() {
+    public final long getMin()
+    {
         return min;
     }
 
@@ -149,7 +158,8 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer
      *
      * @return the maximum value, or {@code Long.MIN_VALUE} if none
      */
-    public final long getMax() {
+    public final long getMax()
+    {
         return max;
     }
 
@@ -159,7 +169,8 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer
      *
      * @return The arithmetic mean of values, or zero if none
      */
-    public final double getAverage() {
+    public final double getAverage()
+    {
         return getCount() > 0 ? (double) getSum() / getCount() : 0.0d;
     }
 
@@ -171,14 +182,14 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer
      * debugging. The exact presentation format is unspecified and may vary
      * between implementations and versions.
      */
-    public String toString() {
-        return String.format(
-            "%s{count=%d, sum=%d, min=%d, average=%f, max=%d}",
-            this.getClass().getSimpleName(),
-            getCount(),
-            getSum(),
-            getMin(),
-            getAverage(),
-            getMax());
+    public String toString()
+    {
+        return String.format("%s{count=%d, sum=%d, min=%d, average=%f, max=%d}",
+                this.getClass().getSimpleName(),
+                getCount(),
+                getSum(),
+                getMin(),
+                getAverage(),
+                getMax());
     }
 }

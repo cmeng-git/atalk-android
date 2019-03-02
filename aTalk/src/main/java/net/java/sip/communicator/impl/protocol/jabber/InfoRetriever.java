@@ -335,7 +335,7 @@ public class InfoRetriever
         }
 
         retrievedDetails.put(bareJid, result);
-        Timber.i("Added retrievedDetails for: %s; size: %d", bareJid, result.size());
+        Timber.i("Added retrievedDetails for: %s; size: %s", bareJid, result.size());
         return result;
     }
 

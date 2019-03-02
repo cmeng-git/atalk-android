@@ -49,6 +49,7 @@
     <string name="hold">Удерживать вызов</string>
     <string name="in_call_with">При вызове</string>
     <string name="network">Сеть</string>
+    <string name="notification_setting">Настройки уведомлений&#8230;</string>
     <string name="password">пароль</string>
     <string name="password_label">Пароль:</string>
     <string name="reason_label">Причина:</string>
@@ -156,12 +157,12 @@
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s конференция</string>
 	<string name="service_gui_CHAT_CONFERENCE_LABEL">Конференции</string>
     <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">Вы уже вошли в чат-комнату %1$s.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION">{0} настройка чата</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Не удалось получить конфигурационную форму в чате {0}.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Не удалось получить форму конфигурации комнаты чата {0}. Только владельцы чата могут видеть и изменять конфигурационную форму.</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION">%1$s настройка чата</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Не удалось получить конфигурационную форму в чате %1$s.</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Не удалось получить форму конфигурации комнаты чата %1$s. Только владельцы чата могут видеть и изменять конфигурационную форму.</string>
     <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Список справа содержит пользователей, которые имеют роль участника в этом чате. Когда в чате есть «Только члены», это будут пользователи, которым разрешено присоединиться.</string>
     <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Редактировать список участников</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">Произошла ошибка при попытке отправить конфигурационную форму для комнаты чата {0}.</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">Произошла ошибка при попытке отправить конфигурационную форму для комнаты чата %1$s.</string>
     <string name="service_gui_CHAT_ROOM_JOIN">Присоединиться к чату</string>
     <string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Удаляет выбранную комнату из списка сохраненных комнат</string>
     <string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Сохраняет чат для будущего использования</string>
@@ -182,7 +183,7 @@
 	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s изменил объект на %2$s</string>
 	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Вы можете продолжить разговор в следующем чате: %1$s</string>
 	<string name="service_gui_CHAT_ROOMS">Чаты</string>
-	<string name="service_gui_CHAT_NICKNAME_CHANGE">{0} теперь известен как {1}</string>
+	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s теперь известен как %2$s</string>
     <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Очистить пользовательские сообщения</string>
     <string name="service_gui_CLOSE">Закрыть</string>
     <string name="service_gui_CLOSE_ALL_CHATS">Закрыть все активные чаты</string>
@@ -435,9 +436,9 @@
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Не присоединяться автоматически</string>
 	<string name="service_gui_KICK">Kick</string>
 	<string name="service_gui_KICK_FAILED">Ошибка отказа</string>
-	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Не удалось нажать {0}. Произошла общая ошибка сервера.</string>
-	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Не удалось нажать {0}. Владельца и администратора комнаты нельзя было пинать.</string>
-	<string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Не удалось нажать {0}. У вас недостаточно прав для этого.</string>
+	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Не удалось нажать %1$s. Произошла общая ошибка сервера.</string>
+	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Не удалось нажать %1$s. Владельца и администратора комнаты нельзя было пинать.</string>
+	<string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Не удалось нажать %1$s. У вас недостаточно прав для этого.</string>
 	<string name="service_gui_LAST">Последняя</string>
     <string name="service_gui_LAST_MSG_CORRECTION">Коррекция последнего сообщения</string>
 	<string name="service_gui_LAST_NAME">Фамилия</string>
@@ -644,7 +645,7 @@
     <string name="service_gui_callinfo_DISCARDED_TOTAL">Число отброшенных пакетов:</string>
 
     <!-- ICE info -->
-    <string name="service_gui_callinfo_HARVESTING_DATA">%1$s d ms (для %2$d урожаев)</string>
+    <string name="service_gui_callinfo_HARVESTING_DATA">%1$d ms (для %2$d урожаев)</string>
     <string name="service_gui_callinfo_HARVESTING_TIME">Время сбора урожая:</string>
     <string name="service_gui_callinfo_ICE_CANDIDATE_EXTENDED_TYPE">ICE кандидат расширенный тип:</string>
     <string name="service_gui_callinfo_ICE_LOCAL_HOST_ADDRESS">Локальный IP-адрес/порт:</string>

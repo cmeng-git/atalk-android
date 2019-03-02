@@ -28,6 +28,8 @@ import android.support.annotation.RequiresApi;
 import org.atalk.android.R;
 import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 
+import java.util.List;
+
 /**
  * Helper class to manage notification channels, and create notifications.
  *
@@ -47,6 +49,9 @@ public class NotificationHelper extends ContextWrapper
         super(ctx);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Delete any unused channel IDs
+            deleteObsoletedChannelIds();
+
             NotificationChannel nMessage = new NotificationChannel(AndroidNotifications.MESSAGE_GROUP,
                     getString(R.string.noti_channel_MESSAGE_GROUP), NotificationManager.IMPORTANCE_LOW);
             // nMessage.setLightColor(Color.BLUE);
@@ -74,8 +79,20 @@ public class NotificationHelper extends ContextWrapper
             NotificationChannel nDefault = new NotificationChannel(AndroidNotifications.DEFAULT_GROUP,
                     getString(R.string.noti_channel_DEFAULT_GROUP), NotificationManager.IMPORTANCE_LOW);
             // nDefault.setLightColor(Color.WHITE);
+            nDefault.setShowBadge(false);
             nDefault.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             getManager().createNotificationChannel(nDefault);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private void deleteObsoletedChannelIds()
+    {
+        List<NotificationChannel> channelGroups = getManager().getNotificationChannels();
+        for (NotificationChannel nc : channelGroups) {
+            if (!AndroidNotifications.notificationIds.contains(nc.getId())) {
+                getManager().deleteNotificationChannel(nc.getId());
+            }
         }
     }
 
@@ -110,7 +127,8 @@ public class NotificationHelper extends ContextWrapper
      * Send Intent to load system Notification Settings for this app.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void goToNotificationSettings() {
+    public void goToNotificationSettings()
+    {
         Intent i = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
         i.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
         startActivity(i);
@@ -122,7 +140,8 @@ public class NotificationHelper extends ContextWrapper
      * @param channel Name of channel to configure
      */
     @TargetApi(Build.VERSION_CODES.O)
-    public void goToNotificationSettings(String channel) {
+    public void goToNotificationSettings(String channel)
+    {
         Intent i = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
         i.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
         i.putExtra(Settings.EXTRA_CHANNEL_ID, channel);

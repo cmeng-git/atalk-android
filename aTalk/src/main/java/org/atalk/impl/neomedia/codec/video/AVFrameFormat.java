@@ -71,8 +71,8 @@ public class AVFrameFormat extends VideoFormat
         super(AVFRAME, size, NOT_SPECIFIED, AVFrame.class, frameRate);
 
         if ((pixFmt == NOT_SPECIFIED) && (deviceSystemPixFmt != NOT_SPECIFIED)) {
-            Timber.w(new Throwable(), "Specifying a device system-specific pixel format %08x without a"
-                    + " matching FFmpeg pixel format may eventually lead to a failure.", deviceSystemPixFmt & 0xffffffffL);
+            Timber.w(new Throwable(), "Specifying a device system-specific pixel format %08x without a matching FFmpeg pixel format may eventually lead to a failure.",
+                    deviceSystemPixFmt & 0xffffffffL);
         }
 
         this.pixFmt = pixFmt;
@@ -111,7 +111,6 @@ public class AVFrameFormat extends VideoFormat
     public Object clone()
     {
         AVFrameFormat f = new AVFrameFormat(getSize(), getFrameRate(), pixFmt, deviceSystemPixFmt);
-
         f.copy(this);
         return f;
     }

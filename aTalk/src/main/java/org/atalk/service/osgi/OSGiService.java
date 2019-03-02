@@ -7,8 +7,6 @@ package org.atalk.service.osgi;
 
 import android.app.*;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
@@ -18,8 +16,6 @@ import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 import org.atalk.impl.osgi.OSGiServiceImpl;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.security.Security;
 
 /**
@@ -124,17 +120,12 @@ public class OSGiService extends Service
             showIcon();
         }
 
-        aTalkApp.getConfig().addPropertyChangeListener(aTalkApp.SHOW_ICON_PROPERTY_NAME, new PropertyChangeListener()
-        {
-            @Override
-            public void propertyChange(PropertyChangeEvent event)
-            {
-                if (aTalkApp.isIconEnabled()) {
-                    showIcon();
-                }
-                else {
-                    hideIcon();
-                }
+        aTalkApp.getConfig().addPropertyChangeListener(aTalkApp.SHOW_ICON_PROPERTY_NAME, event -> {
+            if (aTalkApp.isIconEnabled()) {
+                showIcon();
+            }
+            else {
+                hideIcon();
             }
         });
         serviceStarted = true;
@@ -145,21 +136,15 @@ public class OSGiService extends Service
      */
     private void showIcon()
     {
+        String title = getResources().getString(R.string.APPLICATION_NAME);
         // The intent to launch when the user clicks the expanded notification
         PendingIntent pendIntent = aTalkApp.getAtalkIconIntent();
 
-        Resources res = getResources();
-        String title = res.getString(R.string.APPLICATION_NAME);
-
-        NotificationCompat.Builder nBuilder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            nBuilder = new NotificationCompat.Builder(this, AndroidNotifications.DEFAULT_GROUP);
-        else
-            nBuilder = new NotificationCompat.Builder(this, null);
-
+        NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this, AndroidNotifications.DEFAULT_GROUP);
         nBuilder.setContentTitle(title)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_notification)
+                .setNumber(0)
                 .setContentIntent(pendIntent);
 
         Notification notice = nBuilder.build();
@@ -202,6 +187,5 @@ public class OSGiService extends Service
 
     static {
         Security.insertProviderAt(new org.bouncycastle.jce.provider.BouncyCastleProvider(), 1);
-
     }
 }

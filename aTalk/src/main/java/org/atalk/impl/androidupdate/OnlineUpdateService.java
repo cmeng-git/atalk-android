@@ -2,10 +2,11 @@ package org.atalk.impl.androidupdate;
 
 import android.app.*;
 import android.content.*;
-import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.settings.SettingsActivity;
@@ -14,7 +15,8 @@ import org.atalk.service.configuration.ConfigurationService;
 
 import java.util.Calendar;
 
-public class OnlineUpdateService extends IntentService {
+public class OnlineUpdateService extends IntentService
+{
     public static final String ACTION_AUTO_UPDATE_APP = "org.atalk.android.ACTION_AUTO_UPDATE_APP";
     public static final String ACTION_AUTO_UPDATE_START = "org.atalk.android.ACTION_AUTO_UPDATE_START";
     public static final String ACTION_AUTO_UPDATE_STOP = "org.atalk.android.ACTION_AUTO_UPDATE_STOP";
@@ -35,18 +37,21 @@ public class OnlineUpdateService extends IntentService {
      */
     private SharedPreferences store;
 
-    public OnlineUpdateService() {
+    public OnlineUpdateService()
+    {
         super(ONLINE_UPDATE_SERVICE);
     }
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
         mNotificationMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleIntent(Intent intent)
+    {
         if (intent != null) {
             String action = intent.getAction();
             if (action != null) {
@@ -72,7 +77,8 @@ public class OnlineUpdateService extends IntentService {
         }
     }
 
-    private void checkAppUpdate() {
+    private void checkAppUpdate()
+    {
         Boolean isAutoUpdateCheckEnable = true;
         ConfigurationService cfg = AndroidGUIActivator.getConfigurationService();
         if (cfg != null)
@@ -84,10 +90,7 @@ public class OnlineUpdateService extends IntentService {
 
             if (!isLatest) {
                 NotificationCompat.Builder nBuilder;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    nBuilder = new NotificationCompat.Builder(this, AndroidNotifications.DEFAULT_GROUP);
-                else
-                    nBuilder = new NotificationCompat.Builder(this, null);
+                nBuilder = new NotificationCompat.Builder(this, AndroidNotifications.DEFAULT_GROUP);
 
                 String msgString = getString(R.string.plugin_newsoftware_DIALOG_MESSAGE,
                         updateService.getLatestVersion());
@@ -110,7 +113,8 @@ public class OnlineUpdateService extends IntentService {
             setNextAlarm(CHECK_NEW_VERSION_INTERVAL);
     }
 
-    private void setNextAlarm(int nextAlarmTime) {
+    private void setNextAlarm(int nextAlarmTime)
+    {
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
         intent.setAction(ACTION_AUTO_UPDATE_APP);
@@ -122,7 +126,8 @@ public class OnlineUpdateService extends IntentService {
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
     }
 
-    private void stopAlarm() {
+    private void stopAlarm()
+    {
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
         intent.setAction(ACTION_AUTO_UPDATE_APP);
