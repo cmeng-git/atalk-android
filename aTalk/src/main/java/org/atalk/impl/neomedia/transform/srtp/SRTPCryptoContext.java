@@ -460,8 +460,8 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
      */
     synchronized public boolean reverseTransformPacket(RawPacket pkt)
     {
-        Timber.d("Reverse transform for SSRC %s SeqNo = %s s_l = %s seqNumSet = %s roc = %s guessedROC = %s",
-                this.ssrc, pkt.getSequenceNumber(), s_l, seqNumSet,  guessedROC, roc);
+//        Timber.d("Reverse transform for SSRC %s SeqNo = %s s_l = %s seqNumSet = %s roc = %s guessedROC = %s",
+//                this.ssrc, pkt.getSequenceNumber(), s_l, seqNumSet,  guessedROC, roc);
 
         int seqNo = pkt.getSequenceNumber();
         boolean seqNumWasJustSet = false;

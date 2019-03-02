@@ -17,6 +17,7 @@
 package org.atalk.android.gui.login;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.*;
@@ -112,7 +113,7 @@ public class CredentialsFragment extends Fragment {
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         View content = inflater.inflate(R.layout.credentials, container, false);
 
@@ -141,21 +142,20 @@ public class CredentialsFragment extends Fragment {
         ViewUtil.setCompoundChecked(content, R.id.store_password, args.getBoolean(ARG_STORE_PASSWORD, true));
         ViewUtil.setCompoundChecked(content, R.id.ib_registration, args.getBoolean(ARG_IB_REGISTRATION, false));
 
-        Boolean isShownServerOption = args.getBoolean(ARG_IS_SHOWN_SERVER_OPTION, false);
+        mServerOverrideCheckBox = content.findViewById(R.id.serverOverridden);
+        mServerIpField = content.findViewById(R.id.serverIpField);
+        mServerPortField = content.findViewById(R.id.serverPortField);
+
+        boolean isShownServerOption = args.getBoolean(ARG_IS_SHOWN_SERVER_OPTION, false);
         if (isShownServerOption) {
-            Boolean isServerOverridden = args.getBoolean(ARG_IS_SERVER_OVERRIDDEN, false);
-            mServerOverrideCheckBox = content.findViewById(R.id.serverOverridden);
+            boolean isServerOverridden = args.getBoolean(ARG_IS_SERVER_OVERRIDDEN, false);
             ViewUtil.setCompoundChecked(content, R.id.serverOverridden, isServerOverridden);
-
-            mServerIpField = content.findViewById(R.id.serverIpField);
             mServerIpField.setText(args.getString(ARG_SERVER_ADDRESS));
-
-            mServerPortField = content.findViewById(R.id.serverPortField);
             mServerPortField.setText(args.getString(ARG_SERVER_PORT));
             updateViewVisibility(isServerOverridden);
         } else {
-            content.findViewById(R.id.serverOverridden).setVisibility(View.GONE);
-            content.findViewById(R.id.serverField).setVisibility(View.GONE);
+            mServerIpField.setVisibility(View.GONE);
+            mServerPortField.setVisibility(View.GONE);
         }
 
         String loginReason = args.getString(ARG_LOGIN_REASON);
@@ -168,20 +168,10 @@ public class CredentialsFragment extends Fragment {
 
     private void initializeViewListeners() {
         mShowPasswordCheckBox.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        showPassword(isChecked);
-                    }
-                });
+                (buttonView, isChecked) -> showPassword(isChecked));
 
         mServerOverrideCheckBox.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        updateViewVisibility(isChecked);
-                    }
-                });
+                (buttonView, isChecked) -> updateViewVisibility(isChecked));
     }
 
     private void showPassword(boolean show) {

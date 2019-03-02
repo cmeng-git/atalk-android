@@ -849,12 +849,12 @@ public class ServerStoredDetails
 	{
 		public BooleanDetail(String detailName, boolean value)
 		{
-			super(detailName, new Boolean(value));
+			super(detailName, value);
 		}
 
 		public boolean getBoolean()
 		{
-			return ((Boolean) getDetailValue()).booleanValue();
+			return (Boolean) getDetailValue();
 		}
 	}
 

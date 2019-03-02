@@ -7,7 +7,9 @@ package org.atalk.service.osgi;
 
 import android.app.*;
 import android.content.*;
+import android.net.Uri;
 import android.os.*;
+import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
@@ -336,6 +338,23 @@ public class OSGiActivity extends FragmentActivity
     {
         Intent intent = new Intent(this, activityClass);
         startActivity(intent);
+    }
+
+    /**
+     * Start the application notification settings page
+     */
+    public void openNotificationSettings()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+            startActivity(intent);
+        }
+        else {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+        }
     }
 
     /**

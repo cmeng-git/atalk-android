@@ -8,7 +8,6 @@ package org.atalk.android.gui.call.notification;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
@@ -82,10 +81,7 @@ public class CallNotificationManager
         }
 
         NotificationCompat.Builder nBuilder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            nBuilder = new NotificationCompat.Builder(context, AndroidNotifications.CALL_GROUP);
-        else
-            nBuilder = new NotificationCompat.Builder(context, null);
+        nBuilder = new NotificationCompat.Builder(context, AndroidNotifications.CALL_GROUP);
 
         nBuilder.setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_notification);
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.call_status_bar_notification);
@@ -107,7 +103,7 @@ public class CallNotificationManager
         Notification notification = nBuilder.build();
 
         // Must use random Id, else notification cancel() may not work properly
-        int id = (int)(System.currentTimeMillis()%10000);
+        int id = (int) (System.currentTimeMillis() % 10000);
         mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(id, notification);
 

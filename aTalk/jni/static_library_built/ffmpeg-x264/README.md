@@ -1,10 +1,10 @@
 ## Build scripts for ffmpeg-x264 with android-ndk for aTalk
-The scriptd are used to build ffmpeg-x264 based on ffmpeg and x264 for aTalk
+The scripts are used to build ffmpeg-x264 based on ffmpeg and x264 for aTalk
 
 ## Source files
-* ffmpeg source is 1.0.10 for aTalk compatibility (ffmpeg.java)
+* Only ffmpeg source v1.0.10 is aTalk compatibility (ffmpeg.java)
 * FFMpeg_1.0.10_aTalk.tar.gz is the patched version of FFmpeg-release-1.0.zip
-* x264.tar.gz is for contains source for the x264 v1.4.7 library build
+* x264.tar.gz contains source for the x264 v1.4.7 library build
 
 ## Build instruction
 * Extract the sources into the respectively sub-directories i.e. ffmpeg and x264
@@ -13,7 +13,7 @@ The scriptd are used to build ffmpeg-x264 based on ffmpeg and x264 for aTalk
 * x264_build_all.sh to build all cpu architectures
 * commented out those architecture you wish to omit in x264_build_settings.sh
 * add option --enable-shared if you need .so library in x264_build_settings.sh#COMMON.
-* aTalk NDK build script supoort use of either static .a or shared .so libraries
+* aTalk NDK build script support use of either static .a or shared .so libraries
 * All the final built libs *.a, *.so and include files are in the ./android/$CPU
 * The above description equally applied to ffmpeg-x264 build
 

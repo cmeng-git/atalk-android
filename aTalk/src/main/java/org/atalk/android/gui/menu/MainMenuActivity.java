@@ -328,6 +328,9 @@ public class MainMenuActivity extends ExitMenuActivity
             case R.id.account_settings:
                 startActivity(AccountsListActivity.class);
                 break;
+            case R.id.notification_setting:
+                openNotificationSettings();
+                break;
             case R.id.sign_in_off:
                 // Toggle current account presence status
                 boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(ActionBarUtil.getStatus(this));

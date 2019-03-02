@@ -5,10 +5,10 @@
  */
 package org.atalk.android.gui.settings;
 
-import android.R;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+import org.atalk.android.R;
 import org.atalk.android.gui.account.settings.MediaEncodingActivity;
 import org.atalk.android.gui.account.settings.MediaEncodingsFragment;
 import org.atalk.impl.neomedia.MediaServiceImpl;

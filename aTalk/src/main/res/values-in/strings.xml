@@ -49,6 +49,7 @@
     <string name="hold">Tunda panggilan</string>
     <string name="in_call_with">Panggilan dengan</string>
     <string name="network">Jaringan</string>
+    <string name="notification_setting">Pengaturan pemberitahuan&#8230;</string>
     <string name="password">kata sandi</string>
     <string name="password_label">Kata Sandi:</string>
     <string name="reason_label">Alasan:</string>
@@ -156,12 +157,12 @@
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">konferensi %1$s \</string>
     <string name="service_gui_CHAT_CONFERENCE_LABEL">Konferensi</string>
     <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">Anda telah bergabung dengan ruang obrolan %1$s.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION">{0} konfigurasi ruang obrolan</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Gagal mendapatkan {0} formulir konfigurasi ruang obrolan.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Tidak dapat memperoleh {0} formulir konfigurasi ruang obrolan. Hanya pemilik ruang obrolan yang dapat melihat dan mengubah formulir konfigurasi.</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION">%1$s konfigurasi ruang obrolan</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Gagal mendapatkan %1$s formulir konfigurasi ruang obrolan.</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Tidak dapat memperoleh %1$s formulir konfigurasi ruang obrolan. Hanya pemilik ruang obrolan yang dapat melihat dan mengubah formulir konfigurasi.</string>
     <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Daftar di sebelah kanan berisi pengguna yang memiliki peran anggota di ruang obrolan ini. Ketika ruang obrolan adalah \'Anggota-hanya\' mereka akan menjadi pengguna yang diizinkan untuk bergabung.</string>
     <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Ubah Daftar Anggota</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">Terjadi kesalahan saat mencoba mengirimkan formulir konfigurasi untuk ruang obrolan {0}.</string>
+    <string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">Terjadi kesalahan saat mencoba mengirimkan formulir konfigurasi untuk ruang obrolan %1$s.</string>
     <string name="service_gui_CHAT_ROOM_JOIN">Bergabung dengan Ruang Obrolan</string>
     <string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Menghapus ruang yang dipilih dari daftar ruang yang disimpan</string>
     <string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Menyimpan ruang obrolan untuk penggunaan selanjutnya</string>
@@ -182,7 +183,7 @@
     <string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s telah mengubah subjek menjadi %2$s</string>
     <string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Anda dapat melanjutkan percakapan di ruang obrolan berikut: %1$s</string>
     <string name="service_gui_CHAT_ROOMS">Ruang obrolan</string>
-    <string name="service_gui_CHAT_NICKNAME_CHANGE">{0} sekarang dikenal sebagai {1}</string>
+    <string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s sekarang dikenal sebagai %2$s</string>
     <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Hapus pesan khusus</string>
     <string name="service_gui_CLOSE">Tutup</string>
     <string name="service_gui_CLOSE_ALL_CHATS">Tutup semua obrolan aktif</string>
@@ -433,9 +434,9 @@
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Jangan bergabung secara otomatis</string>
 	<string name="service_gui_KICK">Tendang</string>
 	<string name="service_gui_KICK_FAILED">Jurus gagal</string>
-	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Gagal menendang {0}. Terjadi kesalahan server umum.</string>
-	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Gagal menendang {0}. Pemilik dan administrator ruangan tidak dapat ditendang.</string>
-	<string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Gagal menendang {0}. Anda tidak memiliki cukup hak untuk melakukannya.</string>
+	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Gagal menendang %1$s. Terjadi kesalahan server umum.</string>
+	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Gagal menendang %1$s. Pemilik dan administrator ruangan tidak dapat ditendang.</string>
+	<string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Gagal menendang %1$s. Anda tidak memiliki cukup hak untuk melakukannya.</string>
 	<string name="service_gui_LAST">Terakhir</string>
     <string name="service_gui_LAST_MSG_CORRECTION">Koreksi pesan terakhir</string>
 	<string name="service_gui_LAST_NAME">Nama belakang</string>

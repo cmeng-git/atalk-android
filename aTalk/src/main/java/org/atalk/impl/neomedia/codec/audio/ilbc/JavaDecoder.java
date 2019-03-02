@@ -87,8 +87,7 @@ public class JavaDecoder extends AbstractCodec2
 		byte[] input = (byte[]) inputBuffer.getData();
 		int inputLength = inputBuffer.getLength();
 
-		if (offsets.size() == 0
-			&& ((inputLength > ilbc_constants.NO_OF_BYTES_20MS && inputLength != ilbc_constants.NO_OF_BYTES_30MS) || inputLength > ilbc_constants.NO_OF_BYTES_30MS)) {
+		if (offsets.size() == 0 && inputLength > ilbc_constants.NO_OF_BYTES_20MS && inputLength != ilbc_constants.NO_OF_BYTES_30MS) {
 			int nb = 0;
 			int len = 0;
 
@@ -105,7 +104,7 @@ public class JavaDecoder extends AbstractCodec2
 				initDec(len);
 
 			for (int i = 0; i < nb; i++) {
-				offsets.add(new Integer(inputLength + (i * len)));
+				offsets.add(inputLength + (i * len));
 			}
 		}
 		else if (this.inputLength != inputLength)
@@ -118,7 +117,7 @@ public class JavaDecoder extends AbstractCodec2
 		int offsetToAdd = 0;
 
 		if (offsets.size() > 0)
-			offsetToAdd = offsets.remove(0).intValue();
+			offsetToAdd = offsets.remove(0);
 
 		dec.decode(output, outputOffset, input, inputBuffer.getOffset() + offsetToAdd, (short) 1);
 

@@ -131,14 +131,12 @@ public class AndroidLoginRenderer implements LoginRenderer
      */
     public void removeProtocolProviderUI(ProtocolProviderService protocolProvider)
     {
-        OperationSetBasicTelephony<?> telOpSet
-                = protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
+        OperationSetBasicTelephony<?> telOpSet = protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
         if (telOpSet != null) {
             telOpSet.removeCallListener(androidCallListener);
         }
 
-        OperationSetPresence presenceOpSet
-                = protocolProvider.getOperationSet(OperationSetPresence.class);
+        OperationSetPresence presenceOpSet = protocolProvider.getOperationSet(OperationSetPresence.class);
         if (presenceOpSet != null) {
             presenceOpSet.removeProviderPresenceStatusListener(androidPresenceListener);
         }
@@ -246,8 +244,7 @@ public class AndroidLoginRenderer implements LoginRenderer
 
         int notificationID = OSGiService.getGeneralNotificationId();
         if (notificationID == -1) {
-            Timber.d("Not displaying status notification because"
-                    + " there's no global notification icon available.");
+            Timber.d("Not displaying status notification because there's no global notification icon available.");
             return;
         }
 

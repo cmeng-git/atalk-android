@@ -142,7 +142,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
         synchronized (callListeners) {
             listeners = new ArrayList<CallListener>(callListeners);
         }
-        Timber.d("Dispatching a CallEvent to %d listeners. The event is: %s", listeners.size(), event);
+        Timber.d("Dispatching a CallEvent to %s listeners. The event is: %s", listeners.size(), event);
         for (CallListener listener : listeners) {
             Timber.d("Dispatching a CallEvent to %s. The event is: %s", listener.getClass(), event);
 

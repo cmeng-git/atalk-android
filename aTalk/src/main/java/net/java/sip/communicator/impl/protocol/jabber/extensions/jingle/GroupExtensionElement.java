@@ -135,7 +135,7 @@ public class GroupExtensionElement extends AbstractExtensionElement
             elementName = parser.getName();
 
             if (elementName.equals(ContentExtensionElement.ELEMENT_NAME)) {
-                ContentExtensionElement content = contentProvider.parse(parser, XmlEnvironment.EMPTY);
+                ContentExtensionElement content = contentProvider.parse(parser);
                 group.addChildExtension(content);
             }
 

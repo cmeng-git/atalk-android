@@ -829,8 +829,8 @@ public class MediaStreamImpl extends AbstractMediaStream
                 Timber.e(ioe, "Failed to create send stream for data source %s  and stream index %s",
                         dataSource, streamIndex);
             } catch (UnsupportedFormatException ufe) {
-                Timber.e(ufe, "Failed to create send stream for data source %s and stream" +
-                        " index %s because of failed format %s", dataSource, streamIndex, ufe.getFailedFormat());
+                Timber.e(ufe, "Failed to create send stream for data source %s and stream index %s because of failed format %s",
+                        dataSource, streamIndex, ufe.getFailedFormat());
             }
         }
         sendStreamsAreCreated = true;

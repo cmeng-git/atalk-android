@@ -49,6 +49,7 @@
     <string name="hold">In Warteschleife setzen</string>
     <string name="in_call_with">Anruf mit</string>
     <string name="network">Netzwerk</string>
+    <string name="notification_setting">Benachrichtigungseinstellungen&#8230;</string>
     <string name="password">Passwort</string>
     <string name="password_label">Passwort:</string>
     <string name="reason_label">Grund:</string>
@@ -156,12 +157,12 @@
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s Konferenz</string>
 	<string name="service_gui_CHAT_CONFERENCE_LABEL">Konferenzen</string>
     <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">Du befindest dich bereits im %1$s Chatraum.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION">{0} Chatraum Konfiguration</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Fehler beim Abrufen des Chatraum-Konfigurationsformulars {0}.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Das Chatraum-Konfigurationsformular {0} konnte nicht abgerufen werden. Nur Besitzer des Chatraums können das Konfigurationsformular sehen und ändern.</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION">%1$s Chatraum Konfiguration</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Fehler beim Abrufen des Chatraum-Konfigurationsformulars %1$s.</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Das Chatraum-Konfigurationsformular %1$s konnte nicht abgerufen werden. Nur Besitzer des Chatraums können das Konfigurationsformular sehen und ändern.</string>
     <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Die Liste auf der rechten Seite enthält Benutzer mit einer Mitgliedsrolle in diesem Chatraum. Wenn der Chatraum\'Nur für Mitglieder\'  ist, sind dies die Benutzer, die sich anmelden dürfen.</string>
     <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Mitgliederliste bearbeiten</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">Fehler beim Übermitteln des Chatraum-Konfigurationsformulars für Chatraum {0}.</string>
+	<string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">Fehler beim Übermitteln des Chatraum-Konfigurationsformulars für Chatraum %1$s.</string>
     <string name="service_gui_CHAT_ROOM_JOIN">Chatraum betreten</string>
     <string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Entfernt den markierten Chatraum aus der Liste mit den gespeicherten Chaträumen.</string>
     <string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Speichert den Chatraum in einer Liste</string>
@@ -182,7 +183,7 @@
 	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s hat das Thema von %2$s geändert</string>
 	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Du kannst dein Gespräch in folgendem Chatraum fortsetzen: %1$s</string>
 	<string name="service_gui_CHAT_ROOMS">Chaträume</string>
-	<string name="service_gui_CHAT_NICKNAME_CHANGE">{0} heißt nun {1}</string>
+	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s heißt nun %2$s</string>
     <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Meldungen entfernen</string>
     <string name="service_gui_CLOSE">Schließen</string>
     <string name="service_gui_CLOSE_ALL_CHATS">Alle aktiven Chats schließen</string>
@@ -433,9 +434,9 @@
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Nicht automatisch beitreten</string>
 	<string name="service_gui_KICK">Herauswerfen</string>
 	<string name="service_gui_KICK_FAILED">Herauswurf gescheitert</string>
-	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Kann {0} nicht herauswerfen. Der Server antwortet mit einem Fehler.</string>
-	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Herauswurf gescheitert: {0}. Der Chatraumbesitzer oder -administrator kann nicht herausgeworfen werden.</string>
-	<string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Herauswurf von {0} gescheitert: du hast nicht genügend Rechte.</string>
+	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Kann %1$s nicht herauswerfen. Der Server antwortet mit einem Fehler.</string>
+	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Herauswurf gescheitert: %1$s. Der Chatraumbesitzer oder -administrator kann nicht herausgeworfen werden.</string>
+	<string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Herauswurf von %1$s gescheitert: du hast nicht genügend Rechte.</string>
 	<string name="service_gui_LAST">Letzter</string>
     <string name="service_gui_LAST_MSG_CORRECTION">Letzte Nachrichtenkorrektur</string>
 	<string name="service_gui_LAST_NAME">Letzter Name</string>
@@ -1199,7 +1200,7 @@
     <string name="service_gui_settings_SHOW_HISTORY">Chatverlauf anzeigen</string>
 
     <!-- Tell others when we are writing to them -->
-    <string name="service_gui_settings_TYPING_NOTIFICATIONS">Am-Schreiben...-Benachrichtigungen aktivieren</string>
+    <string name="service_gui_settings_TYPING_NOTIFICATIONS">Am-Schreiben…-Benachrichtigungen aktivieren</string>
 
     <!-- Enable option to send thumnail preview for image file sending -->
     <string name="service_gui_settings_THUMBNAIL_OPTION">Miniaturvorschau senden/empfangen</string>

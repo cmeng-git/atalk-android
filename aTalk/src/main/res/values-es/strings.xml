@@ -53,6 +53,7 @@
     <string name="hold">Postergar la llamada</string>
     <string name="in_call_with">Llamando a </string>
     <string name="network">Red</string>
+    <string name="notification_setting">Configuración de las notificaciones&#8230;</string>
     <string name="password">contraseña</string>
     <string name="password_label">Contraseña:</string>
     <string name="reason_label">Motivo:</string>
@@ -205,7 +206,7 @@
     <string name="service_gui_CONTACT_NAME">JID del contacto o número</string>
     <string name="service_gui_CONTACT_NAME_EMPTY">El nombre del contacto no debe estar vacío.</string>
     <string name="service_gui_CONTACT_OWNER">Contacto Propietario: %1$s</string>
-    <string name="service_gui_CONTACT_PAUSED_TYPING">ha dejado de escribir</string>
+    <string name="service_gui_CONTACT_PAUSED_TYPING">** %1$s ha dejado de escribir</string>
     <string name="service_gui_CONTACT_RENAME">Nuevo nombre de contacto:</string>
     <string name="service_gui_CONTACT_RENAME_HINT">Ingresar nuevo nombre de contacto</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Cambiar el nombre del contacto</string>
@@ -347,7 +348,7 @@
 	<string name="service_gui_FILE_TRANSFER_CANCELED">Se ha cancelado la transferencia de archivos</string>
 	<string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">El cliente o servidor de contacto no admite la transferencia de archivos ni los protocolos necesarios</string>
 	<string name="service_gui_FILE_TRANSFER_PREPARING">Preparando la transferencia de archivos con %1$s. Por favor, espere&#8230;</string>
-	<string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s%2$s comparte un archivo contigo</string>
+	<string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s comparte un archivo contigo</string>
 	<string name="service_gui_FILE_TRANSFER_REFUSED">Se ha rechazado la transferencia de archivos</string>
 	<string name="service_gui_FILE_UNABLE_TO_SEND">Se ha producido un error al enviar el archivo a %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Esperando %1$s para aceptar tu archivo</string>
@@ -370,7 +371,7 @@
 	<string name="service_gui_HISTORY_ERASE_ALL">Borrar el historial de chat de todos los contactos</string>
 	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">¿Seguro que se quiere borrar todos los mensajes de %1$s?</string>
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">¿Seguro que se quiere borrar todos los mensajes de todos los contactos??</string>
-	<string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente.</string>
+	<string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente. %1%s</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Eliminar medios de mi teléfono</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Miembros de la sala de charla</string>
@@ -696,7 +697,7 @@
     <string name="service_gui_CERT_INFO_CHAIN">Cadena de certificados:</string>
     <string name="service_gui_CERT_INFO_CN">Nombre común:</string>
     <string name="service_gui_CERT_INFO_O">Organización:</string>
-    <string name="service_gui_CERT_INFO_C">Nombre del pais:</string>
+    <string name="service_gui_CERT_INFO_C">Nombre del país::</string>
     <string name="service_gui_CERT_INFO_ST">Nombre del Estado o Provincia:</string>
     <string name="service_gui_CERT_INFO_L">Nombre de la localidad:</string>
     <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;html>&lt;b>Emitido por&lt;/b>&lt;/html></string>
@@ -767,7 +768,7 @@
     <string name="plugin_accountinfo_BDAY">Cumpleaños:</string>
     <string name="plugin_accountinfo_CHANGE">Cambiar</string>
     <string name="plugin_accountinfo_CITY">Ciudad:</string>
-    <string name="plugin_accountinfo_COUNTRY">Pais:</string>
+    <string name="plugin_accountinfo_COUNTRY">País:</string>
     <string name="plugin_accountinfo_DISCARD_CHANGE">El usuario se desconecta - Descartando todos los cambios en la información de la cuenta.</string>
     <string name="plugin_accountinfo_DISPLAY_NAME">Nombre para mostrar:</string>
     <string name="plugin_accountinfo_EMAIL">E-mail:</string>

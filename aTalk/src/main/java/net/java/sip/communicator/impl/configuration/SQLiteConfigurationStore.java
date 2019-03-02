@@ -130,15 +130,12 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
                 tableName = TABLE_NAME;
             }
 
-			Cursor cursor = mDB.query(tableName, new String[]{COLUMN_NAME},
-					null, null, null, null, COLUMN_NAME + " ASC");
-			try {
-				while (cursor.moveToNext()) {
-					propertyNames.add(cursor.getString(0));
-				}
-			} finally {
-				cursor.close();
-			}
+            try (Cursor cursor = mDB.query(tableName, new String[]{COLUMN_NAME},
+                    null, null, null, null, COLUMN_NAME + " ASC")) {
+                while (cursor.moveToNext()) {
+                    propertyNames.add(cursor.getString(0));
+                }
+            }
 		}
 		return propertyNames.toArray(new String[0]);
 	}
@@ -227,6 +224,6 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
 
         // cmeng to take care of properties and accountproperties ????
         super.setNonSystemProperty(name, value);
-        Timber.log(TimberLog.FINER, "### Set setNonSystem Property: " + name + ": " + value);
+        Timber.log(TimberLog.FINER, "### Set setNonSystem Property: %s: %s", name, value);
     }
 }

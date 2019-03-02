@@ -344,7 +344,7 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
             try {
                 protocolProvider.unregister(true);
             } catch (OperationFailedException ex) {
-                Timber.e("Provider failed unRegistration with error: %s", ex);
+                Timber.e("Provider failed unRegistration with error: %s", ex.getMessage());
 
 //				String alertMsg = "Provider could not be unregistered due to ";
 //				int errorCode = ex.getErrorCode();

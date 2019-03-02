@@ -8,7 +8,6 @@ package org.atalk.android.gui.settings;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
-import android.preference.Preference.OnPreferenceChangeListener;
 
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.systray.PopupMessageHandler;
@@ -217,7 +216,7 @@ public class SettingsActivity extends OSGiActivity
 
             List<CharSequence> entryVector = new ArrayList<>(Arrays.asList(localePreference.getEntries()));
             List<CharSequence> entryValueVector = new ArrayList<>(Arrays.asList(localePreference.getEntryValues()));
-            String supportedLanguages[] = getResources().getStringArray(R.array.supported_languages);
+            String[] supportedLanguages = getResources().getStringArray(R.array.supported_languages);
             Set<String> supportedLanguageSet = new HashSet<>(Arrays.asList(supportedLanguages));
             for (int i = entryVector.size() - 1; i > -1; --i) {
                 if (!supportedLanguageSet.contains(entryValueVector.get(i).toString())) {
@@ -236,21 +235,16 @@ public class SettingsActivity extends OSGiActivity
             localePreference.setSummary(localePreference.getEntry());
 
             // summaryMapper not working for initLocal ?? so use this instead
-            localePreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object value)
-                {
-                    String language = value.toString();
-                    localePreference.setValue(language);
-                    localePreference.setSummary(localePreference.getEntry());
+            localePreference.setOnPreferenceChangeListener((preference, value) -> {
+                String language1 = value.toString();
+                localePreference.setValue(language1);
+                localePreference.setSummary(localePreference.getEntry());
 
-                    AndroidGUIActivator.getConfigurationService().setProperty(P_KEY_LOCALE, language);
-                    aTalk.setATLanguage(language);
-                    aTalk.setLanguage(aTalkApp.getGlobalContext(), language);
-                    aTalk.setPrefChange(true);
-                    return true;
-                }
+                AndroidGUIActivator.getConfigurationService().setProperty(P_KEY_LOCALE, language1);
+                aTalk.setATLanguage(language1);
+                aTalk.setLanguage(aTalkApp.getGlobalContext(), language1);
+                aTalk.setPrefChange(true);
+                return true;
             });
         }
 
@@ -331,18 +325,13 @@ public class SettingsActivity extends OSGiActivity
             fileSizeList.setSummary(fileSizeList.getEntry());
 
             // summaryMapper not working for initLocal ?? so use this instead
-            fileSizeList.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object value)
-                {
-                    String fileSize = value.toString();
-                    fileSizeList.setValue(fileSize);
-                    fileSizeList.setSummary(fileSizeList.getEntry());
+            fileSizeList.setOnPreferenceChangeListener((preference, value) -> {
+                String fileSize = value.toString();
+                fileSizeList.setValue(fileSize);
+                fileSizeList.setSummary(fileSizeList.getEntry());
 
-                    ConfigurationUtils.setAutoAcceptFileSizeSize(Integer.parseInt(fileSize));
-                    return true;
-                }
+                ConfigurationUtils.setAutoAcceptFileSizeSize(Integer.parseInt(fileSize));
+                return true;
             });
         }
 
@@ -358,8 +347,7 @@ public class SettingsActivity extends OSGiActivity
             //		cfg.getBoolean(AUTO_UPDATE_CHECK_ENABLE, true));
 
             BundleContext bc = AndroidGUIActivator.bundleContext;
-            ServiceReference<PopupMessageHandler>[] handlerRefs
-                    = ServiceUtils.getServiceReferences(bc, PopupMessageHandler.class);
+            ServiceReference[] handlerRefs = ServiceUtils.getServiceReferences(bc, PopupMessageHandler.class);
             if (handlerRefs == null) {
                 Timber.w("No popup handlers found");
                 handlerRefs = new ServiceReference[0]; // Collections.emptyList();
@@ -564,8 +552,7 @@ public class SettingsActivity extends OSGiActivity
         private PopupMessageHandler getHandlerForClassName(String clazz)
         {
             BundleContext bc = AndroidGUIActivator.bundleContext;
-            ServiceReference<PopupMessageHandler>[] handlerRefs
-                    = ServiceUtils.getServiceReferences(bc, PopupMessageHandler.class);
+            ServiceReference[] handlerRefs = ServiceUtils.getServiceReferences(bc, PopupMessageHandler.class);
 
             if (handlerRefs == null)
                 return null;
@@ -595,6 +582,7 @@ public class SettingsActivity extends OSGiActivity
             else if (key.equals(P_KEY_HISTORY_SIZE)) {
                 String intStr = shPreferences.getString(P_KEY_HISTORY_SIZE,
                         Integer.toString(ConfigurationUtils.getChatHistorySize()));
+                assert intStr != null;
                 ConfigurationUtils.setChatHistorySize(Integer.parseInt(intStr));
                 updateHistorySizeSummary();
             }
@@ -639,7 +627,7 @@ public class SettingsActivity extends OSGiActivity
             else if (key.equals(P_KEY_POPUP_HANDLER)) {
                 String handler = shPreferences.getString(P_KEY_POPUP_HANDLER, "Auto");
                 SystrayService systray = AndroidGUIActivator.getSystrayService();
-                if (handler.equals("Auto")) {
+                if ("Auto".equals(handler)) {
                     // "Auto" selected. Delete the user's preference and select the best available handler.
                     ConfigurationUtils.setPopupHandlerConfig(null);
                     systray.selectBestPopupMessageHandler();
@@ -669,7 +657,7 @@ public class SettingsActivity extends OSGiActivity
                 audioSystem.setEchoCancel(shPreferences.getBoolean(P_KEY_AUDIO_ECHO_CANCEL, true));
             }
             // Auto gain control
-            else if (key.equals(P_KEY_AUDIO_ECHO_CANCEL)) {
+            else if (key.equals(P_KEY_AUDIO_AGC)) {
                 audioSystem.setAutomaticGainControl(shPreferences.getBoolean(P_KEY_AUDIO_AGC, true));
             }
             // Noise reduction
@@ -731,8 +719,11 @@ public class SettingsActivity extends OSGiActivity
             // Video bit rate
             else if (key.equals(P_KEY_VIDEO_BITRATE)) {
                 String bitrateStr = shPreferences.getString(P_KEY_VIDEO_BITRATE, "");
-                int bitrate = !bitrateStr.isEmpty()
-                        ? Integer.parseInt(bitrateStr) : DeviceConfiguration.DEFAULT_VIDEO_BITRATE;
+                int bitrate = 0;
+                if (bitrateStr != null) {
+                    bitrate = !bitrateStr.isEmpty()
+                            ? Integer.parseInt(bitrateStr) : DeviceConfiguration.DEFAULT_VIDEO_BITRATE;
+                }
                 if (bitrate < 1) {
                     bitrate = 1;
                 }

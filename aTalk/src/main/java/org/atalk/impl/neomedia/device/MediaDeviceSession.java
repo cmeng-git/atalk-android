@@ -1425,8 +1425,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                     Timber.e("Failed to set format of track %s to %s. Processor is in state %s",
                             trackIndex, supportedFormat, processor.getState());
                 else if (setFormat != supportedFormat)
-                    Timber.w("Failed to change format of track %d from %s to %s. Processor is in state %s",
-                            +trackIndex, setFormat, supportedFormat, processor.getState());
+                    Timber.w("Failed to change format of track %s from %s to %s. Processor is in state %s",
+                            trackIndex, setFormat, supportedFormat, processor.getState());
                 else
                     Timber.log(TimberLog.FINER, "Set format of track %s to %s", trackIndex, setFormat);
             }

@@ -13,6 +13,9 @@ import net.java.sip.communicator.util.ServiceUtils;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Android notifications wiring which overrides some default notifications and adds vibrate actions.
  *
@@ -44,6 +47,8 @@ public class AndroidNotifications implements BundleActivator
      * Missed call event.
      */
     public static final String MISSED_CALL = "missed_call";
+
+    public static List<String> notificationIds = Arrays.asList(DEFAULT_GROUP, MESSAGE_GROUP, FILE_GROUP, CALL_GROUP, MISSED_CALL);
 
     /**
      * {@inheritDoc}

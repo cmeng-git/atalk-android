@@ -40,7 +40,7 @@ public class ChatRoomInfoChangeDialog extends Dialog
     private EditText subjectField;
     private EditText nicknameField;
 
-    private String oldNick;
+    private String oldNick = "";
     private String oldSubject;
 
     /**
@@ -63,8 +63,9 @@ public class ChatRoomInfoChangeDialog extends Dialog
 
         EditText chatRoomName = this.findViewById(R.id.chatRoom_Jid);
         chatRoomName.setText(mChatRoom.getIdentifier());
-
-        oldNick = mChatRoom.getUserNickname().toString();
+        chatRoomName.setEnabled(false);
+        if (mChatRoom.getUserNickname() != null)
+            oldNick = mChatRoom.getUserNickname().toString();
         nicknameField = this.findViewById(R.id.NickName_Edit);
         nicknameField.setText(oldNick);
 

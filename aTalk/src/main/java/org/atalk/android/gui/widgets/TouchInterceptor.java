@@ -177,7 +177,7 @@ public class TouchInterceptor extends ListView
                     dragPointY = y - item.getTop();
                     xOffset = ((int) ev.getRawX()) - x;
                     yOffset = ((int) ev.getRawY()) - y;
-                    Timber.d("Dragging %s, %d sxy: %d, %d", x, y, dragRegionStartX, dragRegionEndX);
+                    Timber.d("Dragging %s, %s sxy: %s, %s", x, y, dragRegionStartX, dragRegionEndX);
 
                     if (x >= dragRegionStartX && x <= dragRegionEndX) {
                         item.setDrawingCacheEnabled(true);

@@ -128,7 +128,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
             service.initialize(jid, accountID);
             return service;
         } catch (XmppStringprepException e) {
-            Timber.e(e, userID + " is not a valid JID");
+            Timber.e(e, "%s is not a valid JID", userID);
         }
         return null;
     }
@@ -194,7 +194,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
             EntityBareJid jid = JidCreate.entityBareFrom(accountID.getUserID());
             ((ProtocolProviderServiceJabberImpl) protocolProvider).initialize(jid, accountID);
         } catch (XmppStringprepException e) {
-            Timber.e(e, accountID.getUserID() + " is not a valid JID");
+            Timber.e(e, "%s is not a valid JID", accountID.getUserID());
             throw new IllegalArgumentException("UserID is not a valid JID");
         }
 

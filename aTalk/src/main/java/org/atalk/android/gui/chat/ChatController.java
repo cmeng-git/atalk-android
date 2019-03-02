@@ -239,16 +239,11 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 && ConfigurationUtils.isSendChatStateNotifications());
 
         if (allowsChatStateNotifications) {
-            msgEdit.setOnTouchListener(new ContentEditText.OnTouchListener()
-            {
-                @Override
-                public boolean onTouch(View v, MotionEvent event)
-                {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        onTouchAction();
-                    }
-                    return false;
+            msgEdit.setOnTouchListener((v, event) -> {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    onTouchAction();
                 }
+                return false;
             });
 
             // Start chat state control thread and give 500mS before sending ChatState.active

@@ -539,7 +539,6 @@ class NotificationServiceImpl implements NotificationService
                             pattern[pIdx] = configService.getLong(actionPropName + ".patternItem" + pIdx, -1);
                             if (pattern[pIdx] == -1) {
                                 Timber.e("Invalid pattern interval: %s", (Object) pattern);
-                                continue;
                             }
                         }
                         int repeat = configService.getInt(actionPropName + ".repeat", -1);
