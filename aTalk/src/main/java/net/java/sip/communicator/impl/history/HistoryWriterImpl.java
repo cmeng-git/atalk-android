@@ -11,9 +11,7 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import net.java.sip.communicator.service.history.HistoryWriter;
 import net.java.sip.communicator.service.history.records.HistoryRecord;
@@ -154,7 +152,7 @@ public class HistoryWriterImpl implements HistoryWriter
 	private Element createRecord(Document doc, String[] propertyNames, String[] propertyValues, Date date)
 	{
 		Element elem = doc.createElement("record");
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 		elem.setAttribute("timestamp", sdf.format(date));
 
 		for (int i = 0; i < propertyNames.length; i++) {
@@ -189,7 +187,7 @@ public class HistoryWriterImpl implements HistoryWriter
 	 */
 	private void removeFirstRecord(Node root)
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 		NodeList nodes = ((Element) root).getElementsByTagName("record");
 		Node oldestNode = null;
 		Date oldestTimeStamp = null;
@@ -210,8 +208,7 @@ public class HistoryWriterImpl implements HistoryWriter
 			if (oldestNode == null || (oldestTimeStamp.after(timestamp))) {
 				oldestNode = node;
 				oldestTimeStamp = timestamp;
-				continue;
-			}
+            }
 		}
 		if (oldestNode != null)
 			root.removeChild(oldestNode);
@@ -235,7 +232,7 @@ public class HistoryWriterImpl implements HistoryWriter
 	public void insertRecord(String[] propertyValues, Date timestamp, String timestampProperty)
 		throws IOException
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 		Iterator<String> fileIterator = HistoryReaderImpl.filterFilesByDate(this.historyImpl.getFileList(), timestamp, null).iterator();
 		String filename = null;
 		while (fileIterator.hasNext()) {
@@ -400,7 +397,7 @@ public class HistoryWriterImpl implements HistoryWriter
 				}
 
 				// change the timestamp, to reflect there was a change
-				SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+				SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 				((Element) node).setAttribute("timestamp", sdf.format(new Date()));
 				changed = true;
 				break;
@@ -454,7 +451,7 @@ public class HistoryWriterImpl implements HistoryWriter
 					continue;
 
 				// change the timestamp, to reflect there was a change
-				SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+				SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 				((Element) node).setAttribute("timestamp", sdf.format(new Date()));
 
 				Map<String, String> updates = updater.getUpdateChanges();
@@ -497,7 +494,7 @@ public class HistoryWriterImpl implements HistoryWriter
 	{
 
 		HistoryRecordStructure structure = historyImpl.getHistoryRecordsStructure();
-		String propertyValues[] = new String[structure.getPropertyCount()];
+        String[] propertyValues = new String[structure.getPropertyCount()];
 
 		int i = 0;
 		for (String propertyName : structure.getPropertyNames()) {

@@ -22,7 +22,7 @@ public class AuthWindowServiceImpl implements AuthenticationWindowService
 	/**
 	 * Requests map
 	 */
-	private static Map<Long, AuthWindowImpl> requestMap = new HashMap<Long, AuthWindowImpl>();
+	private static Map<Long, AuthWindowImpl> requestMap = new HashMap<>();
 
 	/**
 	 * Creates an instance of the <tt>AuthenticationWindow</tt> implementation.

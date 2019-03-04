@@ -33,8 +33,7 @@ import org.atalk.android.util.java.awt.event.ActionEvent;
 import org.atalk.android.util.java.awt.event.ActionListener;
 import org.atalk.android.util.javax.swing.*;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * The <tt>ChooseCallAccountDialog</tt> is the dialog shown when calling a
@@ -511,17 +510,18 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
         {
             this.contact = contact;
 
-            String itemName = "<html>";
+            StringBuilder itemName = new StringBuilder("<html>");
             Iterator<String> labels = contact.getLabels();
 
             if (labels != null && labels.hasNext())
                 while (labels.hasNext())
-                    itemName += "<b style=\"color: gray\">"
-                            + labels.next().toLowerCase() + "</b> ";
+                    itemName.append("<b style=\"color: gray\">")
+                            .append(labels.next().toLowerCase(Locale.US))
+                            .append("</b> ");
 
-            itemName += contact.getAddress() + "</html>";
+            itemName.append(contact.getAddress()).append("</html>");
 
-            this.setText(itemName);
+            this.setText(itemName.toString());
             loadSkin();
         }
 

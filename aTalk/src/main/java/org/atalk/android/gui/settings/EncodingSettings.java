@@ -8,7 +8,6 @@ package org.atalk.android.gui.settings;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-import org.atalk.android.R;
 import org.atalk.android.gui.account.settings.MediaEncodingActivity;
 import org.atalk.android.gui.account.settings.MediaEncodingsFragment;
 import org.atalk.impl.neomedia.MediaServiceImpl;
@@ -54,11 +53,11 @@ public class EncodingSettings extends OSGiActivity
                 List<Integer> priorities = MediaEncodingActivity.getPriorities(formats, encConfig);
 
                 this.encodingsFragment = MediaEncodingsFragment.newInstance(encodings, priorities);
-                getFragmentManager().beginTransaction().add(R.id.content, encodingsFragment).commit();
+                getFragmentManager().beginTransaction().add(android.R.id.content, encodingsFragment).commit();
             }
         }
         else {
-            this.encodingsFragment = (MediaEncodingsFragment) getFragmentManager().findFragmentById(R.id.content);
+            this.encodingsFragment = (MediaEncodingsFragment) getFragmentManager().findFragmentById(android.R.id.content);
         }
     }
 

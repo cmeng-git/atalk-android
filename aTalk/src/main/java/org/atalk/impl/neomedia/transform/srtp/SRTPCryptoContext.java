@@ -255,16 +255,14 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
         }
         else if (-delta > REPLAY_WINDOW_SIZE) {
             if (sender) {
-                Timber.e("Discarding RTP packet with sequence number %d, SSRC %d"
-                                + " because it is outside the replay window! (roc %d, s_l %d), guessedROC %d",
+                Timber.e("Discarding RTP packet with sequence number %d, SSRC %d because it is outside the replay window! (roc %d, s_l %d), guessedROC %d",
                         seqNo, (0xFFFFFFFFL & ssrc), roc, s_l, guessedROC);
             }
             return false;
         }
         else if (((replayWindow >> (-delta)) & 0x1) != 0) {
             if (sender) {
-                Timber.e("Discarding RTP packet with sequence number %d, SSRC %d"
-                                + " because it has been received already! (roc %d, s_l %d), guessedROC %d",
+                Timber.e("Discarding RTP packet with sequence number %d, SSRC %d because it has been received already! (roc %d, s_l %d), guessedROC %d",
                         seqNo, (0xFFFFFFFFL & ssrc), roc, s_l, guessedROC);
             }
             return false; // Packet received already!

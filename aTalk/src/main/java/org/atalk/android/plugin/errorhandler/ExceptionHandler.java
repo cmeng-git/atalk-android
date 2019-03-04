@@ -108,7 +108,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler
 	 */
 	private static void markCrashedEvent()
 	{
-		getStorage().edit().putBoolean("crash", true).commit();
+		getStorage().edit().putBoolean("crash", true).apply();
 	}
 
 	/**
@@ -126,6 +126,6 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler
 	 */
 	public static void resetCrashedStatus()
 	{
-		getStorage().edit().putBoolean("crash", false).commit();
+		getStorage().edit().putBoolean("crash", false).apply();
 	}
 }

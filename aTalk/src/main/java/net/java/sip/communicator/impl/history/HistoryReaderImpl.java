@@ -18,15 +18,7 @@ import org.w3c.dom.NodeList;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.Vector;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static net.java.sip.communicator.service.history.HistoryService.DATE_FORMAT;
@@ -199,7 +191,7 @@ public class HistoryReaderImpl implements HistoryReader
 		int leftCount = count;
 		int currentFile = filelist.size() - 1;
 
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 		while ((leftCount > 0) && (currentFile >= 0)) {
 			Document doc = this.historyImpl.getDocumentForFile(filelist.get(currentFile));
 
@@ -334,7 +326,7 @@ public class HistoryReaderImpl implements HistoryReader
 		int leftCount = count;
 		int currentFile = 0;
 
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 		while (leftCount > 0 && currentFile < filelist.size()) {
 			Document doc = this.historyImpl.getDocumentForFile(filelist.get(currentFile));
 
@@ -426,7 +418,7 @@ public class HistoryReaderImpl implements HistoryReader
 
 		int currentFile = filelist.size() - 1;
 
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 		while (leftCount > 0 && currentFile >= 0) {
 			Document doc = this.historyImpl.getDocumentForFile(filelist.get(currentFile));
 
@@ -509,56 +501,46 @@ public class HistoryReaderImpl implements HistoryReader
 		// start progress - minimum value
 		fireProgressStateChanged(startDate, endDate, keywords, HistorySearchProgressListener.PROGRESS_MINIMUM_VALUE);
 
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		Iterator<String> fileIterator = filelist.iterator();
-		while (fileIterator.hasNext()) {
-			String filename = fileIterator.next();
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+        for (String filename : filelist) {
+            Document doc = this.historyImpl.getDocumentForFile(filename);
+            if (doc == null)
+                continue;
 
-			Document doc = this.historyImpl.getDocumentForFile(filename);
+            NodeList nodes = doc.getElementsByTagName("record");
+            double nodesProgressStep = fileProgressStep;
 
-			if (doc == null)
-				continue;
+            if (nodes.getLength() != 0)
+                nodesProgressStep = fileProgressStep / nodes.getLength();
 
-			NodeList nodes = doc.getElementsByTagName("record");
+            Node node;
+            for (int i = 0; i < nodes.getLength(); i++) {
+                node = nodes.item(i);
+                Date timestamp;
+                String ts = node.getAttributes().getNamedItem("timestamp").getNodeValue();
+                try {
+                    timestamp = sdf.parse(ts);
+                } catch (ParseException e) {
+                    timestamp = new Date(Long.parseLong(ts));
+                }
 
-			double nodesProgressStep = fileProgressStep;
+                if (isInPeriod(timestamp, startDate, endDate)) {
+                    NodeList propertyNodes = node.getChildNodes();
 
-			if (nodes.getLength() != 0)
-				nodesProgressStep = fileProgressStep / nodes.getLength();
-
-			Node node;
-			for (int i = 0; i < nodes.getLength(); i++) {
-				node = nodes.item(i);
-
-				Date timestamp;
-				String ts = node.getAttributes().getNamedItem("timestamp").getNodeValue();
-				try {
-					timestamp = sdf.parse(ts);
-				}
-				catch (ParseException e) {
-					timestamp = new Date(Long.parseLong(ts));
-				}
-
-				if (isInPeriod(timestamp, startDate, endDate)) {
-					NodeList propertyNodes = node.getChildNodes();
-
-					HistoryRecord record = filterByKeyword(propertyNodes, timestamp, keywords, field, caseSensitive);
-
-					if (record != null) {
-						result.add(record);
-					}
-				}
-
-				currentProgress += nodesProgressStep;
-				fireProgressStateChanged(startDate, endDate, keywords, (int) currentProgress);
-			}
-		}
+                    HistoryRecord record = filterByKeyword(propertyNodes, timestamp, keywords, field, caseSensitive);
+                    if (record != null) {
+                        result.add(record);
+                    }
+                }
+                currentProgress += nodesProgressStep;
+                fireProgressStateChanged(startDate, endDate, keywords, (int) currentProgress);
+            }
+        }
 
 		// if maximum value is not reached fire an event
 		if ((int) currentProgress < HistorySearchProgressListener.PROGRESS_MAXIMUM_VALUE) {
 			fireProgressStateChanged(startDate, endDate, keywords, HistorySearchProgressListener.PROGRESS_MAXIMUM_VALUE);
 		}
-
 		return new OrderedQueryResultSet<>(result);
 	}
 

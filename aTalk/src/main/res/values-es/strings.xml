@@ -371,7 +371,7 @@
 	<string name="service_gui_HISTORY_ERASE_ALL">Borrar el historial de chat de todos los contactos</string>
 	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">¿Seguro que se quiere borrar todos los mensajes de %1$s?</string>
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">¿Seguro que se quiere borrar todos los mensajes de todos los contactos??</string>
-	<string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente. %1%s</string>
+	<string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente. %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Eliminar medios de mi teléfono</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Miembros de la sala de charla</string>

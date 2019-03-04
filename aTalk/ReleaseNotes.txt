@@ -1,5 +1,13 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.7.2 (1072)
+Author:         cmeng
+Upload Date:	03/04/2019
+- Fix audio and video codec settings blank display causing system crash
+  incorrect using the proposed import by AS i.e. org.atalk.android.R instead of android.R;
+- Fix certificate display problem due to unknown issuer label in certificate content
+
+=========================================================================
 Version:		1.7.1 (1071)
 Author:         cmeng
 Upload Date:	03/02/2019

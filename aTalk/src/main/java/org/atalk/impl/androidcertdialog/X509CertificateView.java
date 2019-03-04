@@ -34,6 +34,8 @@ import java.util.*;
 
 import javax.security.auth.x500.X500Principal;
 
+import timber.log.Timber;
+
 /**
  * Form that shows the content of an X509Certificate.
  *
@@ -130,15 +132,15 @@ public class X509CertificateView extends Dialog
             for (Map.Entry<String, String> name : rdnNames.entrySet()) {
                 String nameType = name.getKey();
                 String lblKey = "service_gui_CERT_INFO_" + nameType;
-                String lbl;
 
+                String lbl;
                 int resID = mContext.getResources().getIdentifier(lblKey, "string", mContext.getPackageName());
                 try {
                     lbl = mContext.getString(resID);
                 } catch (Resources.NotFoundException e) {
+                    Timber.w("Unknown certificate subject label: %s", nameType);
                     lbl = nameType;
                 }
-
                 if (("!" + lblKey + "!").equals(lbl))
                     lbl = nameType;
 
@@ -157,9 +159,15 @@ public class X509CertificateView extends Dialog
             for (Map.Entry<String, String> name : rdnNames.entrySet()) {
                 String nameType = name.getKey();
                 String lblKey = "service_gui_CERT_INFO_" + nameType;
-                int resID = mContext.getResources().getIdentifier(lblKey, "string", mContext.getPackageName());
-                String lbl = mContext.getString(resID);
 
+                String lbl;
+                int resID = mContext.getResources().getIdentifier(lblKey, "string", mContext.getPackageName());
+                try {
+                    lbl = mContext.getString(resID);
+                } catch (Resources.NotFoundException e) {
+                    Timber.w("Unknown certificate issuer label: %s", nameType);
+                    lbl = nameType;
+                }
                 if (("!" + lblKey + "!").equals(lbl))
                     lbl = nameType;
 

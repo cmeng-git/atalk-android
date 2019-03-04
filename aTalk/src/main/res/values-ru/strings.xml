@@ -448,7 +448,7 @@
     <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Локально в режиме ожидания</string>
     <string name="service_gui_LOGIN_CREDENTIAL">Пользовательские учетные данные пользователя</string>
     <string name="service_gui_LOGIN_FAILED">Ошибка входа</string>
-    <string name="service_gui_LOGIN_GENERAL_ERROR">Произошла ошибка при входе в учетную запись: Имя пользователя: {0}, Имя сервера: {1}: {2}.</string>
+    <string name="service_gui_LOGIN_GENERAL_ERROR">Произошла ошибка при входе в учетную запись: Имя пользователя: %1$s, Имя сервера: %2$s:%3$s.</string>
     <string name="service_gui_LOGIN_INTERNAL_ERROR">Произошла ошибка при входе в учетную запись: Имя пользователя: {0}, Имя сервера: {1}. Это, скорее всего, внутренняя ошибка приложения. Сообщите о проблеме в список рассылки разработчиков.</string>
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Невозможно войти в систему с учетной записью: Имя пользователя: {0}, Имя сервера: {1}, из-за проблемы с настройкой учетной записи. Проверьте конфигурацию своей учетной записи.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">Невозможно войти в систему с учетной записью:\nИмя пользователя: {0}\nServer name: {1}\ndue к сбою сети. Проверьте сетевое подключение.</string>

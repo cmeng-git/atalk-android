@@ -944,8 +944,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             if (transport == null) {
                 // There is no operation set for querying transport parameters.
                 // Assuming transport capabilities are unlimited.
-                Timber.d("No implementation of BasicInstantMessagingTransport available."
-                        + " Assuming OTR defaults for OTR fragmentation instructions.");
+                Timber.d("No implementation of BasicInstantMessagingTransport available. Assuming OTR defaults for OTR fragmentation instructions.");
                 return null;
             }
 

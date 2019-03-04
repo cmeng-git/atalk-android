@@ -739,7 +739,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void filterData(String query)
     {
-        currentFilterQuery = query.toLowerCase();
+        currentFilterQuery = query.toLowerCase(Locale.US);
         groups.clear();
         contacts.clear();
 

@@ -178,10 +178,10 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     public synchronized void close()
     {
         super.close();
-        //        OperationSetDesktopSharingClientJabberImpl client = (OperationSetDesktopSharingClientJabberImpl)
-        //                getPeer().getProtocolProvider().getOperationSet(OperationSetDesktopSharingClient.class);
-        //        if (client != null)
-        //            client.fireRemoteControlRevoked(getPeer());
+//        OperationSetDesktopSharingClientJabberImpl client = (OperationSetDesktopSharingClientJabberImpl)
+//                getPeer().getProtocolProvider().getOperationSet(OperationSetDesktopSharingClient.class);
+//        if (client != null)
+//            client.fireRemoteControlRevoked(getPeer());
     }
 
     /**
@@ -2266,7 +2266,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 int numberSupportedVersions = zrtpControl.getNumberSupportedVersions();
 
                 for (int i = 0; i < numberSupportedVersions; i++) {
-                    String helloHash[] = zrtpControl.getHelloHashSep(i);
+                    String[] helloHash = zrtpControl.getHelloHashSep(i);
 
                     if ((helloHash != null) && (helloHash[1].length() > 0)) {
                         ZrtpHashExtensionElement hash = new ZrtpHashExtensionElement();
