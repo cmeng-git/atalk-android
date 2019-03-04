@@ -446,7 +446,7 @@
     <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Lokal ditahan</string>
     <string name="service_gui_LOGIN_CREDENTIAL">Login Kredensial Pengguna</string>
     <string name="service_gui_LOGIN_FAILED">Login gagal</string>
-    <string name="service_gui_LOGIN_GENERAL_ERROR">Terjadi kesalahan saat masuk menggunakan akun: Nama pengguna: {0}, Nama server: {1}: {2}.</string>
+    <string name="service_gui_LOGIN_GENERAL_ERROR">Terjadi kesalahan saat masuk menggunakan akun: Nama pengguna: %1$s, Nama server: %2$s:%3$s.</string>
     <string name="service_gui_LOGIN_INTERNAL_ERROR">Terjadi kesalahan saat masuk menggunakan akun: Nama pengguna: {0}, Nama server: {1}. Ini kemungkinan besar kesalahan aplikasi internal. Silakan laporkan masalah ke milis pengembang kami.</string>
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Tidak dapat masuk dengan akun: Nama pengguna: {0}, Nama server: {1}, karena masalah konfigurasi akun. Silakan periksa konfigurasi akun Anda.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">Tidak dapat masuk menggunakan akun:\nNama pengguna: {0}\nNama server: {1}\nkenyebabkan kegagalan jaringan. Silakan periksa koneksi jaringan Anda.</string>

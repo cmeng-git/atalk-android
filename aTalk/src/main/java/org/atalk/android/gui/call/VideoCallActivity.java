@@ -633,7 +633,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
     public void setErrorReason(final String reason)
     {
-        Timber.i("Error reason: %s", reason);
+        Timber.i("End call reason: %s", reason);
         runOnUiThread(() -> {
             callState.errorReason = reason;
 

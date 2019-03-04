@@ -4,138 +4,133 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/theme_background"
-    android:padding="@dimen/screen_padding">
+    android:padding="@dimen/screen_padding"
+    android:orientation="vertical">
+
+    <Spinner
+        android:id="@+id/networkSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/item_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:background="@drawable/spinner_dark"
+        android:prompt="@string/choose_network" />
+
+    <EditText
+        android:id="@+id/usernameField"
+        style="@style/EntryTextView"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:hint="@string/username_hint"
+        android:inputType="textNoSuggestions" />
+
+    <RelativeLayout
+        android:id="@+id/pwdTypingArea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/passwordField"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="@dimen/between_padding"
+            android:hint="@string/password"
+            android:inputType="textPassword" />
+
+        <CheckBox
+            android:id="@+id/show_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/passwordField"
+            android:layout_alignRight="@+id/passwordField" />
+
+        <ImageView
+            android:id="@+id/pwdviewImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/show_password"
+            android:layout_alignLeft="@id/show_password"
+            android:layout_alignStart="@id/show_password"
+            android:alpha="0.3"
+            android:src="@drawable/pwdview" />
+    </RelativeLayout>
+
+    <CheckBox
+        android:id="@+id/store_password"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/store_password" />
+
+    <CheckBox
+        android:id="@+id/ibRegistration"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/account_registration" />
+
+    <CheckBox
+        android:id="@+id/serverOverridden"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/account_override_server" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/serverIpField"
+            style="@style/EntryTextView"
+            android:layout_width="0dp"
+            android:layout_marginBottom="@dimen/between_padding"
+            android:layout_weight=".70"
+            android:hint="@string/account_server_ip"
+            android:inputType="textNoSuggestions" />
+
+        <EditText
+            android:id="@+id/serverPortField"
+            style="@style/EntryTextView"
+            android:layout_width="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/between_padding"
+            android:layout_marginLeft="@dimen/between_padding"
+            android:layout_marginStart="@dimen/between_padding"
+            android:layout_weight=".30"
+            android:inputType="textNoSuggestions"
+            android:text="@string/account_server_port" />
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/dnssecModeSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/item_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:background="@drawable/spinner_dark" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/networkSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/item_height"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/between_padding"
-            android:background="@drawable/spinner_dark"
-            android:prompt="@string/choose_network" />
+        <Button
+            android:id="@+id/buttonCancel"
+            style="@style/ButtonTop"
+            android:text="@string/service_gui_CANCEL" />
 
-        <EditText
-            android:id="@+id/usernameField"
-            style="@style/EntryTextView"
-            android:layout_width="match_parent"
-            android:layout_marginBottom="@dimen/between_padding"
-            android:hint="@string/username_hint"
-            android:inputType="textNoSuggestions" />
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="2dp"
+            android:visibility="invisible" />
 
-        <RelativeLayout
-            android:id="@+id/pwdTypingArea"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/passwordField"
-                style="@style/EntryTextView"
-                android:layout_width="match_parent"
-                android:layout_marginBottom="@dimen/between_padding"
-                android:hint="@string/password"
-                android:inputType="textPassword" />
-
-            <CheckBox
-                android:id="@+id/show_password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignEnd="@id/passwordField"
-                android:layout_alignRight="@+id/passwordField" />
-
-            <ImageView
-                android:id="@+id/pwdviewImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/show_password"
-                android:layout_alignLeft="@id/show_password"
-                android:layout_alignStart="@id/show_password"
-                android:alpha="0.3"
-                android:src="@drawable/pwdview" />
-        </RelativeLayout>
-
-        <CheckBox
-            android:id="@+id/store_password"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/store_password" />
-
-        <CheckBox
-            android:id="@+id/ibRegistration"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/account_registration" />
-
-        <CheckBox
-            android:id="@+id/serverOverridden"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/account_override_server" />
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/serverIpField"
-                style="@style/EntryTextView"
-                android:layout_width="0dp"
-                android:layout_marginBottom="@dimen/between_padding"
-                android:layout_weight=".70"
-                android:hint="@string/account_server_ip"
-                android:inputType="textNoSuggestions" />
-
-            <EditText
-                android:id="@+id/serverPortField"
-                style="@style/EntryTextView"
-                android:layout_width="0dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/between_padding"
-                android:layout_marginLeft="@dimen/between_padding"
-                android:layout_marginStart="@dimen/between_padding"
-                android:layout_weight=".30"
-                android:inputType="textNoSuggestions"
-                android:text="@string/account_server_port" />
-        </LinearLayout>
-
-        <Spinner
-            android:id="@+id/dnssecModeSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/item_height"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/between_padding"
-            android:background="@drawable/spinner_dark" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/buttonCancel"
-                style="@style/ButtonTop"
-                android:text="@string/service_gui_CANCEL" />
-
-            <View
-                android:id="@+id/centerShim"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="2dp"
-                android:visibility="invisible" />
-
-            <Button
-                android:id="@+id/buttonSignIn"
-                style="@style/ButtonTop"
-                android:focusable="true"
-                android:text="@string/service_gui_SIGN_IN" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/buttonSignIn"
+            style="@style/ButtonTop"
+            android:focusable="true"
+            android:text="@string/service_gui_SIGN_IN" />
     </LinearLayout>
 </LinearLayout>

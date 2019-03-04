@@ -6,8 +6,7 @@
 package org.atalk.android.gui.call;
 
 import java.net.InetSocketAddress;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallConference;
@@ -239,7 +238,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
 
 		if (iceStateVisible) {
 			Resources resources = getResources();
-			int strId = resources.getIdentifier("service_gui_callinfo_ICE_STATE_" + iceState.toUpperCase(),
+			int strId = resources.getIdentifier("service_gui_callinfo_ICE_STATE_" + iceState.toUpperCase(Locale.US),
                     "string", getActivity().getPackageName());
 			setTextViewValue(R.id.iceState, resources.getString(strId));
 		}

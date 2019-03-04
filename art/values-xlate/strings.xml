@@ -446,7 +446,7 @@
     <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Locally on hold</string>
     <string name="service_gui_LOGIN_CREDENTIAL">Login User Credentials</string>
     <string name="service_gui_LOGIN_FAILED">Login failed</string>
-    <string name="service_gui_LOGIN_GENERAL_ERROR">An error occurred while logging in with account: User name: {0}, Server name: {1}:{2}.</string>
+    <string name="service_gui_LOGIN_GENERAL_ERROR">An error occurred while logging in with account: User name: %1$s, Server name: %2$s:%3$s.</string>
     <string name="service_gui_LOGIN_INTERNAL_ERROR">An error occurred while logging in with account: User name: {0}, Server name: {1}. This is most probably an internal application error. Please report the problem to our developers mailing list.</string>
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Unable to log in with account: User name: {0}, Server name: {1}, due to an account configuration problem. Please check your account configuration.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">Unable to log in with account:\nUser name: {0}\nServer name: {1}\ndue to a network failure. Please check your network connection.</string>

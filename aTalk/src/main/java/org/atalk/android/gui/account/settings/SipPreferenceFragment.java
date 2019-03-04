@@ -223,7 +223,7 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
         if (!certs.contains(currentCert) && !isInitialized()) {
             // The empty one
             currentCert = certs.get(0);
-            getPreferenceManager().getSharedPreferences().edit().putString(PREF_KEY_TLS_CERT_ID, currentCert).commit();
+            getPreferenceManager().getSharedPreferences().edit().putString(PREF_KEY_TLS_CERT_ID, currentCert).apply();
         }
 
         String[] entries = new String[certs.size()];

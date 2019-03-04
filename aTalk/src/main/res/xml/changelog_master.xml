@@ -6,6 +6,12 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.7.2 (03/02/2019)" versioncode="1072">
+        <change>Fix audio and video codec settings blank display causing system crash</change>
+        <change>Fix certificate display problem due to unknown issuer label in certificate content</change>
+        <change>Bug fixes and other enhancements</change>
+    </release>
+
     <release version="1.7.1 (03/02/2019)" versioncode="1071">
         <change>Add user option to access Application Notification Settings</change>
         <change>Clean up unused notification channels</change>

@@ -326,6 +326,6 @@ public class H264Parameters implements Serializable
         String storeString = spsStr + "," + ppsStr;
 
         config.edit().putString(STORE_ID, storeString)
-                .putString(VIDEO_SIZE_STORE_ID, formatUsed.getSize().toString()).commit();
+                .putString(VIDEO_SIZE_STORE_ID, formatUsed.getSize().toString()).apply();
     }
 }

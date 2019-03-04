@@ -446,7 +446,7 @@
     <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Lokal auf Abruf</string>
     <string name="service_gui_LOGIN_CREDENTIAL">Login Benutzerdaten</string>
     <string name="service_gui_LOGIN_FAILED">Login fehlgeschlagen</string>
-    <string name="service_gui_LOGIN_GENERAL_ERROR">Der Loginversuch ist fehlgeschlagen. Benutzer: {0}, Server: {1}:{2}.</string>
+    <string name="service_gui_LOGIN_GENERAL_ERROR">Der Loginversuch ist fehlgeschlagen. Benutzer: %1$s, Server: %2$s:%3$s.</string>
     <string name="service_gui_LOGIN_INTERNAL_ERROR">Beim Anmelden mit dem Konto ist ein Fehler aufgetreten: Benutzername: {0}, Servername: {1}. Dies ist höchstwahrscheinlich ein interner Anwendungsfehler. Bitte melde das Problem unserer Mailingliste für Entwickler.</string>
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Anmeldung mit diesem Konto nicht möglich: Benutzername: {0}, Servername: {1}. Bitte überprüfe deine Kontoeinstellungen.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">Anmeldung fehlgeschlagen:\nBenutzername: {0}\nServername: {1}\n Netzwerkfehler: Bitte überprüfe deine Netzwerkverbindung.</string>

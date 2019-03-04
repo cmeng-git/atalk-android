@@ -182,8 +182,7 @@ public class RawPacketCache implements AutoCloseable
             throws Exception
     {
         if (totalPacketsAdded.get() > 0) {
-            Timber.i("%s closed,stream=%d max_size_bytes=%s,max_size_packets=%s,total_hits=%d, total_misses=%d," +
-                            " total_packets=%d, oldest_hit_ms=%s",
+            Timber.i("%s closed,stream=%d max_size_bytes=%s,max_size_packets=%s,total_hits=%d, total_misses=%d, total_packets=%d, oldest_hit_ms=%s",
                     Logger.Category.STATISTICS, streamId, maxSizeInBytes, maxSizeInPackets, totalHits.get(),
                     totalMisses.get(), totalPacketsAdded.get(), oldestHit);
         }

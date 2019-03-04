@@ -57,8 +57,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1071
-        versionName "1.7.1" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1072
+        versionName "1.7.2" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -129,10 +129,10 @@ android {
         debug { java.srcDirs = ['src/debug/java'] }
 
         // Move the tests to tests/java, tests/res, etc...
-        // androidTest.setRoot('tests')
+        androidTest.setRoot('tests')
 
         // Move the build types to build-types/<type>
-        // release.setRoot('build-types/release')
+        release.setRoot('build-types/release')
     }
 
     lintOptions {

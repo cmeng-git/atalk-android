@@ -233,11 +233,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports instant
-     * messaging, otherwise returns <code>false</code>.
+     * Returns {@code true} if this chat transport supports instant
+     * messaging, otherwise returns {@code false}.
      *
-     * @return <code>true</code> if this chat transport supports instant
-     * messaging, otherwise returns <code>false</code>.
+     * @return {@code true} if this chat transport supports instant
+     * messaging, otherwise returns {@code false}.
      */
     public boolean allowsInstantMessage()
     {
@@ -256,10 +256,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports message corrections and false
+     * Returns {@code true} if this chat transport supports message corrections and false
      * otherwise.
      *
-     * @return <code>true</code> if this chat transport supports message corrections and false
+     * @return {@code true} if this chat transport supports message corrections and false
      * otherwise.
      */
     public boolean allowsMessageCorrections()
@@ -275,11 +275,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports sms
-     * messaging, otherwise returns <code>false</code>.
+     * Returns {@code true} if this chat transport supports sms
+     * messaging, otherwise returns {@code false}.
      *
-     * @return <code>true</code> if this chat transport supports sms
-     * messaging, otherwise returns <code>false</code>.
+     * @return {@code true} if this chat transport supports sms
+     * messaging, otherwise returns {@code false}.
      */
     public boolean allowsSmsMessage()
     {
@@ -294,13 +294,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports chat state notifications,
-     * otherwise returns <code>false</code>.
+     * Returns {@code true} if this chat transport supports chat state notifications,
+     * otherwise returns {@code false}.
      * User SHOULD explicitly discover whether the Contact supports the protocol or negotiate the
      * use of chat state notifications with the Contact (e.g., via XEP-0155 Stanza Session Negotiation).
      *
-     * @return <code>true</code> if this chat transport supports chat state
-     * notifications, otherwise returns <code>false</code>.
+     * @return {@code true} if this chat transport supports chat state
+     * notifications, otherwise returns {@code false}.
      */
     public boolean allowsChatStateNotifications()
     {
@@ -316,11 +316,9 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports file transfer, otherwise returns
-     * <code>false</code>.
+     * Returns {@code true} if this chat transport supports file transfer, otherwise returns {@code false}.
      *
-     * @return <code>true</code> if this chat transport supports file transfer, otherwise returns
-     * <code>false</code>.
+     * @return {@code true} if this chat transport supports file transfer, otherwise returns {@code false}.
      */
     public boolean allowsFileTransfer()
     {

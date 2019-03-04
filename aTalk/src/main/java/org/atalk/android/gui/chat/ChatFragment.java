@@ -1441,13 +1441,13 @@ public class ChatFragment extends OSGiFragment
                             String mLoc = str.substring(startIndex + 7);
                             String[] location = mLoc.split(",");
 
-                            String sLat = location[0].toLowerCase();
+                            String sLat = location[0].toLowerCase(Locale.US);
                             if (sLat.contains("s"))
                                 sLat = "-" + sLat.replaceAll("[^0-9.]+", "");
                             else
                                 sLat = sLat.replaceAll("[^0-9.]+", "");
 
-                            String sLng = location[1].toLowerCase();
+                            String sLng = location[1].toLowerCase(Locale.US);
                             if (sLng.contains("w"))
                                 sLng = "-" + sLng.replaceAll("[^0-9.]+", "");
                             else
