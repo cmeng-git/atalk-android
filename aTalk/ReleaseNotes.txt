@@ -90,7 +90,7 @@ Upload Date:	12/17/2018
 - Implement Fault-tolerant negotiation for file transfer using Socks5ByteStream with IbbByteStream fallback
 - Allow account connection by either its fully qualified domain name (FQDN) or its IP
 - Change account setting to direct access and move account info access to context menu
-- Introduce 3S sleep on returning to AccountInfoPrsenceActivity from accouting setting before check accout registration.
+- Introduce 3S sleep on returning to AccountInfoPresenceActivity from accounting setting before check account registration.
 - Check to ensure dialog is showing before dismissed": PhoneWindow$DecorView-not attached to window manager
 - Remove inactive account status icon in preference setting screens
 - Use smack BobManager to handle Bob thumbnail request in OperationSetFileTransferJabberImpl and OutgoingFileTransferJabberImpl

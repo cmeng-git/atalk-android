@@ -127,12 +127,6 @@ android {
         }
         release { java.srcDirs = ['src/release/java'] }
         debug { java.srcDirs = ['src/debug/java'] }
-
-        // Move the tests to tests/java, tests/res, etc...
-        androidTest.setRoot('tests')
-
-        // Move the build types to build-types/<type>
-        release.setRoot('build-types/release')
     }
 
     lintOptions {
@@ -310,7 +304,6 @@ dependencies {
     }
 
     // implementation 'com.github.jitsi:zrtp4j:master-SNAPSHOT'
-
     implementation jarjar.repackage {
         // Source not found either in master-SNAPSHOT or
         // from('com.github.jitsi:zrtp4j:beb6723b2e13e27710e38ea9b64f2da8d9a395a3') {
