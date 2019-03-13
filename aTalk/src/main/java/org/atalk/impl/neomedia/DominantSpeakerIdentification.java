@@ -317,7 +317,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     public JSONObject doGetJSON()
     {
         JSONObject jsonObject;
-        if (TimberLog.isTraceEnabled()) {
+        if (TimberLog.isTraceEnable) {
             synchronized (this) {
                 jsonObject = new JSONObject();
 

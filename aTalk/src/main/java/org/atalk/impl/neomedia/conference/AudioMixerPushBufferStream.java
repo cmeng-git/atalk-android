@@ -505,7 +505,7 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
         if (inFormat == null)
             inFormat = inStreamFormat;
 
-        if (TimberLog.isTraceEnabled()) {
+        if (TimberLog.isTraceEnable) {
             if (lastReadInFormat == null)
                 lastReadInFormat = inFormat;
             else if (!lastReadInFormat.matches(inFormat)) {
@@ -837,7 +837,7 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
             setTransferHandler(newValue, transferHandler);
             equalizeInStreamBufferLength();
 
-            if (TimberLog.isTraceEnabled()) {
+            if (TimberLog.isTraceEnable) {
                 int oldValueLength = (oldValue == null) ? 0 : oldValue.length;
                 int newValueLength = (newValue == null) ? 0 : newValue.length;
                 int difference = newValueLength - oldValueLength;

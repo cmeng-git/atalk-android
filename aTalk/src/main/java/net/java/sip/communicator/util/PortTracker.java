@@ -110,28 +110,7 @@ public class PortTracker
         } catch (Exception e)//Null, NumberFormat, IllegalArgument
         {
             Timber.i("Ignoring invalid port range [%s, %s]", newMinPort, newMaxPort);
-            Timber.d(e, "Cause: ");
-        }
-    }
-
-    /**
-     * Sets the next port to specified value unless allowing the caller to
-     * request validation and force the port into the range that this tracker operates in.
-     *
-     * @param nextPort the next port we'd like this tracker to return.
-     * @param validate determines whether this tracker should bring the new
-     * value into its current range.
-     */
-    public void setNextPort(int nextPort, boolean validate)
-    {
-        /*
-         * Make sure that nextPort is within the specified range unless
-         */
-        if ((nextPort < minPort || nextPort > maxPort) && validate) {
-            port = minPort;
-        }
-        else {
-            this.port = nextPort;
+            Timber.d("Cause: %s", e.getMessage());
         }
     }
 
@@ -143,7 +122,15 @@ public class PortTracker
      */
     public void setNextPort(int nextPort)
     {
-        setNextPort(nextPort, true);
+        /*
+         * Make sure that nextPort is within the specified range unless
+         */
+        if ((nextPort < minPort || nextPort > maxPort)) {
+            port = minPort;
+        }
+        else {
+            this.port = nextPort;
+        }
     }
 
     /**
@@ -189,9 +176,8 @@ public class PortTracker
         } catch (Exception exc)//Null, NumberFormat, IllegalArgument
         {
             Timber.i("Ignoring invalid port range [%s to %s]", newMinPortString, newMaxPortString);
-            Timber.d(exc, "Cause: ");
+            Timber.d("Cause: ", exc.getMessage());
             return null;
         }
     }
-
 }

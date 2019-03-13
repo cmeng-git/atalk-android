@@ -225,7 +225,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
         long delay = (current - last);
         last = System.currentTimeMillis();
         // Measure moving average
-        if (TimberLog.isTraceEnabled()) {
+        if (TimberLog.isTraceEnable) {
             avg[idx] = delay;
             if (++idx == avg.length)
                 idx = 0;

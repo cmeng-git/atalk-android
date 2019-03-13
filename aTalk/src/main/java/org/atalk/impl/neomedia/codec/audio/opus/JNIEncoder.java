@@ -258,7 +258,7 @@ public class JNIEncoder extends AbstractCodec2 implements FormatParametersAwareC
         useDtx = cfg.getBoolean(Constants.PROP_OPUS_DTX, true);
         Opus.encoder_set_dtx(encoder, useDtx ? 1 : 0);
 
-        if (TimberLog.isTraceEnabled()) {
+        if (TimberLog.isTraceEnable) {
             String bw;
             switch (Opus.encoder_get_bandwidth(encoder)) {
                 case Opus.BANDWIDTH_FULLBAND:

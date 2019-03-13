@@ -421,6 +421,12 @@ public class ConfigurationUtils
     private static String pHideExtendedAwayStatus = "protocol.globalstatus.HIDE_EXTENDED_AWAY_STATUS";
 
     /**
+     * The name of the property which indicates whether the user should be
+     * warned that master password is not set.
+     */
+    private static final String MASTER_PASS_WARNING_PROP = ".gui.main.SHOW_MASTER_PASSWORD_WARNING";
+
+    /**
      * Indicates if phone numbers should be normalized before dialed.
      */
     private static boolean isNormalizePhoneNumber;
@@ -435,6 +441,12 @@ public class ConfigurationUtils
      * The name of the single interface property.
      */
     public static final String ALERTER_ENABLED_PROP = "chatalerter.ENABLED";
+
+    /**
+     * Indicates whether the user should be warned
+     * that master password is not set.
+     */
+    private static boolean showMasterPasswordWarning;
 
     /**
      * Indicates if window (task bar or dock icon) alerter is enabled.
@@ -667,7 +679,7 @@ public class ConfigurationUtils
         // Single interface enabled property.
         String singleInterfaceEnabledProp = UtilActivator.getResources().getSettingsString(SINGLE_WINDOW_INTERFACE_ENABLED);
 
-        boolean isEnabled = false;
+        boolean isEnabled;
         if (!StringUtils.isNullOrEmpty(singleInterfaceEnabledProp))
             isEnabled = Boolean.parseBoolean(singleInterfaceEnabledProp);
         else
@@ -765,6 +777,7 @@ public class ConfigurationUtils
         hideExtendedAwayStatus = configService.getBoolean(pHideExtendedAwayStatus, hideExtendedAwayStatus);
 
         isSmsNotifyTextDisabled = configService.getBoolean(SMS_MSG_NOTIFY_TEXT_DISABLED_PROP, isSmsNotifyTextDisabled);
+        showMasterPasswordWarning = configService.getBoolean(MASTER_PASS_WARNING_PROP, true);
     }
 
     /**
@@ -799,8 +812,7 @@ public class ConfigurationUtils
     /**
      * Updates the "autoPopupNewMessage" property.
      *
-     * @param autoPopup indicates to the user interface whether new messages should be opened and bring to
-     * front.
+     * @param autoPopup indicates to the user interface whether new messages should be opened and bring to front.
      **/
     public static void setAutoPopupNewMessage(boolean autoPopup)
     {
@@ -873,7 +885,7 @@ public class ConfigurationUtils
     /**
      * Updates the "isAutoStartOnBoot" property through the <tt>ConfigurationService</tt>.
      *
-     * @param autoStart <code>true</code> to auto start aTalk on device reboot
+     * @param autoStart {@code true} to auto start aTalk on device reboot
      */
     public static void setAutoStart(boolean autoStart)
     {
@@ -895,8 +907,8 @@ public class ConfigurationUtils
     /**
      * Updates the "sendChatStateNotifications" property through the <tt>ConfigurationService</tt>.
      *
-     * @param isChatStateNotification <code>true</code> to indicate that chat state notifications are enabled,
-     * <code>false</code> otherwise.
+     * @param isChatStateNotification {@code true} to indicate that chat state notifications are enabled,
+     * {@code false} otherwise.
      */
     public static void setSendChatStateNotifications(boolean isChatStateNotification)
     {
@@ -919,8 +931,8 @@ public class ConfigurationUtils
     /**
      * Updates the "sendChatStateNotifications" property through the <tt>ConfigurationService</tt>.
      *
-     * @param sendThumbnail <code>true</code> to indicate that chat state notifications are enabled,
-     * <code>false</code> otherwise.
+     * @param sendThumbnail {@code true} to indicate that chat state notifications are enabled,
+     * {@code false} otherwise.
      */
     public static void setSendThumbnail(boolean sendThumbnail)
     {
@@ -965,8 +977,8 @@ public class ConfigurationUtils
     /**
      * Updates the "isPresenceSubscribeAuto" property through the <tt>ConfigurationService</tt>.
      *
-     * @param presenceSubscribeAuto <code>true</code> to indicate that chat state notifications are enabled,
-     * <code>false</code> otherwise.
+     * @param presenceSubscribeAuto {@code true} to indicate that chat state notifications are enabled,
+     * {@code false} otherwise.
      */
     public static void setPresenceSubscribeAuto(boolean presenceSubscribeAuto)
     {
@@ -983,8 +995,7 @@ public class ConfigurationUtils
      * returns FALSE. Indicates to the user interface whether the confirmation window during the
      * move contact process is enabled or not.
      *
-     * @return TRUE if the "isMoveContactConfirmationRequested" property is true, otherwise -
-     * returns FALSE
+     * @return TRUE if the "isMoveContactConfirmationRequested" property is true, otherwise - returns FALSE
      */
     public static boolean isMoveContactConfirmationRequested()
     {
@@ -992,12 +1003,11 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "isMultiChatWindowEnabled" property is true, otherwise -
-     * returns <code>false</code>. Indicates to the user interface whether the chat window could
+     * Returns {@code true} if the "isMultiChatWindowEnabled" property is true, otherwise -
+     * returns {@code false}. Indicates to the user interface whether the chat window could
      * contain multiple chats or just one chat.
      *
-     * @return <code>true</code> if the "isMultiChatWindowEnabled" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "isMultiChatWindowEnabled" property is true, otherwise - returns {@code false}.
      */
     public static boolean isMultiChatWindowEnabled()
     {
@@ -1005,12 +1015,12 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "isPrivateMessagingInChatRoomDisabled" property is true,
-     * otherwise - returns <code>false</code>. Indicates to the user interface whether the
+     * Returns {@code true} if the "isPrivateMessagingInChatRoomDisabled" property is true,
+     * otherwise - returns {@code false}. Indicates to the user interface whether the
      * private messaging is disabled in chat rooms.
      *
-     * @return <code>true</code> if the "isPrivateMessagingInChatRoomDisabled" property is true,
-     * otherwise - returns <code>false</code>.
+     * @return {@code true} if the "isPrivateMessagingInChatRoomDisabled" property is true,
+     * otherwise - returns {@code false}.
      */
     public static boolean isPrivateMessagingInChatRoomDisabled()
     {
@@ -1029,12 +1039,12 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "isLeaveChatRoomOnWindowCloseEnabled" property is true,
-     * otherwise - returns <code>false</code>. Indicates to the user interface whether when
+     * Returns {@code true} if the "isLeaveChatRoomOnWindowCloseEnabled" property is true,
+     * otherwise - returns {@code false}. Indicates to the user interface whether when
      * closing the chat window we would leave the chat room.
      *
-     * @return <code>true</code> if the "isLeaveChatRoomOnWindowCloseEnabled" property is true,
-     * otherwise - returns <code>false</code>.
+     * @return {@code true} if the "isLeaveChatRoomOnWindowCloseEnabled" property is true,
+     * otherwise - returns {@code false}.
      */
     public static boolean isLeaveChatRoomOnWindowCloseEnabled()
     {
@@ -1042,8 +1052,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isLeaveChatRoomOnWindowClose" property through the
-     * <tt>ConfigurationService</tt>.
+     * Updates the "isLeaveChatRoomOnWindowClose" property through the <tt>ConfigurationService</tt>.
      *
      * @param isLeave indicates whether to leave chat room on window close.
      */
@@ -1054,10 +1063,10 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "isHistoryShown" property is true, otherwise - returns
-     * <code>false</code>. Indicates to the user whether the history is shown in the chat window.
+     * Returns {@code true} if the "isHistoryShown" property is true, otherwise - returns
+     * {@code false}. Indicates to the user whether the history is shown in the chat window.
      *
-     * @return <code>true</code> if the "isHistoryShown" property is true, otherwise - returns <code>false</code>.
+     * @return {@code true} if the "isHistoryShown" property is true, otherwise - returns {@code false}.
      */
     public static boolean isHistoryShown()
     {
@@ -1065,10 +1074,10 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "isRecentMessagesShown" property is true, otherwise -
-     * returns <code>false</code>. Indicates to the user whether the recent messages are shown.
+     * Returns {@code true} if the "isRecentMessagesShown" property is true, otherwise -
+     * returns {@code false}. Indicates to the user whether the recent messages are shown.
      *
-     * @return <code>true</code> if the "isRecentMessagesShown" property is true, otherwise <code>false</code>
+     * @return {@code true} if the "isRecentMessagesShown" property is true, otherwise {@code false}
      * .
      */
     public static boolean isRecentMessagesShown()
@@ -1100,11 +1109,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "isWindowDecorated" property is true, otherwise - returns
-     * <code>false</code>..
+     * Returns {@code true} if the "isWindowDecorated" property is true, otherwise - returns {@code false}..
      *
-     * @return <code>true</code> if the "isWindowDecorated" property is true, otherwise - returns
-     * <code>false</code>.
+     * @return {@code true} if the "isWindowDecorated" property is true, otherwise - returns {@code false}.
      */
     public static boolean isWindowDecorated()
     {
@@ -1112,11 +1119,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "isChatToolbarVisible" property is true, otherwise -
-     * returns <code>false</code> ..
+     * Returns {@code true}if the "isChatToolbarVisible" property is true, otherwise - returns {@code false}..
      *
-     * @return <code>true</code> if the "isChatToolbarVisible" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "isChatToolbarVisible" property is true, otherwise - returns {@code false}.
      */
     public static boolean isChatToolbarVisible()
     {
@@ -1124,11 +1129,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "isChatStyleBarVisible" property is true, otherwise -
-     * returns <code>false</code> ..
+     * Returns {@code true} if the "isChatStyleBarVisible" property is true, otherwise - returns {@code false}..
      *
-     * @return <code>true</code> if the "isChatStyleBarVisible" property is true, otherwise -
-     * returns <code>false</code>
+     * @return {@code true}if the "isChatStyleBarVisible" property is true, otherwise - returns {@code false}
      * .
      */
     public static boolean isChatStyleBarVisible()
@@ -1137,11 +1140,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "isChatSimpleTheme" property is true, otherwise - returns
-     * <code>false</code>..
+     * Returns {@code true} if the "isChatSimpleTheme" property is true, otherwise - returns {@code false}..
      *
-     * @return <code>true</code> if the "isChatSimpleTheme" property is true, otherwise - returns
-     * <code>false</code>.
+     * @return {@code true} if the "isChatSimpleTheme" property is true, otherwise - returns {@code false}.
      */
     public static boolean isChatSimpleThemeEnabled()
     {
@@ -1149,11 +1150,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "ADD_CONTACT_DISABLED" property is true, otherwise -
-     * returns <code>false</code>..
+     * Returns {@code true} if the "ADD_CONTACT_DISABLED" property is true, otherwise - returns {@code false}..
      *
-     * @return <code>true</code> if the "ADD_CONTACT_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "ADD_CONTACT_DISABLED" property is true, otherwise - returns {@code false}.
      */
     public static boolean isAddContactDisabled()
     {
@@ -1161,11 +1160,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "MERGE_CONTACT_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * Returns {@code true} if the "MERGE_CONTACT_DISABLED" property is true, otherwise - returns {@code false}.
      *
-     * @return <code>true</code> if the "MERGE_CONTACT_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "MERGE_CONTACT_DISABLED" property is true, otherwise - returns {@code false}.
      */
     public static boolean isMergeContactDisabled()
     {
@@ -1173,11 +1170,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "CREATE_GROUP_DISABLED" property is true, otherwise -
-     * returns <code>false</code> ..
+     * Returns {@code true} if the "CREATE_GROUP_DISABLED" property is true, otherwise - returns {@code false} ..
      *
-     * @return <code>true</code> if the "CREATE_GROUP_DISABLED" property is true, otherwise -
-     * returns <code>false</code>
+     * @return {@code true} if the "CREATE_GROUP_DISABLED" property is true, otherwise - returns {@code false}
      * .
      */
     public static boolean isCreateGroupDisabled()
@@ -1186,11 +1181,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "FLATTEN_GROUP_ENABLED" property is true, otherwise -
-     * returns <code>false</code> ..
+     * Returns {@code true} if the "FLATTEN_GROUP_ENABLED" property is true, otherwise - returns {@code false} ..
      *
-     * @return <code>true</code> if the "FLATTEN_GROUP_ENABLED" property is true, otherwise -
-     * returns <code>false</code>
+     * @return {@code true} if the "FLATTEN_GROUP_ENABLED" property is true, otherwise - returns {@code false}
      * .
      */
     public static boolean isFlattenGroupEnabled()
@@ -1199,11 +1192,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "GO_TO_CHATROOM_DISABLED" property is true, otherwise -
-     * returns <code>false</code>..
+     * Returns {@code true} if the "GO_TO_CHATROOM_DISABLED" property is true, otherwise - returns {@code false}..
      *
-     * @return <code>true</code> if the "GO_TO_CHATROOM_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "GO_TO_CHATROOM_DISABLED" property is true, otherwise - returns {@code false}.
      */
     public static boolean isGoToChatroomDisabled()
     {
@@ -1211,11 +1202,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "REMOVE_CONTACT_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * Returns {@code true} if the "REMOVE_CONTACT_DISABLED" property is true, otherwise - returns {@code false}.
      *
-     * @return <code>true</code> if the "REMOVE_CONTACT_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "REMOVE_CONTACT_DISABLED" property is true, otherwise - returns {@code false}.
      */
     public static boolean isRemoveContactDisabled()
     {
@@ -1223,11 +1212,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "CONTACT_MOVE_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * Returns {@code true} if the "CONTACT_MOVE_DISABLED" property is true, otherwise - returns {@code false}.
      *
-     * @return <code>true</code> if the "CONTACT_MOVE_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "CONTACT_MOVE_DISABLED" property is true, otherwise - returns {@code false}.
      */
     public static boolean isContactMoveDisabled()
     {
@@ -1235,11 +1222,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "CONTACT_RENAME_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * Returns {@code true} if the "CONTACT_RENAME_DISABLED" property is true, otherwise - returns {@code false}.
      *
-     * @return <code>true</code> if the "CONTACT_RENAME_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "CONTACT_RENAME_DISABLED" property is true, otherwise - returns {@code false}.
      */
     public static boolean isContactRenameDisabled()
     {
@@ -1247,47 +1232,36 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if the "GROUP_REMOVE_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * Returns {@code true} if the "GROUP_REMOVE_DISABLED" property is true, otherwise - returns {@code false}.
      *
-     * @return <code>true</code> if the "GROUP_REMOVE_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "GROUP_REMOVE_DISABLED" property is true, otherwise - returns {@code false}.
      */
     public static boolean isGroupRemoveDisabled()
     {
         return isGroupRemoveDisabled;
     }
 
-    /**
-     * Returns <code>true</code> if the "GROUP_RENAME_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+    /** returns {@code true} if the "GROUP_RENAME_DISABLED" property is true, otherwise - returns {@code false}.
      *
-     * @return <code>true</code> if the "GROUP_RENAME_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "GROUP_RENAME_DISABLED" property is true, otherwise - returns {@code false}.
      */
     public static boolean isGroupRenameDisabled()
     {
         return isGroupRenameDisabled;
     }
 
-    /**
-     * Returns <code>true</code> if the "PRESET_STATUS_MESSAGES" property is true, otherwise -
-     * returns <code>false</code>.
+    /** returns {@code true} if the "PRESET_STATUS_MESSAGES" property is true, otherwise - returns {@code false}.
      *
-     * @return <code>true</code> if the "PRESET_STATUS_MESSAGES" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "PRESET_STATUS_MESSAGES" property is true, otherwise - returns {@code false}.
      */
     public static boolean isPresetStatusMessagesEnabled()
     {
         return isPresetStatusMessagesEnabled;
     }
 
-    /**
-     * Returns <code>true</code> if the "ADVANCED_CONFIG_DISABLED" property is true, otherwise -
-     * returns <code>false</code>..
+    /** returns {@code true} if the "ADVANCED_CONFIG_DISABLED" property is true, otherwise - returns {@code false}..
      *
-     * @return <code>true</code> if the "ADVANCED_CONFIG_DISABLED" property is true, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the "ADVANCED_CONFIG_DISABLED" property is true, otherwise - returns {@code false}.
      */
     public static boolean isAdvancedAccountConfigDisabled()
     {
@@ -1305,7 +1279,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns the default chat font family.
+     * returns the default chat font family.
      *
      * @return the default chat font family
      */
@@ -1484,9 +1458,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if transparent windows are enabled, <code>false</code> otherwise.
+     * Returns {@code true} if transparent windows are enabled, {@code false} otherwise.
      *
-     * @return <code>true</code> if transparent windows are enabled, <code>false</code> otherwise.
+     * @return {@code true} if transparent windows are enabled, {@code false} otherwise.
      */
     public static boolean isTransparentWindowEnabled()
     {
@@ -1514,9 +1488,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if phone numbers should be normalized, <code>false</code> otherwise.
+     * Returns {@code true} if phone numbers should be normalized, {@code false} otherwise.
      *
-     * @return <code>true</code> if phone numbers should be normalized, <code>false</code> otherwise.
+     * @return {@code true} if phone numbers should be normalized, {@code false} otherwise.
      */
     public static boolean isNormalizePhoneNumber()
     {
@@ -1535,9 +1509,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if window alerter is enabled (tack bar or dock icon).
+     * Returns {@code true} if window alerter is enabled (tack bar or dock icon).
      *
-     * @return <code>true</code> if window alerter is enables, <code>false</code> otherwise.
+     * @return {@code true} if window alerter is enables, {@code false} otherwise.
      */
     public static boolean isAlerterEnabled()
     {
@@ -1556,11 +1530,11 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if a string with a alphabetical character might be considered as
-     * a phone number. <code>false</code> otherwise.
+     * Returns {@code true} if a string with a alphabetical character might be considered as
+     * a phone number. {@code false} otherwise.
      *
-     * @return <code>true</code> if a string with a alphabetical character might be considered as
-     * a phone number. <code>false</code> otherwise.
+     * @return {@code true} if a string with a alphabetical character might be considered as
+     * a phone number. {@code false} otherwise.
      */
     public static boolean acceptPhoneNumberWithAlphaChars()
     {
@@ -1581,11 +1555,11 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <code>true</code> if status changed should be shown in chat history area,
-     * <code>false</code> otherwise.
+     * Returns {@code true} if status changed should be shown in chat history area,
+     * {@code false} otherwise.
      *
-     * @return <code>true</code> if status changed should be shown in chat history area,
-     * <code>false</code> otherwise.
+     * @return {@code true} if status changed should be shown in chat history area,
+     * {@code false} otherwise.
      */
     public static boolean isShowStatusChangedInChat()
     {
@@ -1686,9 +1660,28 @@ public class ConfigurationUtils
     }
 
     /**
+     * Whether to show or not the master password warning.
+     * @return {@code true} to show it, and {@code false} otherwise.
+     */
+    public static boolean showMasterPasswordWarning()
+    {
+        return showMasterPasswordWarning;
+    }
+
+    /**
+     * Updates the value of whether to show master password warning.
+     * @param value the new value to set.
+     */
+    public static void setShowMasterPasswordWarning(boolean value)
+    {
+        showMasterPasswordWarning = value;
+        configService.setProperty(MASTER_PASS_WARNING_PROP, value);
+    }
+
+    /**
      * Updates the "singleWindowInterface" property through the <tt>ConfigurationService</tt>.
      *
-     * @param isEnabled <code>true</code> to indicate that the single window interface is enabled,
+     * @param isEnabled {@code true} to indicate that the single window interface is enabled,
      * <tt>false</tt> - otherwise
      */
     public static void setSingleWindowInterfaceEnabled(boolean isEnabled)
@@ -1710,8 +1703,8 @@ public class ConfigurationUtils
     /**
      * Updates the "showOffline" property through the <tt>ConfigurationService</tt>.
      *
-     * @param isShowOffline <code>true</code> to indicate that the offline users should be shown,
-     * <code>false</code> otherwise.
+     * @param isShowOffline {@code true} to indicate that the offline users should be shown,
+     * {@code false} otherwise.
      */
     public static void setShowOffline(boolean isShowOffline)
     {
@@ -1722,7 +1715,7 @@ public class ConfigurationUtils
     /**
      * Updates the "showCallPanel" property through the <tt>ConfigurationService</tt>.
      *
-     * @param isCallPanelShown <code>true</code> to indicate that the call panel should be shown, <code>false</code>
+     * @param isCallPanelShown {@code true} to indicate that the call panel should be shown, {@code false}
      * otherwise.
      */
     public static void setShowCallPanel(boolean isCallPanelShown)
@@ -1734,8 +1727,7 @@ public class ConfigurationUtils
     /**
      * Updates the "showApplication" property through the <tt>ConfigurationService</tt>.
      *
-     * @param isVisible <code>true</code> to indicate that the application should be shown, <code>false</code>
-     * otherwise.
+     * @param isVisible {@code true} to indicate that the application should be shown, {@code false} otherwise.
      */
     public static void setApplicationVisible(boolean isVisible)
     {
@@ -2190,12 +2182,10 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <tt>true</tt> if the group given by <tt>groupID</tt> is collapsed or <tt>false</tt>
-     * otherwise.
+     * Returns <tt>true</tt> if the group given by <tt>groupID</tt> is collapsed or <tt>false</tt> otherwise.
      *
      * @param groupID the identifier of the group
-     * @return <tt>true</tt> if the group given by <tt>groupID</tt> is collapsed or <tt>false</tt>
-     * otherwise
+     * @return <tt>true</tt> if the group given by <tt>groupID</tt> is collapsed or <tt>false</tt> otherwise
      */
     public static boolean isContactListGroupCollapsed(String groupID)
     {

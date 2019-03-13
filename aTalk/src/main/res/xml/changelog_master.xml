@@ -6,6 +6,10 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.7.3 (03/14/2019)" versioncode="1073">
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="1.7.2 (03/04/2019)" versioncode="1072">
         <change>Fix audio and video codec settings blank display causing system crash</change>
         <change>Fix certificate display problem due to unknown issuer label in certificate content</change>

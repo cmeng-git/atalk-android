@@ -67,7 +67,7 @@ public class JAWTRendererAndroidVideoComponent extends Component implements View
     {
         if ((view == null) && (context != null)) {
             view = new GLSurfaceView(context);
-            if (TimberLog.isTraceEnabled())
+            if (TimberLog.isTraceEnable)
                 view.setDebugFlags(GLSurfaceView.DEBUG_LOG_GL_CALLS);
             view.setRenderer(new GLSurfaceView.Renderer()
             {

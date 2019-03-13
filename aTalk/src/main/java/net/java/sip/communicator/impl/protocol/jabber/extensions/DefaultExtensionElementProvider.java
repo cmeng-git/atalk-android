@@ -84,16 +84,14 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
             elementName = parser.getName();
             namespace = parser.getNamespace();
 
-            Timber.log(TimberLog.FINER, "Will parse %s; ns = %s class = %s", elementName, namespace,
+            Timber.log(TimberLog.FINER, "Parsing %s; ns: %s; class: %s", elementName, namespace,
                     packetExtension.getClass().getSimpleName());
 
             if (eventType == XmlPullParser.START_TAG) {
                 ExtensionElementProvider provider = ProviderManager.getExtensionProvider(elementName, namespace);
-
                 if (provider == null) {
-                    // we don't know how to handle this kind of extensions.
-                    Timber.log(TimberLog.FINER, "Could not add a provider for element %s from namespace %s",
-                            elementName, namespace);
+                    // Extension element provider may not have added properly
+                    Timber.w("No provider for element: %s; namespace: %s", elementName, namespace);
                 }
                 else {
                     ExtensionElement childExtension = (ExtensionElement) provider.parse(parser);

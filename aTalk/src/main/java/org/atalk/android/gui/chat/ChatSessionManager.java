@@ -157,7 +157,7 @@ public class ChatSessionManager
      */
     public synchronized static List<Chat> getActiveChats()
     {
-        return new LinkedList<Chat>(activeChats.values());
+        return new LinkedList<>(activeChats.values());
     }
 
     /**
@@ -698,7 +698,7 @@ public class ChatSessionManager
      * <tt>null</tt> to select the default <tt>Contact</tt> of <tt>metaContact</tt> if it is
      * online or one of its <tt>Contact</tt>s which supports offline messaging
      * // @param contactResource the <tt>ContactResource</tt>, to be selected in the newly created <tt>ChatPanel</tt>
-     * @return The <code>ChatPanel</code> newly created.
+     * @return The {@code ChatPanel} newly created.
      */
     private static ChatPanel createChat(MetaContact metaContact)
     {
@@ -733,7 +733,7 @@ public class ChatSessionManager
      * created <tt>ChatPanel</tt>s.
      *
      * @param chatRoomWrapper the <tt>ChatRoom</tt>, for which the chat will be created
-     * @return The <code>ChatPanel</code> newly created.
+     * @return The {@code ChatPanel} newly created.
      */
     private static ChatPanel createChat(ChatRoomWrapper chatRoomWrapper)
     {
@@ -747,7 +747,7 @@ public class ChatSessionManager
      * @param chatRoomWrapper the <tt>ChatRoom</tt>, for which the chat will be created
      * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
      * one is loaded in the chat.
-     * @return The <code>ChatPanel</code> newly created.
+     * @return The {@code ChatPanel} newly created.
      */
     private static ChatPanel createChat(ChatRoomWrapper chatRoomWrapper, String escapedMessageID)
     {
@@ -765,7 +765,7 @@ public class ChatSessionManager
      * of created <tt>ChatPanel</tt>s.
      *
      * @param chatRoomWrapper the <tt>AdHocChatRoom</tt>, for which the chat will be created
-     * @return The <code>ChatPanel</code> newly created.
+     * @return The {@code ChatPanel} newly created.
      */
     private static ChatPanel createChat(AdHocChatRoomWrapper chatRoomWrapper)
     {
@@ -779,7 +779,7 @@ public class ChatSessionManager
      * @param chatRoomWrapper the <tt>AdHocChatRoom</tt>, for which the chat will be created
      * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
      * one is loaded in the chat.
-     * @return The <code>ChatPanel</code> newly created.
+     * @return The {@code ChatPanel} newly created.
      */
     private static ChatPanel createChat(AdHocChatRoomWrapper chatRoomWrapper, String escapedMessageID)
     {

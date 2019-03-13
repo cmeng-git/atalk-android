@@ -138,7 +138,7 @@ public class DHCPProvisioningDiscover implements Runnable
                             p.setCiaddr(addr);
                             p.setChaddr(macAddress);
 
-                            byte msg[] = p.serialize();
+                            byte[] msg = p.serialize();
                             DatagramPacket pkt = new DatagramPacket(msg,
                                     msg.length, InetAddress.getByAddress(broadcastIPAddr), port - 1);
 

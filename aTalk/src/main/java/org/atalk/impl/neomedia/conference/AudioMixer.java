@@ -182,7 +182,7 @@ public class AudioMixer
         }
 
         // Try to enable tracing on captureDevice.
-        if (TimberLog.isTraceEnabled()) {
+        if (TimberLog.isTraceEnable) {
             captureDevice = MediaDeviceImpl.createTracingCaptureDevice(captureDevice);
         }
 

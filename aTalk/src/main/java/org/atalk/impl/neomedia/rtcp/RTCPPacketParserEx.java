@@ -199,7 +199,7 @@ public class RTCPPacketParserEx extends RTCPPacketParser
             in.read(fb.fci);
         }
 
-        if (TimberLog.isTraceEnabled()) {
+        if (TimberLog.isTraceEnable) {
             String ptStr; // Payload type (PT)
             String fmtStr = null; // Feedback message type (FMT)
             String detailStr = null;

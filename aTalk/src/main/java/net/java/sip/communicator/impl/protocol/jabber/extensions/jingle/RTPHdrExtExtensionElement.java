@@ -15,6 +15,8 @@ import java.net.URI;
 /**
  * RTP header extension.
  *
+ * Jingle's Discovery Info URN for "XEP-0294: Jingle RTP Header Extensions Negotiation" support.
+ *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */

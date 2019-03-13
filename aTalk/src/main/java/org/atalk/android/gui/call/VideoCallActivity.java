@@ -149,6 +149,11 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     private static boolean mBackToChat = false;
 
     /**
+     * Flag for enable/disable DTMF handling
+     */
+    private boolean dtmfEnabled = true;
+
+    /**
      * Called when the activity is starting. Initializes the corresponding call interface.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
@@ -1071,6 +1076,18 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     public void setSecurityPanelVisible(boolean visible)
     {
+    }
+
+    @Override
+    public void setDtmfToneEnabled(boolean enabled)
+    {
+        dtmfEnabled = enabled;
+    }
+
+    @Override
+    public boolean isDtmfToneEnabled()
+    {
+        return dtmfEnabled;
     }
 
     /**

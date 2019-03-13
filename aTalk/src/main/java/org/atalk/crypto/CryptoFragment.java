@@ -896,9 +896,9 @@ public class CryptoFragment extends OSGiFragment
                     }
                 } catch (XMPPException.XMPPErrorException | SmackException.NoResponseException
                         | InterruptedException | SmackException.NotConnectedException e) {
-                    entityCan = false;
+                    Timber.w("Exception in omemo support checking: %s", e.getMessage());
                 } catch (PubSubException.NotALeafNodeException e) {
-                    e.printStackTrace();
+                    Timber.w("Exception in checking entity omemo support: %s", e.getMessage());
                 }
                 // update the result in cache
                 omemoCapable.put(mDescriptor, serverCan && entityCan);

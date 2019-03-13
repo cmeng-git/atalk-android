@@ -214,11 +214,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     public static final String URN_XMPP_IQ_VERSION = "jabber:iq:version";
 
     /**
-     * Jingle's Discovery Info URN for "XEP-0294: Jingle RTP Header Extensions Negotiation" support.
-     */
-    public static final String URN_XMPP_JINGLE_RTP_HDREXT = "urn:xmpp:jingle:apps:rtp:rtp-hdrext:0";
-
-    /**
      * URN for XEP-0077 inband registration
      */
     public static final String URN_REGISTER = "jabber:iq:register";
@@ -1706,7 +1701,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         supportedFeatures.add(DataPacketExtension.NAMESPACE);
 
         // XEP-0294: Jingle RTP Header Extensions Negotiation
-        supportedFeatures.add(URN_XMPP_JINGLE_RTP_HDREXT);
+        supportedFeatures.add(RTPHdrExtExtensionElement.NAMESPACE);
 
         // XEP-0308: Last Message Correction
         supportedFeatures.add(MessageCorrectExtension.NAMESPACE);

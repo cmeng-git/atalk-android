@@ -214,7 +214,7 @@ public class DHCPCoreServer implements Runnable
             // receive datagram
             this.serverSocket.receive(requestDatagram);
 
-            if (TimberLog.isTraceEnabled()) {
+            if (TimberLog.isTraceEnable) {
                 StringBuilder sbuf = new StringBuilder("Received packet from ");
                 DHCPPacket.appendHostAddress(sbuf, requestDatagram.getAddress());
                 sbuf.append('(')

@@ -45,8 +45,8 @@ public interface CallRenderer
     void stopCallTimer();
 
     /**
-     * Returns <code>true</code> if the call timer has been started, otherwise returns <code>false</code>.
-     * @return <code>true</code> if the call timer has been started, otherwise returns <code>false</code>
+     * Returns {@code true} if the call timer has been started, otherwise returns {@code false}.
+     * @return {@code true} if the call timer has been started, otherwise returns {@code false}
      */
     boolean isCallTimerStarted();
 

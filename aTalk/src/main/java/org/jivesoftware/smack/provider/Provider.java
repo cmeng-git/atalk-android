@@ -35,8 +35,8 @@ import java.lang.reflect.Type;
  * {@link org.jivesoftware.smack.SmackException} should be thrown.
  * </p>
  *
- * @author Florian Schmaus
  * @param <E> the type of the resulting element.
+ * @author Florian Schmaus
  */
 public abstract class Provider<E extends Element>
 {
@@ -66,7 +66,9 @@ public abstract class Provider<E extends Element>
         return elementClass;
     }
 
-    public final E parse(XmlPullParser parser) throws IOException, XmlPullParserException, SmackParsingException {
+    public final E parse(XmlPullParser parser)
+            throws IOException, XmlPullParserException, SmackParsingException
+    {
         // XPP3 calling convention assert: Parser should be at start tag
         ParserUtils.assertAtStartTag(parser);
 
@@ -84,6 +86,9 @@ public abstract class Provider<E extends Element>
         return parse(parser, initialDepth, XmlEnvironment.EMPTY);
     }
 
-    public abstract E parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException;
+    public E parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws XmlPullParserException, IOException, SmackParsingException
+    {
+        return null;
+    }
 }

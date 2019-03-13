@@ -109,7 +109,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
      */
     public synchronized InetAddress getLocalHost(InetAddress intendedDestination)
     {
-        InetAddress localHost = null;
+        InetAddress localHost;
         Timber.log(TimberLog.FINER, "Querying for a localhost address for intended destination '%s", intendedDestination);
 
         /*
@@ -120,35 +120,35 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
          */
 
         String osVersion;
-        if (OSUtils.IS_WINDOWS && !(osVersion = System.getProperty("os.version")).startsWith("4") /* 95/98/Me/NT */
-                && !osVersion.startsWith("5.0")) /* 2000 */ {
-            //            byte[] src = Win32LocalhostRetriever.getSourceForDestination(intendedDestination.getAddress());
-            //            if (src == null) {
-            //                Timber.w("Failed to get localhost ");
-            //            }
-            //            else {
-            //                try {
-            //                    localHost = InetAddress.getByAddress(src);
-            //                } catch (UnknownHostException uhe) {
-            //                    Timber.w("Failed to get localhost", uhe);
-            //                }
-            //            }
-        }
-        else if (OSUtils.IS_MAC) {
-            //            try {
-            //                localHost = BsdLocalhostRetriever.getLocalSocketAddress(
-            //                        new InetSocketAddress(intendedDestination, RANDOM_ADDR_DISC_PORT));
-            //            } catch (IOException e) {
-            //                Timber.w("Failed to get localhost", e);
-            //            }
-        }
-        else {
-            // no point in making sure that the localHostFinderSocket is initialized.
-            // better let it through a NullPointerException.
-            localHostFinderSocket.connect(intendedDestination, RANDOM_ADDR_DISC_PORT);
-            localHost = localHostFinderSocket.getLocalAddress();
-            localHostFinderSocket.disconnect();
-        }
+//        if (OSUtils.IS_WINDOWS && !(osVersion = System.getProperty("os.version")).startsWith("4") /* 95/98/Me/NT */
+//                && !osVersion.startsWith("5.0")) /* 2000 */ {
+//            byte[] src = Win32LocalhostRetriever.getSourceForDestination(intendedDestination.getAddress());
+//            if (src == null) {
+//                Timber.w("Failed to get localhost ");
+//            }
+//            else {
+//                try {
+//                    localHost = InetAddress.getByAddress(src);
+//                } catch (UnknownHostException uhe) {
+//                    Timber.w(uhe, "Failed to get localhost");
+//                }
+//            }
+//        }
+//        else if (OSUtils.IS_MAC) {
+//            try {
+//                localHost = BsdLocalhostRetriever.getLocalSocketAddress(
+//                        new InetSocketAddress(intendedDestination, RANDOM_ADDR_DISC_PORT));
+//            } catch (IOException e) {
+//                Timber.w(e, "Failed to get localhost");
+//            }
+//        }
+//        else {
+        // no point in making sure that the localHostFinderSocket is initialized.
+        // better let it through a NullPointerException.
+        localHostFinderSocket.connect(intendedDestination, RANDOM_ADDR_DISC_PORT);
+        localHost = localHostFinderSocket.getLocalAddress();
+        localHostFinderSocket.disconnect();
+//        }
 
         // windows socket implementations return the any address so we need to find something else here ...
         // InetAddress.getLocalHost seems to work better on windows so let's hope it'll do the trick.
@@ -227,19 +227,16 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
     public byte[] getHardwareAddress(NetworkInterface iface)
     {
         String ifName;
-        byte hwAddress[];
+        byte[] hwAddress;
 
         /* try reflection */
         try {
             Method method = iface.getClass().getMethod("getHardwareAddress");
-
-            if (method != null) {
-                hwAddress = (byte[]) method.invoke(iface, new Object[]{});
-                return hwAddress;
-            }
+            hwAddress = (byte[]) method.invoke(iface, new Object[]{});
+            return hwAddress;
         } catch (Exception e) {
+            Timber.e("get Hardware Address failed: %s", e.getMessage());
         }
-
         /*
          * maybe getHardwareAddress not available on this JVM try with our JNI
          */
@@ -249,7 +246,6 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
         else {
             ifName = iface.getName();
         }
-
         hwAddress = HardwareAddressRetriever.getHardwareAddress(ifName);
         return hwAddress;
     }

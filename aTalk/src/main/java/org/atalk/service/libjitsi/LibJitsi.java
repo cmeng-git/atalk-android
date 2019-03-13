@@ -218,7 +218,7 @@ public abstract class LibJitsi
                     break;
             }
 
-            if ((exception != null) && TimberLog.isTraceEnabled()) {
+            if ((exception != null) && TimberLog.isTraceEnable) {
                 StringBuilder message = new StringBuilder();
 
                 message.append("Failed to initialize LibJitsi backend ");

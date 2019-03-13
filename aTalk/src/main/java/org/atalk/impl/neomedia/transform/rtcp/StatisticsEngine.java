@@ -900,7 +900,7 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
 
                 incrementSSRCCounter(jitterSumMap, ssrc, jitter);
 
-                if (TimberLog.isTraceEnabled()) {
+                if (TimberLog.isTraceEnable) {
                     long numberOfRTCPReports = getMapValue(numberOfRTCPReportsMap, ssrc);
                     // As sender reports are sent on every 5 seconds, print
                     // every 4th packet, on every 20 seconds.

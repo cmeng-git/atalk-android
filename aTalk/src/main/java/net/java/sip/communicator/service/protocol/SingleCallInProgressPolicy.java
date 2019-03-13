@@ -70,7 +70,7 @@ public class SingleCallInProgressPolicy
     /**
      * The <tt>Call</tt>s this policy manages i.e. put on hold when one of them enters in progress.
      */
-    private final List<Call> calls = new ArrayList<Call>();
+    private final List<Call> calls = new ArrayList<>();
 
     /**
      * The listener utilized by this policy to discover new <tt>Call</tt> and track their in-progress state.
@@ -93,7 +93,10 @@ public class SingleCallInProgressPolicy
     {
         this.bundleContext = bundleContext;
 
-        this.bundleContext.addServiceListener(listener);
+        if (ProtocolProviderActivator.getConfigurationService()
+                .getBoolean(PNAME_SINGLE_CALL_IN_PROGRESS_POLICY_ENABLED, true)) {
+            this.bundleContext.addServiceListener(listener);
+        }
     }
 
     /**
@@ -109,13 +112,11 @@ public class SingleCallInProgressPolicy
         synchronized (calls) {
             if (!calls.contains(call)) {
                 CallState callState = call.getCallState();
-
                 if ((callState != null) && !callState.equals(CallState.CALL_ENDED)) {
                     calls.add(call);
                 }
             }
         }
-
         call.addCallChangeListener(listener);
     }
 
@@ -525,9 +526,7 @@ public class SingleCallInProgressPolicy
             try {
                 presence.publishPresenceStatus(presenceStatus, null);
             } catch (Throwable t) {
-                if (t instanceof InterruptedException)
-                    Thread.currentThread().interrupt();
-                else if (t instanceof ThreadDeath)
+                if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;
             }
         }
@@ -692,7 +691,7 @@ public class SingleCallInProgressPolicy
          */
         public void callEnded(CallEvent ev)
         {
-            /**
+            /*
              * Not using call ended, cause the CallListener is removed
              * when protocol disconnects and it can happen that this is
              * before the callEnded event in case of running call during

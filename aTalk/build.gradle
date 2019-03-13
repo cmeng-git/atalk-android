@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-beta05'
+        classpath 'com.android.tools.build:gradle:3.4.0-rc01'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
@@ -57,8 +57,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1072
-        versionName "1.7.2" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1073
+        versionName "1.7.3" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -366,10 +366,9 @@ task updateVersionFile(type: Copy) {
 
 // cmeng - need to perform setup libs (first time & after clean)
 tasks.withType(JavaCompile) {
-    compileTask -> compileTask.dependsOn ndkBuild //, jarRepackage
+    compileTask -> compileTask.dependsOn ndkBuild
 }
 
 // will clean /libs/armeabi/*.so
 clean.dependsOn 'ndkClean'
-// preBuild.dependsOn 'copyJars'
 build.dependsOn 'updateVersionFile'

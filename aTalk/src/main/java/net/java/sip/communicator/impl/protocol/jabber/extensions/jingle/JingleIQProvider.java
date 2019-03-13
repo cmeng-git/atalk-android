@@ -18,11 +18,14 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+
+import timber.log.Timber;
 
 /**
  * An implementation of a Jingle IQ provider that parses incoming Jingle IQs.
@@ -49,9 +52,14 @@ public class JingleIQProvider extends IQProvider<JingleIQ>
                 PayloadTypeExtensionElement.ELEMENT_NAME, RtpDescriptionExtensionElement.NAMESPACE,
                 new DefaultExtensionElementProvider<>(PayloadTypeExtensionElement.class));
 
-        // <parameter/> provider
+        // <parameter/> provider - RtpDescriptionExtensionElement
         ProviderManager.addExtensionProvider(
                 ParameterExtensionElement.ELEMENT_NAME, RtpDescriptionExtensionElement.NAMESPACE,
+                new DefaultExtensionElementProvider<>(ParameterExtensionElement.class));
+
+        // <parameter/> provider - RTPHdrExtExtensionElement
+        ProviderManager.addExtensionProvider(
+                ParameterExtensionElement.ELEMENT_NAME, RTPHdrExtExtensionElement.NAMESPACE,
                 new DefaultExtensionElementProvider<>(ParameterExtensionElement.class));
 
         // <rtp-hdrext/> provider
@@ -174,7 +182,7 @@ public class JingleIQProvider extends IQProvider<JingleIQ>
      * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */
     @Override
-    public JingleIQ parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+    public JingleIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException, SmackParsingException
     {
         // let's first handle the "jingle" element params.
@@ -211,54 +219,73 @@ public class JingleIQProvider extends IQProvider<JingleIQ>
 
         while (!done) {
             eventType = parser.next();
-            elementName = parser.getName();
-            namespace = parser.getNamespace();
-
-            if (eventType == XmlPullParser.START_TAG) {
-                // <content/>
-                if (elementName.equals(ContentExtensionElement.ELEMENT_NAME)) {
-                    ContentExtensionElement content = contentProvider.parse(parser);
-                    jingleIQ.addContent(content);
-                }
-                // <reason/>
-                else if (elementName.equals(ReasonPacketExtension.ELEMENT_NAME)) {
-                    ReasonPacketExtension reason = reasonProvider.parse(parser);
-                    jingleIQ.setReason(reason);
-                }
-                // <transfer/>
-                else if (elementName.equals(TransferExtensionElement.ELEMENT_NAME)
-                        && namespace.equals(TransferExtensionElement.NAMESPACE)) {
-                    jingleIQ.addExtension(transferProvider.parse(parser));
-                }
-                // <conference-info/>
-                else if (elementName.equals(CoinExtensionElement.ELEMENT_NAME)) {
-                    jingleIQ.addExtension(coinProvider.parse(parser));
-                }
-                else if (elementName.equals(CallIdExtensionElement.ELEMENT_NAME)) {
-                    jingleIQ.addExtension(callidProvider.parse(parser));
-                }
-                else if (elementName.equals(GroupExtensionElement.ELEMENT_NAME)) {
-                    jingleIQ.addExtension(GroupExtensionElement.parseExtension(parser));
-                }
-                // <mute/> <active/> and other session-info elements
-                if (namespace.equals(SessionInfoExtensionElement.NAMESPACE)) {
-                    SessionInfoType type = SessionInfoType.valueOf(elementName);
-
-                    // <mute/>
-                    if (type == SessionInfoType.mute || type == SessionInfoType.unmute) {
-                        String name = parser.getAttributeValue("", MuteSessionInfoExtensionElement.NAME_ATTR_VALUE);
-
-                        jingleIQ.setSessionInfo(new MuteSessionInfoExtensionElement(
-                                type == SessionInfoType.mute, name));
+            switch (eventType) {
+                case XmlPullParser.START_TAG:
+                    elementName = parser.getName();
+                    namespace = parser.getNamespace();
+                    switch (elementName) {
+                        // <content/>
+                        case ContentExtensionElement.ELEMENT_NAME:
+                            ContentExtensionElement content = contentProvider.parse(parser);
+                            jingleIQ.addContent(content);
+                            break;
+                        // <reason/>
+                        case ReasonPacketExtension.ELEMENT_NAME:
+                            ReasonPacketExtension reason = reasonProvider.parse(parser);
+                            jingleIQ.setReason(reason);
+                            break;
+                        // <transfer/>
+                        case TransferExtensionElement.ELEMENT_NAME:
+                            if (namespace.equals(TransferExtensionElement.NAMESPACE)) {
+                                jingleIQ.addExtension(transferProvider.parse(parser));
+                            }
+                            break;
+                        // <conference-info/>
+                        case CoinExtensionElement.ELEMENT_NAME:
+                            jingleIQ.addExtension(coinProvider.parse(parser));
+                            break;
+                        case CallIdExtensionElement.ELEMENT_NAME:
+                            jingleIQ.addExtension(callidProvider.parse(parser));
+                            break;
+                        case GroupExtensionElement.ELEMENT_NAME:
+                            jingleIQ.addExtension(GroupExtensionElement.parseExtension(parser));
+                            break;
                     }
-                    // <hold/>, <unhold/>, <active/>, etc.
-                    else {
-                        jingleIQ.setSessionInfo(new SessionInfoExtensionElement(type));
+
+                    // <mute/> <active/> and other session-info elements
+                    if (namespace.equals(SessionInfoExtensionElement.NAMESPACE)) {
+                        SessionInfoType type = SessionInfoType.valueOf(elementName);
+
+                        // <mute/>
+                        if (type == SessionInfoType.mute || type == SessionInfoType.unmute) {
+                            String name = parser.getAttributeValue("", MuteSessionInfoExtensionElement.NAME_ATTR_VALUE);
+                            jingleIQ.setSessionInfo(new MuteSessionInfoExtensionElement(
+                                    type == SessionInfoType.mute, name));
+                        }
+                        // <hold/>, <unhold/>, <active/>, etc.
+                        else {
+                            jingleIQ.setSessionInfo(new SessionInfoExtensionElement(type));
+                        }
                     }
-                }
-            }
-            if ((eventType == XmlPullParser.END_TAG) && parser.getName().equals(JingleIQ.ELEMENT_NAME)) {
-                done = true;
+                    else if (!ContentExtensionElement.ELEMENT_NAME.equals(elementName)) {
+                        /*
+                         * Seem to have problem with extracting correct elementName???; will failed if passed on to
+                         * PacketParserUtils.addExtensionElement(jingleIQ, parser);
+                         *
+                         * <jingle xmlns='urn:xmpp:jingle:1' action='session-initiate' initiator='swordfish@atalk.org/atalk' sid='5e00252pm8if7'>
+                         *     <content creator='initiator' name='audio'>
+                         * Unknown jingle IQ type: content; urn:xmpp:jingle:1)
+                         */
+                        // Just log info; no safe to call, media call may failed if not supported by addExtensionElement
+                        Timber.w("Unknown jingle IQ type: %s; %s)", elementName, namespace);
+                        // PacketParserUtils.addExtensionElement(jingleIQ, parser);
+                    }
+                    break;
+                case XmlPullParser.END_TAG:
+                    // if (parser.getName().equals(JingleIQ.ELEMENT_NAME)) {
+                    if (parser.getDepth() == initialDepth) {
+                        done = true;
+                    }
             }
         }
         return jingleIQ;
