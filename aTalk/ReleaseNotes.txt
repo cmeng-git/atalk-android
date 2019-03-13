@@ -1,5 +1,26 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.7.3 (1073)
+Author:         cmeng
+Upload Date:	03/14/2019
+
+- Add Extension provider for eleName: ParameterExtensionElement and nameSpace:RTPHdrExtExtensionElement in
+  JingleIQProvider - missing reference in parse method.
+- IceUdpTransportManager-> agent.getHarvestCount() always return zero, use agent.getHarvesters().size() instead
+- Add DTMF option in CallPeelRenderer class
+- Add PNAME_SINGLE_CALL_IN_PROGRESS_POLICY_ENABLED option to SingleCallingProgressPolicy
+- Add MASTER_PASS_WARNING_PROP in ConfigurationUtils
+- Cleanup Timberlog and include FINEST log messages
+- Cleanup jni directory structure and update readme file
+- Update ffmpeg_1.0.10_atalk.tar.gz - add missing arch.mak file
+- update smack sources to the official release 4.4.0-alpha2
+- Smack provider.java: defined public E parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+  for official 4.4.0-alpha2 release reference
+- Update UriHandlerJabberImpl class (Patter p)
+- Update TransportManager and PortTracker classes source
+- Fix impl.neomedia.jmfext.media.renderer.audio.AudioTrackRenderer.stop() IllegalStateException
+
+=========================================================================
 Version:		1.7.2 (1072)
 Author:         cmeng
 Upload Date:	03/04/2019

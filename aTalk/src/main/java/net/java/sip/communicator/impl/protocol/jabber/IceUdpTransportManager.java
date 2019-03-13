@@ -192,13 +192,13 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             }
         }
 
-        if (accID.isUPNPEnabled())
+        if (accID.isUPNPEnabled()) {
             agent.addCandidateHarvester(new UPNPHarvester());
+        }
 
         long stopGatheringHarvesterTime = System.currentTimeMillis();
         long gatheringHarvesterTime = stopGatheringHarvesterTime - startGatheringHarvesterTime;
-        Timber.i("End gathering harvester within %d ms; Size: %s",
-                gatheringHarvesterTime, agent.getHarvestCount());
+        Timber.i("End gathering harvester within %d ms; Size: %s", gatheringHarvesterTime, agent.getHarvesters().size());
         return agent;
     }
 

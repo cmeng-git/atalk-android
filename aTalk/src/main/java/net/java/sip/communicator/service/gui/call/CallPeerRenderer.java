@@ -141,4 +141,14 @@ public interface CallPeerRenderer
      * @param visible <tt>true</tt> to show the security panel or <tt>false</tt> to hide it
      */
     void setSecurityPanelVisible(boolean visible);
+    /**
+     * Enable or disable DTMF tone handle
+     * @param enabled - if true DTMF tone is enabled and disabled if false
+     */
+    void setDtmfToneEnabled(boolean enabled);
+
+    /**
+     * @return true if DTMF handling enabled
+     */
+    boolean isDtmfToneEnabled();
 }

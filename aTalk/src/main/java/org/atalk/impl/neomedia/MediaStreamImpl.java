@@ -835,7 +835,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         }
         sendStreamsAreCreated = true;
 
-        if (TimberLog.isTraceEnabled()) {
+        if (TimberLog.isTraceEnable) {
             @SuppressWarnings("unchecked")
             Vector<SendStream> sendStreams = rtpManager.getSendStreams();
             int sendStreamCount = (sendStreams == null) ? 0 : sendStreams.size();
@@ -1814,7 +1814,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     private void printFlowStatistics(StreamRTPManager rtpManager)
     {
         try {
-            if (!TimberLog.isTraceEnabled())
+            if (!TimberLog.isFinestEnable)
                 return;
 
             // print flow statistics.
@@ -1901,7 +1901,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     {
         mediaStreamStatsImpl.updateStats();
 
-        if (TimberLog.isTraceEnabled()) {
+        if (TimberLog.isTraceEnable) {
             StringBuilder buff = new StringBuilder("\nReceive stream stats: discarded RTP packets: ")
                     .append(mediaStreamStatsImpl.getNbDiscarded())
                     .append("\nReceive stream stats: decoded with FEC: ")
@@ -2492,7 +2492,7 @@ public class MediaStreamImpl extends AbstractMediaStream
             else if (startedDirection == null)
                 startedDirection = MediaDirection.SENDONLY;
 
-            if (TimberLog.isTraceEnabled()) {
+            if (TimberLog.isTraceEnable) {
                 MediaType mediaType = getMediaType();
                 MediaStreamStats stats = getMediaStreamStats();
 
@@ -2910,7 +2910,7 @@ public class MediaStreamImpl extends AbstractMediaStream
              * The level of logger used here is in accord with the level of
              * logger used in StatisticsEngine where sent reports are logged.
              */
-            if (TimberLog.isTraceEnabled()) {
+            if (TimberLog.isTraceEnable) {
                 // As reports are received on every 5 seconds
                 // print every 4th packet, on every 20 seconds
                 if ((numberOfReceivedSenderReports + numberOfReceivedReceiverReports) % 4 != 1)

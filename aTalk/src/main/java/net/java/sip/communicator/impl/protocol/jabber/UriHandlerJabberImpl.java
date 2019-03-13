@@ -269,7 +269,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
             String contactId = uri.substring(uri.indexOf(':') + 1);
             // todo check url!!
             // Set the email pattern string
-            Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+            Pattern p = Pattern.compile(".+@.+");
             if (!p.matcher(contactId).matches()) {
                 showErrorMessage("Wrong contact id : " + uri, null);
                 return;

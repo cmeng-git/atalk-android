@@ -495,7 +495,7 @@ public class RTCPReports
                         receivedFeedbacks.put((int) feedback.getSSRC(), feedback);
                     }
 
-                    if (!feedbacks.isEmpty() && TimberLog.isTraceEnabled()) {
+                    if (!feedbacks.isEmpty() && TimberLog.isTraceEnable) {
                         StringBuilder s = new StringBuilder();
                         s.append("Received RTCP RR blocks from SSRC ")
                                 .append(report.getSSRC() & 0xFFFFFFFFL)

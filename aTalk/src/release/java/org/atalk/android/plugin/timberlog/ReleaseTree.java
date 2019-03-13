@@ -18,7 +18,7 @@ public class ReleaseTree extends Timber.DebugTree
     {
         // return (priority < TimberLog.FINE && priority > Log.DEBUG) && (priority != Log.INFO || TimberLog.isInfoEnabled());
         return (priority == Log.WARN || priority == Log.ERROR || priority == Log.ASSERT
-                || (priority == Log.INFO && TimberLog.isInfoEnabled()));
+                || (priority == Log.INFO && TimberLog.isInfoEnable));
     }
 
 //    @Override

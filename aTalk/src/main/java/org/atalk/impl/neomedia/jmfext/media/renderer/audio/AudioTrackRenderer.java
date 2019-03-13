@@ -21,6 +21,8 @@ import javax.media.format.AudioFormat;
 
 import timber.log.Timber;
 
+import static android.media.AudioTrack.STATE_INITIALIZED;
+
 /**
  * Implements an audio <tt>Renderer</tt> which uses {@link AudioTrack}.
  *
@@ -687,7 +689,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      */
     public synchronized void stop()
     {
-        if (audioTrack != null) {
+        if ((audioTrack != null) && audioTrack.getState()==STATE_INITIALIZED) {
             audioTrack.stop();
             setThreadPriority = true;
         }

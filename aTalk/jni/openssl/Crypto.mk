@@ -36,7 +36,7 @@ include $(CLEAR_VARS)
 ifeq (,$(TARGET_BUILD_APPS))
 LOCAL_CLANG := true
 else
-LOCAL_SDK_VERSION := 15
+LOCAL_SDK_VERSION := 21
 endif
 LOCAL_CLANG := true
 

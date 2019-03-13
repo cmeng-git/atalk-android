@@ -87,7 +87,7 @@ class PushSourceStreamImpl implements PushSourceStream, Runnable, SourceTransfer
 
         readQCapacity = RTPConnectorOutputStream.PACKET_QUEUE_CAPACITY;
         readQ = new ArrayBlockingQueue<>(readQCapacity);
-        if (TimberLog.isTraceEnabled()) {
+        if (TimberLog.isTraceEnable) {
             readQStats = new QueueStatistics(getClass().getSimpleName() + "-" + hashCode());
         }
         else {

@@ -1241,7 +1241,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      */
     private void debugPrintSystemProperties()
     {
-        if (!TimberLog.isTraceEnabled())
+        if (!TimberLog.isTraceEnable)
             return;
 
         try {
@@ -1279,7 +1279,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
     @Override
     public void logConfigurationProperties(String excludePattern)
     {
-        if (!TimberLog.isTraceEnabled())
+        if (!TimberLog.isTraceEnable)
             return;
 
         Pattern exclusion = null;

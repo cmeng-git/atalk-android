@@ -103,7 +103,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
                 REMOVE_RTP_HEADER_EXTENSIONS_PNAME,
                 false);
 
-        if (TimberLog.isTraceEnabled()) {
+        if (TimberLog.isTraceEnable) {
             writeQStats = new QueueStatistics(getClass().getSimpleName() + "-" + hashCode());
         }
         else {
@@ -430,13 +430,13 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
                         }
 
                         if (destination.containsReceiveSSRC(ssrcOfMediaSource)) {
-                            if (TimberLog.isTraceEnabled()) {
+                            if (TimberLog.isTraceEnable) {
                                 int ssrcOfPacketSender = RTPUtils.readInt(buffer, offset + 4);
                                 String message = getClass().getName() + ".willWriteControl: FMT "
                                         + fmt + ", PT " + pt + ", SSRC of packet sender "
-                                        + Long.toString(ssrcOfPacketSender & 0xffffffffl)
+                                        + Long.toString(ssrcOfPacketSender & 0xffffffffL)
                                         + ", SSRC of media source "
-                                        + Long.toString(ssrcOfMediaSource & 0xffffffffl);
+                                        + Long.toString(ssrcOfMediaSource & 0xffffffffL);
 
                                 Timber.log(TimberLog.FINER, "%s", message);
                             }
@@ -449,7 +449,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
             }
         }
 
-        if (write && TimberLog.isTraceEnabled())
+        if (write && TimberLog.isTraceEnable)
             RTPTranslatorImpl.logRTCP(this, "doWrite", buffer, offset, length);
         return write;
     }

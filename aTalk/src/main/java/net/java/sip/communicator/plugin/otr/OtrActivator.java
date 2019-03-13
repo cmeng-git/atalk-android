@@ -229,7 +229,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
     {
         Object sService = bundleContext.getService(serviceEvent.getServiceReference());
 
-        if (TimberLog.isTraceEnabled()) {
+        if (TimberLog.isTraceEnable) {
             Timber.log(TimberLog.FINER, "Received a service event for: %s", sService.getClass().getName());
         }
 

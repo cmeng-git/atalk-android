@@ -107,7 +107,7 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
         ProtocolProviderService protocolProvider = evt.getProvider();
         AccountID accountID = protocolProvider.getAccountID();
 
-        if (TimberLog.isTraceEnabled())
+        if (TimberLog.isTraceEnable)
             Timber.log(TimberLog.FINER, "Protocol provider: %s changes state to: %s Reason: %s",
                     protocolProvider, evt.getNewState().getStateName(), evt.getReason());
 

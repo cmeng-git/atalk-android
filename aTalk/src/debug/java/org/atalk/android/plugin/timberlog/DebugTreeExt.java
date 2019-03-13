@@ -16,7 +16,7 @@ public class DebugTreeExt extends Timber.DebugTree
     @Override
     protected boolean isLoggable(@Nullable String tag, int priority)
     {
-        return ((priority != TimberLog.FINER) || TimberLog.isTraceEnabled());
+        return ((priority != TimberLog.FINER) || TimberLog.isTraceEnable);
 
         // For testing release version logcat messages in debug mode
         // return (priority == Log.WARN || priority == Log.ERROR || priority == Log.ASSERT
@@ -30,7 +30,7 @@ public class DebugTreeExt extends Timber.DebugTree
     @Override
     protected void log(int priority, String tag, String message, Throwable t)
     {
-        if (priority == TimberLog.FINER) {
+        if ((priority == TimberLog.FINER) || (priority == TimberLog.FINEST)) {
             println_native(0, priority, tag, message);
         }
         else {
@@ -65,6 +65,8 @@ public class DebugTreeExt extends Timber.DebugTree
                 return 'A';
             case TimberLog.FINER:
                 return 'T';
+            case TimberLog.FINEST:
+                return 'S';
             default:
                 return '?';
         }
