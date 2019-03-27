@@ -173,7 +173,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
 
         if (decodeFEC && ((inBuf.getFlags() & Buffer.FLAG_SKIP_FEC) != 0)) {
             decodeFEC = false;
-            Timber.d("Not decoding FEC/PLC for %s because of Buffer.FLAG_SKIP_FEC.", seqNo);
+            Timber.d("Opus: not decoding FEC/PLC for %s because of Buffer.FLAG_SKIP_FEC.", seqNo);
         }
 
         // After we have determined what is to be decoded, do decode it.

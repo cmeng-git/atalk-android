@@ -15,96 +15,100 @@
 # limitations under the License.
 
 set -u
-source ./_shared.sh
+. _settings.sh
 
-# Setup architectures, library name and other vars + cleanup from previous runs
-# Use LIB_VPX-master i.e. 1.6.1+ (10/12/2017)
-# LIB_GIT="v1.6.1"
-# aTalk uses the trunk master instead
-LIB_GIT="master"
-LIB_VPX="libvpx"
-LIB_DEST_DIR=${TOOLS_ROOT}/libs
+# aTalk v1.7.3 uses libvpx-master i.e. 1.6.1+ (10/13/2017)
+# aTalk v1.7.3 is not compatible with libvpx-1.7.0
+# LIB_VPX="libvpx-master"
+LIB_VPX="libvpx-1.6.1+"
+# LIB_VPX="libvpx-1.7.0"
 
-#[ -d ${LIB_DEST_DIR} ] && rm -rf ${LIB_DEST_DIR}
-[ -f "${LIB_GIT}.tar.gz" ] || wget https://github.com/webmproject/LIB_VPX/archive/${LIB_GIT}.tar.gz;
+# Both has been fixed by patches: https://android.googlesource.com/platform/external/libvpx/+/ca30a60d2d6fbab4ac07c63bfbf7bbbd1fe6a583
+# libvpx >v1.6.1 has the following errors when build with aTalk; v1.6.1 also failed with --enable-pic
+# ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(deblock_sse2.asm.o): relocation R_386_GOTOFF against preemptible symbol vpx_rv cannot be used when making a shared object
+# ./i686-linux-android/4.9.x/../../../../i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_mmx.asm.o): relocation R_386_GOTOFF against preemptible symbol # vp8_bilinear_filters_x86_8 cannot be used when making a shared object
+# ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_mmx.asm.o): relocation R_386_GOTOFF against preemptible symbol vp8_bilinear_filters_x86_8 cannot be used when making a shared object
+# ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_sse2.asm.o): relocation R_386_GOTOFF against preemptible symbol vp8_bilinear_filters_x86_8 cannot be used when making a shared object
+# ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_sse2.asm.o): relocation R_386_GOTOFF against preemptible symbol vp8_bilinear_filters_x86_8 cannot be used when making a shared object
+
+# However libvpx-1.6.1 x86_64 has the same error
+# ./x86_64-linux-android/bin/ld: error: vpx/android/x86_64/lib/libvpx.a(deblock_sse2.asm.o): requires dynamic R_X86_64_PC32 reloc against 'vpx_rv' which may overflow at runtime; recompile with -fPIC
+
+# Uncomment below for fetech libvpx from online repository
+# ./init_libvpx.sh ${LIB_VPX}
+
+# Applying required patches to libvpx-1.7.0 or libvpx-1.6.1+
+echo -e "\n*** Applying patches for: ${LIB_VPX} ***"
+./libvpx_patch.sh ${LIB_VPX}
 
 # Unarchive library, then configure and make for specified architectures
 configure_make() {
-  ARCH=$1; ABI=$2;
-
-# rm -rf "${LIB_VPX}"
-# tar xfz "${LIB_GIT}.tar.gz" "${LIB_VPX}"
-[ -d "${LIB_VPX}" ] || tar xfz "${LIB_GIT}.tar.gz" "${LIB_VPX}";
-
   pushd "${LIB_VPX}"
+  make clean
+
+  ABI=$1;
   configure $*
 
-    if [ "$ARCH" == "android" ]; then
-        TARGET="armv7-android-gcc --disable-runtime-cpu-detect --disable-neon --disable-neon-asm"
-    elif [ "$ARCH" == "android-armeabi" ]; then
-        TARGET="armv7-android-gcc --disable-runtime-cpu-detect"
-    elif [ "$ARCH" == "android64-aarch64" ]; then
-        TARGET="arm64-android-gcc"
-    elif [ "$ARCH" == "android-x86" ]; then
-        TARGET="x86-android-gcc"
-    elif [ "$ARCH" == "android64" ]; then
-        TARGET="x86_64-android-gcc"
-    elif [ "$ARCH" == "android-mips" ]; then
-        TARGET="mips32-linux-gcc"
-    elif [ "$ARCH" == "android-mips64" ]; then
-        TARGET="mips64-linux-gcc"
-   fi;
+  case $ABI in
+    # libvpx does not provide armv5 build option
+    armeabi)
+      TARGET="armv7-android-gcc --disable-neon --disable-neon-asm"
+    ;;
+    armeabi-v7a)
+      TARGET="armv7-android-gcc"
+    ;;
+    arm64-v8a)
+      TARGET="arm64-android-gcc"
+    ;;
+    x86)
+      TARGET="x86-android-gcc"
+    ;;
+    x86_64)
+      TARGET="x86_64-android-gcc"
+    ;;
+    mips)
+      TARGET="mips32-linux-gcc"
+    ;;
+    mips64)
+      TARGET="mips64-linux-gcc"
+    ;;
+  esac
 
-   echo ./configure \
-     --target=${TARGET} \
-     --disable-runtime-cpu-detect \
-     --disable-examples \
-     --disable-tools \
-     --sdk-path=${NDK_ROOT}/ \
-     --prefix=${LIB_DEST_DIR}/${ABI}
+  # --sdk-path=${TOOLCHAIN_PREFIX} must use ${NDK} actual path else cannot find CC for arm64-android-gcc
+  # https://bugs.chromium.org/p/webm/issues/detail?id=1476
+  # --extra-cflags fix for >= ndk-r16b; but essentially NOP for NDK below ndk-r16 (need patch for arm64-android-gcc)
+  # --as=yasm requires by x86 and x86-64 instead of clang
 
-   ./configure \
-     --target=${TARGET} \
-     --disable-runtime-cpu-detect \
-     --disable-examples \
-     --disable-tools \
-     --sdk-path=${NDK_ROOT}/ \
-     --prefix=${LIB_DEST_DIR}/${ABI}
+  ./configure \
+    --sdk-path=${NDK} \
+    --extra-cflags="-isystem ${NDK}/sysroot/usr/include/${NDK_ABIARCH} -isystem ${NDK}/sysroot/usr/include" \
+    --prefix=${PREFIX} \
+    --target=${TARGET} \
+    --as=yasm \
+    --enable-pic \
+    --disable-runtime-cpu-detect \
+    --disable-docs \
+    --enable-static \
+    --disable-shared \
+    --enable-libyuv \
+    --disable-examples \
+    --disable-tools \
+    --disable-debug \
+    --disable-unit-tests \
+    --enable-realtime-only \
+    --disable-webm-io || exit 1
 
-
-  PATH=$TOOLCHAIN_PATH:$PATH
-  make clean
-  if make -j4; then
-    # make install
-    # make install_sw
-    # make install_ssldirs
-
-    OUTPUT_ROOT=${TOOLS_ROOT}/output/android/${ABI}
-    [ -d ${OUTPUT_ROOT}/include ] || mkdir -p ${OUTPUT_ROOT}/include/vpx \
-	&& mkdir -p ${OUTPUT_ROOT}/include/common \
-	&& mkdir -p ${OUTPUT_ROOT}/include/mkvmuxer \
-	&& mkdir -p ${OUTPUT_ROOT}/include/mkvparser \
-	&& mkdir -p ${OUTPUT_ROOT}/include/libmkv
-    cp -r ./vpx/*.h ${OUTPUT_ROOT}/include/vpx
-    cp -r ./third_party/libwebm/common/*.h ${OUTPUT_ROOT}/include/common
-    cp -r ./third_party/libwebm/mkvmuxer/*.h ${OUTPUT_ROOT}/include/mkvmuxer
-    cp -r ./third_party/libwebm/mkvparser/*.h ${OUTPUT_ROOT}/include/mkvparser
-    cp -r ./third_party/libmkv/*.h ${OUTPUT_ROOT}/include/libmkv
-
-    [ -d ${OUTPUT_ROOT}/lib ] || mkdir -p ${OUTPUT_ROOT}/lib
-#    cp ${LIB_DEST_DIR}/${ABI}/lib/LIB_VPX.a ${OUTPUT_ROOT}/lib
-    cp LIB_VPX.a ${OUTPUT_ROOT}/lib
-  fi;
+  make -j${HOST_NUM_CORES} install
   popd
-
 }
 
-for ((i=0; i < ${#ARCHS[@]}; i++))
+for ((i=0; i < ${#ABIS[@]}; i++))
 do
-  if [[ $# -eq 0 ]] || [[ "$1" == "${ARCHS[i]}" ]]; then
+  if [[ $# -eq 0 ]] || [[ "$1" == "${ABIS[i]}" ]]; then
     # Do not build 64 bit arch if ANDROID_API is less than 21 which is
     # the minimum supported API level for 64 bit.
     [[ ${ANDROID_API} < 21 ]] && ( echo "${ABIS[i]}" | grep 64 > /dev/null ) && continue;
-    configure_make "${ARCHS[i]}" "${ABIS[i]}"
+    configure_make "${ABIS[i]}"
+    echo -e "** BUILD COMPLETED: ${LIB_VPX} for ${ABIS[i]} **\n\n"
   fi
 done

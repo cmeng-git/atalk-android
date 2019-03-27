@@ -1,0 +1,16 @@
+--- a/ffmpeg-x264/ffmpeg/libavutil/pixdesc.c	2015-08-01 00:35:36.000000000
++++ b/ffmpeg-x264/ffmpeg/libavutil/pixdesc.c	2019-03-23 13:16:50.000000000
+@@ -1482,6 +1482,13 @@
+         snprintf(buf, buf_size, "%-11s %7d %10d", pixdesc->name,
+                  pixdesc->nb_components, av_get_bits_per_pixel(pixdesc));
+     }
+ 
+     return buf;
+ }
++
++const AVPixFmtDescriptor *av_pix_fmt_desc_get(enum PixelFormat pix_fmt)
++{
++    if (pix_fmt < 0 || pix_fmt >= PIX_FMT_NB)
++        return NULL;
++    return &av_pix_fmt_descriptors[pix_fmt];
++}

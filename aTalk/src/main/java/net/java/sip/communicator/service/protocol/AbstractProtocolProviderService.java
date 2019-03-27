@@ -146,7 +146,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
         synchronized (registrationListeners) {
             listeners = registrationListeners.toArray(new RegistrationStateChangeListener[registrationListeners.size()]);
         }
-        Timber.d("Dispatching %s to %s listeners.", event, listeners.length);
+        Timber.log(TimberLog.FINER, "Dispatching %s to %s listeners.", event, listeners.length);
 
         for (RegistrationStateChangeListener listener : listeners)
             try {

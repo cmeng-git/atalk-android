@@ -1,0 +1,44 @@
+--- a/ffmpeg-x264/ffmpeg/configure	2014-07-21 01:25:31.000000000
++++ b/ffmpeg-x264/ffmpeg-1.0.10/configure	2019-03-22 11:42:34.000000000
+@@ -2074,17 +2074,17 @@
+ LIBSUF=".a"
+ FULLNAME='$(NAME)$(BUILDSUF)'
+ LIBNAME='$(LIBPREF)$(FULLNAME)$(LIBSUF)'
+ SLIBPREF="lib"
+ SLIBSUF=".so"
+ SLIBNAME='$(SLIBPREF)$(FULLNAME)$(SLIBSUF)'
+-SLIBNAME_WITH_VERSION='$(SLIBNAME).$(LIBVERSION)'
+-SLIBNAME_WITH_MAJOR='$(SLIBNAME).$(LIBMAJOR)'
++SLIBNAME_WITH_VERSION='$(SLIBNAME)'
++SLIBNAME_WITH_MAJOR='$(SLIBNAME)'
+ LIB_INSTALL_EXTRA_CMD='$$(RANLIB) "$(LIBDIR)/$(LIBNAME)"'
+ SLIB_INSTALL_NAME='$(SLIBNAME_WITH_VERSION)'
+-SLIB_INSTALL_LINKS='$(SLIBNAME_WITH_MAJOR) $(SLIBNAME)'
++#SLIB_INSTALL_LINKS='$(SLIBNAME_WITH_MAJOR) $(SLIBNAME)'
+ 
+ asflags_filter=echo
+ cflags_filter=echo
+ ldflags_filter=echo
+ 
+ AS_C='-c'
+@@ -2998,12 +2998,20 @@
+ 
+ enable $subarch
+ enabled spic && enable pic
+ 
+ # OS specific
+ case $target_os in
++    android)
++        disable symver
++        enable section_data_rel_ro
++        add_cflags -fPIE
++        SLIB_INSTALL_NAME='$(SLIBNAME)'
++        SLIB_INSTALL_LINKS=
++        SHFLAGS='-shared -Wl,-soname,$(SLIBNAME)'
++        ;;
+     haiku)
+         prefix_default="/boot/common"
+         network_extralibs="-lnetwork"
+         host_libs=
+         ;;
+     sunos)

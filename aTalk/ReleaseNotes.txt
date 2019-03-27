@@ -1,9 +1,31 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.8.0 (1080)
+Author:         cmeng
+Upload Date:	03/27/2019
+- Add jni native libraries support for all ABIS i.e. armeabi-v7a arm64-v8a x86 x86_64
+- Cleanup ffmpeg-x264 build scripts and patches for 64bit ABI and fixed text relocation etc problems
+- Cleanup vpx build scripts and patches x264-configure for correct arm68-v8a build
+- Init camera only once on aTalk first launch; skip during network re-connect
+- Use default of 10S timeout to retrieve VCard instead of 30S - field ANR
+- Exclude postproc module in ffmpeg library build
+  # https://trac.ffmpeg.org/wiki/Postprocessing
+  # Anyway, most of the time it won't help to postprocess h.264, HEVC, VP8, or VP9 video.
+- Upgrade vpx to version 1.5.2, max version that is compatible with ffmpeg 1.0.10 for aTalk
+  i.e https://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-20180806-2245-stable.tar
+- Fixed undefined reference for x2
+
+- Patch ffmpeg sources to support x264 > v152; build ok but  has problem with x264-157 encode in aTalk media call
+- Continue to us x264-147 - compatible with ffmpeg=1.0.10 for aTalk
+net.sf.fmj.media.Log.error() Failed to realize: net.sf.fmj.media.ProcessEngine@584fa51
+net.sf.fmj.media.Log.error()   Cannot build a flow graph with the customized options:
+net.sf.fmj.media.Log.error()     Unable to transcode format: YUV Video Format: Size = [width=720, height=960] MaxDataLength = -1 DataType = class [B yuvType = -1 StrideY = -1 StrideUV = -1 OffsetY = -1 OffsetU = -1 OffsetV = -1
+net.sf.fmj.media.Log.error()       to: H264/RTP, fmtps={packetization-mode=1}
+
+=========================================================================
 Version:		1.7.3 (1073)
 Author:         cmeng
 Upload Date:	03/14/2019
-
 - Add Extension provider for eleName: ParameterExtensionElement and nameSpace:RTPHdrExtExtensionElement in
   JingleIQProvider - missing reference in parse method.
 - IceUdpTransportManager-> agent.getHarvestCount() always return zero, use agent.getHarvesters().size() instead

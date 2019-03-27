@@ -12,7 +12,7 @@ do
     ;;
     arm64-v8a)
       # has problem building for arm64-v8a with undefined references in libx264
-      #./ffmpeg-x264_build_arm64-v8a.sh || exit 0
+      ./ffmpeg-x264_build_arm64-v8a.sh || exit 0
     ;;
     x86)
       ./ffmpeg-x264_build_x86.sh || exit 0

@@ -137,15 +137,15 @@ public class InfoRetriever
         if (connection == null || !connection.isAuthenticated())
             return null;
 
-        // Set the timeout to wait before considering vCard has time out
-        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
+        // Set the timeout to wait before considering vCard has time out - too long field ANR - use default instead
+        // connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
         Timber.i("Start loading VCard information for: %s", bareJid);
         VCardAvatarManager vCardAvatarManager = VCardAvatarManager.getInstanceFor(connection);
         VCard card = vCardAvatarManager.downloadVCard(bareJid);
 
         // Reset back to aTalk default
-        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
+        // connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
 
         // cmeng - vCard can be null due to smack request response timeout (2017/11/29)
         // return an empty list if VCard fetching from server failed

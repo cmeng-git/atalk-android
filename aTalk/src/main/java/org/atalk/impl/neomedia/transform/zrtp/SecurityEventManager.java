@@ -7,6 +7,7 @@ package org.atalk.impl.neomedia.transform.zrtp;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.event.SrtpListener;
@@ -248,7 +249,7 @@ public class SecurityEventManager extends ZrtpUserCallback
 
         if (sendEvent)
             securityListener.securityMessageReceived(message, i18nMessage, severity);
-        Timber.d("%s: ZRTP message: severity: %s, sub code: %s, multi: %s",
+        Timber.log(TimberLog.FINER, "%s: ZRTP message: severity: %s, sub code: %s, multi: %s",
                 sessionTypeToString(sessionType), sev, msgCode, multiStreams);
     }
 

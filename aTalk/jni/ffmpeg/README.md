@@ -16,21 +16,17 @@ such as audio, video, subtitles and related metadata.
 
 ## Tools
 
-* [ffmpeg](http://ffmpeg.org/ffmpeg.html) is a command line toolbox to
-  manipulate, convert and stream multimedia content.
+* [ffmpeg](http://ffmpeg.org/ffmpeg.html) is a command line toolbox to manipulate, convert and stream multimedia content.
 * [ffplay](http://ffmpeg.org/ffplay.html) is a minimalistic multimedia player.
-* [ffprobe](http://ffmpeg.org/ffprobe.html) is a simple analysis tool to inspect
-  multimedia content.
-* [ffserver](http://ffmpeg.org/ffserver.html) is a multimedia streaming server
-  for live broadcasts.
+* [ffprobe](http://ffmpeg.org/ffprobe.html) is a simple analysis tool to inspect multimedia content.
+* [ffserver](http://ffmpeg.org/ffserver.html) is a multimedia streaming server for live broadcasts.
 * Additional small tools such as `aviocat`, `ismindex` and `qt-faststart`.
 
 ## Documentation
 
 The offline documentation is available in the **doc/** directory.
 
-The online documentation is available in the main [website](http://ffmpeg.org)
-and in the [wiki](http://trac.ffmpeg.org).
+The online documentation is available in the main [website](http://ffmpeg.org) and in the [wiki](http://trac.ffmpeg.org).
 
 ### Examples
 
@@ -38,5 +34,5 @@ Coding examples are available in the **doc/examples** directory.
 
 ## License
 
-FFmpeg codebase is mainly LGPL-licensed with optional components licensed under
-GPL. Please refer to the LICENSE file for detailed information.
+FFmpeg codebase is mainly LGPL-licensed with optional components licensed under GPL.<br/>
+Please refer to the LICENSE file for detailed information.

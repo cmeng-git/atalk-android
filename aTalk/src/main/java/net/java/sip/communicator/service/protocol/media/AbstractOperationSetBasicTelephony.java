@@ -9,6 +9,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.CallEvent;
 import net.java.sip.communicator.service.protocol.event.CallListener;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.recording.Recorder;
@@ -138,13 +139,12 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
     public void fireCallEvent(CallEvent event)
     {
         List<CallListener> listeners;
-
         synchronized (callListeners) {
             listeners = new ArrayList<CallListener>(callListeners);
         }
-        Timber.d("Dispatching a CallEvent to %s listeners. The event is: %s", listeners.size(), event);
+        Timber.log(TimberLog.FINER, "Dispatching a CallEvent to %s listeners. The event is: %s", listeners.size(), event);
         for (CallListener listener : listeners) {
-            Timber.d("Dispatching a CallEvent to %s. The event is: %s", listener.getClass(), event);
+            Timber.log(TimberLog.FINER, "Dispatching a CallEvent to %s. The event is: %s", listener.getClass(), event);
 
             switch (event.getEventID()) {
                 case CallEvent.CALL_INITIATED:

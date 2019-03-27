@@ -1921,7 +1921,7 @@ public class ChatFragment extends OSGiFragment
             // Must request to refresh the msgCache once the send file activity has started. Otherwise the
             // send file request will get activated a second time.
             if (newStatus != FileTransferStatusChangeEvent.PREPARING) {
-                chatPanel.setCacheReflesh(true);
+                chatPanel.setCacheRefresh(true);
             }
             if (newStatus == FileTransferStatusChangeEvent.COMPLETED
                     || newStatus == FileTransferStatusChangeEvent.CANCELED

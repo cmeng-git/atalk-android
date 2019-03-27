@@ -6,6 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.8.0 (03/27/2019)" versioncode="1080">
+        <change>Add jni native libraries support for all ABIS i.e. armeabi-v7a arm64-v8a x86 x86_64</change>
+        <change>Upgrade x264 jni native library to v152</change>
+        <change>Fix text relocation and other problems in ffmpeg for ABIS x86 and x86_64</change>
+        <change>Cleanup all jni libraries build scripts and patches for all ABIS build</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="1.7.3 (03/14/2019)" versioncode="1073">
         <change>Bug fixes and enhancements</change>
     </release>

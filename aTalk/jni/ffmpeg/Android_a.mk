@@ -27,7 +27,8 @@ LOCAL_MODULE:= libavfilter
 LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libavfilter.a
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 # tell ndk-build about the dependency
-LOCAL_STATIC_LIBRARIES := libpostproc libx264
+# LOCAL_STATIC_LIBRARIES := libpostproc libx264
+LOCAL_STATIC_LIBRARIES := libx264
 include $(PREBUILT_STATIC_LIBRARY)
 
 # ========== libavformat ==================
@@ -60,12 +61,14 @@ LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libswscale.a
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 include $(PREBUILT_STATIC_LIBRARY)
 
+# https://trac.ffmpeg.org/wiki/Postprocessing
+# Anyway, most of the time it won't help to postprocess h.264, HEVC, VP8, or VP9 video.
 # ========== libpostproc ==================
-include $(CLEAR_VARS)
-LOCAL_MODULE:= libpostproc
-LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libpostproc.a
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
-include $(PREBUILT_STATIC_LIBRARY)
+# include $(CLEAR_VARS)
+# LOCAL_MODULE:= libpostproc
+# LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libpostproc.a
+# LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
+# include $(PREBUILT_STATIC_LIBRARY)
 
 # ========== libx264 ==================
 include $(CLEAR_VARS)
@@ -78,8 +81,12 @@ include $(PREBUILT_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE := jnffmpeg
 LOCAL_LDLIBS += -llog -lz
+# x64 has text relocation - must disable it for now
+LOCAL_DISABLE_FATAL_LINKER_WARNINGS := true
+# x8_64 has some warning i.e. ffmpeg/android/x86_64/lib/libx264.a(cabac-a-8.o): requires dynamic R_X86_64_PC32 reloc against 'x264_cabac_range_lps' which may overflow at runtime;
+LOCAL_ALLOW_UNDEFINED_SYMBOLS := true
 # for x-86 shared library built warning
-LOCAL_LDLIBS += -Wl,--no-warn-shared-textrel
+# LOCAL_LDLIBS += -Wl,--no-warn-shared-textrel
 # Ensure each static library inter-dependencies are defined in its respective PREBUILT_STATIC_LIBRARY block
 # or setup the dependency in PREBUILT_STATIC_LIBRARY blocks
 LOCAL_STATIC_LIBRARIES := libavcodec libavdevice libavfilter libavutil libavformat libswresample libswscale libx264
@@ -91,13 +98,3 @@ LOCAL_CFLAGS := -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H -Wdepre
 include $(BUILD_SHARED_LIBRARY)
 
 # $(call import-module,ffmpeg/android/$(CPU)) // path to NDK module relative to NDK/sources/
-
-
-
-
-
-
-
-
-
-

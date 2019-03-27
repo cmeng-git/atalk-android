@@ -318,8 +318,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         if (call.getCallState() != CallState.CALL_ENDED) {
             mBackToChat = true;
             callNotificationControl = new CallControl();
-            aTalkApp.getGlobalContext().registerReceiver(callNotificationControl,
-                    new IntentFilter("org.atalk.call.control"));
+            aTalkApp.getGlobalContext().registerReceiver(callNotificationControl, new IntentFilter("org.atalk.call.control"));
             leaveNotification();
         }
         else
@@ -350,8 +349,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 }
                 // Remove auto hide fragment
                 ensureAutoHideFragmentDetached();
-                getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
-                        new CallEnded()).commit();
+                getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new CallEnded()).commit();
             });
         }).start();
     }

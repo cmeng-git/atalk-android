@@ -675,7 +675,7 @@ public class SwScale
         Format outputFormat = super.setOutputFormat(format);
 
         if (outputFormat != null) {
-            Timber.d("%s %08x set to output in %s", getClass().getName(), hashCode(), outputFormat);
+            Timber.log(TimberLog.FINER, "%s %08x set to output in %s", getClass().getName(), hashCode(), outputFormat);
         }
         return outputFormat;
     }

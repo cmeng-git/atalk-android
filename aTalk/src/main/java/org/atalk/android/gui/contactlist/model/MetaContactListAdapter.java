@@ -22,6 +22,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.PresenceFilter;
+import org.atalk.android.plugin.timberlog.TimberLog;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -684,7 +685,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void metaContactAvatarUpdated(final MetaContactAvatarUpdateEvent evt)
     {
         uiHandler.post(() -> {
-            Timber.d("META CONTACT AVATAR UPDATED: %s", evt.getSourceMetaContact());
+            Timber.log(TimberLog.FINER, "metaContact avatar updated: %s", evt.getSourceMetaContact());
             updateAvatar(evt.getSourceMetaContact());
         });
     }
