@@ -1,0 +1,21 @@
+--- a/vpx_ports/mem.h	2017-10-13 08:37:57.000000000 
++++ b/vpx_ports/mem.h	2019-03-20 17:54:48.000000000 
+@@ -20,12 +20,18 @@
+ #define DECLARE_ALIGNED(n, typ, val) __declspec(align(n)) typ val
+ #else
+ #warning No alignment directives known for this compiler.
+ #define DECLARE_ALIGNED(n, typ, val) typ val
+ #endif
+ 
++#if defined(__GNUC__) && __GNUC__ >= 4 && !defined(_WIN32)
++#define DECLARE_PROTECTED(decl) decl __attribute__((visibility("protected")))
++#else
++#define DECLARE_PROTECTED(decl) decl
++#endif
++
+ #if HAVE_NEON && defined(_MSC_VER)
+ #define __builtin_prefetch(x)
+ #endif
+ 
+ /* Shift down with rounding */
+ #define ROUND_POWER_OF_TWO(value, n) (((value) + (1 << ((n)-1))) >> (n))

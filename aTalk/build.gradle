@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-rc01'
+        classpath 'com.android.tools.build:gradle:3.4.0-rc02'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
@@ -57,8 +57,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1073
-        versionName "1.7.3" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1080
+        versionName "1.8.0" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -325,7 +325,7 @@ task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
     println "Main jni directory for NDK build => " + jniSrcDir
     println '****************************************************************************************'
 
-    // APP_PLATFORM=android-15 for aTalk minimum SDK platform support i.e. API-16
+    // APP_PLATFORM=android-21 for aTalk minimum SDK platform support i.e. API-21
     // this setting if set takes priority over value set in jni/Application.mk
     commandLine "$ndkDir/ndk-build",
             '-C' + projectDir + '/jni',

@@ -53,22 +53,20 @@ LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libswscale.so
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 include $(PREBUILT_SHARED_LIBRARY)
 
+# https://trac.ffmpeg.org/wiki/Postprocessing
+# Anyway, most of the time it won't help to postprocess h.264, HEVC, VP8, or VP9 video.
 # ========== libpostproc ==================
-include $(CLEAR_VARS)
-LOCAL_MODULE:= libpostproc
-LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libpostproc.so
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
-include $(PREBUILT_SHARED_LIBRARY)
+# include $(CLEAR_VARS)
+# LOCAL_MODULE:= libpostproc
+# LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libpostproc.so
+# LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
+# include $(PREBUILT_SHARED_LIBRARY)
 
 # ========== libx264 ==================
 # Linking with versioned shared library in Android NDK
-# java.lang.UnsatisfiedLinkError: dlopen failed: library "libx264.so.147" not found
-# use GHex to change file content "libx264.so.147" to "libx264_147.so"
-# change filename from libx264.so.147 to libx264_147.so
-# Note: the .so filename must match with the file changed content
 include $(CLEAR_VARS)
 LOCAL_MODULE:= libx264
-LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libx264_147.so
+LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libx264_152.so
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 include $(PREBUILT_SHARED_LIBRARY)
 

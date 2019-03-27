@@ -56,13 +56,16 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
 		super.onActivityCreated(savedInstanceState);
 		audioManager = (AudioManager) aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
 		MediaServiceImpl mediaService = NeomediaActivator.getMediaServiceImpl();
-		this.volumeControl = mediaService.getOutputVolumeControl();
+		if (mediaService != null)
+    		volumeControl = mediaService.getOutputVolumeControl();
 	}
 
 	@Override
 	public void onResume()
 	{
 		super.onResume();
+        if (volumeControl == null)
+            return;
 
 		float currentVol = volumeControl.getVolume();
 		// Default

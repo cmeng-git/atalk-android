@@ -524,7 +524,6 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
         } finally {
             postInitialize();
         }
-        //        }
     }
 
     /**

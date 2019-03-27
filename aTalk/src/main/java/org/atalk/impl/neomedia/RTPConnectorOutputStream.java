@@ -7,6 +7,7 @@ package org.atalk.impl.neomedia;
 
 import net.sf.fmj.media.util.MediaThread;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
@@ -105,7 +106,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         }
 
         PACKET_QUEUE_CAPACITY = packetQueueCapacity >= 0 ? packetQueueCapacity : 256;
-        Timber.d("Initialized configuration. Send thread: %s. Pool capacity: %s. Queue capacity: %s. Avg bitrate window: %s",
+        Timber.log(TimberLog.FINER, "Initialized configuration. Send thread: %s. Pool capacity: %s. Queue capacity: %s. Avg bitrate window: %s",
                 USE_SEND_THREAD, POOL_CAPACITY, PACKET_QUEUE_CAPACITY, AVERAGE_BITRATE_WINDOW_MS);
     }
 
@@ -363,8 +364,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     public void setEnabled(boolean enabled)
     {
         if (this.enabled != enabled) {
-            Timber.d("setEnabled: %s", enabled);
-
+            Timber.log(TimberLog.FINER, "setEnabled: %s", enabled);
             this.enabled = enabled;
         }
     }
@@ -477,7 +477,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
             // example, it was discovered during testing that RTCP was
             // seemingly endlessly sent after hanging up a call.
             if (targets.isEmpty())
-                Timber.d(new Throwable(), "Write called without targets!");
+                Timber.log(TimberLog.FINER, new Throwable(), "Write called without targets!");
 
             if (queue != null) {
                 queue.write(buf, off, len, context);
@@ -595,7 +595,10 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
          */
         private Queue()
         {
-            queueStats = new QueueStatistics(getClass().getSimpleName() + "-" + hashCode());
+            if (TimberLog.isTraceEnable) {
+                queueStats = new QueueStatistics(getClass().getSimpleName() + "-" + hashCode());
+            }
+
             sendThread = new Thread()
             {
                 @Override

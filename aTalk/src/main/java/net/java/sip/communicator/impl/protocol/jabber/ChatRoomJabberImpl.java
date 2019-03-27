@@ -62,8 +62,6 @@ import java.util.*;
 
 import timber.log.Timber;
 
-import static net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10;
-
 /**
  * Implements chat rooms for jabber. The class encapsulates instances of the jive software <tt>MultiUserChat</tt>.
  *
@@ -666,7 +664,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 throw new OperationFailedException(errorMessage, OperationFailedException.CAPTCHA_CHALLENGE, ex);
             }
         } finally {
-            mProvider.getConnection().setReplyTimeout(SMACK_PACKET_REPLY_TIMEOUT_10);
+            mProvider.getConnection().setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
         }
     }
 

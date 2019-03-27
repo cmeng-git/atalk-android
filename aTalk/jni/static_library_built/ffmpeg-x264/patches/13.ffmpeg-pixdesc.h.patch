@@ -1,0 +1,38 @@
+--- a/ffmpeg-x264/ffmpeg/libavutil/pixdesc.h	2015-08-01 00:35:36.000000000
++++ b/ffmpeg-x264/ffmpeg/libavutil/pixdesc.h	2019-03-23 13:00:57.000000000
+@@ -38,12 +38,16 @@
+      * Number of elements before the component of the first pixel plus 1.
+      * Elements are bits for bitstream formats, bytes otherwise.
+      */
+     uint16_t offset_plus1 :3;
+     uint16_t shift        :3;            ///< number of least significant bits that must be shifted away to get the value
+     uint16_t depth_minus1 :4;            ///< number of bits in the component minus 1
++    /**
++     * Number of bits in the component.
++     */
++    int depth;
+ }AVComponentDescriptor;
+ 
+ /**
+  * Descriptor that unambiguously describes how the bits of a pixel are
+  * stored in the up to 4 data planes of an image. It also stores the
+  * subsampling factors and number of components.
+@@ -100,12 +104,18 @@
+ #define PIX_FMT_PSEUDOPAL 64
+ 
+ /**
+  * The array of all the pixel format descriptors.
+  */
+ extern const AVPixFmtDescriptor av_pix_fmt_descriptors[];
++
++/**
++ * @return a pixel format descriptor for provided pixel format or NULL if
++ * this pixel format is unknown.
++ */
++const AVPixFmtDescriptor *av_pix_fmt_desc_get(enum PixelFormat pix_fmt);
+ 
+ /**
+  * Read a line from an image, and write the values of the
+  * pixel format component c to dst.
+  *
+  * @param data the array containing the pointers to the planes of the image

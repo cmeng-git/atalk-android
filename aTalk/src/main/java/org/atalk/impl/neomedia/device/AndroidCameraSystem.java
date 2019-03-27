@@ -45,6 +45,8 @@ public class AndroidCameraSystem extends DeviceSystem
      */
     private static final String LOCATOR_PROTOCOL = DeviceSystem.LOCATOR_PROTOCOL_ANDROIDCAMERA;
 
+    private static boolean isDeviceInitialized = false;
+
     /**
      * Creates new instance of <tt>AndroidCameraSystem</tt>.
      *
@@ -66,6 +68,10 @@ public class AndroidCameraSystem extends DeviceSystem
         if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
                 Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
             return;
+
+        if (isDeviceInitialized)
+            return;
+        isDeviceInitialized = true;
 
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
         for (int cameraId = 0; cameraId < Camera.getNumberOfCameras(); cameraId++) {

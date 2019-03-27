@@ -775,9 +775,10 @@ public class ServerStoredContactListJabberImpl
         } catch (NotLoggedInException | NoResponseException | NotConnectedException | InterruptedException e) {
             e.printStackTrace();
         }
-
-        // Reset to SMACK_PACKET_REPLY_TIMEOUT_10
-        xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
+        finally {
+            // Reset to default
+            xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
+        }
     }
 
     /**

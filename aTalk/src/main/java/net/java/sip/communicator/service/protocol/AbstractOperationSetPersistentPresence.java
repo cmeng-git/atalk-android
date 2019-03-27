@@ -7,6 +7,8 @@ package net.java.sip.communicator.service.protocol;
 
 import net.java.sip.communicator.service.protocol.event.*;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
+
 import java.beans.PropertyChangeEvent;
 import java.util.*;
 
@@ -163,9 +165,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         synchronized (subscriptionListeners) {
             listeners = new ArrayList<>(subscriptionListeners);
         }
-        Timber.d("Dispatching a Contact Property Change Event to %d listeners. Evt = %S",
-                listeners.size(), evt);
-
+        Timber.d("Dispatching a Contact Property Change Event to %d listeners. Evt = %S", listeners.size(), evt);
         for (SubscriptionListener listener : listeners)
             listener.contactModified(evt);
     }
@@ -195,13 +195,9 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
             listeners = new ArrayList<>(providerPresenceStatusListeners);
         }
 
-        Timber.d("Dispatching Provider Status Change. Listeners = %d evt = %s",
-                listeners.size(), evt);
-
+        Timber.log(TimberLog.FINER, "Dispatching Provider Status Change. Listeners = %d evt = %s", listeners.size(), evt);
         for (ProviderPresenceStatusListener listener : listeners)
             listener.providerStatusChanged(evt);
-
-        Timber.d("status dispatching done.");
     }
 
     /**
@@ -278,8 +274,8 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         synchronized (subscriptionListeners) {
             listeners = new ArrayList<>(subscriptionListeners);
         }
-        Timber.d("Dispatching a Subscription Event to %d listeners. Evt = %s", listeners.size(), evt);
 
+        Timber.log(TimberLog.FINER, "Dispatching a Subscription Event to %d listeners. Evt = %s", listeners.size(), evt);
         for (SubscriptionListener listener : listeners)
             switch (eventID) {
                 case SubscriptionEvent.SUBSCRIPTION_CREATED:

@@ -7,6 +7,7 @@ package org.atalk.impl.neomedia;
 
 import net.sf.fmj.media.rtp.*;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.device.MediaDeviceSession;
 import org.atalk.impl.neomedia.device.VideoMediaDeviceSession;
@@ -346,7 +347,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
                 rtt = -1;
             }
             else {
-                Timber.d("rtt: stream=%s ssrc=%s, rtt(ms)=%s, now=%s, lsr=%s, dlsr=%s",
+                Timber.log(TimberLog.FINER, "rtt: stream=%s ssrc=%s, rtt(ms)=%s, now=%s, lsr=%s, dlsr=%s",
                         mediaStreamImpl.hashCode(), feedback.getSSRC(), rttLong,
                         Long.toHexString(arrival), Long.toHexString(lsr), Long.toHexString(dlsr));
                 rtt = (int) rttLong;

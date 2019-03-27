@@ -113,7 +113,7 @@ public class ChatPanel implements Chat, MessageListener
      * Flag indicates if there was a send File activity status changed, then the whole cache must be invalid and reload.
      * Otherwise, the cache still contains the send file request and will trigger and file send action
      */
-    private boolean cacheReflesh = false;
+    private boolean cacheRefresh = false;
 
     /**
      * Registered chatFragment to be informed of any messageReceived event
@@ -398,11 +398,11 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Set the cache refresh flag from send file status change event.
      *
-     * @param cacheFreflesh if <tt>true</tt>, msgCache is cleared and reload.
+     * @param cacheRefresh if <tt>true</tt>, msgCache is cleared and reload.
      */
-    public void setCacheReflesh(boolean cacheFreflesh)
+    public void setCacheRefresh(boolean cacheRefresh)
     {
-        this.cacheReflesh = cacheFreflesh;
+        this.cacheRefresh = cacheRefresh;
     }
 
     /**
@@ -415,7 +415,7 @@ public class ChatPanel implements Chat, MessageListener
         // If chatFragment is initializing (initActive) AND we have cached messages that include
         // history (historyLoaded == true) and no request for cacheRefresh form file transfer activity
         // then just return the message cache.
-        if (init && historyLoaded && !cacheReflesh) {
+        if (init && historyLoaded && !cacheRefresh) {
             return msgCache;
         }
 
@@ -430,9 +430,9 @@ public class ChatPanel implements Chat, MessageListener
         Collection<Object> history;
 
         // Refresh msgCache if set via file transfer sending status change request
-        if (cacheReflesh) {
+        if (cacheRefresh) {
             msgCache.clear();
-            cacheReflesh = false;
+            cacheRefresh = false;
         }
 
         // first time fetch, so read in last HISTORY_CHUNK_SIZE of history messages
@@ -842,11 +842,13 @@ public class ChatPanel implements Chat, MessageListener
     {
         if (isChatFocused()) {
             final Activity activity = aTalkApp.getCurrentActivity();
-            activity.runOnUiThread(() -> {
-                PresenceStatus presenceStatus = chatTransport.getStatus();
-                ActionBarUtil.setSubtitle(activity, presenceStatus.getStatusName());
-                ActionBarUtil.setStatus(activity, presenceStatus.getStatusIcon());
-            });
+            if (activity != null) {
+                activity.runOnUiThread(() -> {
+                    PresenceStatus presenceStatus = chatTransport.getStatus();
+                    ActionBarUtil.setSubtitle(activity, presenceStatus.getStatusName());
+                    ActionBarUtil.setStatus(activity, presenceStatus.getStatusIcon());
+                });
+            }
         }
 
         String contactName = ((MetaContactChatTransport) chatTransport).getContact().getAddress();

@@ -5,7 +5,7 @@
 # APP_PLATFORM=android-15 for aTalk minimum support SDK platform i.e. api-15
 # see https://github.com/android-ndk/ndk/issues/543
 # https://android.googlesource.com/platform/ndk/+/master/docs/user/common_problems.md#using-mismatched-prebuilt-libraries
-APP_PLATFORM := android-16
+APP_PLATFORM := android-21
 
 # https://developer.android.com/ndk/guides/abis.html
 # We recommend setting APP_ABI := all for all targets. For specific target explicitly, use
@@ -14,7 +14,7 @@ APP_PLATFORM := android-16
 # arm64-v8a: ARMv8 AArch64
 # x86 x86_64: Intel Atom
 # mips mips64: MIPS.
-APP_ABI := armeabi-v7a x86
+APP_ABI := armeabi-v7a arm64-v8a x86 x86_64
 
 # An application should not use more than one C++ runtime. The various STLs are not compatible with one another.
 # Note: The exception to this rule is that "no STL" does not count as an STL.

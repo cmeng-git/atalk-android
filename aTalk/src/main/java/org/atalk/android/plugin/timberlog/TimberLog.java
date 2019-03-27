@@ -18,7 +18,7 @@ public class TimberLog
      * Flag to indicate if Timber.fine is being enabled for finer tracing of the debug message
      * Set this to false if detail tracing is not required.
      */
-    public static boolean isTraceEnable = true;
+    public static boolean isTraceEnable = false;
 
     /**
      * To specify if the info logging is enabled for released version

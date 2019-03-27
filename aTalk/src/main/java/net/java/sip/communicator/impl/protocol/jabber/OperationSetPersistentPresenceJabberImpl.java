@@ -12,6 +12,7 @@ import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -874,7 +875,7 @@ public class OperationSetPersistentPresenceJabberImpl
                     mRoster.addSubscribeListener(OperationSetPersistentPresenceJabberImpl.this);
                     mRoster.addPresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
                     handleSubsribeEvent = true;
-                    Timber.i("SubscribeListener and PresenceEventListener added");
+                    Timber.log(TimberLog.FINER, "SubscribeListener and PresenceEventListener added");
                 }
 
                 if (vCardAvatarManager == null) {

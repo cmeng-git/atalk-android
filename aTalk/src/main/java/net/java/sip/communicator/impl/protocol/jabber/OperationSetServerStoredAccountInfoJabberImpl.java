@@ -398,14 +398,12 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
             }
         } catch (XMPPException | NoResponseException | NotConnectedException
                 | InterruptedException e) {
-            // Reset to SMACK_PACKET_REPLY_TIMEOUT_10
-            xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
-
             Timber.e(e, "Error loading/saving vcard");
             throw new OperationFailedException("Error loading/saving vcard: ", 1, e);
+        } finally {
+            // Reset to default
+            xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
         }
-        // Reset to SMACK_PACKET_REPLY_TIMEOUT_10
-        xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
     }
 
     /**

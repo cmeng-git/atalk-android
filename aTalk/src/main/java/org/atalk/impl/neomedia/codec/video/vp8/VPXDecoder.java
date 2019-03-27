@@ -172,7 +172,7 @@ public class VPXDecoder extends AbstractCodec2
                     buf_size,
                     0, 0);
             if (ret != VPX.CODEC_OK) {
-                Timber.d("Discarding a frame, codec_decode() error: %s", VPX.codec_err_to_string(ret));
+                Timber.w("Discarding a frame with decode error: %s", VPX.codec_err_to_string(ret));
                 outputBuffer.setDiscard(true);
                 return BUFFER_PROCESSED_OK;
             }

@@ -41,6 +41,10 @@ typedef struct AVComponentDescriptor{
     uint16_t offset_plus1 :3;
     uint16_t shift        :3;            ///< number of least significant bits that must be shifted away to get the value
     uint16_t depth_minus1 :4;            ///< number of bits in the component minus 1
+    /**
+     * Number of bits in the component.
+     */
+    int depth;
 }AVComponentDescriptor;
 
 /**
@@ -103,6 +107,12 @@ typedef struct AVPixFmtDescriptor{
  * The array of all the pixel format descriptors.
  */
 extern const AVPixFmtDescriptor av_pix_fmt_descriptors[];
+
+/**
+ * @return a pixel format descriptor for provided pixel format or NULL if
+ * this pixel format is unknown.
+ */
+const AVPixFmtDescriptor *av_pix_fmt_desc_get(enum PixelFormat pix_fmt);
 
 /**
  * Read a line from an image, and write the values of the

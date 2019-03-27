@@ -24,7 +24,8 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.listener.VCardAvatarListener;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
@@ -94,13 +95,7 @@ public class VCardAvatarManager extends AvatarManager
 //            = new AndFilter(PresenceTypeFilter.AVAILABLE, new NotFilter(new StanzaExtensionFilter(ELEMENT, NAMESPACE)));
 
     static {
-        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener()
-        {
-            public void connectionCreated(XMPPConnection connection)
-            {
-                getInstanceFor(connection);
-            }
-        });
+        XMPPConnectionRegistry.addConnectionCreationListener(VCardAvatarManager::getInstanceFor);
     }
 
     public static synchronized VCardAvatarManager getInstanceFor(XMPPConnection connection)
@@ -157,7 +152,7 @@ public class VCardAvatarManager extends AvatarManager
          * Listen for remote presence stanzas with the vCardTemp:x:update extension. If we
          * receive such a stanza, process the stanza and acts if necessary
          */
-        connection.addAsyncStanzaListener(stanza -> processContactPhotoPresence(stanza), PRESENCES_WITH_VCARD);
+        connection.addAsyncStanzaListener(this::processContactPhotoPresence, PRESENCES_WITH_VCARD);
     }
 
     /**

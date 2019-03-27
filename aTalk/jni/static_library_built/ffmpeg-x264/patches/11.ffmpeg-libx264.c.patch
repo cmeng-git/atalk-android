@@ -1,0 +1,75 @@
+--- a/ffmpeg-x264/ffmpeg/libavcodec/libx264.c	2015-08-01 00:35:36.000000000
++++ b/ffmpeg-x264/ffmpeg/libavcodec/libx264.c	2019-03-23 12:10:41.000000000
+@@ -155,13 +155,17 @@
+     x264_nal_t *nal;
+     int nnal, i, ret;
+     x264_picture_t pic_out;
+ 
+     x264_picture_init( &x4->pic );
+     x4->pic.img.i_csp   = x4->params.i_csp;
++#if X264_BUILD >= 153
++    if (x4->params.i_bitdepth > 8)
++#else
+     if (x264_bit_depth > 8)
++#endif
+         x4->pic.img.i_csp |= X264_CSP_HIGH_DEPTH;
+     x4->pic.img.i_plane = avfmt2_num_planes(ctx->pix_fmt);
+ 
+     if (frame) {
+         for (i = 0; i < x4->pic.img.i_plane; i++) {
+             x4->pic.img.plane[i]    = frame->data[i];
+@@ -307,12 +311,15 @@
+         x4->params.i_level_idc = avctx->level;
+ 
+     x4->params.pf_log               = X264_log;
+     x4->params.p_log_private        = avctx;
+     x4->params.i_log_level          = X264_LOG_DEBUG;
+     x4->params.i_csp                = convert_pix_fmt(avctx->pix_fmt);
++#if X264_BUILD >= 153
++    x4->params.i_bitdepth           = av_pix_fmt_desc_get(avctx->pix_fmt)->comp[0].depth;
++#endif
+ 
+     OPT_STR("weightp", x4->wpredp);
+ 
+     if (avctx->bit_rate) {
+         x4->params.rc.i_bitrate   = avctx->bit_rate / 1000;
+         x4->params.rc.i_rc_method = X264_RC_ABR;
+@@ -577,28 +584,38 @@
+ static const enum PixelFormat pix_fmts_10bit[] = {
+     PIX_FMT_YUV420P10,
+     PIX_FMT_YUV422P10,
+     PIX_FMT_YUV444P10,
+     PIX_FMT_NONE
+ };
++static const enum PixelFormat pix_fmts_all[] = {
++    PIX_FMT_YUV420P,
++    PIX_FMT_YUV422P,
++    PIX_FMT_YUV444P,
++    PIX_FMT_NONE
++};
+ static const enum PixelFormat pix_fmts_8bit_rgb[] = {
+ #ifdef X264_CSP_BGR
+     PIX_FMT_BGR24,
+     PIX_FMT_RGB24,
+ #endif
+     PIX_FMT_NONE
+ };
+ 
+ static av_cold void X264_init_static(AVCodec *codec)
+ {
++#if X264_BUILD < 153
+     if (x264_bit_depth == 8)
+         codec->pix_fmts = pix_fmts_8bit;
+     else if (x264_bit_depth == 9)
+         codec->pix_fmts = pix_fmts_9bit;
+     else if (x264_bit_depth == 10)
+         codec->pix_fmts = pix_fmts_10bit;
++#else
++    codec->pix_fmts = pix_fmts_all;
++#endif
+ }
+ 
+ #define OFFSET(x) offsetof(X264Context, x)
+ #define VE AV_OPT_FLAG_VIDEO_PARAM | AV_OPT_FLAG_ENCODING_PARAM
+ static const AVOption options[] = {
+     { "preset",        "Set the encoding preset (cf. x264 --fullhelp)",   OFFSET(preset),        AV_OPT_TYPE_STRING, { .str = "medium" }, 0, 0, VE},

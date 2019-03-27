@@ -8,6 +8,7 @@ package net.java.sip.communicator.service.notification;
 import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
 import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
 
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 
 import java.util.*;
@@ -622,7 +623,7 @@ class NotificationServiceImpl implements NotificationService
     public void registerDefaultNotificationForEvent(String eventType, String actionType,
             String actionDescriptor, String defaultMessage)
     {
-        Timber.d("Registering default event Type: %s; Action: %s; Descriptor: %s; Message: %s",
+        Timber.log(TimberLog.FINER,"Registering default event Type: %s; Action: %s; Descriptor: %s; Message: %s",
                 eventType, actionType, actionDescriptor, defaultMessage);
 
         if (isDefault(eventType, actionType)) {

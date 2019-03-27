@@ -21,6 +21,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.osgi.OSGiService;
 
 import java.util.List;
@@ -105,7 +106,7 @@ public class AndroidUtils
     {
         int id = OSGiService.getGeneralNotificationId();
         if (id < 0) {
-            Timber.w("There's no global notification icon bound");
+            Timber.log(TimberLog.FINER, "There's no global notification icon bound");
             return;
         }
 

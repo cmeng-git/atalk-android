@@ -1,0 +1,86 @@
+--- a/x264/configure	2019-03-08 09:10:25.000000000
++++ b/x264/configure	2019-03-14 10:46:24.000000000
+@@ -78,13 +78,13 @@
+     # several non gcc compilers issue an incredibly large number of warnings on high warning levels,
+     # suppress them by reducing the warning level rather than having to use #pragmas
+     for arg in $*; do
+         [[ "$arg" = -falign-loops* ]] && arg=
+         [ "$arg" = -fno-tree-vectorize ] && arg=
+         [ "$arg" = -Wshadow ] && arg=
+-        [ "$arg" = -Wno-maybe-uninitialized ] && arg=
++        [ "$arg" = -Wuninitialized ] && arg=
+         [[ "$arg" = -mpreferred-stack-boundary* ]] && arg=
+         [[ "$arg" = -l* ]] && arg=
+         [[ "$arg" = -L* ]] && arg=
+         if [ $compiler_style = MS ]; then
+             [ "$arg" = -ffast-math ] && arg="-fp:fast"
+             [ "$arg" = -Wall ] && arg=
+@@ -112,13 +112,13 @@
+         [ "$arg" = -Wl,--large-address-aware ] && arg=-largeaddressaware
+         [ "$arg" = -s ] && arg=
+         [ "$arg" = -Wl,-Bsymbolic ] && arg=
+         [ "$arg" = -fno-tree-vectorize ] && arg=
+         [ "$arg" = -Werror ] && arg=
+         [ "$arg" = -Wshadow ] && arg=
+-        [ "$arg" = -Wmaybe-uninitialized ] && arg=
++        [ "$arg" = -Wuninitialized ] && arg=
+         [[ "$arg" = -Qdiag-error* ]] && arg=
+ 
+         arg=${arg/pthreadGC/pthreadVC}
+         [ "$arg" = avifil32.lib ] && arg=vfw32.lib
+         [ "$arg" = gpac_static.lib ] && arg=libgpac_static.lib
+         [ "$arg" = x264.lib ] && arg=libx264.lib
+@@ -525,13 +525,12 @@
+ fi
+ if ${cross_prefix}gcc-ranlib --version >/dev/null 2>&1; then
+     RANLIB="${RANLIB-${cross_prefix}gcc-ranlib}"
+ else
+     RANLIB="${RANLIB-${cross_prefix}ranlib}"
+ fi
+-
+ if [ "x$host" = x ]; then
+     host=`${SRCPATH}/config.guess`
+ fi
+ # normalize a triplet into a quadruplet
+ host=`${SRCPATH}/config.sub $host`
+ 
+@@ -586,17 +585,17 @@
+     if [[ "$cc_base" = icc || "$cc_base" = icc[\ .]* ]]; then
+         AR="xiar"
+         compiler=ICC
+     fi
+ fi
+ 
+-if [ $compiler = GNU ]; then
+-    if cc_check '' -Werror=unknown-warning-option ; then
+-        CHECK_CFLAGS="$CHECK_CFLAGS -Werror=unknown-warning-option"
+-    fi
+-fi
++#if [ $compiler = GNU ]; then
++#    if cc_check '' -Werror=unknown-warning-option ; then
++#        CHECK_CFLAGS="$CHECK_CFLAGS -Werror=unknown-warning-option"
++#    fi
++#fi
+ 
+ libm=""
+ case $host_os in
+     beos*)
+         SYS="BEOS"
+         define HAVE_MALLOC_H
+@@ -1254,14 +1253,14 @@
+ fi
+ 
+ if cc_check '' -Wshadow ; then
+     CFLAGS="-Wshadow $CFLAGS"
+ fi
+ 
+-if cc_check '' -Wmaybe-uninitialized ; then
+-    CFLAGS="-Wno-maybe-uninitialized $CFLAGS"
++if cc_check '' -Wuninitialized ; then
++    CFLAGS="-Wuninitialized $CFLAGS"
+ fi
+ 
+ if [ $compiler = ICC -o $compiler = ICL ] ; then
+     if cc_check 'extras/intel_dispatcher.h' '' 'x264_intel_dispatcher_override();' ; then
+         define HAVE_INTEL_DISPATCHER
+     fi
