@@ -44,14 +44,12 @@ public class DePacketizer extends AbstractCodec2
     private Queue<Container> free = new ArrayBlockingQueue<Container>(100);
 
     /**
-     * Stores the first (earliest) sequence number stored in <tt>data</tt>, or -1 if
-     * <tt>data</tt> is empty.
+     * Stores the first (earliest) sequence number stored in <tt>data</tt>, or -1 if <tt>data</tt> is empty.
      */
     private int firstSeq = -1;
 
     /**
-     * Stores the last (latest) sequence number stored in <tt>data</tt>, or -1 if <tt>data</tt>
-     * is empty.
+     * Stores the last (latest) sequence number stored in <tt>data</tt>, or -1 if <tt>data</tt> is empty.
      */
     private int lastSeq = -1;
 
@@ -63,8 +61,7 @@ public class DePacketizer extends AbstractCodec2
     private int pictureId = -1;
 
     /**
-     * Stores the RTP timestamp of the packets stored in <tt>data</tt>, or -1
-     * if they don't have a timestamp set.
+     * Stores the RTP timestamp of the packets stored in <tt>data</tt>, or -1 if they don't have a timestamp set.
      */
     private long timestamp = -1L;
 
@@ -122,7 +119,7 @@ public class DePacketizer extends AbstractCodec2
     protected void doOpen()
             throws ResourceUnavailableException
     {
-        Timber.i("Opened VP8 dePacketizer");
+        Timber.log(TimberLog.FINER, "Opened VP8 dePacketizer");
     }
 
     /**
@@ -151,8 +148,7 @@ public class DePacketizer extends AbstractCodec2
      * Checks whether the currently held VP8 compressed frame is complete (e.g all its packets
      * are stored in <tt>data</tt>).
      *
-     * @return <tt>true</tt> if the currently help VP8 compressed frame is complete,
-     * <tt>false</tt> otherwise.
+     * @return <tt>true</tt> if the currently help VP8 compressed frame is complete, <tt>false</tt> otherwise.
      */
     private boolean frameComplete()
     {
@@ -198,8 +194,7 @@ public class DePacketizer extends AbstractCodec2
         long inRtpTimestamp = inBuffer.getRtpTimeStamp();
         int inPictureId = VP8PayloadDescriptor.getPictureId(inData, inOffset);
         boolean inMarker = (inBuffer.getFlags() & Buffer.FLAG_RTP_MARKER) != 0;
-        boolean inIsStartOfFrame
-                = VP8PayloadDescriptor.isStartOfFrame(inData, inOffset);
+        boolean inIsStartOfFrame = VP8PayloadDescriptor.isStartOfFrame(inData, inOffset);
 
         int inPdSize = VP8PayloadDescriptor.getSize(inData, inOffset, inLength);
         int inPayloadLength = inLength - inPdSize;
@@ -239,11 +234,9 @@ public class DePacketizer extends AbstractCodec2
             }
         }
 
-        // a whole frame in a single packet. avoid the extra copy to
-        // this.data and output it immediately.
+        // a whole frame in a single packet. avoid the extra copy to this.data and output it immediately.
         if (empty && inMarker && inIsStartOfFrame) {
-            byte[] outData
-                    = validateByteArraySize(outBuffer, inPayloadLength, false);
+            byte[] outData = validateByteArraySize(outBuffer, inPayloadLength, false);
             System.arraycopy(
                     inData,
                     inOffset + inPdSize,
@@ -332,8 +325,7 @@ public class DePacketizer extends AbstractCodec2
     }
 
     /**
-     * Returns true if the buffer contains a VP8 key frame at offset
-     * <tt>offset</tt>.
+     * Returns true if the buffer contains a VP8 key frame at offset <tt>offset</tt>.
      *
      * @param buf the byte buffer to check
      * @param off the offset in the byte buffer where the actual data starts
@@ -362,6 +354,16 @@ public class DePacketizer extends AbstractCodec2
     public static class VP8PayloadDescriptor
     {
         /**
+         * The bitmask for the TL0PICIDX field.
+         */
+        public static final int TL0PICIDX_MASK = 0xff;
+
+        /**
+         * The bitmask for the extended picture id field.
+         */
+        public static final int EXTENDED_PICTURE_ID_MASK = 0x7fff;
+
+        /**
          * I bit from the X byte of the Payload Descriptor.
          */
         private static final byte I_BIT = (byte) 0x80;
@@ -379,6 +381,7 @@ public class DePacketizer extends AbstractCodec2
          * I bit from the I byte of the Payload Descriptor.
          */
         private static final byte M_BIT = (byte) 0x80;
+
         /**
          * Maximum length of a VP8 Payload Descriptor.
          */
@@ -396,6 +399,11 @@ public class DePacketizer extends AbstractCodec2
          * X bit from the first byte of the Payload Descriptor.
          */
         private static final byte X_BIT = (byte) 0x80;
+
+        /**
+         * N bit from the first byte of the Payload Descriptor.
+         */
+        private static final byte N_BIT = (byte) 0x20;
 
         /**
          * Gets the temporal layer index (TID), if that's set.
@@ -494,8 +502,7 @@ public class DePacketizer extends AbstractCodec2
          * passed as an argument has a picture ID or not.
          *
          * @param buf the byte buffer that contains the VP8 payload.
-         * @param off the offset in the byte buffer where the VP8 payload
-         * starts.
+         * @param off the offset in the byte buffer where the VP8 payload starts.
          * @param len the length of the VP8 payload in the byte buffer.
          * @return true if the VP8 payload contains a picture ID, false otherwise.
          */
@@ -510,8 +517,7 @@ public class DePacketizer extends AbstractCodec2
          * passed as an argument has an extended picture ID or not.
          *
          * @param buf the byte buffer that contains the VP8 payload.
-         * @param off the offset in the byte buffer where the VP8 payload
-         * starts.
+         * @param off the offset in the byte buffer where the VP8 payload starts.
          * @param len the length of the VP8 payload in the byte buffer.
          * @return true if the VP8 payload contains an extended picture ID, false otherwise.
          */
@@ -549,8 +555,7 @@ public class DePacketizer extends AbstractCodec2
          * buffer that is passed as an argument.
          *
          * @param buf the byte buffer that contains the VP8 payload.
-         * @param off the offset in the byte buffer where the VP8 payload
-         * starts.
+         * @param off the offset in the byte buffer where the VP8 payload starts.
          * @param len the length of the VP8 payload in the byte buffer.
          * @return true if the operation succeeded, false otherwise.
          */
@@ -568,8 +573,7 @@ public class DePacketizer extends AbstractCodec2
         }
 
         /**
-         * Sets the TL0PICIDX field for the VP8 payload specified in the buffer that is passed as
-         * an argument.
+         * Sets the TL0PICIDX field for the VP8 payload specified in the buffer that is passed as an argument.
          *
          * @param buf the byte buffer that contains the VP8 payload.
          * @param off the offset in the byte buffer where the VP8 payload starts.
@@ -653,6 +657,40 @@ public class DePacketizer extends AbstractCodec2
         {
             return input[offset] & 0x07;
         }
+
+        /**
+         * Gets a boolean that indicates whether or not the non-reference bit is set.
+         *
+         * @param buf the byte buffer that holds the VP8 payload descriptor.
+         * @param off the offset in the byte buffer where the payload descriptor starts.
+         * @param len the length of the payload descriptor in the byte buffer.
+         *
+         * @return true if the non-reference bit is NOT set, false otherwise.
+         */
+        public static boolean isReference(byte[] buf, int off, int len)
+        {
+            return (buf[off] & N_BIT) == 0;
+        }
+
+        /**
+         * Gets the TL0PICIDX from the payload descriptor.
+         *
+         * @param buf the byte buffer that holds the VP8 payload descriptor.
+         * @param off the offset in the byte buffer where the payload descriptor starts.
+         * @param len the length of the payload descriptor in the byte buffer.
+         *
+         * @return the TL0PICIDX from the payload descriptor.
+         */
+        public static int getTL0PICIDX(byte[] buf, int off, int len)
+        {
+            int sz = getSize(buf, off, len);
+            if (sz < 1)
+            {
+                return -1;
+            }
+
+            return buf[off + sz - 2] & 0xff;
+        }
     }
 
     /**
@@ -678,8 +716,33 @@ public class DePacketizer extends AbstractCodec2
         {
             // When set to 0 the current frame is a key frame.  When set to 1
             // the current frame is an inter-frame. Defined in [RFC6386]
-
             return (input[offset] & S_BIT) == 0;
+        }
+    }
+
+
+    /**
+     * A class that represents a keyframe header structure (see RFC 6386, paragraph 9.1).
+     *
+     * @author George Politis
+     */
+    public static class VP8KeyframeHeader
+    {
+        // From RFC 6386, the keyframe header has this format.
+        //
+        // Start code byte 0     0x9d
+        // Start code byte 1     0x01
+        // Start code byte 2     0x2a
+        //
+        // 16 bits      :     (2 bits Horizontal Scale << 14) | Width (14 bits)
+        // 16 bits      :     (2 bits Vertical Scale << 14) | Height (14 bits)
+
+        /**
+         * @return the height of this instance.
+         */
+        public static int getHeight(byte[] buf, int off)
+        {
+            return (((buf[off + 6] & 0xff) << 8) | buf[off + 5] & 0xff) & 0x3fff;
         }
     }
 

@@ -6,6 +6,7 @@
 package org.atalk.impl.neomedia.transform.zrtp;
 
 import org.atalk.impl.neomedia.AbstractRTPConnector;
+import org.atalk.impl.neomedia.RTPConnectorOutputStream;
 import org.atalk.impl.neomedia.transform.*;
 import org.atalk.impl.neomedia.transform.srtp.*;
 import org.atalk.service.fileaccess.FileAccessService;
@@ -719,10 +720,15 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
         packet.setCrc();
 
         try {
-            zrtpConnector.getDataOutputStream()
-                    .write(packet.getBuffer(), packet.getOffset(), packet.getLength());
+            RTPConnectorOutputStream outputStream = zrtpConnector.getDataOutputStream();
+            if (outputStream != null) {
+                outputStream.write(
+                        packet.getBuffer(),
+                        packet.getOffset(),
+                        packet.getLength());
+            }
         } catch (IOException e) {
-            Timber.w("Failed to send ZRTP data.");
+            Timber.w("Failed to send ZRTP data: %s", e.getMessage());
             return false;
         }
         return true;
@@ -762,14 +768,14 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             // the main crypto context for the sending part of the connection.
             if (secrets.getRole() == Role.Initiator) {
                 srtpPolicy = new SRTPPolicy(cipher,
-                        secrets.getInitKeyLen() / 8,    // key length
+                        secrets.getInitKeyLen() / 8,
                         authn, authKeyLen,    // auth key length
-                        secrets.getSrtpAuthTagLen() / 8,// auth tag length
-                        secrets.getInitSaltLen() / 8    // salt length
+                        secrets.getSrtpAuthTagLen() / 8,
+                        secrets.getInitSaltLen() / 8
                 );
 
                 SRTPContextFactory engine = new SRTPContextFactory(
-                        true /* sender */,
+                        true,
                         secrets.getKeyInitiator(), secrets.getSaltInitiator(),
                         srtpPolicy, srtpPolicy);
 
@@ -778,14 +784,14 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             }
             else {
                 srtpPolicy = new SRTPPolicy(cipher,
-                        secrets.getRespKeyLen() / 8,    // key length
+                        secrets.getRespKeyLen() / 8,
                         authn, authKeyLen,    // auth key length
-                        secrets.getSrtpAuthTagLen() / 8,// auth tag length
-                        secrets.getRespSaltLen() / 8    // salt length
+                        secrets.getSrtpAuthTagLen() / 8,
+                        secrets.getRespSaltLen() / 8
                 );
 
                 SRTPContextFactory engine = new SRTPContextFactory(
-                        true /* sender */,
+                        true,
                         secrets.getKeyResponder(), secrets.getSaltResponder(),
                         srtpPolicy, srtpPolicy);
 
@@ -798,10 +804,10 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             // See comment above.
             if (secrets.getRole() == Role.Initiator) {
                 srtpPolicy = new SRTPPolicy(cipher,
-                        secrets.getRespKeyLen() / 8,    // key length
+                        secrets.getRespKeyLen() / 8,
                         authn, authKeyLen, // auth key length
-                        secrets.getSrtpAuthTagLen() / 8,// auth tag length
-                        secrets.getRespSaltLen() / 8    // salt length
+                        secrets.getSrtpAuthTagLen() / 8,
+                        secrets.getRespSaltLen() / 8
                 );
 
                 SRTPContextFactory engine = new SRTPContextFactory(
@@ -815,10 +821,10 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             }
             else {
                 srtpPolicy = new SRTPPolicy(cipher,
-                        secrets.getInitKeyLen() / 8,    // key length
+                        secrets.getInitKeyLen() / 8,
                         authn, authKeyLen, // auth key length
-                        secrets.getSrtpAuthTagLen() / 8,// auth tag length
-                        secrets.getInitSaltLen() / 8    // salt length
+                        secrets.getSrtpAuthTagLen() / 8,
+                        secrets.getInitSaltLen() / 8
                 );
 
                 SRTPContextFactory engine = new SRTPContextFactory(
@@ -841,8 +847,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param c The name of the used cipher algorithm and mode, or NULL.
      * @param s The SAS string.
-     * @param verified if <code>verified</code> is true then SAS was verified by both parties during a
-     * previous call.
+     * @param verified if <code>verified</code> is true then SAS was verified by both parties during a previous call.
      * @see gnu.java.zrtp.ZrtpCallback#srtpSecretsOn(java.lang.String, java.lang.String, boolean)
      */
     public void srtpSecretsOn(String c, String s, boolean verified)
@@ -1138,8 +1143,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      */
     public boolean isMultiStream()
     {
-        return (zrtpEngine != null)
-                && zrtpEngine.isMultiStream();
+        return (zrtpEngine != null) && zrtpEngine.isMultiStream();
     }
 
     /**
@@ -1275,8 +1279,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      */
     public boolean setSignatureData(byte[] data)
     {
-        return (zrtpEngine != null)
-                && zrtpEngine.setSignatureData(data);
+        return (zrtpEngine != null) && zrtpEngine.setSignatureData(data);
     }
 
     /**

@@ -5,9 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriConferenceIQ;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriStreamConnector;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
+import org.xmpp.extensions.colibri.ColibriConferenceIQ;
+import org.xmpp.extensions.colibri.ColibriStreamConnector;
+import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -451,8 +451,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                         colibriContent.removeChannel(colibriChannel);
 
                         /*
-                         * If the last remote channel is to be expired, expire the local channel as
-                         * well.
+                         * If the last remote channel is to be expired, expire the local channel as well.
                          */
                         if (colibriContent.getChannelCount() == 1) {
                             colibriChannel = colibriContent.getChannel(0);
@@ -841,7 +840,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
             dtlsControl.setSetup(peer.isInitiator() ? DtlsControl.Setup.ACTIVE : DtlsControl.Setup.PASSIVE);
         }
         IceUdpTransportExtensionElement remoteTransport = channel.getTransport();
-        return peerMediaHandler.addDtlsAdvertisedEncryptions(true, remoteTransport, mediaType);
+        return peerMediaHandler.addDtlsAdvertisedEncryptions(true, remoteTransport, mediaType, false);
     }
 
     /**

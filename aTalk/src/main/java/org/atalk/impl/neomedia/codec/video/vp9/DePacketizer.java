@@ -43,7 +43,23 @@ public class DePacketizer
 	 */
 	private static final byte I_BIT = (byte) (1 << 7);
 
-	/**
+    /**
+     * Returns true if the buffer contains a VP9 key frame at offset
+     * <tt>offset</tt>.
+     *
+     * @param buf the byte buffer to check
+     * @param off the offset in the byte buffer where the actual data starts
+     * @param len the length of the data in the byte buffer
+     * @return true if the buffer contains a VP8 key frame at offset
+     * <tt>offset</tt>.
+     */
+    public static boolean isKeyFrame(byte[] buf, int off, int len)
+    {
+        // TODO merge https://github.com/jitsi/libjitsi/pull/432 and remove this
+        return true;
+    }
+
+    /**
 	 * A class that represents the VP9 Payload Descriptor structure defined
 	 * in {@link "https://tools.ietf.org/html/draft-ietf-payload-vp9-02"}
 	 */

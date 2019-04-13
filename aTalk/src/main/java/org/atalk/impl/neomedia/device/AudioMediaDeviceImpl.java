@@ -133,12 +133,10 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
     }
 
     /**
-     * Creates a new <tt>AudioMixer</tt> which is to enable the sharing of a specific explicit
-     * <tt>CaptureDevice</tt>
+     * Creates a new <tt>AudioMixer</tt> which is to enable the sharing of a specific explicit <tt>CaptureDevice</tt>
      *
      * @param captureDevice an exclusive <tt>CaptureDevice</tt> for which sharing is to be enabled
-     * @return a new <tt>AudioMixer</tt> which enables the sharing of the specified exclusive
-     * <tt>captureDevice</tt>
+     * @return a new <tt>AudioMixer</tt> which enables the sharing of the specified exclusive <tt>captureDevice</tt>
      */
     private AudioMixer createCaptureDeviceSharing(CaptureDevice captureDevice)
     {
@@ -191,10 +189,15 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
     }
 
     /**
-     * Returns a <tt>List</tt> containing (at the time of writing) a single extension descriptor
-     * indicating <tt>RECVONLY</tt> support for mixer-to-client audio levels.
+     * Returns a <tt>List</tt> containing extension descriptor indicating
+     * <tt>RECVONLY</tt> support for mixer-to-client audio levels,
+     * and extension descriptor indicating <tt>SENDRECV</tt> support for
+     * client-to-mixer audio levels.
+     * We add the ssrc audio levels as first element, in order when making offer
+     * to be the first one (id 1) as some other systems have this hardcoded it as 1 (jicofo).
      *
-     * @return a <tt>List</tt> containing the <tt>CSRC_AUDIO_LEVEL_URN</tt> extension descriptor.
+     * @return a <tt>List</tt> containing the <tt>CSRC_AUDIO_LEVEL_URN</tt>
+     * and  <tt>SSRC_AUDIO_LEVEL_URN</tt> extension descriptor.
      */
     @Override
     public List<RTPExtension> getSupportedExtensions()
@@ -202,13 +205,19 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
         if (rtpExtensions == null) {
             rtpExtensions = new ArrayList<RTPExtension>(1);
 
+            URI ssrcAudioLevelURN;
             URI csrcAudioLevelURN;
             try {
+                ssrcAudioLevelURN = new URI(RTPExtension.SSRC_AUDIO_LEVEL_URN);
                 csrcAudioLevelURN = new URI(RTPExtension.CSRC_AUDIO_LEVEL_URN);
             } catch (URISyntaxException e) {
                 // can't happen since CSRC_AUDIO_LEVEL_URN is a valid URI and never changes.
                 Timber.i(e, "Aha! Someone messed with the source!");
+                ssrcAudioLevelURN = null;
                 csrcAudioLevelURN = null;
+            }
+            if (ssrcAudioLevelURN != null) {
+                rtpExtensions.add(new RTPExtension(ssrcAudioLevelURN, MediaDirection.SENDRECV));
             }
             if (csrcAudioLevelURN != null) {
                 rtpExtensions.add(new RTPExtension(csrcAudioLevelURN, MediaDirection.RECVONLY));
@@ -245,8 +254,7 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
     /**
      * Invokes the super (with respect to the <tt>AudioMediaDeviceImpl</tt> class)
      * implementation of {@link MediaDeviceImpl#createCaptureDevice()}. Allows this instance to
-     * customize the very <tt>CaptureDevice</tt> which is to be possibly further wrapped by this
-     * instance.
+     * customize the very <tt>CaptureDevice</tt> which is to be possibly further wrapped by this instance.
      *
      * @return the <tt>CaptureDevice</tt> returned by the call to the super implementation of
      * <tt>MediaDeviceImpl#createCaptureDevice</tt>.

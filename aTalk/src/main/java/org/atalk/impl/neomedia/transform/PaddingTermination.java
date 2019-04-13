@@ -15,9 +15,9 @@
  */
 package org.atalk.impl.neomedia.transform;
 
-import org.atalk.impl.neomedia.*;
-import org.atalk.service.neomedia.*;
-import org.atalk.util.*;
+import org.atalk.impl.neomedia.RTPPacketPredicate;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.util.LRUCache;
 
 import java.util.*;
 
@@ -28,15 +28,15 @@ import java.util.*;
  * (https://github.com/jitsi/libjitsi/pull/263#discussion_r100417318).
  *
  * @author George Politis
+ * @author Eng Chong Meng
  */
 public class PaddingTermination extends SinglePacketTransformerAdapter
-    implements TransformEngine
+        implements TransformEngine
 {
     /**
      * The size of the seen sequence numbers set to hold per SSRC. As long as
      * Chrome does not probe with ancient packets (> 5 seconds (300 packets per
-     * second) this size should be a sufficiently large size to prevent padding
-     * packets.
+     * second) this size should be a sufficiently large size to prevent padding packets.
      */
     private static final int SEEN_SET_SZ = 1500;
 
@@ -82,13 +82,10 @@ public class PaddingTermination extends SinglePacketTransformerAdapter
         // NOTE dropping padding from the main RTP stream is not supported
         // because we can't rewrite to hide the gaps. Padding packets in the
         // RTX stream are detected and killed in the RtxTransformer, so this
-        // instance should not see any RTX packets (it's after RTX in the
-        // chain).
+        // instance should not see any RTX packets (it's after RTX in the chain).
         Set<Integer> replayContext = replayContexts.get(mediaSSRC);
-        if (replayContext == null)
-        {
-            replayContext = Collections.newSetFromMap(
-                new LRUCache<Integer, Boolean>(SEEN_SET_SZ));
+        if (replayContext == null) {
+            replayContext = Collections.newSetFromMap(new LRUCache<>(SEEN_SET_SZ));
             replayContexts.put(mediaSSRC, replayContext);
         }
         return replayContext.add(pkt.getSequenceNumber()) ? pkt : null;

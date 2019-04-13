@@ -15,6 +15,8 @@
  */
 package org.atalk.service.neomedia;
 
+import net.sf.fmj.media.rtp.RTPHeader;
+
 import org.atalk.util.*;
 
 import java.util.*;
@@ -58,6 +60,16 @@ public class RawPacket implements ByteArrayBuffer
      * Report is 8 bytes long.
      */
     private static final int RTCP_MIN_SIZE = 8;
+
+    /**
+     * The bitmask for the RTP sequence number field.
+     */
+    public static final int SEQUENCE_NUMBER_MASK = 0xffff;
+
+    /**
+     * The bitmask for the RTP timestamp field.
+     */
+    public static final long TIMESTAMP_MASK = 0xFFFF_FFFFL;
 
     /**
      * Byte array storing the content of this Packet
@@ -263,6 +275,34 @@ public class RawPacket implements ByteArrayBuffer
         }
 
         return RTPUtils.readUint32AsLong(buf, off + 4);
+    }
+
+    /**
+     * Checks whether the RTP/RTCP header is valid or not (note that a valid
+     * header does not necessarily imply a valid packet). It does so by checking
+     * the RTP/RTCP header version and makes sure the buffer is at least 8 bytes
+     * long for RTCP and 12 bytes long for RTP.
+     *
+     * @param buf the byte buffer that contains the RTCP header.
+     * @param off the offset in the byte buffer where the RTCP header starts.
+     * @param len the number of bytes in buffer which constitute the actual
+     * data.
+     * @return true if the RTP/RTCP packet is valid, false otherwise.
+     */
+    public static boolean isRtpRtcp(byte[] buf, int off, int len)
+    {
+        if (isInvalid(buf, off, len))
+        {
+            return false;
+        }
+
+        int version = getVersion(buf, off, len);
+        if (version != RTPHeader.VERSION)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -1927,9 +1967,9 @@ public class RawPacket implements ByteArrayBuffer
          */
         public int getExtId()
         {
-            if (getLength() <= 0)
+            if (super.getLength() <= 0)
                 return -1;
-            return (buffer[getOffset()] & 0xf0) >>> 4;
+            return (buffer[super.getOffset()] & 0xf0) >>> 4;
         }
 
         /**
@@ -1942,7 +1982,7 @@ public class RawPacket implements ByteArrayBuffer
             // Therefore, the value zero in this field indicates that one byte
             // of data follows, and a value of 15 (the maximum) indicates
             // element data of 16 bytes."
-            return (buffer[getOffset()] & 0x0f) + 1;
+            return (buffer[super.getOffset()] & 0x0f) + 1;
         }
     }
 
@@ -2050,7 +2090,7 @@ public class RawPacket implements ByteArrayBuffer
             if (extLen <= 0)
             {
                 throw new IllegalStateException(
-                    "Invalid extension length. Did next() return true?");
+                    "Invalid extension length. Did hasNext() return true?");
             }
             headerExtension.setOffsetLength(nextOff, extLen);
 
@@ -2059,17 +2099,6 @@ public class RawPacket implements ByteArrayBuffer
             remainingLen -= extLen;
 
             return headerExtension;
-        }
-
-        /**
-         * {@inheritDoc}
-         * </p>
-         * This {@link Iterator} does not support removing elements.
-         */
-        @Override
-        public void remove()
-        {
-            throw new UnsupportedOperationException("remove");
         }
     }
 }

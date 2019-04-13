@@ -3426,4 +3426,16 @@ public class MediaStreamImpl extends AbstractMediaStream
             transportCCEngine.addMediaStream(this);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setRTPTranslator(RTPTranslator rtpTranslator)
+    {
+        super.setRTPTranslator(rtpTranslator);
+        if (this.deviceSession != null) {
+            this.deviceSession.setUseTranslator(rtpTranslator != null);
+        }
+    }
 }

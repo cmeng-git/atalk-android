@@ -273,8 +273,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     /**
      * Returns whether or not this <tt>RTPConnectorOutputStream</tt> has a valid socket.
      *
-     * @return <tt>true</tt> if this <tt>RTPConnectorOutputStream</tt> has a valid socket;
-     * <tt>false</tt>, otherwise
+     * @return <tt>true</tt> if this <tt>RTPConnectorOutputStream</tt> has a valid socket; <tt>false</tt>, otherwise
      */
     protected abstract boolean isSocketValid();
 
@@ -283,8 +282,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
      *
      * @param remoteAddr target ip address
      * @param remotePort target port
-     * @return <tt>true</tt> if the target is in stream target list and can be removed;
-     * <tt>false</tt>, otherwise
+     * @return <tt>true</tt> if the target is in stream target list and can be removed; <tt>false</tt>, otherwise
      */
     public boolean removeTarget(InetAddress remoteAddr, int remotePort)
     {
@@ -342,8 +340,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     }
 
     /**
-     * Sends a specific <tt>RawPacket</tt> through this <tt>OutputDataStream</tt> to a specific
-     * <tt>InetSocketAddress</tt>.
+     * Sends a specific <tt>RawPacket</tt> through this <tt>OutputDataStream</tt> to a specific <tt>InetSocketAddress</tt>.
      *
      * @param packet the <tt>RawPacket</tt> to send through this <tt>OutputDataStream</tt> to the specified
      * <tt>target</tt>
@@ -443,7 +440,6 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
     {
         int result = -1;
         RawPacket[] pkts = packetize(buf, off, len, context);
-
         if (pkts != null) {
             if (write(pkts)) {
                 result = len;
@@ -596,6 +592,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         private Queue()
         {
             if (TimberLog.isTraceEnable) {
+                // queueStats = QueueStatistics.get(getClass().getSimpleName());
                 queueStats = new QueueStatistics(getClass().getSimpleName() + "-" + hashCode());
             }
 

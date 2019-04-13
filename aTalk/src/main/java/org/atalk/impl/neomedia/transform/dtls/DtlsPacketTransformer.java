@@ -47,8 +47,7 @@ public class DtlsPacketTransformer implements PacketTransformer
      * {@link #runInConnectThread(DTLSProtocol, TlsPeer, DatagramTransport)} is
      * to retry the invocations of
      * {@link DTLSClientProtocol#connect(TlsClient, DatagramTransport)} and
-     * {@link DTLSServerProtocol#accept(TlsServer, DatagramTransport)} in
-     * anticipation of a successful connection.
+     * {@link DTLSServerProtocol#accept(TlsServer, DatagramTransport)} in anticipation of a successful connection.
      *
      * @see #CONNECT_RETRY_INTERVAL
      */
@@ -180,15 +179,7 @@ public class DtlsPacketTransformer implements PacketTransformer
     private MediaType mediaType;
 
     private final PropertyChangeListener propertyChangeListener
-            = new WeakReferencePropertyChangeListener(
-            new PropertyChangeListener()
-            {
-                @Override
-                public void propertyChange(PropertyChangeEvent ev)
-                {
-                    DtlsPacketTransformer.this.propertyChange(ev);
-                }
-            });
+            = new WeakReferencePropertyChangeListener(DtlsPacketTransformer.this::propertyChange);
 
     /**
      * The {@code Queue} of SRTP {@code RawPacket}s which were received from the
@@ -281,8 +272,7 @@ public class DtlsPacketTransformer implements PacketTransformer
             } catch (IOException ioe) {
                 /*
                  * DatagramTransportImpl has no reason to fail because it is merely an adapter of
-                 * #connector and this PacketTransformer to the terms of the Bouncy Castle Crypto
-                 * API.
+                 * #connector and this PacketTransformer to the terms of the Bouncy Castle Crypto API.
                  */
                 Timber.e(ioe, "Failed to (properly) close %s", datagramTransport.getClass());
             }
@@ -357,7 +347,7 @@ public class DtlsPacketTransformer implements PacketTransformer
         if (srtpTransformer != null)
             return srtpTransformer;
 
-        if (rtcpmux && Component.RTCP == componentID)
+        if (rtcpmux && DtlsTransformEngine.COMPONENT_RTCP == componentID)
             return initializeSRTCPTransformerFromRtp();
 
         // XXX It is our explicit policy to rely on the SrtpListener to notify
@@ -435,7 +425,6 @@ public class DtlsPacketTransformer implements PacketTransformer
                 else {
                     msg += " Will retry.";
                     Timber.e(ioe, "%s", msg);
-
                     return true;
                 }
             }
@@ -457,8 +446,7 @@ public class DtlsPacketTransformer implements PacketTransformer
      */
     private SinglePacketTransformer initializeSRTCPTransformerFromRtp()
     {
-        DtlsPacketTransformer rtpTransformer
-                = (DtlsPacketTransformer) getTransformEngine().getRTPTransformer();
+        DtlsPacketTransformer rtpTransformer = (DtlsPacketTransformer) getTransformEngine().getRTPTransformer();
 
         // Prevent recursion (that is pretty much impossible to ever happen).
         if (rtpTransformer != this) {
@@ -468,8 +456,7 @@ public class DtlsPacketTransformer implements PacketTransformer
                     && srtpTransformer instanceof SRTPTransformer) {
                 synchronized (this) {
                     if (_srtpTransformer == null) {
-                        setSrtpTransformer(
-                                new SRTCPTransformer((SRTPTransformer) srtpTransformer));
+                        setSrtpTransformer(new SRTCPTransformer((SRTPTransformer) srtpTransformer));
                     }
                 }
             }
@@ -488,16 +475,15 @@ public class DtlsPacketTransformer implements PacketTransformer
      * @return a new <tt>SRTPTransformer</tt> instance initialized with
      * <tt>srtpProtectionProfile</tt> and <tt>tlsContext</tt>
      */
-    private SinglePacketTransformer initializeSRTPTransformer(int srtpProtectionProfile,
-            TlsContext tlsContext)
+    private SinglePacketTransformer initializeSRTPTransformer(int srtpProtectionProfile, TlsContext tlsContext)
     {
         boolean rtcp;
 
         switch (componentID) {
-            case Component.RTCP:
+            case DtlsTransformEngine.COMPONENT_RTCP:
                 rtcp = true;
                 break;
-            case Component.RTP:
+            case DtlsTransformEngine.COMPONENT_RTP:
                 rtcp = false;
                 break;
             default:
@@ -550,8 +536,32 @@ public class DtlsPacketTransformer implements PacketTransformer
                 throw new IllegalArgumentException("srtpProtectionProfile");
         }
 
-        byte[] keyingMaterial = tlsContext.exportKeyingMaterial(ExporterLabel.dtls_srtp, null,
-                2 * (cipher_key_length + cipher_salt_length));
+        byte[] keyingMaterial = null;
+        if (tlsContext.getSecurityParameters().getMasterSecret() == null
+                && tlsContext.getResumableSession() != null) {
+            // BouncyCastle 1.59 clears the master secret from its session
+            // parameters immediately after connect, making them unavailable
+            // for exporting keying material. The value can still be present
+            // in the session parameters from the resumable session, which is
+            // used here.
+            final SessionParameters sessionParameters
+                    = tlsContext.getResumableSession().exportSessionParameters();
+            if (sessionParameters != null
+                    && sessionParameters.getMasterSecret() != null) {
+                keyingMaterial = exportKeyingMaterial(
+                        tlsContext,
+                        ExporterLabel.dtls_srtp,
+                        null,
+                        2 * (cipher_key_length + cipher_salt_length),
+                        sessionParameters.getMasterSecret()
+                );
+            }
+        }
+        else {
+            // Original, BouncyCastle 1.54-compatible code.
+            keyingMaterial = tlsContext.exportKeyingMaterial(ExporterLabel.dtls_srtp, null,
+                    2 * (cipher_key_length + cipher_salt_length));
+        }
         byte[] client_write_SRTP_master_key = new byte[cipher_key_length];
         byte[] server_write_SRTP_master_key = new byte[cipher_key_length];
         byte[] client_write_SRTP_master_salt = new byte[cipher_salt_length];
@@ -615,12 +625,10 @@ public class DtlsPacketTransformer implements PacketTransformer
         SinglePacketTransformer srtpTransformer;
 
         if (rtcp) {
-            srtpTransformer
-                    = new SRTCPTransformer(forwardSRTPContextFactory, reverseSRTPContextFactory);
+            srtpTransformer = new SRTCPTransformer(forwardSRTPContextFactory, reverseSRTPContextFactory);
         }
         else {
-            srtpTransformer
-                    = new SRTPTransformer(forwardSRTPContextFactory, reverseSRTPContextFactory);
+            srtpTransformer = new SRTPTransformer(forwardSRTPContextFactory, reverseSRTPContextFactory);
         }
         return srtpTransformer;
     }
@@ -723,7 +731,7 @@ public class DtlsPacketTransformer implements PacketTransformer
     @Override
     public RawPacket[] reverseTransform(RawPacket[] pkts)
     {
-        return transform(pkts, /* transform */ false);
+        return transform(pkts, false);
     }
 
     /**
@@ -733,12 +741,11 @@ public class DtlsPacketTransformer implements PacketTransformer
      * @param pkt the DTLS {@code RawPacket} received from the remote peer to
      * process.
      * @param outPkts a list of packets, to which application data read from
-     * the DTLS transport should be appended. If {@code null}, application data
-     * will not be read.
+     * the DTLS transport should be appended. If {@code null}, application data will not be read.
      */
     private void reverseTransformDtls(RawPacket pkt, List<RawPacket> outPkts)
     {
-        if (rtcpmux && Component.RTCP == componentID) {
+        if (rtcpmux && DtlsTransformEngine.COMPONENT_RTCP == componentID) {
             // This should never happen.
             Timber.w("Dropping a DTLS packet, because it was received on the RTCP channel while rtcpmux is in use.");
             return;
@@ -750,8 +757,7 @@ public class DtlsPacketTransformer implements PacketTransformer
                 Timber.w("Dropping a DTLS packet. This DtlsPacketTransformer has not been started successfully or has been closed.");
             }
             else {
-                datagramTransport.queueReceive(
-                        pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
+                datagramTransport.queueReceive(pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
             }
         }
 
@@ -1136,7 +1142,7 @@ public class DtlsPacketTransformer implements PacketTransformer
         outPkts = transformDtls(inPkts, transform, outPkts);
         outPkts = transformNonDtls(inPkts, transform, outPkts);
 
-        return outPkts.toArray(new RawPacket[outPkts.size()]);
+        return outPkts.toArray(new RawPacket[0]);
     }
 
     /**
@@ -1158,8 +1164,7 @@ public class DtlsPacketTransformer implements PacketTransformer
      * the processing including the elements of {@code outPkts}. Practically,
      * {@code outPkts} itself.
      */
-    private List<RawPacket> transformDtls(
-            RawPacket[] inPkts, boolean transform, List<RawPacket> outPkts)
+    private List<RawPacket> transformDtls(RawPacket[] inPkts, boolean transform, List<RawPacket> outPkts)
     {
         if (inPkts != null) {
             for (int i = 0; i < inPkts.length; ++i) {
@@ -1209,8 +1214,7 @@ public class DtlsPacketTransformer implements PacketTransformer
      * the processing including the elements of {@code outPkts}. Practically,
      * {@code outPkts} itself.
      */
-    private List<RawPacket> transformNonDtls(
-            RawPacket[] inPkts, boolean transform, List<RawPacket> outPkts)
+    private List<RawPacket> transformNonDtls(RawPacket[] inPkts, boolean transform, List<RawPacket> outPkts)
     {
         /* Pure/non-SRTP DTLS */
         if (isSrtpDisabled()) {
@@ -1243,8 +1247,7 @@ public class DtlsPacketTransformer implements PacketTransformer
      * {@code RawPacket}s though because it merely wraps {@code inPkts} into
      * DTLS application data.
      */
-    private List<RawPacket> transformNonSrtp(
-            RawPacket[] inPkts, List<RawPacket> outPkts)
+    private List<RawPacket> transformNonSrtp(RawPacket[] inPkts, List<RawPacket> outPkts)
     {
         if (inPkts != null) {
             for (RawPacket inPkt : inPkts) {
@@ -1277,8 +1280,7 @@ public class DtlsPacketTransformer implements PacketTransformer
      * the processing including the elements of {@code outPkts}. Practically,
      * {@code outPkts} itself.
      */
-    private List<RawPacket> transformSrtp(
-            RawPacket[] inPkts, boolean transform, List<RawPacket> outPkts)
+    private List<RawPacket> transformSrtp(RawPacket[] inPkts, boolean transform, List<RawPacket> outPkts)
     {
         SinglePacketTransformer srtpTransformer = getSRTPTransformer();
 
@@ -1292,8 +1294,7 @@ public class DtlsPacketTransformer implements PacketTransformer
         else {
             // Process the (SRTP) packets provided to earlier (method)
             // invocations during which _srtpTransformer was unavailable.
-            LinkedList<RawPacket> q
-                    = transform ? _transformSrtpQueue : _reverseTransformSrtpQueue;
+            LinkedList<RawPacket> q = transform ? _transformSrtpQueue : _reverseTransformSrtpQueue;
 
             // XXX Don't obtain a lock if the queue is empty. If a thread was in
             // the process of adding packets to it, they will be handled in a
@@ -1315,8 +1316,7 @@ public class DtlsPacketTransformer implements PacketTransformer
                             ? inPkts[0] : null;
 
                     try {
-                        outPkts = transformSrtp(
-                                srtpTransformer, q, transform, outPkts, template);
+                        outPkts = transformSrtp(srtpTransformer, q, transform, outPkts, template);
                     } finally {
                         // If a RawPacket from q causes an exception, do not
                         // attempt to process it next time.
@@ -1328,9 +1328,7 @@ public class DtlsPacketTransformer implements PacketTransformer
             // Process the (SRTP) packets provided to the current (method)
             // invocation.
             if (inPkts != null && inPkts.length != 0) {
-                outPkts = transformSrtp(
-                        srtpTransformer, Arrays.asList(inPkts), transform,
-                        outPkts, /* template */ null);
+                outPkts = transformSrtp(srtpTransformer, Arrays.asList(inPkts), transform, outPkts, null);
             }
         }
         return outPkts;
@@ -1357,8 +1355,7 @@ public class DtlsPacketTransformer implements PacketTransformer
      * the processing including the elements of {@code outPkts}. Practically,
      * {@code outPkts} itself.
      */
-    private List<RawPacket> transformSrtp(
-            SinglePacketTransformer srtpTransformer, Collection<RawPacket> inPkts,
+    private List<RawPacket> transformSrtp(SinglePacketTransformer srtpTransformer, Collection<RawPacket> inPkts,
             boolean transform, List<RawPacket> outPkts, RawPacket template)
     {
         for (RawPacket inPkt : inPkts) {
@@ -1432,5 +1429,43 @@ public class DtlsPacketTransformer implements PacketTransformer
             return template.getRTCPSSRC() == pkt.getRTCPSSRC();
         }
         return true;
+    }
+
+    /* Copied from TlsContext#exportKeyingMaterial and modified to work with
+     * an externally provided masterSecret value.
+     */
+    private static byte[] exportKeyingMaterial(TlsContext context, String asciiLabel, byte[] context_value, int length, byte[] masterSecret)
+    {
+        if (context_value != null && !TlsUtils.isValidUint16(context_value.length)) {
+            throw new IllegalArgumentException("'context_value' must have length less than 2^16 (or be null)");
+        }
+
+        SecurityParameters sp = context.getSecurityParameters();
+        byte[] cr = sp.getClientRandom(), sr = sp.getServerRandom();
+
+        int seedLength = cr.length + sr.length;
+        if (context_value != null) {
+            seedLength += (2 + context_value.length);
+        }
+
+        byte[] seed = new byte[seedLength];
+        int seedPos = 0;
+
+        System.arraycopy(cr, 0, seed, seedPos, cr.length);
+        seedPos += cr.length;
+        System.arraycopy(sr, 0, seed, seedPos, sr.length);
+        seedPos += sr.length;
+        if (context_value != null) {
+            TlsUtils.writeUint16(context_value.length, seed, seedPos);
+            seedPos += 2;
+            System.arraycopy(context_value, 0, seed, seedPos, context_value.length);
+            seedPos += context_value.length;
+        }
+
+        if (seedPos != seedLength) {
+            throw new IllegalStateException("error in calculation of seed for export");
+        }
+
+        return TlsUtils.PRF(context, masterSecret, asciiLabel, seed, length);
     }
 }

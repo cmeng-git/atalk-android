@@ -61,14 +61,12 @@ public final class StringUtils
             char ch = camelCase.charAt(wordEndIndex);
 
             if (Character.isUpperCase(ch) && (wordBeginIndex != wordEndIndex)) {
-                display.append(
-                        camelCase.substring(wordBeginIndex, wordEndIndex));
+                display.append(camelCase.substring(wordBeginIndex, wordEndIndex));
                 display.append(' ');
                 wordBeginIndex = wordEndIndex;
             }
         }
-        if (wordEndIndex >= camelCaseLength)
-            display.append(camelCase.substring(wordBeginIndex));
+        display.append(camelCase.substring(wordBeginIndex));
         return display.toString();
     }
 

@@ -202,24 +202,11 @@ public class OSGiActivity extends FragmentActivity
         ExceptionHandler.resetCrashedStatus();
         // Asks the user
         AlertDialog.Builder question = new AlertDialog.Builder(this);
-        question.setTitle(R.string.service_gui_WARNING).setMessage(
-                getString(R.string.service_gui_SEND_LOGS_QUESTION))
-                .setPositiveButton(R.string.service_gui_YES, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                        aTalkApp.showSendLogsDialog();
-                    }
-                }).setNegativeButton(R.string.service_gui_NO, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.dismiss();
-            }
-        }).create().show();
+        question.setTitle(R.string.service_gui_WARNING).setMessage(getString(R.string.service_gui_SEND_LOGS_QUESTION))
+                .setPositiveButton(R.string.service_gui_YES, (dialog, which) -> {
+                    dialog.dismiss();
+                    aTalkApp.showSendLogsDialog();
+                }).setNegativeButton(R.string.service_gui_NO, (dialog, which) -> dialog.dismiss()).create().show();
 
     }
 

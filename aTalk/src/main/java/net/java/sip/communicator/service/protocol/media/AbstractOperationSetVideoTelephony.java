@@ -162,8 +162,7 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
 	{
 		@SuppressWarnings("unchecked")
 		W w = (W) peer;
-		VideoMediaStream videoStream = (VideoMediaStream) w.getMediaHandler().getStream(
-			MediaType.VIDEO);
+		VideoMediaStream videoStream = (VideoMediaStream) w.getMediaHandler().getStream(MediaType.VIDEO);
 
 		if (videoStream != null) {
 			for (ConferenceMember member : peer.getConferenceMembers()) {

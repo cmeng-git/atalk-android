@@ -64,7 +64,6 @@ public class ImgStreamingSystem extends DeviceSystem
 
 			for (ScreenDevice screen : screens) {
 				Dimension s = screen.getSize();
-
 				size.width += s.width;
 				size.height += s.height;
 			}
@@ -90,8 +89,8 @@ public class ImgStreamingSystem extends DeviceSystem
 					Format.NOT_SPECIFIED, // frameRate
 					32, // bitsPerPixel
 					2 /* red */, 3 /* green */, 4 /* blue */) };
-			CaptureDeviceInfo cdi = new CaptureDeviceInfo(name + " " + i, new MediaLocator(
-				LOCATOR_PROTOCOL + ":" + i), formats);
+			CaptureDeviceInfo cdi = new CaptureDeviceInfo(name + " " + i,
+                    new MediaLocator(LOCATOR_PROTOCOL + ":" + i), formats);
 
 			CaptureDeviceManager.addDevice(cdi);
 			i++;

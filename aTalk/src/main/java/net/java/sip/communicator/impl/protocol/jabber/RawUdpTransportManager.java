@@ -5,8 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriConferenceIQ;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
+import org.xmpp.extensions.colibri.ColibriConferenceIQ;
+import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
@@ -453,5 +453,16 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
     public int getNbHarvesting(String harvesterName)
     {
         return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setRtcpmux(boolean rtcpmux)
+    {
+        if (rtcpmux) {
+            throw new IllegalArgumentException("rtcp mux not supported by " + getClass().getSimpleName());
+        }
     }
 }

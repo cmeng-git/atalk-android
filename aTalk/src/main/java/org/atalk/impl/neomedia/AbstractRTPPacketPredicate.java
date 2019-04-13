@@ -14,6 +14,7 @@
 package org.atalk.impl.neomedia;
 
 import org.atalk.service.neomedia.ByteArrayBuffer;
+import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.RTCPUtils;
 import org.atalk.util.function.Predicate;
 // import java.util.function.Predicate; => need API-24
@@ -46,8 +47,7 @@ public class AbstractRTPPacketPredicate implements Predicate<ByteArrayBuffer>
     public boolean test(ByteArrayBuffer pkt)
     {
         // If isHeaderValid fails, this is not a valid RTP packet either.
-        if (pkt == null || !RTCPUtils.isHeaderValid(
-                pkt.getBuffer(), pkt.getOffset(), pkt.getLength())) {
+        if (pkt == null || !RawPacket.isRtpRtcp(pkt.getBuffer(), pkt.getOffset(), pkt.getLength())) {
             return false;
         }
 

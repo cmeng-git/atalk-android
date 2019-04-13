@@ -5,9 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriConferenceIQ;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriStreamConnector;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
+import org.xmpp.extensions.colibri.ColibriConferenceIQ;
+import org.xmpp.extensions.colibri.ColibriStreamConnector;
+import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
@@ -725,4 +725,9 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
         }
         return channel;
     }
+
+    /**
+     * Sets the flag which indicates whether to use rtcpmux or not.
+     */
+    public abstract void setRtcpmux(boolean rtcpmux);
 }

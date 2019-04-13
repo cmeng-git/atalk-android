@@ -29,146 +29,139 @@ import java.util.*;
  */
 public class CallRecord
 {
-	/**
-	 * The outgoing call direction.
-	 */
-	public final static String OUT = "out";
+    /**
+     * The outgoing call direction.
+     */
+    public final static String OUT = "out";
 
-	/**
-	 * The incoming call direction.
-	 */
-	public final static String IN = "in";
+    /**
+     * The incoming call direction.
+     */
+    public final static String IN = "in";
 
-	/**
-	 * Indicates the direction of the call - IN or OUT.
-	 */
-	protected String direction = null;
+    /**
+     * Indicates the direction of the call - IN or OUT.
+     */
+    protected String direction = null;
 
-	/**
-	 * A list of all peer records corresponding to this call record.
-	 */
-	protected final List<CallPeerRecord> peerRecords = new Vector<>();
+    /**
+     * A list of all peer records corresponding to this call record.
+     */
+    protected final List<CallPeerRecord> peerRecords = new Vector<>();
 
-	/**
-	 * The start call date.
-	 */
-	protected Date startTime = null;
+    /**
+     * The start call date.
+     */
+    protected Date startTime = null;
 
-	/**
-	 * The end call date.
-	 */
-	protected Date endTime = null;
+    /**
+     * The end call date.
+     */
+    protected Date endTime = null;
 
-	/**
-	 * The protocol provider (accountUid) through which the call was made.
-	 */
-	protected ProtocolProviderService protocolProvider;
+    /**
+     * The protocol provider (accountUid) through which the call was made.
+     */
+    protected ProtocolProviderService protocolProvider;
 
-	/**
-	 * This is the end reason of the call if any. -1 default value for no reason specified.
-	 */
-	protected int endReason = -1;
+    /**
+     * This is the end reason of the call if any. -1 default value for no reason specified.
+     */
+    protected int endReason = -1;
 
-	/**
-	 * Creates CallRecord
-	 */
-	public CallRecord()
-	{
-	}
+    /**
+     * Creates CallRecord
+     */
+    public CallRecord()
+    {
+    }
 
-	/**
-	 * Creates Call Record
-	 *
-	 * @param direction
-	 * 		String
-	 * @param startTime
-	 * 		Date
-	 * @param endTime
-	 * 		Date
-	 */
-	public CallRecord(String direction, Date startTime, Date endTime)
-	{
-		this.direction = direction;
-		this.startTime = startTime;
-		this.endTime = endTime;
-	}
+    /**
+     * Creates Call Record
+     *
+     * @param direction String
+     * @param startTime Date
+     * @param endTime Date
+     */
+    public CallRecord(String direction, Date startTime, Date endTime)
+    {
+        this.direction = direction;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
-	/**
-	 * Finds a CallPeer with the supplied address
-	 *
-	 * @param address
-	 * 		EntityFullJid or callParticipantIDs
-	 * @return CallPeerRecord
-	 */
-	public CallPeerRecord findPeerRecord(String address)
-	{
-		for (CallPeerRecord item : peerRecords) {
-			if (item.getPeerAddress().equals(address))
-				return item;
-		}
-		return null;
-	}
+    /**
+     * Finds a CallPeer with the supplied address
+     *
+     * @param address EntityFullJid or callParticipantIDs
+     * @return CallPeerRecord
+     */
+    public CallPeerRecord findPeerRecord(String address)
+    {
+        for (CallPeerRecord item : peerRecords) {
+            if (item.getPeerAddress().equals(address))
+                return item;
+        }
+        return null;
+    }
 
-	/**
-	 * Returns the direction of the call
-	 * IN or OUT
-	 *
-	 * @return String
-	 */
-	public String getDirection()
-	{
-		return direction;
-	}
+    /**
+     * Returns the direction of the call IN or OUT
+     *
+     * @return String
+     */
+    public String getDirection()
+    {
+        return direction;
+    }
 
-	/**
-	 * Returns the time when the call has finished
-	 *
-	 * @return Date
-	 */
-	public Date getEndTime()
-	{
-		return endTime;
-	}
+    /**
+     * Returns the time when the call has finished
+     *
+     * @return Date
+     */
+    public Date getEndTime()
+    {
+        return endTime;
+    }
 
-	/**
-	 * Return Vector of CallPeerRecords
-	 *
-	 * @return Vector
-	 */
-	public List<CallPeerRecord> getPeerRecords()
-	{
-		return peerRecords;
-	}
+    /**
+     * Return Vector of CallPeerRecords
+     *
+     * @return Vector
+     */
+    public List<CallPeerRecord> getPeerRecords()
+    {
+        return peerRecords;
+    }
 
-	/**
-	 * The time when the call has began
-	 *
-	 * @return Date
-	 */
-	public Date getStartTime()
-	{
-		return startTime;
-	}
+    /**
+     * The time when the call has began
+     *
+     * @return Date
+     */
+    public Date getStartTime()
+    {
+        return startTime;
+    }
 
-	/**
-	 * Returns the protocol provider used for the call. Could be null if the
-	 * record has not saved the provider.
-	 *
-	 * @return the protocol provider used for the call
-	 */
-	public ProtocolProviderService getProtocolProvider()
-	{
-		return protocolProvider;
-	}
+    /**
+     * Returns the protocol provider used for the call. Could be null if the record has not saved the provider.
+     *
+     * @return the protocol provider used for the call
+     */
+    public ProtocolProviderService getProtocolProvider()
+    {
+        return protocolProvider;
+    }
 
-	/**
-	 * This is the end reason of the call if any. -1 the default value
-	 * for no reason specified.
-	 *
-	 * @return end reason code if any.
-	 */
-	public int getEndReason()
-	{
-		return endReason;
-	}
+    /**
+     * This is the end reason of the call if any. -1 the default value for no reason specified.
+     *
+     * @return end reason code if any.
+     */
+    public int getEndReason()
+    {
+        return endReason;
+    }
 }

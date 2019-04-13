@@ -578,7 +578,7 @@
 
     <!-- Logs -->
     <string name="service_gui_SEND_LOGS">Report Bugs</string>
-    <string name="service_gui_SEND_LOGS_QUESTION">aTalk has just recovered after serious crash. Do you want to report the bugs to devepers?</string>
+    <string name="service_gui_SEND_LOGS_QUESTION">aTalk has just recovered after serious crash. Do you want to report the bugs to developers?</string>
     <string name="service_gui_SEND_LOGS_SUBJECT">aTalk bugs report</string>
     <string name="service_gui_SEND_LOGS_TITLE">aTalk bugs report via email</string>
     <string name="service_gui_SEND_LOGS_INFO">Please provide a brief description on:\nWhat was the problem and how it happened?</string>

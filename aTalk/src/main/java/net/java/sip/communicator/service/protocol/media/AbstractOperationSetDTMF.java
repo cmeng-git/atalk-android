@@ -70,8 +70,7 @@ public abstract class AbstractOperationSetDTMF implements OperationSetDTMF
 	private static int getMinimalToneDurationSetting(ProtocolProviderService pps)
 	{
 		AccountID accountID = pps.getAccountID();
-		String minimalToneDurationString = accountID
-			.getAccountPropertyString("DTMF_MINIMAL_TONE_DURATION");
+		String minimalToneDurationString = accountID.getAccountPropertyString("DTMF_MINIMAL_TONE_DURATION");
 		int minimalToneDuration = OperationSetDTMF.DEFAULT_DTMF_MINIMAL_TONE_DURATION;
 		// Check if there is a specific value for this account.
 		if (!StringUtils.isNullOrEmpty(minimalToneDurationString)) {

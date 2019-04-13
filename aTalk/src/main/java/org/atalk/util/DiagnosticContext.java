@@ -15,6 +15,7 @@
  */
 package org.atalk.util;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,7 +48,7 @@ public class DiagnosticContext extends ConcurrentHashMap<String, Object>
 //     * @param timeSeriesName the name of the time series
 //     * @param tsMs the timestamp of the time series point (in millis)
 //     */
-//    public TimeSeriesPoint makeTimeSeriesPoint(String timeSeriesName, long tsMs)
+//    public TimeSeriesPoint makeTimeSeriesPoint-api26(String timeSeriesName, long tsMs)
 //    {
 //        return makeTimeSeriesPointInternal(timeSeriesName, tsMs);
 //    }
@@ -65,6 +66,16 @@ public class DiagnosticContext extends ConcurrentHashMap<String, Object>
                 .addField("series", timeSeriesName)
                 .addField("time", tsMs);
     }
+
+    // Required API-26
+//    public TimeSeriesPoint makeTimeSeriesPoint(
+//        String timeSeriesName, Instant instant)
+//    {
+//        return new TimeSeriesPoint(this)
+//            .addField("series", timeSeriesName)
+//            .addField("time",
+//                instant.getEpochSecond() + "." + instant.getNano());
+//    }
 
     public class TimeSeriesPoint extends HashMap<String, Object>
     {

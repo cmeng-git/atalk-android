@@ -14,24 +14,25 @@ make clean
   --prefix=${PREFIX} \
   --cross-prefix=${CROSS_PREFIX} \
   --sysroot=${SYSROOT} \
+  --pkg-config=${BASEDIR}/ffmpeg-pkg-config \
   --nm=${CROSS_PREFIX}nm \
   --cc=${CROSS_PREFIX}gcc \
   --extra-libs="-lgcc" \
-  --target-os=linux \
   --disable-asm \
   --arch=arm64 \
   --cpu=cortex-a57 \
   --extra-cflags="-O3 -DANDROID -Dipv6mr_interface=ipv6mr_ifindex -march=armv8-a -fPIC -fasm -Wno-psabi -fno-short-enums -fno-strict-aliasing -I${PREFIX}/include/x264" \
-  --extra-ldflags="-lc -lm -ldl -llog ${ADDI_LDFLAGS} -L${PREFIX}/lib -lx264"
+  --extra-ldflags="-lc -lm -ldl -llog ${ADDI_LDFLAGS} -L${PREFIX}/lib"
 
 make -j${HOST_NUM_CORES} install
 }
 
-export CPU=arm64-v8a
-PREFIX=../android/${CPU}
+export ABI=arm64-v8a
+PREFIX=../android/${ABI}
 CROSS_PREFIX=${TOOLCHAIN}/bin/aarch64-linux-android-
+
 
 pushd ffmpeg
 build_target
 popd
-echo -e "*** Android ffmpeg for ${CPU} builds completed ***\n\n"
+echo -e "*** Android ffmpeg for ${ABI} builds completed ***\n\n"

@@ -34,11 +34,9 @@ public class RTPConnectorTCPOutputStream extends RTPConnectorOutputStream
     }
 
     /**
-     * Sends a specific <tt>RawPacket</tt> through this <tt>OutputDataStream</tt> to a specific
-     * <tt>InetSocketAddress</tt>.
+     * Sends a specific <tt>RawPacket</tt> through this <tt>OutputDataStream</tt> to a specific <tt>InetSocketAddress</tt>.
      *
-     * @param packet the <tt>RawPacket</tt> to send through this <tt>OutputDataStream</tt> to the specified
-     * <tt>target</tt>
+     * @param packet the <tt>RawPacket</tt> to send through this <tt>OutputDataStream</tt> to the specified <tt>target</tt>
      * @param target the <tt>InetSocketAddress</tt> to which the specified <tt>packet</tt> is to be sent
      * through this <tt>OutputDataStream</tt>
      * @throws IOException if anything goes wrong while sending the specified <tt>packet</tt> through this
@@ -54,8 +52,7 @@ public class RTPConnectorTCPOutputStream extends RTPConnectorOutputStream
     /**
      * Returns whether or not this <tt>RTPConnectorOutputStream</tt> has a valid socket.
      *
-     * @return <tt>true</tt>if this <tt>RTPConnectorOutputStream</tt> has a valid socket, and
-     * <tt>false</tt> otherwise.
+     * @return <tt>true</tt>if this <tt>RTPConnectorOutputStream</tt> has a valid socket, and <tt>false</tt> otherwise.
      */
     @Override
     protected boolean isSocketValid()

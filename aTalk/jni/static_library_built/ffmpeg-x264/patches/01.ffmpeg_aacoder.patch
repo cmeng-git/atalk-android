@@ -1,0 +1,16 @@
+--- a/ffmpeg/libavcodec/aaccoder.c
++++ b/ffmpeg/libavcodec/aaccoder.c
+@@ -58,12 +58,13 @@
+ 
+ /* Parameter of f(x) = a*(100/lambda), defines how much PNS is allowed to
+  * replace low energy non zero bands */
+ #define NOISE_LAMBDA_REPLACE 1.948f
+ 
+ #include "libavcodec/aaccoder_trellis.h"
++#undef B0
+ 
+ /**
+  * structure used in optimal codebook search
+  */
+ typedef struct BandCodingPath {
+     int prev_idx; ///< pointer to the previous path point

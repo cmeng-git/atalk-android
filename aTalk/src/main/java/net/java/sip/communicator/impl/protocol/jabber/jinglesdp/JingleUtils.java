@@ -6,9 +6,9 @@
 package net.java.sip.communicator.impl.protocol.jabber.jinglesdp;
 
 import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentExtensionElement.CreatorEnum;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentExtensionElement.SendersEnum;
+import org.xmpp.extensions.jingle.*;
+import org.xmpp.extensions.jingle.ContentExtensionElement.CreatorEnum;
+import org.xmpp.extensions.jingle.ContentExtensionElement.SendersEnum;
 import net.java.sip.communicator.service.protocol.media.DynamicPayloadTypeRegistry;
 import net.java.sip.communicator.service.protocol.media.DynamicRTPExtensionsRegistry;
 import net.java.sip.communicator.util.NetworkUtils;

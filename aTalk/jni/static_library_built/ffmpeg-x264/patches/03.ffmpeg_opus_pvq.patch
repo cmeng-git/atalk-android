@@ -1,0 +1,18 @@
+--- a/ffmpeg/libavcodec/opus_pvq.c
++++ b/ffmpeg/libavcodec/opus_pvq.c
+@@ -22,13 +22,14 @@
+  * License along with FFmpeg; if not, write to the Free Software
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
+ #include "opustab.h"
+ #include "opus_pvq.h"
+-
++#undef B0
++
+ #define CELT_PVQ_U(n, k) (ff_celt_pvq_u_row[FFMIN(n, k)][FFMAX(n, k)])
+ #define CELT_PVQ_V(n, k) (CELT_PVQ_U(n, k) + CELT_PVQ_U(n, (k) + 1))
+ 
+ static inline int16_t celt_cos(int16_t x)
+ {
+     x = (MUL16(x, x) + 4096) >> 13;

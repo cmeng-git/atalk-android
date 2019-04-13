@@ -10,7 +10,8 @@ import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.version.Version;
-import org.atalk.util.*;
+import org.atalk.util.ConfigUtils;
+import org.atalk.util.StringUtils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -48,14 +49,12 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * &quot;upgrades&quot; of which other hash functions. The keys are the hash
      * functions which have &quot;upgrades&quot; defined and are written in lower case.
      */
-    private static final Map<String, String[]> HASH_FUNCTION_UPGRADES
-            = new HashMap<>();
+    private static final Map<String, String[]> HASH_FUNCTION_UPGRADES = new HashMap<>();
 
     /**
      * The table which maps half-<tt>byte</tt>s to their hex characters.
      */
-    private static final char[] HEX_ENCODE_TABLE
-            = {
+    private static final char[] HEX_ENCODE_TABLE = {
             '0', '1', '2', '3', '4', '5', '6', '7',
             '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
     };
@@ -70,8 +69,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * during certificate creation. When a certificate is created and this
      * property is not set, a default value of "SHA1withRSA" will be used.
      */
-    public static final String PROP_SIGNATURE_ALGORITHM
-            = "neomedia.transform.dtls.SIGNATURE_ALGORITHM";
+    public static final String PROP_SIGNATURE_ALGORITHM = "neomedia.transform.dtls.SIGNATURE_ALGORITHM";
 
     /**
      * The name of the property to specify RSA Key length.
@@ -86,8 +84,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     /**
      * The RSA key size to use.
      * The default value is {@code DEFAULT_RSA_KEY_SIZE} but may be overridden
-     * by the {@code ConfigurationService} and/or {@code System} property
-     * {@code RSA_KEY_SIZE_PNAME}.
+     * by the {@code ConfigurationService} and/or {@code System} property {@code RSA_KEY_SIZE_PNAME}.
      */
     public static final int RSA_KEY_SIZE;
 
@@ -116,8 +113,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     /**
      * The name of the property to specify DTLS certificate cache expiration.
      */
-    public static final String CERT_CACHE_EXPIRE_TIME_PNAME
-            = "neomedia.transform.dtls.CERT_CACHE_EXPIRE_TIME";
+    public static final String CERT_CACHE_EXPIRE_TIME_PNAME = "neomedia.transform.dtls.CERT_CACHE_EXPIRE_TIME";
 
 
     /**
@@ -194,9 +190,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
                 DEFAULT_CERT_CACHE_EXPIRE_TIME);
 
         // HASH_FUNCTION_UPGRADES
-        HASH_FUNCTION_UPGRADES.put(
-                "sha-1",
-                new String[]{"sha-224", "sha-256", "sha-384", "sha-512"});
+        HASH_FUNCTION_UPGRADES.put("sha-1", new String[]{"sha-224", "sha-256", "sha-384", "sha-512"});
     }
 
     /**
@@ -204,8 +198,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * <tt>DtlsControlImpl</tt>.
      *
      * @param theirs the list of <tt>SRTPProtectionProfile</tt>s to choose from
-     * @return the first from the specified <tt>theirs</tt> that is supported by
-     * <tt>DtlsControlImpl</tt>
+     * @return the first from the specified <tt>theirs</tt> that is supported by <tt>DtlsControlImpl</tt>
      */
     static int chooseSRTPProtectionProfile(int... theirs)
     {
@@ -226,8 +219,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * @param certificate the certificate the fingerprint of which is to be computed
      * @param hashFunction the hash function to be used in order to compute the fingerprint of the specified
      * <tt>certificate</tt>
-     * @return the fingerprint of the specified <tt>certificate</tt> computed using the specified
-     * <tt>hashFunction</tt>
+     * @return the fingerprint of the specified <tt>certificate</tt> computed using the specified <tt>hashFunction</tt>
      */
     private static final String computeFingerprint(Certificate certificate, String hashFunction)
     {
@@ -267,11 +259,9 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     {
         try {
             AlgorithmIdentifier sigAlgId = certificate.getSignatureAlgorithm();
-            AlgorithmIdentifier digAlgId
-                    = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
+            AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
 
-            return BcDefaultDigestProvider.INSTANCE
-                    .get(digAlgId).getAlgorithmName().toLowerCase();
+            return BcDefaultDigestProvider.INSTANCE.get(digAlgId).getAlgorithmName().toLowerCase();
         } catch (Throwable t) {
             if (t instanceof ThreadDeath) {
                 throw (ThreadDeath) t;
@@ -291,25 +281,20 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * function and has a fingerprint associated with it.
      *
      * @param hashFunction the hash function which is not associated with a
-     * fingerprint and for which an &quot;upgrade&quot; associated with a
-     * fingerprint is to be found
-     * @param fingerprints the set of available hash function-fingerprint
-     * associations
+     * fingerprint and for which an &quot;upgrade&quot; associated with a fingerprint is to be found
+     * @param fingerprints the set of available hash function-fingerprint associations
      * @return a hash function written in lower case which is an
      * &quot;upgrade&quot; of the specified {@code hashFunction} and has a
      * fingerprint associated with it in {@code fingerprints} if there is such
      * a hash function; otherwise, {@code null}
      */
-    private static String findHashFunctionUpgrade(
-            String hashFunction,
-            Map<String, String> fingerprints)
+    private static String findHashFunctionUpgrade(String hashFunction, Map<String, String> fingerprints)
     {
         String[] hashFunctionUpgrades = HASH_FUNCTION_UPGRADES.get(hashFunction);
 
         if (hashFunctionUpgrades != null) {
             for (String hashFunctionUpgrade : hashFunctionUpgrades) {
                 String fingerprint = fingerprints.get(hashFunctionUpgrade);
-
                 if (fingerprint != null)
                     return hashFunctionUpgrade.toLowerCase();
             }
@@ -336,8 +321,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
                 }
         );
         String localFingerprintHashFunction = findHashFunction(x509Certificate);
-        String localFingerprint
-                = computeFingerprint(x509Certificate, localFingerprintHashFunction);
+        String localFingerprint = computeFingerprint(x509Certificate, localFingerprintHashFunction);
 
         long timestamp = System.currentTimeMillis();
         return new CertificateInfo(
@@ -399,11 +383,9 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      *
      * @param subject the subject (and issuer) of the new certificate to be generated
      * @param keyPair the pair of private and public keys of the certificate to be generated
-     * @return a new self-signed certificate with the specified <tt>subject</tt> and
-     * <tt>keyPair</tt>
+     * @return a new self-signed certificate with the specified <tt>subject</tt> and <tt>keyPair</tt>
      */
-    private static Certificate generateX509Certificate(X500Name subject,
-            AsymmetricCipherKeyPair keyPair)
+    private static Certificate generateX509Certificate(X500Name subject, AsymmetricCipherKeyPair keyPair)
     {
         // The signature algorithm of the generated certificate defaults to
         // SHA1. However, allow the overriding of the default via the
@@ -422,12 +404,9 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
                     /* serial */BigInteger.valueOf(now), notBefore, notAfter, subject,
                     /* publicKeyInfo */
                     SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(keyPair.getPublic()));
-            AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder()
-                    .find("SHA1withRSA");
-            AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder()
-                    .find(sigAlgId);
-            ContentSigner signer = new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(
-                    keyPair.getPrivate());
+            AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find("SHA1withRSA");
+            AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
+            ContentSigner signer = new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(keyPair.getPrivate());
 
             return builder.build(signer).toASN1Structure();
         } catch (Throwable t) {
@@ -445,13 +424,11 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
 
     /**
      * Gets the <tt>String</tt> representation of a fingerprint specified in the form of an
-     * array of
-     * <tt>byte</tt>s in accord with RFC 4572.
+     * array of <tt>byte</tt>s in accord with RFC 4572.
      *
      * @param fingerprint an array of <tt>bytes</tt> which represents a fingerprint the <tt>String</tt>
      * representation in accord with RFC 4572 of which is to be returned
-     * @return the <tt>String</tt> representation in accord with RFC 4572 of the specified
-     * <tt>fingerprint</tt>
+     * @return the <tt>String</tt> representation in accord with RFC 4572 of the specified <tt>fingerprint</tt>
      */
     private static String toHex(byte[] fingerprint)
     {
@@ -490,8 +467,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
 
     /**
      * The properties of {@code DtlsControlImpl} and their values which this
-     * instance shares with {@link DtlsTransformEngine} and
-     * {@link DtlsPacketTransformer}.
+     * instance shares with {@link DtlsTransformEngine} and {@link DtlsPacketTransformer}.
      */
     private final Properties properties;
 
@@ -523,11 +499,9 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
         synchronized (DtlsControlImpl.class) {
             certificateInfo = certificateInfoCache;
             if (certificateInfo == null
-                    || certificateInfo.timestamp + CERT_CACHE_EXPIRE_TIME
-                    < System.currentTimeMillis()) {
+                    || certificateInfo.timestamp + CERT_CACHE_EXPIRE_TIME < System.currentTimeMillis()) {
                 // The cache doesn't exist yet or has outlived its lifetime. Rebuild the cache.
-                certificateInfoCache = certificateInfo
-                        = generateCertificateInfo();
+                certificateInfoCache = certificateInfo = generateCertificateInfo();
             }
         }
         this.certificateInfo = certificateInfo;
@@ -817,7 +791,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
                 if ((throwableMessage == null) || (throwableMessage.length() == 0))
                     Timber.e(e, "%s", message);
                 else
-                    Timber.e("%s %s",message, throwableMessage);
+                    Timber.e("%s %s", message, throwableMessage);
 
                 throw e;
             }
@@ -831,7 +805,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
                 if (throwableMessage == null || throwableMessage.length() == 0)
                     Timber.w(e, "%s", message);
                 else
-                    Timber.w("%s %s",message, throwableMessage);
+                    Timber.w("%s %s", message, throwableMessage);
             }
         }
         return b;

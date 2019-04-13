@@ -73,8 +73,7 @@ public class AndroidMediaCodec extends AbstractCodec2
     private static final Format[] SUPPORTED_INPUT_FORMATS;
 
     /**
-     * The list of <tt>Format</tt>s of media data supported as output by <tt>AndroidMediaCodec</tt>
-     * instances.
+     * The list of <tt>Format</tt>s of media data supported as output by <tt>AndroidMediaCodec</tt> instances.
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS;
 
@@ -96,8 +95,7 @@ public class AndroidMediaCodec extends AbstractCodec2
 
         /*
          * The Formats supported by AndroidMediaCodec as input and output are the mime types and
-         * colorFormats (in the cases of video) supported by the MediaCodecs available on the
-         * Android system.
+         * colorFormats (in the cases of video) supported by the MediaCodecs available on the Android system.
          */
 
         /*
@@ -161,8 +159,7 @@ public class AndroidMediaCodec extends AbstractCodec2
                     continue;
 
                 /*
-                 * Finally, we know the FMJ Formats supported by Android's MediaCodec as input and
-                 * output.
+                 * Finally, we know the FMJ Formats supported by Android's MediaCodec as input and output.
                  */
                 List<Format> a, b;
 
@@ -247,8 +244,7 @@ public class AndroidMediaCodec extends AbstractCodec2
 
     /**
      * Gets an FMJ <tt>VideoFormat</tt> instance which represents the same information about media
-     * data as a specific <tt>colorFormat</tt> defined in the terms of Android's <tt>MediaCodec</tt>
-     * class.
+     * data as a specific <tt>colorFormat</tt> defined in the terms of Android's <tt>MediaCodec</tt> class.
      *
      * @param colorFormat the <tt>colorFormat</tt> value in the terms of Android's <tt>MediaCodec</tt> class to
      * get an FMJ <tt>VideoFormat</tt> equivalent of
@@ -299,8 +295,7 @@ public class AndroidMediaCodec extends AbstractCodec2
      * @param format the FMJ <tt>Format</tt> to get the equivalent to
      * @return a <tt>colorFormat</tt> value defined in the terms of Android's <tt>MediaCodec</tt>
      * class which is equivalent to the specified <tt>format</tt> or
-     * {@link #OMX_COLOR_FormatUnused} if no equivalent is known to
-     * <tt>AndroidMediaCodec</tt>
+     * {@link #OMX_COLOR_FormatUnused} if no equivalent is known to <tt>AndroidMediaCodec</tt>
      */
     private static int getMediaCodecColorFormatFromFmjFormat(Format format)
     {
@@ -313,7 +308,6 @@ public class AndroidMediaCodec extends AbstractCodec2
                     return PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS[i + 1];
             }
         }
-
         return OMX_COLOR_FormatUnused;
     }
 
@@ -369,7 +363,6 @@ public class AndroidMediaCodec extends AbstractCodec2
     private static boolean matchesMediaCodecType(Format format, String type)
     {
         String formatType = getMediaCodecTypeFromFmjFormat(format);
-
         return (formatType != null) && formatType.equals(type);
     }
 
@@ -621,12 +614,9 @@ public class AndroidMediaCodec extends AbstractCodec2
                 }
             } finally {
                 mediaCodec.queueInputBuffer(mediaCodecInputIndex, mediaCodecInputOffset,
-                        mediaCodecInputLength,
-                        /* presentationTimeUs */0,
-                        /* flags */0);
+                        mediaCodecInputLength, 0, 0);
             }
         }
-
         return processed;
     }
 
@@ -651,9 +641,7 @@ public class AndroidMediaCodec extends AbstractCodec2
             if (codecInfo.isEncoder()) {
                 /* The supported input Formats are the colorFormats. */
                 for (String supportedType : supportedTypes) {
-                    MediaCodecInfo.CodecCapabilities capabilities = getCapabilitiesForType(
-                            codecInfo, supportedType);
-
+                    MediaCodecInfo.CodecCapabilities capabilities = getCapabilitiesForType(codecInfo, supportedType);
                     if (capabilities != null) {
                         int[] colorFormats = capabilities.colorFormats;
 
@@ -685,8 +673,8 @@ public class AndroidMediaCodec extends AbstractCodec2
                 for (String supportedType : supportedTypes) {
                     if (matchesMediaCodecType(inputFormat, supportedType)) {
                         /* The supported output Formats are the colorFormats. */
-                        MediaCodecInfo.CodecCapabilities capabilities = getCapabilitiesForType(
-                                codecInfo, supportedType);
+                        MediaCodecInfo.CodecCapabilities capabilities
+                                = getCapabilitiesForType(codecInfo, supportedType);
 
                         if (capabilities != null) {
                             int[] colorFormats = capabilities.colorFormats;

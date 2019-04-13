@@ -71,11 +71,9 @@ public class ProtoContactEvent extends PropertyChangeEvent
      * contact before the event occurred or null for a new contact or when
      * irrelevant.
      * @param newParent the <tt>MetaContact</tt> that is parent of the source
-     * contact after the event occurred or null for a removed contact or when
-     * irrelevant.
+     * contact after the event occurred or null for a removed contact or when irrelevant.
      */
-    public ProtoContactEvent(Contact source, String eventName, MetaContact oldParent,
-            MetaContact newParent)
+    public ProtoContactEvent(Contact source, String eventName, MetaContact oldParent, MetaContact newParent)
     {
         super(source, eventName, oldParent, newParent);
     }
@@ -117,15 +115,11 @@ public class ProtoContactEvent extends PropertyChangeEvent
      * Returns the <tt>MetaContact</tt> that is the most relevant parent of
      * the source proto <tt>Contact</tt>. In the case of a moved or newly
      * added <tt>Contact</tt> the method would return same as getNewParent()
-     * and would return the contact's old parent in the case of a
-     * <tt>PROTO_CONTACT_REMOVED</tt> event.
-     * @return  the <tt>MetaContact</tt> that is most apt to be called parent
-     * to the source <tt>Contact</tt>.
+     * and would return the contact's old parent in the case of a <tt>PROTO_CONTACT_REMOVED</tt> event.
+     * @return  the <tt>MetaContact</tt> that is most apt to be called parent to the source <tt>Contact</tt>.
      */
     public MetaContact getParent()
     {
-        return getNewParent() != null
-            ? getNewParent()
-            : getOldParent();
+        return getNewParent() != null ? getNewParent() : getOldParent();
     }
 }

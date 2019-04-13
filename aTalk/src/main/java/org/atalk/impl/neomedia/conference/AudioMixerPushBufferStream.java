@@ -839,13 +839,12 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
 
             if (TimberLog.isTraceEnable) {
                 int oldValueLength = (oldValue == null) ? 0 : oldValue.length;
-                int newValueLength = (newValue == null) ? 0 : newValue.length;
-                int difference = newValueLength - oldValueLength;
+                int difference = newValue.length - oldValueLength;
 
                 if (difference > 0)
-                    Timber.log(TimberLog.FINER, "Added %s inStream(s) and the total is 5s", difference, newValueLength);
+                    Timber.log(TimberLog.FINER, "Added %s inStream(s) and the total is 5s", difference, newValue.length);
                 else if (difference < 0)
-                    Timber.log(TimberLog.FINER, "Removed %s inStream(s) and the total is %s", difference, newValueLength);
+                    Timber.log(TimberLog.FINER, "Removed %s inStream(s) and the total is %s", difference, newValue.length);
             }
         }
     }

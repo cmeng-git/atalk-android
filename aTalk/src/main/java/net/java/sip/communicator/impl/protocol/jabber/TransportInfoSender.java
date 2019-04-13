@@ -5,8 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentExtensionElement;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.JingleIQ;
+import org.xmpp.extensions.jingle.ContentExtensionElement;
+import org.xmpp.extensions.jingle.JingleIQ;
 
 /**
  * Represents functionality which allows a <tt>TransportManagerJabberImpl</tt> implementation to

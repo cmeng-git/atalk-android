@@ -19,8 +19,8 @@ make clean
 make -j${HOST_NUM_CORES} install
 }
 
-export CPU=armeabi
-PREFIX=../android/${CPU}
+export ABI=armeabi
+PREFIX=../android/${ABI}
 CROSS_PREFIX=${TOOLCHAIN}/bin/arm-linux-androideabi-
 
 pushd x264
@@ -30,4 +30,4 @@ pushd ${PREFIX}/lib
 update_x264.so
 popd
 
-echo -e "*** Android x264-${X264_API} for ${CPU} builds completed ***\n\n"
+echo -e "*** Android x264-${X264_API} for ${ABI} builds completed ***\n\n"

@@ -5,6 +5,8 @@
  */
 package org.atalk.service.neomedia.recording;
 
+import android.support.annotation.NonNull;
+
 import org.atalk.service.neomedia.MediaType;
 import org.json.JSONObject;
 
@@ -246,8 +248,7 @@ public class RecorderEvent
 
     public String toString()
     {
-        return "RecorderEvent: " + getType().toString() + " @" + getInstant()
-                + "(" + getMediaType() + ")";
+        return "RecorderEvent: " + getType().toString() + " @" + getInstant() + "(" + getMediaType() + ")";
     }
 
     public void setEndpointId(String endpointId)
@@ -301,6 +302,7 @@ public class RecorderEvent
             this.name = name;
         }
 
+        @NonNull
         public String toString()
         {
             return name;
@@ -327,12 +329,13 @@ public class RecorderEvent
         public double scaleFactor;
         private String stringValue;
 
-        private AspectRatio(String stringValue, double scaleFactor)
+        AspectRatio(String stringValue, double scaleFactor)
         {
             this.scaleFactor = scaleFactor;
             this.stringValue = stringValue;
         }
 
+        @NonNull
         @Override
         public String toString()
         {
@@ -347,5 +350,4 @@ public class RecorderEvent
             return ASPECT_RATIO_UNKNOWN;
         }
     }
-
 }

@@ -908,8 +908,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
                      */
                     for (MediaAwareCallPeer<?, ?, ?> otherCallPeer : callPeer.getCall()
                             .getCallPeerList()) {
-                        MediaStream otherStream = otherCallPeer.getMediaHandler().getStream(
-                                mediaType);
+                        MediaStream otherStream = otherCallPeer.getMediaHandler().getStream(mediaType);
                         if (otherStream != null) {
                             srcId = otherStream.getLocalSourceID();
                             break;
@@ -1024,9 +1023,9 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
             throws IllegalArgumentException
     {
         if (from.getState() != ConferenceInfoDocument.State.FULL)
-            throw new IllegalArgumentException("The 'from' document needs to " + "have state=full");
+            throw new IllegalArgumentException("The 'from' document needs to have state=full");
         if (to.getState() != ConferenceInfoDocument.State.FULL)
-            throw new IllegalArgumentException("The 'to' document needs to " + "have state=full");
+            throw new IllegalArgumentException("The 'to' document needs to have state=full");
 
         if (!isPartialNotificationEnabled()) {
             return conferenceInfoDocumentsMatch(from, to) ? null : to;
@@ -1206,9 +1205,9 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     private boolean conferenceInfoDocumentsMatch(ConferenceInfoDocument a, ConferenceInfoDocument b)
     {
         if (a.getState() != ConferenceInfoDocument.State.FULL)
-            throw new IllegalArgumentException("The 'a' document needs to" + "have state=full");
+            throw new IllegalArgumentException("The 'a' document needs to have state=full");
         if (b.getState() != ConferenceInfoDocument.State.FULL)
-            throw new IllegalArgumentException("The 'b' document needs to" + "have state=full");
+            throw new IllegalArgumentException("The 'b' document needs to have state=full");
 
         if (!stringsMatch(a.getEntity(), b.getEntity()))
             return false;
@@ -1334,8 +1333,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      */
     private boolean isPartialNotificationEnabled()
     {
-        String s = parentProvider.getAccountID().getAccountProperties()
-                .get(PARTIAL_NOTIFICATIONS_PROP_NAME);
+        String s = parentProvider.getAccountID().getAccountProperties().get(PARTIAL_NOTIFICATIONS_PROP_NAME);
 
         return (s == null || Boolean.parseBoolean(s));
     }

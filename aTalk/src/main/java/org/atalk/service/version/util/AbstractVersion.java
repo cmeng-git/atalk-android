@@ -168,11 +168,18 @@ public abstract class AbstractVersion implements Version
 	 */
 	@Override
 	public boolean equals(Object version)
-	{
-		// simply compare the version strings
-		return toString().equals((version == null) ? "null" : version.toString());
+    {
+        // simply compare the version strings
+        return toString().equals((version == null) ? "null" : version.toString());
+    }
 
-	}
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override public int hashCode()
+    {
+        return toString().hashCode();
+    }
 
 	/**
 	 * Returns a String representation of this Version instance in the generic form of major

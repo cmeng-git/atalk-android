@@ -131,14 +131,12 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     };
 
     /**
-     * The JMF <tt>Processor</tt> which transcodes {@link #captureDevice} into the format of this
-     * instance.
+     * The JMF <tt>Processor</tt> which transcodes {@link #captureDevice} into the format of this instance.
      */
     private Processor processor;
 
     /**
-     * The <tt>ControllerListener</tt> which listens to {@link #processor} for
-     * <tt>ControllerEvent</tt>s.
+     * The <tt>ControllerListener</tt> which listens to {@link #processor} for <tt>ControllerEvent</tt>s.
      */
     private ControllerListener processorControllerListener;
 
@@ -160,8 +158,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     private boolean processorIsPrematurelyClosed;
 
     /**
-     * The list of SSRC identifiers representing the parties that we are currently handling receive
-     * streams from.
+     * The list of SSRC identifiers representing the parties that we are currently handling receive streams from.
      */
     private long[] ssrcList = null;
 
@@ -179,6 +176,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * Whether output size has changed after latest processor config. Used for video streams.
      */
     protected boolean outputSizeChanged = false;
+
+    /**
+     * Whether this device session is used by a stream which uses a translator.
+     */
+    public boolean useTranslator = false;
 
     /**
      * Initializes a new <tt>MediaDeviceSession</tt> instance which is to represent the use of a
@@ -355,7 +357,6 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 if (dataOutput != null)
                     dataOutput.disconnect();
             }
-
             processor.deallocate();
             processor.close();
             processorIsPrematurelyClosed = false;
@@ -1821,8 +1822,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * @param processor the JMF <tt>Processor</tt> to wait on
      * @param state the state as defined by the respective <tt>Processor</tt> state constants to wait
      * <tt>processor</tt> to enter
-     * @return <tt>true</tt> if <tt>processor</tt> has successfully entered <tt>state</tt>;
-     * otherwise, <tt>false</tt>
+     * @return <tt>true</tt> if <tt>processor</tt> has successfully entered <tt>state</tt>; otherwise, <tt>false</tt>
      */
     private static boolean waitForState(Processor processor, int state)
     {
@@ -1983,5 +1983,15 @@ public class MediaDeviceSession extends PropertyChangeNotifier
         if (controls == null)
             controls = Collections.emptySet();
         return controls;
+    }
+
+    /**
+     * Updates the value of <tt>useTranslator</tt>.
+     *
+     * @param useTranslator whether this device session is used by a <tt>MediaStream</tt> that is having a translator.
+     */
+    public void setUseTranslator(boolean useTranslator)
+    {
+        this.useTranslator = useTranslator;
     }
 }

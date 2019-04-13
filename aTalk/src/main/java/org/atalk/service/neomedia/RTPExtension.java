@@ -42,7 +42,7 @@ public class RTPExtension
      * {@link "https://tools.ietf.org/html/draft-ietf-avtext-framemarking-03"}
      */
     public static final String FRAME_MARKING_URN
-            = "urn:ietf:params:rtp-hdrext:framemarking";
+            = "http://tools.ietf.org/html/draft-ietf-avtext-framemarking-07";
 
     /**
      * The URN which identifies the Original Header Block RTP extension defined
@@ -70,6 +70,12 @@ public class RTPExtension
      * in {@link "https://tools.ietf.org/html/rfc5450"}.
      */
     public static final String TOF_URN = "urn:ietf:params:rtp-hdrext:toffset";
+
+    /**
+     * The URN which identifies the RTP Header Extension for Video Content Type.
+     */
+    public static final String VIDEO_CONTENT_TYPE_URN
+        = "http://www.webrtc.org/experiments/rtp-hdrext/video-content-type";
 
     /**
 	 * The direction that this extension will be transmitted in.

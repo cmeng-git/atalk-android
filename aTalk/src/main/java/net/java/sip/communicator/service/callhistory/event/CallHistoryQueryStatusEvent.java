@@ -15,9 +15,9 @@
  */
 package net.java.sip.communicator.service.callhistory.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.callhistory.CallHistoryQuery;
 
-import net.java.sip.communicator.service.callhistory.*;
+import java.util.EventObject;
 
 /**
  * The <tt>CallHistoryQueryStatusEvent</tt> is triggered each time a
@@ -26,8 +26,7 @@ import net.java.sip.communicator.service.callhistory.*;
  *
  * @author Yana Stamcheva
  */
-public class CallHistoryQueryStatusEvent
-    extends EventObject
+public class CallHistoryQueryStatusEvent extends EventObject
 {
     /**
      * Serial version UID.
@@ -41,22 +40,20 @@ public class CallHistoryQueryStatusEvent
 
     /**
      * Creates a <tt>CallHistoryQueryStatusEvent</tt> by specifying the source
-     * <tt>CallHistoryQuery</tt> and the <tt>eventType</tt> indicating why
-     * initially this event occurred.
+     * <tt>CallHistoryQuery</tt> and the <tt>eventType</tt> indicating why initially this event occurred.
+     *
      * @param source the <tt>CallHistoryQuery</tt> this event is about
-     * @param eventType the type of the event. One of the QUERY_XXX constants
-     * defined in the <tt>CallHistoryQuery</tt>
+     * @param eventType the type of the event. One of the QUERY_XXX constants defined in the <tt>CallHistoryQuery</tt>
      */
-    public CallHistoryQueryStatusEvent( CallHistoryQuery source,
-                                        int eventType)
+    public CallHistoryQueryStatusEvent(CallHistoryQuery source, int eventType)
     {
         super(source);
-
         this.eventType = eventType;
     }
 
     /**
      * Returns the <tt>CallHistoryQuery</tt> that triggered this event.
+     *
      * @return the <tt>CallHistoryQuery</tt> that triggered this event
      */
     public CallHistoryQuery getQuerySource()
@@ -66,6 +63,7 @@ public class CallHistoryQueryStatusEvent
 
     /**
      * Returns the type of this event.
+     *
      * @return the type of this event
      */
     public int getEventType()

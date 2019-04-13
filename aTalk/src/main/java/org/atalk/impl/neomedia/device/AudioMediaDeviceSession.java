@@ -125,7 +125,7 @@ public class AudioMediaDeviceSession extends MediaDeviceSession
     protected void playerConfigureComplete(Processor player)
     {
         super.playerConfigureComplete(player);
-        TrackControl tcs[] = player.getTrackControls();
+        TrackControl[] tcs = player.getTrackControls();
         if (tcs != null) {
             for (TrackControl tc : tcs) {
                 if (tc.getFormat() instanceof AudioFormat) {
@@ -153,6 +153,12 @@ public class AudioMediaDeviceSession extends MediaDeviceSession
     protected void processorControllerUpdate(ControllerEvent event)
     {
         super.processorControllerUpdate(event);
+
+        // when using translator we do not want any audio level effect
+        if (useTranslator) {
+            return;
+        }
+
         if (event instanceof ConfigureCompleteEvent) {
             Processor processor = (Processor) event.getSourceController();
             if (processor != null)
@@ -187,7 +193,7 @@ public class AudioMediaDeviceSession extends MediaDeviceSession
                 }
             }
         } catch (UnsupportedPlugInException ex) {
-            Timber.e(ex,"Effects are not supported by the datasource.");
+            Timber.e(ex, "Effects are not supported by the datasource.");
         }
     }
 
@@ -221,6 +227,10 @@ public class AudioMediaDeviceSession extends MediaDeviceSession
      */
     public void setLocalUserAudioLevelListener(SimpleAudioLevelListener listener)
     {
+        if (useTranslator) {
+            return;
+        }
+
         localUserAudioLevelEffect.setAudioLevelListener(listener);
     }
 
@@ -249,6 +259,9 @@ public class AudioMediaDeviceSession extends MediaDeviceSession
      */
     public void setStreamAudioLevelListener(SimpleAudioLevelListener listener)
     {
+        if (useTranslator) {
+            return;
+        }
         streamAudioLevelEffect.setAudioLevelListener(listener);
     }
 
@@ -279,6 +292,12 @@ public class AudioMediaDeviceSession extends MediaDeviceSession
     protected Processor createProcessor()
     {
         Processor processor = super.createProcessor();
+
+        // when using translator we do not want any audio level effect
+        if (useTranslator) {
+            return processor;
+        }
+
         if (processor != null) {
             if (outputAudioLevelEffect != null) {
                 for (TrackControl track : processor.getTrackControls()) {

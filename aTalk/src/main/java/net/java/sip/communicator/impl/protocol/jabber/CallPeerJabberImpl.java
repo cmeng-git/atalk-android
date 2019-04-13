@@ -5,17 +5,16 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriConferenceIQ;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.SourceExtensionElement;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentExtensionElement.SendersEnum;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet.MediaPresenceExtensionElement;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet.SSRCInfoExtensionElement;
+import org.xmpp.extensions.colibri.ColibriConferenceIQ;
+import org.xmpp.extensions.colibri.SourceExtensionElement;
+import org.xmpp.extensions.jingle.*;
+import org.xmpp.extensions.jingle.ContentExtensionElement.SendersEnum;
+import org.xmpp.extensions.jitsimeet.MediaPresenceExtensionElement;
+import org.xmpp.extensions.jitsimeet.SSRCInfoExtensionElement;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -237,9 +236,9 @@ public class CallPeerJabberImpl
      * would send a CANCEL, BYE, or BUSY_HERE message and set the new state to DISCONNECTED.
      *
      * @param failed indicates if the hangup is following to a call failure or simply a disconnect
-     * @param reasonText the text, if any, to be set on the <tt>ReasonPacketExtension</tt> as the value of its
+     * @param reasonText the text, if any, to be set on the <tt>ReasonExtensionElement</tt> as the value of its
      * @param reasonOtherExtension the <tt>ExtensionElement</tt>, if any, to be set on the
-     * <tt>ReasonPacketExtension</tt> as the value of its <tt>otherExtension</tt> property
+     * <tt>ReasonExtensionElement</tt> as the value of its <tt>otherExtension</tt> property
      */
     public void hangup(boolean failed, String reasonText, ExtensionElement reasonOtherExtension)
             throws NotConnectedException, InterruptedException
@@ -288,14 +287,14 @@ public class CallPeerJabberImpl
 
         if (responseIQ != null) {
             if (reasonOtherExtension != null) {
-                ReasonPacketExtension reason
-                        = responseIQ.getExtension(ReasonPacketExtension.ELEMENT_NAME, ReasonPacketExtension.NAMESPACE);
+                ReasonExtensionElement reason
+                        = responseIQ.getExtension(ReasonExtensionElement.ELEMENT_NAME, ReasonExtensionElement.NAMESPACE);
 
                 if (reason != null) {
                     reason.setOtherExtension(reasonOtherExtension);
                 }
-                else if (reasonOtherExtension instanceof ReasonPacketExtension) {
-                    responseIQ.setReason((ReasonPacketExtension) reasonOtherExtension);
+                else if (reasonOtherExtension instanceof ReasonExtensionElement) {
+                    responseIQ.setReason((ReasonExtensionElement) reasonOtherExtension);
                 }
             }
             mConnection.sendStanza(responseIQ);
@@ -743,7 +742,7 @@ public class CallPeerJabberImpl
     public void processSessionTerminate(JingleIQ jingleIQ)
     {
         String reasonStr = "Call ended by remote side.";
-        ReasonPacketExtension reasonExt = jingleIQ.getReason();
+        ReasonExtensionElement reasonExt = jingleIQ.getReason();
 
         if (reasonExt != null) {
             Reason reason = reasonExt.getReason();
@@ -1238,7 +1237,7 @@ public class CallPeerJabberImpl
         String message = ((sid == null) ? "Unattended" : "Attended") + " transfer to: " + to;
         // Implements the SIP behavior: once the transfer is accepted, the current call is closed.
         try {
-            hangup(false, message, new ReasonPacketExtension(Reason.SUCCESS, message,
+            hangup(false, message, new ReasonExtensionElement(Reason.SUCCESS, message,
                     new TransferredExtensionElement()));
         } catch (NotConnectedException | InterruptedException e) {
             throw new OperationFailedException("Could not send transfer", 0, e);

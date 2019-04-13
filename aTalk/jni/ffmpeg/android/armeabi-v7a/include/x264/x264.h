@@ -1,7 +1,7 @@
 /*****************************************************************************
  * x264.h: x264 public header
  *****************************************************************************
- * Copyright (C) 2003-2017 x264 project
+ * Copyright (C) 2003-2018 x264 project
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Loren Merritt <lorenm@u.washington.edu>
@@ -45,7 +45,7 @@ extern "C" {
 
 #include "x264_config.h"
 
-#define X264_BUILD 152
+#define X264_BUILD 157
 
 /* Application developers planning to link against a shared library version of
  * libx264 from a Microsoft Visual Studio or similar development environment
@@ -170,6 +170,7 @@ typedef struct x264_nal_t
 #define X264_ANALYSE_PSUB16x16  0x0010  /* Analyse p16x8, p8x16 and p8x8 */
 #define X264_ANALYSE_PSUB8x8    0x0020  /* Analyse p8x4, p4x8, p4x4 */
 #define X264_ANALYSE_BSUB16x16  0x0100  /* Analyse b16x8, b8x16 and b8x8 */
+
 #define X264_DIRECT_PRED_NONE        0
 #define X264_DIRECT_PRED_SPATIAL     1
 #define X264_DIRECT_PRED_TEMPORAL    2
@@ -202,6 +203,10 @@ typedef struct x264_nal_t
 #define X264_KEYINT_MIN_AUTO         0
 #define X264_KEYINT_MAX_INFINITE     (1<<30)
 
+/* AVC-Intra flavors */
+#define X264_AVCINTRA_FLAVOR_PANASONIC 0
+#define X264_AVCINTRA_FLAVOR_SONY      1
+
 static const char * const x264_direct_pred_names[] = { "none", "spatial", "temporal", "auto", 0 };
 static const char * const x264_motion_est_names[] = { "dia", "hex", "umh", "esa", "tesa", 0 };
 static const char * const x264_b_pyramid_names[] = { "none", "strict", "normal", 0 };
@@ -211,30 +216,32 @@ static const char * const x264_fullrange_names[] = { "off", "on", 0 };
 static const char * const x264_colorprim_names[] = { "", "bt709", "undef", "", "bt470m", "bt470bg", "smpte170m", "smpte240m", "film", "bt2020", "smpte428",
                                                      "smpte431", "smpte432", 0 };
 static const char * const x264_transfer_names[] = { "", "bt709", "undef", "", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100", "log316",
-                                                    "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "smpte428", 0 };
+                                                    "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "smpte428", "arib-std-b67", 0 };
 static const char * const x264_colmatrix_names[] = { "GBR", "bt709", "undef", "", "fcc", "bt470bg", "smpte170m", "smpte240m", "YCgCo", "bt2020nc", "bt2020c",
-                                                     "smpte2085", 0 };
+                                                     "smpte2085", "chroma-derived-nc", "chroma-derived-c", "ICtCp", 0 };
 static const char * const x264_nal_hrd_names[] = { "none", "vbr", "cbr", 0 };
+static const char * const x264_avcintra_flavor_names[] = { "panasonic", "sony", 0 };
 
 /* Colorspace type */
 #define X264_CSP_MASK           0x00ff  /* */
 #define X264_CSP_NONE           0x0000  /* Invalid mode     */
-#define X264_CSP_I420           0x0001  /* yuv 4:2:0 planar */
-#define X264_CSP_YV12           0x0002  /* yvu 4:2:0 planar */
-#define X264_CSP_NV12           0x0003  /* yuv 4:2:0, with one y plane and one packed u+v */
-#define X264_CSP_NV21           0x0004  /* yuv 4:2:0, with one y plane and one packed v+u */
-#define X264_CSP_I422           0x0005  /* yuv 4:2:2 planar */
-#define X264_CSP_YV16           0x0006  /* yvu 4:2:2 planar */
-#define X264_CSP_NV16           0x0007  /* yuv 4:2:2, with one y plane and one packed u+v */
-#define X264_CSP_YUYV           0x0008  /* yuyv 4:2:2 packed */
-#define X264_CSP_UYVY           0x0009  /* uyvy 4:2:2 packed */
-#define X264_CSP_V210           0x000a  /* 10-bit yuv 4:2:2 packed in 32 */
-#define X264_CSP_I444           0x000b  /* yuv 4:4:4 planar */
-#define X264_CSP_YV24           0x000c  /* yvu 4:4:4 planar */
-#define X264_CSP_BGR            0x000d  /* packed bgr 24bits */
-#define X264_CSP_BGRA           0x000e  /* packed bgr 32bits */
-#define X264_CSP_RGB            0x000f  /* packed rgb 24bits */
-#define X264_CSP_MAX            0x0010  /* end of list */
+#define X264_CSP_I400           0x0001  /* monochrome 4:0:0 */
+#define X264_CSP_I420           0x0002  /* yuv 4:2:0 planar */
+#define X264_CSP_YV12           0x0003  /* yvu 4:2:0 planar */
+#define X264_CSP_NV12           0x0004  /* yuv 4:2:0, with one y plane and one packed u+v */
+#define X264_CSP_NV21           0x0005  /* yuv 4:2:0, with one y plane and one packed v+u */
+#define X264_CSP_I422           0x0006  /* yuv 4:2:2 planar */
+#define X264_CSP_YV16           0x0007  /* yvu 4:2:2 planar */
+#define X264_CSP_NV16           0x0008  /* yuv 4:2:2, with one y plane and one packed u+v */
+#define X264_CSP_YUYV           0x0009  /* yuyv 4:2:2 packed */
+#define X264_CSP_UYVY           0x000a  /* uyvy 4:2:2 packed */
+#define X264_CSP_V210           0x000b  /* 10-bit yuv 4:2:2 packed in 32 */
+#define X264_CSP_I444           0x000c  /* yuv 4:4:4 planar */
+#define X264_CSP_YV24           0x000d  /* yvu 4:4:4 planar */
+#define X264_CSP_BGR            0x000e  /* packed bgr 24bits */
+#define X264_CSP_BGRA           0x000f  /* packed bgr 32bits */
+#define X264_CSP_RGB            0x0010  /* packed rgb 24bits */
+#define X264_CSP_MAX            0x0011  /* end of list */
 #define X264_CSP_VFLIP          0x1000  /* the csp is vertically flipped */
 #define X264_CSP_HIGH_DEPTH     0x2000  /* the csp has a depth of 16 bits per pixel component */
 
@@ -292,6 +299,7 @@ typedef struct x264_param_t
     int         i_width;
     int         i_height;
     int         i_csp;         /* CSP of encoded bitstream */
+    int         i_bitdepth;
     int         i_level_idc;
     int         i_frame_total; /* number of frames to encode if known, else 0 */
 
@@ -336,6 +344,7 @@ typedef struct x264_param_t
     int         b_open_gop;
     int         b_bluray_compat;
     int         i_avcintra_class;
+    int         i_avcintra_flavor;
 
     int         b_deblocking_filter;
     int         i_deblocking_filter_alphac0;    /* [-6, 6] -6 light filter, 6 strong */
@@ -407,7 +416,7 @@ typedef struct x264_param_t
     {
         int         i_rc_method;    /* X264_RC_* */
 
-        int         i_qp_constant;  /* 0 to (51 + 6*(x264_bit_depth-8)). 0=lossless */
+        int         i_qp_constant;  /* 0=lossless */
         int         i_qp_min;       /* min allowed QP value */
         int         i_qp_max;       /* max allowed QP value */
         int         i_qp_step;      /* max QP step between frames */
@@ -458,6 +467,9 @@ typedef struct x264_param_t
 
     /* frame packing arrangement flag */
     int i_frame_packing;
+
+    /* alternative transfer SEI */
+    int i_alternative_transfer;
 
     /* Muxing parameters */
     int b_aud;                  /* generate access unit delimiters */
@@ -669,15 +681,6 @@ int     x264_param_apply_profile( x264_param_t *, const char *profile );
 /****************************************************************************
  * Picture structures and functions
  ****************************************************************************/
-
-/* x264_bit_depth:
- *      Specifies the number of bits per pixel that x264 uses. This is also the
- *      bit depth that x264 encodes in. If this value is > 8, x264 will read
- *      two bytes of input data for each pixel sample, and expect the upper
- *      (16-x264_bit_depth) bits to be zero.
- *      Note: The flag X264_CSP_HIGH_DEPTH must be used to specify the
- *      colorspace depth as well. */
-X264_API extern const int x264_bit_depth;
 
 /* x264_chroma_format:
  *      Specifies the chroma formats that x264 supports encoding. When this
@@ -913,10 +916,10 @@ void    x264_encoder_close( x264_t * );
  *      return the number of currently delayed (buffered) frames
  *      this should be used at the end of the stream, to know when you have all the encoded frames. */
 int     x264_encoder_delayed_frames( x264_t * );
-/* x264_encoder_maximum_delayed_frames( x264_t *h ):
+/* x264_encoder_maximum_delayed_frames( x264_t * ):
  *      return the maximum number of delayed (buffered) frames that can occur with the current
  *      parameters. */
-int     x264_encoder_maximum_delayed_frames( x264_t *h );
+int     x264_encoder_maximum_delayed_frames( x264_t * );
 /* x264_encoder_intra_refresh:
  *      If an intra refresh is not in progress, begin one with the next P-frame.
  *      If an intra refresh is in progress, begin one as soon as the current one finishes.

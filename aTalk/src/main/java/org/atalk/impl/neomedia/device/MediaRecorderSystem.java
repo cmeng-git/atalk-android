@@ -6,6 +6,7 @@
 package org.atalk.impl.neomedia.device;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.hardware.Camera;
@@ -13,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.util.BackgroundManager;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
@@ -32,6 +34,7 @@ import timber.log.Timber;
  *
  * @author Lyubomir Marinov
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class MediaRecorderSystem extends DeviceSystem
 {
@@ -45,6 +48,10 @@ public class MediaRecorderSystem extends DeviceSystem
     private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_MEDIARECORDER;
 
     public static Dimension[] SUPPORTED_SIZES = new Dimension[]{};
+
+    private static boolean isMediaRecorderInitialized = false;
+
+    private static BackgroundManager backgroundManager = BackgroundManager.getInstance();
 
     /**
      * Initializes a new <tt>MediaRecorderSystem</tt> instance which discovers and registers
@@ -83,12 +90,13 @@ public class MediaRecorderSystem extends DeviceSystem
             throws Exception
     {
         int cameraCount = Camera.getNumberOfCameras();
-        if (cameraCount <= 0)
-            return;
-
-        if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
-                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            Timber.w("Camera Init has no permission to start!");
+        // Re-init of MediaRecorderSystem is handled with AndroidCameraSystem
+        if (backgroundManager.isAppInBackground() || (cameraCount < 1) || isMediaRecorderInitialized
+                || (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)) {
+            if (backgroundManager.isAppInBackground()) {
+                Timber.w("Unable to initialize media recorder while in background #: %s;", cameraCount);
+            }
             return;
         }
 
@@ -112,15 +120,14 @@ public class MediaRecorderSystem extends DeviceSystem
                     facing = "";
                     break;
             }
-
             // Pick up the preferred sizes which is supported by the Camera.
-            Camera camera = Camera.open(cameraId);
             List<Dimension> sizes = new ArrayList<>(CameraUtils.PREFERRED_SIZES.length);
 
             // Locator protocol contains camera id and it's facing
             MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL, cameraId, cameraInfo);
-
+            Camera camera = null;
             try {
+                camera = Camera.open(cameraId);
                 Camera.Parameters params = camera.getParameters();
                 List<Camera.Size> supportedSizes = params.getSupportedVideoSizes();
                 if (supportedSizes == null) {
@@ -154,7 +161,8 @@ public class MediaRecorderSystem extends DeviceSystem
                     Timber.d("Sizes supported by %s: %s", locator, dimensionsToString(sizes));
                 }
             } finally {
-                camera.release();
+                if (camera != null)
+                    camera.release();
             }
 
             int count = sizes.size();
@@ -189,10 +197,10 @@ public class MediaRecorderSystem extends DeviceSystem
             else
                 captureDevices.add(device);
         }
-
         if (!captureDevices.isEmpty()) {
             for (CaptureDeviceInfo captureDevice : captureDevices)
                 CaptureDeviceManager.addDevice(captureDevice);
         }
+        isMediaRecorderInitialized = true;
     }
 }

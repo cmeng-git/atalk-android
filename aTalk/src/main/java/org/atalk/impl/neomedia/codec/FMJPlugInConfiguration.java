@@ -113,8 +113,7 @@ public class FMJPlugInConfiguration
             "net.sf.fmj"};
 
     /**
-     * The list of class names to register as FMJ plugins with type
-     * <tt>PlugInManager.MULTIPLEXER</tt>.
+     * The list of class names to register as FMJ plugins with type <tt>PlugInManager.MULTIPLEXER</tt>.
      */
     private static final String[] CUSTOM_MULTIPLEXERS = {
             "org.atalk.impl.neomedia.recording.BasicWavMux"

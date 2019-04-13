@@ -1,5 +1,5 @@
---- a/x264/configure	2019-03-08 09:10:25.000000000
-+++ b/x264/configure	2019-03-14 10:46:24.000000000
+--- a/x264/configure	2018-08-07 04:45:05.000000000
++++ b/x264/configure	2019-03-27 12:04:46.000000000
 @@ -78,13 +78,13 @@
      # several non gcc compilers issue an incredibly large number of warnings on high warning levels,
      # suppress them by reducing the warning level rather than having to use #pragmas
@@ -30,21 +30,7 @@
          [ "$arg" = avifil32.lib ] && arg=vfw32.lib
          [ "$arg" = gpac_static.lib ] && arg=libgpac_static.lib
          [ "$arg" = x264.lib ] && arg=libx264.lib
-@@ -525,13 +525,12 @@
- fi
- if ${cross_prefix}gcc-ranlib --version >/dev/null 2>&1; then
-     RANLIB="${RANLIB-${cross_prefix}gcc-ranlib}"
- else
-     RANLIB="${RANLIB-${cross_prefix}ranlib}"
- fi
--
- if [ "x$host" = x ]; then
-     host=`${SRCPATH}/config.guess`
- fi
- # normalize a triplet into a quadruplet
- host=`${SRCPATH}/config.sub $host`
- 
-@@ -586,17 +585,17 @@
+@@ -586,17 +586,17 @@
      if [[ "$cc_base" = icc || "$cc_base" = icc[\ .]* ]]; then
          AR="xiar"
          compiler=ICC
@@ -67,7 +53,7 @@
      beos*)
          SYS="BEOS"
          define HAVE_MALLOC_H
-@@ -1254,14 +1253,14 @@
+@@ -1254,14 +1254,14 @@
  fi
  
  if cc_check '' -Wshadow ; then

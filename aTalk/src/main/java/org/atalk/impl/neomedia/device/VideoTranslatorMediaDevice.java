@@ -26,9 +26,9 @@ import javax.media.protocol.DataSource;
  * @author Lyubomir Marinov
  * @author Hristo Terezov
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
-public class VideoTranslatorMediaDevice extends AbstractMediaDevice
-		implements MediaDeviceWrapper, VideoListener
+public class VideoTranslatorMediaDevice extends AbstractMediaDevice implements MediaDeviceWrapper, VideoListener
 {
 	/**
 	 * The <tt>MediaDevice</tt> which this instance enables to be used in a video conference

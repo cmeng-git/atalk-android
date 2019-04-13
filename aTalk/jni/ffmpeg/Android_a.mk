@@ -15,11 +15,11 @@ LOCAL_STATIC_LIBRARIES := libavutil libx264
 include $(PREBUILT_STATIC_LIBRARY)
 
 # ========== libavdevice ==================
-include $(CLEAR_VARS)
-LOCAL_MODULE:= libavdevice
-LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libavdevice.a
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
-include $(PREBUILT_STATIC_LIBRARY)
+# include $(CLEAR_VARS)
+# LOCAL_MODULE:= libavdevice
+# LOCAL_SRC_FILES:= $(LOCAL_LIB_PATH)/lib/libavdevice.a
+# LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
+# include $(PREBUILT_STATIC_LIBRARY)
 
 # ========== libavfilter ==================
 include $(CLEAR_VARS)
@@ -89,7 +89,8 @@ LOCAL_ALLOW_UNDEFINED_SYMBOLS := true
 # LOCAL_LDLIBS += -Wl,--no-warn-shared-textrel
 # Ensure each static library inter-dependencies are defined in its respective PREBUILT_STATIC_LIBRARY block
 # or setup the dependency in PREBUILT_STATIC_LIBRARY blocks
-LOCAL_STATIC_LIBRARIES := libavcodec libavdevice libavfilter libavutil libavformat libswresample libswscale libx264
+# LOCAL_STATIC_LIBRARIES := libavcodec libavdevice libavfilter libavutil libavformat libswresample libswscale libx264
+LOCAL_STATIC_LIBRARIES := libavcodec libavfilter libavutil libavformat libswresample libswscale libx264
 # Must use exact format prefix with $(LOCAL_PATH) below to work - $(LOCAL_LIB_PATH)/include not working
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/android/$(TARGET_ARCH_ABI)/include
 LOCAL_SRC_FILES := ./org_atalk_impl_neomedia_codec_FFmpeg.c

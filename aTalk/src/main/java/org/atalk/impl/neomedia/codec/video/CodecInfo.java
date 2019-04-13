@@ -6,10 +6,8 @@
  */
 package org.atalk.impl.neomedia.codec.video;
 
-import android.annotation.TargetApi;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
-import android.os.Build;
 
 import org.atalk.service.neomedia.codec.Constants;
 
@@ -23,7 +21,6 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public abstract class CodecInfo
 {
     /**

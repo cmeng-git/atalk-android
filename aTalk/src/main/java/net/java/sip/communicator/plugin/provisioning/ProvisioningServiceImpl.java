@@ -102,15 +102,12 @@ public class ProvisioningServiceImpl implements ProvisioningService
     public ProvisioningServiceImpl()
     {
         // check if UUID is already configured
-        String uuid = (String) ProvisioningActivator.getConfigurationService()
-                .getProperty(PROVISIONING_UUID_PROP);
+        String uuid = (String) ProvisioningActivator.getConfigurationService().getProperty(PROVISIONING_UUID_PROP);
 
         if (uuid == null || uuid.equals("")) {
             uuid = UUID.randomUUID().toString();
-            ProvisioningActivator.getConfigurationService()
-                    .setProperty(PROVISIONING_UUID_PROP, uuid);
+            ProvisioningActivator.getConfigurationService().setProperty(PROVISIONING_UUID_PROP, uuid);
         }
-
     }
 
     /**
@@ -133,9 +130,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
                  * store the provisioning URL in local configuration in case the provisioning
                  * discovery failed (DHCP/DNS unavailable, ...)
                  */
-                ProvisioningActivator.getConfigurationService()
-                        .setProperty(PROPERTY_PROVISIONING_URL, url);
-
+                ProvisioningActivator.getConfigurationService().setProperty(PROPERTY_PROVISIONING_URL, url);
                 updateConfiguration(data);
             }
         }
@@ -148,8 +143,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
      */
     public String getProvisioningMethod()
     {
-        String provMethod = ProvisioningActivator.getConfigurationService()
-                .getString(PROVISIONING_METHOD_PROP);
+        String provMethod = ProvisioningActivator.getConfigurationService().getString(PROVISIONING_METHOD_PROP);
 
         if (provMethod == null || provMethod.length() <= 0) {
             provMethod = ProvisioningActivator.getResourceService()
@@ -158,20 +152,17 @@ public class ProvisioningServiceImpl implements ProvisioningService
             if (provMethod != null && provMethod.length() > 0)
                 setProvisioningMethod(provMethod);
         }
-
         return provMethod;
     }
 
     /**
-     * Enables the provisioning with the given method. If the provisioningMethod is null disables
-     * the provisioning.
+     * Enables the provisioning with the given method. If the provisioningMethod is null disables the provisioning.
      *
      * @param provisioningMethod the provisioning method
      */
     public void setProvisioningMethod(String provisioningMethod)
     {
-        ProvisioningActivator.getConfigurationService().setProperty(PROVISIONING_METHOD_PROP,
-                provisioningMethod);
+        ProvisioningActivator.getConfigurationService().setProperty(PROVISIONING_METHOD_PROP, provisioningMethod);
     }
 
     /**
@@ -181,9 +172,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
      */
     public String getProvisioningUri()
     {
-        String provUri = ProvisioningActivator.getConfigurationService()
-                .getString(PROPERTY_PROVISIONING_URL);
-
+        String provUri = ProvisioningActivator.getConfigurationService().getString(PROPERTY_PROVISIONING_URL);
         if (provUri == null || provUri.length() <= 0) {
             provUri = ProvisioningActivator.getResourceService()
                     .getSettingsString("plugin.provisioning.DEFAULT_PROVISIONING_URI");
@@ -201,8 +190,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
      */
     public void setProvisioningUri(String uri)
     {
-        ProvisioningActivator.getConfigurationService().setProperty(PROPERTY_PROVISIONING_URL,
-                uri);
+        ProvisioningActivator.getConfigurationService().setProperty(PROPERTY_PROVISIONING_URL, uri);
     }
 
     /**
@@ -248,8 +236,8 @@ public class ProvisioningServiceImpl implements ProvisioningService
     private InputStream retrieveConfigurationFile(String url, List<NameValuePair> parameters)
     {
         try {
-            String arg = null;
-            String args[] = null;
+            String arg;
+            String[] args = null;
 
             URL u = new URL(url);
             InetAddress ipaddr = ProvisioningActivator.getNetworkAddressManagerService()
@@ -304,17 +292,17 @@ public class ProvisioningServiceImpl implements ProvisioningService
                 url = url.replace("${arch}", System.getProperty("os.arch"));
             }
 
-            //			if (url.indexOf("${resx}") != -1 || url.indexOf("${resy}") != -1) {
-            //				Rectangle screen = ScreenInformation.getScreenBounds();
-            //
-            //				if (url.indexOf("${resx}") != -1) {
-            //					url = url.replace("${resx}", String.valueOf(screen.width));
-            //				}
-            //
-            //				if (url.indexOf("${resy}") != -1) {
-            //					url = url.replace("${resy}", String.valueOf(screen.height));
-            //				}
-            //			}
+//            if (url.indexOf("${resx}") != -1 || url.indexOf("${resy}") != -1) {
+//                Rectangle screen = ScreenInformation.getScreenBounds();
+//
+//                if (url.indexOf("${resx}") != -1) {
+//                    url = url.replace("${resx}", String.valueOf(screen.width));
+//                }
+//
+//                if (url.indexOf("${resy}") != -1) {
+//                    url = url.replace("${resy}", String.valueOf(screen.height));
+//                }
+//            }
 
             if (url.contains("${build}")) {
                 url = url.replace("${build}", System.getProperty("sip-communicator.version"));
@@ -361,13 +349,13 @@ public class ProvisioningServiceImpl implements ProvisioningService
                             InetAddress inet = enInet.nextElement();
 
                             if (inet.equals(ipaddr)) {
-                                byte hw[] = ProvisioningActivator.getNetworkAddressManagerService()
+                                byte[] hw = ProvisioningActivator.getNetworkAddressManagerService()
                                         .getHardwareAddress(iface);
 
                                 if (hw == null || hw.length == 0)
                                     continue;
 
-                                StringBuffer buf = new StringBuffer();
+                                StringBuilder buf = new StringBuilder();
 
                                 for (byte h : hw) {
                                     int hi = h >= 0 ? h : h + 256;
@@ -399,8 +387,8 @@ public class ProvisioningServiceImpl implements ProvisioningService
                 url = url.substring(0, url.indexOf('?'));
             }
 
-            ArrayList<String> paramNames;
-            ArrayList<String> paramValues;
+            ArrayList<String> paramNames = null;
+            ArrayList<String> paramValues = null;
             int usernameIx = -1;
             int passwordIx = -1;
 
@@ -454,32 +442,30 @@ public class ProvisioningServiceImpl implements ProvisioningService
                     }
                 }
             }
-
             HttpUtils.HTTPResponseResult res = null;
             Throwable errorWhileProvisioning = null;
             try {
-                //				res = HttpUtils.postForm(url, PROPERTY_PROVISIONING_USERNAME,
-                // 					PROPERTY_PROVISIONING_PASSWORD, paramNames, paramValues, usernameIx, passwordIx,
-                //					new HttpUtils.RedirectHandler() {
-                //						@Override
-                //						public boolean handleRedirect(String location, List<NameValuePair>
-                // 							parameters)
-                //						{
-                //							if (!hasParams(location))
-                //								return false;
-                //
-                //							// if we have parameters proceed
-                //							retrieveConfigurationFile(location, parameters);
-                //
-                //							return true;
-                //						}
-                //
-                //						@Override
-                //						public boolean hasParams(String location)
-                //						{
-                //							return location.contains("${");
-                //						}
-                //					});
+                res = HttpUtils.postForm(url, PROPERTY_PROVISIONING_USERNAME,
+                        PROPERTY_PROVISIONING_PASSWORD, paramNames, paramValues, usernameIx, passwordIx,
+                        new HttpUtils.RedirectHandler()
+                        {
+                            @Override
+                            public boolean handleRedirect(String location, List<NameValuePair> parameters)
+                            {
+                                if (!hasParams(location))
+                                    return false;
+
+                                // if we have parameters proceed
+                                retrieveConfigurationFile(location, parameters);
+                                return true;
+                            }
+
+                            @Override
+                            public boolean hasParams(String location)
+                            {
+                                return location.contains("${");
+                            }
+                        });
             } catch (Throwable t) {
                 Timber.e(t, "Error posting form");
                 errorWhileProvisioning = t;
@@ -503,10 +489,8 @@ public class ProvisioningServiceImpl implements ProvisioningService
                     {
                         for (Bundle b : ProvisioningActivator.bundleContext.getBundles()) {
                             try {
-                                // skip our Bundle avoiding stopping us while
-                                // starting and NPE in felix
-                                if (ProvisioningActivator.bundleContext.equals(
-                                        b.getBundleContext())) {
+                                // skip our Bundle avoiding stopping us while starting and NPE in felix
+                                if (ProvisioningActivator.bundleContext.equals(b.getBundleContext())) {
                                     continue;
                                 }
                                 b.stop();
@@ -516,29 +500,26 @@ public class ProvisioningServiceImpl implements ProvisioningService
                         }
                     }
                 }
-
                 // stop processing
                 return null;
             }
 
-            String userPass[] = res.getCredentials();
+            String[] userPass = res.getCredentials();
             if (userPass[0] != null && userPass[1] != null) {
                 provUsername = userPass[0];
                 provPassword = userPass[1];
             }
-
             InputStream in = res.getContent();
 
             // Skips ProgressMonitorInputStream wrapper on Android
             if (!OSUtils.IS_ANDROID) {
-                // Chain a ProgressMonitorInputStream to the
-                // URLConnection's InputStream
-                //				final ProgressMonitorInputStream pin;
-                //				pin = new ProgressMonitorInputStream(null, u.toString(), in);
-                //
-                //				// Set the maximum value of the ProgressMonitor
-                //				ProgressMonitor pm = pin.getProgressMonitor();
-                //				pm.setMaximum((int) res.getContentLength());
+                // Chain a ProgressMonitorInputStream to the URLConnection's InputStream
+//				final ProgressMonitorInputStream pin;
+//				pin = new ProgressMonitorInputStream(null, u.toString(), in);
+//
+//				// Set the maximum value of the ProgressMonitor
+//				ProgressMonitor pm = pin.getProgressMonitor();
+//				pm.setMaximum((int) res.getContentLength());
 
                 // Uses ProgressMonitorInputStream if available
                 return null; //pin;
@@ -567,7 +548,6 @@ public class ProvisioningServiceImpl implements ProvisioningService
             if (nv.getName().equals(paramName))
                 return nv.getValue();
         }
-
         return null;
     }
 
@@ -579,10 +559,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
     private void updateConfiguration(final InputStream data)
     {
         Properties fileProps = new OrderedProperties();
-        InputStream in = null;
-
-        try {
-            in = new BufferedInputStream(data);
+        try (InputStream in = new BufferedInputStream(data)) {
             fileProps.load(in);
 
             for (Map.Entry<Object, Object> entry : fileProps.entrySet()) {
@@ -594,7 +571,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
                     continue;
 
                 if (key.equals(PROVISIONING_ALLOW_PREFIX_PROP)) {
-                    String prefixes[] = ((String) value).split("\\|");
+                    String[] prefixes = ((String) value).split("\\|");
 
                     /* updates allowed prefixes list */
                     Collections.addAll(allowedPrefixes, prefixes);
@@ -609,7 +586,6 @@ public class ProvisioningServiceImpl implements ProvisioningService
                 if (!isPrefixAllowed(key)) {
                     continue;
                 }
-
                 processProperty(key, value);
             }
 
@@ -622,11 +598,6 @@ public class ProvisioningServiceImpl implements ProvisioningService
             }
         } catch (IOException e) {
             Timber.w("Error during load of provisioning file");
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-            }
         }
     }
 
@@ -644,7 +615,6 @@ public class ProvisioningServiceImpl implements ProvisioningService
                     return true;
                 }
             }
-
             /* current property prefix is not allowed */
             return false;
         }
@@ -657,8 +627,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
     /**
      * Process a new property. If value equals "${null}", it means to remove the property in the
      * configuration service. If the key name end with "PASSWORD", its value is encrypted through
-     * credentials storage service, otherwise the property is added/updated in the configuration
-     * service.
+     * credentials storage service, otherwise the property is added/updated in the configuration service.
      *
      * @param key property key name
      * @param value property value
@@ -674,7 +643,6 @@ public class ProvisioningServiceImpl implements ProvisioningService
                     .storePassword(key.substring(0, key.lastIndexOf(".")), (String) value);
 
             Timber.i("%s = <password hidden>", key);
-
             return;
         }
         else if (key.startsWith(SYSTEM_PROP_PREFIX)) {
@@ -684,7 +652,6 @@ public class ProvisioningServiceImpl implements ProvisioningService
         else {
             ProvisioningActivator.getConfigurationService().setProperty(key, value);
         }
-
         Timber.i("%s = %s", key, value);
     }
 
@@ -697,12 +664,11 @@ public class ProvisioningServiceImpl implements ProvisioningService
     private void checkEnforcePrefix(String enforcePrefix)
     {
         ConfigurationService config = ProvisioningActivator.getConfigurationService();
-        String prefixes[] = null;
+        String[] prefixes = null;
 
         if (enforcePrefix == null) {
             return;
         }
-
         /* must escape the | character */
         prefixes = enforcePrefix.split("\\|");
 
@@ -716,7 +682,6 @@ public class ProvisioningServiceImpl implements ProvisioningService
                     break;
                 }
             }
-
             /*
              * property name does is not in the enforce prefix list so remove it
              */

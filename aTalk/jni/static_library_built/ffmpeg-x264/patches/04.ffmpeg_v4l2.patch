@@ -1,0 +1,17 @@
+--- a/ffmpeg/libavdevice/v4l2.c	2019-02-10 04:56:02.000000000
++++ b/ffmpeg/libavdevice/v4l2.c	2019-03-18 10:25:49.000000000
+@@ -129,13 +129,13 @@
+         SET_WRAPPERS(v4l2_);
+ #else
+         av_log(ctx, AV_LOG_ERROR, "libavdevice is not built with libv4l2 support.\n");
+         return AVERROR(EINVAL);
+ #endif
+     } else {
+-        SET_WRAPPERS();
++        /* SET_WRAPPERS(); */
+     }
+ 
+ #define v4l2_open   s->open_f
+ #define v4l2_close  s->close_f
+ #define v4l2_dup    s->dup_f
+ #define v4l2_ioctl  s->ioctl_f

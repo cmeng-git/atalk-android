@@ -2,6 +2,10 @@
 # releases are sorted from youngest to oldest.
 
 #=============================================================
+version 1.1.1 (2019/04/13):
+- Cleanup all build scripts and README
+
+#=============================================================
 version 1.1.0 (2019/03/21):
 - Cleanup all build scripts, settings and README
 - Add patches for libvpx 1.7.0 and 1.6.1+

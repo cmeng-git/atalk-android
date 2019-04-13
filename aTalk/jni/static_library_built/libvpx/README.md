@@ -8,23 +8,30 @@
 </table>
 
 ### Build For Android
-- Use Android NDK: android-ndk-r15c
-- git clone vpx-android directory into your linux working directory.
-- When you first build-libvpx4android.sh, it fetches, when enabled, the \<LIB_VPX> source from github.<br>
-  Alternatively manually run e.g.: ./init_libvpx.sh libvpx-1.7.1 (change libvpx version if necessary)
-- You may change e.g LIB_VPX="libvpx-1.7.0" to the libvpx version you want to build. <br>
-  Note: the patches defined in patch_libvpx.sh is for libvpx-1.7.0 and libvpx-1.6.1+ (master-20171013.tar.gz for aTalk)
+- Follow the instructions below to build libvpx for android
+- aTalk v1.8.1 release is only compatible with libvpx-1.6.1+ (./sources/master-20171013.tar.gz)<br/>
+Note: The compiled libjnvpx.so for aTalk has problem when exec on x86_64 android platform (libvpx asm source errors):<br/>
+  org.atalk.android A/libc: Fatal signal 31 (SIGSYS), code 1 in tid 5833 (Loop thread: ne), pid 4781 (g.atalk.android)<br/>
+  Use video codec x264 if you are running aTalk on X86/x86_64 platforms
+- When you first exec build-libvpx4android.sh, it applies the required patches to libvpx<br/>
+  Note: the patches defined in patch_libvpx.sh is for libvpx-1.7.0 and libvpx-1.6.1+ (master-20171013.tar.gz for aTalk)<br/>
   
-You build the static libvpx.a for the various architecture using the command as below.<br/>
+The ./build-libvpx4android.sh script build the static libvpx.a for the various architectures as defined in ./_settings.sh<br/>
+i.e. ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")<br/>
 All the built libvpx.a and *.h will be placed in the ./output/android/\<ABI>/lib and ./output/android/\<ABI>/include respectively
 
+**Android libvpx build instructions:**
 ```
+### git clone vpx-android directory into your linux working directory.
 git clone https://github.com/cmeng-git/vpx-android.git ./vpx-android
 cd vpx-android
+
+### Use Android NDK: android-ndk-r15c
 export ANDROID_NDK=/opt/android/android-ndk-r15c
 
-# setup the required libvpx
-./init_libvpx.sh
+### skip below step and use ./sources/master-20171013.tar.gz instead for aTalk v1.8.1 
+### setup the required libvpx e.g. "libvpx-1.7.0"; must also change the LIB_VPX variable in ./build-libvpx4android.sh
+./init_libvpx.sh libvpx-1.7.0
 
 # use one of the following to build libvpx i.e.
 # for all the ABI's defined in _share.sh

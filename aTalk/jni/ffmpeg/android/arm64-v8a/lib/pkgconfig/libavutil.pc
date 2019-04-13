@@ -1,14 +1,14 @@
-prefix=../android/arm64-v8a
+prefix=../android/armeabi-v7a
 exec_prefix=${prefix}
-libdir=${prefix}/lib
-includedir=${prefix}/include
+libdir=../android/armeabi-v7a/lib
+includedir=../android/armeabi-v7a/include
 
 Name: libavutil
 Description: FFmpeg utility library
-Version: 51.73.101
+Version: 55.78.100
 Requires: 
 Requires.private: 
 Conflicts:
-Libs: -L${libdir} -lavutil 
-Libs.private: -lm
+Libs: -L${libdir}  -lavutil -lm
+Libs.private: 
 Cflags: -I${includedir}

@@ -20,8 +20,8 @@ make clean
 make -j${HOST_NUM_CORES} install
 }
 
-export CPU=x86_64
-PREFIX=../android/${CPU}
+export ABI=x86_64
+PREFIX=../android/${ABI}
 CROSS_PREFIX=${TOOLCHAIN}/bin/x86_64-linux-android-
 
 pushd x264
@@ -31,7 +31,7 @@ pushd ${PREFIX}/lib
 update_x264.so
 popd
 
-echo -e "*** Android x264-${X264_API} for ${CPU} builds completed ***\n\n"
+echo -e "*** Android x264-${X264_API} for ${ABI} builds completed ***\n\n"
 
 # Must have --disable-asm for x86 and x64_86 ABIS; otherwise problem in aTalk libjnffmpeg.so build (even with --enable-pic) i.e.
 

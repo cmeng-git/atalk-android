@@ -6,6 +6,7 @@
 package org.atalk.impl.neomedia.transform.csrc;
 
 import org.atalk.impl.neomedia.AudioMediaStreamImpl;
+import org.atalk.util.ExecutorUtils;
 import org.ice4j.util.ExecutorFactory;
 
 import java.util.concurrent.ExecutorService;
@@ -28,9 +29,8 @@ public class CsrcAudioLevelDispatcher
      * The executor service to asynchronously execute method which delivers
      * audio level updates to <tt>AudioMediaStreamImpl</tt>
      */
-    private static final ExecutorService threadPool = ExecutorFactory.createFixedThreadPool(
-            Runtime.getRuntime().availableProcessors(),
-            CsrcAudioLevelDispatcher.class.getName() + "-");
+    private static final ExecutorService threadPool
+        = ExecutorUtils.newCachedThreadPool(true, CsrcAudioLevelDispatcher.class.getName() + "-");
 
     /**
      * The levels added to this instance (by the <tt>reverseTransform</tt>
@@ -55,7 +55,7 @@ public class CsrcAudioLevelDispatcher
      * A cached instance of {@link #deliverAudioLevelsToMediaStream()} runnable
      * to reduce allocations.
      */
-    private final Runnable deliverRunnable = () -> deliverAudioLevelsToMediaStream();
+    private final Runnable deliverRunnable = this::deliverAudioLevelsToMediaStream;
 
     /**
      * Initializes a new <tt>CsrcAudioLevelDispatcher</tt> to dispatch events

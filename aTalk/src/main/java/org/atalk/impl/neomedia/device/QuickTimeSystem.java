@@ -33,8 +33,7 @@ public class QuickTimeSystem extends DeviceSystem
      * Initializes a new <tt>QuickTimeSystem</tt> instance which discovers and registers
      * QuickTime/QTKit capture devices with JMF.
      *
-     * @throws Exception if anything goes wrong while discovering and registering QuickTime/QTKit capture
-     * defines with JMF
+     * @throws Exception if anything goes wrong while discovering and registering QuickTime/QTKit capture defines with JMF
      */
     public QuickTimeSystem()
             throws Exception

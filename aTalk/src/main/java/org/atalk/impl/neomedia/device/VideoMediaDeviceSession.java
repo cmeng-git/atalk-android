@@ -39,6 +39,7 @@ import javax.media.*;
 import javax.media.control.*;
 import javax.media.format.VideoFormat;
 import javax.media.protocol.*;
+import javax.media.rtp.OutputDataStream;
 
 import timber.log.Timber;
 
@@ -790,8 +791,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
         /*
          * When we know (through means such as SDP) that we don't want to receive, it doesn't make
          * sense to wait for the remote peer to acknowledge our desire. So we'll just stop
-         * depicting the video of the remote peer regardless of whether it stops or continues
-         * its sending.
+         * depicting the video of the remote peer regardless of whether it stops or continues its sending.
          */
         if (getStartedDirection().allowsReceiving()) {
             for (Player player : getPlayers()) {
@@ -819,10 +819,13 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
 
         if (VideoMediaDeviceSession.this.useRTCPFeedbackPLI) {
             try {
-                new RTCPFeedbackMessagePacket(RTCPFeedbackMessageEvent.FMT_PLI,
-                        RTCPFeedbackMessageEvent.PT_PS, localSSRC,
-                        remoteSSRC).writeTo(rtpConnector.getControlOutputStream());
-                requested = true;
+                OutputDataStream controlOutputStream = rtpConnector.getControlOutputStream();
+                if (controlOutputStream != null) {
+                    new RTCPFeedbackMessagePacket(RTCPFeedbackMessageEvent.FMT_PLI,
+                            RTCPFeedbackMessageEvent.PT_PS, localSSRC,
+                            remoteSSRC).writeTo(controlOutputStream);
+                    requested = true;
+                }
             } catch (IOException ioe) {
                 /*
                  * Apart from logging the IOException, there are not a lot of ways to handle it.
