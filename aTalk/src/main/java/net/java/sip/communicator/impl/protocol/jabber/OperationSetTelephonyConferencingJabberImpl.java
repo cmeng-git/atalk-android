@@ -5,9 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.coin.CoinIQ;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CoinExtensionElement;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.JingleIQ;
+import org.xmpp.extensions.coin.CoinIQ;
+import org.xmpp.extensions.jingle.CoinExtensionElement;
+import org.xmpp.extensions.jingle.JingleIQ;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.media.*;

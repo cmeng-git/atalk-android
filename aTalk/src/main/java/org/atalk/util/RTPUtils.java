@@ -256,7 +256,7 @@ public class RTPUtils
         @Override
         public int compare(Integer a, Integer b)
         {
-            if (a == b || a.intValue() == b.intValue())
+            if (a.equals(b))
             {
                 return 0;
             }

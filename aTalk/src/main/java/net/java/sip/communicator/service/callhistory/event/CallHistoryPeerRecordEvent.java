@@ -15,17 +15,18 @@
  */
 package net.java.sip.communicator.service.callhistory.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.Date;
+import java.util.EventObject;
 
 
 /**
  * An event which is fired when a new call peer history record is added.
+ *
  * @author Hristo Terezov
  */
-public class CallHistoryPeerRecordEvent
-    extends EventObject
+public class CallHistoryPeerRecordEvent extends EventObject
 {
 
     /**
@@ -45,12 +46,12 @@ public class CallHistoryPeerRecordEvent
 
     /**
      * Constructs new <tt>CallHistoryPeerRecordEvent</tt> event.
+     *
      * @param peerAddress the address of the peer associated with the event.
      * @param startDate the date when the peer has been added.
      * @param provider the provider associated with the peer.
      */
-    public CallHistoryPeerRecordEvent(String peerAddress, Date startDate,
-        ProtocolProviderService provider)
+    public CallHistoryPeerRecordEvent(String peerAddress, Date startDate, ProtocolProviderService provider)
     {
         super(peerAddress);
         CallHistoryPeerRecordEvent.startDate = startDate;
@@ -59,6 +60,7 @@ public class CallHistoryPeerRecordEvent
 
     /**
      * Returns the start date property of the event.
+     *
      * @return the start date property of the event.
      */
     public Date getStartDate()
@@ -68,6 +70,7 @@ public class CallHistoryPeerRecordEvent
 
     /**
      * Returns the peer address of the event.
+     *
      * @return the peer address of the event.
      */
     public String getPeerAddress()
@@ -77,6 +80,7 @@ public class CallHistoryPeerRecordEvent
 
     /**
      * Returns the protocol provider service associated with the event.
+     *
      * @return the protocol provider service associated with the event.
      */
     public ProtocolProviderService getProvider()

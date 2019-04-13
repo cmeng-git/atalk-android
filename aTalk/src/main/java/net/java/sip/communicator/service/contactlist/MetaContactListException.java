@@ -23,8 +23,7 @@ package net.java.sip.communicator.service.contactlist;
  *
  * @author Emil Ivov
  */
-public class MetaContactListException
-    extends RuntimeException
+public class MetaContactListException extends RuntimeException
 {
     /**
      * Serial version UID.
@@ -41,26 +40,26 @@ public class MetaContactListException
      * Indicates that a failure has occurred while trying to communicate
      * through the network.
      */
-    public static final int CODE_NETWORK_ERROR  = 2;
+    public static final int CODE_NETWORK_ERROR = 2;
 
     /**
      * Indicates that the exception was caused by the fact that we tried to
      * add to our contact list a contact that was already in there.
      */
-    public static final int CODE_CONTACT_ALREADY_EXISTS_ERROR  = 3;
+    public static final int CODE_CONTACT_ALREADY_EXISTS_ERROR = 3;
 
     /**
      * Indicates that the exception was caused by the fact that we tried to
      * add to our contact list a group that was already in there.
      */
-    public static final int CODE_GROUP_ALREADY_EXISTS_ERROR  = 4;
+    public static final int CODE_GROUP_ALREADY_EXISTS_ERROR = 4;
 
 
     /**
      * Indicates that the error which caused the exception was either unknown
      * or did not correspond to any of the other error codes
      */
-    public static final int CODE_UNKNOWN_ERROR  = 5;
+    public static final int CODE_UNKNOWN_ERROR = 5;
 
     /**
      * An error code indicating the nature of this exception.
@@ -71,27 +70,27 @@ public class MetaContactListException
      * Indicates that the exception was caused by the fact that we tried to
      * remove a group that cannot be removed or an error occur during remove.
      */
-    public static final int CODE_REMOVE_GROUP_ERROR  = 6;
+    public static final int CODE_REMOVE_GROUP_ERROR = 6;
 
-   /**
+    /**
      * Indicates that the exception was caused by the fact that we tried to
      * move a contact that cannot be moved or an error occur during move.
      */
-    public static final int CODE_MOVE_CONTACT_ERROR  = 7;
+    public static final int CODE_MOVE_CONTACT_ERROR = 7;
 
     /**
      * Indicates that the last operation is not supported
      * from underling protocol.
      */
-    public static final int CODE_NOT_SUPPORTED_OPERATION  = 8;
+    public static final int CODE_NOT_SUPPORTED_OPERATION = 8;
 
     /**
      * Creates a MetaContactListException with the specified message cause and
      * code.
+     *
      * @param message a human readable message describing the exception.
      * @param cause the Exception/Error (if any) that caused this Exception.
-     * @param code one of the status CODE_XXX variable, describing the nature
-     * of the exception.
+     * @param code one of the status CODE_XXX variable, describing the nature of the exception.
      */
     public MetaContactListException(String message, Exception cause, int code)
     {
@@ -103,8 +102,7 @@ public class MetaContactListException
      * Creates a MetaContactListException with the specified message error code.
      *
      * @param message a human readable message describing the exception.
-     * @param code one of the status CODE_XXX variable, describing the nature
-     * of the exception.
+     * @param code one of the status CODE_XXX variable, describing the nature of the exception.
      */
     public MetaContactListException(String message, int code)
     {
@@ -115,6 +113,7 @@ public class MetaContactListException
 
     /**
      * Returns an int describing the nature of the exception.
+     *
      * @return one of the static int CODE_XXX fields of this class.
      */
     public int getErrorCode()

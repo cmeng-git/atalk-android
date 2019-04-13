@@ -17,9 +17,11 @@ package net.java.sip.communicator.service.contactlist;
 
 import net.java.sip.communicator.service.protocol.*;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A MetaContact is an abstraction used for merging multiple Contacts (most
@@ -38,6 +40,7 @@ public interface MetaContact extends Comparable<MetaContact>
     /**
      * Returns the default protocol specific <tt>Contact</tt> to use when
      * communicating with this <tt>MetaContact</tt>.
+     *
      * @return the default <tt>Contact</tt> to use when communicating with
      * this <tt>MetaContact</tt>
      */
@@ -60,15 +63,16 @@ public interface MetaContact extends Comparable<MetaContact>
      * <tt>Iterator</tt> returned by this method should not be over the actual
      * list of contacts but rather over a copy of that list.
      * <p>
+     *
      * @return a <tt>java.util.Iterator</tt> containing all protocol specific
-     * <tt>Contact</tt>s that were registered as subContacts for this
-     * <tt>MetaContact</tt>
+     * <tt>Contact</tt>s that were registered as subContacts for this <tt>MetaContact</tt>
      */
     Iterator<Contact> getContacts();
 
     /**
      * Returns a contact encapsulated by this meta contact, having the specified
      * contactAddress and coming from the indicated ownerProvider.
+     *
      * @param contactAddress the address of the contact who we're looking for.
      * @param ownerProvider a reference to the ProtocolProviderService that
      * the contact we're looking for belongs to.
@@ -81,6 +85,7 @@ public interface MetaContact extends Comparable<MetaContact>
     /**
      * Returns <tt>true</tt> if the given <tt>protocolContact</tt> is contained
      * in this <tt>MetaContact</tt>, otherwise - returns <tt>false</tt>.
+     *
      * @param protocolContact the <tt>Contact</tt> we're looking for
      * @return <tt>true</tt> if the given <tt>protocolContact</tt> is contained
      * in this <tt>MetaContact</tt>, otherwise - returns <tt>false</tt>
@@ -90,6 +95,7 @@ public interface MetaContact extends Comparable<MetaContact>
     /**
      * Returns the number of protocol specific <tt>Contact</tt>s that this
      * <tt>MetaContact</tt> contains.
+     *
      * @return an int indicating the number of protocol specific contacts merged
      * in this <tt>MetaContact</tt>
      */
@@ -105,6 +111,7 @@ public interface MetaContact extends Comparable<MetaContact>
      * <tt>Iterator</tt> returned by this method should not be over the actual
      * list of contacts but rather over a copy of that list.
      * <p>
+     *
      * @param provider a reference to the <tt>ProtocolProviderService</tt>
      * whose contacts we'd like to get.
      * @return an <tt>Iterator</tt> over all contacts encapsulated in this
@@ -122,6 +129,7 @@ public interface MetaContact extends Comparable<MetaContact>
      * <tt>List</tt> returned by this method should not be the actual list of
      * contacts but rather a copy of that list.
      * <p>
+     *
      * @param opSetClass the operation for which the default contact is needed
      * @return a <tt>List</tt> of all contacts encapsulated in this
      * <tt>MetaContact</tt> and supporting the specified <tt>OperationSet</tt>
@@ -130,8 +138,8 @@ public interface MetaContact extends Comparable<MetaContact>
 
     /**
      * Returns the MetaContactGroup currently containing this meta contact
-     * @return a reference to the MetaContactGroup currently containing this
-     * meta contact.
+     *
+     * @return a reference to the MetaContactGroup currently containing this meta contact.
      */
     MetaContactGroup getParentMetaContactGroup();
 
@@ -139,6 +147,7 @@ public interface MetaContact extends Comparable<MetaContact>
      * Returns a String identifier (the actual contents is left to
      * implementations) that uniquely represents this <tt>MetaContact</tt>
      * in the containing <tt>MetaContactList</tt>
+     *
      * @return String
      */
     String getMetaUID();
@@ -146,6 +155,7 @@ public interface MetaContact extends Comparable<MetaContact>
     /**
      * Returns a characteristic display name that can be used when including
      * this <tt>MetaContact</tt> in user interface.
+     *
      * @return a human readable String that represents this meta contact.
      */
     String getDisplayName();
@@ -172,12 +182,14 @@ public interface MetaContact extends Comparable<MetaContact>
 
     /**
      * Returns a String representation of this <tt>MetaContact</tt>.
+     *
      * @return a String representation of this <tt>MetaContact</tt>.
      */
     String toString();
 
     /**
      * Adds a custom detail to this contact.
+     *
      * @param name name of the detail.
      * @param value the value of the detail.
      */
@@ -185,6 +197,7 @@ public interface MetaContact extends Comparable<MetaContact>
 
     /**
      * Remove the given detail.
+     *
      * @param name of the detail to be removed.
      * @param value value of the detail to be removed.
      */
@@ -192,12 +205,14 @@ public interface MetaContact extends Comparable<MetaContact>
 
     /**
      * Remove all details with given name.
+     *
      * @param name of the details to be removed.
      */
     void removeDetails(String name);
 
     /**
      * Change the detail.
+     *
      * @param name of the detail to be changed.
      * @param oldValue the old value of the detail.
      * @param newValue the new value of the detail.
@@ -206,6 +221,7 @@ public interface MetaContact extends Comparable<MetaContact>
 
     /**
      * Get all details with given name.
+     *
      * @param name the name of the details we are searching.
      * @return JSONArray for the details with the given name.
      */
@@ -216,8 +232,7 @@ public interface MetaContact extends Comparable<MetaContact>
     /**
      * Gets the user data associated with this instance and a specific key.
      *
-     * @param key the key of the user data associated with this instance to be
-     * retrieved
+     * @param key the key of the user data associated with this instance to be retrieved
      * @return an <tt>Object</tt> which represents the value associated with
      * this instance and the specified <tt>key</tt>; <tt>null</tt> if no
      * association with the specified <tt>key</tt> exists in this instance
@@ -240,8 +255,7 @@ public interface MetaContact extends Comparable<MetaContact>
      * </p>
      *
      * @param key the key to associate in this instance with the specified value
-     * @param value the value to be associated in this instance with the
-     * specified <tt>key</tt>
+     * @param value the value to be associated in this instance with the specified <tt>key</tt>
      */
     void setData(Object key, Object value);
 }

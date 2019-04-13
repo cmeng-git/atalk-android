@@ -5,8 +5,10 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.CandidateType;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
+import org.ice4j.socket.DatagramPacketFilter;
+import org.ice4j.socket.MultiplexingDatagramSocket;
+import org.xmpp.extensions.jingle.CandidateType;
+import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
@@ -27,8 +29,7 @@ import org.xmpp.jnodes.smack.SmackServiceNode;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
+import java.net.*;
 import java.util.*;
 
 import timber.log.Timber;
@@ -57,6 +58,43 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     private static final int[] COMPONENT_IDS = new int[]{Component.RTP, Component.RTCP};
 
     /**
+     * A filter which accepts any non-RTCP packets (RTP, DTLS, etc).
+     */
+    private static DatagramPacketFilter RTP_FILTER = new DatagramPacketFilter()
+    {
+        @Override
+        public boolean accept(DatagramPacket p)
+        {
+            return !RTCP_FILTER.accept(p);
+        }
+    };
+
+    /**
+     * A filter which accepts RTCP packets.
+     */
+    private final static DatagramPacketFilter RTCP_FILTER = p -> {
+        if (p == null) {
+            return false;
+        }
+
+        byte[] buf = p.getData();
+        int off = p.getOffset();
+        int len = p.getLength();
+
+        if (buf == null || len < 8 || off + len > buf.length) {
+            return false;
+        }
+
+        int version = (buf[off] & 0xC0) >>> 6;
+        if (version != 2) {
+            return false;
+        }
+
+        int pt = buf[off + 1] & 0xff;
+        return 200 <= pt && pt <= 211;
+    };
+
+    /**
      * This is where we keep our answer between the time we get the offer and are ready with the answer.
      */
     protected List<ContentExtensionElement> cpeList;
@@ -65,6 +103,19 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * The ICE agent that this transport manager would be using for ICE negotiation.
      */
     protected final Agent iceAgent;
+
+    /**
+     * Whether this transport manager should use rtcpmux. When using rtcpmux,
+     * the ICE Agent initializes a single Component per stream, and we use
+     * {@link org.ice4j.socket.MultiplexingDatagramSocket} to split it's
+     * socket into a socket accepting RTCP packets, and one for everything else (RTP, DTLS).
+     */
+    private boolean rtcpmux = false;
+
+    /**
+     * Caches the sockets for the stream connector so that they are not re-created.
+     */
+    private DatagramSocket[] streamConnectorSockets = null;
 
     /**
      * Creates a new instance of this transport manager, binding it to the specified peer.
@@ -282,31 +333,55 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     private DatagramSocket[] getStreamConnectorSockets(MediaType mediaType)
     {
+        // cmeng: aTalk remote video cannot received if enabled
+//        if (streamConnectorSockets != null) {
+//            return streamConnectorSockets;
+//        }
+
         IceMediaStream stream = iceAgent.getStream(mediaType.toString());
-
         if (stream != null) {
-            DatagramSocket[] streamConnectorSockets = new DatagramSocket[COMPONENT_IDS.length];
-            int streamConnectorSocketCount = 0;
+            if (rtcpmux) {
+                Component component = stream.getComponent(Component.RTP);
+                MultiplexingDatagramSocket componentSocket = component.getSocket();
+                if (componentSocket == null) {
+                    // ICE is not ready yet
+                    return null;
+                }
 
-            for (int i = 0; i < COMPONENT_IDS.length; i++) {
-                Component component = stream.getComponent(COMPONENT_IDS[i]);
+                DatagramSocket[] streamConnectorSockets = new DatagramSocket[2];
+                try {
+                    streamConnectorSockets[0] = componentSocket.getSocket(RTP_FILTER);
+                    streamConnectorSockets[1] = componentSocket.getSocket(RTCP_FILTER);
+                } catch (Exception e) {
+                    Timber.e("Failed to create filtered sockets.");
+                    return null;
+                }
+                return this.streamConnectorSockets = streamConnectorSockets;
+            }
+            else {
+                DatagramSocket[] streamConnectorSockets = new DatagramSocket[COMPONENT_IDS.length];
+                int streamConnectorSocketCount = 0;
 
-                if (component != null) {
-                    // ice4j-2.0 DatagramSocket streamConnectorSocket = component.getSocket();
-                    CandidatePair selectedPair = component.getSelectedPair();
-                    if (selectedPair != null) {
-                        DatagramSocket streamConnectorSocket = selectedPair.getLocalCandidate().getDatagramSocket();
-                        if (streamConnectorSocket != null) {
-                            streamConnectorSockets[i] = streamConnectorSocket;
-                            streamConnectorSocketCount++;
-                            Timber.log(TimberLog.FINER, "Added a streamConnectorSocket to StreamConnectorSocket list"
-                                    + " and increase streamConnectorSocketCount to " + streamConnectorSocketCount);
+                for (int i = 0; i < COMPONENT_IDS.length; i++) {
+                    Component component = stream.getComponent(COMPONENT_IDS[i]);
+
+                    if (component != null) {
+                        // ice4j-2.0 DatagramSocket streamConnectorSocket = component.getSocket();
+                        CandidatePair selectedPair = component.getSelectedPair();
+                        if (selectedPair != null) {
+                            DatagramSocket streamConnectorSocket = selectedPair.getLocalCandidate().getDatagramSocket();
+                            if (streamConnectorSocket != null) {
+                                streamConnectorSockets[i] = streamConnectorSocket;
+                                streamConnectorSocketCount++;
+                                Timber.log(TimberLog.FINER, "Added a streamConnectorSocket to StreamConnectorSocket list"
+                                        + " and increase streamConnectorSocketCount to %s", streamConnectorSocketCount);
+                            }
                         }
                     }
                 }
-            }
-            if (streamConnectorSocketCount > 0) {
-                return streamConnectorSockets;
+                if (streamConnectorSocketCount > 0) {
+                    return this.streamConnectorSockets = streamConnectorSockets;
+                }
             }
         }
         return null;
@@ -359,6 +434,10 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                     }
                 }
             }
+            if (rtcpmux) {
+                streamTargetAddresses[1] = streamTargetAddresses[0];
+                streamTargetAddressCount++;
+            }
             if (streamTargetAddressCount > 0) {
                 streamTarget = new MediaStreamTarget(streamTargetAddresses[0 /* RTP */], streamTargetAddresses[1 /* RTCP */]);
             }
@@ -370,8 +449,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Implements {@link TransportManagerJabberImpl#getXmlNamespace()}. Gets the XML namespace of
      * the Jingle transport implemented by this <tt>TransportManagerJabberImpl</tt>.
      *
-     * @return the XML namespace of the Jingle transport implemented by this
-     * <tt>TransportManagerJabberImpl</tt>
+     * @return the XML namespace of the Jingle transport implemented by this <tt>TransportManagerJabberImpl</tt>
      * @see TransportManagerJabberImpl#getXmlNamespace()
      */
     @Override
@@ -555,7 +633,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         try {
             portTracker = getPortTracker(media);
             // the following call involves STUN processing so it may take a while
-            stream = getNetAddrMgr().createIceStream(portTracker.getPort(), media, iceAgent);
+            stream = getNetAddrMgr().createIceStream(rtcpmux ? 1 : 2, portTracker.getPort(), media, iceAgent);
         } catch (Exception ex) {
             throw new OperationFailedException("Failed to initialize stream " + media,
                     OperationFailedException.INTERNAL_ERROR, ex);
@@ -695,7 +773,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Map)
      */
     @Override
-    protected synchronized boolean startConnectivityEstablishment(Map<String, IceUdpTransportExtensionElement> remote)
+    protected synchronized boolean startConnectivityEstablishment (Map<String, IceUdpTransportExtensionElement> remote)
     {
         /*
          * If ICE is running already, we try to update the checklists with the candidates. Note that
@@ -1073,7 +1151,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * Returns the total harvesting time (in ms) for all harvesters.
      *
      * @return The total harvesting time (in ms) for all the harvesters. 0 if the ICE agent is null,
-     * or if the agent has nevers harvested.
+     * or if the agent has never harvested.
      */
     @Override
     public long getTotalHarvestingTime()
@@ -1124,5 +1202,14 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     public void propertyChange(PropertyChangeEvent evt)
     {
         getCallPeer().getMediaHandler().firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setRtcpmux(boolean rtcpmux)
+    {
+        this.rtcpmux = rtcpmux;
     }
 }

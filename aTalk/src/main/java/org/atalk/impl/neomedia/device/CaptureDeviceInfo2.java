@@ -202,7 +202,6 @@ public class CaptureDeviceInfo2 extends CaptureDeviceInfo
 	 */
 	public boolean isSameTransportType(String transportType)
 	{
-		return (this.transportType == null) ? (transportType == null) : this.transportType
-			.equals(transportType);
+		return (this.transportType == null) ? (transportType == null) : this.transportType.equals(transportType);
 	}
 }

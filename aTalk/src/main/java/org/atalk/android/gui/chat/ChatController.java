@@ -709,13 +709,18 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     @Override
     public void onCommitContent(InputContentInfoCompat info)
     {
-        Uri contentUri = info.getContentUri();
-        String filePath = FilePathHelper.getPath(parent, contentUri);
-        if (!StringUtils.isNullOrEmpty(filePath)) {
-            sendSticker(filePath);
+        if (chatPanel.getProtocolProvider().isRegistered()) {
+            Uri contentUri = info.getContentUri();
+            String filePath = FilePathHelper.getPath(parent, contentUri);
+            if (!StringUtils.isNullOrEmpty(filePath)) {
+                sendSticker(filePath);
+            }
+            else
+                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
         }
-        else
-            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+        else {
+            aTalkApp.showToastMessage(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+        }
     }
 
     private void sendSticker(String filePath)

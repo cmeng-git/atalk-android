@@ -15,9 +15,10 @@
  */
 package net.java.sip.communicator.service.callhistory.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.callhistory.CallHistoryQuery;
+import net.java.sip.communicator.service.callhistory.CallRecord;
 
-import net.java.sip.communicator.service.callhistory.*;
+import java.util.EventObject;
 
 /**
  * The <tt>CallRecordEvent</tt> indicates that a <tt>CallRecord</tt> has been
@@ -25,8 +26,7 @@ import net.java.sip.communicator.service.callhistory.*;
  *
  * @author Yana Stamcheva
  */
-public class CallRecordEvent
-    extends EventObject
+public class CallRecordEvent extends EventObject
 {
     /**
      * Serial version UID.
@@ -41,11 +41,12 @@ public class CallRecordEvent
     /**
      * Creates a <tt>CallRecordEvent</tt> by specifying the parent <tt>query</tt>
      * and the <tt>callRecord</tt> this event is about.
+     *
      * @param query the source that triggered this event
      * @param callRecord the <tt>CallRecord</tt> this event is about
      */
     public CallRecordEvent(CallHistoryQuery query,
-                           CallRecord callRecord)
+            CallRecord callRecord)
     {
         super(query);
 
@@ -54,6 +55,7 @@ public class CallRecordEvent
 
     /**
      * Returns the <tt>ContactQuery</tt> that triggered this event.
+     *
      * @return the <tt>ContactQuery</tt> that triggered this event
      */
     public CallHistoryQuery getQuerySource()
@@ -63,6 +65,7 @@ public class CallRecordEvent
 
     /**
      * Returns the <tt>CallRecord</tt>s this event is about.
+     *
      * @return the <tt>CallRecord</tt>s this event is about
      */
     public CallRecord getCallRecord()

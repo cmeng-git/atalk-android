@@ -6,6 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.8.1 (04/13/2019)" versioncode="1081">
+        <change>Init camera parameters only when aTalk is in foreground; otherwise system alerts with 'aTalk has been detected using camera'</change>
+        <change>Implement BackgroundManager to init camera when the aTalk returns to foreground e.g. on auto-start</change>
+        <change>Block sticker sending if user is not online</change>
+        <change>Ensure user is online before checking server for HttpFileUpload service else NPE</change>
+        <change>Upgrade JNI native libraries for ffmpeg to v3.4.6 and x264 to v157</change>
+        <change>Optimize ffmpeg build options to reduce final jni libraries' and apk sizes</change>
+        <change>Fix thumbnail option availability during image attachment files sending</change>
+        <change>Video codec VP8 is not compatible for android with x86/x86_64 platforms (assembly source errors). Manually disable VP8 and enable h264 video codec in settings... instead</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="1.8.0 (03/27/2019)" versioncode="1080">
         <change>Add jni native libraries support for all ABIS i.e. armeabi-v7a arm64-v8a x86 x86_64</change>
         <change>Upgrade x264 jni native library to v152</change>

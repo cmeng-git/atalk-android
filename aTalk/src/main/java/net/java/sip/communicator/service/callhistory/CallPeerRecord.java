@@ -61,6 +61,7 @@ public class CallPeerRecord
 
     /**
      * Creates CallPeerRecord
+     *
      * @param peerAddress String
      * @param startTime Date
      * @param endTime Date
@@ -84,6 +85,7 @@ public class CallPeerRecord
 
     /**
      * The peer address - entityFullJid or callParticipantIDs
+     *
      * @return String
      */
     public String getPeerAddress()
@@ -103,6 +105,7 @@ public class CallPeerRecord
 
     /**
      * When peer connected to the call
+     *
      * @return Date
      */
     public Date getStartTime()
@@ -112,6 +115,7 @@ public class CallPeerRecord
 
     /**
      * Returns the actual state of the peer
+     *
      * @return CallPeerState
      */
     public CallPeerState getState()
@@ -121,6 +125,7 @@ public class CallPeerRecord
 
     /**
      * Sets secondary address to the <tt>CallPeerRecord</tt>
+     *
      * @param address the address to be set.
      */
     public void setPeerSecondaryAddress(String address)
@@ -130,6 +135,7 @@ public class CallPeerRecord
 
     /**
      * Returns the secondary address to the <tt>CallPeerRecord</tt>
+     *
      * @return the secondary address to the <tt>CallPeerRecord</tt>
      */
     public String getPeerSecondaryAddress()

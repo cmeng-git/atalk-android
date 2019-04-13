@@ -10,8 +10,9 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.condesc.ConferenceDescriptionExtensionElement;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jitsimeet.*;
+import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionElement;
+import org.xmpp.extensions.condesc.TransportExtensionElement;
+import org.xmpp.extensions.jitsimeet.*;
 import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -1590,7 +1591,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             cd.setDisplayName(displayName);
         }
 
-        ConferenceDescriptionExtensionElement ext = new ConferenceDescriptionExtensionElement(cd);
+        ConferenceDescriptionExtensionElement ext
+            = new ConferenceDescriptionExtensionElement(cd.getUri(), cd.getUri(), cd.getPassword());
         if (lastPresenceSent != null) {
             setPacketExtension(lastPresenceSent, ext, ConferenceDescriptionExtensionElement.NAMESPACE);
             try {
@@ -2538,8 +2540,19 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             ExtensionElement ext = presence.getExtension(ConferenceDescriptionExtensionElement.NAMESPACE);
             if (presence.isAvailable() && ext != null) {
                 ConferenceDescriptionExtensionElement cdExt = (ConferenceDescriptionExtensionElement) ext;
-                ConferenceDescription cd = cdExt.toConferenceDescription();
 
+                ConferenceDescription cd
+                    = new ConferenceDescription(
+                        cdExt.getUri(),
+                        cdExt.getCallId(),
+                        cdExt.getPassword());
+                cd.setAvailable(cdExt.isAvailable());
+                cd.setDisplayName(getName());
+                for (TransportExtensionElement t
+                    : cdExt.getChildExtensionsOfType(TransportExtensionElement.class))
+                {
+                    cd.addTransport(t.getNamespace());
+                }
                 if (!processConferenceDescription(cd, participantNick))
                     return;
 

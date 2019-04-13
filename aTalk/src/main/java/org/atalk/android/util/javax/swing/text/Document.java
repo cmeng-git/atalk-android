@@ -2,7 +2,7 @@ package org.atalk.android.util.javax.swing.text;
 
 import java.util.Dictionary;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.colibri.ColibriConferenceIQ.Content;
+import org.xmpp.extensions.colibri.ColibriConferenceIQ.Content;
 
 import org.atalk.android.gui.util.event.EventListenerList;
 import org.atalk.android.util.javax.swing.event.DocumentListener;

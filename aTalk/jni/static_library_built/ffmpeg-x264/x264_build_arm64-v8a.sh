@@ -23,8 +23,8 @@ make clean
 make -j${HOST_NUM_CORES} install
 }
 
-export CPU=arm64-v8a
-PREFIX=../android/${CPU}
+export ABI=arm64-v8a
+PREFIX=../android/${ABI}
 CROSS_PREFIX=${TOOLCHAIN}/bin/aarch64-linux-android-
 
 pushd x264
@@ -34,7 +34,7 @@ pushd ${PREFIX}/lib
 update_x264.so
 popd
 
-echo -e "*** Android x264-${X264_API} for ${CPU} builds completed ***\n\n"
+echo -e "*** Android x264-${X264_API} for ${ABI} builds completed ***\n\n"
 
 # ffmpeg - fixed with -Wl,--unresolved-symbols=ignore-in-shared-libs
 # export ADDI_LDFLAGS="-Wl,-z,defs -Wl,--unresolved-symbols=ignore-in-shared-libs"

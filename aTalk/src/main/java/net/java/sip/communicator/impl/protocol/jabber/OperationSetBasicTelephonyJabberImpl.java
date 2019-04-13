@@ -7,8 +7,8 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.text.TextUtils;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.condesc.CallIdExtensionElement;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
+import org.xmpp.extensions.condesc.CallIdExtensionElement;
+import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
@@ -547,12 +547,12 @@ public class OperationSetBasicTelephonyJabberImpl
         boolean failed = (reasonCode != HANGUP_REASON_NORMAL_CLEARING);
 
         // if we are failing a peer and have a reason, add the reason packet extension
-        ReasonPacketExtension reasonPacketExt = null;
+        ReasonExtensionElement reasonPacketExt = null;
 
         if (failed && (reasonText != null)) {
             Reason reason = convertReasonCodeToSIPCode(reasonCode);
             if (reason != null) {
-                reasonPacketExt = new ReasonPacketExtension(reason, reasonText, null);
+                reasonPacketExt = new ReasonExtensionElement(reason, reasonText, null);
             }
         }
 

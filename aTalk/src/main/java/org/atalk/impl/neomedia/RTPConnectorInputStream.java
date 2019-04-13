@@ -16,7 +16,8 @@ import org.ice4j.socket.DatagramPacketFilter;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.SocketTimeoutException;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -31,7 +32,7 @@ import timber.log.Timber;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public abstract class RTPConnectorInputStream<T> implements PushSourceStream
+public abstract class RTPConnectorInputStream<T extends Closeable> implements PushSourceStream, Closeable
 {
     /**
      * The value of the property <tt>controls</tt> of <tt>RTPConnectorInputStream</tt> when there
@@ -40,8 +41,7 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
     private static final Object[] EMPTY_CONTROLS = new Object[0];
 
     /**
-     * The length in bytes of the buffers of <tt>RTPConnectorInputStream</tt> receiving packets
-     * from the network.
+     * The length in bytes of the buffers of <tt>RTPConnectorInputStream</tt> receiving packets from the network.
      */
     public static final int PACKET_RECEIVE_BUFFER_LENGTH = 4 * 1024;
 
@@ -139,8 +139,7 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
     private SourceTransferHandler transferHandler;
 
     /**
-     * Initializes a new <tt>RTPConnectorInputStream</tt> which is to receive packet data from a
-     * specific UDP socket.
+     * Initializes a new <tt>RTPConnectorInputStream</tt> which is to receive packet data from a specific UDP socket.
      *
      * @param socket
      */
@@ -186,7 +185,6 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
                 return RTPConnectorInputStream.this.read(buffer, data, offset, length);
             }
         };
-
         maybeStartReceiveThread();
     }
 
@@ -195,10 +193,8 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
      * <tt>DatagramPacket</tt> for pushing out of this <tt>PushSourceStream</tt> . In other words,
      * determines whether <tt>p</tt> is to be discarded/dropped/ignored.
      *
-     * @param p the <tt>DatagramPacket</tt> to be considered for acceptance by all
-     * <tt>datagramPacketFilters</tt>
-     * @return <tt>true</tt> if all <tt>datagramPacketFilters</tt> accept <tt>p</tt>; otherwise,
-     * <tt>false</tt>
+     * @param p the <tt>DatagramPacket</tt> to be considered for acceptance by all <tt>datagramPacketFilters</tt>
+     * @return <tt>true</tt> if all <tt>datagramPacketFilters</tt> accept <tt>p</tt>; otherwise, <tt>false</tt>
      */
     private boolean accept(DatagramPacket p)
     {
@@ -250,6 +246,7 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
     /**
      * Close this stream, stops the worker thread.
      */
+    @Override
     public synchronized void close()
     {
         closed = true;
@@ -260,15 +257,10 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
              */
             try {
                 if (socket instanceof Closeable) {
-                    ((Closeable) socket).close();
-                }
-                else if (socket instanceof DatagramSocket) {
-                    ((DatagramSocket) socket).close();
-                }
-                else if (socket instanceof Socket) {
-                    ((Socket) socket).close();
+                    socket.close();
                 }
             } catch (IOException ex) {
+                // ignore
             }
         }
     }
@@ -521,7 +513,6 @@ public abstract class RTPConnectorInputStream<T> implements PushSourceStream
                 }
             }
         }
-
         return pktLength;
     }
 

@@ -1,4 +1,27 @@
 Project aTalk-Android Release Notes
+
+=========================================================================
+Version:		1.8.1 (1080)
+Author:         cmeng
+Upload Date:	04/13/2019
+- Init MediaRecorderSystem and AndroidCameraSystem only when aTalk is in foreground;
+  otherwise android generates system notification: aTalk has been detected using camera
+- Implement BackgroundManager class to allow re-init camera when the app returns to foreground
+- Block sticker sending if user is not online
+- Ensure user is login before checking server for HttpFileUpload service else NullPointerException
+- Update org_atalk_impl_neomedia_codec_FFmpeg.c to support ffmpeg v3.4.6
+- Upgrade ffmpeg lib to version 3.4.6 and optimized build option to reduce final jnilib sizes
+- Upgrade x264 lib to v157
+- Fix stanza creation for si file transfer with thumbnail element
+- Must include --disable-asm option in ffmpeg-x264 build for arm64-v8a, x86, x86_64 else errors:
+  ./i686-linux-android/bin/ld: warning: shared library text segment is not shareable
+  ./x86_64-linux-android/bin/ld: error: in libswresample, libswscale, libavcodec: requires dynamic R_X86_64_PC32 reloc against ...
+- clang/clang++ compiles .a libraries sizes > gcc/g++ (ndk-r15c) > old .a libraries (ndk-bundle)
+- AS latest ndk-bundle is no further compatible; has tried gcc/g++ with API-15, and older ndk, no change in .a sizes???
+- Update source and libjitsi to master release 20190409
+- Move SIP extensions package to org.xmpp.extensions and update source to jitsi-xmpp-extensions 20190409
+- libjnvpx.so is not compatible to android x86/x86_64 platforms, use x264 video codec instead
+
 =========================================================================
 Version:		1.8.0 (1080)
 Author:         cmeng

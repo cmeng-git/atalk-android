@@ -14,23 +14,23 @@ make clean
   --prefix=${PREFIX} \
   --cross-prefix=${CROSS_PREFIX} \
   --sysroot=${SYSROOT} \
+  --pkg-config=${BASEDIR}/ffmpeg-pkg-config \
   --nm=${CROSS_PREFIX}nm \
   --cc=${CROSS_PREFIX}gcc \
   --extra-libs="-lgcc" \
-  --target-os=linux \
   --arch=mips \
   --disable-mipsdspr1 --disable-mipsdspr2 --disable-mipsfpu \
   --extra-cflags="-Os -fPIC -I${PREFIX}/include/x264" \
-  --extra-ldflags="${ADDI_LDFLAGS} -L${PREFIX}/lib -lx264"
+  --extra-ldflags="${ADDI_LDFLAGS} -L${PREFIX}/lib"
 
 make -j${HOST_NUM_CORES} install
 }
 
-export CPU=mips
-PREFIX=../android/${CPU}
+export ABI=mips
+PREFIX=../android/${ABI}
 CROSS_PREFIX=${TOOLCHAIN}/bin/mipsel-linux-android-
 
 pushd ffmpeg
 build_target
 popd
-echo -e "*** Android ffmpeg for ${CPU} builds completed ***\n\n"
+echo -e "*** Android ffmpeg for ${ABI} builds completed ***\n\n"

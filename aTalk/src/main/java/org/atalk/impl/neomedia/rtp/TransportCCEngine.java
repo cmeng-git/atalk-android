@@ -257,8 +257,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter implements Remo
             // The number of packets represented in incomingPackets (including
             // the missing ones), i.e. the number of entries that the RTCP TCC
             // packet would include.
-            int packetCount
-                    = 1 + RTPUtils.subtractNumber(
+            int packetCount = 1 + RTPUtils.subtractNumber(
                     incomingPackets.lastKey(),
                     incomingPackets.firstKey());
 

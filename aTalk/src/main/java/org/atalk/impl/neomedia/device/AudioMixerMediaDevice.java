@@ -417,8 +417,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * @return the list of <tt>MediaFormat</tt>s supported by this <tt>MediaDevice</tt>
      * @see MediaDevice#getSupportedFormats()
      */
-    public List<MediaFormat> getSupportedFormats(QualityPreset sendPreset,
-            QualityPreset receivePreset)
+    public List<MediaFormat> getSupportedFormats(QualityPreset sendPreset, QualityPreset receivePreset)
     {
         return device.getSupportedFormats();
     }

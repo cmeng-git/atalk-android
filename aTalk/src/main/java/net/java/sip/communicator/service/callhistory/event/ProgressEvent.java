@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.callhistory.event;
 
-import java.util.*;
+import java.util.Date;
 
 /**
  * A "ProgressEvent" event gets delivered through the search process
@@ -24,8 +24,7 @@ import java.util.*;
  *
  * @author Damian Minkov
  */
-public class ProgressEvent
-    extends java.util.EventObject
+public class ProgressEvent extends java.util.EventObject
 {
     /**
      * Serial version UID.
@@ -49,19 +48,16 @@ public class ProgressEvent
      * @param evt the <tt>ProgressEvent</tt>
      * @param progress initial progress value
      */
-    public ProgressEvent(
-        Object source,
-        net.java.sip.communicator.service.history.event.ProgressEvent evt,
-        int progress)
+    public ProgressEvent(Object source, net.java.sip.communicator.service.history.event.ProgressEvent evt, int progress)
     {
         super(source);
-
         this.evt = evt;
         this.progress = progress;
     }
 
     /**
      * Gets the current progress that will be fired.
+     *
      * @return int the progress value
      */
     public int getProgress()
@@ -71,6 +67,7 @@ public class ProgressEvent
 
     /**
      * The end date in the search condition.
+     *
      * @return Date end date value
      */
     public Date getEndDate()
@@ -80,6 +77,7 @@ public class ProgressEvent
 
     /**
      * The start date in the search condition.
+     *
      * @return Date start date value
      */
     public Date getStartDate()
@@ -89,6 +87,7 @@ public class ProgressEvent
 
     /**
      * Sets the progress that will be fired
+     *
      * @param progress int progress value
      */
     public void setProgress(int progress)

@@ -504,7 +504,7 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
                 b = true;
             }
             else {
-                Timber.d("SRTP auth failed for SSRC %s", ssrc);
+                Timber.w("SRTP auth failed for SSRC %s", ssrc);
             }
         }
 

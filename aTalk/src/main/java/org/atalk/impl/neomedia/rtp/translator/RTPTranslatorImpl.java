@@ -32,6 +32,7 @@ import timber.log.Timber;
  * traffic between multiple <tt>MediaStream</tt>s.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class RTPTranslatorImpl extends AbstractRTPTranslator
         implements ReceiveStreamListener

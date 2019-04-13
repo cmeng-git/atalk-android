@@ -22,14 +22,14 @@ public interface HistoryQuery
 	/**
 	 * Cancels this query.
 	 */
-	public void cancel();
+	void cancel();
 
 	/**
 	 * Returns the query string, this query was created for.
 	 *
 	 * @return the query string, this query was created for
 	 */
-	public String getQueryString();
+	String getQueryString();
 
 	/**
 	 * Returns a collection of the results for this query. It's up to the implementation to
@@ -41,7 +41,7 @@ public interface HistoryQuery
 	 *
 	 * @return a collection of the initial results for this query
 	 */
-	public Collection<HistoryRecord> getHistoryRecords();
+	Collection<HistoryRecord> getHistoryRecords();
 
 	/**
 	 * Adds the given <tt>HistoryQueryListener</tt> to the list of listeners interested in query
@@ -50,7 +50,7 @@ public interface HistoryQuery
 	 * @param l
 	 * 		the <tt>HistoryQueryListener</tt> to add
 	 */
-	public void addHistoryRecordsListener(HistoryQueryListener l);
+	void addHistoryRecordsListener(HistoryQueryListener l);
 
 	/**
 	 * Removes the given <tt>HistoryQueryListener</tt> from the list of listeners interested in
@@ -59,5 +59,5 @@ public interface HistoryQuery
 	 * @param l
 	 * 		the <tt>HistoryQueryListener</tt> to remove
 	 */
-	public void removeHistoryRecordsListener(HistoryQueryListener l);
+	void removeHistoryRecordsListener(HistoryQueryListener l);
 }

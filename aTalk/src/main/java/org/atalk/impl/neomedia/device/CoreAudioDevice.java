@@ -35,7 +35,7 @@ public class CoreAudioDevice
                 System.loadLibrary("jnmaccoreaudio");
                 isLoaded = true;
             }
-            else if (OSUtils.IS_WINDOWS_VISTA || OSUtils.IS_WINDOWS_7 || OSUtils.IS_WINDOWS_8) {
+            else if (OSUtils.IS_WINDOWS) {
                 System.loadLibrary("jnwincoreaudio");
                 isLoaded = true;
             }

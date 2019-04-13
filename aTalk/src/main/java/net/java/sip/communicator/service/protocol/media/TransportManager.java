@@ -246,8 +246,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
         PortTracker portTracker = getPortTracker(mediaType);
 
         // create the RTP socket.
-        DatagramSocket rtpSocket;
-        rtpSocket = createDatagramSocket(localHostForPeer, portTracker);
+        DatagramSocket rtpSocket = createDatagramSocket(localHostForPeer, portTracker);
 
         // create the RTCP socket, preferably on the port following our RTP one.
         DatagramSocket rtcpSocket = createDatagramSocket(localHostForPeer, portTracker);

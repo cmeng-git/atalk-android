@@ -6,14 +6,13 @@
 
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.Thumbnail;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.ThumbnailFile;
+import org.xmpp.extensions.thumbnail.Thumbnail;
+import org.xmpp.extensions.thumbnail.ThumbnailFile;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -322,7 +321,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                     jabberProvider, OperationSetFileTransferJabberImpl.this, request);
             StreamInitiation si = getStreamInitiation(request);
 
-            // Send thumbnail request if advertised in streamInitiation packet, not autoAccept and the feature is enabled
+            // Send thumbnail request if advertised in streamInitiation packet, no autoAccept and the feature is enabled
             StreamInitiation.File file;
             boolean isThumbnailFile = false;
             if ((si != null) && (file = si.getFile()) instanceof ThumbnailFile) {

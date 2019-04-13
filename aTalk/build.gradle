@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-rc02'
+        classpath 'com.android.tools.build:gradle:3.4.0-rc03'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
@@ -57,8 +57,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1080
-        versionName "1.8.0" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1081
+        versionName "1.8.1" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -167,6 +167,7 @@ dependencies {
     implementation "com.android.support:support-v13:${rootProject.supportLibraryVersion}"
     implementation "com.android.support:appcompat-v7:${rootProject.supportLibraryVersion}"
     implementation "com.android.support:design:${rootProject.supportLibraryVersion}"
+    // implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation 'com.android.support:multidex:1.0.3'
 
     // libraries from maven repository
@@ -236,7 +237,7 @@ dependencies {
     implementation 'org.osgi:osgi.core:7.0.0'
 
     playstoreImplementation "com.google.android.gms:play-services-location:${rootProject.gmsPlayServicesVersion}"
-    playstoreImplementation "com.google.android.gms:play-services-maps:${rootProject.gmsPlayServicesVersion}"
+    playstoreImplementation "com.google.android.gms:play-services-maps:16.1.0"
     playstoreImplementation "com.google.android.gms:play-services-panorama:${rootProject.gmsPlayServicesVersion}"
 
     /*

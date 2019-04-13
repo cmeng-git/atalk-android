@@ -5,8 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.Thumbnail;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.thumbnail.ThumbnailFile;
+import org.xmpp.extensions.thumbnail.Thumbnail;
+import org.xmpp.extensions.thumbnail.ThumbnailFile;
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
 
@@ -174,7 +174,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
         if (!(file instanceof ThumbnailedFile))
             return;
 
-        Timber.d("File transfer packet intercepted in order to add thumbnail.");
+        Timber.d("File transfer packet intercepted to add thumbnail element.");
 
         XMPPTCPConnection connection = protocolProvider.getConnection();
         StreamInitiation fileTransferPacket = (StreamInitiation) stanza;

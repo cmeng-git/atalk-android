@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2016 cmeng
+# Copyright 2016 Eng Chong Meng
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,22 +17,27 @@
 set -u
 . _settings.sh
 
-# aTalk v1.7.3 uses libvpx-master i.e. 1.6.1+ (10/13/2017)
-# aTalk v1.7.3 is not compatible with libvpx-1.7.0
+# aTalk v1.7.3 and above uses libvpx-master i.e. 1.6.1+ (10/13/2017)
+# aTalk v1.8.1 is not compatible with libvpx-1.7.0
+
 # LIB_VPX="libvpx-master"
 LIB_VPX="libvpx-1.6.1+"
 # LIB_VPX="libvpx-1.7.0"
 
-# Both has been fixed by patches: https://android.googlesource.com/platform/external/libvpx/+/ca30a60d2d6fbab4ac07c63bfbf7bbbd1fe6a583
-# libvpx >v1.6.1 has the following errors when build with aTalk; v1.6.1 also failed with --enable-pic
+## Both problems #1 & #2 below have been fixed by patches from: https://android.googlesource.com/platform/external/libvpx/+/ca30a60d2d6fbab4ac07c63bfbf7bbbd1fe6a583
+## However the compiled libjnvpx.so has problem when exec on x86_64 android platform:
+## i.e. org.atalk.android A/libc: Fatal signal 31 (SIGSYS), code 1 in tid 5833 (Loop thread: ne), pid 4781 (g.atalk.android)
+
+# 1. libvpx >v1.6.1 has the following errors when build with aTalk; v1.6.1 failed with --enable-pic
 # ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(deblock_sse2.asm.o): relocation R_386_GOTOFF against preemptible symbol vpx_rv cannot be used when making a shared object
 # ./i686-linux-android/4.9.x/../../../../i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_mmx.asm.o): relocation R_386_GOTOFF against preemptible symbol # vp8_bilinear_filters_x86_8 cannot be used when making a shared object
 # ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_mmx.asm.o): relocation R_386_GOTOFF against preemptible symbol vp8_bilinear_filters_x86_8 cannot be used when making a shared object
 # ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_sse2.asm.o): relocation R_386_GOTOFF against preemptible symbol vp8_bilinear_filters_x86_8 cannot be used when making a shared object
 # ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_sse2.asm.o): relocation R_386_GOTOFF against preemptible symbol vp8_bilinear_filters_x86_8 cannot be used when making a shared object
 
-# However libvpx-1.6.1 x86_64 has the same error
+# 2. However libvpx-1.6.1 x86_64 has the same error
 # ./x86_64-linux-android/bin/ld: error: vpx/android/x86_64/lib/libvpx.a(deblock_sse2.asm.o): requires dynamic R_X86_64_PC32 reloc against 'vpx_rv' which may overflow at runtime; recompile with -fPIC
+
 
 # Uncomment below for fetech libvpx from online repository
 # ./init_libvpx.sh ${LIB_VPX}

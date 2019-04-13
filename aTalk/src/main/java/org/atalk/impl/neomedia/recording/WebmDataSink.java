@@ -456,8 +456,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      *
      * @param buf the buffer containing a compressed VP8 frame.
      * @param offset the offset in <tt>buf</tt> where the VP8 compressed frame starts.
-     * @return the height of the VP8 compressed frame contained in <tt>buf</tt> at offset
-     * <tt>offset</tt>.
+     * @return the height of the VP8 compressed frame contained in <tt>buf</tt> at offset <tt>offset</tt>.
      */
     private int getHeight(byte[] buf, int offset)
     {
@@ -467,16 +466,13 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     /**
      * Returns the value of the <tt>show_frame</tt> field from the "uncompressed data chunk" in the
      * VP8 compressed frame contained in <tt>buf</tt> at offset <tt>offset</tt>. RFC6386 isn't
-     * clear
-     * about the format, so the interpretation of
+     * clear about the format, so the interpretation of
      *
      * @param buf the buffer containing a compressed VP8 frame.
      * @param offset the offset in <tt>buf</tt> where the VP8 compressed frame starts.
      * @return the value of the <tt>show_frame</tt> field from the "uncompressed data chunk" in the
      * VP8 compressed frame contained in <tt>buf</tt> at offset <tt>offset</tt>.
-     * @{link http://tools.ietf.org/html/draft-ietf-payload-vp8-11} is used. TODO: move it to a
-     * more
-     * general class?
+     * @{link http://tools.ietf.org/html/draft-ietf-payload-vp8-11} is used.
      */
     private boolean isShowFrame(byte[] buf, int offset)
     {

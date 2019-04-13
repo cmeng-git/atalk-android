@@ -124,7 +124,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         this.isDisplayResourceOnly = isDisplayResourceOnly;
         mPPS = contact.getProtocolProvider();
         ftOpSet = (OperationSetFileTransferJabberImpl) mPPS.getOperationSet(OperationSetFileTransfer.class);
-        httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
+        if (mPPS.getConnection() != null)
+            httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
 
         presenceOpSet = mPPS.getOperationSet(OperationSetPresence.class);
         if (presenceOpSet != null)
@@ -322,7 +323,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public boolean allowsFileTransfer()
     {
-        return (ftOpSet != null) || httpFileUploadManager.isUploadServiceDiscovered();
+        return (ftOpSet != null)
+                || ((httpFileUploadManager != null) && httpFileUploadManager.isUploadServiceDiscovered());
     }
 
     /**

@@ -198,7 +198,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
         PlugInManager.removePlugIn("com.sun.media.renderer.audio.JavaSoundRenderer", PlugInManager.RENDERER);
 
         if (OSUtils.IS_WINDOWS) {
-            if (OSUtils.IS_WINDOWS32 && (OSUtils.IS_WINDOWS_VISTA || OSUtils.IS_WINDOWS_7)) {
+            if (OSUtils.IS_WINDOWS32) {
                 /*
                  * DDRenderer will cause 32-bit Windows Vista/7 to switch its theme from Aero to
                  * Vista Basic so try to pick up a different Renderer.
@@ -437,7 +437,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * Detects video capture devices configured through JMF and disable video if none was found.
      */
-    private void extractConfiguredVideoCaptureDevices()
+    public void extractConfiguredVideoCaptureDevices()
     {
         if (!MediaServiceImpl.isMediaTypeSupportEnabled(MediaType.VIDEO))
             return;

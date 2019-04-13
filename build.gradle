@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-rc02'
+        classpath 'com.android.tools.build:gradle:3.4.0-rc03'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -26,7 +26,7 @@ project.ext {
     buildToolsVersion = '28.0.3'
     // do not change to 28.0.0 => ClassNotFoundException : OnUnhandledKeyEventListener
     supportLibraryVersion = '27.1.1'
-    gmsPlayServicesVersion = '15.0.1'
+    gmsPlayServicesVersion = '16.0.0'
 }
 task clean(type: Delete) {
     delete rootProject.buildDir

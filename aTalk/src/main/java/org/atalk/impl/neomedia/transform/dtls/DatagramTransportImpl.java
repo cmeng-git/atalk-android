@@ -82,8 +82,8 @@ public class DatagramTransportImpl implements DatagramTransport
 	public DatagramTransportImpl(int componentID)
 	{
 		switch (componentID) {
-			case Component.RTCP:
-			case Component.RTP:
+        case DtlsTransformEngine.COMPONENT_RTCP:
+        case DtlsTransformEngine.COMPONENT_RTP:
 				this.componentID = componentID;
 				break;
 			default:
@@ -151,10 +151,10 @@ public class DatagramTransportImpl implements DatagramTransport
 		RTPConnectorOutputStream outputStream;
 
 		switch (componentID) {
-			case Component.RTCP:
+        case DtlsTransformEngine.COMPONENT_RTCP:
 				outputStream = connector.getControlOutputStream();
 				break;
-			case Component.RTP:
+        case DtlsTransformEngine.COMPONENT_RTP:
 				outputStream = connector.getDataOutputStream();
 				break;
 			default:

@@ -421,12 +421,6 @@ public class ConfigurationUtils
     private static String pHideExtendedAwayStatus = "protocol.globalstatus.HIDE_EXTENDED_AWAY_STATUS";
 
     /**
-     * The name of the property which indicates whether the user should be
-     * warned that master password is not set.
-     */
-    private static final String MASTER_PASS_WARNING_PROP = ".gui.main.SHOW_MASTER_PASSWORD_WARNING";
-
-    /**
      * Indicates if phone numbers should be normalized before dialed.
      */
     private static boolean isNormalizePhoneNumber;
@@ -441,6 +435,13 @@ public class ConfigurationUtils
      * The name of the single interface property.
      */
     public static final String ALERTER_ENABLED_PROP = "chatalerter.ENABLED";
+
+    /**
+     * The name of the property which indicates whether the user should be
+     * warned that master password is not set.
+     */
+    private static final String MASTER_PASS_WARNING_PROP = "gui.main.SHOW_MASTER_PASSWORD_WARNING";
+
 
     /**
      * Indicates whether the user should be warned
