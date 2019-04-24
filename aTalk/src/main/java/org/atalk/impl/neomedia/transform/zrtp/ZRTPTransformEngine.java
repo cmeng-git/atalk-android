@@ -135,6 +135,7 @@ import timber.log.Timber;
  * overloaded methods and a possible different behaviour.
  *
  * @author Werner Dittmann &lt;Werner.Dittmann@t-online.de>
+ * @author Eng Chong Meng
  */
 public class ZRTPTransformEngine extends SinglePacketTransformer implements SrtpControl.TransformEngine, ZrtpCallback
 {
@@ -453,8 +454,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * @param config the zrtp config to use
      * @return true if initialization fails, false if succeeds
      */
-    public synchronized boolean initialize(String zidFilename, boolean autoEnable,
-            ZrtpConfigure config)
+    public synchronized boolean initialize(String zidFilename, boolean autoEnable, ZrtpConfigure config)
     {
         // Try to get the ZidFile path through the FileAccessService.
         File file = null;
@@ -688,8 +688,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             }
             // Check if it is really a ZRTP packet, if not don't process it
             else if (zPkt.hasMagic()) {
-                int extHeaderOffset = zPkt.getHeaderLength() - zPkt.getExtensionLength()
-                        - RawPacket.EXT_HEADER_SIZE;
+                int extHeaderOffset = zPkt.getHeaderLength() - zPkt.getExtensionLength() - RawPacket.EXT_HEADER_SIZE;
                 // zrtp engine need a "pointer" to the extension header, so we
                 // give him the extension header and the payload data
                 byte[] extHeader = zPkt.readRegion(extHeaderOffset, RawPacket.EXT_HEADER_SIZE
@@ -702,8 +701,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
 
     /**
      * The callback method required by the ZRTP implementation. First allocate space to hold the
-     * complete ZRTP packet, copy the message part in its place, the initialize the header,
-     * counter, SSRC and crc.
+     * complete ZRTP packet, copy the message part in its place, the initialize the header, counter, SSRC and crc.
      *
      * @param data The ZRTP packet data
      * @return true if sending succeeds, false if it fails
@@ -722,10 +720,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
         try {
             RTPConnectorOutputStream outputStream = zrtpConnector.getDataOutputStream();
             if (outputStream != null) {
-                outputStream.write(
-                        packet.getBuffer(),
-                        packet.getOffset(),
-                        packet.getLength());
+                outputStream.write(packet.getBuffer(), packet.getOffset(), packet.getLength());
             }
         } catch (IOException e) {
             Timber.w("Failed to send ZRTP data: %s", e.getMessage());
@@ -769,7 +764,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             if (secrets.getRole() == Role.Initiator) {
                 srtpPolicy = new SRTPPolicy(cipher,
                         secrets.getInitKeyLen() / 8,
-                        authn, authKeyLen,    // auth key length
+                        authn, authKeyLen,
                         secrets.getSrtpAuthTagLen() / 8,
                         secrets.getInitSaltLen() / 8
                 );
@@ -785,7 +780,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             else {
                 srtpPolicy = new SRTPPolicy(cipher,
                         secrets.getRespKeyLen() / 8,
-                        authn, authKeyLen,    // auth key length
+                        authn, authKeyLen,
                         secrets.getSrtpAuthTagLen() / 8,
                         secrets.getRespSaltLen() / 8
                 );
@@ -805,7 +800,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             if (secrets.getRole() == Role.Initiator) {
                 srtpPolicy = new SRTPPolicy(cipher,
                         secrets.getRespKeyLen() / 8,
-                        authn, authKeyLen, // auth key length
+                        authn, authKeyLen,
                         secrets.getSrtpAuthTagLen() / 8,
                         secrets.getRespSaltLen() / 8
                 );
@@ -1107,8 +1102,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * Use this method to get the peer's Hello Hash data. The method returns the data as a string.
      *
      * @return a String containing the Hello hash value as hex-digits. Peer Hello hash is available
-     * after we received a Hello packet from our peer. If peer's hello hash is not available
-     * return null.
+     * after we received a Hello packet from our peer. If peer's hello hash is not available return null.
      */
     public String getPeerHelloHash()
     {

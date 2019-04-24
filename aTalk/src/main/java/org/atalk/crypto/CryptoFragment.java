@@ -36,6 +36,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.crypto.listener.CryptoModeChangeListener;
+import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smack.SmackException;
@@ -873,7 +874,8 @@ public class CryptoFragment extends OSGiFragment
 
                 try {
                     DomainBareJid serverJid = mConnection.getXMPPServiceDomain();
-                    serverCan = OmemoManager.serverSupportsOmemo(mConnection, serverJid);
+                    serverCan = AndroidOmemoService.isOmemoInitSuccessful
+                            || OmemoManager.serverSupportsOmemo(mConnection, serverJid);
 
                     if (mDescriptor instanceof ChatRoom) {
                         MultiUserChat muc = ((ChatRoom) mDescriptor).getMultiUserChat();

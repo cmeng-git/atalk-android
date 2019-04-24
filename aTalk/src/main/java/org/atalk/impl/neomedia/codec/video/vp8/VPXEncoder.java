@@ -171,8 +171,7 @@ public class VPXEncoder extends AbstractCodec2
         }
         VPX.codec_enc_config_default(INTERFACE, cfg, 0);
 
-        int bitRate = NeomediaServiceUtils
-                .getMediaServiceImpl().getDeviceConfiguration().getVideoBitrate();
+        int bitRate = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration().getVideoBitrate();
 
         //set some settings
         VPX.codec_enc_cfg_set_rc_target_bitrate(cfg, bitRate);

@@ -45,6 +45,8 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
     private OperationSetBasicInstantMessagingJabberImpl imOpSet = null;
     private OperationSetMultiUserChatJabberImpl mucOpSet = null;
 
+    public static boolean isOmemoInitSuccessful = false;
+
     public AndroidOmemoService(ProtocolProviderService pps)
     {
         mConnection = pps.getConnection();
@@ -102,18 +104,21 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
     public void initOmemoDevice()
     {
         // omemoManager.initialize(); or
+        isOmemoInitSuccessful = false;
         mOmemoManager.initializeAsync(this);
     }
 
     @Override
     public void initializationFinished(OmemoManager manager)
     {
+        isOmemoInitSuccessful = true;
         Timber.i("Initialize OmemoManager successful for %s", mConnection.getUser());
     }
 
     @Override
     public void initializationFailed(Exception cause)
     {
+        isOmemoInitSuccessful = false;
         String title = aTalkApp.getResString(R.string.omemo_init_failed_title);
         Timber.e(cause, "%s", title);
         String errMsg = cause.getMessage();

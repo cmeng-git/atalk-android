@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include <libavutil/avutil.h>
+#include <libavutil/imgutils.h>
 #include <libavutil/pixdesc.h>
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -105,10 +106,8 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1alloc_1packet
 {
     AVPacket *pkt = av_malloc(sizeof(AVPacket));
 
-    if (pkt)
-    {
-        if (av_new_packet(pkt, size))
-        {
+    if (pkt) {
+        if (av_new_packet(pkt, size)) {
             av_free(pkt);
             pkt = 0;
         }
@@ -125,30 +124,34 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1close
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
- * Method:    avcodec_decode_audio4
+ * Method:    avcodec_send_packet & avcodec_receive_frame
  * Signature: (JJ[ZJ)I
  */
 JNIEXPORT jint JNICALL
 Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1decode_1audio4
-    (JNIEnv *env, jclass clazz, jlong avctx, jlong frame,
-        jbooleanArray got_frame, jlong avpkt)
+    (JNIEnv *env, jclass clazz, jlong avctx, jlong avframe, jbooleanArray got_frame, jlong avpkt)
 {
     jint ret;
-    int i;
-
-    ret = avcodec_decode_audio4(
-                (AVCodecContext *) (intptr_t) avctx,
-                (AVFrame *) (intptr_t) frame,
-                &i,
-                (const AVPacket *) (intptr_t) avpkt);
-
-    if (got_frame)
-    {
-        jboolean b = i ? JNI_TRUE : JNI_FALSE;
-
+    AVPacket *pkt;
+/*
+    int got_frame_ptr;
+    ret = avcodec_decode_audio4((AVCodecContext *) (intptr_t) avctx,
+                (AVFrame *) (intptr_t) avframe, &got_frame_ptr, (const AVPacket *) (intptr_t) avpkt);
+    if (got_frame) {
+        jboolean b = got_frame_ptr ? JNI_TRUE : JNI_FALSE;
         (*env)->SetBooleanArrayRegion(env, got_frame, 0, 1, &b);
     }
-
+*/
+    pkt = (AVPacket *) (intptr_t) avpkt;
+    ret = avcodec_send_packet((AVCodecContext *) (intptr_t) avctx, pkt);
+    if (ret == 0) {
+        ret = avcodec_receive_frame((AVCodecContext *) (intptr_t) avctx, (AVFrame *) (intptr_t) avframe);
+        jboolean b = (ret == 0) ? JNI_TRUE : JNI_FALSE;
+        (*env)->SetBooleanArrayRegion(env, got_frame, 0, 1, &b);
+        if (ret == 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF) {
+            ret = pkt->size;
+        }
+    }
     return ret;
 }
 
@@ -159,19 +162,15 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1decode_1video__JJ_3Z_3BI
 {
     jint ret;
 
-    if (buf)
-	{
+    if (buf) {
         jbyte *buf_ = (*env)->GetByteArrayElements (env, buf, NULL);
-
-        if (buf_)
-		{
-		    int i;
+        if (buf_) {
             AVPacket avpkt;
-
             av_init_packet(&avpkt);
             avpkt.data = (uint8_t *) buf_;
             avpkt.size = (int) buf_size;
-
+/*
+		    int i;
             ret = avcodec_decode_video2((AVCodecContext *) (intptr_t) avctx,
                     (AVFrame *) (intptr_t) avframe, &i, &avpkt);
 
@@ -181,6 +180,17 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1decode_1video__JJ_3Z_3BI
                 jboolean j_got_picture = i ? JNI_TRUE : JNI_FALSE;
                 (*env)->SetBooleanArrayRegion (env, got_picture, 0, 1, &j_got_picture);
             }
+*/
+            ret = avcodec_send_packet((AVCodecContext *) (intptr_t) avctx, &avpkt);
+            if (ret == 0) {
+                ret = avcodec_receive_frame((AVCodecContext *) (intptr_t) avctx, (AVFrame *) (intptr_t) avframe);
+                jboolean j_got_picture = (ret == 0) ? JNI_TRUE : JNI_FALSE;
+                (*env)->SetBooleanArrayRegion (env, got_picture, 0, 1, &j_got_picture);
+                if (ret == 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF) {
+                    ret = avpkt.size;
+                }
+            }
+            (*env)->ReleaseByteArrayElements (env, buf, buf_, 0);
         } else
             ret = -1;
     } else
@@ -199,12 +209,19 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1decode_1video__JJJI
     av_init_packet(&avpkt);
     avpkt.data = (uint8_t*) (intptr_t) src;
     avpkt.size = (int) src_length;
-
-    ret = avcodec_decode_video2(
-            (AVCodecContext *) (intptr_t) avctx,
-            (AVFrame *) (intptr_t) avframe, &got_picture, &avpkt);
-
-	return got_picture ? ret : -1;
+/*
+    ret = avcodec_decode_video2((AVCodecContext *) (intptr_t) avctx,
+       (AVFrame *) (intptr_t) avframe, &got_picture, &avpkt);
+    return got_picture ? ret : -1;
+*/
+    ret = avcodec_send_packet((AVCodecContext *) (intptr_t) avctx, &avpkt);
+    if (ret == 0) {
+        ret = avcodec_receive_frame((AVCodecContext *) (intptr_t) avctx, (AVFrame *) (intptr_t) avframe);
+        if (ret == 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF) {
+            ret = avpkt.size;
+        }
+    }
+    return ret;
 }
 
 JNIEXPORT jint JNICALL
@@ -219,35 +236,31 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1encode_1audio
     AVFrame *frame = NULL;
     AVCodecContext *avctx = NULL;
     int got_output = 0;
-    AVPacket pkt;
-    av_init_packet(&pkt);
+    int pkt_size;
+    AVPacket avpkt;
+    av_init_packet(&avpkt);
 
     // validate parameters
-    if (!buf || !ctx)
-    {
+    if (!buf || !ctx) {
         goto end;
     }
 
     // convert java objects to pointers
-    avctx = (AVCodecContext*)(intptr_t)ctx;
+    avctx = (AVCodecContext*)(intptr_t) ctx;
     buf_ = (*env)->GetByteArrayElements(env, buf, NULL);
-    if (!buf_)
-    {
+    if (!buf_) {
         goto end;
     }
 
     samples_ = (*env)->GetByteArrayElements(env, samples, NULL);
-    if (!samples_)
-    {
+    if (!samples_) {
         goto end;
     }
-
     samples_size = (*env)->GetArrayLength(env, samples);
 
     // prepare encoder input
     frame = av_frame_alloc();
-    if (!frame)
-    {
+    if (!frame) {
         ret = AVERROR(ENOMEM);
         goto end;
     }
@@ -256,70 +269,56 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1encode_1audio
     frame->format = avctx->sample_fmt;
     frame->channel_layout = avctx->channel_layout;
 
-    ret = avcodec_fill_audio_frame(frame,
-        avctx->channels,
-        avctx->sample_fmt,
-        (uint8_t*) (samples_ + samples_offset),
-        samples_size - samples_offset, 0);
-    if (ret < 0)
-    {
+    ret = avcodec_fill_audio_frame(frame, avctx->channels, avctx->sample_fmt,
+        (uint8_t*) (samples_ + samples_offset), samples_size - samples_offset, 0);
+    if (ret < 0) {
         goto end;
     }
 
-    pkt.data = (uint8_t*)(buf_ + buf_offset);
-    pkt.size = buf_size;
+    avpkt.data = (uint8_t*)(buf_ + buf_offset);
+    avpkt.size = buf_size;
 
-    // encode
-    ret = avcodec_encode_audio2(avctx, &pkt, frame, &got_output);
-    if (ret == 0)
-    {
-        ret = got_output ? pkt.size : 0;
+    // avcodec_encode_audio2 - deprecated
+/*
+    ret = avcodec_encode_audio2(avctx, &avpkt, frame, &got_output);
+    if (ret == 0) {
+        ret = got_output ? avpkt.size : 0;
     }
+*/
+    ret = avcodec_send_frame((AVCodecContext *) (intptr_t) avctx, (const AVFrame *) (intptr_t) frame);
+    if (ret == 0) {
+        ret = avcodec_receive_packet((AVCodecContext *) (intptr_t) avctx, &avpkt);
+        memcpy((buf_ + buf_offset), avpkt.data, avpkt.size);
+    }
+    ret = (ret == 0) ? avpkt.size : 0;
+/*
+    // cmeng: above simple method also works
+    while (ret >= 0) {
+       ret = avcodec_receive_packet((AVCodecContext *) (intptr_t) avctx, &avpkt);
+       if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
+          ret = pkt_size;
+          goto end;
+       }
+       else if (ret < 0) {
+          ret = 0;
+          goto end;
+       }
 
+       memcpy((buf_ + buf_offset), avpkt.data, avpkt.size);
+       pkt_size = (ret == 0) ? avpkt.size : 0;
+    }
+*/
 end:
-    if (buf_)
-    {
+    if (buf_) {
         (*env)->ReleaseByteArrayElements(env, buf, buf_, 0);
     }
-
-    if (samples_)
-    {
+    if (samples_) {
         (*env)->ReleaseByteArrayElements(env, samples, samples_, JNI_ABORT);
     }
 
     av_frame_free(&frame);
-    av_packet_unref(&pkt);
+    av_packet_unref(&avpkt);
     return (jint) ret;
-
-/*
-    if (buf) {
-        jbyte *buf_ptr = (*env)->GetByteArrayElements (env, buf, NULL);
-
-        if (buf_ptr) {
-            jbyte *samples_ptr = (*env)->GetByteArrayElements (env, samples, NULL);
-            if (samples_ptr) {
-                ret = (jint) avcodec_encode_audio(
-                        (AVCodecContext *) (intptr_t) avctx,
-                        (uint8_t *) (buf_ptr + buf_offset), (int) buf_size,
-                        (const short *) (samples_ptr + samples_offset));
-*/
-               /* avcodec_encode_audio(AVCodecContext *avctx,
-                      uint8_t *buf, int buf_size, const short *samples);
-			   avcodec_encode_audio2(AVCodecContext *avctx, AVPacket *avpkt,
-                          const AVFrame *frame, int *got_packet_ptr);*/
-
-/*
-                (*env)->ReleaseByteArrayElements(
-                        env, samples, samples_ptr, JNI_ABORT);
-             } else
-                ret = -1;
-            (*env)->ReleaseByteArrayElements (env, buf, buf_ptr, 0);
-        } else
-            ret = -1;
-    } else
-        ret = -1;
-    return ret;
-*/
 }
 
 JNIEXPORT jint JNICALL
@@ -327,27 +326,37 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1encode_1video
     (JNIEnv *env, jclass clazz, jlong avctx, jbyteArray buf, jint buf_size, jlong frame)
 {
     jint ret;
-
     if (buf) {
         jbyte *buf_ = (*env)->GetByteArrayElements (env, buf, NULL);
-
         if (buf_) {
+            int pkt_size;
+            AVPacket avpkt;
+            av_init_packet(&avpkt);
+/*
             int got_output;
-            AVPacket pkt;
-            pkt.data = (uint8_t*)buf_;
-            pkt.size = (int)buf_size;
+            avpkt.data = (uint8_t*) buf_;
+            avpkt.size = (int) buf_size;
 
-            ret
-                = (jint)
-                    avcodec_encode_video2(
-                            (AVCodecContext *) (intptr_t) avctx,
-                            &pkt,
-                            (const AVFrame *) (intptr_t) frame,
-                            &got_output);
+            ret = (jint) avcodec_encode_video2((AVCodecContext *) (intptr_t) avctx, &avpkt,
+                    (const AVFrame *) (intptr_t) frame, &got_output);
             if (ret >= 0)
-                ret = got_output ? pkt.size : 0;
+                ret = got_output ? avpkt.size : 0;
+*/
+            ret = avcodec_send_frame((AVCodecContext *) (intptr_t) avctx, (const AVFrame *) (intptr_t) frame);
+            while (ret >= 0) {
+                ret = avcodec_receive_packet((AVCodecContext *) (intptr_t) avctx, &avpkt);
+                if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
+                    (*env)->ReleaseByteArrayElements (env, buf, buf_, 0);
+                    return pkt_size;
+                }
+                else if (ret < 0)
+                    return -1;
 
-            (*env)->ReleaseByteArrayElements (env, buf, buf_, 0);
+                memcpy(buf_, avpkt.data, avpkt.size);
+                pkt_size = (ret == 0) ? avpkt.size : 0;
+                av_packet_unref(&avpkt);
+            }
+
         } else
             ret = -1;
     } else {
@@ -379,8 +388,7 @@ JNIEXPORT void JNICALL
 Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1free_1packet
     (JNIEnv *env, jclass clazz, jlong pkt)
 {
-    if (pkt)
-    {
+    if (pkt) {
         AVPacket *pkt_ = (AVPacket *) (intptr_t) pkt;
 
         av_packet_unref(pkt_);
@@ -395,56 +403,41 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1open2
     AVDictionary *options_ = NULL;
     int ret = 0;
 
-    if (options)
-    {
+    if (options) {
         jsize length = (*env)->GetArrayLength(env, options);
 
-        if (length)
-        {
-            if (length % 2)
-			{
+        if (length) {
+            if (length % 2) {
                 ret = AVERROR(EINVAL);
 			}
-            else
-            {
+            else {
                 jsize i = 0;
 
-                while ((0 <= ret) && (i < length))
-                {
-                    jstring key
-                        = (jstring)
-                            (*env)->GetObjectArrayElement(env, options, i++);
+                while ((0 <= ret) && (i < length)) {
+                    jstring key = (jstring) (*env)->GetObjectArrayElement(env, options, i++);
                     const char *key_;
 
-                    if (key)
-                    {
+                    if (key) {
                         key_ = (*env)->GetStringUTFChars(env, key, NULL);
                         if (!key_)
                             ret = AVERROR(ENOMEM);
                     }
-                    else
-					{
+                    else {
                         key_ = NULL;
 					}
-                    if (0 <= ret)
-                    {
-                        jstring value
-                            = (jstring) (*env)->GetObjectArrayElement(env, options, i++);
+                    if (0 <= ret) {
+                        jstring value = (jstring) (*env)->GetObjectArrayElement(env, options, i++);
                         const char *value_;
 
-                        if (value)
-                        {
-                            value_
-                                = (*env)->GetStringUTFChars(env, value, NULL);
+                        if (value) {
+                            value_ = (*env)->GetStringUTFChars(env, value, NULL);
                             if (!value_)
                                 ret = AVERROR(ENOMEM);
                         }
-                        else
-						{
+                        else {
                             value_ = NULL;
 						}
-                        if (0 <= ret)
-                        {
+                        if (0 <= ret) {
                             ret = av_dict_set(&options_, key_, value_, 0);
                             (*env)->ReleaseStringUTFChars(env, value, value_);
                         }
@@ -454,13 +447,9 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1open2
             }
         }
     }
-    if (0 <= ret)
-    {
-        ret
-            = avcodec_open2(
-                    (AVCodecContext *) (intptr_t) avctx,
-                    (AVCodec *) (intptr_t) codec,
-                    &options_);
+    if (0 <= ret) {
+        ret = avcodec_open2((AVCodecContext *) (intptr_t) avctx,
+                    (AVCodec *) (intptr_t) codec, &options_);
     }
     if (options_)
         av_dict_free(&options_);
@@ -568,8 +557,7 @@ DEFINE_AVCODECCONTEXT_F_PROPERTY_SETTER(qcompress, qcompress)
 
 JNIEXPORT void JNICALL
 Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1quantizer
-    (JNIEnv *env, jclass clazz, jlong avctx, jint qmin, jint qmax,
-        jint max_qdiff)
+    (JNIEnv *env, jclass clazz, jlong avctx, jint qmin, jint qmax, jint max_qdiff)
 {
     AVCodecContext *avctx_ = (AVCodecContext *) (intptr_t) avctx;
 
@@ -701,12 +689,9 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1graph_1get_1filter
     const char *name_ = (*env)->GetStringUTFChars(env, name, NULL);
     AVFilterContext *filter;
 
-    if (name_)
-    {
-        filter
-            = avfilter_graph_get_filter(
-                    (AVFilterGraph *) (intptr_t) graph,
-                    (char *) name_);
+    if (name_) {
+        filter = avfilter_graph_get_filter(
+                    (AVFilterGraph *) (intptr_t) graph, (char *) name_);
         (*env)->ReleaseStringUTFChars(env, name, name_);
     }
     else
@@ -722,8 +707,7 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avfilter_1graph_1parse
     const char *filters_ = (*env)->GetStringUTFChars(env, filters, NULL);
     int ret;
 
-    if (filters_)
-    {
+    if (filters_) {
         AVFilterGraph *graph_ = (AVFilterGraph *) (intptr_t) graph;
 
 		ret = avfilter_graph_parse_ptr(
@@ -795,13 +779,11 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avframe_1set_1key_1frame
 {
     AVFrame *frame_ = (AVFrame *) (intptr_t) frame;
 
-    if (JNI_TRUE == key_frame)
-    {
+    if (JNI_TRUE == key_frame) {
         frame_->key_frame = 1;
         frame_->pict_type = AV_PICTURE_TYPE_I;
     }
-    else
-    {
+    else {
         frame_->key_frame = 0;
         frame_->pict_type = 0;
     }
@@ -832,29 +814,24 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avpacket_1set_1data
     jbyte *data_;
     jboolean ok;
 
-    if (data)
-    {
+    if (data) {
         data_ = (*env)->GetPrimitiveArrayCritical(env, data, NULL);
         ok = data_ ? JNI_TRUE : JNI_FALSE;
     }
-    else
-    {
+    else {
         data_ = NULL;
         ok = JNI_TRUE;
     }
-    if (JNI_TRUE == ok)
-    {
+    if (JNI_TRUE == ok) {
         int delta;
         AVPacket *pkt_ = (AVPacket *) (intptr_t) pkt;
 
         delta = length - pkt_->size;
-        if (delta > 0)
-        {
+        if (delta > 0) {
             if (av_grow_packet(pkt_, delta) != 0)
                 ok = JNI_FALSE;
         }
-        else if (delta < 0)
-        {
+        else if (delta < 0) {
             av_shrink_packet(pkt_, length);
         }
         if (JNI_TRUE == ok)
@@ -866,14 +843,18 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avpacket_1set_1data
 
 JNIEXPORT jint JNICALL
 Java_org_atalk_impl_neomedia_codec_FFmpeg_avpicture_1fill
-    (JNIEnv *env, jclass clazz, jlong frame, jlong ptr, jint pix_fmt,
-        jint width, jint height)
+    (JNIEnv *env, jclass clazz, jlong frame, jlong ptr, jint pix_fmt, jint width, jint height)
 {
-    return (jint) avpicture_fill(
-            (AVPicture *) (intptr_t) frame,
-            (uint8_t *) (intptr_t) ptr,
-            (int) pix_fmt,
-            (int) width, (int) height);
+    return (jint) avpicture_fill((AVFrame *) (intptr_t) frame, (uint8_t *) (intptr_t) ptr,
+           (int) pix_fmt, (int) width, (int) height);
+
+/*
+    AVFrame *avframe;
+
+    avframe = (AVFrame *) (intptr_t) frame;
+    return (jint) av_image_fill_arrays(avframe->data, avframe->linesize,
+            (uint8_t *) (intptr_t) ptr, (int) pix_fmt, (int) width, (int) height, 1);
+*/
 }
 
 JNIEXPORT jlong JNICALL
@@ -889,8 +870,7 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_get_1filtered_1video_1frame
     input_->height = height;
     input_->format = pixFmt;
     result = av_buffersrc_write_frame(buffer_, input_);
-    if (result != 0)
-    {
+    if (result != 0) {
         return (jlong)result;
     }
 
@@ -943,10 +923,8 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_memcpy___3BIIJ
     (JNIEnv *env, jclass clazz, jbyteArray dst, jint dst_offset,
         jint dst_length, jlong src)
 {
-    (*env)->SetByteArrayRegion(
-            env,
-            dst, dst_offset, dst_length,
-            (jbyte *) (intptr_t) src);
+    (*env)->SetByteArrayRegion(env,
+            dst, dst_offset, dst_length, (jbyte *) (intptr_t) src);
 }
 
 JNIEXPORT void JNICALL
@@ -954,9 +932,7 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_memcpy___3IIIJ
     (JNIEnv *env, jclass clazz, jintArray dst, jint dst_offset, jint dst_length, jlong src)
 {
     (*env)->SetIntArrayRegion(
-            env,
-            dst, dst_offset, dst_length,
-            (jint *) (intptr_t) src);
+            env, dst, dst_offset, dst_length, (jint *) (intptr_t) src);
 }
 
 JNIEXPORT void JNICALL
@@ -964,9 +940,7 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_memcpy__J_3BII
     (JNIEnv *env, jclass clazz, jlong dst, jbyteArray src, jint src_offset, jint src_length)
 {
     (*env)->GetByteArrayRegion(
-            env,
-            src, src_offset, src_length,
-            (jbyte *) (intptr_t) dst);
+            env, src, src_offset, src_length, (jbyte *) (intptr_t) dst);
 }
 
 JNIEXPORT jint JNICALL
@@ -1032,30 +1006,27 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_sws_1scale__JJIILjava_lang_Object_2III
     (JNIEnv *env, jclass clazz, jlong avctx, jlong src, jint srcSliceY,
         jint srcSliceH, jobject dst, jint dstFormat, jint dstW, jint dstH)
 {
-    AVPicture *srcPicture;
+    AVFrame *srcFrame;
     uint8_t *dst_;
     int ret;
 
-    srcPicture = (AVPicture *) (intptr_t) src;
+    srcFrame = (AVFrame *) (intptr_t) src;
     dst_ = (*env)->GetPrimitiveArrayCritical(env, dst, NULL);
-    if (dst_)
-    {
-        AVPicture dstPicture;
+    if (dst_) {
+        AVFrame dstFrame;
 
-        /* Turn the bytes into an AVPicture */
-		avpicture_fill(
-            &dstPicture,
-            dst_, (int) dstFormat, (int) dstW, (int) dstH);
-        ret = sws_scale(
-                (struct SwsContext *) (intptr_t) avctx,
-                (const uint8_t * const *) srcPicture->data, (int *) srcPicture->linesize,
+        /* Turn the bytes into an AVFrame */
+		// avpicture_fill(&dstFrame, dst_, (int) dstFormat, (int) dstW, (int) dstH);
+        av_image_fill_arrays(dstFrame.data, dstFrame.linesize,
+            dst_, (int) dstFormat, (int) dstW, (int) dstH, 1);
+
+        ret = sws_scale((struct SwsContext *) (intptr_t) avctx,
+                (const uint8_t * const *) srcFrame->data, (int *) srcFrame->linesize,
                 (int) srcSliceY, (int) srcSliceH,
-                (uint8_t **) dstPicture.data,
-                (int *) dstPicture.linesize);
+                (uint8_t **) dstFrame.data, (int *) dstFrame.linesize);
         (*env)->ReleasePrimitiveArrayCritical(env, dst, dst_, 0);
     }
-    else
-    {
+    else {
         ret = -1;
     }
     return (jint) ret;
@@ -1071,17 +1042,18 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_sws_1scale__JLjava_lang_Object_2IIIIIL
     jint ret;
 
     src_ = (*env)->GetPrimitiveArrayCritical(env, src, NULL);
-    if (src_)
-    {
-        AVPicture srcPicture;
-        avpicture_fill(&srcPicture, src_, (int) srcFormat, (int) srcW, (int) srcH);
+    if (src_) {
+        AVFrame srcFrame;
+        // avpicture_fill(&srcFrame, src_, (int) srcFormat, (int) srcW, (int) srcH);
+        av_image_fill_arrays(srcFrame.data, srcFrame.linesize,
+            src_, (int) srcFormat, (int) srcW, (int) srcH, 1);
+
         ret = Java_org_atalk_impl_neomedia_codec_FFmpeg_sws_1scale__JJIILjava_lang_Object_2III(
-                env, class, avctx, (jlong) (intptr_t) &srcPicture, srcSliceY, srcSliceH,
+                env, class, avctx, (jlong) (intptr_t) &srcFrame, srcSliceY, srcSliceH,
                 dst, dstFormat, dstW, dstH);
         (*env)->ReleasePrimitiveArrayCritical(env, src, src_, 0);
     }
-    else
-    {
+    else {
         ret = -1;
     }
     return ret;

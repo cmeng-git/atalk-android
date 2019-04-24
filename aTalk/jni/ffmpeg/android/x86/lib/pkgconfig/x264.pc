@@ -1,11 +1,11 @@
-prefix=../android/x86
+prefix=/home/cmeng/workspace/ndk/ffmpeg-x264/android/x86
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
-includedir=../android/x86/include/x264
+includedir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/x86/include/x264
 
 Name: x264
 Description: H.264 (MPEG4 AVC) encoder library
 Version: 0.157.2945M 72db437
-Libs: -L${exec_prefix}/lib -lx264 
-Libs.private: -lm
-Cflags: -I../android/x86/include/x264
+Libs: -L${exec_prefix}/lib -lx264 -lm
+Libs.private: 
+Cflags: -I/home/cmeng/workspace/ndk/ffmpeg-x264/android/x86/include/x264
