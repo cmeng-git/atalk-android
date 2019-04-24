@@ -6,6 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.8.2 (04/24/2019)" versioncode="1082">
+        <change>Fix Omemo chat session setup failure due to 'Cryptography Changes in Android-P'</change>
+        <change>Fixed libvpx VP8 encoder problem on android with ABIS x86/x86_64 platforms</change>
+        <change>Upgrade libvpx to v1.8.0</change>
+        <change>Cleanup and simplify scripts for ffmpeg-x264 static libraries build</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="1.8.1 (04/13/2019)" versioncode="1081">
         <change>Init camera parameters only when aTalk is in foreground; otherwise system alerts with 'aTalk has been detected using camera'</change>
         <change>Implement BackgroundManager to init camera when the aTalk returns to foreground e.g. on auto-start</change>

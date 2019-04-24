@@ -1,7 +1,21 @@
 Project aTalk-Android Release Notes
+=========================================================================
+Version:		1.8.2 (1082)
+Author:         cmeng
+Upload Date:	04/24/2019
+- Fix Omemo chat session setup failure due to 'Cryptography Changes in Android-P'
+  i.e. https://android-developers.googleblog.com/2018/03/cryptography-changes-in-android-p.html
+  For fix see: https://github.com/Flowdalic/Smack/commit/7d7fbe68286d77f60c8f390034ee39f849f42dfa
+  Smack-Omemo: Do not explicitly select the (crypto) Provider in smack-omemo
+- Fixed libvpx VP8 encoder problem on android with ABIS x86/x86_64 platforms
+  https://bugs.chromium.org/p/webm/issues/detail?id=1623#c6
+- Upgrade libvpx to v1.8.0
+- Cleanup and simplify scripts for ffmpeg-x264 static libraries build
+- Replacing some ffmpeg deprecated functions
+- upgrade AS to 3.4.0 release
 
 =========================================================================
-Version:		1.8.1 (1080)
+Version:		1.8.1 (1081)
 Author:         cmeng
 Upload Date:	04/13/2019
 - Init MediaRecorderSystem and AndroidCameraSystem only when aTalk is in foreground;

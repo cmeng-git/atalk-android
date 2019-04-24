@@ -635,7 +635,6 @@ public class JNIEncoder extends AbstractCodec
             return BUFFER_PROCESSED_OK;
         }
 
-
         // Copy the data of inBuffer into avFrame.
         FFmpeg.memcpy(rawFrameBuffer, (byte[]) inBuffer.getData(), inBuffer.getOffset(), rawFrameLen);
 
@@ -654,6 +653,10 @@ public class JNIEncoder extends AbstractCodec
         // Encode avFrame into the data of outBuffer.
         byte[] out = AbstractCodec2.validateByteArraySize(outBuffer, rawFrameLen, false);
         int outLength = FFmpeg.avcodec_encode_video(avctx, out, out.length, avFrame);
+
+//        if (lastKeyFrame < 3) {
+//            Timber.w("H264 encoded packet length: %s", outLength);
+//        }
 
         outBuffer.setLength(outLength);
         outBuffer.setOffset(0);

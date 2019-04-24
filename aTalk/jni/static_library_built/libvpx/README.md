@@ -4,49 +4,55 @@
 <thead>
 <tr><td>library</td><td>version</td><td>platform support</td><td>arch support</td></tr>
 </thead>
-<tr><td>libvpx</td><td>1.7.0</td><td>android</td><td>armeabi-v7a arm64-v8a x86 x86_64</td></tr>
+<tr><td>libvpx</td><td>1.8.0</td><td>android</td><td>armeabi-v7a arm64-v8a x86 x86_64</td></tr>
 </table>
 
 ### Build For Android
 - Follow the instructions below to build libvpx for android
-- aTalk v1.8.1 release is only compatible with libvpx-1.6.1+ (./sources/master-20171013.tar.gz)<br/>
-Note: The compiled libjnvpx.so for aTalk has problem when exec on x86_64 android platform (libvpx asm source errors):<br/>
-  org.atalk.android A/libc: Fatal signal 31 (SIGSYS), code 1 in tid 5833 (Loop thread: ne), pid 4781 (g.atalk.android)<br/>
-  Use video codec x264 if you are running aTalk on X86/x86_64 platforms
+- aTalk v1.8.2 release is compatible with libvpx-1.8.0 or 1.9.0 (./source/libvpx-master-20190420.zip)<br/>
+- Following problem has been fixed with inclusion of configure option --disable-avx2<br/>
+  see https://bugs.chromium.org/p/webm/issues/detail?id=1623#c1<br/>
+  i.e.: The compiled libjnvpx.so for aTalk has problem when exec on x86_64 android platform (libvpx asm source errors):<br/>
+  org.atalk.android A/libc: Fatal signal 31 (SIGSYS), code 1 in tid 5833 (Loop thread: ne), pid 4781 (g.atalk.android)
 - When you first exec build-libvpx4android.sh, it applies the required patches to libvpx<br/>
-  Note: the patches defined in patch_libvpx.sh is for libvpx-1.7.0 and libvpx-1.6.1+ (master-20171013.tar.gz for aTalk)<br/>
+  Note: the patches defined in libvpx_patch.sh is for libvpx-1.8.0+, libvpx-1.7.0 and libvpx-1.6.1+<br/>
   
 The ./build-libvpx4android.sh script build the static libvpx.a for the various architectures as defined in ./_settings.sh<br/>
 i.e. ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")<br/>
-All the built libvpx.a and *.h will be placed in the ./output/android/\<ABI>/lib and ./output/android/\<ABI>/include respectively
+All the built libvpx.a and *.h are installed in the ./output/android/\<ABI>/lib and ./output/android/\<ABI>/include respectively
 
 **Android libvpx build instructions:**
 ```
-### git clone vpx-android directory into your linux working directory.
+## git clone vpx-android directory into your linux working directory.
 git clone https://github.com/cmeng-git/vpx-android.git ./vpx-android
 cd vpx-android
 
-### Use Android NDK: android-ndk-r15c
+## Use Android NDK: android-ndk-r15c
 export ANDROID_NDK=/opt/android/android-ndk-r15c
 
-### skip below step and use ./sources/master-20171013.tar.gz instead for aTalk v1.8.1 
-### setup the required libvpx e.g. "libvpx-1.7.0"; must also change the LIB_VPX variable in ./build-libvpx4android.sh
-./init_libvpx.sh libvpx-1.7.0
+## setup the required libvpx; default "libvpx-1.8.0" or change LIB_GIT in ./init_libvpx.sh
+./init_libvpx.sh
 
-# use one of the following to build libvpx i.e.
-# for all the ABI's defined in _share.sh
+## use one of the following to build libvpx i.e.
+#a. for all the ABI's defined in _settings.sh
 ./build-libvpx4android.sh
 
-# for all the specific <ABI>
+#b. for a specific <ABI>
 ./build-libvpx4android.sh <ABI> 
 ```
 
-Copy `.output/android/lib/*`, `./output/include/*` directories to the android project
-jni directory e.g. aTalk/jni/vpx/android
+Copy the static libs and includes in `./output/android/<ABI>` directories to the android project
+jni directory i.e. aTalk/jni/vpx/android/\<ABI>
 
-Similarly copy all the include directories to the android project jni directory.
+```
+Note:
+## Standalone toolchains work for ABIS=("arm64-v8a" "x86" "x86_64")
+ABIS "armeabi-v7a" has errors i.e.
+  ./sysroot/usr/lib/../lib/crtbegin_dynamic.o:crtbegin.c:function _start: error: undefined reference to 'main'
+  clang50: error: linker command failed with exit code 1 (use -v to see invocation)
+```
 
-Note: All information given below is for reference only. See aTalk/jni for its implementation.
+All information given below is for reference only. See aTalk/jni for its implementation.
 
 ##### ============================================
 #### Android.mk makefile - for other project

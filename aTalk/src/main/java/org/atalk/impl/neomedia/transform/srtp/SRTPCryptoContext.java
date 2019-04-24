@@ -258,7 +258,7 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
                 Timber.e("Discarding RTP packet with sequence number %d, SSRC %d because it is outside the replay window! (roc %d, s_l %d), guessedROC %d",
                         seqNo, (0xFFFFFFFFL & ssrc), roc, s_l, guessedROC);
             }
-            return false;
+            return false; // Packet too old.
         }
         else if (((replayWindow >> (-delta)) & 0x1) != 0) {
             if (sender) {
@@ -462,6 +462,8 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
 //                this.ssrc, pkt.getSequenceNumber(), s_l, seqNumSet,  guessedROC, roc);
 
         int seqNo = pkt.getSequenceNumber();
+
+        // Whether s_l was initialized while processing this packet.
         boolean seqNumWasJustSet = false;
         if (!seqNumSet) {
             seqNumSet = true;
@@ -610,7 +612,7 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
         }
     }
 
-
+    // cmeng: attempt to resync - #TODO
     private void reSync(int seqNo, long guessedIndex)
     {
         if (seqNo < s_l)
