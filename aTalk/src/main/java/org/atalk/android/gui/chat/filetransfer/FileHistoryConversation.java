@@ -57,8 +57,6 @@ public class FileHistoryConversation extends FileTransferConversation
             ViewGroup container, boolean init)
     {
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
-
-        boolean bgAlert = true;
         String titleString;
 
         if (fileRecord == null) {
@@ -71,7 +69,7 @@ public class FileHistoryConversation extends FileTransferConversation
             return convertView;
         }
 
-        String entityJid = fileRecord.getContact().getAddress();
+        String entityJid = fileRecord.getJidAddress();
         String dir = fileRecord.getDirection();
 
         if (FileRecord.IN.equals(dir))
@@ -82,13 +80,20 @@ public class FileHistoryConversation extends FileTransferConversation
         File filePath = fileRecord.getFile();
         String status = fileRecord.getStatus();
 
-        if (FileRecord.COMPLETED.equals(status)) {
-            bgAlert = false;
+        boolean bgAlert = !FileRecord.COMPLETED.equals(status);
+        if (filePath.exists()) {
             MyGlideApp.loadImage(messageViewHolder.stickerView, filePath, true);
+        } else {
+            if (!FileRecord.ACTIVE.equals(status)) {
+                bgAlert = true;
+                status = FileRecord.NOT_FOUND;
+            }
         }
 
+        mEncryption = fileRecord.getEncType();
+        setEncState(mEncryption);
+
         titleString = getStatusMessage(entityJid, dir, status);
-        mChatFragment.clearMsgCache = FileRecord.ACTIVE.equals(status);
 
         this.setCompletedDownloadFile(mChatFragment, filePath);
         Date date = fileRecord.getDate();
@@ -131,8 +136,15 @@ public class FileHistoryConversation extends FileTransferConversation
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_REFUSED);
                     break;
                 case FileRecord.ACTIVE:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE);
+                case FileRecord.PREPARING:
+                case FileRecord.IN_PROGRESS:
+                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, status);
                     break;
+                case FileRecord.NOT_FOUND:
+                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                    break;
+                default: // http file transfer status containing http link
+                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, status);
             }
         }
         else {
@@ -150,7 +162,9 @@ public class FileHistoryConversation extends FileTransferConversation
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_SEND_REFUSED, entityJid);
                     break;
                 case FileRecord.ACTIVE:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE);
+                case FileRecord.PREPARING:
+                case FileRecord.IN_PROGRESS:
+                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, status);
                     break;
             }
         }
@@ -163,16 +177,8 @@ public class FileHistoryConversation extends FileTransferConversation
      * @return empty string
      */
     @Override
-    protected String getProgressLabel(String bytesString)
+    protected String getProgressLabel(long bytesString)
     {
         return "";
-    }
-
-    /**
-     * File History status is known
-     */
-    @Override
-    protected void setXferStatus(int xferStatus)
-    {
     }
 }

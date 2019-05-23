@@ -66,7 +66,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
 
         // Create the identifier of this file transfer that is used from the history and the user
         // interface to track this transfer.
-        this.id = String.valueOf(System.currentTimeMillis()) + String.valueOf(hashCode());
+        this.id = String.valueOf(System.currentTimeMillis()) + hashCode();
 
         // jabberTransfer is null for http file upload
         if (jabberTransfer == null)

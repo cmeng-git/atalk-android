@@ -66,7 +66,7 @@ public class JavaEncoder extends AbstractCodec2 implements AdvancedAttributesAwa
 	private int duration = OUTPUT_FRAME_SIZE_IN_BYTES * OUTPUT_FRAMES_COUNT * 1000000;
 
 	/**
-	 * Initializes a new <code>JavaEncoder</code> instance.
+	 * Initializes a new {@code JavaEncoder} instance.
 	 */
 	public JavaEncoder()
 	{

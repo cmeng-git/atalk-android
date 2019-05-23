@@ -5,13 +5,12 @@
  */
 package org.atalk.android.gui.chat;
 
+import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
 import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
 
 import java.util.Date;
-
-import timber.log.Timber;
 
 /**
  * The <tt>ChatMessage</tt> interface is used to display a chat message.
@@ -25,10 +24,10 @@ public interface ChatMessage
     String UUID = "uuid";
     String SESSION_UUID = "chatSessionUuid"; // chatSession Uuid
     String TIME_STAMP = "timeStamp"; // TimeStamp
-    String ENTITY_JID = "entityJid"; // contactJid or chatRoomJid
-    String JID = "Jid";                // chatRoom Jid
+    String ENTITY_JID = "entityJid"; // contactJid or chatRoomJid (nick)
+    String JID = "Jid";                // chatRoom member FullJid
     String MSG_BODY = "msgBody";    // message content
-    String ENC_TYPE = "encType";    // Mime / Encryption of the message
+    String ENC_TYPE = "encType";    // see Message for the ENCRYPTION_xxx definitions
     String MSG_TYPE = "msgType";    // as defined in below * message type *
     String DIRECTION = "direction"; // in or out
     String STATUS = "status";        // see STATUS_
@@ -70,21 +69,6 @@ public interface ChatMessage
 
     int STATUS_DELETE = 99;  // to be deleted
 
-    /*
-     * ENC_TYPE type defined in DB
-     * Lower nibble for body mimeType
-     * Upper nibble for body encryption Type
-     */
-    int MIME_MASK = 0x0F;
-    int ENCRYPTION_MASK = 0xF0;
-
-    int ENCODE_PLAIN = 0x00; // text/plain (UTF-8)
-    int ENCODE_HTML = 0x01;    // text/html
-
-    int ENCRYPTION_NONE = 0x00;
-    int ENCRYPTION_OMEMO = 0x10;
-    int ENCRYPTION_OTR = 0x20;
-
     // int ENCRYPTION_DECRYPTED = 0x50;
     // int ENCRYPTION_DECRYPTION_FAILED = 0x60;
 
@@ -98,6 +82,9 @@ public interface ChatMessage
     int MESSAGE_OUT = 0;
     /**
      * The message type representing incoming messages.
+     *
+     * An event type indicating that the message being received is a standard conversation message
+     * sent by another contact.
      */
     int MESSAGE_IN = 1;
     /**
@@ -106,11 +93,20 @@ public interface ChatMessage
     int MESSAGE_STATUS = 3;
     /**
      * The message type representing system messages received.
+     *
+     * An event type indicting that the message being received is a system message being sent by the
+     * server or a system administrator, possibly notifying us of something important such as
+     * ongoing maintenance activities or server downtime.
      */
     int MESSAGE_SYSTEM = 5;
     /**
      * The message type representing action messages. These are message specific for IRC,
      * but could be used in other protocols also.
+     *
+     * An event type indicating that the message being received is a special message that sent by
+     * either another member or the server itself, indicating that some kind of action (other than
+     * the delivery of a conversation message) has occurred. Action messages are widely used in IRC
+     * through the /action and /me commands
      */
     int MESSAGE_ACTION = 6;
     /**
@@ -143,6 +139,10 @@ public interface ChatMessage
      * The message type representing sms messages.
      */
     int MESSAGE_SMS_OUT = 40;
+
+    /**
+     * an event type indicating that the message being received is an SMS message.
+     */
     int MESSAGE_SMS_IN = 41;
 
     /**
@@ -155,20 +155,40 @@ public interface ChatMessage
     int MESSAGE_FILE_TRANSFER_RECEIVE = 51;
 
     /**
+     * The Http file upload message type.
+     */
+    int MESSAGE_HTTP_FILE_UPLOAD = 52;
+
+    /**
+     * The Http file download message type.
+     */
+    int MESSAGE_HTTP_FILE_DOWNLOAD = 53;
+
+    /**
      * The sticker message type.
      */
-    int MESSAGE_STICKER_SEND = 52;
+    int MESSAGE_STICKER_SEND = 54;
 
     /**
      * The file transfer history message type.
      */
     int MESSAGE_FILE_TRANSFER_HISTORY = 55;
 
-    // All muc messages are numbered >=80
-    /**
+    /* ***********************
+     * All muc messages are numbered >=80 cmeng?
      * The MUC message type.
      */
+
+    /**
+     * An event type indicating that the message being received is a standard conversation message
+     * sent by another member of the chat room to all current participants.
+     */
     int MESSAGE_MUC_OUT = 80;
+
+    /**
+     * An event type indicating that the message being received is a standard conversation message
+     * sent by another member of the chatRoom to all current participants.
+     */
     int MESSAGE_MUC_IN = 81;
 
     /**
@@ -282,11 +302,18 @@ public interface ChatMessage
     OperationSetFileTransfer getOpSet();
 
     /**
-     * Returns the IncomingFileTransferRequest of this message.
+     * Returns IncomingFileTransferRequest]of this message.
      *
      * @return the IncomingFileTransferRequest of this message.
      */
     IncomingFileTransferRequest getFTRequest();
+
+    /**
+     * Returns HttpFileTransferImpl of this message.
+     *
+     * @return the IncomingFileTransferRequest of this message.
+     */
+    HttpFileDownloadJabberImpl getHttpFileTransfer();
 
     /**
      * Returns history file transfer fileRecord

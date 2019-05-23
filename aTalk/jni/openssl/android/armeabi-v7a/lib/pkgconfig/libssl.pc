@@ -1,0 +1,12 @@
+prefix=/home/cmeng/workspace/ndk/openssl-android/output/android/armeabi-v7a
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: OpenSSL-libssl
+Description: Secure Sockets Layer and cryptography libraries
+Version: 1.0.2r
+Requires.private: libcrypto
+Libs: -L${libdir} -lssl
+Libs.private: -ldl -L/home/cmeng/workspace/ndk/openssl-android/armeabi-v7a-android-toolchain/sysroot/usr/lib -lz
+Cflags: -I${includedir} 

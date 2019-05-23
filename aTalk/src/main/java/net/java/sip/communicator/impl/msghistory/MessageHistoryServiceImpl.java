@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
@@ -44,6 +45,7 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
+import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.*;
 
 import java.beans.PropertyChangeEvent;
@@ -70,10 +72,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         AdHocChatRoomMessageListener, ServiceListener, LocalUserChatRoomPresenceListener,
         LocalUserAdHocChatRoomPresenceListener
 {
-    /**
-     * Subtype sms to mark sms messages.
-     */
-    private static final String MSG_SUBTYPE_SMS = "sms";
     /**
      * Sort database message records by TimeStamp in ASC or DESC
      */
@@ -301,16 +299,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 capOpSet.removeContactCapabilitiesListener(messageSourceService);
             }
         }
-    }
-
-    /**
-     * Returns the history service.
-     *
-     * @return the history service
-     */
-    public HistoryService getHistoryService()
-    {
-        return historyService;
     }
 
     /**
@@ -838,7 +826,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             mProperties.put(cursor.getColumnName(i), value);
         }
 
-        // Return FileRecord if it is of file transfer message type
+        // Return FileRecord if it is of file transfer message type, but excluding MESSAGE_HTTP_FILE_LINK
         int msgType = Integer.parseInt(mProperties.get(ChatMessage.MSG_TYPE));
         if ((msgType == ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY)
                 || (msgType == ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE)
@@ -847,38 +835,31 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             return createFileRecordFromProperties(mProperties, contact);
         }
 
-        // process normal chat message
+        // else proceed to process normal chat message
         MessageImpl msg = createMessageFromProperties(mProperties);
         Date timestamp = new Date(Long.parseLong(mProperties.get(ChatMessage.TIME_STAMP)));
 
         if (msg.isOutgoing) {
             MessageDeliveredEvent evt = new MessageDeliveredEvent(msg, contact, timestamp);
-
-            if ((msg.getMsgSubType() != null)
-                    && msg.getMsgSubType().equals(MSG_SUBTYPE_SMS)) {
+            if (ChatMessage.MESSAGE_SMS_OUT == msg.getMsgSubType()) {
                 evt.setSmsMessage(true);
             }
             return evt;
         }
         else {
-            int eventType = MessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED;
-            if ((msg.getMsgSubType() != null)
-                    && msg.getMsgSubType().equals(MSG_SUBTYPE_SMS)) {
-                eventType = MessageReceivedEvent.SMS_MESSAGE_RECEIVED;
-            }
-            return new MessageReceivedEvent(msg, contact, timestamp, eventType);
+            return new MessageReceivedEvent(msg, contact, timestamp, msgType);
         }
     }
 
     /**
-     * Used to convert HistoryRecord in ChatRoomMessageDeliveredEvent or
+     * Use to convert HistoryRecord in ChatRoomMessageDeliveredEvent or
      * ChatRoomMessageReceivedEvent which are returned in cursor by the finder methods
      *
      * @param cursor HistoryRecord in cursor
-     * @param room the chat room
+     * @param chatRoom the chat room
      * @return EventObject
      */
-    private EventObject convertHistoryRecordToMessageEvent(Cursor cursor, ChatRoom room)
+    private EventObject convertHistoryRecordToMessageEvent(Cursor cursor, ChatRoom chatRoom)
     {
         Map<String, String> mProperties = new Hashtable<>();
 
@@ -887,26 +868,41 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             mProperties.put(cursor.getColumnName(i), value);
         }
 
+        String jabberID = XmppStringUtils.parseBareJid(mProperties.get(ChatMessage.JID));
+        int msgType = Integer.parseInt(mProperties.get(ChatMessage.MSG_TYPE));
+
+        // Do not include ChatMessage.MESSAGE_HTTP_FILE_LINK
+        if ((msgType == ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY)
+                || (msgType == ChatMessage.MESSAGE_FILE_TRANSFER_SEND)
+                || (msgType == ChatMessage.MESSAGE_STICKER_SEND)) {
+
+            ProtocolProviderService pps = chatRoom.getParentProvider();
+            OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
+                    pps.getOperationSet(OperationSetPersistentPresence.class);
+            Contact contact = presenceOpSet.findContactByID(jabberID);
+            if (contact != null) {
+                return createFileRecordFromProperties(mProperties, contact);
+            }
+            else // send from me
+                return createFileRecordFromProperties(mProperties, chatRoom);
+        }
+
         MessageImpl msg = createMessageFromProperties(mProperties);
         Date timestamp = new Date(Long.parseLong(mProperties.get(ChatMessage.TIME_STAMP)));
         String nickName = mProperties.get(ChatMessage.ENTITY_JID);  // nick for muc
-        // String nickName = entityJid.split("/")[1];
-        // String jabberID = mProperties.get(ChatMessage.JID);
 
-        // getUserRole must have Resourcepart != null
+        // getUserRole must have ResourcePart != null
         ChatRoomMemberRole userRole = ChatRoomMemberRole.GUEST;
-        if (room.getUserNickname() != null) {
-            userRole = room.getUserRole();
+        if (chatRoom.getUserNickname() != null) {
+            userRole = chatRoom.getUserRole();
         }
-        ChatRoomMember from = new ChatRoomMemberImpl(room, nickName, userRole);
+        ChatRoomMember from = new ChatRoomMemberImpl(chatRoom, nickName, jabberID, userRole);
 
         if (msg.isOutgoing) {
-            return new ChatRoomMessageDeliveredEvent(room, timestamp, msg,
-                    ChatRoomMessageDeliveredEvent.CONVERSATION_MESSAGE_DELIVERED);
+            return new ChatRoomMessageDeliveredEvent(chatRoom, timestamp, msg, ChatMessage.MESSAGE_MUC_OUT);
         }
-        else
-            return new ChatRoomMessageReceivedEvent(room, from, timestamp, msg,
-                    ChatRoomMessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED);
+        else // muc incoming message can be MESSAGE_HTTP_FILE_LINK
+            return new ChatRoomMessageReceivedEvent(chatRoom, from, timestamp, msg, msgType);
     }
 
     /**
@@ -919,17 +915,17 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     {
         String messageUID = mProperties.get(ChatMessage.UUID);
         Date messageReceivedDate = new Date(Long.parseLong(mProperties.get(ChatMessage.TIME_STAMP)));
-        String entityJid = mProperties.get(ChatMessage.ENTITY_JID);
+
         String msgBody = mProperties.get(ChatMessage.MSG_BODY);
         int encType = Integer.parseInt(mProperties.get(ChatMessage.ENC_TYPE));
         boolean isOutgoing = ChatMessage.DIR_OUT.equals(mProperties.get(ChatMessage.DIRECTION));
 
-        String msgSubType = null;
+        int msgSubType = -1;
         int msgType = Integer.parseInt(mProperties.get(ChatMessage.MSG_TYPE));
         if ((msgType == ChatMessage.MESSAGE_SMS_OUT) || (msgType == ChatMessage.MESSAGE_SMS_IN))
-            msgSubType = MSG_SUBTYPE_SMS;
+            msgSubType = msgType;
 
-        return new MessageImpl(msgBody, encType, entityJid, messageUID, isOutgoing, messageReceivedDate, msgSubType);
+        return new MessageImpl(msgBody, encType, "", messageUID, isOutgoing, messageReceivedDate, msgSubType);
     }
 
     /**
@@ -939,15 +935,15 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param contact the entityJid of the history message
      * @return FileRecord
      */
-    private FileRecord createFileRecordFromProperties(Map<String, String> mProperties,
-            Contact contact)
+    private FileRecord createFileRecordFromProperties(Map<String, String> mProperties, Object contact)
     {
         String uuid = mProperties.get(ChatMessage.UUID);
         String dir = mProperties.get(ChatMessage.DIRECTION);
         Date date = new Date(Long.parseLong(mProperties.get(ChatMessage.TIME_STAMP)));
         String file = mProperties.get(ChatMessage.FILE_PATH);
-        String status = mProperties.get(ChatMessage.MSG_BODY); // contains file transfer status
-        return new FileRecord(uuid, contact, dir, date, new File(file), status);
+        int encType = Integer.parseInt(mProperties.get(ChatMessage.ENC_TYPE));
+        String status = mProperties.get(ChatMessage.MSG_BODY); // body contains file transfer status
+        return new FileRecord(uuid, contact, dir, date, new File(file), encType, status);
     }
 
     /**
@@ -983,22 +979,28 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     {
         Contact entityJid = evt.getSourceContact();
         MetaContact metaContact = MessageHistoryActivator.getContactListService().findMetaContactByContact(entityJid);
-        // return if logging is switched off for this particular contact
-        if (metaContact != null && !isHistoryLoggingEnabled(metaContact.getMetaUID())) {
+
+        // return if logging is switched off for this particular contact or not a Http File Transfer message
+        int msgType = evt.getEventType();
+        if ((metaContact != null) && !isHistoryLoggingEnabled(metaContact.getMetaUID())
+                && !(ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == msgType)) {
             return;
         }
 
         String sessionUuid = getSessionUuidByJid(entityJid);
-        writeMessage(sessionUuid, ChatMessage.DIR_IN, entityJid, evt.getSourceMessage(),
-                evt.getTimestamp(), evt.getEventType());
+        writeMessage(sessionUuid, ChatMessage.DIR_IN, entityJid, evt.getSourceMessage(), evt.getTimestamp(), msgType);
     }
 
     public void messageDelivered(MessageDeliveredEvent evt)
     {
+        Message message = evt.getSourceMessage();
         Contact entityJid = evt.getDestinationContact();
         MetaContact metaContact = MessageHistoryActivator.getContactListService().findMetaContactByContact(entityJid);
+
         // return if logging is switched off for this particular contact
-        if (metaContact != null && !isHistoryLoggingEnabled(metaContact.getMetaUID())) {
+        // and do store if message is for remote only e.g HTTP file upload message
+        if ((metaContact != null) && !isHistoryLoggingEnabled(metaContact.getMetaUID())
+                || message.isRemoteOnly()) {
             return;
         }
 
@@ -1017,14 +1019,13 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
     public void messageReceived(ChatRoomMessageReceivedEvent evt)
     {
-        // return if logging is switched off for this particular chat room
-        if (!isHistoryLoggingEnabled(evt.getSourceChatRoom().getName())) {
+        int msgType = evt.getEventType();
+
+        // return if logging is switched off for this particular chatRoom or not a Http File Transfer message
+        if (!isHistoryLoggingEnabled(evt.getSourceChatRoom().getName())
+                && !(ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == msgType)) {
             return;
         }
-
-        // ignore non conversation messages
-        if (evt.getEventType() != ChatRoomMessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED)
-            return;
 
         // if this is chat room message history on every room enter, we can receive the same
         // latest history messages and this will just fill the history on every join
@@ -1062,15 +1063,17 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         }
 
         String sessionUuid = getSessionUuidByJid(evt.getSourceChatRoom());
-        writeMessage(sessionUuid, ChatMessage.DIR_IN, evt.getSourceChatRoomMember(),
-                evt.getMessage(), evt.getTimestamp(), evt.getEventType());
+        writeMessage(sessionUuid, ChatMessage.DIR_IN, evt.getSourceChatRoomMember(), evt.getMessage(),
+                evt.getTimestamp(), msgType);
     }
 
     public void messageDelivered(ChatRoomMessageDeliveredEvent evt)
     {
         // return if logging is switched off for this particular chat room
         ChatRoom room = evt.getSourceChatRoom();
-        if (!isHistoryLoggingEnabled(room.getName())) {
+        Message message = evt.getMessage();
+
+        if (!isHistoryLoggingEnabled(room.getName()) || message.isRemoteOnly()) {
             return;
         }
 
@@ -1106,7 +1109,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         }
 
         String sessionUuid = getSessionUuidByJid(room);
-        writeMessage(sessionUuid, ChatMessage.DIR_OUT, room, evt.getMessage(), evt.getTimestamp(),
+        writeMessage(sessionUuid, ChatMessage.DIR_OUT, room, message, evt.getTimestamp(),
                 ChatMessage.MESSAGE_MUC_OUT);
     }
 
@@ -1120,21 +1123,27 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
     public void messageReceived(AdHocChatRoomMessageReceivedEvent evt)
     {
-        // return if logging is switched off for this particular chat room
-        if (!isHistoryLoggingEnabled(evt.getSourceChatRoom().getIdentifier())) {
+        int msgType = evt.getEventType();
+
+        // return if logging is switched off for this particular chatRoom or not a Http File Transfer message
+        // Must save Http File Transfer message record for transfer status
+        if (!isHistoryLoggingEnabled(evt.getSourceChatRoom().getName())
+                && !(ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == msgType)) {
             return;
         }
 
         String sessionUuid = getSessionUuidByJid(evt.getSourceChatRoom());
-        writeMessage(sessionUuid, ChatMessage.DIR_IN, evt.getSourceChatRoomParticipant(),
-                evt.getMessage(), evt.getTimestamp(), evt.getEventType());
+        writeMessage(sessionUuid, ChatMessage.DIR_IN, evt.getSourceChatRoomParticipant(), evt.getMessage(),
+                evt.getTimestamp(), msgType);
     }
 
     public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt)
     {
         // return if logging is switched off for this particular chat room
         AdHocChatRoom room = evt.getSourceChatRoom();
-        if (!isHistoryLoggingEnabled(room.getIdentifier())) {
+        Message message = evt.getMessage();
+
+        if (!isHistoryLoggingEnabled(room.getName()) || message.isRemoteOnly()) {
             return;
         }
 
@@ -1294,6 +1303,14 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
         mDB.insert(ChatMessage.TABLE_NAME, null, contentValues);
     }
+
+//    public void convertToMessageType(String msgUuid, int msgType) {
+//        String[] args = {msgUuid};
+//
+//        contentValues.clear();
+//        contentValues.put(ChatMessage.MSG_TYPE, msgType);
+//        mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
+//    }
 
     //============ service change events handler ================//
 
@@ -1991,10 +2008,10 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     {
         private final boolean isOutgoing;
         private final Date messageReceivedDate;
-        private String msgSubType;
+        private int msgSubType;
 
         MessageImpl(String content, int encType, String subject, String messageUID,
-                boolean isOutgoing, Date messageReceivedDate, String msgSubType)
+                boolean isOutgoing, Date messageReceivedDate, int msgSubType)
         {
             super(content, encType, subject, messageUID);
             this.isOutgoing = isOutgoing;
@@ -2007,7 +2024,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             return messageReceivedDate;
         }
 
-        public String getMsgSubType()
+        public int getMsgSubType()
         {
             return msgSubType;
         }
@@ -2097,21 +2114,26 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     /**
      * Simple ChatRoomMember implementation. Searches for contact matches, to use its display nick.
      */
-    static class ChatRoomMemberImpl implements ChatRoomMember
+    public static class ChatRoomMemberImpl implements ChatRoomMember
     {
         private final ChatRoom chatRoom;
         private final String nick;
         private ChatRoomMemberRole role;
-        private Contact contact = null;
+        private Contact contact;
+        private String mContactAddress;
         private OperationSetPersistentPresence opSetPresence = null;
 
-        public ChatRoomMemberImpl(ChatRoom chatRoom, String fromStr, ChatRoomMemberRole role)
+        public ChatRoomMemberImpl(ChatRoom chatRoom, String fromStr, String jabberID, ChatRoomMemberRole role)
         {
             this.chatRoom = chatRoom;
             this.nick = fromStr;
             this.role = role;
-            // this.role = chatRoom.getUserRole();
-            // contact = chatRoom.getPrivateContactByNickname(fromStr);
+            mContactAddress = jabberID;
+
+            opSetPresence = getProtocolProvider().getOperationSet(OperationSetPersistentPresence.class);
+            if (opSetPresence != null) {
+                contact = opSetPresence.findContactByID(jabberID);
+            }
         }
 
         public ChatRoom getChatRoom()
@@ -2126,7 +2148,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
         public String getContactAddress()
         {
-            return (getContact() == null) ? nick : contact.getAddress();
+            return mContactAddress;
         }
 
         public String getNickName()
@@ -2157,12 +2179,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
         public Contact getContact()
         {
-            if ((contact == null) && (opSetPresence == null)) {
-                opSetPresence = getProtocolProvider().getOperationSet(OperationSetPersistentPresence.class);
-                if (opSetPresence != null) {
-                    contact = opSetPresence.findContactByID(nick);
-                }
-            }
             return contact;
         }
 

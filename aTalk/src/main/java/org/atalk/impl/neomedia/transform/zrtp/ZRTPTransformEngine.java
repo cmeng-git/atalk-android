@@ -842,7 +842,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      *
      * @param c The name of the used cipher algorithm and mode, or NULL.
      * @param s The SAS string.
-     * @param verified if <code>verified</code> is true then SAS was verified by both parties during a previous call.
+     * @param verified if {@code verified} is true then SAS was verified by both parties during a previous call.
      * @see gnu.java.zrtp.ZrtpCallback#srtpSecretsOn(java.lang.String, java.lang.String, boolean)
      */
     public void srtpSecretsOn(String c, String s, boolean verified)

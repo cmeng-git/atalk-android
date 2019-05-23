@@ -55,8 +55,7 @@ public interface AdHocChatRoom
      *
      * @param listener a member participation listener.
      */
-    void removeParticipantPresenceListener(
-            AdHocChatRoomParticipantPresenceListener listener);
+    void removeParticipantPresenceListener(AdHocChatRoomParticipantPresenceListener listener);
 
     /**
      * Registers <tt>listener</tt> so that it would receive events every time a new message is
@@ -112,12 +111,11 @@ public interface AdHocChatRoom
      * Create a Message instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
-     * @param encryptionType encryption used for <tt>content</tt>
-     * @param mimeType the MIME-type for <tt>content</tt>
+     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
      * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
      * @return the newly created message.
      */
-    Message createMessage(String content, int encryptionType, int mimeType, String subject);
+    Message createMessage(String content, int encType, String subject);
 
     /**
      * Sends the <tt>Message</tt> to this ad-hoc chat room.

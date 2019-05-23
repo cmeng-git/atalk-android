@@ -170,15 +170,13 @@ public class AndroidCallListener implements CallListener, CallChangeListener
             public void run()
             {
                 Call incomingCall = evt.getSourceCall();
-
                 Intent receivedCallIntent = new Intent(appContext, ReceivedCallActivity.class);
                 receivedCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 String identifier = CallManager.addActiveCall(incomingCall);
                 receivedCallIntent.putExtra(CallManager.CALL_IDENTIFIER, identifier);
 
-                receivedCallIntent.putExtra(CallManager.CALLEE_DISPLAY_NAME,
-                        CallUIUtils.getCalleeDisplayName(incomingCall));
+                receivedCallIntent.putExtra(CallManager.CALLEE_DISPLAY_NAME, CallUIUtils.getCalleeDisplayName(incomingCall));
                 receivedCallIntent.putExtra(CallManager.CALLEE_ADDRESS, CallUIUtils.getCalleeAddress(incomingCall));
                 receivedCallIntent.putExtra(CallManager.CALLEE_AVATAR, CallUIUtils.getCalleeAvatar(incomingCall));
                 appContext.startActivity(receivedCallIntent);

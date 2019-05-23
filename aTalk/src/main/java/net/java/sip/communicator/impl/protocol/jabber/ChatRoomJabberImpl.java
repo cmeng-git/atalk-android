@@ -144,6 +144,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     private String oldSubject;
 
+    // The last send Message encType; for reinsert into relayed delivered message from server
+    private int mEncType;
+
     /**
      * The mRole of this chat room local user participant.
      */
@@ -397,14 +400,13 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Create a Message instance for sending arbitrary MIME-encoding content.
      *
      * @param content message content value
-     * @param encryptionType encryption used for <tt>content</tt>
-     * @param mimeType the MIME-type for <tt>content</tt>
+     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
      * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
      * @return the newly created message.
      */
-    public Message createMessage(String content, int encryptionType, int mimeType, String subject)
+    public Message createMessage(String content, int encType, String subject)
     {
-        return new MessageJabberImpl(content, encryptionType | mimeType, subject);
+        return new MessageJabberImpl(content, encType, subject);
     }
 
     /**
@@ -416,7 +418,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public Message createMessage(String messageText)
     {
-        return new MessageJabberImpl(messageText, ChatMessage.ENCODE_PLAIN, null);
+        return new MessageJabberImpl(messageText, Message.ENCODE_PLAIN, null);
     }
 
     /**
@@ -855,6 +857,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     public void sendMessage(Message message)
             throws OperationFailedException
     {
+        mEncType = message.getEncType();
         org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message();
         msg.setBody(message.getContent());
         sendMessage(msg);
@@ -925,7 +928,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         // message delivered for own outgoing message view display
         Date timeStamp = new Date();
         ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(ChatRoomJabberImpl.this,
-                timeStamp, message, ChatRoomMessageDeliveredEvent.CONVERSATION_MESSAGE_DELIVERED);
+                timeStamp, message, ChatMessage.MESSAGE_MUC_OUT);
         fireMessageEvent(msgDeliveredEvt);
     }
 
@@ -1833,13 +1836,13 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 return;
 
             ChatRoomMember member;
-            int messageReceivedEventType = ChatRoomMessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED;
+            int messageReceivedEventType = ChatMessage.MESSAGE_MUC_IN;
             Jid entityJid = msg.getFrom();  // chatRoom entityJid
             Resourcepart fromNick = entityJid.getResourceOrNull();
 
             // when the message comes from the room itself, it is a system message
             if (entityJid.equals(getName())) {
-                messageReceivedEventType = ChatRoomMessageReceivedEvent.SYSTEM_MESSAGE_RECEIVED;
+                messageReceivedEventType = ChatMessage.MESSAGE_SYSTEM;
                 member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, Resourcepart.EMPTY, getIdentifier());
             }
             else {
@@ -1881,10 +1884,13 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             // chaRoom server. Checking using nick OR jid in case user join with a different nick.
             if (((getUserNickname() != null) && getUserNickname().equals(fromNick)) || ((jabberID != null)
                     && jabberID.equals(getAccountId(member.getChatRoom())))) {
-                // message delivered
+
+                // MUC received message may be relayed from server on message send hence reCreate the message is required
+                if (Message.FLAG_REMOTE_ONLY == (mEncType & Message.FLAG_MODE_MASK)) {
+                    newMessage = createMessage(msgBody, mEncType, "");
+                }
                 ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(
-                        ChatRoomJabberImpl.this, timeStamp, newMessage,
-                        ChatRoomMessageDeliveredEvent.CONVERSATION_MESSAGE_DELIVERED);
+                        ChatRoomJabberImpl.this, timeStamp, newMessage, ChatMessage.MESSAGE_MUC_OUT);
 
                 msgDeliveredEvt.setHistoryMessage(true);
                 fireMessageEvent(msgDeliveredEvt);
@@ -1894,7 +1900,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
                         ChatRoomJabberImpl.this, member, timeStamp, newMessage, messageReceivedEventType);
 
-                if (messageReceivedEventType == ChatRoomMessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED
+                if (messageReceivedEventType == ChatMessage.MESSAGE_MUC_IN
                         && newMessage.getContent().contains(getUserNickname() + ":")) {
                     msgReceivedEvt.setImportantMessage(true);
                 }
@@ -2621,7 +2627,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             // Check if the MUCUser informs that the invitee has declined the invitation
             if ((mucUser != null) && (rejection != null)
                     && (message.getType() != org.jivesoftware.smack.packet.Message.Type.error)) {
-                int messageReceivedEventType = ChatRoomMessageReceivedEvent.SYSTEM_MESSAGE_RECEIVED;
                 ChatRoomMemberJabberImpl member
                         = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, Resourcepart.EMPTY, getIdentifier());
                 EntityBareJid from = rejection.getFrom();
@@ -2642,7 +2647,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                         fromStr, mucUser.getDecline().getReason());
 
                 ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
-                        ChatRoomJabberImpl.this, member, new Date(), createMessage(msgBody), messageReceivedEventType);
+                        ChatRoomJabberImpl.this, member, new Date(), createMessage(msgBody), ChatMessage.MESSAGE_SYSTEM);
                 fireMessageEvent(msgReceivedEvt);
             }
         }

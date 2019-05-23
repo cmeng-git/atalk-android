@@ -31,7 +31,7 @@ cd vpx-android
 export ANDROID_NDK=/opt/android/android-ndk-r15c
 
 ## setup the required libvpx; default "libvpx-1.8.0" or change LIB_GIT in ./init_libvpx.sh
-./init_libvpx.sh
+./init_libvpx.sh (Optional as next command will load the source if not found)
 
 ## use one of the following to build libvpx i.e.
 #a. for all the ABI's defined in _settings.sh
@@ -48,8 +48,8 @@ jni directory i.e. aTalk/jni/vpx/android/\<ABI>
 Note:
 ## Standalone toolchains work for ABIS=("arm64-v8a" "x86" "x86_64")
 ABIS "armeabi-v7a" has errors i.e.
-  ./sysroot/usr/lib/../lib/crtbegin_dynamic.o:crtbegin.c:function _start: error: undefined reference to 'main'
-  clang50: error: linker command failed with exit code 1 (use -v to see invocation)
+clang50: error: unsupported option '--defsym'
+clang50: error: no such file or directory: 'ARCHITECTURE=7'
 ```
 
 All information given below is for reference only. See aTalk/jni for its implementation.

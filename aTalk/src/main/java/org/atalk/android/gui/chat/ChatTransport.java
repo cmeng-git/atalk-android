@@ -10,6 +10,7 @@ import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 
+import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jxmpp.jid.EntityBareJid;
 
@@ -33,36 +34,36 @@ public interface ChatTransport
     Object getDescriptor();
 
     /**
-     * Returns <code>true</code> if this chat transport supports instant
-     * messaging, otherwise returns <code>false</code>.
+     * Returns {@code true} if this chat transport supports instant
+     * messaging, otherwise returns {@code false}.
      *
-     * @return <code>true</code> if this chat transport supports instant
-     * messaging, otherwise returns <code>false</code>
+     * @return {@code true} if this chat transport supports instant
+     * messaging, otherwise returns {@code false}
      */
     boolean allowsInstantMessage();
 
     /**
      * Returns <tt>true</tt> if this chat transport supports message corrections and false otherwise.
      *
-     * @return <code>true</code> if this chat transport supports message corrections and false otherwise.
+     * @return {@code true} if this chat transport supports message corrections and false otherwise.
      */
     boolean allowsMessageCorrections();
 
     /**
-     * Returns <code>true</code> if this chat transport supports sms
-     * messaging, otherwise returns <code>false</code>.
+     * Returns {@code true} if this chat transport supports sms
+     * messaging, otherwise returns {@code false}.
      *
-     * @return <code>true</code> if this chat transport supports sms
-     * messaging, otherwise returns <code>false</code>
+     * @return {@code true} if this chat transport supports sms
+     * messaging, otherwise returns {@code false}
      */
     boolean allowsSmsMessage();
 
     /**
-     * Returns <code>true</code> if this chat transport supports chat state
-     * notifications, otherwise returns <code>false</code>.
+     * Returns {@code true} if this chat transport supports chat state
+     * notifications, otherwise returns {@code false}.
      *
-     * @return <code>true</code> if this chat transport supports chat state
-     * notifications, otherwise returns <code>false</code>
+     * @return {@code true} if this chat transport supports chat state
+     * notifications, otherwise returns {@code false}
      */
     boolean allowsChatStateNotifications();
 
@@ -117,11 +118,10 @@ public interface ChatTransport
      * the mime type (html or plain text).
      *
      * @param message The message to send.
-     * @param encryptionType The encryptionType of the message to send: @see ChatMessage Encryption Type
-     * @param mimeType The mime type of the message to send: 1=text/html or 0=text/plain.
+     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
      * @throws Exception if the send doesn't succeed
      */
-    void sendInstantMessage(String message, int encryptionType, int mimeType)
+    void sendInstantMessage(String message, int encType)
             throws Exception;
 
     /**
@@ -129,11 +129,10 @@ public interface ChatTransport
      * specifying the mime type (html or plain text) and the id of the
      *
      * @param message The message to send.
-     * @param encryptionType The encryption type of the message to send: @see ChatMessage Encryption Type
-     * @param mimeType The mime Type of the message to send: 1=text/html or 0=text/plain.
+     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
      * @param correctedMessageUID The ID of the message being corrected by this message.
      */
-    void sendInstantMessage(String message, int encryptionType, int mimeType, String correctedMessageUID);
+    void sendInstantMessage(String message, int encType, String correctedMessageUID);
 
     /**
      * Determines whether this chat transport supports the supplied content type
@@ -161,7 +160,7 @@ public interface ChatTransport
             throws Exception;
 
     /**
-     * Sends the given SMS message trough this chat transport, leaving the transport to choose the destination.
+     * Sends the given SMS message through this chat transport, leaving the transport to choose the destination.
      *
      * @param message The message to send.
      * @throws Exception if the send doesn't succeed
@@ -186,7 +185,7 @@ public interface ChatTransport
      * @param file the file to send
      * @throws Exception if the send doesn't succeed
      */
-    Object sendSticker(File file)
+    Object sendSticker(File file, int chatType, FileTransferConversation xferCon)
             throws Exception;
 
     /**
@@ -196,7 +195,7 @@ public interface ChatTransport
      * @return the <tt>FileTransfer</tt> charged to transfer the given <tt>file</tt>.
      * @throws Exception if the send doesn't succeed
      */
-    Object sendFile(File file)
+    Object sendFile(File file, int chatType, FileTransferConversation xferCon)
             throws Exception;
 
     /**

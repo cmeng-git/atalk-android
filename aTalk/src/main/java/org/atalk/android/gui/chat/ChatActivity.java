@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
-import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
@@ -103,19 +102,19 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     private MenuItem mChatRoomSubject;
 
     /**
-     * Holds chat id that is currently handled by this Activity.
+     * Holds chatId that is currently handled by this Activity.
      */
     private String currentChatId;
-    private ChatPanel selectedChatPanel;
-    private static Contact mRecipient;
+    // Current chatMode see ChatSessionManager ChatMode variables
     private int currentChatMode;
-
     // currently not implemented
     private int mCurrentChatType;
 
+    private ChatPanel selectedChatPanel;
+    private static Contact mRecipient;
+
     private static File mCameraFilePath = null;
     final private List<Uri> mPendingImageUris = new ArrayList<>();
-    final private List<Uri> mPendingFileUris = new ArrayList<>();
 
     private static final int SELECT_PHOTO = 100;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 101;
@@ -130,7 +129,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
      * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
      */
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -149,7 +147,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         if (postRestoreIntent()) {
             return;
         }
-
         // Add fragment for crypto padLock for OTR and OMEMO before start pager
         getSupportFragmentManager().beginTransaction().add(new CryptoFragment(), CRYPTO_FRAGMENT).commit();
 
@@ -177,15 +174,18 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     {
         String chatId;
 
+        // resume chat using previous setup conditions
         if (savedInstanceState != null) {
             chatId = savedInstanceState.getString(ChatSessionManager.CHAT_IDENTIFIER);
             currentChatMode = savedInstanceState.getInt(ChatSessionManager.CHAT_MODE);
             mCurrentChatType = savedInstanceState.getInt(ChatSessionManager.CHAT_MSGTYPE);
         }
+        // else start chat in metaContact chat with OMEMO encryption
         else {
             chatId = intent.getStringExtra(ChatSessionManager.CHAT_IDENTIFIER);
             currentChatMode = intent.getIntExtra(ChatSessionManager.CHAT_MODE, ChatSessionManager.MC_CHAT);
-            mCurrentChatType = intent.getIntExtra(ChatSessionManager.CHAT_MSGTYPE, ChatFragment.MSGTYPE_NORMAL);
+            mCurrentChatType = intent.getIntExtra(ChatSessionManager.CHAT_MSGTYPE, ChatFragment.MSGTYPE_OMEMO);
+            // mCryptoFragment.setChatType(mCurrentChatType); // CryptoFragment not ready
         }
         if (chatId == null)
             throw new RuntimeException("Missing chat identifier extra");
@@ -491,7 +491,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                                 .append("<br/>");
                     }
                     String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
-                    selectedChatPanel.addMessage(user, new Date(), Chat.SYSTEM_MESSAGE, ChatMessage.ENCODE_HTML,
+                    selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_HTML,
                             memberList.toString());
                 }
                 return true;
@@ -596,12 +596,12 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         //                String sendTo = mRecipient.getAddress();
         //                ChatPanel chatPanel = (ChatPanel) uiService.getChat(mRecipient);
         //                if (chatPanel != null) {
-        //                    chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, ChatMessage.ENCODE_PLAIN, filePath);
+        //                    chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, Message.ENCODE_PLAIN, filePath);
         //                }
         //            }
         //        }
         String sendTo = selectedChatPanel.getChatSession().getCurrentChatTransport().getName();
-        selectedChatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, ChatMessage.ENCODE_PLAIN, filePath);
+        selectedChatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_FILE_TRANSFER_SEND, Message.ENCODE_PLAIN, filePath);
     }
 
     public static void sendLocation(String location)
@@ -612,15 +612,15 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             if (mRecipient != null) {
                 chatPanel = (ChatPanel) uiService.getChat(mRecipient);
                 if (chatPanel != null) {
-                    int encryption = ChatMessage.ENCRYPTION_NONE;
+                    int encryption = Message.ENCRYPTION_NONE;
                     if (chatPanel.isOmemoChat())
-                        encryption = ChatMessage.ENCRYPTION_OMEMO;
+                        encryption = Message.ENCRYPTION_OMEMO;
                     else if (chatPanel.isOTRChat())
-                        encryption = ChatMessage.ENCRYPTION_OTR;
+                        encryption = Message.ENCRYPTION_OTR;
 
                     ChatTransport mChatTransport = chatPanel.getChatSession().getCurrentChatTransport();
                     try {
-                        mChatTransport.sendInstantMessage(location, encryption, ChatMessage.ENCODE_PLAIN);
+                        mChatTransport.sendInstantMessage(location, encryption | Message.ENCODE_PLAIN);
                     } catch (Exception e) {
                         aTalkApp.showToastMessage(e.getMessage());
                     }

@@ -34,7 +34,7 @@ public class aTalkProtocolReceiver extends OSGiActivity
             }
         }
         else {
-            Timber.w("No URL supplied in Jitsi link");
+            Timber.w("No URL supplied in aTalk link");
         }
         finish();
     }

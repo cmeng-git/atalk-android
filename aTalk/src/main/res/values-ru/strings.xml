@@ -343,7 +343,7 @@
     <string name="service_gui_FILE_SEND_TO">Отправить вложение</string>
     <string name="service_gui_FILE_SENDING_TO">Отправка файла в %1$s</string>
     <string name="service_gui_FILE_TOO_BIG">Размер файла превышает максимально допустимый для этого протокола: %1$s</string>
-    <string name="service_gui_FILE_TRANSFER_ACTIVE">Прерывание передачи файлов прерывается. Отслеживание состояния потеряно!</string>
+    <string name="service_gui_FILE_TRANSFER_ACTIVE">Прерывание передачи файлов прерывается. Отслеживание состояния @ %1$s потеряно!</string>
     <string name="service_gui_FILE_TRANSFER_CANCELED">Передача файлов отменена</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Контактный клиент или сервер не поддерживает передачу файлов или требуемые протоколы</string>
     <string name="service_gui_FILE_TRANSFER_PREPARING">Подготовка передачи файлов с %1$s. Подождите&#8230;</string>
@@ -351,8 +351,6 @@
     <string name="service_gui_FILE_TRANSFER_REFUSED">Отказано в передаче файлов</string>
 	<string name="service_gui_FILE_UNABLE_TO_SEND">Произошла ошибка при отправке файла в %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Ожидание %1$s, чтобы принять ваш файл</string>
-    <string name="service_gui_FILE_DOWNLOAD_LINK">&lt;html xmlns=\'http://jabber.org/protocol/xhtml-im\'>&lt;body xmlns=\'http://www.w3.org/1999/xhtml\'>
-      &lt;p>Передача файла в автономном режиме, доступ по ссылке:\n&lt;a href=\'%1$s\'>%2$s&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
 
 	<string name="service_gui_FINISH">Закончить</string>
 	<string name="service_gui_FOLDER_DOES_NOT_EXIST">Не удалось найти папку, содержащую этот файл. Он был удален или перемещен</string>

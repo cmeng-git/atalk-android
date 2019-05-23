@@ -6,6 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.8.3 (05/23/2019)" versioncode="1083">
+        <change>Implement \'OMEMO Media Sharing\' to support end-to-end encrypted files and stickers sharing</change>
+        <change>Include http file upload service in fault-tolerance file transfer implementation; to handle clients that do not support legacy SOCK5 and IBB protocols</change>
+        <change>Support Stickers, Bitmoji and Emoji rich content sharing in chat room</change>
+        <change>Enhance and harmonize UI for all the file transfer protocols, http file upload &amp; download services</change>
+        <change>Provide encryption status indicator in media file chat view content</change>
+        <change>Fix incorrect URL decode and highlight on hyperlink for direct web access</change>
+        <change>Upgrade openssl jni library to 1.0.2r (1.0.2l)</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="1.8.2 (04/24/2019)" versioncode="1082">
         <change>Fix Omemo chat session setup failure due to 'Cryptography Changes in Android-P'</change>
         <change>Fixed libvpx VP8 encoder problem on android with ABIS x86/x86_64 platforms</change>

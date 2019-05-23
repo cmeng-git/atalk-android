@@ -132,11 +132,6 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     private OperationSetPersistentPresenceJabberImpl opSetPersPresence = null;
 
     /**
-     * The html namespace used as feature XHTMLManager.namespace
-     */
-    private final static String HTML_NAMESPACE = "http://jabber.org/protocol/xhtml-im";
-
-    /**
      * Whether carbon is enabled or not.
      */
     private boolean isCarbonEnabled = false;
@@ -218,7 +213,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     public boolean isContentTypeSupported(int mimeType)
     {
-        return ((ChatMessage.ENCODE_PLAIN == mimeType) || (ChatMessage.ENCODE_HTML == mimeType));
+        return ((Message.ENCODE_PLAIN == mimeType) || (Message.ENCODE_HTML == mimeType));
     }
 
     /**
@@ -232,12 +227,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     public boolean isContentTypeSupported(int mimeType, Contact contact)
     {
         // by default we support default mime type, for other mime types method must be overridden
-        if (ChatMessage.ENCODE_PLAIN == mimeType) {
+        if (Message.ENCODE_PLAIN == mimeType) {
             return true;
         }
-        else if (ChatMessage.ENCODE_HTML == mimeType) {
+        else if (Message.ENCODE_HTML == mimeType) {
             Jid toJid = getRecentFullJidForContactIfPossible(contact);
-            return jabberProvider.isFeatureListSupported(toJid, HTML_NAMESPACE);
+            return jabberProvider.isFeatureListSupported(toJid, XHTMLExtension.NAMESPACE);
         }
         return false;
     }
@@ -380,20 +375,23 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         for (MessageDeliveredEvent event : transformedEvents) {
             String content = event.getSourceMessage().getContent();
 
-            if (ChatMessage.ENCODE_HTML == message.getMimeType()) {
+            if (Message.ENCODE_HTML == message.getMimeType()) {
                 // msg.setBody(Html2Text.extractText(content));
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
                     msg.setBody(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
                 else
-                    msg.setBody(Html.escapeHtml(content));
+                    msg.setBody(Html.fromHtml(content));
 
-                // Check if the other user supports XHTML messages make sure we use our discovery
-                // manager as it caches calls
-                if (jabberProvider.isFeatureListSupported(toJid, HTML_NAMESPACE)) {
-                    // Add the XHTML text to the message
-                    XHTMLText htmlText = new XHTMLText("", "us").append(content).appendCloseBodyTag();
-                    XHTMLManager.addBody(msg, htmlText);
-                }
+                // cmeng: Just add XHTML element as it will be ignored by buddy without XEP-0071: XHTML-IM support
+                // Also carbon messages may send to buddy on difference clients with different capabalities
+                // Note isFeatureListSupported must use FullJid unless it is for service e.g. conference.atalk.org
+
+                // Check if the buddy supports XHTML messages make sure we use our discovery manager as it caches calls
+                // if (jabberProvider.isFeatureListSupported(toJid, XHTMLExtension.NAMESPACE)) {
+                // Add the XHTML text to the message
+                XHTMLText htmlText = new XHTMLText("", "us").append(content).appendCloseBodyTag();
+                XHTMLManager.addBody(msg, htmlText);
+                //}
             }
             else {
                 // this is plain text so keep it as it is.
@@ -482,9 +480,21 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             OmemoManager omemoManager)
     {
         Jid toJid = to.getJid();
-        String msgContent = message.getContent();
+        String content = message.getContent();
+        String msgContent;
         OmemoMessage.Sent encryptedMessage;
         String msg = null;
+
+        // OMEMO message content will strip off any html tags info for now => #TODO
+        if (Message.ENCODE_HTML == message.getMimeType()) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+                msgContent = Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY).toString();
+            else
+                msgContent = Html.fromHtml(content).toString();
+        }
+        else {
+            msgContent = content;
+        }
 
         try {
             encryptedMessage = omemoManager.encrypt(toJid.asBareJid(), msgContent);
@@ -674,15 +684,14 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         String correctedMessageUID = getCorrectionMessageId(message);
 
         // Get the message type i.e. OTR or NONE for incoming message encryption state display
-        String msg = message.getBody();
-        int encryption = msg.startsWith("?OTR") ? ChatMessage.ENCRYPTION_OTR : ChatMessage.ENCRYPTION_NONE;
-        int encType = encryption | ChatMessage.ENCODE_PLAIN;
+        String msgBody = message.getBody();
+        int encryption = msgBody.startsWith("?OTR") ? Message.ENCRYPTION_OTR : Message.ENCRYPTION_NONE;
+        int encType = encryption | Message.ENCODE_PLAIN;
         Message newMessage = createMessageWithUID(message.getBody(), encType, msgID);
 
         // check if the message is available in xhtml
-        ExtensionElement ext = message.getExtension("http://jabber.org/protocol/xhtml-im");
-        if (ext != null) {
-            XHTMLExtension xhtmlExt = (XHTMLExtension) ext;
+        if (XHTMLManager.isXHTMLMessage(message)) {
+            XHTMLExtension xhtmlExt = (XHTMLExtension) message.getExtension(XHTMLExtension.NAMESPACE);
 
             // parse all bodies
             List<CharSequence> bodies = xhtmlExt.getBodies();
@@ -703,7 +712,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 // for some reason &apos; is not rendered correctly from our ui, lets use its
                 // equivalent. Other similar chars(< > & ") seem ok.
                 receivedMessage = receivedMessage.replaceAll("&apos;", "&#39;");
-                encType = encryption | ChatMessage.ENCODE_HTML;
+                encType = encryption | Message.ENCODE_HTML;
                 newMessage = createMessageWithUID(receivedMessage, encType, msgID);
             }
         }
@@ -721,9 +730,9 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 }
 
                 String errorReason = (error != null) ? error.toString() : "";
-                ChatRoomMessageDeliveryFailedEvent evt = new ChatRoomMessageDeliveryFailedEvent(privateContactRoom,
+                ChatRoomMessageDeliveryFailedEvent msgDeliveryFailed = new ChatRoomMessageDeliveryFailedEvent(privateContactRoom,
                         null, errorResultCode, errorReason, new Date(), newMessage);
-                privateContactRoom.fireMessageEvent(evt);
+                privateContactRoom.fireMessageEvent(msgDeliveryFailed);
                 return;
             }
 
@@ -742,9 +751,9 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 sourceContact = opSetPersPresence.createVolatileContact(userFullJId, isPrivateMessaging);
             }
 
-            MessageDeliveryFailedEvent ev
+            MessageDeliveryFailedEvent msgDeliveryFailed
                     = new MessageDeliveryFailedEvent(newMessage, sourceContact, correctedMessageUID, errorResultCode);
-            fireMessageEvent(ev);
+            fireMessageEvent(msgDeliveryFailed);
             return;
         }
         putJidForAddress(userFullJId, message.getThread());
@@ -767,7 +776,6 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             msgEvt = new MessageReceivedEvent(newMessage, sourceContact, resource, timestamp,
                     correctedMessageUID, isPrivateMessaging, privateContactRoom);
 
-        // msgReceivedEvt = messageReceivedTransform(msgReceivedEvt);
         fireMessageEvent(msgEvt);
     }
 
@@ -902,14 +910,17 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
         String msgID = encryptedMessage.getStanzaId();
         String correctedMsgID = getCorrectionMessageId(encryptedMessage);
-        int encType = ChatMessage.ENCRYPTION_OMEMO | ChatMessage.ENCODE_PLAIN;
-        Message newMessage = createMessageWithUID(decryptedMessage.getBody(), encType, msgID);
+        int encType = Message.ENCRYPTION_OMEMO | Message.ENCODE_PLAIN;
+
+        String msgBody = decryptedMessage.getBody();
+        Message newMessage = createMessageWithUID(msgBody, encType, msgID);
 
         EventObject msgEvt;
         if (isForwardedSentOmemoMessage)
             msgEvt = new MessageDeliveredEvent(newMessage, sourceContact, timeStamp);
         else
             msgEvt = new MessageReceivedEvent(newMessage, sourceContact, timeStamp, correctedMsgID);
+
         fireMessageEvent(msgEvt);
     }
 

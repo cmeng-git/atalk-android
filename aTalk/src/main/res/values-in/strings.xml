@@ -340,7 +340,7 @@
     <string name="service_gui_FILE_SEND_TO">Kirim Lampiran</string>
     <string name="service_gui_FILE_SENDING_TO">Mengirim fail ke %1$s</string>
     <string name="service_gui_FILE_TOO_BIG">Ukuran fail melebihi batas maksimum yang diizinkan untuk protokol ini: %1$s</string>
-    <string name="service_gui_FILE_TRANSFER_ACTIVE">Transfer fail sedang diproses sedang terganggu. Pelacakan status hilang!</string>
+    <string name="service_gui_FILE_TRANSFER_ACTIVE">Transfer fail sedang diproses sedang terganggu. Pelacakan status @ %1$s hilang!</string>
     <string name="service_gui_FILE_TRANSFER_CANCELED">Transfer fail telah dibatalkan</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Hubungi klien atau server tidak mendukung transfer file atau protokol yang diperlukan</string>
     <string name="service_gui_FILE_TRANSFER_PREPARING">Mempersiapkan transfer fail dengan %1$s. Harap tunggu&#8230;</string>
@@ -348,8 +348,6 @@
     <string name="service_gui_FILE_TRANSFER_REFUSED">Transfer fail telah ditolak</string>
     <string name="service_gui_FILE_UNABLE_TO_SEND">Terjadi kesalahan saat mengirim fail ke %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Menunggu %1$s untuk menerima fail Anda</string>
-    <string name="service_gui_FILE_DOWNLOAD_LINK">&lt;html xmlns=\'http://jabber.org/protocol/xhtml-im\'>&lt;body xmlns=\'http://www.w3.org/1999/xhtml\'>
-      &lt;p>File offline ditransfer, akses melalui tautan:\n&lt;a href=\'%1$s\'>%2$s&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
 
     <string name="service_gui_FINISH">Selesai</string>
     <string name="service_gui_FOLDER_DOES_NOT_EXIST">Folder yang berisi fail ini tidak dapat ditemukan. Itu dihapus atau dipindahkan</string>

@@ -276,13 +276,13 @@ public interface NotificationService
 
 	/**
 	 * Indicates whether or not actions for the specified <tt>eventType</tt> are activated. This method returns
-	 * <code>false</code> if the given <tt>eventType</tt> is not contained in the list of registered event types.
+	 * {@code false} if the given <tt>eventType</tt> is not contained in the list of registered event types.
 	 *
 	 * @param eventType
 	 *        the name of the event (as defined by the plugin that's registered it) that we are checking.
-	 * @return <code>true</code> if actions for the specified <tt>eventType</tt> are activated, <code>false</code> -
+	 * @return {@code true</code> if actions for the specified <tt>eventType</tt> are activated, <code>false} -
 	 *         otherwise. If the given <tt>eventType</tt> is not contained in the list of registered event types -
-	 *         returns <code>false</code>.
+	 *         returns {@code false}.
 	 */
 	boolean isActive(String eventType);
 

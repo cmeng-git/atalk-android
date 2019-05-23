@@ -7,11 +7,13 @@
 package org.atalk.android.gui.chat.conference;
 
 import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.chatstates.ChatState;
@@ -36,8 +38,6 @@ public class ConferenceChatTransport implements ChatTransport
     private final ChatRoom chatRoom;
     private final ProtocolProviderService mPPS;
     private HttpFileUploadManager httpFileUploadManager;
-
-    private static URL mURL = null;
 
     /**
      * Creates an instance of <tt>ConferenceChatTransport</tt> by specifying the parent chat
@@ -116,11 +116,11 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports instant messaging,
-     * otherwise returns <code>false</code>.
+     * Returns {@code true} if this chat transport supports instant messaging,
+     * otherwise returns {@code false}.
      *
-     * @return <code>true</code> if this chat transport supports instant messaging,
-     * otherwise returns <code>false</code>.
+     * @return {@code true} if this chat transport supports instant messaging,
+     * otherwise returns {@code false}.
      */
     public boolean allowsInstantMessage()
     {
@@ -128,11 +128,11 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports sms messaging,
-     * otherwise returns <code>false</code>.
+     * Returns {@code true} if this chat transport supports sms messaging,
+     * otherwise returns {@code false}.
      *
-     * @return <code>true</code> if this chat transport supports sms messaging,
-     * otherwise returns <code>false</code>.
+     * @return {@code true} if this chat transport supports sms messaging,
+     * otherwise returns {@code false}.
      */
     public boolean allowsSmsMessage()
     {
@@ -140,11 +140,11 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports chat state notifications,
-     * otherwise returns <code>false</code>.
+     * Returns {@code true} if this chat transport supports chat state notifications,
+     * otherwise returns {@code false}.
      *
-     * @return <code>true</code> if this chat transport supports chat state notifications,
-     * otherwise returns <code>false</code>.
+     * @return {@code true} if this chat transport supports chat state notifications,
+     * otherwise returns {@code false}.
      */
     public boolean allowsChatStateNotifications()
     {
@@ -157,10 +157,9 @@ public class ConferenceChatTransport implements ChatTransport
      * (html or plain text).
      *
      * @param messageText The message to send.
-     * @param encryptionType The encryptionType of the message to send: @see ChatMessage Encryption Type
-     * @param mimeType The mime type of the message to send: 1=text/html or 0=text/plain.
+     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
      */
-    public void sendInstantMessage(String messageText, int encryptionType, int mimeType)
+    public void sendInstantMessage(String messageText, int encType)
             throws Exception
     {
         // If this chat transport does not support instant messaging we do nothing here.
@@ -169,8 +168,8 @@ public class ConferenceChatTransport implements ChatTransport
             return;
         }
 
-        Message message = chatRoom.createMessage(messageText, encryptionType, mimeType, null);
-        if (ChatMessage.ENCRYPTION_OMEMO == encryptionType) {
+        Message message = chatRoom.createMessage(messageText, encType, null);
+        if (Message.ENCRYPTION_OMEMO == (encType & Message.ENCRYPTION_OMEMO)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             chatRoom.sendMessage(message, omemoManager);
         }
@@ -184,12 +183,11 @@ public class ConferenceChatTransport implements ChatTransport
      * mime type (html or plain text) and the id of the message to replace.
      *
      * @param message The message to send.
-     * @param encryptionType The encryptionType of the message to send: @see ChatMessage Encryption Type
-     * @param mimeType The mime type of the message to send: 1=text/html or 0=text/plain.
+     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
      * @param correctedMessageUID The ID of the message being corrected by this message.
      * @see ChatMessage Encryption Type
      */
-    public void sendInstantMessage(String message, int encryptionType, int mimeType, String correctedMessageUID)
+    public void sendInstantMessage(String message, int encType, String correctedMessageUID)
     {
     }
 
@@ -202,7 +200,7 @@ public class ConferenceChatTransport implements ChatTransport
     public boolean isContentTypeSupported(int mimeType)
     {
         // we only support plain text for chat rooms for now
-        return (ChatMessage.ENCODE_PLAIN == mimeType);
+        return (Message.ENCODE_PLAIN == mimeType);
     }
 
     /**
@@ -233,9 +231,10 @@ public class ConferenceChatTransport implements ChatTransport
     /**
      * Sending sticker messages is not supported by this chat transport implementation.
      */
-    public FileTransfer sendSticker(File file)
+    public Object sendSticker(File file, int chatType, FileTransferConversation xferCon)
+            throws Exception
     {
-        return null;
+        return sendFile(file, chatType, xferCon);
     }
 
     /**
@@ -256,18 +255,38 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Sending files through a chat room is not yet supported by this chat transport implementation.
+     * Sending files through a chat room will always use http file upload
      */
-    public URL sendFile(File file)
+    public Object sendFile(File file, int chatType, FileTransferConversation xferCon)
             throws Exception
     {
         // If this chat transport does not support file transfer we do nothing and just return.
         if (!allowsFileTransfer())
             return null;
 
+        return httpFileUpload(file, chatType, xferCon);
+    }
+
+    /**
+     * Http file upload if supported by the server
+     */
+    private Object httpFileUpload(File file, int chatType, FileTransferConversation xferCon)
+            throws Exception
+    {
+        // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed
         if (httpFileUploadManager.isUploadServiceDiscovered()) {
+            int encType = Message.ENCRYPTION_NONE;
+            Object url;
             try {
-                return httpFileUploadManager.uploadFile(file, null);
+                if (ChatFragment.MSGTYPE_OMEMO == chatType) {
+                    encType = Message.ENCRYPTION_OMEMO;
+                    url = httpFileUploadManager.uploadFileEncrypted(file, xferCon);
+                }
+                else {
+                    url = httpFileUploadManager.uploadFile(file, xferCon);
+                }
+                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, chatRoom, encType);
+                return url;
             } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());
             }
@@ -277,13 +296,11 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns <code>true</code> if this chat transport supports file transfer, otherwise returns
-     * <code>false</code>.
+     * Returns {@code true} if this chat transport supports file transfer, otherwise returns {@code false}.
      *
-     * @return <code>true</code> if this chat transport supports file transfer, otherwise returns
-     * <code>false</code>.
+     * @return {@code true} if this chat transport supports file transfer, otherwise returns {@code false}.
      */
-    public boolean allowsFileTransfer()
+    private boolean allowsFileTransfer()
     {
         return httpFileUploadManager.isUploadServiceDiscovered();
     }

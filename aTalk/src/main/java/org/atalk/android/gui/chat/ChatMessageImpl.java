@@ -7,6 +7,7 @@ package org.atalk.android.gui.chat;
 
 import android.text.TextUtils;
 
+import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.*;
@@ -96,6 +97,8 @@ public class ChatMessageImpl implements ChatMessage
      */
     private IncomingFileTransferRequest request;
 
+    private HttpFileDownloadJabberImpl httpFileTransfer;
+
     /**
      * A map between FileRecord status to statusCode saved in DB
      */
@@ -134,15 +137,22 @@ public class ChatMessageImpl implements ChatMessage
     public ChatMessageImpl(String contactName, Date date, int messageType, int mimeType, String message,
             OperationSetFileTransfer opSet, IncomingFileTransferRequest request)
     {
-        this(contactName, null, date, messageType, mimeType, message, ChatMessage.ENCRYPTION_NONE,
+        this(contactName, null, date, messageType, mimeType, message, Message.ENCRYPTION_NONE,
                 null, null, opSet, request, null);
     }
 
     public ChatMessageImpl(String contactName, Date date, int messageType, int mimeType, String message,
             String messageUID, FileRecord fileRecord)
     {
-        this(contactName, null, date, messageType, mimeType, message, ChatMessage.ENCRYPTION_NONE,
+        this(contactName, null, date, messageType, mimeType, message, Message.ENCRYPTION_NONE,
                 messageUID, null, null, null, fileRecord);
+    }
+
+    public ChatMessageImpl(String contactName, Date date, int messageType, int mimeType, String message,
+            String messageUID, HttpFileDownloadJabberImpl httpFileTransfer)
+    {
+        this(contactName, null, date, messageType, mimeType, message, Message.ENCRYPTION_NONE,
+                messageUID, null, null, httpFileTransfer, null);
     }
 
     /**
@@ -185,7 +195,7 @@ public class ChatMessageImpl implements ChatMessage
 
     public ChatMessageImpl(String contactName, String contactDisplayName, Date date, int messageType, int mimeType,
             String message, int encryptionType, String messageUID, String correctedMessageUID,
-            OperationSetFileTransfer opSet, IncomingFileTransferRequest request, FileRecord fileRecord)
+            OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
     {
         this.contactName = contactName;
         this.contactDisplayName = contactDisplayName;
@@ -198,7 +208,15 @@ public class ChatMessageImpl implements ChatMessage
         this.correctedMessageUID = correctedMessageUID;
         this.fileRecord = fileRecord;
         this.opSet = opSet;
-        this.request = request;
+
+        if (request instanceof IncomingFileTransferRequest) {
+            this.request = (IncomingFileTransferRequest) request;
+            this.httpFileTransfer = null;
+        }
+        else {
+            this.request = null;
+            this.httpFileTransfer = (HttpFileDownloadJabberImpl) request;
+        }
     }
 
     public void updateCachedOutput(String msg)
@@ -258,7 +276,6 @@ public class ChatMessageImpl implements ChatMessage
         this.messageType = messageType;
     }
 
-
     /**
      * Returns the mime type of the content type (e.g. "text", "text/html", etc.).
      *
@@ -286,7 +303,7 @@ public class ChatMessageImpl implements ChatMessage
 
         String output = message;
         // Escape HTML content (getMimeType() can be null)
-        if (ChatMessage.ENCODE_HTML != getMimeType()) {
+        if (Message.ENCODE_HTML != getMimeType()) {
             output = Html.escapeHtml(output);
         }
 
@@ -376,6 +393,22 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
+     * Returns the HttpFileDownloadJabberImpl of this message.
+     *
+     * @return the HttpFileDownloadJabberImpl of this message.
+     */
+    @Override
+    public HttpFileDownloadJabberImpl getHttpFileTransfer()
+    {
+        return httpFileTransfer;
+    }
+
+    public void setHttpFileTransfer(HttpFileDownloadJabberImpl httpFileTransfer)
+    {
+        this.httpFileTransfer = httpFileTransfer;
+    }
+
+    /**
      * Returns the fileRecord of this message.
      *
      * @return the fileRecord of this message.
@@ -414,10 +447,15 @@ public class ChatMessageImpl implements ChatMessage
      */
     public boolean isConsecutiveMessage(ChatMessage nextMsg)
     {
+        if (nextMsg == null)
+            return false;
+
         // New FTRequest message always treated as non-consecutiveMessage
         boolean nonFTMsg = ((messageType != MESSAGE_FILE_TRANSFER_RECEIVE)
                 && (messageType != MESSAGE_FILE_TRANSFER_SEND) && (messageType != MESSAGE_STICKER_SEND));
         // New system message always treated as non-consecutiveMessage
+        boolean nonHttpFTMsg = (nextMsg.getMessage() == null)
+                || !nextMsg.getMessage().matches("(?s)^aesgcm:.*|^http[s].*");
         boolean nonSystemMsg = (messageType != MESSAGE_SYSTEM);
         // New LatLng message always treated as non-consecutiveMessage
         boolean nonLatLng = (!TextUtils.isEmpty(message) && !message.contains("LatLng:"));
@@ -433,33 +471,8 @@ public class ChatMessageImpl implements ChatMessage
         // true if the new message is within a minute from the last one
         boolean inElapseTime = ((nextMsg.getDate().getTime() - getDate().getTime()) < 60000);
 
-        return (nonFTMsg && nonSystemMsg && nonLatLng && encTypeSame
+        return (nonFTMsg && nonSystemMsg && nonLatLng && encTypeSame && nonHttpFTMsg
                 && (uidEqual || (mTypeJidEqual && inElapseTime)));
-    }
-
-    /**
-     * Returns the message type corresponding to the given <tt>MessageReceivedEvent</tt>.
-     *
-     * @param evt the <tt>MessageReceivedEvent</tt>, that gives us information of the message type
-     * @return the message type corresponding to the given <tt>MessageReceivedEvent</tt>
-     */
-    public static int getMessageType(MessageReceivedEvent evt)
-    {
-        int eventType = evt.getEventType();
-
-        // Distinguish the message type, depending on the type of event that we have received.
-        int messageType = -1;
-
-        if (eventType == MessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED) {
-            messageType = MESSAGE_IN;
-        }
-        else if (eventType == MessageReceivedEvent.SYSTEM_MESSAGE_RECEIVED) {
-            messageType = MESSAGE_SYSTEM;
-        }
-        else if (eventType == MessageReceivedEvent.SMS_MESSAGE_RECEIVED) {
-            messageType = MESSAGE_SMS_IN;
-        }
-        return messageType;
     }
 
     static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt)
@@ -482,7 +495,7 @@ public class ChatMessageImpl implements ChatMessage
                 = AndroidGUIActivator.getContactListService().findMetaContactByContact(protocolContact);
 
         return new ChatMessageImpl(protocolContact.getAddress(), metaContact.getDisplayName(),
-                evt.getTimestamp(), getMessageType(evt), message.getMimeType(),
+                evt.getTimestamp(), evt.getEventType(), message.getMimeType(),
                 message.getContent(), message.getEncryptionType(), message.getMessageUID(),
                 evt.getCorrectedMessageUID(), null, null, null);
     }
@@ -493,7 +506,7 @@ public class ChatMessageImpl implements ChatMessage
         final Message message = evt.getMessage();
 
         return new ChatMessageImpl(chatRoom.toString(), chatRoom.getName(),
-                evt.getTimestamp(), ChatMessage.MESSAGE_OUT, message.getMimeType(),
+                evt.getTimestamp(), ChatMessage.MESSAGE_MUC_OUT, message.getMimeType(),
                 message.getContent(), message.getEncryptionType(), message.getMessageUID(),
                 null, null, null, null);
     }
@@ -501,19 +514,19 @@ public class ChatMessageImpl implements ChatMessage
     static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageReceivedEvent evt)
     {
         String nickName = evt.getSourceChatRoomMember().getNickName();
+        // Extract the contact with the resource part
+        String contact = evt.getSourceChatRoomMember().getContactAddress(); //.split("/")[0];
 
         final Message message = evt.getMessage();
-        return new ChatMessageImpl(nickName, nickName, evt.getTimestamp(),
-                ChatMessage.MESSAGE_IN, message.getMimeType(), message.getContent(), message.getMimeType(),
+        return new ChatMessageImpl(contact, nickName, evt.getTimestamp(),
+                evt.getEventType(), message.getMimeType(), message.getContent(), message.getMimeType(),
                 message.getMessageUID(), null, null, null, null);
     }
 
     static public ChatMessageImpl getMsgForEvent(final FileRecord fileRecord)
     {
-        Contact protocolContact = fileRecord.getContact();
-
-        return new ChatMessageImpl(protocolContact.getAddress(), fileRecord.getDate(),
-                ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY, ChatMessage.ENCODE_PLAIN, null,
+        return new ChatMessageImpl(fileRecord.getJidAddress(), fileRecord.getDate(),
+                ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY, Message.ENCODE_PLAIN, null,
                 fileRecord.getID(), fileRecord);
     }
 

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ByteFormat;
 import net.java.sip.communicator.util.GuiUtils;
@@ -34,8 +35,10 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatActivity;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.service.osgi.OSGiFragment;
+import org.jivesoftware.smackx.httpfileupload.UploadProgressListener;
 
 import java.io.File;
+import java.util.*;
 
 /**
  * The <tt>FileTransferConversationComponent</tt> is the parent of all file conversation
@@ -43,7 +46,8 @@ import java.io.File;
  *
  * @author Eng Chong Meng
  */
-public abstract class FileTransferConversation extends OSGiFragment implements FileTransferProgressListener
+public abstract class FileTransferConversation extends OSGiFragment
+        implements FileTransferProgressListener, UploadProgressListener
 {
     /**
      * XEP-0264: File Transfer Thumbnails option
@@ -73,47 +77,60 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
     protected FileTransfer fileTransfer = null;
 
     /**
-     * The speed calculated delay.
+     * The size of the file to be transferred.
      */
-    private final static int SPEED_CALCULATE_DELAY = 5000;
+    private long mTransferFileSize = 0;
 
     /**
-     * The transferred file size.
+     * The time of the last fileTransfer update.
      */
-    private long transferredFileSize = 0;
-
-    /**
-     * The time of the last calculated transfer speed.
-     */
-    private long lastSpeedTimestamp = 0;
-
-    /**
-     * The last estimated time for the transfer.
-     */
-    private long lastEstimatedTimeTimestamp = 0;
+    private long mLastTimestamp = 0;
 
     /**
      * The number of bytes last transferred.
      */
-    private long lastTransferredBytes = 0;
+    private long mLastTransferredBytes = 0;
 
     /**
      * The last calculated progress speed.
      */
-    private long lastProgressSpeed;
+    private long mTransferSpeed = 0;
 
     /**
      * The last estimated time.
      */
-    private long lastEstimatedTime;
+    private long mEstimatedTimeLeft = 0;
 
     /**
-     * The file transfer index of the chatListAdapter
+     * The file transfer index/position of the message in chatListAdapter
      */
     protected int msgId = 0;
 
+    /**
+     * The message Uuid  uniquely identify the record in the message database
+     */
+    protected String msgUuid;
+
+    /*
+     * mEntityJid can be Contact or ChatRoom
+     */
+    protected Object mEntityJid;
+
+    /*
+     * Transfer file encryption type
+     */
+    protected int mEncryption = Message.ENCRYPTION_NONE;
+
+    /**
+     * For Http file Upload and Download must set to true to update the message in the DB
+     */
+    protected boolean mUpdateDB = false;
+
+
     protected ChatFragment mChatFragment;
     protected ChatFragment.MessageViewHolder messageViewHolder;
+
+    private final Vector<UploadProgressListener> uploadProgressListeners = new Vector<>();
 
     protected View inflateViewForFileTransfer(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
             ViewGroup container, boolean init)
@@ -133,6 +150,7 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
             messageViewHolder.stickerView = convertView.findViewById(R.id.sticker);
 
             messageViewHolder.titleLabel = convertView.findViewById(R.id.filexferTitleView);
+            messageViewHolder.encStateView = convertView.findViewById(R.id.encFileStateView);
             messageViewHolder.fileLabel = convertView.findViewById(R.id.filexferFileNameView);
             messageViewHolder.viewFileXferError = convertView.findViewById(R.id.errorView);
 
@@ -146,7 +164,7 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
             messageViewHolder.retryButton.setVisibility(View.GONE);
             messageViewHolder.acceptButton.setVisibility(View.GONE);
             messageViewHolder.rejectButton.setVisibility(View.GONE);
-            messageViewHolder.mProgressBar.setVisibility(View.GONE);
+            hideProgressRelatedComponents();
         }
 
         View.OnClickListener onAction = getOnSetListener();
@@ -167,6 +185,19 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
         String message = getResources().getString(resId);
         messageViewHolder.viewFileXferError.setText(message);
         messageViewHolder.viewFileXferError.setVisibility(TextView.VISIBLE);
+    }
+
+    /**
+     * Set the file encryption status icon.
+     *
+     * @param encType the encryption
+     */
+    protected void setEncState(int encType)
+    {
+        if (Message.ENCRYPTION_OMEMO == encType)
+            messageViewHolder.encStateView.setImageResource(R.drawable.encryption_omemo);
+        else
+            messageViewHolder.encStateView.setImageResource(R.drawable.encryption_none);
     }
 
     /**
@@ -197,22 +228,18 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
      *
      * @param file the file that has been downloaded or sent
      */
-    protected void setCompletedDownloadFile(ChatFragment cPanel, File file)
+    protected void setCompletedDownloadFile(ChatFragment chatFragment, File file)
     {
-        this.chatActivity = (ChatActivity) cPanel.getActivity();
+        this.chatActivity = (ChatActivity) chatFragment.getActivity();
         mXferFile = file;
         final String toolTip = aTalkApp.getResString(R.string.service_gui_OPEN_FILE_FROM_IMAGE);
         messageViewHolder.imageLabel.setContentDescription(toolTip);
         View.OnClickListener onAction = getOnSetListener();
         messageViewHolder.imageLabel.setOnClickListener(onAction);
 
-        messageViewHolder.imageLabel.setOnLongClickListener(new View.OnLongClickListener()
-        {
-            public boolean onLongClick(View v)
-            {
-                Toast.makeText(v.getContext(), toolTip, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        messageViewHolder.imageLabel.setOnLongClickListener(v -> {
+            Toast.makeText(v.getContext(), toolTip, Toast.LENGTH_SHORT).show();
+            return true;
         });
     }
 
@@ -220,12 +247,12 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
      * Sets the file transfer.
      *
      * @param fileTransfer the file transfer
-     * @param transferredFileSize the size of the transferred file Running in thread, not UI here
+     * @param transferFileSize the size of the transferred file Running in thread, not UI here
      */
-    protected void setFileTransfer(FileTransfer fileTransfer, long transferredFileSize)
+    protected void setFileTransfer(FileTransfer fileTransfer, long transferFileSize)
     {
         this.fileTransfer = fileTransfer;
-        this.transferredFileSize = transferredFileSize;
+        this.mTransferFileSize = transferFileSize;
         fileTransfer.addProgressListener(this);
     }
 
@@ -248,48 +275,73 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
     }
 
     /**
-     * Updates progress bar progress line every time a progress event has been received.
+     * Updates progress bar progress line every time a progress event has been received file transport    
+     * Note: total size of event.getProgress() is always lag behind event.getFileTransfer().getTransferredBytes();
      *
      * @param event the <tt>FileTransferProgressEvent</tt> that notifies us
      */
     public void progressChanged(final FileTransferProgressEvent event)
     {
-        final int progressStatus = (int) event.getProgress();
-        final long transferredBytes = event.getFileTransfer().getTransferredBytes();
-        final long progressTimestamp = event.getTimestamp();
+        long transferredBytes = event.getFileTransfer().getTransferredBytes();
+        long progressTimestamp = event.getTimestamp();
+
+        updateProgress(transferredBytes, progressTimestamp);
+    }
+
+    /**
+     * Callback for displaying http file upload progress.
+     *
+     * @param uploadedBytes the number of bytes uploaded at the moment
+     * @param totalBytes the total number of bytes to be uploaded
+     */
+    @Override
+    public void onUploadProgress(long uploadedBytes, long totalBytes)
+    {
+        updateProgress(uploadedBytes, System.currentTimeMillis());
+    }
+
+    private void updateProgress(long transferredBytes, long progressTimestamp)
+    {
+        // before file transfer start is -1
+        if (transferredBytes < 0)
+            return;
 
         final String bytesString = ByteFormat.format(transferredBytes);
+        long byteTransferDelta = transferredBytes - mLastTransferredBytes;
+        long timeElapsed = progressTimestamp - mLastTimestamp;
+
+        // Calculate running average transfer speed in bytes/sec
+        if (timeElapsed > 0)
+            mTransferSpeed = (((byteTransferDelta * 1000) / timeElapsed) + mTransferSpeed) / 2;
+        // Calculate  running average time left in sec
+        if (mTransferSpeed > 0)
+            mEstimatedTimeLeft = (((mTransferFileSize - transferredBytes) / mTransferSpeed) + mEstimatedTimeLeft) / 2;
+
+        mLastTimestamp = progressTimestamp;
+        mLastTransferredBytes = transferredBytes;
 
         runOnUiThread(() -> {
-            messageViewHolder.mProgressBar.setProgress(progressStatus);
-
-            if ((progressTimestamp - lastSpeedTimestamp) >= SPEED_CALCULATE_DELAY) {
-                lastProgressSpeed = Math.round(calculateProgressSpeed(transferredBytes));
-
-                lastSpeedTimestamp = progressTimestamp;
-                lastTransferredBytes = transferredBytes;
+            // Need to do it here as it was found that Http File Upload completed before the progress Bar is even visible
+            if (!messageViewHolder.mProgressBar.isShown()) {
+                messageViewHolder.mProgressBar.setVisibility(View.VISIBLE);
+                messageViewHolder.mProgressBar.setMax((int) mXferFile.length());
             }
+            // Note: progress bar can only handle int size (4-bytes: 2,147,483, 647);
+            messageViewHolder.mProgressBar.setProgress((int) transferredBytes);
 
-            if ((progressTimestamp - lastEstimatedTimeTimestamp) >= SPEED_CALCULATE_DELAY
-                    && lastProgressSpeed > 0) {
-                lastEstimatedTime = Math.round(calculateEstimatedTransferTime(lastProgressSpeed,
-                        transferredFileSize - transferredBytes));
-                lastEstimatedTimeTimestamp = progressTimestamp;
-            }
-
-            if (lastProgressSpeed > 0) {
+            if (mTransferSpeed > 0) {
                 messageViewHolder.progressSpeedLabel.setVisibility(View.VISIBLE);
                 messageViewHolder.progressSpeedLabel.setText(
-                        aTalkApp.getResString(R.string.service_gui_SPEED, ByteFormat.format(lastProgressSpeed), bytesString));
+                        aTalkApp.getResString(R.string.service_gui_SPEED, ByteFormat.format(mTransferSpeed), bytesString));
             }
 
-            if (transferredBytes >= transferredFileSize) {
+            if (transferredBytes >= mTransferFileSize) {
                 messageViewHolder.estimatedTimeLabel.setVisibility(View.GONE);
             }
-            else if (lastEstimatedTime > 0) {
+            else if (mEstimatedTimeLeft > 0) {
                 messageViewHolder.estimatedTimeLabel.setVisibility(View.VISIBLE);
                 messageViewHolder.estimatedTimeLabel.setText(aTalkApp.getResString(R.string.service_gui_ESTIMATED_TIME,
-                        GuiUtils.formatSeconds(lastEstimatedTime * 1000)));
+                        GuiUtils.formatSeconds(mEstimatedTimeLeft * 1000)));
             }
         });
     }
@@ -326,46 +378,48 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
      * @param bytesString the bytes that have been transferred
      * @return the label to show on the progress bar
      */
-    protected abstract String getProgressLabel(String bytesString);
+    protected abstract String getProgressLabel(long bytesString);
+
+    // dummy updateView for implementation
+    protected void updateView(final int status)
+    {
+    }
+
+    /**
+     * @param status File transfer send status
+     * @param jid Conact or ChatRoom for Http file upload service
+     */
+    public void setStatus(final int status, Object jid, int encType)
+    {
+        mEntityJid = jid;
+        mEncryption = encType;
+        mUpdateDB = (jid != null);
+
+        setXferStatus(status);
+        // Must execute in UiThread to Update UI information
+        runOnUiThread(() -> {
+            updateView(status);
+        });
+    }
 
     /**
      * Must update chatListAdapter file transfer status to actual for refresh when user scroll.
      *
-     * @param xferStatus the file transfer new status
+     * @param status the file transfer new status
      */
-    protected abstract void setXferStatus(int xferStatus);
+    public void setXferStatus(int status)
+    {
+        mChatFragment.getChatListAdapter().setXferStatus(msgId, status);
+    }
 
     /**
      * Get the current status fo the file transfer
+     *
      * @return the current status of the file transfer
      */
     protected int getXferStatus()
     {
         return mChatFragment.getChatListAdapter().getXferStatus(msgId);
-    }
-
-    /**
-     * Returns the speed of the transfer.
-     *
-     * @param transferredBytes the number of bytes that have been transferred
-     * @return the speed of the transfer
-     */
-    private double calculateProgressSpeed(long transferredBytes)
-    {
-        // Bytes per second = bytes / SPEED_CALCULATE_DELAY milli-seconds * 1000.
-        return (transferredBytes - lastTransferredBytes) / SPEED_CALCULATE_DELAY * 1000;
-    }
-
-    /**
-     * Returns the estimated transfer time left.
-     *
-     * @param speed the speed of the transfer
-     * @param bytesLeft the size of the file
-     * @return the estimated transfer time left
-     */
-    private double calculateEstimatedTransferTime(double speed, long bytesLeft)
-    {
-        return bytesLeft / speed;
     }
 
     /**
@@ -398,7 +452,56 @@ public abstract class FileTransferConversation extends OSGiFragment implements F
     /**
      * @return the fileTransfer file
      */
-    public File getFileName() {
+    public File getFileName()
+    {
         return mXferFile;
+    }
+
+    /**
+     * Adds the given <tt>ScFileTransferListener</tt> that would listen for file transfer requests
+     * created file transfers.
+     *
+     * @param listener the <tt>ScFileTransferListener</tt> to add
+     */
+    public void addUploadListener(UploadProgressListener listener)
+    {
+        synchronized (uploadProgressListeners) {
+            if (!uploadProgressListeners.contains(listener)) {
+                this.uploadProgressListeners.add(listener);
+            }
+        }
+    }
+
+    /**
+     * Removes the given <tt>ScFileTransferListener</tt> that listens for file transfer requests and
+     * created file transfers.
+     *
+     * @param listener the <tt>ScFileTransferListener</tt> to remove
+     */
+    public void removeUploadListener(UploadProgressListener listener)
+    {
+        synchronized (uploadProgressListeners) {
+            this.uploadProgressListeners.remove(listener);
+        }
+    }
+
+    /**
+     * Callback for displaying upload progress.
+     *
+     * @param uploadedBytes the number of bytes uploaded at the moment
+     * @param totalBytes the total number of bytes to be uploaded
+     */
+    // @Override
+    public void onUploadStatus(long uploadedBytes, long totalBytes)
+    {
+        Iterator<UploadProgressListener> listeners;
+        synchronized (uploadProgressListeners) {
+            listeners = new ArrayList<>(uploadProgressListeners).iterator();
+        }
+
+        while (listeners.hasNext()) {
+            UploadProgressListener listener = listeners.next();
+            listener.onUploadProgress(uploadedBytes, totalBytes);
+        }
     }
 }

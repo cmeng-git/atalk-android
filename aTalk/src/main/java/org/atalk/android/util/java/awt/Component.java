@@ -47,7 +47,7 @@ public class Component implements Serializable
 	
     /**
      * The foreground color for this component.
-     * <code>foreground</code> can be <code>null</code>.
+     * {@code foreground</code> can be <code>null}.
      *
      * @serial
      * @see #getForeground
@@ -57,7 +57,7 @@ public class Component implements Serializable
 	
     /**
      * The background color for this component.
-     * <code>background</code> can be <code>null</code>.
+     * {@code background</code> can be <code>null}.
      *
      * @serial
      * @see #getBackground
@@ -67,7 +67,7 @@ public class Component implements Serializable
 
     /**
      * The font used by this component.
-     * The <code>font</code> can be <code>null</code>.
+     * The {@code font</code> can be <code>null}.
      *
      * @serial
      * @see #getFont
@@ -77,13 +77,13 @@ public class Component implements Serializable
 
     /**
      * The font which the peer is currently using.
-     * (<code>null</code> if no peer exists.)
+     * ({@code null} if no peer exists.)
      */
     Font        peerFont;
 
     /**
      * The cursor displayed when pointer is over this component.
-     * This value can be <code>null</code>.
+     * This value can be {@code null}.
      *
      * @serial
      * @see #getCursor
@@ -109,7 +109,7 @@ public class Component implements Serializable
 
     /**
      * A component's name.
-     * This field can be <code>null</code>.
+     * This field can be {@code null}.
      *
      * @serial
      * @see #getName
@@ -119,7 +119,7 @@ public class Component implements Serializable
 
     /**
      * A bool to determine whether the name has
-     * been set explicitly. <code>nameExplicitlySet</code> will
+     * been set explicitly. {@code nameExplicitlySet} will
      * be false if the name has not been set and
      * true if it has.
      *
@@ -226,7 +226,7 @@ public class Component implements Serializable
     boolean maxSizeSet;
 
     /**
-     * <code>newEventsOnly</code> will be true if the event is
+     * {@code newEventsOnly} will be true if the event is
      * one of the event types enabled for the component.
      * It will then allow for normal processing to
      * continue.  If it is false the event is passed
@@ -270,15 +270,15 @@ public class Component implements Serializable
     static int incRate;
 
     /**
-     * Ease-of-use constant for <code>getAlignmentY()</code>.
+     * Ease-of-use constant for {@code getAlignmentY()}.
      * Specifies an alignment to the top of the component.
      * @see     #getAlignmentY
      */
     public static final float TOP_ALIGNMENT = 0.0f;
 
     /**
-     * Ease-of-use constant for <code>getAlignmentY</code> and
-     * <code>getAlignmentX</code>. Specifies an alignment to
+     * Ease-of-use constant for {@code getAlignmentY} and
+     * {@code getAlignmentX}. Specifies an alignment to
      * the center of the component
      * @see     #getAlignmentX
      * @see     #getAlignmentY
@@ -286,21 +286,21 @@ public class Component implements Serializable
     public static final float CENTER_ALIGNMENT = 0.5f;
 
     /**
-     * Ease-of-use constant for <code>getAlignmentY</code>.
+     * Ease-of-use constant for {@code getAlignmentY}.
      * Specifies an alignment to the bottom of the component.
      * @see     #getAlignmentY
      */
     public static final float BOTTOM_ALIGNMENT = 1.0f;
 
     /**
-     * Ease-of-use constant for <code>getAlignmentX</code>.
+     * Ease-of-use constant for {@code getAlignmentX}.
      * Specifies an alignment to the left side of the component.
      * @see     #getAlignmentX
      */
     public static final float LEFT_ALIGNMENT = 0.0f;
 
     /**
-     * Ease-of-use constant for <code>getAlignmentX</code>.
+     * Ease-of-use constant for {@code getAlignmentX}.
      * Specifies an alignment to the right side of the component.
      * @see     #getAlignmentX
      */
@@ -312,8 +312,8 @@ public class Component implements Serializable
     private static final long serialVersionUID = -7644114512714619750L;
 
     /**
-     * If any <code>PropertyChangeListeners</code> have been registered,
-     * the <code>changeSupport</code> field describes them.
+     * If any {@code PropertyChangeListeners} have been registered,
+     * the {@code changeSupport} field describes them.
      *
      * @serial
      * @since 1.2

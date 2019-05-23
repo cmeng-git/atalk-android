@@ -303,11 +303,11 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     }
 
     /**
-     * Returns <code>true</code> if this contact is persistent, otherwise returns
-     * <code>false</code>.
+     * Returns {@code true} if this contact is persistent, otherwise returns
+     * {@code false}.
      *
-     * @return <code>true</code> if this contact is persistent, otherwise returns
-     * <code>false</code>.
+     * @return {@code true} if this contact is persistent, otherwise returns
+     * {@code false}.
      */
     @Override
     public boolean isDescriptorPersistent()

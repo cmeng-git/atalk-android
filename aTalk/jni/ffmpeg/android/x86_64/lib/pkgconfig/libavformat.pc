@@ -1,7 +1,7 @@
-prefix=../android/armeabi-v7a
+prefix=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a
 exec_prefix=${prefix}
-libdir=../android/armeabi-v7a/lib
-includedir=../android/armeabi-v7a/include
+libdir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/lib
+includedir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/include
 
 Name: libavformat
 Description: FFmpeg container format library
@@ -9,6 +9,6 @@ Version: 57.83.100
 Requires: libavcodec >= 57.107.100, libavutil >= 55.78.100
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavformat -lx264 -lm -lz -pthread -pthread -lgcc
+Libs: -L${libdir}  -lavformat -L/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/lib -lx264 -lm -lm -lz -pthread -pthread -lgcc -lstdc++
 Libs.private: 
 Cflags: -I${includedir}

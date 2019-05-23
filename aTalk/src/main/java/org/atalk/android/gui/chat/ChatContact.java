@@ -32,7 +32,7 @@ public abstract class ChatContact<T>
 
 	/**
 	 * The avatar image corresponding to the source contact in the form of an
-	 * <code>ImageIcon</code>.
+	 * {@code ImageIcon}.
 	 */
 	private Drawable avatar;
 
@@ -161,11 +161,11 @@ public abstract class ChatContact<T>
 	}
 
 	/**
-	 * Returns <code>true</code> if this is the currently selected contact in the list of contacts
-	 * for the chat, otherwise returns <code>false</code>.
+	 * Returns {@code true} if this is the currently selected contact in the list of contacts
+	 * for the chat, otherwise returns {@code false}.
 	 *
-	 * @return <code>true</code> if this is the currently selected contact in the list of contacts
-	 * for the chat, otherwise returns <code>false</code>.
+	 * @return {@code true} if this is the currently selected contact in the list of contacts
+	 * for the chat, otherwise returns {@code false}.
 	 */
 	public boolean isSelected()
 	{
@@ -176,8 +176,8 @@ public abstract class ChatContact<T>
 	 * Sets this isSelected property of this chat contact.
 	 *
 	 * @param selected
-	 * 		<code>true</code> to indicate that this contact would be the selected contact in the
-	 * 		list of chat window contacts; otherwise, <code>false</code>
+	 * 		{@code true} to indicate that this contact would be the selected contact in the
+	 * 		list of chat window contacts; otherwise, {@code false}
 	 */
 	public void setSelected(boolean selected)
 	{

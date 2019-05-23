@@ -55,7 +55,7 @@ public class AndroidUIServiceImpl implements UIService
      * Returns TRUE if the application is visible and FALSE otherwise. This method is meant to be
      * used by the systray service in order to detect the visibility of the application.
      *
-     * @return <code>true</code> if the application is visible and <code>false</code> otherwise.
+     * @return {@code true</code> if the application is visible and <code>false} otherwise.
      * @see #setVisible(boolean)
      */
     @Override
@@ -66,10 +66,10 @@ public class AndroidUIServiceImpl implements UIService
 
     /**
      * Shows or hides the main application window depending on the value of parameter
-     * <code>visible</code>. Meant to be used by the systray when it needs to show or hide the
+     * {@code visible}. Meant to be used by the systray when it needs to show or hide the
      * application.
      *
-     * @param visible if <code>true</code>, shows the main application window; otherwise, hides the main
+     * @param visible if {@code true}, shows the main application window; otherwise, hides the main
      * application window.
      * @see #isVisible()
      */
@@ -251,7 +251,7 @@ public class AndroidUIServiceImpl implements UIService
      * error message, information message, etc. or to prompt user for simple one field input or
      * to question the user.
      *
-     * @return a <code>PopupDialog</code>.
+     * @return a {@code PopupDialog}.
      * @see net.java.sip.communicator.service.gui.PopupDialog
      */
     @Override
@@ -401,9 +401,9 @@ public class AndroidUIServiceImpl implements UIService
      * implementation.
      *
      * @param windowID one of the <tt>WindowID</tt>-s, defined in the <tt>ExportedWindow</tt> interface.
-     * @return <code>true</code> if the component with the given <tt>WindowID</tt> is contained in
+     * @return {@code true} if the component with the given <tt>WindowID</tt> is contained in
      * the current UI implementation,
-     * <code>false</code> otherwise.
+     * {@code false} otherwise.
      */
     @Override
     public boolean isExportedWindowSupported(WindowID windowID)
@@ -435,9 +435,9 @@ public class AndroidUIServiceImpl implements UIService
      * implementation.
      *
      * @param containderID One of the CONTAINER_XXX Container-s.
-     * @return <code>true</code> if the container with the given <tt>Container</tt> is supported
+     * @return {@code true} if the container with the given <tt>Container</tt> is supported
      * from the current UI implementation,
-     * <code>false</code> otherwise.
+     * {@code false} otherwise.
      */
     @Override
     public boolean isContainerSupported(Container containderID)

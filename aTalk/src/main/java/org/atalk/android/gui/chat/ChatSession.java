@@ -100,8 +100,7 @@ public abstract class ChatSession
     protected final List<ChatTransport> chatTransports = new LinkedList<>();
 
     /**
-     * The list of all <tt>ChatSessionChangeListener</tt> registered to listen for transport
-     * modifications.
+     * The list of all <tt>ChatSessionChangeListener</tt> registered to listen for transport modifications.
      */
     private final List<ChatSessionChangeListener> chatTransportChangeListeners = new ArrayList<>();
 
@@ -144,11 +143,9 @@ public abstract class ChatSession
     }
 
     /**
-     * Returns <code>true</code> if this chat session descriptor is persistent, otherwise returns
-     * <code>false</code>.
+     * Returns {@code true} if this chat session descriptor is persistent, otherwise returns {@code false}.
      *
-     * @return <code>true</code> if this chat session descriptor is persistent, otherwise returns
-     * <code>false</code>.
+     * @return {@code true} if this chat session descriptor is persistent, otherwise returns {@code false}.
      */
     public abstract boolean isDescriptorPersistent();
 
@@ -181,12 +178,10 @@ public abstract class ChatSession
     public abstract ChatTransport getCurrentChatTransport();
 
     /**
-     * Returns a list of all <tt>ChatTransport</tt>s contained in this session supporting the
-     * given <tt>opSetClass</tt>.
+     * Returns a list of all <tt>ChatTransport</tt>s contained in this session supporting the given <tt>opSetClass</tt>.
      *
      * @param opSetClass the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ChatTransport</tt>s contained in this session supporting the
-     * given <tt>opSetClass</tt>
+     * @return a list of all <tt>ChatTransport</tt>s contained in this session supporting the given <tt>opSetClass</tt>
      */
     public List<ChatTransport> getTransportsForOperationSet(
             Class<? extends OperationSet> opSetClass)
@@ -201,8 +196,7 @@ public abstract class ChatSession
     }
 
     /**
-     * Returns the <tt>ChatPanel</tt> that provides the connection between this chat session and
-     * its UI.
+     * Returns the <tt>ChatPanel</tt> that provides the connection between this chat session and its UI.
      *
      * @return The <tt>ChatSessionRenderer</tt>.
      */
@@ -233,8 +227,7 @@ public abstract class ChatSession
     public abstract Collection<Object> getHistory(int count);
 
     /**
-     * Returns a collection of the last N number of history messages given by count before the
-     * given date.
+     * Returns a collection of the last N number of history messages given by count before the given date.
      *
      * @param date The date up to which we're looking for messages.
      * @param count The number of messages from history to return.
@@ -243,8 +236,7 @@ public abstract class ChatSession
     public abstract Collection<Object> getHistoryBeforeDate(Date date, int count);
 
     /**
-     * Returns a collection of the last N number of history messages given by count after the
-     * given date.
+     * Returns a collection of the last N number of history messages given by count after the given date.
      *
      * @param date The date from which we're looking for messages.
      * @param count The number of messages from history to return.
@@ -322,11 +314,11 @@ public abstract class ChatSession
 
     /**
      * Gets the indicator which determines whether a contact list of (multiple) participants is
-     * supported by this <code>ChatSession</code>. For example, UI implementations may use the
+     * supported by this {@code ChatSession}. For example, UI implementations may use the
      * indicator to determine whether UI elements should be created for the user to represent the
-     * contact list of the participants in this <code>ChatSession</code>.
+     * contact list of the participants in this {@code ChatSession}.
      *
-     * @return <tt>true</tt> if this <code>ChatSession</code> supports a contact list of
+     * @return <tt>true</tt> if this {@code ChatSession} supports a contact list of
      * (multiple) participants; otherwise, <tt>false</tt>
      */
     public abstract boolean isContactListSupported();

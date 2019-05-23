@@ -9,14 +9,14 @@ The ffmpeg-v3.4.6 and libx264-v157 source:<br/>
      contains source for the x264-157 library build; 
 
 ### ffmpeg build instruction:
-* Execute script below to fetch libraries sources for both ffmpeg and x264<br/>
+* Optional - execute script below to fetch libraries sources for both ffmpeg and x264<br/>
   ./init_update_libs.sh<br/>
 * Run ffmpeg-atalk_build.sh to build all ABIS architectures as defined in _settings.sh \<ABIS> OR<br/>
   e.g. ffmpeg-atalk_build.sh arm64-v8a for a specific 'arm64-v8a' architecture built
 * All the final built libs *.a, *.so and include files are in the ./android/\<ABI>
 * Copy all the ./android/\<ABI> static lib and include files to aTalk jni/ffmpeg/\<ABI>
 * Note:<br/>
- a. Before build, ffmpeg-atalk_build.sh applies the required patches to the libraries sources<br/>
+ a. Before build, ffmpeg-atalk_build.sh fetches source if not found and applies the required patches to the libraries sources<br/>
  b. aTalk current android_a.mk script for ffmpeg-x264 support uses only static .a libraries<br/>
  c. You may edit _settings.sh ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64") that you wish to omit OR<br/>
  set STANDALONE_TOOLCHAINS to 0:SDK toolchains OR 1:standalone toolchains<br/>

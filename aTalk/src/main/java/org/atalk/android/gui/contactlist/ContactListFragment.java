@@ -505,7 +505,7 @@ public class ContactListFragment extends OSGiFragment
     }
 
     /**
-     * cmeng: when metaContact is owned by two different accounts, the first launched chatSession
+     * cmeng: when metaContact is owned by two different user accounts, the first launched chatSession
      * will take predominant over subsequent metaContact chat session launches by another account
      */
     @Override
@@ -531,7 +531,7 @@ public class ContactListFragment extends OSGiFragment
 
         // Default to telephony access if contact is not a valid entityJid
         if (metaContact.getDefaultContact().getJid() instanceof DomainJid) {
-            String domainJid = metaContact.getDefaultContact().getJid().toString();
+            String domainJid = metaContact.getDefaultContact().getAddress();
             TelephonyFragment extPhone = TelephonyFragment.newInstance(domainJid);
             getActivity().getSupportFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
             return true;

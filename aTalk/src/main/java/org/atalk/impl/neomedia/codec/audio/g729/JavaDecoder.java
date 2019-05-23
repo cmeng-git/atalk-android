@@ -42,7 +42,7 @@ public class JavaDecoder extends AbstractCodec2
 	private short[] sp16;
 
 	/**
-	 * Initializes a new <code>JavaDecoder</code> instance.
+	 * Initializes a new {@code JavaDecoder} instance.
 	 */
 	public JavaDecoder()
 	{

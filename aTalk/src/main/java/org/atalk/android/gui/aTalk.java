@@ -175,6 +175,22 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         }
     }
 
+    /*
+     * If the user is currently looking at the first page, allow the system to handle the
+     * Back button. This calls finish() on this activity and pops the back stack.
+     */
+    @Override
+    public void onBackPressed()
+    {
+        if (mPager.getCurrentItem() == 0) {
+            super.onBackPressed();
+        }
+        else {
+            // Otherwise, select the previous page.
+            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+        }
+    }
+
     /**
      * Called when an activity is destroyed.
      */
@@ -194,21 +210,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
                         throw (ThreadDeath) t;
                 }
             }
-        }
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        super.onBackPressed();
-        if (mPager.getCurrentItem() == 0) {
-            // If the user is currently looking at the first page, allow the system to handle the
-            // Back button. This calls finish() on this activity and pops the back stack.
-            super.onBackPressed();
-        }
-        else {
-            // Otherwise, select the previous page.
-            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
     }
 

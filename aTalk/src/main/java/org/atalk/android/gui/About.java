@@ -88,6 +88,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"XEP-0054: vcard-temp", "https://xmpp.org/extensions/xep-0054.html"},
             new String[]{"XEP-0060:	Publish-Subscribe", "https://xmpp.org/extensions/xep-0060.html"},
             new String[]{"XEP-0065: SOCKS5 Bytestreams", "https://xmpp.org/extensions/xep-0065.html"},
+            new String[]{"XEP-0071:	XHTML-IM", "https://xmpp.org/extensions/xep-0071.html"},
             new String[]{"XEP-0077:	In-Band Registration", "https://xmpp.org/extensions/xep-0077.html"},
             new String[]{"XEP-0084: User Avatar", "https://xmpp.org/extensions/xep-0084.html"},
             new String[]{"XEP-0085: Chat State Notifications", "https://xmpp.org/extensions/xep-0085.html"},
@@ -127,6 +128,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"XEP-0352: Client State Indication", "https://xmpp.org/extensions/xep-052.html"},
             new String[]{"XEP-0364: Off-the-Record Messaging (V2/3)", "https://xmpp.org/extensions/xep-0364.html"},
             new String[]{"XEP-0384: OMEMO Encryption", "https://xmpp.org/extensions/xep-0384.html"},
+            new String[]{"XEP-xxxx: OMEMO Media sharing", "https://xmpp.org/extensions/inbox/omemo-media-sharing.html"},
     };
 
     /**

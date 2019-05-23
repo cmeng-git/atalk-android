@@ -5,7 +5,7 @@ includedir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/x86_64/include/x264
 
 Name: x264
 Description: H.264 (MPEG4 AVC) encoder library
-Version: 0.157.2945M 72db437
+Version: 0.157.x
 Libs: -L${exec_prefix}/lib -lx264 -lm
 Libs.private: 
 Cflags: -I/home/cmeng/workspace/ndk/ffmpeg-x264/android/x86_64/include/x264

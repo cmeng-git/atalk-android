@@ -73,7 +73,7 @@ public class LoginSynchronizationPoint<E extends Exception>
      * Send the given top level stream element and wait for a response.
      *
      * @param request the plain stream element to send.
-     * @return <code>null</code> if synchronization point was successful, or the failure Exception.
+     * @return {@code null} if synchronization point was successful, or the failure Exception.
      * @throws NoResponseException if no response was received.
      * @throws NotConnectedException if the connection is not connected.
      */
@@ -147,7 +147,7 @@ public class LoginSynchronizationPoint<E extends Exception>
     /**
      * Check if this synchronization point is successful or wait the connections reply timeout.
      *
-     * @return <code>null</code> if synchronization point was successful, or the failure Exception.
+     * @return {@code null} if synchronization point was successful, or the failure Exception.
      * @throws NoResponseException if there was no response marking the synchronization point as
      * success or failed.
      * @throws InterruptedException
@@ -266,7 +266,7 @@ public class LoginSynchronizationPoint<E extends Exception>
      * The exception is thrown, if state is one of 'Initial', 'NoResponse' or 'RequestSent'
      * </p>
      *
-     * @return <code>true</code> if synchronization point was successful, <code>false</code> on
+     * @return {@code true</code> if synchronization point was successful, <code>false} on
      * failure.
      * @throws NoResponseException
      */

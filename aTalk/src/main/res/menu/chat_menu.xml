@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/muc_invite"
-        android:icon="@drawable/ic_add_to_chat_dark"
-        android:showAsAction="ifRoom"
-        android:title="@string/service_gui_INVITE">
-    </item>
-    <item
         android:id="@+id/send_file"
         android:icon="@drawable/ic_attachment_dark"
         android:showAsAction="ifRoom"
         android:title="@string/service_gui_FILE_SEND_TO">
+    </item>
+    <item
+        android:id="@+id/muc_invite"
+        android:icon="@drawable/ic_add_to_chat_dark"
+        android:showAsAction="ifRoom"
+        android:title="@string/service_gui_INVITE">
     </item>
     <item
         android:id="@+id/send_location"

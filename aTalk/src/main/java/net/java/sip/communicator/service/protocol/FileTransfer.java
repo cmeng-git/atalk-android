@@ -30,7 +30,7 @@ public interface FileTransfer
     public static final int OUT = 2;
 
     /**
-     * Uniquie ID that is identifying the FileTransfer if the request has been accepted.
+     * Unique ID that is identifying the FileTransfer if the request has been accepted.
      *
      * @return the id.
      */
@@ -56,7 +56,7 @@ public interface FileTransfer
     public File getLocalFile();
 
     /**
-     * Returns the contact that we are transfering files with.
+     * Returns the contact that we are transferring files with.
      *
      * @return the contact.
      */
@@ -73,9 +73,9 @@ public interface FileTransfer
     public int getStatus();
 
     /**
-     * Returns the number of bytes already transfered through this file transfer.
+     * Returns the number of bytes already transferred through this file transfer.
      *
-     * @return the number of bytes already transfered through this file transfer
+     * @return the number of bytes already transferred through this file transfer
      */
     public long getTransferredBytes();
 

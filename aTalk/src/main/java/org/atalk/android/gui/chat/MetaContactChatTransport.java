@@ -17,6 +17,7 @@ import net.java.sip.communicator.util.FileUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.chatstates.ChatState;
@@ -147,7 +148,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
 
             if (imOpSet != null)
-                imOpSet.isContentTypeSupported(ChatMessage.ENCODE_HTML, contact);
+                imOpSet.isContentTypeSupported(Message.ENCODE_HTML, contact);
         }
     }
 
@@ -332,10 +333,9 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * (html or plain text).
      *
      * @param message The message to send.
-     * @param encryptionType The encryption type of the message to send: @see ChatMessage Encryption Type
-     * @param mimeType The mime type of the message to send: 1=text/html or 0=text/plain.
+     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
      */
-    public void sendInstantMessage(String message, int encryptionType, int mimeType)
+    public void sendInstantMessage(String message, int encType)
     {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
@@ -344,12 +344,12 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         }
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-        int encType = encryptionType |
-                (imOpSet.isContentTypeSupported(ChatMessage.ENCODE_HTML) ? mimeType : ChatMessage.ENCODE_PLAIN);
+        if (!imOpSet.isContentTypeSupported(Message.ENCODE_HTML))
+                encType = encType & Message.FLAG_MODE_MASK;
         Message msg = imOpSet.createMessage(message, encType, "");
 
         ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
-        if (ChatMessage.ENCRYPTION_OMEMO == encryptionType) {
+        if (Message.ENCRYPTION_OMEMO == (encType & Message.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             imOpSet.sendInstantMessage(contact, toResource, msg, null, omemoManager);
         }
@@ -363,23 +363,22 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * type (html or plain text) and the id of the message to replace.
      *
      * @param message The message to send.
-     * @param encryptionType The encryptionType of the message to send: @see ChatMessage Encryption Type
-     * @param mimeType The encode Mode of the message to send: 1=text/html or 0=text/plain.
+     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
      * @param correctedMessageUID The ID of the message being corrected by this message.
      */
-    public void sendInstantMessage(String message, int encryptionType, int mimeType, String correctedMessageUID)
+    public void sendInstantMessage(String message, int encType, String correctedMessageUID)
     {
         if (!allowsMessageCorrections()) {
             return;
         }
 
         OperationSetMessageCorrection mcOpSet = mPPS.getOperationSet(OperationSetMessageCorrection.class);
-        int encType = encryptionType |
-                (mcOpSet.isContentTypeSupported(ChatMessage.ENCODE_HTML) ? mimeType : ChatMessage.ENCODE_PLAIN);
+        if (!mcOpSet.isContentTypeSupported(Message.ENCODE_HTML))
+            encType = encType & Message.FLAG_MODE_MASK;
         Message msg = mcOpSet.createMessage(message, encType, "");
 
         ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
-        if (ChatMessage.ENCRYPTION_OMEMO == encryptionType) {
+        if (Message.ENCRYPTION_OMEMO == (encType & Message.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             mcOpSet.sendInstantMessage(contact, toResource, msg, correctedMessageUID, omemoManager);
         }
@@ -397,7 +396,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     public boolean isContentTypeSupported(int mimeType)
     {
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-
         return (imOpSet != null) && imOpSet.isContentTypeSupported(mimeType);
     }
 
@@ -476,73 +474,33 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Sending files through a chat room is not yet supported by this chat transport implementation.
-     */
-    public URL httpUploadFile(File file)
-            throws Exception
-    {
-        // check to see if server support httpFileUpload if contact is off line
-        if (httpFileUploadManager.isUploadServiceDiscovered()) {
-            try {
-                return httpFileUploadManager.uploadFile(file, null);
-            } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
-                throw new OperationNotSupportedException(e.getMessage());
-            }
-        }
-        else
-            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
-    }
-
-    /**
-     * Sends the given file through this chat transport file transfer operation set.
+     * Sends the given sticker through this chat transport file transfer operation set.
      *
      * @param file the file to send
      * @return the <tt>FileTransfer</tt> object charged to transfer the file
      * @throws Exception if anything goes wrong
      */
-    public Object sendFile(File file)
+    public Object sendSticker(File file, int chatType, FileTransferConversation xferCon)
             throws Exception
     {
-        return sendFile(file, false);
-    }
-
-    /**
-     * Sends the given file through this chat transport file transfer operation set.
-     *
-     * @param file the file to send
-     * @return the <tt>FileTransfer</tt> object charged to transfer the file
-     * @throws Exception if anything goes wrong
-     */
-    private Object sendFile(File file, boolean isMultimediaMessage)
-            throws Exception
-    {
-        // If this chat transport does not support file transfer we do nothing and just return. HttpFileUpload?
+        // If this chat transport does not support file transfer we do nothing and just return.
         if (!allowsFileTransfer())
             return null;
 
-        // Create a thumbNailed file if possible.
-        if (FileUtils.isImage(file.getName())) {
-            OperationSetThumbnailedFileFactory tfOpSet = mPPS.getOperationSet(OperationSetThumbnailedFileFactory.class);
-            if (tfOpSet != null) {
-                byte[] thumbnail = getFileThumbnail(file);
-                if (thumbnail != null && thumbnail.length > 0) {
-                    file = tfOpSet.createFileWithThumbnail(file, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT,
-                            "image/png", thumbnail);
-                }
+        if (getStatus().isOnline()) {
+            // Use http file upload for OMEMO media file sharing
+            // Retry with http file upload if legacy file transfer protocols is not supported by buddy
+            try {
+                if (ChatFragment.MSGTYPE_OMEMO == chatType)
+                    return httpFileUpload(file, chatType, xferCon);
+                else
+                    return ftOpSet.sendFile(contact, file);
+            } catch (OperationNotSupportedException ex) {
+                return httpFileUpload(file, chatType, xferCon);
             }
         }
-        if (isMultimediaMessage) {
-            OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
-            if (smsOpSet == null)
-                return null;
-            return smsOpSet.sendMultimediaFile(contact, file);
-        }
-        else {
-            if (getStatus().isOnline())
-                return ftOpSet.sendFile(contact, file);
-            else
-                return httpUploadFile(file);
-        }
+        else
+            return httpFileUpload(file, chatType, xferCon);
     }
 
     /**
@@ -555,27 +513,99 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     public Object sendMultimediaFile(File file)
             throws Exception
     {
-        return sendFile(file, true);
+        return sendFile(file, true, ChatFragment.MSGTYPE_NORMAL, null);
     }
 
     /**
-     * Sends the given sticker through this chat transport file transfer operation set.
+     * Sends the given file through this chat transport file transfer operation set.
      *
      * @param file the file to send
      * @return the <tt>FileTransfer</tt> object charged to transfer the file
      * @throws Exception if anything goes wrong
      */
-    public Object sendSticker(File file)
+    public Object sendFile(File file, int chatType, FileTransferConversation xferCon)
             throws Exception
     {
-        // If this chat transport does not support file transfer we do nothing and just return.
+        return sendFile(file, false, chatType, xferCon);
+    }
+
+    /**
+     * Sends the given file through this chat transport file transfer operation set.
+     *
+     * @param file the file to send
+     * @return the <tt>FileTransfer</tt> object charged to transfer the file
+     * @throws Exception if anything goes wrong
+     */
+    private Object sendFile(File file, boolean isMultimediaMessage, int chatType, FileTransferConversation xferCon)
+            throws Exception
+    {
+        // If this chat transport does not support file transfer we do nothing and just return. HttpFileUpload?
         if (!allowsFileTransfer())
             return null;
 
-        if (getStatus().isOnline())
-            return ftOpSet.sendFile(contact, file);
+        // Create a thumbNailed file if possible. Skip if OMEMO message
+        if (FileUtils.isImage(file.getName()) && (ChatFragment.MSGTYPE_OMEMO != chatType)) {
+            OperationSetThumbnailedFileFactory tfOpSet = mPPS.getOperationSet(OperationSetThumbnailedFileFactory.class);
+            if (tfOpSet != null) {
+                byte[] thumbnail = getFileThumbnail(file);
+                if (thumbnail != null && thumbnail.length > 0) {
+                    file = tfOpSet.createFileWithThumbnail(file, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT,
+                            "image/png", thumbnail);
+                }
+            }
+        }
+
+        if (isMultimediaMessage) {
+            OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
+            if (smsOpSet == null)
+                return null;
+            return smsOpSet.sendMultimediaFile(contact, file);
+        }
+        else {
+            if (getStatus().isOnline()) {
+                // Use http file upload for OMEMO media file sharing
+                // Retry with http file upload if legacy file transfer protocols is not supported by buddy
+                try {
+                    if (ChatFragment.MSGTYPE_OMEMO == chatType)
+                        return httpFileUpload(file, chatType, xferCon);
+                    else
+                        return ftOpSet.sendFile(contact, file);
+                } catch (OperationNotSupportedException ex) {
+                    // Fallback to use Http file upload if client does not support legacy SOCKS5 and IBS
+                    return httpFileUpload(file, chatType, xferCon);
+                }
+            }
+            else
+                return httpFileUpload(file, chatType, xferCon);
+        }
+    }
+
+    /**
+     * Http file upload if supported by the server
+     */
+    private Object httpFileUpload(File file, int chatType, FileTransferConversation xferCon)
+            throws Exception
+    {
+        // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed
+        if (httpFileUploadManager.isUploadServiceDiscovered()) {
+            int encType = Message.ENCRYPTION_NONE;
+            Object url;
+            try {
+                if (ChatFragment.MSGTYPE_OMEMO == chatType) {
+                    encType = Message.ENCRYPTION_OMEMO;
+                    url = httpFileUploadManager.uploadFileEncrypted(file, xferCon);
+                }
+                else {
+                    url = httpFileUploadManager.uploadFile(file, xferCon);
+                }
+                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, contact, encType);
+                return url;
+            } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
+                throw new OperationNotSupportedException(e.getMessage());
+            }
+        }
         else
-            return httpUploadFile(file);
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
     }
 
     /**

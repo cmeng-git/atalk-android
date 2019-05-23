@@ -354,7 +354,8 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
                 listenWrapper.setIx(i);
                 mhs.addSearchProgressListener(listenWrapper);
 
-                if (descriptor instanceof MetaContact) {  // will also get fileHistory
+                // will also get fileHistory for metaContact and chatRoom
+                if (descriptor instanceof MetaContact) {
                     result.addAll(mhs.findLast((MetaContact) descriptor, count));
                 }
                 else if (descriptor instanceof ChatRoomWrapper) {

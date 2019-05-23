@@ -18,7 +18,7 @@ public interface UserCapsNodeListener
 {
     /**
      * Notifies this listener that an <tt>EntityCapsManager</tt>'s caps node record for a specific
-     * user may have changed. The listener will take the appropriate actions that deem necessary
+     * user may have changed. The listener will take the appropriate actions that deems necessary
      *
      * @param userJid the user FullJid
      * @param online indicates if the user for which we're notified is online

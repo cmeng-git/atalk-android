@@ -17,8 +17,10 @@ import org.atalk.android.gui.chat.ChatMessage;
 public abstract class AbstractMessage implements Message
 {
     private String mContent;
-    private final int mMimeType;
+    private final int mEncType;
     private final int mEncryption;
+    private final int mMimeType;
+    private final boolean mRemoteOnly;
     private final String mMessageUID;
 
     /**
@@ -35,8 +37,10 @@ public abstract class AbstractMessage implements Message
      */
     protected AbstractMessage(String content, int encType, String subject)
     {
-        mMimeType = encType & ChatMessage.MIME_MASK;
-        mEncryption = encType & ChatMessage.ENCRYPTION_MASK;
+        mEncType = encType;
+        mEncryption = encType & ENCRYPTION_MASK;
+        mMimeType = encType & ENCODE_MIME_MASK;
+        mRemoteOnly = (encType & FLAG_MODE_MASK) != 0;
         mSubject = subject;
 
         setContent(content);
@@ -51,8 +55,10 @@ public abstract class AbstractMessage implements Message
      */
     protected AbstractMessage(String content, int encType, String subject, String messageUID)
     {
-        mMimeType = encType & ChatMessage.MIME_MASK;
-        mEncryption = encType & ChatMessage.ENCRYPTION_MASK;
+        mEncType = encType;
+        mMimeType = encType & ENCODE_MIME_MASK;
+        mEncryption = encType & ENCRYPTION_MASK;
+        mRemoteOnly = (encType & FLAG_MODE_MASK) != 0;
         mSubject = subject;
 
         setContent(content);
@@ -61,7 +67,7 @@ public abstract class AbstractMessage implements Message
 
     protected String createMessageUID()
     {
-        return String.valueOf(System.currentTimeMillis()) + String.valueOf(hashCode());
+        return System.currentTimeMillis() + String.valueOf(hashCode());
     }
 
     /*
@@ -90,9 +96,7 @@ public abstract class AbstractMessage implements Message
     }
 
     /*
-     * (non-Javadoc)
-     *
-     * @see net.java.sip.communicator.service.protocol.Message#getMimeType()
+     * @return the Encryption Type for the message
      */
     public int getEncryptionType()
     {
@@ -100,13 +104,16 @@ public abstract class AbstractMessage implements Message
     }
 
     /**
-     * @return the encType of both Mime and Encryption combined
+     * @return the encType info
      */
     public int getEncType()
     {
-        return mEncryption | mMimeType;
+        return mEncType;
     }
 
+    public boolean isRemoteOnly() {
+        return mRemoteOnly;
+    }
     /*
      * (non-Javadoc)
      *

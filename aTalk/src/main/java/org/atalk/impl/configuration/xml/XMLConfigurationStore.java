@@ -18,7 +18,7 @@ import javax.xml.parsers.*;
 import timber.log.Timber;
 
 /**
- * Implements a <code>ConfigurationStore</code> which serializes property name-value associations
+ * Implements a {@code ConfigurationStore} which serializes property name-value associations
  * in XML format.
  *
  * @author Emil Ivov
@@ -100,7 +100,7 @@ public class XMLConfigurationStore implements ConfigurationStore
 
     /**
      * Implements {@link ConfigurationStore#getProperty(String)}. Gets the value in this
-     * <code>ConfigurationStore</code> of a property with a specific name.
+     * {@code ConfigurationStore} of a property with a specific name.
      *
      * @param propertyName the name of the property to get the value of
      * @return the value in this <tt>ConfigurationStore</tt> of the property with the specified

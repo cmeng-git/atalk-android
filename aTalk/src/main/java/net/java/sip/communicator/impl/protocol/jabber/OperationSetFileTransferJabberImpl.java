@@ -432,14 +432,14 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         public void run()
         {
             int status;
-            long progress;
             String statusReason = "";
 
             while (true) {
                 try {
                     Thread.sleep(10);
 
-                    progress = fileTransfer.getTransferredBytes();
+                    // cmeng - do not use pre-fetched value, instead use actual at time of fireProgressChangeEvent
+                    // progress = fileTransfer.getTransferredBytes();
                     status = parseJabberStatus(jabberTransfer.getStatus());
                     if (status == FileTransferStatusChangeEvent.COMPLETED
                             || status == FileTransferStatusChangeEvent.FAILED
@@ -457,13 +457,13 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                                 && fileTransfer.getStatus() == FileTransferStatusChangeEvent.PREPARING) {
                             fileTransfer.fireStatusChangeEvent(
                                     FileTransferStatusChangeEvent.IN_PROGRESS, "Status changed");
-                            fileTransfer.fireProgressChangeEvent(System.currentTimeMillis(), progress);
+                            fileTransfer.fireProgressChangeEvent(System.currentTimeMillis(), fileTransfer.getTransferredBytes());
                         }
                         break;
                     }
 
                     fileTransfer.fireStatusChangeEvent(status, "Status changed");
-                    fileTransfer.fireProgressChangeEvent(System.currentTimeMillis(), progress);
+                    fileTransfer.fireProgressChangeEvent(System.currentTimeMillis(), fileTransfer.getTransferredBytes());
                 } catch (InterruptedException e) {
                     Timber.d(e, "Unable to sleep thread.");
                 }
@@ -496,7 +496,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                 status = FileTransferStatusChangeEvent.CANCELED;
             }
             fileTransfer.fireStatusChangeEvent(status, statusReason);
-            fileTransfer.fireProgressChangeEvent(System.currentTimeMillis(), progress);
+            fileTransfer.fireProgressChangeEvent(System.currentTimeMillis(), fileTransfer.getTransferredBytes());
         }
     }
 

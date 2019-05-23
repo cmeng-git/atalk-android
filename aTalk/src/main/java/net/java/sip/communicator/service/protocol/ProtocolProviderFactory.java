@@ -929,9 +929,8 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Unloads the account corresponding to the given <tt>accountID</tt>. Unregisters the
-     * corresponding protocol provider, but keeps the account in contrast to the uninstallAccount
-     * method.
+     * Unloads the account corresponding to the given <tt>accountID</tt>. Unregisters the corresponding
+     * protocol provider, but keeps the account in contrast to the uninstallAccount method.
      *
      * @param accountID the account identifier
      * @return true if an account with the specified ID existed and was unloaded and false
@@ -941,14 +940,11 @@ public abstract class ProtocolProviderFactory
     {
         // Unregister the protocol provider.
         ServiceReference<ProtocolProviderService> serRef = getProviderForAccount(accountID);
-
         if (serRef == null) {
             return false;
         }
-
         BundleContext bundleContext = getBundleContext();
         ProtocolProviderService protocolProvider = bundleContext.getService(serRef);
-
         try {
             protocolProvider.unregister();
         } catch (OperationFailedException ex) {
@@ -957,7 +953,6 @@ public abstract class ProtocolProviderFactory
         }
 
         ServiceRegistration<ProtocolProviderService> registration;
-
         synchronized (registeredAccounts) {
             registration = registeredAccounts.remove(accountID);
         }
@@ -965,8 +960,12 @@ public abstract class ProtocolProviderFactory
             return false;
         }
 
-        // Kill the service.
-        registration.unregister();
+        // Kill the service. // Catch based on Field Failure
+        try {
+            registration.unregister();
+        } catch (IllegalStateException ex) {
+            return false;
+        }
         return true;
     }
 
@@ -1061,7 +1060,8 @@ public abstract class ProtocolProviderFactory
      * @return a String indicating the ConfigurationService property name prefix under which all
      * account properties are stored or null if no account corresponding to the specified id was found.
      */
-    public static String findAccountPrefix(BundleContext bundleContext, AccountID accountID, String sourcePackageName)
+    public static String findAccountPrefix(BundleContext bundleContext, AccountID accountID, String
+            sourcePackageName)
     {
         ServiceReference<ConfigurationService> confReference = bundleContext.getServiceReference(ConfigurationService.class);
         ConfigurationService configurationService = bundleContext.getService(confReference);
@@ -1145,7 +1145,8 @@ public abstract class ProtocolProviderFactory
      * @return Registered <tt>ProtocolProviderFactory</tt> for given protocol name or <tt>null</tt>
      * if no provider was found.
      */
-    public static ProtocolProviderFactory getProtocolProviderFactory(BundleContext bundleContext, String protocolName)
+    public static ProtocolProviderFactory getProtocolProviderFactory(BundleContext bundleContext, String
+            protocolName)
     {
         ServiceReference[] serRefs = null;
         String osgiFilter = "(PROTOCOL_NAME=" + protocolName + ")";

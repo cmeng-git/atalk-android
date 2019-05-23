@@ -67,7 +67,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      */
     public Message createMessage(String messageText)
     {
-        return createMessage(messageText, ChatMessage.ENCODE_PLAIN, null);
+        return createMessage(messageText, Message.ENCODE_PLAIN, null);
     }
 
     public abstract Message createMessage(String content, int encType, String subject);
@@ -313,7 +313,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
     public boolean isContentTypeSupported(int mimeType, Contact contact)
     {
         // by default we support default mime type, for other mime-types method must be overridden
-        return (ChatMessage.ENCODE_PLAIN == mimeType);
+        return (Message.ENCODE_PLAIN == mimeType);
     }
 
     /**

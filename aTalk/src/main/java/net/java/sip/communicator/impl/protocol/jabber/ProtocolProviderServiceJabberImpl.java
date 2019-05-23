@@ -9,6 +9,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
 import org.xmpp.extensions.coin.CoinIQ;
 import org.xmpp.extensions.coin.CoinIQProvider;
@@ -1739,6 +1740,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         // XEP-0092: Software Version
         supportedFeatures.add(URN_XMPP_IQ_VERSION);
+
+        // Enable the XEP-0071: XHTML-IM feature for the account
+        supportedFeatures.add(XHTMLExtension.NAMESPACE);
+        // XHTMLManager.setServiceEnabled(mConnection, true);
     }
 
     /**
@@ -2029,7 +2034,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             addSupportedOperationSet(OperationSetMessageCorrection.class, basicInstantMessaging);
 
-            // The http://jabber.org/protocol/xhtml-im feature is included already in smack.
+            // The XHTMLExtension.NAMESPACE: http://jabber.org/protocol/xhtml-im feature is included already in smack.
+
             addSupportedOperationSet(OperationSetExtendedAuthorizations.class,
                     new OperationSetExtendedAuthorizationsJabberImpl(this, persistentPresence));
 
@@ -2392,7 +2398,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Determines if the given list of <tt>features</tt> is supported by the specified jabber id.
      *
-     * @param jid the jabber id for which to check
+     * @param jid the jabber id for which to check;
+     * Jid must be FullJid unless it is for service e.g. proxy.atalk.org, conference.atalk.org
      * @param features the list of features to check for
      * @return <tt>true</tt> if the list of features is supported; otherwise, <tt>false</tt>
      */
@@ -2413,7 +2420,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 }
             }
             return true;
-        } catch (XMPPException e) {
+        } catch (Exception e) {
             Timber.d(e, "Failed to retrieve discovery info.");
         }
         return false;

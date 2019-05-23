@@ -117,7 +117,7 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
     private final short[] outputLength = new short[1];
 
     /**
-     * Initializes a new <code>JavaEncoder</code> instance.
+     * Initializes a new {@code JavaEncoder} instance.
      */
     public JavaEncoder()
     {

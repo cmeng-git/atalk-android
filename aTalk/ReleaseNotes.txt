@@ -1,5 +1,34 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.8.3 (1083)
+Author:         cmeng
+Upload Date:	05/23/2019
+- Implement \'OMEMO Media Sharing\' to support end-to-end encrypted files and stickers sharing
+- Include http file upload service in fault-tolerance file transfer implementation;
+  to handle clients that do not support legacy SOCK5 and IBB protocols e.g. conversations
+- Support Stickers, Bitmoji and Emoji rich content sharing in chat room
+- Enhance and harmonize UI for all the file transfer protocols, http file upload &amp; download services
+- Provide encryption status indicator in media file chat view content
+- Fix incorrect URL decode and highlight on hyperlink for direct web access - use Linkify method
+- Upgrade openssl jni library to 1.0.2r (1.0.2l)
+
+- Remove cache support for scDiscovery#nonCapsCache referenced by Jid without NVH - may contains obsolete discoInfo sets
+- All EntityCapManager enquiry for contacts must be FullJid; same buddy may use different clients and discoInfo capabilities
+- Implement remoteOnly message flag i.e. not local store, cache or display on sending device e.g. sending Http File Upload link
+- Common use of Chat Events and ChatMessage flags as one entity - code optimization
+- Fix FileBackend.getMimeType.getScheme() null return on non-content file checking causing system crash
+- Fixed file transfer progress status update error
+- Cleanup up jni openssl build scripts (not to use the latest android ndk-bundle)
+  use android-ndk-r15c etc; Otherwise has below problem in aTalk build
+  Latest ndk-bundle generated libraries have problem when integrate with aTalk.
+  # armv7: requires unsupported dynamic reloc R_ARM_REL32;
+  # x86: relocation R_386_GOTOFF against preemptible symbol ..
+- Simplify and use single script command for each jni library built
+
+#todo
+- Provide persistent on user selected chat mode across sessions and re-launch of aTalk.
+
+=========================================================================
 Version:		1.8.2 (1082)
 Author:         cmeng
 Upload Date:	04/24/2019

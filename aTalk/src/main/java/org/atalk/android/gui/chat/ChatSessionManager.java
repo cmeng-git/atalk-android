@@ -294,26 +294,26 @@ public class ChatSessionManager
          * A string identifier that uniquely represents this descriptor in the containing chat session database
          */
         String chatId;
-        int chatType;
-
-        Intent chatIntent = new Intent(aTalkApp.getGlobalContext(), ChatActivity.class);
+        int chatMode;
 
         // childContacts table = mcUid
         if (descriptor instanceof MetaContact) {
             chatId = ((MetaContact) descriptor).getMetaUID();
-            chatType = MC_CHAT;
+            chatMode = MC_CHAT;
         }
         else if (descriptor instanceof ChatRoomWrapper) {
             chatId = ((ChatRoomWrapper) descriptor).getChatRoomID();
-            chatType = MUC_CC;
+            chatMode = MUC_CC;
         }
         else {
             chatId = ((AdHocChatRoomWrapper) descriptor).getAdHocChatRoomID();
-            chatType = MUC_ADHOC;
+            chatMode = MUC_ADHOC;
         }
+
+        Intent chatIntent = new Intent(aTalkApp.getGlobalContext(), ChatActivity.class);
         chatIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         chatIntent.putExtra(CHAT_IDENTIFIER, chatId);
-        chatIntent.putExtra(CHAT_MODE, chatType);
+        chatIntent.putExtra(CHAT_MODE, chatMode);
         return chatIntent;
     }
 

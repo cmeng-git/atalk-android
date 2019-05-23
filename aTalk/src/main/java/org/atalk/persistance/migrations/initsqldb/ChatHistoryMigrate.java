@@ -40,7 +40,7 @@ import javax.xml.parsers.DocumentBuilder;
 
 import timber.log.Timber;
 
-import static org.atalk.android.gui.chat.ChatMessage.ENCODE_PLAIN;
+import net.java.sip.communicator.service.protocol.Message;
 import static org.atalk.android.gui.chat.ChatMessage.STATUS_RECEIVED;
 import static org.atalk.android.gui.chat.ChatMessage.STATUS_SEND;
 
@@ -260,7 +260,7 @@ public class ChatHistoryMigrate extends Activity
 
                     //					content = XMLUtils.findChild((Element) recordNode, ATTR_ENC).getTextContent();
                     //					msgValues.put(ChatMessage.ENC_TYPE, content);
-                    msgValues.put(ChatMessage.ENC_TYPE, ENCODE_PLAIN);
+                    msgValues.put(ChatMessage.ENC_TYPE, Message.ENCODE_PLAIN);
 
                     timeDate = XMLUtils.findChild((Element) recordNode, ATTR_TS).getTextContent();
 
@@ -317,7 +317,7 @@ public class ChatHistoryMigrate extends Activity
                     //							FileHistoryConversation.getStatusMessage(direction, status));
                     msgValues.put(ChatMessage.MSG_BODY, status);
                     msgValues.put(ChatMessage.STATUS, ChatMessageImpl.statusMap.get(status));
-                    msgValues.put(ChatMessage.ENC_TYPE, ENCODE_PLAIN);
+                    msgValues.put(ChatMessage.ENC_TYPE, Message.ENCODE_PLAIN);
 
                     content = XMLUtils.findChild((Element) recordNode, ATTR_FILE).getTextContent();
                     msgValues.put(ChatMessage.FILE_PATH, content);

@@ -33,6 +33,7 @@ import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
@@ -567,7 +568,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     @Override
     public void messageReceived(MessageReceivedEvent evt)
     {
-        if (isSMSEnabled && (evt.getEventType() != MessageReceivedEvent.SMS_MESSAGE_RECEIVED)) {
+        if (isSMSEnabled && (evt.getEventType() != ChatMessage.MESSAGE_SMS_IN)) {
             return;
         }
         handle(evt, evt.getSourceContact().getProtocolProvider(), evt.getSourceContact().getAddress());
@@ -600,7 +601,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
             return;
 
         // ignore non conversation messages
-        if (evt.getEventType() != ChatRoomMessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED)
+        if (evt.getEventType() != ChatMessage.MESSAGE_IN)
             return;
 
         handle(evt, evt.getSourceChatRoom().getParentProvider(), evt.getSourceChatRoom().getName());

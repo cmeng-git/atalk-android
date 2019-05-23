@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxHeight="250dp"
-            android:adjustViewBounds= "true"
+            android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             android:paddingLeft="5dip"
             android:paddingStart="5dip" />
@@ -71,17 +71,30 @@
             android:text="{Title text}"
             android:textColor="@color/black" />
 
-        <TextView
-            android:id="@+id/filexferFileNameView"
-            style="@style/SmallFont"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/msg_info_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="start"
-            android:paddingBottom="5dip"
-            android:paddingLeft="5dip"
-            android:paddingStart="5dip"
-            android:text="{FileName text}"
-            android:textColor="@color/grey" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/encFileStateView"
+                android:layout_width="18dip"
+                android:layout_height="18dip"
+                android:src="@drawable/crypto_omemo_verified" />
+
+            <TextView
+                android:id="@+id/filexferFileNameView"
+                style="@style/SmallFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:paddingBottom="5dip"
+                android:layout_marginLeft="@dimen/chat_text_margin"
+                android:layout_marginStart="@dimen/chat_text_margin"
+                android:text="{FileName text}"
+                android:textColor="@color/grey" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/errorView"

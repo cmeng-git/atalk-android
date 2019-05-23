@@ -11,8 +11,8 @@ import android.view.View;
 
 import net.java.sip.communicator.plugin.otr.*;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
-import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.Message;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -62,7 +62,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
 
         // Local fingerprint.
         String account = contact.getProtocolProvider().getAccountID().getDisplayName();
-        String localFingerprint  = keyManager.getLocalFingerprint(contact.getProtocolProvider().getAccountID());
+        String localFingerprint = keyManager.getLocalFingerprint(contact.getProtocolProvider().getAccountID());
 
         View content = findViewById(android.R.id.content);
         ViewUtil.setTextViewValue(content, R.id.localFingerprintLbl,
@@ -100,8 +100,8 @@ public class OtrAuthenticateDialog extends OSGiActivity
             String resourceName = (otrContact.resource != null) ? "/" + otrContact.resource.getResourceName() : "";
             String sender = contact.getDisplayName();
             String message = getString(R.string.plugin_otr_activator_sessionstared, sender + resourceName);
-            OtrActivator.uiService.getChat(contact).addMessage(sender, new Date(), Chat.SYSTEM_MESSAGE,
-                    ChatMessage.ENCODE_HTML, message);
+            OtrActivator.uiService.getChat(contact).addMessage(sender, new Date(), ChatMessage.MESSAGE_SYSTEM,
+                    Message.ENCODE_HTML, message);
         }
         else {
             keyManager.unverify(otrContact, remoteFingerprint);

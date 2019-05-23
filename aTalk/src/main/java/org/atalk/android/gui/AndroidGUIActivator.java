@@ -11,6 +11,7 @@ import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.contactsource.DemuxContactSourceService;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
+import net.java.sip.communicator.service.filehistory.FileHistoryService;
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
 import net.java.sip.communicator.service.gui.AlertUIService;
 import net.java.sip.communicator.service.gui.UIService;
@@ -91,8 +92,10 @@ public class AndroidGUIActivator implements BundleActivator
     private static GlobalDisplayDetailsService globalDisplayService;
     private static AlertUIService alertUIService;
     private static CredentialsStorageService credentialsService;
+
     private static MUCService mucService;
     private static MessageHistoryService messageHistoryService;
+    private static FileHistoryService fileHistoryService;
 
     /**
      * The registered PhoneNumberI18nService.
@@ -360,6 +363,18 @@ public class AndroidGUIActivator implements BundleActivator
         }
         return credentialsService;
 
+    }
+
+    /**
+     * Gets the service giving access to message history.
+     *
+     * @return the service giving access to message history.
+     */
+    public static FileHistoryService getFileHistoryService()
+    {
+        if (fileHistoryService == null)
+            fileHistoryService = ServiceUtils.getService(bundleContext, FileHistoryService.class);
+        return fileHistoryService;
     }
 
     /**
