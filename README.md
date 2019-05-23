@@ -16,23 +16,26 @@
 ## Features
 aTalk is an xmpp client designed for android and supports the following features:
 * Instant messaging in plain text and End-to-End encryption with [OMEMO](http://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
-* Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway (experimental)
 * SSL Certificate authentication, DNSSEC and DANE Security implementation for enhanced secure Connection Establishment
-* Omemo encryption is available during multi-user-chat session, giving users' maximum privacy and security
+* OMEMO encryption in multi-user-chat session, give users' maximum privacy and security
+* OMEMO Media File Sharing for all files including Stickers, Bitmoji and Emoji rich contents
+* Support http file upload for file sharing with offline contact and members in conference room
+* Support downloadable Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
+* Send and receive files for all document types and images, with thumbnail preview before file is sent 
+* Auto accept file transfer request with max file size option
+* Implement fault-tolerance file transfer to ease and enhance file sharing reliability (1-1 chat and chatRoom) 
+* Enhance and harmonize UI for file sharing in chat and chatRoom
+* Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway (experimental)
 * Support multi-user chat in room creation, server chat rooms discovery and joining chat room with captcha protection 
 * Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
 * Support simultaneous media call and message chat sessions
-* Support http file upload for file sharing with offline contact and members in conference room
-* Send and receive files for all document types and images, with thumbnail preview before file is sent 
-* Auto accept file transfer request with max file size option
-* Support downloadable Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
 * Unique GPS-Location implementation standalone tool, or sending locations to your chosen buddy for real-time tracking or playback animation.
 * A 360° street view of your current location, may use for self-guided tour. The street view tracks and follows your direction of sight.
 * Built-in demo for GPS-Location features
 * Integrated photo editor with zooming and cropping, user can update the avatar with ease
-* Last message correction, message carbons and offline messages (omemo)
+* Last message correction, message carbons and offline messages (OMEMO)
 * Mobile network ping interval self-tune optimization support
-* In-Band Registration with captcha support
+* In-Band Registration with captcha option support
 * Multiple accounts creation
 * Multi-language UI support (Bahasa Indonesia, English, German, Russian, and Spanish). 
 
@@ -47,6 +50,7 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0054: vcard-temp](https://xmpp.org/extensions/xep-0054.html)
 * [XEP-0060: Publish-Subscribe](https://xmpp.org/extensions/xep-0060.html)
 * [XEP-0065: SOCKS5 Bytestreams](https://xmpp.org/extensions/xep-0065.html)
+* [XEP-0071: XHTML-IM](https://xmpp.org/extensions/xep-0071.html)
 * [XEP-0077: In-Band Registration](https://xmpp.org/extensions/xep-0077.html)
 * [XEP-0084: User Avatar](https://xmpp.org/extensions/xep-0084.html)
 * [XEP-0085: Chat State Notifications](https://xmpp.org/extensions/xep-0085.html)
@@ -87,6 +91,8 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0352: Client State Indication](https://xmpp.org/extensions/xep-052.html)
 * [XEP-0363: HTTP File Upload](https://xmpp.org/extensions/xep-0363.html)
 * [XEP-0364: Off-the-Record Messaging (V2/3)](https://xmpp.org/extensions/xep-0364.html)
+* [XEP-0384: OMEMO Encryption](https://xmpp.org/extensions/xep-0384.html)
+* [XEP-xxxx: OMEMO Media sharing](https://xmpp.org/extensions/inbox/omemo-media-sharing.html)
 
 Libraries used in this project
 ------------------------------

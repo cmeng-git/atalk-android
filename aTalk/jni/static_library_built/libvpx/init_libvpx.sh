@@ -1,12 +1,12 @@
 #!/bin/bash
 
 if [[ $# -eq 1 ]]; then
-  LIB_VPX=$1
+  LIB_GIT=$1
 else
-  LIB_VPX="libvpx"
+	LIB_GIT=v1.8.0
 fi
 
-LIB_GIT=v1.8.0
+LIB_VPX="libvpx"
 
 echo -e "\n================ Fetching library source for: ${LIB_VPX} (${LIB_GIT})============================"
 rm -rf ${LIB_VPX}

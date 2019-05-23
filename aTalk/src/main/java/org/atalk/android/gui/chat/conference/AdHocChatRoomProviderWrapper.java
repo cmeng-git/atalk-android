@@ -94,11 +94,11 @@ public class AdHocChatRoomProviderWrapper
 	}
 
 	/**
-	 * Returns <code>true</code> if the given ad-hoc chat room is contained in this provider, otherwise - returns <code>false</code>.
+	 * Returns {@code true</code> if the given ad-hoc chat room is contained in this provider, otherwise - returns <code>false}.
 	 *
 	 * @param adHocChatRoom
 	 *        the ad-hoc chat room to search for.
-	 * @return <code>true</code> if the given ad-hoc chat room is contained in this provider, otherwise - returns <code>false</code>.
+	 * @return {@code true</code> if the given ad-hoc chat room is contained in this provider, otherwise - returns <code>false}.
 	 */
 	public boolean containsAdHocChatRoom(AdHocChatRoomWrapper adHocChatRoom)
 	{

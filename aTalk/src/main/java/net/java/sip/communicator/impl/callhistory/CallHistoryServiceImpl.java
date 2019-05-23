@@ -204,16 +204,6 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     }
 
     /**
-     * Returns the underlying history service.
-     *
-     * @return the underlying history service
-     */
-    public HistoryService getHistoryService()
-    {
-        return historyService;
-    }
-
-    /**
      * Set the configuration service.
      *
      * @param historyService HistoryService

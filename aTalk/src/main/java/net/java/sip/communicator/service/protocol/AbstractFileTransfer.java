@@ -25,14 +25,21 @@ public abstract class AbstractFileTransfer implements FileTransfer
     /**
      * A list of listeners registered for file transfer status events.
      */
-    final private Vector<FileTransferStatusListener> statusListeners = new Vector<FileTransferStatusListener>();
+    final private Vector<FileTransferStatusListener> statusListeners = new Vector<>();
 
     /**
      * A list of listeners registered for file transfer progress status events.
      */
-    final private Vector<FileTransferProgressListener> progressListeners = new Vector<FileTransferProgressListener>();
+    final private Vector<FileTransferProgressListener> progressListeners = new Vector<>();
 
+    /*
+     * current Status for keeping track if there is changes
+     */
     private int mStatus;
+    /*
+     * current progress of byte transferred for keeping track if there is changes
+     */
+    private long mProgress;
 
     /**
      * Cancels this file transfer. When this method is called transfer should be interrupted.
@@ -40,9 +47,9 @@ public abstract class AbstractFileTransfer implements FileTransfer
     abstract public void cancel();
 
     /**
-     * Returns the number of bytes already transfered through this file transfer.
+     * Returns the number of bytes already transferred through this file transfer.
      *
-     * @return the number of bytes already transfered through this file transfer
+     * @return the number of bytes already transferred through this file transfer
      */
     abstract public long getTransferredBytes();
 
@@ -131,7 +138,9 @@ public abstract class AbstractFileTransfer implements FileTransfer
         if (mStatus == newStatus)
             return;
 
-        Collection<FileTransferStatusListener> listeners = null;
+        // Updates the status.
+        mStatus = newStatus;
+        Collection<FileTransferStatusListener> listeners;
         synchronized (statusListeners) {
             listeners = new ArrayList<>(statusListeners);
         }
@@ -139,25 +148,27 @@ public abstract class AbstractFileTransfer implements FileTransfer
         FileTransferStatusChangeEvent statusEvent = new FileTransferStatusChangeEvent(this, mStatus,
                 newStatus, reason);
 
-        // Updates the status.
-        mStatus = newStatus;
-
         for (FileTransferStatusListener statusListener : listeners) {
             statusListener.statusChanged(statusEvent);
         }
     }
 
     /**
-     * Notifies all status listeners that a new <tt>FileTransferProgressEvent</tt> occured.
+     * Notifies all status listeners that a new <tt>FileTransferProgressEvent</tt> occurred.
      *
-     * @param timestamp the date on which the event occured
+     * @param timestamp the date on which the event occurred
      * @param progress the bytes representing the progress of the transfer
      */
     public void fireProgressChangeEvent(long timestamp, long progress)
     {
-        Collection<FileTransferProgressListener> listeners = null;
+        // ignore if there is no change since the last progress check
+        if (mProgress == progress)
+            return;
+
+        mProgress = progress;
+        Collection<FileTransferProgressListener> listeners;
         synchronized (progressListeners) {
-            listeners = new ArrayList<FileTransferProgressListener>(progressListeners);
+            listeners = new ArrayList<>(progressListeners);
         }
 
         FileTransferProgressEvent progressEvent = new FileTransferProgressEvent(this, timestamp, progress);

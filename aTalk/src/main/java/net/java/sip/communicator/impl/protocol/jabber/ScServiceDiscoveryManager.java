@@ -5,6 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import org.jxmpp.jid.*;
 import org.xmpp.extensions.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
 
@@ -28,7 +29,6 @@ import org.jivesoftware.smackx.disco.NodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
-import org.jxmpp.jid.Jid;
 import org.jxmpp.util.cache.LruCache;
 
 import java.io.File;
@@ -50,12 +50,13 @@ import timber.log.Timber;
 public class ScServiceDiscoveryManager implements NodeInformationProvider
 {
     /**
-     * The flag which indicates whether we are currently storing non-caps.
+     * The flag which indicates whether we are currently storing no nodeVer caps.
      */
     private final boolean cacheNonCaps;
 
     /**
-     * The cache for storing discoInfo without valid nvh. Used only if {@link #cacheNonCaps} is <tt>true</tt>.
+     * The cache for storing service discoInfo without nodeVer e.g, proxy.atalk.org, conference.atalk.org.
+     * Used only if {@link #cacheNonCaps} is <tt>true</tt>.
      */
     private static final LruCache<Jid, DiscoverInfo> nonCapsCache = new LruCache<>(10000);
 
@@ -177,9 +178,10 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 
         // updateEntityCapsVersion(); cmeng: auto done in mEntityCapsManager init statement
         mEntityCapsManager = EntityCapsManager.getInstanceFor(connection);
+        mEntityCapsManager.enableEntityCaps();
 
         // Listener for received cap packages and take necessary action
-        connection.addAsyncStanzaListener(new CapsPacketListener(), PRESENCES_WITH_CAPS);
+        connection.addAsyncStanzaListener(new CapsStanzaListener(), PRESENCES_WITH_CAPS);
     }
 
     /**
@@ -277,76 +279,76 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     /**
      * Returns the discovered information of a given XMPP entity addressed by its JID.
      *
-     * @param entityID the address of the XMPP entity.
+     * @param entityJid the address of the XMPP entity. Buddy Jid should be FullJid
      * @return the discovered information.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if there is no connection
      * @throws InterruptedException if there is an Exception
      */
-    public DiscoverInfo discoverInfo(Jid entityID)
+    public DiscoverInfo discoverInfo(Jid entityJid)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         // Check if we have it cached in the Entity Capabilities Manager
-        DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityID);
+        DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityJid);
         if (discoverInfo != null) {
             return discoverInfo;
         }
 
-        // Try to get the nvh if it's known, otherwise null is returned
-        NodeVerHash nvh = EntityCapsManager.getNodeVerHashByJid(entityID);
+        // Try to get the nvh if it's known, otherwise null is returned e.g. for services
+        NodeVerHash nvh = EntityCapsManager.getNodeVerHashByJid(entityJid);
 
         // if nvh is null; try to retrieve from local nonCapsCache
         if (cacheNonCaps && (nvh == null)) {
-            discoverInfo = getDiscoverInfoByEntity(entityID);
+            discoverInfo = getDiscoverInfoByEntity(entityJid);
             if (discoverInfo != null)
                 return discoverInfo;
         }
 
-        // Not found: Then discover by requesting the information from the remote entity
-        discoverInfo = getRemoteDiscoverInfo(entityID);
+        // Not found: Then discover by requesting the information from the remote entity allowing only 10S for blocking access
+        discoverInfo = getRemoteDiscoverInfo(entityJid,
+                ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
         if (discoverInfo != null) {
-            // store in local nonCapsCache
+            // store in local nonCapsCache only if (nvh == null)
             if ((nvh == null) && cacheNonCaps) {
-                // Timber.w("Add discoverInfo with null nvh for: " + entityID);
-                addDiscoverInfoByEntity(entityID, discoverInfo);
+                addDiscoverInfoByEntity(entityJid, discoverInfo);
             }
             return discoverInfo;
         }
 
-        Timber.w("Failed to get DiscoverInfo for: %s", entityID);
-        return discoverInfo;
+        Timber.w("Failed to get DiscoverInfo for: %s", entityJid);
+        return null;
     }
 
     /**
      * Returns the discovered information of a given XMPP entity addressed by its JID if locally
      * cached, otherwise schedules for retrieval.
      *
-     * @param entityID the address of the XMPP entity.
+     * @param entityJid the address of the XMPP entity. Buddy Jid should be FullJid
      * @return the discovered information.
      * @throws XMPPException if the operation failed for some reason.
      */
-    public DiscoverInfo discoverInfoNonBlocking(Jid entityID)
+    public DiscoverInfo discoverInfoNonBlocking(Jid entityJid)
             throws XMPPException
     {
         // Check if we have it cached in the Entity Capabilities Manager
-        DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityID);
+        DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityJid);
         if (discoverInfo != null) {
             return discoverInfo;
         }
 
-        // Try to get the nvh if it's known, otherwise null is returned
-        NodeVerHash nvh = EntityCapsManager.getNodeVerHashByJid(entityID);
+        // Try to get the nvh if it's known, otherwise null is returned  i.e. for services
+        NodeVerHash nvh = EntityCapsManager.getNodeVerHashByJid(entityJid);
 
         // if nvh is null; try to retrieve from local nonCapsCache
         if (cacheNonCaps && (nvh == null)) {
-            discoverInfo = getDiscoverInfoByEntity(entityID);
+            discoverInfo = getDiscoverInfoByEntity(entityJid);
             if (discoverInfo != null)
                 return discoverInfo;
         }
 
-        // add to retrieve thread
-        retriever.addEntityForRetrieve(entityID, nvh);
+        // add to retrieve discovery thread
+        retriever.addEntityForRetrieve(entityJid);
         return null;
     }
 
@@ -354,22 +356,24 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * Returns the discovered information of a given XMPP entity addressed by its JID and note attribute.
      * Use this message only when trying to query information which is not directly addressable.
      *
-     * @param entityID the address of the XMPP entity.
+     * @param entityJid the address of the XMPP entity; must be FullJid unless it is for services
+     * @param timeout variable timeout to wait: default 10S for blocking and 30S for non-blocking access
+     *
      * @return the discovered information.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
+     * @throws NotConnectedException not connection exception
      * @throws InterruptedException
      */
-    public DiscoverInfo getRemoteDiscoverInfo(Jid entityID)
+    public DiscoverInfo getRemoteDiscoverInfo(Jid entityJid, int timeout)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         // cmeng - "item-not-found" for request on a 5-second wait timeout. Actually server does
         // reply @ 28 seconds after disco#info is sent
-        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
+        connection.setReplyTimeout(timeout);
 
-        // Timber.w("### Remote discovery for: " + entityID);
-        DiscoverInfo discoInfo = discoveryManager.discoverInfo(entityID);
+        Timber.w("### Remote discovery for: %s", entityJid);
+        DiscoverInfo discoInfo = discoveryManager.discoverInfo(entityJid);
 
         connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
         return discoInfo;
@@ -378,24 +382,24 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     /**
      * Returns the discovered items of a given XMPP entity addressed by its JID.
      *
-     * @param entityID the address of the XMPP entity.
+     * @param entityJid the address of the XMPP entity.
      * @return the discovered information.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public DiscoverItems discoverItems(Jid entityID)
+    public DiscoverItems discoverItems(Jid entityJid)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
-        return discoveryManager.discoverItems(entityID);
+        return discoveryManager.discoverItems(entityJid);
     }
 
     /**
      * Returns the discovered items of a given XMPP entity addressed by its JID and note attribute.
      * Use this message only when trying to query information which is not directly addressable.
      *
-     * @param entityID the address of the XMPP entity.
+     * @param entityJid the address of the XMPP entity.
      * @param node the attribute that supplements the 'jid' attribute.
      * @return the discovered items.
      * @throws XMPPErrorException if the operation failed for some reason.
@@ -403,10 +407,10 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public DiscoverItems discoverItems(Jid entityID, String node)
+    public DiscoverItems discoverItems(Jid entityJid, String node)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
-        return discoveryManager.discoverItems(entityID, node);
+        return discoveryManager.discoverItems(entityJid, node);
     }
 
     /**
@@ -456,35 +460,36 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     }
 
     /**
-     * Add DiscoverInfo to the database.
+     * Add DiscoverInfo to the database only if the entityJid is DomainBareJid.
      *
-     * @param entityID The node and verification String (e.g.
-     * "http://psi-im.org#q07IKJEyjvHSyhy//CH0CxmKi8w=").
-     * @param info DiscoverInfo for the specified node.
+     * @param entityJid The entity Jid
+     * @param info DiscInfo for the specified entity.
      */
-    private static void addDiscoverInfoByEntity(Jid entityID, DiscoverInfo info)
+    private static void addDiscoverInfoByEntity(Jid entityJid, DiscoverInfo info)
     {
-        nonCapsCache.put(entityID, info);
-        if (discoInfoPersistentCache != null)
-            discoInfoPersistentCache.addDiscoverInfoByNodePersistent(entityID.toString(), info);
+        if (entityJid instanceof DomainBareJid) {
+            Timber.w("### Add discInfo for: %s", entityJid);
+            nonCapsCache.put(entityJid, info);
+            if (discoInfoPersistentCache != null)
+                discoInfoPersistentCache.addDiscoverInfoByNodePersistent(entityJid.toString(), info);
+        }
     }
 
     /**
      * Retrieve DiscoverInfo for a specific entity.
      *
-     * @param entityID The node name (e.g.
-     * "http://psi-im.org#q07IKJEyjvHSyhy//CH0CxmKi8w=").
+     * @param entityJid The entity Jid i.e. DomainJid
      * @return The corresponding DiscoverInfo or null if none is known.
      */
-    private static DiscoverInfo getDiscoverInfoByEntity(Jid entityID)
+    private static DiscoverInfo getDiscoverInfoByEntity(Jid entityJid)
     {
-        // If not in nonCapsCache, try to retrieve the information from discoInfoPersistentCache using entityID
-        DiscoverInfo info = nonCapsCache.lookup(entityID);
+        // If not in nonCapsCache, try to retrieve the information from discoInfoPersistentCache using entityJid
+        DiscoverInfo info = nonCapsCache.lookup(entityJid);
         if (info == null && discoInfoPersistentCache != null) {
-            info = discoInfoPersistentCache.lookup(entityID.toString());
+            info = discoInfoPersistentCache.lookup(entityJid.toString());
             // Promote the information to nonCapsCache if one was found
             if (info != null) {
-                nonCapsCache.put(entityID, info);
+                nonCapsCache.put(entityJid, info);
             }
         }
 
@@ -555,26 +560,26 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     /**
      * The {@link StanzaListener} that will be registering incoming caps.
      */
-    private class CapsPacketListener implements StanzaListener
+    private class CapsStanzaListener implements StanzaListener
     {
         /**
          * Handles incoming presence packets with CapsExtension and alert listeners that the specific user caps
          * node may have changed.
          *
-         * @param packet the incoming presence <tt>Packet</tt> to be handled
+         * @param stanza the incoming presence <tt>Packet</tt> to be handled
          * @see StanzaListener#processStanza(Stanza)
          */
-        public void processStanza(Stanza packet)
+        public void processStanza(Stanza stanza)
         {
             if (!mEntityCapsManager.entityCapsEnabled())
                 return;
 
             // Check it the packet indicates that the user is online. We will use this
             // information to decide if we're going to send the discover info request.
-            boolean online = (packet instanceof Presence) && ((Presence) packet).isAvailable();
+            boolean online = (stanza instanceof Presence) && ((Presence) stanza).isAvailable();
 
-            CapsExtension capsExtension = CapsExtension.from(packet);
-            Jid fromJid = packet.getFrom();
+            CapsExtension capsExtension = CapsExtension.from(stanza);
+            Jid fromJid = stanza.getFrom();
 
             if ((capsExtension != null) && online) {
                 /*
@@ -682,7 +687,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         /**
          * Entities to be processed and their nvh. HashMap so we can store null nvh.
          */
-        final private Map<Jid, NodeVerHash> entities = new HashMap<>();
+        final private ArrayList<Jid> entities = new ArrayList<>();
 
         /**
          * Our capability operation set.
@@ -698,8 +703,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
                 stopped = false;
 
                 while (!stopped) {
-                    Map.Entry<Jid, NodeVerHash> entityToProcess = null;
-
+                    Jid entityToProcess;
                     synchronized (entities) {
                         if (entities.size() == 0) {
                             try {
@@ -708,18 +712,13 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
                                 ex.printStackTrace();
                             }
                         }
-
-                        Iterator<Map.Entry<Jid, NodeVerHash>> iter = entities.entrySet().iterator();
-                        if (iter.hasNext()) {
-                            entityToProcess = iter.next();
-                            iter.remove();
-                        }
+                        entityToProcess = entities.get(0);
+                        entities.remove(entityToProcess);
                     }
 
                     if (entityToProcess != null) {
-                        requestDiscoveryInfo(entityToProcess.getKey(), entityToProcess.getValue());
+                        requestDiscoveryInfo(entityToProcess);
                     }
-                    entityToProcess = null;
                 }
             } catch (Throwable t) {
                 Timber.e(t, "Error requesting discovery info, thread ended unexpectedly");
@@ -729,52 +728,48 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         /**
          * Requests the discovery info and fires the event if retrieved.
          *
-         * @param entityID the entity to request
-         * @param nvh and its capability.
+         * @param entityJid the entity to request
          */
-        private void requestDiscoveryInfo(final Jid entityID, NodeVerHash nvh)
+        private void requestDiscoveryInfo(final Jid entityJid)
         {
             try {
                 // Discover by requesting the information from the remote entity;
                 // will return null if no nvh in JID_TO_NODEVER_CACHE=>CAPS_CACHE
-                DiscoverInfo discoverInfo = getRemoteDiscoverInfo(entityID);
-
-                if ((nvh != null)
-                        && !EntityCapsManager.verifyDiscoverInfoVersion(nvh.getVer(), nvh.getHash(), discoverInfo)) {
-                    // Force nvh to null if nodeVersion is invalid and log error
-                    Timber.e("Invalid DiscoverInfo NodeVersion for %s", nvh.getNodeVer());
-                    nvh = null;
-                }
+                DiscoverInfo discoverInfo = getRemoteDiscoverInfo(entityJid,
+                        ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
                 // (discoverInfo = null) if iq result with "item-not-found"
                 if (discoverInfo != null) {
-                    if ((nvh == null) && cacheNonCaps) {
-                        // Timber.w("Add discoverInfo with null nvh for: %s", entityID);
-                        addDiscoverInfoByEntity(entityID, discoverInfo);
+                    if (cacheNonCaps) {
+                        // Timber.w("Add discoverInfo with null nvh for: %s", entityJid);
+                        addDiscoverInfoByEntity(entityJid, discoverInfo);
                     }
 
                     // fire the event
                     if (capabilitiesOpSet != null) {
-                        capabilitiesOpSet.fireContactCapabilitiesChanged(entityID);
+                        capabilitiesOpSet.fireContactCapabilitiesChanged(entityJid);
                     }
                 }
             } catch (NoResponseException | NotConnectedException | XMPPException | InterruptedException e) {
                 // print discovery info errors only when trace is enabled
-                Timber.log(TimberLog.FINER, e, "Error requesting discover info for %s", entityID);
+                Timber.log(TimberLog.FINER, e, "Error requesting discover info for %s", entityJid);
             }
         }
 
         /**
          * Queue entities for retrieval.
          *
-         * @param entityID the entity.
+         * @param entityJid the entity.
          * @param nvh and its capability.
          */
-        public void addEntityForRetrieve(Jid entityID, NodeVerHash nvh)
+        public void addEntityForRetrieve(Jid entityJid)
         {
+            if (entityJid instanceof BareJid)
+                Timber.e("Warning! discoInfo for BareJid '%s' repeated access for every call!!!", entityJid.toString());
+
             synchronized (entities) {
-                if (!entities.containsKey(entityID)) {
-                    entities.put(entityID, nvh);
+                if (!entities.contains(entityJid)) {
+                    entities.add(entityJid);
                     entities.notifyAll();
 
                     if (retrieverThread == null) {

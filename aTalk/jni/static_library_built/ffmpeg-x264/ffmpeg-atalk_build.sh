@@ -11,6 +11,9 @@ if [[ $# -eq 2 ]]; then
   MODULES=("$2")
 fi
 
+# Auto fetch and unarchive both ffmpeg and x264 from online repository
+[[ -d ffmpeg ]] && [[ -d x264 ]] || ./init_update_libs.sh
+
 # Applying required patches
 . ffmpeg-atalk_patch.sh "${MODULES[@]}"
 

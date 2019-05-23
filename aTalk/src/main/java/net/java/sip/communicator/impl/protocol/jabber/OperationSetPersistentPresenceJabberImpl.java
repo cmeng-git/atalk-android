@@ -324,7 +324,7 @@ public class OperationSetPersistentPresenceJabberImpl
 
     /**
      * Returns a reference to the contact with the specified ID in case we have a subscription for
-     * it and null otherwise/
+     * it and null otherwise
      *
      * @param contactID a String identifier of the contact which we're seeking a reference of.
      * @return a reference to the Contact with the specified <tt>contactID</tt> or null if we don't

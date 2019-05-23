@@ -209,12 +209,14 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             /*
              * Adds fragment that turns on and off the screen when proximity sensor detects FAR/NEAR distance.
              */
-            getSupportFragmentManager().beginTransaction().add(volControl,
-                    VOLUME_CTRL_TAG).add(new ProximitySensorFragment(), PROXIMITY_FRAGMENT_TAG)
+            getSupportFragmentManager().beginTransaction()
+                    .add(volControl, VOLUME_CTRL_TAG)
+                    .add(new ProximitySensorFragment(), PROXIMITY_FRAGMENT_TAG)
                     /* Adds the fragment that handles video display logic */
                     .add(videoFragment, VIDEO_FRAGMENT_TAG)
                     /* Adds the fragment that handles call duration logic */
-                    .add(new CallTimerFragment(), TIMER_FRAGMENT_TAG).commit();
+                    .add(new CallTimerFragment(), TIMER_FRAGMENT_TAG)
+                    .commit();
         }
         else {
             FragmentManager fragmentManager = getSupportFragmentManager();

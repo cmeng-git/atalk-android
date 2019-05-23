@@ -27,6 +27,7 @@ import timber.log.Timber;
  *
  * @author Yana Stamcheva
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class ReceivedCallActivity extends OSGiActivity implements CallChangeListener
 {
@@ -47,9 +48,9 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     {
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                        + WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        + WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                        + WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+                        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
     }
 
     /**
@@ -76,7 +77,6 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
             Bitmap bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
             avatarView.setImageBitmap(bitmap);
         }
-
         callIdentifier = extras.getString(CallManager.CALL_IDENTIFIER);
         call = CallManager.getActiveCall(callIdentifier);
         if (call == null) {
@@ -84,7 +84,6 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
             finish();
             return;
         }
-
         ImageView hangupView = findViewById(R.id.hangupButton);
         hangupView.setOnClickListener(v -> hangupCall());
 

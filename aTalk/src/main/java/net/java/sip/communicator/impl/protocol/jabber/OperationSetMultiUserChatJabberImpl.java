@@ -36,6 +36,9 @@ import java.util.*;
 
 import timber.log.Timber;
 
+import static net.java.sip.communicator.service.protocol.Message.ENCRYPTION_OMEMO;
+import static net.java.sip.communicator.service.protocol.Message.ENCODE_PLAIN;
+
 /**
  * A jabber implementation of the multi user chat operation set.
  *
@@ -265,8 +268,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     }
 
 //    /**
-//     * Returns a list of the names of all chat rooms that <tt>contact</tt> is currently a member
-//     * of.
+//     * Returns a list of the names of all chat rooms that <tt>contact</tt> is currently a member of.
 //     *
 //     * @param contact
 //     * 		the contact whose current ChatRooms we will be querying.
@@ -282,17 +284,13 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
 //			throws OperationFailedException, OperationNotSupportedException
 //	{
 //		assertSupportedAndConnected();
-//
-//		Iterator joinedRoomsIter = MultiUserChat.getJoinedRooms(getXmppConnection(),
-//				contact.getAddress());
-//
+//		Iterator joinedRoomsIter = MultiUserChat.getJoinedRooms(getXmppConnection(), contact.getAddress());
 //		List joinedRoomsForContact = new LinkedList();
 //
 //		while (joinedRoomsIter.hasNext()) {
 //			MultiUserChat muc = (MultiUserChat) joinedRoomsIter.next();
 //			joinedRoomsForContact.add(muc.getRoom());
 //		}
-//
 //		return joinedRoomsForContact;
 //	}
 
@@ -755,12 +753,11 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         EntityFullJid msgFrom = (EntityFullJid) message.getFrom();
         ChatRoomMemberJabberImpl member = chatRoom.findMemberFromParticipant(msgFrom);
 
-        int encType = ChatMessage.ENCRYPTION_OMEMO | ChatMessage.ENCODE_PLAIN;
+        int encType = ENCRYPTION_OMEMO | ENCODE_PLAIN;
         net.java.sip.communicator.service.protocol.Message newMessage
                 = new MessageJabberImpl(decryptedBody, encType, null);
         ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
-                chatRoom, member, timeStamp, newMessage, ChatRoomMessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED);
-
+                chatRoom, member, timeStamp, newMessage, ChatMessage.MESSAGE_MUC_IN);
         chatRoom.fireMessageEvent(msgReceivedEvt);
     }
 }

@@ -105,7 +105,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      * SUPPORTED_ZRTP_VERSIONS.
      * @return String array containing the version string at offset 0, the Hello hash value as
      * hex-digits at offset 1. Hello hash is available immediately after class
-     * instantiation. Returns <code>null</code> if ZRTP is not available.
+     * instantiation. Returns {@code null} if ZRTP is not available.
      */
     public String[] getHelloHashSep(int index)
     {

@@ -1,7 +1,7 @@
-prefix=../android/armeabi-v7a
+prefix=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a
 exec_prefix=${prefix}
-libdir=../android/armeabi-v7a/lib
-includedir=../android/armeabi-v7a/include
+libdir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/lib
+includedir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/include
 
 Name: libavutil
 Description: FFmpeg utility library

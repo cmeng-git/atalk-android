@@ -240,7 +240,7 @@ public class FileBackend
     public static String getMimeType(Context ctx, Uri uri)
     {
         String mimeType = null;
-        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
             ContentResolver cr = ctx.getContentResolver();
             mimeType = cr.getType(uri);
         }

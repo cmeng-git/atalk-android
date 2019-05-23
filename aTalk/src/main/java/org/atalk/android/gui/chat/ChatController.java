@@ -23,8 +23,8 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
-import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.UIService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
@@ -275,63 +275,47 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
     /**
      * Sends the chat message or corrects the last message if the chatPanel has correction UID set.
-     */
-    private void sendMessage()
-    {
-        String correctionUID = chatPanel.getCorrectionUID();
-        String content = msgEdit.getText().toString();
-
-        // allow last message correction to send empty string
-        if (TextUtils.isEmpty(content)) {
-            if (correctionUID != null) {
-                content = " ";
-            }
-            else
-                return;
-        }
-
-        int encryption = ChatMessage.ENCRYPTION_NONE;
-        if (chatPanel.isOmemoChat())
-            encryption = ChatMessage.ENCRYPTION_OMEMO;
-        else if (chatPanel.isOTRChat())
-            encryption = ChatMessage.ENCRYPTION_OTR;
-
-        if (correctionUID == null) {
-            try {
-                mChatTransport.sendInstantMessage(content, encryption, ChatMessage.ENCODE_PLAIN);
-            } catch (Exception ex) {
-                aTalkApp.showToastMessage(ex.getMessage());
-            }
-        }
-        // Last message correction
-        else {
-            mChatTransport.sendInstantMessage(content, encryption, ChatMessage.ENCODE_PLAIN, correctionUID);
-            // Clears correction UI state
-            chatPanel.setCorrectionUID(null);
-            updateCorrectionState();
-        }
-        // Clears edit text field
-        msgEdit.setText("");
-
-        // just update chat state to active but not sending notifications
-        mChatState = ChatState.active;
-        if (chatStateCtrlThread == null) {
-            chatStateCtrlThread = new ChatStateControl();
-            chatStateCtrlThread.start();
-        }
-        chatStateCtrlThread.initChatState();
-    }
-
-    /**
-     * Allowing sending of the message text from aTalk methods
      *
-     * @param content message content
+     * @param message the text string to be sent
+     * @param encType The encType of the message to be sent: RemoteOnly | 1=text/html or 0=text/plain.
      */
-    public void sendMessage(final String content)
+    public void sendMessage(String message, int encType)
     {
+            String correctionUID = chatPanel.getCorrectionUID();
+
+            int encryption = Message.ENCRYPTION_NONE;
+            if (chatPanel.isOmemoChat())
+                encryption = Message.ENCRYPTION_OMEMO;
+            else if (chatPanel.isOTRChat())
+                encryption = Message.ENCRYPTION_OTR;
+
+            if (correctionUID == null) {
+                try {
+                    mChatTransport.sendInstantMessage(message, encryption | encType);
+                } catch (Exception ex) {
+                    aTalkApp.showToastMessage(ex.getMessage());
+                }
+            }
+            // Last message correction
+            else {
+                mChatTransport.sendInstantMessage(message, encryption | encType, correctionUID);
+                // Clears correction UI state
+                chatPanel.setCorrectionUID(null);
+                updateCorrectionState();
+            }
+
+        // must run on UiThread when access view
         parent.runOnUiThread(() -> {
-            msgEdit.setText(content);
-            sendMessage();
+            // Clears edit text field
+            msgEdit.setText("");
+
+            // just update chat state to active but not sending notifications
+            mChatState = ChatState.active;
+            if (chatStateCtrlThread == null) {
+                chatStateCtrlThread = new ChatStateControl();
+                chatStateCtrlThread.start();
+            }
+            chatStateCtrlThread.initChatState();
         });
     }
 
@@ -401,7 +385,24 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         switch (v.getId()) {
             case R.id.sendMessageButton:
                 if (chatPanel.getProtocolProvider().isRegistered()) {
-                    sendMessage();
+                    String correctionUID = chatPanel.getCorrectionUID();
+
+                    // allow last message correction to send empty string
+                    String textEdit = msgEdit.getText().toString();
+                    if (TextUtils.isEmpty(textEdit)) {
+                        if (correctionUID != null) {
+                            textEdit = " ";
+                        }
+                        else
+                            return;
+                    }
+
+                    if (textEdit.contains("<html>")) {
+                        msgEdit.setText(textEdit.substring(7));
+                        sendMessage(textEdit, Message.ENCODE_HTML);
+                    }
+                    else
+                        sendMessage(textEdit, Message.ENCODE_PLAIN);
                     showSendModeButton();
                 }
                 else {
@@ -728,13 +729,16 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         Date date = Calendar.getInstance().getTime();
         UIService uiService = AndroidGUIActivator.getUIService();
         if (uiService != null) {
-            MetaContact metacontact = chatPanel.getMetaContact();
-            if (metacontact != null) {
-                String sendTo = metacontact.getDefaultContact().getAddress();
-                chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_STICKER, ChatMessage.ENCODE_PLAIN, filePath);
+            String sendTo;
+            Object sender = mChatTransport.getDescriptor();
+            if (sender instanceof Contact) {
+                sendTo = ((Contact) sender).getAddress();
+                chatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_STICKER_SEND, Message.ENCODE_PLAIN, filePath);
             }
+            // chatRoom always use Http File Upload service
             else {
-                aTalkApp.showToastMessage(R.string.service_gui_FILE_SEND_NOT_ALLOW);
+                sendTo = ((ChatRoom) sender).getName();
+                chatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_STICKER_SEND, Message.ENCODE_PLAIN, filePath);
             }
         }
     }

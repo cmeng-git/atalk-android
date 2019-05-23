@@ -5,6 +5,7 @@
  */
 package org.atalk.android.gui.chat;
 
+import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
 import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
@@ -292,5 +293,15 @@ public class MergedMessage implements ChatMessage
     public IncomingFileTransferRequest getFTRequest()
     {
         return rootMessage.getFTRequest();
+    }
+    /**
+     * Returns the HttpFileDownloadJabberImpl of this message.
+     *
+     * @return the HttpFileDownloadJabberImpl of this message.
+     */
+    @Override
+    public HttpFileDownloadJabberImpl getHttpFileTransfer()
+    {
+        return rootMessage.getHttpFileTransfer();
     }
 }

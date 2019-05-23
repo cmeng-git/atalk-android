@@ -340,7 +340,7 @@
     <string name="service_gui_FILE_SEND_TO">Anlagen senden</string>
     <string name="service_gui_FILE_SENDING_TO">Sende Datei an %1$s</string>
     <string name="service_gui_FILE_TOO_BIG">Die maximale Dateigrösse wurde überschritten: %1$s</string>
-    <string name="service_gui_FILE_TRANSFER_ACTIVE">Der laufende Dateitransfer wurde unterbrochen.</string>
+    <string name="service_gui_FILE_TRANSFER_ACTIVE">Der laufende Dateitransfer wurde unterbrochen @ %1$s.</string>
     <string name="service_gui_FILE_TRANSFER_CANCELED">Dateitransfer wurde abgebrochen</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Contact Client oder Server unterstützt keine Dateiübertragung oder erforderliche Protokolle</string>
     <string name="service_gui_FILE_TRANSFER_PREPARING">Bereite Dateitransfer mit %1$s vor. Bitte warten&#8230;</string>
@@ -348,8 +348,6 @@
     <string name="service_gui_FILE_TRANSFER_REFUSED">Dateitransfer wurde abgelehnt</string>
 	<string name="service_gui_FILE_UNABLE_TO_SEND">Es gab ein Problem beim Sender einer Datei an %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Warte auf %1$s zur Bestätigung des Transfers.</string>
-    <string name="service_gui_FILE_DOWNLOAD_LINK">&lt;html xmlns=\'http://jabber.org/protocol/xhtml-im\'>&lt;body xmlns=\'http://www.w3.org/1999/xhtml\'>
-      &lt;p>Offline-Datei übertragen, Zugriff über Link:\n&lt;a href=\'%1$s\'>%2$s&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
 
 	<string name="service_gui_FINISH">Beenden</string>
 	<string name="service_gui_FOLDER_DOES_NOT_EXIST">Das Verzeichnis zu dieser Datei wurde nicht gefunden. Es wurde anscheinend gelöscht.</string>

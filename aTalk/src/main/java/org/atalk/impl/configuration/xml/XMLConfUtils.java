@@ -47,7 +47,7 @@ public class XMLConfUtils extends XMLUtils
 	 * 		the target document where the specified path should be created
 	 * @param path
 	 * 		an array of <tt>String</tt> elements which represents the path to be created. Each
-	 * 		element of <tt>path</tt> up to and including the index <code>pathLength - 1</code>
+	 * 		element of <tt>path</tt> up to and including the index {@code pathLength - 1}
 	 * 		must be valid  XML (element) names
 	 * @param pathLength
 	 * 		the length of the specified <tt>path</tt>

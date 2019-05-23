@@ -73,7 +73,7 @@ public class OtrSm
 	 * Respond to or initiate an SMP negotiation
 	 *
 	 * @param question
-	 * 		The question to present to the peer, if initiating. May be <code>null</code> for no
+	 * 		The question to present to the peer, if initiating. May be {@code null} for no
 	 * 		question. If not initiating, then it should be received question in order to clarify
 	 * 		whether this is shared secret verification.
 	 * @param secret

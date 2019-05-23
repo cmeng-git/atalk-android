@@ -12,8 +12,8 @@ import javax.media.protocol.*;
  * <tt>PushBufferStream</tt> but rather a specific substitute in order to give full control to the
  * {@link PushBufferStream#read(javax.media.Buffer)} method of the substitute.
  * <p>
- * The purpose is achieved in <code>#transferData(PushBufferStream)</code> where the method argument
- * <code>stream</code> is ignored and the substitute is used instead.
+ * The purpose is achieved in {@code #transferData(PushBufferStream)} where the method argument
+ * {@code stream} is ignored and the substitute is used instead.
  * </p>
  *
  * @author Lubomir Marinov
@@ -22,14 +22,14 @@ public class StreamSubstituteBufferTransferHandler implements BufferTransferHand
 {
 
 	/**
-	 * The <code>PushBufferStream</code> to be overridden for <code>transferHandler</code> with the
-	 * <code>substitute</code> of this instance.
+	 * The {@code PushBufferStream} to be overridden for {@code transferHandler} with the
+	 * {@code substitute} of this instance.
 	 */
 	private final PushBufferStream stream;
 
 	/**
-	 * The <code>PushBufferStream</code> to override the <code>stream</code> of this instance for
-	 * <code>transferHandler</code>.
+	 * The {@code PushBufferStream} to override the {@code stream} of this instance for
+	 * {@code transferHandler}.
 	 */
 	private final PushBufferStream substitute;
 
@@ -47,11 +47,11 @@ public class StreamSubstituteBufferTransferHandler implements BufferTransferHand
 	 * 		the <tt>BufferTransferHandler</tt> the new instance is to overwrite the source
 	 * 		<tt>PushBufferStream</tt> of
 	 * @param stream
-	 * 		the <code>PushBufferStream</code> to be overridden for the specified
-	 * 		<code>transferHandler</code> with the specified <code>substitute</code>
+	 * 		the {@code PushBufferStream} to be overridden for the specified
+	 * 		{@code transferHandler} with the specified (@code substitute}
 	 * @param substitute
-	 * 		the <code>PushBufferStream</code> to override the specified <code>stream</code> for
-	 * 		the specified <code>transferHandler</code>
+	 * 		the {@code PushBufferStream} to override the specified {@code stream} for
+	 * 		the specified {@code transferHandler}
 	 */
 	public StreamSubstituteBufferTransferHandler(BufferTransferHandler transferHandler,
 			PushBufferStream stream, PushBufferStream substitute)

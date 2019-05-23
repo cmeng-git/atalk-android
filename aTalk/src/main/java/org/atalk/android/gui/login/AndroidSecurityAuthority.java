@@ -191,7 +191,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
     /**
      * Indicates if the user name is currently editable, i.e. could be changed by user or not.
      *
-     * @return <code>true</code> if the user name could be changed, <code>false</code> - otherwise.
+     * @return {@code true</code> if the user name could be changed, <code>false} - otherwise.
      */
     public boolean isUserNameEditable()
     {

@@ -150,7 +150,7 @@ class Util
 	}
 
 	/**
-	 * Write <code>data</code> in <code>fp</code>
+	 * Write {@code data}  in {@code fp}
 	 *
 	 * @param data
 	 * @param length
@@ -171,7 +171,7 @@ class Util
 	}
 
 	/**
-	 * Read <code>data</code> from <code>fp</code>.
+	 * Read  {@code data}  in {@code fp}.
 	 *
 	 * @param data
 	 * @param length

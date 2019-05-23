@@ -45,8 +45,7 @@ public class AudioStreamUtils
 			Context context = ServiceUtils.getService(NeomediaActivator.getBundleContext(),
 				OSGiService.class);
 
-			// As Android resources don't use file extensions, remove it if
-			// there is one.
+			// As Android resources don't use file extensions, remove it if there is one.
 			int lastPathSeparator = url.lastIndexOf('/');
 			int extensionStartIx;
 			String resourceUri;

@@ -221,7 +221,7 @@ class Decoder extends Ld8k
 	}
 
 	/**
-	 * Process <code>SERIAL_SIZE</code> short of speech.
+	 * Process {@code SERIAL_SIZE} short of speech.
 	 *
 	 * @param serial
 	 *        input : serial array encoded in bits_ld8k

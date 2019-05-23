@@ -597,7 +597,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         /**
          * Called on the event dispatching thread (not on the worker thread)
-         * after the <code>construct</code> method has returned.
+         * after the {@code construct} method has returned.
          */
         @Override
         protected void onPostExecute(Iterator<GenericDetail> result)

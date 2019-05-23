@@ -8,7 +8,6 @@ package org.atalk.android.gui.chat.conference;
 import android.app.Activity;
 import android.os.*;
 
-import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.*;
@@ -20,7 +19,6 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.*;
-import org.atalk.android.gui.chat.history.HistoryWindow;
 import org.atalk.android.gui.chatroomslist.*;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.plugin.timberlog.TimberLog;
@@ -54,7 +52,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     /**
      * Maps each history window to a <tt>ChatRoomWrapper</tt>.
      */
-    private final Hashtable<ChatRoomWrapper, HistoryWindow> chatRoomHistory = new Hashtable<>();
+    // private final Hashtable<ChatRoomWrapper, HistoryWindow> chatRoomHistory = new Hashtable<>();
 
     /**
      * The list of ad-hoc chat rooms.
@@ -144,24 +142,16 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     public void messageDelivered(ChatRoomMessageDeliveredEvent evt)
     {
         ChatRoom sourceChatRoom = evt.getSourceChatRoom();
-
         Timber.log(TimberLog.FINER, "MESSAGE DELIVERED to chat room: %s", sourceChatRoom.getName());
 
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, false);
         if (chatPanel != null) {
-            String messageType;
-            switch (evt.getEventType()) {
-                case ChatRoomMessageDeliveredEvent.CONVERSATION_MESSAGE_DELIVERED:
-                    messageType = Chat.OUTGOING_MESSAGE;
-                    break;
-                case ChatRoomMessageDeliveredEvent.ACTION_MESSAGE_DELIVERED:
-                    messageType = Chat.ACTION_MESSAGE;
-                    break;
-                default:
-                    messageType = null;
-                    break;
-            }
             Message msg = evt.getMessage();
+            // just return if the delivered message is for remote client consumption only
+            if (msg.isRemoteOnly())
+                return;
+
+            int messageType = evt.getEventType();
             chatPanel.addMessage(sourceChatRoom.getUserNickname().toString(), null,
                     evt.getTimestamp(), messageType, msg.getMimeType(), msg.getContent(), msg.getEncryptionType(),
                     msg.getMessageUID(), null);
@@ -180,18 +170,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         ChatRoom sourceChatRoom = evt.getSourceChatRoom();
         ChatRoomMember sourceMember = evt.getSourceChatRoomMember();
 
-        String messageType = null;
-        switch (evt.getEventType()) {
-            case ChatRoomMessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED:
-                messageType = Chat.INCOMING_MESSAGE;
-                break;
-            case ChatRoomMessageReceivedEvent.SYSTEM_MESSAGE_RECEIVED:
-                messageType = Chat.SYSTEM_MESSAGE;
-                break;
-            case ChatRoomMessageReceivedEvent.ACTION_MESSAGE_RECEIVED:
-                messageType = Chat.ACTION_MESSAGE;
-                break;
-        }
+        int messageType = evt.getEventType();
 
         Timber.d("Message received from contact: %s", sourceMember.getContact());
         Message message = evt.getMessage();
@@ -249,17 +228,17 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                     break;
                 }
             }
-            //			if (hasMatch)
-            //				return; // cmeng disable for now
+            //	if (hasMatch)
+            //	    return; // cmeng disable for now
         }
         String jabberID = sourceMember.getContact().getAddress();
         String displayName = sourceMember.getNickName();
         chatPanel.addMessage(jabberID, displayName, evt.getTimestamp(), messageType, message.getMimeType(),
                 messageContent, message.getEncryptionType(), message.getMessageUID(), null);
 
-        //		if (createWindow) {
-        //			ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());
-        //		}
+        //	if (createWindow) {
+        //		ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());
+        //	}
     }
 
     /**
@@ -311,7 +290,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, true);
         chatPanel.addMessage(destMember != null ? destMember.getNickName() : sourceChatRoom.getName(), new Date(),
-                Chat.OUTGOING_MESSAGE, sourceMessage.getMimeType(), sourceMessage.getContent());
+                ChatMessage.MESSAGE_OUT, sourceMessage.getMimeType(), sourceMessage.getContent());
 
         // chatPanel.addErrorMessage(destMember != null
         // ? destMember.getNickName() : sourceChatRoom.getNickName(), errorMsg);
@@ -434,16 +413,16 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                     ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, false);
 
                     if (chatPanel != null) {
-                        chatPanel.addMessage(sourceChatRoom.getName(), null, new Date(), Chat.SYSTEM_MESSAGE,
-                                ChatMessage.ENCODE_PLAIN, evt.getReason(), ChatMessage.ENCRYPTION_NONE, null, null);
+                        chatPanel.addMessage(sourceChatRoom.getName(), null, new Date(), ChatMessage.MESSAGE_SYSTEM,
+                                Message.ENCODE_PLAIN, evt.getReason(), Message.ENCRYPTION_NONE, null, null);
 
                         // print and the alternate address
                         if (!StringUtils.isNullOrEmpty(evt.getAlternateAddress())) {
                             chatPanel.addMessage(sourceChatRoom.getName(), null, new Date(),
-                                    Chat.SYSTEM_MESSAGE, ChatMessage.ENCODE_PLAIN,
+                                    ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
                                     aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_ALTERNATE_ADDRESS,
                                             evt.getAlternateAddress()),
-                                    ChatMessage.ENCRYPTION_NONE, null, null);
+                                    Message.ENCRYPTION_NONE, null, null);
                         }
                     }
                 }
@@ -506,8 +485,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         AdHocChatRoom chatRoom = null;
         try {
-            java.util.List<String> members = new LinkedList<>();
-            members.addAll(contacts);
+            List<String> members = new LinkedList<>(contacts);
             chatRoom = groupChatOpSet.createAdHocChatRoom("chatroom-" + new Date().getTime(), members, reason);
         } catch (OperationFailedException | OperationNotSupportedException ex) {
             AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
@@ -617,49 +595,6 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
                     R.string.service_gui_WARNING, R.string.service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED);
         }
-    }
-
-    /**
-     * Checks if there's an open history window for the given chat room.
-     *
-     * @param chatRoomWrapper the chat room wrapper to check for
-     * @return TRUE if there's an opened history window for the given chat room, FALSE otherwise.
-     */
-    public boolean containsHistoryWindowForChatRoom(ChatRoomWrapper chatRoomWrapper)
-    {
-        return chatRoomHistory.containsKey(chatRoomWrapper);
-    }
-
-    /**
-     * Returns the history window for the given chat room.
-     *
-     * @param chatRoomWrapper the chat room wrapper to search for
-     * @return the history window for the given chat room
-     */
-    public HistoryWindow getHistoryWindowForChatRoom(ChatRoomWrapper chatRoomWrapper)
-    {
-        return chatRoomHistory.get(chatRoomWrapper);
-    }
-
-    /**
-     * Adds a history window for a given chat room in the table of opened history windows.
-     *
-     * @param chatRoomWrapper the chat room wrapper to add
-     * @param historyWindow the history window to add
-     */
-    public void addHistoryWindowForChatRoom(ChatRoomWrapper chatRoomWrapper, HistoryWindow historyWindow)
-    {
-        chatRoomHistory.put(chatRoomWrapper, historyWindow);
-    }
-
-    /**
-     * Removes the history window for the given chat room.
-     *
-     * @param chatRoomWrapper the chat room wrapper to remove the history window
-     */
-    public void removeHistoryWindowForChatRoom(ChatRoomWrapper chatRoomWrapper)
-    {
-        chatRoomHistory.remove(chatRoomWrapper);
     }
 
     /**
@@ -836,14 +771,13 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Indicates that an invitation has been received and opens the invitation dialog to notify
-     * the user.
+     * Indicates that an invitation has been received and opens the invitation dialog to notify the user.
      *
      * @param evt the <tt>AdHocChatRoomInvitationReceivedEvent</tt> that notified us
      */
     public void invitationReceived(AdHocChatRoomInvitationReceivedEvent evt)
     {
-        Timber.i("Invitation received: %s", evt.toString());
+        // Timber.i("Invitation received: %s", evt.toString());
         final OperationSetAdHocMultiUserChat multiUserChatOpSet = evt.getSourceOperationSet();
         final AdHocChatRoomInvitation invitationAdHoc = evt.getInvitation();
 
@@ -864,24 +798,16 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt)
     {
         AdHocChatRoom sourceChatRoom = (AdHocChatRoom) evt.getSource();
-
-        Timber.i("Message delivered to ad-hoc chat room: %s", sourceChatRoom.getName());
-
+        // Timber.i("Message delivered to ad-hoc chat room: %s", sourceChatRoom.getName());
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, false);
         if (chatPanel != null) {
-            String messageType;
-            switch (evt.getEventType()) {
-                case AdHocChatRoomMessageDeliveredEvent.CONVERSATION_MESSAGE_DELIVERED:
-                    messageType = Chat.OUTGOING_MESSAGE;
-                    break;
-                case AdHocChatRoomMessageDeliveredEvent.ACTION_MESSAGE_DELIVERED:
-                    messageType = Chat.ACTION_MESSAGE;
-                    break;
-                default:
-                    messageType = null;
-            }
-
             Message msg = evt.getMessage();
+
+            // just return if the delivered message is for remote client consumption only
+            if (msg.isRemoteOnly())
+                return;
+
+            int messageType = evt.getEventType();
             chatPanel.addMessage(sourceChatRoom.getParentProvider().getAccountID().getUserID(),
                     null, evt.getTimestamp(), messageType, msg.getMimeType(), msg.getContent(),
                     msg.getEncryptionType(), msg.getMessageUID(), null);
@@ -927,7 +853,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         }
 
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, true);
-        chatPanel.addMessage(destParticipant.getDisplayName(), new Date(), Chat.OUTGOING_MESSAGE,
+        chatPanel.addMessage(destParticipant.getDisplayName(), new Date(), ChatMessage.MESSAGE_OUT,
                 sourceMessage.getMimeType(), sourceMessage.getContent());
 
         // chatPanel.addErrorMessage(destParticipant.getDisplayName(), errorMsg);
@@ -946,20 +872,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         AdHocChatRoom sourceChatRoom = evt.getSourceChatRoom();
         Contact sourceParticipant = evt.getSourceChatRoomParticipant();
 
-        String messageType = null;
-
-        switch (evt.getEventType()) {
-            case AdHocChatRoomMessageReceivedEvent.CONVERSATION_MESSAGE_RECEIVED:
-                messageType = Chat.INCOMING_MESSAGE;
-                break;
-            case AdHocChatRoomMessageReceivedEvent.SYSTEM_MESSAGE_RECEIVED:
-                messageType = Chat.SYSTEM_MESSAGE;
-                break;
-            case AdHocChatRoomMessageReceivedEvent.ACTION_MESSAGE_RECEIVED:
-                messageType = Chat.ACTION_MESSAGE;
-                break;
-        }
-
+        int messageType = evt.getEventType();
         Timber.i("Message received from contact: %s", sourceParticipant.getAddress());
 
         Message message = evt.getMessage();

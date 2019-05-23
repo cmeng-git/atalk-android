@@ -63,8 +63,8 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     private LanguagePack languagePack = null;
 
     /**
-     * The {@link Locale} of <code>languageResources</code> so that the caching of the later
-     * can be used when a string with the same <code>Locale</code> is requested.
+     * The {@link Locale} of {@code languageResources} so that the caching of the later
+     * can be used when a string with the same {@code Locale} is requested.
      */
     private Locale languageLocale;
 

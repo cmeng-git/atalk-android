@@ -128,8 +128,8 @@ extern "C" {
 
 #if !(defined(VMS) || defined(__VMS)) /* VMS uses logical names instead */
 #if defined(HEADER_CRYPTLIB_H) && !defined(OPENSSLDIR)
-#define ENGINESDIR "/home/cmeng/workspace/ndk/openssl/tools/libs/x86_64/lib/engines"
-#define OPENSSLDIR "/home/cmeng/workspace/ndk/openssl/tools/libs/x86_64/ssl"
+#define ENGINESDIR "/home/cmeng/workspace/ndk/openssl-android/output/android/x86_64/lib/engines"
+#define OPENSSLDIR "/home/cmeng/workspace/ndk/openssl-android/output/android/x86_64/ssl"
 #endif
 #endif
 

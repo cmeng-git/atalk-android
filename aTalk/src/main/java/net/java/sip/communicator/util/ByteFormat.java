@@ -38,7 +38,7 @@ public class ByteFormat extends Format {
 		long check = 1;
 
 		// sizes
-		String[] sufixes = {"", " bytes", " K", " MB", " GB"};
+		String[] sufixes = {"", " bytes", " KB", " MB", " GB"};
 
 		for (int i = 1; i <= 4; i++) {
 			long tempCheck = check * 1024;

@@ -87,7 +87,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
                 privateContactRoom.updatePrivateContactPresenceStatus(sender);
             }
         }
-        this.id = String.valueOf(System.currentTimeMillis()) + String.valueOf(hashCode());
+        this.id = String.valueOf(System.currentTimeMillis()) + hashCode();
     }
 
     /**

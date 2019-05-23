@@ -21,6 +21,7 @@ set -u
 # aTalk v1.8.2 uses libvpx-1.8.0
 
 LIB_VPX="libvpx"
+LIB_GIT=v1.8.0
 
 ## Both problems #1 & #2 below have been fixed by patches from: https://android.googlesource.com/platform/external/libvpx/+/ca30a60d2d6fbab4ac07c63bfbf7bbbd1fe6a583
 ## However the compiled libjnvpx.so has problem when exec on x86_64 android platform:
@@ -36,9 +37,8 @@ LIB_VPX="libvpx"
 # 2. However libvpx-1.6.1 x86_64 has the same error
 # ./x86_64-linux-android/bin/ld: error: vpx/android/x86_64/lib/libvpx.a(deblock_sse2.asm.o): requires dynamic R_X86_64_PC32 reloc against 'vpx_rv' which may overflow at runtime; recompile with -fPIC
 
-
-# Uncomment below to fetch libvpx from online repository
-# ./init_libvpx.sh ${LIB_VPX}
+# Auto fetch and unarchive libvpx from online repository
+[[ -d ${LIB_VPX} ]] || ./init_libvpx.sh ${LIB_GIT}
 
 # Applying required patches to libvpx-1.8.0, libvpx-1.7.0 or libvpx-1.6.1+
 ./libvpx_patch.sh ${LIB_VPX}
@@ -104,7 +104,7 @@ configure_make() {
   # --extra-cflags="-isystem ${NDK}/sysroot/usr/include/${NDK_ABIARCH} -isystem ${NDK}/sysroot/usr/include" \
   # must specified -libc from standalone toolchains, libvpx configure.sh cannot get the right arch to use
 
-  # SDK toolchains has error with using ndk-r18b; ndk-R17c and ndk-r16b are ok (gcc/g++)
+  # SDK toolchains has error with ndk-r18b; however ndk-R17c and ndk-r16b are ok (gcc/g++)
 
   # Standalone toolchains built has problem with ABIS="armeabi-v7a"
   # /tmp/vpx-conf-31901-2664.o(.ARM.exidx.text.main+0x0): error: undefined reference to '__aeabi_unwind_cpp_pr0'
@@ -112,7 +112,7 @@ configure_make() {
   # Cannot define option add_ldflags "-Wl,--fix-cortex-a8"
   # Standalone: arm-linux-androideabi-ld: -Wl,--fix-cortex-a8: unknown option
 
-  # Need --disable-avx2 to fix x86_64 problem i.e.
+  # Need --disable-avx2 to fix x86_64 problem OR enable --enable-runtime-cpu-detect option
   # org.atalk.android A/libc: Fatal signal 4 (SIGILL), code 2 (ILL_ILLOPN), fault addr 0x77b2ac1757e6 in tid 20780 (Loop thread: ne), pid 20363 (g.atalk.android)
   # see https://bugs.chromium.org/p/webm/issues/detail?id=1623#c1
   # OR use option --enable-runtime-cpu-detect for x86/x86_64 ABIS platforms

@@ -164,7 +164,7 @@ class Coder extends Ld8k
 	} /* end of main() */
 
 	/**
-	 * Process <code>L_FRAME</code> short of speech.
+	 * Process {@code L_FRAME} short of speech.
 	 *
 	 * @param sp16
 	 *        input : speach short array

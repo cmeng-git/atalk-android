@@ -344,7 +344,7 @@
 	<string name="service_gui_FILE_SEND_TO">Enviar archivo adjunto</string>
 	<string name="service_gui_FILE_SENDING_TO">Enviando el archivo a %1$s</string>
 	<string name="service_gui_FILE_TOO_BIG">El tamaño del archivo excede el máximo permitido para este protocolo: %1$s</string>
-	<string name="service_gui_FILE_TRANSFER_ACTIVE">La transferencia de archivos en curso se interrumpía. Seguimiento de estado perdido!</string>
+	<string name="service_gui_FILE_TRANSFER_ACTIVE">La transferencia de archivos en curso se interrumpía. Seguimiento de estado @ %1$s perdido!</string>
 	<string name="service_gui_FILE_TRANSFER_CANCELED">Se ha cancelado la transferencia de archivos</string>
 	<string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">El cliente o servidor de contacto no admite la transferencia de archivos ni los protocolos necesarios</string>
 	<string name="service_gui_FILE_TRANSFER_PREPARING">Preparando la transferencia de archivos con %1$s. Por favor, espere&#8230;</string>
@@ -352,8 +352,6 @@
 	<string name="service_gui_FILE_TRANSFER_REFUSED">Se ha rechazado la transferencia de archivos</string>
 	<string name="service_gui_FILE_UNABLE_TO_SEND">Se ha producido un error al enviar el archivo a %1$s</string>
     <string name="service_gui_FILE_WAITING_TO_ACCEPT">Esperando %1$s para aceptar tu archivo</string>
-    <string name="service_gui_FILE_DOWNLOAD_LINK">&lt;html xmlns=\'http://jabber.org/protocol/xhtml-im\'>&lt;body xmlns=\'http://www.w3.org/1999/xhtml\'>
-      &lt;p>Archivo fuera de línea transferido, acceso por enlace:\n&lt;a href=\'%1$s\'>%2$s&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
 
 	<string name="service_gui_FINISH">Finalizar</string>
 	<string name="service_gui_FOLDER_DOES_NOT_EXIST">No se ha podido encontrar la carpeta que contiene este archivo. Se ha borrado o movido</string>

@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
@@ -42,8 +42,9 @@ configurations {
     all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     all*.exclude group: 'xpp3', module: 'xpp3'
 
-    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
+    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-experimental'
+    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-omemo'
 }
 
@@ -58,8 +59,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1082
-        versionName "1.8.2" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1083
+        versionName "1.8.3" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -256,6 +257,17 @@ dependencies {
         destinationName "smack-core_${smackVersion}.jar"
 
         classDelete 'org.jivesoftware.smack.provider.Provider'
+        classDelete 'org.jivesoftware.smack.util.StringUtils**'
+    }
+
+    implementation jarjar.repackage {
+        from("org.igniterealtime.smack:smack-experimental:$smackVersion") {
+            transitive = false
+        }
+        destinationDir new File("${projectDir}/libs")
+        destinationName "smack-experimental${smackVersion}.jar"
+
+        classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
     }
 
     implementation jarjar.repackage {
@@ -270,6 +282,7 @@ dependencies {
         classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
         classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
         classDelete 'org.jivesoftware.smackx.pubsub.PubSubManager'
+        classDelete 'org.jivesoftware.smackx.xhtmlim.XHTMLText'
     }
 
     implementation jarjar.repackage {

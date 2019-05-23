@@ -77,19 +77,19 @@ public class AndroidNotifications implements BundleActivator
         notificationService.removeEventNotificationAction(NotificationManager.INCOMING_CALL,
                 NotificationAction.ACTION_POPUP_MESSAGE);
 
-        // Missed call : new(No default message, Notification hide timeout, displayed on Jitsi icon)
+        // Missed call : new(No default message, Notification hide timeout, displayed on aTalk icon)
         notificationService.registerDefaultNotificationForEvent(MISSED_CALL,
                 new PopupMessageNotificationAction(null, -1, CALL_GROUP));
 
-        // Incoming message: new(No default message, Notification hide timeout, displayed on Jitsi icon)
+        // Incoming message: new(No default message, Notification hide timeout, displayed on aTalk icon)
         notificationService.registerDefaultNotificationForEvent(NotificationManager.INCOMING_MESSAGE,
                 new PopupMessageNotificationAction(null, -1, MESSAGE_GROUP));
 
-        // Incoming file: new(No default message, Notification hide timeout, displayed on Jitsi icon)
+        // Incoming file: new(No default message, Notification hide timeout, displayed on aTalk icon)
         notificationService.registerDefaultNotificationForEvent(NotificationManager.INCOMING_FILE,
                 new PopupMessageNotificationAction(null, -1, FILE_GROUP));
 
-        // Proactive notifications: new(No default message, Notification hide timeout, displayed on Jitsi icon)
+        // Proactive notifications: new(No default message, Notification hide timeout, displayed on aTalk icon)
         notificationService.registerDefaultNotificationForEvent(NotificationManager.PROACTIVE_NOTIFICATION,
                 new PopupMessageNotificationAction(null, 7000, DEFAULT_GROUP));
 

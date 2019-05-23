@@ -82,8 +82,7 @@ public class FileTransferStatusChangeEvent extends EventObject
      * @param newStatus the new status
      * @param reason the reason of this status change
      */
-    public FileTransferStatusChangeEvent(FileTransfer fileTransfer, int oldStatus, int newStatus,
-            String reason)
+    public FileTransferStatusChangeEvent(FileTransfer fileTransfer, int oldStatus, int newStatus, String reason)
     {
         super(fileTransfer);
 

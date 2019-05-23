@@ -940,29 +940,33 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      */
     public void messageReceived(AdHocChatRoomMessageReceivedEvent evt)
     {
-        try {
-            AdHocChatRoom sourceChatRoom = evt.getSourceChatRoom();
-            Contact sourceParticipant = evt.getSourceChatRoomParticipant();
+        // Fire notification as INCOMING_FILE is found
+        AdHocChatRoom chatRoom = evt.getSourceChatRoom();
+        String sourceParticipant = evt.getSourceChatRoomParticipant().getDisplayName();
+        final Message message = evt.getMessage();
+        String msgBody = message.getContent();
+        String msgUid = message.getMessageUID();
 
+        if (ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == evt.getEventType()) {
+            String filePath = msgBody.split("#")[0];
+            String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+
+            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM, sourceParticipant);
+            fireChatNotification(chatRoom, INCOMING_FILE, title, fileName, msgUid);
+        }
+        else {
             boolean fireChatNotification;
-            String nickname = sourceChatRoom.getName();
-            String messageContent = evt.getMessage().getContent();
+            String nickname = chatRoom.getName();
 
-            fireChatNotification = (nickname == null) || messageContent.toLowerCase().contains(nickname.toLowerCase());
+            fireChatNotification = (nickname == null) || msgBody.toLowerCase().contains(nickname.toLowerCase());
             if (fireChatNotification) {
-                String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED,
-                        sourceParticipant.getDisplayName());
+                String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, sourceParticipant);
                 final String htmlContent;
-                if (ChatMessage.ENCODE_HTML == evt.getMessage().getMimeType()) {
-                    htmlContent = messageContent;
+                if (!(Message.ENCODE_HTML == evt.getMessage().getMimeType())) {
+                    msgBody = StringEscapeUtils.escapeHtml4(msgBody);
                 }
-                else {
-                    htmlContent = StringEscapeUtils.escapeHtml4(messageContent);
-                }
-                fireChatNotification(sourceChatRoom, INCOMING_MESSAGE, title, htmlContent, evt.getMessage().getMessageUID());
+                fireChatNotification(chatRoom, INCOMING_MESSAGE, title, msgBody, evt.getMessage().getMessageUID());
             }
-        } catch (Throwable t) {
-            Timber.e(t, "Error notifying for adHoc message received");
         }
     }
 
@@ -970,48 +974,42 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      * Implements the <tt>ChatRoomMessageListener.messageReceived</tt> method. <br>
      * Obtains the corresponding <tt>ChatPanel</tt> and process the message there.
      *
-     * @param evt the <tt>ChatRoomMessageReceivedEvent</tt> that notified us that a message has been
-     * received
+     * @param evt the <tt>ChatRoomMessageReceivedEvent</tt> that notified us that a message has been received
      */
     public void messageReceived(ChatRoomMessageReceivedEvent evt)
     {
-        try {
-            ChatRoom sourceChatRoom = evt.getSourceChatRoom();
-            ChatRoomMember sourceMember = evt.getSourceChatRoomMember();
+        // Fire notification as INCOMING_FILE is found
+        ChatRoom chatRoom = evt.getSourceChatRoom();
+        String nickName = evt.getSourceChatRoomMember().getNickName();
+        final Message message = evt.getMessage();
+        String msgBody = message.getContent();
+        String msgUid = message.getMessageUID();
 
+        if (ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == evt.getEventType()) {
+            String filePath = msgBody.split("#")[0];
+            String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+
+            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM, nickName);
+            fireChatNotification(chatRoom, INCOMING_FILE, title, fileName, msgUid);
+        }
+        else {
             boolean fireChatNotification;
-            final Message sourceMsg = evt.getMessage();
-            String messageContent = sourceMsg.getContent();
-
             /*
              * It is uncommon for IRC clients to display popup notifications for messages which
              * are sent to public channels and which do not mention the nickname of the local user.
              */
-            if (sourceChatRoom.isSystem() || isPrivate(sourceChatRoom) || (messageContent == null))
+            if (chatRoom.isSystem() || isPrivate(chatRoom) || (msgBody == null))
                 fireChatNotification = true;
             else {
-                fireChatNotification = (sourceChatRoom.getUserNickname() != null);
-
-                // 	String nickname = sourceChatRoom.getUserNickname().toString();
-                // int atIx = nickname.indexOf("@");
-
-                // ireChatNotification = messageContent.toLowerCase().contains(nickname.toLowerCase())
-                //		|| ((atIx != -1) && messageContent.toLowerCase().contains(nickname.substring(0, atIx).toLowerCase()));
+                fireChatNotification = (chatRoom.getUserNickname() != null);
             }
-
             if (fireChatNotification) {
-                String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, sourceMember.getNickName());
-                final String htmlContent;
-                if (ChatMessage.ENCODE_HTML == sourceMsg.getMimeType()) {
-                    htmlContent = messageContent;
+                String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, nickName);
+                if (!(Message.ENCODE_HTML == message.getMimeType())) {
+                    msgBody = StringEscapeUtils.escapeHtml4(msgBody);
                 }
-                else {
-                    htmlContent = StringEscapeUtils.escapeHtml4(messageContent);
-                }
-                fireChatNotification(sourceChatRoom, INCOMING_MESSAGE, title, htmlContent, sourceMsg.getMessageUID());
+                fireChatNotification(chatRoom, INCOMING_MESSAGE, title, msgBody, msgUid);
             }
-        } catch (Throwable t) {
-            Timber.e(t, "Error notifying for chat room message received");
         }
     }
 
@@ -1022,21 +1020,27 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      */
     public void messageReceived(MessageReceivedEvent evt)
     {
-        try {
-            // Fire notification
-            String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, evt.getSourceContact().getDisplayName());
+        // Fire notification as INCOMING_FILE is found
+        Contact contact = evt.getSourceContact();
+        final Message message = evt.getSourceMessage();
+        String msgBody = message.getContent();
+        String msgUid = message.getMessageUID();
 
-            final Message sourceMsg = evt.getSourceMessage();
-            final String htmlContent;
-            if (ChatMessage.ENCODE_HTML == sourceMsg.getMimeType()) {
-                htmlContent = sourceMsg.getContent();
+        if (ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == evt.getEventType()) {
+            String filePath = msgBody.split("#")[0];
+            String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+
+            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM, contact.getAddress());
+            fireChatNotification(contact, INCOMING_FILE, title, fileName, msgUid);
+        }
+        else {
+            // Fire as message notification
+            String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, contact.getAddress());
+
+            if (!(Message.ENCODE_HTML == message.getMimeType())) {
+                msgBody = StringEscapeUtils.escapeHtml4(message.getContent());
             }
-            else {
-                htmlContent = StringEscapeUtils.escapeHtml4(sourceMsg.getContent());
-            }
-            fireChatNotification(evt.getSourceContact(), INCOMING_MESSAGE, title, htmlContent, sourceMsg.getMessageUID());
-        } catch (Throwable t) {
-            Timber.e(t, "Error notifying for message received");
+            fireChatNotification(contact, INCOMING_MESSAGE, title, msgBody, msgUid);
         }
     }
 

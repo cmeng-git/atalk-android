@@ -538,6 +538,8 @@ public class MUCServiceImpl extends MUCService
                     default:
                         done(JOIN_UNKNOWN_ERROR_PROP, message);
                 }
+            } catch (IllegalStateException ex) {
+                done(JOIN_PROVIDER_NOT_REGISTERED_PROP, ex.getMessage());
             }
         }
 

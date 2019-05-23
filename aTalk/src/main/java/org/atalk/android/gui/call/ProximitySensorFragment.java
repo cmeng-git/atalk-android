@@ -56,12 +56,12 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
     {
         super.onResume();
         SensorManager manager = aTalkApp.getSensorManager();
-        fm = ((OSGiActivity) getActivity()).getSupportFragmentManager();
+        fm = getActivity().getSupportFragmentManager();
 
         // Skips if the sensor has been already attached
         if (proximitySensor != null) {
             // Re-registers the listener as it might have been unregistered in onPause()
-            manager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_UI);
+            manager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
             return;
         }
 
@@ -117,8 +117,8 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
             return;
 
         float proximity = event.values[0];
-        float max = event.sensor.getMaximumRange();
-        //		Timber.i("Proximity updated: " + proximity + " max range: " + max);
+        // float max = event.sensor.getMaximumRange();
+        // Timber.i("Proximity updated: " + proximity + " max range: " + max);
 
         if (proximity > 0) {
             screenOn();
