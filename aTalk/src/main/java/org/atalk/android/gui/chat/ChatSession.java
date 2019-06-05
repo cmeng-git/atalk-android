@@ -22,7 +22,6 @@ import net.java.sip.communicator.service.protocol.OperationSet;
 
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.json.JSONObject;
-import org.jxmpp.jid.Jid;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,15 +37,15 @@ import java.util.List;
  */
 public abstract class ChatSession
 {
-    public static final String TABLE_NAME = "chatSessions";  // chat session
+    public static final String TABLE_NAME = "chatSessions"; // chat session
     public static final String SESSION_UUID = "sessionUuid";
     public static final String ACCOUNT_UUID = "accountUuid";
-    public static final String ACCOUNT_UID = "accountUid";    // AccountUID
+    public static final String ACCOUNT_UID = "accountUid";  // AccountUID
     public static final String ENTITY_JID = "entityJid";    // entityJid for contact or chatRoom
-    public static final String CREATED = "created";            // time stamp
-    public static final String STATUS = "status";
-    public static final String MODE = "mode";                // muc = 1
-    public static final String ATTRIBUTES = "attributes";    // see below ATTR_*
+    public static final String CREATED = "created";         // time stamp
+    public static final String STATUS = "status";           // see ChatFragment#chatType (persistent)
+    public static final String MODE = "mode";               // muc = 1
+    public static final String ATTRIBUTES = "attributes";   // see below ATTR_*
 
     public static final String ATTR_NEXT_ENCRYPTION = "next_encryption";
     public static final String ATTR_MUC_PASSWORD = "muc_password";
@@ -216,7 +215,7 @@ public abstract class ChatSession
      *
      * @return the entityBareJid of the chat
      */
-    public abstract String getChatName();
+    public abstract String getChatEntity();
 
     /**
      * Returns a collection of the last N number of history messages given by count.

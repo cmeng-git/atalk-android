@@ -115,12 +115,12 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Returns the name of the chat room.
+     * Returns the entityJid of the chat room.
      *
-     * @return the name of the chat room.
+     * @return the entityJid of the chat room.
      */
     @Override
-    public String getChatName()
+    public String getChatEntity()
     {
         return chatRoomWrapper.getChatRoomName();
     }

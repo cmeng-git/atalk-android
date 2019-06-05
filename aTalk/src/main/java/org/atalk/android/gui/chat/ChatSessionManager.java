@@ -751,7 +751,7 @@ public class ChatSessionManager
      */
     private static ChatPanel createChat(ChatRoomWrapper chatRoomWrapper, String escapedMessageID)
     {
-        ChatPanel chatPanel = new ChatPanel(null);
+        ChatPanel chatPanel = new ChatPanel(chatRoomWrapper);
         ConferenceChatSession chatSession = new ConferenceChatSession(chatPanel, chatRoomWrapper);
         chatPanel.setChatSession(chatSession);
 
@@ -783,7 +783,7 @@ public class ChatSessionManager
      */
     private static ChatPanel createChat(AdHocChatRoomWrapper chatRoomWrapper, String escapedMessageID)
     {
-        ChatPanel chatPanel = new ChatPanel(null);
+        ChatPanel chatPanel = new ChatPanel(chatRoomWrapper);
         AdHocConferenceChatSession chatSession = new AdHocConferenceChatSession(chatPanel, chatRoomWrapper);
         chatPanel.setChatSession(chatSession);
 

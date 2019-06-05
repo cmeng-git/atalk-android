@@ -24,8 +24,7 @@ import org.json.JSONException;
 import java.util.*;
 
 /**
- * An implementation of the <tt>ChatSession</tt> interface that represents a user-to-user chat
- * session.
+ * An implementation of the <tt>ChatSession</tt> interface that represents a user-to-user chat session.
  *
  * @author Yana Stamcheva
  * @author Lubomir Marinov
@@ -51,8 +50,7 @@ public class MetaContactChatSession extends ChatSession
     /**
      * Creates an instance of <tt>MetaContactChatSession</tt> by specifying the
      * renderer, which gives the connection with the UI, the meta contact
-     * corresponding to the session and the protocol contact to be used as
-     * transport.
+     * corresponding to the session and the protocol contact to be used as transport.
      *
      * @param chatPanel the renderer, which gives the connection with the UI.
      * @param metaContact the meta contact corresponding to the session and the protocol contact.
@@ -79,17 +77,17 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Returns the name of this chat.
+     * Returns the entityBareJid of the <tt>MetaContact</tt>
      *
-     * @return the name of this chat
+     * @return the entityBareJid of this chat
      */
     @Override
-    public String getChatName()
+    public String getChatEntity()
     {
-        String displayName = metaContact.getDisplayName();
-        if (!StringUtils.isNullOrEmpty(displayName))
-            return metaContact.getDisplayName();
-        return aTalkApp.getResString(R.string.service_gui_UNKNOWN);
+        String entityJid = metaContact.getDefaultContact().getAddress();
+        if (StringUtils.isNullOrEmpty(entityJid))
+            entityJid = aTalkApp.getResString(R.string.service_gui_UNKNOWN);
+        return entityJid;
     }
 
     /**
@@ -169,8 +167,8 @@ public class MetaContactChatSession extends ChatSession
         if (metaHistory == null)
             return startHistoryDate;
 
-        Collection<Object> firstMessage = metaHistory.findFirstMessagesAfter(
-                chatHistoryFilter, metaContact, new Date(0), 1);
+        Collection<Object> firstMessage
+                = metaHistory.findFirstMessagesAfter(chatHistoryFilter, metaContact, new Date(0), 1);
         if (firstMessage.size() > 0) {
             Iterator<Object> i = firstMessage.iterator();
 

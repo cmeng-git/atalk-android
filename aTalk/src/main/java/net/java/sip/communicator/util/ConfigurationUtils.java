@@ -20,8 +20,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
-import org.atalk.android.gui.chat.ChatSession;
-import org.atalk.android.gui.chat.MetaContactChatTransport;
+import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.atalk.android.util.java.awt.Color;
 import org.atalk.persistance.DatabaseBackend;
@@ -426,8 +425,7 @@ public class ConfigurationUtils
     private static boolean isNormalizePhoneNumber;
 
     /**
-     * Indicates if a string containing alphabetical characters might be considered as a phone
-     * number.
+     * Indicates if a string containing alphabetical characters might be considered as a phone number.
      */
     private static boolean acceptPhoneNumberWithAlphaChars;
 
@@ -442,10 +440,8 @@ public class ConfigurationUtils
      */
     private static final String MASTER_PASS_WARNING_PROP = "gui.main.SHOW_MASTER_PASSWORD_WARNING";
 
-
     /**
-     * Indicates whether the user should be warned
-     * that master password is not set.
+     * Indicates whether the user should be warned that master password is not set.
      */
     private static boolean showMasterPasswordWarning;
 
@@ -762,12 +758,10 @@ public class ConfigurationUtils
         // Load the "ACCEPT_PHONE_NUMBER_WITH_ALPHA_CHARS" property.
         acceptPhoneNumberWithAlphaChars = configService.getBoolean("gui.ACCEPT_PHONE_NUMBER_WITH_ALPHA_CHARS", true);
 
-        isHideAddressInCallHistoryTooltipEnabled
-                = configService.getBoolean(HIDE_ADDR_IN_CALL_HISTORY_TOOLTIP_PROPERTY,
+        isHideAddressInCallHistoryTooltipEnabled = configService.getBoolean(HIDE_ADDR_IN_CALL_HISTORY_TOOLTIP_PROPERTY,
                 isHideAddressInCallHistoryTooltipEnabled);
 
-        isHideDomainInReceivedCallDialogEnabled
-                = configService.getBoolean(HIDE_DOMAIN_IN_RECEIVE_CALL_DIALOG_PROPERTY,
+        isHideDomainInReceivedCallDialogEnabled = configService.getBoolean(HIDE_DOMAIN_IN_RECEIVE_CALL_DIALOG_PROPERTY,
                 isHideDomainInReceivedCallDialogEnabled);
 
         String hideExtendedAwayStatusDefaultValue = UtilActivator.getResources().getSettingsString(pHideExtendedAwayStatus);
@@ -859,13 +853,11 @@ public class ConfigurationUtils
     }
 
     /**
-     * Return TRUE if "quitWarningShown" property is true, otherwise - return FALSE. Indicates to
-     * the user interface whether the quit warning dialog should be shown when user clicks on the
-     * X button.
+     * Return TRUE if "quitWarningShown" property is true, otherwise - return FALSE. Indicates to the user
+     * interface whether the quit warning dialog should be shown when user clicks on the X button.
      *
      * @return TRUE if "quitWarningShown" property is true, otherwise - return FALSE. Indicates to
-     * the user interface whether the quit warning dialog should be shown when user clicks on the
-     * X button.
+     * the user interface whether the quit warning dialog should be shown when user clicks on the X button.
      */
     public static boolean isQuitWarningShown()
     {
@@ -941,7 +933,6 @@ public class ConfigurationUtils
         configService.setProperty(pSendThumbnail, Boolean.toString(isSendThumbnail));
         FileTransferConversation.FT_THUMBNAIL_ENABLE = sendThumbnail;
     }
-
 
     /**
      * The maximum file size that user will automatically accept for download.
@@ -1242,7 +1233,8 @@ public class ConfigurationUtils
         return isGroupRemoveDisabled;
     }
 
-    /** returns {@code true} if the "GROUP_RENAME_DISABLED" property is true, otherwise - returns {@code false}.
+    /**
+     * returns {@code true} if the "GROUP_RENAME_DISABLED" property is true, otherwise - returns {@code false}.
      *
      * @return {@code true} if the "GROUP_RENAME_DISABLED" property is true, otherwise - returns {@code false}.
      */
@@ -1251,7 +1243,8 @@ public class ConfigurationUtils
         return isGroupRenameDisabled;
     }
 
-    /** returns {@code true} if the "PRESET_STATUS_MESSAGES" property is true, otherwise - returns {@code false}.
+    /**
+     * returns {@code true} if the "PRESET_STATUS_MESSAGES" property is true, otherwise - returns {@code false}.
      *
      * @return {@code true} if the "PRESET_STATUS_MESSAGES" property is true, otherwise - returns {@code false}.
      */
@@ -1260,7 +1253,8 @@ public class ConfigurationUtils
         return isPresetStatusMessagesEnabled;
     }
 
-    /** returns {@code true} if the "ADVANCED_CONFIG_DISABLED" property is true, otherwise - returns {@code false}..
+    /**
+     * returns {@code true} if the "ADVANCED_CONFIG_DISABLED" property is true, otherwise - returns {@code false}..
      *
      * @return {@code true} if the "ADVANCED_CONFIG_DISABLED" property is true, otherwise - returns {@code false}.
      */
@@ -1556,11 +1550,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns {@code true} if status changed should be shown in chat history area,
-     * {@code false} otherwise.
+     * Returns {@code true} if status changed should be shown in chat history area, {@code false} otherwise.
      *
-     * @return {@code true} if status changed should be shown in chat history area,
-     * {@code false} otherwise.
+     * @return {@code true} if status changed should be shown in chat history area, {@code false} otherwise.
      */
     public static boolean isShowStatusChangedInChat()
     {
@@ -1568,11 +1560,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Whether allow to use additional phone numbers to route video calls and desktop sharing
-     * through it.
+     * Whether allow to use additional phone numbers to route video calls and desktop sharing through it.
      *
-     * @return whether allow to use additional phone numbers to route video calls and desktop
-     * sharing through it.
+     * @return whether allow to use additional phone numbers to route video calls and desktop sharing through it.
      */
     public static boolean isRouteVideoAndDesktopUsingPhoneNumberEnabled()
     {
@@ -1640,8 +1630,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Whether to display or not the text notifying that a message is a incoming or outgoing sms
-     * message.
+     * Whether to display or not the text notifying that a message is a incoming or outgoing sms message.
      *
      * @return whether to display the text notifying that a message is sms.
      */
@@ -1662,6 +1651,7 @@ public class ConfigurationUtils
 
     /**
      * Whether to show or not the master password warning.
+     *
      * @return {@code true} to show it, and {@code false} otherwise.
      */
     public static boolean showMasterPasswordWarning()
@@ -1671,6 +1661,7 @@ public class ConfigurationUtils
 
     /**
      * Updates the value of whether to show master password warning.
+     *
      * @param value the new value to set.
      */
     public static void setShowMasterPasswordWarning(boolean value)
@@ -1682,8 +1673,7 @@ public class ConfigurationUtils
     /**
      * Updates the "singleWindowInterface" property through the <tt>ConfigurationService</tt>.
      *
-     * @param isEnabled {@code true} to indicate that the single window interface is enabled,
-     * <tt>false</tt> - otherwise
+     * @param isEnabled {@code true} to indicate that the single window interface is enabled, <tt>false</tt> - otherwise
      */
     public static void setSingleWindowInterfaceEnabled(boolean isEnabled)
     {
@@ -1704,8 +1694,7 @@ public class ConfigurationUtils
     /**
      * Updates the "showOffline" property through the <tt>ConfigurationService</tt>.
      *
-     * @param isShowOffline {@code true} to indicate that the offline users should be shown,
-     * {@code false} otherwise.
+     * @param isShowOffline {@code true} to indicate that the offline users should be shown, {@code false} otherwise.
      */
     public static void setShowOffline(boolean isShowOffline)
     {
@@ -1716,8 +1705,7 @@ public class ConfigurationUtils
     /**
      * Updates the "showCallPanel" property through the <tt>ConfigurationService</tt>.
      *
-     * @param isCallPanelShown {@code true} to indicate that the call panel should be shown, {@code false}
-     * otherwise.
+     * @param isCallPanelShown {@code true} to indicate that the call panel should be shown, {@code false} otherwise.
      */
     public static void setShowCallPanel(boolean isCallPanelShown)
     {
@@ -1744,8 +1732,7 @@ public class ConfigurationUtils
      * Updates the "showAppQuitWarning" property through the <tt>ConfigurationService</tt>.
      *
      * @param isWarningShown indicates if the message warning the user that the application would not be closed if
-     * she clicks the X
-     * button would be shown again.
+     * she clicks the X button would be shown again.
      */
     public static void setQuitWarningShown(boolean isWarningShown)
     {
@@ -1775,11 +1762,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isMoveContactQuestionEnabled" property through the
-     * <tt>ConfigurationService</tt>.
+     * Updates the "isMoveContactQuestionEnabled" property through the <tt>ConfigurationService</tt>.
      *
-     * @param isRequested indicates if a confirmation would be requested from user during the move contact
-     * process.
+     * @param isRequested indicates if a confirmation would be requested from user during the move contact process.
      */
     public static void setMoveContactConfirmationRequested(boolean isRequested)
     {
@@ -1992,7 +1977,7 @@ public class ConfigurationUtils
             contentValues.put(ChatSession.ACCOUNT_UID, accountUid);
             contentValues.put(ChatSession.ENTITY_JID, newChatRoomId);
             contentValues.put(ChatSession.CREATED, timeStamp);
-            contentValues.put(ChatSession.STATUS, ChatSession.STATUS_AVAILABLE);
+            contentValues.put(ChatSession.STATUS, ChatFragment.MSGTYPE_OMEMO);
             contentValues.put(ChatSession.MODE, ChatSession.MODE_MULTI);
             contentValues.put(ChatSession.ATTRIBUTES, attributes);
 
@@ -2026,8 +2011,7 @@ public class ConfigurationUtils
     public static void updateChatRoomStatus(ProtocolProviderService protocolProvider,
             String chatRoomId, String chatRoomStatus)
     {
-        updateChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.LAST_CHAT_ROOM_STATUS,
-                chatRoomStatus);
+        updateChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.LAST_CHAT_ROOM_STATUS, chatRoomStatus);
     }
 
     /**
@@ -2207,8 +2191,7 @@ public class ConfigurationUtils
     /**
      * Indicates if the account configuration is disabled.
      *
-     * @return <tt>true</tt> if the account manual configuration and creation is disabled,
-     * otherwise return <tt>false</tt>
+     * @return <tt>true</tt> if the account manual configuration and creation is disabled, otherwise return <tt>false</tt>
      */
     public static boolean isShowAccountConfig()
     {

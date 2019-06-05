@@ -145,6 +145,7 @@ public class ChatFragment extends OSGiFragment
      */
     private boolean primarySelected = false;
 
+    // Message chatType definitions - persistent storge constants
     public final static int MSGTYPE_UNKNOWN = 0x0;
     public final static int MSGTYPE_NORMAL = 0x1;
 
@@ -2135,6 +2136,7 @@ public class ChatFragment extends OSGiFragment
     @Override
     public void onCryptoModeChange(int chatType)
     {
+        chatPanel.setChatType(chatType);
         changeBackground(mCFView, chatType);
     }
 
@@ -2150,7 +2152,6 @@ public class ChatFragment extends OSGiFragment
             return;
 
         mChatType = chatType;
-        chatPanel.setChatType(mChatType);
 
         runOnUiThread(() -> {
             switch (chatType) {

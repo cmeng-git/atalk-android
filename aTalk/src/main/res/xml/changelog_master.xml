@@ -6,6 +6,12 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.8.4 (06/05/2019)" versioncode="1084">
+        <change>Fix smack ping not working function - aTalk stops receiving calls and messages on standby</change>
+        <change>Provide persistent storage for user selected chatType across sessions and re-launch of aTalk. OTR chatType selected is not stored as its validity is session dependent and buddy being online</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="1.8.3 (05/23/2019)" versioncode="1083">
         <change>Implement \'OMEMO Media Sharing\' to support end-to-end encrypted files and stickers sharing</change>
         <change>Include http file upload service in fault-tolerance file transfer implementation; to handle clients that do not support legacy SOCK5 and IBB protocols</change>

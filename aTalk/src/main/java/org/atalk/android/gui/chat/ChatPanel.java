@@ -55,7 +55,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * The underlying <tt>MetaContact</tt>, we're chatting with.
      */
-    private final MetaContact metaContact;
+    private final MetaContact mMetaContact;
 
     /**
      * The chatType for which the message will be send for method not using Transform process
@@ -128,17 +128,17 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Creates a chat session with the given <tt>MetaContact</tt>.
      *
-     * @param metaContact the <tt>MetaContact</tt> we're chatting with
+     * @param descriptor the transport object we're chatting with
      */
-    public ChatPanel(MetaContact metaContact)
+    public ChatPanel(Object descriptor)
     {
-        this.metaContact = metaContact;
-
-        // init default mChatType onCreate
-        if (metaContact != null)
-            mChatType = ChatFragment.MSGTYPE_NORMAL;
-        else // Conference
-            mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
+        if (descriptor instanceof MetaContact) {
+            mMetaContact = (MetaContact) descriptor;
+        }
+        // Conference
+        else {
+            mMetaContact = null;
+        }
     }
 
     /**
@@ -187,7 +187,7 @@ public class ChatPanel implements Chat, MessageListener
      */
     public MetaContact getMetaContact()
     {
-        return metaContact;
+        return mMetaContact;
     }
 
     /**
@@ -310,7 +310,7 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void addChatStateListener(ChatStateNotificationsListener l)
     {
-        Iterator<Contact> protoContacts = metaContact.getContacts();
+        Iterator<Contact> protoContacts = mMetaContact.getContacts();
 
         while (protoContacts.hasNext()) {
             Contact protoContact = protoContacts.next();
@@ -330,7 +330,7 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void removeChatStateListener(ChatStateNotificationsListener l)
     {
-        Iterator<Contact> protoContacts = metaContact.getContacts();
+        Iterator<Contact> protoContacts = mMetaContact.getContacts();
 
         while (protoContacts.hasNext()) {
             Contact protoContact = protoContacts.next();
@@ -351,7 +351,7 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void addContactStatusListener(ContactPresenceStatusListener l)
     {
-        Iterator<Contact> protoContacts = metaContact.getContacts();
+        Iterator<Contact> protoContacts = mMetaContact.getContacts();
         while (protoContacts.hasNext()) {
             Contact protoContact = protoContacts.next();
             OperationSetPresence presenceOpSet
@@ -370,7 +370,7 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void removeContactStatusListener(ContactPresenceStatusListener l)
     {
-        Iterator<Contact> protoContacts = metaContact.getContacts();
+        Iterator<Contact> protoContacts = mMetaContact.getContacts();
 
         while (protoContacts.hasNext()) {
             Contact protoContact = protoContacts.next();
@@ -689,7 +689,7 @@ public class ChatPanel implements Chat, MessageListener
     public void messageReceived(MessageReceivedEvent messageReceivedEvent)
     {
         // cmeng: only handle messageReceivedEvent belongs to this.metaContact
-        if ((metaContact != null) && metaContact.containsContact(messageReceivedEvent.getSourceContact())) {
+        if ((mMetaContact != null) && mMetaContact.containsContact(messageReceivedEvent.getSourceContact())) {
             synchronized (cacheLock) {
                 // Must cache chatMsg as chatFragment has not registered to handle incoming
                 // message on first onAttach or not in focus
@@ -728,7 +728,7 @@ public class ChatPanel implements Chat, MessageListener
          * (metaContact == null) for ConferenceChatTransport. Check just in case the listener is not properly
          * removed when the chat is closed. Only handle messageReceivedEvent belongs to this.metaContact
          */
-        if ((metaContact != null) && metaContact.containsContact(messageDeliveredEvent.getDestinationContact())) {
+        if ((mMetaContact != null) && mMetaContact.containsContact(messageDeliveredEvent.getDestinationContact())) {
 
             // return if delivered message does not required local display in chatWindow nor cached
             if (messageDeliveredEvent.getSourceMessage().isRemoteOnly())
@@ -859,8 +859,8 @@ public class ChatPanel implements Chat, MessageListener
                     }
                 });
             }
-            this.addMessage(mChatSession.getChatName(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
-                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SUBJECT_CHANGED, mChatSession.getChatName(), subject));
+            this.addMessage(mChatSession.getChatEntity(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
+                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SUBJECT_CHANGED, mChatSession.getChatEntity(), subject));
         }
     }
 

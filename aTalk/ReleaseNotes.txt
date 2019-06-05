@@ -1,5 +1,16 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.8.4 (1084)
+Author:         cmeng
+Upload Date:	06/05/2019
+- Fix smack ping function not working - aTalk stops receiving calls and messages on standby
+- Provide persistent storage for user selected chatType across sessions and re-launch of aTalk.
+  OTR chatType selected is not stored as its validity is session dependent and buddy being online.
+- OTR session status check must resync with UI
+- Change MetaContactChatSession#getChatName to getChatEntity and return chat EntityJid instead of displayName
+- Redefined ChatSession.STATUS to store ChatFragment#chatType for persistent chatType retrieval
+
+=========================================================================
 Version:		1.8.3 (1083)
 Author:         cmeng
 Upload Date:	05/23/2019
@@ -25,8 +36,6 @@ Upload Date:	05/23/2019
   # x86: relocation R_386_GOTOFF against preemptible symbol ..
 - Simplify and use single script command for each jni library built
 
-#todo
-- Provide persistent on user selected chat mode across sessions and re-launch of aTalk.
 
 =========================================================================
 Version:		1.8.2 (1082)

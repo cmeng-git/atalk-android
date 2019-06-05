@@ -1333,8 +1333,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     public void pingFailed()
     {
-//        Timber.w("Ping failed! isLastConnectionMobile: %s; isConnectedMobile: %s", isLastConnectionMobile,
-//                isConnectedMobile());
+        // Timber.w("Ping failed! isLastConnectionMobile: %s; isConnectedMobile: %s", isLastConnectionMobile,
+        //        isConnectedMobile());
         isMobilePingClosedOnError = isLastConnectionMobile && isConnectedMobile();
     }
 
