@@ -39,8 +39,7 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.atalk.android.gui.chat.ChatMessage;
-import org.atalk.android.gui.chat.ChatSession;
+import org.atalk.android.gui.chat.*;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
@@ -537,10 +536,10 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Returns the messages for the recently contacted <tt>count</tt> contacts.
      *
      * @param count contacts count
-     * @param providerToFilter can be filtered by provider e.g. Jabber:abc123@atalk.org, or <tt>null</tt> to search
-     * for all  providers
-     * @param contactToFilter can be filtered by contact e.g. xyx123@atalk.org, or <tt>null</tt> to search for all
-     * contacts
+     * @param providerToFilter can be filtered by provider e.g. Jabber:abc123@atalk.org,
+     * or <tt>null</tt> to search for all  providers
+     * @param contactToFilter can be filtered by contact e.g. xyx123@atalk.org, or <tt>null</tt>
+     * to search for all contacts
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter,
@@ -802,11 +801,65 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         contentValues.put(ChatSession.ACCOUNT_UID, accountUid);
         contentValues.put(ChatSession.ENTITY_JID, entityJid);
         contentValues.put(ChatSession.CREATED, timeStamp);
-        contentValues.put(ChatSession.STATUS, "0");
+        contentValues.put(ChatSession.STATUS, ChatFragment.MSGTYPE_OMEMO);
         contentValues.put(ChatSession.MODE, mode);
 
         mDB.insert(ChatSession.TABLE_NAME, null, contentValues);
         return sessionUuid;
+    }
+
+    /**
+     * Get the chatSession chatType
+     * @param chatSession the chatSession for single or multi-chat
+     * @return the chatSession chatType
+     */
+    public int getSessionChatType(ChatSession chatSession)
+    {
+        int chatType = ChatFragment.MSGTYPE_OMEMO;
+        String entityJid = chatSession.getChatEntity();
+        AccountID accountUid = chatSession.getCurrentChatTransport().getProtocolProvider().getAccountID();
+
+        if (StringUtils.isNullOrEmpty(entityJid) || (accountUid == null))
+            return chatType;
+
+        String accountUuid = accountUid.getAccountUuid();
+        String[] columns = {ChatSession.STATUS};
+        String[] args = {accountUuid, entityJid};
+
+        Cursor cursor = mDB.query(ChatSession.TABLE_NAME, columns, ChatSession.ACCOUNT_UUID
+                + "=? AND " + ChatSession.ENTITY_JID + "=?", args, null, null, null);
+
+        while (cursor.moveToNext()) {
+            chatType = cursor.getInt(0);
+            if (ChatFragment.MSGTYPE_UNKNOWN == chatType)
+                chatType = ChatFragment.MSGTYPE_OMEMO;
+        }
+        cursor.close();
+       return chatType;
+    }
+
+
+    /**
+     * Get the chatSession chatType
+     * @param chatSession the chatSession for single or multi-chat
+     * @return the chatSession chatType
+     */
+    public int setSessionChatType(ChatSession chatSession, int chatType)
+    {
+        String entityJid = chatSession.getChatEntity();
+        AccountID accountUid = chatSession.getCurrentChatTransport().getProtocolProvider().getAccountID();
+
+        if (StringUtils.isNullOrEmpty(entityJid) || (accountUid == null))
+            return 0;
+
+        String accountUuid = accountUid.getAccountUuid();
+        String[] args = {accountUuid, entityJid};
+
+        contentValues.clear();
+        contentValues.put(ChatSession.STATUS, chatType);
+
+        return mDB.update(ChatSession.TABLE_NAME, contentValues, ChatSession.ACCOUNT_UUID
+                + "=? AND " + ChatSession.ENTITY_JID + "=?", args);
     }
 
     /**

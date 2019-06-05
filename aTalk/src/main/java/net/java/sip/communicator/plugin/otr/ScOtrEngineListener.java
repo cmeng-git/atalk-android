@@ -11,15 +11,16 @@ import net.java.sip.communicator.service.protocol.Contact;
 
 /**
  * @author George Politis
+ * @author Eng Chong Meng
  */
 public interface ScOtrEngineListener {
-	public void contactPolicyChanged(Contact contact);
+	void contactPolicyChanged(Contact contact);
 
-	public void globalPolicyChanged();
+	void globalPolicyChanged();
 
-	public void sessionStatusChanged(OtrContact contact);
+	void sessionStatusChanged(OtrContact contact);
 
-	public void multipleInstancesDetected(OtrContact contact);
+	void multipleInstancesDetected(OtrContact contact);
 
-	public void outgoingSessionChanged(OtrContact contact);
+	void outgoingSessionChanged(OtrContact contact);
 }

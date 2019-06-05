@@ -59,8 +59,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1083
-        versionName "1.8.3" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1084
+        versionName "1.8.4" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -257,6 +257,7 @@ dependencies {
         destinationName "smack-core_${smackVersion}.jar"
 
         classDelete 'org.jivesoftware.smack.provider.Provider'
+        classDelete 'org.jivesoftware.smack.SmackReactor**'
         classDelete 'org.jivesoftware.smack.util.StringUtils**'
     }
 

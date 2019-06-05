@@ -93,12 +93,12 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     }
 
     /**
-     * Returns the name of the ad-hoc chat room.
+     * Returns the entityJid of the ad-hoc chat room.
      *
-     * @return the name of the ad-hoc chat room.
+     * @return the entityJid of the ad-hoc chat room.
      */
     @Override
-    public String getChatName()
+    public String getChatEntity()
     {
         return chatRoomWrapper.getAdHocChatRoomName();
     }

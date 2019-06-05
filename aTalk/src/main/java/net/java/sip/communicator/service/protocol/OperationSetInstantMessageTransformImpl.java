@@ -25,7 +25,7 @@ public class OperationSetInstantMessageTransformImpl implements OperationSetInst
 	{
 		synchronized (transformLayers) {
 			if (!transformLayers.containsKey(defaultPriority))
-				transformLayers.put(defaultPriority, new Vector<TransformLayer>());
+				transformLayers.put(defaultPriority, new Vector<>());
 
 			transformLayers.get(defaultPriority).add(transformLayer);
 		}

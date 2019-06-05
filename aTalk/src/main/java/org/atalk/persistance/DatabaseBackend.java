@@ -31,8 +31,7 @@ import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.*;
-import org.atalk.android.gui.chat.ChatMessage;
-import org.atalk.android.gui.chat.ChatSession;
+import org.atalk.android.gui.chat.*;
 import org.atalk.crypto.omemo.FingerprintStatus;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.migrations.*;
@@ -290,7 +289,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
                 + ChatSession.ACCOUNT_UID + " TEXT, "
                 + ChatSession.ENTITY_JID + " TEXT, "
                 + ChatSession.CREATED + " NUMBER, "
-                + ChatSession.STATUS + " NUMBER DEFAULT 0, "
+                + ChatSession.STATUS + " NUMBER DEFAULT " + ChatFragment.MSGTYPE_OMEMO + ", "
                 + ChatSession.MODE + " NUMBER, "
                 + ChatSession.ATTRIBUTES + " TEXT, FOREIGN KEY("
                 + ChatSession.ACCOUNT_UUID + ") REFERENCES "

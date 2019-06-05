@@ -12,6 +12,8 @@ import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.Contact;
 
+import org.atalk.android.gui.chat.ChatSession;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.EventObject;
@@ -384,4 +386,20 @@ public interface MessageHistoryService
     String getSessionUuidByJid(ChatRoom chatRoom);
 
     String getSessionUuidByJid(AccountID accountID, String entityJid);
+
+    /**
+     * Get the chatSession persistent chatType
+     * @param chatSession the chat session for which to fetch from
+     * @return the chatType
+     */
+    int getSessionChatType(ChatSession chatSession);
+
+    /**
+     * Store the chatSession to user selected chatType
+     * @param chatSession the chat session for which to apply to
+     * @param chatType the chatType to store
+     * @return number of columns affected
+     */
+    int setSessionChatType(ChatSession chatSession, int chatType);
 }
+

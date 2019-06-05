@@ -53,7 +53,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      */
     public Message createMessage(byte[] content, int encType, String subject)
     {
-        String contentAsString = null;
+        String contentAsString;
         contentAsString = new String(content);
         return createMessage(contentAsString, encType, subject);
     }
@@ -116,7 +116,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      */
     public void fireMessageEvent(EventObject evt)
     {
-        Collection<MessageListener> listeners = null;
+        Collection<MessageListener> listeners;
         synchronized (this.messageListeners) {
             listeners = new ArrayList<>(this.messageListeners);
         }
@@ -300,7 +300,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
                 current.addAll(next);
             }
         }
-        return current.toArray(new EventObject[current.size()]);
+        return current.toArray(new EventObject[0]);
     }
 
     /**

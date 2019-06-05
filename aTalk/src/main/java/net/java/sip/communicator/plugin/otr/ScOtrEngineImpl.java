@@ -15,7 +15,6 @@ import net.java.sip.communicator.plugin.otr.authdialog.SmpAuthenticateBuddyDialo
 import net.java.sip.communicator.plugin.otr.authdialog.SmpProgressDialog;
 import net.java.sip.communicator.service.browserlauncher.BrowserLauncherService;
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
 import net.java.sip.communicator.service.protocol.*;
 

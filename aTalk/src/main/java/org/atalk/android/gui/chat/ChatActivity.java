@@ -185,7 +185,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             chatId = intent.getStringExtra(ChatSessionManager.CHAT_IDENTIFIER);
             currentChatMode = intent.getIntExtra(ChatSessionManager.CHAT_MODE, ChatSessionManager.MC_CHAT);
             mCurrentChatType = intent.getIntExtra(ChatSessionManager.CHAT_MSGTYPE, ChatFragment.MSGTYPE_OMEMO);
-            // mCryptoFragment.setChatType(mCurrentChatType); // CryptoFragment not ready
         }
         if (chatId == null)
             throw new RuntimeException("Missing chat identifier extra");

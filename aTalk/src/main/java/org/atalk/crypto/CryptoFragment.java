@@ -25,6 +25,7 @@ import net.java.sip.communicator.plugin.otr.*;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
+import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
@@ -65,6 +66,7 @@ import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_NORMAL;
 import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_OMEMO;
 import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_OTR;
 import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_OTR_UA;
+import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_UNKNOWN;
 
 /**
  * Fragment when added to <tt>Activity</tt> will display the padlock allowing user to select
@@ -119,6 +121,7 @@ public class CryptoFragment extends OSGiFragment
      * Otr Contact for currently active chatSession.
      */
     private OtrContact currentOtrContact = null;
+    MessageHistoryService mMHS;
 
     /**
      * isOmemoMode flag prevents otr from changing status when transition from otr to omemo when
@@ -132,6 +135,7 @@ public class CryptoFragment extends OSGiFragment
     public CryptoFragment()
     {
         setHasOptionsMenu(true);
+        mMHS = AndroidGUIActivator.getMessageHistoryService();
     }
 
     /**
@@ -198,15 +202,15 @@ public class CryptoFragment extends OSGiFragment
                     checkCryptoButton(activeChat.getChatType());
                 return true;
             case R.id.encryption_none:
-                if ((mChatType != MSGTYPE_NORMAL) && (mChatType != MSGTYPE_MUC_NORMAL)) {
-                    if (mDescriptor instanceof Contact)
-                        mChatType = ChatFragment.MSGTYPE_NORMAL;
-                    else
-                        mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
-                    hasChange = true;
-                    doHandleOmemoPressed(false);
-                    doHandleOtrPressed(false);
-                }
+                // if ((mChatType != MSGTYPE_NORMAL) && (mChatType != MSGTYPE_MUC_NORMAL)) {
+                if (mDescriptor instanceof Contact)
+                    mChatType = ChatFragment.MSGTYPE_NORMAL;
+                else
+                    mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
+                hasChange = true;
+                doHandleOmemoPressed(false);
+                doHandleOtrPressed(false);
+                //}
                 break;
             case R.id.encryption_omemo:
                 hasChange = true;
@@ -227,6 +231,11 @@ public class CryptoFragment extends OSGiFragment
             String chatId = ChatSessionManager.getCurrentChatId();
             encryptionChoice.put(chatId, item.getItemId());
             setStatusOmemo(mChatType);
+            // Timber.w("update persistent ChatType to: %s", mChatType);
+
+            // Do not store OTR as it may be invalid on new session startup
+            if ((mChatType != MSGTYPE_OTR) && (mChatType != MSGTYPE_OTR_UA))
+                mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -484,11 +493,13 @@ public class CryptoFragment extends OSGiFragment
                 Contact contact = currentOtrContact.contact;
                 OtrPolicy policy = scOtrEngine.getContactPolicy(contact);
                 ScSessionStatus status = scOtrEngine.getSessionStatus(currentOtrContact);
+                int chatType = MSGTYPE_UNKNOWN;
 
                 if (enable) {
                     switch (status) {
                         // Do nothing if it is already in encryption mode
                         case ENCRYPTED:
+                            chatType = MSGTYPE_OTR;
                             break;
                         /*
                          * Default action for timeout, loading (handset) and finished
@@ -505,6 +516,9 @@ public class CryptoFragment extends OSGiFragment
 
                         // Start otr private session if in plainText mode
                         case PLAINTEXT:
+                            // End any unclean session if any before proceed
+                            // scOtrEngine.endSession(currentOtrContact);
+
                             OtrPolicy globalPolicy = scOtrEngine.getGlobalPolicy();
                             policy.setSendWhitespaceTag(globalPolicy.getSendWhitespaceTag());
                             scOtrEngine.setContactPolicy(contact, policy);
@@ -516,7 +530,7 @@ public class CryptoFragment extends OSGiFragment
                     // let calling method or omemo decides what to set when OTR is disabled
                     switch (status) {
                         case PLAINTEXT:
-                            // Do nothing if it is already in plain Text
+                            chatType = MSGTYPE_NORMAL;
                             break;
 
                         /*
@@ -532,6 +546,15 @@ public class CryptoFragment extends OSGiFragment
                         case FINISHED:
                             scOtrEngine.endSession(currentOtrContact);
                             break;
+                    }
+                }
+
+                // Update otr status icon and e-sync static chatType to chatPanel, chatFragment etc if not the same
+                if (chatType != MSGTYPE_UNKNOWN) {
+                    mChatType = chatType;  // update this just in case
+                    setStatusOtr(status);
+                    if (chatType != activeChat.getChatType()) {
+                        notifyCryptoModeChanged(chatType);
                     }
                 }
             }
@@ -645,8 +668,12 @@ public class CryptoFragment extends OSGiFragment
      */
     private void initOmemo(String chatSessionId)
     {
-        if (!encryptionChoice.containsKey(chatSessionId))
-            encryptionChoice.put(chatSessionId, mNone.getItemId());
+        // Get from the persistent storage chatType for new instance
+        if (!encryptionChoice.containsKey(chatSessionId)) {
+            int chatType = mMHS.getSessionChatType(activeChat.getChatSession());
+            activeChat.setChatType(chatType);
+            encryptionChoice.put(chatSessionId, checkCryptoButton(chatType).getItemId());
+        }
 
         int mSelectedChoice = encryptionChoice.get(chatSessionId);
         MenuItem mItem = menu.findItem(mSelectedChoice);
@@ -761,10 +788,11 @@ public class CryptoFragment extends OSGiFragment
                     PublicKey pubKey = scOtrEngine.getRemotePublicKey(currentOtrContact);
                     String fingerprint = scOtrKeyManager.getFingerprintFromPublicKey(pubKey);
                     boolean isVerified = scOtrKeyManager.isVerified(currentOtrContact.contact, fingerprint);
-                    iconId = isVerified ? R.drawable.encrypted_verified_dark : R.drawable.encrypted_unverified_dark;
-                    tipKey = isVerified ? R.string.plugin_otr_menu_OTR_AUTHETICATED : R.string
-                            .plugin_otr_menu_OTR_NON_AUTHETICATED;
                     chatType = isVerified ? MSGTYPE_OTR : MSGTYPE_OTR_UA;
+
+                    iconId = isVerified ? R.drawable.encrypted_verified_dark : R.drawable.encrypted_unverified_dark;
+                    tipKey = isVerified ? R.string.plugin_otr_menu_OTR_AUTHETICATED
+                            : R.string.plugin_otr_menu_OTR_NON_AUTHETICATED;
                     break;
                 case FINISHED:
                     iconId = R.drawable.encrypted_finished_dark;
@@ -793,9 +821,12 @@ public class CryptoFragment extends OSGiFragment
             });
 
             // setStatusOmemo() will always get executed. So skip if same chatType
-            if (chatType != mChatType) {
+            if ((chatType != mChatType) || (chatType != activeChat.getChatType())) {
+                Timber.w("OTR listener change mChatType to: %s (%s)", mChatType, chatType);
                 mChatType = chatType;
-                // Timber.w("OTR listener change mChatType to: %s", mChatType);
+                // Do not store OTR state
+                if (mChatType == MSGTYPE_NORMAL)
+                    mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
                 notifyCryptoModeChanged(mChatType);
             }
         }
@@ -948,8 +979,7 @@ public class CryptoFragment extends OSGiFragment
 
     /**
      * Chat Type change notification to all registered cryptoModeChangeListeners mainly to change
-     * chatFragment background color for the new chatType; which is triggered from user
-     * cryptoMode selection.
+     * chatFragment background color for the new chatType; which is triggered from user cryptoMode selection.
      * When a listener for the mDescriptor key is not found, then the map is updated linking
      * current mDescriptor with the recent added listener with null key. null key is added when a
      * chatFragment is opened or became the primary selected.
@@ -998,6 +1028,7 @@ public class CryptoFragment extends OSGiFragment
         runOnUiThread(() -> {
             switch (chatType) {
                 case MSGTYPE_NORMAL:
+                case MSGTYPE_MUC_NORMAL:
                     onOptionsItemSelected(mNone);
                     break;
                 case MSGTYPE_OMEMO:
@@ -1007,19 +1038,5 @@ public class CryptoFragment extends OSGiFragment
                     onOptionsItemSelected(mOtr);
             }
         });
-    }
-
-    private MenuItem getMenuItem(int chatType)
-    {
-        switch (chatType) {
-            case MSGTYPE_NORMAL:
-                return mNone;
-            case MSGTYPE_OMEMO:
-                return mOmemo;
-            case MSGTYPE_OTR:
-                return mOtr;
-            default:
-                return mNone;
-        }
     }
 }
