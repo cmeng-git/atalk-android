@@ -35,6 +35,7 @@ import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.fragment.ActionBarStatusFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
+import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.osgi.framework.BundleContext;
 
@@ -72,7 +73,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     /**
      * The number of pages (wizard steps) to show.
      */
-    private static final int NUM_PAGES = 2;
+    private static final int NUM_PAGES = 3;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -263,8 +264,11 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
                 aTalkApp.setContactListFragment(contactListFragment);
                 return contactListFragment;
             }
-            else {
+            else if (position == 1) {
                 return new ChatRoomListFragment();
+            }
+            else {
+                return new WebViewFragment();
             }
         }
 

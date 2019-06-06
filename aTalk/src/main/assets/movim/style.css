@@ -1,0 +1,171 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Open Sans Light'), local('OpenSans-Light'), url(fonts/os_300.woff2) format('woff2'), url(fonts/os_300.woff2) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(fonts/os_400.woff2) format('woff2'), url(fonts/os_400.woff) format('woff');
+}
+
+html {
+    font-size: 8px;
+    height: 100%;
+}
+
+body {
+    background-color: #3F51B5;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    max-width: 500px;
+    margin: 0 auto;
+
+    padding: 0 2rem;
+    /*padding-top: 6rem;*/
+
+    background-image: /*url("img/logo_cloud.svg"), */radial-gradient(circle farthest-corner at right bottom,#5265ce 0,#213399 100%);
+    background-size: /*auto 27px, */100% 100%;
+    background-position: /*center 20px, */center;
+    background-repeat: no-repeat;
+
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 2.5rem;
+    opacity: 0.5;
+    text-align: center;
+}
+
+#error img {
+    max-width: 200px;
+    margin: 3rem 0;
+}
+
+#error,
+#redirect {
+    text-align: center;
+}
+
+#redirect .spinner {
+    background-image: url(img/movim_cloud.svg);
+    width: 100%;
+    height: 14rem;
+    position: absolute;
+    top: calc(50% - 12rem);
+    padding-top: 10rem;
+    left: 0;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: 11rem;
+    opacity: 1;
+}
+
+#list {
+    display: none;
+}
+
+#list ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#list ul li {
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 2px rgba(0, 0, 0, 0.24);
+    margin: 1rem 0;
+    background-color: white;
+    text-align: left;
+    padding: 1.5rem 2rem;
+    border-radius: 2px;
+}
+
+#list ul li:hover {
+    cursor: pointer;
+    background-color: #EDEDED;
+}
+
+#list ul li span {
+    color: rgba(0, 0, 0, 0.87);
+}
+
+#list ul li span.info {
+    float: right;
+    font-size: 1.5rem;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+#list ul li p {
+    color: gray;
+    margin: 0;
+    font-size: 1.75rem;
+}
+
+a.button,
+a.button:link,
+a.button:visited {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    padding: 1rem 2rem;
+    margin: 1rem;
+    color: white;
+    float: right;
+    display: inline-block;
+    text-decoration: none;
+}
+
+a.button:hover {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+a.button.main {
+    float: none;
+    position: absolute;
+    bottom: 4rem;
+    width: 30rem;
+    left: calc(50% - 16rem);
+    box-sizing: border-box;
+}
+
+body.list #redirect {
+    display: none;
+}
+
+body.list #list {
+    display: block;
+}
+
+.spinner {
+    position: relative;
+    overflow: visible;
+    text-align: center;
+    opacity: 0.5;
+}
+
+label,
+input {
+    display: block;
+    margin: 0 auto;
+}
+
+input {
+    background-color: transparent;
+    border: 0;
+    color: white;
+    border-bottom: 1px solid white;
+    padding: 1rem;
+    font-size: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input:invalid {
+    box-shadow: none;
+    border-color: red;
+    color: red;
+}

@@ -1198,6 +1198,10 @@
     <string name="service_gui_settings_ENABLED_STR">Включено</string>
     <string name="service_gui_settings_GENERAL">Общие</string>
 
+    <!-- WebView default Page -->
+    <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Войдите на страницу доступа по умолчанию для webView:</string>
+    <string name="service_gui_settings_WEBVIEW_TITLE">Страница веб-доступа</string>
+
     <!-- Message settings -->
     <string name="service_gui_settings_MSG">обмен сообщениями</string>
 

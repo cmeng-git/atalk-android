@@ -59,8 +59,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1084
-        versionName "1.8.4" // no alphabet allowed (e.g. 0.8.7.a)
+        versionCode 1085
+        versionName "1.8.5" // no alphabet allowed (e.g. 0.8.7.a)
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion

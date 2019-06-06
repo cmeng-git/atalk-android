@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Movim - Pod Chooser</title>
+        <meta name="description" content="Movim is a kickass distributed social networking platform that protect your privacy an comes with a set of awesome features." />
+        <meta name="theme-color" content="#1C1D5B" />
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        <script type="text/javascript" src="script.js"></script>
+    </head>
+    <body>
+        <div id="redirect">
+            <a class="button main" onclick="API.get();">Choose another Pod</a>
+
+            <div class="spinner">
+                <h2>Loading <span></span>…</h2>
+            </div>
+        </div>
+        <div id="list">
+            <h2>Loading the list…</h2>
+            <p>
+                <label for="url">Current Pod</label>
+                <input name="url" type="url" placeholder="Choose a pod or enter an URL"/>
+            </p>
+
+            <ul></ul>
+
+            <a class="button" onclick="API.set();">Save</a>
+            <a class="button" onclick="API.reload();">Back</a>
+        </div>
+    </body>
+
+    <script type="text/javascript">API.init();</script>
+</html>

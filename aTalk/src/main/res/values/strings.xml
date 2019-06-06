@@ -1361,6 +1361,12 @@
     <string name="service_gui_settings_ENABLED_STR">Enabled</string>
     <string name="service_gui_settings_GENERAL">General</string>
 
+    <!-- WebView default Page -->
+    <string name="pref_key_webview_PAGE">gui.WEB_PAGE_ACCESS</string>
+    <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Enter webView default access page:</string>
+    <string name="service_gui_settings_WEBVIEW_TITLE">Web Access Page</string>
+    <string name="service_gui_settings_WEBVIEW_SUMMARY">file:///android_asset/movim/index.html</string>
+
     <!-- Messaging settings -->
     <string name="pref_cat_settings_msg">pref.cat.settings.msg</string>
     <string name="service_gui_settings_MSG">Messaging</string>
@@ -1380,7 +1386,7 @@
     <!-- Show x recent messages in new chats -->
     <string name="pref_key_chat_history_size">pref.key.msg.chat_history_size</string>
     <string name="pref_key_show_history">pref.key.msg.show_history</string>
-    <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">How many recent messages should be displayed ?</string>
+    <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">How many recent messages should be displayed?</string>
     <string name="service_gui_settings_CHAT_HISTORY_SIZE">Show recent messages</string>
     <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d recent messages in new chats</string>
     <string name="service_gui_settings_SHOW_HISTORY">Show history</string>
