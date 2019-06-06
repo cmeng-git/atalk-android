@@ -18,6 +18,13 @@
             android:summaryOn="@string/service_gui_settings_AUTO_START_SUMMARY_ENABLE"
             android:title="@string/service_gui_settings_AUTO_START" />
 
+        <EditTextPreference
+            android:key="@string/pref_key_webview_PAGE"
+            android:dialogMessage="@string/service_gui_settings_WEBVIEW_DLG_TITLE"
+            android:inputType="textWebEditText"
+            android:title="@string/service_gui_settings_WEBVIEW_TITLE"
+            android:summary="@string/service_gui_settings_WEBVIEW_SUMMARY" />
+
         <ListPreference
             android:dialogTitle="@string/service_gui_settings_LOCALE"
             android:entries="@array/settings_language_entries"

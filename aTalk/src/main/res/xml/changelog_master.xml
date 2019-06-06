@@ -6,6 +6,11 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.8.5 (06/06/2019)" versioncode="1085">
+        <change>Add web access to main page slider for company RSS feed or news sharing - default access to movim</change>
+        <change>Add user option to specify default web access page in settings</change>
+    </release>
+
     <release version="1.8.4 (06/05/2019)" versioncode="1084">
         <change>Fix smack ping not working function - aTalk stops receiving calls and messages on standby</change>
         <change>Provide persistent storage for user selected chatType across sessions and re-launch of aTalk. OTR chatType selected is not stored as its validity is session dependent and buddy being online</change>

@@ -58,6 +58,8 @@ public class SettingsActivity extends OSGiActivity
     static private final String P_KEY_LOCALE = aTalkApp.getResString(R.string.pref_key_locale);
     static public final String P_KEY_THEME = aTalkApp.getResString(R.string.pref_key_theme);
 
+    static private final String P_KEY_WEB_PAGE = aTalkApp.getResString(R.string.pref_key_webview_PAGE);
+
     // Message section
     static private final String P_KEY_AUTO_START = aTalkApp.getResString(R.string.pref_key_atalk_auto_start);
     static private final String P_KEY_LOG_CHAT_HISTORY = aTalkApp.getResString(R.string.pref_key_history_logging);
@@ -164,6 +166,7 @@ public class SettingsActivity extends OSGiActivity
             // init display locale
             initLocale();
 
+            initWebPagePreference();
             // Init display theme - not implemented
             // aTalkApp.initTheme();
 
@@ -203,6 +206,21 @@ public class SettingsActivity extends OSGiActivity
             shPrefs.unregisterOnSharedPreferenceChangeListener(this);
             shPrefs.unregisterOnSharedPreferenceChangeListener(summaryMapper);
             super.onStop();
+        }
+
+        /**
+         * Initialize web default access page
+         */
+        private void initWebPagePreference() {
+            // Updates displayed history size summary.
+            EditTextPreference webPagePref = (EditTextPreference) findPreference(P_KEY_WEB_PAGE);
+            webPagePref.setText(ConfigurationUtils.getWebPage());
+            updateWebPageSummary();
+        }
+
+        private void updateWebPageSummary() {
+            EditTextPreference webPagePref = (EditTextPreference) findPreference(P_KEY_WEB_PAGE);
+            webPagePref.setSummary(ConfigurationUtils.getWebPage());
         }
 
         /**
@@ -585,6 +603,11 @@ public class SettingsActivity extends OSGiActivity
                 assert intStr != null;
                 ConfigurationUtils.setChatHistorySize(Integer.parseInt(intStr));
                 updateHistorySizeSummary();
+            }
+            else if (key.equals(P_KEY_WEB_PAGE)) {
+                String wpStr = shPreferences.getString(P_KEY_WEB_PAGE, ConfigurationUtils.getWebPage());
+                ConfigurationUtils.setWebPage(wpStr);
+                updateWebPageSummary();
             }
             else if (key.equals(P_KEY_AUTO_START)) {
                 ConfigurationUtils.setAutoStart(shPreferences.getBoolean(

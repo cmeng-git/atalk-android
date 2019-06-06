@@ -77,6 +77,11 @@ public class ConfigurationUtils
     private static String sendMessageCommand;
 
     /**
+     * The Web View access page
+     */
+    private static String mWebPage;
+
+    /**
      * The aTalk UI language
      */
     private static String mLanguage;
@@ -398,6 +403,7 @@ public class ConfigurationUtils
      * The names of the configuration properties.
      */
     public static String pAutoStart = "gui.AUTO_START_ON_REBOOT";
+    public static String pWebPage = aTalkApp.getResString(R.string.pref_key_webview_PAGE);
     private static String pAutoPopupNewMessage = "gui.AUTO_POPUP_NEW_MESSAGE";
     private static String pMsgCommand = "gui.SEND_MESSAGE_COMMAND";
     private static String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
@@ -469,6 +475,11 @@ public class ConfigurationUtils
         // Load the UI language last selected by user or default to system language i.e. ""
         mLanguage = configService.getString(aTalkApp.getResString(R.string.pref_key_locale, ""));
         aTalk.setATLanguage(mLanguage);
+
+        // Load the "webPage" property.
+        mWebPage = configService.getString(pWebPage);
+        if (StringUtils.isNullOrEmpty(mWebPage))
+            mWebPage = aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY);
 
         // Load the "auPopupNewMessage" property.
         String autoPopup = configService.getString(pAutoPopupNewMessage);
@@ -1419,6 +1430,28 @@ public class ConfigurationUtils
             }
         }
         return protocolProvider;
+    }
+
+    /**
+     * Returns the number of messages from chat history that would be shown in the chat window.
+     *
+     * @return the number of messages from chat history that would be shown in the chat window.
+     */
+    public static String getWebPage()
+    {
+        return StringUtils.isNullOrEmpty(mWebPage, true)?
+                aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY) : mWebPage;
+    }
+
+    /**
+     * Updates the "webPage" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param webPage the web page for access.
+     */
+    public static void setWebPage(String webPage)
+    {
+        mWebPage = webPage;
+        configService.setProperty(pWebPage, webPage);
     }
 
     /**

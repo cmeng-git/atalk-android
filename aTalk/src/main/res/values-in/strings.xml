@@ -1193,6 +1193,10 @@
     <string name="service_gui_settings_ENABLED_STR">Diaktifkan</string>
     <string name="service_gui_settings_GENERAL">Umum</string>
 
+    <!-- WebView default Page -->
+    <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Masuk ke halaman akses default webView:</string>
+    <string name="service_gui_settings_WEBVIEW_TITLE">Halaman Akses Web</string>
+
     <!-- Message settings -->
     <string name="service_gui_settings_MSG">Messaging</string>
 

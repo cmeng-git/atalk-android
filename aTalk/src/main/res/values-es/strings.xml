@@ -1209,6 +1209,10 @@
     <string name="service_gui_settings_ENABLED_STR">Activado</string>
     <string name="service_gui_settings_GENERAL">General</string>
 
+    <!-- WebView default Page -->
+    <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Ingrese a la página de acceso predeterminado de webView:</string>
+    <string name="service_gui_settings_WEBVIEW_TITLE">Página de acceso web</string>
+
     <!-- Message settings -->
     <string name="service_gui_settings_MSG">Mensajería</string>
 

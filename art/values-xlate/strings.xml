@@ -1191,6 +1191,10 @@
     <string name="service_gui_settings_ENABLED_STR">Enabled</string>
     <string name="service_gui_settings_GENERAL">General</string>
 
+    <!-- WebView default Page -->
+    <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Ubah webView default access page:</string>
+    <string name="service_gui_settings_WEBVIEW_TITLE">Web Access Page</string>
+
     <!-- Messaging settings -->
     <string name="service_gui_settings_MSG">Messaging</string>
 
@@ -1205,7 +1209,7 @@
     <string name="service_gui_settings_HISTORY_LOGGING">Chat history logging</string>
 
     <!-- Show x recent messages in new chats -->
-    <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">How many recent messages should be displayed ?</string>
+    <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">How many recent messages should be displayed?</string>
     <string name="service_gui_settings_CHAT_HISTORY_SIZE">Show recent messages</string>
     <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d recent messages in new chats</string>
     <string name="service_gui_settings_SHOW_HISTORY">Show history</string>

@@ -1178,6 +1178,10 @@
     <string name="service_gui_settings_ENABLED_STR">Aktiviert</string>
     <string name="service_gui_settings_GENERAL">Allgemein</string>
 
+    <!-- WebView default Page -->
+    <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Geben Sie die Standardzugriffsseite von webView ein:</string>
+    <string name="service_gui_settings_WEBVIEW_TITLE">Webzugriffsseite</string>
+
     <!-- Message settings -->
     <string name="service_gui_settings_MSG">Nachrichten</string>
 
