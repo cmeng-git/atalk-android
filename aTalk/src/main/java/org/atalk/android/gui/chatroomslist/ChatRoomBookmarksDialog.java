@@ -276,11 +276,10 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         {
             super.onPostExecute(result);
             if ((mAccountBookmarkConferencesList != null) && (mAccountBookmarkConferencesList.size() > 0)) {
-                String[] keySet = (String[]) mAccountBookmarkConferencesList.keySet().toArray();
+                Object[] keySet = mAccountBookmarkConferencesList.keySet().toArray();
 
-                String accountId;
-                if (keySet != null && keySet.length > 0) {
-                    accountId = keySet[0];
+                if ((keySet != null) && (keySet.length > 0)) {
+                    String accountId = (String) keySet[0];
                     if (!StringUtils.isNullOrEmpty(accountId))
                         initChatRoomSpinner(accountId);
                 }
