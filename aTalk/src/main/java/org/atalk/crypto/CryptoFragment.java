@@ -78,7 +78,7 @@ public class CryptoFragment extends OSGiFragment
         implements ChatSessionManager.CurrentChatListener, ChatRoomMemberPresenceListener
 {
     /**
-     * A map of the user selected encryption menu ItemId. The stored key is the chatId. The information
+     * A map of the user selected chatType. The stored key is the chatSessionId. The information
      * is used to restore the last user selected encryption choice when a chat window is scrolled in view.
      */
     private static final Map<String, Integer> encryptionChoice = new LinkedHashMap<>();
@@ -229,7 +229,7 @@ public class CryptoFragment extends OSGiFragment
 
         if (hasChange) {
             String chatId = ChatSessionManager.getCurrentChatId();
-            encryptionChoice.put(chatId, item.getItemId());
+            encryptionChoice.put(chatId, mChatType);
             setStatusOmemo(mChatType);
             // Timber.w("update persistent ChatType to: %s", mChatType);
 
@@ -669,20 +669,21 @@ public class CryptoFragment extends OSGiFragment
     private void initOmemo(String chatSessionId)
     {
         // Get from the persistent storage chatType for new instance
+        int chatType;
         if (!encryptionChoice.containsKey(chatSessionId)) {
-            int chatType = mMHS.getSessionChatType(activeChat.getChatSession());
-            activeChat.setChatType(chatType);
-            encryptionChoice.put(chatSessionId, checkCryptoButton(chatType).getItemId());
+            chatType = mMHS.getSessionChatType(activeChat.getChatSession());
+            encryptionChoice.put(chatSessionId, chatType);
         }
+        chatType = encryptionChoice.get(chatSessionId);
+        activeChat.setChatType(chatType);
 
-        int mSelectedChoice = encryptionChoice.get(chatSessionId);
-        MenuItem mItem = menu.findItem(mSelectedChoice);
+        MenuItem mItem =  checkCryptoButton(chatType);
         mItem.setChecked(true);
         isOmemoSupport();
 
         // need to handle crypto state icon if it is not OTR - need to handle for all in Note 8???
         if (mItem != mOtr) {
-            setStatusOmemo(activeChat.getChatType());
+            setStatusOmemo(chatType);
         }
         isOmemoMode = (mItem == mOmemo);
 

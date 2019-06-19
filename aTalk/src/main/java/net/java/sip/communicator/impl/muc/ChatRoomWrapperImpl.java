@@ -20,13 +20,22 @@ import android.support.annotation.NonNull;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.util.StringUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
+import org.jxmpp.util.XmppStringUtils;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import timber.log.Timber;
 
 /**
  * The <tt>ChatRoomWrapper</tt> is the representation of the <tt>ChatRoom</tt> in the GUI. It
@@ -43,13 +52,15 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      */
     private final ChatRoomProviderWrapper parentProvider;
 
+    private final ProtocolProviderService mPPS;
+
     /**
      * The room that is wrapped.
      */
     private ChatRoom chatRoom;
 
     /**
-     * The room id.
+     * The room Name.
      */
     private final String chatRoomID;
 
@@ -59,10 +70,24 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     private static final String AUTOJOIN_PROPERTY_NAME = "autoJoin";
 
     /**
+     * The property we use to store values in configuration service.
+     */
+    private static final String BOOKMARK_PROPERTY_NAME = "bookmark";
+
+    /**
+     * The participant nickName.
+     */
+    private String nickName = null;
+
+    private String bookmarkName = null;
+
+    /**
      * As isAutoJoin can be called from GUI many times we store its value once retrieved to
-     * minimize calls to configuration service.
+     * minimize calls to configuration service. Set to null to indicate not initialize
      */
     private Boolean autoJoin = null;
+
+    private Boolean bookmark = null;
 
     /**
      * By default all chat rooms are persistent from UI point of view. But we can override this
@@ -86,15 +111,13 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
         {
             MessageHistoryService mhs = MUCActivator.getMessageHistoryService();
             if (!mhs.isHistoryLoggingEnabled() || !mhs.isHistoryLoggingEnabled(getChatRoomID())) {
-                MUCService.setChatRoomAutoOpenOption(getParentProvider().getProtocolProvider(),
-                        getChatRoomID(), MUCService.OPEN_ON_ACTIVITY);
+                MUCService.setChatRoomAutoOpenOption(mPPS, getChatRoomID(), MUCService.OPEN_ON_ACTIVITY);
             }
         }
     };
 
     /**
-     * Creates a <tt>ChatRoomWrapper</tt> by specifying the protocol provider, the identifier and
-     * the name of the chatRoom.
+     * Creates a <tt>ChatRoomWrapper</tt> by specifying the protocol provider and the name of the chatRoom.
      *
      * @param parentProvider the protocol provider to which the corresponding chat room belongs
      * @param chatRoomID the identifier of the corresponding chat room
@@ -103,18 +126,18 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     {
         this.parentProvider = parentProvider;
         this.chatRoomID = chatRoomID;
+        this.mPPS = parentProvider.getProtocolProvider();
 
         // Request for passwordPrefix only if chatRoomID is not a serviceName
         if (chatRoomID.contains("@")) {
-            passwordPrefix = ConfigurationUtils.getChatRoomPrefix
-                    (parentProvider.getProtocolProvider(), chatRoomID) + ".password";
+            passwordPrefix = ConfigurationUtils.getChatRoomPrefix(mPPS, chatRoomID) + ".password";
         }
 
         MUCActivator.getConfigurationService().addPropertyChangeListener(
                 MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED, propertyListener);
         MUCActivator.getConfigurationService().addPropertyChangeListener(
                 MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_PER_CONTACT_ENABLED_PREFIX
-                        + "." + getChatRoomID(), propertyListener);
+                        + "." + chatRoomID, propertyListener);
     }
 
     /**
@@ -173,6 +196,24 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
+     * Returns the chat room EntityBareJid.
+     *
+     * @return the chat room EntityBareJid
+     */
+    public EntityBareJid getEntityBareJid() {
+        if (chatRoom != null)
+            return chatRoom.getIdentifier();
+        else {
+            try {
+                return JidCreate.entityBareFrom(chatRoomID);
+            } catch (XmppStringprepException e) {
+                Timber.w("Failed to get Room EntityBareJid: %s", e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the parent protocol provider.
      *
      * @return the parent protocol provider
@@ -183,9 +224,9 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
-     * Returns <code>true</code> if the chat room is persistent, otherwise - returns <code>false</code>.
+     * Returns {@code true} if the chat room is persistent, otherwise - returns {@code false}.
      *
-     * @return <code>true</code> if the chat room is persistent, otherwise - returns <code>false</code>.
+     * @return {@code true} if the chat room is persistent, otherwise - returns {@code false}.
      */
     public boolean isPersistent()
     {
@@ -237,6 +278,88 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
+     * Returns the user nickName as ResourcePart.
+     *
+     * @return the user nickName ResourcePart
+     */
+    public Resourcepart getNickResource() {
+        String nickName = getNickName();
+        try {
+            return Resourcepart.from(nickName);
+        } catch (XmppStringprepException e) {
+            Timber.w("Failed to get Nick resourcePart: %s", e.getMessage());
+        }
+        return  null;
+    }
+
+    /**
+     * Returns the member nickName.
+     *
+     * @return the member nickName
+     */
+    public String getNickName()
+    {
+        if (StringUtils.isNullOrEmpty(nickName)) {
+            nickName = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, ChatRoom.USER_NICK_NAME);
+            if (StringUtils.isNullOrEmpty(nickName))
+                nickName = getDefaultNickname(mPPS);
+        }
+        return nickName;
+    }
+
+    /**
+     * Sets the default value in the nickname field based on pps.
+     *
+     * @param pps the ProtocolProviderService
+     */
+    private String getDefaultNickname(ProtocolProviderService pps)
+    {
+        String nickName = AndroidGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
+        if ((nickName == null) || nickName.contains("@"))
+            nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
+
+        return nickName;
+    }
+
+    /**
+     * Stores the nickName for the member.
+     *
+     * @param value the nickName to store
+     */
+    public void setNickName(String value)
+    {
+        nickName = value;
+        if (!isPersistent()) {
+            setPersistent(true);
+            ConfigurationUtils.saveChatRoom(mPPS, chatRoomID, chatRoomID);
+        }
+        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ChatRoom.USER_NICK_NAME, null);
+    }
+
+    /**
+     * Returns the bookmark name; empty string if null.
+     *
+     * @return the bookmark name
+     */
+    public String getBookmarkName() {
+        return StringUtils.isNullOrEmpty(bookmarkName)? "": bookmarkName;
+    }
+
+    /**
+     * set the bookmark name.
+     *
+     * @param value the bookmark name to set
+     */
+    public void setBookmarkName(String value) {
+        bookmarkName = value;
+        if (!isPersistent()) {
+            setPersistent(true);
+            ConfigurationUtils.saveChatRoom(mPPS, chatRoomID, chatRoomID);
+        }
+        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ChatRoom.CHAT_ROOM_NAME, null);
+    }
+
+    /**
      * Is room set to auto join on start-up (return autoJoin may be null).
      *
      * @return is auto joining enabled.
@@ -244,8 +367,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     public boolean isAutoJoin()
     {
         if (autoJoin == null) {
-            String val = ConfigurationUtils.getChatRoomProperty(
-                    getParentProvider().getProtocolProvider(), getChatRoomID(), AUTOJOIN_PROPERTY_NAME);
+            String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, AUTOJOIN_PROPERTY_NAME);
             autoJoin = StringUtils.isNullOrEmpty(val) ? false : Boolean.valueOf(val);
         }
         return autoJoin;
@@ -258,26 +380,64 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      */
     public void setAutoJoin(boolean value)
     {
-        autoJoin = value;
+        if (isAutoJoin() == value)
+            return;
 
-        // as the user wants to autoJoin this room and it maybe already created as non persistent
+        autoJoin = value;
+        // as the user wants to autoJoin this room and it maybe already created as non-persistent
         // we must set it persistent and store it
         if (!isPersistent()) {
             setPersistent(true);
-            ConfigurationUtils.saveChatRoom(getParentProvider().getProtocolProvider(),
-                    getChatRoomID(), getChatRoomID());
+            ConfigurationUtils.saveChatRoom(mPPS, chatRoomID, chatRoomID);
         }
 
         if (value) {
-            ConfigurationUtils.updateChatRoomProperty(getParentProvider().getProtocolProvider(),
-                    chatRoomID, AUTOJOIN_PROPERTY_NAME, Boolean.toString(autoJoin));
+            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, AUTOJOIN_PROPERTY_NAME, Boolean.toString(autoJoin));
         }
         else {
-            ConfigurationUtils.updateChatRoomProperty(getParentProvider().getProtocolProvider(),
-                    chatRoomID, AUTOJOIN_PROPERTY_NAME, null);
+            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, AUTOJOIN_PROPERTY_NAME, null);
         }
-        MUCActivator.getMUCService().fireChatRoomListChangedEvent(this,
-                ChatRoomListChangeEvent.CHAT_ROOM_CHANGED);
+        MUCActivator.getMUCService().fireChatRoomListChangedEvent(this, ChatRoomListChangeEvent.CHAT_ROOM_CHANGED);
+    }
+
+    /**
+     * Is access on start-up (return bookmarked may be null).
+     *
+     * @return if the charRoomWrapper is bookmarked.
+     */
+    public boolean isBookmarked()
+    {
+        if (bookmark == null) {
+            String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, BOOKMARK_PROPERTY_NAME);
+            bookmark = StringUtils.isNullOrEmpty(val) ? false : Boolean.valueOf(val);
+        }
+        return bookmark;
+    }
+
+    /**
+     * Changes bookmark value in configuration service.
+     *
+     * @param value change of bookmark property.
+     */
+    public void setBookmark(boolean value)
+    {
+        if (isBookmarked() == value)
+            return;
+
+        bookmark = value;
+        // as the user wants to bookmark this room and it maybe already created as non persistent
+        // we must set it persistent and store it
+        if (!isPersistent()) {
+            setPersistent(true);
+            ConfigurationUtils.saveChatRoom(mPPS, chatRoomID, chatRoomID);
+        }
+
+        if (value) {
+            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, BOOKMARK_PROPERTY_NAME, Boolean.toString(bookmark));
+        }
+        else {
+            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, BOOKMARK_PROPERTY_NAME, null);
+        }
     }
 
     /**
@@ -289,7 +449,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
                 MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED, propertyListener);
         MUCActivator.getConfigurationService().removePropertyChangeListener(
                 MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_PER_CONTACT_ENABLED_PREFIX + "."
-                        + getChatRoomID(), propertyListener);
+                        + chatRoomID, propertyListener);
     }
 
     /**
@@ -313,6 +473,6 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
 //				+ getDisplayName().compareToIgnoreCase(target.getDisplayName()) * 10000
 //				+ getMetaUID().compareTo(target.getMetaUID());
 
-        return getChatRoomID().compareToIgnoreCase(target.getChatRoomID());
+        return chatRoomID.compareToIgnoreCase(target.getChatRoomID());
     }
 }

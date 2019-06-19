@@ -24,13 +24,14 @@
     <item
         android:id="@+id/create_videobridge"
         android:icon="@drawable/ic_videobridge"
-        android:showAsAction="ifRoom"
         android:title="@string/service_gui_CREATE_VIDEO_BRIDGE"
         android:visible="false" />
     <item
+        android:id="@+id/muc_bookmarks"
+        android:title="@string/service_gui_CHATROOM_BOOKMARK_TITLE" />
+    <item
         android:id="@+id/add_contact"
         android:icon="@drawable/addcontact_dark"
-        android:showAsAction="ifRoom"
         android:title="@string/service_gui_ADD_CONTACT" />
     <item
         android:id="@+id/main_settings"

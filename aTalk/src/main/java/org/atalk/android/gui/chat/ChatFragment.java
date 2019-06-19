@@ -428,7 +428,7 @@ public class ChatFragment extends OSGiFragment
      */
     public void setPrimarySelected(boolean isSelected)
     {
-        Timber.d("Primary page selected: %s %s", hashCode(), isSelected);
+        // Timber.d("Primary page selected: %s %s", hashCode(), isSelected);
         primarySelected = isSelected;
         initChatController(isSelected);
     }

@@ -1215,88 +1215,84 @@ public class OperationSetPersistentPresenceJabberImpl
 
             // Update resource from own presence instance and localContact if it is not null
             // Execute in new thread to avoid loading on Smack
-            new Thread(new Runnable()
-            {
-                public void run()
-                {
-                    try {
-                        Jid userJid = presence.getFrom();
-                        OperationSetMultiUserChat mucOpSet = parentProvider.getOperationSet(OperationSetMultiUserChat.class);
-                        if ((userJid != null) && (mucOpSet != null)) {
-                            List<ChatRoom> chatRooms = mucOpSet.getCurrentlyJoinedChatRooms();
-                            for (ChatRoom chatRoom : chatRooms) {
-                                if (userJid.equals(chatRoom.getIdentifier())) {
-                                    userJid = presence.getFrom();
-                                    break;
-                                }
+            new Thread(() -> {
+                try {
+                    Jid userJid = presence.getFrom();
+                    OperationSetMultiUserChat mucOpSet = parentProvider.getOperationSet(OperationSetMultiUserChat.class);
+                    if ((userJid != null) && (mucOpSet != null)) {
+                        List<ChatRoom> chatRooms = mucOpSet.getCurrentlyJoinedChatRooms();
+                        for (ChatRoom chatRoom : chatRooms) {
+                            if (userJid.equals(chatRoom.getIdentifier())) {
+                                userJid = presence.getFrom();
+                                break;
                             }
                         }
-                        Timber.i("Smack presence update for: %s - %s", userJid, presence.getType());
-
-                        // all contact statuses that are received from all its resources ordered by priority (higher first)
-                        // and those with equal priorities order with the one that is most connected as first
-                        TreeSet<Presence> userStats = statuses.get(userJid);
-                        if (userStats == null) {
-                            userStats = new TreeSet<>((o1, o2) -> {
-                                int res = o2.getPriority() - o1.getPriority();
-
-                                // if statuses are with same priorities return which one is more
-                                // available counts the JabberStatusEnum order
-                                if (res == 0) {
-                                    res = jabberStatusToPresenceStatus(o2, parentProvider).getStatus()
-                                            - jabberStatusToPresenceStatus(o1, parentProvider).getStatus();
-                                    // We have run out of "logical" ways to order the presences inside
-                                    // the TreeSet. We have make sure we are consistent with equals.
-                                    // We do this by comparing the unique resource names. If this
-                                    // evaluates to 0 again, then we can safely assume this presence
-                                    // object represents the same resource and by that the same client.
-                                    if (res == 0) {
-                                        res = o1.getFrom().compareTo(o2.getFrom());
-                                    }
-                                }
-                                return res;
-                            });
-                            statuses.put(userJid, userStats);
-                        }
-                        else {
-                            // remove the status for this resource if we are online we will update its value with the new status
-                            Resourcepart resource = presence.getFrom().getResourceOrEmpty();
-                            for (Iterator<Presence> iter = userStats.iterator(); iter.hasNext(); ) {
-                                Presence p = iter.next();
-                                if (resource.equals(p.getFrom().getResourceOrEmpty()))
-                                    iter.remove();
-                            }
-                        }
-                        if (!jabberStatusToPresenceStatus(presence, parentProvider)
-                                .equals(parentProvider.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE))) {
-                            userStats.add(presence);
-                        }
-
-                        Presence currentPresence;
-                        if (userStats.size() == 0) {
-                            currentPresence = presence;
-                            /*
-                             * We no longer have statuses for userID so it doesn't make sense to retain
-                             * (1) the TreeSet and
-                             * (2) its slot in the statuses Map.
-                             */
-                            statuses.remove(userJid);
-                        }
-                        else
-                            currentPresence = userStats.first();
-
-                        ContactJabberImpl sourceContact = ssContactList.findContactById(userJid);
-                        if (sourceContact == null) {
-                            Timber.w("Ignore own or no source contact found for id = %s", userJid);
-                            return;
-                        }
-
-                        // statuses may be the same and only change in status message
-                        sourceContact.setStatusMessage(currentPresence.getStatus());
-                        updateContactStatus(sourceContact, jabberStatusToPresenceStatus(currentPresence, parentProvider));
-                    } catch (IllegalStateException | IllegalArgumentException ex) {
-                        Timber.e(ex, "Failed changing status");
                     }
+                    Timber.i("Smack presence update for: %s - %s", userJid, presence.getType());
+
+                    // all contact statuses that are received from all its resources ordered by priority (higher first)
+                    // and those with equal priorities order with the one that is most connected as first
+                    TreeSet<Presence> userStats = statuses.get(userJid);
+                    if (userStats == null) {
+                        userStats = new TreeSet<>((o1, o2) -> {
+                            int res = o2.getPriority() - o1.getPriority();
+
+                            // if statuses are with same priorities return which one is more
+                            // available counts the JabberStatusEnum order
+                            if (res == 0) {
+                                res = jabberStatusToPresenceStatus(o2, parentProvider).getStatus()
+                                        - jabberStatusToPresenceStatus(o1, parentProvider).getStatus();
+                                // We have run out of "logical" ways to order the presences inside
+                                // the TreeSet. We have make sure we are consistent with equals.
+                                // We do this by comparing the unique resource names. If this
+                                // evaluates to 0 again, then we can safely assume this presence
+                                // object represents the same resource and by that the same client.
+                                if (res == 0) {
+                                    res = o1.getFrom().compareTo(o2.getFrom());
+                                }
+                            }
+                            return res;
+                        });
+                        statuses.put(userJid, userStats);
+                    }
+                    else {
+                        // remove the status for this resource if we are online we will update its value with the new status
+                        Resourcepart resource = presence.getFrom().getResourceOrEmpty();
+                        for (Iterator<Presence> iter = userStats.iterator(); iter.hasNext(); ) {
+                            Presence p = iter.next();
+                            if (resource.equals(p.getFrom().getResourceOrEmpty()))
+                                iter.remove();
+                        }
+                    }
+                    if (!jabberStatusToPresenceStatus(presence, parentProvider)
+                            .equals(parentProvider.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE))) {
+                        userStats.add(presence);
+                    }
+
+                    Presence currentPresence;
+                    if (userStats.size() == 0) {
+                        currentPresence = presence;
+                        /*
+                         * We no longer have statuses for userID so it doesn't make sense to retain
+                         * (1) the TreeSet and
+                         * (2) its slot in the statuses Map.
+                         */
+                        statuses.remove(userJid);
+                    }
+                    else
+                        currentPresence = userStats.first();
+
+                    ContactJabberImpl sourceContact = ssContactList.findContactById(userJid);
+                    if (sourceContact == null) {
+                        Timber.w("Ignore own or no source contact found for id = %s", userJid);
+                        return;
+                    }
+
+                    // statuses may be the same and only change in status message
+                    sourceContact.setStatusMessage(currentPresence.getStatus());
+                    updateContactStatus(sourceContact, jabberStatusToPresenceStatus(currentPresence, parentProvider));
+                } catch (IllegalStateException | IllegalArgumentException ex) {
+                    Timber.e(ex, "Failed changing status");
                 }
             }).start();
         }

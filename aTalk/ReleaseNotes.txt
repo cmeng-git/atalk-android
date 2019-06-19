@@ -1,5 +1,25 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.8.6 (1086)
+Author:         cmeng
+Upload Date:	06/20/2019
+- Implement XEP-0048: Bookmarks support with autoJoin on first login
+- Default to save bookmark and enable autoJoin on newly created conference room
+- Add global ChatRoom Bookmark option on main menu (local and server rooms included for user selection)
+- Add user selectable autoJoin option in chatRoom list fragment. Join chatRoom and update bookmark if necessary
+- Show user selected chatRoom bookmark dialog when click on chatRoom avatar/checkbox
+- Provide user option to remove local stored chatRoom on XMPPException when purging chatRoom on server - non-auth
+- Do not set MUCService.OPEN_ON_ACTIVITY when create a room - the room opens whenever there is an activity change (presence)
+- Do not rejoin chatRoom in JoinChatRoomTask; check for nick and subject changes only
+- Fix conferenceChatManager non-display of chat Messages received from member with nickName only - i.e. Contact == null
+- Alert user on room attributes change failure - Only moderators are allowed to change the subject in this room
+- Enhance CaptchaDialog to fetch Message.Body message for display
+- Fix user selected chatType is not properly restored after user closed an active chatSession
+- Fix debug apk update for android-N: need REQUEST_INSTALL_PACKAGES in manifest and support only scheme content://
+- Remove bookmark when the chatRoom is destroyed
+- Add callback to launch user install dialog on apk download completion
+
+=========================================================================
 Version:		1.8.5 (1085)
 Author:         cmeng
 Upload Date:	06/06/2019

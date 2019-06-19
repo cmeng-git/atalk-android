@@ -162,8 +162,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      * Implements the <tt>ChatRoomMessageListener.messageReceived</tt> method. <br>
      * Obtains the corresponding <tt>ChatPanel</tt> and process the message there.
      *
-     * @param evt the <tt>ChatRoomMessageReceivedEvent</tt> that notified us that a message has been
-     * received
+     * @param evt the <tt>ChatRoomMessageReceivedEvent</tt> that notified us that a message has been received
      */
     public void messageReceived(ChatRoomMessageReceivedEvent evt)
     {
@@ -228,17 +227,18 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                     break;
                 }
             }
-            //	if (hasMatch)
-            //	    return; // cmeng disable for now
+            // skip if the message is an old history previously received
+            if (hasMatch)
+                return;
         }
-        String jabberID = sourceMember.getContact().getAddress();
+
+        // contact can be null if messaage received with nickName only
+        Contact sender = sourceMember.getContact();
         String displayName = sourceMember.getNickName();
+        String jabberID = (sender == null) ? displayName : sender.getAddress();
+
         chatPanel.addMessage(jabberID, displayName, evt.getTimestamp(), messageType, message.getMimeType(),
                 messageContent, message.getEncryptionType(), message.getMessageUID(), null);
-
-        //	if (createWindow) {
-        //		ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());
-        //	}
     }
 
     /**

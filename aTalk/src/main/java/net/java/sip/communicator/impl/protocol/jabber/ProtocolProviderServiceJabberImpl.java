@@ -259,6 +259,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     // vCard save takes about 29 seconds on Note 8
     public static final int SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_40 = 40000;  // 40 seconds
 
+    // Captcha entry timeout is control by server - so set to long smack timeout (60S)
+    public static final int SMACK_PACKET_CAPTCHA_TIMEOUT = 60000;
+
     /**
      * aTalk Smack packet reply default timeout.
      */

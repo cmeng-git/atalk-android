@@ -32,11 +32,6 @@ public class OnlineUpdateService extends IntentService
 
     private NotificationManager mNotificationMgr;
 
-    /**
-     * <tt>SharedPreferences</tt> used to store download ids.
-     */
-    private SharedPreferences store;
-
     public OnlineUpdateService()
     {
         super(ONLINE_UPDATE_SERVICE);
@@ -79,7 +74,7 @@ public class OnlineUpdateService extends IntentService
 
     private void checkAppUpdate()
     {
-        Boolean isAutoUpdateCheckEnable = true;
+        boolean isAutoUpdateCheckEnable = true;
         ConfigurationService cfg = AndroidGUIActivator.getConfigurationService();
         if (cfg != null)
             isAutoUpdateCheckEnable = cfg.getBoolean(SettingsActivity.AUTO_UPDATE_CHECK_ENABLE, true);

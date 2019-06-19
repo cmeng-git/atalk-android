@@ -41,6 +41,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AccountsListActivity;
 import org.atalk.android.gui.call.conference.ConferenceInviteDialog;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
+import org.atalk.android.gui.chatroomslist.ChatRoomBookmarksDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomCreateDialog;
 import org.atalk.android.gui.contactlist.AddContactActivity;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
@@ -297,6 +298,10 @@ public class MainMenuActivity extends ExitMenuActivity
                 }
                 else
                     menuVbItem.actionPerformed();
+                break;
+            case R.id.muc_bookmarks:
+                ChatRoomBookmarksDialog chatRoomBookmarksDialog = new ChatRoomBookmarksDialog(this);
+                chatRoomBookmarksDialog.show();
                 break;
             case R.id.show_hide_offline:
                 boolean isShowOffline = ConfigurationUtils.isShowOffline();

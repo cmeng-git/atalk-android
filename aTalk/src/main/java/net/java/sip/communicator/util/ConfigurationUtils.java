@@ -2078,7 +2078,6 @@ public class ConfigurationUtils
                 attributes.put(property, value);
         } catch (JSONException e) {
             Timber.w("ChatRoom property update failed: %s: %s", chatRoomId, property);
-            e.printStackTrace();
         }
 
         String accountUid = protocolProvider.getAccountID().getAccountUniqueID();

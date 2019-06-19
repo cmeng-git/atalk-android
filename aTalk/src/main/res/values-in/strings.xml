@@ -148,8 +148,9 @@
     <string name="service_gui_CHANGE_NICK">Ubah nama panggilan</string>
     <string name="service_gui_CHANGE_NICKNAME">Ubah nama panggilan&#8230;</string>
     <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">Nama panggilan sudah ada</string>
-    <string name="service_gui_CHANGE_NICKNAME_ERROR">Kesalahan mengubah nama panggilan</string>
+    <string name="service_gui_CHANGE_NICKNAME_ERROR">Kesalahan saat mengubah nama panggilan untuk %1$s: %2$s</string>
     <string name="service_gui_CHANGE_NICKNAME_LABEL">Pada bidang di bawah ini, Anda dapat memasukkan nama panggilan baru Anda.</string>
+    <string name="service_gui_CHANGE_NICKNAME_NULL">Konten bidang Nama Nick tidak boleh nol</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Ubah Info Ruang obrolan</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT">Ubah ruang subjek&#8230;</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">Pada bidang di bawah ini, Anda dapat memasukkan subjek baru untuk ruangan ini.</string>
@@ -368,15 +369,21 @@
     <string name="service_gui_HISTORY_REMOVE_ERROR">Kesalahan menghapus pesan yang disimpan secara lokal untuk %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Hapus media dari ponsel saya</string>
 
-    <string name="service_gui_CHATROOM_OCCUPANT">Penghuni ruang obrolan</string>
+     <string name="service_gui_CHATROOM_BOOKMARK_TITLE">Bookmark ChatRoom</string>
+    <string name="service_gui_CHATROOM_BOOKMARK">Bookmark</string>
+    <string name="service_gui_CHATROOM_AUTOJOIN">Bergabung Otomatis</string>
+    <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Gagal memperbarui Bookmark untuk %1$s: %2$s</string>
+
+       <string name="service_gui_CHATROOM_OCCUPANT">Penghuni ruang obrolan</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Hapus obrolan iniRiwayat riwayat</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Hapus semua riwayat chatRooms</string>
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Matikan histori untuk chatRoom ini</string>
     <string name="service_gui_CHATROOM_INFO">Info ChatRoom</string>
 
     <string name="service_gui_DESTROY_CHATROOM">Hancurkan chatRoom ini</string>
-    <string name="service_gui_DESTROY_CHATROOM_ERROR">Terjadi kesalahan saat menghancurkan ruang obrolan:\n\nKesalahan: %1$s</string>
-    <string name="service_gui_DESTROY_CHATROOM_TEXT">Pemilik akun: %1$s.\n\nApakah Anda yakin ingin menghancurkan\'%2$s\'dan semua riwayat obrolannya?</string>
+    <string name="service_gui_DESTROY_CHATROOM_EXCEPTION">Terjadi kesalahan saat menghancurkan ruang obrolan:\n%1$s</string>
+     <string name="service_gui_DESTROY_CHATROOM_ERROR">Gagal menghapus chatRoom di server:\n\'%1$s\'\n%2$s\n\nLanjutkan untuk menghapus chatRoom lokal\nAnda masih dapat membuat/bergabung kembali dengan chatRoom nanti.</string>
+       <string name="service_gui_DESTROY_CHATROOM_TEXT">Pemilik akun: %1$s.\nApakah Anda yakin ingin menghancurkan\n\'%2$s\'\ndan semua riwayat obrolannya?</string>
     <string name="service_gui_DESTROY_CHATROOM_TITLE">Hancurkan chatRoom</string>
     <string name="service_gui_DESTROYED_CHATROOM">\'%1$s\'telah dihapus Berhasil!</string>
 
@@ -426,7 +433,7 @@
     <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">Ruang obrolan dilindungi dengan tantangan captcha</string>
     <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">Verifikasi CAPTCHA betul</string>
     <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">Anda harus bergabung kembali dengan ruang obrolan %1$s setelah Anda mengirimkan teks CAPTCHA</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA timeout tantangan;\nsilakan bergabung kembali dengan chatRoom dan coba lagi.</string>
 
 	<string name="service_gui_JOIN_AUTOMATICALLY">Gabung otomatis</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Jangan bergabung secara otomatis</string>
@@ -500,6 +507,7 @@
     <string name="service_gui_SHOW_STACK_TRACE">Tampilkan tumpukan Jejak</string>
     <string name="service_gui_STREET">Jalan</string>
     <string name="service_gui_SUBMIT">Kirim</string>
+    <string name="service_gui_VIDEO_PHONE">Video</string>
     <string name="service_gui_WORK_PHONE">Bekerja</string>
 
     <!-- Call -->
@@ -748,6 +756,7 @@
     <string name="plugin_updatechecker_DIALOG_NOUPDATE">Versi yang terinstal saat ini: ( %1$s- %2$s) sudah diperbarui.</string>
     <string name="plugin_updatechecker_DIALOG_NOUPDATE_TITLE">Tidak ada versi baru</string>
     <string name="plugin_updatechecker_DIALOG_TITLE">Instal Pembaruan</string>
+    <string name="plugin_updatechecker_DOWNLOAD_FAILED">Gagal mengunduh pembaruan baru!</string>
     <string name="plugin_updatechecker_UPDATE_MENU_ENTRY">Periksa pembaruan</string>
     <string name="plugin_newsoftware_DIALOG_MESSAGE">Versi perangkat lunak baru ( %1$s) tersedia.</string>
 

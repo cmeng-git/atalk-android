@@ -148,8 +148,9 @@
 	<string name="service_gui_CHANGE_NICK">Изменить псевдоним</string>
 	<string name="service_gui_CHANGE_NICKNAME">Изменить псевдоним&#8230;</string>
     <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">Ник уже существует</string>
-	<string name="service_gui_CHANGE_NICKNAME_ERROR">Ошибка при изменении псевдонима</string>
+	<string name="service_gui_CHANGE_NICKNAME_ERROR">Ошибка изменения псевдонима для %1$s: %2$s</string>
     <string name="service_gui_CHANGE_NICKNAME_LABEL">В поле ниже вы можете ввести новый псевдоним.</string>
+    <string name="service_gui_CHANGE_NICKNAME_NULL">Псевдоним Имя поля не может быть пустым</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Изменить информацию комнаты чата</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT">Изменить тему помещения&#8230;</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">В поле ниже вы можете ввести новый объект для этой комнаты.</string>
@@ -371,15 +372,21 @@
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Ошибка удаления локально сохраненных сообщений для %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Удалить медиа с моего телефона</string>
 
-    <string name="service_gui_CHATROOM_OCCUPANT">Жители чатов</string>
+    <string name="service_gui_CHATROOM_BOOKMARK_TITLE">ChatRoom Закладка</string>
+    <string name="service_gui_CHATROOM_BOOKMARK">Закладка</string>
+    <string name="service_gui_CHATROOM_AUTOJOIN">Авто Присоединение</string>
+    <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Не удалось обновить закладки для %1$s: %2$s</string>
+
+        <string name="service_gui_CHATROOM_OCCUPANT">Жители чатов</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Удалить эту историю чата</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Стереть всю историю чатов.</string>
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Отключить историю для этого чатаRoom</string>
     <string name="service_gui_CHATROOM_INFO">Информация о ChatRoom</string>
 
     <string name="service_gui_DESTROY_CHATROOM">Уничтожить этот chatRoom</string>
-    <string name="service_gui_DESTROY_CHATROOM_ERROR">Произошла ошибка при уничтожении комнаты чата:\n\nError: %1$s</string>
-	<string name="service_gui_DESTROY_CHATROOM_TEXT">Владелец учетной записи: %1$s.\n\nВы уверены, что хотите уничтожить \'%2$s\' и всю историю чатов?</string>
+    <string name="service_gui_DESTROY_CHATROOM_EXCEPTION">Произошла ошибка при уничтожении комнаты чата:\n%1$s</string>
+    <string name="service_gui_DESTROY_CHATROOM_ERROR">Не удалось удалить chatRoom на сервере:\n\'%1$s\'\n%2$s\n\nПродолжить очистку локального chatRoom\nВы можете еще позже воссоздать/присоединиться к chatRoom.</string>
+	<string name="service_gui_DESTROY_CHATROOM_TEXT">Владелец учетной записи: %1$s.\nВы уверены, что хотите уничтожить\n\'%2$s\'\nи всю историю чатов?</string>
     <string name="service_gui_DESTROY_CHATROOM_TITLE">Уничтожить chatRoom</string>
     <string name="service_gui_DESTROYED_CHATROOM">\'%1$s\' удалено успешно!</string>
 
@@ -428,7 +435,7 @@
     <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">Чат-чат защищен вызовом captcha</string>
     <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">Проверка CAPTCHA действительна</string>
     <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">Не удалось выполнить проверку CAPTCHA</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">После того, как вы представили текст CAPTCHA, вам нужно вернуться в комнату %1$s</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">%1$s тайм-аут вызова ChatRoom CAPTCHA;\nпожалуйста, присоединитесь к chatRoom и попробуйте снова.</string>
 
 	<string name="service_gui_JOIN_AUTOMATICALLY">Автоматически присоединяться</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Не присоединяться автоматически</string>
@@ -503,6 +510,7 @@
     <string name="service_gui_SHOW_STACK_TRACE">Показать трассировку стека</string>
     <string name="service_gui_STREET">Улица</string>
     <string name="service_gui_SUBMIT">Отправить</string>
+    <string name="service_gui_VIDEO_PHONE">видео</string>
     <string name="service_gui_WORK_PHONE">Работа</string>
 
     <!-- Call -->
@@ -749,6 +757,7 @@
     <string name="plugin_updatechecker_DIALOG_NOUPDATE">Текущая установленная версия: (%1$s-%2$s) обновлена.</string>
     <string name="plugin_updatechecker_DIALOG_NOUPDATE_TITLE">Нет новой версии</string>
     <string name="plugin_updatechecker_DIALOG_TITLE">Установить обновления</string>
+    <string name="plugin_updatechecker_DOWNLOAD_FAILED">Не удалось загрузить новое обновление!</string>
     <string name="plugin_updatechecker_UPDATE_MENU_ENTRY">Проверить наличие обновлений</string>
     <string name="plugin_newsoftware_DIALOG_MESSAGE">Доступна новая версия программного обеспечения (%1$s).</string>
 

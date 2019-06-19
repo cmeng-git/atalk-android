@@ -27,6 +27,10 @@ import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.persistance.DatabaseBackend;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.bookmarks.BookmarkManager;
+import org.jxmpp.jid.EntityBareJid;
 import org.osgi.framework.*;
 
 import java.util.*;
@@ -245,17 +249,30 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     }
 
     /**
-     * Removes the given <tt>ChatRoom</tt> from the list of all chat rooms.
+     * Removes the given <tt>ChatRoom</tt> from the list of all chat rooms and bookmark on server
      *
      * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt> to remove
      */
     public void removeChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
         ChatRoomProviderWrapper chatRoomProvider = chatRoomWrapper.getParentProvider();
-        if (providersList.contains(chatRoomProvider)) {
-            chatRoomProvider.removeChatRoom(chatRoomWrapper);
 
-            ConfigurationUtils.removeChatRoom(chatRoomProvider.getProtocolProvider(), chatRoomWrapper.getChatRoomID());
+        if (providersList.contains(chatRoomProvider)) {
+            /*
+             * Remove bookmark from server when the room is removed
+             */
+            ProtocolProviderService pps = chatRoomProvider.getProtocolProvider();
+            BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
+            EntityBareJid entityBareJid = chatRoomWrapper.getEntityBareJid();
+            try {
+                bookmarkManager.removeBookmarkedConference(entityBareJid);
+            } catch (SmackException.NoResponseException | SmackException.NotConnectedException
+                    | XMPPException.XMPPErrorException | InterruptedException e) {
+                Timber.w("Failed to remove Bookmarks: %s", e.getMessage());
+            }
+
+            chatRoomProvider.removeChatRoom(chatRoomWrapper);
+            ConfigurationUtils.removeChatRoom(pps, chatRoomWrapper.getChatRoomID());
 
             chatRoomWrapper.removeListeners();
             fireChatRoomListChangedEvent(chatRoomWrapper, ChatRoomListChangeEvent.CHAT_ROOM_REMOVED);
@@ -308,8 +325,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      * @param pps the protocol provider associated with the chat room.
      * @return the <tt>ChatRoomWrapper</tt> object corresponding to the given id of the chat room
      */
-    public ChatRoomWrapper findChatRoomWrapperFromChatRoomID(String chatRoomID,
-            ProtocolProviderService pps)
+    public ChatRoomWrapper findChatRoomWrapperFromChatRoomID(String chatRoomID, ProtocolProviderService pps)
     {
         for (ChatRoomProviderWrapper provider : providersList) {
             // check all pps OR only for the right pps if provided (cmeng)

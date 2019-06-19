@@ -30,6 +30,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
+        implements View.OnClickListener
 {
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
@@ -125,7 +126,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     public void invalidateViews()
     {
         if (contactListView != null) {
-            contactListFragment.runOnUiThread(() -> contactListView.invalidateViews());
+            contactListFragment.runOnUiThread(contactListView::invalidateViews);
         }
     }
 
@@ -251,18 +252,18 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             contactViewHolder.statusMessage = convertView.findViewById(R.id.statusMessage);
 
             contactViewHolder.avatarView = convertView.findViewById(R.id.avatarIcon);
-            contactViewHolder.avatarView.setOnClickListener(avatarIconClickListener);
+            contactViewHolder.avatarView.setOnClickListener(this);
             contactViewHolder.avatarView.setTag(contactViewHolder);
             contactViewHolder.statusView = convertView.findViewById(R.id.contactStatusIcon);
 
             // Create call button listener and add bind holder tag
             contactViewHolder.callButtonLayout = convertView.findViewById(R.id.callButtonLayout);
             contactViewHolder.callButton = convertView.findViewById(R.id.contactCallButton);
-            contactViewHolder.callButton.setOnClickListener(callButtonListener);
+            contactViewHolder.callButton.setOnClickListener(this);
             contactViewHolder.callButton.setTag(contactViewHolder);
 
             contactViewHolder.callVideoButton = convertView.findViewById(R.id.contactCallVideoButton);
-            contactViewHolder.callVideoButton.setOnClickListener(callButtonListener);
+            contactViewHolder.callVideoButton.setOnClickListener(this);
             contactViewHolder.callVideoButton.setTag(contactViewHolder);
 
             contactViewHolder.selectedBgView = convertView.findViewById(R.id.selectedBackgroundIcon);
@@ -415,54 +416,42 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * We keep one instance of call button listener to avoid unnecessary allocations. Clicked
-     * positions are obtained from the view holder.
+     * We keep one instance of view click listener to avoid unnecessary allocations.
+     * Clicked positions are obtained from the view holder.
      */
-    private final CallButtonClickListener callButtonListener = new CallButtonClickListener();
-    private final AvatarIconClickListener avatarIconClickListener = new AvatarIconClickListener();
-
-    private class CallButtonClickListener implements View.OnClickListener
+    public void onClick(View view)
     {
-        public void onClick(View view)
-        {
-            if (!(view.getTag() instanceof ContactViewHolder)) {
-                return;
-            }
-
-            ContactViewHolder viewHolder = (ContactViewHolder) view.getTag();
-            Object contact = getChild(viewHolder.groupPosition, viewHolder.childPosition);
-            if (contact == null) {
-                Timber.w("No contact to make a call at %d:%d", viewHolder.groupPosition, viewHolder.childPosition);
-                return;
-            }
-
-            UIContactRenderer renderer = getContactRenderer(viewHolder.groupPosition);
-            boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-            AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),
-                    viewHolder.callVideoButton, renderer.getDefaultAddress(contact), isVideoCall);
+        if (!(view.getTag() instanceof ContactViewHolder)) {
+            return;
         }
-    }
 
-    private class AvatarIconClickListener implements View.OnClickListener
-    {
-        public void onClick(View view)
-        {
-            if (!(view.getTag() instanceof ContactViewHolder)) {
-                return;
-            }
+        ContactViewHolder viewHolder = (ContactViewHolder) view.getTag();
+        int groupPos = viewHolder.groupPosition;
+        int childPos = viewHolder.childPosition;
+        Object contact = getChild(groupPos, childPos);
 
-            ContactViewHolder viewHolder = (ContactViewHolder) view.getTag();
-            int groupPos = viewHolder.groupPosition;
-            int childPos = viewHolder.childPosition;
-            Object contact = getChild(groupPos, childPos);
-            if (contact == null) {
-                Timber.w("No contact found at %s, %s", groupPos, childPos);
+        if (contact != null) {
+            UIContactRenderer renderer = getContactRenderer(groupPos);
+            String contactAddress = renderer.getDefaultAddress(contact);
+
+            switch (view.getId()) {
+                case R.id.contactCallButton:
+                case R.id.contactCallVideoButton:
+                    boolean isVideoCall = viewHolder.callVideoButton.isPressed();
+                    AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),
+                            viewHolder.callVideoButton, contactAddress, isVideoCall);
+                    break;
+
+                case R.id.avatarIcon:
+                    aTalkApp.showToastMessage(contactAddress);
+                    break;
+
+                default:
+                    break;
             }
-            else {
-                String contactAddress = getContactRenderer(groupPos).getDefaultAddress(contact);
-                // make toast, show contact details
-                aTalkApp.showToastMessage(contactAddress);
-            }
+        }
+        else {
+            Timber.w("No valid contact found at this position: %s:%s", groupPos, childPos);
         }
     }
 

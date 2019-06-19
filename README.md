@@ -25,6 +25,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * Auto accept file transfer request with max file size option
 * Implement fault-tolerance file transfer to ease and enhance file sharing reliability (1-1 chat and chatRoom) 
 * Enhance and harmonize UI for file sharing in chat and chatRoom
+* Implement XEP-0048: Bookmarks for conference room
 * Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway (experimental)
 * Support multi-user chat in room creation, server chat rooms discovery and joining chat room with captcha protection 
 * Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
@@ -47,6 +48,7 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0030: Service Discovery](https://xmpp.org/extensions/xep-0030.html)
 * [XEP-0045: Multi-User Chat](https://xmpp.org/extensions/xep-0045.html)
 * [XEP-0047: In-Band Bytestreams](https://xmpp.org/extensions/xep-00047.html)
+* [XEP-0048: Bookmarks](https://xmpp.org/extensions/xep-0048.html)
 * [XEP-0054: vcard-temp](https://xmpp.org/extensions/xep-0054.html)
 * [XEP-0060: Publish-Subscribe](https://xmpp.org/extensions/xep-0060.html)
 * [XEP-0065: SOCKS5 Bytestreams](https://xmpp.org/extensions/xep-0065.html)
@@ -61,6 +63,7 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0115: Entity Capabilities](https://xmpp.org/extensions/xep-0115.html)
 * [XEP-0138: Stream Compression](https://xmpp.org/extensions/xep-0138.html)
 * [XEP-0153: vCard-Based Avatar](https://xmpp.org/extensions/xep-0153.html)
+* [XEP-0158: CAPTCHA Forms](https://xmpp.org/extensions/xep-0158.html)
 * [XEP-0163: Personal Eventing Protocol (avatars and nicks)](https://xmpp.org/extensions/xep-0163.html)
 * [XEP-0166: Jingle](https://xmpp.org/extensions/xep-0166.html)
 * [XEP-0167: Jingle RTP Sessions](https://xmpp.org/extensions/xep-0167.html)

@@ -70,12 +70,13 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
         progressbar.setIndeterminate(true);
 
         webview = contentView.findViewById(R.id.webview);
-        webview.getSettings().setJavaScriptEnabled(true);
-        webview.getSettings().setDomStorageEnabled(true);
+        final WebSettings webSettings = webview.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
 
         if (Build.VERSION.SDK_INT >= 21) {
-            webview.getSettings().setMixedContentMode(0);
-            webview.getSettings().setAllowUniversalAccessFromFileURLs(true);
+            webSettings.setMixedContentMode(0);
+            webSettings.setAllowUniversalAccessFromFileURLs(true);
         }
 
         if (Build.VERSION.SDK_INT >= 17)
@@ -205,7 +206,6 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
         contentView.requestFocus();
         contentView.setOnKeyListener(this);
 
-        // webview.loadUrl("file:///android_asset/movim/index.html");
         return contentView;
     }
 

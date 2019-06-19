@@ -41,8 +41,7 @@ import static org.atalk.android.R.id.cb_media_delete;
 
 /**
  * The <tt>EntityListHelper</tt> is the class through which we make operations with the
- * <tt>MetaContact</tt> or <tt>ChatRoomWrapper</tt> in the list
- * All methods in this class are static.
+ * <tt>MetaContact</tt> or <tt>ChatRoomWrapper</tt> in the list All methods in this class are static.
  *
  * @author Eng Chong Meng
  */
@@ -57,17 +56,17 @@ public class EntityListHelper
      * Removes given <tt>entity</tt> from the contact list or chatRoom list. Asks the user for
      * confirmation before proceed.
      *
-     * @param desc the contact or chatRoom to be removed from the list.
+     * @param descriptor the contact or chatRoom to be removed from the list.
      */
-    public static void removeEntity(final Object desc, final ChatPanel chatPanel)
+    public static void removeEntity(final Object descriptor, final ChatPanel chatPanel)
     {
         Context ctx = aTalkApp.getGlobalContext();
         String message;
         String title;
 
-        if (desc instanceof MetaContact) {
+        if (descriptor instanceof MetaContact) {
             title = ctx.getString(R.string.service_gui_REMOVE_CONTACT);
-            MetaContact contact = (MetaContact) desc;
+            MetaContact contact = (MetaContact) descriptor;
             if (contact.getDefaultContact() == null) {
                 aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contact.getDisplayName());
                 return;
@@ -76,8 +75,8 @@ public class EntityListHelper
                     contact.getDefaultContact().getProtocolProvider().getAccountID().getUserID(),
                     contact.getDisplayName());
         }
-        else if (desc instanceof ChatRoomWrapper) {
-            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) desc;
+        else if (descriptor instanceof ChatRoomWrapper) {
+            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) descriptor;
             title = ctx.getString(R.string.service_gui_DESTROY_CHATROOM_TITLE);
             message = ctx.getString(R.string.service_gui_DESTROY_CHATROOM_TEXT,
                     chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID(),
@@ -92,11 +91,11 @@ public class EntityListHelper
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
-                        if (desc instanceof MetaContact) {
-                            doRemoveContact((MetaContact) desc);
+                        if (descriptor instanceof MetaContact) {
+                            doRemoveContact((MetaContact) descriptor);
                         }
                         else {
-                            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) desc;
+                            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) descriptor;
                             ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
                             AndroidGUIActivator.getMUCService().destroyChatRoom(chatRoomWrapper,
                                     "User requested", chatRoom.getIdentifier());
@@ -117,7 +116,7 @@ public class EntityListHelper
     /**
      * Routine to remove metaContact
      *
-     * @param contact contact to be remove
+     * @param contact contact to be removed
      */
     private static void doRemoveContact(final MetaContact contact)
     {
@@ -255,7 +254,7 @@ public class EntityListHelper
         private doEraseEntityChatHistory(Context context, List<String> msgUUIDs, List<File> msgFiles)
         {
             this.mContext = context;
-            this.mCallback = (TaskCompleted) mContext;
+            this.mCallback = (TaskCompleted) context;
             this.messageUUIDs = msgUUIDs;
             this.messageFiles = msgFiles;
         }

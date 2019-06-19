@@ -22,8 +22,11 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -39,6 +42,7 @@ import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_REGISTR
 import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_SUBSCRIPTION_ALREADY_EXISTS_PROP;
 import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_SUCCESS_PROP;
 import static net.java.sip.communicator.service.muc.ChatRoomWrapper.JOIN_UNKNOWN_ERROR_PROP;
+import static net.java.sip.communicator.service.muc.ChatRoomWrapper.NOT_ENOUGH_PRIVILEGES;
 
 /**
  * The <tt>MUCServiceImpl</tt> class implements the service for the chat rooms.
@@ -180,9 +184,9 @@ public class MUCServiceImpl extends MUCService
                     aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED,
                             chatRoomWrapper.getChatRoomName()));
         }
-        // join chatRoom if not a current participant
-        else if (!chatRoom.isJoined())
-            new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, nickName, password, subject).start();
+
+        // join from add chat room dialog
+        new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, nickName, password, subject).start();
     }
 
     /**
@@ -222,7 +226,7 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Joins the room with the given name though the given chat room provider.
+     * Joins the room with the given room name via the given chat room provider.
      *
      * @param chatRoomName the name of the room to join.
      * @param chatRoomProvider the chat room provider to join through.
@@ -233,6 +237,7 @@ public class MUCServiceImpl extends MUCService
                 = chatRoomProvider.getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
         ChatRoom chatRoom = null;
         try {
+            /* Find chatRoom for <tt>roomName</tt>. If the room doesn't exists in the cache then creates it. */
             chatRoom = groupChatOpSet.findRoom(chatRoomName);
         } catch (Exception e) {
             Timber.log(TimberLog.FINER, e, "Exception occurred while searching for room:%s", chatRoomName);
@@ -504,19 +509,30 @@ public class MUCServiceImpl extends MUCService
             // Must setup up chatRoom and ready to receive incoming messages before joining/sending presence to server
             // ChatPanel chatPanel = ChatSessionManager.getMultiChat(chatRoomWrapper, true);
 
-            startChatActivity(chatRoomWrapper);
             ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
             try {
-                if (password != null && password.length > 0)
-                    chatRoom.joinAs(nickName, password);
-                else if (nickName != null)
-                    chatRoom.joinAs(nickName);
-                else
-                    chatRoom.join();
-                done(JOIN_SUCCESS_PROP, "");
+                if (chatRoom.isJoined()) {
+                    if (!TextUtils.isEmpty(nickName) && !nickName.equals(chatRoom.getUserNickname().toString())) {
+                        chatRoom.setUserNickname(nickName);
+                    }
+                    if (!TextUtils.isEmpty(subject) && !subject.equals(chatRoom.getSubject())) {
+                        chatRoom.setSubject(subject);
+                    }
+                }
+                else {
+                    startChatActivity(chatRoomWrapper);
+                    if (password != null && password.length > 0)
+                        chatRoom.joinAs(nickName, password);
+                    else if (nickName != null)
+                        chatRoom.joinAs(nickName);
+                    else
+                        chatRoom.join();
+                    done(JOIN_SUCCESS_PROP, "");
+                }
 
             } catch (OperationFailedException e) {
-                Timber.log(TimberLog.FINER, e, "Failed to join chat room: %s", chatRoom.getName());
+                Timber.log(TimberLog.FINER, e, "Failed to join: %s or change chatRoom attributes: %s; %s",
+                        chatRoom.getName(), nickName, subject);
 
                 String message = e.getMessage();
                 switch (e.getErrorCode()) {
@@ -534,6 +550,9 @@ public class MUCServiceImpl extends MUCService
                         break;
                     case OperationFailedException.SUBSCRIPTION_ALREADY_EXISTS:
                         done(JOIN_SUBSCRIPTION_ALREADY_EXISTS_PROP, message);
+                        break;
+                    case OperationFailedException.NOT_ENOUGH_PRIVILEGES:
+                        done(NOT_ENOUGH_PRIVILEGES, message);
                         break;
                     default:
                         done(JOIN_UNKNOWN_ERROR_PROP, message);
@@ -604,6 +623,9 @@ public class MUCServiceImpl extends MUCService
                     break;
                 case JOIN_SUBSCRIPTION_ALREADY_EXISTS_PROP:
                     errorMessage = aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_ALREADY_JOINED, chatRoomId);
+                    break;
+                case NOT_ENOUGH_PRIVILEGES:
+                    errorMessage = msg;
                     break;
                 case JOIN_UNKNOWN_ERROR_PROP:
                     errorMessage = aTalkApp.getResString(R.string.service_gui_FAILED_TO_JOIN_CHAT_ROOM, chatRoomId)
@@ -727,16 +749,40 @@ public class MUCServiceImpl extends MUCService
      */
     public void destroyChatRoom(ChatRoomWrapper chatRoomWrapper, String reason, EntityBareJid alternateAddress)
     {
-        if (chatRoomWrapper.getChatRoom().destroy(reason, alternateAddress)) {
-            MUCActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
-            chatRoomList.removeChatRoom(chatRoomWrapper);
-        }
-        else {
-            // If we leave a chat room which is not persistent, the room can be destroyed on the
-            // server; and error is returned when we try to destroy it not-authorized(401)
-            if (!chatRoomWrapper.getChatRoom().isPersistent() && !chatRoomWrapper.getChatRoom().isJoined()) {
+        try {
+            if (chatRoomWrapper.getChatRoom().destroy(reason, alternateAddress)) {
+                MUCActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
                 chatRoomList.removeChatRoom(chatRoomWrapper);
             }
+            else {
+                // If we leave a chat room which is not persistent, the room cannot be destroyed on the server;
+                // and error is returned when we try to destroy it i.e. not-authorized(401)
+                if (!chatRoomWrapper.getChatRoom().isPersistent() && !chatRoomWrapper.getChatRoom().isJoined()) {
+                    chatRoomList.removeChatRoom(chatRoomWrapper);
+                }
+            }
+            // Allow user to purge local stored chatRoom on XMPPException
+        } catch (XMPPException e) {
+            AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
+                    aTalkApp.getResString(R.string.service_gui_DESTROY_CHATROOM_TITLE),
+                    aTalkApp.getResString(R.string.service_gui_DESTROY_CHATROOM_ERROR,
+                            chatRoomWrapper.getEntityBareJid(), e.getMessage()),
+                    aTalkApp.getResString(R.string.service_gui_PURGE),
+                    new DialogActivity.DialogListener()
+                    {
+                        @Override
+                        public boolean onConfirmClicked(DialogActivity dialog)
+                        {
+                            chatRoomList.removeChatRoom(chatRoomWrapper);
+                            return true;
+                        }
+
+                        @Override
+                        public void onDialogCancelled(DialogActivity dialog)
+                        {
+                        }
+                    }
+            );
         }
     }
 
@@ -801,8 +847,7 @@ public class MUCServiceImpl extends MUCService
         }
 
         if (!room.getChatRoom().isJoined()) {
-            String savedNick = ConfigurationUtils.getChatRoomProperty(room.getParentProvider().getProtocolProvider(),
-                    room.getChatRoomID(), ChatRoom.USER_NICK_NAME);
+            String savedNick = room.getNickName();
             String subject = null;
 
             if (savedNick == null) {

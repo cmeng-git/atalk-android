@@ -16,12 +16,11 @@
  */
 package org.atalk.android.gui.chatroomslist;
 
-import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.view.*;
 import android.widget.*;
 import android.widget.ExpandableListView.*;
@@ -412,13 +411,11 @@ public class ChatRoomListFragment extends OSGiFragment
     }
 
     /**
-     * Callback method to be invoked when a child in this expandable list has
-     * been clicked.
+     * Callback method to be invoked when a child in this expandable list has been clicked.
      *
      * @param listView The ExpandableListView where the click happened
      * @param v The view within the expandable list/ListView that was clicked
-     * @param groupPosition The group position that contains the child that
-     * was clicked
+     * @param groupPosition The group position that contains the child that was clicked
      * @param childPosition The child position within the group
      * @param id The row id of the child that was clicked
      * @return True if the click was handled
@@ -454,7 +451,7 @@ public class ChatRoomListFragment extends OSGiFragment
             String nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
 
             // Set chatRoom openAutomatically on_activity
-            MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
+            // MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
             AndroidGUIActivator.getMUCService().joinChatRoom(chatRoomWrapper, nickName, null, null);
 
             Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
@@ -471,7 +468,6 @@ public class ChatRoomListFragment extends OSGiFragment
      * @param id the identifier
      * @return <tt>true</tt> if the group click action has been performed
      */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
     {
         if (chatRoomListView.isGroupExpanded(groupPosition))

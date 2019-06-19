@@ -73,4 +73,7 @@ public interface UIChatRoomRenderer
      * @return chatRoomID that can be used to establish an outgoing connection.
      */
     String getChatRoomID(Object chatRoomWrapper);
+
+    boolean isAutoJoin(Object chatRoomWrapper);
+    boolean isBookmark(Object chatRoomWrapper);
 }
