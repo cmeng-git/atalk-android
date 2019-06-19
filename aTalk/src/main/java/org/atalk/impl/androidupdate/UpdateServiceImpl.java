@@ -11,25 +11,25 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 
-import net.java.sip.communicator.service.httputil.HttpUtils;
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.version.Version;
 import org.atalk.service.version.VersionService;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.*;
 
 import timber.log.Timber;
 
 /**
- * Android update service implementation. It checks for update and schedules .apk download using
- * <tt>DownloadManager</tt>.
+ * Android update service implementation. It checks for update and schedules .apk download using <tt>DownloadManager</tt>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -60,6 +60,10 @@ public class UpdateServiceImpl implements UpdateService
      */
     private String latestVersion;
     private int latestVersionCode;
+
+    /* DownloadManager Broadcast Receiver Handler */
+    private DownloadManager downloadManager;
+    private DownloadReceiver downloadReceiver = null;
 
     /**
      * The download link
@@ -103,11 +107,11 @@ public class UpdateServiceImpl implements UpdateService
                 if (lastJobStatus == DownloadManager.STATUS_SUCCESSFUL) {
                     DownloadManager downloadManager = aTalkApp.getDownloadManager();
                     Uri fileUri = downloadManager.getUriForDownloadedFile(lastDownload);
-                    File file = new File(fileUri.getPath());
+                    File apkFile = new File(FilePathHelper.getPath(aTalkApp.getGlobalContext(), fileUri));
 
-                    if (file.exists()) {
+                    if (apkFile.exists()) {
                         // Ask the user if he wants to install
-                        askInstallDownloadedApk(lastDownload);
+                        askInstallDownloadedApk(fileUri);
                         return;
                     }
                 }
@@ -153,9 +157,9 @@ public class UpdateServiceImpl implements UpdateService
     /**
      * Asks the user whether to install downloaded .apk.
      *
-     * @param apkDownloadId download id of the apk to install.
+     * @param fileUri download file uri of the apk to install.
      */
-    private void askInstallDownloadedApk(final long apkDownloadId)
+    private void askInstallDownloadedApk(Uri fileUri)
     {
         AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
                 aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_DOWNLOADED_TITLE),
@@ -166,12 +170,17 @@ public class UpdateServiceImpl implements UpdateService
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
-                        DownloadManager downloadManager = aTalkApp.getDownloadManager();
-                        Uri fileUri = downloadManager.getUriForDownloadedFile(apkDownloadId);
+                        // Need REQUEST_INSTALL_PACKAGES in manifest; Intent.ACTION_VIEW works for both
+                        // Intent intent;
+                        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                        //   intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                        // else
+                        //   intent = new Intent(Intent.ACTION_VIEW);
 
                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setDataAndType(fileUri, APK_MIME_TYPE);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.setDataAndType(fileUri, APK_MIME_TYPE);
 
                         aTalkApp.getGlobalContext().startActivity(intent);
                         return true;
@@ -197,14 +206,11 @@ public class UpdateServiceImpl implements UpdateService
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(id);
 
-        Cursor cursor = downloadManager.query(query);
-        try {
+        try (Cursor cursor = downloadManager.query(query)) {
             if (!cursor.moveToFirst())
                 return DownloadManager.STATUS_FAILED;
             else
                 return cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-        } finally {
-            cursor.close();
         }
     }
 
@@ -215,6 +221,12 @@ public class UpdateServiceImpl implements UpdateService
     {
         Uri uri = Uri.parse(downloadLink);
         String fileName = uri.getLastPathSegment();
+
+        if (downloadReceiver == null) {
+            downloadReceiver = new DownloadReceiver();
+            aTalkApp.getGlobalContext().registerReceiver(downloadReceiver,
+                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        }
 
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
@@ -232,6 +244,44 @@ public class UpdateServiceImpl implements UpdateService
         String storeStr = store.getString(ENTRY_NAME, "");
         storeStr += id + ",";
         store.edit().putString(ENTRY_NAME, storeStr).apply();
+    }
+
+    private class DownloadReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            List<Long> previousDownloads = getOldDownloads();
+            if (previousDownloads.size() > 0) {
+                long lastDownload = previousDownloads.get(previousDownloads.size() - 1);
+
+                int lastJobStatus = checkDownloadStatus(lastDownload);
+                if (lastJobStatus == DownloadManager.STATUS_SUCCESSFUL) {
+                    DownloadManager downloadManager = aTalkApp.getDownloadManager();
+                    Uri fileUri = downloadManager.getUriForDownloadedFile(lastDownload);
+                    File apkFile = new File(FilePathHelper.getPath(aTalkApp.getGlobalContext(), fileUri));
+
+                    if (apkFile.exists()) {
+                        // Ask the user if he wants to install
+                        askInstallDownloadedApk(fileUri);
+                        return;
+                    }
+                }
+                else if (lastJobStatus == DownloadManager.STATUS_FAILED) {
+                    // Download is in progress or scheduled for retry
+                    AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                            aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_TITLE),
+                            aTalkApp.getResString(R.string.plugin_updatechecker_DOWNLOAD_FAILED));
+                    return;
+                }
+            }
+
+            // unregistered downloadReceiver
+            if (downloadReceiver != null) {
+                aTalkApp.getGlobalContext().unregisterReceiver(downloadReceiver);
+                downloadReceiver = null;
+            }
+        }
     }
 
     private SharedPreferences getStore()
@@ -312,54 +362,60 @@ public class UpdateServiceImpl implements UpdateService
     @Override
     public boolean isLatestVersion()
     {
-        String[] aLinks;
-        HttpUtils.HTTPResponseResult res = null;
+        String[] updateLinks;
+        Properties mProperties = null;
+        String errMsg = "";
 
         VersionService versionService = getVersionService();
         currentVersion = versionService.getCurrentVersionName();
         currentVersionCode = versionService.getCurrentVersionCode();
 
-        try {
-            String updateLink = UpdateActivator.getConfiguration().getString(PROP_UPDATE_LINK);
-            if (updateLink == null) {
-                Timber.d("Updates are disabled, faking latest version.");
+        String updateLink = UpdateActivator.getConfiguration().getString(PROP_UPDATE_LINK);
+        if (updateLink == null) {
+            Timber.d("Updates are disabled, faking latest version.");
+        }
+        else {
+            updateLinks = updateLink.split(",");
+            for (String aLink : updateLinks) {
+                String urlStr = aLink.trim() + filePath;
+                try {
+                    URL mUrl = new URL(urlStr);
+                    HttpURLConnection httpConnection = (HttpURLConnection) mUrl.openConnection();
+                    httpConnection.setRequestMethod("GET");
+                    httpConnection.setRequestProperty("Content-length", "0");
+                    httpConnection.setUseCaches(false);
+                    httpConnection.setAllowUserInteraction(false);
+                    httpConnection.setConnectTimeout(100000);
+                    httpConnection.setReadTimeout(100000);
+
+                    httpConnection.connect();
+                    int responseCode = httpConnection.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        InputStream in = httpConnection.getInputStream();
+                        mProperties = new Properties();
+                        mProperties.load(in);
+                        break;
+                    }
+                } catch (IOException e) {
+                    errMsg = e.getMessage();
+                }
+            }
+
+            if (mProperties != null) {
+                latestVersion = mProperties.getProperty("last_version");
+                latestVersionCode = Integer.valueOf(mProperties.getProperty("last_version_code"));
+                if (BuildConfig.DEBUG) {
+                    downloadLink = mProperties.getProperty("download_link-debug");
+                }
+                else {
+                    downloadLink = mProperties.getProperty("download_link");
+                }
+                // return true is current running application is already the latest
+                return (currentVersionCode >= latestVersionCode);
             }
             else {
-                aLinks = updateLink.split(",");
-                for (String aLink : aLinks) {
-                    aLink = aLink.trim() + filePath;
-                    res = HttpUtils.openURLConnection(aLink);
-                    if (res != null)
-                        break;
-                }
-
-                if (res != null) {
-                    InputStream in = null;
-                    Properties props = new Properties();
-
-                    try {
-                        in = res.getContent();
-                        props.load(in);
-                    } finally {
-                        if (in != null)
-                            in.close();
-                    }
-
-                    latestVersion = props.getProperty("last_version");
-                    latestVersionCode = Integer.valueOf(props.getProperty("last_version_code"));
-                    if (BuildConfig.DEBUG) {
-                        downloadLink = props.getProperty("download_link-debug");
-                    }
-                    else {
-                        downloadLink = props.getProperty("download_link");
-                    }
-                    // return true is current running application is already the latest
-                    return (currentVersionCode >= latestVersionCode);
-                }
+                Timber.w("Could not retrieve version.properties for checking: %s", errMsg);
             }
-        } catch (Exception e) {
-            Timber.w(e, "Could not retrieve latest version for checking! ");
-            return false;
         }
         return true;
     }

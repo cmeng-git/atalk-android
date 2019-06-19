@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:background="@color/theme_background"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/jid_Account"
+            style="@style/MediumFont"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/service_gui_ACCOUNT" />
+
+        <Spinner
+            android:id="@+id/jid_Accounts_Spinner"
+            style="@style/SpinnerView"
+            android:layout_width="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/mucName"
+            style="@style/MediumFont"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/service_gui_NAME" />
+
+        <EditText
+            android:id="@+id/mucName_Edit"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/NickName"
+            style="@style/MediumFont"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/service_gui_NICKNAME_LABEL" />
+
+        <EditText
+            android:id="@+id/nickName_Edit"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/password"
+            style="@style/MediumFont"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/password_label" />
+
+        <RelativeLayout
+            android:id="@+id/pwdTypingArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/passwordField"
+                style="@style/EntryTextView"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="@dimen/between_padding"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+
+            <CheckBox
+                android:id="@+id/show_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@id/passwordField"
+                android:layout_alignRight="@+id/passwordField" />
+
+            <ImageView
+                android:id="@+id/pwdviewImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/show_password"
+                android:layout_alignLeft="@id/show_password"
+                android:layout_alignStart="@id/show_password"
+                android:alpha="0.3"
+                android:src="@drawable/pwdview" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/chatRoom_Name"
+            style="@style/MediumFont"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/service_gui_CHAT_ROOM" />
+
+        <CheckBox
+            android:id="@+id/cb_bookmark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:text="@string/service_gui_CHATROOM_BOOKMARK" />
+
+        <CheckBox
+            android:id="@+id/cb_autojoin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:text="@string/service_gui_CHATROOM_AUTOJOIN" />
+
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/chatRoom_Spinner"
+        style="@style/SpinnerView"
+        android:layout_width="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/between_padding"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_Cancel"
+            style="@style/ButtonTop"
+            android:enabled="true"
+            android:text="@string/service_gui_CANCEL" />
+
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="2dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/button_Apply"
+            style="@style/ButtonTop"
+            android:enabled="true"
+            android:text="@string/service_gui_APPLY" />
+    </LinearLayout>
+</LinearLayout>

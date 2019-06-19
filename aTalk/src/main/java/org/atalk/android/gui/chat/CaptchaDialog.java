@@ -26,17 +26,16 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.*;
 
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.util.Logger;
-
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.packet.Message.Body;
 import org.jivesoftware.smackx.bob.packet.BoBExt;
 import org.jivesoftware.smackx.captcha.packet.Captcha;
 import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
+import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -72,7 +71,8 @@ public class CaptchaDialog extends Dialog
     private DataForm formSubmit;
     private String mReasonText;
 
-    private static XMPPTCPConnection mConnection;
+    private static MultiUserChat mMultiUserChat;
+    private static XMPPConnection mConnection;
     private static Message mMessage;
     private Context mContext;
     private final CaptchaDialogListener callBack;
@@ -82,12 +82,13 @@ public class CaptchaDialog extends Dialog
         void onResult(int state);
     }
 
-    public CaptchaDialog(Context context, ProtocolProviderService pps, Message message, CaptchaDialogListener listener)
+    public CaptchaDialog(Context context, MultiUserChat multiUserChat, Message message, CaptchaDialogListener listener)
     {
         super(context);
         mContext = context;
+        mMultiUserChat = multiUserChat;
+        mConnection = multiUserChat.getXmppConnection();
         mMessage = message;
-        mConnection = pps.getConnection();
         callBack = listener;
     }
 
@@ -112,6 +113,7 @@ public class CaptchaDialog extends Dialog
             showCaptchaContent();
             initializeViewListeners();
         }
+        setCancelable(false);
     }
 
     private void closeDialog()
@@ -130,7 +132,13 @@ public class CaptchaDialog extends Dialog
                 (int) (mCaptcha.getWidth() * metrics.scaledDensity),
                 (int) (mCaptcha.getHeight() * metrics.scaledDensity), false);
         mImageView.setImageBitmap(captcha);
-        mReasonText = mMessage.getBody();
+
+        Body bodyExt = mMessage.getExtension(Body.ELEMENT, Body.NAMESPACE);
+        if (bodyExt != null)
+            mReasonText = bodyExt.getMessage();
+        else
+            mReasonText = mMessage.getBody();
+
         mReason.setText(mReasonText);
         mCaptchaText.requestFocus();
     }
@@ -140,8 +148,7 @@ public class CaptchaDialog extends Dialog
      */
     private void initializeViewListeners()
     {
-        mImageView.setOnClickListener(
-                v -> mCaptchaText.requestFocus()
+        mImageView.setOnClickListener(v -> mCaptchaText.requestFocus()
         );
 
         mAcceptButton.setOnClickListener(v -> {

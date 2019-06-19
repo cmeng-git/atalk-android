@@ -22,11 +22,18 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.android.gui.util.AndroidUtils;
+
+import timber.log.Timber;
 
 /**
  * The dialog allows user to change nickName and/or Subject.
@@ -35,7 +42,10 @@ import org.atalk.android.R;
  */
 public class ChatRoomInfoChangeDialog extends Dialog
 {
+    private Context mContext;
+    private ChatRoomWrapper mChatRoomWrapper;
     private ChatRoom mChatRoom;
+    private static MUCServiceImpl mucService;
 
     private EditText subjectField;
     private EditText nicknameField;
@@ -51,7 +61,10 @@ public class ChatRoomInfoChangeDialog extends Dialog
     public ChatRoomInfoChangeDialog(Context context, ChatRoomWrapper chatRoomWrapper)
     {
         super(context);
+        mContext = context;
+        mChatRoomWrapper = chatRoomWrapper;
         mChatRoom = chatRoomWrapper.getChatRoom();
+        mucService = MUCActivator.getMUCService();
     }
 
     @Override
@@ -75,8 +88,8 @@ public class ChatRoomInfoChangeDialog extends Dialog
 
         Button mApplyButton = this.findViewById(R.id.button_Apply);
         mApplyButton.setOnClickListener(v -> {
-            applyChatRoomChanges();
-            closeDialog();
+            if (applyChatRoomChanges())
+                closeDialog();
         });
 
         Button mCancelButton = this.findViewById(R.id.button_Cancel);
@@ -92,26 +105,19 @@ public class ChatRoomInfoChangeDialog extends Dialog
     /**
      * Invites the contacts to the chat conference.
      */
-    private void applyChatRoomChanges()
+    private boolean applyChatRoomChanges()
     {
         // allow nickName to contain spaces
         String nickName = nicknameField.getText().toString().trim();
         String subject = subjectField.getText().toString().trim();
 
-        if (!TextUtils.isEmpty(nickName) && !nickName.equals(oldNick)) {
-            try {
-                mChatRoom.setUserNickname(nickName);
-            } catch (OperationFailedException e) {
-                e.printStackTrace();
-            }
+        if (TextUtils.isEmpty(nickName)) {
+            AndroidUtils.showAlertDialog(mContext, R.string.service_gui_CHANGE_ROOM_INFO,
+                    R.string.service_gui_CHANGE_NICKNAME_NULL);
+            return false;
         }
 
-        if (!TextUtils.isEmpty(subject) && !subject.equals(oldSubject)) {
-            try {
-                mChatRoom.setSubject(subject);
-            } catch (OperationFailedException e) {
-                e.printStackTrace();
-            }
-        }
+        mucService.joinChatRoom(mChatRoomWrapper, nickName, null, subject);
+        return true;
     }
 }

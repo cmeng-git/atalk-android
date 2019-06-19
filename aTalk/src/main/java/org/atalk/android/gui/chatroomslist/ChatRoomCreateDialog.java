@@ -29,7 +29,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.muc.*;
-import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
@@ -39,9 +38,15 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.util.ComboBox;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.bookmarks.BookmarkManager;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * The invite dialog is the one shown when the user clicks on the conference option in the Contact List toolbar.
@@ -50,8 +55,6 @@ import java.util.*;
  */
 public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListener
 {
-    public static final String REMOVE_ROOM_ON_FIRST_JOIN_FAILED = "gui.chatroomslist.REMOVE_ROOM_ON_FIRST_JOIN_FAILED";
-
     private final MainMenuActivity mParent;
     private final MUCServiceImpl mucService;
 
@@ -63,7 +66,6 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 
     private EditText subjectField;
     private EditText nicknameField;
-    private String chatRoomField;
     private Button mJoinButton;
 
     /**
@@ -192,7 +194,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     private void updateJoinButtonEnableState()
     {
         String nickName = nicknameField.getText().toString().trim();
-        chatRoomField = chatRoomComboBox.getText().trim();
+        String chatRoomField = chatRoomComboBox.getText().trim();
 
         boolean mEnable = (!TextUtils.isEmpty(chatRoomField) && !TextUtils.isEmpty(nickName));
         if (mEnable) {
@@ -290,51 +292,72 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         String chatRoomID = chatRoomComboBox.getText().replaceAll("\\s", "");
         Collection<String> contacts = new ArrayList<>();
         String reason = "Let's chat";
-        Boolean createNew = false;
 
         if (!TextUtils.isEmpty(chatRoomID) && !TextUtils.isEmpty(nickName)) {
             ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
 
-            // create if new chatRoom
+            // create new if chatRoom does not exist
             ChatRoomWrapper chatRoomWrapper = mucService.findChatRoomWrapperFromChatRoomID(chatRoomID, pps);
             if (chatRoomWrapper == null) {
-                createNew = true;
+                // Just create chatRoomWrapper without joining
                 chatRoomWrapper = mucService.createChatRoom(chatRoomID, pps, contacts,
-                        reason, true, false, false);
-                // In case the protocol failed to create a chat room (null), then return without
-                // open the chat room.
+                        reason, false, false, false);
+
+                // Return without open the chat room, the protocol failed to create a chat room (null)
                 if (chatRoomWrapper == null) {
                     aTalkApp.showToastMessage(R.string.service_gui_CREATE_CHAT_ROOM_ERROR, chatRoomID);
                     return false;
                 }
-                chatRoomID = chatRoomWrapper.getChatRoomID();
-                ConfigurationUtils.saveChatRoom(pps, chatRoomID, chatRoomID);
-            }
-            ConfigurationUtils.updateChatRoomProperty(pps, chatRoomID,
-                    ChatRoom.USER_NICK_NAME, nickName);
 
-            // Allow to remove new chatRoom if join failed
-            if (createNew && AndroidGUIActivator.getConfigurationService().getBoolean(REMOVE_ROOM_ON_FIRST_JOIN_FAILED,
-                    false)) {
-                final ChatRoomWrapper crWrapper = chatRoomWrapper;
+                // retrieve and save the created chatRoom in database -> createChatRoom will save a copy in dB
+                // chatRoomID = chatRoomWrapper.getChatRoomID();
+                // ConfigurationUtils.saveChatRoom(pps, chatRoomID, chatRoomID);
 
-                chatRoomWrapper.addPropertyChangeListener(evt -> {
-                    if (evt.getPropertyName().equals(ChatRoomWrapper.JOIN_SUCCESS_PROP))
-                        return;
+                /*
+                 * Save to server bookmark with autojoin option for newly created chatroom
+                 */
+                // MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
+                chatRoomWrapper.setAutoJoin(true);
+                chatRoomWrapper.setBookmark(true);
+                chatRoomWrapper.setNickName(nickName); // save for later ResourcePart retrieval
+                EntityBareJid entityBareJid = chatRoomWrapper.getEntityBareJid();
 
-                    // if we failed for some , then close and remove the room
-                    AndroidGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
-                    AndroidGUIActivator.getMUCService().removeChatRoom(crWrapper);
-                });
+                BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
+                try {
+                    // Use subject for bookmark name
+                    bookmarkManager.addBookmarkedConference(subject, entityBareJid, true,
+                            chatRoomWrapper.getNickResource(), "");
+                } catch (SmackException.NoResponseException | SmackException.NotConnectedException
+                        | XMPPException.XMPPErrorException | InterruptedException e) {
+                    Timber.w("Failed to add new Bookmarks: %s", e.getMessage());
+                }
+
+                // Allow to remove new chatRoom if join failed
+                if (AndroidGUIActivator.getConfigurationService()
+                        .getBoolean(MUCService.REMOVE_ROOM_ON_FIRST_JOIN_FAILED, false)) {
+                    final ChatRoomWrapper crWrapper = chatRoomWrapper;
+
+                    chatRoomWrapper.addPropertyChangeListener(evt -> {
+                        if (evt.getPropertyName().equals(ChatRoomWrapper.JOIN_SUCCESS_PROP))
+                            return;
+
+                        // if we failed for some , then close and remove the room
+                        AndroidGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
+                        AndroidGUIActivator.getMUCService().removeChatRoom(crWrapper);
+                    });
+                }
             }
 
             // Set chatRoom openAutomatically on_activity
-            MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
+            // MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
+
+            chatRoomWrapper.setNickName(nickName);
             mucService.joinChatRoom(chatRoomWrapper, nickName, null, subject);
             Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
             mParent.startActivity(chatIntent);
             return true;
-        } else if (TextUtils.isEmpty(chatRoomID)) {
+        }
+        else if (TextUtils.isEmpty(chatRoomID)) {
             aTalkApp.showToastMessage(R.string.service_gui_JOIN_CHAT_ROOM_NAME);
         }
         else {
@@ -342,63 +365,4 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         }
         return false;
     }
-
-    //	/**
-    //	 * Invites the contacts to the chat conference.
-    //	 */
-    //	private void createChatRoom()
-    //	{
-    //		// allow nickName to contain spaces
-    //		String nickName = nicknameField.getText().toString().trim();
-    //		String subject = subjectField.getText().toString().trim();
-    //		chatRoomField = chatRoomComboBox.getText().replaceAll("\\s", "");
-    //		Collection<String> contacts = new ArrayList<>();
-    //		String reason = "Let's chat";
-    //
-    //		if (!TextUtils.isEmpty(chatRoomField) && !TextUtils.isEmpty(nickName)) {
-    //			final ChatRoomWrapper chatRoomWrapper = AndroidGUIActivator.getMUCService()
-    //					.createChatRoom(chatRoomField, getSelectedProvider().getProtocolProvider(),
-    //							contacts, reason, true, false, false);
-    //
-    //			// In case the protocol failed to create a chat room (null), then return without
-    //			// open the chat room.
-    //			if (chatRoomWrapper == null) {
-    //				return;
-    //			}
-    //
-    //			ProtocolProviderService pps = chatRoomWrapper.getParentProvider().getProtocolProvider();
-    //			String chatRoomID = chatRoomWrapper.getChatRoomID();
-    //
-    //			if (!chatRoomWrapper.isPersistent()) {
-    //				chatRoomWrapper.setPersistent(true);
-    //				ConfigurationUtils.saveChatRoom(pps, chatRoomID, chatRoomID);
-    //			}
-    //			ConfigurationUtils.updateChatRoomProperty(pps, chatRoomID, ChatRoom.USER_NICK_NAME, nickName);
-    //
-    //			if (AndroidGUIActivator.getConfigurationService()
-    //					.getBoolean(REMOVE_ROOM_ON_FIRST_JOIN_FAILED, false)) {
-    //				chatRoomWrapper.addPropertyChangeListener(new PropertyChangeListener()
-    //				{
-    //					@Override
-    //					public void propertyChange(PropertyChangeEvent evt)
-    //					{
-    //						if (evt.getPropertyName().equals(ChatRoomWrapper.JOIN_SUCCESS_PROP))
-    //							return;
-    //
-    //						// if we failed for some reason we want to remove the room close the room
-    //						AndroidGUIActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
-    //
-    //						// remove it
-    //						AndroidGUIActivator.getMUCService().removeChatRoom(chatRoomWrapper);
-    //					}
-    //				});
-    //			}
-    //
-    //			// Set chatRoom openAutomatically on_activity
-    //			MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
-    //			AndroidGUIActivator.getMUCService().joinChatRoom(chatRoomWrapper, nickName, null, subject);
-    //			Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
-    //			mParent.startActivity(chatIntent);
-    //		}
-    //	}
 }

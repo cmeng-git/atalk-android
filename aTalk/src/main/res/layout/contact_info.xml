@@ -57,12 +57,12 @@
             android:id="@+id/statusMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/accountAvatar"
-            android:layout_marginLeft="100dp"
-            android:layout_marginStart="100dp"
+            android:layout_alignBottom="@+id/contactAvatar"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="40dp"
-            android:layout_toEndOf="@+id/accountAvatar"
-            android:layout_toRightOf="@+id/accountAvatar"
+            android:layout_toEndOf="@+id/contactAvatar"
+            android:layout_toRightOf="@+id/contactAvatar"
             android:hint="@string/plugin_contactinfo_USER_STATUS_MESSAGE"
             tools:ignore="UnknownIdInLayout" />
     </RelativeLayout>

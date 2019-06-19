@@ -23,9 +23,10 @@ import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatSessionManager;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
- * Class used to obtain UI specific data for <tt>MetaContact</tt> instances.
+ * Class used to obtain UI specific data for <tt>ChatRoom</tt> instances.
  *
  * @author Eng Chong MEng
  */
@@ -46,8 +47,10 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
     @Override
     public String getStatusMessage(Object chatRoomWrapper)
     {
-        String displayDetails = getDisplayDetails((ChatRoomWrapper) chatRoomWrapper);
-        return (displayDetails != null) ? displayDetails : "";
+        String displayDetail = getDisplayDetail(chatRoomWrapper);
+        if (StringUtils.isNullOrEmpty(displayDetail))
+            displayDetail =  getChatRoomID(chatRoomWrapper).split("@")[0];
+        return displayDetail;
     }
 
     @Override
@@ -68,15 +71,26 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
         return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomID();
     }
 
-    /**
-     * Returns the display details for the underlying <tt>MetaContact</tt>.
-     *
-     * @param chatRoomWrapper the <tt>MetaContact</tt>, which details we're looking for
-     * @return the display details for the underlying <tt>MetaContact</tt>
-     */
-    private static String getDisplayDetails(ChatRoomWrapper chatRoomWrapper)
+    @Override
+    public boolean isAutoJoin(Object chatRoomWrapper)
     {
-        // String displayDetails "not implement";
-        return null;
+        return ((ChatRoomWrapper) chatRoomWrapper).isAutoJoin();
+    }
+
+    @Override
+    public boolean isBookmark(Object chatRoomWrapper)
+    {
+        return ((ChatRoomWrapper) chatRoomWrapper).isBookmarked();
+    }
+
+    /**
+     * Returns the display details for the underlying <tt>ChatRoomWrapper</tt>.
+     *
+     * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt>, which details we're looking for
+     * @return the display details for the underlying <tt>ChatRoomWrapper</tt>
+     */
+    private static String getDisplayDetail(Object chatRoomWrapper)
+    {
+        return ((ChatRoomWrapper) chatRoomWrapper).getBookmarkName();
     }
 }

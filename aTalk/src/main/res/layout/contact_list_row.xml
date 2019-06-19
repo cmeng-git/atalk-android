@@ -51,7 +51,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Displayname@server.com"

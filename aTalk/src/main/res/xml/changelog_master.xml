@@ -6,6 +6,21 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="1.8.6 (06/20/2019)" versioncode="1086">
+        <change>Implement XEP-0048: Bookmarks support with autoJoin on first login</change>
+        <change>Default to save bookmark and enable autoJoin on newly created conference room</change>
+        <change>Add global ChatRoom Bookmark option on main menu (local and server rooms included for user selection)</change>
+        <change>Add user selectable autoJoin option in chatRoom list fragment. Join chatRoom and update bookmark if necessary</change>
+        <change>Show user selected chatRoom bookmark dialog when click on chatRoom avatar/checkbox</change>
+        <change>Do not rejoin chatRoom in JoinChatRoomTask; check for nick and subject changes only</change>
+        <change>Provide user option to remove local stored chatRoom on XMPPException when purging chatRoom on server</change>
+        <change>Fix non-display of chat Messages received from member with nickName only</change>
+        <change>Alert user on room attributes change failure</change>
+        <change>Fix user selected chatType is not properly restored after user closed an active chatSession</change>
+        <change>Fix debug apk update for android-N: need REQUEST_INSTALL_PACKAGES in manifest and support only scheme content:</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="1.8.5 (06/06/2019)" versioncode="1085">
         <change>Add web access to main page slider for company RSS feed or news sharing - default access to movim</change>
         <change>Add user option to specify default web access page in settings</change>

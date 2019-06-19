@@ -19,9 +19,9 @@ package org.atalk.android.gui.chatroomslist.model;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import net.java.sip.communicator.impl.muc.MUCActivator;
-import net.java.sip.communicator.impl.muc.MUCServiceImpl;
+import net.java.sip.communicator.impl.muc.*;
 import net.java.sip.communicator.service.muc.*;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -29,11 +29,16 @@ import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.model.UIGroupRenderer;
-import org.atalk.util.Logger;
 import org.atalk.util.StringUtils;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.bookmarks.BookmarkManager;
+import org.jivesoftware.smackx.bookmarks.BookmarkedConference;
 
 import java.util.*;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 /**
  * ChatRoom list model is responsible for caching current chatRoomWrapper list obtained from
@@ -171,13 +176,11 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Finds <tt>ChatRoomWrapper</tt> index in <tt>ChatRoomProviderWrapper</tt> identified by given
-     * <tt>groupIndex</tt>.
+     * Finds <tt>ChatRoomWrapper</tt> index in <tt>ChatRoomProviderWrapper</tt> identified by given <tt>groupIndex</tt>.
      *
      * @param groupIndex index of mCrpWrapperGroup we want to search.
      * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt> to find inside the mCrpWrapperGroup.
-     * @return index of <tt>ChatRoomWrapper</tt> inside mCrpWrapperGroup identified by given
-     * mCrpWrapperGroup index.
+     * @return index of <tt>ChatRoomWrapper</tt> inside mCrpWrapperGroup identified by given mCrpWrapperGroup index.
      */
     public int getChildIndex(int groupIndex, ChatRoomWrapper chatRoomWrapper)
     {
@@ -185,8 +188,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Returns the count of children contained in the mCrpWrapperGroup given by the
-     * <tt>groupPosition</tt>.
+     * Returns the count of children contained in the mCrpWrapperGroup given by the <tt>groupPosition</tt>.
      *
      * @param groupPosition the index of the mCrpWrapperGroup, which children we would like to count
      */
@@ -233,23 +235,70 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Adds all child mCrWrapperList for all the given <tt>mCrpWrapperGroup</tt>. Skip adding
-     * group of zero child.
+     * Adds all child mCrWrapperList for all the given <tt>mCrpWrapperGroup</tt>. Skip adding group of zero child.
      *
      * @param providers the providers mCrpWrapperGroup, which child mCrWrapperList to add
      */
     private void addChatRooms(List<ChatRoomProviderWrapper> providers)
     {
         for (ChatRoomProviderWrapper provider : providers) {
-            List<ChatRoomWrapper> chatRoomWrappers = provider.getChatRooms();
+            List<ChatRoomWrapper> chatRoomWrappers = initBookmarkChatRooms(provider);
             if ((chatRoomWrappers != null) && (chatRoomWrappers.size() > 0)) {
                 addGroup(provider);
-
                 for (ChatRoomWrapper crWrapper : chatRoomWrappers) {
                     addChatRoom(provider, crWrapper);
                 }
             }
         }
+    }
+
+    /**
+     * Adds all child mCrWrapperList for all the given <tt>mCrpWrapper</tt> and update it with bookmark info
+     *
+     * @param crpWrapper the crpWrapper provider, which child mCrWrapperList to fetch
+     */
+    private List<ChatRoomWrapper> initBookmarkChatRooms(ChatRoomProviderWrapper crpWrapper)
+    {
+        if (crpWrapper != null) {
+            // List<ChatRoomWrapper> crWrappers = crpWrapper.getChatRooms();
+
+            ProtocolProviderService pps = crpWrapper.getProtocolProvider();
+            BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
+            try {
+                List<BookmarkedConference> bookmarksList = bookmarkManager.getBookmarkedConferences();
+                for (BookmarkedConference bookmarkedConference : bookmarksList) {
+                    String chatRoomId = bookmarkedConference.getJid().toString();
+                    ChatRoomWrapper chatRoomWrapper = crpWrapper.findChatRoomWrapperForChatRoomID(chatRoomId);
+                    if (chatRoomWrapper == null) {
+                        chatRoomWrapper = new ChatRoomWrapperImpl(crpWrapper, chatRoomId);
+                        crpWrapper.addChatRoom(chatRoomWrapper);
+                    }
+                    // cmeng: not working - problem chatRoom list empty
+                    // else {
+                    //     crWrappers.remove(chatRoomWrapper);
+                    // }
+                    chatRoomWrapper.setBookmark(true);
+                    chatRoomWrapper.setBookmarkName(bookmarkedConference.getName());
+                    chatRoomWrapper.setAutoJoin(bookmarkedConference.isAutoJoin());
+
+                    String password = bookmarkedConference.getPassword();
+                    if (!StringUtils.isNullOrEmpty(password))
+                        chatRoomWrapper.savePassword(password);
+                }
+                // for (ChatRoomWrapper crWrapper : crWrappers) {
+                //     crWrapper.setBookmark(false);
+                // }
+            } catch (SmackException.NoResponseException | SmackException.NotConnectedException
+                    | XMPPException.XMPPErrorException | InterruptedException e) {
+                Timber.w("Failed to fetch Bookmarks for %s: %s",
+                        crpWrapper.getProtocolProvider().getAccountID(), e.getMessage());
+            }
+
+            // Auto join chatRoom if any - not need
+            // crpWrapper.synchronizeProvider();
+            return crpWrapper.getChatRooms();
+        }
+        return null;
     }
 
     /**
@@ -272,8 +321,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Remove an existing <tt>crpWrapper</tt> from both the originalCrpWrapperGroup and
-     * mCrpWrapperGroup if exist
+     * Remove an existing <tt>crpWrapper</tt> from both the originalCrpWrapperGroup and mCrpWrapperGroup if exist
      *
      * @param crpWrapper the <tt>chatRoomProviderWrapper</tt> to be removed
      */
@@ -328,8 +376,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Removes all the ChatRoomProviderWrappers and ChatRoomWrappers contained in the given
-     * providers.
+     * Removes all the ChatRoomProviderWrappers and ChatRoomWrappers contained in the given providers.
      *
      * @param providers the <tt>ChatRoomProviderWrapper</tt>, which content we'd like to remove
      */

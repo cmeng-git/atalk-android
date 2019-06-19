@@ -18,7 +18,6 @@ package net.java.sip.communicator.impl.muc;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -42,9 +41,9 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
      * The user-specific key-value associations stored in this instance.
      * <p>
      * Like the Widget implementation of Eclipse SWT, the storage type takes into account that
-     * there are likely to be many <code>MetaContactGroupImpl</code> instances and
-     * <code>Map</code>s are thus likely to impose increased memory use. While an array may
-     * very well perform worse than a <code>Map</code> with respect to search, the mechanism of
+     * there are likely to be many {@code MetaContactGroupImpl} instances and
+     * {@code Map}s are thus likely to impose increased memory use. While an array may
+     * very well perform worse than a {@code Map} with respect to search, the mechanism of
      * user-defined key-value associations explicitly states that it is not guaranteed to be
      * optimized for any particular use and only covers the most basic cases and
      * performance-savvy code will likely implement a more optimized solution anyway.
@@ -144,12 +143,10 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
     }
 
     /**
-     * Returns <code>true</code> if the given chat room is contained in this provider, otherwise -
-     * returns <code>false</code>.
+     * Returns {@code true} if the given chat room is contained in this provider, otherwise - returns {@code false}.
      *
      * @param chatRoom the chat room to search for.
-     * @return <code>true</code> if the given chat room is contained in this provider, otherwise -
-     * returns <code>false</code>.
+     * @return {@code true} if the given chat room is contained in this provider, otherwise - returns {@code false}.
      */
     public boolean containsChatRoom(ChatRoomWrapper chatRoom)
     {
@@ -159,12 +156,10 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
     }
 
     /**
-     * Returns the chat room wrapper contained in this provider that corresponds to the given chat
-     * room.
+     * Returns the chat room wrapper contained in this provider that corresponds to the given chat room.
      *
      * @param chatRoom the chat room we're looking for.
-     * @return the chat room wrapper contained in this provider that corresponds to the given chat
-     * room.
+     * @return the chat room wrapper contained in this provider that corresponds to the given chat room.
      */
     public ChatRoomWrapper findChatRoomWrapperForChatRoom(ChatRoom chatRoom)
     {
@@ -172,16 +167,14 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
     }
 
     /**
-     * Returns the chat room wrapper contained in this provider that corresponds to the chat room
-     * with the given id.
+     * Returns the chat room wrapper contained in this provider that corresponds to the chat room with the given id.
      *
      * @param chatRoomID the id of the chat room we're looking for.
      * @return the chat room wrapper contained in this provider that corresponds to the given chat room id.
      */
     public ChatRoomWrapper findChatRoomWrapperForChatRoomID(String chatRoomID)
     {
-        // Compare ids, cause saved chatRooms don't have ChatRoom object
-        // but Id's are the same.
+        // Compare ids, cause saved chatRooms don't have ChatRoom object but Id's are the same.
         for (ChatRoomWrapper chatRoomWrapper : chatRoomsOrderedCopy) {
             if (chatRoomWrapper.getChatRoomID().equals(chatRoomID)) {
                 return chatRoomWrapper;
@@ -284,12 +277,11 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
     }
 
     /**
-     * Determines the index in <code>#data</code> of a specific key.
+     * Determines the index in {@code #data} of a specific key.
      *
-     * @param key the key to retrieve the index in <code>#data</code> of
-     * @return the index in <code>#data</code> of the specified <code>key</code> if it is
-     * contained; <tt>-1</tt> if <code>key</code> is not
-     * contained in <code>#data</code>
+     * @param key the key to retrieve the index in {@code #data} of
+     * @return the index in {@code #data} of the specified {@code key} if it is contained;
+     * <tt>-1</tt> if {@code key} is not contained in {@code #data}
      */
     private int dataIndexOf(Object key)
     {
@@ -301,23 +293,27 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
     }
 
     /**
-     * Goes through the locally stored chat rooms list and for each {@link ChatRoomWrapper} tries
-     * to find the corresponding server stored
-     * {@link ChatRoom} in the specified operation set. Joins automatically all found chat rooms.
+     * Goes through the locally stored chat rooms list and for each {@link ChatRoomWrapper}
+     * tries to find the corresponding server stored {@link ChatRoom} in the specified operation set.
+     * Joins automatically all found chat rooms.
      */
     public void synchronizeProvider()
     {
-        final OperationSetMultiUserChat groupChatOpSet
-                = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
+        final OperationSetMultiUserChat groupChatOpSet = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
 
         for (final ChatRoomWrapper chatRoomWrapper : chatRoomsOrderedCopy) {
+            // Proceed only if the protocol is still registered (system test indicates must check again)
+            // if (!protocolProvider.isRegistered()) {
+            //    Timber.w("The Protocol is not registered to autoJoin chatRoom: %s", protocolProvider);
+            //    continue;
+            // }
+
             new Thread()
             {
                 @Override
                 public void run()
                 {
                     ChatRoom chatRoom = null;
-
                     try {
                         chatRoom = groupChatOpSet.findRoom(chatRoomWrapper.getChatRoomName());
                     } catch (OperationFailedException | OperationNotSupportedException | XmppStringprepException e1) {
@@ -328,10 +324,7 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
                         chatRoomWrapper.setChatRoom(chatRoom);
 
                         if (chatRoomWrapper.isAutoJoin()) {
-                            String nickName = ConfigurationUtils.getChatRoomProperty(
-                                    chatRoomWrapper.getParentProvider().getProtocolProvider(),
-                                    chatRoomWrapper.getChatRoomID(), ChatRoom.USER_NICK_NAME);
-
+                            String nickName = chatRoomWrapper.getNickName();
                             if (nickName != null) {
                                 MUCActivator.getMUCService().joinChatRoom(chatRoom, nickName, null);
                             }
@@ -342,17 +335,13 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
                     }
                     else {
                         if (chatRoomWrapper.isAutoJoin()) {
-                            // chat room is not existent we must create it and join
-                            // it
+                            // For non-existent chat room, we must create it and join
                             ChatRoomWrapper roomWrapper
                                     = MUCActivator.getMUCService().createChatRoom(chatRoomWrapper.getChatRoomName(),
                                     chatRoomWrapper.getParentProvider().getProtocolProvider(),
-                                    new ArrayList<String>(), "", false, false, true);
+                                    new ArrayList<>(), "", false, false, true);
 
-                            String nickName = ConfigurationUtils.getChatRoomProperty(
-                                    chatRoomWrapper.getParentProvider().getProtocolProvider(),
-                                    chatRoomWrapper.getChatRoomID(), ChatRoom.USER_NICK_NAME);
-
+                            String nickName = chatRoomWrapper.getNickName();
                             if (nickName != null) {
                                 MUCActivator.getMUCService().joinChatRoom(roomWrapper.getChatRoom(), nickName, null);
                             }

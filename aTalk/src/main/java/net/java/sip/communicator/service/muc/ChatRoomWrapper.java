@@ -17,6 +17,9 @@ package net.java.sip.communicator.service.muc;
 
 import net.java.sip.communicator.service.protocol.ChatRoom;
 
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.parts.Resourcepart;
+
 import java.beans.PropertyChangeListener;
 
 /**
@@ -60,6 +63,12 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
     String JOIN_SUBSCRIPTION_ALREADY_EXISTS_PROP = "SubscriptionAlreadyExists";
 
     /**
+     * Property to be fired when we do not have enough privileges to perform certain task
+     * e.g. Only moderators are allowed to change the subject in this room
+     */
+    String NOT_ENOUGH_PRIVILEGES = "NotEnoughPrivileges";
+
+    /**
      * Property to be fired when unknown error occurred while joining a chat room.
      */
     String JOIN_UNKNOWN_ERROR_PROP = "UnknownError";
@@ -70,6 +79,13 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
      * @return the <tt>ChatRoom</tt> that this wrapper represents.
      */
     ChatRoom getChatRoom();
+
+    /**
+     * Returns the chat room EntityBareJid.
+     *
+     * @return the chat room EntityBareJid
+     */
+    EntityBareJid getEntityBareJid();
 
     /**
      * Sets the <tt>ChatRoom</tt> that this wrapper represents.
@@ -114,6 +130,41 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
     void setPersistent(boolean value);
 
     /**
+     * Returns the user nickName as ResourcePart.
+     *
+     * @return the user nickName ResourcePart
+     */
+    Resourcepart getNickResource();
+
+    /**
+     * Returns the user nickName.
+     *
+     * @return the user nickName
+     */
+    String getNickName();
+
+    /**
+     * Stores the nickName for the user.
+     *
+     * @param nickName the nickName to store
+     */
+    void setNickName(String nickName);
+
+    /**
+     * Returns the bookmark name.
+     *
+     * @return the bookmark name
+     */
+    String getBookmarkName();
+
+    /**
+     * set the bookmark name.
+     *
+     * @param name the bookmark name to set
+     */
+    void setBookmarkName(String name);
+
+    /**
      * Stores the password for the chat room.
      *
      * @param password the password to store
@@ -145,6 +196,20 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
      * @param value change of auto join property.
      */
     void setAutoJoin(boolean value);
+
+    /**
+     * Is access on start-up (return bookmarked may be null).
+     *
+     * @return if the charRoomWrapper is bookmarked.
+     */
+    boolean isBookmarked();
+
+    /**
+     * Changes bookmark value in configuration service.
+     *
+     * @param value change of bookmark property.
+     */
+    void setBookmark(boolean value);
 
     /**
      * Removes the listeners.

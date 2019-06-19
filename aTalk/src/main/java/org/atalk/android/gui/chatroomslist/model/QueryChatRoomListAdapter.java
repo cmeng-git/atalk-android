@@ -72,8 +72,7 @@ public class QueryChatRoomListAdapter extends BaseChatRoomListAdapter
      * @param fragment parent fragment.
      * @param chatRoomListModel meta contact list model used as a base data model
      */
-    public QueryChatRoomListAdapter(ChatRoomListFragment fragment,
-            ChatRoomListAdapter chatRoomListModel)
+    public QueryChatRoomListAdapter(ChatRoomListFragment fragment, ChatRoomListAdapter chatRoomListModel)
     {
         super(fragment);
         this.chatRoomList = chatRoomListModel;

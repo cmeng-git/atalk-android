@@ -63,6 +63,11 @@ public abstract class MUCService
     public static String DEFAULT_AUTO_OPEN_BEHAVIOUR = OPEN_ON_MESSAGE;
 
     /**
+     * Remove the newly create room if failed to join
+     */
+    public static final String REMOVE_ROOM_ON_FIRST_JOIN_FAILED = "gui.chatroomslist.REMOVE_ROOM_ON_FIRST_JOIN_FAILED";
+
+    /**
      * Map for the auto open configuration values and their text representation
      */
     public static Map<String, String> autoOpenConfigValuesTexts = new HashMap<>();

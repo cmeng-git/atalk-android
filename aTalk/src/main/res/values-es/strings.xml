@@ -152,8 +152,9 @@
 	<string name="service_gui_CHANGE_NICK">Cambiar el apodo</string>
 	<string name="service_gui_CHANGE_NICKNAME">Cambiar el apodo&#8230;</string>
 	<string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">El apodo ya existe</string>
-	<string name="service_gui_CHANGE_NICKNAME_ERROR">Error al cambiar el apodo</string>
+	<string name="service_gui_CHANGE_NICKNAME_ERROR">Error al cambiar el apodo para %1$s: %2$s</string>
 	<string name="service_gui_CHANGE_NICKNAME_LABEL">En el campo de abajo, puedes introducir tu nuevo apodo.</string>
+    <string name="service_gui_CHANGE_NICKNAME_NULL">El contenido del campo Nick Name no puede ser nulo</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Cambiar información de la sala de chat</string>
 	<string name="service_gui_CHANGE_ROOM_SUBJECT">Cambiar el tema de la sala\'s&#8230;</string>
 	<string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">En el siguiente campo, puede introducir el nuevo tema para esta sala.</string>
@@ -372,6 +373,11 @@
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente. %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Eliminar medios de mi teléfono</string>
 
+    <string name="service_gui_CHATROOM_BOOKMARK_TITLE">ChatRoom Bookmark</string>
+    <string name="service_gui_CHATROOM_BOOKMARK">Bookmark</string>
+    <string name="service_gui_CHATROOM_AUTOJOIN">Unirse automáticamente</string>
+    <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Error al actualizar Marcadores para %1$s: %2$s</string>
+
     <string name="service_gui_CHATROOM_OCCUPANT">Miembros de la sala de charla</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Borrar el historial de esta sala de charla</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Borrar el historial de todas las salas de charla</string>
@@ -379,8 +385,9 @@
     <string name="service_gui_CHATROOM_INFO">Información de la sala de charla</string>
 
     <string name="service_gui_DESTROY_CHATROOM">Destruir esta sala de charla</string>
-    <string name="service_gui_DESTROY_CHATROOM_ERROR">Se produjo un error al destruir la sala de chat: \n\nError: %1$s </string>
-    <string name="service_gui_DESTROY_CHATROOM_TEXT">Propietario de la sala de charla: %1$s.\n\n¿Seguro que se quiere eliminar \'%2$s\' y todo su historial de charla?</string>
+    <string name="service_gui_DESTROY_CHATROOM_EXCEPTION">Se produjo un error al destruir la sala de chat:\n%1$s </string>
+    <string name="service_gui_DESTROY_CHATROOM_ERROR">Error al eliminar el chatRoom en el servidor:\n\'%1$s\'\n%2$s\n\nSe debe purgar el chatRoom local\nPuede que aún pueda recrear/volver a unirse al chatRoom más tarde.</string>
+    <string name="service_gui_DESTROY_CHATROOM_TEXT">Propietario de la sala de charla: %1$s.\n¿Seguro que se quiere eliminar\n\'%2$s\'\ny todo su historial de charla?</string>
     <string name="service_gui_DESTROY_CHATROOM_TITLE">Eliminar la sala de charla</string>
     <string name="service_gui_DESTROYED_CHATROOM">\'%s\' ha sido eliminado exitosamente!</string>
 
@@ -431,7 +438,7 @@
     <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">La sala de chat está protegida con captcha challenge</string>
     <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">La verificación de CAPTCHA es válida</string>
     <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">La verificación de CAPTCHA ha fallado</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">Debes volver a unirte a la sala de chat de %1$s después de haber enviado el texto de CAPTCHA</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA desafío timeout;\npor favor, vuelva a unirse a chatRoom y vuelva a intentarlo.</string>
 
 	<string name="service_gui_JOIN_AUTOMATICALLY">Unirse automáticamente</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">No unirse automáticamente</string>
@@ -506,6 +513,7 @@
     <string name="service_gui_SHOW_STACK_TRACE">Mostrar stack Trace</string>
     <string name="service_gui_STREET">Calle</string>
     <string name="service_gui_SUBMIT">Enviar</string>
+    <string name="service_gui_VIDEO_PHONE">Video</string>
     <string name="service_gui_WORK_PHONE">"Trabajo "</string>
 
     <!-- Call -->
@@ -756,6 +764,7 @@
     <string name="plugin_updatechecker_DIALOG_NOUPDATE">Versión instalada actual: (%1$s-%2$s) está actualizada.</string>
     <string name="plugin_updatechecker_DIALOG_NOUPDATE_TITLE">No hay nueva versión</string>
     <string name="plugin_updatechecker_DIALOG_TITLE">Instalar las actualizaciones</string>
+    <string name="plugin_updatechecker_DOWNLOAD_FAILED">Error al descargar la nueva actualización!</string>
     <string name="plugin_updatechecker_UPDATE_MENU_ENTRY">Comprobar actualizaciones</string>
     <string name="plugin_newsoftware_DIALOG_MESSAGE">Una nueva versión de software (%1$s) está disponible.</string>
 

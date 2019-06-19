@@ -19,17 +19,25 @@ package org.atalk.android.gui.chatroomslist.model;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.v4.app.FragmentTransaction;
 import android.view.*;
 import android.widget.*;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.chatroomslist.ChatRoomBookmarkDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.model.UIGroupRenderer;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiActivity;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.bookmarks.BookmarkManager;
+import org.jxmpp.jid.EntityBareJid;
 
 import timber.log.Timber;
 
@@ -39,6 +47,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
+        implements View.OnClickListener, ChatRoomBookmarkDialog.OnFinishedCallback
 {
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
@@ -55,6 +64,8 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * The list view.
      */
     private final ExpandableListView chatRoomListView;
+
+    private ChatRoomViewHolder mViewHolder;
 
     /**
      * Creates the chatRoom list adapter.
@@ -123,7 +134,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     public void invalidateViews()
     {
         if (chatRoomListView != null) {
-            chatRoomListFragment.runOnUiThread(() -> chatRoomListView.invalidateViews());
+            chatRoomListFragment.runOnUiThread(chatRoomListView::invalidateViews);
         }
     }
 
@@ -136,8 +147,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     protected void updateDisplayName(final int groupIndex, final int chatRoomIndex)
     {
         int firstIndex = chatRoomListView.getFirstVisiblePosition();
-        View chatRoomView = chatRoomListView.getChildAt(
-                getListIndex(groupIndex, chatRoomIndex) - firstIndex);
+        View chatRoomView = chatRoomListView.getChildAt(getListIndex(groupIndex, chatRoomIndex) - firstIndex);
 
         if (chatRoomView != null) {
             ChatRoomWrapper crWrapper = (ChatRoomWrapper) getChild(groupIndex, chatRoomIndex);
@@ -171,8 +181,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      *
      * @param groupIndex the index of the group
      * @param chatRoomIndex the index of the child chatRoom
-     * @return an int representing the flat list index for the given <tt>groupIndex</tt> and
-     * <tt>chatRoomIndex</tt>
+     * @return an int representing the flat list index for the given <tt>groupIndex</tt> and <tt>chatRoomIndex</tt>
      */
     public int getListIndex(int groupIndex, int chatRoomIndex)
     {
@@ -192,8 +201,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Returns the identifier of the child contained on the given <tt>groupPosition</tt> and
-     * <tt>childPosition</tt>.
+     * Returns the identifier of the child contained on the given <tt>groupPosition</tt> and <tt>childPosition</tt>.
      *
      * @param groupPosition the index of the group
      * @param childPosition the index of the child
@@ -230,8 +238,16 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
             chatRoomViewHolder.statusMessage = convertView.findViewById(R.id.room_status);
 
             chatRoomViewHolder.roomIcon = convertView.findViewById(R.id.room_icon);
-            chatRoomViewHolder.roomIcon.setOnClickListener(roomIconClickListener);
+            chatRoomViewHolder.roomIcon.setOnClickListener(this);
             chatRoomViewHolder.roomIcon.setTag(chatRoomViewHolder);
+
+            chatRoomViewHolder.autojoin = convertView.findViewById(R.id.cb_autojoin);
+            chatRoomViewHolder.autojoin.setOnClickListener(this);
+            chatRoomViewHolder.autojoin.setTag(chatRoomViewHolder);
+
+            chatRoomViewHolder.bookmark = convertView.findViewById(R.id.cb_bookmark);
+            chatRoomViewHolder.bookmark.setOnClickListener(this);
+            chatRoomViewHolder.bookmark.setTag(chatRoomViewHolder);
 
             convertView.setTag(chatRoomViewHolder);
         }
@@ -244,7 +260,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 
         // return and stop further process if child has been removed
         Object child = getChild(groupPosition, childPosition);
-        if ((child == null) || !(child instanceof ChatRoomWrapper))
+        if (!(child instanceof ChatRoomWrapper))
             return convertView;
 
         UIChatRoomRenderer renderer = getChatRoomRenderer(groupPosition);
@@ -259,6 +275,9 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         String roomStatus = renderer.getStatusMessage(child);
         chatRoomViewHolder.roomName.setText(roomName);
         chatRoomViewHolder.statusMessage.setText(roomStatus);
+
+        chatRoomViewHolder.autojoin.setChecked(renderer.isAutoJoin(child));
+        chatRoomViewHolder.bookmark.setChecked(renderer.isBookmark(child));
 
         if (renderer.isDisplayBold(child)) {
             chatRoomViewHolder.roomName.setTypeface(Typeface.DEFAULT_BOLD);
@@ -342,34 +361,79 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * We keep one instance of avatar button listener to avoid unnecessary allocations. Clicked
-     * positions are obtained from the view holder.
+     * We keep one instance of view click listener to avoid unnecessary allocations.
+     * Clicked positions are obtained from the view holder.
      */
-    private final RoomIconClickListener roomIconClickListener = new RoomIconClickListener();
-
-    private class RoomIconClickListener implements View.OnClickListener
+    public void onClick(View view)
     {
-        public void onClick(View view)
-        {
-            if (!(view.getTag() instanceof ChatRoomViewHolder)) {
-                return;
-            }
+        if (!(view.getTag() instanceof ChatRoomViewHolder)) {
+            return;
+        }
 
-            ChatRoomViewHolder viewHolder = (ChatRoomViewHolder) view.getTag();
-            int groupPos = viewHolder.groupPosition;
-            int childPos = viewHolder.childPosition;
-            Object chatRoomWrapper = getChild(groupPos, childPos);
-            if (chatRoomWrapper == null) {
-                Timber.w("No chatRoom found at %d:%d", groupPos, childPos);
-            }
-            else {
-                String chatRoomName = getChatRoomRenderer(groupPos).getChatRoomID(chatRoomWrapper);
+        mViewHolder = (ChatRoomViewHolder) view.getTag();
+        int groupPos = mViewHolder.groupPosition;
+        int childPos = mViewHolder.childPosition;
+        ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) getChild(groupPos, childPos);
 
-                // make toast, show chatRoom details
-                Toast.makeText(chatRoomListFragment.getActivity(), chatRoomName,
-                        Toast.LENGTH_SHORT).show();
+        if (chatRoomWrapper != null) {
+            switch (view.getId()) {
+                case R.id.cb_autojoin:
+                    // Set chatRoom autoJoin on first login
+                    chatRoomWrapper.setAutoJoin(mViewHolder.autojoin.isChecked());
+                    if (chatRoomWrapper.isAutoJoin()) {
+                        MUCActivator.getMUCService().joinChatRoom(chatRoomWrapper);
+                    }
+
+                    // Continue to update server BookMarkConference data if bookmark is checked
+                    if (mViewHolder.bookmark.isChecked()) {
+                        ProtocolProviderService pps = chatRoomWrapper.getParentProvider().getProtocolProvider();
+                        BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
+                        EntityBareJid entityBareJid = chatRoomWrapper.getEntityBareJid();
+                        chatRoomWrapper.setBookmark(mViewHolder.bookmark.isChecked());
+                        try {
+                            if (mViewHolder.bookmark.isChecked()) {
+                                bookmarkManager.addBookmarkedConference(chatRoomWrapper.getBookmarkName(), entityBareJid,
+                                        chatRoomWrapper.isAutoJoin(), chatRoomWrapper.getNickResource(),
+                                        chatRoomWrapper.loadPassword());
+                            }
+                            else {
+                                bookmarkManager.removeBookmarkedConference(entityBareJid);
+                            }
+                        } catch (SmackException.NoResponseException | SmackException.NotConnectedException
+                                | XMPPException.XMPPErrorException | InterruptedException e) {
+                            Timber.w("Failed to update Bookmarks: %s", e.getMessage());
+                        }
+                    }
+                    break;
+
+                case R.id.room_icon:
+                case R.id.cb_bookmark:
+                    FragmentTransaction ft = chatRoomListFragment.getFragmentManager().beginTransaction();
+                    ft.addToBackStack(null);
+                    ChatRoomBookmarkDialog chatRoomBookmarkFragment
+                            = ChatRoomBookmarkDialog.getInstance(chatRoomWrapper, this);
+                    chatRoomBookmarkFragment.show(ft, "dialog");
+                    break;
+                default:
+                    break;
             }
         }
+        else {
+            Timber.w("No chatRoom found at %d:%d", groupPos, childPos);
+        }
+    }
+
+    /**
+     * update bookmark check on dialog close
+     */
+    @Override
+    public void onCloseDialog()
+    {
+        // retain current state unless change by user in dialog
+        ChatRoomWrapper chatRoomWrapper
+                = (ChatRoomWrapper) getChild(mViewHolder.groupPosition, mViewHolder.childPosition);
+        if (chatRoomWrapper != null)
+            mViewHolder.bookmark.setChecked((chatRoomWrapper.isBookmarked()));
     }
 
     /**
@@ -391,6 +455,8 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         TextView roomName;
         TextView statusMessage;
         ImageView roomIcon;
+        CheckBox autojoin;
+        CheckBox bookmark;
         ImageView selectedBgView;
         int groupPosition;
         int childPosition;

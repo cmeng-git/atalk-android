@@ -61,7 +61,7 @@ public class CaptchaProvider extends ExtensionElementProvider<Captcha>
             elementName = parser.getName();
             namespace = parser.getNamespace();
             if (eventType == XmlPullParser.START_TAG) {
-                if (elementName.equals("x") && namespace.equals("jabber:x:data")) {
+                if (elementName.equals(DataForm.ELEMENT) && namespace.equals(DataForm.NAMESPACE)) {
                     form = dataFormProvider.parse(parser);
                 }
                 else if (eventType == XmlPullParser.TEXT) {

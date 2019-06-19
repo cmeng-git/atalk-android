@@ -5,50 +5,81 @@
     android:background="@color/white"
     android:descendantFocusability="blocksDescendants">
 
-    <ImageView
-        android:id="@+id/room_icon"
-        android:layout_width="48dp"
+    <RelativeLayout
+        android:id="@+id/avatarLayout"
+        android:layout_width="@dimen/contact_list_avatar_width"
         android:layout_height="fill_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
+        android:layout_margin="4dp"
         android:paddingLeft="5dp"
-        android:paddingStart="5dp"
-        android:src="@drawable/ic_chatroom" />
+        android:paddingStart="5dp">
+
+        <ImageView
+            android:id="@+id/room_icon"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_chatroom" />
+
+        <CheckBox
+            android:id="@+id/cb_bookmark"
+            style="?android:attr/starStyle"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:layout_width="30dp"
+            android:layout_height="30dip"
+            android:layout_alignBottom="@id/room_icon"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:focusable="false"
+            android:visibility="visible"
+            android:gravity="center_vertical" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/room_icon"
-        android:layout_toRightOf="@+id/room_icon"
+        android:layout_toEndOf="@+id/avatarLayout"
+        android:layout_toRightOf="@+id/avatarLayout"
+        android:layout_alignBottom="@+id/avatarLayout"
         android:orientation="vertical"
         android:paddingLeft="8dp"
         android:paddingStart="8dp">
 
         <TextView
-            android:id="@+id/roominfo_name"
+            android:id="@+id/room_status"
             style="@style/MediumFont"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:maxLines="1"
-            android:text="chatroom@conference.server.com"
-            android:textColor="@color/list_text_selection_color" />
-
-        <TextView
-            android:id="@+id/room_status"
-            style="@style/SmallFont"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginBottom="5dp"
             android:gravity="bottom"
             android:maxLines="1"
             android:text="chatroom@conference.server.com"
             android:textColor="@color/list_details_selection_color" />
+
+        <TextView
+            android:id="@+id/roominfo_name"
+            style="@style/SmallFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:ellipsize="end"
+            android:gravity="bottom"
+            android:maxLines="1"
+            android:text="chatroom@conference.server.com"
+            android:textColor="@color/list_text_selection_color" />
+
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/cb_autojoin"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
+        android:button="@drawable/checkbox_autojoin"
+        android:focusable="false"
+        android:visibility="visible"
+        android:gravity="bottom" />
 </RelativeLayout>

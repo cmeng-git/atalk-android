@@ -312,7 +312,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         mDestroyChatRoom = mMenu.findItem(R.id.destroy_chat_room);
         mChatRoomInfo = mMenu.findItem(R.id.chatroom_info);
         mChatRoomMember = mMenu.findItem(R.id.show_chatroom_occupant);
-        mChatRoomSubject = mMenu.findItem(R.id.change_chatroom_subject);
+        mChatRoomSubject = mMenu.findItem(R.id.change_chatroom_attr);
 
         if (BuildConfig.FLAVOR.equals("fdroid") && (mSendLocation != null)) {
             menu.removeItem(R.id.send_location);
@@ -385,101 +385,44 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        Intent intent;
         Object object = selectedChatPanel.getChatSession().getDescriptor();
 
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.muc_invite:
-                ChatInviteDialog inviteDialog = new ChatInviteDialog(this, selectedChatPanel);
-                inviteDialog.show();
-                return true;
+        if (object instanceof ChatRoomWrapper) {
+            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
+            ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
 
-            case R.id.call_contact_audio: // start voice call
-                if (mRecipient != null)
-                    AndroidCallUtil.createCall(this, mRecipient.getAddress(),
-                            mRecipient.getProtocolProvider(), false);
-                return true;
-
-            case R.id.call_contact_video: // start video call
-                if (mRecipient != null)
-                    AndroidCallUtil.createCall(this, mRecipient.getAddress(),
-                            mRecipient.getProtocolProvider(), true);
-                return true;
-
-            case R.id.send_location:
-                if (!BuildConfig.FLAVOR.equals("fdroid")) {
-                    intent = new Intent(this, GeoLocation.class);
-                    intent.putExtra(GeoLocation.SEND_LOCATION, true);
-                    startActivity(intent);
-                }
-                return true;
-
-            case R.id.erase_chat_history:
-                EntityListHelper.eraseEntityChatHistory(ChatActivity.this,
-                        selectedChatPanel.getChatSession().getDescriptor(), null, null);
-                return true;
-
-            case R.id.leave_chat_room:
-                if (object instanceof ChatRoomWrapper) {
-                    ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
-                    ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
+            switch (item.getItemId()) {
+                case R.id.leave_chat_room:
                     if (chatRoom != null) {
                         ChatRoomWrapper leavedRoomWrapped = MUCActivator.getMUCService().leaveChatRoom(chatRoomWrapper);
                         if (leavedRoomWrapped != null) {
                             MUCActivator.getUIService().closeChatRoomWindow(leavedRoomWrapped);
                         }
                     }
-                    // MUCActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
                     ChatSessionManager.removeActiveChat(selectedChatPanel);
+                    MUCActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
                     MUCActivator.getMUCService().removeChatRoom(chatRoomWrapper);
                     finish();
-                }
-                return true;
+                    return true;
 
-            case R.id.destroy_chat_room:
-                if (object instanceof ChatRoomWrapper) {
-                    ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
-                    ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
-
-                    // Not necessary as destroyChatRoom will also remove muc chatSession
-                    // MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
-                    // mhs.eraseLocallyStoredHistory(chatRoom, null);
-
-                    MUCActivator.getMUCService().destroyChatRoom(chatRoomWrapper, "User requested",
-                            chatRoom.getIdentifier());
-                    ChatSessionManager.removeActiveChat(selectedChatPanel);
+                case R.id.destroy_chat_room:
+                    EntityListHelper.removeEntity(chatRoomWrapper, selectedChatPanel);
                     // It is safer to just finish. see case R.id.close_chat:
                     finish();
-                }
-                return true;
+                    return true;
 
-            case R.id.send_file:
-                AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this, mRecipient);
-                attachOptionDialog.show();
-                return true;
-
-            case R.id.chatroom_info:
-                if (object instanceof ChatRoomWrapper) {
-                    ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
+                case R.id.chatroom_info:
                     ChatRoomInfoFragment chatRoomInfoFragment = ChatRoomInfoFragment.newInstance(chatRoomWrapper);
                     getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, chatRoomInfoFragment).commit();
-                }
-                return true;
+                    return true;
 
-            case R.id.change_chatroom_subject:
-                if (object instanceof ChatRoomWrapper) {
-                    ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
-                    ChatRoomInfoChangeDialog chatRoomInfoChangeDialog
-                            = new ChatRoomInfoChangeDialog(this, chatRoomWrapper);
+                case R.id.change_chatroom_attr:
+                    ChatRoomInfoChangeDialog chatRoomInfoChangeDialog = new ChatRoomInfoChangeDialog(this, chatRoomWrapper);
                     chatRoomInfoChangeDialog.show();
-                }
-                return true;
+                    return true;
 
-            case R.id.show_chatroom_occupant:
-                if (object instanceof ChatRoomWrapper) {
-                    ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
+                case R.id.show_chatroom_occupant:
                     StringBuilder memberList = new StringBuilder();
                     List<ChatRoomMember> occupants = chatRoomWrapper.getChatRoom().getMembers();
                     for (ChatRoomMember member : occupants) {
@@ -488,16 +431,55 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                                 .append(" - ")
                                 .append(occupant.getJabberID())
                                 .append("<br/>");
+                        String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
+                        selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_HTML,
+                                memberList.toString());
                     }
-                    String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
-                    selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_HTML,
-                            memberList.toString());
-                }
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+                    return true;
+            }
         }
+        else {
+            Intent intent;
+
+            // Handle item selection
+            switch (item.getItemId()) {
+                case R.id.muc_invite:
+                    ChatInviteDialog inviteDialog = new ChatInviteDialog(this, selectedChatPanel);
+                    inviteDialog.show();
+                    return true;
+
+                case R.id.call_contact_audio: // start audio call
+                    if (mRecipient != null)
+                        AndroidCallUtil.createCall(this, mRecipient.getAddress(),
+                                mRecipient.getProtocolProvider(), false);
+                    return true;
+
+                case R.id.call_contact_video: // start video call
+                    if (mRecipient != null)
+                        AndroidCallUtil.createCall(this, mRecipient.getAddress(),
+                                mRecipient.getProtocolProvider(), true);
+                    return true;
+
+                case R.id.send_location:
+                    if (!BuildConfig.FLAVOR.equals("fdroid")) {
+                        intent = new Intent(this, GeoLocation.class);
+                        intent.putExtra(GeoLocation.SEND_LOCATION, true);
+                        startActivity(intent);
+                    }
+                    return true;
+
+                case R.id.erase_chat_history:
+                    EntityListHelper.eraseEntityChatHistory(ChatActivity.this,
+                            selectedChatPanel.getChatSession().getDescriptor(), null, null);
+                    return true;
+
+                case R.id.send_file:
+                    AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this, mRecipient);
+                    attachOptionDialog.show();
+                    return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -650,10 +632,10 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 fileUri = FileBackend.getUriForFile(this, mCameraFilePath);
 
                 // create Intent to take a picture and return control to the calling application
+                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                 break;
 
@@ -819,14 +801,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         if (mimeType.contains("3gp")) {
             openIntent = new Intent(this, AudioBgService.class);
             openIntent.setAction(AudioBgService.ACTION_PLAYBACK);
-            openIntent.setDataAndType(uri, mimeType);
             openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            openIntent.setDataAndType(uri, mimeType);
             startService(openIntent);
             return;
         }
 
-        openIntent.setDataAndType(uri, mimeType);
         openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        openIntent.setDataAndType(uri, mimeType);
         PackageManager manager = getPackageManager();
         List<ResolveInfo> info = manager.queryIntentActivities(openIntent, 0);
         if (info.size() == 0) {

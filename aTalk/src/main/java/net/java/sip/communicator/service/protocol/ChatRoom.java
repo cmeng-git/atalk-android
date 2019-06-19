@@ -8,6 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.*;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jxmpp.jid.EntityBareJid;
@@ -572,7 +573,8 @@ public interface ChatRoom
      * @param alternateAddress the alternate address
      * @return <tt>true</tt> if the room is destroyed.
      */
-    boolean destroy(String reason, EntityBareJid alternateAddress);
+    boolean destroy(String reason, EntityBareJid alternateAddress)
+            throws XMPPException;
 
     /**
      * Returns the ids of the users that has the member role in the room. When the room is member

@@ -9,10 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
-import net.java.sip.communicator.impl.muc.MUCActivator;
-import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionElement;
-import org.xmpp.extensions.condesc.TransportExtensionElement;
-import org.xmpp.extensions.jitsimeet.*;
 import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -25,6 +21,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.CaptchaDialog;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
+import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.atalk.util.StringUtils;
@@ -57,6 +54,9 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
+import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionElement;
+import org.xmpp.extensions.condesc.TransportExtensionElement;
+import org.xmpp.extensions.jitsimeet.*;
 
 import java.beans.PropertyChangeEvent;
 import java.util.*;
@@ -246,13 +246,16 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Show captcha challenge for spam group chat if requested
      *
-     * @param message messge containing captcha challenge info
+     * @param message message containing captcha challenge info
      */
     private void initCaptchaProcess(final org.jivesoftware.smack.packet.Message message)
     {
         new Handler(Looper.getMainLooper()).post(() -> {
+            if (aTalkApp.getCurrentActivity() == null)
+                return;
+
             CaptchaDialog captchaDialog = new CaptchaDialog(aTalkApp.getCurrentActivity(),
-                    mProvider, message, ChatRoomJabberImpl.this);
+                    mMultiUserChat, message, ChatRoomJabberImpl.this);
             captchaDialog.show();
         });
     }
@@ -606,7 +609,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             }
             else {
                 // Allow longer timeout during join chatRoom to allow time to handle any captcha challenge
-                mProvider.getConnection().setReplyTimeout(15000);
+                mProvider.getConnection().setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_CAPTCHA_TIMEOUT);
                 if (password == null)
                     mMultiUserChat.join(mNickName);
                 else
@@ -756,12 +759,13 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @return <tt>true</tt> if the room is destroyed.
      */
     public boolean destroy(String reason, EntityBareJid roomName)
+            throws XMPPException
     {
         try {
             mMultiUserChat.destroy(reason, roomName);
-        } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException e) {
-            MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_ERROR),
-                    aTalkApp.getResString(R.string.service_gui_DESTROY_CHATROOM_ERROR, e.getMessage()));
+        } catch (NoResponseException | NotConnectedException | InterruptedException e) {
+            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), aTalkApp.getResString(R.string.service_gui_ERROR),
+                    aTalkApp.getResString(R.string.service_gui_DESTROY_CHATROOM_EXCEPTION, e.getMessage()));
             return false;
         }
         return true;
@@ -945,8 +949,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mMultiUserChat.changeSubject(subject);
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
             String errMsg = "Failed to change subject for chat room" + getName();
-            Timber.e(ex, "%s", errMsg);
-            throw new OperationFailedException(errMsg, OperationFailedException.FORBIDDEN, ex);
+            Timber.e(ex, "%s: %s", errMsg, ex.getMessage());
+            throw new OperationFailedException(errMsg, OperationFailedException.NOT_ENOUGH_PRIVILEGES, ex);
         }
     }
 
@@ -1595,7 +1599,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         }
 
         ConferenceDescriptionExtensionElement ext
-            = new ConferenceDescriptionExtensionElement(cd.getUri(), cd.getUri(), cd.getPassword());
+                = new ConferenceDescriptionExtensionElement(cd.getUri(), cd.getUri(), cd.getPassword());
         if (lastPresenceSent != null) {
             setPacketExtension(lastPresenceSent, ext, ConferenceDescriptionExtensionElement.NAMESPACE);
             try {
@@ -2548,15 +2552,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 ConferenceDescriptionExtensionElement cdExt = (ConferenceDescriptionExtensionElement) ext;
 
                 ConferenceDescription cd
-                    = new ConferenceDescription(
+                        = new ConferenceDescription(
                         cdExt.getUri(),
                         cdExt.getCallId(),
                         cdExt.getPassword());
                 cd.setAvailable(cdExt.isAvailable());
                 cd.setDisplayName(getName());
                 for (TransportExtensionElement t
-                    : cdExt.getChildExtensionsOfType(TransportExtensionElement.class))
-                {
+                        : cdExt.getChildExtensionsOfType(TransportExtensionElement.class)) {
                     cd.addTransport(t.getNamespace());
                 }
                 if (!processConferenceDescription(cd, participantNick))
