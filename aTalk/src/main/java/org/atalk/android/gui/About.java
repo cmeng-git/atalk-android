@@ -89,6 +89,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"XEP-0054: vcard-temp", "https://xmpp.org/extensions/xep-0054.html"},
             new String[]{"XEP-0060:	Publish-Subscribe", "https://xmpp.org/extensions/xep-0060.html"},
             new String[]{"XEP-0065: SOCKS5 Bytestreams", "https://xmpp.org/extensions/xep-0065.html"},
+            new String[]{"XEP-0070:	Verifying HTTP Requests via XMPP", "https://xmpp.org/extensions/xep-0070.html"},
             new String[]{"XEP-0071:	XHTML-IM", "https://xmpp.org/extensions/xep-0071.html"},
             new String[]{"XEP-0077:	In-Band Registration", "https://xmpp.org/extensions/xep-0077.html"},
             new String[]{"XEP-0084: User Avatar", "https://xmpp.org/extensions/xep-0084.html"},

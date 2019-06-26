@@ -14,7 +14,6 @@ import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.jivesoftware.smack.SmackException;
@@ -64,7 +63,8 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_
  */
 
 public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperationSetBasicInstantMessaging
-        implements OperationSetMessageCorrection, IncomingChatMessageListener, CarbonCopyReceivedListener, OmemoMessageListener
+        implements OperationSetMessageCorrection, IncomingChatMessageListener, CarbonCopyReceivedListener,
+        OmemoMessageListener
 {
     /**
      * A table mapping contact addresses to message threads that can be used to target a specific

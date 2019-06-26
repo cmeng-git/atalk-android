@@ -17,6 +17,9 @@ import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smackx.avatar.AvatarManager;
+import org.jxmpp.jid.BareJid;
+
+import timber.log.Timber;
 
 /**
  * Fragment displayed in <tt>VideoCallActivity</tt> when the call has ended.
@@ -30,8 +33,14 @@ public class CallEnded extends OSGiFragment implements View.OnClickListener
     {
         View v = inflater.inflate(R.layout.call_ended, container, false);
 
-        // Display callPeer avatar
-        byte[] avatar = AvatarManager.getAvatarImageByJid(VideoCallActivity.callState.callPeer.asBareJid());
+        // Display callPeer avatar; take care NPE from field
+        byte[] avatar = null;
+        try {
+            BareJid bareJid = VideoCallActivity.callState.callPeer.asBareJid();
+            avatar = AvatarManager.getAvatarImageByJid(bareJid);
+        } catch (Exception e) {
+            Timber.w("Failed to find callPeer Jid");
+        }
         if (avatar != null)
             ((ImageView) v.findViewById(R.id.calleeAvatar)).setImageBitmap(AndroidImageUtil.bitmapFromBytes(avatar));
 

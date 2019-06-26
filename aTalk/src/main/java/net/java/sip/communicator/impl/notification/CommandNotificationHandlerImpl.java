@@ -11,7 +11,6 @@ import java.util.Map;
 import net.java.sip.communicator.service.notification.CommandNotificationAction;
 import net.java.sip.communicator.service.notification.CommandNotificationHandler;
 import net.java.sip.communicator.service.notification.NotificationAction;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.util.StringUtils;
 

@@ -236,6 +236,10 @@
     <string name="check_new_version">Comprobar actualizaciones</string>
     <string name="show_history_log">Historial de registros</string>
 
+    <!-- HTTP Authorization Request Dialog -->
+    <string name="service_gui_HTTP_REQUEST_TITLE">Solicitud de autorización HTTP</string>
+    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Autorización para %2$s\n(ID: %3$s).\n¿Acepta esta solicitud de cuenta:\n%4$s?\n\nVerifique que el ID dado coincida con el sitio si está disponible</string>
+
     <string name="app_authors_fmt">Autores: %s</string>
     <string name="app_libraries">aTalk utiliza las siguientes bibliotecas de terceros: %s</string>
     <string name="app_revision_fmt">Información de la revisión: %s</string>
@@ -375,7 +379,7 @@
 
     <string name="service_gui_CHATROOM_BOOKMARK_TITLE">ChatRoom Bookmark</string>
     <string name="service_gui_CHATROOM_BOOKMARK">Bookmark</string>
-    <string name="service_gui_CHATROOM_AUTOJOIN">Unirse automáticamente</string>
+    <string name="service_gui_CHATROOM_AUTOJOIN">Unirse Auto</string>
     <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Error al actualizar Marcadores para %1$s: %2$s</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Miembros de la sala de charla</string>
@@ -513,6 +517,7 @@
     <string name="service_gui_SHOW_STACK_TRACE">Mostrar stack Trace</string>
     <string name="service_gui_STREET">Calle</string>
     <string name="service_gui_SUBMIT">Enviar</string>
+    <string name="service_gui_USER_LOGIN">Por favor Iniciar sesión</string>
     <string name="service_gui_VIDEO_PHONE">Video</string>
     <string name="service_gui_WORK_PHONE">"Trabajo "</string>
 

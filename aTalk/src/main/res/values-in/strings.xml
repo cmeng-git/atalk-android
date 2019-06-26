@@ -232,7 +232,11 @@
     <string name="check_new_version">Periksa Pembaruan</string>
     <string name="show_history_log">Log Riwayat</string>
 
-    <string name="app_authors_fmt">Penulis: %1$s</string>
+    <!-- HTTP Authorization Request Dialog -->
+    <string name="service_gui_HTTP_REQUEST_TITLE">Permintaan Otorisasi HTTP</string>
+    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Otorisasi untuk %2$s\n(ID: %3$s).\nApakah Anda menerima permintaan akun ini:\n%4$s?\n\nVerifikasi situs pencocokan ID yang diberikan jika tersedia</string>
+
+        <string name="app_authors_fmt">Penulis: %1$s</string>
     <string name="app_libraries">aTalk menggunakan pustaka pihak ketiga berikut: %1$s</string>
     <string name="app_revision_fmt">Informasi Revisi: %1$s</string>
     <string name="app_xeps">aTalk mendukung XEPs berikut: %1$s</string>
@@ -371,7 +375,7 @@
 
      <string name="service_gui_CHATROOM_BOOKMARK_TITLE">Bookmark ChatRoom</string>
     <string name="service_gui_CHATROOM_BOOKMARK">Bookmark</string>
-    <string name="service_gui_CHATROOM_AUTOJOIN">Bergabung Otomatis</string>
+    <string name="service_gui_CHATROOM_AUTOJOIN">Hubung Oto</string>
     <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Gagal memperbarui Bookmark untuk %1$s: %2$s</string>
 
        <string name="service_gui_CHATROOM_OCCUPANT">Penghuni ruang obrolan</string>
@@ -507,6 +511,7 @@
     <string name="service_gui_SHOW_STACK_TRACE">Tampilkan tumpukan Jejak</string>
     <string name="service_gui_STREET">Jalan</string>
     <string name="service_gui_SUBMIT">Kirim</string>
+    <string name="service_gui_USER_LOGIN">Silahkan masuk</string>
     <string name="service_gui_VIDEO_PHONE">Video</string>
     <string name="service_gui_WORK_PHONE">Bekerja</string>
 

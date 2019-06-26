@@ -232,7 +232,11 @@
     <string name="check_new_version">Проверить обновление</string>
     <string name="show_history_log">История журналов</string>
 
-    <string name="app_authors_fmt">Авторы: %1$s</string>
+    <!-- HTTP Authorization Request Dialog -->
+    <string name="service_gui_HTTP_REQUEST_TITLE">HTTP-запрос авторизации</string>
+    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Авторизация для %2$s\n(ID: %3$s).\nПринимаете ли вы этот запрос для учетной записи:\n%4$s?\n\nПроверьте, соответствует ли данный идентификатор сайту, если он доступен</string>
+
+        <string name="app_authors_fmt">Авторы: %1$s</string>
     <string name="app_libraries">aTalk использует следующие сторонние библиотеки: %1$s</string>
     <string name="app_revision_fmt">Информация о пересмотре: %1$s</string>
     <string name="app_xeps">aTalk поддерживает следующие XEP: %1$s</string>
@@ -374,7 +378,7 @@
 
     <string name="service_gui_CHATROOM_BOOKMARK_TITLE">ChatRoom Закладка</string>
     <string name="service_gui_CHATROOM_BOOKMARK">Закладка</string>
-    <string name="service_gui_CHATROOM_AUTOJOIN">Авто Присоединение</string>
+    <string name="service_gui_CHATROOM_AUTOJOIN">Авто вступать</string>
     <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Не удалось обновить закладки для %1$s: %2$s</string>
 
         <string name="service_gui_CHATROOM_OCCUPANT">Жители чатов</string>
@@ -510,6 +514,7 @@
     <string name="service_gui_SHOW_STACK_TRACE">Показать трассировку стека</string>
     <string name="service_gui_STREET">Улица</string>
     <string name="service_gui_SUBMIT">Отправить</string>
+    <string name="service_gui_USER_LOGIN">Пожалуйста, войдите</string>
     <string name="service_gui_VIDEO_PHONE">видео</string>
     <string name="service_gui_WORK_PHONE">Работа</string>
 

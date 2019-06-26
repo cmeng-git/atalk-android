@@ -39,6 +39,8 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
@@ -810,6 +812,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
     /**
      * Get the chatSession chatType
+     *
      * @param chatSession the chatSession for single or multi-chat
      * @return the chatSession chatType
      */
@@ -835,12 +838,13 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 chatType = ChatFragment.MSGTYPE_OMEMO;
         }
         cursor.close();
-       return chatType;
+        return chatType;
     }
 
 
     /**
      * Get the chatSession chatType
+     *
      * @param chatSession the chatSession for single or multi-chat
      * @return the chatSession chatType
      */
@@ -849,7 +853,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         String entityJid = chatSession.getChatEntity();
         AccountID accountUid = chatSession.getCurrentChatTransport().getProtocolProvider().getAccountID();
 
-        if (StringUtils.isNullOrEmpty(entityJid) || (accountUid == null))
+        if (StringUtils.isNullOrEmpty(entityJid) || entityJid.equals(aTalkApp.getResString(R.string.service_gui_UNKNOWN))
+                || (accountUid == null))
             return 0;
 
         String accountUuid = accountUid.getAccountUuid();
@@ -858,8 +863,15 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         contentValues.clear();
         contentValues.put(ChatSession.STATUS, chatType);
 
-        return mDB.update(ChatSession.TABLE_NAME, contentValues, ChatSession.ACCOUNT_UUID
-                + "=? AND " + ChatSession.ENTITY_JID + "=?", args);
+        // From field crash on java.lang.IllegalArgumentException? HWKSA-M, Android 9
+        try {
+            return mDB.update(ChatSession.TABLE_NAME, contentValues, ChatSession.ACCOUNT_UUID
+                    + "=? AND " + ChatSession.ENTITY_JID + "=?", args);
+        } catch (IllegalArgumentException e) {
+            Timber.w("Exception setSessionChatType for EntityJid: %s and AccountUid: %s; %s",
+                    entityJid, accountUid, e.getMessage());
+            return -1;
+        }
     }
 
     /**
