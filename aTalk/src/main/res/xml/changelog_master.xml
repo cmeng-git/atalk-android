@@ -6,7 +6,15 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="1.8.7 (06/20/2019)" versioncode="1087">
+    <release version="1.8.8 (06/26/2019)" versioncode="1088">
+        <change>Implement XEP-0070: Verify HTTP Requests via XMPP entity to confirm it made the request, improving user experience</change>
+        <change>Improve webView user interface and provide proper handling of non-url links on user click</change>
+        <change>Allow loading of clicked links on page if from same domain, else use android OS default browser</change>
+        <change>Support GoBack on previous visited web pages when user returns to webView slider page</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="1.8.7 (06/19/2019)" versioncode="1087">
         <change>Implement XEP-0048: Bookmarks support with autoJoin on first login</change>
         <change>Default to save bookmark and enable autoJoin on newly created conference room</change>
         <change>Add global ChatRoom Bookmark option on main menu (local and server rooms included for user selection)</change>

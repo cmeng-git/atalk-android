@@ -243,6 +243,10 @@
     <string name="check_new_version">Check Update</string>
     <string name="show_history_log">History Logs</string>
 
+    <!-- HTTP Authorization Request Dialog -->
+    <string name="service_gui_HTTP_REQUEST_TITLE">HTTP Authorization Request</string>
+    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Authorization for %2$s\n(ID: %3$s).\nDo you accept this request for account:\n%4$s?\n\nVerify given ID matches site if available</string>
+
     <string name="app_authors_fmt">Authors: %1$s</string>
     <string name="app_libraries">aTalk uses the following third-party libraries: %1$s</string>
     <string name="app_revision_fmt">Revision Information: %1$s</string>
@@ -539,6 +543,7 @@
     <string name="service_gui_SHOW_STACK_TRACE">Show stack Trace</string>
     <string name="service_gui_STREET">Street</string>
     <string name="service_gui_SUBMIT">Submit</string>
+    <string name="service_gui_USER_LOGIN">Please Login</string>
     <string name="service_gui_VIDEO_PHONE">Video</string>
     <string name="service_gui_WORK_PHONE">Work</string>
 

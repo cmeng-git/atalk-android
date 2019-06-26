@@ -9,24 +9,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
-import org.xmpp.extensions.DefaultExtensionElementProvider;
-import org.xmpp.extensions.coin.CoinIQ;
-import org.xmpp.extensions.coin.CoinIQProvider;
-import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.colibri.ColibriIQProvider;
-import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionElement;
-import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionProvider;
-import org.xmpp.extensions.inputevt.InputEvtIQ;
-import org.xmpp.extensions.inputevt.InputEvtIQProvider;
-import org.xmpp.extensions.jibri.JibriIq;
-import org.xmpp.extensions.jibri.JibriIqProvider;
-import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jingleinfo.JingleInfoQueryIQ;
-import org.xmpp.extensions.jingleinfo.JingleInfoQueryIQProvider;
-import org.xmpp.extensions.jitsimeet.*;
-import org.xmpp.extensions.thumbnail.Thumbnail;
-import org.xmpp.extensions.thumbnail.ThumbnailStreamInitiationProvider;
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
@@ -36,7 +18,9 @@ import net.java.sip.communicator.util.NetworkUtils;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.aTalk;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
+import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.service.configuration.ConfigurationService;
@@ -90,6 +74,11 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator;
+import org.jivesoftware.smackx.httpauthorizationrequest.HTTPAuthorizationRequestListener;
+import org.jivesoftware.smackx.httpauthorizationrequest.HTTPAuthorizationRequestManager;
+import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
+import org.jivesoftware.smackx.httpauthorizationrequest.provider.ConfirmExtProvider;
+import org.jivesoftware.smackx.httpauthorizationrequest.provider.ConfirmIQProvider;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationProvider;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationStreamFeatureProvider;
@@ -104,6 +93,7 @@ import org.jivesoftware.smackx.ping.PingManager;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
+import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -114,6 +104,23 @@ import org.minidns.dnssec.DnssecValidationFailedException;
 import org.minidns.record.SRV;
 import org.osgi.framework.ServiceReference;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmpp.extensions.DefaultExtensionElementProvider;
+import org.xmpp.extensions.coin.CoinIQ;
+import org.xmpp.extensions.coin.CoinIQProvider;
+import org.xmpp.extensions.colibri.ColibriConferenceIQ;
+import org.xmpp.extensions.colibri.ColibriIQProvider;
+import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionElement;
+import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionProvider;
+import org.xmpp.extensions.inputevt.InputEvtIQ;
+import org.xmpp.extensions.inputevt.InputEvtIQProvider;
+import org.xmpp.extensions.jibri.JibriIq;
+import org.xmpp.extensions.jibri.JibriIqProvider;
+import org.xmpp.extensions.jingle.*;
+import org.xmpp.extensions.jingleinfo.JingleInfoQueryIQ;
+import org.xmpp.extensions.jingleinfo.JingleInfoQueryIQProvider;
+import org.xmpp.extensions.jitsimeet.*;
+import org.xmpp.extensions.thumbnail.Thumbnail;
+import org.xmpp.extensions.thumbnail.ThumbnailStreamInitiationProvider;
 import org.xmpp.jnodes.smack.*;
 
 import java.io.File;
@@ -144,7 +151,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderService
-        implements PingFailedListener
+        implements PingFailedListener, HTTPAuthorizationRequestListener, DialogActivity.DialogListener
 {
     /**
      * Jingle's Discovery Info common URN.
@@ -360,6 +367,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private ReconnectionManager reconnectionManager = null;
 
     private AndroidOmemoService androidOmemoService = null;
+
+    private HTTPAuthorizationRequestManager httpAuthorizationRequestManager = null;
 
     /**
      * The <tt>OperationSetContactCapabilities</tt> of this <tt>ProtocolProviderService</tt> which
@@ -1285,6 +1294,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             /*  Must only initialize omemoDevice after user authenticated */
             androidOmemoService.initOmemoDevice();
 
+            // Init HTTPAuthorizationRequestManager on authenticated
+            httpAuthorizationRequestManager = HTTPAuthorizationRequestManager.getInstanceFor(mConnection);
+            httpAuthorizationRequestManager.addIncomingListener(ProtocolProviderServiceJabberImpl.this);
+
             // Get the Roster instance for this authenticated user
             mRoster = Roster.getInstanceFor(mConnection);
 
@@ -1429,6 +1442,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             mConnection.disconnect(unavailablePresence);
         } catch (Exception ex) {
             Timber.w("Exception while disconnect and clean connection!!!");
+        }
+
+        if (httpAuthorizationRequestManager != null) {
+            httpAuthorizationRequestManager.removeIncomingListener(this);
         }
 
         try {
@@ -1932,6 +1949,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             ProviderManager.addIQProvider(Registration.ELEMENT, Registration.NAMESPACE, new RegistrationProvider());
 
+            ProviderManager.addIQProvider(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE, new ConfirmIQProvider());
+
             ProviderManager.addExtensionProvider(
                     ConferenceDescriptionExtensionElement.ELEMENT_NAME, ConferenceDescriptionExtensionElement.NAMESPACE,
                     new ConferenceDescriptionExtensionProvider());
@@ -1966,6 +1985,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addExtensionProvider(
                     TranscriptionRequestExtensionElement.ELEMENT_NAME, TranscriptionRequestExtensionElement.NAMESPACE,
                     new DefaultExtensionElementProvider<>(TranscriptionRequestExtensionElement.class));
+
+            ProviderManager.addExtensionProvider(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE, new ConfirmExtProvider());
 
             /*
              * Tell Smack what are the additional StreamFeatureProvider and ExtensionProviders that aTalk can support
@@ -2571,7 +2592,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     public EntityFullJid getOurJID()
     {
-        EntityFullJid fullJid = null;
+        EntityFullJid fullJid;
         if (mConnection != null) {
             fullJid = mConnection.getUser();
         }
@@ -2793,6 +2814,37 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         }
     }
 
+    /*
+     * ============== HTTP Authorization Request received ===============
+     */
+    @Override
+    public void onHTTPAuthorizationRequest(DomainBareJid from, ConfirmExtension confirmExt)
+    {
+        String instruction = httpAuthorizationRequestManager.getInstruction();
+        if (StringUtils.isNullOrEmpty(instruction)) {
+            instruction = aTalkApp.getResString(R.string.service_gui_HTTP_REQUEST_INSTRUCTION,
+                    confirmExt.getMethod(), confirmExt.getUrl(), confirmExt.getId(), mAccountID.getAccountJid());
+        }
+        AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
+                aTalkApp.getResString(R.string.service_gui_HTTP_REQUEST_TITLE), instruction,
+                aTalkApp.getResString(R.string.service_gui_OK), this);
+    }
+
+    @Override
+    public boolean onConfirmClicked(DialogActivity dialog)
+    {
+        httpAuthorizationRequestManager.accept();
+        return true;
+    }
+
+    @Override
+    public void onDialogCancelled(DialogActivity dialog)
+    {
+        httpAuthorizationRequestManager.reject();
+    }
+
+    // ==================================================
+
     /**
      * Sets the traffic class for the XMPP signalling socket.
      */
@@ -2840,7 +2892,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Retrieve the XMPP connection socket used by the protocolProvider (by reflection)
      *
      * @return the socket which is used for this connection.
-     * @see XMPPTCPConnection#socket
+     * @see XMPPTCPConnection# socket
      */
     public Socket getSocket()
     {

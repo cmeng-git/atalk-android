@@ -18,33 +18,31 @@ package org.atalk.android.gui.webview;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
-import android.content.*;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.*;
 import android.view.View.OnKeyListener;
 import android.webkit.*;
-import android.widget.*;
+import android.widget.ProgressBar;
 
 import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.atalk.android.R;
+import org.atalk.android.*;
 import org.atalk.service.osgi.OSGiFragment;
-import org.atalk.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
+import timber.log.Timber;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class WebViewFragment extends OSGiFragment implements OnKeyListener
@@ -53,34 +51,53 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
     private ProgressBar progressbar;
     private HashMap<String, List<String>> notifs = new HashMap<>();
     private static Context instance;
+    private static Stack<String> urlStack = new Stack<>();
 
-    private String webUrl;
+    // stop webView.goBack() once we have started reload from urlStack
+    private boolean isLoadFromStack = false;
+
+    private String webUrl = null;
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessageArray;
+
     private final static int FILE_REQUEST_CODE = 1;
 
     @SuppressLint("JavascriptInterface")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        // init webUrl with urlStack.pop() if non-empty, else load from default in DB
+        if (urlStack.isEmpty()) {
+            webUrl = ConfigurationUtils.getWebPage();
+            urlStack.push(webUrl);
+        }
+        else {
+            webUrl = urlStack.pop();
+        }
+
         instance = getContext();
-        webUrl = ConfigurationUtils.getWebPage();
         View contentView = inflater.inflate(R.layout.webview_main, container, false);
         progressbar = contentView.findViewById(R.id.progress);
         progressbar.setIndeterminate(true);
 
         webview = contentView.findViewById(R.id.webview);
+
         final WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
+
+        if (Build.VERSION.SDK_INT >= 17) {
+            webview.addJavascriptInterface(aTalkApp.getGlobalContext(), "Android");
+        }
+
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= 19) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
 
         if (Build.VERSION.SDK_INT >= 21) {
             webSettings.setMixedContentMode(0);
             webSettings.setAllowUniversalAccessFromFileURLs(true);
         }
-
-        if (Build.VERSION.SDK_INT >= 17)
-            webview.addJavascriptInterface(this, "Android");
 
         webview.setWebChromeClient(new WebChromeClient()
         {
@@ -135,77 +152,8 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
             }
         });
 
-        webview.setWebViewClient(new WebViewClient()
-        {
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
-            {
-                webview.loadUrl("file:///android_asset/movim/error.html");
-            }
-
-            public boolean shouldOverrideUrlLoading(WebView view, String url)
-            {
-                String origin = Uri.parse(view.getUrl()).getHost();
-                String aim = Uri.parse(url).getHost();
-
-                if (StringUtils.isNullOrEmpty(origin) || origin.equals(aim)) {
-                    return false;
-                }
-
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                startActivity(intent);
-                return true;
-            }
-
-            public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error)
-            {
-                webview.loadUrl("file:///android_asset/movim/ssl.html");
-            }
-
-            public void onReceivedHttpAuthRequest(final WebView view, final HttpAuthHandler handler, final String host,
-                    final String realm)
-            {
-                final String[] httpAuth = new String[2];
-                final String[] viewAuth = view.getHttpAuthUsernamePassword(host, realm);
-                final EditText usernameInput = new EditText(instance);
-                final EditText passwordInput = new EditText(instance);
-
-                httpAuth[0] = viewAuth != null ? viewAuth[0] : "";
-                httpAuth[1] = viewAuth != null ? viewAuth[1] : "";
-
-                usernameInput.setHint("Username");
-                passwordInput.setHint("Password");
-                passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
-                LinearLayout ll = new LinearLayout(instance);
-                ll.setOrientation(LinearLayout.VERTICAL);
-                ll.addView(usernameInput);
-                ll.addView(passwordInput);
-
-                Builder authDialog = new Builder(instance).setTitle("Please login")
-                        .setView(ll).setCancelable(false)
-                        .setPositiveButton("OK", (dialog, whichButton) -> {
-                            httpAuth[0] = usernameInput.getText().toString();
-                            httpAuth[1] = passwordInput.getText().toString();
-                            view.setHttpAuthUsernamePassword(host, realm, httpAuth[0], httpAuth[1]);
-                            handler.proceed(httpAuth[0], httpAuth[1]);
-                            dialog.dismiss();
-                        });
-
-                if (!handler.useHttpAuthUsernamePassword()) {
-                    authDialog.show();
-                }
-                else {
-                    handler.proceed(httpAuth[0], httpAuth[1]);
-                }
-            }
-        });
-
-        // setup keyPress listener
-        contentView.setFocusableInTouchMode(true);
-        contentView.requestFocus();
-        contentView.setOnKeyListener(this);
-
+        webview.setWebViewClient(new MyWebViewClient(this));
+        webview.loadUrl(webUrl);
         return contentView;
     }
 
@@ -213,7 +161,11 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
     public void onResume()
     {
         super.onResume();
-        webview.loadUrl(webUrl);
+
+        // setup keyPress listener - must re-enable every time on resume
+        webview.setFocusableInTouchMode(true);
+        webview.requestFocus();
+        webview.setOnKeyListener(this);
     }
 
     // Prevent the webView from reloading on device rotation
@@ -226,6 +178,25 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
     public static Context getInstance()
     {
         return instance;
+    }
+
+    /**
+     * Init webView so it download root url stored in DB on next init
+     */
+    public static void initWebView()
+    {
+        urlStack.clear();
+    }
+
+    /**
+     * Add the own loaded url page to stack for later retrieval (goBack)
+     *
+     * @param url loaded url
+     */
+    public void addUrl(String url)
+    {
+        urlStack.push(url);
+        isLoadFromStack = false;
     }
 
     @Override
@@ -271,14 +242,26 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
     public boolean onKey(View v, int keyCode, KeyEvent event)
     {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            // android os will not pass in KEYCODE_MENU???
             if (keyCode == KeyEvent.KEYCODE_MENU) {
                 webview.loadUrl("javascript:MovimTpl.toggleMenu()");
                 return true;
             }
             if (keyCode == KeyEvent.KEYCODE_BACK) {
-                // webview.loadUrl("javascript:MovimTpl.back()");
-                webview.loadUrl(webUrl);
-                return true;
+                if (!isLoadFromStack && webview.canGoBack()) {
+                    if (!urlStack.isEmpty())
+                        urlStack.pop();
+                    webview.goBack();
+                    return true;
+                }
+                // else continue to reload url from urlStack if non-empty.
+                else if (!urlStack.isEmpty()) {
+                    isLoadFromStack = true;
+                    webUrl = urlStack.pop();
+                    Timber.w("urlStack pop(): %s", webUrl);
+                    webview.loadUrl(webUrl);
+                    return true;
+                }
             }
         }
         return false;

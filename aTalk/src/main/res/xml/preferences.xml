@@ -23,6 +23,7 @@
             android:dialogMessage="@string/service_gui_settings_WEBVIEW_DLG_TITLE"
             android:inputType="textWebEditText"
             android:title="@string/service_gui_settings_WEBVIEW_TITLE"
+            android:hint="e.g. https://www.example.org"
             android:summary="@string/service_gui_settings_WEBVIEW_SUMMARY" />
 
         <ListPreference

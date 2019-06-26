@@ -25,7 +25,8 @@ aTalk is an xmpp client designed for android and supports the following features
 * Auto accept file transfer request with max file size option
 * Implement fault-tolerance file transfer to ease and enhance file sharing reliability (1-1 chat and chatRoom) 
 * Enhance and harmonize UI for file sharing in chat and chatRoom
-* Implement XEP-0048: Bookmarks for conference room
+* XEP-0048: Bookmarks for conference room and autoJoin on login
+* XEP-0070: Verifying HTTP Requests via XMPP entity to confirm it made the request 
 * Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway (experimental)
 * Support multi-user chat in room creation, server chat rooms discovery and joining chat room with captcha protection 
 * Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
@@ -52,6 +53,7 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0054: vcard-temp](https://xmpp.org/extensions/xep-0054.html)
 * [XEP-0060: Publish-Subscribe](https://xmpp.org/extensions/xep-0060.html)
 * [XEP-0065: SOCKS5 Bytestreams](https://xmpp.org/extensions/xep-0065.html)
+* [XEP-0070: Verifying HTTP Requests via XMPP](https://xmpp.org/extensions/xep-0070.html)
 * [XEP-0071: XHTML-IM](https://xmpp.org/extensions/xep-0071.html)
 * [XEP-0077: In-Band Registration](https://xmpp.org/extensions/xep-0077.html)
 * [XEP-0084: User Avatar](https://xmpp.org/extensions/xep-0084.html)

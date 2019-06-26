@@ -259,7 +259,7 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
     private void handleActionEvent(NotificationActionTypeEvent event)
     {
         if (event.getEventType().equals(eventType)) {
-            runOnUiThread(() -> updateDisplay());
+            runOnUiThread(this::updateDisplay);
         }
     }
 
@@ -283,7 +283,7 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
             return;
 
         // Event no longer exists
-        runOnUiThread(() -> finish());
+        runOnUiThread(this::finish);
     }
 
     /**

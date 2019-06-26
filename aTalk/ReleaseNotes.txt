@@ -1,14 +1,26 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		1.8.8 (1088)
+Author:         cmeng
+Upload Date:	06/26/2019
+- Implement XEP-0070: Verifying HTTP Requests via XMPP - add smack library httauthorizationrequest
+- Develop XEP-0070 smack libraries for above feature support
+- aTalk WebViewFragment must not loadUrl() on resume - android OS resumes on closing dialog, destroy any new url loading request from site
+- Allow webView to load if the URL host/domain name is the same, also provide proper handling of non-url link
+- Must re-enable onKey listener on resume - previously set up is de-registered on view pause
+- Simulate urlStack for user goBack() to his visited webPages even when the webViewFragement has been destroyed by android OS
+- User entry web site must not contain leading or trailing spaces. Trim before store
+
+=========================================================================
 Version:		1.8.7 (1087)
 Author:         cmeng
-Upload Date:	06/20/2019
+Upload Date:	06/19/2019
 - Incorrect casting of keySet() to string[] in ChatRoomBookmarksDialog#mAccountBookmarkConferencesList
 
 =========================================================================
 Version:		1.8.6 (1086)
 Author:         cmeng
-Upload Date:	06/20/2019
+Upload Date:	06/19/2019
 - Implement XEP-0048: Bookmarks support with autoJoin on first login
 - Default to save bookmark and enable autoJoin on newly created conference room
 - Add global ChatRoom Bookmark option on main menu (local and server rooms included for user selection)

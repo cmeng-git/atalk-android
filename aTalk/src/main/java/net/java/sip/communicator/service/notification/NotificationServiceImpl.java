@@ -38,8 +38,7 @@ class NotificationServiceImpl implements NotificationService
     private static final String NOTIFICATIONS_PREFIX = "notifications";
 
     /**
-     * Defines the number of actions that have to be registered before cached notifications are
-     * fired.
+     * Defines the number of actions that have to be registered before cached notifications are fired.
      * <p>
      * Current value = 4 (vibrate action excluded).
      */

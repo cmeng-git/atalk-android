@@ -125,7 +125,7 @@ public class VCardAvatarManager extends AvatarManager
              * Upon user authentication, update account avatarHash so it is ready for
              * x-extension inclusion in <presence/> sending.
              * @see XMPPConnection#addStanzaInterceptor(StanzaListener, StanzaFilter)
-             * @see VCardAvatarManager#processStanza(Stanza)
+             * @see VCardAvatarManager#processContactPhotoPresence(Stanza)
              *
              * Application can also update the avatarHash anytime using
              * @see VCardTempXUpdate#setAvatarHash(String)

@@ -22,6 +22,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
+import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.android.util.java.awt.Color;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
@@ -1439,6 +1440,7 @@ public class ConfigurationUtils
      */
     public static String getWebPage()
     {
+        WebViewFragment.initWebView();
         return StringUtils.isNullOrEmpty(mWebPage, true)?
                 aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY) : mWebPage;
     }
@@ -1450,7 +1452,7 @@ public class ConfigurationUtils
      */
     public static void setWebPage(String webPage)
     {
-        mWebPage = webPage;
+        mWebPage = StringUtils.isNullOrEmpty(webPage)? webPage: webPage.trim();
         configService.setProperty(pWebPage, webPage);
     }
 
