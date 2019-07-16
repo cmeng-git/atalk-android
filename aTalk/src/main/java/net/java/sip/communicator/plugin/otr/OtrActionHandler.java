@@ -19,5 +19,5 @@ public interface OtrActionHandler {
 	 *
 	 * @param uuid session's identifier extracted from clicked URL.
 	 */
-	public void onAuthenticateLinkClicked(UUID uuid);
+	void onAuthenticateLinkClicked(UUID uuid);
 }

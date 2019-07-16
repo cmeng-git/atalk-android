@@ -15,22 +15,19 @@
  */
 package net.java.sip.communicator.service.contactlist;
 
-import android.support.annotation.NonNull;
-
 import net.java.sip.communicator.service.protocol.ContactGroup;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import java.util.Iterator;
 
+import androidx.annotation.NonNull;
+
 /**
- * <tt>MetaContactGroup</tt>s are used to merge groups (often originating
- * in different protocols).
+ * <tt>MetaContactGroup</tt>s are used to merge groups (often originating in different protocols).
  *
  * A <tt>MetaContactGroup</tt> may contain contacts and some groups may
  * also have sub-groups as children. To verify whether or not a particular
- * group may contain subgroups, a developer has to call the
- * <tt>canContainSubgroups()</tt> method
- *
+ * group may contain subgroups, a developer has to call the <tt>canContainSubgroups()</tt> method
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -65,7 +62,6 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * <tt>Iterator</tt> returned by this method should not be over the actual
      * list of groups but rather over a copy of that list.
      *
-     *
      * @return an Iterator over the protocol specific groups that this group represents.
      */
     Iterator<ContactGroup> getContactGroups();
@@ -98,6 +94,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * <tt>Iterator</tt> returned by this method should not be over the actual
      * list of groups but rather over a copy of that list.
      * *
+     *
      * @param accountID the id of the account whose contact groups we'd like to retrieve.
      * @return an <tt>Iterator</tt> over all contacts encapsulated in this
      * <tt>MetaContact</tt> and originating from the provider with the specified account id.
@@ -215,7 +212,6 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * Returns the contact with the specified identifier
      *
      * @param metaUID a String identifier obtained through the <tt>MetaContact.getMetaUID()</tt> method.
-     *
      * @return the <tt>MetaContact</tt> with the specified identifier.
      */
     MetaContact getMetaContact(String metaUID);
@@ -248,7 +244,6 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      *
      * @param index the index of the meta contact to return.
      * @return the MetaContact with the specified index,
-     *
      * @throws java.lang.IndexOutOfBoundsException in case <tt>index</tt> is
      * not a valid index for this group.
      */
@@ -276,7 +271,6 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      *
      * @param index the index of the group to return.
      * @return the <tt>MetaContactGroup</tt> with the specified index.
-     *
      * @throws java.lang.IndexOutOfBoundsException if <tt>index</tt> is not a valid index.
      */
     MetaContactGroup getMetaContactSubgroup(int index)
@@ -328,7 +322,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * The user-defined association created by this method and stored in this
      * instance is not serialized by this instance and is thus only meant for
      * runtime use.
-
+     *
      * The storage of the user data is implementation-specific and is thus not
      * guaranteed to be optimized for execution time and memory use.
      *

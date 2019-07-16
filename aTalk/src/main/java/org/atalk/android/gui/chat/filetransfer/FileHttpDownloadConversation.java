@@ -28,7 +28,6 @@ import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
-import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
@@ -403,7 +402,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         String fileName = uri.getLastPathSegment();
 
         Long jobId = download(uri, fileName);
-        previousDownloads.put(jobId, dnLink);
+        if (jobId > 0)
+            previousDownloads.put(jobId, dnLink);
     }
 
     /**
@@ -416,7 +416,12 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
 
         mFHS.updateFTStatusToDB(msgUuid, FileRecord.IN_PROGRESS, null, mEncryption);
-        return downloadManager.enqueue(request);
+        try {
+            return downloadManager.enqueue(request);
+        } catch (SecurityException e) {
+            aTalkApp.showToastMessage(e.getMessage());
+        }
+        return -1;
     }
 
     /**

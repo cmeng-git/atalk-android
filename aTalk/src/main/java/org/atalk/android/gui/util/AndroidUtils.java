@@ -11,7 +11,7 @@ import android.content.res.Configuration;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Looper;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -64,6 +64,13 @@ public class AndroidUtils
     {
         String title = context.getResources().getString(titleId);
         String msg = context.getResources().getString(messageId);
+        showAlertDialog(context, title, msg);
+    }
+
+    public static void showAlertDialog(Context context, final int titleId, final int messageId, final Object... arg)
+    {
+        String title = context.getResources().getString(titleId);
+        String msg = context.getResources().getString(messageId, arg);
         showAlertDialog(context, title, msg);
     }
 

@@ -5,8 +5,6 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import android.support.annotation.NonNull;
-
 import org.atalk.impl.neomedia.MediaUtils;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.PulseAudioRenderer;
 import org.atalk.impl.neomedia.pulseaudio.PA;
@@ -18,6 +16,8 @@ import java.util.List;
 
 import javax.media.*;
 import javax.media.format.AudioFormat;
+
+import androidx.annotation.NonNull;
 
 /**
  * Implements an <tt>AudioSystem</tt> using the native PulseAudio API/library.
@@ -226,7 +226,7 @@ public class PulseAudioSystem extends AudioSystem
      * PulseAudio logic <tt>mediaRole</tt>
      */
     public long createStream(int sampleRate, int channels, String mediaName, String mediaRole)
-            throws IllegalStateException, RuntimeException
+            throws RuntimeException
     {
         long context = getContext();
 
@@ -266,41 +266,30 @@ public class PulseAudioSystem extends AudioSystem
      */
     @Override
     protected synchronized void doInitialize()
-            throws Exception
     {
         long context = getContext();
 
-        final List<CaptureDeviceInfo2> captureDevices = new LinkedList<CaptureDeviceInfo2>();
-        final List<Format> captureDeviceFormats = new LinkedList<Format>();
-        PA.source_info_cb_t sourceInfoListCb = new PA.source_info_cb_t()
-        {
-            @Override
-            public void callback(long c, long i, int eol)
-            {
-                try {
-                    if (eol == 0 && i != 0) {
-                        sourceInfoListCb(c, i, captureDevices, captureDeviceFormats);
-                    }
-                } finally {
-                    signalMainloop(false);
+        final List<CaptureDeviceInfo2> captureDevices = new LinkedList<>();
+        final List<Format> captureDeviceFormats = new LinkedList<>();
+        PA.source_info_cb_t sourceInfoListCb = (c, i, eol) -> {
+            try {
+                if (eol == 0 && i != 0) {
+                    sourceInfoListCb(c, i, captureDevices, captureDeviceFormats);
                 }
+            } finally {
+                signalMainloop(false);
             }
         };
 
-        final List<CaptureDeviceInfo2> playbackDevices = new LinkedList<CaptureDeviceInfo2>();
-        final List<Format> playbackDeviceFormats = new LinkedList<Format>();
-        PA.sink_info_cb_t sinkInfoListCb = new PA.sink_info_cb_t()
-        {
-            @Override
-            public void callback(long c, long i, int eol)
-            {
-                try {
-                    if (eol == 0 && i != 0) {
-                        sinkInfoListCb(c, i, playbackDevices, playbackDeviceFormats);
-                    }
-                } finally {
-                    signalMainloop(false);
+        final List<CaptureDeviceInfo2> playbackDevices = new LinkedList<>();
+        final List<Format> playbackDeviceFormats = new LinkedList<>();
+        PA.sink_info_cb_t sinkInfoListCb = (c, i, eol) -> {
+            try {
+                if (eol == 0 && i != 0) {
+                    sinkInfoListCb(c, i, playbackDevices, playbackDeviceFormats);
                 }
+            } finally {
+                signalMainloop(false);
             }
         };
 
@@ -567,7 +556,7 @@ public class PulseAudioSystem extends AudioSystem
      * <tt>PA_CONTEXT_FAILED</tt>, or <tt>PA_CONTEXT_TERMINATED</tt>.
      *
      * @param context the PulseAudio context to wait for
-     * @param stateToWaitForm the PulseAudio state of the specified <tt>context</tt> to wait for
+     * @param stateToWaitFor the PulseAudio state of the specified <tt>context</tt> to wait for
      * @return the state of the specified <tt>context</tt> which caused the method to return
      */
     private int waitForContextState(long context, int stateToWaitFor)
@@ -591,7 +580,7 @@ public class PulseAudioSystem extends AudioSystem
      * <tt>PA_STREAM_FAILED</tt>, or <tt>PA_STREAM_TERMINATED</tt>.
      *
      * @param stream the PulseAudio stream to wait for
-     * @param stateToWaitForm the PulseAudio state of the specified <tt>stream</tt> to wait for
+     * @param stateToWaitFor the PulseAudio state of the specified <tt>stream</tt> to wait for
      * @return the state of the specified <tt>stream</tt> which caused the method to return
      */
     public int waitForStreamState(long stream, int stateToWaitFor)

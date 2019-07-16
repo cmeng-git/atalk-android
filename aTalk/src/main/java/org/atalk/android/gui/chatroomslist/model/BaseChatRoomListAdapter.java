@@ -19,7 +19,6 @@ package org.atalk.android.gui.chatroomslist.model;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.support.v4.app.FragmentTransaction;
 import android.view.*;
 import android.widget.*;
 
@@ -39,6 +38,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
 import org.jxmpp.jid.EntityBareJid;
 
+import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
 /**
@@ -268,7 +268,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
             convertView.setBackgroundResource(R.drawable.list_selection_gradient);
         }
         else {
-            convertView.setBackgroundResource(R.drawable.chatroom_list_selector);
+            convertView.setBackgroundResource(R.drawable.array_list_selector);
         }
         // Update display information.
         String roomName = renderer.getDisplayName(child);
@@ -412,7 +412,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
                     ft.addToBackStack(null);
                     ChatRoomBookmarkDialog chatRoomBookmarkFragment
                             = ChatRoomBookmarkDialog.getInstance(chatRoomWrapper, this);
-                    chatRoomBookmarkFragment.show(ft, "dialog");
+                    chatRoomBookmarkFragment.show(ft, "bmDdialog");
                     break;
                 default:
                     break;

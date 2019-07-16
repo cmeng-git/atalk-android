@@ -19,7 +19,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.*;
 import android.widget.*;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -40,6 +39,7 @@ import org.atalk.android.gui.contactlist.model.*;
 
 import java.util.*;
 
+import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**
@@ -113,7 +113,7 @@ public class ChatInviteDialog extends Dialog
         reasonText = this.findViewById(R.id.text_reason);
 
         contactListView = this.findViewById(R.id.ContactListView);
-        contactListView.setSelector(R.drawable.contact_list_selector);
+        contactListView.setSelector(R.drawable.array_list_selector);
         contactListView.setOnChildClickListener(this);
         contactListView.setOnGroupClickListener(this);
 
@@ -406,7 +406,7 @@ public class ChatInviteDialog extends Dialog
         // Obtain selected contacts.
         for (MetaContact uiContact : selectedContacts) {
             // skip server/system account
-            if (uiContact.getDefaultContact().getJid().asEntityBareJidIfPossible() == null) {
+            if (uiContact.getDefaultContact().getJid() == null) {
                 aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, uiContact.getDisplayName());
                 continue;
             }

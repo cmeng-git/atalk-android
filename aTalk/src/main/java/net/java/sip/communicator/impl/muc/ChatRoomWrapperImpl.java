@@ -15,8 +15,6 @@
  */
 package net.java.sip.communicator.impl.muc;
 
-import android.support.annotation.NonNull;
-
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.ChatRoom;
@@ -35,6 +33,7 @@ import org.jxmpp.util.XmppStringUtils;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**
@@ -200,7 +199,8 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the chat room EntityBareJid
      */
-    public EntityBareJid getEntityBareJid() {
+    public EntityBareJid getEntityBareJid()
+    {
         if (chatRoom != null)
             return chatRoom.getIdentifier();
         else {
@@ -282,14 +282,15 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the user nickName ResourcePart
      */
-    public Resourcepart getNickResource() {
+    public Resourcepart getNickResource()
+    {
         String nickName = getNickName();
         try {
             return Resourcepart.from(nickName);
         } catch (XmppStringprepException e) {
             Timber.w("Failed to get Nick resourcePart: %s", e.getMessage());
         }
-        return  null;
+        return null;
     }
 
     /**
@@ -341,8 +342,9 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the bookmark name
      */
-    public String getBookmarkName() {
-        return StringUtils.isNullOrEmpty(bookmarkName)? "": bookmarkName;
+    public String getBookmarkName()
+    {
+        return StringUtils.isNullOrEmpty(bookmarkName) ? "" : bookmarkName;
     }
 
     /**
@@ -350,7 +352,8 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param value the bookmark name to set
      */
-    public void setBookmarkName(String value) {
+    public void setBookmarkName(String value)
+    {
         bookmarkName = value;
         if (!isPersistent()) {
             setPersistent(true);

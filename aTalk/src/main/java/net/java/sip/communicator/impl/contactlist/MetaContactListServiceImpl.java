@@ -1073,8 +1073,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     // cmeng - SQLite will remove all decedent of the groupToRemove base on accountUuid etc
     // need to fireEvent for all listeners.
-    private void locallyRemoveAllContactsForProvider(MetaContactGroupImpl parentMetaGroup,
-            ContactGroup groupToRemove)
+    private void locallyRemoveAllContactsForProvider(MetaContactGroupImpl parentMetaGroup, ContactGroup groupToRemove)
     {
         Iterator<MetaContact> childrenContacts = parentMetaGroup.getChildContacts();
         // first go through all direct children.

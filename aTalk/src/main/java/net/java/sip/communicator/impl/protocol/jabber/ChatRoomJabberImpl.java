@@ -5,8 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.os.*;
+import android.text.Html;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.service.protocol.Message;
@@ -469,8 +469,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Returns the local user's nickname in the context of this chat room or <tt>null</tt> if not currently joined.
      *
-     * @return the nickname currently being used by the local user in the context of the local
-     * chat room.
+     * @return the nickname currently being used by the local user in the context of the local chat room.
      */
     public Resourcepart getUserNickname()
     {
@@ -906,34 +905,48 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     public void sendMessage(Message message, OmemoManager omemoManager)
     {
-        String msgContent = message.getContent();
-        OmemoMessage.Sent encryptedMucMessage;
-        String msg = null;
+        String content = message.getContent();
+        String msgContent;
+        OmemoMessage.Sent encryptedMessage;
+        String errMessage = null;
+
+        // OMEMO message content will strip off any html tags info for now => #TODO
+        if (Message.ENCODE_HTML == message.getMimeType()) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+                msgContent = Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY).toString();
+            else
+                msgContent = Html.fromHtml(content).toString();
+        }
+        else {
+            msgContent = content;
+        }
 
         try {
-            encryptedMucMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
-            mMultiUserChat.sendMessage(encryptedMucMessage.asMessage(this.getIdentifier()));
+            encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
+            mMultiUserChat.sendMessage(encryptedMessage.asMessage(this.getIdentifier()));
+            // message delivered for own outgoing message view display
+            ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(ChatRoomJabberImpl.this,
+                    new Date(), message, ChatMessage.MESSAGE_MUC_OUT);
+            fireMessageEvent(msgDeliveredEvt);
         } catch (UndecidedOmemoIdentityException e) {
+            errMessage = aTalkApp.getResString(R.string.omemo_send_error,
+                    "Undecided Omemo Identity: " + e.getUndecidedDevices().toString());
             Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
             aTalkApp.getGlobalContext().startActivity(
                     OmemoAuthenticateDialog.createIntent(omemoManager, omemoDevices, null));
-        } catch (CryptoFailedException | InterruptedException
-                | NotConnectedException | NoResponseException | XMPPErrorException
-                | NoOmemoSupportException e) {
-            msg = "Omemo is unable to create session with device: " + e.getMessage();
+        } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException
+                | XMPPErrorException | NoOmemoSupportException e) {
+            errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage());
         } catch (NotLoggedInException e) {
-            msg = "User must login to send omemo message: " + e.getMessage();
-        }
-        if (!StringUtils.isNullOrEmpty(msg)) {
-            Timber.w("%s", msg);
-            aTalkApp.showToastMessage(msg);
+            errMessage = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
         }
 
-        // message delivered for own outgoing message view display
-        Date timeStamp = new Date();
-        ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(ChatRoomJabberImpl.this,
-                timeStamp, message, ChatMessage.MESSAGE_MUC_OUT);
-        fireMessageEvent(msgDeliveredEvt);
+        if (!TextUtils.isEmpty(errMessage)) {
+            Timber.w("%s", errMessage);
+            ChatRoomMessageDeliveryFailedEvent failedEvent = new ChatRoomMessageDeliveryFailedEvent(ChatRoomJabberImpl.this,
+                    null, ChatRoomMessageDeliveryFailedEvent.OMEMO_SEND_ERROR, errMessage, new Date(), message);
+            fireMessageEvent(failedEvent);
+        }
     }
 
     /**

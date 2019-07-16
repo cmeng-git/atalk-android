@@ -5,10 +5,10 @@
  */
 package org.atalk.service.neomedia.recording;
 
-import android.support.annotation.NonNull;
-
 import org.atalk.service.neomedia.MediaType;
 import org.json.JSONObject;
+
+import androidx.annotation.NonNull;
 
 /**
  * Represents an event related to media recording, such as a new SSRC starting to be recorded.

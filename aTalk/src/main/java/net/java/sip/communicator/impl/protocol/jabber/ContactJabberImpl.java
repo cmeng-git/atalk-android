@@ -497,7 +497,7 @@ public class ContactJabberImpl extends AbstractContact
     public Collection<ContactResource> getResources()
     {
         if (resources != null)
-            return new ArrayList<ContactResource>(resources.values());
+            return new ArrayList<>(resources.values());
         return null;
     }
 

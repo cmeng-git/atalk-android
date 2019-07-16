@@ -13,6 +13,7 @@ import org.jivesoftware.smackx.omemo.OmemoManager;
  * Provides basic functionality for sending and receiving InstantMessages.
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public interface OperationSetBasicInstantMessaging extends OperationSet
 {
@@ -24,7 +25,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
      * @return the newly created message.
      */
-    public Message createMessage(String content, int encType, String subject);
+    Message createMessage(String content, int encType, String subject);
 
     /**
      * Create a Message instance for sending a simple text messages with default (text/plain)
@@ -33,7 +34,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * @param messageText the string content of the message.
      * @return Message the newly created message
      */
-    public Message createMessage(String messageText);
+    Message createMessage(String messageText);
 
     /**
      * Create a Message instance with the specified UID, content type and a default encoding. This
@@ -45,7 +46,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * @param messageUID the unique identifier of this message.
      * @return Message the newly created message
      */
-    public Message createMessageWithUID(String messageText, int encType, String messageUID);
+    Message createMessageWithUID(String messageText, int encType, String messageUID);
 
     /**
      * Sends the <tt>message</tt> to the destination indicated by the <tt>to</tt> contact.
@@ -55,7 +56,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * @throws java.lang.IllegalStateException if the underlying ICQ stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <tt>to</tt> is not an instance belonging to the underlying implementation.
      */
-    public void sendInstantMessage(Contact to, Message message)
+    void sendInstantMessage(Contact to, Message message)
             throws IllegalStateException, IllegalArgumentException;
 
     /**
@@ -68,9 +69,9 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * @throws java.lang.IllegalStateException if the underlying ICQ stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <tt>to</tt> is not an instance belonging to the underlying implementation.
      */
-    public void sendInstantMessage(Contact to, ContactResource toResource, Message message);
+    void sendInstantMessage(Contact to, ContactResource toResource, Message message);
 
-    public void sendInstantMessage(Contact to, ContactResource resource, Message message, String correctedMessageUID,
+    void sendInstantMessage(Contact to, ContactResource resource, Message message, String correctedMessageUID,
             OmemoManager omemoManager);
 
     /**
@@ -79,7 +80,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      *
      * @param listener the <tt>MessageListener</tt> to register.
      */
-    public void addMessageListener(MessageListener listener);
+    void addMessageListener(MessageListener listener);
 
     /**
      * Unregisters <tt>listener</tt> so that it won't receive any further notifications upon
@@ -87,7 +88,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      *
      * @param listener the <tt>MessageListener</tt> to unregister.
      */
-    public void removeMessageListener(MessageListener listener);
+    void removeMessageListener(MessageListener listener);
 
     /**
      * Determines whether the protocol provider (or the protocol itself) support sending and
@@ -101,7 +102,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      *
      * @return <tt>true</tt> if the protocol supports offline messages and <tt>false</tt> otherwise.
      */
-    public boolean isOfflineMessagingSupported();
+    boolean isOfflineMessagingSupported();
 
     /**
      * Determines whether the protocol supports the supplied content type
@@ -109,7 +110,7 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * @param mimeType the mime type we want to check
      * @return <tt>true</tt> if the protocol supports it and <tt>false</tt> otherwise.
      */
-    public boolean isContentTypeSupported(int mimeType);
+    boolean isContentTypeSupported(int mimeType);
 
     /**
      * Determines whether the protocol supports the supplied content type for the given contact.
@@ -118,12 +119,12 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      * @param contact contact which is checked for supported encType
      * @return <tt>true</tt> if the contact supports it and <tt>false</tt> otherwise.
      */
-    public boolean isContentTypeSupported(int mimeType, Contact contact);
+    boolean isContentTypeSupported(int mimeType, Contact contact);
 
     /**
      * Returns the inactivity timeout in milliseconds.
      *
      * @return The inactivity timeout in milliseconds. Or -1 if undefined
      */
-    public long getInactivityTimeout();
+    long getInactivityTimeout();
 }

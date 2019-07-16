@@ -7,12 +7,13 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Contacts.Data;
-import android.support.annotation.Nullable;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
 import java.util.*;
+
+import androidx.annotation.Nullable;
 
 public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Recipient>>
 {

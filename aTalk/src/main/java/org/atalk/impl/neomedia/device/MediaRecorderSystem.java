@@ -6,11 +6,9 @@
 package org.atalk.impl.neomedia.device;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.hardware.Camera;
-import android.support.v4.content.ContextCompat;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -27,6 +25,7 @@ import java.util.*;
 
 import javax.media.*;
 
+import androidx.core.content.ContextCompat;
 import timber.log.Timber;
 
 /**
@@ -87,7 +86,6 @@ public class MediaRecorderSystem extends DeviceSystem
     }
 
     protected void doInitialize()
-            throws Exception
     {
         int cameraCount = Camera.getNumberOfCameras();
         // Re-init of MediaRecorderSystem is handled with AndroidCameraSystem

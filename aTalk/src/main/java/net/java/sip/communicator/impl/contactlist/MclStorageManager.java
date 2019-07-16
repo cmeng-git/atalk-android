@@ -19,7 +19,6 @@ package net.java.sip.communicator.impl.contactlist;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
@@ -34,6 +33,7 @@ import org.osgi.framework.BundleContext;
 
 import java.util.*;
 
+import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 import static net.java.sip.communicator.service.contactlist.MetaContactGroup.TBL_CHILD_CONTACTS;
@@ -457,8 +457,7 @@ public class MclStorageManager implements MetaContactListListener
      * <p>
      *
      * @param evt the MetaContactListEvent containing the corresponding contactGroup and other info.
-     * @see MetaContactListServiceImpl#locallyRemoveAllContactsForProvider(MetaContactGroupImpl,
-     * ContactGroup)
+     * @see MetaContactListServiceImpl#locallyRemoveAllContactsForProvider(MetaContactGroupImpl, ContactGroup)
      */
     private void contactGroupRenamedInMetaGroup(MetaContactGroupEvent evt)
     {
@@ -526,7 +525,7 @@ public class MclStorageManager implements MetaContactListListener
         Cursor cursor = mDB.query(MetaContactGroup.TABLE_NAME, null,
                 MetaContactGroup.PROTO_GROUP_UID + "=?", args, null, null, null);
         if (cursor.getCount() == 0) {  // found no parent
-            Timber.i("Removing old protoGroup childContacts if any: %s: %s",  protoGroupUid, accountUuid);
+            Timber.i("Removing old protoGroup childContacts if any: %s: %s", protoGroupUid, accountUuid);
             args = new String[]{accountUuid, protoGroupUid};
             mDB.delete(TBL_CHILD_CONTACTS, MetaContactGroup.ACCOUNT_UUID
                     + "=? AND " + MetaContactGroup.PROTO_GROUP_UID + "=?", args);

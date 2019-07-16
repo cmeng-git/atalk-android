@@ -20,6 +20,7 @@ import java.util.EventListener;
  * <tt>AdHocChatRoom</tt>.
  *
  * @author Valentin Martinet
+ * @author Eng Chong Meng
  */
 public interface AdHocChatRoomMessageListener extends EventListener
 {
@@ -29,7 +30,7 @@ public interface AdHocChatRoomMessageListener extends EventListener
      * @param evt the <tt>AdHocChatRoomMessageReceivedEvent</tt> containing the newly received message,
      * its sender and other details.
      */
-    public void messageReceived(AdHocChatRoomMessageReceivedEvent evt);
+    void messageReceived(AdHocChatRoomMessageReceivedEvent evt);
 
     /**
      * Called when the underlying implementation has received an indication that a message, sent
@@ -38,7 +39,7 @@ public interface AdHocChatRoomMessageListener extends EventListener
      * @param evt the <tt>AdHocChatRoomMessageDeliveredEvent</tt> containing the id of the message that
      * has caused the event.
      */
-    public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt);
+    void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt);
 
     /**
      * Called to indicate that delivery of a message sent earlier to the chat room has failed.
@@ -47,5 +48,5 @@ public interface AdHocChatRoomMessageListener extends EventListener
      * @param evt the <tt>AdHocChatroomMessageDeliveryFailedEvent</tt> containing the ID of the message
      * whose delivery has failed.
      */
-    public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt);
+    void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt);
 }

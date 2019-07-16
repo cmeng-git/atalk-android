@@ -19,6 +19,7 @@ package net.java.sip.communicator.impl.msghistory;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
@@ -33,6 +34,7 @@ import net.java.sip.communicator.service.history.event.ProgressEvent;
 import net.java.sip.communicator.service.msghistory.MessageHistoryAdvancedService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.msghistory.event.MessageHistorySearchProgressListener;
+import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
@@ -934,6 +936,10 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         }
 
         String jabberID = XmppStringUtils.parseBareJid(mProperties.get(ChatMessage.JID));
+        // cmeng: from chatRoom, then Jid is null (should be system message) ?
+        if (TextUtils.isEmpty(jabberID))
+            jabberID = mProperties.get(ChatMessage.ENTITY_JID);
+
         int msgType = Integer.parseInt(mProperties.get(ChatMessage.MSG_TYPE));
 
         // Do not include ChatMessage.MESSAGE_HTTP_FILE_LINK
@@ -2010,6 +2016,70 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             String[] args = {uuid};
             mDB.delete(ChatMessage.TABLE_NAME, ChatMessage.UUID + "=?", args);
         }
+    }
+
+    /**
+     * Retrieve all locally stored media file paths for the specified descriptor
+     *
+     * @param descriptor MetaContact or ChatRoomWrapper
+     * @return List of media file Paths
+     */
+    public List<String> getLocallyStoredFilePath(Object descriptor)
+    {
+        List<String> msgFilePathDel = new ArrayList<>();
+        String filePath;
+        String sessionUuid = null;
+
+        if (descriptor instanceof MetaContact) {
+            Iterator<Contact> contacts = ((MetaContact) descriptor).getContacts();
+            Contact contact = contacts.next();
+            if (contact != null)
+                sessionUuid = getSessionUuidByJid(contact);
+        }
+        else {
+            ChatRoom chatRoom = ((ChatRoomWrapper) descriptor).getChatRoom();
+            if (chatRoom != null)
+                sessionUuid = getSessionUuidByJid(chatRoom);
+        }
+
+        if (sessionUuid != null) {
+            String[] args = {sessionUuid};
+            String[] columns = {ChatMessage.FILE_PATH};
+
+            Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, columns, ChatMessage.SESSION_UUID + "=?",
+                    args, null, null, null);
+            while (cursor.moveToNext()) {
+                filePath = cursor.getString(0);
+                if (!TextUtils.isEmpty(filePath)) {
+                    msgFilePathDel.add(filePath);
+                }
+            }
+            cursor.close();
+        }
+        return msgFilePathDel;
+    }
+
+    /**
+     * Retrieve all locally stored media file paths for all the received messages
+     *
+     * @return List of media file Paths
+     */
+    public List<String> getLocallyStoredFilePath()
+    {
+        List<String> msgFilePathDel = new ArrayList<>();
+        String filePath;
+        String[] columns = {ChatMessage.FILE_PATH};
+
+        Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, columns, ChatMessage.FILE_PATH + " IS NOT NULL",
+                null, null, null, null);
+        while (cursor.moveToNext()) {
+            filePath = cursor.getString(0);
+            if (!TextUtils.isEmpty(filePath)) {
+                msgFilePathDel.add(filePath);
+            }
+        }
+        cursor.close();
+        return msgFilePathDel;
     }
 
     /**

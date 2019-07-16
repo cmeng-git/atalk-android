@@ -1,9 +1,6 @@
 package org.atalk.android.util;
 
-import android.arch.lifecycle.LifecycleObserver;
 import android.app.*;
-import android.content.ComponentCallbacks2;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import org.atalk.android.aTalkApp;
@@ -88,7 +85,11 @@ public class BackgroundManager implements Application.ActivityLifecycleCallbacks
     public boolean isAppInBackground()
     {
         ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
-        ActivityManager.getMyMemoryState(myProcess);
+        try {
+            ActivityManager.getMyMemoryState(myProcess);
+        } catch (NoSuchMethodError ignored) {
+            // from android 4.0.3
+        }
         return myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
     }
 

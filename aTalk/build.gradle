@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.android.tools.build:gradle:3.4.2'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
@@ -59,8 +59,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1088
-        versionName "1.8.8"
+        versionCode 1100
+        versionName "2.0.0"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -165,20 +165,21 @@ dependencies {
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "com.android.support:support-v4:${rootProject.supportLibraryVersion}"
-    implementation "com.android.support:support-v13:${rootProject.supportLibraryVersion}"
-    implementation "com.android.support:appcompat-v7:${rootProject.supportLibraryVersion}"
-    implementation "com.android.support:design:${rootProject.supportLibraryVersion}"
+    implementation "androidx.legacy:legacy-support-v4:${rootProject.supportLibraryVersion}"
+    implementation "androidx.legacy:legacy-support-v13:${rootProject.supportLibraryVersion}"
+    implementation "androidx.appcompat:appcompat:1.0.2"
     // implementation "android.arch.lifecycle:extensions:1.1.1"
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    implementation "com.google.android.material:material:${rootProject.supportLibraryVersion}"
 
     // libraries from maven repository
     implementation 'ch.imvs:sdes4j:1.1.4'
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
     // butterknife >=9.0.0 uses androidx - incompatible
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.jakewharton:butterknife:10.1.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
     implementation('com.jakewharton.timber:timber:4.7.1') {
         transitive = false
@@ -240,7 +241,7 @@ dependencies {
 
     // not compatible to 17.0.0 androidx#Fragment
     playstoreImplementation "com.google.android.gms:play-services-location:${rootProject.gmsPlayServicesVersion}"
-    playstoreImplementation "com.google.android.gms:play-services-maps:16.1.0"
+    playstoreImplementation "com.google.android.gms:play-services-maps:${rootProject.gmsPlayServicesVersion}"
     playstoreImplementation "com.google.android.gms:play-services-panorama:${rootProject.gmsPlayServicesVersion}"
 
     /*

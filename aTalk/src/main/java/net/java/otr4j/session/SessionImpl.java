@@ -425,7 +425,7 @@ public class SessionImpl implements Session
                 auth.handleReceivingMessage(m);
                 if (auth.getIsSecure()) {
                     this.setSessionStatus(SessionStatus.ENCRYPTED);
-                    Timber.log(TimberLog.FINER, "Gone Secure.");
+                    Timber.log(TimberLog.FINER, "Entered secure state.");
                 }
                 return null;
             default:

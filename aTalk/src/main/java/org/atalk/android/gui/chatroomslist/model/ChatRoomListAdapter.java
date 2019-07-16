@@ -263,6 +263,9 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
             // List<ChatRoomWrapper> crWrappers = crpWrapper.getChatRooms();
 
             ProtocolProviderService pps = crpWrapper.getProtocolProvider();
+            if ((pps == null) || (pps.getConnection() == null))
+                return null;
+
             BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
             try {
                 List<BookmarkedConference> bookmarksList = bookmarkManager.getBookmarkedConferences();

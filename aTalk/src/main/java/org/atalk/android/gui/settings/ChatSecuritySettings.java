@@ -21,7 +21,7 @@ import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 /**
- * Chat security settings screen with OTR preferences.
+ * Chat security settings screen with OTR preferences - modified for aTalk
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -30,8 +30,13 @@ public class ChatSecuritySettings extends OSGiActivity
 {
     // Preference mKeys
     static private final String P_KEY_CRYPTO_ENABLE = aTalkApp.getResString(R.string.pref_key_crypto_enable);
-    static private final String P_KEY_CRYPTO_AUTO = aTalkApp.getResString(R.string.pref_key_otr_auto);
-    static private final String P_KEY_CRYPTO_REQUIRE = aTalkApp.getResString(R.string.pref_key_crypto_require);
+
+    private static final String AUTO_INIT_OTR_PROP = "otr.AUTO_INIT_PRIVATE_MESSAGING";
+
+    /**
+     * A property specifying whether private messaging should be made mandatory.
+     */
+    private static final String OTR_MANDATORY_PROP = "otr.PRIVATE_MESSAGING_MANDATORY";
 
     // OMEMO Security section
     static private final String P_KEY_OMEMO_KEY_BLIND_TRUST
@@ -80,13 +85,21 @@ public class ChatSecuritySettings extends OSGiActivity
             OtrPolicy otrPolicy = OtrActivator.scOtrEngine.getGlobalPolicy();
             PreferenceScreen screen = getPreferenceScreen();
             PreferenceUtil.setCheckboxVal(screen, P_KEY_CRYPTO_ENABLE, otrPolicy.getEnableManual());
-            PreferenceUtil.setCheckboxVal(screen, P_KEY_CRYPTO_AUTO, otrPolicy.getEnableAlways());
-            PreferenceUtil.setCheckboxVal(screen, P_KEY_CRYPTO_REQUIRE, otrPolicy.getRequireEncryption());
-
             PreferenceUtil.setCheckboxVal(screen, P_KEY_OMEMO_KEY_BLIND_TRUST,
                     mConfig.getBoolean(mConfig.PNAME_OMEMO_KEY_BLIND_TRUST, true));
 
             SharedPreferences shPrefs = getPreferenceManager().getSharedPreferences();
+
+            // cmeng: remove unused preferences
+            SharedPreferences.Editor mEditor = shPrefs.edit();
+            mEditor.remove(getResources().getString(R.string.pref_key_otr_auto));
+            mEditor.remove(getResources().getString(R.string.pref_key_crypto_require));
+            mEditor.commit();
+
+            // cmeng: Purge all the unnecessary OTR implementations for aTalk - will be removed in future release
+            mConfig.setProperty(AUTO_INIT_OTR_PROP, null);
+            mConfig.setProperty(OTR_MANDATORY_PROP, null);
+
             shPrefs.registerOnSharedPreferenceChangeListener(this);
         }
 
@@ -106,33 +119,20 @@ public class ChatSecuritySettings extends OSGiActivity
          */
         public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key)
         {
-            OtrPolicy otrPolicy = OtrActivator.scOtrEngine.getGlobalPolicy();
             if (key.equals(P_KEY_CRYPTO_ENABLE)) {
-                otrPolicy.setEnableManual(shPreferences.getBoolean(P_KEY_CRYPTO_ENABLE,
-                        otrPolicy.getEnableManual()));
-            }
-            else if (key.equals(P_KEY_CRYPTO_AUTO)) {
-                boolean isAutoInit = shPreferences.getBoolean(P_KEY_CRYPTO_AUTO,
-                        otrPolicy.getEnableAlways());
+                OtrPolicy otrPolicy = OtrActivator.scOtrEngine.getGlobalPolicy();
 
-                otrPolicy.setEnableAlways(isAutoInit);
-                OtrActivator.configService.setProperty(OtrActivator.AUTO_INIT_OTR_PROP,
-                        Boolean.toString(isAutoInit));
-            }
-            else if (key.equals(P_KEY_CRYPTO_REQUIRE)) {
-                boolean isRequired = shPreferences.getBoolean(P_KEY_CRYPTO_REQUIRE,
-                        otrPolicy.getRequireEncryption());
-                otrPolicy.setRequireEncryption(isRequired);
-                OtrActivator.configService.setProperty(OtrActivator.OTR_MANDATORY_PROP,
-                        Boolean.toString(isRequired));
+                boolean isEnabled = shPreferences.getBoolean(P_KEY_CRYPTO_ENABLE, otrPolicy.getEnableManual());
+                otrPolicy.setEnableManual(isEnabled);
+                OtrActivator.configService.setProperty(OtrActivator.OTR_DISABLED_PROP, Boolean.toString(!isEnabled));
+
+                // Store changes immediately
+                OtrActivator.scOtrEngine.setGlobalPolicy(otrPolicy);
             }
             else if (key.equals(P_KEY_OMEMO_KEY_BLIND_TRUST)) {
                 mConfig.setProperty(mConfig.PNAME_OMEMO_KEY_BLIND_TRUST,
                         shPreferences.getBoolean(P_KEY_OMEMO_KEY_BLIND_TRUST, true));
             }
-
-            // Store changes immediately
-            OtrActivator.scOtrEngine.setGlobalPolicy(otrPolicy);
         }
     }
 }

@@ -242,11 +242,12 @@ public class AndroidImageUtil
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
 
-        float rX = ((float) bitmap.getWidth()) * factor;
-        float rY = ((float) bitmap.getHeight()) * factor;
+        float rX = ((float) bitmap.getWidth()/2); // * factor;
+        float rY = ((float) bitmap.getHeight()/2); // * factor ;
         // float r = (rX+rY)/2;
 
-        canvas.drawRoundRect(rectF, rX, rY, paint);
+        //canvas.drawRoundRect(rectF, rX, rY, paint);
+        canvas.drawCircle(rX, rY, rX, paint);
 
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);

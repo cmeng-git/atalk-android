@@ -12,7 +12,6 @@ import android.content.*;
 import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceActivity;
-import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -25,6 +24,7 @@ import org.osgi.framework.BundleContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.app.NavUtils;
 import timber.log.Timber;
 
 /**

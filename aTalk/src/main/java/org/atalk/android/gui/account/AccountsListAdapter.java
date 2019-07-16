@@ -113,9 +113,9 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
         if (event.getServiceReference().getBundle().getState() == Bundle.STOPPING) {
             return;
         }
-        Object sourceService = bundleContext.getService(event.getServiceReference());
 
         // we don't care if the source service is not a protocol provider
+        Object sourceService = bundleContext.getService(event.getServiceReference());
         if (!(sourceService instanceof ProtocolProviderService)) {
             return;
         }
@@ -129,23 +129,16 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
                 addAccount(new Account(protocolProvider.getAccountID(), bundleContext,
                         getParentActivity().getBaseContext()));
             }
+            // Register for account events listener if account exists on this list
             else {
-                // Register for events if account exists on this list
                 acc.addAccountEventListener(this);
             }
         }
         else if (event.getType() == ServiceEvent.UNREGISTERING) {
-            Account acc = findAccountID(protocolProvider.getAccountID());
-            if (acc != null && acc.isEnabled()) {
-                // Remove enabled accounts
-                if (acc.isEnabled()) {
-                    // Remove the account completely
-                    removeAccount(protocolProvider.getAccountID());
-                }
-                else {
-                    // Quit from listening to updates
-                    acc.removeAccountEventListener(this);
-                }
+            Account account = findAccountID(protocolProvider.getAccountID());
+            // Remove enabled account if exist
+            if (account != null && account.isEnabled()) {
+                removeAccount(account);
             }
         }
     }
@@ -223,7 +216,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      *
      * @param account {@link Account} that will be added to the list
      */
-    public void addAccount(Account account)
+    private void addAccount(Account account)
     {
         if (filterDisabledAccounts && !account.isEnabled())
             return;
@@ -231,7 +224,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
         if (account.getAccountID().isHidden())
             return;
 
-        Timber.d("Account added: %s", account.getAccountName());
+        Timber.d("Account added: %s", account.getUserID());
         add(account);
         account.addAccountEventListener(this);
     }
@@ -239,15 +232,14 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
     /**
      * Removes the account from the list
      *
-     * @param accountID the {@link AccountID} that will be removed from the list
+     * @param account the {@link Account} that will be removed from the list
      */
-    public void removeAccount(AccountID accountID)
+    private void removeAccount(Account account)
     {
-        Account account = findAccountID(accountID);
         if (account != null) {
+            Timber.d("Account removed: %s", account.getUserID());
             account.removeAccountEventListener(this);
             remove(account);
-            Timber.d("Account removed: %s", accountID.getDisplayName());
         }
     }
 
@@ -258,9 +250,9 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
      */
     public void onChangeEvent(AccountEvent accountEvent)
     {
-        //			Timber.log(TimberLog.FINE, "Not an Error! Received accountEvent update for: "
-        //					+ accountEvent.getSource().getAccountName() + " "
-        //					+ accountEvent.toString(), new Throwable());
+        // Timber.log(TimberLog.FINE, "Not an Error! Received accountEvent update for: "
+        //		+ accountEvent.getSource().getAccountName() + " "
+        //		+ accountEvent.toString(), new Throwable());
         doRefreshList();
     }
 }

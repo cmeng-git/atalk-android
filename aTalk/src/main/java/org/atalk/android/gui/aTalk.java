@@ -20,9 +20,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.*;
-import android.support.v4.app.*;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -35,12 +32,15 @@ import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.fragment.ActionBarStatusFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
-import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.android.gui.util.EntityListHelper;
+import org.atalk.android.gui.webview.WebViewFragment;
 import org.osgi.framework.BundleContext;
 
 import java.util.List;
 
+import androidx.fragment.app.*;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import de.cketti.library.changelog.ChangeLog;
 import timber.log.Timber;
 
@@ -247,7 +247,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     }
 
     /**
-     * A simple pager adapter that represents 2 Screen Slide PageFragment objects, in sequence.
+     * A simple pager adapter that represents 3 Screen Slide PageFragment objects, in sequence.
      */
     private class MainPagerAdapter extends FragmentPagerAdapter
     {
@@ -275,7 +275,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         @Override
         public int getCount()
         {
-            if (Build.MODEL.contains("GT-I9100"))
+            if (Build.VERSION.SDK_INT < 17)
                 return 1;
             else
                 return NUM_PAGES;

@@ -35,6 +35,7 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.atalk.android.R.id.cb_media_delete;
@@ -158,15 +159,6 @@ public class EntityListHelper
                     {
                     }
                 });
-
-        // /int returnCode = dialog.showDialog();
-        // if (returnCode == MessageDialog.OK_RETURN_CODE) {
-        // 		GuiActivator.getContactListService().removeMetaContactGroup(group);
-        // }
-        // else if (returnCode == MessageDialog.OK_DONT_ASK_CODE) {
-        // 		GuiActivator.getContactListService().removeMetaContactGroup(group);
-        // 		Constants.REMOVE_CONTACT_ASK = false;
-        // }
     }
 
     /**
@@ -225,11 +217,10 @@ public class EntityListHelper
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
                         CheckBox cbMediaDelete = dialog.findViewById(cb_media_delete);
-                        if (!cbMediaDelete.isChecked()) {
-                            msgFiles.clear();
-                        }
+                        boolean mediaDelete = cbMediaDelete.isChecked();
+
                         EntityListHelper mErase = new EntityListHelper();
-                        mErase.new doEraseEntityChatHistory(caller, msgUUIDs, msgFiles).execute(desc);
+                        mErase.new doEraseEntityChatHistory(caller, msgUUIDs, msgFiles, mediaDelete).execute(desc);
                         return true;
                     }
 
@@ -246,17 +237,17 @@ public class EntityListHelper
      */
     private class doEraseEntityChatHistory extends AsyncTask<Object, Void, Integer>
     {
-        private Context mContext = null;
         private TaskCompleted mCallback;
-        private final List<String> messageUUIDs;
-        private final List<File> messageFiles;
+        private boolean isPurgeMediaFile;
+        private List<String> messageUUIDs;
+        private List<File> msgFiles;
 
-        private doEraseEntityChatHistory(Context context, List<String> msgUUIDs, List<File> msgFiles)
+        private doEraseEntityChatHistory(Context context, List<String> msgUUIDs, List<File> msgFiles, boolean purgeMedia)
         {
-            this.mContext = context;
             this.mCallback = (TaskCompleted) context;
             this.messageUUIDs = msgUUIDs;
-            this.messageFiles = msgFiles;
+            this.msgFiles = msgFiles;
+            this.isPurgeMediaFile = purgeMedia;
         }
 
         @Override
@@ -268,22 +259,33 @@ public class EntityListHelper
         protected Integer doInBackground(Object... mDescriptor)
         {
             Object desc = mDescriptor[0];
-            if (desc instanceof MetaContact) {
-                // purge all the voice files of the deleted messages
-                if (messageFiles != null) {
-                    for (File file : messageFiles) {
+            if ((desc instanceof MetaContact) || (desc instanceof ChatRoomWrapper)) {
+                MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
+                if (isPurgeMediaFile) {
+                    // null => delete all local saved files; then construct locally
+                    if (msgFiles == null) {
+                        msgFiles = new ArrayList<>();
+                        List<String> filePathDel = mhs.getLocallyStoredFilePath(desc);
+                        for (String filePath : filePathDel) {
+                            msgFiles.add(new File(filePath));
+                        }
+                    }
+
+                    // purge all the files of the deleted messages
+                    for (File file : msgFiles) {
                         if (file.exists())
                             file.delete();
                     }
                 }
-                MetaContact metaContact = (MetaContact) desc;
-                MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
-                mhs.eraseLocallyStoredHistory(metaContact, messageUUIDs);
-            }
-            else if (desc instanceof ChatRoomWrapper) {
-                ChatRoom chatRoom = ((ChatRoomWrapper) desc).getChatRoom();
-                MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
-                mhs.eraseLocallyStoredHistory(chatRoom, messageUUIDs);
+
+                if (desc instanceof MetaContact) {
+                    MetaContact metaContact = (MetaContact) desc;
+                    mhs.eraseLocallyStoredHistory(metaContact, messageUUIDs);
+                }
+                else {
+                    ChatRoom chatRoom = ((ChatRoomWrapper) desc).getChatRoom();
+                    mhs.eraseLocallyStoredHistory(chatRoom, messageUUIDs);
+                }
             }
             else {
                 return ZERO_ENTITY;
@@ -296,7 +298,6 @@ public class EntityListHelper
         {
             // Return result to caller
             mCallback.onTaskComplete(result);
-            this.mContext = null;
         }
 
         @Override
@@ -305,6 +306,11 @@ public class EntityListHelper
         }
     }
 
+    /**
+     * Erase all the local stored chat history for all MetaContact and ChatRoomWrapper
+     *
+     * @param caller the callback
+     */
     public static void eraseAllContactHistory(final Context caller)
     {
         Context ctx = aTalkApp.getGlobalContext();
@@ -317,8 +323,11 @@ public class EntityListHelper
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
+                        CheckBox cbMediaDelete = dialog.findViewById(cb_media_delete);
+                        boolean mediaDelete = cbMediaDelete.isChecked();
+
                         EntityListHelper mErase = new EntityListHelper();
-                        mErase.new doEraseAllContactHistory(caller).execute();
+                        mErase.new doEraseAllContactHistory(caller, mediaDelete).execute();
                         return true;
                     }
 
@@ -332,13 +341,13 @@ public class EntityListHelper
 
     private class doEraseAllContactHistory extends AsyncTask<Void, Void, Integer>
     {
-        private Context mContext = null;
+        private boolean isPurgeMediaFile;
         private TaskCompleted mCallback;
 
-        private doEraseAllContactHistory(Context context)
+        private doEraseAllContactHistory(Context context, boolean purgeMedia)
         {
-            this.mContext = context;
-            this.mCallback = (TaskCompleted) mContext;
+            this.mCallback = (TaskCompleted) context;
+            this.isPurgeMediaFile = purgeMedia;
         }
 
         @Override
@@ -350,6 +359,15 @@ public class EntityListHelper
         protected Integer doInBackground(Void... none)
         {
             MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
+            if (isPurgeMediaFile) {
+                // purge all the files of the deleted messages
+                List<String> msgFiles = mhs.getLocallyStoredFilePath();
+                for (String msgFile : msgFiles) {
+                    File file = new File(msgFile);
+                    if (file.exists())
+                        file.delete();
+                }
+            }
             mhs.eraseLocallyStoredHistory();
             return ALL_ENTITIES;
         }
@@ -359,7 +377,6 @@ public class EntityListHelper
         {
             // Return result to caller
             mCallback.onTaskComplete(result);
-            this.mContext = null;
         }
 
         @Override

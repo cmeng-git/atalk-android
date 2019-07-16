@@ -525,8 +525,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     }
 
     @Override  // CalendarDatePickerDialogFragment callback
-    public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear,
-            int dayOfMonth)
+    public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth)
     {
         Calendar mDate = Calendar.getInstance();
 
@@ -658,20 +657,23 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         if (detail instanceof BirthDateDetail) {
             birthDateDetail = (BirthDateDetail) detail;
-            Calendar birthDate = (Calendar) birthDateDetail.getDetailValue();
+            Object objBirthDate = birthDateDetail.getDetailValue();
+
             // default to today if birthDate is null
-            if (birthDate == null)
-                birthDate = Calendar.getInstance();
+            if (objBirthDate instanceof Calendar) {
+                Calendar birthDate = (Calendar) objBirthDate;
 
-            int bYear = birthDate.get(Calendar.YEAR);
-            int bMonth = birthDate.get(Calendar.MONTH);
-            int bDay = birthDate.get(Calendar.DAY_OF_MONTH);
+                int bYear = birthDate.get(Calendar.YEAR);
+                int bMonth = birthDate.get(Calendar.MONTH);
+                int bDay = birthDate.get(Calendar.DAY_OF_MONTH);
+                // Preset calendarDatePicker date
+                calendarDatePicker.setPreselectedDate(bYear, bMonth, bDay);
 
-            // Preset calendarDatePicker date
-            calendarDatePicker.setPreselectedDate(bYear, bMonth, bDay);
-
-            // Update BirthDate and Age
-            onDateSet(null, bYear, bMonth, bDay);
+                // Update BirthDate and Age
+                onDateSet(null, bYear, bMonth, bDay);
+            } else if (objBirthDate != null) {
+                birthDateField.setText((String) objBirthDate);
+            }
             return;
         }
 
@@ -858,17 +860,17 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             String text = detailToTextField.get(URLDetail.class).getText().toString().trim();
 
             URL url = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            URLDetail newDetail = null;
+
+            if (!StringUtils.isNullOrEmpty(text, true)) {
                 try {
                     url = new URL(text);
+                    newDetail = new URLDetail("URL", url);
                 } catch (MalformedURLException e1) {
-                    Timber.d("Failed to update URL detail due to malformed URL.");
+                    Timber.d("URL field has malformed URL; save as text instead.");
+                    newDetail = new URLDetail("URL", text);
                 }
-
-            URLDetail newDetail = null;
-            if (url != null)
-                newDetail = new URLDetail("URL", url);
-
+            }
             if (urlDetail != null || newDetail != null)
                 changeDetail(urlDetail, newDetail);
         }
@@ -895,7 +897,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                     birthDate.setTime(mDate);
                     newDetail = new BirthDateDetail(birthDate);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    // Save as String value
+                    newDetail = new BirthDateDetail(text);
                 }
             }
             if (birthDateDetail != null || newDetail != null)

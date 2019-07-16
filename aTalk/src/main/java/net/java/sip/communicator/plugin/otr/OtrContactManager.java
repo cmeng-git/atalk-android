@@ -128,7 +128,10 @@ public class OtrContactManager implements ServiceListener
 
             OtrContact other = (OtrContact) obj;
             if (this.contact != null && this.contact.equals(other.contact)) {
-                if (this.resource != null && resource.equals(other.resource))
+                // cmeng: must only compare resourceName, other resource parameters may not be the same
+                // e.g. presenceStatus - incoming otrContact can be offline?
+                if (this.resource != null
+                        && resource.getResourceName().equals(other.resource.getResourceName()))
                     return true;
                 return this.resource == null && other.resource == null;
             }

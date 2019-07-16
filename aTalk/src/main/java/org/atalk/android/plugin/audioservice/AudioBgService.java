@@ -21,8 +21,6 @@ import android.content.Intent;
 import android.media.*;
 import android.net.Uri;
 import android.os.*;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.atalk.persistance.FileBackend;
@@ -30,6 +28,9 @@ import org.atalk.persistance.FileBackend;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
+
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class AudioBgService extends Service implements MediaPlayer.OnCompletionListener
 {

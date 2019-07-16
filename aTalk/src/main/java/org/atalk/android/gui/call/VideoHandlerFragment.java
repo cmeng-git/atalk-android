@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.view.*;
 import android.widget.ImageView;
@@ -36,6 +35,7 @@ import org.atalk.util.event.*;
 import java.util.Iterator;
 import java.util.List;
 
+import androidx.core.content.ContextCompat;
 import timber.log.Timber;
 
 /**
@@ -337,9 +337,8 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId()) {
-            case R.id.switch_camera:
-                return startCameraSwitchThread(item);
+        if (item.getItemId() == R.id.switch_camera) {
+            return startCameraSwitchThread(item);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -393,13 +392,11 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     @Override
     public boolean onLongClick(View v)
     {
-        switch (v.getId()) {
-            case R.id.button_call_video:
-                aTalkApp.showToastMessage(mCameraToggle.getTitle().toString());
-                return startCameraSwitchThread(mCameraToggle);
-            default:
-                return false;
+        if (v.getId() == R.id.button_call_video) {
+            aTalkApp.showToastMessage(mCameraToggle.getTitle().toString());
+            return startCameraSwitchThread(mCameraToggle);
         }
+        return false;
     }
 
     /**

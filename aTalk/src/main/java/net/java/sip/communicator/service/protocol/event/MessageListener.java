@@ -19,6 +19,7 @@ import java.util.EventListener;
  * A listener that would gather events notifying of message delivery status. Message received
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public interface MessageListener extends EventListener
 {
@@ -28,7 +29,7 @@ public interface MessageListener extends EventListener
      * @param evt the <tt>MessageReceivedEvent</tt> containing the newly received message, its sender
      * and other details.
      */
-    public void messageReceived(MessageReceivedEvent evt);
+    void messageReceived(MessageReceivedEvent evt);
 
     /**
      * Called when the underlying implementation has received an indication that a message, sent
@@ -36,7 +37,7 @@ public interface MessageListener extends EventListener
      *
      * @param evt the MessageDeliveredEvent containing the id of the message that has caused the event.
      */
-    public void messageDelivered(MessageDeliveredEvent evt);
+    void messageDelivered(MessageDeliveredEvent evt);
 
     /**
      * Called to indicated that delivery of a message sent earlier has failed. Reason code and
@@ -44,5 +45,5 @@ public interface MessageListener extends EventListener
      *
      * @param evt the <tt>MessageFailedEvent</tt> containing the ID of the message whose delivery has failed.
      */
-    public void messageDeliveryFailed(MessageDeliveryFailedEvent evt);
+    void messageDeliveryFailed(MessageDeliveryFailedEvent evt);
 }

@@ -90,7 +90,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
 
                 String resourceName = (otrContact.resource != null) ? "/" + otrContact.resource.getResourceName() : "";
                 Contact contact = otrContact.contact;
-                String sender = contact.getDisplayName();
+                String sender = contact.getAddress();
 
                 // Cancel any scheduled tasks that will change the ScSessionStatus for this Contact
                 scheduler.cancel(otrContact);
@@ -460,9 +460,8 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
     public void setContactPolicy(Contact contact, OtrPolicy policy)
     {
         ProtocolProviderService pps = contact.getProtocolProvider();
-        SessionID sessionID
-                = new SessionID(pps.getAccountID().getAccountUniqueID(), contact.getAddress(), pps.getProtocolName());
-
+        SessionID sessionID = new SessionID(pps.getAccountID().getAccountUniqueID(),
+                contact.getAddress(), pps.getProtocolName());
         String propertyID = sessionID + CONTACT_POLICY;
         if (policy == null)
             this.configurator.removeProperty(propertyID);
@@ -480,7 +479,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             return;
 
         Contact contact = otrContact.contact;
-        OtrActivator.uiService.getChat(contact).addMessage(contact.getDisplayName(), new Date(),
+        OtrActivator.uiService.getChat(contact).addMessage(contact.getAddress(), new Date(),
                 ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, err);
     }
 
@@ -704,7 +703,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
                 return;
 
             Contact contact = otrContact.contact;
-            OtrActivator.uiService.getChat(contact).addMessage(contact.getDisplayName(),
+            OtrActivator.uiService.getChat(contact).addMessage(contact.getAddress(),
                     new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN, warn);
         }
 
@@ -719,7 +718,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             Contact contact = otrContact.contact;
             String error = aTalkApp.getResString(R.string.plugin_otr_activator_unreadablemsgreceived,
                     contact.getDisplayName() + resourceName);
-            OtrActivator.uiService.getChat(contact).addMessage(contact.getDisplayName(), new Date(),
+            OtrActivator.uiService.getChat(contact).addMessage(contact.getAddress(), new Date(),
                     ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, error);
         }
 
@@ -733,7 +732,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
 
             Contact contact = otrContact.contact;
             String warn = aTalkApp.getResString(R.string.plugin_otr_activator_unencryptedmsgreceived);
-            OtrActivator.uiService.getChat(contact).addMessage(contact.getDisplayName(), new Date(),
+            OtrActivator.uiService.getChat(contact).addMessage(contact.getAddress(), new Date(),
                     ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN, warn);
         }
 
@@ -750,7 +749,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
                     contact.getDisplayName(), tlvType, cheated);
 
             String error = aTalkApp.getResString(R.string.plugin_otr_activator_smperror);
-            OtrActivator.uiService.getChat(contact).addMessage(contact.getDisplayName(),
+            OtrActivator.uiService.getChat(contact).addMessage(contact.getAddress(),
                     new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, error);
 
             SmpProgressDialog progressDialog = progressDialogMap.get(otrContact);
@@ -774,7 +773,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             Session session = otrEngine.getSession(sessionID);
             if (session.isSmpInProgress()) {
                 String warn = aTalkApp.getResString(R.string.plugin_otr_activator_smpaborted, contact.getDisplayName());
-                OtrActivator.uiService.getChat(contact).addMessage(contact.getDisplayName(),
+                OtrActivator.uiService.getChat(contact).addMessage(contact.getAddress(),
                         new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN, warn);
 
                 SmpProgressDialog progressDialog = progressDialogMap.get(otrContact);
@@ -795,12 +794,11 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             if (otrContact == null)
                 return;
 
-//			String resourceName = otrContact.resource != null ? "/"
-//					+ otrContact.resource.getResourceName() : "";
+//			String resourceName = otrContact.resource != null ? "/" + otrContact.resource.getResourceName() : "";
             Contact contact = otrContact.contact;
             String error = aTalkApp.getResString(R.string.plugin_otr_activator_sessionfinishederror,
                     contact.getDisplayName());
-            OtrActivator.uiService.getChat(contact).addMessage(contact.getDisplayName(),
+            OtrActivator.uiService.getChat(contact).addMessage(contact.getAddress(),
                     new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, error);
         }
 
@@ -814,7 +812,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
 
             Contact contact = otrContact.contact;
             String error = aTalkApp.getResString(R.string.plugin_otr_activator_requireencryption, msgText);
-            OtrActivator.uiService.getChat(contact).addMessage(contact.getDisplayName(),
+            OtrActivator.uiService.getChat(contact).addMessage(contact.getAddress(),
                     new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, error);
         }
 
@@ -910,7 +908,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             Contact contact = otrContact.contact;
             String message = aTalkApp.getResString(R.string.plugin_otr_activator_multipleinstancesdetected,
                     contact.getDisplayName() + resourceName);
-            OtrActivator.uiService.getChat(contact).addMessage(contact.getDisplayName(),
+            OtrActivator.uiService.getChat(contact).addMessage(contact.getAddress(),
                     new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_HTML, message);
         }
 
@@ -925,7 +923,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             Contact contact = otrContact.contact;
             String message = aTalkApp.getResString(R.string.plugin_otr_activator_msgfromanotherinstance,
                     contact.getDisplayName() + resourceName);
-            OtrActivator.uiService.getChat(contact).addMessage(contact.getDisplayName(),
+            OtrActivator.uiService.getChat(contact).addMessage(contact.getAddress(),
                     new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_HTML, message);
         }
 

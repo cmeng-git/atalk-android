@@ -18,7 +18,6 @@ package org.atalk.android.gui.call.telephony;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.*;
 import android.view.*;
 import android.widget.*;
@@ -38,6 +37,8 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.*;
+
+import androidx.fragment.app.Fragment;
 
 import static net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl.GOOGLE_VOICE_DOMAIN;
 
@@ -211,7 +212,7 @@ public class TelephonyFragment extends OSGiFragment
      */
     public void onCallClicked(View content, boolean videoCall)
     {
-        String recipient = null;
+        String recipient;
         if (!vRecipient.isEmpty()) {
             recipient = vRecipient.getAddresses()[0].getAddress();
         }

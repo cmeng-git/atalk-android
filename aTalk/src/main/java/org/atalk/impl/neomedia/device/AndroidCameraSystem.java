@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
-import android.support.v4.content.ContextCompat;
 import android.view.Surface;
 
 import org.atalk.android.R;
@@ -31,6 +30,7 @@ import javax.media.*;
 import javax.media.format.VideoFormat;
 import javax.media.format.YUVFormat;
 
+import androidx.core.content.ContextCompat;
 import timber.log.Timber;
 
 /**
@@ -67,7 +67,6 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
      */
     @Override
     protected void doInitialize()
-            throws Exception
     {
         int cameraCount = Camera.getNumberOfCameras();
         if (backgroundManager.isAppInBackground() || (cameraCount < 1) || isCameraInitialized

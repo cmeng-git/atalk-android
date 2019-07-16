@@ -287,7 +287,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             convertView.setBackgroundResource(R.drawable.list_selection_gradient);
         }
         else {
-            convertView.setBackgroundResource(R.drawable.contact_list_selector);
+            convertView.setBackgroundResource(R.drawable.array_list_selector);
         }
 
         // Set display name and status message for conacts or phone book contacts
@@ -463,7 +463,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     private void setAvatar(ImageView avatarView, Drawable avatarImage)
     {
         if (avatarImage == null) {
-            avatarImage = aTalkApp.getAppResources().getDrawable(R.drawable.avatar);
+            avatarImage = aTalkApp.getAppResources().getDrawable(R.drawable.contact_avatar);
         }
         avatarView.setImageDrawable(avatarImage);
     }

@@ -1,5 +1,39 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.0.0 (1100)
+Author:         cmeng
+Upload Date:	07/16/2019
+- Harmonize aTalk UI presentation
+- Enhance user/contact presence status with additional icon/status indicators
+- ChatActivity#onOptionsItemSelected must include Invite item while already in conference
+- Ensure first Omemo session setup with undecided contact omemoDevices is updated correctly based on return status
+- Alert user of undelivered OMEMO message due to Undecided Omemo Identity Exception etc using MessageDeliveryFailed Event
+- Provide option to user delete any corrupted OMEMO identity.
+- "Purge unused Identities" will also purge all null Identity records from database
+- "Regenerate OMEMO identities" will purge all current account OMEMO devices (active and inactive)
+- OperationSetBasicInstantMessagingJabberImpl#sendInstantMessage and ChatRoomJabberImpl#sendMessage()
+  to include (ChatRoom)MessageDeliveryFailedEvent handler for Omemo exception
+- Remove unused OTR Messaging Security options in Settings...
+- Crypto OTR item menu changes dynamically in response to contact presence status change
+- Fix OTR system message links not response to user clicks
+- Implement OTR multi-sessions outgoing session switcher
+- OtrContact compare must use contact and resourceName; must not use ContactResource as its parameters may be difference (PresenceStatus)
+- Cleanup OtrActivator() and init Global Policy with OTR_DISABLED_PROP saved value
+- ScOtrEngineImpl addMessage must use contact.getAddress() instead of getDisplayName()
+- ChatPanel#messageDeliveryFailed: cannot use nick for addMessage(). Otherwise message is not shown in contact chatFragment
+- Fix crashes (msgFiles == null) & implement media files delete for "Erase this contact/chatRoom history"
+- Launch chatRoom info as dialog and enhance its information content
+- Use CopyOnWriteArrayList @ ChatPanel#getHistory() to avoid ChatFragment#prependMessages ConcurrentModificationException
+- SQLiteOmemoStore#storeOmemoIdentityKey incorrectly checks for userDevice instead for contactDevice
+- Clean SQLiteOmemoStore#regenerate() routine - need to AndroidOmemoService#initOmemoDevice() to publish Identity keys
+- Ensure ConferenceChatManager#messageDeliveryFailed() MESSAGE_ERROR is shown in chatFragment (add missing statement)
+- Enable \'Send attachment\' option access in chatRoom
+- Allow BirthDateDetails to be stored as Calendar or String - too many Date formats cannot possible covered.
+- Allow URLDetails to be stored as URL or String - value not use as active link
+- Migrate aTalk to use androidx support libraries
+- aTalk minimum installed android device OS version is 4.4 (KitKat) i.e. API-19
+
+=========================================================================
 Version:		1.8.8 (1088)
 Author:         cmeng
 Upload Date:	06/26/2019

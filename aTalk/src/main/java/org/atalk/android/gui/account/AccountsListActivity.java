@@ -272,7 +272,7 @@ public class AccountsListActivity extends OSGiActivity
          */
         AccountStatusListAdapter(Collection<AccountID> accounts)
         {
-            super(AccountsListActivity.this, R.layout.account_enable_row, -1, accounts, false);
+            super(AccountsListActivity.this, R.layout.account_list_row, -1, accounts, false);
         }
 
         /**
@@ -301,41 +301,32 @@ public class AccountsListActivity extends OSGiActivity
                     offlineToast.show();
                 }
             });
-            rowView.setOnLongClickListener(new View.OnLongClickListener()
-            {
-                @Override
-                public boolean onLongClick(View v)
-                {
-                    registerForContextMenu(v);
-                    clickedAccount = account;
-                    openContextMenu(v);
-                    return true;
-                }
+            rowView.setOnLongClickListener(v -> {
+                registerForContextMenu(v);
+                clickedAccount = account;
+                openContextMenu(v);
+                return true;
             });
 
             ToggleButton button = rowView.findViewById(R.id.accountToggleButton);
             button.setChecked(account.isEnabled());
 
-            button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-            {
-                public void onCheckedChanged(CompoundButton compoundButton, boolean enable)
-                {
-                    if (accEnableThread != null) {
-                        Timber.e("Ongoing operation in progress");
-                        return;
-                    }
-                    Timber.d("Toggle %s -> %s", account, enable);
-
-                    // Prevents from switching the state after key pressed. Refresh will be
-                    // triggered by the thread when it finishes the operation.
-                    compoundButton.setChecked(account.isEnabled());
-
-                    accEnableThread = new AccountEnableThread(account.getAccountID(), enable);
-                    String message = enable ? getString(R.string.service_gui_CONNECTING_ACCOUNT, account.getAccountName())
-                            : getString(R.string.service_gui_DISCONNECTING_ACCOUNT, account.getAccountName());
-                    progressDialog = ProgressDialogFragment.showProgressDialog(getString(R.string.service_gui_INFO), message);
-                    accEnableThread.start();
+            button.setOnCheckedChangeListener((compoundButton, enable) -> {
+                if (accEnableThread != null) {
+                    Timber.e("Ongoing operation in progress");
+                    return;
                 }
+                Timber.d("Toggle %s -> %s", account, enable);
+
+                // Prevents from switching the state after key pressed. Refresh will be
+                // triggered by the thread when it finishes the operation.
+                compoundButton.setChecked(account.isEnabled());
+
+                accEnableThread = new AccountEnableThread(account.getAccountID(), enable);
+                String message = enable ? getString(R.string.service_gui_CONNECTING_ACCOUNT, account.getAccountName())
+                        : getString(R.string.service_gui_DISCONNECTING_ACCOUNT, account.getAccountName());
+                progressDialog = ProgressDialogFragment.showProgressDialog(getString(R.string.service_gui_INFO), message);
+                accEnableThread.start();
             });
             return rowView;
         }

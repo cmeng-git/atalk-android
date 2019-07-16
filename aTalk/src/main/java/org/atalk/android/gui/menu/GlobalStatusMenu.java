@@ -1,13 +1,12 @@
 package org.atalk.android.gui.menu;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.FragmentActivity;
 import android.view.*;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 import android.widget.PopupWindow.OnDismissListener;
@@ -29,6 +28,7 @@ import org.osgi.framework.*;
 import java.beans.PropertyChangeEvent;
 import java.util.*;
 
+import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
 public class GlobalStatusMenu extends FragmentActivity
@@ -71,16 +71,12 @@ public class GlobalStatusMenu extends FragmentActivity
     {
         mActivity = activity;
         mWindow = new PopupWindow(activity);
-        mWindow.setTouchInterceptor(new OnTouchListener()
-        {
-            public boolean onTouch(View v, MotionEvent event)
-            {
-                if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
-                    mWindow.dismiss();
-                    return true;
-                }
-                return false;
+        mWindow.setTouchInterceptor((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+                mWindow.dismiss();
+                return true;
             }
+            return false;
         });
 
         mWindowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
@@ -415,11 +411,11 @@ public class GlobalStatusMenu extends FragmentActivity
         if (rootWidth == 0) {
             rootWidth = mRootView.getMeasuredWidth();
         }
-        int screenWidth = mWindowManager.getDefaultDisplay().getWidth();
-        int screenHeight = mWindowManager.getDefaultDisplay().getHeight();
+        Point screenSize = new Point();
+        mWindowManager.getDefaultDisplay().getSize(screenSize);
 
         // automatically get X coord of popup (top left)
-        if ((anchorRect.left + rootWidth) > screenWidth) {
+        if ((anchorRect.left + rootWidth) > screenSize.x) {
             xPos = anchorRect.left - (rootWidth - anchor.getWidth());
             xPos = (xPos < 0) ? 0 : xPos;
             arrowPos = anchorRect.centerX() - xPos;
@@ -434,7 +430,7 @@ public class GlobalStatusMenu extends FragmentActivity
         }
 
         int dyTop = anchorRect.top;
-        int dyBottom = screenHeight - anchorRect.bottom;
+        int dyBottom = screenSize.y - anchorRect.bottom;
         boolean onTop = dyTop > dyBottom;
         if (onTop) {
             if (rootHeight > dyTop) {
@@ -454,7 +450,7 @@ public class GlobalStatusMenu extends FragmentActivity
             }
         }
         showArrow(((onTop) ? R.id.arrow_down : R.id.arrow_up), arrowPos);
-        setAnimationStyle(screenWidth, anchorRect.centerX(), onTop);
+        setAnimationStyle(screenSize.x, anchorRect.centerX(), onTop);
         mWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
     }
 

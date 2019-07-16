@@ -7,16 +7,13 @@ package net.java.sip.communicator.service.protocol;
 
 import net.java.sip.communicator.service.protocol.event.*;
 
-import org.atalk.android.gui.chat.ChatMessage;
-
 import java.util.*;
 
 import timber.log.Timber;
 
 /**
  * Represents a default implementation of {@link OperationSetBasicInstantMessaging} in order to make
- * it easier for implementers to provide complete solutions while focusing on
- * implementation-specific details.
+ * it easier for implementers to provide complete solutions while focusing on implementation-specific details.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -40,6 +37,19 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
             if (!messageListeners.contains(listener)) {
                 messageListeners.add(listener);
             }
+        }
+    }
+
+    /**
+     * Unregisters <tt>listener</tt> so that it won't receive any further notifications upon
+     * successful message delivery, failure or reception of incoming messages..
+     *
+     * @param listener the <tt>MessageListener</tt> to unregister.
+     */
+    public void removeMessageListener(MessageListener listener)
+    {
+        synchronized (messageListeners) {
+            messageListeners.remove(listener);
         }
     }
 
@@ -87,23 +97,6 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
         return createMessage(messageText);
     }
 
-    /**
-     * Notifies all registered message listeners that a message has been delivered successfully to
-     * its addressee..
-     *
-     * @param message the <tt>Message</tt> that has been delivered.
-     * @param to the <tt>Contact</tt> that <tt>message</tt> was delivered to.
-     */
-    protected void fireMessageDelivered(Message message, Contact to)
-    {
-        fireMessageEvent(new MessageDeliveredEvent(message, to, new Date()));
-    }
-
-    protected void fireMessageDeliveryFailed(Message message, Contact to, int errorCode)
-    {
-        fireMessageEvent(new MessageDeliveryFailedEvent(message, to, errorCode));
-    }
-
     protected enum MessageEventType
     {
         None, MessageDelivered, MessageReceived, MessageDeliveryFailed, MessageDeliveryPending,
@@ -114,7 +107,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      *
      * @param evt the <tt>EventObject</tt> that we'd like delivered to all registered message listeners.
      */
-    public void fireMessageEvent(EventObject evt)
+    protected void fireMessageEvent(EventObject evt)
     {
         Collection<MessageListener> listeners;
         synchronized (this.messageListeners) {
@@ -157,10 +150,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
                             listener.messageReceived((MessageReceivedEvent) event);
                             break;
                         default:
-                            /*
-                             * We either have nothing to do or we do not know what to do. Anyway,
-                             * we'll silence the compiler.
-                             */
+                            // We either have nothing to do or we do not know what to do. Just silence the compiler.
                             break;
                     }
                 }
@@ -171,36 +161,12 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
     }
 
     /**
-     * Notifies all registered message listeners that a message has been received.
-     *
-     * @param message the <tt>Message</tt> that has been received.
-     * @param from the <tt>Contact</tt> that <tt>message</tt> was received from.
-     */
-    protected void fireMessageReceived(Message message, Contact from)
-    {
-        fireMessageEvent(new MessageReceivedEvent(message, from, new Date()));
-    }
-
-    /**
-     * Unregisters <tt>listener</tt> so that it won't receive any further notifications upon
-     * successful message delivery, failure or reception of incoming messages..
-     *
-     * @param listener the <tt>MessageListener</tt> to unregister.
-     */
-    public void removeMessageListener(MessageListener listener)
-    {
-        synchronized (messageListeners) {
-            messageListeners.remove(listener);
-        }
-    }
-
-    /**
      * Messages pending delivery to be transformed.
      *
      * @param evt the message delivery event
      * @return returns message delivery events
      */
-    public MessageDeliveredEvent[] messageDeliveryPendingTransform(final MessageDeliveredEvent evt)
+    protected MessageDeliveredEvent[] messageDeliveryPendingTransform(final MessageDeliveredEvent evt)
     {
         EventObject[] transformed = messageTransform(evt, MessageEventType.MessageDeliveryPending);
 
@@ -215,8 +181,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      *
      * @param evt the source event to transform
      * @param eventType the event type of the source event
-     * @return returns the resulting (transformed) events, if any. (I.e. an array of 0 or more size
-     * containing events.)
+     * @return returns the resulting (transformed) events, if any. (I.e. an array of 0 or more size containing events.)
      */
     private EventObject[] messageTransform(final EventObject evt, final MessageEventType eventType)
     {

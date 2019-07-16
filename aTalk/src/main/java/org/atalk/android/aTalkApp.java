@@ -12,7 +12,6 @@ import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.*;
-import android.support.multidex.MultiDex;
 import android.widget.Toast;
 
 import net.java.sip.communicator.service.protocol.AccountManager;
@@ -35,6 +34,7 @@ import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
 
+import androidx.multidex.MultiDex;
 import timber.log.Timber;
 
 /**

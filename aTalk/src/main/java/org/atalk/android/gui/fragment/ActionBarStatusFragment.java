@@ -8,7 +8,6 @@ package org.atalk.android.gui.fragment;
 import android.app.ActionBar;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,6 +33,8 @@ import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.StringUtils;
 
 import java.util.Collection;
+
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * Fragment when added to Activity will display global display details like avatar, display name
@@ -67,9 +68,14 @@ public class ActionBarStatusFragment extends OSGiFragment
     private static final int AWAY = 4;
 
     /**
+     * The away status.
+     */
+    private static final int EXTENDED_AWAY = 5;
+
+    /**
      * The do not disturb status.
      */
-    private static final int DND = 5;
+    private static final int DND = 6;
 
     private static int ACTION_ID = DND + 1;
 
@@ -148,6 +154,9 @@ public class ActionBarStatusFragment extends OSGiFragment
         ActionMenuItem awayItem = new ActionMenuItem(AWAY,
                 getResources().getString(R.string.service_gui_AWAY_STATUS),
                 getResources().getDrawable(R.drawable.global_away));
+        ActionMenuItem extendedAwayItem = new ActionMenuItem(EXTENDED_AWAY,
+                getResources().getString(R.string.service_gui_EXTENDED_AWAY_STATUS),
+                getResources().getDrawable(R.drawable.global_extended_away));
         ActionMenuItem dndItem = new ActionMenuItem(DND,
                 getResources().getString(R.string.service_gui_DND_STATUS),
                 getResources().getDrawable(R.drawable.global_dnd));
@@ -158,9 +167,10 @@ public class ActionBarStatusFragment extends OSGiFragment
         globalStatusMenu.addActionItem(onlineItem);
         globalStatusMenu.addActionItem(offlineItem);
         globalStatusMenu.addActionItem(awayItem);
+        globalStatusMenu.addActionItem(extendedAwayItem);
         globalStatusMenu.addActionItem(dndItem);
 
-        // Add all registered PPS to the presence status menu
+        // Add all registered PPS users to the presence status menu
         Collection<ProtocolProviderService> registeredProviders = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : registeredProviders) {
             AccountID accountId = pps.getAccountID();
@@ -176,12 +186,8 @@ public class ActionBarStatusFragment extends OSGiFragment
                 publishGlobalStatus(actionId);
         });
 
-        globalStatusMenu.setOnDismissListener(new GlobalStatusMenu.OnDismissListener()
-        {
-            public void onDismiss()
-            {
-                // TODO: Add a dismiss action.
-            }
+        globalStatusMenu.setOnDismissListener(() -> {
+            // TODO: Add a dismiss action.
         });
         return globalStatusMenu;
     }
@@ -199,17 +205,20 @@ public class ActionBarStatusFragment extends OSGiFragment
         new Thread(() -> {
             GlobalStatusService globalStatusService = AndroidGUIActivator.getGlobalStatusService();
             switch (newStatus) {
+                case FFC:
+                    globalStatusService.publishStatus(GlobalStatusEnum.FREE_FOR_CHAT);
+                    break;
                 case ONLINE:
                     globalStatusService.publishStatus(GlobalStatusEnum.ONLINE);
                     break;
                 case OFFLINE:
                     globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
                     break;
-                case FFC:
-                    globalStatusService.publishStatus(GlobalStatusEnum.FREE_FOR_CHAT);
-                    break;
                 case AWAY:
                     globalStatusService.publishStatus(GlobalStatusEnum.AWAY);
+                    break;
+                case EXTENDED_AWAY:
+                    globalStatusService.publishStatus(GlobalStatusEnum.EXTENDED_AWAY);
                     break;
                 case DND:
                     globalStatusService.publishStatus(GlobalStatusEnum.DO_NOT_DISTURB);

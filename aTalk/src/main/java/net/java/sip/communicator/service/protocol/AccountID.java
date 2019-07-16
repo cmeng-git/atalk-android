@@ -140,7 +140,7 @@ public class AccountID
     /**
      * An XMPP Jabber ID associated with this particular account. e.g. abc123@example.org
      */
-    private BareJid userBareJid;
+    protected BareJid userBareJid;
 
     /**
      * The name of the service that defines the context for this account. e.g. example.org
@@ -239,11 +239,6 @@ public class AccountID
     public BareJid getBareJid()
     {
         return userBareJid;
-    }
-
-    public void setBareJid(BareJid jid)
-    {
-        userBareJid = jid;
     }
 
     /**

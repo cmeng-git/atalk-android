@@ -19,7 +19,6 @@ package net.java.sip.communicator.impl.msghistory;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.event.MetaContactListAdapter;
@@ -37,11 +36,13 @@ import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.util.*;
 
+import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**
@@ -64,8 +65,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     public static final String VERSION = "version";         // version
 
     /**
-     * Whether to show recent messages in history or in contactList. By default we show it in
-     * contactList.
+     * Whether to show recent messages in history or in contactList. By default we show it in contactList.
      */
     private static final String IN_HISTORY_PROPERTY = "msghistory.contactsrc.IN_HISTORY";
     /**
@@ -533,7 +533,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         cursor.close();
 
         Date date = new Date();
-        String uuid = String.valueOf(date.getTime()) + String.valueOf(Math.abs(date.hashCode()));
+        String uuid = String.valueOf(date.getTime()) + Math.abs(date.hashCode());
         String accountUid = msc.getProtocolProviderService().getAccountID().getAccountUniqueID();
 
         contentValues.clear();
@@ -992,6 +992,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
             }
         }
 
+        @NotNull
         @Override
         public String toString()
         {
@@ -1090,23 +1091,14 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 
             if (o instanceof ComparableEvtObj) {
                 ComparableEvtObj that = (ComparableEvtObj) o;
-
-                if (!address.equals(that.address))
-                    return false;
-                if (!ppService.equals(that.ppService))
-                    return false;
+                return (address.equals(that.address) &&  ppService.equals(that.ppService));
             }
             else if (o instanceof MessageSourceContact) {
                 MessageSourceContact that = (MessageSourceContact) o;
-
-                if (!address.equals(that.getContactAddress()))
-                    return false;
-                if (!ppService.equals(that.getProtocolProviderService()))
-                    return false;
+                return (address.equals(that.getContactAddress()) && ppService.equals(that.getProtocolProviderService()));
             }
             else
                 return false;
-            return true;
         }
 
         @Override
@@ -1138,8 +1130,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     * Permanently removes locally stored message history for the metaContact, remove any recent
-     * contacts if any.
+     * Permanently removes locally stored message history for the metaContact, remove any recent contacts if any.
      */
     public void eraseLocallyStoredHistory(MetaContact metaContact, List<Date> mhsTimeStamp)
             throws IOException

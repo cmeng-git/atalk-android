@@ -5,8 +5,6 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import android.support.annotation.NonNull;
-
 import org.atalk.impl.neomedia.MediaUtils;
 import org.atalk.impl.neomedia.control.DiagnosticsControl;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.PortAudioRenderer;
@@ -19,6 +17,7 @@ import javax.media.Format;
 import javax.media.MediaLocator;
 import javax.media.format.AudioFormat;
 
+import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**

@@ -37,7 +37,6 @@ import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.migrations.*;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
@@ -838,7 +837,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         }
 
         return db.query(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, null, selectionString,
-                selectionArgs.toArray(new String[selectionArgs.size()]), null, null, null);
+                selectionArgs.toArray(new String[0]), null, null, null);
     }
 
     public IdentityKeyPair loadIdentityKeyPair(OmemoDevice device)
@@ -993,7 +992,6 @@ public class DatabaseBackend extends SQLiteOpenHelper
     }
 
     public void storeCachedDeviceList(OmemoDevice userDevice, BareJid contact, OmemoCachedDeviceList deviceList)
-            throws CannotEstablishOmemoSessionException, CorruptedOmemoKeyException
     {
         if (contact == null) {
             return;
@@ -1005,6 +1003,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         // Active devices
         values.put(SQLiteOmemoStore.ACTIVE, 1);
         Set<Integer> activeDevices = deviceList.getActiveDevices();
+        Timber.i("Identities table - updating for activeDevice: %s:%s", contact, activeDevices);
         for (int deviceId : activeDevices) {
             String[] selectionArgs = {contact.toString(), Integer.toString(deviceId)};
 
@@ -1017,13 +1016,11 @@ public class DatabaseBackend extends SQLiteOpenHelper
                  * Just logged the error. Any missing buddy identityKey will be handled by
                  * AndroidOmemoService#buddyDeviceListUpdateListener()
                  */
-                Timber.w("Identities table contains no activeDevice (create new): %s:%s ", contact, deviceId);
+                Timber.w("Identities table - create new activeDevice: %s:%s ", contact, deviceId);
                 values.put(SQLiteOmemoStore.BARE_JID, contact.toString());
                 values.put(SQLiteOmemoStore.DEVICE_ID, deviceId);
                 db.insert(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, null, values);
             }
-            else
-                Timber.i("Identities table updated for activeDevice: %s:%s", contact, deviceId);
         }
 
         /*
@@ -1035,6 +1032,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         values.clear();
         values.put(SQLiteOmemoStore.ACTIVE, 0);
         Set<Integer> inActiveDevices = deviceList.getInactiveDevices();
+        Timber.i("Identities table updated for inactiveDevice: %s:%s", contact, inActiveDevices);
         for (int deviceId : inActiveDevices) {
             String[] selectionArgs = {contact.toString(), Integer.toString(deviceId)};
 
@@ -1047,18 +1045,13 @@ public class DatabaseBackend extends SQLiteOpenHelper
                 values.put(SQLiteOmemoStore.DEVICE_ID, deviceId);
                 db.insert(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, null, values);
             }
-            else
-                Timber.i("Identities table updated for inactiveDevice: %s:%s", contact, deviceId);
         }
     }
 
-    public int deleteInactiveDeviceList()
+    public int deleteNullIdentyKeyDevices()
     {
         final SQLiteDatabase db = this.getWritableDatabase();
-        String[] whereArgs = {"0"};
-
-        return db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.ACTIVE + "=? AND "
-                + SQLiteOmemoStore.IDENTITY_KEY + " IS NULL ", whereArgs);
+        return db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.IDENTITY_KEY + " IS NULL", null);
     }
 
     public void setLastDeviceIdPublicationDate(OmemoDevice device, Date date)
@@ -1322,27 +1315,35 @@ public class DatabaseBackend extends SQLiteOpenHelper
     }
 
     // ========= Purge OMEMO dataBase =========
+    public void purgeOmemoDb(String account)
+    {
+        Timber.d(">>> Wiping OMEMO database for account : %s", account);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String[] deleteArgs = {account};
+
+        db.delete(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME, SQLiteOmemoStore.OMEMO_JID + "=?", deleteArgs);
+        db.delete(SQLiteOmemoStore.PREKEY_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", deleteArgs);
+        db.delete(SQLiteOmemoStore.SIGNED_PREKEY_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", deleteArgs);
+        db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", deleteArgs);
+        db.delete(SQLiteOmemoStore.SESSION_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", deleteArgs);
+    }
+
     public void purgeOmemoDb(OmemoDevice device)
     {
-        Timber.d(">>> Wiping OMEMO database for account : %s", device.getJid());
+        Timber.d(">>> Wiping OMEMO database for device : %s", device);
         SQLiteDatabase db = this.getWritableDatabase();
         String[] deleteArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
 
         db.delete(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME,
-                SQLiteOmemoStore.OMEMO_JID + "=? AND " + SQLiteOmemoStore.OMEMO_REG_ID + "=?",
-                deleteArgs);
+                SQLiteOmemoStore.OMEMO_JID + "=? AND " + SQLiteOmemoStore.OMEMO_REG_ID + "=?", deleteArgs);
         db.delete(SQLiteOmemoStore.PREKEY_TABLE_NAME,
-                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?",
-                deleteArgs);
+                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", deleteArgs);
         db.delete(SQLiteOmemoStore.SIGNED_PREKEY_TABLE_NAME,
-                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?",
-                deleteArgs);
+                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", deleteArgs);
         db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME,
-                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?",
-                deleteArgs);
+                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", deleteArgs);
         db.delete(SQLiteOmemoStore.SESSION_TABLE_NAME,
-                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?",
-                deleteArgs);
+                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", deleteArgs);
     }
 
     private static class RealMigrationsHelper implements MigrationsHelper

@@ -34,9 +34,10 @@
         android:layout_marginStart="@dimen/chat_text_margin"
         android:layout_toEndOf="@+id/incomingAvatarView"
         android:layout_toRightOf="@+id/incomingAvatarView"
-        android:background="@drawable/filexfer_bg"
+        android:background="@drawable/holder_filexfer"
         android:orientation="vertical"
-        android:padding="5dip">
+        android:padding="5dip"
+        android:layout_marginBottom="4dp">
 
         <TextView
             android:id="@+id/xferTimeView"
@@ -81,7 +82,7 @@
                 android:id="@+id/encFileStateView"
                 android:layout_width="18dip"
                 android:layout_height="18dip"
-                android:src="@drawable/crypto_omemo_verified" />
+                android:src="@drawable/encryption_omemo" />
 
             <TextView
                 android:id="@+id/filexferFileNameView"

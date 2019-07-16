@@ -15,8 +15,6 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package net.java.sip.communicator.impl.contactlist;
 
-import android.support.annotation.NonNull;
-
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.protocol.*;
@@ -25,6 +23,7 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 
 import java.util.*;
 
+import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**

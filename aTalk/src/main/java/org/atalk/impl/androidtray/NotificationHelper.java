@@ -23,12 +23,13 @@ import android.content.*;
 import android.graphics.Color;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
 
 import org.atalk.android.R;
 import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 
 import java.util.List;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Helper class to manage notification channels, and create notifications.

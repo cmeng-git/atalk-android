@@ -8,16 +8,11 @@ package net.java.sip.communicator.service.msghistory;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.msghistory.event.MessageHistorySearchProgressListener;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.gui.chat.ChatSession;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.EventObject;
-import java.util.List;
+import java.util.*;
 
 /**
  * The Message History Service stores messages exchanged through the various protocols
@@ -44,8 +39,7 @@ public interface MessageHistoryService
     public static final String PNAME_IS_MESSAGE_HISTORY_PER_CONTACT_ENABLED_PREFIX = "msghistory.contact";
 
     /**
-     * Returns all the messages exchanged by all the contacts in the supplied metaContact after
-     * the given date
+     * Returns all the messages exchanged by all the contacts in the supplied metaContact after the given date
      *
      * @param contact MetaContact
      * @param startDate Date the start date of the conversations
@@ -54,8 +48,7 @@ public interface MessageHistoryService
     Collection<EventObject> findByStartDate(MetaContact contact, Date startDate);
 
     /**
-     * Returns all the messages exchanged by all the contacts in the supplied metaContact before
-     * the given date
+     * Returns all the messages exchanged by all the contacts in the supplied metaContact before the given date
      *
      * @param contact MetaContact
      * @param endDate Date the end date of the conversations
@@ -64,8 +57,7 @@ public interface MessageHistoryService
     Collection<EventObject> findByEndDate(MetaContact contact, Date endDate);
 
     /**
-     * Returns all the messages exchanged by all the contacts in the supplied metaContact between
-     * the given dates
+     * Returns all the messages exchanged by all the contacts in the supplied metaContact between the given dates
      *
      * @param contact MetaContact
      * @param startDate Date the start date of the conversations
@@ -101,8 +93,7 @@ public interface MessageHistoryService
             String[] keywords, boolean caseSensitive);
 
     /**
-     * Returns all the messages exchanged by all the contacts in the supplied metaContact having
-     * the given keyword
+     * Returns all the messages exchanged by all the contacts in the supplied metaContact having the given keyword
      *
      * @param contact MetaContact
      * @param keyword keyword
@@ -111,8 +102,7 @@ public interface MessageHistoryService
     Collection<EventObject> findByKeyword(MetaContact contact, String keyword);
 
     /**
-     * Returns all the messages exchanged by all the contacts in the supplied metaContact having
-     * the given keyword
+     * Returns all the messages exchanged by all the contacts in the supplied metaContact having the given keyword
      *
      * @param contact MetaContact
      * @param keyword keyword
@@ -122,8 +112,7 @@ public interface MessageHistoryService
     Collection<EventObject> findByKeyword(MetaContact contact, String keyword, boolean caseSensitive);
 
     /**
-     * Returns all the messages exchanged by all the contacts in the supplied metaContact having
-     * the given keywords
+     * Returns all the messages exchanged by all the contacts in the supplied metaContact having the given keywords
      *
      * @param contact MetaContact
      * @param keywords keyword
@@ -132,8 +121,7 @@ public interface MessageHistoryService
     Collection<EventObject> findByKeywords(MetaContact contact, String[] keywords);
 
     /**
-     * Returns all the messages exchanged by all the contacts in the supplied metaContact having
-     * the given keywords
+     * Returns all the messages exchanged by all the contacts in the supplied metaContact having the given keywords
      *
      * @param contact MetaContact
      * @param keywords keyword
@@ -143,8 +131,7 @@ public interface MessageHistoryService
     Collection<EventObject> findByKeywords(MetaContact contact, String[] keywords, boolean caseSensitive);
 
     /**
-     * Returns the supplied number of recent messages exchanged by all the contacts in the
-     * supplied metaContact
+     * Returns the supplied number of recent messages exchanged by all the contacts in the supplied metaContact
      *
      * @param contact MetaContact
      * @param count messages count
@@ -303,8 +290,7 @@ public interface MessageHistoryService
     Collection<EventObject> findLast(ChatRoom room, int count);
 
     /**
-     * Returns the supplied number of recent messages after the given date exchanged in the
-     * supplied chat room
+     * Returns the supplied number of recent messages after the given date exchanged in the supplied chat room
      *
      * @param room The chat room
      * @param date messages after date
@@ -314,8 +300,7 @@ public interface MessageHistoryService
     Collection<EventObject> findFirstMessagesAfter(ChatRoom room, Date date, int count);
 
     /**
-     * Returns the supplied number of recent messages before the given date exchanged in the
-     * supplied chat room
+     * Returns the supplied number of recent messages before the given date exchanged in the supplied chat room
      *
      * @param room The chat room
      * @param date messages before date
@@ -340,9 +325,18 @@ public interface MessageHistoryService
     void eraseLocallyStoredHistory(ChatRoom room, List<String> messageUUIDs);
 
     /**
+     * Fetch the attached file paths for all the messages of the specified descriptor.
+     */
+    List<String> getLocallyStoredFilePath(Object descriptor);
+
+    /**
+     * Fetch the attached file paths for all locally saved messages.
+     */
+    List<String> getLocallyStoredFilePath();
+
+    /**
      * Returns <code>true</code> if the "IS_MESSAGE_HISTORY_ENABLED" property is true, otherwise -
-     * returns <code>false</code>. Indicates to the user interface whether the history logging is
-     * enabled.
+     * returns <code>false</code>. Indicates to the user interface whether the history logging is enabled.
      *
      * @return <code>true</code> if the "IS_MESSAGE_HISTORY_ENABLED" property is true, otherwise -
      * returns <code>false</code>.
@@ -359,8 +353,7 @@ public interface MessageHistoryService
     /**
      * Returns <code>true</code> if the "IS_MESSAGE_HISTORY_ENABLED" property is true for the
      * <tt>id</tt>, otherwise - returns <code>false</code>. Indicates to the user interface
-     * whether the history logging is enabled for the supplied id (id for metaContact or for
-     * chat room).
+     * whether the history logging is enabled for the supplied id (id for metaContact or for chat room).
      *
      * @return <code>true</code> if the "IS_MESSAGE_HISTORY_ENABLED" property is true for the
      * <tt>id</tt>, otherwise - returns <code>false</code>.
@@ -368,8 +361,7 @@ public interface MessageHistoryService
     boolean isHistoryLoggingEnabled(String id);
 
     /**
-     * Updates the "isHistoryLoggingEnabled" property through the <tt>ConfigurationService</tt>
-     * for the contact.
+     * Updates the "isHistoryLoggingEnabled" property through the <tt>ConfigurationService</tt> for the contact.
      *
      * @param isEnabled indicates if the history logging is enabled for the contact.
      */
@@ -389,6 +381,7 @@ public interface MessageHistoryService
 
     /**
      * Get the chatSession persistent chatType
+     *
      * @param chatSession the chat session for which to fetch from
      * @return the chatType
      */
@@ -396,6 +389,7 @@ public interface MessageHistoryService
 
     /**
      * Store the chatSession to user selected chatType
+     *
      * @param chatSession the chat session for which to apply to
      * @param chatType the chatType to store
      * @return number of columns affected

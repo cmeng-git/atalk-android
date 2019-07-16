@@ -5,57 +5,50 @@
         android:id="@+id/send_file"
         android:icon="@drawable/ic_attachment_dark"
         android:showAsAction="ifRoom"
-        android:title="@string/service_gui_FILE_SEND_TO">
-    </item>
+        android:title="@string/service_gui_FILE_SEND_TO" />
     <item
         android:id="@+id/muc_invite"
         android:icon="@drawable/ic_add_to_chat_dark"
         android:showAsAction="ifRoom"
-        android:title="@string/service_gui_INVITE">
-    </item>
+        android:title="@string/service_gui_INVITE" />
     <item
         android:id="@+id/send_location"
         android:icon="@drawable/ic_location_dark"
         android:showAsAction="ifRoom"
-        android:title="@string/service_gui_GEO_SEND">
-    </item>
+        android:title="@string/service_gui_GEO_SEND" />
     <item
         android:id="@+id/call_contact_audio"
         android:icon="@drawable/chatcall_dark"
-        android:title="@string/service_gui_CALL">
-    </item>
+        android:title="@string/service_gui_CALL" />
     <item
         android:id="@+id/call_contact_video"
         android:icon="@drawable/chatcallvideo_dark"
-        android:title="@string/service_gui_CALL_VIDEO">
-    </item>
+        android:title="@string/service_gui_CALL_VIDEO" />
     <item
         android:id="@+id/erase_chat_history"
-        android:title="@string/service_gui_HISTORY_ERASE_PER_CONTACT">
-    </item>
+        android:title="@string/service_gui_HISTORY_ERASE_PER_CONTACT" />
     <item
         android:id="@+id/leave_chat_room"
         android:title="@string/service_gui_LEAVE_ROOM"
-        android:visible="false">
-    </item>
+        android:visible="false" />
     <item
         android:id="@+id/destroy_chat_room"
         android:title="@string/service_gui_DESTROY_CHATROOM_TITLE"
-        android:visible="false">
-    </item>
+        android:visible="false" />
     <item
         android:id="@+id/change_chatroom_attr"
         android:title="@string/service_gui_CHANGE_ROOM_INFO"
-        android:visible="false">
-    </item>
+        android:visible="false" />
     <item
         android:id="@+id/chatroom_info"
         android:title="@string/service_gui_CHATROOM_INFO"
-        android:visible="false">
-    </item>
+        android:visible="false" />
     <item
         android:id="@+id/show_chatroom_occupant"
         android:title="@string/service_gui_CHATROOM_OCCUPANT"
-        android:visible="false">
-    </item>
+        android:visible="false" />
+    <item
+        android:id="@+id/otr_session"
+        android:icon="@drawable/crypto_otr"
+        android:title="OTR Sessions" />
 </menu>

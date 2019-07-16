@@ -8,7 +8,6 @@ package org.atalk.android.gui.call.notification;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import net.java.sip.communicator.service.protocol.Call;
@@ -22,6 +21,8 @@ import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.core.app.NotificationCompat;
 
 /**
  * Class manages currently running call control notifications. Those are displayed when {@link VideoCallActivity} is

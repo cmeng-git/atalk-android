@@ -16,19 +16,20 @@
  */
 package org.atalk.android.gui.chatroomslist;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
 
+import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
+import net.java.sip.communicator.service.protocol.ChatRoomMember;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
-import org.atalk.service.osgi.OSGiFragment;
+import org.atalk.service.osgi.OSGiDialogFragment;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
@@ -42,47 +43,41 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * This fragment that show the chatRoom information retrieve from the server
+ * This fragment dialog shows the chatRoom information retrieve from the server
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomInfoFragment extends OSGiFragment
+public class ChatRoomInfoDialog extends OSGiDialogFragment
 {
-    private View mContent;
+    private View contentView;
     private static ChatRoomWrapper mChatRoomWrapper;
 
-    public ChatRoomInfoFragment()
+    public ChatRoomInfoDialog()
     {
     }
 
-    public static ChatRoomInfoFragment newInstance(ChatRoomWrapper chatRoomWrapper)
+    public static ChatRoomInfoDialog newInstance(ChatRoomWrapper chatRoomWrapper)
     {
         mChatRoomWrapper = chatRoomWrapper;
-        return new ChatRoomInfoFragment();
-    }
 
-    @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
+        Bundle args = new Bundle();
+        ChatRoomInfoDialog dialog = new ChatRoomInfoDialog();
+        dialog.setArguments(args);
+        return dialog;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        mContent = inflater.inflate(R.layout.chatroom_info, container, false);
+        getDialog().setTitle(R.string.service_gui_CHATROOM_INFO);
+        contentView = inflater.inflate(R.layout.chatroom_info, container, false);
 
-        final Button buttonOk = mContent.findViewById(R.id.button_ok);
-        buttonOk.setOnClickListener(v -> closeFragment());
+        final Button buttonOk = contentView.findViewById(R.id.button_ok);
+        buttonOk.setOnClickListener(v -> dismiss());
 
         new getRoomInfo().execute();
-        return mContent;
-    }
-
-    private void closeFragment()
-    {
-        Fragment chatRoomInfoFragment = getFragmentManager().findFragmentById(android.R.id.content);
-        getActivity().getSupportFragmentManager().beginTransaction().remove(chatRoomInfoFragment).commit();
+        setCancelable(false);
+        return contentView;
     }
 
     /**
@@ -129,76 +124,83 @@ public class ChatRoomInfoFragment extends OSGiFragment
             super.onPostExecute(result);
             String textValue;
             if (chatRoomInfo != null) {
-                TextView textView = mContent.findViewById(R.id.roominfo_name);
+                TextView textView = contentView.findViewById(R.id.roominfo_name);
                 textView.setText(chatRoomInfo.getName());
 
-                textView = mContent.findViewById(R.id.roominfo_subject);
+                textView = contentView.findViewById(R.id.roominfo_subject);
                 textView.setText(chatRoomInfo.getSubject());
 
-                textView = mContent.findViewById(R.id.roominfo_description);
-                textView.setText(chatRoomInfo.getDescription());
+                textView = contentView.findViewById(R.id.roominfo_description);
+                textValue = chatRoomInfo.getDescription();
+                if (TextUtils.isEmpty(textValue))
+                    textValue = mChatRoomWrapper.getBookmarkName();
+                textView.setText(textValue);
 
-                textView = mContent.findViewById(R.id.roominfo_occupants);
-                int value = chatRoomInfo.getOccupantsCount();
+                textView = contentView.findViewById(R.id.roominfo_occupants);
+                StringBuilder memberList = new StringBuilder();
+                List<ChatRoomMember> occupants = mChatRoomWrapper.getChatRoom().getMembers();
+                for (ChatRoomMember member : occupants) {
+                    ChatRoomMemberJabberImpl occupant = (ChatRoomMemberJabberImpl) member;
+                    memberList.append(occupant.getNickName())
+                            .append(" - ")
+                            .append(occupant.getJabberID())
+                            .append("; ");
+                }
+                textView.setText(memberList);
+
+                textView = contentView.findViewById(R.id.maxhistoryfetch);
+                int value = chatRoomInfo.getMaxHistoryFetch();
                 if (value < 0)
                     textValue = "not specified";
                 else
                     textValue = Integer.toString(value);
                 textView.setText(textValue);
 
-                textView = mContent.findViewById(R.id.maxhistoryfetch);
-                value = chatRoomInfo.getMaxHistoryFetch();
-                if (value < 0)
-                    textValue = "not specified";
-                else
-                    textValue = Integer.toString(value);
-                textView.setText(textValue);
-
-                textView = mContent.findViewById(R.id.roominfo_contactjid);
-                // getContactJids() may throw NPE if contact == nul
+                textView = contentView.findViewById(R.id.roominfo_contactjid);
+                // getContactJids() may throw NPE if contact == null
                 List<EntityBareJid> contactJids = new ArrayList<>();
                 try {
                     contactJids = chatRoomInfo.getContactJids();
                 } catch (NullPointerException e) {
-                    Timber.e("Contact Jids excepiton: %s", e.getMessage());
+                    Timber.e("Contact Jids exception: %s", e.getMessage());
                 }
-                textValue = contactJids.toString();
+                textValue = contactJids.get(0).toString();
                 textView.setText(textValue);
 
-                textView = mContent.findViewById(R.id.roominfo_lang);
+                textView = contentView.findViewById(R.id.roominfo_lang);
                 textValue = chatRoomInfo.getLang();
                 textValue = (textValue == null) ? "" : textValue;
                 textView.setText(textValue);
 
-                textView = mContent.findViewById(R.id.roominfo_ldapgroup);
+                textView = contentView.findViewById(R.id.roominfo_ldapgroup);
                 textValue = chatRoomInfo.getLdapGroup();
                 textValue = (textValue == null) ? "" : textValue;
                 textView.setText(textValue);
 
-                CheckBox cbox = mContent.findViewById(R.id.muc_membersonly);
+                CheckBox cbox = contentView.findViewById(R.id.muc_membersonly);
                 cbox.setChecked(chatRoomInfo.isMembersOnly());
 
-                cbox = mContent.findViewById(R.id.muc_nonanonymous);
+                cbox = contentView.findViewById(R.id.muc_nonanonymous);
                 cbox.setChecked(chatRoomInfo.isNonanonymous());
 
-                cbox = mContent.findViewById(R.id.muc_persistent);
+                cbox = contentView.findViewById(R.id.muc_persistent);
                 cbox.setChecked(chatRoomInfo.isPersistent());
 
-                cbox = mContent.findViewById(R.id.muc_passwordprotected);
+                cbox = contentView.findViewById(R.id.muc_passwordprotected);
                 cbox.setChecked(chatRoomInfo.isPasswordProtected());
 
-                cbox = mContent.findViewById(R.id.muc_moderated);
+                cbox = contentView.findViewById(R.id.muc_moderated);
                 cbox.setChecked(chatRoomInfo.isModerated());
 
-                cbox = mContent.findViewById(R.id.room_subject_modifiable);
+                cbox = contentView.findViewById(R.id.room_subject_modifiable);
                 Boolean state = chatRoomInfo.isSubjectModifiable();
                 cbox.setChecked((state != null) ? state : false);
             }
             else {
-                TextView textView = mContent.findViewById(R.id.roominfo_name);
+                TextView textView = contentView.findViewById(R.id.roominfo_name);
                 textView.setText(XmppStringUtils.parseLocalpart(mChatRoomWrapper.getChatRoomID()));
 
-                textView = mContent.findViewById(R.id.roominfo_subject);
+                textView = contentView.findViewById(R.id.roominfo_subject);
                 textView.setTextColor(getResources().getColor(R.color.red));
                 textView.setText(errMsg);
             }

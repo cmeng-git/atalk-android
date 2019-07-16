@@ -3,7 +3,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/otr_padlock"
           android:title="@string/plugin_otr_menu_OTR_TOOLTIP"
-          android:icon="@drawable/encrypted_unsecure_dark"
+          android:icon="@drawable/crypto_otr_unsecure"
           android:showAsAction="always">
     </item>
     <!--  android:menuCategory="system"
