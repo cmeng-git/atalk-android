@@ -27,7 +27,6 @@ import java.util.Locale;
  */
 public final class ResourceManagementServiceUtils
 {
-
     /**
      * Constructs a new <tt>Locale</tt> instance from a specific locale
      * identifier which can either be a two-letter language code or contain a
@@ -45,13 +44,11 @@ public final class ResourceManagementServiceUtils
         String language;
         String country;
 
-        if (underscoreIndex == -1)
-        {
+        if (underscoreIndex == -1) {
             language = localeId;
             country = "";
         }
-        else
-        {
+        else {
             language = localeId.substring(0, underscoreIndex);
             country = localeId.substring(underscoreIndex + 1);
         }
@@ -67,11 +64,9 @@ public final class ResourceManagementServiceUtils
      * @return a <tt>ResourceManagementService</tt> instance registered in
      * the specified <tt>BundleContext</tt> if any; otherwise, <tt>null</tt>
      */
-    public static ResourceManagementService getService(
-        BundleContext bundleContext)
+    public static ResourceManagementService getService(BundleContext bundleContext)
     {
-        return
-            ServiceUtils.getService(bundleContext, ResourceManagementService.class);
+        return ServiceUtils.getService(bundleContext, ResourceManagementService.class);
     }
 
     /**

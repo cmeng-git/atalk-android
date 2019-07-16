@@ -12,9 +12,6 @@ import android.content.*;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
-import android.support.v13.view.inputmethod.InputContentInfoCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.*;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +38,9 @@ import org.jivesoftware.smackx.chatstates.ChatState;
 
 import java.util.*;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.view.inputmethod.InputContentInfoCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import timber.log.Timber;
 
 /**
@@ -268,7 +268,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             // Remove text listener
             msgEdit.removeTextChangedListener(this);
             // Store edited text in chatPanel
-            if (chatPanel != null)
+            if ((chatPanel != null) && (msgEdit.getText() != null))
                 chatPanel.setEditedText(msgEdit.getText().toString());
         }
     }
@@ -281,28 +281,28 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     public void sendMessage(String message, int encType)
     {
-            String correctionUID = chatPanel.getCorrectionUID();
+        String correctionUID = chatPanel.getCorrectionUID();
 
-            int encryption = Message.ENCRYPTION_NONE;
-            if (chatPanel.isOmemoChat())
-                encryption = Message.ENCRYPTION_OMEMO;
-            else if (chatPanel.isOTRChat())
-                encryption = Message.ENCRYPTION_OTR;
+        int encryption = Message.ENCRYPTION_NONE;
+        if (chatPanel.isOmemoChat())
+            encryption = Message.ENCRYPTION_OMEMO;
+        else if (chatPanel.isOTRChat())
+            encryption = Message.ENCRYPTION_OTR;
 
-            if (correctionUID == null) {
-                try {
-                    mChatTransport.sendInstantMessage(message, encryption | encType);
-                } catch (Exception ex) {
-                    aTalkApp.showToastMessage(ex.getMessage());
-                }
+        if (correctionUID == null) {
+            try {
+                mChatTransport.sendInstantMessage(message, encryption | encType);
+            } catch (Exception ex) {
+                aTalkApp.showToastMessage(ex.getMessage());
             }
-            // Last message correction
-            else {
-                mChatTransport.sendInstantMessage(message, encryption | encType, correctionUID);
-                // Clears correction UI state
-                chatPanel.setCorrectionUID(null);
-                updateCorrectionState();
-            }
+        }
+        // Last message correction
+        else {
+            mChatTransport.sendInstantMessage(message, encryption | encType, correctionUID);
+            // Clears correction UI state
+            chatPanel.setCorrectionUID(null);
+            updateCorrectionState();
+        }
 
         // must run on UiThread when access view
         parent.runOnUiThread(() -> {
@@ -347,8 +347,14 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 }
             }
         }
-        if (mChatTransport instanceof MetaContactChatTransport)
+
+        if (mChatTransport instanceof MetaContactChatTransport) {
             editText(adapter, chatMessage, position);
+        }
+        // Just put the last message in edit box for Omemo send error
+        else {
+            msgEdit.setText(chatMessage.getContentForCorrection());
+        }
     }
 
     public void editText(AdapterView adapter, ChatMessage chatMessage, int position)
@@ -356,21 +362,26 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         // ListView cListView = chatFragment.getChatListView();
         String uidToCorrect = chatMessage.getUidForCorrection();
         String content = chatMessage.getContentForCorrection();
-        if (uidToCorrect != null && content != null) {
-            // Change edit text bg colors and show cancel button
-            chatPanel.setCorrectionUID(uidToCorrect);
-            updateCorrectionState();
+
+        if (!TextUtils.isEmpty(content)) {
             // Sets corrected message content and show the keyboard
             msgEdit.setText(content);
             msgEdit.requestFocus();
 
-            InputMethodManager inputMethodManager = (InputMethodManager) parent.getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (inputMethodManager != null)
-                inputMethodManager.showSoftInput(msgEdit, InputMethodManager.SHOW_IMPLICIT);
+            // Not send message - uidToCorrect is null
+            if (!TextUtils.isEmpty(uidToCorrect)) {
+                // Change edit text bg colors and show cancel button
+                chatPanel.setCorrectionUID(uidToCorrect);
+                updateCorrectionState();
 
-            // Select corrected message
-            // TODO: it doesn't work when keyboard is displayed for the first time
-            adapter.setSelection(position);
+                InputMethodManager inputMethodManager = (InputMethodManager) parent.getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (inputMethodManager != null)
+                    inputMethodManager.showSoftInput(msgEdit, InputMethodManager.SHOW_IMPLICIT);
+
+                // Select corrected message
+                // TODO: it doesn't work when keyboard is displayed for the first time
+                adapter.setSelection(position);
+            }
         }
     }
 
@@ -387,14 +398,17 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 if (chatPanel.getProtocolProvider().isRegistered()) {
                     String correctionUID = chatPanel.getCorrectionUID();
 
-                    // allow last message correction to send empty string
-                    String textEdit = msgEdit.getText().toString();
-                    if (TextUtils.isEmpty(textEdit)) {
+                    String textEdit;
+                    if (TextUtils.isEmpty(msgEdit.getText())) {
+                        // allow last message correction to send empty string to clear last sent text
                         if (correctionUID != null) {
                             textEdit = " ";
                         }
                         else
                             return;
+                    }
+                    else {
+                        textEdit = msgEdit.getText().toString();
                     }
 
                     if (textEdit.contains("<html>")) {
@@ -436,32 +450,30 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     @Override
     public boolean onLongClick(View v)
     {
-        switch (v.getId()) {
-            case R.id.audioRecordButton:
-                Timber.w("Current Chat Transport for audio: %s", mChatTransport.toString());
-                if (!(mChatTransport instanceof MetaContactChatTransport) || !mChatTransport.getStatus().isOnline()) {
-                    aTalkApp.showToastMessage(R.string.chat_noaudio_buddyOffline);
-                }
-                else {
-                    Timber.d("Audio recording started!!!");
-                    isRecording = true;
-                    // Hide normal edit text view
-                    msgEdit.setVisibility(View.GONE);
-                    cancelBtn.setVisibility(View.GONE);
+        if (v.getId() == R.id.audioRecordButton) {
+            Timber.w("Current Chat Transport for audio: %s", mChatTransport.toString());
+            if (!(mChatTransport instanceof MetaContactChatTransport) || !mChatTransport.getStatus().isOnline()) {
+                aTalkApp.showToastMessage(R.string.chat_noaudio_buddyOffline);
+            }
+            else {
+                Timber.d("Audio recording started!!!");
+                isRecording = true;
+                // Hide normal edit text view
+                msgEdit.setVisibility(View.GONE);
+                cancelBtn.setVisibility(View.GONE);
 
-                    // Show audio record information
-                    msgRecordView.setVisibility(View.VISIBLE);
-                    mTrash.setImageResource(R.drawable.ic_record);
-                    mTrash.startAnimation(animBlink);
+                // Show audio record information
+                msgRecordView.setVisibility(View.VISIBLE);
+                mTrash.setImageResource(R.drawable.ic_record);
+                mTrash.startAnimation(animBlink);
 
-                    // Set up audio background service and receiver
-                    IntentFilter filter = new IntentFilter();
-                    filter.addAction(AudioBgService.ACTION_AUDIO_RECORD);
-                    filter.addAction(AudioBgService.ACTION_SMI);
-                    LocalBroadcastManager.getInstance(parent).registerReceiver(mReceiver, filter);
-                    startAudioService(AudioBgService.ACTION_RECORDING);
-                }
-                break;
+                // Set up audio background service and receiver
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(AudioBgService.ACTION_AUDIO_RECORD);
+                filter.addAction(AudioBgService.ACTION_SMI);
+                LocalBroadcastManager.getInstance(parent).registerReceiver(mReceiver, filter);
+                startAudioService(AudioBgService.ACTION_RECORDING);
+            }
         }
         return true;
     }
@@ -649,7 +661,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
         // Enabled send text button if text entry box contains text or in correction mode or ...
         // audio message sending is not allow if it is not MetaContact
-        if ((msgEdit.getText().length() > 0) || (chatPanel.getCorrectionUID() != null)
+        if (!TextUtils.isEmpty(msgEdit.getText()) || (chatPanel.getCorrectionUID() != null)
                 || !(mChatTransport instanceof MetaContactChatTransport)) {
             sendBtn.setVisibility(View.VISIBLE);
         }

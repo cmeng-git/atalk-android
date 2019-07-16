@@ -185,7 +185,7 @@ public class ChatMessageImpl implements ChatMessage
      * @param contactName the name of the contact
      * @param contactDisplayName the contact display name
      * @param date the DateTimeStamp
-     * @param messageType the type (INCOMING or OUTGOING)
+     * @param messageType the type (INCOMING, OUTGOING, SYSTEM etc)
      * @param mimeType the content type of the message
      * @param message the message content
      * @param encryptionType the message original encryption type

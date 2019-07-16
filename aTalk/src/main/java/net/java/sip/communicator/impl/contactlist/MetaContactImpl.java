@@ -15,8 +15,6 @@
 package net.java.sip.communicator.impl.contactlist;
 
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
@@ -30,6 +28,8 @@ import org.json.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import timber.log.Timber;
 
 /**
@@ -541,8 +541,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Returns an avatar that can be used when presenting this <tt>MetaContact</tt> in user
-     * interface.
+     * Returns an avatar that can be used when presenting this <tt>MetaContact</tt> in user interface.
      * The method would also make sure that we try the network for new versions of avatars.
      *
      * @return an avatar (e.g. user photo) of this contact.
@@ -1011,8 +1010,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
                 }
                 else {
                     capContacts = capabilities.get(newCap);
-
-                    if (!capContacts.contains(contact)) {
+                    if ((capContacts != null) && !capContacts.contains(contact)) {
                         capContacts.add(contact);
                     }
                 }

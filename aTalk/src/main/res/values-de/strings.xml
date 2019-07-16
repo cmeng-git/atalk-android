@@ -76,12 +76,6 @@
     <string name="chatRoom_Subject">Betreff</string>
     <string name="choose_file_activity_title">Datei auswählen</string>
     <string name="menu_settings">Einstellungen</string>
-    <string name="status_available">Online</string>
-    <string name="status_away">Derzeit nicht da</string>
-    <string name="status_chat">Zum chatten bereit</string>
-    <string name="status_dnd">Bitte nicht stören</string>
-    <string name="status_offline">Offline</string>
-    <string name="status_xa">Nicht verfügbar</string>
     <string name="title_activity_attach_option_dialog">Anhang schicken</string>
     <string name="title_activity_activation_view">Aktivierung</string>
 
@@ -121,7 +115,7 @@
     <string name="service_gui_AUTHORIZATION_REQUESTED_INFO">Der Kontakt %1$s bittet um deine Autorisierung.</string>
     <string name="service_gui_AUTHORIZATION_REQUEST">Autorisierungsanfrage</string>
     <string name="service_gui_AVATAR_HINT">Empfohlene Bildgröße: 64*64 (96*96 px maximum)</string>
-    <string name="service_gui_AWAY_STATUS">Derzeit nicht da</string>
+    <string name="service_gui_AWAY_STATUS">Abwesend</string>
     <string name="service_gui_AVATAR_SET_ERROR">Kann den Avatar für %1$s nicht speichern.</string>
 
     <string name="service_gui_BUSY_STATUS">Beschäftigt</string>
@@ -307,9 +301,10 @@
     <string name="service_gui_ERROR">Error</string>
     <string name="service_gui_ERROR_WAS">Error war: %1$s</string>
 	<string name="service_gui_EXIT">Abbrechen</string>
+    <string name="service_gui_EXTENDED_AWAY_STATUS">Abwesend (erweitert)</string>
     <string name="service_gui_FAILED_STATUS">Anruf fehlgeschlagen</string>
 	<string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Kann Chatraum %1$s nicht betreten.</string>
-    <string name="service_gui_FFC_STATUS">Zum Chatten bereit</string>
+    <string name="service_gui_FFC_STATUS">Für Chats verfügbar</string>
 
     <!-- File Transfer (xFile prefix with date) -->
     <string name="xFile_FILE_BYTE_SENT">%1$s gesendet</string>
@@ -475,7 +470,7 @@
 
     <string name="service_gui_MSG_DELIVERY_ERROR">Fehler beim Senden der Nachricht.</string>
     <string name="service_gui_MSG_DELIVERY_FAILURE">Die obige Nachricht konnte nicht zugestellt werden</string>
-    <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Ein interner Fehler ist aufgetreten. Dies ist höchstwahrscheinlich ein Anwendungsfehler.</string>
+    <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Ein interner Fehler ist aufgetreten. Bitte melden Sie es per Debug-Protokoll.</string>
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Das verwendete Protokoll unterstützt keine Offline-Nachrichten. Du kannst versuchen %1$s über ein anderes Protokoll zu erreichen, oder warten, bis er/sie online ist.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Beim Zustellen der Nachricht ist ein unbekannter Fehler aufgetreten.</string>
     <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Nicht unterstützte Operation.</string>
@@ -575,7 +570,7 @@
     <string name="service_gui_UNKNOWN">Unbekannt</string>
     <string name="service_gui_UNKNOWN_USER">Unbekannter Benutzer</string>
     <string name="service_gui_UNKNOWN_STATUS">Unbekannter Status</string>
-    <string name="service_gui_URL_HINT">http://www.beispiel.de</string>
+    <string name="service_gui_URL_HINT">https://www.beispiel.de</string>
     <string name="service_gui_VOLUME_CONTROL_TITLE">Ausgabe-Lautstärke</string>
     <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">Lautstärke anpassen</string>
     <string name="service_gui_VOLUME_GAIN_LEVEL">Lautstärke: %1$s%%</string>
@@ -921,7 +916,7 @@
     <string name="plugin_otr_activator_unreadablemsgreceived">%1$s hat Dir eine unlesbare verschlüsselte Nachricht gesendet.</string>
     <string name="plugin_otr_activator_unreadablemsgreply">Du hast%1$s eine unlesbare verschlüsselte Nachricht gesendet. Bitte beenden deine private Konversation mit %2$s oder aktualisiere sie.</string>
     <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Nicht bestätigter&lt;/b>privater Nachrichtenaustausch mit %1$s wurde gestartet.</string>
-    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s wurde noch nicht authentifiziert. Du solltest diesen Chatpartner&lt;a href="atalk://%2$s/%3$s?%4$s">&lt;br/>authentifizieren&lt;br/>&lt;/a></string>
+    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s wurde noch nicht authentifiziert. Du solltest diesen Chatpartner&lt;a href=\"atalk://%2$s/%3$s?%4$s\">&lt;br/>authentifizieren&lt;br/>&lt;/a></string>
 
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">Einfacher Text</string>
@@ -930,12 +925,13 @@
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Mein Fingerprint %1$s:\n%2$s</string>
     <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs fehlen für: %1$s</string>
     <string name="omemo_identity_key_invalid">Ungültiger IdentityKey für OMEMO-Gerät: %1$s.\nException:%2$s.</string>
-    <string name="omemo_identity_key_missing">OMEMO IdentityKey fehlt für: %1$s</string>
+    <string name="omemo_identity_key_missing">OMEMO IdentityKey für %1$s fehlt.\nFahren Sie mit dem Herunterladen vom Server fort.</string>
     <string name="omemo_identity_keypairs_invalid">Ungültige IdentityKeyPairs für OMEMO-Gerät: %1$s.\nException:%2$s.</string>
     <string name="omemo_init_failed_CorruptedOmemoKeyException">OMEMO-Manager konnte nicht gestartet werden, Verschlüsselung ist nicht aktiv. Starte bitte das Programm neu. Wenn der Fehler weiterhin besteht fahre mit dem Registrieren von OMEMO-Identitäten für das Gerät %1$s fort.\n\nException: %2$s.</string>
     <string name="omemo_init_failed_noresponse">OMEMO-Manager konnte nicht gestartet werden. Die OMEMO-Verschlüsselung funktioniert möglicherweise nicht richtig: %1$s</string>
     <string name="omemo_init_failed_title">OMEMO-Manager-Initialisierung fehlgeschlagen</string>
     <string name="omemo_menu_authenticated">OMEMO authentifiziert</string>
+    <string name="omemo_send_error">Das Senden der Nachricht ist fehlgeschlagen. Bitte versuchen Sie es erneut, nachdem alle Fehler behoben wurden: %1$s</string>
     <string name="omemo_menu_unauthenticated">OMEMO nicht-authentifiziert</string>
     <string name="omemo_menu_untrusted">OMEMO nicht-vertrauenswürdig</string>
     <string name="omemo_rebuild_session">Erstelle eine neue Sitzung für fehlenden %1$s</string>

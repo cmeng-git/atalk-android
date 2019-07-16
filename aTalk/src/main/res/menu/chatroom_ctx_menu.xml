@@ -14,7 +14,7 @@
         android:title="@string/service_gui_CHATROOM_HISTORY_ERASE_PER">
     </item>
     <item
-        android:id="@+id/erase_chatroom_history_all"
+        android:id="@+id/erase_all_chatroom_history"
         android:title="@string/service_gui_CHATROOM_HISTORY_ERASE_ALL">
     </item>
     <item

@@ -20,13 +20,13 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.view.*;
 import android.widget.*;
 import android.widget.ExpandableListView.*;
 
 import net.java.sip.communicator.service.gui.Chat;
-import net.java.sip.communicator.service.muc.*;
+import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
+import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
@@ -42,6 +42,7 @@ import org.jxmpp.util.XmppStringUtils;
 
 import java.util.List;
 
+import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
 /**
@@ -119,7 +120,7 @@ public class ChatRoomListFragment extends OSGiFragment
 
         ViewGroup content = (ViewGroup) inflater.inflate(R.layout.chatroom_list, container, false);
         chatRoomListView = content.findViewById(R.id.chatRoomListView);
-        chatRoomListView.setSelector(R.drawable.contact_list_selector);
+        chatRoomListView.setSelector(R.drawable.array_list_selector);
         chatRoomListView.setOnChildClickListener(this);
         chatRoomListView.setOnGroupClickListener(this);
 
@@ -324,7 +325,7 @@ public class ChatRoomListFragment extends OSGiFragment
         menu.findItem(R.id.close_all_chatrooms).setVisible(visible);
 
         // may not want to offer erase all chatRooms chat history
-        menu.findItem(R.id.erase_chatroom_history_all).setVisible(false);
+        menu.findItem(R.id.erase_all_chatroom_history).setVisible(false);
     }
 
     /**
@@ -362,16 +363,17 @@ public class ChatRoomListFragment extends OSGiFragment
                 EntityListHelper.eraseEntityChatHistory(getActivity(),
                         mClickedChatRoom, null, null);
                 return true;
-            case R.id.erase_chatroom_history_all:
+            case R.id.erase_all_chatroom_history:
                 EntityListHelper.eraseAllContactHistory(getActivity());
                 return true;
             case R.id.destroy_chatroom:
                 EntityListHelper.removeEntity(mClickedChatRoom, chatPanel);
                 return true;
             case R.id.chatroom_info:
-                ChatRoomInfoFragment chatRoomInfoFragment = ChatRoomInfoFragment.newInstance(mClickedChatRoom);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, chatRoomInfoFragment).commit();
+                ChatRoomInfoDialog chatRoomInfoDialog = ChatRoomInfoDialog.newInstance(mClickedChatRoom);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.addToBackStack(null);
+                chatRoomInfoDialog.show(ft, "infoDialog");
                 return true;
             case R.id.chatroom_ctx_menu_exit:
                 return true;
@@ -447,11 +449,7 @@ public class ChatRoomListFragment extends OSGiFragment
     {
         if (chatRoomWrapper != null) {
             ProtocolProviderService pps = chatRoomWrapper.getParentProvider().getProtocolProvider();
-            String chatRoomID = chatRoomWrapper.getChatRoomID();
             String nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
-
-            // Set chatRoom openAutomatically on_activity
-            // MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
             AndroidGUIActivator.getMUCService().joinChatRoom(chatRoomWrapper, nickName, null, null);
 
             Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
@@ -476,11 +474,6 @@ public class ChatRoomListFragment extends OSGiFragment
             chatRoomListView.expandGroup(groupPosition, true);
         }
         return true;
-    }
-
-    public ChatRoomWrapper getClickedChatRoom()
-    {
-        return mClickedChatRoom;
     }
 
     /**

@@ -10,7 +10,6 @@ import android.content.*;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.support.v4.app.*;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,7 +40,10 @@ import java.beans.PropertyChangeListener;
 import java.util.EventObject;
 import java.util.Iterator;
 
+import androidx.fragment.app.*;
 import timber.log.Timber;
+
+import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /**
  * The <tt>VideoCallActivity</tt> corresponds the call screen.
@@ -515,6 +517,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      * {@inheritDoc}
      */
     @Override
+    // @SuppressLint("RestrictedApi")
     public boolean dispatchKeyEvent(KeyEvent event)
     {
         /*

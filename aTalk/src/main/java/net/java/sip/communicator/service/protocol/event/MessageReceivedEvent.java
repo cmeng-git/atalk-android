@@ -198,9 +198,12 @@ public class MessageReceivedEvent extends EventObject
             Date timestamp, int eventType, boolean isPrivateMessaging, ChatRoom privateContactRoom)
     {
         super(source);
+
         // Convert to MESSAGE_HTTP_FILE_DOWNLOAD if it is http download link
-        if (source.getContent().matches("(?s)^aesgcm:.*|^http[s]:.*"))
+        // source.getContent() may be null (Omemo key send contains no body content)
+        if ((source.getContent() != null) && (source.getContent().matches("(?s)^aesgcm:.*|^http[s]:.*"))) {
             eventType = ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD;
+        }
 
         this.from = from;
         this.fromResource = fromResource;

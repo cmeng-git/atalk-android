@@ -11,8 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.*;
 import android.widget.*;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -40,6 +38,8 @@ import org.jxmpp.jid.DomainJid;
 
 import java.util.List;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
 /**
@@ -118,7 +118,7 @@ public class ContactListFragment extends OSGiFragment
 
         ViewGroup content = (ViewGroup) inflater.inflate(R.layout.contact_list, container, false);
         contactListView = content.findViewById(R.id.contactListView);
-        contactListView.setSelector(R.drawable.contact_list_selector);
+        contactListView.setSelector(R.drawable.array_list_selector);
         contactListView.setOnChildClickListener(this);
         contactListView.setOnGroupClickListener(this);
 
@@ -391,7 +391,7 @@ public class ContactListFragment extends OSGiFragment
                 ft = getFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
                 DialogFragment renameFragment = ContactRenameDialog.getInstance(clickedContact);
-                renameFragment.show(ft, "dialog");
+                renameFragment.show(ft, "renameDialog");
                 return true;
             case R.id.remove_contact:
                 EntityListHelper.removeEntity(clickedContact, chatPanel);
@@ -401,7 +401,7 @@ public class ContactListFragment extends OSGiFragment
                 ft = getFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
                 DialogFragment newFragment = MoveToGroupDialog.getInstance(clickedContact);
-                newFragment.show(ft, "dialog");
+                newFragment.show(ft, "moveDialog");
                 return true;
             case R.id.re_request_auth:
                 if (clickedContact != null)
@@ -533,6 +533,7 @@ public class ContactListFragment extends OSGiFragment
         if (metaContact.getDefaultContact().getJid() instanceof DomainJid) {
             String domainJid = metaContact.getDefaultContact().getAddress();
             TelephonyFragment extPhone = TelephonyFragment.newInstance(domainJid);
+            // getFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
             getActivity().getSupportFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
             return true;
         }

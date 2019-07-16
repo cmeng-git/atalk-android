@@ -1,6 +1,5 @@
 package org.atalk.android.gui.call.telephony;
 
-import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import androidx.annotation.VisibleForTesting;
 import timber.log.Timber;
 
 /*
@@ -97,12 +97,12 @@ public class Address implements Serializable
      * Parse a comma separated list of phone addresses in human readable format and return an
      * array of Address objects, RFC-822 encoded.
      *
-     * @param addressList
+     * @param addressList List of addresses
      * @return An array of 0 or more Addresses.
      */
     public static Address[] parseUnencoded(String addressList)
     {
-        List<Address> addresses = new ArrayList<Address>();
+        List<Address> addresses = new ArrayList<>();
         if (!TextUtils.isEmpty(addressList)) {
             Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(addressList);
             for (Rfc822Token token : tokens) {
@@ -118,7 +118,7 @@ public class Address implements Serializable
     /**
      * Parse a comma separated list of addresses in RFC-822 format and return an array of Address objects.
      *
-     * @param addressList
+     * @param addressList List of addresses
      * @return An array of 0 or more Addresses.
      */
     public static Address[] parse(String addressList)
@@ -216,18 +216,18 @@ public class Address implements Serializable
         if (addressList == null) {
             return new Address[]{};
         }
-        List<Address> addresses = new ArrayList<Address>();
+        List<Address> addresses = new ArrayList<>();
         int length = addressList.length();
         int pairStartIndex = 0;
-        int pairEndIndex = 0;
-        int addressEndIndex = 0;
+        int pairEndIndex;
+        int addressEndIndex;
         while (pairStartIndex < length) {
             pairEndIndex = addressList.indexOf(",\u0000", pairStartIndex);
             if (pairEndIndex == -1) {
                 pairEndIndex = length;
             }
             addressEndIndex = addressList.indexOf(";\u0000", pairStartIndex);
-            String address = null;
+            String address;
             String person = null;
             if (addressEndIndex == -1 || addressEndIndex > pairEndIndex) {
                 address = addressList.substring(pairStartIndex, pairEndIndex);
@@ -239,7 +239,7 @@ public class Address implements Serializable
             addresses.add(new Address(address, person, false));
             pairStartIndex = pairEndIndex + 2;
         }
-        return addresses.toArray(new Address[addresses.size()]);
+        return addresses.toArray(new Address[0]);
     }
 
     /**

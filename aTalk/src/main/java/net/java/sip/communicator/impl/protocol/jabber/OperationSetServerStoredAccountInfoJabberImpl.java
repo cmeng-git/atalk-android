@@ -341,9 +341,14 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
             }
             else if (detail.getClass().equals(BirthDateDetail.class)) {
                 if (detail.getDetailValue() != null) {
-                    Calendar c = ((BirthDateDetail) detail).getCalendar();
-                    DateFormat dateFormat = new SimpleDateFormat(InfoRetriever.BDAY_FORMAT_MEDIUM, Locale.US);
-                    String strdate = dateFormat.format(c.getTime());
+                    String strdate;
+                    Object date = ((BirthDateDetail) detail).getCalendar();
+                     if (date instanceof Calendar) {
+                           DateFormat dateFormat = new SimpleDateFormat(InfoRetriever.BDAY_FORMAT_MEDIUM, Locale.US);
+                         strdate = dateFormat.format(((Calendar) date).getTime());
+                     } else {
+                         strdate = (String) date;
+                     }
                     vCard.setField("BDAY", strdate);
                 }
             }

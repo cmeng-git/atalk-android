@@ -85,12 +85,6 @@
     <string name="chatRoom_Subject">Subject</string>
     <string name="choose_file_activity_title">Choose a file</string>
     <string name="menu_settings">Settings</string>
-    <string name="status_available">Online</string>
-    <string name="status_away">Away</string>
-    <string name="status_chat">Free for chat</string>
-    <string name="status_dnd">Do not disturb</string>
-    <string name="status_offline">Offline</string>
-    <string name="status_xa">Not available</string>
     <string name="title_activity_attach_option_dialog">Send attachment</string>
     <string name="title_activity_activation_view">Activation</string>
 
@@ -321,6 +315,7 @@
     <string name="service_gui_ERROR">Error</string>
     <string name="service_gui_ERROR_WAS">Error was: %1$s</string>
     <string name="service_gui_EXIT">Exit</string>
+    <string name="service_gui_EXTENDED_AWAY_STATUS">Extended Away</string>
     <string name="service_gui_FAILED_STATUS">Call failed</string>
     <string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Failed to join chat room with name: %1$s.</string>
     <string name="service_gui_FFC_STATUS">Free for chat</string>
@@ -506,7 +501,7 @@
 
     <string name="service_gui_MSG_DELIVERY_ERROR">Failed to deliver message.</string>
     <string name="service_gui_MSG_DELIVERY_FAILURE">The above message could not be delivered</string>
-    <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">An internal error occurred. This is most probably a bug. Please report it here: https://jitsi.org/Development/BugsAndIssues.</string>
+    <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">An internal error occurred. This is most probably a bug. Please report it via debug log.</string>
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">The protocol you are using does not support offline messages.
         You could try to reach %1$s through another protocol or wait until he/she becomes online.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Unknown error has occurred while delivering your message.</string>
@@ -608,7 +603,7 @@
     <string name="service_gui_UNKNOWN">Unknown</string>
     <string name="service_gui_UNKNOWN_USER">Unknown user</string>
     <string name="service_gui_UNKNOWN_STATUS">Unknown state</string>
-    <string name="service_gui_URL_HINT">http://www.example.com</string>
+    <string name="service_gui_URL_HINT">https://www.example.com</string>
     <string name="service_gui_VOLUME_CONTROL_TITLE">Output volume gain level</string>
     <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">Adjust volume</string>
     <string name="service_gui_VOLUME_GAIN_LEVEL">Volume gain level: %1$s%%</string>
@@ -987,7 +982,7 @@
     <string name="plugin_otr_activator_unreadablemsgreceived">%1$s sent you an unreadable encrypted message.</string>
     <string name="plugin_otr_activator_unreadablemsgreply">You sent %1$s an unreadable encrypted message. Please end your private conversation with %2$s or refresh it.</string>
     <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Unverified&lt;/b> private conversation with %1$s started.</string>
-    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s has not been authenticated yet. You should &lt;a href="atalk://%2$s/%3$s?%4$s">&lt;b>authenticate&lt;/b>&lt;/a> this buddy.</string>
+    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s has not been authenticated yet. You should &lt;a href=\"atalk://%2$s/%3$s?%4$s\">&lt;b>authenticate&lt;/b>&lt;/a> this buddy.</string>
 
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">Plain Text</string>
@@ -996,13 +991,14 @@
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
     <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs is missing for: %1$s</string>
     <string name="omemo_identity_key_invalid">Invalid IdentityKey for omemoDevice: %1$s.\nException: %2$s.</string>
-    <string name="omemo_identity_key_missing">OMEMO IdentityKey is missing for: %1$s</string>
+    <string name="omemo_identity_key_missing">OMEMO IdentityKey for %1$s is missing.\nProceed to download from server.</string>
     <string name="omemo_identity_keypairs_invalid">Invalid IdentityKeyPairs for omemoDevice: %1$s.\nException: %2$s.</string>
     <string name="omemo_init_failed_CorruptedOmemoKeyException">Initialize OmemoManager has failed and omemo messaging is not working. If problem persists
         after restart, please proceed to "Regnerate OMEMO identities" for the failed omomoDevice: %1$s.\n\nException: %2$s.</string>
     <string name="omemo_init_failed_noresponse">Initialize OmemoManager has failed and omemo messaging may not work properly: %1$s</string>
     <string name="omemo_init_failed_title">OmemoManager init failed</string>
     <string name="omemo_menu_authenticated">OMEMO Authenticated</string>
+    <string name="omemo_send_error">Message send failed. Please try again after all errors have been corrected: %1$s</string>
     <string name="omemo_menu_unauthenticated">OMEMO unAuthenticated</string>
     <string name="omemo_menu_untrusted">OMEMO Un-Trusted</string>
     <string name="omemo_rebuild_session">Rebuild new session for missing: %1$s</string>

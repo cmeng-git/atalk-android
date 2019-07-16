@@ -6,8 +6,6 @@
 package org.atalk.android.gui.call;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.view.*;
 import android.widget.ImageView;
 
@@ -19,6 +17,8 @@ import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.BareJid;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
 /**

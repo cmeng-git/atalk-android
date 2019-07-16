@@ -14,8 +14,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.*;
 import android.widget.Toast;
 
@@ -30,7 +28,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
 import org.atalk.android.gui.chatroomslist.ChatRoomInfoChangeDialog;
-import org.atalk.android.gui.chatroomslist.ChatRoomInfoFragment;
+import org.atalk.android.gui.chatroomslist.ChatRoomInfoDialog;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
@@ -49,6 +47,9 @@ import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import java.io.File;
 import java.util.*;
 
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import timber.log.Timber;
 
 import static org.atalk.persistance.FileBackend.getMimeType;
@@ -100,6 +101,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     private MenuItem mChatRoomInfo;
     private MenuItem mChatRoomMember;
     private MenuItem mChatRoomSubject;
+    private MenuItem mOtr_Session;
 
     /**
      * Holds chatId that is currently handled by this Activity.
@@ -313,6 +315,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         mChatRoomInfo = mMenu.findItem(R.id.chatroom_info);
         mChatRoomMember = mMenu.findItem(R.id.show_chatroom_occupant);
         mChatRoomSubject = mMenu.findItem(R.id.change_chatroom_attr);
+        mOtr_Session = menu.findItem(R.id.otr_session);
 
         if (BuildConfig.FLAVOR.equals("fdroid") && (mSendLocation != null)) {
             menu.removeItem(R.id.send_location);
@@ -356,6 +359,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mChatRoomInfo.setVisible(false);
                 mChatRoomMember.setVisible(false);
                 mChatRoomSubject.setVisible(false);
+                // Let CryptoFragment handles this to take care Omemo and OTR
+                // mOtr_Session.setVisible(true);
             }
             else {
                 mLeaveChatRoom.setVisible(true);
@@ -368,6 +373,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mChatRoomSubject.setVisible(true);
                 mCallAudioContact.setVisible(false);
                 mCallVideoContact.setVisible(false);
+                mOtr_Session.setVisible(false);
             }
 
             MenuItem mPadlock = mMenu.findItem(R.id.otr_padlock);
@@ -392,6 +398,11 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
 
             switch (item.getItemId()) {
+                case R.id.muc_invite:
+                    ChatInviteDialog inviteDialog = new ChatInviteDialog(this, selectedChatPanel);
+                    inviteDialog.show();
+                    return true;
+
                 case R.id.leave_chat_room:
                     if (chatRoom != null) {
                         ChatRoomWrapper leavedRoomWrapped = MUCActivator.getMUCService().leaveChatRoom(chatRoomWrapper);
@@ -412,9 +423,10 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     return true;
 
                 case R.id.chatroom_info:
-                    ChatRoomInfoFragment chatRoomInfoFragment = ChatRoomInfoFragment.newInstance(chatRoomWrapper);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(android.R.id.content, chatRoomInfoFragment).commit();
+                    ChatRoomInfoDialog chatRoomInfoDialog = ChatRoomInfoDialog.newInstance(chatRoomWrapper);
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.addToBackStack(null);
+                    chatRoomInfoDialog.show(ft, "infoDialog");
                     return true;
 
                 case R.id.change_chatroom_attr:
@@ -435,6 +447,12 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                         selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_HTML,
                                 memberList.toString());
                     }
+                    return true;
+
+                case R.id.send_file:
+                    // Note: mReceipient is not used
+                    AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this, mRecipient);
+                    attachOptionDialog.show();
                     return true;
             }
         }

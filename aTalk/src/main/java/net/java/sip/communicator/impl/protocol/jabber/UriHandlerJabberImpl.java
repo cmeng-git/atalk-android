@@ -14,8 +14,6 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import android.support.annotation.NonNull;
-
 import net.java.sip.communicator.service.argdelegation.UriHandler;
 import net.java.sip.communicator.service.gui.ExportedWindow;
 import net.java.sip.communicator.service.gui.PopupDialog;
@@ -32,6 +30,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**

@@ -5,12 +5,12 @@
  */
 package org.atalk.impl.androidtray;
 
-import android.support.v4.app.NotificationCompat;
-
 import net.java.sip.communicator.service.systray.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.core.app.NotificationCompat;
 
 /**
  * Popup notification that consists of few merged previous popups.
@@ -59,11 +59,11 @@ public class AndroidMergedPopup extends AndroidPopup
     @Override
     protected String getMessage()
     {
-        String msg = super.getMessage();
+        StringBuilder msg = new StringBuilder(super.getMessage());
         for (AndroidPopup popup : mergedPopups) {
-            msg += "\n" + popup.getMessage();
+            msg.append("\n").append(popup.getMessage());
         }
-        return msg;
+        return msg.toString();
     }
 
     /**

@@ -91,7 +91,7 @@ public class JingleIQ extends IQ
     /**
      * The list of "content" elements included in this IQ.
      */
-    private final List<ContentExtensionElement> contentList = new ArrayList<ContentExtensionElement>();
+    private final List<ContentExtensionElement> contentList = new ArrayList<>();
 
     public JingleIQ()
     {

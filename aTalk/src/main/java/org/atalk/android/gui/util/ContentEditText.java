@@ -3,11 +3,12 @@ package org.atalk.android.gui.util;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v13.view.inputmethod.*;
-import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.view.inputmethod.*;
 
 public class ContentEditText extends AppCompatEditText
 {

@@ -7,12 +7,14 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.os.Build;
 import android.text.Html;
+import android.text.TextUtils;
 
 import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
@@ -360,7 +362,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         for (ExtensionElement ext : extensions) {
             msg.addExtension(ext);
         }
-        Timber.log(TimberLog.FINER, "Will send a message to: %s chat.jid = %s", toJid, toJid);
+        Timber.log(TimberLog.FINER, "MessageDeliveredEvent - Sending a message to: %s", toJid);
 
         MessageDeliveredEvent msgDeliveryPendingEvt = new MessageDeliveredEvent(message, to, toResource);
         MessageDeliveredEvent[] transformedEvents = messageDeliveryPendingTransform(msgDeliveryPendingEvt);
@@ -483,7 +485,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         String content = message.getContent();
         String msgContent;
         OmemoMessage.Sent encryptedMessage;
-        String msg = null;
+        String errMessage = null;
 
         // OMEMO message content will strip off any html tags info for now => #TODO
         if (Message.ENCODE_HTML == message.getMimeType()) {
@@ -504,27 +506,32 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             sendMessage.setStanzaId(message.getMessageUID());
             mChat = mChatManager.chatWith(toJid.asEntityBareJidIfPossible());
             mChat.send(sendMessage);
+
+            // proceed to send message if no exceptions.
+            MessageDeliveredEvent msgDelivered;
+            if (correctedMessageUID == null)
+                msgDelivered = new MessageDeliveredEvent(message, to, resource);
+            else
+                msgDelivered = new MessageDeliveredEvent(message, to, correctedMessageUID);
+            fireMessageEvent(msgDelivered);
         } catch (UndecidedOmemoIdentityException e) {
+            errMessage = aTalkApp.getResString(R.string.omemo_send_error,
+                    "Undecided Omemo Identity: " + e.getUndecidedDevices().toString());
             Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
             aTalkApp.getGlobalContext().startActivity(
                     OmemoAuthenticateDialog.createIntent(omemoManager, omemoDevices, null));
         } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException e) {
-            msg = "Omemo is unable to create session with device: " + e.getMessage();
+            errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage());
         } catch (SmackException.NotLoggedInException e) {
-            msg = "User must login to send omemo message: " + e.getMessage();
-        }
-        if (!StringUtils.isNullOrEmpty(msg)) {
-            Timber.w("%s", msg);
-            aTalkApp.showToastMessage(msg);
+            errMessage = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
         }
 
-        MessageDeliveredEvent msgDelivered;
-        if (correctedMessageUID == null)
-            msgDelivered = new MessageDeliveredEvent(message, to, resource);
-        else
-            msgDelivered = new MessageDeliveredEvent(message, to, correctedMessageUID);
-
-        fireMessageEvent(msgDelivered);
+        if (!TextUtils.isEmpty(errMessage)) {
+            Timber.w("%s", errMessage);
+            MessageDeliveryFailedEvent failedEvent = new MessageDeliveryFailedEvent(message, to,
+                    MessageDeliveryFailedEvent.OMEMO_SEND_ERROR, System.currentTimeMillis(), errMessage);
+            fireMessageEvent(failedEvent);
+        }
     }
 
     /**
@@ -678,7 +685,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 isPrivateMessaging = true;
             }
         }
-        Timber.d("Received from %s the message %s", userBareID, message.toString());
+        // Timber.d("Received from %s the message %s", userBareID, message.toString());
 
         String msgID = message.getStanzaId();
         String correctedMessageUID = getCorrectionMessageId(message);

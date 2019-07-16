@@ -10,8 +10,6 @@ import android.content.*;
 import android.net.Uri;
 import android.os.*;
 import android.provider.Settings;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -27,6 +25,8 @@ import org.osgi.framework.BundleContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.app.NavUtils;
+import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
 /**

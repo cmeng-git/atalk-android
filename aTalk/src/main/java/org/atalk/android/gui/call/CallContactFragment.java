@@ -9,8 +9,6 @@ import android.Manifest;
 import android.accounts.Account;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.view.*;
 import android.widget.*;
 
@@ -29,6 +27,8 @@ import org.osgi.framework.BundleContext;
 
 import java.util.Collection;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import timber.log.Timber;
 
 /**
@@ -123,13 +123,9 @@ public class CallContactFragment extends OSGiFragment
                     String accountAddress = provider.getAccountID().getAccountJid();
 
                     MenuItem menuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, accountAddress);
-                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
-                    {
-                        public boolean onMenuItemClick(MenuItem item)
-                        {
-                            createCall(calleeAddress, provider);
-                            return false;
-                        }
+                    menuItem.setOnMenuItemClickListener(item -> {
+                        createCall(calleeAddress, provider);
+                        return false;
                     });
                     mProvider = provider;
                 }
@@ -187,14 +183,12 @@ public class CallContactFragment extends OSGiFragment
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
             @NonNull int[] grantResults)
     {
-        switch (requestCode) {
-            case PERMISSION_GET_ACCOUNTS: {
-                // If request is cancelled, the result arrays are empty.
-                if ((grantResults.length > 0)
-                        && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    // permission granted, so proceed
-                    initAndroidAccounts();
-                }
+        // If request is cancelled, the result arrays are empty.
+        if (requestCode == PERMISSION_GET_ACCOUNTS) {
+            if ((grantResults.length > 0)
+                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // permission granted, so proceed
+                initAndroidAccounts();
             }
         }
     }

@@ -18,7 +18,6 @@ package org.atalk.android.util;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -29,6 +28,8 @@ import android.widget.*;
 import org.atalk.android.R;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * Custom ComboBox for Android
@@ -93,7 +94,7 @@ public class ComboBox extends LinearLayout
         String[] from = new String[]{column};
         int[] to = new int[]{android.R.id.text1};
         SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this.getContext(),
-				android.R.layout.simple_dropdown_item_1line, source, from, to);
+                android.R.layout.simple_dropdown_item_1line, source, from, to);
         // this is to ensure that when suggestion is selected it provides the value to the textBox
         cursorAdapter.setStringConversionColumn(source.getColumnIndex(column));
         _text.setAdapter(cursorAdapter);
@@ -102,8 +103,8 @@ public class ComboBox extends LinearLayout
     public void setSuggestionSource(List<String> list)
     {
         // Create an ArrayAdapter using the string array and a default spinner layout
-		ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this.getContext(),
-				R.layout.simple_spinner_item, list)
+        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this.getContext(),
+                R.layout.simple_spinner_item, list)
         {
             // Allow to change font style in dropdown vew
             public View getView(int position, View convertView, @NonNull ViewGroup parent)
@@ -116,7 +117,7 @@ public class ComboBox extends LinearLayout
         };
 
         // Specify the layout to use when the list of choices appears
-		mAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+        mAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
 
         // Apply the adapter to the spinner
         _text.setAdapter(mAdapter);

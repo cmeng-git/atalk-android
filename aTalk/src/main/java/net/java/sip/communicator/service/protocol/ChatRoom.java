@@ -276,8 +276,7 @@ public interface ChatRoom
      * Returns a <tt>List</tt> of <tt>ChatRoomMember</tt>s corresponding to all members currently
      * participating in this room.
      *
-     * @return a <tt>List</tt> of <tt>ChatRoomMember</tt> instances corresponding to all room
-     * members.
+     * @return a <tt>List</tt> of <tt>ChatRoomMember</tt> instances corresponding to all room members.
      */
     List<ChatRoomMember> getMembers();
 
@@ -395,11 +394,9 @@ public interface ChatRoom
             throws OperationFailedException, InterruptedException;
 
     /**
-     * Returns <code>true</code> if this chat room is a system room and <code>false</code>
-     * otherwise.
+     * Returns <code>true</code> if this chat room is a system room and <code>false</code> otherwise.
      *
-     * @return <code>true</code> if this chat room is a system room and <code>false</code>
-     * otherwise.
+     * @return <code>true</code> if this chat room is a system room and <code>false</code> otherwise.
      */
     boolean isSystem();
 

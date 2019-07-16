@@ -1,6 +1,9 @@
 package net.java.sip.communicator.util;
 
 import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
+
+import timber.log.Timber;
 
 public class StatusUtil
 {
@@ -18,12 +21,12 @@ public class StatusUtil
             if (connectivity < PresenceStatus.ONLINE_THRESHOLD) {
                 return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.USER_OFFLINE_ICON");
             }
-            else if (connectivity < PresenceStatus.AWAY_THRESHOLD) {
+            else if (connectivity < PresenceStatus.EXTENDED_AWAY_THRESHOLD) {
                 return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.USER_DND_ICON");
             }
-            else if (connectivity == PresenceStatus.AWAY_THRESHOLD) {
+            else if (connectivity < PresenceStatus.AWAY_THRESHOLD) {
                 // the special status On The Phone is state between DND and AWAY states.
-                return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.USER_ON_THE_PHONE_ICON");
+                return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.USER_EXTENDED_AWAY_ICON");
             }
             else if (connectivity < PresenceStatus.AVAILABLE_THRESHOLD) {
                 return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.USER_AWAY_ICON");
@@ -53,16 +56,21 @@ public class StatusUtil
     {
         if (status != null) {
             int connectivity = status.getStatus();
-
             if (connectivity < PresenceStatus.ONLINE_THRESHOLD) {
                 return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.CONTACT_OFFLINE_ICON");
             }
-            else if (connectivity < PresenceStatus.AWAY_THRESHOLD) {
+            else if (connectivity < PresenceStatus.EXTENDED_AWAY_THRESHOLD) {
                 return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.CONTACT_DND_ICON");
             }
-            else if (connectivity == PresenceStatus.AWAY_THRESHOLD) {
-                // the special status On The Phone is state between DND and AWAY states.
-                return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.CONTACT_ON_THE_PHONE_ICON");
+            // the special status On The Phone is state between DND and AWAY states.
+            else if (connectivity < PresenceStatus.AWAY_THRESHOLD) {
+                String statusName = status.getStatusName();
+                if (JabberStatusEnum.ON_THE_PHONE.equals(statusName))
+                    return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.CONTACT_ON_THE_PHONE_ICON");
+                else if (JabberStatusEnum.IN_A_MEETING.equals(statusName))
+                    return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.CONTACT_IN_A_MEETING_ICON");
+                else
+                    return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.CONTACT_EXTENDED_AWAY_ICON");
             }
             else if (connectivity < PresenceStatus.AVAILABLE_THRESHOLD) {
                 return UtilActivator.getResources().getImageInBytes("service.gui.statusicons.CONTACT_AWAY_ICON");

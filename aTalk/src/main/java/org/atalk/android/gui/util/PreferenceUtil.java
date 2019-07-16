@@ -7,8 +7,6 @@ package org.atalk.android.gui.util;
 
 import android.preference.*;
 
-import timber.log.Timber;
-
 /**
  * Utility class exposing methods to operate on <tt>Preference</tt> subclasses.
  *
@@ -27,7 +25,6 @@ public class PreferenceUtil
     static public void setCheckboxVal(PreferenceScreen screen, String prefKey, boolean isChecked)
     {
         CheckBoxPreference cbPref = (CheckBoxPreference) screen.findPreference(prefKey);
-        Timber.d("Setting %s on %s", isChecked, prefKey);
         cbPref.setChecked(isChecked);
     }
 
@@ -41,7 +38,6 @@ public class PreferenceUtil
     public static void setEditTextVal(PreferenceScreen screen, String prefKey, String txtValue)
     {
         EditTextPreference cbPref = (EditTextPreference) screen.findPreference(prefKey);
-        Timber.d("Setting %s on %s", txtValue, prefKey);
         cbPref.setText(txtValue);
     }
 
@@ -55,7 +51,6 @@ public class PreferenceUtil
     public static void setListVal(PreferenceScreen screen, String prefKey, String value)
     {
         ListPreference lstPref = (ListPreference) screen.findPreference(prefKey);
-        Timber.d("Setting %s on %s", value, prefKey);
         lstPref.setValue(value);
     }
 }

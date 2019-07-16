@@ -7,9 +7,10 @@ package org.atalk.service.osgi;
 
 import android.app.Activity;
 import android.os.Looper;
-import android.support.v4.app.DialogFragment;
 
 import org.osgi.framework.BundleContext;
+
+import androidx.fragment.app.DialogFragment;
 
 /**
  * Class can be used to build {@link DialogFragment}s that require OSGI services access.

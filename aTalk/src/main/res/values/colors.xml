@@ -10,7 +10,7 @@
     <color name="theme_background">#2E5368</color>
     <color name="call_background">#2E5368</color>
     <color name="chat_background">#f5f5f5</color>
-    <color name="chat_background_muc">#f5f5f5</color>
+    <color name="chat_background_muc">#E2E2E2</color>
     <color name="chat_background_normal">#C2DBE2</color>
     <color name="chat_background_omemo">#FCF8E9</color>
     <color name="chat_background_omemo_ua">#FCF8E9</color>

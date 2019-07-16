@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.support.v4.app.NotificationCompat;
 
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -31,6 +30,7 @@ import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.core.app.NotificationCompat;
 import timber.log.Timber;
 
 /**
@@ -147,7 +147,7 @@ public class AndroidPopup
     {
         if (chatPanel != null) {
             Object descriptor = chatPanel.getChatSession().getCurrentChatTransport().getDescriptor();
-            return (mDescriptor != null) && (descriptor != null) && descriptor.equals(mDescriptor)
+            return (descriptor != null) && descriptor.equals(mDescriptor)
                     && (AndroidNotifications.MESSAGE_GROUP.equals(group)
                     || AndroidNotifications.FILE_GROUP.equals(group));
         }
@@ -285,7 +285,7 @@ public class AndroidPopup
             if (mDescriptor instanceof ChatRoom)
                 iconBmp = AndroidImageUtil.scaledBitmapFromResource(res, R.drawable.ic_chatroom, prefWidth, prefHeight);
             else
-                iconBmp = AndroidImageUtil.scaledBitmapFromResource(res, R.drawable.avatar, prefWidth, prefHeight);
+                iconBmp = AndroidImageUtil.scaledBitmapFromResource(res, R.drawable.contact_avatar, prefWidth, prefHeight);
         }
         if (iconBmp != null) {
             if (iconBmp.getWidth() > prefWidth || iconBmp.getHeight() > prefHeight) {

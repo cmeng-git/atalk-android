@@ -47,7 +47,7 @@
                 android:id="@+id/accountStatusIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/jabber_status_phone" />
+                android:src="@drawable/jabber_status_offline" />
 
             <TextView
                 android:id="@+id/accountStatus"

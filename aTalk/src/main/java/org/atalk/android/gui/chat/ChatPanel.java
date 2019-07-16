@@ -7,6 +7,7 @@ package org.atalk.android.gui.chat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -29,6 +30,7 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import timber.log.Timber;
 
@@ -399,7 +401,7 @@ public class ChatPanel implements Chat, MessageListener
      *
      * @return a collection of last messages.
      */
-    public Collection<ChatMessage> getHistory(boolean init)
+    public List<ChatMessage> getHistory(boolean init)
     {
         // If chatFragment is initializing (initActive) AND we have cached messages that include
         // history (historyLoaded == true) and no request for cacheRefresh form file transfer activity
@@ -438,9 +440,11 @@ public class ChatPanel implements Chat, MessageListener
                     lastOldestMessageDate, HISTORY_CHUNK_SIZE);
         }
 
-        // Convert events into messages
-        ArrayList<ChatMessage> historyMsgs = new ArrayList<>();
+        // Use CopyOnWriteArrayList instead to avoid ChatFragment#prependMessages ConcurrentModificationException
+        // ArrayList<ChatMessage> historyMsgs = new ArrayList<>();
+        List<ChatMessage> historyMsgs = new CopyOnWriteArrayList<>();
 
+        // Convert events into messages for display
         for (Object o : history) {
             if (o instanceof MessageDeliveredEvent) {
                 historyMsgs.add(ChatMessageImpl.getMsgForEvent((MessageDeliveredEvent) o));
@@ -753,13 +757,14 @@ public class ChatPanel implements Chat, MessageListener
         Timber.e("%s", evt.getReason());
 
         String errorMsg;
-        Message sourceMessage = (Message) evt.getSource();
-        Contact sourceContact = evt.getDestinationContact();
-        MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(sourceContact);
+        Message srcMessage = (Message) evt.getSource();
+
+        // contactJid cannot be nick name, otherwise message will not be displayed
+        String contactJid = evt.getDestinationContact().getAddress();
 
         if (evt.getErrorCode() == MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED) {
             errorMsg = aTalkApp.getResString(
-                    R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED, sourceContact.getDisplayName());
+                    R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED, contactJid);
         }
         else if (evt.getErrorCode() == MessageDeliveryFailedEvent.NETWORK_FAILURE) {
             errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_NOT_DELIVERED);
@@ -770,17 +775,21 @@ public class ChatPanel implements Chat, MessageListener
         else if (evt.getErrorCode() == MessageDeliveryFailedEvent.INTERNAL_ERROR) {
             errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
         }
+        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.OMEMO_SEND_ERROR) {
+            // Just show the pass in error message
+            errorMsg = evt.getReason();
+            evt.setReason(null);
+        }
         else {
             errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_ERROR);
         }
 
         String reason = evt.getReason();
-        if (reason != null)
+        if (!TextUtils.isEmpty(reason))
             errorMsg += " " + aTalkApp.getResString(R.string.service_gui_ERROR_WAS, reason);
 
-        addMessage(metaContact.getDisplayName(), new Date(), ChatMessage.MESSAGE_OUT,
-                sourceMessage.getMimeType(), sourceMessage.getContent());
-        addMessage(metaContact.getDisplayName(), new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, errorMsg);
+        addMessage(contactJid, new Date(), ChatMessage.MESSAGE_OUT, srcMessage.getMimeType(), srcMessage.getContent());
+        addMessage(contactJid, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, errorMsg);
     }
 
     /**
@@ -852,12 +861,14 @@ public class ChatPanel implements Chat, MessageListener
 
             if (isChatFocused()) {
                 final Activity activity = aTalkApp.getCurrentActivity();
-                activity.runOnUiThread(() -> {
-                    // cmeng: check instanceof just in case user change chat session
-                    if (mChatSession instanceof ConferenceChatSession) {
-                        ActionBarUtil.setSubtitle(activity, subject);
-                    }
-                });
+                if (activity != null) {
+                    activity.runOnUiThread(() -> {
+                        // cmeng: check instanceof just in case user change chat session
+                        if (mChatSession instanceof ConferenceChatSession) {
+                            ActionBarUtil.setSubtitle(activity, subject);
+                        }
+                    });
+                }
             }
             this.addMessage(mChatSession.getChatEntity(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
                     aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SUBJECT_CHANGED, mChatSession.getChatEntity(), subject));

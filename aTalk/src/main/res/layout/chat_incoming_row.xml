@@ -24,8 +24,8 @@
 
         <ImageView
             android:id="@+id/incomingStatusIcon"
-            android:layout_width="18dip"
-            android:layout_height="18dip"
+            android:layout_width="14dip"
+            android:layout_height="14dip"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
@@ -38,12 +38,13 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dip"
         android:layout_marginRight="30dip"
+        android:layout_marginBottom="4dp"
         android:layout_toEndOf="@+id/incomingAvatarView"
         android:layout_toRightOf="@+id/incomingAvatarView"
-        android:background="@drawable/message_holder"
+        android:background="@drawable/holder_message"
         android:gravity="start"
         android:orientation="vertical"
-        android:padding="7dip">
+        android:padding="7dip" >
 
         <TextView
             android:id="@+id/incomingJidView"
@@ -86,7 +87,7 @@
                 android:id="@+id/encStateView"
                 android:layout_width="18dip"
                 android:layout_height="18dip"
-                android:src="@drawable/crypto_omemo_verified" />
+                android:src="@drawable/encryption_omemo" />
 
             <TextView
                 android:id="@+id/incomingTimeView"
@@ -106,6 +107,7 @@
         android:layout_alignLeft="@+id/msg_body_layout"
         android:layout_alignStart="@+id/msg_body_layout"
         android:layout_marginLeft="-10dp"
+        android:layout_marginStart="-10dp"
         android:layout_marginTop="@dimen/chat_arrow_top"
         android:src="@drawable/messagearrowin_dark" />
 

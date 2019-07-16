@@ -3,7 +3,6 @@ package org.atalk.android.gui.account;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.view.*;
 import android.widget.*;
 
@@ -14,6 +13,8 @@ import org.atalk.android.gui.util.AndroidImageUtil;
 
 import java.util.Iterator;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class StatusListAdapter extends ArrayAdapter<PresenceStatus>
 {
@@ -33,13 +34,15 @@ public class StatusListAdapter extends ArrayAdapter<PresenceStatus>
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
         final View statusItemView;
 
         // Retrieve views
         if (convertView == null) {
             statusItemView = inflater.inflate(R.layout.account_presence_status_row, parent, false);
-        } else {
+        }
+        else {
             statusItemView = convertView;
         }
 
@@ -59,7 +62,8 @@ public class StatusListAdapter extends ArrayAdapter<PresenceStatus>
     }
 
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+    public View getDropDownView(int position, View convertView, ViewGroup parent)
+    {
         return getView(position, convertView, parent);
     }
 

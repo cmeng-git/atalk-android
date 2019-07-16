@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/screen_padding_small" >
+
+    <ListView
+        android:id="@+id/otrSessionListView"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:choiceMode="singleChoice"
+        android:listSelector="@drawable/array_list_selector" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="3dip"
+        android:layout_marginTop="5dip"
+        android:background="@color/contact_list_divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_Cancel"
+            style="@style/ButtonTop"
+            android:text="@string/service_gui_CANCEL" />
+
+        <View
+            android:id="@+id/centerShim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="2dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/btn_OK"
+            style="@style/ButtonTop"
+            android:text="@string/service_gui_OK" />
+    </LinearLayout>
+</LinearLayout>

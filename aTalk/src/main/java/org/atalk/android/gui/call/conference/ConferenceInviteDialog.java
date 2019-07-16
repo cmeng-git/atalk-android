@@ -188,7 +188,7 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
 
         this.setContentView(R.layout.videobridge_invite_dialog);
         contactListView = this.findViewById(R.id.ContactListView);
-        contactListView.setSelector(R.drawable.contact_list_selector);
+        contactListView.setSelector(R.drawable.array_list_selector);
         contactListView.setOnChildClickListener(this);
 
         // Adds context menu for contact list items

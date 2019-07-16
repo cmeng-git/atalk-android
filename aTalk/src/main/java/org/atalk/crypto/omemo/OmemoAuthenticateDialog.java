@@ -20,9 +20,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.ListView;
+import android.widget.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -53,6 +51,8 @@ import static org.atalk.android.R.id.fingerprint;
  */
 public class OmemoAuthenticateDialog extends OSGiActivity
 {
+    public final static String Corrupted_OmemoKey = "Corrupted OmemoKey, purge?";
+
     private static OmemoManager mOmemoManager;
     private static Set<OmemoDevice> mOmemoDevices;
     private static CryptoFragment mCryptoFragment;
@@ -113,24 +113,20 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         FingerprintStatus fpStatus;
 
         for (OmemoDevice device : mOmemoDevices) {
+            // Default all devices' trust to false
+            fingerprintCheck.put(device, false);
             try {
                 fingerprint = mOmemoManager.getFingerprint(device).toString();
                 buddyFingerprints.put(device, fingerprint);
 
                 fpStatus = mOmemoStore.getFingerprintStatus(device, fingerprint);
                 deviceFPStatus.put(device, fpStatus);
-            } catch (CannotEstablishOmemoSessionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotLoggedInException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (CorruptedOmemoKeyException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
+            } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException e) {
+                buddyFingerprints.put(device, Corrupted_OmemoKey);
+                deviceFPStatus.put(device, null);
+            } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException
+                    | SmackException.NoResponseException | InterruptedException e) {
+                Timber.w("Smack exception in fingerPrint fetch for omemo device: %s", device);
             }
         }
         return buddyFingerprints;
@@ -152,7 +148,12 @@ public class OmemoAuthenticateDialog extends OSGiActivity
             allTrusted = fpCheck && allTrusted;
             if (fpCheck) {
                 fingerprint = buddyFingerprints.get(omemoDevice);
-                trustOmemoFingerPrint(omemoDevice, fingerprint);
+                if (Corrupted_OmemoKey.equals(fingerprint)) {
+                    mOmemoStore.purgeOwnDeviceKeys(omemoDevice);
+                }
+                else {
+                    trustOmemoFingerPrint(omemoDevice, fingerprint);
+                }
             }
             else {
                 /* Do not change original fingerprint trust state */
@@ -183,7 +184,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
     private void executeDone(int chatType)
     {
         if (mCryptoFragment != null)
-            mCryptoFragment.updateStatusOmemo(chatType);
+            mCryptoFragment.onOmemoAuthenticateOK(chatType);
         finish();
     }
 

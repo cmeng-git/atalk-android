@@ -8,13 +8,13 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 
+import androidx.annotation.RequiresApi;
 import timber.log.Timber;
 
 public class FilePathHelper
@@ -121,7 +121,7 @@ public class FilePathHelper
                 String documentId = DocumentsContract.getDocumentId(uri);
 
                 if (isMediaDoc(uriAuthority)) {
-                    String idArr[] = documentId.split(":");
+                    String[] idArr = documentId.split(":");
                     if (idArr.length == 2) {
                         // First item is document type.
                         String docType = idArr[0];
@@ -155,7 +155,7 @@ public class FilePathHelper
 
                 }
                 else if (isExternalStoreDoc(uriAuthority)) {
-                    String idArr[] = documentId.split(":");
+                    String[] idArr = documentId.split(":");
                     if (idArr.length == 2) {
                         String type = idArr[0];
                         String realDocId = idArr[1];

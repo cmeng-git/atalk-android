@@ -8,7 +8,6 @@ package org.atalk.service.osgi;
 import android.app.*;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -17,6 +16,8 @@ import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 import org.atalk.impl.osgi.OSGiServiceImpl;
 
 import java.security.Security;
+
+import androidx.core.app.NotificationCompat;
 
 /**
  * Implements an Android {@link Service} which (automatically) starts and stops an OSGi framework (implementation).

@@ -1,8 +1,8 @@
 package org.atalk.impl.androidupdate;
 
 import android.app.*;
-import android.content.*;
-import android.support.v4.app.NotificationCompat;
+import android.content.Context;
+import android.content.Intent;
 
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
@@ -14,6 +14,8 @@ import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 import org.atalk.service.configuration.ConfigurationService;
 
 import java.util.Calendar;
+
+import androidx.core.app.NotificationCompat;
 
 public class OnlineUpdateService extends IntentService
 {

@@ -6,7 +6,6 @@
 package org.atalk.impl.androidtray;
 
 import android.app.PendingIntent;
-import android.support.v4.app.NotificationCompat;
 
 import net.java.sip.communicator.service.systray.AbstractPopupMessageHandler;
 import net.java.sip.communicator.service.systray.PopupMessage;
@@ -21,6 +20,7 @@ import org.atalk.service.osgi.OSGiService;
 
 import java.util.*;
 
+import androidx.core.app.NotificationCompat;
 import timber.log.Timber;
 
 /**

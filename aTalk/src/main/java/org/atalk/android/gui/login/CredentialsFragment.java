@@ -17,15 +17,17 @@
 package org.atalk.android.gui.login;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.*;
 import android.widget.*;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 
 import java.util.Arrays;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 /**
  * The credentials fragment can be used to retrieve username, password, the "store password" option status, login
@@ -44,7 +46,8 @@ import java.util.Arrays;
  *
  * @author Eng Chong Meng
  */
-public class CredentialsFragment extends Fragment {
+public class CredentialsFragment extends Fragment
+{
     /**
      * Pre-entered login argument.
      */
@@ -107,17 +110,17 @@ public class CredentialsFragment extends Fragment {
     private EditText mPasswordField;
     private CheckBox mShowPasswordCheckBox;
     private ImageView mShowPasswordImage;
-    private Spinner spinnerDM;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         Bundle args = getArguments();
         View content = inflater.inflate(R.layout.credentials, container, false);
 
-        spinnerDM = content.findViewById(R.id.dnssecModeSpinner);
+        Spinner spinnerDM = content.findViewById(R.id.dnssecModeSpinner);
         ArrayAdapter<CharSequence> adapterDM = ArrayAdapter.createFromResource(getActivity(),
                 R.array.dnssec_Mode_name, R.layout.simple_spinner_item);
         adapterDM.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
@@ -153,7 +156,8 @@ public class CredentialsFragment extends Fragment {
             mServerIpField.setText(args.getString(ARG_SERVER_ADDRESS));
             mServerPortField.setText(args.getString(ARG_SERVER_PORT));
             updateViewVisibility(isServerOverridden);
-        } else {
+        }
+        else {
             mServerIpField.setVisibility(View.GONE);
             mServerPortField.setVisibility(View.GONE);
         }
@@ -166,7 +170,8 @@ public class CredentialsFragment extends Fragment {
         return content;
     }
 
-    private void initializeViewListeners() {
+    private void initializeViewListeners()
+    {
         mShowPasswordCheckBox.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> showPassword(isChecked));
 
@@ -174,23 +179,27 @@ public class CredentialsFragment extends Fragment {
                 (buttonView, isChecked) -> updateViewVisibility(isChecked));
     }
 
-    private void showPassword(boolean show) {
+    private void showPassword(boolean show)
+    {
         int cursorPosition = mPasswordField.getSelectionStart();
         if (show) {
             mShowPasswordImage.setAlpha(1.0f);
             mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        } else {
+        }
+        else {
             mShowPasswordImage.setAlpha(0.3f);
             mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         }
         mPasswordField.setSelection(cursorPosition);
     }
 
-    private void updateViewVisibility(boolean IsServerOverridden) {
+    private void updateViewVisibility(boolean IsServerOverridden)
+    {
         if (IsServerOverridden) {
             mServerIpField.setVisibility(View.VISIBLE);
             mServerPortField.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else {
             mServerIpField.setVisibility(View.GONE);
             mServerPortField.setVisibility(View.GONE);
         }

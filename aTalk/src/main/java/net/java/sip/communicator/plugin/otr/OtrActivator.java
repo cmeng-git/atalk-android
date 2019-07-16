@@ -6,18 +6,19 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
+import net.java.otr4j.OtrPolicy;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
-import net.java.sip.communicator.service.gui.*;
+import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 import net.java.sip.communicator.util.AbstractServiceDependentActivator;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.atalk.android.gui.settings.ChatSecuritySettings;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
-import org.atalk.util.OSUtils;
 import org.osgi.framework.*;
 
 import java.util.*;
@@ -25,25 +26,22 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
+ * cmeng:
+ * The OtrActivator etc have been modified to be use in aTalk to support coexistence with OMEMO
+ *
  * @author George Politis
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
 public class OtrActivator extends AbstractServiceDependentActivator implements ServiceListener
 {
-    public static final String AUTO_INIT_OTR_PROP = "otr.AUTO_INIT_PRIVATE_MESSAGING";
     /**
      * A property used in configuration to disable the OTR plugin.
      */
     public static final String OTR_DISABLED_PROP = "otr.DISABLED";
-    /**
-     * A property specifying whether private messaging should be made mandatory.
-     */
-    public static final String OTR_MANDATORY_PROP = "otr.PRIVATE_MESSAGING_MANDATORY";
 
     /**
-     * Indicates if the security/chat config form should be disabled, i.e.
-     * not visible to the user.
+     * Indicates if the security/chat config form should be disabled, i.e. not visible to the user.
      */
     private static final String OTR_CHAT_CONFIG_DISABLED_PROP = "otr.otrchatconfig.DISABLED";
     /**
@@ -52,14 +50,12 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
     public static BundleContext bundleContext;
     /**
      * The {@link ConfigurationService} of the {@link OtrActivator}. Can also be
-     * obtained from the {@link OtrActivator#bundleContext} on demand, but we
-     * add it here for convenience.
+     * obtained from the {@link OtrActivator#bundleContext} on demand, but we add it here for convenience.
      */
     public static ConfigurationService configService;
     /**
-     * The {@link ResourceManagementService} of the {@link OtrActivator}. Can
-     * also be obtained from the {@link OtrActivator#bundleContext} on demand,
-     * but we add it here for convenience.
+     * The {@link ResourceManagementService} of the {@link OtrActivator}. Can also be obtained from the
+     * {@link OtrActivator#bundleContext} on demand, but we add it here for convenience.
      */
     public static ResourceManagementService resourceService;
 
@@ -162,34 +158,6 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
     }
 
     /**
-     * Returns the <tt>MetaContactListService</tt> obtained from the bundle
-     * context.
-     *
-     * @return the <tt>MetaContactListService</tt> obtained from the bundle
-     * context
-     */
-    public static MetaContactListService getContactListService()
-    {
-        if (metaCListService == null) {
-            metaCListService = ServiceUtils.getService(bundleContext, MetaContactListService.class);
-        }
-        return metaCListService;
-    }
-
-    /**
-     * Gets the service giving access to message history.
-     *
-     * @return the service giving access to message history.
-     */
-    public static MessageHistoryService getMessageHistoryService()
-    {
-        if (messageHistoryService == null) {
-            messageHistoryService = ServiceUtils.getService(bundleContext, MessageHistoryService.class);
-        }
-        return messageHistoryService;
-    }
-
-    /**
      * The dependent class. We are waiting for the ui service.
      *
      * @return the ui service class.
@@ -258,31 +226,35 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
         bundleContext = context;
     }
 
-    /*
+    /**
      * Implements AbstractServiceDependentActivator#start(UIService).
+     *
+     * @param dependentService the service this activator is waiting.
+     * @see ChatSecuritySettings #onSharedPreferenceChanged(SharedPreferences, String)
      */
     @Override
     public void start(Object dependentService)
     {
-        configService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
-        // Check whether someone has disabled this plug-in.
-        if (configService.getBoolean(OTR_DISABLED_PROP, false)) {
-            configService = null;
-            return;
-        }
-
-        resourceService = ResourceManagementServiceUtils.getService(bundleContext);
-        if (resourceService == null) {
-            configService = null;
-            return;
-        }
-
+        // Init all public static references used by other OTR classes
         uiService = (UIService) dependentService;
+        configService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
+        resourceService = ResourceManagementServiceUtils.getService(bundleContext);
 
-        // Init static variables, don't proceed without them.
+        // Init OTR static variables, do not proceed without them.
         scOtrEngine = new ScOtrEngineImpl();
         otrContactManager = new OtrContactManager();
         otrTransformLayer = new OtrTransformLayer();
+
+        // Check whether someone has disabled this plug-in (valid for encode enable only).
+        OtrPolicy otrPolicy = OtrActivator.scOtrEngine.getGlobalPolicy();
+        boolean isEnabled = !configService.getBoolean(OTR_DISABLED_PROP, false);
+        otrPolicy.setEnableManual(isEnabled);
+
+        // Disable AUTO_INIT_OTR_PROP & OTR_MANDATORY_PROP for aTalk implementation (saved to DB)
+        // may be removed in aTalk latest release once given sufficient time to user
+        otrPolicy.setEnableAlways(false);
+        otrPolicy.setRequireEncryption(false);
+        scOtrEngine.setGlobalPolicy(otrPolicy);
 
         // Register Transformation Layer
         bundleContext.addServiceListener(this);
@@ -298,19 +270,6 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
                 ProtocolProviderService provider = bundleContext.getService(protocolProviderRef);
                 handleProviderAdded(provider);
             }
-        }
-
-        // If the general configuration form is disabled don't register it.
-        if (!configService.getBoolean(OTR_CHAT_CONFIG_DISABLED_PROP, false)
-                && !OSUtils.IS_ANDROID) {
-            Dictionary<String, String> properties = new Hashtable<>();
-
-            properties.put(ConfigurationForm.FORM_TYPE, ConfigurationForm.SECURITY_TYPE);
-            // Register the configuration form.
-            bundleContext.registerService(ConfigurationForm.class.getName(),
-                    new LazyConfigurationForm("otr.authdialog.OtrConfigurationPanel",
-                            getClass().getClassLoader(), "plugin.otr.configform.ICON",
-                            "service.gui.CHAT", 1), properties);
         }
     }
 
@@ -344,5 +303,31 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
                 handleProviderRemoved(provider);
             }
         }
+    }
+
+    /**
+     * Returns the <tt>MetaContactListService</tt> obtained from the bundle context.
+     *
+     * @return the <tt>MetaContactListService</tt> obtained from the bundle context
+     */
+    public static MetaContactListService getContactListService()
+    {
+        if (metaCListService == null) {
+            metaCListService = ServiceUtils.getService(bundleContext, MetaContactListService.class);
+        }
+        return metaCListService;
+    }
+
+    /**
+     * Gets the service giving access to message history.
+     *
+     * @return the service giving access to message history.
+     */
+    public static MessageHistoryService getMessageHistoryService()
+    {
+        if (messageHistoryService == null) {
+            messageHistoryService = ServiceUtils.getService(bundleContext, MessageHistoryService.class);
+        }
+        return messageHistoryService;
     }
 }

@@ -76,12 +76,6 @@
     <string name="chatRoom_Subject">Тема</string>
     <string name="choose_file_activity_title">Выберите файл</string>
     <string name="menu_settings">Настройки</string>
-    <string name="status_available">Онлайн</string>
-    <string name="status_away">Далеко</string>
-    <string name="status_chat">Бесплатно для чата</string>
-    <string name="status_dnd">Не беспокоить</string>
-    <string name="status_offline">Offline</string>
-    <string name="status_xa">Недоступно</string>
     <string name="title_activity_attach_option_dialog">Отправить вложение</string>
     <string name="title_activity_activation_view">Активация</string>
 
@@ -121,7 +115,7 @@
     <string name="service_gui_AUTHORIZATION_REQUESTED_INFO">Контакт %1$s запрашивает ваше разрешение.</string>
     <string name="service_gui_AUTHORIZATION_REQUEST">Запрос авторизации</string>
     <string name="service_gui_AVATAR_HINT">Значок рекомендуется: 64 * 64 (96 * 96 пикселей квадратный максимум)</string>
-    <string name="service_gui_AWAY_STATUS">Away</string>
+    <string name="service_gui_AWAY_STATUS">Отошёл</string>
     <string name="service_gui_AVATAR_SET_ERROR">Не удалось установить аватар для %1$s</string>
 
     <string name="service_gui_BUSY_STATUS">Занято</string>
@@ -310,6 +304,7 @@
     <string name="service_gui_ERROR">Ошибка</string>
     <string name="service_gui_ERROR_WAS">Ошибка: %1$s</string>
 	<string name="service_gui_EXIT">Выход</string>
+    <string name="service_gui_EXTENDED_AWAY_STATUS">Давно отсутствую</string>
     <string name="service_gui_FAILED_STATUS">Не удалось выполнить вызов</string>
 	<string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Не удалось присоединиться к чату с именем: %1$s.</string>
     <string name="service_gui_FFC_STATUS">Бесплатно для чата</string>
@@ -477,7 +472,7 @@
 
 	<string name="service_gui_MSG_DELIVERY_ERROR">Не удалось доставить сообщение.</string>
     <string name="service_gui_MSG_DELIVERY_FAILURE">Приведенное выше сообщение не может быть доставлено</string>
-    <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Произошла внутренняя ошибка. Скорее всего, это ошибка. Сообщите об этом здесь: https://jitsi.org/Development/BugsAndIssues.</string>
+    <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Произошла внутренняя ошибка. Скорее всего, Пожалуйста, сообщите об этом через журнал отладки.</string>
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Используемый протокол не поддерживает автономные сообщения.
         Вы можете попытаться достигнуть %1$s через другой протокол или подождать, пока он/она не станет онлайн.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Неизвестная ошибка произошла при доставке вашего сообщения.</string>
@@ -578,7 +573,7 @@
     <string name="service_gui_UNKNOWN">Неизвестно</string>
     <string name="service_gui_UNKNOWN_USER">Неизвестный пользователь</string>
     <string name="service_gui_UNKNOWN_STATUS">Неизвестное состояние</string>
-    <string name="service_gui_URL_HINT">http://www.example.com</string>
+    <string name="service_gui_URL_HINT">https://www.example.com</string>
     <string name="service_gui_VOLUME_CONTROL_TITLE">Уровень усиления выходного объема</string>
     <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">Отрегулировать громкость</string>
     <string name="service_gui_VOLUME_GAIN_LEVEL">Уровень усиления уровня: %1$s%%</string>
@@ -933,7 +928,7 @@
     <string name="plugin_otr_activator_unreadablemsgreceived">%1$s отправил вам нечитаемое зашифрованное сообщение.</string>
     <string name="plugin_otr_activator_unreadablemsgreply">Вы отправили %1$s нечитаемое зашифрованное сообщение. Завершите свой приватный разговор %2$s или обновите его.</string>
     <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Неверный &lt;/b>закрытый разговор с %1$s.</string>
-    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s еще не завершена. Вы должны &lt;a href="atalk://%2$s/%3$s?%4$s">&lt;b>authenticate &lt;/b>&lt;/a>этот приятель.</string>
+    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s еще не завершена. Вы должны &lt;a href=\"atalk://%2$s/%3$s?%4$s\">&lt;b>authenticate &lt;/b>&lt;/a>этот приятель.</string>
 
     <!-- Crypto OMEMO -->
 	<string name="menu_crypto_plain_text">Обычный текст</string>
@@ -942,13 +937,14 @@
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
     <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs отсутствует для: %1$s</string>
     <string name="omemo_identity_key_invalid">Недопустимый IdentityKey для omemoDevice: %1$s.\nException: %2$s.</string>
-    <string name="omemo_identity_key_missing">OMEMO IdentityKey отсутствует для: %1$s</string>
+    <string name="omemo_identity_key_missing">OMEMO IdentityKey для %1$s отсутствует.\nПродолжить загрузку с сервера.</string>
     <string name="omemo_identity_keypairs_invalid">Недопустимый IdentityKeyPairs для omemoDevice: %1$s.\nException: %2$s.</string>
     <string name="omemo_init_failed_CorruptedOmemoKeyException">Инициализировать OmemoManager не удалось, и omemo обмен сообщениями не работает. Если проблема сохраняется
         после перезагрузки, перейдите к разделу «Зарегистрировать идентификаторы OMEMO» для отказавшего omomoDevice: %1$s.\n\nException: %2$s.</string>
     <string name="omemo_init_failed_noresponse">Инициализировать OmemoManager не удалось, и omemo обмен сообщениями может не работать должным образом: %1$s</string>
     <string name="omemo_init_failed_title">Ошибка initemoManager</string>
     <string name="omemo_menu_authenticated">OMEMO Authenticated</string>
+    <string name="omemo_send_error">Сообщение отправлено не удалось. Пожалуйста, попробуйте еще раз после того, как все ошибки были исправлены: %1$s</string>
     <string name="omemo_menu_unauthenticated">OMEMO unAuthenticated</string>
     <string name="omemo_menu_untrusted">OMEMO Un-Trusted</string>
     <string name="omemo_rebuild_session">Перестроить новый сеанс для отсутствия: %1$s</string>

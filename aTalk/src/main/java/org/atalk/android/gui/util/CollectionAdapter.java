@@ -151,7 +151,7 @@ public abstract class CollectionAdapter<T> extends BaseAdapter
      */
     protected void doRefreshList()
     {
-        parentActivity.runOnUiThread(() -> notifyDataSetChanged());
+        parentActivity.runOnUiThread(this::notifyDataSetChanged);
     }
 
     /**

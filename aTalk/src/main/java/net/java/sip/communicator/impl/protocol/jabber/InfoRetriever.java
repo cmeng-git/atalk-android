@@ -178,7 +178,7 @@ public class InfoRetriever
 
         tmp = card.getField("BDAY");
         if (tmp != null) {
-            Calendar birthDateCalendar = Calendar.getInstance();
+            BirthDateDetail birthDateDetail;
             Date birthDate = null;
             try {
                 DateFormat dateFormatMedium = new SimpleDateFormat(BDAY_FORMAT_MEDIUM, Locale.US);
@@ -192,11 +192,15 @@ public class InfoRetriever
                     Timber.w("%s %s",msg, ex.getMessage());
                 }
             }
+
             if (birthDate != null) {
+                Calendar birthDateCalendar = Calendar.getInstance();
                 birthDateCalendar.setTime(birthDate);
-                BirthDateDetail bd = new BirthDateDetail(birthDateCalendar);
-                result.add(bd);
-            }
+                birthDateDetail = new BirthDateDetail(birthDateCalendar);
+            } else
+                birthDateDetail = new BirthDateDetail(tmp);
+
+            result.add(birthDateDetail);
         }
         // Home Details addrField one of: POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR,
         // STREET, LOCALITY, REGION, PCODE, CTRY
@@ -320,17 +324,19 @@ public class InfoRetriever
         if (tmp != null)
             result.add(new AboutMeDetail(tmp));
 
-        // cmeng: it is normal for packet.EmptyResultIQ when contact does not have avatar
-        // uploaded
+        // cmeng: it is normal for packet.EmptyResultIQ when contact does not have avatar uploaded
         byte[] imageBytes = card.getAvatar();
         if (imageBytes != null && imageBytes.length > 0) {
             result.add(new ImageDetail("Image", imageBytes));
         }
+
+        // add as string context if not a valid URL
+        tmp = card.getField("URL");
         try {
-            tmp = card.getField("URL");
             if (tmp != null)
                 result.add(new URLDetail("URL", new URL(tmp)));
         } catch (MalformedURLException ex) {
+            result.add(new URLDetail("URL", tmp));
             Timber.w("%s %s", msg, ex.getMessage());
         }
 

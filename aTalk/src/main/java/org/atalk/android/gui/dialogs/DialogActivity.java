@@ -7,8 +7,6 @@ package org.atalk.android.gui.dialogs;
 
 import android.content.*;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -19,6 +17,9 @@ import org.atalk.service.osgi.OSGiActivity;
 
 import java.io.Serializable;
 import java.util.*;
+
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 /**
  * <tt>DialogActivity</tt> can be used to display alerts without having parent <tt>Activity</tt>

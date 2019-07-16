@@ -1,12 +1,12 @@
-/**
- *
- * Copyright 2017 Paul Schaub
+/*
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,16 +17,14 @@
 package org.atalk.crypto.listener;
 
 /**
- * Listener interface that allows implementations to receive decrypted OMEMO messages.
+ * Listener interface that allows implementations to receive crypto mode change event.
  *
- * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public interface CryptoModeChangeListener
 {
     /**
-     * Gets called, whenever an OmemoMessage has been received and was successfully decrypted.
-     *
+     * Get called, whenever an there is a change in the cryptoMode.
      */
     void onCryptoModeChange(int cryptoMode);
-
 }

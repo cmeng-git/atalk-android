@@ -190,7 +190,7 @@ public class MetaContactRenderer implements UIContactRenderer
     {
         byte[] statusImage = getStatusImage(metaContact);
 
-        if (statusImage != null)
+        if ((statusImage != null) && (statusImage.length > 0))
             return AndroidImageUtil.drawableFromBytes(statusImage);
 
         return null;

@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.BackgroundManager;

@@ -92,8 +92,6 @@ public class PropertiesMigrate
         String value;
 
         mDB = db;
-        String otrGlobal = "GLOBAL_POLICY,AUTO_INIT_PRIVATE_MESSAGING,PRIVATE_MESSAGING_MANDATORY";
-
         Cursor cursor = propertiesDB.query(TBL_PROPERTIES, null, null, null, null, null, null);
         int columnName = cursor.getColumnIndex("Name");
         int columnValue = cursor.getColumnIndex("Value");

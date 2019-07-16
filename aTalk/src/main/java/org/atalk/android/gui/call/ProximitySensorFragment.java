@@ -6,17 +6,16 @@
 package org.atalk.android.gui.call;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.hardware.*;
 import android.os.Bundle;
-import android.support.v4.app.*;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.service.osgi.OSGiActivity;
+import org.jetbrains.annotations.NotNull;
 
+import androidx.fragment.app.*;
 import timber.log.Timber;
 
 /**
@@ -133,8 +132,7 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
      */
     private void screenOff()
     {
-        // ScreenOff exist - proximity detection screen on is out of sync; so just reuse the
-        // existing one
+        // ScreenOff exist - proximity detection screen on is out of sync; so just reuse the existing one
 //		if (screenOffDialog != null) {
 //			Timber.w("screenOffDialog exist when trying to perform screenOff");
 //		}
@@ -151,9 +149,9 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
             screenOffDialog.dismiss();
             screenOffDialog = null;
         }
-        else {
+//        else {
 //			Timber.w("screenOffDialog was null when trying to perform screenOn");
-        }
+//        }
     }
 
     /**
@@ -191,36 +189,33 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
             volControl = null;
         }
 
+        @NotNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState)
         {
-            setStyle(R.style.ScreenOffDialog, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+            setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
 
             Dialog d = super.onCreateDialog(savedInstanceState);
             d.setContentView(R.layout.screen_off);
 
             d.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                     | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            d.setOnKeyListener(new DialogInterface.OnKeyListener()
-            {
-                @Override
-                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event)
-                {
-                    // Capture all events, but dispatch volume keys to volume control fragment
-                    if (volControl != null && event.getAction() == KeyEvent.ACTION_DOWN) {
-                        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                            volControl.onKeyVolUp();
-                        }
-                        else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                            volControl.onKeyVolDown();
-                        }
-                        // Exit Screen Lock
-                        else if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            onResume();
-                        }
+
+            d.setOnKeyListener((dialog, keyCode, event) -> {
+                // Capture all events, but dispatch volume keys to volume control fragment
+                if (volControl != null && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                        volControl.onKeyVolUp();
                     }
-                    return true;
+                    else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                        volControl.onKeyVolDown();
+                    }
+                    // Exit Screen Lock
+                    else if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        onResume();
+                    }
                 }
+                return true;
             });
             return d;
         }

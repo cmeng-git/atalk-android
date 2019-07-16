@@ -76,12 +76,6 @@
     <string name="chatRoom_Subject">Subjek</string>
     <string name="choose_file_activity_title">Pilih fail</string>
     <string name="menu_settings">Pengaturan</string>
-    <string name="status_available">Online</string>
-    <string name="status_away">Away</string>
-    <string name="status_chat">Gratis untuk obrolan</string>
-    <string name="status_dnd">Jangan ganggu</string>
-    <string name="status_offline">Offline</string>
-    <string name="status_xa">Tidak tersedia</string>
     <string name="title_activity_attach_option_dialog">Kirim lampiran</string>
     <string name="title_activity_activation_view">Aktivasi</string>
 
@@ -307,6 +301,7 @@
     <string name="service_gui_ERROR">Kesalahan</string>
     <string name="service_gui_ERROR_WAS">Kesalahannya adalah: %1$s</string>
     <string name="service_gui_EXIT">Tinggal</string>
+    <string name="service_gui_EXTENDED_AWAY_STATUS">Meninggal lama</string>
     <string name="service_gui_FAILED_STATUS">Panggilan gagal</string>
     <string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Gagal bergabung ke ruang obrolan dengan nama: %1$s.</string>
     <string name="service_gui_FFC_STATUS">Gratis untuk obrolan</string>
@@ -475,7 +470,7 @@
 
 	<string name="service_gui_MSG_DELIVERY_ERROR">Gagal mengirim pesan.</string>
     <string name="service_gui_MSG_DELIVERY_FAILURE">Pesan di atas tidak dapat dikirim</string>
-    <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Terjadi kesalahan internal. Ini kemungkinan besar bug. Silakan laporkan di sini: https://jitsi.org/Development/BugsAndIssues.</string>
+    <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Terjadi kesalahan internal. Ini kemungkinan besar bug. Silakan laporkan melalui log debug.</string>
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Protokol yang Anda gunakan tidak mendukung pesan offline.
         Anda dapat mencoba menjangkau %1$s melalui protokol lain atau menunggu hingga dia online.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Kesalahan tidak dikenal telah terjadi saat mengirim pesan Anda.</string>
@@ -575,7 +570,7 @@
     <string name="service_gui_UNKNOWN">Tidak diketahui</string>
     <string name="service_gui_UNKNOWN_USER">Pengguna tidak dikenal</string>
     <string name="service_gui_UNKNOWN_STATUS">Kondisi tidak dikenal</string>
-    <string name="service_gui_URL_HINT">http://www.example.com</string>
+    <string name="service_gui_URL_HINT">https://www.example.com</string>
     <string name="service_gui_VOLUME_CONTROL_TITLE">Tingkat penguatan volume output</string>
     <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">Menyesuaikan volume</string>
     <string name="service_gui_VOLUME_GAIN_LEVEL">Level penguatan volume: %1$s %%</string>
@@ -929,7 +924,7 @@
     <string name="plugin_otr_activator_unreadablemsgreceived">%1$s mengirimi Anda pesan terenkripsi yang tidak dapat dibaca.</string>
     <string name="plugin_otr_activator_unreadablemsgreply">Anda mengirim %1$s pesan terenkripsi yang tidak terbaca. Akhiri percakapan pribadi Anda dengan %2$s atau segarkan.</string>
     <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Percakapan&lt;/b>percakapan pribadi dengan %1$s dimulai.</string>
-    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s belum diotentikasi. Anda harus&lt;a href="atalk://%2$s/%3$s? %4$s">&lt;b>mengautentikasi&lt;/b>&lt;/a>teman ini.</string>
+    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s belum diotentikasi. Anda harus&lt;a href=\"atalk://%2$s/%3$s? %4$s\">&lt;b>mengautentikasi&lt;/b>&lt;/a>teman ini.</string>
 
     <!-- Crypto OMEMO -->
     <string name="menu_crypto_plain_text">Teks Biasa</string>
@@ -938,13 +933,14 @@
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Sidik Jari Saya %1$s:\n %2$s</string>
     <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs tidak ada untuk: %1$s</string>
     <string name="omemo_identity_key_invalid">IdentitasKey Tidak Valid untuk omemoDevice: %1$s.\nEksepsi: %2$s.</string>
-    <string name="omemo_identity_key_missing">OMEMO IdentityKey tidak ada untuk: %1$s</string>
+    <string name="omemo_identity_key_missing">OMEMO IdentityKey untuk %1$s tidak ada.\nLanjutkan untuk mengunduh dari server.</string>
     <string name="omemo_identity_keypairs_invalid">IdentitasKeyPairs Tidak Valid untuk omemoDevice: %1$s.\nEksepsi: %2$s.</string>
     <string name="omemo_init_failed_CorruptedOmemoKeyException">Inisialisasi OmemoManager telah gagal dan pesan omemo tidak berfungsi. Jika masalah berlanjut
         setelah memulai ulang, lanjutkan ke "Regungkan identitas OMEMO" untuk omomoDevice yang gagal: %1$s.\n\nPersepsi: %2$s.</string>
     <string name="omemo_init_failed_noresponse">Inisialisasi OmemoManager telah gagal dan pesan omemo mungkin tidak berfungsi dengan baik: %1$s</string>
     <string name="omemo_init_failed_title">OmemoManager init gagal</string>
     <string name="omemo_menu_authenticated">OMEMO Autentikasi</string>
+    <string name="omemo_send_error">Pengiriman pesan gagal. Silakan coba lagi setelah semua kesalahan diperbaiki: %1$s</string>
     <string name="omemo_menu_unauthenticated">OMEMO unAuthenticated</string>
     <string name="omemo_menu_untrusted">OMEMO Tidak Dipercayai</string>
     <string name="omemo_rebuild_session">Rekonstruksi sesi baru karena hilang: %1$s</string>

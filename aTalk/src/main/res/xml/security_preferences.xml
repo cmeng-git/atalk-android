@@ -9,22 +9,7 @@
             android:key="@string/pref_key_crypto_enable"
             android:summaryOff="@string/service_gui_settings_CRYPTO_ENABLE_OFF"
             android:summaryOn="@string/service_gui_settings_CRYPTO_ENABLE_ON"
-            android:title="@string/service_gui_settings_CRYPTO_ENABLE_TITLE"
-            />
-        <CheckBoxPreference
-            android:dependency="@string/pref_key_crypto_enable"
-            android:key="@string/pref_key_otr_auto"
-            android:summaryOff="@string/service_gui_settings_CRYPTO_AUTO_OFF"
-            android:summaryOn="@string/service_gui_settings_CRTOTI_AUTO_ON"
-            android:title="@string/service_gui_settings_CRYPTO_AUTO_TITLE"
-            />
-        <CheckBoxPreference
-            android:dependency="@string/pref_key_crypto_enable"
-            android:key="@string/pref_key_crypto_require"
-            android:summaryOff="@string/service_gui_settings_CRYPTO_REQUIRE_OFF"
-            android:summaryOn="@string/service_gui_settings_CRYPTO_REQUIRE_ON"
-            android:title="@string/service_gui_settings_CRYPTO_REQUIRE_TITLE"
-            />
+            android:title="@string/service_gui_settings_CRYPTO_ENABLE_TITLE" />
     </PreferenceCategory>
 
     <PreferenceCategory

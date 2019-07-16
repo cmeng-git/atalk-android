@@ -22,11 +22,8 @@ import android.content.ClipboardManager;
 import android.content.*;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.*;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.text.*;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -40,7 +37,6 @@ import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
-import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.*;
@@ -67,6 +63,10 @@ import java.io.File;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import timber.log.Timber;
 
 /**
@@ -228,7 +228,7 @@ public class ChatFragment extends OSGiFragment
 
         chatStateView = mCFView.findViewById(R.id.chatStateView);
         chatListView.setAdapter(chatListAdapter);
-        chatListView.setSelector(R.drawable.contact_list_selector);
+        chatListView.setSelector(R.drawable.array_list_selector);
         initListViewListeners();
 
         // Chat intent handling - chatId should not be null
@@ -844,12 +844,15 @@ public class ChatFragment extends OSGiFragment
         }
 
         /**
-         * Inserts given <tt>Collection</tt> of <tt>ChatMessage</tt> at the beginning of the list.
+         * Inserts given <tt>CopyOnWriteArrayList</tt> of <tt>ChatMessage</tt> at the beginning of the list.
          * synchronized to avoid java.util.ConcurrentModificationException on receive history messages
+         * - seems still happen so use CopyOnWriteArrayList at ChanPanel#LoadHistory()
          *
-         * @param chatMessages the collection of <tt>ChatMessage</tt> to prepend.
+         * List<ChatMessage> chatMessages = new CopyOnWriteArrayList<>() to avoid ConcurrentModificationException
+         *
+         * @param chatMessages the CopyOnWriteArrayList of <tt>ChatMessage</tt> to prepend.
          */
-        private synchronized void prependMessages(Collection<ChatMessage> chatMessages)
+        private synchronized void prependMessages(List<ChatMessage> chatMessages)
         {
             List<MessageDisplay> newMsgs = new ArrayList<>();
             MessageDisplay previous = null;
@@ -1041,7 +1044,7 @@ public class ChatFragment extends OSGiFragment
         {
             // Position must be aligned to the number of header views included
             int cPos = position - chatListView.getHeaderViewsCount();
-            Boolean isMsgIn = (INCOMING_MESSAGE_VIEW == getItemViewType(cPos));
+            boolean isMsgIn = (INCOMING_MESSAGE_VIEW == getItemViewType(cPos));
             ChatMessage chatMessage = chatListAdapter.getMessage(cPos);
 
             String body = chatMessage.getMessage();
@@ -1212,7 +1215,8 @@ public class ChatFragment extends OSGiFragment
                         messageViewHolder.jidView.setText(chatMessage.getContactDisplayName() + ":");
                         setEncState(messageViewHolder.encStateView, msgDisplay.getEncryption());
                     }
-                    if (messageViewHolder.viewType == OUTGOING_MESSAGE_VIEW) {
+                    if (messageViewHolder.viewType == OUTGOING_MESSAGE_VIEW
+                            || messageViewHolder.viewType == CORRECTED_MESSAGE_VIEW) {
                         setEncState(messageViewHolder.encStateView, msgDisplay.getEncryption());
                     }
                     updateStatusAndAvatarView(messageViewHolder, jid);
@@ -1232,7 +1236,12 @@ public class ChatFragment extends OSGiFragment
 
                 // check and make link clickable if it is not an HTTP file link
                 Spannable body = (Spannable) msgDisplay.getBody();
-                if (!body.toString().matches("(?s)^aesgcm:.*"))  {
+
+                // OTR system messages must use setMovementMethod to make the link clickable
+                if (messageViewHolder.viewType == SYSTEM_MESSAGE_VIEW) {
+                    messageViewHolder.messageView.setMovementMethod(LinkMovementMethod.getInstance());
+                }
+                else if (!TextUtils.isEmpty(body) && !body.toString().matches("(?s)^aesgcm:.*")) {
                     Linkify.addLinks(body, Linkify.ALL);
                     // Set up link movement method i.e. make all links in TextView clickable
                     messageViewHolder.messageView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -1383,6 +1392,7 @@ public class ChatFragment extends OSGiFragment
             Timber.d("Contact presence status changed: %s", sourceContact.getAddress());
 
             if ((chatPanel.getMetaContact() != null) && chatPanel.getMetaContact().containsContact(sourceContact)) {
+                mCryptoFragment.onContactPresenceStatusChanged();
                 new UpdateStatusTask().execute();
             }
         }
@@ -1610,7 +1620,7 @@ public class ChatFragment extends OSGiFragment
              */
             public Spanned getBody()
             {
-                if (body == null) {
+                if ((body == null) && !TextUtils.isEmpty(msg.getMessage())) {
                     try { // cannot assume null body = html message
                         body = Html.fromHtml(msg.getMessage(), imageGetter, null);
                         Pattern urlMatcher = Pattern.compile("\\b[A-Za-z]+://[A-Za-z0-9:./?=]+\\b");
@@ -1691,7 +1701,7 @@ public class ChatFragment extends OSGiFragment
      * Loads the history in an asynchronous thread and then adds the history messages to the user
      * interface.
      */
-    private class LoadHistoryTask extends AsyncTask<Void, Void, Collection<ChatMessage>>
+    private class LoadHistoryTask extends AsyncTask<Void, Void, List<ChatMessage>>
     {
         /**
          * Indicates that history is being loaded for the first time.
@@ -1716,13 +1726,13 @@ public class ChatFragment extends OSGiFragment
         }
 
         @Override
-        protected Collection<ChatMessage> doInBackground(Void... params)
+        protected List<ChatMessage> doInBackground(Void... params)
         {
             return chatPanel.getHistory(init);
         }
 
         @Override
-        protected void onPostExecute(Collection<ChatMessage> result)
+        protected void onPostExecute(List<ChatMessage> result)
         {
             super.onPostExecute(result);
             chatListAdapter.prependMessages(result);
@@ -1777,8 +1787,8 @@ public class ChatFragment extends OSGiFragment
     public void setAvatar(ImageView avatarView, Drawable avatarDrawable)
     {
         if (avatarDrawable == null) {
-            // avatarDrawable = aTalkApp.getAppResources().getDrawable(R.drawable.avatar);
-            avatarDrawable = ContextCompat.getDrawable(aTalkApp.getGlobalContext(), R.drawable.avatar);
+            // avatarDrawable = aTalkApp.getAppResources().getDrawable(R.drawable.contact_avatar);
+            avatarDrawable = ContextCompat.getDrawable(aTalkApp.getGlobalContext(), R.drawable.contact_avatar);
         }
         if (avatarView != null) {
             avatarView.setImageDrawable(avatarDrawable);
@@ -2028,7 +2038,7 @@ public class ChatFragment extends OSGiFragment
         {
             long maxFileLength = currentChatTransport.getMaximumFileLength();
             if (mFile.length() > maxFileLength) {
-                chatPanel.addMessage(currentChatTransport.getDisplayName(), new Date(), ChatMessage.MESSAGE_ERROR,
+                chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
                         Message.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG,
                                 ByteFormat.format(maxFileLength)));
 
@@ -2102,11 +2112,11 @@ public class ChatFragment extends OSGiFragment
             if (ex != null) {
                 Timber.e(ex, "Failed to send file.");
                 if (ex instanceof IllegalStateException) {
-                    chatPanel.addMessage(currentChatTransport.getDisplayName(), new Date(), ChatMessage.MESSAGE_ERROR,
+                    chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
                             Message.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM));
                 }
                 else {
-                    chatPanel.addMessage(currentChatTransport.getDisplayName(), new Date(), ChatMessage.MESSAGE_ERROR,
+                    chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
                             Message.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_DELIVERY_ERROR, ex.getMessage()));
                 }
             }

@@ -6,6 +6,24 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.0.0 (07/16/2019)" versioncode="1100">
+        <change>Harmonize aTalk UI presentation</change>
+        <change>Enhance user/contact presence status with additional icon/status indicators</change>
+        <change>Ensure OMEMO session setup with undecided contact omemoDevices is updated correctly based on return status</change>
+        <change>Alert user of undelivered OMEMO message due to Undecided Omemo Identity Exception etc</change>
+        <change>Fix incomplete Omemo Identity regenerate implementation</change>
+        <change>Remove unused OTR Messaging Security options in Settings...</change>
+        <change>Fix OTR system message links not response to user clicks</change>
+        <change>Crypto OTR item menu changes dynamically in response to contact presence status change</change>
+        <change>Implement OTR multi-sessions outgoing session switcher</change>
+        <change>Fix and implement media files delete for \'Erase this contact/chatRoom history\'</change>
+        <change>Enable \'Send attachment\' option access in conference</change>
+        <change>Launch chatRoom info as dialog and enhance its information content</change>
+        <change>Migrate aTalk to use androidx support libraries</change>
+        <change>aTalk minimum installed android device OS version is 4.4 (KitKat) i.e. API-19</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="1.8.8 (06/26/2019)" versioncode="1088">
         <change>Implement XEP-0070: Verify HTTP Requests via XMPP entity to confirm it made the request, improving user experience</change>
         <change>Improve webView user interface and provide proper handling of non-url links on user click</change>

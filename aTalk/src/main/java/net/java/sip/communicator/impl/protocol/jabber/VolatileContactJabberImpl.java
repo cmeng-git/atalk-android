@@ -21,7 +21,7 @@ public class VolatileContactJabberImpl extends ContactJabberImpl
     /**
      * This contact id
      */
-    private Jid contactId = null;
+    private Jid contactId;
 
     /**
      * Indicates whether the contact is private messaging contact or not.

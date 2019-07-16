@@ -203,7 +203,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
     @Override
     public boolean equals(Object obj)
     {
-        if (obj == null || !(obj instanceof PresenceStatus))
+        if (!(obj instanceof PresenceStatus))
             return false;
 
         PresenceStatus status = (PresenceStatus) obj;
