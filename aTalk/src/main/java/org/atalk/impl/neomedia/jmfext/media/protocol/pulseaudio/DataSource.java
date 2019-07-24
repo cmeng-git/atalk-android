@@ -156,8 +156,8 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 
             MediaServiceImpl mediaServiceImpl = NeomediaServiceUtils.getMediaServiceImpl();
 
-            gainControl = (mediaServiceImpl == null) ? null : (GainControl) mediaServiceImpl
-                    .getInputVolumeControl();
+            gainControl = (mediaServiceImpl == null)
+                    ? null : (GainControl) mediaServiceImpl.getInputVolumeControl();
         }
 
         /**

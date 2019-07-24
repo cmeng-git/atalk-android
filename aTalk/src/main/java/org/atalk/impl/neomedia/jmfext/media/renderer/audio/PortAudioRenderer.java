@@ -408,7 +408,8 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
                         supportedInputFormats.add(new AudioFormat(
                                 audioFormat.getEncoding(),
                                 sampleRate,
-                                sampleSizeInBits, channels,
+                                sampleSizeInBits,
+                                channels,
                                 audioFormat.getEndian(),
                                 audioFormat.getSigned(),
                                 Format.NOT_SPECIFIED /* frameSizeInBits */,

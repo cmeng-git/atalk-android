@@ -23,8 +23,7 @@ import javax.media.renderer.VideoRenderer;
 import timber.log.Timber;
 
 /**
- * Implements a <tt>VideoRenderer</tt> which uses JAWT to perform native painting in an AWT or Swing
- * <tt>Component</tt>.
+ * Implements a <tt>VideoRenderer</tt> which uses JAWT to perform native painting in an AWT or Swing <tt>Component</tt>.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -95,8 +94,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
      * @param handle the handle to the native counterpart of a <tt>JAWTRenderer</tt> as returned by
      * {@link #open(Component)} which is to be closed
      * @param component the AWT <tt>Component</tt> into which the <tt>JAWTRenderer</tt> and its native
-     * counterpart are drawing. The platform-specific info of <tt>component</tt> is not
-     * guaranteed to be valid.
+     * counterpart are drawing. The platform-specific info of <tt>component</tt> is not guaranteed to be valid.
      */
     private static native void close(long handle, Component component);
 
@@ -108,8 +106,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
      * counterpart to be opened are to draw. The platform-specific info of <tt>component</tt>
      * is not guaranteed to be valid.
      * @return a handle to a native counterpart of a <tt>JAWTRenderer</tt> which is to draw into
-     * the
-     * specified AWT <tt>Component</tt>
+     * the specified AWT <tt>Component</tt>
      * @throws ResourceUnavailableException if there is a problem during opening
      */
     private static native long open(Component component)
@@ -123,8 +120,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
      * the specified AWT <tt>Component</tt>
      * @param component the AWT <tt>Component</tt> into which the <tt>JAWTRenderer</tt> and its native
      * counterpart specified by <tt>handle</tt> are to draw. The platform-specific info of
-     * <tt>component</tt> is guaranteed to be valid only during the execution of
-     * <tt>paint</tt>.
+     * <tt>component</tt> is guaranteed to be valid only during the execution of <tt>paint</tt>.
      * @param g the <tt>Graphics</tt> context into which the drawing is to be performed
      * @param zOrder
      * @return <tt>true</tt> if the native counterpart of a <tt>JAWTRenderer</tt> wants to continue
@@ -181,7 +177,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
      * {@link #reflectInputFormatOnComponent()} into the AWT event dispatching thread.
      */
     private final Runnable reflectInputFormatOnComponentInEventDispatchThread
-            = () -> reflectInputFormatOnComponentInEventDispatchThread();
+            = this::reflectInputFormatOnComponentInEventDispatchThread;
 
     /**
      * The last known width of the input processed by this <tt>JAWTRenderer</tt>.
@@ -243,9 +239,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
 
             try {
                 Class<?> componentClass = Class.forName(componentClassName.toString());
-                Constructor<?> componentConstructor
-                        = componentClass.getConstructor(JAWTRenderer.class);
-
+                Constructor<?> componentConstructor = componentClass.getConstructor(JAWTRenderer.class);
                 component = (Component) componentConstructor.newInstance(this);
             } catch (ClassNotFoundException cnfe) {
                 reflectiveOperationException = cnfe;
@@ -322,8 +316,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
     /**
      * Opens this <tt>PlugIn</tt> and acquires the resources that it needs to operate. The input
      * format of this <tt>Renderer</tt> has to be set before <tt>open</tt> is called. Buffers
-     * should
-     * not be passed into this <tt>PlugIn</tt> without first calling <tt>open</tt>.
+     * should not be passed into this <tt>PlugIn</tt> without first calling <tt>open</tt>.
      *
      * @throws ResourceUnavailableException if there is a problem during opening
      */
@@ -345,8 +338,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
 
                 handle = open(component);
                 if (handle == 0) {
-                    throw new ResourceUnavailableException(
-                            "Failed to open the native JAWTRenderer.");
+                    throw new ResourceUnavailableException("Failed to open the native JAWTRenderer.");
                 }
             }
             else {
@@ -354,17 +346,15 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
                 component = null;
             }
         }
-        // The #addNotify() invocation, if any, should happen outside the
-        // synchronized block in order to avoid a deadlock.
+        // The #addNotify() invocation, if any, should happen outside the synchronized block in order to avoid a deadlock.
         if (addNotify) {
-            SwingUtilities.invokeLater(() -> component.addNotify());
+            SwingUtilities.invokeLater(component::addNotify);
         }
     }
 
     /**
      * Processes the data provided in a specific <tt>Buffer</tt> and renders it to the output
-     * device
-     * represented by this <tt>Renderer</tt>.
+     * device represented by this <tt>Renderer</tt>.
      *
      * @param buffer a <tt>Buffer</tt> containing the data to be processed and rendered
      * @return <tt>BUFFER_PROCESSED_OK</tt> if the processing is successful; otherwise, the other
@@ -415,7 +405,6 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
                 if (repaint)
                     component.repaint();
             }
-
             return BUFFER_PROCESSED_OK;
         }
     }
@@ -423,10 +412,8 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
     /**
      * Sets properties of the AWT <tt>Component</tt> of this <tt>Renderer</tt> which depend on the
      * properties of the <tt>inputFormat</tt> of this <tt>Renderer</tt>. Makes sure that the
-     * procedure is executed on the AWT event dispatching thread because an AWT
-     * <tt>Component</tt>'s
-     * properties (such as <tt>preferredSize</tt>) should be accessed in the AWT event dispatching
-     * thread.
+     * procedure is executed on the AWT event dispatching thread because an AWT <tt>Component</tt>'s
+     * properties (such as <tt>preferredSize</tt>) should be accessed in the AWT event dispatching thread.
      */
     private void reflectInputFormatOnComponent()
     {
@@ -499,8 +486,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
      *
      * @param component the AWT <tt>Component</tt> into which this <tt>VideoRenderer</tt> is to draw
      * @return <tt>true</tt> if this <tt>VideoRenderer</tt> accepted the specified
-     * <tt>component</tt> as the AWT <tt>Component</tt> into which it is to draw;
-     * <tt>false</tt>, otherwise
+     * <tt>component</tt> as the AWT <tt>Component</tt> into which it is to draw; <tt>false</tt>, otherwise
      */
     @Override
     public boolean setComponent(Component component)
@@ -516,8 +502,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
      * @return the <tt>Format</tt> of the input to be processed by this <tt>Renderer</tt> if the
      * specified <tt>format</tt> is supported or <tt>null</tt> if the specified
      * <tt>format</tt> is not supported by this <tt>Renderer</tt>. Typically, it is the
-     * supported input <tt>Format</tt> which most closely matches the specified
-     * <tt>Format</tt>.
+     * supported input <tt>Format</tt> which most closely matches the specified <tt>Format</tt>.
      */
     @Override
     public synchronized Format setInputFormat(Format format)
@@ -553,8 +538,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
     }
 
     /**
-     * Starts the rendering process. Begins rendering any data available in the internal buffers of
-     * this <tt>Renderer</tt>.
+     * Starts the rendering process. Begins rendering any data available in the internal buffers of this <tt>Renderer</tt>.
      */
     @Override
     public void start()

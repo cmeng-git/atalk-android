@@ -146,7 +146,7 @@ public class MclStorageManager implements MetaContactListListener
             String protoGroupUID = cursor.getString(cursor.getColumnIndex(MetaContactGroup.PROTO_GROUP_UID));
             String persistentData = cursor.getString(cursor.getColumnIndex(MetaContactGroup.PERSISTENT_DATA));
 
-            Timber.i("### Fetching contact group: %s: %s for %s", parentProtoGroupUID, protoGroupUID, accountUuid);
+            Timber.d("### Fetching contact group: %s: %s for %s", parentProtoGroupUID, protoGroupUID, accountUuid);
             if (ContactGroup.ROOT_GROUP_UID.equals(groupUID)) {
                 metaGroup = mclServiceImpl.rootMetaGroup;
                 parentProtoGroup = null;
@@ -349,7 +349,7 @@ public class MclStorageManager implements MetaContactListListener
             String mcGroupName = "mcGroupNull";
             if (mcGroup != null)
                 mcGroupName = mcGroup.getGroupName();
-            Timber.e("Abort metaContactGroup creation without a parent for: %s", mcGroupName);
+            Timber.d("Abort metaContactGroup creation without a parent for: %s", mcGroupName);
             return;
         }
         createMetaContactGroupEntry(mcGroup);
@@ -375,14 +375,13 @@ public class MclStorageManager implements MetaContactListListener
          */
         String mcGroupName = findMetaContactGroupEntry(mcGroupUid);
         if ((MetaContactGroupEvent.CONTACT_GROUP_ADDED_TO_META_GROUP != evt.getEventID()) && (mcGroupName == null)) {
-            Timber.w("Failed to find modifying metaContactGroup: %s", mcGroup.getGroupName());
-            new Exception("May ignore - for debug only").printStackTrace();
+            Timber.d("Ignore debug ref: Failed to find modifying metaContactGroup: %s", mcGroup.getGroupName());
             return;
         }
 
         // Modification to the root entry in the table is strictly not allowed
         if (ContactGroup.ROOT_GROUP_UID.equals(mcGroupUid)) {
-            Timber.w("### Ignore attempt to modify root group! %s", evt.toString());
+            Timber.d("### Ignore attempt to modify root group! %s", evt.toString());
             return;
         }
 
@@ -425,7 +424,7 @@ public class MclStorageManager implements MetaContactListListener
         // contact is removed - already triggered and removed in contactGroupRemovedFromMetaGroup()
         String mcGroupUid = mcGroup.getMetaUID();
         if (findMetaContactGroupEntry(mcGroupUid) == null) {
-            Timber.w("Failed to find metaContactGroup for removal (may have been removed): %s", mcGroup.getGroupName());
+            Timber.d("Failed to find metaContactGroup for removal (may have been removed): %s", mcGroup.getGroupName());
             return;
         }
 
@@ -471,8 +470,7 @@ public class MclStorageManager implements MetaContactListListener
                 MetaContactGroup.MC_GROUP_UID + "=?", args, null, null, null);
 
         if (cursor.getCount() != 1) {
-            Timber.e("Rename of the protoGroup is not allowed with multiple owners: %s", newProtoGroupUid);
-            new Exception("May ignore - for debug only").printStackTrace();
+            Timber.d("Ignore debug ref: Rename of the protoGroup is not allowed with multiple owners: %s", newProtoGroupUid);
         }
         else {
             cursor.moveToNext();
@@ -513,7 +511,7 @@ public class MclStorageManager implements MetaContactListListener
         String accountUuid = evt.getSourceProvider().getAccountID().getAccountUuid();
         String mcGroupUid = evt.getSourceMetaContactGroup().getMetaUID();
         String protoGroupUid = protoGroup.getUID();
-        Timber.i("Removing contact ProtoGroup: %s: %s", protoGroupUid, accountUuid);
+        Timber.d("Removing contact ProtoGroup: %s: %s", protoGroupUid, accountUuid);
 
         String[] args = {accountUuid, mcGroupUid, protoGroupUid};
         mDB.delete(MetaContactGroup.TABLE_NAME, MetaContactGroup.ACCOUNT_UUID + "=? AND "
@@ -525,7 +523,7 @@ public class MclStorageManager implements MetaContactListListener
         Cursor cursor = mDB.query(MetaContactGroup.TABLE_NAME, null,
                 MetaContactGroup.PROTO_GROUP_UID + "=?", args, null, null, null);
         if (cursor.getCount() == 0) {  // found no parent
-            Timber.i("Removing old protoGroup childContacts if any: %s: %s", protoGroupUid, accountUuid);
+            Timber.d("Removing old protoGroup childContacts if any: %s: %s", protoGroupUid, accountUuid);
             args = new String[]{accountUuid, protoGroupUid};
             mDB.delete(TBL_CHILD_CONTACTS, MetaContactGroup.ACCOUNT_UUID
                     + "=? AND " + MetaContactGroup.PROTO_GROUP_UID + "=?", args);
@@ -562,7 +560,7 @@ public class MclStorageManager implements MetaContactListListener
 
         // Just logged in an internal err if rename contact not found (non-persistent)
         if (contactJid == null) {
-            Timber.e("MetaContact not found for rename: %s", metaContactImpl.getDisplayName());
+            Timber.d("MetaContact not found for rename: %s", metaContactImpl.getDisplayName());
             return;
         }
         String oldDisplayName = evt.getOldDisplayName();
@@ -608,8 +606,7 @@ public class MclStorageManager implements MetaContactListListener
 
         // Just logged in an internal err if rename contact not found (non-persistent)
         if (contactJid == null) {
-            Timber.w("MetaContact not found for modification: %s", evt.getSourceMetaContact());
-            new Exception("May ignore - for debug only").printStackTrace();
+            Timber.d("Ignore debug ref: MetaContact not found for modification: %s", evt.getSourceMetaContact());
             return;
         }
 
@@ -699,8 +696,7 @@ public class MclStorageManager implements MetaContactListListener
         //			createMetaContactEntry(evt.getSourceMetaContact());
         //		}
         if (findMetaContactEntry(metaContactUid) == null) {
-            Timber.e("MetaContact Uid cannot be null %s", metaContact.getDisplayName());
-            new Exception("May ignore - for debug only").printStackTrace();
+            Timber.d("Ignore debug ref: MetaContact Uid cannot be null %s", metaContact.getDisplayName());
             return;
         }
 
@@ -710,7 +706,7 @@ public class MclStorageManager implements MetaContactListListener
 
         // create new metaContactGroup if not exist (give warning if none found)
         if (findMetaContactGroupEntry(newGroupUid) == null) {
-            Timber.e("Destination mcGroup for metaContact move not found: %s", newGroupName);
+            Timber.w("Destination mcGroup for metaContact move not found: %s", newGroupName);
         }
 
         mcValues.clear();
@@ -735,8 +731,7 @@ public class MclStorageManager implements MetaContactListListener
 
         // Just logged in an internal err if none is found
         if (contactJid == null) {
-            Timber.w("MetaContact not found for removal: %s", evt.getSourceMetaContact());
-            // new Exception("May ignore - for debug only").printStackTrace();
+            Timber.d("Ignore debug ref: MetaContact not found for removal: %s", evt.getSourceMetaContact());
             return;
         }
 
@@ -770,14 +765,14 @@ public class MclStorageManager implements MetaContactListListener
 
         // Just logged in an internal err if the new contactJid already exist
         if (findProtoContactEntry(mcUid, contactJid) == 0) {
-            Timber.e("Abort create new to an existing protoContact: %s", contactJid);
+            Timber.d("Abort create new to an existing protoContact: %s", contactJid);
             return;
         }
 
         // Abort if contact does not have a parent group defined.
         ContactGroup parentGroup = contact.getParentContactGroup();
         if (parentGroup == null) {
-            Timber.i("Abort entry creation, contact does not have a parent: %s", contact);
+            Timber.d("Abort entry creation, contact does not have a parent: %s", contact);
             return;
         }
 
@@ -827,8 +822,7 @@ public class MclStorageManager implements MetaContactListListener
             MetaContact metaContact = evt.getParent();
             String metaContactUid = metaContact.getMetaUID();
 
-            Timber.e("ProtoContact not found for modification: %s for: %s", evt.getParent(), metaContactUid);
-            new Exception("May ignore - for debug only").printStackTrace();
+            Timber.d("Ignore debug ref: ProtoContact not found for modification: %s for: %s", evt.getParent(), metaContactUid);
             return;
         }
 
@@ -858,8 +852,7 @@ public class MclStorageManager implements MetaContactListListener
 
         // Just logged in an internal err if rename contact not found
         if (contactJid == null) {
-            Timber.e("ProtoContact not found for modification: %s for: %s", evt.getParent(), metaContactUid);
-            new Exception("May ignore - for debug only").printStackTrace();
+            Timber.d("Ignore debug ref: ProtoContact not found for modification: %s for: %s", evt.getParent(), metaContactUid);
             return;
         }
 
@@ -890,14 +883,14 @@ public class MclStorageManager implements MetaContactListListener
 
         // Just logged in an internal err if the contactJid of the oldMcUid entry not found
         if (findProtoContactEntry(oldMcUid, contactJid) == 0) {
-            Timber.e("Failed to find the metaContact for moving: %s", contactJid);
+            Timber.d("Failed to find the metaContact for moving: %s", contactJid);
             return;
         }
 
         String newMcUid = evt.getNewParent().getMetaUID();
         String groupName = findMetaContactEntry(newMcUid);
         if (groupName == null) {
-            Timber.e("Failed to find new destination metaContactGroup for: %s", newMcUid);
+            Timber.d("Failed to find new destination metaContactGroup for: %s", newMcUid);
             return;
         }
 
@@ -922,7 +915,7 @@ public class MclStorageManager implements MetaContactListListener
 
         // Just logged in an internal err if the contactJid of the mcUid entry not found
         if (findProtoContactEntry(mcUid, contactJid) == 0) {
-            Timber.e("Failed to find the protoContact for removal: %s", contactJid);
+            Timber.d("Failed to find the protoContact for removal: %s", contactJid);
             return;
         }
 

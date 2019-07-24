@@ -5,10 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.ice4j.socket.DatagramPacketFilter;
-import org.ice4j.socket.MultiplexingDatagramSocket;
-import org.xmpp.extensions.jingle.CandidateType;
-import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
@@ -24,7 +20,11 @@ import org.ice4j.TransportAddress;
 import org.ice4j.ice.*;
 import org.ice4j.ice.harvest.*;
 import org.ice4j.security.LongTermCredential;
+import org.ice4j.socket.DatagramPacketFilter;
+import org.ice4j.socket.MultiplexingDatagramSocket;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.xmpp.extensions.jingle.CandidateType;
+import org.xmpp.extensions.jingle.*;
 import org.xmpp.jnodes.smack.SmackServiceNode;
 
 import java.beans.PropertyChangeEvent;
@@ -333,10 +333,10 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     private DatagramSocket[] getStreamConnectorSockets(MediaType mediaType)
     {
-        // cmeng: aTalk remote video cannot received if enabled
-//        if (streamConnectorSockets != null) {
-//            return streamConnectorSockets;
-//        }
+        // cmeng: aTalk remote video cannot received if enabled even for ice4j-2.0
+        // if (streamConnectorSockets != null) {
+        //     return streamConnectorSockets;
+        // }
 
         IceMediaStream stream = iceAgent.getStream(mediaType.toString());
         if (stream != null) {
@@ -366,17 +366,18 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                     Component component = stream.getComponent(COMPONENT_IDS[i]);
 
                     if (component != null) {
-                        // ice4j-2.0 DatagramSocket streamConnectorSocket = component.getSocket();
-                        CandidatePair selectedPair = component.getSelectedPair();
-                        if (selectedPair != null) {
-                            DatagramSocket streamConnectorSocket = selectedPair.getLocalCandidate().getDatagramSocket();
-                            if (streamConnectorSocket != null) {
-                                streamConnectorSockets[i] = streamConnectorSocket;
-                                streamConnectorSocketCount++;
-                                Timber.log(TimberLog.FINER, "Added a streamConnectorSocket to StreamConnectorSocket list"
-                                        + " and increase streamConnectorSocketCount to %s", streamConnectorSocketCount);
-                            }
+                        // CandidatePair selectedPair = component.getSelectedPair();
+                        // if (selectedPair != null) {
+                        //    DatagramSocket streamConnectorSocket = selectedPair.getLocalCandidate().getDatagramSocket();
+
+                        DatagramSocket streamConnectorSocket = component.getSocket(); // ice4j-2.0
+                        if (streamConnectorSocket != null) {
+                            streamConnectorSockets[i] = streamConnectorSocket;
+                            streamConnectorSocketCount++;
+                            Timber.log(TimberLog.FINER, "Added a streamConnectorSocket to StreamConnectorSocket list"
+                                    + " and increase streamConnectorSocketCount to %s", streamConnectorSocketCount);
                         }
+                        // }
                     }
                 }
                 if (streamConnectorSocketCount > 0) {
@@ -773,7 +774,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Map)
      */
     @Override
-    protected synchronized boolean startConnectivityEstablishment (Map<String, IceUdpTransportExtensionElement> remote)
+    protected synchronized boolean startConnectivityEstablishment(Map<String, IceUdpTransportExtensionElement> remote)
     {
         /*
          * If ICE is running already, we try to update the checklists with the candidates. Note that

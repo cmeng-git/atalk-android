@@ -232,8 +232,7 @@ class AimdRateControl
     }
 
     /**
-     * Returns <tt>true</tt> if the bitrate estimate hasn't been changed for more than an RTT,
-     * or if
+     * Returns <tt>true</tt> if the bitrate estimate hasn't been changed for more than an RTT, or if
      * the <tt>incomingBitrate</tt> is more than 5% above the current estimate. Should be used to
      * decide if we should reduce the rate further when over-using.
      *
@@ -255,8 +254,7 @@ class AimdRateControl
     }
 
     /**
-     * Returns <tt>true</tt> if there is a valid estimate of the incoming bitrate, <tt>false</tt>
-     * otherwise.
+     * Returns <tt>true</tt> if there is a valid estimate of the incoming bitrate, <tt>false</tt> otherwise.
      *
      * @return
      */

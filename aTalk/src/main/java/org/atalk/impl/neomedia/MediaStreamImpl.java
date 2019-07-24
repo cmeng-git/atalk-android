@@ -492,8 +492,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         if (added) {
             try {
                 MediaDeviceSession deviceSession = getDeviceSession();
-
-                if (deviceSession == null) {
+                if (deviceSession == null || rtpTranslator != null) {
                     // Since there is no output MediaDevice to render the receiveStream on, the
                     // JitterBuffer of the receiveStream will needlessly buffer and, possibly,
                     // eventually try to adapt to the lack of free buffer space.
@@ -3256,6 +3255,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      */
     public boolean isKeyFrame(RawPacket pkt)
     {
+        // XXX merge with GenericAdaptiveTrackProjectionContext.isKeyframe().
         if (!RTPPacketPredicate.INSTANCE.test(pkt)) {
             return false;
         }

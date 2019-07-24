@@ -9,9 +9,6 @@ import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.function.Predicate;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-
 import timber.log.Timber;
 
 /**
@@ -19,8 +16,10 @@ import timber.log.Timber;
  * single packet into a single packet.
  *
  * Eases the implementation of <tt>PacketTransformer<tt>-s which transform each
- * packet into a single transformed packet (as opposed to an array of possibly
- * more than one packet).
+ * packet into a single transformed packet (as opposed to an array of possibly more than one packet).
+ *
+ * cmeng (20190723): Do not update this file - video call not working on old android (Note-3)
+ * Need API-24 for new implementation
  *
  * @author Boris Grozev
  * @author George Politis
@@ -38,11 +37,14 @@ public abstract class SinglePacketTransformer implements PacketTransformer
     /**
      * The number of exceptions caught in {@link #reverseTransform(RawPacket)}.
      */
+    // private AtomicInteger exceptionsInReverseTransform = new AtomicInteger();
     private long exceptionsInReverseTransform;
+
 
     /**
      * The number of exceptions caught in {@link #transform(RawPacket)}.
      */
+    // private AtomicInteger exceptionsInTransform = new AtomicInteger();
     private long exceptionsInTransform;
 
     /**
@@ -52,6 +54,20 @@ public abstract class SinglePacketTransformer implements PacketTransformer
      * mistake, they happen to be passed RTCP packets.
      */
     private final Predicate<ByteArrayBuffer> packetPredicate;
+
+    /*
+     * A cached link to {@link #reverseTransform(RawPacket)} method to reduce calling overhead on hotpath.
+     * Need API-24 (not use in aTalk)
+     */
+    // private final Function<RawPacket, RawPacket> cachedReverseTransform
+    //        = pkt -> this.reverseTransform(pkt);
+
+    /*
+     * A cached link to {@link #transform(RawPacket)} method to reduce calling overhead on hotpath.
+     * Need API-24 (not use in aTalk)
+     */
+    // private final Function<RawPacket, RawPacket> cachedTransform
+    //         = pkt -> this.transform(pkt);
 
     /**
      * Ctor.
@@ -98,12 +114,15 @@ public abstract class SinglePacketTransformer implements PacketTransformer
     /**
      * {@inheritDoc}
      *
-     * Reverse-transforms an array of packets by calling {@link #reverseTransform(RawPacket)} on
-     * each one.
+     * Reverse-transforms an array of packets by calling {@link #reverseTransform(RawPacket)} on each one.
+     * cmeng (20190723): Do not update this method - video call not working on old android (Note-3)
      */
     @Override
     public RawPacket[] reverseTransform(RawPacket[] pkts)
     {
+        // For API-24 only
+        // return transformArray(pkts, cachedReverseTransform, exceptionsInReverseTransform, "reverseTransform");
+
         if (pkts != null) {
             for (int i = 0; i < pkts.length; i++) {
                 RawPacket pkt = pkts[i];
@@ -143,6 +162,9 @@ public abstract class SinglePacketTransformer implements PacketTransformer
     @Override
     public RawPacket[] transform(RawPacket[] pkts)
     {
+        // For API-24 only
+        // return transformArray(pkts, cachedTransform, exceptionsInTransform, "transform");
+
         if (pkts != null) {
             for (int i = 0; i < pkts.length; i++) {
                 RawPacket pkt = pkts[i];
@@ -166,49 +188,42 @@ public abstract class SinglePacketTransformer implements PacketTransformer
         return pkts;
     }
 
-    /**
+    // cmeng - for API-24 implementation
+    /*
      * Applies a specific transformation function to an array of {@link RawPacket}s.
      *
      * @param pkts the array to transform.
-     * @param transformFunction the function to apply to each (non-null) element
-     * of the array.
+     * @param transformFunction the function to apply to each (non-null) element of the array.
      * @param exceptionCounter a counter of the number of exceptions encountered.
-     * @param logMessage a name of the transformation function, to be used
-     * when logging exceptions.
+     * @param logMessage a name of the transformation function, to be used when logging exceptions.
      * @return {@code pkts}.
      */
-    private RawPacket[] transformArray(
-            RawPacket[] pkts,
-            Function<RawPacket, RawPacket> transformFunction,
-            AtomicInteger exceptionCounter,
-            String logMessage)
-    {
-        if (pkts != null) {
-            for (int i = 0; i < pkts.length; i++) {
-                RawPacket pkt = pkts[i];
-                if (pkt != null
-                        && (packetPredicate == null || packetPredicate.test(pkt))) {
-                    try {
-                        pkts[i] = transformFunction.apply(pkt);
-                    } catch (Throwable t) {
-                        exceptionCounter.incrementAndGet();
-                        if ((exceptionCounter.get() % EXCEPTIONS_TO_LOG) == 0
-                                || exceptionCounter.get() == 1) {
-                            Timber.e(t, "Failed to %s RawPacket(s)!", logMessage);
-                        }
-                        if (t instanceof Error) {
-                            throw (Error) t;
-                        }
-                        else if (t instanceof RuntimeException) {
-                            throw (RuntimeException) t;
-                        }
-                        else {
-                            throw new RuntimeException(t);
-                        }
-                    }
-                }
-            }
-        }
-        return pkts;
-    }
+//    private RawPacket[] transformArray(RawPacket[] pkts, Function<RawPacket, RawPacket> transformFunction,
+//            AtomicInteger exceptionCounter, String logMessage)
+//    {
+//        if (pkts != null) {
+//            for (int i = 0; i < pkts.length; i++) {
+//                RawPacket pkt = pkts[i];
+//                if (pkt != null
+//                        && (packetPredicate == null || packetPredicate.test(pkt))) {
+//                    try {
+//                        pkts[i] = transformFunction.apply(pkt);
+//                    } catch (Throwable t) {
+//                        exceptionCounter.incrementAndGet();
+//                        if ((exceptionCounter.get() % EXCEPTIONS_TO_LOG) == 0
+//                                || exceptionCounter.get() == 1) {
+//                            Timber.e(t, "Failed to %s RawPacket(s)!", logMessage);
+//                        }
+//                        if (t instanceof Error) {
+//                            throw (Error) t;
+//                        }
+//                        else {
+//                            throw (RuntimeException) t;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return pkts;
+//    }
 }

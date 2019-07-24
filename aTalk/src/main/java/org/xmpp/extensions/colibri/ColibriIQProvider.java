@@ -5,10 +5,6 @@
  */
 package org.xmpp.extensions.colibri;
 
-import org.xmpp.extensions.DefaultExtensionElementProvider;
-import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jitsimeet.SSRCInfoExtensionElement;
-
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.*;
@@ -17,6 +13,9 @@ import org.jivesoftware.smack.provider.*;
 import org.jxmpp.jid.parts.Localpart;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmpp.extensions.DefaultExtensionElementProvider;
+import org.xmpp.extensions.jingle.*;
+import org.xmpp.extensions.jitsimeet.SSRCInfoExtensionElement;
 
 import java.io.IOException;
 
@@ -75,22 +74,26 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
         ProviderManager.addIQProvider(ShutdownIQ.FORCE_ELEMENT_NAME, ShutdownIQ.NAMESPACE, this);
 
         // Shutdown extension
+        ExtensionElementProvider shutdownProvider
+                = new DefaultExtensionElementProvider<>(ColibriConferenceIQ.GracefulShutdown.class);
         ProviderManager.addExtensionProvider(
                 ColibriConferenceIQ.GracefulShutdown.ELEMENT_NAME, ColibriConferenceIQ.GracefulShutdown.NAMESPACE,
-                new DefaultExtensionElementProvider<>(ColibriConferenceIQ.GracefulShutdown.class));
+                shutdownProvider);
 
         // ColibriStatsIQ
         ProviderManager.addIQProvider(ColibriStatsIQ.ELEMENT_NAME, ColibriStatsIQ.NAMESPACE, this);
 
         // ColibriStatsExtensionElement
+        ExtensionElementProvider statsProvider
+                = new DefaultExtensionElementProvider<>(ColibriStatsExtensionElement.class);
         ProviderManager.addExtensionProvider(
-                ColibriStatsExtensionElement.ELEMENT_NAME, ColibriStatsExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(ColibriStatsExtensionElement.class));
+                ColibriStatsExtensionElement.ELEMENT_NAME, ColibriStatsExtensionElement.NAMESPACE, statsProvider);
 
         // ColibriStatsExtensionElement.Stat
+        ExtensionElementProvider statProvider
+                = new DefaultExtensionElementProvider<>(ColibriStatsExtensionElement.Stat.class);
         ProviderManager.addExtensionProvider(
-                ColibriStatsExtensionElement.Stat.ELEMENT_NAME, ColibriStatsExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(ColibriStatsExtensionElement.Stat.class));
+                ColibriStatsExtensionElement.Stat.ELEMENT_NAME, ColibriStatsExtensionElement.NAMESPACE, statProvider);
 
         // ssrc-info
         ProviderManager.addExtensionProvider(

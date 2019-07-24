@@ -549,8 +549,7 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
         // peers, resulting in Chrome's discarding the RTP/RTCP packets with
         // ((RTPSessionMgr) manager).getLocalSSRC(); as the media sender SSRC.
         // This makes the ((RTPSessionMgr) manager).getLocalSSRC() useless in
-        // 95% of the use cases (hence the "almost" in the beginning of this
-        // comment).
+        // 95% of the use cases (hence the "almost" in the beginning of this comment).
         return localSSRC;
     }
 
@@ -690,8 +689,7 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
                 manager.initialize(this.connector);
             }
 
-            StreamRTPManagerDesc streamRTPManagerDesc = getStreamRTPManagerDesc(streamRTPManager,
-                    true);
+            StreamRTPManagerDesc streamRTPManagerDesc = getStreamRTPManagerDesc(streamRTPManager, true);
 
             // We got the connector and the streamRTPManagerDesc. We can now
             // downgrade the lock on this translator.

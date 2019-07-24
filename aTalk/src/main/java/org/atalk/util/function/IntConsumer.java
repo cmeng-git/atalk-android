@@ -24,8 +24,6 @@
  */
 package org.atalk.util.function;
 
-import org.jivesoftware.smack.util.Objects;
-
 /**
  * Represents an operation that accepts a single {@code int}-valued argument and
  * returns no result.  This is the primitive type specialization of
@@ -39,7 +37,8 @@ import org.jivesoftware.smack.util.Objects;
  * @since 1.8
  */
 @FunctionalInterface
-public interface IntConsumer {
+public interface IntConsumer
+{
 
     /**
      * Performs this operation on the given argument.

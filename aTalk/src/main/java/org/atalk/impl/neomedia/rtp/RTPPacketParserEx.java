@@ -34,7 +34,6 @@ public class RTPPacketParserEx extends net.sf.fmj.media.rtp.util.RTPPacketParser
             Timber.w("pkt is null.");
             return null;
         }
-
         return parse(pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
     }
 

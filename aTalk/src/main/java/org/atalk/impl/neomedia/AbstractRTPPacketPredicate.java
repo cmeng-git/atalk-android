@@ -46,7 +46,6 @@ public class AbstractRTPPacketPredicate implements Predicate<ByteArrayBuffer>
     @Override
     public boolean test(ByteArrayBuffer pkt)
     {
-        // If isHeaderValid fails, this is not a valid RTP packet either.
         if (pkt == null || !RawPacket.isRtpRtcp(pkt.getBuffer(), pkt.getOffset(), pkt.getLength())) {
             return false;
         }

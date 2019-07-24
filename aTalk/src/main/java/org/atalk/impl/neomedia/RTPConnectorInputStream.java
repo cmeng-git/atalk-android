@@ -12,6 +12,7 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 import org.atalk.impl.neomedia.protocol.PushBufferStreamAdapter;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.ArrayUtils;
+import org.atalk.util.concurrent.MonotonicAtomicLong;
 import org.ice4j.socket.DatagramPacketFilter;
 
 import java.io.Closeable;
@@ -19,7 +20,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.SocketTimeoutException;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.media.Buffer;
 import javax.media.protocol.*;
@@ -124,7 +125,7 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     /**
      * The pool of <tt>RawPacket</tt> instances to reduce their allocations and garbage collection.
      */
-    private final Queue<RawPacket> rawPacketPool = new LinkedBlockingQueue<>(RTPConnectorOutputStream.POOL_CAPACITY);
+    private final Queue<RawPacket> rawPacketPool = new ArrayBlockingQueue<>(RTPConnectorOutputStream.POOL_CAPACITY);
 
     /**
      * The background/daemon <tt>Thread</tt> which invokes {@link #receive(DatagramPacket)}.
@@ -137,6 +138,11 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
      * SourceTransferHandler object which is used to read packets.
      */
     private SourceTransferHandler transferHandler;
+
+    /**
+     * The time in milliseconds of the last activity related to this <tt>RTPConnectorInputStream</tt>.
+     */
+    private final MonotonicAtomicLong lastActivityTime = new MonotonicAtomicLong();
 
     /**
      * Initializes a new <tt>RTPConnectorInputStream</tt> which is to receive packet data from a specific UDP socket.
@@ -162,14 +168,9 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
             }
         }
 
-        // PacketLoggingService
-        addDatagramPacketFilter(new DatagramPacketFilter()
-        {
-            @Override
-            public boolean accept(DatagramPacket p)
-            {
-                return true;
-            }
+        addDatagramPacketFilter(p -> {
+            lastActivityTime.increase(System.currentTimeMillis());
+            return true;
         });
 
         /*
@@ -186,6 +187,16 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
             }
         };
         maybeStartReceiveThread();
+    }
+
+    /**
+     * Gets the time in milliseconds of the last activity related to this <tt>RTPConnectorInputStream</tt>.
+     *
+     * @return the time in milliseconds of the last activity related to this <tt>RTPConnectorInputStream</tt>
+     */
+    public long getLastActivityTime()
+    {
+        return lastActivityTime.get();
     }
 
     /**

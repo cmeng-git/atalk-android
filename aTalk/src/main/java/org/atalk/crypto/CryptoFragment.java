@@ -217,8 +217,8 @@ public class CryptoFragment extends OSGiFragment
                 else
                     mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
                 hasChange = true;
-                doHandleOmemoPressed(false);
                 doHandleOtrPressed(false);
+                doHandleOmemoPressed(false);
                 //}
                 break;
             case R.id.encryption_omemo:
@@ -234,8 +234,8 @@ public class CryptoFragment extends OSGiFragment
                 hasChange = true; //only if it is in plain text mode +++? currently
                 // hasChange = (ScSessionStatus.PLAINTEXT == scOtrEngine.getSessionStatus(currentOtrContact));
                 showMultiOtrSession = true;
-                doHandleOmemoPressed(false);
                 doHandleOtrPressed(true);
+                doHandleOmemoPressed(false);
                 break;
 
             case R.id.otr_session:
@@ -564,15 +564,8 @@ public class CryptoFragment extends OSGiFragment
                             break;
                     }
                 }
-
-                // Update otr status icon and e-sync static chatType to chatPanel, chatFragment etc if not the same
-                if (chatType != MSGTYPE_UNKNOWN) {
-                    mChatType = chatType;  // update this just in case
-                    setStatusOtr(status);
-                    if (chatType != activeChat.getChatType()) {
-                        notifyCryptoModeChanged(chatType);
-                    }
-                }
+                // cmeng - 20190721 - do not perform any UI update on user crypto option selection
+                // Just update OtrEngine state and let the otr events take care the rest of UI update.
             }
         }.start();
     }
@@ -658,16 +651,16 @@ public class CryptoFragment extends OSGiFragment
             if (resources != null) {
                 for (ContactResource resource : resources) {
                     OtrContact otrContact = OtrContactManager.getOtrContact(contact, resource);
-                    if (otrContact.equals(currentOtrContact)) {
+                    if (otrContact != null) {
+                        currentOtrContact = otrContact;
                         break;
                     }
-                    currentOtrContact = otrContact;
                 }
             }
-            setOTRMenuItem(contact);
 
+            setOTRMenuItem(contact);
             initOmemo(chatSessionId);
-            if (!isOmemoMode && currentOtrContact != null) {
+            if (!isOmemoMode && (currentOtrContact != null)) {
                 setStatusOtr(scOtrEngine.getSessionStatus(currentOtrContact));
             }
         }
@@ -891,8 +884,8 @@ public class CryptoFragment extends OSGiFragment
                 tipKey = R.string.menu_crypto_plain_text;
                 break;
             default:
-                iconId = R.drawable.crypto_otr_unsecure;
-                tipKey = R.string.menu_crypto_plain_text;
+                // return if it is in OTR mode (none of above)
+                return;
         }
         runOnUiThread(() -> {
             mCryptoChoice.setIcon(iconId);
@@ -1046,7 +1039,7 @@ public class CryptoFragment extends OSGiFragment
         }
 
         if (listener != null) {
-            // Timber.w("CryptMode Listener changed: %s => %s", listener, mDescriptor);
+            // Timber.w("CryptMode Listener changed: %s => %s", listener, chatType);
             listener.onCryptoModeChange(chatType);
         }
     }

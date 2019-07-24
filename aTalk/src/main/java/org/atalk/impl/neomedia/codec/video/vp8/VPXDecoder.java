@@ -238,8 +238,7 @@ public class VPXDecoder extends AbstractCodec2
 
     /**
      * Allocates a new AVFrame and set its data fields to the data fields from the
-     * <tt>vpx_image_t</tt> pointed to by <tt>img</tt>. Also set its 'linesize' according to
-     * <tt>img</tt>.
+     * <tt>vpx_image_t</tt> pointed to by <tt>img</tt>. Also set its 'linesize' according to <tt>img</tt>.
      *
      * @param img pointer to a <tt>vpx_image_t</tt> whose data will be used
      * @return an AVFrame instance with its data fields set to the fields from <tt>img</tt>
@@ -266,8 +265,7 @@ public class VPXDecoder extends AbstractCodec2
     }
 
     /**
-     * Sets the <tt>Format</tt> of the media data to be input for processing in this
-     * <tt>Codec</tt>.
+     * Sets the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>.
      *
      * @param format the <tt>Format</tt> of the media data to be input for
      * processing in this <tt>Codec</tt>

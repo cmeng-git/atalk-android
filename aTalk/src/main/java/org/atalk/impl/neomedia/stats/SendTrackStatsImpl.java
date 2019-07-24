@@ -39,8 +39,7 @@ public class SendTrackStatsImpl extends AbstractTrackStats
     RateStatistics packetsNotSentRate = new RateStatistics(1000, 1000F);
 
     /**
-     * The fraction lost reported in the most recently received RTCP Receiver
-     * Report.
+     * The fraction lost reported in the most recently received RTCP Receiver Report.
      */
     private double fractionLost = -1d;
 
@@ -111,8 +110,7 @@ public class SendTrackStatsImpl extends AbstractTrackStats
      *
      * Returns an estimation of the loss rate based on the most recent RTCP
      * Receiver Report that we received, and the rate of "non-sent" packets
-     * (i.e. in the case of jitsi-videobridge the loss rate from the sender to
-     * the bridge).
+     * (i.e. in the case of jitsi-videobridge the loss rate from the sender to the bridge).
      */
     @Override
     public double getLossRate()

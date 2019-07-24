@@ -194,8 +194,6 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
     @Override
     public void onClick(View view)
     {
-        boolean cancelUpdate = false;
-
         switch (view.getId()) {
             case R.id.ok_button:
                 finish();

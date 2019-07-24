@@ -31,12 +31,11 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class JNIEncoder extends AbstractCodec2 implements FormatParametersAwareCodec,
-        PacketLossAwareEncoder
+public class JNIEncoder extends AbstractCodec2
+        implements FormatParametersAwareCodec, PacketLossAwareEncoder
 {
     /**
-     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JNIEncoder</tt>
-     * instances.
+     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JNIEncoder</tt> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS;
 
@@ -50,16 +49,19 @@ public class JNIEncoder extends AbstractCodec2 implements FormatParametersAwareC
     static final double[] SUPPORTED_INPUT_SAMPLE_RATES = new double[]{48000};
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JNIEncoder</tt>
-     * instances.
+     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JNIEncoder</tt> instances.
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS = new Format[]{new AudioFormat(
-            Constants.OPUS_RTP, 48000,
-            /* sampleSizeInBits */Format.NOT_SPECIFIED, 2,
+            Constants.OPUS_RTP,
+            48000,
+            /* sampleSizeInBits */Format.NOT_SPECIFIED,
+            2,
             /* endian */Format.NOT_SPECIFIED,
             /* signed */Format.NOT_SPECIFIED,
             /* frameSizeInBits */Format.NOT_SPECIFIED,
-            /* frameRate */Format.NOT_SPECIFIED, Format.byteArray)};
+            /* frameRate */Format.NOT_SPECIFIED,
+            Format.byteArray)
+    };
 
     /*
      * Sets the supported input formats.
@@ -76,11 +78,16 @@ public class JNIEncoder extends AbstractCodec2 implements FormatParametersAwareC
         SUPPORTED_INPUT_FORMATS = new Format[supportedInputCount];
         // SUPPORTED_INPUT_FORMATS = new Format[supportedInputCount*2];
         for (int i = 0; i < supportedInputCount; i++) {
-            SUPPORTED_INPUT_FORMATS[i] = new AudioFormat(AudioFormat.LINEAR,
-                    SUPPORTED_INPUT_SAMPLE_RATES[i], 16, 1,
-                    AbstractAudioRenderer.NATIVE_AUDIO_FORMAT_ENDIAN, AudioFormat.SIGNED,
+            SUPPORTED_INPUT_FORMATS[i] = new AudioFormat(
+                    AudioFormat.LINEAR,
+                    SUPPORTED_INPUT_SAMPLE_RATES[i],
+                    16,
+                    1,
+                    AbstractAudioRenderer.NATIVE_AUDIO_FORMAT_ENDIAN,
+                    AudioFormat.SIGNED,
                     /* frameSizeInBits */Format.NOT_SPECIFIED,
-                    /* frameRate */Format.NOT_SPECIFIED, Format.byteArray);
+                    /* frameRate */Format.NOT_SPECIFIED,
+                    Format.byteArray);
         }
         /*
          * Using stereo input formats leads to problems (at least when used with pulse audio). It is
@@ -142,8 +149,7 @@ public class JNIEncoder extends AbstractCodec2 implements FormatParametersAwareC
 
     /**
      * The size in samples per channel of an audio frame input by this instance. Automatically
-     * calculated, based on {@link #frameSizeInMillis} and the <tt>inputFormat</tt> of this
-     * instance.
+     * calculated, based on {@link #frameSizeInMillis} and the <tt>inputFormat</tt> of this instance.
      */
     private int frameSizeInSamplesPerChannel;
 
@@ -174,6 +180,11 @@ public class JNIEncoder extends AbstractCodec2 implements FormatParametersAwareC
      * Whether to use FEC, obtained from configuration.
      */
     private boolean useFec;
+
+    /**
+     * Whether to use VBR, obtained from configuration.
+     */
+    private boolean useVbr;
 
     /**
      * Initializes a new <tt>JNIEncoder</tt> instance.
@@ -258,6 +269,9 @@ public class JNIEncoder extends AbstractCodec2 implements FormatParametersAwareC
         useDtx = cfg.getBoolean(Constants.PROP_OPUS_DTX, true);
         Opus.encoder_set_dtx(encoder, useDtx ? 1 : 0);
 
+        useVbr = cfg.getBoolean(Constants.PROP_OPUS_VBR, true);
+        Opus.encoder_set_vbr(encoder, useVbr ? 1 : 0);
+
         if (TimberLog.isTraceEnable) {
             String bw;
             switch (Opus.encoder_get_bandwidth(encoder)) {
@@ -287,8 +301,7 @@ public class JNIEncoder extends AbstractCodec2 implements FormatParametersAwareC
      *
      * @param inBuffer the <tt>Buffer</tt> from which the media to be encoded is to be read
      * @param outBuffer the <tt>Buffer</tt> into which the encoded media is to be written
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if the specified <tt>inBuffer</tt> has been processed
-     * successfully
+     * @return <tt>BUFFER_PROCESSED_OK</tt> if the specified <tt>inBuffer</tt> has been processed successfully
      * @see AbstractCodec2#doProcess(Buffer, Buffer)
      */
     @Override
@@ -361,8 +374,7 @@ public class JNIEncoder extends AbstractCodec2 implements FormatParametersAwareC
 
         // At long last, do the actual encoding.
         byte[] out = validateByteArraySize(outBuffer, Opus.MAX_PACKET, false);
-        int outLength = Opus.encode(encoder, in, inOffset, frameSizeInSamplesPerChannel, out, 0,
-                out.length);
+        int outLength = Opus.encode(encoder, in, inOffset, frameSizeInSamplesPerChannel, out, 0, out.length);
 
         if (outLength < 0) // error from opus_encode
             return BUFFER_PROCESSED_FAILED;
@@ -385,8 +397,7 @@ public class JNIEncoder extends AbstractCodec2 implements FormatParametersAwareC
      * Implements {@link Control#getControlComponent()}. <tt>JNIEncoder</tt> does not provide user
      * interface of its own.
      *
-     * @return <tt>null</tt> to signify that <tt>JNIEncoder</tt> does not provide user interface of
-     * its own
+     * @return <tt>null</tt> to signify that <tt>JNIEncoder</tt> does not provide user interface of its own
      */
     @Override
     public Component getControlComponent()
@@ -457,7 +468,6 @@ public class JNIEncoder extends AbstractCodec2 implements FormatParametersAwareC
 
         try {
             String s = fmtps.get("maxaveragebitrate");
-
             if ((s != null) && (s.length() != 0))
                 maxaveragebitrate = Integer.parseInt(s);
         } catch (Exception e) {

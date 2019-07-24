@@ -49,4 +49,13 @@ public class RegionExtensionElement extends AbstractExtensionElement
     {
         return getAttributeAsString("id");
     }
+
+    /**
+     * Sets the value for the region in the id attribute.
+     * @param value string
+     */
+    public void setRegionId(String value)
+    {
+        setAttribute("id", value);
+    }
 }

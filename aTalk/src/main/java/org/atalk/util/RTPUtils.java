@@ -15,10 +15,11 @@
  */
 package org.atalk.util;
 
-import java.util.*;
+import java.util.Comparator;
 
 /**
  * RTP-related static utility methods.
+ *
  * @author Boris Grozev
  */
 public class RTPUtils
@@ -26,34 +27,34 @@ public class RTPUtils
     /**
      * Hex characters for converting bytes to readable hex strings
      */
-    private final static char[] HEXES = new char[]
-        {
+    private final static char[] HEXES = new char[]{
             '0', '1', '2', '3', '4', '5', '6', '7', '8',
             '9', 'A', 'B', 'C', 'D', 'E', 'F'
-        };
+    };
+
     /**
      * Returns the delta between two RTP sequence numbers, taking into account
      * rollover.  This will return the 'shortest' delta between the two
      * sequence numbers in the form of the number you'd add to b to get a. e.g.:
      * getSequenceNumberDelta(1, 10) -> -9 (10 + -9 = 1)
      * getSequenceNumberDelta(1, 65530) -> 7 (65530 + 7 = 1)
+     *
      * @return the delta between two RTP sequence numbers (modulo 2^16).
      */
     public static int getSequenceNumberDelta(int a, int b)
     {
         int diff = a - b;
-
-        if (diff < -(1<<15))
-            diff += 1<<16;
-        else if (diff > 1<<15)
-            diff -= 1<<16;
+        if (diff < -(1 << 15))
+            diff += 1 << 16;
+        else if (diff > 1 << 15)
+            diff -= 1 << 16;
 
         return diff;
     }
 
     /**
-     * Returns whether or not seqNumOne is 'older' than seqNumTwo, taking
-     * rollover into account
+     * Returns whether or not seqNumOne is 'older' than seqNumTwo, taking rollover into account
+     *
      * @param seqNumOne
      * @param seqNumTwo
      * @return true if seqNumOne is 'older' than seqNumTwo
@@ -64,10 +65,9 @@ public class RTPUtils
     }
 
     /**
-     * Returns result of the subtraction of one RTP sequence number from another
-     * (modulo 2^16).
-     * @return result of the subtraction of one RTP sequence number from another
-     * (modulo 2^16).
+     * Returns result of the subtraction of one RTP sequence number from another (modulo 2^16).
+     *
+     * @return result of the subtraction of one RTP sequence number from another (modulo 2^16).
      */
     public static int subtractNumber(int a, int b)
     {
@@ -76,12 +76,11 @@ public class RTPUtils
 
 
     /**
-     * Apply a delta to a given sequence number and return the result (taking
-     * rollover into account)
+     * Apply a delta to a given sequence number and return the result (taking rollover into account)
+     *
      * @param startingSequenceNumber the starting sequence number
      * @param delta the delta to be applied
-     * @return the sequence number result from doing
-     * startingSequenceNumber + delta
+     * @return the sequence number result from doing startingSequenceNumber + delta
      */
     public static int applySequenceNumberDelta(int startingSequenceNumber, int delta)
     {
@@ -96,21 +95,20 @@ public class RTPUtils
      */
     public static int writeInt(byte[] buf, int off, int data)
     {
-        if (buf == null || buf.length < off + 4)
-        {
+        if (buf == null || buf.length < off + 4) {
             return -1;
         }
 
-        buf[off++] = (byte)(data>>24);
-        buf[off++] = (byte)(data>>16);
-        buf[off++] = (byte)(data>>8);
-        buf[off] = (byte)data;
+        buf[off++] = (byte) (data >> 24);
+        buf[off++] = (byte) (data >> 16);
+        buf[off++] = (byte) (data >> 8);
+        buf[off] = (byte) data;
         return 4;
     }
 
     /**
-     * Writes the least significant 24 bits from the given integer into the
-     * given byte array at the given offset.
+     * Writes the least significant 24 bits from the given integer into the given byte array at the given offset.
+     *
      * @param buf the buffer into which to write.
      * @param off the offset at which to write.
      * @param data the integer to write.
@@ -118,14 +116,13 @@ public class RTPUtils
      */
     public static int writeUint24(byte[] buf, int off, int data)
     {
-        if (buf == null || buf.length < off + 3)
-        {
+        if (buf == null || buf.length < off + 3) {
             return -1;
         }
 
-        buf[off++] = (byte)(data>>16);
-        buf[off++] = (byte)(data>>8);
-        buf[off] = (byte)data;
+        buf[off++] = (byte) (data >> 16);
+        buf[off++] = (byte) (data >> 8);
+        buf[off] = (byte) data;
         return 3;
     }
 
@@ -137,8 +134,8 @@ public class RTPUtils
      */
     public static int writeShort(byte[] buf, int off, short data)
     {
-        buf[off++] = (byte)(data>>8);
-        buf[off] = (byte)data;
+        buf[off++] = (byte) (data >> 8);
+        buf[off] = (byte) data;
         return 2;
     }
 
@@ -150,8 +147,7 @@ public class RTPUtils
      */
     public static int readInt(byte[] buffer, int offset)
     {
-        return
-            ((buffer[offset++] & 0xFF) << 24)
+        return ((buffer[offset++] & 0xFF) << 24)
                 | ((buffer[offset++] & 0xFF) << 16)
                 | ((buffer[offset++] & 0xFF) << 8)
                 | (buffer[offset] & 0xFF);
@@ -160,6 +156,7 @@ public class RTPUtils
     /**
      * Reads a 32-bit unsigned integer from the given buffer at the given
      * offset and returns its {@link long} representation.
+     *
      * @param buffer the buffer.
      * @param offset start offset of the integer to be read.
      */
@@ -177,10 +174,9 @@ public class RTPUtils
      */
     public static int readUint16AsInt(byte[] buffer, int offset)
     {
-        int b1 = (0xFF & (buffer[offset + 0]));
+        int b1 = (0xFF & (buffer[offset]));
         int b2 = (0xFF & (buffer[offset + 1]));
-        int val = b1 << 8 | b2;
-        return val;
+        return b1 << 8 | b2;
     }
 
     /**
@@ -193,9 +189,8 @@ public class RTPUtils
     public static int readInt16AsInt(byte[] buffer, int offset)
     {
         int ret = ((0xFF & (buffer[offset])) << 8)
-            | (0xFF & (buffer[offset + 1]));
-        if ((ret & 0x8000) != 0)
-        {
+                | (0xFF & (buffer[offset + 1]));
+        if ((ret & 0x8000) != 0) {
             ret = ret | 0xFFFF_0000;
         }
 
@@ -205,13 +200,13 @@ public class RTPUtils
     /**
      * Read an unsigned short at specified offset as a int
      *
-     * @param buffer
+     * @param buffer byte array buffer
      * @param offset start offset of the unsigned short
      * @return the int value of the unsigned short at offset
      */
     public static int readUint24AsInt(byte[] buffer, int offset)
     {
-        int b1 = (0xFF & (buffer[offset + 0]));
+        int b1 = (0xFF & (buffer[offset]));
         int b2 = (0xFF & (buffer[offset + 1]));
         int b3 = (0xFF & (buffer[offset + 2]));
         return b1 << 16 | b2 << 8 | b3;
@@ -219,9 +214,9 @@ public class RTPUtils
 
     /**
      * Returns the given integer masked to 16 bits
+     *
      * @param value the integer to mask
-     * @return the value, masked to only keep the lower
-     * 16 bits
+     * @return the value, masked to only keep the lower 16 bits
      */
     public static int as16Bits(int value)
     {
@@ -230,9 +225,9 @@ public class RTPUtils
 
     /**
      * Returns the given integer masked to 32 bits
+     *
      * @param value the integer to mask
-     * @return the value, masked to only keep the lower
-     * 32 bits
+     * @return the value, masked to only keep the lower 32 bits
      */
     public static long as32Bits(long value)
     {
@@ -252,48 +247,44 @@ public class RTPUtils
      * Doesn't work for: [0, 2^15] and ([0, 2^15-1] u {2^16-1}) and [0, 2^16)
      */
     public static final Comparator<? super Integer> sequenceNumberComparator
-        = new Comparator<Integer>() {
-        @Override
-        public int compare(Integer a, Integer b)
+            = (Comparator<Integer>) (a, b) -> {
+        if (a.equals(b)) {
+            return 0;
+        }
+        else if (a > b) {
+            if (a - b < 0x10000)
+                return 1;
+            else
+                return -1;
+        }
+        else //a < b
         {
-            if (a.equals(b))
-            {
-                return 0;
-            }
-            else if (a > b)
-            {
-                if (a - b < 0x10000)
-                    return 1;
-                else
-                    return -1;
-            }
-            else //a < b
-            {
-                if (b - a < 0x10000)
-                    return -1;
-                else
-                    return 1;
-            }
+            if (b - a < 0x10000)
+                return -1;
+            else
+                return 1;
         }
     };
 
     /**
      * Returns the difference between two RTP timestamps.
+     *
      * @return the difference between two RTP timestamps.
      */
     public static long rtpTimestampDiff(long a, long b)
     {
         long diff = a - b;
-        if (diff < -(1L<<31))
-            diff+= 1L<<32;
-        else if (diff > 1L<<31)
-            diff-= 1L<<32;
+        if (diff < -(1L << 31))
+            diff += 1L << 32;
+        else if (diff > 1L << 31)
+            diff -= 1L << 32;
 
         return diff;
     }
 
     /**
      * Returns whether or not the first given timestamp is newer than the second
+     *
      * @param a
      * @param b
      * @return true if a is newer than b, false otherwise
@@ -305,13 +296,13 @@ public class RTPUtils
 
     /**
      * Return a string containing the hex string version of the given byte
-     * @param b
-     * @return
+     *
+     * @param b byte value
+     * @return a string containing the hex string version of the given byte
      */
     private static String toHexString(byte b)
     {
-
-        StringBuilder hexStringBuilder  = new StringBuilder(2);
+        StringBuilder hexStringBuilder = new StringBuilder(2);
 
         hexStringBuilder.append(HEXES[(b & 0xF0) >> 4]);
         hexStringBuilder.append(HEXES[b & 0x0F]);
@@ -321,8 +312,9 @@ public class RTPUtils
 
     /**
      * Return a string containing the hex string version of the given bytes
-     * @param bytes
-     * @return
+     *
+     * @param bytes byte array
+     * @return a string containing the hex string version of the given byte
      */
     public static String toHexString(byte[] bytes)
     {
@@ -331,28 +323,23 @@ public class RTPUtils
 
     /**
      * Return a string containing the hex string version of the given byte
-     * @param bytes
-     * @param offset
-     * @param length
-     * @return
+     *
+     * @param bytes byte arrays
+     * @param offset offset in the array
+     * @param length length of array
+     * @return a string containing the hex string version of the given byte
      */
     public static String toHexString(byte[] bytes, int offset, int length)
     {
         if (bytes == null)
             return null;
-        else
-        {
-            StringBuilder hexStringBuilder
-                = new StringBuilder(2 * bytes.length);
-
-            for (int i = 0; i < length; i++)
-            {
-                if (i % 16 == 0)
-                {
-                    hexStringBuilder.append("\n").append(toHexString((byte)i)).append("  ");
+        else {
+            StringBuilder hexStringBuilder = new StringBuilder(2 * bytes.length);
+            for (int i = 0; i < length; i++) {
+                if (i % 16 == 0) {
+                    hexStringBuilder.append("\n").append(toHexString((byte) i)).append("  ");
                 }
-                else if (i % 8 == 0)
-                {
+                else if (i % 8 == 0) {
                     hexStringBuilder.append(" ");
                 }
                 byte b = bytes[offset + i];

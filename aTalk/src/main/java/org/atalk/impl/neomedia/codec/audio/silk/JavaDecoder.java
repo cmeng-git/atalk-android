@@ -34,8 +34,7 @@ public class JavaDecoder extends AbstractCodec2
         /**
          * Returns the number packets for which FEC data was decoded in <tt>JavaDecoder.this</tt>
          *
-         * @return Returns the number packets for which FEC data was decoded in
-         * <tt>JavaDecoder.this</tt>
+         * @return Returns the number packets for which FEC data was decoded in <tt>JavaDecoder.this</tt>
          */
         public int fecPacketsDecoded()
         {
@@ -63,14 +62,12 @@ public class JavaDecoder extends AbstractCodec2
      */
     private static final int MAX_FRAMES_PER_PAYLOAD = 5;
     /**
-     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JavaDecoder</tt>
-     * instances.
+     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JavaDecoder</tt> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS = JavaEncoder.SUPPORTED_OUTPUT_FORMATS;
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JavaDecoder</tt>
-     * instances.
+     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JavaDecoder</tt> instances.
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS = JavaEncoder.SUPPORTED_INPUT_FORMATS;
 
@@ -91,8 +88,7 @@ public class JavaDecoder extends AbstractCodec2
     private short frameLength;
 
     /**
-     * The number of frames decoded from the last input <tt>Buffer</tt> which has not been consumed
-     * yet.
+     * The number of frames decoded from the last input <tt>Buffer</tt> which has not been consumed yet.
      */
     private int framesPerPayload;
 
@@ -102,8 +98,7 @@ public class JavaDecoder extends AbstractCodec2
     private long lastSeqNo = Buffer.SEQUENCE_UNKNOWN;
 
     /**
-     * Temporary buffer used when decoding FEC. Defined here to avoid using <tt>new</tt> in
-     * <tt>doProcess</tt>.
+     * Temporary buffer used when decoding FEC. Defined here to avoid using <tt>new</tt> in <tt>doProcess</tt>.
      */
     private short[] lbrrBytes = new short[1];
 
@@ -114,14 +109,12 @@ public class JavaDecoder extends AbstractCodec2
     private byte[] lbrrData = new byte[JavaEncoder.MAX_BYTES_PER_FRAME];
 
     /**
-     * Number of packets which: were missing, the following packet was available and it contained
-     * FEC data.
+     * Number of packets which: were missing, the following packet was available and it contained FEC data.
      */
     private int nbFECDecoded = 0;
 
     /**
-     * Number of packets which: were missing, the next packet was available, but it did not contain
-     * FEC data.
+     * Number of packets which: were missing, the next packet was available, but it did not contain FEC data.
      */
     private int nbFECNotDecoded = 0;
 
@@ -137,7 +130,7 @@ public class JavaDecoder extends AbstractCodec2
 
     /**
      * The length of an output frame as reported by
-     * {@link Silk_dec_API#SKP_Silk_SDK_Decode(Object, SKP_SILK_SDK_DecControlStruct, int, byte[], int, int, short[], int, short[])}
+     * {@link DecAPI#SKP_Silk_SDK_Decode(Object, SKP_SILK_SDK_DecControlStruct, int, byte[], int, int, short[], int, short[])}
      * .
      */
     private final short[] outLength = new short[1];
@@ -310,7 +303,6 @@ public class JavaDecoder extends AbstractCodec2
             if ((processed & INPUT_BUFFER_NOT_CONSUMED) != INPUT_BUFFER_NOT_CONSUMED)
                 framesPerPayload = 0;
         }
-
         return processed;
     }
 
@@ -319,12 +311,11 @@ public class JavaDecoder extends AbstractCodec2
      *
      * @param inputFormat the input format to get the matching output formats of
      * @return the output formats matching the specified input format
-     * @see AbstractCodecExt#getMatchingOutputFormats(Format)
+     * @see AbstractCodec2#getMatchingOutputFormats(Format)
      */
     @Override
     protected Format[] getMatchingOutputFormats(Format inputFormat)
     {
-        return JavaEncoder.getMatchingOutputFormats(inputFormat, SUPPORTED_INPUT_FORMATS,
-                SUPPORTED_OUTPUT_FORMATS);
+        return JavaEncoder.getMatchingOutputFormats(inputFormat, SUPPORTED_INPUT_FORMATS, SUPPORTED_OUTPUT_FORMATS);
     }
 }

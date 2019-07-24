@@ -13,9 +13,7 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.*;
 import org.atalk.util.ConfigUtils;
-import org.atalk.util.event.WeakReferencePropertyChangeListener;
 import org.bouncycastle.crypto.tls.*;
-import org.ice4j.ice.Component;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -32,7 +30,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class DtlsPacketTransformer implements PacketTransformer
+public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeListener
 {
     /**
      * The interval in milliseconds between successive tries to await successful connections in
@@ -178,9 +176,6 @@ public class DtlsPacketTransformer implements PacketTransformer
      */
     private MediaType mediaType;
 
-    private final PropertyChangeListener propertyChangeListener
-            = new WeakReferencePropertyChangeListener(DtlsPacketTransformer.this::propertyChange);
-
     /**
      * The {@code Queue} of SRTP {@code RawPacket}s which were received from the
      * remote while {@link #_srtpTransformer} was unavailable i.e. {@code null}.
@@ -241,7 +236,7 @@ public class DtlsPacketTransformer implements PacketTransformer
 
         // Track the DTLS properties which control the conditional behaviors of
         // DtlsPacketTransformer.
-        getProperties().addPropertyChangeListener(propertyChangeListener);
+        getProperties().addPropertyChangeListener(this);
         propertyChange(/* propertyName */ (String) null);
     }
 
@@ -251,7 +246,7 @@ public class DtlsPacketTransformer implements PacketTransformer
     @Override
     public synchronized void close()
     {
-        getProperties().removePropertyChangeListener(propertyChangeListener);
+        getProperties().removePropertyChangeListener(this);
 
         // SrtpControl.start(MediaType) starts its associated TransformEngine.
         // We will use that mediaType to signal the normal stop then as well
@@ -670,7 +665,7 @@ public class DtlsPacketTransformer implements PacketTransformer
         }
     }
 
-    private void propertyChange(PropertyChangeEvent ev)
+    public void propertyChange(PropertyChangeEvent ev)
     {
         propertyChange(ev.getPropertyName());
     }
@@ -826,6 +821,7 @@ public class DtlsPacketTransformer implements PacketTransformer
         int srtpProtectionProfile = 0;
         TlsContext tlsContext = null;
 
+        // DTLS client
         if (dtlsProtocol instanceof DTLSClientProtocol) {
             DTLSClientProtocol dtlsClientProtocol = (DTLSClientProtocol) dtlsProtocol;
             TlsClientImpl tlsClient = (TlsClientImpl) tlsPeer;
@@ -934,7 +930,7 @@ public class DtlsPacketTransformer implements PacketTransformer
      *
      * @param connector the <tt>RTPConnector</tt> which is to use or uses this <tt>PacketTransformer</tt>
      */
-    private void setConnector(AbstractRTPConnector connector)
+    private synchronized void setConnector(AbstractRTPConnector connector)
     {
         if (this.connector != connector) {
             AbstractRTPConnector oldValue = this.connector;
@@ -950,8 +946,7 @@ public class DtlsPacketTransformer implements PacketTransformer
     }
 
     /**
-     * Sets the <tt>MediaType</tt> of the stream which this instance is to work for/be associated
-     * with.
+     * Sets the <tt>MediaType</tt> of the stream which this instance is to work for/be associated with.
      *
      * @param mediaType the <tt>MediaType</tt> of the stream which this instance is to work for/be associated
      * with
@@ -972,7 +967,8 @@ public class DtlsPacketTransformer implements PacketTransformer
     /**
      * Enables/disables rtcp-mux.
      *
-     * @param rtcpmux whether to enable or disable.
+     * @param rtcpmux {@code true} to enable rtcp-mux or {@code false} to
+     * disable it.
      */
     void setRtcpmux(boolean rtcpmux)
     {
@@ -1009,8 +1005,7 @@ public class DtlsPacketTransformer implements PacketTransformer
             }
             return;
         }
-
-        if (rtcpmux && Component.RTCP == componentID) {
+        if (rtcpmux && DtlsTransformEngine.COMPONENT_RTCP == componentID) {
             /*
              * In the case of rtcp-mux, the RTCP transformer does not create a DTLS session. The
              * SRTP context (srtpTransformer) will be initialized on demand using

@@ -452,8 +452,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
     /**
      * Returns a <tt>List</tt> of <tt>String</tt>s containing the property names that have the
-     * specified suffix. A suffix is considered to be everything after the last dot in the
-     * property name.
+     * specified suffix. A suffix is considered to be everything after the last dot in the property name.
      *
      * For example, imagine a configuration service instance containing two properties only:
      *
@@ -464,8 +463,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * A call to this method with <tt>suffix</tt> equal to "PROP1" will return both properties,
      * whereas the call with <tt>suffix</tt> equal to "communicator.PROP1" or "PROP2" will return
-     * an empty <tt>List</tt>. Thus, if the <tt>suffix</tt> argument contains a dot, nothing
-     * will be found.
+     * an empty <tt>List</tt>. Thus, if the <tt>suffix</tt> argument contains a dot, nothing will be found.
      *
      * @param suffix the suffix for the property names to be returned
      * @return a <tt>List</tt> of <tt>String</tt>s containing the property names which contain the
@@ -650,13 +648,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
             if (trans != null)
                 trans.beginTransaction();
 
-            OutputStream stream = (file == null) ? null : new FileOutputStream(file);
-
-            try {
+            try (OutputStream stream = (file == null) ? null : new FileOutputStream(file)) {
                 store.storeConfiguration(stream);
-            } finally {
-                if (stream != null)
-                    stream.close();
             }
 
             if (trans != null)
@@ -908,11 +901,9 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * directory and returns a link to that one.
      *
      * @param extension the extension of the file name of the configuration file. The specified extension may
-     * not be taken into account if the the configuration file name is forced through a
-     * system property.
+     * not be taken into account if the the configuration file name is forced through a system property.
      * @param create <tt>true</tt> to create the configuration file with the determined file name if it
-     * does not exist; <tt>false</tt> to only figure out the file name of the configuration
-     * file without creating it
+     * does not exist; <tt>false</tt> to only figure out the file name of the configuration file without creating it
      * @return the configuration file currently used by the implementation.
      */
     private File getConfigurationFile(String extension, boolean create)
@@ -1018,17 +1009,14 @@ public class ConfigurationServiceImpl implements ConfigurationService
     private static void copy(InputStream inputStream, File outputFile)
             throws IOException
     {
-        OutputStream outputStream = new FileOutputStream(outputFile);
 
-        try {
+        try (OutputStream outputStream = new FileOutputStream(outputFile)) {
             byte[] bytes = new byte[4 * 1024];
             int bytesRead;
 
             while ((bytesRead = inputStream.read(bytes)) != -1) {
                 outputStream.write(bytes, 0, bytesRead);
             }
-        } finally {
-            outputStream.close();
         }
     }
 
@@ -1162,7 +1150,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
             try {
                 doubleValue = Double.parseDouble(stringValue);
             } catch (NumberFormatException ex) {
-                Timber.e(ex,"%s does not appear to be a double. Defaulting to %s",
+                Timber.e(ex, "%s does not appear to be a double. Defaulting to %s",
                         propertyName, defaultValue);
             }
         }
@@ -1320,17 +1308,9 @@ public class ConfigurationServiceImpl implements ConfigurationService
             String fileName = tokenizer.nextToken();
             try {
                 fileName = fileName.trim();
-
                 Properties fileProps = new Properties();
-
-                InputStream stream = null;
-                try {
-                    stream = ClassLoader.getSystemResourceAsStream(fileName);
+                try (InputStream stream = ClassLoader.getSystemResourceAsStream(fileName)) {
                     fileProps.load(stream);
-                } finally {
-                    if (stream != null) {
-                        stream.close();
-                    }
                 }
 
                 // now set all of this file's properties as system properties

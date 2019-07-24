@@ -36,14 +36,12 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
     static final int MAX_BYTES_PER_FRAME = 250;
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JavaEncoder</tt>
-     * instances.
+     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JavaEncoder</tt> instances.
      */
     static final Format[] SUPPORTED_INPUT_FORMATS;
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JavaEncoder</tt>
-     * instances.
+     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JavaEncoder</tt> instances.
      */
     static final Format[] SUPPORTED_OUTPUT_FORMATS;
 
@@ -88,14 +86,26 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
         for (int i = 0; i < supportedCount; i++) {
             double supportedSampleRate = SUPPORTED_SAMPLE_RATES[i];
 
-            SUPPORTED_INPUT_FORMATS[i] = new AudioFormat(AudioFormat.LINEAR, supportedSampleRate,
-                    16, 1, AudioFormat.LITTLE_ENDIAN, AudioFormat.SIGNED,
-                    Format.NOT_SPECIFIED /* frameSizeInBits */, Format.NOT_SPECIFIED /* frameRate */,
+            SUPPORTED_INPUT_FORMATS[i] = new AudioFormat(
+                    AudioFormat.LINEAR,
+                    supportedSampleRate,
+                    16,
+                    1,
+                    AudioFormat.LITTLE_ENDIAN,
+                    AudioFormat.SIGNED,
+                    Format.NOT_SPECIFIED /* frameSizeInBits */,
+                    Format.NOT_SPECIFIED /* frameRate */,
                     Format.shortArray);
-            SUPPORTED_OUTPUT_FORMATS[i] = new AudioFormat(Constants.SILK_RTP, supportedSampleRate,
-                    Format.NOT_SPECIFIED /* sampleSizeInBits */, 1, Format.NOT_SPECIFIED /* endian */,
-                    Format.NOT_SPECIFIED /* signed */, Format.NOT_SPECIFIED /* frameSizeInBits */,
-                    Format.NOT_SPECIFIED /* frameRate */, Format.byteArray);
+            SUPPORTED_OUTPUT_FORMATS[i] = new AudioFormat(
+                    Constants.SILK_RTP,
+                    supportedSampleRate,
+                    Format.NOT_SPECIFIED /* sampleSizeInBits */,
+                    1,
+                    Format.NOT_SPECIFIED /* endian */,
+                    Format.NOT_SPECIFIED /* signed */,
+                    Format.NOT_SPECIFIED /* frameSizeInBits */,
+                    Format.NOT_SPECIFIED /* frameRate */,
+                    Format.byteArray);
         }
     }
 
@@ -207,8 +217,7 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
 
         if (processed != BUFFER_PROCESSED_FAILED) {
             if (processed == BUFFER_PROCESSED_OK) {
-                updateOutput(outputBuffer, getOutputFormat(), outputBuffer.getLength(),
-                        outputBuffer.getOffset());
+                updateOutput(outputBuffer, getOutputFormat(), outputBuffer.getLength(), outputBuffer.getOffset());
                 outputBuffer.setDuration(duration);
             }
 
@@ -229,8 +238,7 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
     @Override
     protected Format[] getMatchingOutputFormats(Format inputFormat)
     {
-        return getMatchingOutputFormats(inputFormat, SUPPORTED_INPUT_FORMATS,
-                SUPPORTED_OUTPUT_FORMATS);
+        return getMatchingOutputFormats(inputFormat, SUPPORTED_INPUT_FORMATS, SUPPORTED_OUTPUT_FORMATS);
     }
 
     static Format[] getMatchingOutputFormats(Format inputFormat, Format[] supportedInputFormats,
@@ -244,14 +252,17 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
             if (matchingInputFormat == null)
                 return new Format[0];
             else {
-                AudioFormat matchingInputAudioFormat = (AudioFormat) matchingInputFormat
-                        .intersects(inputFormat);
-                Format outputFormat = new AudioFormat(null /* encoding */,
+                AudioFormat matchingInputAudioFormat = (AudioFormat) matchingInputFormat.intersects(inputFormat);
+                Format outputFormat = new AudioFormat(
+                        null /* encoding */,
                         matchingInputAudioFormat.getSampleRate(),
-                        Format.NOT_SPECIFIED /* sampleSizeInBits */, Format.NOT_SPECIFIED /* channels */,
-                        Format.NOT_SPECIFIED /* endian */, Format.NOT_SPECIFIED /* signed */,
+                        Format.NOT_SPECIFIED /* sampleSizeInBits */,
+                        Format.NOT_SPECIFIED /* channels */,
+                        Format.NOT_SPECIFIED /* endian */,
+                        Format.NOT_SPECIFIED /* signed */,
                         Format.NOT_SPECIFIED /* frameSizeInBits */,
-                        Format.NOT_SPECIFIED /* frameRate */, null /* dataType */);
+                        Format.NOT_SPECIFIED /* frameRate */,
+                        null /* dataType */);
                 Format matchingOutputFormat = matches(outputFormat, supportedOutputFormats);
 
                 if (matchingOutputFormat == null)
@@ -276,11 +287,16 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
         if ((outputFormat != null) && (outputFormat.getClass() == AudioFormat.class)) {
             AudioFormat outputAudioFormat = (AudioFormat) outputFormat;
 
-            outputFormat = setOutputFormat(new AudioFormat(outputAudioFormat.getEncoding(),
-                    outputAudioFormat.getSampleRate(), outputAudioFormat.getSampleSizeInBits(),
-                    outputAudioFormat.getChannels(), outputAudioFormat.getEndian(),
-                    outputAudioFormat.getSigned(), outputAudioFormat.getFrameSizeInBits(),
-                    outputAudioFormat.getFrameRate(), outputAudioFormat.getDataType())
+            outputFormat = setOutputFormat(new AudioFormat(
+                    outputAudioFormat.getEncoding(),
+                    outputAudioFormat.getSampleRate(),
+                    outputAudioFormat.getSampleSizeInBits(),
+                    outputAudioFormat.getChannels(),
+                    outputAudioFormat.getEndian(),
+                    outputAudioFormat.getSigned(),
+                    outputAudioFormat.getFrameSizeInBits(),
+                    outputAudioFormat.getFrameRate(),
+                    outputAudioFormat.getDataType())
             {
                 private static final long serialVersionUID = 0L;
 
@@ -295,8 +311,7 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
     }
 
     /**
-     * Updates the encoder's packet loss percentage. Takes into account
-     * <tt>this.alwaysAssumePacketLoss</tt>.
+     * Updates the encoder's packet loss percentage. Takes into account <tt>this.alwaysAssumePacketLoss</tt>.
      *
      * @param percentage the expected packet loss percentage to set.
      */

@@ -59,7 +59,8 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter implements Remo
     /**
      * The {@link TimeSeriesLogger} to be used by this instance to print time series.
      */
-    private static final TimeSeriesLogger timeSeriesLogger = TimeSeriesLogger.getTimeSeriesLogger(TransportCCEngine.class);
+    private static final TimeSeriesLogger timeSeriesLogger
+            = TimeSeriesLogger.getTimeSeriesLogger(TransportCCEngine.class);
 
     /**
      * The engine which handles incoming RTP packets for this instance. It
@@ -335,8 +336,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter implements Remo
     }
 
     /**
-     * Sets the ID of the transport-cc RTP extension. Set to -1 to effectively
-     * disable.
+     * Sets the ID of the transport-cc RTP extension. Set to -1 to effectively disable.
      *
      * @param id the ID to set.
      */
@@ -346,8 +346,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter implements Remo
     }
 
     /**
-     * Called when a receive channel group has a new bitrate estimate for the
-     * incoming streams.
+     * Called when a receive channel group has a new bitrate estimate for the incoming streams.
      *
      * @param ssrcs
      * @param bitrate
@@ -484,8 +483,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter implements Remo
     }
 
     /**
-     * @return one of the {@link MediaStream} instances which use this
-     * {@link TransportCCEngine}, or null.
+     * @return one of the {@link MediaStream} instances which use this {@link TransportCCEngine}, or null.
      */
     private MediaStream getMediaStream()
     {
@@ -529,8 +527,7 @@ public class TransportCCEngine extends RTCPPacketListenerAdapter implements Remo
          * {@inheritDoc}
          * <p></p>
          * If the transport-cc extension is configured, update the
-         * transport-wide sequence number (adding a new extension if one doesn't
-         * exist already).
+         * transport-wide sequence number (adding a new extension if one doesn't exist already).
          */
         @Override
         public RawPacket transform(RawPacket pkt)

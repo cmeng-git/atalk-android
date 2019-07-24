@@ -1,5 +1,17 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.0.1 (1101)
+Author:         cmeng
+Upload Date:	07/24/2019
+- Fix crypto chat session background color inconsistency - re-enable OMEMO will change to blue
+  solution: do not allow doHandleOtrPressed handle UI update - leave it to otr events.
+- Fix OTR padlock changes to unencrypted when press again
+  solution: setStatusOmemo#default: just return and do nothing if it is in OTR session mode
+- Fix system crash on OtrContactManager#equal on resourceName compare with NPE
+- Fix JingleIQProvider#Parse incorrect CASE statement parse handling
+- Clean up and update source to xmpp extensions, jitsi and libjitsi dated 20190720
+
+=========================================================================
 Version:		2.0.0 (1100)
 Author:         cmeng
 Upload Date:	07/16/2019

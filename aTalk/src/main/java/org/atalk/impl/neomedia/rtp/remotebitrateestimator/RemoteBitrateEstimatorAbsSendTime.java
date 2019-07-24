@@ -392,8 +392,8 @@ public class RemoteBitrateEstimatorAbsSendTime implements RemoteBitrateEstimator
         /**
          * Ctor.
          *
-         * @param options
-         * @param enableBurstGrouping
+         * @param options the over-use detector options.
+         * @param enableBurstGrouping true to activate burst detection, false otherwise
          */
         Detector(OverUseDetectorOptions options, boolean enableBurstGrouping)
         {

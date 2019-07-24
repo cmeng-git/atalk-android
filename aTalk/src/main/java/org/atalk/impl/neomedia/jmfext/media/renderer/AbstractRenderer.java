@@ -15,8 +15,7 @@ import timber.log.Timber;
 /**
  * Provides an abstract base implementation of <tt>Renderer</tt> in order to facilitate extenders.
  *
- * @param <T> the type of <tt>Format</tt> of the media data processed as input by
- * <tt>AbstractRenderer</tt>
+ * @param <T> the type of <tt>Format</tt> of the media data processed as input by <tt>AbstractRenderer</tt>
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */

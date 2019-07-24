@@ -15,14 +15,15 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
-import org.jivesoftware.smack.packet.*;
-import org.jxmpp.jid.*;
+import org.jivesoftware.smack.packet.IQ;
+import org.jxmpp.jid.Jid;
 
 /**
  * IQ used for the signaling of audio muting functionality in Jitsi Meet
  * conferences.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class MuteIq extends IQ
 {
@@ -42,9 +43,19 @@ public class MuteIq extends IQ
     public static final String JID_ATTR_NAME = "jid";
 
     /**
+     * Attribute name of "actor".
+     */
+    public static final String ACTOR_ATTR_NAME = "actor";
+
+    /**
      * Muted peer MUC jid.
      */
     private Jid jid;
+
+    /**
+     * The jid of the peer tha initiated the mute, optional.
+     */
+    private Jid actor;
 
     /**
      * To mute or unmute.
@@ -62,14 +73,17 @@ public class MuteIq extends IQ
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
     {
-        xml.attribute(JID_ATTR_NAME, jid)
-                .rightAngleBracket()
-                .append(mute.toString());
+        xml.optAttribute(JID_ATTR_NAME, jid);
+        xml.optAttribute(ACTOR_ATTR_NAME, actor);
+
+        xml.rightAngleBracket();
+        xml.append(mute.toString());
         return xml;
     }
 
     /**
      * Sets the MUC jid of the user to be muted/unmuted.
+     *
      * @param jid muc jid in the form of room_name@muc.server.net/nickname.
      */
     public void setJid(Jid jid)
@@ -88,8 +102,9 @@ public class MuteIq extends IQ
 
     /**
      * The action contained in the text part of 'mute' XML element body.
+     *
      * @param mute <tt>true</tt> to mute the participant. <tt>null</tt> means no
-     *             action is included in result XML.
+     * action is included in result XML.
      */
     public void setMute(Boolean mute)
     {
@@ -103,5 +118,23 @@ public class MuteIq extends IQ
     public Boolean getMute()
     {
         return mute;
+    }
+
+    /**
+     * Returns the peer jid that initiated the mute, if any.
+     * @return the peer jid that initiated the mute.
+     */
+    public Jid getActor()
+    {
+        return actor;
+    }
+
+    /**
+     * Sets jid for the peer that initiated the mute.
+     * @param actor the jid of the peer doing the mute.
+     */
+    public void setActor(Jid actor)
+    {
+        this.actor = actor;
     }
 }

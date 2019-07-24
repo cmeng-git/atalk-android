@@ -28,9 +28,10 @@ package org.atalk.util.function;
  * @author George Politis
  * @author Eng Chong Meng
  *
- * @deprecated Use {@link java.util.function.Function}=> required API-24
+ * // @deprecated Use {@link java.util.function.Function}=> required API-24
  */
-@Deprecated
+// @Deprecated
+// cmeng: needed by aTalk with API-19
 public abstract class AbstractFunction<T, R>
 {
     /**
@@ -59,7 +60,6 @@ public abstract class AbstractFunction<T, R>
         if (before == null) {
             throw new NullPointerException();
         }
-
         return new AbstractFunction<V, R>()
         {
             @Override

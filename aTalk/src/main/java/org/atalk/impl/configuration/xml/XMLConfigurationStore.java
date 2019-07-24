@@ -34,8 +34,7 @@ public class XMLConfigurationStore implements ConfigurationStore
     private static final String ATTRIBUTE_VALUE = "value";
 
     /**
-     * Name of the xml attribute indicating that a property is to be resolved in the system
-     * properties
+     * Name of the xml attribute indicating that a property is to be resolved in the system properties
      */
     private static final String SYSTEM_ATTRIBUTE_NAME = "system";
 
@@ -47,7 +46,7 @@ public class XMLConfigurationStore implements ConfigurationStore
     /**
      * The list of properties currently registered in the configuration service.
      */
-    private Hashtable<String, Object> properties = new Hashtable<String, Object>();
+    private Hashtable<String, Object> properties = new Hashtable<>();
 
     /**
      * Contains the properties that were initially loaded from the configuration file or (if the
@@ -74,8 +73,7 @@ public class XMLConfigurationStore implements ConfigurationStore
     }
 
     /**
-     * Creates a new runtime XML document which is to contain the properties managed by this
-     * <tt>ConfigurationStore</tt>
+     * Creates a new runtime XML document which is to contain the properties managed by this <tt>ConfigurationStore</tt>
      * .
      *
      * @return a new runtime XML <tt>Document</tt> which is to contain the properties managed by
@@ -85,7 +83,7 @@ public class XMLConfigurationStore implements ConfigurationStore
     {
         if (propertiesDocument == null) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = null;
+            DocumentBuilder builder;
             try {
                 builder = factory.newDocumentBuilder();
             } catch (ParserConfigurationException ex) {
@@ -132,7 +130,7 @@ public class XMLConfigurationStore implements ConfigurationStore
     public String[] getPropertyNames(String name)
     {
         Set<String> propertyNames = properties.keySet();
-        return propertyNames.toArray(new String[propertyNames.size()]);
+        return propertyNames.toArray(new String[0]);
     }
 
     /**
@@ -140,8 +138,7 @@ public class XMLConfigurationStore implements ConfigurationStore
      * name stands for a system property.
      *
      * @param propertyName the name of a property which is to be determined whether it is a system property
-     * @return <tt>true</tt> if the specified name stands for a system property; <tt>false</tt>,
-     * otherwise
+     * @return <tt>true</tt> if the specified name stands for a system property; <tt>false</tt>, otherwise
      * @see ConfigurationStore#isSystemProperty(String)
      */
     public boolean isSystemProperty(String propertyName)
@@ -163,7 +160,7 @@ public class XMLConfigurationStore implements ConfigurationStore
         try {
             DocumentBuilderFactory factory = XMLUtils.newDocumentBuilderFactory();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Map<String, Object> props = new Hashtable<String, Object>();
+            Map<String, Object> props = new Hashtable<>();
 
             // if the file is empty (or contains only sth insignificant)
             // ignore it and create a new document.
@@ -174,7 +171,7 @@ public class XMLConfigurationStore implements ConfigurationStore
 
             Node root = propertiesDocument.getFirstChild();
 
-            Node currentNode = null;
+            Node currentNode;
             NodeList children = root.getChildNodes();
             for (int i = 0; i < children.getLength(); i++) {
                 currentNode = children.item(i);
@@ -243,8 +240,7 @@ public class XMLConfigurationStore implements ConfigurationStore
     }
 
     /**
-     * Creates new entries in the XML <tt>doc</tt> for every element in the <tt>newProperties</tt>
-     * table.
+     * Creates new entries in the XML <tt>doc</tt> for every element in the <tt>newProperties</tt> table.
      *
      * @param doc the XML <tt>Document</tt> where the new entries should be created
      * @param newProperties the table containing the properties that are to be introduced in the document.
@@ -308,8 +304,7 @@ public class XMLConfigurationStore implements ConfigurationStore
     public void reloadConfiguration(File file)
             throws IOException, XMLException
     {
-        properties = new Hashtable<String, Object>();
-
+        properties = new Hashtable<>();
         fileExtractedProperties = loadConfiguration(file);
         properties.putAll(fileExtractedProperties);
     }
@@ -317,12 +312,10 @@ public class XMLConfigurationStore implements ConfigurationStore
     /**
      * Implements {@link ConfigurationStore#removeProperty(String)}. Removes the value association
      * in this <tt>ConfigurationStore</tt> of the property with a specific name. If the property
-     * with the specified name is not associated with a value in this
-     * <tt>ConfigurationStore</tt>, does nothing.
+     * with the specified name is not associated with a value in this <tt>ConfigurationStore</tt>, does nothing.
      *
      * @param propertyName the name of the property which is to have its value association in this
-     * <tt>ConfigurationStore</tt>
-     * removed
+     * <tt>ConfigurationStore</tt> removed
      * @see ConfigurationStore#removeProperty(String)
      */
     public void removeProperty(String propertyName)
@@ -352,8 +345,7 @@ public class XMLConfigurationStore implements ConfigurationStore
      * Implements {@link ConfigurationStore#setSystemProperty(String)}. Sets a property with a
      * specific name to be considered a system property by the <tt>ConfigurationStore</tt>.
      *
-     * @param propertyName the name of the property to be set as a system property in this
-     * <tt>ConfigurationStore</tt>
+     * @param propertyName the name of the property to be set as a system property in this <tt>ConfigurationStore</tt>
      * @see ConfigurationStore#setSystemProperty(String)
      */
     public void setSystemProperty(String propertyName)
@@ -435,16 +427,14 @@ public class XMLConfigurationStore implements ConfigurationStore
                     }
 
                     boolean isSystem = (value instanceof PropertyReference);
-                    String prop = isSystem ? ((PropertyReference) value).getValue().toString()
-                            : value.toString();
+                    String prop = isSystem ? ((PropertyReference) value).getValue().toString() : value.toString();
 
                     attr.setNodeValue(prop);
 
                     // in case the property has changed to system since the last load - update the
                     // conf file accordingly.
                     if (isSystem)
-                        ((Element) currentNode).setAttribute(SYSTEM_ATTRIBUTE_NAME,
-                                SYSTEM_ATTRIBUTE_TRUE);
+                        ((Element) currentNode).setAttribute(SYSTEM_ATTRIBUTE_NAME, SYSTEM_ATTRIBUTE_TRUE);
                     else
                         ((Element) currentNode).removeAttribute(SYSTEM_ATTRIBUTE_NAME);
 

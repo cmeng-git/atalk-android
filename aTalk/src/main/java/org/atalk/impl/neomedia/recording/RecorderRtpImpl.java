@@ -7,7 +7,7 @@ package org.atalk.impl.neomedia.recording;
 
 import com.sun.media.util.Registry;
 
-import org.atalk.impl.neomedia.ActiveSpeakerDetectorImpl;
+import org.atalk.impl.neomedia.DominantSpeakerIdentification;
 import org.atalk.impl.neomedia.audiolevel.AudioLevelEffect;
 import org.atalk.impl.neomedia.codec.SilenceEffect;
 import org.atalk.impl.neomedia.device.MediaDeviceImpl;
@@ -26,7 +26,6 @@ import org.atalk.service.neomedia.control.FlushableControl;
 import org.atalk.service.neomedia.control.KeyFrameControlAdapter;
 import org.atalk.service.neomedia.event.ActiveSpeakerChangedListener;
 import org.atalk.service.neomedia.recording.*;
-import org.atalk.util.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -99,16 +98,14 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     private static String PERFORM_ASD_PNAME = "neomedia.recording.PERFORM_ASD";
 
     /**
-     * The name of the property which sets a custom output audio codec.
-     * Currently only WAV is supported
+     * The name of the property which sets a custom output audio codec. Currently only WAV is supported
      */
     private static String AUDIO_CODEC_PNAME = "neomedia.recording.AUDIO_CODEC";
 
     /**
      * The <tt>ContentDescriptor</tt> to use when saving audio.
      */
-    private static ContentDescriptor AUDIO_CONTENT_DESCRIPTOR
-            = new ContentDescriptor(FileTypeDescriptor.MPEG_AUDIO);
+    private static ContentDescriptor AUDIO_CONTENT_DESCRIPTOR = new ContentDescriptor(FileTypeDescriptor.MPEG_AUDIO);
 
     /**
      * The suffix for audio file names.
@@ -151,8 +148,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     private RTCPFeedbackMessageSender rtcpFeedbackSender;
 
     /**
-     * The {@link RTPManager} instance we use to handle the packets coming from
-     * <tt>RTPTranslator</tt>.
+     * The {@link RTPManager} instance we use to handle the packets coming from <tt>RTPTranslator</tt>.
      */
     private RTPManager rtpManager;
 
@@ -164,8 +160,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
     /**
      * Holds the <tt>ReceiveStreams</tt> added to this instance by {@link #rtpManager} and
-     * additional information associated with each one (e.g. the <tt>Processor</tt>, if any, used
-     * for it).
+     * additional information associated with each one (e.g. the <tt>Processor</tt>, if any, used for it).
      */
     private final HashSet<ReceiveStreamDesc> receiveStreams = new HashSet<>();
 
@@ -278,10 +273,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     /**
      * {@inheritDoc}
      *
-     * @param format unused, since this implementation records multiple streams using potentially different
-     * formats.
-     * @param dirname the path to the directory into which this <tt>Recorder</tt> will store the recorded
-     * media files.
+     * @param format unused, since this implementation records multiple streams using potentially different formats.
+     * @param dirname the path to the directory into which this <tt>Recorder</tt> will store the recorded media files.
      */
     @Override
     public void start(String format, String dirname)
@@ -293,7 +286,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         MediaService mediaService = LibJitsi.getMediaService();
 
         if (performActiveSpeakerDetection) {
-            activeSpeakerDetector = new ActiveSpeakerDetectorImpl();
+            activeSpeakerDetector = new DominantSpeakerIdentification();
             activeSpeakerDetector.addActiveSpeakerChangedListener(this);
         }
 
@@ -497,10 +490,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
                 return;
             }
 
-            // FMJ silently creates new ReceiveStream instances, so we have to recognize them by
-            // the SSRC.
-            ReceiveStreamDesc receiveStreamDesc = findReceiveStream(
-                    getReceiveStreamSSRC(receiveStream));
+            // FMJ silently creates new ReceiveStream instances, so we have to recognize them by the SSRC.
+            ReceiveStreamDesc receiveStreamDesc = findReceiveStream(getReceiveStreamSSRC(receiveStream));
             if (receiveStreamDesc != null) {
                 Timber.i("ReceiveStream timeout, ssrc = %s", receiveStreamDesc.ssrc);
                 removeReceiveStream(receiveStreamDesc, true);
