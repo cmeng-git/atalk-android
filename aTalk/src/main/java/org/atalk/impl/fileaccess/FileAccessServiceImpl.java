@@ -8,12 +8,9 @@ package org.atalk.impl.fileaccess;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.*;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.OSUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -60,6 +57,7 @@ public class FileAccessServiceImpl implements FileAccessService
      * @return The created temporary file
      * @throws IOException If the file cannot be created
      */
+    @Override
     public File getTemporaryFile()
             throws IOException
     {
@@ -75,6 +73,7 @@ public class FileAccessServiceImpl implements FileAccessService
      * @return the created temporary directory
      * @throws IOException if the temporary directory cannot not be created
      */
+    @Override
     public File getTemporaryDirectory()
             throws IOException
     {
@@ -86,7 +85,6 @@ public class FileAccessServiceImpl implements FileAccessService
         if (!file.mkdirs()) {
             throw new IOException("Could not create temporary directory");
         }
-
         return file;
     }
 
@@ -94,6 +92,7 @@ public class FileAccessServiceImpl implements FileAccessService
      * Please use {@link #getPrivatePersistentFile(String, FileCategory)}.
      */
     @Deprecated
+    @Override
     public File getPrivatePersistentFile(String fileName)
             throws Exception
     {
@@ -114,6 +113,7 @@ public class FileAccessServiceImpl implements FileAccessService
      * @return The file
      * @throws Exception if we failed to create the file.
      */
+    @Override
     public File getPrivatePersistentFile(String fileName, FileCategory category)
             throws Exception
     {
@@ -130,6 +130,7 @@ public class FileAccessServiceImpl implements FileAccessService
      * Please use {@link #getPrivatePersistentDirectory(String, FileCategory)}
      */
     @Deprecated
+    @Override
     public File getPrivatePersistentDirectory(String dirName)
             throws Exception
     {
@@ -151,6 +152,7 @@ public class FileAccessServiceImpl implements FileAccessService
      * @return The created directory.
      * @throws Exception Thrown if there is no suitable location for the persistent directory.
      */
+    @Override
     public File getPrivatePersistentDirectory(String dirName, FileCategory category)
             throws Exception
     {
@@ -270,71 +272,13 @@ public class FileAccessServiceImpl implements FileAccessService
      * @return the default download directory
      * @throws IOException if it I/O error occurred
      */
+    @Override
     public File getDefaultDownloadDirectory()
             throws IOException
     {
         // For all other operating systems we return the Downloads folder.
         return new File(getSystemProperty("user.home"), "Downloads");
     }
-
-    /*
-     * private static class HANDLE extends PointerType implements NativeMapped { }
-     *
-     * private static class HWND extends HANDLE { }
-     */
-
-    // public static class GUIDs extends Structure
-    // {
-    // // public static class ByValue extends GUID implements Structure.ByValue {}
-    // public int data1;
-    // public short data2;
-    // public short data3;
-    // public byte[] data4;
-    //
-    // @Override
-    // protected List getFieldOrder()
-    // {
-    // return Arrays.asList(new String[] { "data1", "data2", "data3", "data4" });
-    // }
-    // }
-
-    private static Map<String, Object> OPT;
-
-    static {
-        if (OSUtils.IS_WINDOWS) {
-            OPT = new HashMap<String, Object>();
-            // OPT.put(Library.OPTION_TYPE_MAPPER, W32APITypeMapper.UNICODE);
-            // OPT.put(Library.OPTION_FUNCTION_MAPPER, W32APIFunctionMapper.UNICODE);
-        }
-    }
-
-    // private static interface Shell32 extends Library
-    // {
-    // public static final int MAX_PATH = 260;
-    // public static final int CSIDL_MYDOCUMENTS = 5;
-    // public static final int SHGFP_TYPE_CURRENT = 0;
-    // public static final int S_OK = 0;
-    // public static final int KF_FLAG_INIT = 0x00000800;
-    // public static final int KF_FLAG_CREATE = 0x00008000;
-    //
-    // static Shell32 INSTANCE = (Shell32) Native.loadLibrary("shell32", Shell32.class, OPT);
-    //
-    // /**
-    // * http://msdn.microsoft.com/en-us/library/bb762181(VS.85).aspx
-    // */
-    // public int SHGetFolderPath(HWND hwndOwner, int nFolder, HANDLE hToken, int dwFlags, char[] pszPath);
-    //
-    // /**
-    // * http://msdn.microsoft.com/en-us/library/bb762188(v=vs.85).aspx
-    // */
-    // public int SHGetKnownFolderPath(GUID rfid, int dwFlags, HANDLE hToken, PointerByReference pszPath);
-    // }
-
-    // private interface Ole32 extends Library
-    // {
-    // static Ole32 INSTANCE = (Ole32) Native.loadLibrary("Ole32", Ole32.class, OPT);
-    // public void CoTaskMemFree(Pointer p);
-    // }
 
     /**
      * Gets the major version of the executing operating system as defined by the <tt>os.version</tt> system property.
@@ -363,6 +307,7 @@ public class FileAccessServiceImpl implements FileAccessService
      * @param file The file concerned by the transaction, null if file is null.
      * @return A new failsafe transaction related to the given file.
      */
+    @Override
     public FailSafeTransaction createFailSafeTransaction(File file)
     {
         return (file == null) ? null : new FailSafeTransactionImpl(file);
@@ -379,12 +324,14 @@ public class FileAccessServiceImpl implements FileAccessService
             return;
 
         ConfigurationService cfg = LibJitsi.getConfigurationService();
-        profileDirLocation = cfg != null ? cfg.getScHomeDirLocation() : getSystemProperty(ConfigurationService.PNAME_SC_HOME_DIR_LOCATION);
+        profileDirLocation = cfg != null ? cfg.getScHomeDirLocation()
+                : getSystemProperty(ConfigurationService.PNAME_SC_HOME_DIR_LOCATION);
         if (profileDirLocation == null) {
             throw new IllegalStateException(ConfigurationService.PNAME_SC_HOME_DIR_LOCATION);
         }
 
-        scHomeDirName = cfg != null ? cfg.getScHomeDirName() : getSystemProperty(ConfigurationService.PNAME_SC_HOME_DIR_NAME);
+        scHomeDirName = cfg != null ? cfg.getScHomeDirName()
+                : getSystemProperty(ConfigurationService.PNAME_SC_HOME_DIR_NAME);
         if (scHomeDirName == null) {
             throw new IllegalStateException(ConfigurationService.PNAME_SC_HOME_DIR_NAME);
         }

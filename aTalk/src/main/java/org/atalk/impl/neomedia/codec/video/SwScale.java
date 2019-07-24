@@ -27,8 +27,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class SwScale
-        extends AbstractCodec
+public class SwScale extends AbstractCodec
 {
     /**
      * The minimum height and/or width of the input and/or output to be passed
@@ -37,13 +36,10 @@ public class SwScale
     public static final int MIN_SWS_SCALE_HEIGHT_OR_WIDTH = 4;
 
     /**
-     * Gets the FFmpeg <tt>PixelFormat</tt> equivalent of a specific FMJ
-     * <tt>RGBFormat</tt>.
+     * Gets the FFmpeg <tt>PixelFormat</tt> equivalent of a specific FMJ <tt>RGBFormat</tt>.
      *
-     * @param rgb the FMJ <tt>RGBFormat</tt> to get the equivalent FFmpeg
-     * <tt>PixelFormat</tt> of
-     * @return the FFmpeg <tt>PixelFormat</tt> equivalent of the specified FMJ
-     * <tt>RGBFormat</tt>
+     * @param rgb the FMJ <tt>RGBFormat</tt> to get the equivalent FFmpeg <tt>PixelFormat</tt> of
+     * @return the FFmpeg <tt>PixelFormat</tt> equivalent of the specified FMJ <tt>RGBFormat</tt>
      */
     private static int getFFmpegPixelFormat(RGBFormat rgb)
     {
@@ -90,20 +86,16 @@ public class SwScale
      * Gets a <tt>VideoFormat</tt> with a specific size i.e. width and height
      * using a specific <tt>VideoFormat</tt> as a template.
      *
-     * @param format the <tt>VideoFormat</tt> which is the template for the
-     * <tt>VideoFormat</tt> to be returned
-     * @param size the size i.e. width and height of the <tt>VideoFormat</tt> to
-     * be returned
-     * @return a <tt>VideoFormat</tt> with the specified <tt>size</tt> and based
-     * on the specified <tt>format</tt>
+     * @param format the <tt>VideoFormat</tt> which is the template for the <tt>VideoFormat</tt> to be returned
+     * @param size the size i.e. width and height of the <tt>VideoFormat</tt> to be returned
+     * @return a <tt>VideoFormat</tt> with the specified <tt>size</tt> and based on the specified <tt>format</tt>
      */
     private static VideoFormat setSize(VideoFormat format, Dimension size)
     {
         /*
          * Since the size of the Format has changed, its size-related properties
          * should change as well. Format#intersects doesn't seem to be cool
-         * because it preserves them and thus the resulting Format is
-         * inconsistent.
+         * because it preserves them and thus the resulting Format is inconsistent.
          */
         if (format instanceof RGBFormat) {
             RGBFormat rgbFormat = (RGBFormat) format;
@@ -114,13 +106,10 @@ public class SwScale
             if ((pixelStride == Format.NOT_SPECIFIED)
                     && (dataType != null)
                     && (bitsPerPixel != Format.NOT_SPECIFIED)) {
-                pixelStride
-                        = dataType.equals(Format.byteArray)
-                        ? (bitsPerPixel / 8)
-                        : 1;
+                pixelStride = dataType.equals(Format.byteArray)
+                        ? (bitsPerPixel / 8) : 1;
             }
-            format
-                    = new RGBFormat(
+            format = new RGBFormat(
                     size,
                     /* maxDataLength */ Format.NOT_SPECIFIED,
                     dataType,
@@ -130,18 +119,15 @@ public class SwScale
                     rgbFormat.getGreenMask(),
                     rgbFormat.getBlueMask(),
                     pixelStride,
-                    ((pixelStride == Format.NOT_SPECIFIED)
-                            || (size == null))
-                            ? Format.NOT_SPECIFIED
-                            : (pixelStride * size.width) /* lineStride */,
+                    ((pixelStride == Format.NOT_SPECIFIED) || (size == null))
+                            ? Format.NOT_SPECIFIED : (pixelStride * size.width) /* lineStride */,
                     rgbFormat.getFlipped(),
                     rgbFormat.getEndian());
         }
         else if (format instanceof YUVFormat) {
             YUVFormat yuvFormat = (YUVFormat) format;
 
-            format
-                    = new YUVFormat(
+            format = new YUVFormat(
                     size,
                     /* maxDataLength */ Format.NOT_SPECIFIED,
                     format.getDataType(),
@@ -170,16 +156,14 @@ public class SwScale
      * The <tt>FrameProcessingControl</tt> of this <tt>Codec</tt> which allows
      * JMF to instruct it to drop frames because it's behind schedule.
      */
-    private final FrameProcessingControlImpl frameProcessingControl
-            = new FrameProcessingControlImpl();
+    private final FrameProcessingControlImpl frameProcessingControl = new FrameProcessingControlImpl();
 
     /**
      * The indicator which determines whether this instance is to preserve the
      * aspect ratio of the video frames provided to this instance as input to be
      * processed. If <tt>true</tt>, the <tt>size</tt> of the
      * <tt>outputFormat</tt> of this instance is used to device a rectangle into
-     * which a scaled video frame should fit with the input aspect ratio
-     * preserved.
+     * which a scaled video frame should fit with the input aspect ratio preserved.
      */
     private final boolean preserveAspectRatio;
 
@@ -192,12 +176,10 @@ public class SwScale
     /**
      * Supported output formats.
      */
-    private VideoFormat[] supportedOutputFormats
-            = new VideoFormat[]
-            {
-                    new RGBFormat(),
-                    new YUVFormat(YUVFormat.YUV_420)
-            };
+    private VideoFormat[] supportedOutputFormats = new VideoFormat[]{
+            new RGBFormat(),
+            new YUVFormat(YUVFormat.YUV_420)
+    };
 
     /**
      * The pointer to the <tt>libswscale</tt> context.
@@ -229,8 +211,7 @@ public class SwScale
     /**
      * Initializes a new <tt>SwScale</tt> instance which can optionally attempt
      * to keep the width and height of YUV 420 output even and to preserve the
-     * aspect ratio of the video frames provided to the instance as input to be
-     * processed.
+     * aspect ratio of the video frames provided to the instance as input to be processed.
      *
      * @param fixOddYuv420Size <tt>true</tt> to have the new instance keep the
      * width and height of YUV 420 output even; otherwise, <tt>false</tt>
@@ -243,14 +224,11 @@ public class SwScale
         this.fixOddYuv420Size = fixOddYuv420Size;
         this.preserveAspectRatio = preserveAspectRatio;
 
-        inputFormats
-                = new Format[]
-                {
-                        new AVFrameFormat(),
-                        new RGBFormat(),
-                        new YUVFormat(YUVFormat.YUV_420)
-                };
-
+        inputFormats = new Format[]{
+                new AVFrameFormat(),
+                new RGBFormat(),
+                new YUVFormat(YUVFormat.YUV_420)
+        };
         addControl(frameProcessingControl);
     }
 
@@ -277,8 +255,7 @@ public class SwScale
      * Makes the protected super implementation public.
      * </p>
      *
-     * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently
-     * configured to accept input media data
+     * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently configured to accept input media data
      * @see AbstractCodec#getInputFormat()
      */
     @Override
@@ -315,13 +292,13 @@ public class SwScale
         if (input == null)
             return supportedOutputFormats;
 
-        /* if size is set for element 0 (YUVFormat), it is also set
-         * for element 1 (RGBFormat) and so on...
+        /*
+         * if size is set for element 0 (YUVFormat), it is also set for element 1 (RGBFormat) and so on...
          */
         Dimension size = supportedOutputFormats[0].getSize();
 
-        /* no specified size set so return the same size as input
-         * in output format supported
+        /*
+         * no specified size set so return the same size as input in output format supported
          */
         VideoFormat videoInput = (VideoFormat) input;
 
@@ -330,30 +307,28 @@ public class SwScale
 
         float frameRate = videoInput.getFrameRate();
 
-        return
-                new Format[]
-                        {
-                                new RGBFormat(
-                                        size,
-                                        /* maxDataLength */ Format.NOT_SPECIFIED,
-                                        /* dataType */ null,
-                                        frameRate,
-                                        32,
-                                        /* red */ Format.NOT_SPECIFIED,
-                                        /* green */ Format.NOT_SPECIFIED,
-                                        /* blue */ Format.NOT_SPECIFIED),
-                                new YUVFormat(
-                                        size,
-                                        /* maxDataLength */ Format.NOT_SPECIFIED,
-                                        /* dataType */ null,
-                                        frameRate,
-                                        YUVFormat.YUV_420,
-                                        /* strideY */ Format.NOT_SPECIFIED,
-                                        /* strideUV */ Format.NOT_SPECIFIED,
-                                        /* offsetY */ Format.NOT_SPECIFIED,
-                                        /* offsetU */ Format.NOT_SPECIFIED,
-                                        /* offsetV */ Format.NOT_SPECIFIED)
-                        };
+        return new Format[]{
+                new RGBFormat(
+                        size,
+                        /* maxDataLength */ Format.NOT_SPECIFIED,
+                        /* dataType */ null,
+                        frameRate,
+                        32,
+                        /* red */ Format.NOT_SPECIFIED,
+                        /* green */ Format.NOT_SPECIFIED,
+                        /* blue */ Format.NOT_SPECIFIED),
+                new YUVFormat(
+                        size,
+                        /* maxDataLength */ Format.NOT_SPECIFIED,
+                        /* dataType */ null,
+                        frameRate,
+                        YUVFormat.YUV_420,
+                        /* strideY */ Format.NOT_SPECIFIED,
+                        /* strideUV */ Format.NOT_SPECIFIED,
+                        /* offsetY */ Format.NOT_SPECIFIED,
+                        /* offsetU */ Format.NOT_SPECIFIED,
+                        /* offsetV */ Format.NOT_SPECIFIED)
+        };
     }
 
     /**
@@ -361,8 +336,7 @@ public class SwScale
      * size and fits into a specific output size.
      *
      * @param in the input size which defines the aspect ratio
-     * @param out the output size which defines the rectangle into which the
-     * returned output size is to fit
+     * @param out the output size which defines the rectangle into which the returned output size is to fit
      * @return an output size which has the aspect ratio of the specified input
      * size and fits into the specified output size
      */
@@ -431,13 +405,11 @@ public class SwScale
     }
 
     /**
-     * Processes (converts color space and/or scales) an input <tt>Buffer</tt>
-     * into an output <tt>Buffer</tt>.
+     * Processes (converts color space and/or scales) an input <tt>Buffer</tt> into an output <tt>Buffer</tt>.
      *
      * @param in the input <tt>Buffer</tt> to process (from)
      * @param out the output <tt>Buffer</tt> to process into
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>in</tt> has been successfully
-     * processed into <tt>out</tt>
+     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>in</tt> has been successfully processed into <tt>out</tt>
      */
     public int process(Buffer in, Buffer out)
     {
@@ -460,7 +432,6 @@ public class SwScale
             setInputFormat(inFormat);
 
         Dimension inSize = inFormat.getSize();
-
         if (inSize == null)
             return BUFFER_PROCESSED_FAILED;
 
@@ -478,8 +449,7 @@ public class SwScale
             /*
              * The format of the output Buffer is not documented to be used as
              * input to the #process method. Anyway, we're trying to use it in
-             * case this Codec doesn't have an outputFormat set which is
-             * unlikely to ever happen.
+             * case this Codec doesn't have an outputFormat set which is unlikely to ever happen.
              */
             outFormat = (VideoFormat) out.getFormat();
             if (outFormat == null)
@@ -487,14 +457,12 @@ public class SwScale
         }
 
         Dimension outSize = outFormat.getSize();
-
         if (outSize == null)
             outSize = inSize;
         else if (preserveAspectRatio)
             outSize = preserveAspectRatio(inSize, outSize);
 
         int outWidth = outSize.width, outHeight = outSize.height;
-
         if ((outWidth < MIN_SWS_SCALE_HEIGHT_OR_WIDTH)
                 || (outHeight < MIN_SWS_SCALE_HEIGHT_OR_WIDTH)) {
             return OUTPUT_BUFFER_NOT_FILLED; // Otherwise, sws_scale will crash.
@@ -515,8 +483,7 @@ public class SwScale
         else if (outFormat instanceof YUVFormat) {
             dstFmt = FFmpeg.PIX_FMT_YUV420P;
             /* YUV420P is 12 bits per pixel. */
-            dstLength
-                    = outWidth * outHeight
+            dstLength = outWidth * outHeight
                     + 2 * ((outWidth + 1) / 2) * ((outHeight + 1) / 2);
         }
         else
@@ -555,15 +522,12 @@ public class SwScale
             srcFrame = ((AVFrame) src).getPtr();
         }
         else {
-            srcFmt
-                    = (inFormat instanceof YUVFormat)
-                    ? FFmpeg.PIX_FMT_YUV420P
-                    : getFFmpegPixelFormat((RGBFormat) inFormat);
+            srcFmt = (inFormat instanceof YUVFormat)
+                    ? FFmpeg.PIX_FMT_YUV420P : getFFmpegPixelFormat((RGBFormat) inFormat);
             srcFrame = 0;
         }
 
-        swsContext
-                = FFmpeg.sws_getCachedContext(
+        swsContext = FFmpeg.sws_getCachedContext(
                 swsContext,
                 inWidth, inHeight, srcFmt,
                 outWidth, outHeight, dstFmt,
@@ -619,8 +583,7 @@ public class SwScale
     @Override
     public Format setInputFormat(Format format)
     {
-        Format inputFormat
-                = (format instanceof VideoFormat)
+        Format inputFormat = (format instanceof VideoFormat)
                 ? super.setInputFormat(format)
                 : null /* The input must be video, a size is not required. */;
 
@@ -635,8 +598,7 @@ public class SwScale
      * Sets the <tt>Format</tt> in which this <tt>Codec</tt> is to output media
      * data.
      *
-     * @param format the <tt>Format</tt> in which this <tt>Codec</tt> is to
-     * output media data
+     * @param format the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data
      * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently
      * configured to output media data or <tt>null</tt> if <tt>format</tt> was
      * found to be incompatible with this <tt>Codec</tt>
@@ -655,8 +617,7 @@ public class SwScale
                     int height = (size.height >> 1) << 1;
 
                     if ((width != size.width) || (height != size.height)) {
-                        format
-                                = new YUVFormat(
+                        format = new YUVFormat(
                                 new Dimension(width, height),
                                 /* maxDataLength */ Format.NOT_SPECIFIED,
                                 yuvFormat.getDataType(),
@@ -681,8 +642,7 @@ public class SwScale
     }
 
     /**
-     * Sets the size i.e. width and height of the current <tt>outputFormat</tt>
-     * of this <tt>SwScale</tt>
+     * Sets the size i.e. width and height of the current <tt>outputFormat</tt> of this <tt>SwScale</tt>
      *
      * @param size the size i.e. width and height to be set on the current
      * <tt>outputFormat</tt> of this <tt>SwScale</tt>
@@ -706,8 +666,7 @@ public class SwScale
     public void setOutputSize(Dimension size)
     {
         /*
-         * If the specified output size is tiny enough to crash sws_scale, do
-         * not accept it.
+         * If the specified output size is tiny enough to crash sws_scale, do not accept it.
          */
         if ((size != null)
                 && ((size.height < MIN_SWS_SCALE_HEIGHT_OR_WIDTH)
@@ -716,8 +675,7 @@ public class SwScale
         }
 
         for (int i = 0; i < supportedOutputFormats.length; i++) {
-            supportedOutputFormats[i]
-                    = setSize(supportedOutputFormats[i], size);
+            supportedOutputFormats[i] = setSize(supportedOutputFormats[i], size);
         }
 
         // Set the size to the outputFormat as well.

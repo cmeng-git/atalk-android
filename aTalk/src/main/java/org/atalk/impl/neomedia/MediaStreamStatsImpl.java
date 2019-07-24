@@ -62,7 +62,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
      * received. This is used to compute the correct Round-Trip-Time (RTT) in the translator case.
      */
     private final Map<Long, Long> emission2reception
-            = Collections.synchronizedMap(new LRUCache<Long, Long>(100));
+            = Collections.synchronizedMap(new LRUCache<>(100));
 
     /**
      * Computes an Exponentially Weighted Moving Average (EWMA). Thus, the most recent history
@@ -261,8 +261,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
     /**
      * The list of listeners to be notified when RTCP packets are received.
      */
-    private final List<RTCPPacketListener> rtcpPacketListeners
-            = Collections.synchronizedList(new LinkedList<RTCPPacketListener>());
+    private final List<RTCPPacketListener> rtcpPacketListeners = Collections.synchronizedList(new LinkedList<>());
 
     /**
      * Creates a new instance of stats concerning a MediaStream.

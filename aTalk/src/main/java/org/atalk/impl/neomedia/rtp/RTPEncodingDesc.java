@@ -143,8 +143,7 @@ public class RTPEncodingDesc
      */
     public RTPEncodingDesc(MediaStreamTrackDesc track, long primarySSRC)
     {
-        this(track, 0, primarySSRC, -1, -1,
-                NO_HEIGHT /* height */, NO_FRAME_RATE /* frame rate */, null);
+        this(track, 0, primarySSRC, -1, -1, NO_HEIGHT, NO_FRAME_RATE, null);
     }
 
     /**
@@ -163,8 +162,7 @@ public class RTPEncodingDesc
     public RTPEncodingDesc(MediaStreamTrackDesc track, int idx, long primarySSRC, int tid, int sid,
             int height, double frameRate, RTPEncodingDesc[] dependencyEncodings)
     {
-        // XXX we should be able to snif the actual height from the RTP
-        // packets.
+        // XXX we should be able to snif the actual height from the RTP packets.
         this.height = height;
         this.frameRate = frameRate;
         this.primarySSRC = primarySSRC;
@@ -260,8 +258,7 @@ public class RTPEncodingDesc
 
     /**
      * Returns a boolean that indicates whether or not this
-     * {@link RTPEncodingDesc} depends on the subjective quality index that is
-     * passed as an argument.
+     * {@link RTPEncodingDesc} depends on the subjective quality index that is passed as an argument.
      *
      * @param idx the index of this instance in the track encodings array.
      * @return true if this {@link RTPEncodingDesc} depends on the subjective
@@ -340,12 +337,10 @@ public class RTPEncodingDesc
 
 
     /**
-     * Gets the cumulative bitrate (in bps) of this {@link RTPEncodingDesc} and
-     * its dependencies.
+     * Gets the cumulative bitrate (in bps) of this {@link RTPEncodingDesc} and its dependencies.
      *
      * @param nowMs
-     * @return the cumulative bitrate (in bps) of this {@link RTPEncodingDesc}
-     * and its dependencies.
+     * @return the cumulative bitrate (in bps) of this {@link RTPEncodingDesc} and its dependencies.
      */
     private long getBitrateBps(long nowMs)
     {

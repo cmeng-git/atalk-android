@@ -59,8 +59,7 @@ public class MediaFormatFactoryImpl implements MediaFormatFactory
      * @param encoding the well-known encoding (name) to create a <tt>MediaFormat</tt> for
      * @return a <tt>MediaFormat</tt> with the specified <tt>encoding</tt> which is either an
      * <tt>AudioMediaFormat</tt> or a <tt>VideoMediaFormat</tt> instance if
-     * <tt>encoding</tt> is known to this <tt>MediaFormatFactory</tt> ; otherwise,
-     * <tt>null</tt>
+     * <tt>encoding</tt> is known to this <tt>MediaFormatFactory</tt> ; otherwise, <tt>null</tt>
      * @see MediaFormatFactory#createMediaFormat(String)
      */
     public MediaFormat createMediaFormat(String encoding)
@@ -78,8 +77,7 @@ public class MediaFormatFactoryImpl implements MediaFormatFactory
      * @param rtpPayloadType the RTP payload type of the <tt>MediaFormat</tt> to create
      * @return a <tt>MediaFormat</tt> with the specified <tt>rtpPayloadType</tt> which is either an
      * <tt>AudioMediaFormat</tt> or a <tt>VideoMediaFormat</tt> instance if
-     * <tt>rtpPayloadType</tt> is known to this <tt>MediaFormatFactory</tt>; otherwise,
-     * <tt>null</tt>
+     * <tt>rtpPayloadType</tt> is known to this <tt>MediaFormatFactory</tt>; otherwise, <tt>null</tt>
      * @see MediaFormatFactory#createMediaFormat(byte)
      */
     public MediaFormat createMediaFormat(byte rtpPayloadType)
@@ -109,8 +107,7 @@ public class MediaFormatFactoryImpl implements MediaFormatFactory
      * @param clockRate the clock rate in Hz to create a <tt>MediaFormat</tt> for
      * @return a <tt>MediaFormat</tt> with the specified <tt>encoding</tt> and <tt>clockRate</tt>
      * which is either an <tt>AudioMediaFormat</tt> or a <tt>VideoMediaFormat</tt> instance
-     * if <tt>encoding</tt> is known to this <tt>MediaFormatFactory</tt>; otherwise,
-     * <tt>null</tt>
+     * if <tt>encoding</tt> is known to this <tt>MediaFormatFactory</tt>; otherwise, <tt>null</tt>
      * @see MediaFormatFactory#createMediaFormat(String, double)
      */
     public MediaFormat createMediaFormat(String encoding, double clockRate)
@@ -273,8 +270,7 @@ public class MediaFormatFactoryImpl implements MediaFormatFactory
      * @return a <tt>MediaFormat</tt> with the specified <tt>encoding</tt>, <tt>clockRate</tt>,
      * <tt>channels</tt> and set of format parameters which is either an
      * <tt>AudioMediaFormat</tt> or a <tt>VideoMediaFormat</tt> instance if
-     * <tt>encoding</tt> is known to this <tt>MediaFormatFactory</tt>; otherwise,
-     * <tt>null</tt>
+     * <tt>encoding</tt> is known to this <tt>MediaFormatFactory</tt>; otherwise, <tt>null</tt>
      */
     public MediaFormat createMediaFormat(byte rtpPayloadType, String encoding, double clockRate,
             int channels, float frameRate, Map<String, String> formatParams,

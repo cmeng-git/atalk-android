@@ -17,8 +17,8 @@
 
     <ImageView
         android:id="@+id/accountProtoIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
@@ -45,8 +45,8 @@
 
             <ImageView
                 android:id="@+id/accountStatusIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/jabber_status_offline" />
 
             <TextView

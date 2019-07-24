@@ -297,11 +297,8 @@ public class RemoteBitrateEstimatorSingleStream implements RemoteBitrateEstimato
     private class Detector
     {
         public OveruseDetector detector;
-
         public OveruseEstimator estimator;
-
         public InterArrival interArrival;
-
         public long lastPacketTimeMs;
 
         public Detector(long lastPacketTimeMs, OverUseDetectorOptions options, boolean enableBurstGrouping)

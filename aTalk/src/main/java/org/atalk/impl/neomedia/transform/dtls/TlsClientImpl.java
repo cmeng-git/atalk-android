@@ -83,22 +83,21 @@ public class TlsClientImpl extends DefaultTlsClient
     @Override
     public int[] getCipherSuites()
     {
-        return new int[]
-                {
-                        /* core/src/main/java/org/bouncycastle/crypto/tls/DefaultTlsClient.java */
-                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,
-                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
-                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
-                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-                        CipherSuite.TLS_DHE_DSS_WITH_AES_128_GCM_SHA256,
-                        CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,
-                        CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA,
-                        CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
-                        CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,
-                        CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
-                };
+        return new int[]{
+                /* core/src/main/java/org/bouncycastle/crypto/tls/DefaultTlsClient.java */
+                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,
+                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_DHE_DSS_WITH_AES_128_GCM_SHA256,
+                CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,
+                CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
+                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,
+                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
+        };
     }
 
     /**
@@ -118,10 +117,7 @@ public class TlsClientImpl extends DefaultTlsClient
             if (clientExtensions == null)
                 clientExtensions = new Hashtable();
             TlsSRTPUtils.addUseSRTPExtension(
-                    clientExtensions,
-                    new UseSRTPData(
-                            DtlsControlImpl.SRTP_PROTECTION_PROFILES,
-                            mki));
+                    clientExtensions, new UseSRTPData(DtlsControlImpl.SRTP_PROTECTION_PROFILES, mki));
         }
         return clientExtensions;
     }
@@ -205,14 +201,9 @@ public class TlsClientImpl extends DefaultTlsClient
      * Forwards to {@link #packetTransformer}.
      */
     @Override
-    public void notifyAlertRaised(
-            short alertLevel,
-            short alertDescription,
-            String message,
-            Throwable cause)
+    public void notifyAlertRaised(short alertLevel, short alertDescription, String message, Throwable cause)
     {
-        packetTransformer.notifyAlertRaised(
-                this, alertLevel, alertDescription, message, cause);
+        packetTransformer.notifyAlertRaised(this, alertLevel, alertDescription, message, cause);
     }
 
     /**
@@ -258,7 +249,6 @@ public class TlsClientImpl extends DefaultTlsClient
                  * handshake and SHOULD send an invalid_parameter alert.
                  */
                 byte[] mki = useSRTPData.getMki();
-
                 if (Arrays.equals(mki, this.mki)) {
                     super.processServerExtensions(serverExtensions);
 

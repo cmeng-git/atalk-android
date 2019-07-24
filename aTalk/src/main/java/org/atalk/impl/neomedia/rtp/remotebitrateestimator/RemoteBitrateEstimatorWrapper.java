@@ -56,8 +56,7 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
     private static final boolean ENABLE_AST_RBE_DEFAULT = false;
 
     /**
-     * Determines whether or not to activate the abs-send-time remote bitrate
-     * estimator.
+     * Determines whether or not to activate the abs-send-time remote bitrate estimator.
      */
     private static final boolean ENABLE_AST_RBE =
             cfg != null ? cfg.getBoolean(ENABLE_AST_RBE_PNAME, ENABLE_AST_RBE_DEFAULT) : ENABLE_AST_RBE_DEFAULT;
@@ -73,8 +72,7 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
     private final RemoteBitrateObserver observer;
 
     /**
-     * Determines the minimum bitrate (in bps) for the estimates of this remote
-     * bitrate estimator.
+     * Determines the minimum bitrate (in bps) for the estimates of this remote bitrate estimator.
      */
     private int minBitrateBps = -1;
 
@@ -89,8 +87,7 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
     private int tccExtensionID = -1;
 
     /**
-     * The flag which indicates whether the remote end supports RTCP REMB or
-     * not.
+     * The flag which indicates whether the remote end supports RTCP REMB or not.
      */
     private boolean supportsRemb = false;
 
@@ -101,8 +98,7 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
 
     /**
      * Counts packets without the AST header extension. After
-     * {@link #SS_THRESHOLD} many packets we switch back to the
-     * single stream RBE.
+     * {@link #SS_THRESHOLD} many packets we switch back to the single stream RBE.
      */
     private int packetsSinceAbsoluteSendTime = 0;
 
@@ -120,8 +116,7 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
      * Ctor.
      *
      * @param observer the observer to notify on bitrate estimation changes.
-     * @param diagnosticContext the {@link DiagnosticContext} to be used by
-     * this instance.
+     * @param diagnosticContext the {@link DiagnosticContext} to be used by this instance.
      */
     public RemoteBitrateEstimatorWrapper(
             RemoteBitrateObserver observer,
@@ -283,8 +278,7 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
      * Gets a boolean that indicates whether or not to perform receive-side
      * bandwidth estimations.
      *
-     * @return true if receive-side bandwidth estimations are enabled, false
-     * otherwise.
+     * @return true if receive-side bandwidth estimations are enabled, false otherwise.
      */
     public boolean receiveSideBweEnabled()
     {
@@ -292,8 +286,7 @@ public class RemoteBitrateEstimatorWrapper extends SinglePacketTransformerAdapte
     }
 
     /**
-     * Sets the value of the flag which indicates whether the remote end
-     * supports RTCP REMB or not.
+     * Sets the value of the flag which indicates whether the remote end supports RTCP REMB or not.
      *
      * @param supportsRemb the value to set.
      */

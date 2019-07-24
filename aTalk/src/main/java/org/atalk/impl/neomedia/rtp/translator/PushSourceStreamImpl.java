@@ -88,7 +88,7 @@ class PushSourceStreamImpl implements PushSourceStream, Runnable, SourceTransfer
         readQCapacity = RTPConnectorOutputStream.PACKET_QUEUE_CAPACITY;
         readQ = new ArrayBlockingQueue<>(readQCapacity);
         if (TimberLog.isTraceEnable) {
-            // readQStats = QueueStatistics.get(getClass().getSimpleName()); ice4j 2.0
+            // readQStats = QueueStatistics.get(getClass().getSimpleName()); // ice4j 2.0
             readQStats = new QueueStatistics(getClass().getSimpleName() + "-" + hashCode());
         }
         else {
@@ -294,8 +294,7 @@ class PushSourceStreamImpl implements PushSourceStream, Runnable, SourceTransfer
      * {@inheritDoc}
      * <p>
      * Implements {@link SourceTransferHandler#transferData(PushSourceStream)}. This instance sets
-     * itself as the <tt>transferHandler</tt> of all <tt>PushSourceStream</tt>s that get added
-     * to it
+     * itself as the <tt>transferHandler</tt> of all <tt>PushSourceStream</tt>s that get added to it
      * (i.e. {@link #streams}). When either one of these pushes media data, this instance pushes
      * that media data.
      */

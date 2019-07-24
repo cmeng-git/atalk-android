@@ -56,17 +56,16 @@ public class OtrContactManager implements ServiceListener
                     return otrContact;
             }
 
+            // Create and cache new if none found
             OtrContact otrContact = new OtrContact(contact, resource);
             synchronized (otrContactsList) {
-                while (!otrContactsList.contains(otrContact)) {
-                    otrContactsList.add(otrContact);
-                }
+                otrContactsList.add(otrContact);
             }
             return otrContact;
         }
         else {
             synchronized (contactsMap) {
-                while (!contactsMap.containsKey(contact)) {
+                if (!contactsMap.containsKey(contact)) {
                     otrContactsList = new ArrayList<>();
                     contactsMap.put(contact, otrContactsList);
                 }
@@ -127,13 +126,13 @@ public class OtrContactManager implements ServiceListener
                 return false;
 
             OtrContact other = (OtrContact) obj;
-            if (this.contact != null && this.contact.equals(other.contact)) {
+            if ((this.contact != null) && this.contact.equals(other.contact)) {
                 // cmeng: must only compare resourceName, other resource parameters may not be the same
                 // e.g. presenceStatus - incoming otrContact can be offline?
-                if (this.resource != null
-                        && resource.getResourceName().equals(other.resource.getResourceName()))
+                if ((this.resource != null) && (other.resource != null)
+                        && this.resource.getResourceName().equals(other.resource.getResourceName()))
                     return true;
-                return this.resource == null && other.resource == null;
+                return ((this.resource == null) && (other.resource == null));
             }
             return false;
         }

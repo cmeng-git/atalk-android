@@ -5,9 +5,10 @@ package org.atalk.util.function;
  * <tt>Predicate</tt> interface found in Java 1.8.
  *
  * @author George Politis
- * @deprecated Use {@link java.util.function.Predicate} but required API-24
+ * // @deprecated Use {@link java.util.function.Predicate} but required API-24
  */
-@Deprecated
+// @Deprecated
+// cmeng - needed by aTalk with API-19 min
 public interface Predicate<T> {
 
     /**

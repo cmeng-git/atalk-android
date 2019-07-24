@@ -104,7 +104,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
                 false);
 
         if (TimberLog.isTraceEnable) {
-            // writeQStats = QueueStatistics.get(getClass().getSimpleName()); ice4j 2.0
+            // writeQStats = QueueStatistics.get(getClass().getSimpleName()); // ice4j 2.0
             writeQStats = new QueueStatistics(getClass().getSimpleName() + "-" + hashCode());
         }
         else {

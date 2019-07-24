@@ -6,7 +6,6 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.colibri.ColibriStreamConnector;
 import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;

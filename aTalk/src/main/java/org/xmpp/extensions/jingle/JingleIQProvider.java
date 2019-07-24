@@ -7,20 +7,20 @@ package org.xmpp.extensions.jingle;
 
 import android.text.TextUtils;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jxmpp.jid.impl.JidCreate;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
 import org.xmpp.extensions.colibri.WebSocketExtensionElement;
 import org.xmpp.extensions.condesc.CallIdExtensionElement;
 import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionElement;
 import org.xmpp.extensions.jitsimeet.BundleExtensionElement;
 import org.xmpp.extensions.jitsimeet.SSRCInfoExtensionElement;
-
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.provider.ProviderManager;
-import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -249,35 +249,40 @@ public class JingleIQProvider extends IQProvider<JingleIQ>
                         case GroupExtensionElement.ELEMENT_NAME:
                             jingleIQ.addExtension(GroupExtensionElement.parseExtension(parser));
                             break;
-                    }
+                        default:
+                            // <mute/> <active/> and other session-info element handlers
+                            if (namespace.equals(SessionInfoExtensionElement.NAMESPACE)) {
+                                SessionInfoType type = SessionInfoType.valueOf(elementName);
 
-                    // <mute/> <active/> and other session-info elements
-                    if (namespace.equals(SessionInfoExtensionElement.NAMESPACE)) {
-                        SessionInfoType type = SessionInfoType.valueOf(elementName);
-
-                        // <mute/>
-                        if (type == SessionInfoType.mute || type == SessionInfoType.unmute) {
-                            String name = parser.getAttributeValue("", MuteSessionInfoExtensionElement.NAME_ATTR_VALUE);
-                            jingleIQ.setSessionInfo(new MuteSessionInfoExtensionElement(
-                                    type == SessionInfoType.mute, name));
-                        }
-                        // <hold/>, <unhold/>, <active/>, etc.
-                        else {
-                            jingleIQ.setSessionInfo(new SessionInfoExtensionElement(type));
-                        }
-                    }
-                    else if (!ContentExtensionElement.ELEMENT_NAME.equals(elementName)) {
-                        /*
-                         * Seem to have problem with extracting correct elementName???; will failed if passed on to
-                         * PacketParserUtils.addExtensionElement(jingleIQ, parser);
-                         *
-                         * <jingle xmlns='urn:xmpp:jingle:1' action='session-initiate' initiator='swordfish@atalk.org/atalk' sid='5e00252pm8if7'>
-                         *     <content creator='initiator' name='audio'>
-                         * Unknown jingle IQ type: content; urn:xmpp:jingle:1)
-                         */
-                        // Just log info; no safe to call, media call may failed if not supported by addExtensionElement
-                        Timber.w("Unknown jingle IQ type: %s; %s)", elementName, namespace);
-                        // PacketParserUtils.addExtensionElement(jingleIQ, parser);
+                                // <mute/>
+                                if (type == SessionInfoType.mute || type == SessionInfoType.unmute) {
+                                    String name = parser.getAttributeValue("", MuteSessionInfoExtensionElement.NAME_ATTR_VALUE);
+                                    jingleIQ.setSessionInfo(new MuteSessionInfoExtensionElement(
+                                            type == SessionInfoType.mute, name));
+                                }
+                                // <ringing/>, <hold/>, <unhold/>, <active/>, etc.
+                                else {
+                                    jingleIQ.setSessionInfo(new SessionInfoExtensionElement(type));
+                                }
+                            }
+                            else {
+                                /*
+                                 * Seem to have problem with extracting correct elementName???; will failed if passed on to
+                                 * PacketParserUtils.addExtensionElement(jingleIQ, parser);
+                                 *
+                                 * <jingle xmlns='urn:xmpp:jingle:1' action='session-initiate'
+                                 *         initiator='swordfish@atalk.org/atalk' sid='5e00252pm8if7'>
+                                 *     <content creator='initiator' name='audio'>
+                                 * Unknown jingle IQ type: content; urn:xmpp:jingle:1)
+                                 */
+                                Timber.w("Unknown jingle IQ: <%s xml:'%s'>)", elementName, namespace);
+                                try {
+                                    PacketParserUtils.addExtensionElement(jingleIQ, parser);
+                                } catch (XmlPullParserException e) {
+                                    // Exception if not supported by addExtensionElement, Just log info
+                                    Timber.e("AddExtensionElement Exception: %s", jingleIQ.toXML());
+                                }
+                            }
                     }
                     break;
                 case XmlPullParser.END_TAG:

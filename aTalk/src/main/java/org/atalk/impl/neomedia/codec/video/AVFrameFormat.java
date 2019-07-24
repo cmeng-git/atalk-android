@@ -80,8 +80,8 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Initializes a new <tt>AVFrameFormat</tt> instance with a specific FFmpeg colorspace and unspecified size and
-     * frame rate.
+     * Initializes a new <tt>AVFrameFormat</tt> instance with a specific FFmpeg
+     * colorspace and unspecified size and frame rate.
      *
      * @param pixFmt the FFmpeg colorspace to be represented by the new instance
      */
@@ -91,8 +91,8 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Initializes a new <tt>AVFrameFormat</tt> instance with a specific FFmpeg colorspace and unspecified size and
-     * frame rate.
+     * Initializes a new <tt>AVFrameFormat</tt> instance with a specific FFmpeg
+     * colorspace and unspecified size and frame rate.
      *
      * @param pixFmt the FFmpeg colorspace to be represented by the new instance
      * @param deviceSystemPixFmt the <tt>DeviceSystem</tt>-specific colorspace to be represented by the new instance
@@ -181,12 +181,12 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Finds the attributes shared by two matching <tt>Format</tt>s. If the specified <tt>Format</tt> does not match
-     * this one, the result is undefined.
+     * Finds the attributes shared by two matching <tt>Format</tt>s. If the
+     * specified <tt>Format</tt> does not match this one, the result is undefined.
      *
      * @param format the matching <tt>Format</tt> to intersect with this one
-     * @return a <tt>Format</tt> with its attributes set to the attributes common to this instance and the specified
-     * <tt>format</tt>
+     * @return a <tt>Format</tt> with its attributes set to the attributes
+     * common to this instance and the specified <tt>format</tt>
      */
     @Override
     public Format intersects(Format format)
@@ -196,7 +196,8 @@ public class AVFrameFormat extends VideoFormat
         if (intersection != null) {
             AVFrameFormat avFrameFormatIntersection = (AVFrameFormat) intersection;
 
-            avFrameFormatIntersection.pixFmt = ((pixFmt == NOT_SPECIFIED) && (format instanceof AVFrameFormat)) ? ((AVFrameFormat) format).pixFmt : pixFmt;
+            avFrameFormatIntersection.pixFmt = ((pixFmt == NOT_SPECIFIED) && (format instanceof AVFrameFormat))
+                    ? ((AVFrameFormat) format).pixFmt : pixFmt;
         }
         return intersection;
     }

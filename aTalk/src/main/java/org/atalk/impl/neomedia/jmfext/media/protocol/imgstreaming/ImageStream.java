@@ -63,8 +63,7 @@ public class ImageStream extends AbstractVideoPullBufferStream<DataSource>
     private int y = 0;
 
     /**
-     * Initializes a new <tt>ImageStream</tt> instance which is to have a specific
-     * <tt>FormatControl</tt>
+     * Initializes a new <tt>ImageStream</tt> instance which is to have a specific <tt>FormatControl</tt>
      *
      * @param dataSource the <tt>DataSource</tt> which is creating the new instance so that it becomes one of
      * its <tt>streams</tt>

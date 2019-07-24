@@ -19,7 +19,8 @@ package org.atalk.android.gui;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -51,6 +52,9 @@ import timber.log.Timber;
  */
 public class aTalk extends MainMenuActivity implements EntityListHelper.TaskCompleted
 {
+    private final static int CONTACT_LIST = 0;
+    private final static int CONFERENCE_LIST = 1;
+    private final static int WEB_PAGE = 2;
     /**
      * The action that will show contacts.
      */
@@ -259,15 +263,15 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         @Override
         public Fragment getItem(int position)
         {
-            if (position == 0) {
+            if (position == CONTACT_LIST) {
                 contactListFragment = new ContactListFragment();
                 aTalkApp.setContactListFragment(contactListFragment);
                 return contactListFragment;
             }
-            else if (position == 1) {
+            else if (position == CONFERENCE_LIST) {
                 return new ChatRoomListFragment();
             }
-            else {
+            else { // if (position == WEB_PAGE){
                 return new WebViewFragment();
             }
         }
@@ -275,10 +279,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         @Override
         public int getCount()
         {
-            if (Build.VERSION.SDK_INT < 17)
-                return 1;
-            else
-                return NUM_PAGES;
+            return NUM_PAGES;
         }
     }
 

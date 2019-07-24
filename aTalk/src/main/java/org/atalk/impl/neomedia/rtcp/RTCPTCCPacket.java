@@ -118,17 +118,15 @@ public class RTCPTCCPacket extends RTCPFBPacket
     }
 
     /**
-     * @param fciBuffer the buffer which contains the FCI portion of the RTCP
-     * feedback packet.
-     * @return the packets represented in the FCI portion of an RTCP
-     * transport-cc feedback packet.
-     *
      * Warning: the timestamps are represented in the 250µs format used by the
      * on-the-wire format, and don't represent local time. This is different
      * than the timestamps expected as input when constructing a packet with
      * {@link RTCPTCCPacket#RTCPTCCPacket(long, long, PacketMap, byte, DiagnosticContext)}.
      *
      * Note that packets described as lost are NOT included in the results.
+     *
+     * @param fciBuffer the buffer which contains the FCI portion of the RTCP feedback packet.
+     * @return the packets represented in the FCI portion of an RTCP transport-cc feedback packet.
      */
     public static PacketMap getPacketsFromFci(ByteArrayBuffer fciBuffer)
     {
@@ -231,8 +229,7 @@ public class RTCPTCCPacket extends RTCPFBPacket
                             delta = fciBuf[currentDeltaOff++] & 0xff;
                             break;
                         case SYMBOL_LARGE_DELTA:
-                            // The delta is a 16-bit signed integer.
-                            // we're about to read 2 bytes
+                            // The delta is a 16-bit signed integer. we're about to read 2 bytes
                             if (currentDeltaOff + 1 >= fciOff + fciLen) {
                                 Timber.w("%s reached the end while reading long delta.", PARSE_ERROR);
                                 return null;

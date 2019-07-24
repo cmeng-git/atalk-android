@@ -3,7 +3,7 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package org.xmpp.extensions.colibri;
+package net.java.sip.communicator.impl.protocol.jabber;
 
 import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.service.neomedia.StreamConnectorDelegate;

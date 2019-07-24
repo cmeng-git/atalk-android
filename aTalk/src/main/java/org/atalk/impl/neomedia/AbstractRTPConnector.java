@@ -178,11 +178,9 @@ public abstract class AbstractRTPConnector implements RTPConnector
      * remote targets and optionally creates it if it does not exist yet.
      *
      * @param create <tt>true</tt> to create the <tt>PushSourceStream</tt> which gives access to the RTCP
-     * data received from the remote targets if it does not exist yet; otherwise,
-     * <tt>false</tt>
+     * data received from the remote targets if it does not exist yet; otherwise, <tt>false</tt>
      * @return the <tt>PushBufferStream</tt> which gives access to the RTCP data received from the
-     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is
-     * <tt>false</tt>
+     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is <tt>false</tt>
      * @throws IOException if creating the <tt>PushSourceStream</tt> fails
      */
     protected RTPConnectorInputStream<?> getControlInputStream(boolean create)
@@ -210,11 +208,9 @@ public abstract class AbstractRTPConnector implements RTPConnector
      * remote targets and optionally creates it if it does not exist yet.
      *
      * @param create <tt>true</tt> to create the <tt>OutputDataStream</tt> which is to be used to write
-     * RTCP data to be sent to the remote targets if it does not exist yet; otherwise,
-     * <tt>false</tt>
+     * RTCP data to be sent to the remote targets if it does not exist yet; otherwise, <tt>false</tt>
      * @return the <tt>OutputDataStream</tt> which is used to write RTCP data to be sent to the
-     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is
-     * <tt>false</tt>
+     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is <tt>false</tt>
      * @throws IOException if creating the <tt>OutputDataStream</tt> fails
      */
     protected RTPConnectorOutputStream getControlOutputStream(boolean create)
@@ -242,11 +238,9 @@ public abstract class AbstractRTPConnector implements RTPConnector
      * remote targets and optionally creates it if it does not exist yet.
      *
      * @param create <tt>true</tt> to create the <tt>PushSourceStream</tt> which gives access to the RTP
-     * data received from the remote targets if it does not exist yet; otherwise,
-     * <tt>false</tt>
+     * data received from the remote targets if it does not exist yet; otherwise, <tt>false</tt>
      * @return the <tt>PushBufferStream</tt> which gives access to the RTP data received from the
-     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is
-     * <tt>false</tt>
+     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is <tt>false</tt>
      * @throws IOException if creating the <tt>PushSourceStream</tt> fails
      */
     protected RTPConnectorInputStream<?> getDataInputStream(boolean create)
@@ -274,11 +268,9 @@ public abstract class AbstractRTPConnector implements RTPConnector
      * remote targets and optionally creates it if it does not exist yet.
      *
      * @param create <tt>true</tt> to create the <tt>OutputDataStream</tt> which is to be used to write RTP
-     * data to be sent to the remote targets if it does not exist yet; otherwise,
-     * <tt>false</tt>
+     * data to be sent to the remote targets if it does not exist yet; otherwise, <tt>false</tt>
      * @return the <tt>OutputDataStream</tt> which is used to write RTP data to be sent to the
-     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is
-     * <tt>false</tt>
+     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is <tt>false</tt>
      * @throws IOException if creating the <tt>OutputDataStream</tt> fails
      */
     public RTPConnectorOutputStream getDataOutputStream(boolean create)
@@ -290,8 +282,7 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Provides a dummy implementation to {@link RTPConnector#getReceiveBufferSize()} that always
-     * returns <tt>-1</tt>.
+     * Provides a dummy implementation to {@link RTPConnector#getReceiveBufferSize()} that always returns <tt>-1</tt>.
      */
     public int getReceiveBufferSize()
     {
@@ -320,8 +311,7 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Provides a dummy implementation to {@link RTPConnector#getSendBufferSize()} that always
-     * returns <tt>-1</tt>.
+     * Provides a dummy implementation to {@link RTPConnector#getSendBufferSize()} that always returns <tt>-1</tt>.
      */
     public int getSendBufferSize()
     {
@@ -330,8 +320,7 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Removes a target from our session. If a target is removed, there will be no data sent to that
-     * address.
+     * Removes a target from our session. If a target is removed, there will be no data sent to that address.
      *
      * @param target Destination target to be removed
      */

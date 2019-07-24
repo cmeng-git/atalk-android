@@ -27,8 +27,7 @@ import java.util.concurrent.atomic.*;
  * @author Damian Minkov
  * @author Boris Grozev
  */
-public class ReceiveTrackStatsImpl
-    extends AbstractTrackStats
+public class ReceiveTrackStatsImpl extends AbstractTrackStats
     implements ReceiveTrackStats
 {
     /**

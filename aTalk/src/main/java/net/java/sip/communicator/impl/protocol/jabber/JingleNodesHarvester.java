@@ -152,7 +152,8 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
             candidate = new JingleNodesCandidate(transportAddress, component, localEndPoint);
             IceSocketWrapper stunSocket = candidate.getStunSocket(null);
             candidate.getStunStack().addSocket(stunSocket);
-            // cmeng v2.0 - component.getComponentSocket().add(candidate.getCandidateIceSocketWrapper());
+            // cmeng ice4j-v2.0
+            component.getComponentSocket().add(candidate.getCandidateIceSocketWrapper());
         } catch (Throwable e) {
             Timber.i("Exception occurred when creating JingleNodesCandidate: %s", e.getMessage());
         }

@@ -6,6 +6,12 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.0.1 (07/24/2019)" versioncode="1101">
+        <change>Fix crypto chat session background color inconsistency</change>
+        <change>Fix OTR padlock changes to unencrypted when user press again</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.0.0 (07/16/2019)" versioncode="1100">
         <change>Harmonize aTalk UI presentation</change>
         <change>Enhance user/contact presence status with additional icon/status indicators</change>

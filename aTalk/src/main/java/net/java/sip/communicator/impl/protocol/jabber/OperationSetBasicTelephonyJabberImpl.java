@@ -175,7 +175,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
         String remoteUri = cd.getUri();
         if (remoteUri.startsWith("xmpp:"))
-            remoteUri = remoteUri.substring(5, remoteUri.length());
+            remoteUri = remoteUri.substring(5);
 
         Jid remoteJid;
         try {
@@ -763,7 +763,7 @@ public class OperationSetBasicTelephonyJabberImpl
         // let's first see whether we have a peer that's concerned by this IQ
         CallPeerJabberImpl callPeer = activeCallsRepository.findCallPeer(jingleIQ.getSID());
         JingleAction action = jingleIQ.getAction();
-        Timber.w("### Processing Jingle Iq id: %s. Action: %s", jingleIQ.getStanzaId(), action);
+        Timber.w("### Processing Jingle IQ id: %s. Action: %s", jingleIQ.getStanzaId(), action);
 
         if (action == JingleAction.SESSION_INITIATE) {
             TransferExtensionElement transfer = jingleIQ.getExtension(
@@ -874,7 +874,7 @@ public class OperationSetBasicTelephonyJabberImpl
             }
         }
         else {
-            Timber.w("Received stray jingle response: %s", action);
+            Timber.w("Received stray jingle IQ id: %s. Action: %s", jingleIQ.getStanzaId(), action);
         }
     }
 

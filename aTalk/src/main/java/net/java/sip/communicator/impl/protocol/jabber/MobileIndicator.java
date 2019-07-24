@@ -5,16 +5,16 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.xmpp.extensions.caps.UserCapsNodeListener;
+import android.text.TextUtils;
+
 import net.java.sip.communicator.service.protocol.ContactResource;
 import net.java.sip.communicator.service.protocol.RegistrationState;
 import net.java.sip.communicator.service.protocol.event.*;
 
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
+import org.xmpp.extensions.caps.UserCapsNodeListener;
 
 import java.util.*;
 
@@ -76,14 +76,14 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
 
         String indicatorResource
                 = parentProvider.getAccountID().getAccountProperties().get(MOBILE_INDICATOR_RESOURCE_ACC_PROP);
-        if (indicatorResource != null && indicatorResource.length() > 0) {
+        if (!TextUtils.isEmpty(indicatorResource)) {
             isCapsMobileIndicator = false;
             checkStrings = indicatorResource.split(",");
         }
         else {
             String indicatorCaps
                     = parentProvider.getAccountID().getAccountProperties().get(MOBILE_INDICATOR_CAPS_ACC_PROP);
-            if (indicatorCaps == null || indicatorCaps.length() == 0) {
+            if (TextUtils.isEmpty(indicatorCaps)) {
                 indicatorCaps = "mobile, portable, android";
             }
             checkStrings = indicatorCaps.split(",");
@@ -127,10 +127,20 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
                 highestPriorityResources.add(res);
             }
         }
+        updateContactMobileStatus(contact, highestPriorityResources);
+    }
 
+    /**
+     * Updates contact mobile status.
+     *
+     * @param contact the contact.
+     * @param resources the list of contact resources.
+     */
+    private void updateContactMobileStatus(ContactJabberImpl contact, List<ContactResource> resources)
+    {
         // check whether all are mobile
         boolean allMobile = false;
-        for (ContactResource res : highestPriorityResources) {
+        for (ContactResource res : resources) {
             if (res.isMobile())
                 allMobile = true;
             else {
@@ -138,7 +148,7 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
                 break;
             }
         }
-        if (highestPriorityResources.size() > 0)
+        if (resources.size() > 0)
             contact.setMobile(allMobile);
         else
             contact.setMobile(false);
@@ -153,12 +163,15 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
     boolean isMobileResource(Jid fullJid)
     {
         if (isCapsMobileIndicator) {
-            XMPPTCPConnection xmppConnection = ssclCallback.getParentProvider().getConnection();
-            if (xmppConnection != null) {
-                EntityCapsManager capsManager = EntityCapsManager.getInstanceFor(xmppConnection);
-                DiscoverInfo caps = EntityCapsManager.getDiscoveryInfoByNodeVer(capsManager.getLocalNodeVer());
-                return (caps != null && containsStrings(caps.getNode(), checkStrings));
-            }
+            EntityCapsManager.NodeVerHash caps = EntityCapsManager.getNodeVerHashByJid(fullJid);
+            return (caps != null && containsStrings(caps.getNode(), checkStrings));
+
+//            XMPPTCPConnection xmppConnection = ssclCallback.getParentProvider().getConnection();
+//            if (xmppConnection != null) {
+//                EntityCapsManager capsManager = EntityCapsManager.getInstanceFor(xmppConnection);
+//                DiscoverInfo caps = EntityCapsManager.getDiscoveryInfoByNodeVer(capsManager.getLocalNodeVer());
+//                return (caps != null && containsStrings(caps.getNode(), checkStrings));
+//            }
         }
         return (startsWithStrings(fullJid.getResourceOrEmpty().toString(), checkStrings));
     }
@@ -169,16 +182,16 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
      *
      * @param evt ProviderStatusChangeEvent the event describing the status change.
      */
+    @Override
     public void registrationStateChanged(RegistrationStateChangeEvent evt)
     {
         if (evt.getNewState() == RegistrationState.REGISTERED) {
             this.parentProvider.getDiscoveryManager().addUserCapsNodeListener(this);
         }
-        else if((evt.getNewState() == RegistrationState.CONNECTION_FAILED
-                    || evt.getNewState()  == RegistrationState.AUTHENTICATION_FAILED
-                    || evt.getNewState() == RegistrationState.UNREGISTERED)
-                && this.parentProvider.getDiscoveryManager() != null)
-        {
+        else if ((evt.getNewState() == RegistrationState.CONNECTION_FAILED
+                || evt.getNewState() == RegistrationState.AUTHENTICATION_FAILED
+                || evt.getNewState() == RegistrationState.UNREGISTERED)
+                && this.parentProvider.getDiscoveryManager() != null) {
             this.parentProvider.getDiscoveryManager().removeUserCapsNodeListener(this);
         }
     }
@@ -203,7 +216,6 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
     private void updateMobileIndicatorUsingCaps(Jid user)
     {
         ContactJabberImpl contact = ssclCallback.findContactById(user.asBareJid());
-
         if (contact == null)
             return;
 
@@ -233,19 +245,7 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
             }
         }
         // check whether all are mobile
-        boolean allMobile = false;
-        for (ContactResource res : mostAvailableResources) {
-            if (res.isMobile())
-                allMobile = true;
-            else {
-                allMobile = false;
-                break;
-            }
-        }
-        if (mostAvailableResources.size() > 0)
-            contact.setMobile(allMobile);
-        else
-            contact.setMobile(false);
+        updateContactMobileStatus(contact, mostAvailableResources);
     }
 
     /**

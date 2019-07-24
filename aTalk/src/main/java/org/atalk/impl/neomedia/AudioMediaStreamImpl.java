@@ -26,6 +26,7 @@ import org.atalk.util.event.PropertyChangeNotifier;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.*;
 
 import javax.media.Format;
@@ -35,8 +36,7 @@ import javax.media.format.AudioFormat;
 import timber.log.Timber;
 
 /**
- * Extends <tt>MediaStreamImpl</tt> in order to provide an implementation of
- * <tt>AudioMediaStream</tt>.
+ * Extends <tt>MediaStreamImpl</tt> in order to provide an implementation of <tt>AudioMediaStream</tt>.
  *
  * @author Lyubomir Marinov
  * @author Emil Ivov
@@ -122,8 +122,7 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
 
     /**
      * Initializes a new <tt>AudioMediaStreamImpl</tt> instance which will use the specified
-     * <tt>MediaDevice</tt> for both capture and playback of audio exchanged via the specified
-     * <tt>StreamConnector</tt>.
+     * <tt>MediaDevice</tt> for both capture and playback of audio exchanged via the specified <tt>StreamConnector</tt>.
      *
      * @param connector the <tt>StreamConnector</tt> the new instance is to use for sending and receiving audio
      * @param device the <tt>MediaDevice</tt> the new instance is to use for both capture and playback of
@@ -141,6 +140,31 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
         }
         else
             audioSystemChangeNotifier = null;
+    }
+
+    /**
+     * Gets the time in milliseconds of the last input activity related to this
+     * <tt>AudioMediaStream</tt>. We detect either RTP or RTCP activity.
+     *
+     * @return the time in milliseconds of the last input activity related to this <tt>AudioMediaStream</tt>
+     * @throws IOException only in case we create input stream and it fails,
+     * as we always pass false to skip creating, should never be thrown.
+     */
+    public long getLastInputActivityTime()
+            throws IOException
+    {
+        RTPConnectorInputStream inData = getRTPConnector().getDataInputStream(false);
+        long inDataActivity = -1;
+        if (inData != null) {
+            inDataActivity = inData.getLastActivityTime();
+        }
+
+        RTPConnectorInputStream inControl = getRTPConnector().getControlInputStream(false);
+        long inControlActivity = -1;
+        if (inControl != null) {
+            inControlActivity = inControl.getLastActivityTime();
+        }
+        return Math.max(inControlActivity, inDataActivity);
     }
 
     /**

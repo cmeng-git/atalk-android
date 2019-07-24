@@ -24,8 +24,6 @@
  */
 package org.atalk.util.function;
 
-import org.jivesoftware.smack.util.Objects;
-
 /**
  * Represents an operation that accepts a single input argument and returns no
  * result. Unlike most other functional interfaces, {@code Consumer} is expected
@@ -35,11 +33,11 @@ import org.jivesoftware.smack.util.Objects;
  * whose functional method is {@link #accept(Object)}.
  *
  * @param <T> the type of the input to the operation
- *
  * @since 1.8
  */
 @FunctionalInterface
-public interface Consumer<T> {
+public interface Consumer<T>
+{
 
     /**
      * Performs this operation on the given argument.

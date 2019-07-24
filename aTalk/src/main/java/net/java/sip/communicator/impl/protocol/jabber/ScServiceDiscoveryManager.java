@@ -79,6 +79,11 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     private final ProtocolProviderServiceJabberImpl parentProvider;
 
     /**
+     * The runnable responsible for retrieving discover info.
+     */
+    private DiscoveryInfoRetriever retriever = new DiscoveryInfoRetriever();
+
+    /**
      * The {@link XMPPTCPConnection} that this manager is responsible for.
      */
     private final XMPPTCPConnection connection;
@@ -99,11 +104,6 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * in order to reduce unnecessary allocations.
      */
     private static final UserCapsNodeListener[] NO_USER_CAPS_NODE_LISTENERS = new UserCapsNodeListener[0];
-
-    /**
-     * The runnable responsible for retrieving discover info.
-     */
-    private DiscoveryInfoRetriever retriever = new DiscoveryInfoRetriever();
 
     /**
      * persistentAvatarCache is used only by ScServiceDiscoveryManager for the specific account entities received
@@ -326,10 +326,8 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      *
      * @param entityJid the address of the XMPP entity. Buddy Jid should be FullJid
      * @return the discovered information.
-     * @throws XMPPException if the operation failed for some reason.
      */
     public DiscoverInfo discoverInfoNonBlocking(Jid entityJid)
-            throws XMPPException
     {
         // Check if we have it cached in the Entity Capabilities Manager
         DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityJid);
@@ -363,9 +361,9 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException not connection exception
-     * @throws InterruptedException
+     * @throws InterruptedException Interrupt
      */
-    public DiscoverInfo getRemoteDiscoverInfo(Jid entityJid, int timeout)
+    private DiscoverInfo getRemoteDiscoverInfo(Jid entityJid, int timeout)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         // cmeng - "item-not-found" for request on a 5-second wait timeout. Actually server does
@@ -386,8 +384,8 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * @return the discovered information.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException Not connection
+     * @throws InterruptedException Interrupt
      */
     public DiscoverItems discoverItems(Jid entityJid)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
@@ -404,8 +402,8 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * @return the discovered items.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException Not connection
+     * @throws InterruptedException Interrupt
      */
     public DiscoverItems discoverItems(Jid entityJid, String node)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
@@ -436,18 +434,6 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
             return false;
         }
         return ((info != null) && info.containsFeature(feature));
-    }
-
-    /**
-     * Gets the <tt>EntityCapsManager</tt> which handles the entity capabilities for this
-     * <tt>ScServiceDiscoveryManager</tt>.
-     *
-     * @return the <tt>EntityCapsManager</tt> which handles the entity capabilities for this
-     * <tt>ScServiceDiscoveryManager</tt>
-     */
-    public EntityCapsManager getEntityCapsManager()
-    {
-        return mEntityCapsManager;
     }
 
     /**
@@ -760,7 +746,6 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
          * Queue entities for retrieval.
          *
          * @param entityJid the entity.
-         * @param nvh and its capability.
          */
         public void addEntityForRetrieve(Jid entityJid)
         {

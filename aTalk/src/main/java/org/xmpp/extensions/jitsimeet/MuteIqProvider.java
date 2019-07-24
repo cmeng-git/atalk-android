@@ -28,6 +28,7 @@ import java.io.IOException;
  * The parser of {@link MuteIq}.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class MuteIqProvider extends IQProvider<MuteIq>
 {
@@ -54,13 +55,20 @@ public class MuteIqProvider extends IQProvider<MuteIq>
         }
 
         String rootElement = parser.getName();
-
         MuteIq iq;
-
         if (MuteIq.ELEMENT_NAME.equals(rootElement)) {
             iq = new MuteIq();
-            Jid jid = JidCreate.from(parser.getAttributeValue("", MuteIq.JID_ATTR_NAME));
-            iq.setJid(jid);
+            String jidStr = parser.getAttributeValue("", MuteIq.JID_ATTR_NAME);
+            if (jidStr != null) {
+                Jid jid = JidCreate.from(jidStr);
+                iq.setJid(jid);
+            }
+
+            String actorStr = parser.getAttributeValue("", MuteIq.ACTOR_ATTR_NAME);
+            if (actorStr != null) {
+                Jid actor = JidCreate.from(actorStr);
+                iq.setActor(actor);
+            }
         }
         else {
             return null;

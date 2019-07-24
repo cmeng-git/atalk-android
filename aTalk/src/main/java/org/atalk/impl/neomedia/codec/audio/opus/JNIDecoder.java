@@ -28,21 +28,25 @@ import timber.log.Timber;
 public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
 {
     /**
-     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JNIDecoder</tt>
-     * instances.
+     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JNIDecoder</tt> instances.
      */
-    private static final Format[] SUPPORTED_INPUT_FORMATS = new Format[]{new AudioFormat(
-            Constants.OPUS_RTP)};
+    private static final Format[] SUPPORTED_INPUT_FORMATS
+            = new Format[]{new AudioFormat(Constants.OPUS_RTP)};
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JNIDecoder</tt>
-     * instances.
+     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JNIDecoder</tt> instances.
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS = new Format[]{new AudioFormat(
-            AudioFormat.LINEAR, 48000, 16, 1, AbstractAudioRenderer.NATIVE_AUDIO_FORMAT_ENDIAN,
+            AudioFormat.LINEAR,
+            48000,
+            16,
+            1,
+            AbstractAudioRenderer.NATIVE_AUDIO_FORMAT_ENDIAN,
             AudioFormat.SIGNED,
             /* frameSizeInBits */Format.NOT_SPECIFIED,
-            /* frameRate */Format.NOT_SPECIFIED, Format.byteArray)};
+            /* frameRate */Format.NOT_SPECIFIED,
+            Format.byteArray)
+    };
 
     static {
         /*
@@ -190,8 +194,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
             byte[] out = validateByteArraySize(outBuf, outOffset + lastFrameSizeInSamplesPerChannel
                     * outputFrameSize, outOffset != 0);
             int frameSizeInSamplesPerChannel = Opus.decode(decoder, in, inOffset, inLength, out,
-                    outOffset, lastFrameSizeInSamplesPerChannel,
-                    /* decodeFEC */1);
+                    outOffset, lastFrameSizeInSamplesPerChannel,1);
 
             if (frameSizeInSamplesPerChannel > 0) {
                 int frameSizeInBytes = frameSizeInSamplesPerChannel * outputFrameSize;
@@ -213,8 +216,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
             lastSeqNo = incrementSeqNo(lastSeqNo);
         }
         else {
-            int frameSizeInSamplesPerChannel = Opus.decoder_get_nb_samples(decoder, in, inOffset,
-                    inLength);
+            int frameSizeInSamplesPerChannel = Opus.decoder_get_nb_samples(decoder, in, inOffset, inLength);
             byte[] out = validateByteArraySize(outBuf, outOffset + frameSizeInSamplesPerChannel
                     * outputFrameSize, outOffset != 0);
 
@@ -242,8 +244,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
         int ret = (lastSeqNo == seqNo) ? BUFFER_PROCESSED_OK : INPUT_BUFFER_NOT_CONSUMED;
 
         if (outLength > 0) {
-            outBuf.setDuration(totalFrameSizeInSamplesPerChannel * 1000L * 1000L * 1000L
-                    / outputSampleRate);
+            outBuf.setDuration(totalFrameSizeInSamplesPerChannel * 1000L * 1000L * 1000L / outputSampleRate);
             outBuf.setFormat(getOutputFormat());
             outBuf.setLength(outLength);
             outBuf.setOffset(0);
@@ -273,11 +274,9 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
     }
 
     /**
-     * Implements {@link Control#getControlComponent()}. <tt>JNIDecoder</tt> does not provide user
-     * interface of its own.
+     * Implements {@link Control#getControlComponent()}. <tt>JNIDecoder</tt> does not provide user interface of its own.
      *
-     * @return <tt>null</tt> to signify that <tt>JNIDecoder</tt> does not provide user interface of
-     * its own
+     * @return <tt>null</tt> to signify that <tt>JNIDecoder</tt> does not provide user interface of its own
      */
     @Override
     public Component getControlComponent()
@@ -293,10 +292,16 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
     {
         AudioFormat af = (AudioFormat) inputFormat;
 
-        return new Format[]{new AudioFormat(AudioFormat.LINEAR, af.getSampleRate(), 16, 1,
-                AbstractAudioRenderer.NATIVE_AUDIO_FORMAT_ENDIAN, AudioFormat.SIGNED,
+        return new Format[]{new AudioFormat(
+                AudioFormat.LINEAR,
+                af.getSampleRate(),
+                16,
+                1,
+                AbstractAudioRenderer.NATIVE_AUDIO_FORMAT_ENDIAN,
+                AudioFormat.SIGNED,
                 /* frameSizeInBits */Format.NOT_SPECIFIED,
-                /* frameRate */Format.NOT_SPECIFIED, Format.byteArray)};
+                /* frameRate */Format.NOT_SPECIFIED,
+                Format.byteArray)};
     }
 
     /**
