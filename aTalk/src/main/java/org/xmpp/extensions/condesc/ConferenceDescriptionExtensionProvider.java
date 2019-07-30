@@ -2,8 +2,8 @@ package org.xmpp.extensions.condesc;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ public class ConferenceDescriptionExtensionProvider
 
         while (!done) {
             switch (parser.next()) {
-                case XmlPullParser.START_TAG:
+                case START_ELEMENT:
                     elementName = parser.getName();
                     if (TransportExtensionElement.ELEMENT_NAME.equals(elementName)) {
                         String transportNs = parser.getNamespace();
@@ -49,7 +49,7 @@ public class ConferenceDescriptionExtensionProvider
                     }
                     break;
 
-                case XmlPullParser.END_TAG:
+                case END_ELEMENT:
                     switch (parser.getName()) {
                         case ConferenceDescriptionExtensionElement.ELEMENT_NAME:
                             done = true;

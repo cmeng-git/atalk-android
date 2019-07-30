@@ -19,11 +19,11 @@ package org.jivesoftware.smackx.bob.provider;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.bob.BoBData;
 import org.jivesoftware.smackx.bob.BoBHash;
 import org.jivesoftware.smackx.bob.packet.BoBExt;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -49,7 +49,7 @@ public class BoBExtensionProvider extends ExtensionElementProvider<BoBExt>
      * vr4MkhoXe0rZigAAAABJRU5ErkJggg==
      * </data>
      *
-     * @see ExtensionElementProvider#parse(XmlPullParser, int)
+     * @see ExtensionElementProvider#parse(XmlPullParser, int, XmlEnvironment)
      */
     @Override
     public BoBExt parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)

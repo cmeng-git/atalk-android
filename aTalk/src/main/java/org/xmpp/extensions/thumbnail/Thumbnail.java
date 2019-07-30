@@ -8,8 +8,8 @@ package org.xmpp.extensions.thumbnail;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.SHA1;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.bob.BoBHash;
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * The <tt>Thumbnail</tt> represents a "thumbnail" XML element, that is contained in the file

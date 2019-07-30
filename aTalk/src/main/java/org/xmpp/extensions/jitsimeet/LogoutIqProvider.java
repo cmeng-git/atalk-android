@@ -16,9 +16,14 @@
 package org.xmpp.extensions.jitsimeet;
 
 import org.atalk.util.StringUtils;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.xmlpull.v1.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
+import java.io.IOException;
 
 /**
  * Provider handles parsing of {@link ConferenceIq} and {@link LoginUrlIq}
@@ -37,11 +42,9 @@ public class LogoutIqProvider extends IQProvider<LogoutIq>
         ProviderManager.addIQProvider(LogoutIq.ELEMENT_NAME, LogoutIq.NAMESPACE, this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public LogoutIq parse(XmlPullParser parser, int initialDepth)
+    public LogoutIq parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws XmlPullParserException, IOException, SmackParsingException
     {
         String namespace = parser.getNamespace();
 

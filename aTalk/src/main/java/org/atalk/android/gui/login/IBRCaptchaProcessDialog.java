@@ -488,14 +488,16 @@ public class IBRCaptchaProcessDialog extends Dialog
     /**
      * Add field / value to the submit Form for registration
      *
-     * @param field the submit field variable
+     * @param name the submit field variable
      * @param value the field value
      */
-    private void addField(String field, String value)
+    private void addField(String name, String value)
     {
-        FormField formField = new FormField(field);
-        formField.addValue(value);
-        submitForm.addField(formField);
+        FormField.Builder field = FormField.builder(name);
+        field.addValue(value);
+        field.setType(FormField.Type.text_single);
+        submitForm.addField(field.build());
+
     }
 
     private void closeDialog()

@@ -10,8 +10,8 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -40,7 +40,7 @@ public class RelayProvider extends ExtensionElementProvider<RelayExtensionElemen
             throws XmlPullParserException, IOException, SmackParsingException
     {
         boolean done = false;
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName = null;
         RelayExtensionElement ext = new RelayExtensionElement();
 
@@ -48,7 +48,7 @@ public class RelayProvider extends ExtensionElementProvider<RelayExtensionElemen
             eventType = parser.next();
             elementName = parser.getName();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals(ServerExtensionElement.ELEMENT_NAME)) {
                     ExtensionElementProvider provider = ProviderManager.getExtensionProvider(
                             ServerExtensionElement.ELEMENT_NAME, ServerExtensionElement.NAMESPACE);
@@ -59,7 +59,7 @@ public class RelayProvider extends ExtensionElementProvider<RelayExtensionElemen
                     ext.setToken(parseText(parser));
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(RelayExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }
@@ -69,11 +69,11 @@ public class RelayProvider extends ExtensionElementProvider<RelayExtensionElemen
     }
 
     /**
-     * Returns the content of the next {@link XmlPullParser#TEXT} element that we encounter in
+     * Returns the content of the next {@link XmlPullParser.Event#TEXT_CHARACTERS} element that we encounter in
      * <tt>parser</tt>.
      *
      * @param parser the parse that we'll be probing for text.
-     * @return the content of the next {@link XmlPullParser#TEXT} element we come across or
+     * @return the content of the next {@link XmlPullParser.Event#TEXT_CHARACTERS} element we come across or
      * <tt>null</tt> if we encounter a closing tag first.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
@@ -81,15 +81,15 @@ public class RelayProvider extends ExtensionElementProvider<RelayExtensionElemen
             throws IOException, XmlPullParserException
     {
         boolean done = false;
-        int eventType;
+        XmlPullParser.Event eventType;
         String text = null;
 
         while (!done) {
             eventType = parser.next();
-            if (eventType == XmlPullParser.TEXT) {
+            if (eventType == XmlPullParser.Event.TEXT_CHARACTERS) {
                 text = parser.getText();
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 done = true;
             }
         }

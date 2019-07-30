@@ -48,14 +48,14 @@ public class XmppAvatarRetriever implements AvatarRetriever
      */
     public XmppAvatarRetriever(XMPPConnection conn, BareJid toAddress, String id)
     {
-        mPubSubManager = PubSubManager.getInstance(conn, toAddress);
+        mPubSubManager = PubSubManager.getInstanceFor(conn, toAddress);
         mId = id;
     }
 
     @Override
     public byte[] getAvatar()
     {
-        List<Item> items = new ArrayList<Item>();
+        List<Item> items = new ArrayList<>();
         try {
             LeafNode node = mPubSubManager.getLeafNode(AvatarData.NAMESPACE);
             items = node.getItems(Collections.singletonList(mId));

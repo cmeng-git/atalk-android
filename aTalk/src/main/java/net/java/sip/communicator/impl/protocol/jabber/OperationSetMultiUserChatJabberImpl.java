@@ -36,8 +36,8 @@ import java.util.*;
 
 import timber.log.Timber;
 
-import static net.java.sip.communicator.service.protocol.Message.ENCRYPTION_OMEMO;
 import static net.java.sip.communicator.service.protocol.Message.ENCODE_PLAIN;
+import static net.java.sip.communicator.service.protocol.Message.ENCRYPTION_OMEMO;
 
 /**
  * A jabber implementation of the multi user chat operation set.
@@ -171,12 +171,16 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                                 || (initField.getType() == FormField.Type.hidden))
                             continue;
 
-                        FormField submitField = form.getField(initField.getVariable());
-                        if (submitField != null) {
-                            for (String fieldValue : initField.getValuesAsString()) {
-                                submitField.addValue(fieldValue);
-                            }
-                        }
+//                        FormField submitField = form.getField(initField.getVariable());
+//                        if (submitField != null) {
+//                            for (String fieldValue : initField.getValuesAsString()) {
+//                                submitField.addValue(fieldValue);
+//                            }
+//                        }
+
+                        FormField.Builder field = FormField.builder(initField.getVariable());
+                        field.addValues(initField.getValues());
+                        FormField submitField = field.build();
                     }
                     // cmeng - all the below fields are already in the default form.
                     String[] fields = {"muc#roomconfig_membersonly", "muc#roomconfig_allowinvites",
@@ -192,7 +196,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 muc.sendConfigurationForm(form);
             } catch (XMPPException | NoResponseException | NotConnectedException |
                     InterruptedException e) {
-                Timber.e(e,"Failed to send config form.");
+                Timber.e(e, "Failed to send config form.");
             }
             room = createLocalChatRoomInstance(muc);
             // as we are creating the room we are the owner of it at least that's what MultiUserChat.create says

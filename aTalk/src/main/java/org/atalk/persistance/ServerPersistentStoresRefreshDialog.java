@@ -25,7 +25,6 @@ import android.widget.CheckBox;
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ScServiceDiscoveryManager;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.*;
@@ -182,8 +181,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
     {
         Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : ppServices) {
-            ProtocolProviderServiceJabberImpl jabberProvider
-                    = (ProtocolProviderServiceJabberImpl) pps;
+            ProtocolProviderServiceJabberImpl jabberProvider = (ProtocolProviderServiceJabberImpl) pps;
 
             File rosterStoreDirectory = jabberProvider.getRosterStoreDirectory();
             if ((rosterStoreDirectory != null) && rosterStoreDirectory.exists()) {

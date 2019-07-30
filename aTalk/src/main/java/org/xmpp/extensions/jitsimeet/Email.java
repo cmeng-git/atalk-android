@@ -21,8 +21,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -109,7 +109,7 @@ public class Email implements ExtensionElement
             final String address = parser.getText();
 
             // Advance to end of extension.
-            while (parser.getEventType() != XmlPullParser.END_TAG) {
+            while (parser.getEventType() != XmlPullParser.Event.END_ELEMENT) {
                 parser.next();
             }
             return new Email(address);

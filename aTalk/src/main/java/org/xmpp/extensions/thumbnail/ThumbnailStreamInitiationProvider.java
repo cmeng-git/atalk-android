@@ -16,12 +16,12 @@ package org.xmpp.extensions.thumbnail;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.jxmpp.util.XmppDateTime;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -66,14 +66,14 @@ public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiati
         DataForm form = null;
         DataFormProvider dataFormProvider = new DataFormProvider();
 
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName;
         String namespace;
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
             namespace = parser.getNamespace();
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals("file")) {
                     name = parser.getAttributeValue("", "name");
                     size = parser.getAttributeValue("", "size");
@@ -93,7 +93,7 @@ public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiati
                     thumbnail = new Thumbnail(parser);
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (elementName.equals("si")) {
                     done = true;
                 }

@@ -17,17 +17,20 @@ repositories {
     google()
     jcenter()
     maven {
-        // Need manual cleanup for new SNAPSHOT update if same name with date change only:
-        // Smack official SNAPSHOT repository
-        url 'https://oss.sonatype.org/content/repositories/snapshots'
+        // maven smack official site
+        url 'https://mvnrepository.com/artifact'
 
-        // Smack custom library for org.igniterealtime
+        // Need manual cleanup for new SNAPSHOT update if same name with date change only:
+        // Smack official SNAPSHOT repository accepted by FDroid
+        // url 'https://oss.sonatype.org/content/repositories/snapshots'
+
+        // Smack custom library for org.igniterealtime - not recognize by FDroid
         // url 'https://igniterealtime.org/repo/'
     }
-//    maven {
-//        // Custom library for org.jitsi - maven-metadata.xml not compatible
-//        url 'https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots'
-//    }
+    // maven {
+    //     // Custom library for org.jitsi - maven-metadata.xml not compatible
+    //     url 'https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots'
+    // }
     maven {
         // Git project library as local library project (ucrop) - see https://jitpack.io/docs/
         url 'https://jitpack.io'
@@ -45,7 +48,6 @@ configurations {
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-experimental'
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
-    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-omemo'
 }
 
 android {
@@ -59,8 +61,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1101
-        versionName "2.0.1"
+        versionCode 1102
+        versionName "2.0.2"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -154,10 +156,10 @@ ext {
     // Remove source reference in .idea/libraries if source mismatched with class jar
 
     // for official maven release
-    // smackVersion = '4.4.0-alpha2'
+    smackVersion = '4.4.0-alpha2'
 
-    // For smack own repository release
-    smackVersion = '4.4.0-alpha2-SNAPSHOT'
+    // For smack own repository SNAPSHOT release
+    // smackVersion = '4.4.0-alpha2-SNAPSHOT'
 }
 
 dependencies {
@@ -284,21 +286,6 @@ dependencies {
         classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
         classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
         classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
-        classDelete 'org.jivesoftware.smackx.pubsub.PubSubManager'
-        classDelete 'org.jivesoftware.smackx.xhtmlim.XHTMLText'
-    }
-
-    implementation jarjar.repackage {
-        from("org.igniterealtime.smack:smack-omemo:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/libs")
-        destinationName "smack-omemo${smackVersion}.jar"
-
-        classDelete 'org.jivesoftware.smackx.omemo.internal.CipherAndAuthTag'
-        classDelete 'org.jivesoftware.smackx.omemo.util.OmemoConstants**'
-        classDelete 'org.jivesoftware.smackx.omemo.util.OmemoMessageBuilder**'
-        classDelete 'org.jivesoftware.smackx.omemo.OmemoService**'
     }
 
     implementation jarjar.repackage {

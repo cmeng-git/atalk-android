@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.httpauthorizationrequest.provider;
 
+import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * The ExtensionElement Provider for ConfirmExtension.

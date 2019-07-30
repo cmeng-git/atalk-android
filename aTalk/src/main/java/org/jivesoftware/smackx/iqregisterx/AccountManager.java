@@ -59,8 +59,7 @@ public final class AccountManager extends Manager {
     private static boolean allowSensitiveOperationOverInsecureConnectionDefault = false;
 
     /**
-     * The default value used by new account managers for
-     * <code>allowSensitiveOperationOverInsecureConnection</code>.
+     * The default value used by new account managers for <code>allowSensitiveOperationOverInsecureConnection</code>.
      *
      * @param allow
      * @see #sensitiveOperationOverInsecureConnection(boolean)
@@ -70,14 +69,13 @@ public final class AccountManager extends Manager {
         AccountManager.allowSensitiveOperationOverInsecureConnectionDefault = allow;
     }
 
-    private boolean allowSensitiveOperationOverInsecureConnection
-            = allowSensitiveOperationOverInsecureConnectionDefault;
+    private boolean allowSensitiveOperationOverInsecureConnection = allowSensitiveOperationOverInsecureConnectionDefault;
 
     /**
      * Set to <code>true</code> to allow sensitive operation over insecure connection.
      * <p>
-     * Set to true to allow sensitive operations like account creation or password changes
-     * over an insecure (e.g. unencrypted) connections.
+     * Set to true to allow sensitive operations like account creation or password changes over an insecure (e.g.
+     * unencrypted) connections.
      * </p>
      *
      * @param allow
@@ -156,13 +154,15 @@ public final class AccountManager extends Manager {
      *      <li>first    -- Given name of the user.
      *      <li>last     -- Family name of the user.
      *      <li>email    -- Email address of the user.
-     *      <li>address  -- Street portion of a physical or mailing address.
      *      <li>city     -- Locality portion of a physical or mailing address.
      *      <li>state    -- Region portion of a physical or mailing address.
      *      <li>zip      -- Postal code portion of a physical or mailing address.
      *      <li>phone    -- Telephone number of the user.
+     *      <li>address  -- Street portion of a physical or mailing address.
      *      <li>url      -- URL to web page describing the user.
      *      <li>date     -- Some date (e.g., birth date, hire date, sign-up date).
+     *      <li>misc     -- other miscellaneous information to associate with the account.
+     *      <li>text     -- textual information to associate with the account.
      *      <li>remove   -- empty flag to remove account.
      * </ul><p>
      *
@@ -189,11 +189,11 @@ public final class AccountManager extends Manager {
     }
 
     /**
-     * Returns the value of a given account attribute or <tt>null</tt> if the account
+     * Returns the value of a given account attribute or <code>null</code> if the account
      * attribute wasn't found.
      *
      * @param name the name of the account attribute to return its value.
-     * @return the value of the account attribute or <tt>null</tt> if an account
+     * @return the value of the account attribute or <code>null</code> if an account
      * attribute wasn't found for the requested name.
      * @throws XMPPErrorException
      * @throws NoResponseException
@@ -208,11 +208,11 @@ public final class AccountManager extends Manager {
     }
 
     /**
-     * Returns the instructions for creating a new account, or <tt>null</tt> if there
+     * Returns the instructions for creating a new account, or <code>null</code> if there
      * are no instructions. If present, instructions should be displayed to the end-user
      * that will complete the registration process.
      *
-     * @return the account creation instructions, or <tt>null</tt> if there are none.
+     * @return the account creation instructions, or <code>null</code> if there are none.
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
@@ -343,7 +343,7 @@ public final class AccountManager extends Manager {
         }
         Map<String, String> map = new HashMap<>();
         map.put("username",  connection().getUser().getLocalpart().toString());
-        map.put("password",newPassword);
+        map.put("password", newPassword);
         Registration reg = new Registration(map);
         reg.setType(IQ.Type.set);
         reg.setTo(connection().getXMPPServiceDomain());

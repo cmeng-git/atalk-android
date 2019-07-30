@@ -16,14 +16,14 @@
  */
 package org.jivesoftware.smackx.httpauthorizationrequest.provider;
 
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
 import org.jivesoftware.smackx.httpauthorizationrequest.packet.ConfirmIQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -40,7 +40,7 @@ public class ConfirmIQProvider extends IQProvider<ConfirmIQ>
             throws XmlPullParserException, IOException, SmackParsingException
     {
         ConfirmExtension confirmExtension = (ConfirmExtension) PacketParserUtils
-                .parseExtensionElement(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE, parser);
+                .parseExtensionElement(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE, parser, xmlEnvironment);
         return new ConfirmIQ(confirmExtension);
     }
 }

@@ -5,13 +5,13 @@
  */
 package org.xmpp.extensions.jingleinfo;
 
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.*;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -60,10 +60,10 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
 
         // Now go on and parse the session element's content.
         while (!done) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             String elementName = parser.getName();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals(StunExtensionElement.ELEMENT_NAME)) {
                     iq.addExtension((StunExtensionElement) stunProvider.parse(parser));
                 }
@@ -71,7 +71,7 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
                     iq.addExtension((RelayExtensionElement) relayProvider.parse(parser));
                 }
             }
-            if (eventType == XmlPullParser.END_TAG) {
+            if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(JingleInfoQueryIQ.ELEMENT_NAME)) {
                     done = true;
                 }

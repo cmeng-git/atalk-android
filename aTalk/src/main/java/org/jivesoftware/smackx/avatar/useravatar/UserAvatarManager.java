@@ -89,13 +89,7 @@ public class UserAvatarManager extends AvatarManager
     private PepManager mPepManager;
 
     static {
-        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener()
-        {
-            public void connectionCreated(XMPPConnection connection)
-            {
-                getInstanceFor(connection);
-            }
-        });
+        XMPPConnectionRegistry.addConnectionCreationListener(UserAvatarManager::getInstanceFor);
     }
 
     public static synchronized UserAvatarManager getInstanceFor(XMPPConnection connection)
@@ -160,8 +154,7 @@ public class UserAvatarManager extends AvatarManager
      * @param quality the compression quality use for JPEG compression
      * @return the resulting info associate with this bitmap.
      */
-    private AvatarMetadata.Info publishBitmap(Bitmap bmp, Bitmap.CompressFormat format,
-            int quality)
+    private AvatarMetadata.Info publishBitmap(Bitmap bmp, Bitmap.CompressFormat format, int quality)
     {
         byte[] data = getBitmapByte(bmp, format, quality);
         String dataId = getAvatarHash(data);
@@ -174,8 +167,7 @@ public class UserAvatarManager extends AvatarManager
         String mimeType = "image/png";
         if (Bitmap.CompressFormat.JPEG == format)
             mimeType = "image/jpeg";
-        AvatarMetadata.Info info
-                = new AvatarMetadata.Info(dataId, mimeType, data.length);
+        AvatarMetadata.Info info = new AvatarMetadata.Info(dataId, mimeType, data.length);
         info.setHeight(bmp.getHeight());
         info.setWidth(bmp.getWidth());
         return info;
@@ -271,7 +263,7 @@ public class UserAvatarManager extends AvatarManager
     private boolean nodePublish(Item item, String node)
     {
         LOGGER.warning("Use alternative aTalk nodePublish for avatar!");
-        PubSubManager pubSubManager = PubSubManager.getInstance(mConnection, mAccount);
+        PubSubManager pubSubManager = PubSubManager.getInstanceFor(mConnection, mAccount);
         try {
             LeafNode pubSubNode = getLeafNode(pubSubManager, node);
             if (pubSubNode != null) {
@@ -425,8 +417,7 @@ public class UserAvatarManager extends AvatarManager
      */
     public void addAvatarListener(UserAvatarListener listener)
     {
-        if (!mListeners.contains(listener))
-            mListeners.add(listener);
+        mListeners.add(listener);
     }
 
     /**

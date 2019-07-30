@@ -2,30 +2,30 @@ package org.xmpp.jnodes.smack;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
 public class JingleTrackerProvider extends IQProvider
 {
     @Override
-    public Element parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException
+    public Element parse(org.jivesoftware.smack.xml.XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws org.jivesoftware.smack.xml.XmlPullParserException, IOException, SmackParsingException
     {
         JingleTrackerIQ iq = new JingleTrackerIQ();
 
         boolean done = false;
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName;
 
         while (!done) {
             eventType = parser.getEventType();
             elementName = parser.getName();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 final TrackerEntry.Type type;
                 if (elementName.equals(TrackerEntry.Type.relay.toString())) {
                     type = TrackerEntry.Type.relay;
@@ -53,7 +53,7 @@ public class JingleTrackerProvider extends IQProvider
                     iq.addEntry(entry);
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (elementName.equals(JingleTrackerIQ.NAME)) {
                     done = true;
                 }

@@ -7,8 +7,8 @@ package org.xmpp.extensions.jingle;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -36,15 +36,15 @@ public class RedirectProvider extends ExtensionElementProvider<RedirectExtension
     {
         String text = null;
         boolean done = false;
-        int eventType;
+        XmlPullParser.Event eventType;
 
         text = parseText(parser);
         while (!done) {
             eventType = parser.next();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(RedirectExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }
@@ -58,11 +58,11 @@ public class RedirectProvider extends ExtensionElementProvider<RedirectExtension
     }
 
     /**
-     * Returns the content of the next {@link XmlPullParser#TEXT} element that we encounter in
+     * Returns the content of the next {@link XmlPullParser.Event#TEXT_CHARACTERS} element that we encounter in
      * <tt>parser</tt>.
      *
      * @param parser the parse that we'll be probing for text.
-     * @return the content of the next {@link XmlPullParser#TEXT} element we come across or
+     * @return the content of the next {@link XmlPullParser.Event#TEXT_CHARACTERS} element we come across or
      * <tt>null</tt> if we encounter a closing tag first.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
@@ -71,17 +71,17 @@ public class RedirectProvider extends ExtensionElementProvider<RedirectExtension
     {
         boolean done = false;
 
-        int eventType;
+        XmlPullParser.Event eventType;
         String text = null;
 
         while (!done) {
             eventType = parser.next();
 
-            if (eventType == XmlPullParser.TEXT) {
+            if (eventType == XmlPullParser.Event.TEXT_CHARACTERS) {
                 text = parser.getText();
                 done = true;
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 done = true;
             }
         }

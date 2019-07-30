@@ -45,9 +45,9 @@ package org.jivesoftware.smackx.avatar.vcardavatar.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -64,16 +64,16 @@ public class VCardTempXUpdateProvider extends ExtensionElementProvider
         VCardTempXUpdate avatar = null;
         outerloop:
         while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-                case XmlPullParser.START_TAG:
+                case START_ELEMENT:
                     String name = parser.getName();
                     if (VCardTempXUpdate.ELEMENT_PHOTO.equals(name)) {
                         String data = parser.nextText();
                         avatar = new VCardTempXUpdate(data);
                     }
                     break;
-                case XmlPullParser.END_TAG:
+                case END_ELEMENT:
                     if (parser.getDepth() == initialDepth) {
                         break outerloop;
                     }

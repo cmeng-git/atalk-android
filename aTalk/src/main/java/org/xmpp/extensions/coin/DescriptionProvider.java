@@ -7,8 +7,8 @@ package org.xmpp.extensions.coin;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -36,14 +36,14 @@ public class DescriptionProvider extends ExtensionElementProvider<DescriptionExt
             throws IOException, XmlPullParserException
     {
         boolean done = false;
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName = null;
         DescriptionExtensionElement ext = new DescriptionExtensionElement();
 
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     switch (elementName) {
                         case DescriptionExtensionElement.ELEMENT_SUBJECT:
                             ext.setSubject(CoinIQProvider.parseText(parser));
@@ -56,7 +56,7 @@ public class DescriptionProvider extends ExtensionElementProvider<DescriptionExt
                             break;
                     }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(DescriptionExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }

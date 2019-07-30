@@ -1,5 +1,5 @@
---- /home/cmeng/source/smack/Smack/trunk/smack-core/src/main/java/org/jivesoftware/smack/provider/Provider.java	2019-02-18 18:39:49.000000000 
-+++ /home/cmeng/workspace/android/smack/smack-core/src/main/java/org/jivesoftware/smack/provider/Provider.java	2019-02-19 09:54:40.000000000 
+--- org/jivesoftware/smack/provider/Provider.java	2019-06-03 23:41:49.000000000
++++ org/jivesoftware/smack/provider/Provider.java	2019-07-29 10:35:34.000000000
 @@ -52,12 +52,15 @@
              currentType = currentClass.getGenericSuperclass();
          }

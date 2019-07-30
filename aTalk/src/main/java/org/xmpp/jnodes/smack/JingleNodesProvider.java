@@ -1,14 +1,13 @@
 package org.xmpp.jnodes.smack;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.xmlpull.v1.*;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.IllegalFormatException;
 
 public class JingleNodesProvider extends IQProvider
@@ -20,7 +19,7 @@ public class JingleNodesProvider extends IQProvider
 		JingleChannelIQ iq = null;
 
 		boolean done = false;
-		int eventType;
+        XmlPullParser.Event eventType;
 		String elementName;
 		String namespace;
 
@@ -29,7 +28,7 @@ public class JingleNodesProvider extends IQProvider
 			elementName = parser.getName();
 			namespace = parser.getNamespace();
 
-			if (eventType == XmlPullParser.START_TAG) {
+			if (eventType == XmlPullParser.Event.START_ELEMENT) {
 				if (elementName.equals(JingleChannelIQ.NAME)
 						&& namespace.equals(JingleChannelIQ.NAMESPACE)) {
 
@@ -53,7 +52,7 @@ public class JingleNodesProvider extends IQProvider
 					}
 				}
 			}
-			else if (eventType == XmlPullParser.END_TAG) {
+			else if (eventType == XmlPullParser.Event.END_ELEMENT) {
 				done = true;
 			}
 			if (!done)

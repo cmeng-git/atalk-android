@@ -16,11 +16,17 @@
 package org.xmpp.extensions.jitsimeet;
 
 import org.atalk.util.StringUtils;
-import org.jivesoftware.smack.provider.*;
-import org.jxmpp.jid.*;
-import org.jxmpp.jid.impl.*;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.xmlpull.v1.*;
+
+import java.io.IOException;
 
 /**
  * Provider handles parsing of {@link ConferenceIq} and {@link LoginUrlIq}
@@ -37,60 +43,46 @@ public class LoginUrlIqProvider extends IQProvider<LoginUrlIq>
     {
         // <auth-url>
         ProviderManager.addIQProvider(
-            LoginUrlIq.ELEMENT_NAME, LoginUrlIq.NAMESPACE, this);
+                LoginUrlIq.ELEMENT_NAME, LoginUrlIq.NAMESPACE, this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public LoginUrlIq parse(XmlPullParser parser, int initialDepth)
-            throws XmppStringprepException
+    public LoginUrlIq parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws XmlPullParserException, IOException, SmackParsingException
     {
         String namespace = parser.getNamespace();
 
         // Check the namespace
-        if (!ConferenceIq.NAMESPACE.equals(namespace))
-        {
+        if (!ConferenceIq.NAMESPACE.equals(namespace)) {
             return null;
         }
 
         String rootElement = parser.getName();
 
         LoginUrlIq authUrlIQ;
-        if (LoginUrlIq.ELEMENT_NAME.equals(rootElement))
-        {
+        if (LoginUrlIq.ELEMENT_NAME.equals(rootElement)) {
             authUrlIQ = new LoginUrlIq();
 
-            String url = parser.getAttributeValue(
-                    "", LoginUrlIq.URL_ATTRIBUTE_NAME);
-            if (!StringUtils.isNullOrEmpty(url))
-            {
+            String url = parser.getAttributeValue("", LoginUrlIq.URL_ATTRIBUTE_NAME);
+            if (!StringUtils.isNullOrEmpty(url)) {
                 authUrlIQ.setUrl(url);
             }
-            String room = parser.getAttributeValue(
-                    "", LoginUrlIq.ROOM_NAME_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(room))
-            {
+            String room = parser.getAttributeValue("", LoginUrlIq.ROOM_NAME_ATTR_NAME);
+            if (!StringUtils.isNullOrEmpty(room)) {
                 EntityBareJid roomJid = JidCreate.entityBareFrom(room);
                 authUrlIQ.setRoom(roomJid);
             }
-            String popup = parser.getAttributeValue(
-                    "", LoginUrlIq.POPUP_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(popup))
-            {
+            String popup = parser.getAttributeValue("", LoginUrlIq.POPUP_ATTR_NAME);
+            if (!StringUtils.isNullOrEmpty(popup)) {
                 Boolean popupBool = Boolean.parseBoolean(popup);
                 authUrlIQ.setPopup(popupBool);
             }
-            String machineUID = parser.getAttributeValue(
-                    "", LoginUrlIq.MACHINE_UID_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(machineUID))
-            {
+            String machineUID = parser.getAttributeValue("", LoginUrlIq.MACHINE_UID_ATTR_NAME);
+            if (!StringUtils.isNullOrEmpty(machineUID)) {
                 authUrlIQ.setMachineUID(machineUID);
             }
         }
-        else
-        {
+        else {
             return null;
         }
 

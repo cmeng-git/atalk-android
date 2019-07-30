@@ -28,7 +28,6 @@ import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.OmemoStore;
-import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 
 import java.util.*;
 
@@ -39,8 +38,6 @@ import java.util.*;
  */
 public class OmemoRegenerateDialog extends OSGiActivity
 {
-    private OmemoFingerprint remoteFingerprint = null;
-
     /**
      * {@inheritDoc}
      */
@@ -64,18 +61,17 @@ public class OmemoRegenerateDialog extends OSGiActivity
         final boolean[] checkedItems = new boolean[accountMap.size()];
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.pref_omemo_regenerate_identities_title);
-        builder.setMultiChoiceItems(accounts.toArray(new CharSequence[accounts.size()]),
-                checkedItems, (dialog, which, isChecked) -> {
-                    checkedItems[which] = isChecked;
-                    final AlertDialog multiChoiceDialog = (AlertDialog) dialog;
-                    for (boolean item : checkedItems) {
-                        if (item) {
-                            multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
-                            return;
-                        }
-                    }
-                    multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
-                });
+        builder.setMultiChoiceItems(accounts.toArray(new CharSequence[0]), checkedItems, (dialog, which, isChecked) -> {
+            checkedItems[which] = isChecked;
+            final AlertDialog multiChoiceDialog = (AlertDialog) dialog;
+            for (boolean item : checkedItems) {
+                if (item) {
+                    multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+                    return;
+                }
+            }
+            multiChoiceDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+        });
 
         builder.setNegativeButton(R.string.service_gui_CANCEL, (dialog, which) -> finish());
         builder.setPositiveButton(R.string.crypto_dialog_button_OMEMO_REGENERATE, (dialog, which) -> {

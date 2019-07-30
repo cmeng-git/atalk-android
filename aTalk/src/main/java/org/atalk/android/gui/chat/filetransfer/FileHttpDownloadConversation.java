@@ -37,7 +37,7 @@ import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager.AesgcmUrl;
+import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
 
 import java.io.*;
 import java.util.Date;

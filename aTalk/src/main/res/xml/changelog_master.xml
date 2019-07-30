@@ -6,6 +6,12 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.0.2 (07/30/2019)" versioncode="1102">
+        <change>Port and update to smack libraries v4.4.0-alpha2</change>
+        <change>Update OMEMO service and media file sharing to latest smack source</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.0.1 (07/24/2019)" versioncode="1101">
         <change>Fix crypto chat session background color inconsistency</change>
         <change>Fix OTR padlock changes to unencrypted when user press again</change>
