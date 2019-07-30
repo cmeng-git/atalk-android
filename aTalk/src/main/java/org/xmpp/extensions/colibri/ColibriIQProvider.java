@@ -10,9 +10,9 @@ import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.*;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jxmpp.jid.parts.Localpart;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
 import org.xmpp.extensions.jingle.*;
 import org.xmpp.extensions.jitsimeet.SSRCInfoExtensionElement;
@@ -214,7 +214,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
 
             while (!done) {
                 switch (parser.next()) {
-                    case XmlPullParser.END_TAG: {
+                    case END_ELEMENT: {
                         String name = parser.getName();
 
                         if (ColibriConferenceIQ.ELEMENT.equals(name)) {
@@ -278,7 +278,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                         break;
                     }
 
-                    case XmlPullParser.START_TAG: {
+                    case START_ELEMENT: {
                         String name = parser.getName();
 
                         if (ColibriConferenceIQ.Channel.ELEMENT_NAME.equals(name)) {
@@ -570,7 +570,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                         break;
                     }
 
-                    case XmlPullParser.TEXT: {
+                    case TEXT_CHARACTERS: {
                         if (ssrc != null)
                             ssrc.append(parser.getText());
                         break;
@@ -585,7 +585,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
             boolean done = false;
             while (!done) {
                 switch (parser.next()) {
-                    case XmlPullParser.END_TAG: {
+                    case END_ELEMENT: {
                         String name = parser.getName();
                         if (rootElement.equals(name)) {
                             done = true;
@@ -604,7 +604,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
             boolean done = false;
             while (!done) {
                 switch (parser.next()) {
-                    case XmlPullParser.START_TAG: {
+                    case START_ELEMENT: {
                         String name = parser.getName();
 
                         if (ColibriStatsExtensionElement.Stat.ELEMENT_NAME.equals(name)) {
@@ -620,7 +620,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                         }
                         break;
                     }
-                    case XmlPullParser.END_TAG: {
+                    case END_ELEMENT: {
                         String name = parser.getName();
                         if (rootElement.equals(name)) {
                             done = true;
@@ -654,7 +654,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
     private void throwAway(XmlPullParser parser, String name)
             throws IOException, XmlPullParserException
     {
-        while ((XmlPullParser.END_TAG != parser.next()) || !name.equals(parser.getName()))
+        while ((XmlPullParser.Event.END_ELEMENT != parser.next()) || !name.equals(parser.getName()))
             ;
     }
 }

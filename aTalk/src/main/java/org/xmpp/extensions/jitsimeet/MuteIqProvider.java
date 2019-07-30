@@ -15,12 +15,14 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -44,8 +46,8 @@ public class MuteIqProvider extends IQProvider<MuteIq>
      * {@inheritDoc}
      */
     @Override
-    public MuteIq parse(XmlPullParser parser, int initialDepth)
-            throws IOException, XmlPullParserException
+    public MuteIq parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws XmlPullParserException, IOException, SmackParsingException
     {
         String namespace = parser.getNamespace();
 
@@ -78,7 +80,7 @@ public class MuteIqProvider extends IQProvider<MuteIq>
 
         while (!done) {
             switch (parser.next()) {
-                case XmlPullParser.END_TAG: {
+                case END_ELEMENT: {
                     String name = parser.getName();
 
                     if (rootElement.equals(name)) {
@@ -87,14 +89,13 @@ public class MuteIqProvider extends IQProvider<MuteIq>
                     break;
                 }
 
-                case XmlPullParser.TEXT: {
+                case TEXT_CHARACTERS: {
                     Boolean mute = Boolean.parseBoolean(parser.getText());
                     iq.setMute(mute);
                     break;
                 }
             }
         }
-
         return iq;
     }
 }

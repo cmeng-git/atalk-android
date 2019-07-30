@@ -7,8 +7,8 @@ package org.xmpp.extensions.coin;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -34,7 +34,7 @@ public class StateProvider extends ExtensionElementProvider<StateExtensionElemen
             throws IOException, XmlPullParserException
     {
         boolean done = false;
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName = null;
 
         StateExtensionElement ext = new StateExtensionElement();
@@ -43,7 +43,7 @@ public class StateProvider extends ExtensionElementProvider<StateExtensionElemen
             eventType = parser.next();
             elementName = parser.getName();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals(StateExtensionElement.ELEMENT_ACTIVE)) {
                     ext.setActive(Boolean.parseBoolean(CoinIQProvider.parseText(parser)) ? 1 : 0);
                 }
@@ -54,7 +54,7 @@ public class StateProvider extends ExtensionElementProvider<StateExtensionElemen
                     ext.setUserCount(Integer.parseInt(CoinIQProvider.parseText(parser)));
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(StateExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }

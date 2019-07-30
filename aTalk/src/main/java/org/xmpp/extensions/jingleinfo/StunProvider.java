@@ -10,8 +10,8 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -38,7 +38,7 @@ public class StunProvider extends ExtensionElementProvider<StunExtensionElement>
             throws IOException, XmlPullParserException, SmackParsingException
     {
         boolean done = false;
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName = null;
         StunExtensionElement ext = new StunExtensionElement();
 
@@ -46,7 +46,7 @@ public class StunProvider extends ExtensionElementProvider<StunExtensionElement>
             eventType = parser.next();
             elementName = parser.getName();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals(ServerExtensionElement.ELEMENT_NAME)) {
                     ExtensionElementProvider provider = ProviderManager.getExtensionProvider(
                             ServerExtensionElement.ELEMENT_NAME, ServerExtensionElement.NAMESPACE);
@@ -54,7 +54,7 @@ public class StunProvider extends ExtensionElementProvider<StunExtensionElement>
                     ext.addChildExtension(childExtension);
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(StunExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }

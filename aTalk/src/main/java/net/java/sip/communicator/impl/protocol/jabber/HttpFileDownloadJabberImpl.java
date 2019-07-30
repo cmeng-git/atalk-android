@@ -20,7 +20,7 @@ import android.net.Uri;
 
 import net.java.sip.communicator.service.protocol.*;
 
-import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
+import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
 
 import java.io.File;
 
@@ -61,7 +61,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
         dnLink = dnLinkInfos[0];
         String url;
         if (dnLink.matches("^aesgcm:.*")) {
-            HttpFileUploadManager.AesgcmUrl aesgcmUrl = new HttpFileUploadManager.AesgcmUrl(dnLink);
+            AesgcmUrl aesgcmUrl = new AesgcmUrl(dnLink);
             url = aesgcmUrl.getDownloadUrl().toString();
             mEncryption = Message.ENCRYPTION_OMEMO;
         }
@@ -86,7 +86,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
     @Override
     public void cancel()
     {
-//            jabberTransfer.cancel();
+        // jabberTransfer.cancel();
     }
 
     /**
@@ -97,9 +97,9 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
     @Override
     public long getTransferredBytes()
     {
-//        if (jabberTransfer != null)
-//            return jabberTransfer.getAmountWritten();
-//        else
+        // if (jabberTransfer != null)
+        //    return jabberTransfer.getAmountWritten();
+        // else
         return -1;
     }
 

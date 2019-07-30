@@ -18,7 +18,8 @@ import java.io.IOException;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.*;
-import org.xmlpull.v1.*;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 /**
  * The <tt>IQProvider</tt> for {@link HealthCheckIQ}.
@@ -58,7 +59,7 @@ public class HealthCheckIQProvider extends IQProvider<HealthCheckIQ>
 
 			while (!done) {
 				switch (parser.next()) {
-					case XmlPullParser.END_TAG: {
+					case END_ELEMENT: {
 						String name = parser.getName();
 
 						if (rootElement.equals(name)) {

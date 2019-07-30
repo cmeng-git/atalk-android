@@ -6,13 +6,15 @@
 package org.xmpp.extensions.jingle;
 
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.xmpp.extensions.AbstractExtensionElement;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
 
 import java.io.IOException;
 import java.util.List;
+
+import static org.jivesoftware.smack.xml.XmlPullParser.Event.END_ELEMENT;
 
 /**
  * Jingle group packet extension(XEP-0338).
@@ -124,7 +126,7 @@ public class GroupExtensionElement extends AbstractExtensionElement
             group.setSemantics(semantics);
 
         boolean done = false;
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName;
         DefaultExtensionElementProvider<ContentExtensionElement> contentProvider
                 = new DefaultExtensionElementProvider<>(ContentExtensionElement.class);
@@ -137,7 +139,7 @@ public class GroupExtensionElement extends AbstractExtensionElement
                 group.addChildExtension(content);
             }
 
-            if ((eventType == XmlPullParser.END_TAG)
+            if ((eventType == END_ELEMENT)
                     && parser.getName().equals(ELEMENT_NAME)) {
                 done = true;
             }

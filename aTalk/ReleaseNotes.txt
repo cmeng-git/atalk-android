@@ -1,5 +1,15 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.0.2 (1102)
+Author:         cmeng
+Upload Date:	07/30/2019
+- Upgrade smack libraries to v4.4.0-alpha2
+- Migrate xmpp extension to use smack 4.4.0-alpha2 smack.xml.XmlPullParser/Event and XmlPullParserException
+  from  org.xmlpull.v1.XmlPullParser and XmlPullParserException;
+- Update OMEMO service and media file sharing to latest smack source - 20190701
+- Remove local smack patched sources and use smack library for OMEMO, xhtml, PubSub
+
+=========================================================================
 Version:		2.0.1 (1101)
 Author:         cmeng
 Upload Date:	07/24/2019

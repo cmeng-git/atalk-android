@@ -16,15 +16,17 @@
 package org.xmpp.extensions.jitsimeet;
 
 import org.atalk.util.StringUtils;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Domainpart;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -46,12 +48,9 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
         ProviderManager.addIQProvider(ConferenceIq.ELEMENT_NAME, ConferenceIq.NAMESPACE, this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public ConferenceIq parse(XmlPullParser parser, int initialDepth)
-            throws IOException, XmlPullParserException
+    public ConferenceIq parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws XmlPullParserException, IOException, SmackParsingException
     {
         String namespace = parser.getNamespace();
 
@@ -99,7 +98,7 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
 
         while (!done) {
             switch (parser.next()) {
-                case XmlPullParser.END_TAG: {
+                case END_ELEMENT: {
                     String name = parser.getName();
 
                     if (rootElement.equals(name)) {
@@ -114,7 +113,7 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
                     break;
                 }
 
-                case XmlPullParser.START_TAG: {
+                case START_ELEMENT: {
                     String name = parser.getName();
 
                     if (ConferenceIq.Property.ELEMENT_NAME.equals(name)) {

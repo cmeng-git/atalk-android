@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smackx.avatar.cache;
 
-
 import org.jxmpp.util.cache.LruCache;
 
 import java.io.*;

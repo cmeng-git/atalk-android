@@ -34,21 +34,9 @@ public class RemoveAccountDialog
         AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
         return alert.setTitle(R.string.service_gui_REMOVE_ACCOUNT)
                 .setMessage(ctx.getString(R.string.service_gui_REMOVE_ACCOUNT_MESSAGE, account.getAccountID()))
-                .setPositiveButton(R.string.service_gui_YES, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        onRemoveClicked(dialog, account, listener);
-                    }
-                }).setNegativeButton(R.string.service_gui_NO, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                }).create();
+                .setPositiveButton(R.string.service_gui_YES, (dialog, which)
+                        -> onRemoveClicked(dialog, account, listener)).setNegativeButton(R.string.service_gui_NO,
+                        (dialog, which) -> dialog.dismiss()).create();
     }
 
     private static void onRemoveClicked(DialogInterface dialog, final Account account, OnAccountRemovedListener l)

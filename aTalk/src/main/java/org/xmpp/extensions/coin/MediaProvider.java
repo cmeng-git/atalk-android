@@ -7,8 +7,8 @@ package org.xmpp.extensions.coin;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -34,7 +34,7 @@ public class MediaProvider extends ExtensionElementProvider<MediaExtensionElemen
             throws IOException, XmlPullParserException
     {
         boolean done = false;
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName = null;
         String id = parser.getAttributeValue("", MediaExtensionElement.ID_ATTR_NAME);
 
@@ -46,7 +46,7 @@ public class MediaProvider extends ExtensionElementProvider<MediaExtensionElemen
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 switch (elementName) {
                     case MediaExtensionElement.ELEMENT_DISPLAY_TEXT:
                         ext.setDisplayText(CoinIQProvider.parseText(parser));
@@ -65,7 +65,7 @@ public class MediaProvider extends ExtensionElementProvider<MediaExtensionElemen
                         break;
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(MediaExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }

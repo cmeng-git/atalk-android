@@ -21,8 +21,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -240,10 +240,10 @@ public class IdentityExtensionElement implements ExtensionElement
             do {
                 parser.next();
 
-                if (parser.getEventType() == XmlPullParser.START_TAG) {
+                if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT) {
                     currentTag = parser.getName();
                 }
-                else if (parser.getEventType() == XmlPullParser.TEXT) {
+                else if (parser.getEventType() == XmlPullParser.Event.TEXT_CHARACTERS) {
                     switch (currentTag) {
                         case USER_AVATAR_URL_ELEMENT_NAME:
                             userAvatarUrl = parser.getText();
@@ -261,7 +261,7 @@ public class IdentityExtensionElement implements ExtensionElement
                             break;
                     }
                 }
-                else if (parser.getEventType() == XmlPullParser.END_TAG) {
+                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT) {
                     currentTag = parser.getName();
                 }
             }

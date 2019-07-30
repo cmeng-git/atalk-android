@@ -19,11 +19,11 @@ package org.jivesoftware.smackx.captcha.provider;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.captcha.packet.Captcha;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -57,19 +57,19 @@ public class CaptchaProvider extends ExtensionElementProvider<Captcha>
 
         boolean done = false;
         while (!done) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             elementName = parser.getName();
             namespace = parser.getNamespace();
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals(DataForm.ELEMENT) && namespace.equals(DataForm.NAMESPACE)) {
                     form = dataFormProvider.parse(parser);
                 }
-                else if (eventType == XmlPullParser.TEXT) {
+                else if (eventType == XmlPullParser.Event.TEXT_CHARACTERS) {
                     data = parser.getText();
                     // data = parser.nextText();
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (Captcha.ELEMENT.equals(elementName)) {
                     done = true;
                 }

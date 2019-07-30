@@ -14,8 +14,8 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -75,7 +75,7 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
 
         // now parse the sub elements
         boolean done = false;
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName;
         String namespace;
 
@@ -87,7 +87,7 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
             Timber.log(TimberLog.FINER, "Parsing %s; ns: %s; class: %s", elementName, namespace,
                     packetExtension.getClass().getSimpleName());
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 ExtensionElementProvider provider = ProviderManager.getExtensionProvider(elementName, namespace);
                 if (provider == null) {
                     // Extension element provider may not have added properly
@@ -103,12 +103,12 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
                     packetExtension.addChildExtension(childExtension);
                 }
             }
-            if (eventType == XmlPullParser.END_TAG) {
+            if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(packetExtension.getElementName())) {
                     done = true;
                 }
             }
-            if (eventType == XmlPullParser.TEXT) {
+            if (eventType == XmlPullParser.Event.TEXT_CHARACTERS) {
                 String text = parser.getText();
                 packetExtension.setText(text);
             }

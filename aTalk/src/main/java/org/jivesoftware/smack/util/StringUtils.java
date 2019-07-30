@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2018 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,9 @@
 
 package org.jivesoftware.smack.util;
 
-import java.io.UnsupportedEncodingException;
-import java.security.SecureRandom;
+import java.io.IOException;
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
@@ -30,7 +31,23 @@ public class StringUtils {
 
     public static final String MD5 = "MD5";
     public static final String SHA1 = "SHA-1";
+
+    /**
+     * Deprecated, do not use.
+     *
+     * @deprecated use StandardCharsets.UTF_8 instead.
+     */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     public static final String UTF8 = "UTF-8";
+
+    /**
+     * Deprecated, do not use.
+     *
+     * @deprecated use StandardCharsets.US_ASCII instead.
+     */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     public static final String USASCII = "US-ASCII";
 
     public static final String QUOTE_ENCODE = "&quot;";
@@ -93,7 +110,6 @@ public class StringUtils {
         forAttribute,
         forAttributeApos,
         forText,
-        ;
     }
 
     /**
@@ -246,7 +262,8 @@ public class StringUtils {
 
     /**
      * Convert a hexadecimal String to bytes.
-     * Stolen from https://stackoverflow.com/a/140861/11150851
+     *
+     * Source: https://stackoverflow.com/a/140861/11150851
      *
      * @param s hex string
      * @return byte array
@@ -262,34 +279,13 @@ public class StringUtils {
     }
 
     public static byte[] toUtf8Bytes(String string) {
-        try {
-            return string.getBytes(StringUtils.UTF8);
-        }
-        catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 encoding not supported by platform", e);
-        }
+        return string.getBytes(StandardCharsets.UTF_8);
     }
 
     /**
-     * Pseudo-random number generator object for use with randomString().
-     * The Random class is not considered to be cryptographically secure, so
-     * only use these random Strings for low to medium security applications.
+     * 24 upper case characters from the latin alphabet and numbers without '0' and 'O'.
      */
-    private static final ThreadLocal<Random> randGen = new ThreadLocal<Random>() {
-        @Override
-        protected Random initialValue() {
-            return new Random();
-        }
-    };
-
-    /**
-     * Array of numbers and letters of mixed case. Numbers appear in the list
-     * twice so that there is a more equal chance that a number will be picked.
-     * We can use the array to get a random number or letter by picking a random
-     * array index.
-     */
-    private static final char[] numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz" +
-                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
+    private static final char[] UNAMBIGUOUS_NUMBERS_AND_LETTER = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ".toCharArray();
 
     /**
      * Returns a random String of numbers and letters (lower and upper case)
@@ -305,41 +301,92 @@ public class StringUtils {
      * @return a random String of numbers and letters of the specified length.
      */
     public static String insecureRandomString(int length) {
-        return randomString(length, randGen.get());
+        return randomString(length, RandomUtil.RANDOM.get());
     }
 
-    private static final ThreadLocal<SecureRandom> SECURE_RANDOM = new ThreadLocal<SecureRandom>() {
-        @Override
-        protected SecureRandom initialValue() {
-            return new SecureRandom();
+    public static String secureOnlineAttackSafeRandomString() {
+        // 34^10 = 2.06e15 possible combinations. Which is enough to protect against online brute force attacks.
+        // See also https://www.grc.com/haystack.htm
+        final int REQUIRED_LENGTH = 10;
+
+        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTER, REQUIRED_LENGTH);
+    }
+
+    public static String secureUniqueRandomString() {
+        // 34^13 = 8.11e19 possible combinations, which is > 2^64.
+        final int REQUIRED_LENGTH = 13;
+
+        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTER, REQUIRED_LENGTH);
+    }
+
+    /**
+     * Generate a secure random string with is human readable. The resulting string consists of 24 upper case characters
+     * from the Latin alphabet and numbers without '0' and 'O', grouped into 4-characters chunks, e.g.
+     * "TWNK-KD5Y-MT3T-E1GS-DRDB-KVTW". The characters are randomly selected by a cryptographically secure pseudorandom
+     * number generator (CSPRNG).
+     * <p>
+     * The string can be used a backup "code" for secrets, and is in fact the same as the one backup code specified in
+     * XEP-0373 and the one used by the <a href="https://github.com/open-keychain/open-keychain/wiki/Backups">Backup
+     * Format v2 of OpenKeychain</a>.
+     * </p>
+     *
+     * @see <a href="https://xmpp.org/extensions/xep-0373.html#backup-encryption"> XEP-0373 §5.4 Encrypting the Secret
+     *      Key Backup</a>
+     * @return a human readable secure random string.
+     */
+    public static String secureOfflineAttackSafeRandomString() {
+        // 34^24 = 2^122.10 possible combinations. Which is enough to protect against offline brute force attacks.
+        // See also https://www.grc.com/haystack.htm
+        final int REQUIRED_LENGTH = 24;
+
+        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTER, REQUIRED_LENGTH);
+    }
+
+    private static final int RANDOM_STRING_CHUNK_SIZE = 4;
+
+    private static String randomString(Random random, char[] alphabet, int numRandomChars) {
+        // The buffer most hold the size of the requested number of random chars and the chunk separators ('-').
+        int bufferSize = numRandomChars + ((numRandomChars - 1) / RANDOM_STRING_CHUNK_SIZE);
+        CharBuffer charBuffer = CharBuffer.allocate(bufferSize);
+
+        try {
+            randomString(charBuffer, random, alphabet, numRandomChars);
+        } catch (IOException e) {
+            // This should never happen if we calcuate the buffer size correctly.
+            throw new AssertionError(e);
         }
-    };
+
+        return charBuffer.flip().toString();
+    }
+
+    private static void randomString(Appendable appendable, Random random, char[] alphabet, int numRandomChars)
+                    throws IOException {
+        for (int randomCharNum = 1; randomCharNum <= numRandomChars; randomCharNum++) {
+            int randomIndex = random.nextInt(alphabet.length);
+            char randomChar = alphabet[randomIndex];
+            appendable.append(randomChar);
+
+            if (randomCharNum % RANDOM_STRING_CHUNK_SIZE == 0 && randomCharNum < numRandomChars) {
+                appendable.append('-');
+            }
+        }
+    }
 
     public static String randomString(final int length) {
-        return randomString(length, SECURE_RANDOM.get());
+        return randomString(length, RandomUtil.SECURE_RANDOM.get());
     }
 
     public static String randomString(final int length, Random random) {
-        if (length < 1) {
-            return null;
+        if (length == 0) {
+            return "";
         }
 
-        byte[] randomBytes = new byte[length];
-        random.nextBytes(randomBytes);
         char[] randomChars = new char[length];
         for (int i = 0; i < length; i++) {
-            randomChars[i] = getPrintableChar(randomBytes[i]);
+            int index = random.nextInt(UNAMBIGUOUS_NUMBERS_AND_LETTER.length);
+            randomChars[i] = UNAMBIGUOUS_NUMBERS_AND_LETTER[index];
         }
         return new String(randomChars);
-    }
-
-    private static char getPrintableChar(byte indexByte) {
-        assert (numbersAndLetters.length < Byte.MAX_VALUE * 2);
-
-        // Convert indexByte as it where an unsigned byte by promoting it to int
-        // and masking it with 0xff. Yields results from 0 - 254.
-        int index = indexByte & 0xff;
-        return numbersAndLetters[index % numbersAndLetters.length];
     }
 
     /**

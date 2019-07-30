@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smackx.avatar.vcardavatar.packet;
 
-
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -63,7 +62,7 @@ public class VCardTempXUpdate implements ExtensionElement
      * 2. mAvatarHash.length() == 0 => vCard with an empty BINVAL i.e. No  photo
      * 3. mAvatarHash.length() > 0 => is the VCard <PHOTO/> image Hash value
      *
-     * @see #toXML(XmlEnvironment.EMPTY) update <x xmlns='vcard-temp:x:update'/> element generation
+     * @see #toXML(XmlEnvironment) update <x xmlns='vcard-temp:x:update'/> element generation
      */
     private String mAvatarHash = null;
 

@@ -12,9 +12,11 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
+
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
 import org.xmpp.extensions.colibri.WebSocketExtensionElement;
 import org.xmpp.extensions.condesc.CallIdExtensionElement;
@@ -212,14 +214,13 @@ public class JingleIQProvider extends IQProvider<JingleIQ>
 
         // Now go on and parse the jingle element's content.
         boolean done = false;
-        int eventType;
         String elementName;
         String namespace;
 
         while (!done) {
-            eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-                case XmlPullParser.START_TAG:
+                case START_ELEMENT:
                     elementName = parser.getName();
                     namespace = parser.getNamespace();
                     switch (elementName) {
@@ -277,7 +278,7 @@ public class JingleIQProvider extends IQProvider<JingleIQ>
                                  */
                                 Timber.w("Unknown jingle IQ: <%s xml:'%s'>)", elementName, namespace);
                                 try {
-                                    PacketParserUtils.addExtensionElement(jingleIQ, parser);
+                                    PacketParserUtils.addExtensionElement(jingleIQ, parser, xmlEnvironment);
                                 } catch (XmlPullParserException e) {
                                     // Exception if not supported by addExtensionElement, Just log info
                                     Timber.e("AddExtensionElement Exception: %s", jingleIQ.toXML());
@@ -285,7 +286,7 @@ public class JingleIQProvider extends IQProvider<JingleIQ>
                             }
                     }
                     break;
-                case XmlPullParser.END_TAG:
+                case END_ELEMENT:
                     // if (parser.getName().equals(JingleIQ.ELEMENT_NAME)) {
                     if (parser.getDepth() == initialDepth) {
                         done = true;

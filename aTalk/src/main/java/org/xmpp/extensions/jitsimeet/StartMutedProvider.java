@@ -15,10 +15,12 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -42,8 +44,8 @@ public class StartMutedProvider extends ExtensionElementProvider<StartMutedExten
     }
 
     @Override
-    public StartMutedExtensionElement parse(XmlPullParser parser, int depth)
-            throws XmlPullParserException, IOException
+    public StartMutedExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+            throws XmlPullParserException, IOException, SmackParsingException
     {
         StartMutedExtensionElement packetExtension = new StartMutedExtensionElement();
 
@@ -52,7 +54,7 @@ public class StartMutedProvider extends ExtensionElementProvider<StartMutedExten
         String elementName;
         while (!done) {
             switch (parser.getEventType()) {
-                case XmlPullParser.START_TAG: {
+                case START_ELEMENT: {
                     elementName = parser.getName();
                     if (StartMutedExtensionElement.ELEMENT_NAME.equals(elementName)) {
                         boolean audioMute = Boolean.parseBoolean(
@@ -66,7 +68,7 @@ public class StartMutedProvider extends ExtensionElementProvider<StartMutedExten
                     parser.next();
                     break;
                 }
-                case XmlPullParser.END_TAG: {
+                case END_ELEMENT: {
                     elementName = parser.getName();
                     if (StartMutedExtensionElement.ELEMENT_NAME.equals(elementName)) {
                         done = true;

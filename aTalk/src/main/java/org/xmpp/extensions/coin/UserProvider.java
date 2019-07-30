@@ -9,8 +9,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -37,7 +37,7 @@ public class UserProvider extends ExtensionElementProvider<UserExtensionElement>
             throws IOException, XmlPullParserException, SmackParsingException
     {
         boolean done = false;
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName = null;
         String entity = parser.getAttributeValue("", UserExtensionElement.ENTITY_ATTR_NAME);
         StateType state = StateType.full;
@@ -57,7 +57,7 @@ public class UserProvider extends ExtensionElementProvider<UserExtensionElement>
             eventType = parser.next();
             elementName = parser.getName();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals(UserExtensionElement.ELEMENT_DISPLAY_TEXT)) {
                     try {
                         ext.setDisplayText(CoinIQProvider.parseText(parser));
@@ -71,7 +71,7 @@ public class UserProvider extends ExtensionElementProvider<UserExtensionElement>
                     ext.addChildExtension(childExtension);
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(UserExtensionElement.ELEMENT_NAME)) {
                     done = true;
                 }

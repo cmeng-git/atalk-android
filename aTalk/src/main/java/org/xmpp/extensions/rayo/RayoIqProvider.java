@@ -14,6 +14,8 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package org.xmpp.extensions.rayo;
 
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
 
 import org.atalk.util.StringUtils;
@@ -21,8 +23,6 @@ import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jxmpp.jid.Jid;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -116,7 +116,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
 
         while (!done) {
             switch (parser.next()) {
-                case XmlPullParser.END_TAG: {
+                case END_ELEMENT: {
                     String name = parser.getName();
                     if (rootElement.equals(name)) {
                         done = true;
@@ -134,7 +134,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
                     break;
                 }
 
-                case XmlPullParser.START_TAG: {
+                case START_ELEMENT: {
                     String name = parser.getName();
 
                     if (HeaderExtensionElement.ELEMENT_NAME.equals(name)) {
@@ -158,7 +158,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
                      */
                     break;
                 }
-                case XmlPullParser.TEXT: {
+                case TEXT_CHARACTERS: {
                     // Parse some text here
                     break;
                 }

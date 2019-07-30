@@ -25,8 +25,8 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.bob.packet.BoBExt;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.*;
@@ -55,9 +55,9 @@ public class RegistrationProvider extends IQProvider<Registration>
         List<ExtensionElement> packetExtensions = new LinkedList<>();
         outerloop:
         while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-                case XmlPullParser.START_TAG:
+                case START_ELEMENT:
                     // Any element that's in the jabber:iq:register namespace,
                     // attempt to parse it if it's in the form <name>value</name>.
                     String name = parser.getName();
@@ -71,7 +71,7 @@ public class RegistrationProvider extends IQProvider<Registration>
                                 isRegistered = true;
                             }
                             else {
-                                if (parser.next() == XmlPullParser.TEXT) {
+                                if (parser.next() == XmlPullParser.Event.TEXT_CHARACTERS) {
                                     value = parser.getText();
                                 }
                                 // Ignore instructions, but anything else should be added to the map.
@@ -84,19 +84,20 @@ public class RegistrationProvider extends IQProvider<Registration>
                             }
                             break;
                         case DataForm.NAMESPACE:
-                            dataForm = (DataForm)
-                                    PacketParserUtils.parseExtensionElement(DataForm.ELEMENT, DataForm.NAMESPACE, parser);
+                            dataForm = (DataForm) PacketParserUtils.parseExtensionElement(DataForm.ELEMENT,
+                                    DataForm.NAMESPACE, parser, xmlEnvironment);
                             break;
                         case BoBExt.NAMESPACE:
-                            boBExt = (BoBExt) PacketParserUtils.parseExtensionElement(BoBExt.ELEMENT, BoBExt.NAMESPACE, parser);
+                            boBExt = (BoBExt) PacketParserUtils.parseExtensionElement(BoBExt.ELEMENT,
+                                    BoBExt.NAMESPACE, parser, xmlEnvironment);
                             break;
                         // In case there are more packet extension.
                         default:
-                            PacketParserUtils.addExtensionElement(packetExtensions, parser, name, nameSpace);
+                            PacketParserUtils.addExtensionElement(packetExtensions, parser, name, nameSpace, xmlEnvironment);
                             break;
                     }
                     break;
-                case XmlPullParser.END_TAG:
+                case END_ELEMENT:
                     if (parser.getDepth() == initialDepth) {
                         break outerloop;
                     }

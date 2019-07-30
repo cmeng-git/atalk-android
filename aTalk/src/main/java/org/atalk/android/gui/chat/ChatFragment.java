@@ -56,7 +56,7 @@ import org.atalk.crypto.listener.CryptoModeChangeListener;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.chatstates.ChatState;
-import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager.AesgcmUrl;
+import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.io.File;

@@ -7,8 +7,8 @@ package org.xmpp.extensions.inputevt;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -41,7 +41,7 @@ public class InputEvtIQProvider extends IQProvider<InputEvtIQ>
 
         while (!done) {
             switch (parser.next()) {
-                case XmlPullParser.START_TAG:
+                case START_ELEMENT:
                     // <remote-control>
                     if (RemoteControlExtensionProvider.ELEMENT_REMOTE_CONTROL.equals(parser.getName())) {
                         RemoteControlExtensionProvider provider = new RemoteControlExtensionProvider();
@@ -50,7 +50,7 @@ public class InputEvtIQProvider extends IQProvider<InputEvtIQ>
                     }
                     break;
 
-                case XmlPullParser.END_TAG:
+                case END_ELEMENT:
                     if (InputEvtIQ.ELEMENT_NAME.equals(parser.getName()))
                         done = true;
                     break;

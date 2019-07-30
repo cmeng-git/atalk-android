@@ -18,6 +18,7 @@ import java.util.*;
  * implementation is based on the smack Form and FormField types.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigurationFormField
 {
@@ -30,7 +31,7 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
      * The smack library submit form field. It's the one that will care all values set by user,
      * before submitting the form.
      */
-    private final FormField smackSubmitFormField;
+    private FormField smackSubmitFormField;
 
     /**
      * Creates an instance of <tt>ChatRoomConfigurationFormFieldJabberImpl</tt> by passing to it the
@@ -86,11 +87,11 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
      */
     public Iterator<String> getOptions()
     {
-        List<String> options = new ArrayList<String>();
+        List<String> options = new ArrayList<>();
         List<FormField.Option> smackOptions = smackFormField.getOptions();
 
         for (FormField.Option smackOption : smackOptions) {
-            options.add(smackOption.getValue());
+            options.add(smackOption.getValueString());
         }
         return Collections.unmodifiableList(options).iterator();
     }
@@ -149,7 +150,7 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
         Iterator<?> valuesIter;
 
         if (smackFormField.getType() == FormField.Type.bool) {
-            List<Boolean> values = new ArrayList<Boolean>();
+            List<Boolean> values = new ArrayList<>();
 
             for (String smackValue : smackValues) {
                 values.add((smackValue.equals("1") || smackValue.equals("true")) ? Boolean.TRUE : Boolean.FALSE);
@@ -169,8 +170,12 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
     public void addValue(Object value)
     {
         if (value instanceof Boolean)
-            value = ((Boolean) value).booleanValue() ? "1" : "0";
-        smackSubmitFormField.addValue(value.toString());
+            value = (Boolean) value ? "1" : "0";
+
+        // smackSubmitFormField.addValue(value.toString());
+        FormField.Builder fieldBuilder = smackSubmitFormField.asBuilder();
+        fieldBuilder.addValue(value.toString());
+        smackSubmitFormField = fieldBuilder.build();
     }
 
     /**
@@ -180,15 +185,18 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
      */
     public void setValues(Object[] newValues)
     {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         for (Object value : newValues) {
             String stringValue;
             if (value instanceof Boolean)
-                stringValue = ((Boolean) value).booleanValue() ? "1" : "0";
+                stringValue = (Boolean) value ? "1" : "0";
             else
                 stringValue = (value == null) ? null : value.toString();
             list.add(stringValue);
         }
-        smackSubmitFormField.addValues(list);
+        // smackSubmitFormField.addValues(list);
+        FormField.Builder fieldBuilder = smackSubmitFormField.asBuilder();
+        fieldBuilder.addValues(list);
+        smackSubmitFormField = fieldBuilder.build();
     }
 }
