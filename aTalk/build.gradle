@@ -16,21 +16,18 @@ apply plugin: 'org.anarres.jarjar'
 repositories {
     google()
     jcenter()
+    mavenCentral()
     maven {
-        // maven smack official site
-        url 'https://mvnrepository.com/artifact'
-
         // Need manual cleanup for new SNAPSHOT update if same name with date change only:
         // Smack official SNAPSHOT repository accepted by FDroid
-        // url 'https://oss.sonatype.org/content/repositories/snapshots'
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
 
         // Smack custom library for org.igniterealtime - not recognize by FDroid
         // url 'https://igniterealtime.org/repo/'
+
+        // Custom library for org.jitsi - maven-metadata.xml not compatible
+        // url 'https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots'
     }
-    // maven {
-    //     // Custom library for org.jitsi - maven-metadata.xml not compatible
-    //     url 'https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots'
-    // }
     maven {
         // Git project library as local library project (ucrop) - see https://jitpack.io/docs/
         url 'https://jitpack.io'
