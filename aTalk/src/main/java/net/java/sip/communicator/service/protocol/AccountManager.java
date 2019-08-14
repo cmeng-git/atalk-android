@@ -88,7 +88,7 @@ public class AccountManager
         databaseBackend = DatabaseBackend.getInstance(context);
         configurationService = ProtocolProviderActivator.getConfigurationService();
 
-        this.bundleContext.addServiceListener(serviceEvent -> AccountManager.this.serviceChanged(serviceEvent));
+        this.bundleContext.addServiceListener(AccountManager.this::serviceChanged);
     }
 
     /**
@@ -433,16 +433,12 @@ public class AccountManager
      */
     private void serviceChanged(ServiceEvent serviceEvent)
     {
-        switch (serviceEvent.getType()) {
-            case ServiceEvent.REGISTERED:
-                Object service = bundleContext.getService(serviceEvent.getServiceReference());
+        if (serviceEvent.getType() == ServiceEvent.REGISTERED) {
+            Object service = bundleContext.getService(serviceEvent.getServiceReference());
 
-                if (service instanceof ProtocolProviderFactory) {
-                    protocolProviderFactoryRegistered((ProtocolProviderFactory) service);
-                }
-                break;
-            default:
-                break;
+            if (service instanceof ProtocolProviderFactory) {
+                protocolProviderFactoryRegistered((ProtocolProviderFactory) service);
+            }
         }
     }
 
@@ -586,7 +582,7 @@ public class AccountManager
             }
 
             synchronized (this.storedAccounts) {
-                AccountID[] storedAccounts = this.storedAccounts.toArray(new AccountID[this.storedAccounts.size()]);
+                AccountID[] storedAccounts = this.storedAccounts.toArray(new AccountID[0]);
 
                 for (AccountID storedAccount : storedAccounts) {
                     ProtocolProviderFactory ppf

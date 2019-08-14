@@ -40,4 +40,12 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:visibility="invisible"/>
 
+    <ProgressBar
+        android:id="@+id/actionbar_progress"
+        style="?android:attr/indeterminateProgressStyle"
+        android:layout_marginTop="@dimen/between_padding"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:visibility="visible" />
 </LinearLayout>

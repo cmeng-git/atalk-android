@@ -5,26 +5,17 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.AbstractContact;
-import net.java.sip.communicator.service.protocol.ContactGroup;
-import net.java.sip.communicator.service.protocol.ContactResource;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.roster.RosterEntry;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -103,10 +94,10 @@ public class ContactJabberImpl extends AbstractContact
     private static final String PGP_KEY_ID = "pgp_keyid";
 
     protected int subscription = 0;
-    protected String photoUri;
     protected JSONObject keys = new JSONObject();
     protected JSONArray groups = new JSONArray();
     private long mLastseen = 0;
+    private String photoUri;
     private String mLastPresence = null;
 
     /**
@@ -205,15 +196,18 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Returns a reference to the image assigned to this contact. If no image is present and the
+     * Returns a reference to the image assigned to this contact. If (image == null) and the
      * retrieveIfNecessary flag is true, we schedule the image for retrieval from the server.
+     *
+     * (image.length == 0) indicates it has been retrieved before, so to avoid avatar retrieval in endless loop
      *
      * @param retrieveIfNecessary specifies whether the method should queue this contact for avatar update from the server.
      * @return a reference to the image currently stored by this contact.
+     * @see ServerStoredContactListJabberImpl.ImageRetriever#run()
      */
     public byte[] getImage(boolean retrieveIfNecessary)
     {
-        if (image == null && retrieveIfNecessary)
+        if ((image == null) && retrieveIfNecessary)
             ssclCallback.addContactForImageUpdate(this);
         return image;
     }
@@ -301,8 +295,7 @@ public class ContactJabberImpl extends AbstractContact
      * received in the last status update message. If you want a reliable way of retrieving
      * someone's status, you should use the <tt>queryContactStatus()</tt> method in <tt>OperationSetPresence</tt>.
      *
-     * @return the PresenceStatus that we've received in the last status update pertaining to this
-     * contact.
+     * @return the PresenceStatus that we've received in the last status update pertaining to this contact.
      */
     public PresenceStatus getPresenceStatus()
     {
@@ -507,7 +500,7 @@ public class ContactJabberImpl extends AbstractContact
      * @param jid the fullJid for which we're looking for a resource
      * @return the <tt>ContactResource</tt> corresponding to the given bareJid.
      */
-    ContactResource getResourceFromJid(Jid jid)
+    ContactResource getResourceFromJid(FullJid jid)
     {
         return (resources == null) ? null : resources.get(jid);
     }

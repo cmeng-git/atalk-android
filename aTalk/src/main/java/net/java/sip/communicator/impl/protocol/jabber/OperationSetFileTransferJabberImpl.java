@@ -276,8 +276,9 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                 }
             }
             // cmeng - resume does not trigger RegistrationState.UNREGISTERED
-            else if (evt.getNewState() == RegistrationState.UNREGISTERED) {
-                // Must unregistered ftrListener on protocolProvider disconnection to avoid any ghost listener
+            // Must do it before UNREGISTERED state, otherwise ftManager == null
+            else if (evt.getNewState() == RegistrationState.UNREGISTERING) {
+                // Must unregistered ftrListener on protocolProvider UNREGISTERING to avoid any ghost listener
                 if (ftrListener != null) {
                     // Timber.w("Remove FileTransferListener: %s", ftrListener);
                     ftManager.removeFileTransferListener(ftrListener);

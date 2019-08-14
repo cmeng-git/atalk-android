@@ -177,7 +177,7 @@ public class ChatSessionManager
             ChatPanel currChat = getActiveChat(currentChatId);
             if (currChat != null) {
                 lastDescriptor = currChat.getChatSession().getDescriptor();
-                Timber.d("Current chat with: %s", currChat.getChatSession().getCurrentChatTransport().getDisplayName());
+                // Timber.d("Current chat descriptor: %s", lastDescriptor);
             }
 
             // Notifies about new current chat session

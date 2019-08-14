@@ -34,9 +34,8 @@ public class RemoveAccountDialog
         AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
         return alert.setTitle(R.string.service_gui_REMOVE_ACCOUNT)
                 .setMessage(ctx.getString(R.string.service_gui_REMOVE_ACCOUNT_MESSAGE, account.getAccountID()))
-                .setPositiveButton(R.string.service_gui_YES, (dialog, which)
-                        -> onRemoveClicked(dialog, account, listener)).setNegativeButton(R.string.service_gui_NO,
-                        (dialog, which) -> dialog.dismiss()).create();
+                .setPositiveButton(R.string.service_gui_YES, (dialog, which) -> onRemoveClicked(dialog, account, listener))
+                .setNegativeButton(R.string.service_gui_NO, (dialog, which) -> dialog.dismiss()).create();
     }
 
     private static void onRemoveClicked(DialogInterface dialog, final Account account, OnAccountRemovedListener l)
@@ -48,12 +47,13 @@ public class RemoveAccountDialog
             public void run()
             {
                 // cleanup omemo data for the deleted user account
+                AccountID accountId = account.getAccountID();
                 SQLiteOmemoStore omemoStore = (SQLiteOmemoStore) OmemoService.getInstance().getOmemoStoreBackend();
-                omemoStore.purgeUserOmemoData(account);
+                omemoStore.purgeUserOmemoData(accountId);
 
                 // purge persistent storage must happen before removeAccount action
-                AccountsListActivity.removeAccountPersistentStore(account);
-                removeAccount(account);
+                AccountsListActivity.removeAccountPersistentStore(accountId);
+                removeAccount(accountId);
             }
         };
         removeAccountThread.start();
@@ -74,16 +74,15 @@ public class RemoveAccountDialog
      * Note: accountUuid without any suffix as propertyName will remove all the properties in
      * the accountProperties for the specified accountUuid
      *
-     * @param account the account that will be uninstalled from the system.
+     * @param accountId the accountId that will be uninstalled from the system.
      */
-    private static void removeAccount(Account account)
+    private static void removeAccount(AccountID accountId)
     {
-        AccountID accountID = account.getAccountID();
-        ProtocolProviderFactory providerFactory = AccountUtils.getProtocolProviderFactory(accountID.getProtocolName());
-        String accountUuid = accountID.getAccountUuid();
+        ProtocolProviderFactory providerFactory = AccountUtils.getProtocolProviderFactory(accountId.getProtocolName());
+        String accountUuid = accountId.getAccountUuid();
         configService.setProperty(accountUuid, null);
 
-        boolean isUninstalled = providerFactory.uninstallAccount(accountID);
+        boolean isUninstalled = providerFactory.uninstallAccount(accountId);
         if (!isUninstalled)
             throw new RuntimeException("Failed to uninstall account");
     }

@@ -7,8 +7,6 @@ package org.xmpp.extensions.jingle;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
-import org.ice4j.ice.CandidateTcpType;
-
 // import org.ice4j.ice.Candidate;
 
 /**
@@ -20,7 +18,7 @@ public class CandidateExtensionElement extends AbstractExtensionElement implemen
     /**
      * The name of the "candidate" element.
      */
-    public static final String ELEMENT_NAME = "candidate";
+    public static final String ELEMENT = "candidate";
 
     /**
      * The name of the "component" element.
@@ -102,7 +100,7 @@ public class CandidateExtensionElement extends AbstractExtensionElement implemen
      */
     public CandidateExtensionElement()
     {
-        super(ELEMENT_NAME, null);
+        super(ELEMENT, null);
     }
 
     /**

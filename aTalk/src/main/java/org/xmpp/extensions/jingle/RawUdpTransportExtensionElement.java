@@ -27,14 +27,14 @@ public class RawUdpTransportExtensionElement extends IceUdpTransportExtensionEle
     /**
      * The name of the "transport" element.
      */
-    public static final String ELEMENT_NAME = "transport";
+    public static final String ELEMENT = "transport";
 
     /**
      * Creates a new {@link RawUdpTransportExtensionElement} instance.
      */
     public RawUdpTransportExtensionElement()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

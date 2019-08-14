@@ -43,7 +43,7 @@ public class UsersProvider extends ExtensionElementProvider<UsersExtensionElemen
         String stateStr = parser.getAttributeValue("", UserExtensionElement.STATE_ATTR_NAME);
 
         if (stateStr != null) {
-            state = StateType.parseString(stateStr);
+            state = StateType.fromString(stateStr);
         }
 
         UsersExtensionElement ext = new UsersExtensionElement();

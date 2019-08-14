@@ -82,6 +82,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
     };
 
     private static String[][] SUPPORTED_XEP = new String[][]{
+            new String[]{"XEP-0012: Last Activity", "https://xmpp.org/extensions/xep-0012.html"},
             new String[]{"XEP-0030: Service Discovery", "https://xmpp.org/extensions/xep-0030.html"},
             new String[]{"XEP-0045: Multi-User Chat", "https://xmpp.org/extensions/xep-0045.html"},
             new String[]{"XEP-0047: In-Band Bytestreams", "https://xmpp.org/extensions/xep-00047.html"},
@@ -107,7 +108,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"XEP-0172: User Nickname", "https://xmpp.org/extensions/xep-0172.html"},
             new String[]{"XEP-0176: Jingle ICE-UDP Transport Method", "https://xmpp.org/extensions/xep-0176.html"},
             new String[]{"XEP-0177: Jingle Raw UDP Transport Method", "https://xmpp.org/extensions/xep-0177.html"},
-            new String[]{"XEP-0184: Message Delivery Receipts (NI)", "https://xmpp.org/extensions/xep-0184.html"},
+            new String[]{"XEP-0184: Message Delivery Receipts", "https://xmpp.org/extensions/xep-0184.html"},
             new String[]{"XEP-0191: Blocking command (NI)", "https://xmpp.org/extensions/xep-0191.html"},
             new String[]{"XEP-0198: Stream Management", "https://xmpp.org/extensions/xep-0198.html"},
             new String[]{"XEP-0199: XMPP Ping", "https://xmpp.org/extensions/xep-0199.html"},
@@ -130,6 +131,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"XEP-0320: Use of DTLS-SRTP in Jingle Sessions", "https://xmpp.org/extensions/xep-0320.html"},
             new String[]{"XEP-0352: Client State Indication", "https://xmpp.org/extensions/xep-052.html"},
             new String[]{"XEP-0364: Off-the-Record Messaging (V2/3)", "https://xmpp.org/extensions/xep-0364.html"},
+            // new String[]{"XEP-0368: SRV records for XMPP over TLS", "https://xmpp.org/extensions/xep-0368.html"},
             new String[]{"XEP-0384: OMEMO Encryption", "https://xmpp.org/extensions/xep-0384.html"},
             new String[]{"XEP-xxxx: OMEMO Media sharing", "https://xmpp.org/extensions/inbox/omemo-media-sharing.html"},
     };

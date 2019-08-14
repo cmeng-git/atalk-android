@@ -35,7 +35,7 @@ public class CallIdExtensionElement extends AbstractExtensionElement
     /**
      * The name of the "callid" element.
      */
-    public static final String ELEMENT_NAME = "callid";
+    public static final String ELEMENT = "callid";
 
     /**
      * Creates a new instance setting the text to <tt>callid</tt>.
@@ -53,6 +53,6 @@ public class CallIdExtensionElement extends AbstractExtensionElement
      */
     public CallIdExtensionElement()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 }

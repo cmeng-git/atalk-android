@@ -18,13 +18,13 @@ public class RtcpmuxExtensionElement extends AbstractExtensionElement
     /**
      * The name of the "encryption" element.
      */
-    public static final String ELEMENT_NAME = "rtcp-mux";
+    public static final String ELEMENT = "rtcp-mux";
 
     /**
      * Creates a new instance of <tt>RtcpmuxExtensionElement</tt>.
      */
     public RtcpmuxExtensionElement()
     {
-        super(ELEMENT_NAME, null);
+        super(ELEMENT, null);
     }
 }

@@ -32,7 +32,7 @@ public class InputEvtIQProvider extends IQProvider<InputEvtIQ>
             throws IOException, XmlPullParserException
     {
         InputEvtIQ inputEvtIQ = new InputEvtIQ();
-        InputEvtAction action = InputEvtAction.parseString(parser.getAttributeValue("",
+        InputEvtAction action = InputEvtAction.fromString(parser.getAttributeValue("",
                 InputEvtIQ.ACTION_ATTR_NAME));
 
         inputEvtIQ.setAction(action);

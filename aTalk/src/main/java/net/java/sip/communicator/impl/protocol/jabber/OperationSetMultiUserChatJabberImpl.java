@@ -759,7 +759,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
 
         int encType = ENCRYPTION_OMEMO | ENCODE_PLAIN;
         net.java.sip.communicator.service.protocol.Message newMessage
-                = new MessageJabberImpl(decryptedBody, encType, null);
+                = new MessageJabberImpl(decryptedBody, encType, "", message.getStanzaId());
+        newMessage.setRemoteMsgId(message.getStanzaId());
         ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
                 chatRoom, member, timeStamp, newMessage, ChatMessage.MESSAGE_MUC_IN);
         chatRoom.fireMessageEvent(msgReceivedEvt);

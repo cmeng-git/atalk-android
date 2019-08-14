@@ -27,10 +27,10 @@ public interface ChatMessage
     String ENTITY_JID = "entityJid"; // contactJid or chatRoomJid (nick)
     String JID = "Jid";                // chatRoom member FullJid
     String MSG_BODY = "msgBody";    // message content
-    String ENC_TYPE = "encType";    // see Message for the ENCRYPTION_xxx definitions
+    String ENC_TYPE = "encType";    // see Message for the ENCRYPTION_xxx & MASK definitions
     String MSG_TYPE = "msgType";    // as defined in below * message type *
     String DIRECTION = "direction"; // in or out
-    String STATUS = "status";        // see STATUS_
+    String STATUS = "status";        // see STATUS_xxx
     String FILE_PATH = "filePath";  // filepath
     String FINGERPRINT = "OmemoFingerprint";    // rx fingerPrint
     String STEALTH_TIMER = "stealthTimer";        // stealth timer
@@ -50,13 +50,6 @@ public interface ChatMessage
     /* chat message status */
     int STATUS_SEND = 0;
     int STATUS_RECEIVED = 1;
-    int STATUS_SEND_RECEIVED = 2;
-    int STATUS_SEND_DISPLAYED = 3;
-    int STATUS_SEND_FAILED = 4;
-
-    int STATUS_WAITING = 5;
-    int STATUS_OFFERED = 6;
-    int STATUS_UNSEND = 7;
 
     /* File transfer status */
     int STATUS_COMPLETED = 10;   // completed
@@ -69,6 +62,13 @@ public interface ChatMessage
 
     int STATUS_DELETE = 99;  // to be deleted
 
+    /* READ - message delivery status: Do not change the order, values used in MergedMessage */
+    int MESSAGE_DELIVERY_NONE = 0;
+    int MESSAGE_DELIVERY_CLIENT_SENT = 1;
+    int MESSAGE_DELIVERY_SERVER_SENT = 2;
+    int MESSAGE_DELIVERY_RECEIPT = 4;
+
+    // Not used
     // int ENCRYPTION_DECRYPTED = 0x50;
     // int ENCRYPTION_DECRYPTION_FAILED = 0x60;
 
@@ -239,6 +239,27 @@ public interface ChatMessage
      * @return the encryption Type
      */
     int getEncryptionType();
+
+    /**
+     * Returns the message delivery receipt status
+     *
+     * @return the receipt status
+     */
+    int getReceiptStatus();
+
+    /**
+     * Returns the server message Id of the message sent - for tracking delivery receipt
+     *
+     * @return the server message Id of the message sent.
+     */
+    String getServerMsgId();
+
+    /**
+     * Returns the remote message Id of the message received - for tracking delivery receipt
+     *
+     * @return the remote message Id of the message received.
+     */
+    String getRemoteMsgId();
 
     /**
      * Returns the UID of this message.

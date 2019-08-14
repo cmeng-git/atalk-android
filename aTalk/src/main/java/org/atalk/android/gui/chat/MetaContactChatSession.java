@@ -281,6 +281,7 @@ public class MetaContactChatSession extends ChatSession
 
     /**
      * Returns the currently used transport for all operation within this chat session.
+     * Note: currentChatTransport == null if pps.isRegistered is false
      *
      * @return the currently used transport for all operation within this chat session.
      */
@@ -700,15 +701,13 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Called when a <tt>ContactResource</tt> has been removed to the list of
-     * available <tt>Contact</tt> resources.
+     * Called when a <tt>ContactResource</tt> has been removed to the list of available <tt>Contact</tt> resources.
      *
      * @param event the <tt>ContactResourceEvent</tt> that notified us
      */
     public void contactResourceRemoved(ContactResourceEvent event)
     {
         Contact contact = event.getContact();
-
         if (metaContact.containsContact(contact)) {
             updateChatTransports(contact);
         }

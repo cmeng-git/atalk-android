@@ -37,15 +37,15 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
     public ColibriIQProvider()
     {
         ProviderManager.addExtensionProvider(
-                PayloadTypeExtensionElement.ELEMENT_NAME, ColibriConferenceIQ.NAMESPACE,
+                PayloadTypeExtensionElement.ELEMENT, ColibriConferenceIQ.NAMESPACE,
                 new DefaultExtensionElementProvider<>(PayloadTypeExtensionElement.class));
 
         ProviderManager.addExtensionProvider(
-                RtcpFbExtensionElement.ELEMENT_NAME, RtcpFbExtensionElement.NAMESPACE,
+                RtcpFbExtensionElement.ELEMENT, RtcpFbExtensionElement.NAMESPACE,
                 new DefaultExtensionElementProvider<>(RtcpFbExtensionElement.class));
 
         ProviderManager.addExtensionProvider(
-                RTPHdrExtExtensionElement.ELEMENT_NAME, ColibriConferenceIQ.NAMESPACE,
+                RTPHdrExtExtensionElement.ELEMENT, ColibriConferenceIQ.NAMESPACE,
                 new DefaultExtensionElementProvider<>(RTPHdrExtExtensionElement.class));
 
         ProviderManager.addExtensionProvider(
@@ -64,10 +64,10 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                 = new DefaultExtensionElementProvider<>(ParameterExtensionElement.class);
 
         ProviderManager.addExtensionProvider(
-                ParameterExtensionElement.ELEMENT_NAME, ColibriConferenceIQ.NAMESPACE, parameterPacketExtension);
+                ParameterExtensionElement.ELEMENT, ColibriConferenceIQ.NAMESPACE, parameterPacketExtension);
 
         ProviderManager.addExtensionProvider(
-                ParameterExtensionElement.ELEMENT_NAME, SourceExtensionElement.NAMESPACE, parameterPacketExtension);
+                ParameterExtensionElement.ELEMENT, SourceExtensionElement.NAMESPACE, parameterPacketExtension);
 
         // Shutdown IQ
         ProviderManager.addIQProvider(ShutdownIQ.GRACEFUL_ELEMENT_NAME, ShutdownIQ.NAMESPACE, this);
@@ -97,7 +97,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
 
         // ssrc-info
         ProviderManager.addExtensionProvider(
-                SSRCInfoExtensionElement.ELEMENT_NAME, SSRCInfoExtensionElement.NAMESPACE,
+                SSRCInfoExtensionElement.ELEMENT, SSRCInfoExtensionElement.NAMESPACE,
                 new DefaultExtensionElementProvider<>(SSRCInfoExtensionElement.class));
     }
 
@@ -295,7 +295,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                             String direction = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.DIRECTION_ATTR_NAME);
                             if (!StringUtils.isNullOrEmpty(direction)) {
-                                channel.setDirection(MediaDirection.parseString(direction));
+                                channel.setDirection(MediaDirection.fromString(direction));
                             }
 
                             // endpoint
@@ -499,12 +499,12 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                             String peName = null;
                             String peNamespace = null;
 
-                            if (IceUdpTransportExtensionElement.ELEMENT_NAME.equals(name)
+                            if (IceUdpTransportExtensionElement.ELEMENT.equals(name)
                                     && IceUdpTransportExtensionElement.NAMESPACE.equals(parser.getNamespace())) {
                                 peName = name;
                                 peNamespace = IceUdpTransportExtensionElement.NAMESPACE;
                             }
-                            else if (PayloadTypeExtensionElement.ELEMENT_NAME.equals(name)) {
+                            else if (PayloadTypeExtensionElement.ELEMENT.equals(name)) {
                                 /*
                                  * The channel element of the Jitsi Videobridge protocol reuses the
                                  * payload-type element defined in XEP-0167: Jingle RTP Sessions.
@@ -512,7 +512,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                                 peName = name;
                                 peNamespace = namespace;
                             }
-                            else if (RtcpFbExtensionElement.ELEMENT_NAME.equals(name)
+                            else if (RtcpFbExtensionElement.ELEMENT.equals(name)
                                     && RtcpFbExtensionElement.NAMESPACE.equals(parser.getNamespace())) {
                                 /*
                                  * The channel element of the Jitsi Videobridge protocol reuses the
@@ -521,7 +521,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                                 peName = name;
                                 peNamespace = namespace;
                             }
-                            else if (RTPHdrExtExtensionElement.ELEMENT_NAME.equals(name)) {
+                            else if (RTPHdrExtExtensionElement.ELEMENT.equals(name)) {
                                 /*
                                  * The channel element of the Jitsi Videobridge protocol reuses the
                                  * rtp-hdrext element defined in XEP-0167: Jingle RTP Sessions.
@@ -529,7 +529,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                                 peName = name;
                                 peNamespace = namespace;
                             }
-                            else if (RawUdpTransportExtensionElement.ELEMENT_NAME.equals(name)
+                            else if (RawUdpTransportExtensionElement.ELEMENT.equals(name)
                                     && RawUdpTransportExtensionElement.NAMESPACE.equals(parser.getNamespace())) {
                                 peName = name;
                                 peNamespace = RawUdpTransportExtensionElement.NAMESPACE;

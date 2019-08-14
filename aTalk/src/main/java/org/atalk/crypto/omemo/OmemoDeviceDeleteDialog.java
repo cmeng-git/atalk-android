@@ -81,8 +81,7 @@ public class OmemoDeviceDeleteDialog extends OSGiActivity
                 if (checkedItems[i]) {
                     ProtocolProviderService pps = accountMap.get(accounts.get(i).toString());
                     if (pps != null) {
-                        OmemoManager omemoManager = OmemoManager.getInstanceFor(pps.getConnection());
-                        mOmemoStore.purgeInactiveUserDevices(omemoManager);
+                        mOmemoStore.purgeInactiveUserDevices(pps);
                     }
                 }
             }

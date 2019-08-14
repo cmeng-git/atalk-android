@@ -2178,7 +2178,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public Recording(String state)
         {
-            this.state = State.parseString(state);
+            this.state = State.fromString(state);
         }
 
         /**
@@ -2199,7 +2199,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public Recording(String state, String token)
         {
-            this(State.parseString(state), token);
+            this(State.fromString(state), token);
         }
 
         /**
@@ -2299,7 +2299,7 @@ public class ColibriConferenceIQ extends IQ
              * @param s state name.
              * @return the state found.
              */
-            public static State parseString(String s)
+            public static State fromString(String s)
             {
                 if (ON.toString().equalsIgnoreCase(s))
                     return ON;

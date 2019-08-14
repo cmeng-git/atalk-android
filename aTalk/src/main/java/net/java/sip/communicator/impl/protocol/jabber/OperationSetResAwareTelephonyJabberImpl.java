@@ -8,6 +8,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.util.StringUtils;
+import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -100,9 +101,9 @@ public class OperationSetResAwareTelephonyJabberImpl implements OperationSetReso
         if (conference != null)
             call.setConference(conference);
 
-        Jid fullCalleeUri = null;
+        FullJid fullCalleeUri = null;
         try {
-            fullCalleeUri = JidCreate.from(StringUtils.isNullOrEmpty(calleeResource)
+            fullCalleeUri = JidCreate.fullFrom(StringUtils.isNullOrEmpty(calleeResource)
                     ? uri : uri + "/" + calleeResource);
         } catch (XmppStringprepException e) {
             e.printStackTrace();

@@ -76,7 +76,7 @@ public class JingleNodeDialogFragment extends DialogFragment
         View contentView = inflater.inflate(R.layout.jingle_node_dialog, null);
 
         builder = builder.setView(contentView)
-                .setPositiveButton(R.string.service_gui_SERVERS_LIST_SAVE, null)
+                .setPositiveButton(R.string.service_gui_SAVE, null)
                 .setNeutralButton(R.string.service_gui_SERVERS_LIST_CANCEL, null);
         if (descriptor != null) {
             // Add remove button if it''s not "create new" dialog

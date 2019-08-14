@@ -108,6 +108,12 @@
             android:key="@string/pref_key_chat_history_size"
             android:title="@string/service_gui_settings_CHAT_HISTORY_SIZE" />
 
+        <!-- Tell others when we have received and read the messages -->
+        <CheckBoxPreference
+            android:key="@string/pref_key_message_delivery_receipt"
+            android:summary="@string/service_gui_settings_MESSAGE_DELIVERY_RECEIPT_SUMMARY"
+            android:title="@string/service_gui_settings_MESSAGE_DELIVERY_RECEIPT" />
+
         <!-- Tell others when we are writing to them -->
         <CheckBoxPreference
             android:key="@string/pref_key_chat_state_notifications"

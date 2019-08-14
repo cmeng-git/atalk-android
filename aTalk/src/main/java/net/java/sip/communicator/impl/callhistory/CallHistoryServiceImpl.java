@@ -521,7 +521,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
      * Create from the retrieved database mProperties to chatMessages
      *
      * @param mProperties CallRecord properties converted from cursor
-     * @return MessageImpl
+     * @return CallRecordImpl
      */
     public static CallRecord createCallRecordFromProperties(Map<String, String> mProperties)
     {

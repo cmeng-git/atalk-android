@@ -35,7 +35,7 @@ public enum StateType
      * @return a StateType.
      * @throws IllegalArgumentException in case <tt>typeStr</tt> is not a valid <tt>EndPointType</tt>.
      */
-    public static StateType parseString(String typeStr)
+    public static StateType fromString(String typeStr)
             throws IllegalArgumentException
     {
         for (StateType value : values()) {

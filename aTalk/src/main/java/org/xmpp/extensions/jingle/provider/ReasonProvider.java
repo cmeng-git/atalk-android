@@ -3,37 +3,38 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package org.xmpp.extensions.jingle;
+package org.xmpp.extensions.jingle.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.xmpp.extensions.jingle.element.JingleReason;
+import org.xmpp.extensions.jingle.element.Reason;
 
 import java.io.IOException;
 
 /**
- * The <tt>ReasonProvider</tt> parses "reason" elements into {@link ReasonExtensionElement}
- * instances.
+ * The <tt>ReasonProvider</tt> parses "reason" elements into {@link JingleReason} instances.
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class ReasonProvider extends ExtensionElementProvider<ReasonExtensionElement>
+public class ReasonProvider extends ExtensionElementProvider<JingleReason>
 {
     /**
-     * Parses a reason extension sub-packet and creates a {@link ReasonExtensionElement} instance. At
+     * Parses a reason extension sub-packet and creates a {@link JingleReason} instance. At
      * the beginning of the method call, the xml parser will be positioned on the opening element of
      * the packet extension. As required by the smack API, at the end of the method call, the parser
      * will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>reason</tt> element.
-     * @return a new {@link ReasonExtensionElement} instance.
+     * @return a new {@link JingleReason} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
 
     @Override
-    public ReasonExtensionElement parse(XmlPullParser parser, int initDepth, XmlEnvironment xmlEnvironment)
+    public JingleReason parse(XmlPullParser parser, int initDepth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException
     {
         String text = null;
@@ -50,11 +51,10 @@ public class ReasonProvider extends ExtensionElementProvider<ReasonExtensionElem
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 // the reason itself.
                 if (reason == null) {
-                    // let the parse exception fly as it would mean we have some weird element
-                    // first in the list.
-                    reason = Reason.parseString(elementName);
+                    // let the parse exception fly as it would mean we have some weird element first in the list.
+                    reason = Reason.fromString(elementName);
                 }
-                else if (elementName.equals(ReasonExtensionElement.TEXT_ELEMENT_NAME)) {
+                else if (elementName.equals(JingleReason.TEXT_ELEMENT_NAME)) {
                         text = parseText(parser);
                 }
                 else {
@@ -62,12 +62,12 @@ public class ReasonProvider extends ExtensionElementProvider<ReasonExtensionElem
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(ReasonExtensionElement.ELEMENT_NAME)) {
+                if (parser.getName().equals(JingleReason.ELEMENT)) {
                     done = true;
                 }
             }
         }
-        return new ReasonExtensionElement(reason, text, null);
+        return new JingleReason(reason, text, null);
     }
 
     /**

@@ -112,7 +112,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
 
         boolean done = false;
         HeaderExtensionElement header = null;
-        // ReasonExtensionElement reason = null;
+        // JingleReason reason = null;
 
         while (!done) {
             switch (parser.next()) {
@@ -148,10 +148,10 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
                     }
                     /*
                      * else if (End.isValidReason(name)) {
-                     * 	reason = new ReasonExtensionElement(name);
+                     * 	reason = new JingleReason(name);
                      *
                      * String platformCode = parser.getAttributeValue( "",
-                     * ReasonExtensionElement.PLATFORM_CODE_ATTRIBUTE);
+                     * JingleReason.PLATFORM_CODE_ATTRIBUTE);
                      *
                      * if (!StringUtils.isNullOrEmpty(platformCode)) {
                      * reason.setPlatformCode(platformCode); } }

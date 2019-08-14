@@ -103,7 +103,7 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
         StateType state = StateType.full;
         String stateStr = parser.getAttributeValue("", CoinIQ.STATE_ATTR_NAME);
         if (stateStr != null) {
-            state = StateType.parseString(stateStr);
+            state = StateType.fromString(stateStr);
         }
 
         coinIQ.setEntity(entity);

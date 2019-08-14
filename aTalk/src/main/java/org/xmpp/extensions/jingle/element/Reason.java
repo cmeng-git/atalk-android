@@ -3,7 +3,7 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package org.xmpp.extensions.jingle;
+package org.xmpp.extensions.jingle.element;
 
 /**
  * This enumeration contains the reason values that provide machine readable information about the
@@ -146,7 +146,7 @@ public enum Reason
      * @return a <tt>JingleAction</tt> value corresponding to the specified <tt>jingleValueStr</tt>.
      * Returns {@link #UNDEFINED} for invalid <tt>jingleValueStr</tt> values.
      */
-    public static Reason parseString(String reasonValueStr)
+    public static Reason fromString(String reasonValueStr)
     {
         for (Reason value : values())
             if (value.toString().equals(reasonValueStr))

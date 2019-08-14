@@ -246,7 +246,7 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
 			if ((str == null) || (str.length() == 0))
 				status = MediaDirection.INACTIVE;
 			else
-				status = MediaDirection.parseString(str);
+				status = MediaDirection.fromString(str);
 		}
 
 		return status;

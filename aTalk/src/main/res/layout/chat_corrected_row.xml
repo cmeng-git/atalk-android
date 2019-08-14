@@ -10,9 +10,7 @@
         android:layout_width="@dimen/chat_avatar"
         android:layout_height="@dimen/chat_avatar"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="5dip"
-        android:layout_marginRight="5dip">
+        android:layout_marginEnd="5dip">
 
         <ImageView
             android:id="@+id/outgoingAvatarIcon"
@@ -20,7 +18,6 @@
             android:layout_height="fill_parent"
             android:layout_centerVertical="true"
             android:layout_marginEnd="1px"
-            android:layout_marginRight="1px"
             android:src="@drawable/avatar" />
 
         <ImageView
@@ -29,7 +26,6 @@
             android:layout_height="14dip"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:src="@drawable/contact_offline" />
     </RelativeLayout>
 
@@ -37,10 +33,8 @@
         android:id="@+id/outgoingMessageHolder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dip"
         android:layout_marginStart="30dip"
         android:layout_marginBottom="4dp"
-        android:layout_toLeftOf="@+id/outgoingAvatarView"
         android:layout_toStartOf="@+id/outgoingAvatarView"
         android:background="@drawable/holder_message_correction"
         android:gravity="end"
@@ -53,7 +47,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/chat_text_margin"
-            android:layout_marginRight="@dimen/chat_text_margin"
             android:textColor="@color/black" />
 
         <LinearLayout
@@ -73,9 +66,17 @@
                 tools:ignore="RtlHardcoded" />
 
             <ImageView
+                android:id="@+id/msg_delivery_status"
+                android:layout_gravity="center_vertical"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_msg_delivery_read" />
+
+            <ImageView
                 android:id="@+id/encStateView"
                 android:layout_width="18dip"
                 android:layout_height="18dip"
+                android:layout_marginStart="4dp"
                 android:src="@drawable/encryption_omemo" />
         </LinearLayout>
     </LinearLayout>
@@ -85,8 +86,6 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/chat_arrow_height"
         android:layout_toEndOf="@+id/outgoingMessageHolder"
-        android:layout_toRightOf="@+id/outgoingMessageHolder"
-        android:layout_marginLeft="-10dp"
         android:layout_marginStart="-10dp"
         android:layout_marginTop="@dimen/chat_arrow_top"
         android:src="@drawable/messagearrowout_correction_dark" />

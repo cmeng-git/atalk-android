@@ -23,7 +23,7 @@ public class TransferExtensionElement extends AbstractExtensionElement
     /**
      * The name of the "transfer" element.
      */
-    public static final String ELEMENT_NAME = "transfer";
+    public static final String ELEMENT = "transfer";
 
     /**
      * The namespace of the "transfer" element.
@@ -50,7 +50,7 @@ public class TransferExtensionElement extends AbstractExtensionElement
      */
     public TransferExtensionElement()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -82,7 +82,7 @@ public class TransferExtensionElement extends AbstractExtensionElement
      *
      * @return the value of the "sid" attribute of this "transfer" element
      */
-    public String getSID()
+    public String getSid()
     {
         return getAttributeAsString(SID_ATTR_NAME);
     }

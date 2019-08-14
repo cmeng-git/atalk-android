@@ -29,7 +29,7 @@ public class EncryptionExtensionElement extends AbstractExtensionElement
     /**
      * The name of the "encryption" element.
      */
-    public static final String ELEMENT_NAME = "encryption";
+    public static final String ELEMENT = "encryption";
 
     /**
      * The name of the <tt>required</tt> attribute.
@@ -46,7 +46,7 @@ public class EncryptionExtensionElement extends AbstractExtensionElement
      */
     public EncryptionExtensionElement()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

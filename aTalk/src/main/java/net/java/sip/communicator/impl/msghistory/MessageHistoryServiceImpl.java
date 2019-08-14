@@ -21,7 +21,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
-import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
@@ -48,13 +47,16 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
+import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import timber.log.Timber;
@@ -73,7 +75,7 @@ import timber.log.Timber;
 public class MessageHistoryServiceImpl implements MessageHistoryService,
         MessageHistoryAdvancedService, MessageListener, ChatRoomMessageListener,
         AdHocChatRoomMessageListener, ServiceListener, LocalUserChatRoomPresenceListener,
-        LocalUserAdHocChatRoomPresenceListener
+        LocalUserAdHocChatRoomPresenceListener, ReceiptReceivedListener
 {
     /**
      * Sort database message records by TimeStamp in ASC or DESC
@@ -589,42 +591,40 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
             accountUuid = cursor.getString(cursor.getColumnIndex(ChatSession.ACCOUNT_UUID));
             entityJid = cursor.getString(cursor.getColumnIndex(ChatSession.ENTITY_JID));
-            try {
-                // find contact or chatRoom for given contactJid; skip if not found contacts,
-                // disabled accounts and hidden one
-                descriptor = getContactOrRoomByID(accountUuid, entityJid, isSMSEnabled);
-                if (descriptor == null)
-                    continue;
 
-                whereCondition = ChatMessage.SESSION_UUID + "=?";
-                argList.clear();
-                argList.add(sessionUuid);
-                if (isSMSEnabled) {
-                    whereCondition += " AND (" + ChatMessage.MSG_TYPE + "=? OR " + ChatMessage.MSG_TYPE + "=?)";
-                    argList.add(String.valueOf(ChatMessage.MESSAGE_SMS_IN));
-                    argList.add(String.valueOf(ChatMessage.MESSAGE_SMS_OUT));
-                }
-                args = argList.toArray(new String[0]);
+            // find contact or chatRoom for given contactJid; skip if not found contacts,
+            // disabled accounts and hidden one
+            descriptor = getContactOrRoomByID(accountUuid, entityJid, isSMSEnabled);
+            if (descriptor == null)
+                continue;
 
-                cursorMsg = mDB.query(ChatMessage.TABLE_NAME, null, whereCondition, args,
-                        null, null, ORDER_DESC, String.valueOf(count));
-
-
-                while (cursorMsg.moveToNext()) {
-                    if (descriptor instanceof Contact) {
-                        EventObject o = convertHistoryRecordToMessageEvent(cursorMsg, (Contact) descriptor);
-                        result.add(o);
-                    }
-                    if (descriptor instanceof ChatRoom) {
-                        EventObject o = convertHistoryRecordToMessageEvent(cursorMsg, (ChatRoom) descriptor);
-                        result.add(o);
-                    }
-                }
-                cursorMsg.close();
-            } catch (IOException ex) {
-                Timber.e(ex, "Could not read history message for: %s", entityJid);
+            whereCondition = ChatMessage.SESSION_UUID + "=?";
+            argList.clear();
+            argList.add(sessionUuid);
+            if (isSMSEnabled) {
+                whereCondition += " AND (" + ChatMessage.MSG_TYPE + "=? OR " + ChatMessage.MSG_TYPE + "=?)";
+                argList.add(String.valueOf(ChatMessage.MESSAGE_SMS_IN));
+                argList.add(String.valueOf(ChatMessage.MESSAGE_SMS_OUT));
             }
+            args = argList.toArray(new String[0]);
+
+            cursorMsg = mDB.query(ChatMessage.TABLE_NAME, null, whereCondition, args,
+                    null, null, ORDER_DESC, String.valueOf(count));
+
+
+            while (cursorMsg.moveToNext()) {
+                if (descriptor instanceof Contact) {
+                    EventObject o = convertHistoryRecordToMessageEvent(cursorMsg, (Contact) descriptor);
+                    result.add(o);
+                }
+                if (descriptor instanceof ChatRoom) {
+                    EventObject o = convertHistoryRecordToMessageEvent(cursorMsg, (ChatRoom) descriptor);
+                    result.add(o);
+                }
+            }
+            cursorMsg.close();
         }
+
         cursor.close();
         Collections.sort(result, new MessageEventComparator<>());
         return result;
@@ -641,7 +641,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      */
 
     private Object getContactOrRoomByID(String accountUuid, String contactId, boolean isSMSEnabled)
-            throws IOException
     {
         // skip for system virtual server e.g. atalk.org without "@"
         if (StringUtils.isNullOrEmpty(contactId) || contactId.indexOf("@") <= 0)
@@ -989,6 +988,9 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
         String msgBody = mProperties.get(ChatMessage.MSG_BODY);
         int encType = Integer.parseInt(mProperties.get(ChatMessage.ENC_TYPE));
+        int receiptStatus = Integer.parseInt(mProperties.get(ChatMessage.READ));
+        String serverMsgId = mProperties.get(ChatMessage.SERVER_MSG_ID);
+        String remoteMsgId = mProperties.get(ChatMessage.REMOTE_MSG_ID);
         boolean isOutgoing = ChatMessage.DIR_OUT.equals(mProperties.get(ChatMessage.DIRECTION));
 
         int msgSubType = -1;
@@ -996,7 +998,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         if ((msgType == ChatMessage.MESSAGE_SMS_OUT) || (msgType == ChatMessage.MESSAGE_SMS_IN))
             msgSubType = msgType;
 
-        return new MessageImpl(msgBody, encType, "", messageUID, isOutgoing, messageReceivedDate, msgSubType);
+        return new MessageImpl(msgBody, encType, "", messageUID,
+                receiptStatus, serverMsgId, remoteMsgId, isOutgoing, messageReceivedDate, msgSubType);
     }
 
     /**
@@ -1075,14 +1078,27 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             return;
         }
 
+        // Replace last message in DB with the new delivered correction message content only - no new message record
+        String msgCorrectionId = evt.getCorrectedMessageUID();
+        if (!TextUtils.isEmpty(msgCorrectionId))
+            message.setMessageUID(msgCorrectionId);
+
         String sessionUuid = getSessionUuidByJid(entityJid);
-        writeMessage(sessionUuid, ChatMessage.DIR_OUT, entityJid, evt.getSourceMessage(),
-                evt.getTimestamp(), evt.getEventType());
+        writeMessage(sessionUuid, ChatMessage.DIR_OUT, entityJid, message, evt.getTimestamp(), evt.getEventType());
     }
 
     public void messageDeliveryFailed(MessageDeliveryFailedEvent evt)
     {
         // nothing to do for the history service when delivery failed
+    }
+
+    @Override
+    public void onReceiptReceived(Jid fromJid, Jid toJid, String receiptId, Stanza receipt)
+    {
+        String[] args = {receiptId};
+        contentValues.clear();
+        contentValues.put(ChatMessage.READ, ChatMessage.MESSAGE_DELIVERY_RECEIPT);
+        mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.SERVER_MSG_ID + "=?", args);
     }
 
     // //////////////////////////////////////////////////////////////////////////
@@ -1180,8 +1196,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         }
 
         String sessionUuid = getSessionUuidByJid(room);
-        writeMessage(sessionUuid, ChatMessage.DIR_OUT, room, message, evt.getTimestamp(),
-                ChatMessage.MESSAGE_MUC_OUT);
+        writeMessage(sessionUuid, ChatMessage.DIR_OUT, room, message, evt.getTimestamp(), ChatMessage.MESSAGE_MUC_OUT);
     }
 
     public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt)
@@ -1322,7 +1337,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         // JID is not stored for chatMessage or incoming message
         // contentValues.put(ChatMessage.JID, entity.getAddress());
         contentValues.put(ChatMessage.MSG_TYPE, msgType);
-
         writeMessageToDB(message, direction);
     }
 
@@ -1368,10 +1382,19 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     {
         contentValues.put(ChatMessage.UUID, message.getMessageUID());
         contentValues.put(ChatMessage.MSG_BODY, message.getContent());
-        contentValues.put(ChatMessage.ENC_TYPE, ((MessageJabberImpl) message).getEncType());
+        contentValues.put(ChatMessage.ENC_TYPE, message.getEncType());
         contentValues.put(ChatMessage.DIRECTION, direction);
-        contentValues.put(ChatMessage.STATUS, ChatMessage.DIR_OUT.equals(direction) ? 0 : 1);
 
+        if (ChatMessage.DIR_OUT.equals(direction)) {
+            contentValues.put(ChatMessage.STATUS, 0);
+            contentValues.put(ChatMessage.SERVER_MSG_ID, message.getServerMsgId());
+            contentValues.put(ChatMessage.REMOTE_MSG_ID, message.getRemoteMsgId());
+            contentValues.put(ChatMessage.READ, ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
+        }
+        else {
+            contentValues.put(ChatMessage.STATUS, 1);
+            contentValues.put(ChatMessage.REMOTE_MSG_ID, message.getMessageUID());
+        }
         mDB.insert(ChatMessage.TABLE_NAME, null, contentValues);
     }
 
@@ -2145,10 +2168,10 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         private final Date messageReceivedDate;
         private int msgSubType;
 
-        MessageImpl(String content, int encType, String subject, String messageUID,
-                boolean isOutgoing, Date messageReceivedDate, int msgSubType)
+        MessageImpl(String content, int encType, String subject, String messageUID, int receiptStatus,
+                String serverMsgId, String remoteMsgId, boolean isOutgoing, Date messageReceivedDate, int msgSubType)
         {
-            super(content, encType, subject, messageUID);
+            super(content, encType, subject, messageUID, receiptStatus, serverMsgId, remoteMsgId);
             this.isOutgoing = isOutgoing;
             this.messageReceivedDate = messageReceivedDate;
             this.msgSubType = msgSubType;

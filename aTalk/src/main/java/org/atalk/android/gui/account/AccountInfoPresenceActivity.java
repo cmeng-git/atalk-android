@@ -6,7 +6,6 @@
 package org.atalk.android.gui.account;
 
 import android.app.*;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -144,6 +143,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     private EditText aboutMeArea;
     private EditText ageField;
     private EditText birthDateField;
+    private Button mApplyButton;
 
     private EditTextWatcher editTextWatcher;
 
@@ -483,7 +483,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         mCalenderButton.setOnClickListener(
                 v -> calendarDatePicker.show(getSupportFragmentManager(), FRAG_TAG_DATE_PICKER));
 
-        Button mApplyButton = findViewById(R.id.button_Apply);
+        mApplyButton = findViewById(R.id.button_Apply);
         mApplyButton.setOnClickListener(v -> {
             if (hasChanges || hasStatusChanges)
                 launchApplyProgressDialog();
@@ -501,21 +501,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             new AlertDialog.Builder(this)
                     .setTitle(R.string.service_gui_UNSAVED_CHANGES_TITLE)
                     .setMessage(R.string.service_gui_UNSAVED_CHANGES)
-                    .setPositiveButton(R.string.service_gui_EXIT,
-                            new DialogInterface.OnClickListener()
-                            {
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    finish();
-                                }
-                            })
-                    .setNegativeButton(R.string.service_gui_NO,
-                            new DialogInterface.OnClickListener()
-                            {
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                }
-                            })
+                    .setPositiveButton(R.string.service_gui_EXIT, (dialog, which) -> finish())
+                    .setNegativeButton(R.string.service_gui_SAVE, (dialog, which) -> {
+                        mApplyButton.performClick();
+                    })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         }
@@ -671,7 +660,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
                 // Update BirthDate and Age
                 onDateSet(null, bYear, bMonth, bDay);
-            } else if (objBirthDate != null) {
+            }
+            else if (objBirthDate != null) {
                 birthDateField.setText((String) objBirthDate);
             }
             return;

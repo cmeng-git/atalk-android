@@ -45,7 +45,7 @@ public class EndpointProvider extends ExtensionElementProvider<EndpointExtension
         String stateStr = parser.getAttributeValue("", EndpointExtensionElement.STATE_ATTR_NAME);
 
         if (stateStr != null) {
-            state = StateType.parseString(stateStr);
+            state = StateType.fromString(stateStr);
         }
 
         EndpointExtensionElement ext = new EndpointExtensionElement(entity);
@@ -60,13 +60,13 @@ public class EndpointProvider extends ExtensionElementProvider<EndpointExtension
                         ext.setDisplayText(CoinIQProvider.parseText(parser));
                         break;
                     case EndpointExtensionElement.ELEMENT_DISCONNECTION:
-                        ext.setDisconnectionType(DisconnectionType.parseString(parser.getText()));
+                        ext.setDisconnectionType(DisconnectionType.fromString(parser.getText()));
                         break;
                     case EndpointExtensionElement.ELEMENT_JOINING:
-                        ext.setJoiningType(JoiningType.parseString(CoinIQProvider.parseText(parser)));
+                        ext.setJoiningType(JoiningType.fromString(CoinIQProvider.parseText(parser)));
                         break;
                     case EndpointExtensionElement.ELEMENT_STATUS:
-                        ext.setStatus(EndpointStatusType.parseString(CoinIQProvider.parseText(parser)));
+                        ext.setStatus(EndpointStatusType.fromString(CoinIQProvider.parseText(parser)));
                         break;
                     case CallInfoExtensionElement.ELEMENT_NAME: {
                         DefaultExtensionElementProvider<CallInfoExtensionElement> provider

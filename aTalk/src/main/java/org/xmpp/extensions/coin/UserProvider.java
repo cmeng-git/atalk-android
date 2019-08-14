@@ -44,7 +44,7 @@ public class UserProvider extends ExtensionElementProvider<UserExtensionElement>
         String stateStr = parser.getAttributeValue("", UserExtensionElement.STATE_ATTR_NAME);
 
         if (stateStr != null) {
-            state = StateType.parseString(stateStr);
+            state = StateType.fromString(stateStr);
         }
 
         if (entity == null) {

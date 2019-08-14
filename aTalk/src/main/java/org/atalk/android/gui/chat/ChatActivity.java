@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.format.DateUtils;
 import android.view.*;
 import android.widget.Toast;
 
@@ -41,10 +42,15 @@ import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.StringUtils;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
+import org.jivesoftware.smackx.iqlast.LastActivityManager;
+import org.jxmpp.jid.Jid;
 
 import java.io.File;
+import java.text.DateFormat;
 import java.util.*;
 
 import androidx.fragment.app.FragmentTransaction;
@@ -564,17 +570,24 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             ActionBarUtil.setTitle(this, chatSession.getCurrentChatTransport().getDisplayName());
             if (chatSession instanceof MetaContactChatSession) {
                 ActionBarUtil.setAvatar(this, chatSession.getChatAvatar());
+
                 PresenceStatus status = chatSession.getCurrentChatTransport().getStatus();
                 if (status != null) {
-                    // ActionBarUtil.setStatus(this, status.getStatusIcon());
                     ActionBarUtil.setStatus(this, status.getStatusIcon());
-                    ActionBarUtil.setSubtitle(this, status.getStatusName());
+
+                    String presenceStatus = status.getStatusName();
+                    if (!status.isOnline()) {
+                        String lastSeen = getLastSeen();
+                        if (lastSeen != null)
+                            presenceStatus = lastSeen;
+                    }
+                    ActionBarUtil.setSubtitle(this, presenceStatus);
                 }
             }
             else if (chatSession instanceof ConferenceChatSession) {
                 ConferenceChatSession ccSession = (ConferenceChatSession) chatSession;
                 ActionBarUtil.setAvatar(this, AndroidImageUtil.convertToBytes(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.ic_chatroom), 100));
+                        .decodeResource(getResources(), R.drawable.ic_chatroom), 100));
                 ActionBarUtil.setStatus(this, ccSession.getChatStatusIcon());
                 ActionBarUtil.setSubtitle(this, ccSession.getChatSubject());
             }
@@ -582,23 +595,59 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     }
 
     /**
-     * Send an outgoing file message to chatFragment for its to start the file send process
+     * Convert to string of the lastSeen elapsed Time
+     *
+     * @return lastSeen string for display; null if exception
+     */
+    public String getLastSeen()
+    {
+        XMPPTCPConnection connection = mRecipient.getProtocolProvider().getConnection();
+        if (connection == null)
+            return null;
+
+        Jid jid = mRecipient.getJid();
+        LastActivityManager lastActivityManager = LastActivityManager.getInstanceFor(connection);
+
+        long timeNow = System.currentTimeMillis();
+        long elapseTime = -1;
+        try {
+            elapseTime = lastActivityManager.getLastActivity(jid).getIdleTime();
+        } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
+                | SmackException.NotConnectedException | InterruptedException ignore) {
+        }
+
+        if (elapseTime == -1) {
+            return null;
+        }
+        else {
+            CharSequence lastSeen;
+            long dateTime = (timeNow - elapseTime * 1000L);
+
+            if (DateUtils.isToday(dateTime)) {
+                DateFormat df = DateFormat.getTimeInstance(DateFormat.MEDIUM);
+                return getString(R.string.service_gui_LAST_SEEN, df.format(new Date(dateTime)));
+            }
+            // else if (DateUtils.isToday(dateTime + DateUtils.DAY_IN_MILLIS)) {  // yesterday
+                // lastSeen = DateUtils.getRelativeTimeSpanString(dateTime, timeNow, DateUtils.SECOND_IN_MILLIS,
+                //        DateUtils.FORMAT_ABBREV_ALL);
+            // }
+            else {
+                // lastSeen = DateUtils.getRelativeTimeSpanString(dateTime, timeNow, DateUtils.DAY_IN_MILLIS);
+                DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+                return df.format(new Date(dateTime));
+            }
+        }
+    }
+
+    /**
+     * Send an outgoing file message to chatFragment for it to start the file send process
+     * The recipient can be contact or chatRoom
      *
      * @param filePath of the file to be sent
      */
     public void sendFile(String filePath)
     {
         Date date = Calendar.getInstance().getTime();
-        //        UIService uiService = AndroidGUIActivator.getUIService();
-        //        if (uiService != null) {
-        //            if (mRecipient != null) {
-        //                String sendTo = mRecipient.getAddress();
-        //                ChatPanel chatPanel = (ChatPanel) uiService.getChat(mRecipient);
-        //                if (chatPanel != null) {
-        //                    chatPanel.addMessage(sendTo, date, ChatPanel.OUTGOING_FILE_MESSAGE, Message.ENCODE_PLAIN, filePath);
-        //                }
-        //            }
-        //        }
         String sendTo = selectedChatPanel.getChatSession().getCurrentChatTransport().getName();
         selectedChatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_FILE_TRANSFER_SEND, Message.ENCODE_PLAIN, filePath);
     }

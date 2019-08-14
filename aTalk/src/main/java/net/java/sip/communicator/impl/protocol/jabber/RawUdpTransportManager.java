@@ -13,6 +13,7 @@ import net.java.sip.communicator.service.protocol.OperationFailedException;
 
 import org.atalk.service.neomedia.*;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.xmpp.extensions.jingle.element.JingleContent;
 
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
@@ -29,16 +30,16 @@ import java.util.*;
 public class RawUdpTransportManager extends TransportManagerJabberImpl
 {
     /**
-     * The list of <tt>ContentExtensionElement</tt>s which represents the local counterpart of the
+     * The list of <tt>JingleContent</tt>s which represents the local counterpart of the
      * negotiation between the local and the remote peers.
      */
-    private List<ContentExtensionElement> local;
+    private List<JingleContent> local;
 
     /**
-     * The collection of <tt>ContentExtensionElement</tt>s which represents the remote counterpart of
+     * The collection of <tt>JingleContent</tt>s which represents the remote counterpart of
      * the negotiation between the local and the remote peers.
      */
-    private final List<Iterable<ContentExtensionElement>> remotes = new LinkedList<>();
+    private final List<Iterable<JingleContent>> remotes = new LinkedList<>();
 
     /**
      * Creates a new instance of this transport manager, binding it to the specified peer.
@@ -136,8 +137,8 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
         if (channel == null) {
             String media = mediaType.toString();
 
-            for (Iterable<ContentExtensionElement> remote : remotes) {
-                for (ContentExtensionElement content : remote) {
+            for (Iterable<JingleContent> remote : remotes) {
+                for (JingleContent content : remote) {
                     RtpDescriptionExtensionElement rtpDescription
                         = content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
 
@@ -214,8 +215,8 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      */
     private void removeRemoteContent(String name)
     {
-        for (Iterator<Iterable<ContentExtensionElement>> remoteIter = remotes.iterator(); remoteIter.hasNext(); ) {
-            Iterable<ContentExtensionElement> remote = remoteIter.next();
+        for (Iterator<Iterable<JingleContent>> remoteIter = remotes.iterator(); remoteIter.hasNext(); ) {
+            Iterable<JingleContent> remote = remoteIter.next();
 
             /*
              * Once the remote content is removed, make sure that we are not retaining sets which do
@@ -230,8 +231,8 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
     /**
      * {@inheritDoc}
      */
-    protected ExtensionElement startCandidateHarvest(ContentExtensionElement theirContent,
-            ContentExtensionElement ourContent, TransportInfoSender transportInfoSender, String media)
+    protected ExtensionElement startCandidateHarvest(JingleContent theirContent,
+            JingleContent ourContent, TransportInfoSender transportInfoSender, String media)
             throws OperationFailedException
     {
         return createTransportForStartCandidateHarvest(media);
@@ -248,7 +249,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * @param ourAnswer the content descriptions that we should be adding our transport lists to (although not
      * necessarily in this very instance).
      * @param transportInfoSender the <tt>TransportInfoSender</tt> to be used by this
-     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>JingleIQ</tt>s
+     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>Jingle</tt>s
      * from the local peer to the remote peer if this <tt>TransportManagerJabberImpl</tt>
      * wishes to utilize <tt>transport-info</tt>. Local candidate addresses sent by this
      * <tt>TransportManagerJabberImpl</tt> in <tt>transport-info</tt> are expected to not be
@@ -257,8 +258,8 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * @see TransportManagerJabberImpl#startCandidateHarvest(List, List, TransportInfoSender)
      */
     @Override
-    public void startCandidateHarvest(List<ContentExtensionElement> theirOffer,
-            List<ContentExtensionElement> ourAnswer, TransportInfoSender transportInfoSender)
+    public void startCandidateHarvest(List<JingleContent> theirOffer,
+            List<JingleContent> ourAnswer, TransportInfoSender transportInfoSender)
             throws OperationFailedException
     {
         this.local = ourAnswer;
@@ -270,13 +271,13 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * negotiation between the local and the remote peer for subsequent calls to
      * {@link #getStreamTarget(MediaType)}.
      *
-     * @param remote the collection of <tt>ContentExtensionElement</tt>s which represents the remote
+     * @param remote the collection of <tt>JingleContent</tt>s which represents the remote
      * counterpart of the negotiation between the local and the remote peer
      * @return <tt>true</tt> because <tt>RawUdpTransportManager</tt> does not perform connectivity checks
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Iterable)
      */
     @Override
-    public boolean startConnectivityEstablishment(Iterable<ContentExtensionElement> remote)
+    public boolean startConnectivityEstablishment(Iterable<JingleContent> remote)
         throws OperationFailedException
     {
         if ((remote != null) && !remotes.contains(remote)) {
@@ -287,7 +288,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
              * peer tells us about a specific set of contents, make sure that it is the only record
              * we will have with respect to the specified set of contents.
              */
-            for (ContentExtensionElement content : remote)
+            for (JingleContent content : remote)
                 removeRemoteContent(content.getName());
 
             remotes.add(remote);
@@ -303,7 +304,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * @see TransportManagerJabberImpl#wrapupCandidateHarvest()
      */
     @Override
-    public List<ContentExtensionElement> wrapupCandidateHarvest()
+    public List<JingleContent> wrapupCandidateHarvest()
     {
         return local;
     }

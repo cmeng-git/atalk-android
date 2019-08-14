@@ -113,7 +113,7 @@ public class AndroidUtils
     {
         int id = OSGiService.getGeneralNotificationId();
         if (id < 0) {
-            Timber.log(TimberLog.FINER, "There's no global notification icon bound");
+            Timber.log(TimberLog.FINER, "There's no global notification icon found");
             return;
         }
 

@@ -45,7 +45,7 @@ public class RedirectProvider extends ExtensionElementProvider<RedirectExtension
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(RedirectExtensionElement.ELEMENT_NAME)) {
+                if (parser.getName().equals(RedirectExtensionElement.ELEMENT)) {
                     done = true;
                 }
             }

@@ -27,6 +27,7 @@ import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -218,18 +219,18 @@ public class AccountsListActivity extends OSGiActivity
     /**
      * Removes the account persistent storage from the device
      *
-     * @param account the {@link Account} for whom the persistent to be purged from the device
+     * @param accountId the {@link AccountID} for whom the persistent to be purged from the device
      */
-    public static void removeAccountPersistentStore(Account account)
+    public static void removeAccountPersistentStore(AccountID accountId)
     {
-        ProtocolProviderService pps = account.getProtocolProvider();
+        ProtocolProviderService pps = accountId.getProtocolProvider();
         if (pps instanceof ProtocolProviderServiceJabberImpl) {
             ProtocolProviderServiceJabberImpl jabberProvider = (ProtocolProviderServiceJabberImpl) pps;
 
             // Purge avatarHash and avatarImages of all contacts belong to the account roster
-            Jid userId = account.getJid();
+            BareJid userJid = accountId.getBareJid();
             try {
-                VCardAvatarManager.clearPersistentStorage(userId.asBareJid());
+                VCardAvatarManager.clearPersistentStorage(userJid);
             } catch (XmppStringprepException e) {
                 Timber.e("Failed to purge store for: %s", R.string.service_gui_REFRESH_STORES_AVATAR);
             }
@@ -246,7 +247,7 @@ public class AccountsListActivity extends OSGiActivity
             // ScServiceDiscoveryManager discoveryInfoManager = jabberProvider.getDiscoveryManager();
             // File discoInfoStoreDirectory = discoveryInfoManager.getDiscoInfoPersistentStore();
             File discoInfoStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir()
-                    + "/discoInfoStore_" + userId);
+                    + "/discoInfoStore_" + userJid);
             try {
                 FileBackend.deleteRecursive(discoInfoStoreDirectory);
             } catch (IOException e) {

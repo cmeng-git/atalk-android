@@ -6,6 +6,12 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.0.3 (08/14/2019)" versioncode="1103">
+        <change>Implement XEP-0184: Message Delivery Receipts support with user enable/disable option</change>
+        <change>Implement XEP-0012: Last Activity support to show the time of the last activity associated with a contact</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.0.2 (07/30/2019)" versioncode="1102">
         <change>Port and update to smack libraries v4.4.0-alpha2</change>
         <change>Update OMEMO service and media file sharing to latest smack source</change>

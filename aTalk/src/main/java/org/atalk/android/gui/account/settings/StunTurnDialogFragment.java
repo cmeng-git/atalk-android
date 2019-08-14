@@ -68,7 +68,7 @@ public class StunTurnDialogFragment extends DialogFragment
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View contentView = inflater.inflate(R.layout.stun_turn_dialog, null);
 
-        builder = builder.setView(contentView).setPositiveButton(R.string.service_gui_SERVERS_LIST_SAVE, null)
+        builder = builder.setView(contentView).setPositiveButton(R.string.service_gui_SAVE, null)
                 .setNeutralButton(R.string.service_gui_SERVERS_LIST_CANCEL, null);
         if (descriptor != null) {
             builder = builder.setNegativeButton(R.string.service_gui_SERVERS_LIST_REMOVE, null);

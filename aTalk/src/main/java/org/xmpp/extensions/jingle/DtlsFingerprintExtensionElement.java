@@ -20,7 +20,7 @@ public class DtlsFingerprintExtensionElement extends AbstractExtensionElement
      * The XML name of the <tt>fingerprint</tt> element defined by XEP-0320: Use of DTLS-SRTP in
      * Jingle Sessions.
      */
-    public static final String ELEMENT_NAME = "fingerprint";
+    public static final String ELEMENT = "fingerprint";
 
     /**
      * The XML name of the <tt>fingerprint</tt> element's attribute which specifies the hash
@@ -58,7 +58,7 @@ public class DtlsFingerprintExtensionElement extends AbstractExtensionElement
      */
     public DtlsFingerprintExtensionElement()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -88,8 +88,7 @@ public class DtlsFingerprintExtensionElement extends AbstractExtensionElement
     public boolean getRequired()
     {
         String attr = getAttributeAsString(REQUIRED_ATTR_NAME);
-
-        return (attr == null) ? false : Boolean.parseBoolean(attr);
+        return (attr != null) && Boolean.parseBoolean(attr);
     }
 
     /**
@@ -126,7 +125,7 @@ public class DtlsFingerprintExtensionElement extends AbstractExtensionElement
      */
     public void setRequired(boolean required)
     {
-        setAttribute(REQUIRED_ATTR_NAME, Boolean.valueOf(required));
+        setAttribute(REQUIRED_ATTR_NAME, required);
     }
 
     /**

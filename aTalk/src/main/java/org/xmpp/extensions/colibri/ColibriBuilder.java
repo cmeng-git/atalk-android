@@ -14,6 +14,7 @@ import org.atalk.service.neomedia.MediaType;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.Jid;
+import org.xmpp.extensions.jingle.element.JingleContent;
 
 import java.util.List;
 import java.util.Map;
@@ -56,13 +57,13 @@ import timber.log.Timber;
 public class ColibriBuilder
 {
     /**
-     * Copies the transport info from a {@link ContentExtensionElement} to a
+     * Copies the transport info from a {@link JingleContent} to a
      * {@link ColibriConferenceIQ.ChannelCommon}.
      *
-     * @param content the {@link ContentExtensionElement} from which to copy.
+     * @param content the {@link JingleContent} from which to copy.
      * @param channel the {@link ColibriConferenceIQ.ChannelCommon} to which to copy.
      */
-    private static void copyTransport(ContentExtensionElement content, ColibriConferenceIQ.ChannelCommon channel)
+    private static void copyTransport(JingleContent content, ColibriConferenceIQ.ChannelCommon channel)
     {
         IceUdpTransportExtensionElement transport = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
         channel.setTransport(IceUdpTransportExtensionElement.cloneTransportAndCandidates(transport, true));
@@ -70,12 +71,12 @@ public class ColibriBuilder
 
     /**
      * Copies the contents of the description element from a
-     * {@link ContentExtensionElement} to a {@link ColibriConferenceIQ.Channel}.
+     * {@link JingleContent} to a {@link ColibriConferenceIQ.Channel}.
      *
-     * @param content the {@link ContentExtensionElement} from which to copy.
+     * @param content the {@link JingleContent} from which to copy.
      * @param channel the {@link ColibriConferenceIQ.Channel} to which to copy.
      */
-    private static boolean copyDescription(ContentExtensionElement content, ColibriConferenceIQ.Channel channel)
+    private static boolean copyDescription(JingleContent content, ColibriConferenceIQ.Channel channel)
     {
         RtpDescriptionExtensionElement description = content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
         if (description != null) {
@@ -230,13 +231,13 @@ public class ColibriBuilder
      * @param endpointId name of the endpoint for which Colibri channels will
      * @param peerIsInitiator the value that will be set in 'initiator'
      * attribute ({@link ColibriConferenceIQ.Channel#initiator}).
-     * @param contents the list of {@link ContentExtensionElement} describing channels media.
+     * @param contents the list of {@link JingleContent} describing channels media.
      * @return {@code true} if the request yields any changes in Colibri
      * channels state on the bridge or {@code false} otherwise. In general when
      * {@code false} is returned for all combined requests it makes no sense to send it.
      */
     public boolean addAllocateChannelsReq(boolean useBundle, String endpointId, String statsId,
-            boolean peerIsInitiator, List<ContentExtensionElement> contents)
+            boolean peerIsInitiator, List<JingleContent> contents)
     {
         return addAllocateChannelsReq(useBundle, endpointId, statsId, peerIsInitiator, contents,
                 null, null, null);
@@ -250,7 +251,7 @@ public class ColibriBuilder
      * @param statsId the stats ID of the endpoint for which channels are to be allocated.
      * @param peerIsInitiator the value that will be set in 'initiator'
      * attribute ({@link ColibriConferenceIQ.Channel#initiator}).
-     * @param contents the list of {@link ContentExtensionElement} describing channels media.
+     * @param contents the list of {@link JingleContent} describing channels media.
      * @param sourceMap a map of content name to the list of
      * {@link SourceExtensionElement}s which are to be added to the channel allocation request for this content.
      * @param sourceGroupMap a map of content name to the list of
@@ -262,14 +263,14 @@ public class ColibriBuilder
      * {@code false} is returned for all combined requests it makes no sense to send it.
      */
     public boolean addAllocateChannelsReq(boolean useBundle, String endpointId, String statsId, boolean peerIsInitiator,
-            List<ContentExtensionElement> contents, Map<String, List<SourceExtensionElement>> sourceMap,
+            List<JingleContent> contents, Map<String, List<SourceExtensionElement>> sourceMap,
             Map<String, List<SourceGroupExtensionElement>> sourceGroupMap, List<String> octoRelayIds)
     {
         ApiLib.requireNonNull(contents, "contents");
         assertRequestType(RequestType.ALLOCATE_CHANNELS);
         boolean hasAnyChanges = false;
 
-        for (ContentExtensionElement content : contents) {
+        for (JingleContent content : contents) {
             MediaType mediaType = JingleUtils.getMediaType(content);
             String contentName = mediaType.toString();
             ColibriConferenceIQ.Content requestContent = request.getOrCreateContent(contentName);
@@ -339,7 +340,7 @@ public class ColibriBuilder
             // Copy first transport to bundle
             ColibriConferenceIQ.ChannelBundle bundle = new ColibriConferenceIQ.ChannelBundle(endpointId);
 
-            ContentExtensionElement firstContent = contents.get(0);
+            JingleContent firstContent = contents.get(0);
             IceUdpTransportExtensionElement transport
                     = firstContent.getFirstChildOfType(IceUdpTransportExtensionElement.class);
             if (transport != null) {

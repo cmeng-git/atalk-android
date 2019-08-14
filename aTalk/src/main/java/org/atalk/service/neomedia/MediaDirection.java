@@ -222,7 +222,7 @@ public enum MediaDirection {
 	 * @throws IllegalArgumentException
 	 *         in case <tt>mediaDirectionStr</tt> is not a valid media direction.
 	 */
-	public static MediaDirection parseString(String mediaDirectionStr)
+	public static MediaDirection fromString(String mediaDirectionStr)
 		throws IllegalArgumentException
 	{
 		for (MediaDirection value : values())

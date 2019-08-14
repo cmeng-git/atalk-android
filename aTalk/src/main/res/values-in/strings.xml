@@ -44,7 +44,6 @@
     <string name="encryption_choices">Enkripsikan Pilihan</string>
     <string name="encryption_choice_unencrypted">Tidak terenkripsi</string>
     <string name="enter_name_or_number">Masukkan nama atau nomor</string>
-    <string name="exit_app">Keluar App</string>
     <string name="hang_up">Menutup panggilan</string>
     <string name="hold">Tunda panggilan</string>
     <string name="in_call_with">Panggilan dengan</string>
@@ -444,6 +443,7 @@
 	<string name="service_gui_LAST">Terakhir</string>
     <string name="service_gui_LAST_MSG_CORRECTION">Koreksi pesan terakhir</string>
 	<string name="service_gui_LAST_NAME">Nama belakang</string>
+    <string name="service_gui_LAST_SEEN">Harini: %s</string>
 	<string name="service_gui_LEAVE">Tinggalkan</string>
     <string name="service_gui_LEAVE_ROOM">Tinggalkan chatRoom</string>
     <string name="service_gui_LOADING">Memuat</string>
@@ -503,6 +503,7 @@
     <string name="service_gui_PHONES">Ponsel</string>
     <string name="service_gui_POSTAL_CODE">Kode Pos</string>
     <string name="service_gui_RENAME">Ganti nama</string>
+    <string name="service_gui_SAVE">Simpan</string>
     <string name="service_gui_SHOW_STACK_TRACE">Tampilkan tumpukan Jejak</string>
     <string name="service_gui_STREET">Jalan</string>
     <string name="service_gui_SUBMIT">Kirim</string>
@@ -1054,7 +1055,6 @@
     <string name="service_gui_SERVERS_LIST_CANCEL">Batalkan</string>
     <string name="service_gui_SERVERS_LIST_EMPTY">Daftarnya kosong. Klik untuk menambahkan entri baru&#8230;</string>
     <string name="service_gui_SERVERS_LIST_REMOVE">Hapus</string>
-    <string name="service_gui_SERVERS_LIST_SAVE">Simpan</string>
     
     <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">Alamat JID</string>
@@ -1226,16 +1226,20 @@
     <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d pesan terbaru dalam obrolan baru</string>
     <string name="service_gui_settings_SHOW_HISTORY">Tampilkan riwayat</string>
 
+    <!-- Tell others when we have received and read the messages -->
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT">Kwitansi pengiriman pesan</string>
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT_SUMMARY">Biarkan kontak Anda tahu kapan Anda telah menerima dan membaca pesan mereka</string>
+
     <!-- Tell others when we are writing to them -->
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Kirim pemberitahuan status obrolan</string>
 
-    <!-- Enable option to send thumnail preview for image file sending -->
+    <!-- Enable option to send thumbnail preview for image file sending -->
     <string name="service_gui_settings_THUMBNAIL_OPTION">Kirim/Terima pratinjau thumbnail</string>
 
     <!-- Auto accept downloadable max file size -->
     <string name="service_gui_settings_ACCEPT_FILE">Otomatis menerima ukuran file maksimal</string>
 
-    <!-- Setup substription Mode: auto or manual approval -->
+    <!-- Setup subscription Mode: auto or manual approval -->
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Kehadiran berlangganan persetujuan</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Berlangganan persetujuan - otomatis terima semua</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Berlangganan persetujuan - manual</string>

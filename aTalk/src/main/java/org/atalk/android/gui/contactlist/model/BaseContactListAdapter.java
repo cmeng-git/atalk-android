@@ -290,7 +290,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             convertView.setBackgroundResource(R.drawable.array_list_selector);
         }
 
-        // Set display name and status message for conacts or phone book contacts
+        // Set display name and status message for contacts or phone book contacts
         String sDisplayName = renderer.getDisplayName(child);
         String statusMessage = renderer.getStatusMessage(child);
 

@@ -142,15 +142,14 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, false);
         if (chatPanel != null) {
-            Message msg = evt.getMessage();
+            Message message = evt.getMessage();
             // just return if the delivered message is for remote client consumption only
-            if (msg.isRemoteOnly())
+            if (message.isRemoteOnly())
                 return;
 
             int messageType = evt.getEventType();
             chatPanel.addMessage(sourceChatRoom.getUserNickname().toString(), null,
-                    evt.getTimestamp(), messageType, msg.getMimeType(), msg.getContent(), msg.getEncryptionType(),
-                    msg.getMessageUID(), null);
+                    evt.getTimestamp(), messageType, message, null);
         }
     }
 
@@ -233,8 +232,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         String displayName = sourceMember.getNickName();
         String jabberID = (sender == null) ? displayName : sender.getAddress();
 
-        chatPanel.addMessage(jabberID, displayName, evt.getTimestamp(), messageType, message.getMimeType(),
-                messageContent, message.getEncryptionType(), message.getMessageUID(), null);
+        chatPanel.addMessage(jabberID, displayName, evt.getTimestamp(), messageType, message, null);
     }
 
     /**
@@ -414,16 +412,15 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                     ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, false);
 
                     if (chatPanel != null) {
-                        chatPanel.addMessage(sourceChatRoom.getName(), null, new Date(), ChatMessage.MESSAGE_SYSTEM,
-                                Message.ENCODE_PLAIN, evt.getReason(), Message.ENCRYPTION_NONE, null, null);
+                        chatPanel.addMessage(sourceChatRoom.getName(), new Date(), ChatMessage.MESSAGE_SYSTEM,
+                                Message.ENCODE_PLAIN, evt.getReason());
 
                         // print and the alternate address
                         if (!StringUtils.isNullOrEmpty(evt.getAlternateAddress())) {
-                            chatPanel.addMessage(sourceChatRoom.getName(), null, new Date(),
+                            chatPanel.addMessage(sourceChatRoom.getName(), new Date(),
                                     ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
                                     aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_ALTERNATE_ADDRESS,
-                                            evt.getAlternateAddress()),
-                                    Message.ENCRYPTION_NONE, null, null);
+                                            evt.getAlternateAddress()));
                         }
                     }
                 }
@@ -801,16 +798,16 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         // Timber.i("Message delivered to ad-hoc chat room: %s", sourceChatRoom.getName());
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, false);
         if (chatPanel != null) {
-            Message msg = evt.getMessage();
+            Message message = evt.getMessage();
 
             // just return if the delivered message is for remote client consumption only
-            if (msg.isRemoteOnly())
+            if (message.isRemoteOnly())
                 return;
 
             int messageType = evt.getEventType();
-            chatPanel.addMessage(sourceChatRoom.getParentProvider().getAccountID().getUserID(),
-                    null, evt.getTimestamp(), messageType, msg.getMimeType(), msg.getContent(),
-                    msg.getEncryptionType(), msg.getMessageUID(), null);
+            AccountID accountId = sourceChatRoom.getParentProvider().getAccountID();
+            chatPanel.addMessage(accountId.getUserID(), accountId.getDisplayName(),
+                    evt.getTimestamp(), messageType, message, null);
         }
         else {
             Timber.e("chat panel is null, message NOT DELIVERED !");
@@ -870,18 +867,16 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     public void messageReceived(AdHocChatRoomMessageReceivedEvent evt)
     {
         AdHocChatRoom sourceChatRoom = evt.getSourceChatRoom();
-        Contact sourceParticipant = evt.getSourceChatRoomParticipant();
+        String sourceParticipant = evt.getSourceChatRoomParticipant().getAddress();
 
         int messageType = evt.getEventType();
-        Timber.i("Message received from contact: %s", sourceParticipant.getAddress());
+        Timber.i("Message received from contact: %s", sourceParticipant);
 
         Message message = evt.getMessage();
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, true, message.getMessageUID());
-        String messageContent = message.getContent();
 
-        chatPanel.addMessage(sourceParticipant.getDisplayName(), null, evt.getTimestamp(),
-                messageType, message.getMimeType(), messageContent, message.getEncryptionType(),
-                message.getMessageUID(), null);
+        chatPanel.addMessage(sourceParticipant, sourceParticipant, evt.getTimestamp(),
+                messageType, message, null);
         ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());
     }
 

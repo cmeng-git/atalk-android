@@ -313,7 +313,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
                 + ChatMessage.FINGERPRINT + " TEXT, "
                 + ChatMessage.STEALTH_TIMER + "  INTEGER DEFAULT 0, "
                 + ChatMessage.CARBON + " INTEGER DEFAULT 0, "
-                + ChatMessage.READ + " INTEGER DEFAULT 1, "
+                + ChatMessage.READ + " INTEGER DEFAULT 0, "
                 + ChatMessage.OOB + " INTEGER DEFAULT 0, "
                 + ChatMessage.ERROR_MSG + " TEXT, "
                 + ChatMessage.SERVER_MSG_ID + " TEXT, "

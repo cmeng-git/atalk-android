@@ -18,7 +18,7 @@ public class ParameterExtensionElement extends AbstractExtensionElement
     /**
      * The name of the "parameter" element.
      */
-    public static final String ELEMENT_NAME = "parameter";
+    public static final String ELEMENT = "parameter";
 
     /**
      * The name of the <tt>name</tt> parameter in the <tt>parameter</tt> element.
@@ -35,7 +35,7 @@ public class ParameterExtensionElement extends AbstractExtensionElement
      */
     public ParameterExtensionElement()
     {
-        super(ELEMENT_NAME, null);
+        super(ELEMENT, null);
     }
 
     /**
@@ -43,7 +43,7 @@ public class ParameterExtensionElement extends AbstractExtensionElement
      */
     public ParameterExtensionElement(String name, String value)
     {
-        super(ELEMENT_NAME, null);
+        super(ELEMENT, null);
 
         setName(name);
         setValue(value);

@@ -574,39 +574,42 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Adds a message to this <tt>Chat</tt>.
+     * Add a message to this <tt>Chat</tt>. Mainly use for File Transfer and System messages
      *
      * @param contactName the name of the contact sending the message
      * @param date the time at which the message is sent or received
      * @param messageType the type of the message
      * @param encType the content encode type i.e plain or html
-     * @param message the message text
+     * @param content the message text
      */
     @Override
-    public void addMessage(String contactName, Date date, int messageType, int encType, String message)
+    public void addMessage(String contactName, Date date, int messageType, int encType, String content)
     {
-        addMessage(contactName, contactName, date, messageType, encType, message, Message.ENCRYPTION_NONE,
-                null, null);
+        addMessage(new ChatMessageImpl(contactName, contactName, date, messageType, encType, content));
     }
 
     /**
-     * Adds a message to this <tt>Chat</tt>.
+     * Add a message to this <tt>Chat</tt>.
      *
      * @param contactName the name of the contact sending the message
      * @param displayName the display name of the contact
      * @param date the time at which the message is sent or received
      * @param chatMsgType the type of the message. See ChatMessage
-     * @param encType the content encode type i.e plain or html
-     * @param message the message text
-     * @param encryptionType the content encryption type
+     * @param message the Message
      */
-    public void addMessage(String contactName, String displayName, Date date, int chatMsgType, int encType,
-            String message, int encryptionType, String messageUID, String correctedMessageUID)
+    public void addMessage(String contactName, String displayName, Date date, int chatMsgType,
+            Message message, String correctedMessageUID)
     {
-        // int chatMsgType = chatTypeToChatMsgType(messageType);
-        ChatMessageImpl chatMessage = new ChatMessageImpl(contactName, displayName, date, chatMsgType, encType,
-                message, encryptionType, messageUID, correctedMessageUID);
+        addMessage(new ChatMessageImpl(contactName, displayName, date, chatMsgType, message, correctedMessageUID));
+    }
 
+    /**
+     * Adds a chat message to this <tt>Chat</tt> panel.
+     *
+     * @param chatMessage the ChatMessage
+     */
+    public void addMessage(ChatMessageImpl chatMessage)
+    {
         synchronized (cacheLock) {
             // Must always cache the chatMsg as chatFragment has not registered to handle incoming
             // message on first onAttach or when it is not in focus.
@@ -634,12 +637,13 @@ public class ChatPanel implements Chat, MessageListener
     {
         Contact sender = request.getSender();
         String senderName = sender.getAddress();
-        String message = aTalkApp.getResString(
+        String msgContent = aTalkApp.getResString(
                 R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, date.toString(), senderName);
 
         int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
         int encType = Message.ENCODE_PLAIN;
-        ChatMessageImpl chatMsg = new ChatMessageImpl(senderName, date, msgType, encType, message, opSet, request);
+        ChatMessageImpl chatMsg = new ChatMessageImpl(senderName, date, msgType, encType,
+                msgContent, null, opSet, request, null);
 
         synchronized (cacheLock) {
             // Must cache chatMsg as chatFragment has not registered to handle incoming message on
@@ -818,6 +822,8 @@ public class ChatPanel implements Chat, MessageListener
                     PresenceStatus presenceStatus = chatTransport.getStatus();
                     ActionBarUtil.setSubtitle(activity, presenceStatus.getStatusName());
                     ActionBarUtil.setStatus(activity, presenceStatus.getStatusIcon());
+
+
                 });
             }
         }
@@ -825,9 +831,11 @@ public class ChatPanel implements Chat, MessageListener
         String contactName = ((MetaContactChatTransport) chatTransport).getContact().getAddress();
         if (ConfigurationUtils.isShowStatusChangedInChat()) {
             // Show a status message to the user.
-            this.addMessage(contactName, chatTransport.getName(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
-                    aTalkApp.getResString(R.string.service_gui_STATUS_CHANGED_CHAT_MESSAGE, chatTransport.getStatus().getStatusName()),
-                    Message.ENCRYPTION_NONE, null, null);
+            // addMessage(contactName, chatTransport.getName(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
+            //        aTalkApp.getResString(R.string.service_gui_STATUS_CHANGED_CHAT_MESSAGE, chatTransport.getStatus().getStatusName()),
+            //        Message.ENCRYPTION_NONE, null, null);
+            addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
+                    aTalkApp.getResString(R.string.service_gui_STATUS_CHANGED_CHAT_MESSAGE, chatTransport.getStatus().getStatusName()));
         }
     }
 
@@ -883,28 +891,10 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void updateChatContactStatus(final ChatContact<?> chatContact, final String statusMessage)
     {
-        //        if (isChatFocused()) {
-        //            final Activity activity = aTalkApp.getCurrentActivity();
-        //            activity.runOnUiThread(() -> {
-        //                // cmeng: check instanceof just in case
-        //                if (mChatSession instanceof ConferenceChatSession) {
-        //                    ActionBarUtil.setStatus(activity, mChatSession.getChatStatusIcon());
-        //
-        //                    StringBuilder mSubTitle = new StringBuilder();
-        //                    mSubTitle.append(((ConferenceChatSession) mChatSession).getChatSubject());
-        //                    mSubTitle.append(": ");
-        //                    Iterator<ChatContact<?>> mParticipants = mChatSession.getParticipants();
-        //                    while (mParticipants.hasNext()) {
-        //                        mSubTitle.append(mParticipants.next().getName()).append(", ");
-        //                    }
-        //                    ActionBarUtil.setSubtitle(activity, mSubTitle.toString());
-        //                }
-        //            });
-        //        }
         if (!StringUtils.isNullOrEmpty(statusMessage)) {
             String contactName = ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getContactAddress();
-            this.addMessage(contactName, chatContact.getName(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
-                    statusMessage, Message.ENCRYPTION_NONE, null, null);
+            addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN, statusMessage);
+
         }
     }
 

@@ -18,7 +18,7 @@ public class CoinExtensionElement extends AbstractExtensionElement
 	/**
 	 * Name of the XML element representing the extension.
 	 */
-	public final static String ELEMENT_NAME = "conference-info";
+	public final static String ELEMENT = "conference-info";
 
 	/**
 	 * Namespace.
@@ -36,7 +36,7 @@ public class CoinExtensionElement extends AbstractExtensionElement
 	 */
 	public CoinExtensionElement()
 	{
-		super(ELEMENT_NAME, NAMESPACE);
+		super(ELEMENT, NAMESPACE);
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class CoinExtensionElement extends AbstractExtensionElement
 	 */
 	public CoinExtensionElement(boolean isFocus)
 	{
-		super(ELEMENT_NAME, NAMESPACE);
+		super(ELEMENT, NAMESPACE);
 		setAttribute(ISFOCUS_ATTR_NAME, isFocus);
 	}
 }

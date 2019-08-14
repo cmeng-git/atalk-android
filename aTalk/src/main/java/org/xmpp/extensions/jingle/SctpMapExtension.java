@@ -20,7 +20,7 @@ public class SctpMapExtension implements ExtensionElement
     /**
      * The name of the "sctpmap" element.
      */
-    public static final String ELEMENT_NAME = "sctpmap";
+    public static final String ELEMENT = "sctpmap";
 
     /**
      * The namespace for the "sctpmap" element.
@@ -65,7 +65,7 @@ public class SctpMapExtension implements ExtensionElement
     @Override
     public String getElementName()
     {
-        return ELEMENT_NAME;
+        return ELEMENT;
     }
 
     /**
@@ -81,7 +81,7 @@ public class SctpMapExtension implements ExtensionElement
      * {@inheritDoc}
      */
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.prelude(getElementName(), getNamespace());

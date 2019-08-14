@@ -3,7 +3,7 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package org.xmpp.extensions.jingle;
+package org.xmpp.extensions.jingle.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -18,7 +18,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @author Eng Chong Meng
  */
 
-public class ReasonExtensionElement implements ExtensionElement
+public class JingleReason implements ExtensionElement
 {
     /**
      * The name space (or rather lack thereof ) that the reason element belongs to.
@@ -28,7 +28,7 @@ public class ReasonExtensionElement implements ExtensionElement
     /**
      * The name of the "content" element.
      */
-    public static final String ELEMENT_NAME = "reason";
+    public static final String ELEMENT = "reason";
 
     /**
      * The name of the text element.
@@ -52,7 +52,7 @@ public class ReasonExtensionElement implements ExtensionElement
     private ExtensionElement otherExtension;
 
     /**
-     * Creates a new <tt>ReasonExtensionElement</tt> instance with the specified reason String.
+     * Creates a new <tt>JingleReason</tt> instance with the specified reason String.
      *
      * @param reason the reason string that we'd like to transport in this packet extension, which may or
      * may not be one of the static strings defined here.
@@ -61,7 +61,7 @@ public class ReasonExtensionElement implements ExtensionElement
      * @param packetExtension any other element that MAY be providing further information or <tt>null</tt> if no
      * such element has been specified.
      */
-    public ReasonExtensionElement(Reason reason, String text, ExtensionElement packetExtension)
+    public JingleReason(Reason reason, String text, ExtensionElement packetExtension)
     {
         this.reason = reason;
         this.text = text;
@@ -136,7 +136,7 @@ public class ReasonExtensionElement implements ExtensionElement
      */
     public String getElementName()
     {
-        return ELEMENT_NAME;
+        return ELEMENT;
     }
 
     /**
@@ -154,10 +154,12 @@ public class ReasonExtensionElement implements ExtensionElement
      *
      * @return the packet extension as XML.
      */
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    @Override
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.openElement(getElementName());
+
         xml.halfOpenElement(getReason().toString());
         xml.closeEmptyElement();
 
@@ -168,6 +170,7 @@ public class ReasonExtensionElement implements ExtensionElement
         if (getOtherExtension() != null) {
             xml.append(getOtherExtension().toXML(XmlEnvironment.EMPTY));
         }
+
         xml.closeElement(getElementName());
         return xml;
     }
