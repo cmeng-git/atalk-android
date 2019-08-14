@@ -124,7 +124,7 @@
     <string name="service_gui_BUSY_STATUS">Ocupado</string>
     <string name="service_gui_CALL">Llamada de audio</string>
     <string name="service_gui_CALL_FAILED">Llamada fallida</string>
-    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histŕico de llamadas</string>
+    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de llamadas</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk no ha podido inicializar %1$s\nTodas las llamadas/servicios de medios estarán deshabilitados.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Llamar con</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">No se encontró ningún dispositivo de Audio/Video activo, por lo que no se pudo hacer la llamada..</string>
@@ -338,7 +338,7 @@
     <string name="service_gui_FILE_RECEIVING_FROM">Recibiendo un archivo de %1$s</string>
 	<string name="service_gui_FILE_SEND_COMPLETED">El fichero se ha enviado correctamente a %1$s</string>
 	<string name="service_gui_FILE_SEND_FAILED">No se pudo enviar el archivo: %1$s</string>
-    <string name="service_gui_FILE_SEND_NOT_ALLOW">No se puede enviar el archivo durante la llamada de conferencia!</string>
+    <string name="service_gui_FILE_SEND_NOT_ALLOW">¡No se puede enviar el archivo durante la llamada de conferencia!</string>
 	<string name="service_gui_FILE_SEND_REFUSED">%1$s ha rechazado este archivo</string>
 	<string name="service_gui_FILE_SEND_TO">Enviar archivo adjunto</string>
 	<string name="service_gui_FILE_SENDING_TO">Enviando el archivo a %1$s</string>
@@ -371,9 +371,9 @@
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente. %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Eliminar medios de mi teléfono</string>
 
-    <string name="service_gui_CHATROOM_BOOKMARK_TITLE">ChatRoom Bookmark</string>
-    <string name="service_gui_CHATROOM_BOOKMARK">Bookmark</string>
-    <string name="service_gui_CHATROOM_AUTOJOIN">Unirse Auto</string>
+    <string name="service_gui_CHATROOM_BOOKMARK_TITLE">Salas en marcadores</string>
+    <string name="service_gui_CHATROOM_BOOKMARK">Marcadores</string>
+    <string name="service_gui_CHATROOM_AUTOJOIN">Autounirse</string>
     <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Error al actualizar Marcadores para %1$s: %2$s</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Miembros de la sala de charla</string>
@@ -413,8 +413,8 @@
 	<string name="service_gui_CLOSE_CHAT_ROOM_DIALOG">Cerrar</string>
 
     <string name="service_gui_COUNTRY">País</string>
-    <string name="service_gui_EMAIL">Email</string>
-    <string name="service_gui_EMAILS">Emails</string>
+    <string name="service_gui_EMAIL">Correo</string>
+    <string name="service_gui_EMAILS">Correos</string>
     <string name="service_gui_FAX">Fax</string>
     <string name="service_gui_HOME">Casa</string>
     <string name="service_gui_HOME_PAGE">Página de inicio</string>
@@ -441,7 +441,7 @@
 	<string name="service_gui_JOIN_AUTOMATICALLY">Unirse automáticamente</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">No unirse automáticamente</string>
 	<string name="service_gui_KICK">Toque de atención</string>
-	<string name="service_gui_KICK_FAILED">Toque de atención fallida</string>
+	<string name="service_gui_KICK_FAILED">Toque de atención fallido</string>
 	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Error al dar un toque de atención %1$s. Se ha producido un error general del servidor.</string>
 	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Error al dar un toque de atención %1$s. El dueño y el administrador de la sala no admiten toques de atención.</string>
 	<string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Error al dar un toque de atención %1$s. No se tienen suficientes privilegios para hacerlo.</string>
@@ -1240,7 +1240,7 @@
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">¿Cuántos mensajes recientes se deben mostrar?</string>
     <string name="service_gui_settings_CHAT_HISTORY_SIZE">Mostrar mensajes recientes</string>
     <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d mensajes recientes en nuevas charlas</string>
-    <string name="service_gui_settings_SHOW_HISTORY">Show history</string>
+    <string name="service_gui_settings_SHOW_HISTORY">Mostrar el historial</string>
 
     <!-- Tell others when we have received and read the messages -->
     <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT">Recibo de entrega del mensaje</string>
@@ -1256,7 +1256,7 @@
     <string name="service_gui_settings_ACCEPT_FILE">Acepta automáticamente el tamaño máximo de archivo</string>
 
     <!-- Setup subscription Mode: auto or manual approval -->
-    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presencia Suscribir aprobación</string>
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Aprobación de suscripción de presencia</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Suscribir aprobación - aceptar automáticamente todo</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Suscribir aprobación - manual</string>
     <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
@@ -1366,7 +1366,7 @@
     <string name="service_gui_settings_VIDEO_FRAME_RATE">Frecuencia de fotogramas de vídeo</string>
     <string name="service_gui_settings_VIDEO_FPS_DESC">Valores aceptados entre 5 y 30 fps</string>
     <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">Umbral de paso RTP (kBytes/s)</string>
-    <string name="service_gui_settings_VIDEO_TARGET_FPS">Frecuencia de imagen objetivo (por seg.)</string>
+    <string name="service_gui_settings_VIDEO_TARGET_FPS">Frecuencia de objetivo en la imagen (por seg.)</string>
 	
     <!-- Security settings -->
     <!-- Chat security -->
