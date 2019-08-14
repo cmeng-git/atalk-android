@@ -60,7 +60,7 @@ public enum JoiningType
      * @return an JoiningType.
      * @throws IllegalArgumentException in case <tt>typeStr</tt> is not a valid <tt>EndPointType</tt>.
      */
-    public static JoiningType parseString(String typeStr)
+    public static JoiningType fromString(String typeStr)
             throws IllegalArgumentException
     {
         for (JoiningType value : values())

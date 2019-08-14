@@ -8,8 +8,11 @@ package org.atalk.android.gui.util;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.*;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
+import android.util.TypedValue;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,6 +33,7 @@ public class ActionBarUtil
      * The avatar drawable for display on ActionBar
      */
     private static LayerDrawable avatarDrawable;
+    private static String LAST_SEEN = ":";
 
     /**
      * Sets the action bar title for the given activity.
@@ -58,6 +62,14 @@ public class ActionBarUtil
         ActionBar actionBar = activity.getActionBar();
         if (actionBar != null) {
             TextView statusText = actionBar.getCustomView().findViewById(R.id.actionBarStatusText);
+            if (!TextUtils.isEmpty(subtitle) && (subtitle.contains(LAST_SEEN))) {
+                statusText.setTypeface(null, Typeface.NORMAL);
+                statusText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+            }
+            else {
+                statusText.setTypeface(null, Typeface.BOLD);
+                statusText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+            }
             statusText.setText(subtitle);
             statusText.setMovementMethod(new ScrollingMovementMethod());
         }

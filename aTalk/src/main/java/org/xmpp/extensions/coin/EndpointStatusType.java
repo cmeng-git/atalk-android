@@ -90,7 +90,7 @@ public enum EndpointStatusType
      * @return an EndPointType.
      * @throws IllegalArgumentException in case <tt>typeStr</tt> is not a valid <tt>EndPointType</tt>.
      */
-    public static EndpointStatusType parseString(String typeStr)
+    public static EndpointStatusType fromString(String typeStr)
             throws IllegalArgumentException
     {
         for (EndpointStatusType value : values())

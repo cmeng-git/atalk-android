@@ -25,6 +25,7 @@ import org.ice4j.socket.MultiplexingDatagramSocket;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.xmpp.extensions.jingle.CandidateType;
 import org.xmpp.extensions.jingle.*;
+import org.xmpp.extensions.jingle.element.JingleContent;
 import org.xmpp.jnodes.smack.SmackServiceNode;
 
 import java.beans.PropertyChangeEvent;
@@ -97,7 +98,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     /**
      * This is where we keep our answer between the time we get the offer and are ready with the answer.
      */
-    protected List<ContentExtensionElement> cpeList;
+    protected List<JingleContent> cpeList;
 
     /**
      * The ICE agent that this transport manager would be using for ICE negotiation.
@@ -470,8 +471,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     /**
      * {@inheritDoc}
      */
-    protected ExtensionElement startCandidateHarvest(ContentExtensionElement theirContent,
-            ContentExtensionElement ourContent, TransportInfoSender transportInfoSender, String media)
+    protected ExtensionElement startCandidateHarvest(JingleContent theirContent,
+            JingleContent ourContent, TransportInfoSender transportInfoSender, String media)
             throws OperationFailedException
     {
         ExtensionElement pe;
@@ -492,7 +493,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
              * extension to be sent in transport-info so the content has the same attributes as in
              * our answer and none of its non-transport extensions.
              */
-            ContentExtensionElement transportInfoContent = new ContentExtensionElement();
+            JingleContent transportInfoContent = new JingleContent();
 
             for (String name : ourContent.getAttributeNames()) {
                 Object value = ourContent.getAttribute(name);
@@ -512,7 +513,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
              * with Empathy right now. In the future, we will get back to the original behavior:
              * sending all content in one transport-info.
              */
-            Collection<ContentExtensionElement> transportInfoContents = new LinkedList<>();
+            Collection<JingleContent> transportInfoContents = new LinkedList<>();
             transportInfoContents.add(transportInfoContent);
             transportInfoSender.sendTransportInfo(transportInfoContents);
         }
@@ -530,7 +531,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @param ourAnswer the content descriptions that we should be adding our transport lists to (although not
      * necessarily in this very instance).
      * @param transportInfoSender the <tt>TransportInfoSender</tt> to be used by this
-     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>JingleIQ</tt>s
+     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>Jingle</tt>s
      * from the local peer to the remote peer if this <tt>TransportManagerJabberImpl</tt>
      * wishes to utilize <tt>transport-info</tt>. Local candidate addresses sent by this
      * <tt>TransportManagerJabberImpl</tt> in <tt>transport-info</tt> are expected to not be
@@ -539,8 +540,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @see TransportManagerJabberImpl#startCandidateHarvest(List, List, TransportInfoSender)
      */
     @Override
-    public void startCandidateHarvest(List<ContentExtensionElement> theirOffer,
-            List<ContentExtensionElement> ourAnswer, TransportInfoSender transportInfoSender)
+    public void startCandidateHarvest(List<JingleContent> theirOffer,
+            List<JingleContent> ourAnswer, TransportInfoSender transportInfoSender)
             throws OperationFailedException
     {
         this.cpeList = ourAnswer;
@@ -700,7 +701,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @see TransportManagerJabberImpl#wrapupCandidateHarvest()
      */
     @Override
-    public List<ContentExtensionElement> wrapupCandidateHarvest()
+    public List<JingleContent> wrapupCandidateHarvest()
     {
         return cpeList;
     }
@@ -720,18 +721,18 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     /**
      * Starts the connectivity establishment of the associated ICE <tt>Agent</tt>.
      *
-     * @param remote the collection of <tt>ContentExtensionElement</tt>s which represents the remote
+     * @param remote the collection of <tt>JingleContent</tt>s which represents the remote
      * counterpart of the negotiation between the local and the remote peers
      * @return <tt>true</tt> if connectivity establishment has been started in response to the call;
      * otherwise, <tt>false</tt>
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Iterable)
      */
     @Override
-    public synchronized boolean startConnectivityEstablishment(Iterable<ContentExtensionElement> remote)
+    public synchronized boolean startConnectivityEstablishment(Iterable<JingleContent> remote)
             throws OperationFailedException
     {
         Map<String, IceUdpTransportExtensionElement> map = new LinkedHashMap<>();
-        for (ContentExtensionElement content : remote) {
+        for (JingleContent content : remote) {
             IceUdpTransportExtensionElement transport = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
             /*
              * If we cannot associate an IceMediaStream with the remote content, we will not have
@@ -739,7 +740,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
              */
             RtpDescriptionExtensionElement description = content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
             if ((description == null) && (cpeList != null)) {
-                ContentExtensionElement localContent = findContentByName(cpeList, content.getName());
+                JingleContent localContent = findContentByName(cpeList, content.getName());
 
                 if (localContent != null) {
                     description = localContent.getFirstChildOfType(RtpDescriptionExtensionElement.class);
@@ -961,7 +962,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
          * have been sent in transport-info already.
          */
         if (cpeList != null) {
-            for (ContentExtensionElement content : cpeList) {
+            for (JingleContent content : cpeList) {
                 IceUdpTransportExtensionElement transport
                         = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
                 if (transport != null) {
@@ -991,7 +992,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     @Override
     public void removeContent(String name)
     {
-        ContentExtensionElement content = removeContent(cpeList, name);
+        JingleContent content = removeContent(cpeList, name);
         if (content != null) {
             RtpDescriptionExtensionElement rtpDescription
                     = content.getFirstChildOfType(RtpDescriptionExtensionElement.class);

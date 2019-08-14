@@ -9,7 +9,9 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.service.certificate.CertificateService;
+import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
@@ -17,6 +19,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.NetworkUtils;
 
 import org.atalk.android.*;
+import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
@@ -79,6 +82,7 @@ import org.jivesoftware.smackx.httpauthorizationrequest.HTTPAuthorizationRequest
 import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
 import org.jivesoftware.smackx.httpauthorizationrequest.provider.ConfirmExtProvider;
 import org.jivesoftware.smackx.httpauthorizationrequest.provider.ConfirmIQProvider;
+import org.jivesoftware.smackx.iqlast.LastActivityManager;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationProvider;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationStreamFeatureProvider;
@@ -90,6 +94,9 @@ import org.jivesoftware.smackx.nick.provider.NickProvider;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.ping.PingFailedListener;
 import org.jivesoftware.smackx.ping.PingManager;
+import org.jivesoftware.smackx.receipts.DeliveryReceipt;
+import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
+import org.jivesoftware.smackx.receipts.DeliveryReceiptManager.AutoReceiptMode;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
@@ -116,6 +123,8 @@ import org.xmpp.extensions.inputevt.InputEvtIQProvider;
 import org.xmpp.extensions.jibri.JibriIq;
 import org.xmpp.extensions.jibri.JibriIqProvider;
 import org.xmpp.extensions.jingle.*;
+import org.xmpp.extensions.jingle.element.Jingle;
+import org.xmpp.extensions.jingle.provider.JingleProvider;
 import org.xmpp.extensions.jingleinfo.JingleInfoQueryIQ;
 import org.xmpp.extensions.jingleinfo.JingleInfoQueryIQProvider;
 import org.xmpp.extensions.jitsimeet.*;
@@ -156,7 +165,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Jingle's Discovery Info common URN.
      */
-    public static final String URN_XMPP_JINGLE = JingleIQ.NAMESPACE;
+    public static final String URN_XMPP_JINGLE = Jingle.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for RTP support.
@@ -907,7 +916,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 DnsName dnsHost = null;
                 config.setHost(dnsHost);
                 config.setHostAddress(null);
-                config.setPort(DEFAULT_PORT);
             }
         } catch (UnknownHostException ex) {
             String errMsg = ex.getMessage() + "\nYou may need to use 'Override server setting' option if " +
@@ -1596,6 +1604,24 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             mPingManager.setPingInterval(0);
         }
 
+        /* XEP-0184: Message Delivery Receipts - global option */
+        DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(mConnection);
+        // Always enable the ReceiptReceivedListener and receipt request (indepedent of contact capability)
+        MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
+        deliveryReceiptManager.addReceiptReceivedListener((MessageHistoryServiceImpl) mhs);
+        deliveryReceiptManager.autoAddDeliveryReceiptRequests();
+
+        if (ConfigurationUtils.isSendMessageDeliveryReceipt()) {
+            deliveryReceiptManager.setAutoReceiptMode(AutoReceiptMode.ifIsSubscribed);
+
+        } else {
+            deliveryReceiptManager.setAutoReceiptMode(AutoReceiptMode.disabled);
+        }
+
+        // Enable Last Activity - XEP-0012
+        LastActivityManager lastActivityManager = LastActivityManager.getInstanceFor(mConnection);
+        lastActivityManager.enable();
+
         /*  Start up VCardAvatarManager / UserAvatarManager for mAccount auto-update */
         VCardAvatarManager.getInstanceFor(mConnection);
         UserAvatarManager.getInstanceFor(mConnection);
@@ -1705,6 +1731,14 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         // XEP-0065: SOCKS5 Bytestreams
         supportedFeatures.add(Bytestream.NAMESPACE);
+
+        // Do not advertise if user disable message delivery receipts option
+        if (ConfigurationUtils.isSendMessageDeliveryReceipt()) {
+            // XEP-0184: Message Delivery Receipts
+            supportedFeatures.add(DeliveryReceipt.NAMESPACE);
+        } else {
+            supportedFeatures.remove(DeliveryReceipt.NAMESPACE);
+        }
 
         // Do not advertise if user disable chat stat notifications option
         if (ConfigurationUtils.isSendChatStateNotifications()) {
@@ -1936,7 +1970,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addIQProvider(InputEvtIQ.ELEMENT_NAME, InputEvtIQ.NAMESPACE, new InputEvtIQProvider());
 
             // register our jingle provider
-            ProviderManager.addIQProvider(JingleIQ.ELEMENT_NAME, JingleIQ.NAMESPACE, new JingleIQProvider());
+            ProviderManager.addIQProvider(Jingle.ELEMENT, Jingle.NAMESPACE, new JingleProvider());
 
             // register our JingleInfo provider
             ProviderManager.addIQProvider(JingleInfoQueryIQ.ELEMENT_NAME, JingleInfoQueryIQ.NAMESPACE,
@@ -2739,7 +2773,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 return false;
             }
             for (SRV srv : srvRecords) {
-                if (srv.name.toString().contains("google.com")) {
+                if (srv.target.toString().contains("google.com")) {
                     return true;
                 }
             }

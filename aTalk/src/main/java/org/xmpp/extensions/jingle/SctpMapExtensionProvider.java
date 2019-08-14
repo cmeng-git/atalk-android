@@ -31,7 +31,7 @@ public class SctpMapExtensionProvider extends ExtensionElementProvider<SctpMapEx
     {
         SctpMapExtension result = new SctpMapExtension();
 
-        if (parser.getName().equals(SctpMapExtension.ELEMENT_NAME)
+        if (parser.getName().equals(SctpMapExtension.ELEMENT)
                 && parser.getNamespace().equals(SctpMapExtension.NAMESPACE)) {
             result.setPort(Integer.parseInt(parser.getAttributeValue(null,
                     SctpMapExtension.PORT_ATTR_NAME)));

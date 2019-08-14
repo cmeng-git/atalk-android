@@ -1,5 +1,22 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.0.3 (1103)
+Author:         cmeng
+Upload Date:	08/14/2019
+- Implement XEP-0184: Message Delivery Receipts support with user enable/disable option
+- Implement XEP-0012: Last Activity support to show the time of the last activity associated with a contact
+- AvatarManager#isAvatarNew must also check for Jid2Hash link is intact as one of the condition
+- Fix ChatSessionManager->currChat.getChatSession().getCurrentChatTransport().getDisplayName' on a null object reference
+  getCurrentChatTransport() will be null if pps.isRegistered in false
+- Replace DB existing sent message with corrected content - do not create new message.
+- Fix OperationSetPersistentPresenceJabberImpl.presenceAvailable to correctly updateResource of other instances of user login
+- Rename Jingle classes and variables in preparation for later smack Jingle migration
+- implement purge of unused OMEMO data on server when:
+    a. Removal of user account
+    b. Regenerate OMEMO identities
+    c. Purge unused identities
+
+=========================================================================
 Version:		2.0.2 (1102)
 Author:         cmeng
 Upload Date:	07/30/2019
@@ -241,7 +258,7 @@ Version:		1.7.0 (1070)
 Author:         cmeng
 Upload Date:	02/24/2019
 - Disable info Retrieval for contact avatar fetching on first login even when local cache is empty
-  ejabberd will auto send VCardTempXUpdate in <presence/> stanza when user come online
+  ejabberd will auto send VCardTempXUpdate in <presence/> stanza when buddy come online
 - Replace LOGGER with Timber for improve debug messages logging
 - Upgrade jarjar-gradle:1.0.0=>1.0.1 to allow gradle jarjar.repackage in gradle
 - Improve create chatRoom dialog UI error messages

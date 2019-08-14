@@ -3,7 +3,7 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package org.xmpp.extensions.jingle;
+package org.xmpp.extensions.jingle.element;
 
 /**
  * XEP-0166 Jingle, stipulates that the value of the 'action' attribute MUST be one of the values
@@ -200,7 +200,7 @@ public enum JingleAction
      * .
      * @throws IllegalArgumentException in case <tt>jingleActionStr</tt> is not a valid media direction.
      */
-    public static JingleAction parseString(String jingleActionStr)
+    public static JingleAction fromString(String jingleActionStr)
     {
         for (JingleAction value : values())
             if (value.toString().equals(jingleActionStr))

@@ -269,7 +269,7 @@ public class VCardAvatarManager extends AvatarManager
             String avatarHash = vCardXExtension.getAvatarHash();
 
             /* acts if only new avatarHash is received. null => client not ready so no action*/
-            if ((avatarHash != null) && isAvatarNew(avatarHash)) {
+            if ((avatarHash != null) && isAvatarNew(jidFrom.asBareJid(), avatarHash)) {
                 /*
                  * If autoDownload is enabled, download VCard and it will also update all
                  * relevant avatar information if download is successful

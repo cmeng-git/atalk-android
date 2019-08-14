@@ -65,6 +65,7 @@ public class SettingsActivity extends OSGiActivity
     static private final String P_KEY_LOG_CHAT_HISTORY = aTalkApp.getResString(R.string.pref_key_history_logging);
     static private final String P_KEY_SHOW_HISTORY = aTalkApp.getResString(R.string.pref_key_show_history);
     static private final String P_KEY_HISTORY_SIZE = aTalkApp.getResString(R.string.pref_key_chat_history_size);
+    static private final String P_KEY_MESSAGE_DELIVERY_RECEIPT = aTalkApp.getResString(R.string.pref_key_message_delivery_receipt);
     static private final String P_KEY_CHAT_STATE_NOTIFICATIONS = aTalkApp.getResString(R.string.pref_key_chat_state_notifications);
     static private final String P_KEY_XFER_THUMBNAIL_PREVIEW = aTalkApp.getResString(R.string.pref_key_send_thumbnail);
     static private final String P_KEY_AUTO_ACCEPT_FILE = aTalkApp.getResString(R.string.pref_key_auto_accept_file);
@@ -306,6 +307,9 @@ public class SettingsActivity extends OSGiActivity
 
             PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_AUTO_START,
                     ConfigurationUtils.isAutoStartEnable());
+
+            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_MESSAGE_DELIVERY_RECEIPT,
+                    ConfigurationUtils.isSendMessageDeliveryReceipt());
 
             PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_CHAT_STATE_NOTIFICATIONS,
                     ConfigurationUtils.isSendChatStateNotifications());
@@ -612,6 +616,10 @@ public class SettingsActivity extends OSGiActivity
             else if (key.equals(P_KEY_AUTO_START)) {
                 ConfigurationUtils.setAutoStart(shPreferences.getBoolean(
                         P_KEY_AUTO_START, ConfigurationUtils.isAutoStartEnable()));
+            }
+            else if (key.equals(P_KEY_MESSAGE_DELIVERY_RECEIPT)) {
+                ConfigurationUtils.setSendMessageDeliveryReceipt(shPreferences.getBoolean(
+                        P_KEY_MESSAGE_DELIVERY_RECEIPT, ConfigurationUtils.isSendMessageDeliveryReceipt()));
             }
             else if (key.equals(P_KEY_CHAT_STATE_NOTIFICATIONS)) {
                 ConfigurationUtils.setSendChatStateNotifications(shPreferences.getBoolean(

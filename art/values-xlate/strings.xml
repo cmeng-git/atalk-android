@@ -44,7 +44,6 @@
     <string name="encryption_choices">Encrypt Choices</string>
     <string name="encryption_choice_unencrypted">Unencrypted</string>
     <string name="enter_name_or_number">Enter name or number</string>
-    <string name="exit_app">Exit</string>
     <string name="hang_up">Hang up call</string>
     <string name="hold">Put call on hold</string>
     <string name="in_call_with">In call with </string>
@@ -443,6 +442,7 @@
     <string name="service_gui_LAST">Last</string>
     <string name="service_gui_LAST_MSG_CORRECTION">Last message correction</string>
     <string name="service_gui_LAST_NAME">Last name</string>
+    <string name="service_gui_LAST_SEEN">Today: %s</string>
     <string name="service_gui_LEAVE">Leave</string>
     <string name="service_gui_LEAVE_ROOM">Leave chatRoom</string>
     <string name="service_gui_LOADING">Loading</string>
@@ -502,6 +502,7 @@
     <string name="service_gui_PHONES">Phones</string>
     <string name="service_gui_POSTAL_CODE">Postal Code</string>
     <string name="service_gui_RENAME">Rename</string>
+    <string name="service_gui_SAVE">Save</string>
     <string name="service_gui_SHOW_STACK_TRACE">Show stack Trace</string>
     <string name="service_gui_STREET">Street</string>
     <string name="service_gui_SUBMIT">Submit</string>
@@ -1051,7 +1052,6 @@
     <string name="service_gui_SERVERS_LIST_CANCEL">Cancel</string>
     <string name="service_gui_SERVERS_LIST_EMPTY">The list is empty. Click to add new entry&#8230;</string>
     <string name="service_gui_SERVERS_LIST_REMOVE">Remove</string>
-    <string name="service_gui_SERVERS_LIST_SAVE">Save</string>
 
     <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">JID Address</string>
@@ -1223,16 +1223,20 @@
     <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d recent messages in new chats</string>
     <string name="service_gui_settings_SHOW_HISTORY">Show history</string>
 
+    <!-- Tell others when we have received and read the messages -->
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT">Message delivery receipt</string>
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT_SUMMARY">Let your contacts know when you have received and read their messages</string>
+
     <!-- Tell others when we are writing to them -->
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Send chat state notifications</string>
 
-    <!-- Enable option to send thumnail preview for image file sending -->
+    <!-- Enable option to send thumbnail preview for image file sending -->
     <string name="service_gui_settings_THUMBNAIL_OPTION">Send/Receive thumbnail preview</string>
 
     <!-- Auto accept downloadable max file size -->
     <string name="service_gui_settings_ACCEPT_FILE">Auto accept max file size</string>
 
-    <!-- Setup substription Mode: auto or manual approval -->
+    <!-- Setup subscription Mode: auto or manual approval -->
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presence subscribe approval</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Subscribe approval - auto accept all</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Subscribe approval - manual</string>

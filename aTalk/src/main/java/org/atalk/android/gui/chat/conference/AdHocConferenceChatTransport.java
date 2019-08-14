@@ -140,6 +140,17 @@ public class AdHocConferenceChatTransport implements ChatTransport
     }
 
     /**
+     * Returns {@code true} if this chat transport supports message delivery receipts,
+     * otherwise returns {@code false}.
+     *
+     * @return {@code true} if this chat transport supports message delivery receipts,
+     * otherwise returns {@code false}
+     */
+    public boolean allowsMessageDeliveryReceipt() {
+        return false;
+    }
+
+    /**
      * Returns {@code true} if this chat transport supports chat state notifications, otherwise returns {@code false}.
      *
      * @return {@code true} if this chat transport supports chat state notifications, otherwise returns {@code false}.

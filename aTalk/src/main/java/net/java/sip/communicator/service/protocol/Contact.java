@@ -65,8 +65,7 @@ public interface Contact
      * contact. An alias is not necessarily unique but is often more human readable than an address
      * (or id).
      *
-     * @return a String that can be used for referring to this contact when interacting with the
-     * user.
+     * @return a String that can be used for referring to this contact when interacting with the user.
      */
     String getDisplayName();
 

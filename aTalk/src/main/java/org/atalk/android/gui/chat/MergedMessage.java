@@ -10,9 +10,7 @@ import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
 import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class merges consecutive <tt>ChatMessage</tt> instances.
@@ -41,6 +39,14 @@ public class MergedMessage implements ChatMessage
      * Variable used to cache merged message content.
      */
     private String message;
+
+    /**
+     * Variable used to cache merged message Ids.
+     */
+    private String serverMsgId;
+    private String remoteMsgId;
+
+    private int receiptStatus;
 
     /**
      * Creates new instance of <tt>MergedMessage</tt> where the given message will become its
@@ -134,6 +140,52 @@ public class MergedMessage implements ChatMessage
     public int getEncryptionType()
     {
         return rootMessage.getEncryptionType();
+    }
+
+    /**
+     * Returns the merged message lowest delivery receipt status
+     *
+     * @return the receipt status
+     */
+    public int getReceiptStatus()
+    {
+        receiptStatus = rootMessage.getReceiptStatus();
+        for (ChatMessage ch : children) {
+            if (ch.getReceiptStatus() < receiptStatus)
+                receiptStatus = ch.getReceiptStatus();
+        }
+        return receiptStatus;
+    }
+
+    /**
+     * Returns the server message Id of the message sent - for tracking delivery receipt
+     *
+     * @return the server message Id of the message sent.
+     */
+    @Override
+    public String getServerMsgId()
+    {
+        serverMsgId = rootMessage.getServerMsgId();
+        // Merge the text
+        for (ChatMessage ch : children) {
+            serverMsgId = mergeText(serverMsgId, ch.getServerMsgId());
+        }
+        return serverMsgId;
+    }
+
+    /**
+     * Returns the remote message Id of the message received - for tracking delivery receipt
+     *
+     * @return the remote message Id of the message received.
+     */
+    public String getRemoteMsgId()
+    {
+        remoteMsgId = rootMessage.getRemoteMsgId();
+        // Merge the text
+        for (ChatMessage ch : children) {
+            remoteMsgId = mergeText(remoteMsgId, ch.getRemoteMsgId());
+        }
+        return remoteMsgId;
     }
 
     /**
@@ -294,6 +346,7 @@ public class MergedMessage implements ChatMessage
     {
         return rootMessage.getFTRequest();
     }
+
     /**
      * Returns the HttpFileDownloadJabberImpl of this message.
      *

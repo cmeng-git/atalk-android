@@ -7,7 +7,8 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import org.xmpp.extensions.coin.CoinIQ;
 import org.xmpp.extensions.jingle.CoinExtensionElement;
-import org.xmpp.extensions.jingle.JingleIQ;
+import org.xmpp.extensions.jingle.element.Jingle;
+
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.media.*;
@@ -232,7 +233,7 @@ public class OperationSetTelephonyConferencingJabberImpl
      */
     private CoinIQ getConferenceInfo(CallPeerJabberImpl callPeer, final ConferenceInfoDocument confInfo)
     {
-        String callPeerSID = callPeer.getSID();
+        String callPeerSID = callPeer.getSid();
         if (callPeerSID == null)
             return null;
 
@@ -381,7 +382,7 @@ public class OperationSetTelephonyConferencingJabberImpl
                 return null;
             }
 
-            String sid = coinIQ.getSID();
+            String sid = coinIQ.getSid();
             if (sid != null) {
                 CallPeerJabberImpl callPeer = getBasicTelephony().getActiveCallsRepository().findCallPeer(sid);
                 if (callPeer != null) {
@@ -427,7 +428,7 @@ public class OperationSetTelephonyConferencingJabberImpl
         ConferenceInfoDocument confInfo = super.getCurrentConferenceInfo(callPeer);
 
         if (callPeer instanceof CallPeerJabberImpl && confInfo != null) {
-            confInfo.setSid(((CallPeerJabberImpl) callPeer).getSID());
+            confInfo.setSid(((CallPeerJabberImpl) callPeer).getSid());
         }
         return confInfo;
     }
@@ -438,7 +439,7 @@ public class OperationSetTelephonyConferencingJabberImpl
     @Override
     protected String getLocalEntity(CallPeer callPeer)
     {
-        JingleIQ sessionIQ = ((CallPeerJabberImpl) callPeer).getSessionIQ();
+        Jingle sessionIQ = ((CallPeerJabberImpl) callPeer).getSessionIQ();
         Jid from = sessionIQ.getFrom();
 
         // cmeng - local callPeer IQ's (from == null)

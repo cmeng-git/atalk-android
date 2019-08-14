@@ -25,8 +25,10 @@ aTalk is an xmpp client designed for android and supports the following features
 * Auto accept file transfer request with max file size option
 * Implement fault-tolerance file transfer to ease and enhance file sharing reliability (1-1 chat and chatRoom) 
 * Enhance and harmonize UI for file sharing in chat and chatRoom
+* XEP-0012: Last Activity to show the time of the last activity associated with a contact
 * XEP-0048: Bookmarks for conference room and autoJoin on login
-* XEP-0070: Verifying HTTP Requests via XMPP entity to confirm it made the request 
+* XEP-0070: Verifying HTTP Requests via XMPP entity to confirm it made the request
+* XEP-0184: Message Delivery Receipts with user enable/disable option
 * Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway (experimental)
 * Support multi-user chat in room creation, server chat rooms discovery and joining chat room with captcha protection 
 * Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
@@ -46,6 +48,7 @@ aTalk is an xmpp client designed for android and supports the following features
 aTalk works seamlessly with almost every XMPP servers available on network, limited only by servers features supported.
 It supports the following XEP's, standards for XMPP client devices.
 
+* [XEP-0012: Last Activity](https://xmpp.org/extensions/xep-0012.html)
 * [XEP-0030: Service Discovery](https://xmpp.org/extensions/xep-0030.html)
 * [XEP-0045: Multi-User Chat](https://xmpp.org/extensions/xep-0045.html)
 * [XEP-0047: In-Band Bytestreams](https://xmpp.org/extensions/xep-00047.html)
@@ -72,7 +75,7 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0172: User Nickname](https://xmpp.org/extensions/xep-0172.html)
 * [XEP-0176: Jingle ICE-UDP Transport Method](https://xmpp.org/extensions/xep-0176.html)
 * [XEP-0177: Jingle Raw UDP Transport Method](https://xmpp.org/extensions/xep-0177.html)
-* [XEP-0184: Message Delivery Receipts (NI)](https://xmpp.org/extensions/xep-0184.html)
+* [XEP-0184: Message Delivery Receipts](https://xmpp.org/extensions/xep-0184.html)
 * [XEP-0191: Blocking command (NI)](https://xmpp.org/extensions/xep-0191.html)
 * [XEP-0198: Stream Management](https://xmpp.org/extensions/xep-0198.html)
 * [XEP-0199: XMPP Ping](https://xmpp.org/extensions/xep-0199.html)

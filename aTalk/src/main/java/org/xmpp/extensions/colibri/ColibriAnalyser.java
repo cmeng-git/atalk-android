@@ -5,7 +5,7 @@
  */
 package org.xmpp.extensions.colibri;
 
-import org.xmpp.extensions.jingle.ContentExtensionElement;
+import org.xmpp.extensions.jingle.element.JingleContent;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 
 import org.atalk.service.neomedia.MediaType;
@@ -102,7 +102,7 @@ public class ColibriAnalyser
      * @return the Colibri IQ that describes allocated channels.
      */
     public static ColibriConferenceIQ getResponseContents(ColibriConferenceIQ conferenceResponse,
-            List<ContentExtensionElement> peerContents)
+            List<JingleContent> peerContents)
     {
         ColibriConferenceIQ conferenceResult = new ColibriConferenceIQ();
 
@@ -114,7 +114,7 @@ public class ColibriAnalyser
         // FIXME: we support single bundle for all channels
         String bundleId = null;
         Set<String> endpointIds = new HashSet<>();
-        for (ContentExtensionElement content : peerContents) {
+        for (JingleContent content : peerContents) {
             MediaType mediaType = JingleUtils.getMediaType(content);
 
             ColibriConferenceIQ.Content contentResponse = conferenceResponse.getContent(mediaType.toString());

@@ -109,6 +109,10 @@ public class RemoteVideoLayout extends LinearLayout
             int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
             int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
 
+            // NullPointerException from field? so just give it a default
+            if (preferredSize == null)
+                preferredSize = new Dimension(640, 480);
+
             double width = preferredSize.width;
             double height = preferredSize.height;
 

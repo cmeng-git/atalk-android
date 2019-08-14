@@ -9,8 +9,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetContactCapabilitiesJabberImpl;
-import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
@@ -34,6 +34,8 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.receipts.DeliveryReceipt;
+import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.framework.ServiceReference;
@@ -111,6 +113,11 @@ public class ConfigurationUtils
      * Indicates if aTalk will auto start on device reboot.
      */
     private static boolean isAutoStartOnBoot = true;
+
+    /**
+     * Indicates if message delivery receipt should be sent.
+     */
+    private static boolean isSendMessageDeliveryReceipt = true;
 
     /**
      * Indicates if chat state notifications should be sent.
@@ -407,6 +414,7 @@ public class ConfigurationUtils
     public static String pWebPage = aTalkApp.getResString(R.string.pref_key_webview_PAGE);
     private static String pAutoPopupNewMessage = "gui.AUTO_POPUP_NEW_MESSAGE";
     private static String pMsgCommand = "gui.SEND_MESSAGE_COMMAND";
+    private static String pMessageDeliveryReceipt = "gui.SEND_MESSAGE_DELIVERY_RECEIPT";
     private static String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
     private static String pSendThumbnail = "gui.sendThumbnail";
     private static String pPresenceSubscribeAuto = "gui.PRESENCE_SUBSCRIBE_MODE_AUTO";
@@ -512,6 +520,9 @@ public class ConfigurationUtils
 
         // Load the "showAppQuitWarning" property.
         isQuitWarningShown = configService.getBoolean("gui.quitWarningShown", isQuitWarningShown);
+
+        // Load the "isSendMessageDeliveryReceipt" property.
+        isSendMessageDeliveryReceipt = configService.getBoolean(pMessageDeliveryReceipt, isSendMessageDeliveryReceipt);
 
         // Load the "sendTypingNotifications" property.
         String isSendTypingNotification = configService.getString(pTypingNotification);
@@ -896,6 +907,30 @@ public class ConfigurationUtils
     {
         isAutoStartOnBoot = autoStart;
         configService.setProperty(pAutoStart, Boolean.toString(autoStart));
+    }
+
+    /**
+     * Return TRUE if "sendMessageDeliveryReceipt" property is true, otherwise - return FALSE.
+     * Indicates to the user interface whether message delivery receipts are enabled or disabled.
+     *
+     * @return TRUE if "sendTypingNotifications" property is true, otherwise - return FALSE.
+     */
+    public static boolean isSendMessageDeliveryReceipt()
+    {
+        return isSendMessageDeliveryReceipt;
+    }
+
+    /**
+     * Updates the "sendChatStateNotifications" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param isDeliveryReceipt {@code true} to indicate that message delivery receipts are enabled,
+     * {@code false} otherwise.
+     */
+    public static void setSendMessageDeliveryReceipt(boolean isDeliveryReceipt)
+    {
+        isSendMessageDeliveryReceipt = isDeliveryReceipt;
+        configService.setProperty(pMessageDeliveryReceipt, Boolean.toString(isDeliveryReceipt));
+        updateDeliveryReceiptFeature(isDeliveryReceipt);
     }
 
     /**
@@ -2272,6 +2307,9 @@ public class ConfigurationUtils
             else if (evt.getPropertyName().equals("gui.quitWarningShown")) {
                 isQuitWarningShown = Boolean.parseBoolean(newValue);
             }
+            else if (evt.getPropertyName().equals(pMessageDeliveryReceipt)) {
+                isSendMessageDeliveryReceipt = Boolean.parseBoolean(newValue);
+            }
             else if (evt.getPropertyName().equals(pTypingNotification)) {
                 isSendChatStateNotifications = Boolean.parseBoolean(newValue);
             }
@@ -2451,6 +2489,34 @@ public class ConfigurationUtils
     }
 
     /**
+     * Update EntityCaps when <DeliveryReceipt/> feature is enabled or disable
+     *
+     * @param isDeliveryReceiptEnable indicates whether Message Delivery Receipt feature is enable or disable
+     */
+    private static void updateDeliveryReceiptFeature(boolean isDeliveryReceiptEnable)
+    {
+        Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
+
+        for (ProtocolProviderService pps : ppServices) {
+            XMPPConnection connection = pps.getConnection();
+            if (connection != null) {
+                /* XEP-0184: Message Delivery Receipts - global option */
+                ServiceDiscoveryManager discoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
+                DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(connection);
+
+                if (isDeliveryReceiptEnable) {
+                    discoveryManager.addFeature(DeliveryReceipt.NAMESPACE);
+                    deliveryReceiptManager.setAutoReceiptMode(DeliveryReceiptManager.AutoReceiptMode.ifIsSubscribed);
+                }
+                else {
+                    discoveryManager.removeFeature(DeliveryReceipt.NAMESPACE);
+                    deliveryReceiptManager.setAutoReceiptMode(DeliveryReceiptManager.AutoReceiptMode.disabled);
+                }
+            }
+        }
+    }
+
+    /**
      * Update EntityCaps when <ChatState/> feature is enabled or disable
      *
      * @param isChatStateEnable indicates whether ChatState feature is enable or disable
@@ -2459,8 +2525,7 @@ public class ConfigurationUtils
     {
         Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : ppServices) {
-            ProtocolProviderServiceJabberImpl jabberProvider = (ProtocolProviderServiceJabberImpl) pps;
-            XMPPConnection connection = ((ProtocolProviderServiceJabberImpl) pps).getConnection();
+            XMPPConnection connection = pps.getConnection();
             if (connection != null) {
                 ServiceDiscoveryManager discoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
 

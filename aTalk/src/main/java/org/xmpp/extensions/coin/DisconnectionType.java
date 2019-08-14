@@ -65,7 +65,7 @@ public enum DisconnectionType
      * @return an DisconnectionType.
      * @throws IllegalArgumentException in case <tt>typeStr</tt> is not a valid <tt>EndPointType</tt>.
      */
-    public static DisconnectionType parseString(String typeStr)
+    public static DisconnectionType fromString(String typeStr)
             throws IllegalArgumentException
     {
         for (DisconnectionType value : values())

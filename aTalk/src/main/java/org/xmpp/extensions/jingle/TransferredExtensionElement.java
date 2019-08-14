@@ -19,7 +19,7 @@ public class TransferredExtensionElement extends AbstractExtensionElement
     /**
      * The name of the "transfer" element.
      */
-    public static final String ELEMENT_NAME = "transferred";
+    public static final String ELEMENT = "transferred";
 
     /**
      * The namespace of the "transfer" element.
@@ -31,6 +31,6 @@ public class TransferredExtensionElement extends AbstractExtensionElement
      */
     public TransferredExtensionElement()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 }

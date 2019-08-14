@@ -144,7 +144,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
         event.setUserRequest(userRequest);
         RegistrationStateChangeListener[] listeners;
         synchronized (registrationListeners) {
-            listeners = registrationListeners.toArray(new RegistrationStateChangeListener[registrationListeners.size()]);
+            listeners = registrationListeners.toArray(new RegistrationStateChangeListener[0]);
         }
         Timber.log(TimberLog.FINER, "Dispatching %s to %s listeners.", event, listeners.length);
 

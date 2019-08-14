@@ -7,8 +7,10 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
 
+import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -36,7 +38,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      * existing contacts. Note that we only store lower case strings in the left column because JIDs
      * in XMPP are not case sensitive.
      */
-    private Map<Jid, Contact> buddies = new Hashtable<>();
+    private Map<BareJid, Contact> buddies = new Hashtable<>();
 
     /**
      * Whether or not this contact group has been resolved against the server.
@@ -154,7 +156,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      */
     public void addContact(ContactJabberImpl contact)
     {
-        buddies.put(contact.getJid(), contact);
+        buddies.put(contact.getJid().asBareJid(), contact);
     }
 
     /**
@@ -164,7 +166,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      */
     void removeContact(ContactJabberImpl contact)
     {
-        buddies.remove(contact.getJid());
+        buddies.remove(contact.getJid().asBareJid());
     }
 
     /**
@@ -187,10 +189,24 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     public Contact getContact(String id)
     {
         try {
-            return this.findContact(JidCreate.from(id));
+            return findContact(JidCreate.from(id).asBareJid());
         } catch (XmppStringprepException e) {
             return null;
         }
+    }
+
+    /**
+     * Returns the contact encapsulating with the specified name or null if no such contact was found.
+     *
+     * @param jid the id for the contact we're looking for.
+     * @return the <tt>ContactJabberImpl</tt> corresponding to the specified screenName or null
+     * if no such contact existed.
+     */
+    public ContactJabberImpl findContact(Jid jid)
+    {
+        if (jid == null)
+            return null;
+        return (ContactJabberImpl) buddies.get(jid.asBareJid());
     }
 
     /**
@@ -247,7 +263,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      */
     public Iterator<ContactGroup> subgroups()
     {
-		return dummyGroupsList.iterator();
+        return dummyGroupsList.iterator();
     }
 
     /**
@@ -284,7 +300,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
         if (obj == this)
             return true;
 
-        if (obj == null || !(obj instanceof ContactGroupJabberImpl))
+        if (!(obj instanceof ContactGroupJabberImpl))
             return false;
 
         if (!((ContactGroup) obj).getGroupName().equals(getGroupName()))
@@ -312,6 +328,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      *
      * @return a String representation of the object.
      */
+    @NotNull
     @Override
     public String toString()
     {
@@ -326,20 +343,6 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
                 buff.append(", ");
         }
         return buff.append("]").toString();
-    }
-
-    /**
-     * Returns the contact encapsulating with the specified name or null if no such contact was found.
-     *
-     * @param id the id for the contact we're looking for.
-     * @return the <tt>ContactJabberImpl</tt> corresponding to the specified screenName or null
-     * if no such contact existed.
-     */
-    ContactJabberImpl findContact(Jid id)
-    {
-        if (id == null)
-            return null;
-        return (ContactJabberImpl) buddies.get(id);
     }
 
     /**

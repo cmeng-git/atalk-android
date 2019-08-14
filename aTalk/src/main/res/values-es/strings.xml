@@ -48,7 +48,6 @@
     <string name="encryption_choices">Opciones de cifrado</string>
     <string name="encryption_choice_unencrypted">No encriptado</string>
     <string name="enter_name_or_number">Introducir nombre o número</string>
-    <string name="exit_app">Salir</string>
     <string name="hang_up">Llamada colgada</string>
     <string name="hold">Postergar la llamada</string>
     <string name="in_call_with">Llamando a </string>
@@ -304,7 +303,7 @@
     <string name="service_gui_ENTER_NAME_OR_NUMBER">Introduzca nombre o número</string>
     <string name="service_gui_ERROR">Error</string>
     <string name="service_gui_ERROR_WAS">El error fue: %1$s</string>
-	<string name="service_gui_EXIT">Salida</string>
+	<string name="service_gui_EXIT">Salir</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Ausencia extendida</string>
     <string name="service_gui_FAILED_STATUS">Fallo en la llamada</string>
 	<string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Error al unirse a la sala de nombre: %1$s.</string>
@@ -449,6 +448,7 @@
 	<string name="service_gui_LAST">Último</string>
     <string name="service_gui_LAST_MSG_CORRECTION">Correción del último mensaje</string>
 	<string name="service_gui_LAST_NAME">Último nombre</string>
+    <string name="service_gui_LAST_SEEN">Hoy: %s</string>
 	<string name="service_gui_LEAVE">Salir</string>
     <string name="service_gui_LEAVE_ROOM">Dejar chatRoom</string>
     <string name="service_gui_LOADING">Cargando</string>
@@ -509,6 +509,7 @@
     <string name="service_gui_PHONES">Teléfonos</string>
     <string name="service_gui_POSTAL_CODE">Código postal</string>
     <string name="service_gui_RENAME">Renombrar</string>
+    <string name="service_gui_SAVE">Guardar</string>
     <string name="service_gui_SHOW_STACK_TRACE">Mostrar stack Trace</string>
     <string name="service_gui_STREET">Calle</string>
     <string name="service_gui_SUBMIT">Enviar</string>
@@ -1070,7 +1071,6 @@
     <string name="service_gui_SERVERS_LIST_CANCEL">Cancelar</string>
     <string name="service_gui_SERVERS_LIST_EMPTY">La lista está vacía. Hacer clic para añadir una nueva entrada&#8230;</string>
     <string name="service_gui_SERVERS_LIST_REMOVE">Eliminar</string>
-    <string name="service_gui_SERVERS_LIST_SAVE">Guardar</string>
     
     <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">Dirección JID</string>
@@ -1242,16 +1242,20 @@
     <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d mensajes recientes en nuevas charlas</string>
     <string name="service_gui_settings_SHOW_HISTORY">Show history</string>
 
+    <!-- Tell others when we have received and read the messages -->
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT">Recibo de entrega del mensaje</string>
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT_SUMMARY">Permitir a tus contactos saber cuando has recibido y leído sus mensajes</string>
+
     <!-- Tell others when we are writing to them -->
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Enviar notificaciones del estado de la charla</string>
 
-    <!-- Enable option to send thumnail preview for image file sending -->
+    <!-- Enable option to send thumbnail preview for image file sending -->
     <string name="service_gui_settings_THUMBNAIL_OPTION">Enviar/Recibir vista previa en miniatura</string>
 
     <!-- Auto accept downloadable max file size -->
     <string name="service_gui_settings_ACCEPT_FILE">Acepta automáticamente el tamaño máximo de archivo</string>
 
-    <!-- Setup substription Mode: auto or manual approval -->
+    <!-- Setup subscription Mode: auto or manual approval -->
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presencia Suscribir aprobación</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Suscribir aprobación - aceptar automáticamente todo</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Suscribir aprobación - manual</string>

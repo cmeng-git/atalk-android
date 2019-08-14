@@ -409,7 +409,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public Message createMessage(String content, int encType, String subject)
     {
-        return new MessageJabberImpl(content, encType, subject);
+        return new MessageJabberImpl(content, encType, subject, null);
     }
 
     /**
@@ -421,7 +421,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public Message createMessage(String messageText)
     {
-        return new MessageJabberImpl(messageText, Message.ENCODE_PLAIN, null);
+        return new MessageJabberImpl(messageText, Message.ENCODE_PLAIN, "", null);
     }
 
     /**
@@ -861,9 +861,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             throws OperationFailedException
     {
         mEncType = message.getEncType();
-        org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message();
-        msg.setBody(message.getContent());
-        sendMessage(msg);
+        org.jivesoftware.smack.packet.Message sendMessage = new org.jivesoftware.smack.packet.Message();
+        sendMessage.setBody(message.getContent());
+        sendMessage(sendMessage);
     }
 
     /**
@@ -875,9 +875,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     public void sendJsonMessage(String json)
             throws OperationFailedException
     {
-        org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message();
-        msg.addExtension(new JsonMessageExtensionElement(json));
-        sendMessage(msg);
+        org.jivesoftware.smack.packet.Message sendMessage = new org.jivesoftware.smack.packet.Message();
+        sendMessage.addExtension(new JsonMessageExtensionElement(json));
+        sendMessage(sendMessage);
     }
 
     /**
@@ -923,8 +923,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
         try {
             encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
-            mMultiUserChat.sendMessage(encryptedMessage.asMessage(this.getIdentifier()));
+            org.jivesoftware.smack.packet.Message sendMessage = encryptedMessage.asMessage(this.getIdentifier());
+            message.setServerMsgId(sendMessage.getStanzaId());
+            mMultiUserChat.sendMessage(sendMessage);
+
             // message delivered for own outgoing message view display
+            message.setReceiptStatus(ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
             ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(ChatRoomJabberImpl.this,
                     new Date(), message, ChatMessage.MESSAGE_MUC_OUT);
             fireMessageEvent(msgDeliveredEvt);
@@ -1822,7 +1826,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                             getName(), LAST_SEEN_DELAYED_MESSAGE_PROP);
 
                     try {
-                        lastSeenDelayedMessage = new Date(Long.parseLong(sTimestamp));
+                        if (!TextUtils.isEmpty(sTimestamp))
+                            lastSeenDelayedMessage = new Date(Long.parseLong(sTimestamp));
                     } catch (Throwable ex) {
                         Timber.w("TimeStamp property is null! %s", timeStamp);
                     }
@@ -1871,10 +1876,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             if (member == null) {
                 member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, fromNick, jabberID);
             }
-
             Timber.d("Received from %s the message %s", fromNick, msg.toString());
 
             Message newMessage = createMessage(msgBody);
+            newMessage.setRemoteMsgId(msg.getStanzaId());
+
             if (msg.getType() == org.jivesoftware.smack.packet.Message.Type.error) {
                 Timber.i("Message error received from: %s", fromNick);
 
@@ -1902,10 +1908,15 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             if (((getUserNickname() != null) && getUserNickname().equals(fromNick)) || ((jabberID != null)
                     && jabberID.equals(getAccountId(member.getChatRoom())))) {
 
-                // MUC received message may be relayed from server on message send hence reCreate the message is required
+                // MUC received message may be relayed from server on message sent hence reCreate the message is required
                 if (Message.FLAG_REMOTE_ONLY == (mEncType & Message.FLAG_MODE_MASK)) {
                     newMessage = createMessage(msgBody, mEncType, "");
+                    newMessage.setRemoteMsgId(msg.getStanzaId());
                 }
+
+                // message delivered for own outgoing message view display
+                newMessage.setServerMsgId(msg.getStanzaId());
+                newMessage.setReceiptStatus(ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
                 ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(
                         ChatRoomJabberImpl.this, timeStamp, newMessage, ChatMessage.MESSAGE_MUC_OUT);
 

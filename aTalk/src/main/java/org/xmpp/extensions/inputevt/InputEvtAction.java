@@ -61,7 +61,7 @@ public enum InputEvtAction
      * @return a <tt>InputEvtAction</tt> value corresponding to the specified <tt>inputActionStr</tt>.
      * @throws IllegalArgumentException in case <tt>inputActionStr</tt> is not valid
      */
-    public static InputEvtAction parseString(String inputActionStr)
+    public static InputEvtAction fromString(String inputActionStr)
             throws IllegalArgumentException
     {
         for (InputEvtAction value : values())

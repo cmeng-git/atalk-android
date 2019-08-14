@@ -10,6 +10,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.xmpp.extensions.AbstractExtensionElement;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
+import org.xmpp.extensions.jingle.element.JingleContent;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +28,7 @@ public class GroupExtensionElement extends AbstractExtensionElement
     /**
      * The name of the "group" element.
      */
-    public static final String ELEMENT_NAME = "group";
+    public static final String ELEMENT = "group";
 
     /**
      * The namespace for the "group" element.
@@ -49,7 +50,7 @@ public class GroupExtensionElement extends AbstractExtensionElement
      */
     public GroupExtensionElement()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -58,7 +59,7 @@ public class GroupExtensionElement extends AbstractExtensionElement
      * @param contents the list that contains the contents to be bundled.
      * @return new <tt>GroupExtensionElement</tt> for BUNDLE semantics initialized with given <tt>contents</tt> list.
      */
-    public static GroupExtensionElement createBundleGroup(List<ContentExtensionElement> contents)
+    public static GroupExtensionElement createBundleGroup(List<JingleContent> contents)
     {
         GroupExtensionElement group = new GroupExtensionElement();
         group.setSemantics(SEMANTICS_BUNDLE);
@@ -89,9 +90,9 @@ public class GroupExtensionElement extends AbstractExtensionElement
      *
      * @return the contents of this group.
      */
-    public List<ContentExtensionElement> getContents()
+    public List<JingleContent> getContents()
     {
-        return getChildExtensionsOfType(ContentExtensionElement.class);
+        return getChildExtensionsOfType(JingleContent.class);
     }
 
     /**
@@ -100,10 +101,10 @@ public class GroupExtensionElement extends AbstractExtensionElement
      *
      * @param contents the contents of this group.
      */
-    public void addContents(List<ContentExtensionElement> contents)
+    public void addContents(List<JingleContent> contents)
     {
-        for (ContentExtensionElement content : contents) {
-            ContentExtensionElement copy = new ContentExtensionElement();
+        for (JingleContent content : contents) {
+            JingleContent copy = new JingleContent();
             copy.setName(content.getName());
             addChildExtension(copy);
         }
@@ -128,19 +129,19 @@ public class GroupExtensionElement extends AbstractExtensionElement
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName;
-        DefaultExtensionElementProvider<ContentExtensionElement> contentProvider
-                = new DefaultExtensionElementProvider<>(ContentExtensionElement.class);
+        DefaultExtensionElementProvider<JingleContent> contentProvider
+                = new DefaultExtensionElementProvider<>(JingleContent.class);
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
 
-            if (elementName.equals(ContentExtensionElement.ELEMENT_NAME)) {
-                ContentExtensionElement content = contentProvider.parse(parser);
+            if (elementName.equals(JingleContent.ELEMENT)) {
+                JingleContent content = contentProvider.parse(parser);
                 group.addChildExtension(content);
             }
 
             if ((eventType == END_ELEMENT)
-                    && parser.getName().equals(ELEMENT_NAME)) {
+                    && parser.getName().equals(ELEMENT)) {
                 done = true;
             }
         }

@@ -18,7 +18,7 @@ public class RedirectExtensionElement extends AbstractExtensionElement
     /**
      * The name of the "redirect" element.
      */
-    public static final String ELEMENT_NAME = "redirect";
+    public static final String ELEMENT = "redirect";
 
     /**
      * The namespace.
@@ -35,7 +35,7 @@ public class RedirectExtensionElement extends AbstractExtensionElement
      */
     public RedirectExtensionElement()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

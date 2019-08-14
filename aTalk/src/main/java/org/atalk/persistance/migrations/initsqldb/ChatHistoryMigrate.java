@@ -307,14 +307,10 @@ public class ChatHistoryMigrate extends Activity
 
                     content = XMLUtils.findChild((Element) recordNode, ATTR_ID).getTextContent();
                     msgValues.put(ChatMessage.UUID, content);
-
-                    timeDate = XMLUtils.findChild((Element) recordNode, ATTR_DATE)
-                            .getTextContent();
-
-                    status = XMLUtils.findChild((Element) recordNode, ATTR_STATUS)
-                            .getTextContent();
-                    //					msgValues.put(ChatMessage.MSG_BODY,
-                    //							FileHistoryConversation.getStatusMessage(direction, status));
+                    timeDate = XMLUtils.findChild((Element) recordNode, ATTR_DATE).getTextContent();
+                    status = XMLUtils.findChild((Element) recordNode, ATTR_STATUS).getTextContent();
+                    // msgValues.put(ChatMessage.MSG_BODY,
+                    // 		FileHistoryConversation.getStatusMessage(direction, status));
                     msgValues.put(ChatMessage.MSG_BODY, status);
                     msgValues.put(ChatMessage.STATUS, ChatMessageImpl.statusMap.get(status));
                     msgValues.put(ChatMessage.ENC_TYPE, Message.ENCODE_PLAIN);

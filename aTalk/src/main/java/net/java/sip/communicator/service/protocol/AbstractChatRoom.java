@@ -8,8 +8,7 @@ import org.jxmpp.jid.parts.Resourcepart;
 import java.util.*;
 
 /**
- * An abstract class with a default implementation of some of the methods of
- * the <tt>ChatRoom</tt> interface.
+ * An abstract class with a default implementation of some of the methods of the <tt>ChatRoom</tt> interface.
  *
  * @author Boris Grozev
  * @author Eng Chong Meng
@@ -55,9 +54,7 @@ public abstract class AbstractChatRoom implements ChatRoom
         Map<String, ConferenceDescription> tmpCachedConferenceDescriptions = new HashMap<>();
         synchronized (cachedConferenceDescriptions) {
             for (Map.Entry<Resourcepart, ConferenceDescription> entry : cachedConferenceDescriptions.entrySet()) {
-                tmpCachedConferenceDescriptions.put(
-                        entry.getKey().toString(),
-                        entry.getValue());
+                tmpCachedConferenceDescriptions.put(entry.getKey().toString(), entry.getValue());
             }
         }
         return tmpCachedConferenceDescriptions;
@@ -94,7 +91,7 @@ public abstract class AbstractChatRoom implements ChatRoom
     }
 
     /**
-     * Processes the <tt>ConferenceDescription</tt> instance and adds/removes  it to the list of conferences.
+     * Processes the <tt>ConferenceDescription</tt> instance and adds/removes it to the list of conferences.
      *
      * @param cd the <tt>ConferenceDescription</tt> instance to process.
      * @param participantNick the name of the participant that sent the <tt>ConferenceDescription</tt>.

@@ -366,8 +366,6 @@ public class OperationSetChatStateNotificationsJabberImpl extends
     /**
      * Handles incoming messages and dispatches whatever events are necessary.
      * The listener that we use to track chat state notifications according to XEP-0085.
-     *
-     * @param message the message that we need to handle.
      */
     private class SmackChatStateListener implements StanzaListener
     {

@@ -44,7 +44,6 @@
     <string name="encryption_choices">Verschlüsselungsmethoden</string>
     <string name="encryption_choice_unencrypted">Unverschlüsselt</string>
     <string name="enter_name_or_number">Name oder Nummer eingeben</string>
-    <string name="exit_app">Beenden</string>
     <string name="hang_up">Auflegen</string>
     <string name="hold">In Warteschleife setzen</string>
     <string name="in_call_with">Anruf mit</string>
@@ -444,6 +443,7 @@
 	<string name="service_gui_LAST">Letzter</string>
     <string name="service_gui_LAST_MSG_CORRECTION">Letzte Nachrichtenkorrektur</string>
 	<string name="service_gui_LAST_NAME">Letzter Name</string>
+    <string name="service_gui_LAST_SEEN">Heute: %s</string>
 	<string name="service_gui_LEAVE">Verlassen</string>
     <string name="service_gui_LEAVE_ROOM">Chatraum verlassen</string>
     <string name="service_gui_LOADING">Lade</string>
@@ -503,6 +503,7 @@
     <string name="service_gui_PHONES">Telefone</string>
     <string name="service_gui_POSTAL_CODE">Postleitzahl</string>
     <string name="service_gui_RENAME">Umbenennen</string>
+    <string name="service_gui_SAVE">Speichern</string>
     <string name="service_gui_SHOW_STACK_TRACE">Zeige Stack-Trace</string>
     <string name="service_gui_STREET">Straße</string>
     <string name="service_gui_SUBMIT">Senden</string>
@@ -1039,7 +1040,6 @@
     <string name="service_gui_SERVERS_LIST_CANCEL">Abbrechen</string>
     <string name="service_gui_SERVERS_LIST_EMPTY">Die Liste ist leer. Klicke, um einen neuen Eintrag hinzuzufügen&#8230;</string>
     <string name="service_gui_SERVERS_LIST_REMOVE">Entfernen</string>
-    <string name="service_gui_SERVERS_LIST_SAVE">Speichern</string>
     
     <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">JID-Adresse</string>
@@ -1211,16 +1211,20 @@
     <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d letzte Nachrichten in neuen Chats</string>
     <string name="service_gui_settings_SHOW_HISTORY">Chatverlauf anzeigen</string>
 
+    <!-- Tell others when we have received and read the messages -->
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT">Empfangsbestätigung für die Nachricht</string>
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT_SUMMARY">Informiere deine Kontakte, wenn du eine Nachricht empfangen und gelesen hast</string>
+
     <!-- Tell others when we are writing to them -->
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Am-Schreiben…-Benachrichtigungen aktivieren</string>
 
-    <!-- Enable option to send thumnail preview for image file sending -->
+    <!-- Enable option to send thumbnail preview for image file sending -->
     <string name="service_gui_settings_THUMBNAIL_OPTION">Miniaturvorschau senden/empfangen</string>
 
     <!-- Auto accept downloadable max file size -->
     <string name="service_gui_settings_ACCEPT_FILE">Akzeptiere automatisch die maximale Dateigröße</string>
 
-    <!-- Setup substription Mode: auto or manual approval -->
+    <!-- Setup subscription Mode: auto or manual approval -->
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presence-Anmeldebestätigungen</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Presence automatisch akzeptieren</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Presence manuell bestätigen</string>

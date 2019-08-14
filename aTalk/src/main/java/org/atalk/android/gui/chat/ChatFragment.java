@@ -54,9 +54,13 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.crypto.listener.CryptoModeChangeListener;
 import org.atalk.service.osgi.OSGiFragment;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
+import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
+import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.io.File;
@@ -77,8 +81,8 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ChatFragment extends OSGiFragment
-        implements ChatSessionManager.CurrentChatListener, FileTransferStatusListener, CryptoModeChangeListener
+public class ChatFragment extends OSGiFragment implements ChatSessionManager.CurrentChatListener,
+        FileTransferStatusListener, CryptoModeChangeListener, ReceiptReceivedListener
 {
     /**
      * The session adapter for the contained <tt>ChatPanel</tt>.
@@ -93,7 +97,7 @@ public class ChatFragment extends OSGiFragment
     /**
      * chat MetaContact associated with the chatFragment
      */
-    MetaContact mChatMetaContact;
+    private MetaContact mChatMetaContact;
 
     /**
      * The chat list view representing the chat.
@@ -108,12 +112,12 @@ public class ChatFragment extends OSGiFragment
     /**
      * Remembers first visible view to scroll the list after new portion of history messages is added.
      */
-    public int scrollFirstVisible;
+    private int scrollFirstVisible;
 
     /**
      * Remembers top position to add to the scrolling offset after new portion of history messages is added.
      */
-    public int scrollTopOffset;
+    private int scrollTopOffset;
 
     /**
      * The chat state view.
@@ -251,6 +255,12 @@ public class ChatFragment extends OSGiFragment
         currentChatTransport = chatPanel.getChatSession().getCurrentChatTransport();
         currentChatFragment = this;
 
+        ProtocolProviderService pps = currentChatTransport.getProtocolProvider();
+        if ((mChatMetaContact != null) && pps.isRegistered()) {
+            DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(pps.getConnection());
+            deliveryReceiptManager.addReceiptReceivedListener(this);
+        }
+
         mFragmentActivity = getActivity();
         if (mFragmentActivity != null) {
             FragmentManager fragmentMgr = mFragmentActivity.getSupportFragmentManager();
@@ -382,8 +392,10 @@ public class ChatFragment extends OSGiFragment
         initChatController(false);
 
         /*
-         * Need to clear msgCache onPause, forcing chatFragment to use FileRecord for view display
-         * on resume. The file transfer status is only reflected in DisplayMessage messages
+         * Need to clear msgCache onPause, forcing chatFragment to reload messages from DB on Resume i.e.
+         * a. Use FileRecord
+         * b. Message delivery receipt status
+         * Any MessageDisplay status update during chatSession is only reflected in DisplayMessage messages (for scrolling)
          */
         if (clearMsgCache) {
             chatPanel.clearMsgCache();
@@ -750,6 +762,8 @@ public class ChatFragment extends OSGiFragment
          */
         private final List<MessageDisplay> messages = new ArrayList<>();
 
+        private final Hashtable<Integer, MessageViewHolder> viewHolders = new Hashtable<>();
+
         /**
          * The type of the incoming message view.
          */
@@ -875,8 +889,7 @@ public class ChatFragment extends OSGiFragment
          *
          * @param newMessage the next message to be merged into the adapter.
          * @return index of the message that will handle <tt>newMessage</tt> merging process. If
-         * <tt>newMessage</tt> is a correction
-         * message, then the last message of the same type will be returned.
+         * <tt>newMessage</tt> is a correction message, then the last message of the same type will be returned.
          */
         private int getLastMessageIdx(ChatMessage newMessage)
         {
@@ -937,6 +950,30 @@ public class ChatFragment extends OSGiFragment
         public long getItemId(int pos)
         {
             return messages.get(pos).id;
+        }
+
+        public MessageViewHolder updateMessageDeliveryStatusForId(String msgId, int receiptStatus)
+        {
+            if (TextUtils.isEmpty(msgId))
+                return null;
+
+            for (int index = messages.size(); index-- > 0; ) {
+                MessageDisplay message = messages.get(index);
+                String msgIds = message.getServerMsgId();
+                if ((msgIds != null) && msgIds.contains(msgId)) {
+                    // must reload cached messages from DB on resume i.e. after session exit
+                    clearMsgCache = true;
+                    // Update MessageDisplay to take care when view is refresh e.g. new message arrived or scroll
+                    message.updateDeliveryStatus(receiptStatus);
+
+                    MessageViewHolder viewHolder = viewHolders.get(index);
+                    // Timber.w("Get MessageViewHolder %s: %s: %S", index, msgIds, viewHolder);
+                    if (viewHolder != null)
+                        setMessageReceiptStatus(viewHolder.msgReceiptView, receiptStatus);
+                    return viewHolder;
+                }
+            }
+            return null;
         }
 
         public void setXferStatus(int pos, int status)
@@ -1179,6 +1216,7 @@ public class ChatFragment extends OSGiFragment
                         convertView.setTag(messageViewHolder);
                 }
                 messageViewHolder.viewType = viewType;
+                viewHolders.put(position, messageViewHolder);
                 // messageViewHolder.timeView.setText(message.getDateStr());
                 return convertView;
             }
@@ -1218,6 +1256,7 @@ public class ChatFragment extends OSGiFragment
                     if (messageViewHolder.viewType == OUTGOING_MESSAGE_VIEW
                             || messageViewHolder.viewType == CORRECTED_MESSAGE_VIEW) {
                         setEncState(messageViewHolder.encStateView, msgDisplay.getEncryption());
+                        setMessageReceiptStatus(messageViewHolder.msgReceiptView, msgDisplay.getReceiptStatus());
                     }
                     updateStatusAndAvatarView(messageViewHolder, jid);
 
@@ -1250,6 +1289,7 @@ public class ChatFragment extends OSGiFragment
 
                 // Set clicks adapter for re-edit last outgoing message OR HTTP link download support
                 messageViewHolder.messageView.setOnClickListener(msgClickAdapter);
+                viewHolders.put(position, messageViewHolder);
                 return convertView;
             }
         }
@@ -1281,6 +1321,7 @@ public class ChatFragment extends OSGiFragment
                 messageViewHolder.avatarView = convertView.findViewById(R.id.outgoingAvatarIcon);
                 messageViewHolder.statusView = convertView.findViewById(R.id.outgoingStatusIcon);
                 messageViewHolder.messageView = convertView.findViewById(R.id.outgoingMessageView);
+                messageViewHolder.msgReceiptView = convertView.findViewById(R.id.msg_delivery_status);
                 messageViewHolder.encStateView = convertView.findViewById(R.id.encStateView);
                 messageViewHolder.timeView = convertView.findViewById(R.id.outgoingTimeView);
                 messageViewHolder.outgoingMessageHolder = convertView.findViewById(R.id.outgoingMessageHolder);
@@ -1441,9 +1482,16 @@ public class ChatFragment extends OSGiFragment
             private int status;
 
             /**
+             * Message Receipt Status.
+             */
+            private int receiptStatus;
+
+            /**
              * Message Encryption Type.
              */
             private int encryption;
+
+            private String serverMsgId;
 
             /**
              * Incoming or outgoing File Transfer object
@@ -1495,7 +1543,9 @@ public class ChatFragment extends OSGiFragment
                 this.msg = msg;
                 this.status = -1;
                 this.fileXfer = null;
+                this.receiptStatus = msg.getReceiptStatus();
                 this.encryption = msg.getEncryptionType();
+                this.serverMsgId = msg.getServerMsgId();
                 checkLatLng();
             }
 
@@ -1579,9 +1629,19 @@ public class ChatFragment extends OSGiFragment
                 return hasLatLng;
             }
 
+            public int getReceiptStatus()
+            {
+                return receiptStatus;
+            }
+
             public int getEncryption()
             {
                 return encryption;
+            }
+
+            public String getServerMsgId()
+            {
+                return serverMsgId;
             }
 
             /**
@@ -1633,8 +1693,8 @@ public class ChatFragment extends OSGiFragment
             }
 
             /**
-             * Updates this display instance with new message causing display contents to be
-             * invalidated.
+             * Updates this display instance with new message causing display contents to be invalidated.
+             * Both receiptStatus and serverMsgId of the merged message will use the new chatMessage
              *
              * @param chatMessage new message content
              */
@@ -1643,6 +1703,14 @@ public class ChatFragment extends OSGiFragment
                 dateStr = null;
                 body = null;
                 msg = chatMessage;
+
+                receiptStatus = chatMessage.getReceiptStatus();
+                serverMsgId = chatMessage.getServerMsgId();
+            }
+
+            public void updateDeliveryStatus(int deliveryStatus)
+            {
+                receiptStatus = deliveryStatus;
             }
         }
     }
@@ -1657,6 +1725,7 @@ public class ChatFragment extends OSGiFragment
         TextView jidView;
         TextView messageView;
         public ImageView encStateView;
+        public ImageView msgReceiptView;
         public TextView timeView;
 
         public ImageView arrowDir = null;
@@ -1809,13 +1878,47 @@ public class ChatFragment extends OSGiFragment
             statusView.setImageDrawable(statusDrawable);
     }
 
+    @Override
+    public void onReceiptReceived(Jid fromJid, Jid toJid, final String receiptId, Stanza receipt)
+    {
+        runOnUiThread(() -> {
+            if (chatListAdapter != null) {
+                chatListAdapter.updateMessageDeliveryStatusForId(receiptId, ChatMessage.MESSAGE_DELIVERY_RECEIPT);
+            }
+        });
+    }
+
+    /**
+     * Sets the status of the given view.
+     *
+     * @param receiptStatusView the encryption state view
+     * @param deliveryStatus the encryption
+     */
+    private void setMessageReceiptStatus(ImageView receiptStatusView, int deliveryStatus)
+    {
+        switch (deliveryStatus) {
+            case ChatMessage.MESSAGE_DELIVERY_NONE:
+                receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_queued);
+                break;
+            case ChatMessage.MESSAGE_DELIVERY_RECEIPT:
+                receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_read);
+                break;
+            case ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT:
+                receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_sent_client);
+                break;
+            case ChatMessage.MESSAGE_DELIVERY_SERVER_SENT:
+                receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_sent_server);
+                break;
+        }
+    }
+
     /**
      * Sets the status of the given view.
      *
      * @param encStateView the encryption state view
      * @param encType the encryption
      */
-    public void setEncState(ImageView encStateView, int encType)
+    private void setEncState(ImageView encStateView, int encType)
     {
         switch (encType) {
             case Message.ENCRYPTION_NONE:
@@ -1895,7 +1998,7 @@ public class ChatFragment extends OSGiFragment
     /**
      * Cancels all active file transfers.
      */
-    public void cancelActiveFileTransfers()
+    private void cancelActiveFileTransfers()
     {
         Enumeration<String> activeKeys = activeFileTransfers.keys();
 
@@ -1946,7 +2049,7 @@ public class ChatFragment extends OSGiFragment
      *
      * @param fileTransfer the identifier of the file transfer to remove
      */
-    public void removeActiveFileTransfer(FileTransfer fileTransfer)
+    private void removeActiveFileTransfer(FileTransfer fileTransfer)
     {
         String id = fileTransfer.getID();
         synchronized (activeFileTransfers) {

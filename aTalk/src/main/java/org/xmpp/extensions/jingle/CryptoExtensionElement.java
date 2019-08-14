@@ -21,7 +21,7 @@ public class CryptoExtensionElement extends AbstractExtensionElement
     /**
      * The name of the "crypto" element.
      */
-    public static final String ELEMENT_NAME = "crypto";
+    public static final String ELEMENT = "crypto";
 
     /**
      * The namespace for the "crypto" element. It it set to "not null" only for Gtalk SDES support
@@ -54,11 +54,11 @@ public class CryptoExtensionElement extends AbstractExtensionElement
      */
     public CryptoExtensionElement()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
-     * Creates a new {@link CryptoPacketExtension} instance with the proper element name
+     * Creates a new {@link CryptoExtensionElement} instance with the proper element name
      * and namespace and initialises it with the parameters contained by the cryptoAttribute.
      *
      * @param tag a <tt>String</tt> containing a decimal number used as an

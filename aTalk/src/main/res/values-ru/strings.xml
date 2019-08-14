@@ -44,7 +44,6 @@
     <string name="encryption_choices">EncryptChoices</string>
     <string name="encryption_choice_unencrypted">Unencrypted</string>
     <string name="enter_name_or_number">Введите имя или номер</string>
-    <string name="exit_app">Выход</string>
     <string name="hang_up">Повесьте вызов</string>
     <string name="hold">Удерживать вызов</string>
     <string name="in_call_with">При вызове</string>
@@ -446,6 +445,7 @@
 	<string name="service_gui_LAST">Последняя</string>
     <string name="service_gui_LAST_MSG_CORRECTION">Коррекция последнего сообщения</string>
 	<string name="service_gui_LAST_NAME">Фамилия</string>
+    <string name="service_gui_LAST_SEEN">сегодня: %s</string>
 	<string name="service_gui_LEAVE">Оставить</string>
     <string name="service_gui_LEAVE_ROOM">оставить chatRoom</string>
     <string name="service_gui_LOADING">Загрузка</string>
@@ -506,6 +506,7 @@
     <string name="service_gui_PHONES">Телефоны</string>
     <string name="service_gui_POSTAL_CODE">Почтовый код</string>
     <string name="service_gui_RENAME">Переименовать</string>
+    <string name="service_gui_SAVE">Сохранить</string>
     <string name="service_gui_SHOW_STACK_TRACE">Показать трассировку стека</string>
     <string name="service_gui_STREET">Улица</string>
     <string name="service_gui_SUBMIT">Отправить</string>
@@ -1059,7 +1060,6 @@
     <string name="service_gui_SERVERS_LIST_CANCEL">Отменить</string>
     <string name="service_gui_SERVERS_LIST_EMPTY">Список пуст. Нажмите, чтобы добавить новую запись&#8230;</string>
     <string name="service_gui_SERVERS_LIST_REMOVE">Удалить</string>
-    <string name="service_gui_SERVERS_LIST_SAVE">Сохранить</string>
     
     <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">Адрес JID</string>
@@ -1231,16 +1231,20 @@
     <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d последние сообщения в новых чатах</string>
     <string name="service_gui_settings_SHOW_HISTORY">Показать историю</string>
 
-    <!-- Tell others when we are writing to them -->
-<string name="service_gui_settings_TYPING_NOTIFICATIONS">Отправить уведомления о состоянии чата</string>
+    <!-- Tell others when we have received and read the messages -->
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT">Квитанция о доставке сообщения</string>
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT_SUMMARY">Позволяет вашим контактам видеть когда вы получили и прочитали их сообщения</string>
 
-    <!-- Enable option to send thumnail preview for image file sending -->
+    <!-- Tell others when we are writing to them -->
+    <string name="service_gui_settings_TYPING_NOTIFICATIONS">Отправить уведомления о состоянии чата</string>
+
+    <!-- Enable option to send thumbnail preview for image file sending -->
     <string name="service_gui_settings_THUMBNAIL_OPTION">Отправить/Получить превью</string>
 
     <!-- Auto accept downloadable max file size -->
     <string name="service_gui_settings_ACCEPT_FILE">Автоматическое принятие максимального размера файла</string>
 
-    <!-- Setup substription Mode: auto or manual approval -->
+    <!-- Setup subscription Mode: auto or manual approval -->
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Утверждение подписки на доступность</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Подтвердить утверждение - автоматически принять все</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Подтвердить утверждение - руководство</string>

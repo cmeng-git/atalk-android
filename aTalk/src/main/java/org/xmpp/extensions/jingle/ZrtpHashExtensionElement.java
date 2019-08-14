@@ -18,7 +18,7 @@ public class ZrtpHashExtensionElement extends AbstractExtensionElement
     /**
      * The name of the "zrtp-hash" element.
      */
-    public static final String ELEMENT_NAME = "zrtp-hash";
+    public static final String ELEMENT = "zrtp-hash";
 
     /**
      * The namespace for the "zrtp-hash" element.
@@ -36,7 +36,7 @@ public class ZrtpHashExtensionElement extends AbstractExtensionElement
      */
     public ZrtpHashExtensionElement()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

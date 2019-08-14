@@ -18,7 +18,7 @@ public class BundleExtensionElement extends AbstractExtensionElement
 	/**
 	 * The XML element name of {@link BundleExtensionElement}.
 	 */
-	public static final String ELEMENT_NAME = "bundle";
+	public static final String ELEMENT = "bundle";
 
 	/**
 	 * The XML element namespace of {@link BundleExtensionElement}.
@@ -31,6 +31,6 @@ public class BundleExtensionElement extends AbstractExtensionElement
 	 */
 	public BundleExtensionElement()
 	{
-		super(ELEMENT_NAME, NAMESPACE);
+		super(ELEMENT, NAMESPACE);
 	}
 }

@@ -24,8 +24,11 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import org.atalk.android.R;
+
+import timber.log.Timber;
 
 /**
  * Splash screen activity
@@ -33,6 +36,7 @@ import org.atalk.android.R;
 public class Splash extends Activity
 {
     private static boolean mFirstRun = true;
+    private static ProgressBar mActionBarProgress;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -40,9 +44,11 @@ public class Splash extends Activity
         // Request indeterminate progress for splash screen
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         // requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         setProgressBarIndeterminateVisibility(true);
+
         setContentView(R.layout.splash);
+        mActionBarProgress = findViewById(R.id.actionbar_progress);
+        mActionBarProgress.setVisibility(ProgressBar.VISIBLE);
 
         // Starts fade in animation
         ImageView myImageView = findViewById(R.id.loadingImage);
@@ -51,12 +57,19 @@ public class Splash extends Activity
         mFirstRun = false;
 
         new Handler().postDelayed(() -> {
+            Timber.d("End of Splash screen Timer");
+            stopProgressBar();
             finish();
         }, 800);
     }
 
-    static public boolean isFirstRun()
+    public static boolean isFirstRun()
     {
         return mFirstRun;
+    }
+
+    public static void stopProgressBar()
+    {
+        mActionBarProgress.setVisibility(ProgressBar.GONE);
     }
 }

@@ -7,8 +7,9 @@ package net.java.sip.communicator.impl.protocol.jabber.jinglesdp;
 
 import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
 import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jingle.ContentExtensionElement.CreatorEnum;
-import org.xmpp.extensions.jingle.ContentExtensionElement.SendersEnum;
+import org.xmpp.extensions.jingle.element.JingleContent;
+import org.xmpp.extensions.jingle.element.JingleContent.Creator;
+import org.xmpp.extensions.jingle.element.JingleContent.Senders;
 import net.java.sip.communicator.service.protocol.media.DynamicPayloadTypeRegistry;
 import net.java.sip.communicator.service.protocol.media.DynamicRTPExtensionsRegistry;
 import net.java.sip.communicator.util.NetworkUtils;
@@ -41,7 +42,7 @@ public class JingleUtils
      * @param content the media content that we'd like to extract the {@link RtpDescriptionExtensionElement} from.
      * @return an {@link RtpDescriptionExtensionElement} provided with <tt>content</tt> or <tt>null</tt> if there is none.
      */
-    public static RtpDescriptionExtensionElement getRtpDescription(ContentExtensionElement content)
+    public static RtpDescriptionExtensionElement getRtpDescription(JingleContent content)
     {
         return content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
     }
@@ -206,14 +207,14 @@ public class JingleUtils
     }
 
     /**
-     * Converts the specified media <tt>direction</tt> into the corresponding {@link SendersEnum}
+     * Converts the specified media <tt>direction</tt> into the corresponding {@link JingleContent.Senders}
      * value so that we could add it to a content element. The <tt>initiatorPerspectice</tt> allows
      * callers to specify whether the direction is to be considered from the session initator's
      * perspective or that of the responder.
      *
      * Example: A {@link MediaDirection#SENDONLY} value would be translated to
-     * {@link SendersEnum#initiator} from the initiator's perspective and to
-     * {@link SendersEnum#responder} otherwise.
+     * {@link Senders#initiator} from the initiator's perspective and to
+     * {@link Senders#responder} otherwise.
      *
      * @param direction the {@link MediaDirection} that we'd like to translate.
      * @param initiatorPerspective <tt>true</tt> if the <tt>direction</tt> param is to be considered from the initiator's
@@ -221,26 +222,26 @@ public class JingleUtils
      * @return one of the <tt>MediaDirection</tt> values indicating the direction of the media steam
      * described by <tt>content</tt>.
      */
-    public static SendersEnum getSenders(MediaDirection direction, boolean initiatorPerspective)
+    public static JingleContent.Senders getSenders(MediaDirection direction, boolean initiatorPerspective)
     {
         if (direction == MediaDirection.SENDRECV)
-            return SendersEnum.both;
+            return Senders.both;
         if (direction == MediaDirection.INACTIVE)
-            return SendersEnum.none;
+            return Senders.none;
 
         if (initiatorPerspective) {
             if (direction == MediaDirection.SENDONLY)
-                return SendersEnum.initiator;
+                return Senders.initiator;
             else
                 // recvonly
-                return SendersEnum.responder;
+                return Senders.responder;
         }
         else {
             if (direction == MediaDirection.SENDONLY)
-                return SendersEnum.responder;
+                return Senders.responder;
             else
                 // recvonly
-                return SendersEnum.initiator;
+                return Senders.initiator;
         }
     }
 
@@ -261,9 +262,9 @@ public class JingleUtils
      * @return one of the <tt>MediaDirection</tt> values indicating the direction of the media steam
      * described by <tt>content</tt>.
      */
-    public static MediaDirection getDirection(ContentExtensionElement content, boolean initiatorPerspective)
+    public static MediaDirection getDirection(JingleContent content, boolean initiatorPerspective)
     {
-        SendersEnum senders = content.getSenders();
+        Senders senders = content.getSenders();
         return getDirection(senders, initiatorPerspective);
     }
 
@@ -281,27 +282,27 @@ public class JingleUtils
      * @return one of the <tt>MediaDirection</tt> values indicating the direction of the media steam
      * described by <tt>content</tt>.
      */
-    public static MediaDirection getDirection(SendersEnum senders, boolean initiatorPerspective)
+    public static MediaDirection getDirection(Senders senders, boolean initiatorPerspective)
     {
         if (senders == null)
             return MediaDirection.SENDRECV;
 
-        if (senders == SendersEnum.initiator) {
+        if (senders == Senders.initiator) {
             if (initiatorPerspective)
                 return MediaDirection.SENDONLY;
             else
                 return MediaDirection.RECVONLY;
         }
-        else if (senders == SendersEnum.responder) {
+        else if (senders == JingleContent.Senders.responder) {
             if (initiatorPerspective)
                 return MediaDirection.RECVONLY;
             else
                 return MediaDirection.SENDONLY;
         }
-        else if (senders == SendersEnum.both)
+        else if (senders == JingleContent.Senders.both)
             return MediaDirection.SENDRECV;
         else
-            // if (senders == SendersEnum.none)
+            // if (senders == Senders.none)
             return MediaDirection.INACTIVE;
     }
 
@@ -314,7 +315,7 @@ public class JingleUtils
      * @return a {@link MediaStreamTarget} containing the default <tt>candidate</tt>s for the stream described in
      * <tt>content</tt> or <tt>null</tt>, if for some reason, the packet does not contain any candidates.
      */
-    public static MediaStreamTarget extractDefaultTarget(ContentExtensionElement content)
+    public static MediaStreamTarget extractDefaultTarget(JingleContent content)
     {
         IceUdpTransportExtensionElement transport = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
         return (transport == null) ? null : extractDefaultTarget(transport);
@@ -362,11 +363,11 @@ public class JingleUtils
     /**
      * Returns the first candidate for the specified <tt>componentID</tt> or null if no such component exists.
      *
-     * @param content the {@link ContentExtensionElement} that we'll be searching for a component.
+     * @param content the {@link JingleContent} that we'll be searching for a component.
      * @param componentID the id of the component that we are looking for (e.g. 1 for RTP, 2 for RTCP);
      * @return the first candidate for the specified <tt>componentID</tt> or null if no such component exists.
      */
-    public static CandidateExtensionElement getFirstCandidate(ContentExtensionElement content, int componentID)
+    public static CandidateExtensionElement getFirstCandidate(JingleContent content, int componentID)
     {
         // passing IceUdp would also return RawUdp transports as one extends the other.
         IceUdpTransportExtensionElement transport = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
@@ -385,7 +386,7 @@ public class JingleUtils
     }
 
     /**
-     * Creates a new {@link ContentExtensionElement} instance according to the specified
+     * Creates a new {@link JingleContent} instance according to the specified
      * <tt>formats</tt>, <tt>connector</tt> and <tt>direction</tt>, and using the
      * <tt>dynamicPayloadTypes</tt> registry to handle dynamic payload type registrations. The type
      * (e.g. audio/video) of the media description is determined via from the type of the first
@@ -405,18 +406,18 @@ public class JingleUtils
      * lookup and register URN to ID mappings.
      * @return the newly create SDP <tt>MediaDescription</tt>.
      */
-    public static ContentExtensionElement createDescription(CreatorEnum creator, String contentName, SendersEnum senders,
+    public static JingleContent createDescription(Creator creator, String contentName, Senders senders,
             List<MediaFormat> formats, List<RTPExtension> rtpExtensions, DynamicPayloadTypeRegistry dynamicPayloadTypes,
             DynamicRTPExtensionsRegistry rtpExtensionsRegistry)
     {
-        ContentExtensionElement content = new ContentExtensionElement();
+        JingleContent content = new JingleContent();
         RtpDescriptionExtensionElement description = new RtpDescriptionExtensionElement();
 
         content.setCreator(creator);
         content.setName(contentName);
 
         // senders - only if we have them and if they are different from default
-        if (senders != null && senders != SendersEnum.both)
+        if (senders != null && senders != JingleContent.Senders.both)
             content.setSenders(senders);
 
         // RTP description
@@ -435,7 +436,7 @@ public class JingleUtils
                 URI uri = extension.getURI();
                 MediaDirection extDirection = extension.getDirection();
                 String attributes = extension.getExtensionAttributes();
-                SendersEnum sendersEnum = getSenders(extDirection, false);
+                Senders sendersEnum = getSenders(extDirection, false);
                 RTPHdrExtExtensionElement ext = new RTPHdrExtExtensionElement();
 
                 ext.setURI(uri);
@@ -499,7 +500,7 @@ public class JingleUtils
      * @return the <tt>MediaType</tt> for <tt>content</tt> by looking for it in the <tt>content</tt>
      * 's <tt>description</tt>, if any. <tt>contentName</tt>
      */
-    public static MediaType getMediaType(ContentExtensionElement content)
+    public static MediaType getMediaType(JingleContent content)
     {
         if (content == null)
             return null;

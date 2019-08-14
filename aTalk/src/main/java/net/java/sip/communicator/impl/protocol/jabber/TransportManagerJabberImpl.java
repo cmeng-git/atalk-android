@@ -16,6 +16,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.Jid;
+import org.xmpp.extensions.jingle.element.JingleContent;
 
 import java.net.InetAddress;
 import java.util.*;
@@ -208,12 +209,12 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Starts transport candidate harvest for a specific <tt>ContentExtensionElement</tt> that we are
+     * Starts transport candidate harvest for a specific <tt>JingleContent</tt> that we are
      * going to offer or answer with.
      *
-     * @param theirContent the <tt>ContentExtensionElement</tt> offered by the remote peer to which we are going
+     * @param theirContent the <tt>JingleContent</tt> offered by the remote peer to which we are going
      * to answer with <tt>ourContent</tt> or <tt>null</tt> if <tt>ourContent</tt> will be an offer to the remote peer
-     * @param ourContent the <tt>ContentExtensionElement</tt> for which transport candidate harvest is to be started
+     * @param ourContent the <tt>JingleContent</tt> for which transport candidate harvest is to be started
      * @param transportInfoSender a <tt>TransportInfoSender</tt> if the harvested transport candidates are to be sent in
      * a <tt>transport-info</tt> rather than in <tt>ourContent</tt>; otherwise, <tt>null</tt>
      * @param media the media of the <tt>RtpDescriptionExtensionElement</tt> child of <tt>ourContent</tt>
@@ -221,8 +222,8 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * @throws OperationFailedException if anything goes wrong while starting transport candidate harvest for
      * the specified <tt>ourContent</tt>
      */
-    protected abstract ExtensionElement startCandidateHarvest(ContentExtensionElement theirContent,
-            ContentExtensionElement ourContent, TransportInfoSender transportInfoSender, String media)
+    protected abstract ExtensionElement startCandidateHarvest(JingleContent theirContent,
+            JingleContent ourContent, TransportInfoSender transportInfoSender, String media)
             throws OperationFailedException;
 
     /**
@@ -236,30 +237,30 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * @param ourAnswer the content descriptions that we should be adding our transport lists to (although not
      * necessarily in this very instance).
      * @param transportInfoSender the <tt>TransportInfoSender</tt> to be used by this
-     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>JingleIQ</tt>s
+     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>Jingle</tt>s
      * from the local peer to the remote peer if this <tt>TransportManagerJabberImpl</tt>
      * wishes to utilize <tt>transport-info</tt>. Local candidate addresses sent by this
      * <tt>TransportManagerJabberImpl</tt> in <tt>transport-info</tt> are expected to not be
      * included in the result of {@link #wrapupCandidateHarvest()}.
      * @throws OperationFailedException if we fail to allocate a port number.
      */
-    public void startCandidateHarvest(List<ContentExtensionElement> theirOffer,
-            List<ContentExtensionElement> ourAnswer, TransportInfoSender transportInfoSender)
+    public void startCandidateHarvest(List<JingleContent> theirOffer,
+            List<JingleContent> ourAnswer, TransportInfoSender transportInfoSender)
             throws OperationFailedException
     {
         CallPeerJabberImpl peer = getCallPeer();
         CallJabberImpl call = peer.getCall();
         boolean isJitsiVideobridge = call.getConference().isJitsiVideobridge();
-        List<ContentExtensionElement> cpes = (theirOffer == null) ? ourAnswer : theirOffer;
+        List<JingleContent> cpes = (theirOffer == null) ? ourAnswer : theirOffer;
 
         /*
          * If Jitsi Videobridge is to be used, determine which channels are to be allocated and
          * attempt to allocate them now.
          */
         if (isJitsiVideobridge) {
-            Map<ContentExtensionElement, ContentExtensionElement> contentMap = new LinkedHashMap<ContentExtensionElement, ContentExtensionElement>();
+            Map<JingleContent, JingleContent> contentMap = new LinkedHashMap<JingleContent, JingleContent>();
 
-            for (ContentExtensionElement cpe : cpes) {
+            for (JingleContent cpe : cpes) {
                 MediaType mediaType = JingleUtils.getMediaType(cpe);
 
                 /*
@@ -268,7 +269,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                  * for that mediaType.
                  */
                 if ((colibri == null) || (colibri.getContent(mediaType.toString()) == null)) {
-                    ContentExtensionElement local, remote;
+                    JingleContent local, remote;
                     if (cpes == ourAnswer) {
                         local = cpe;
                         remote = (theirOffer == null) ? null : findContentByName(theirOffer, cpe.getName());
@@ -287,8 +288,8 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                  */
                 if (colibri == null)
                     colibri = new ColibriConferenceIQ();
-                for (Map.Entry<ContentExtensionElement, ContentExtensionElement> e : contentMap.entrySet()) {
-                    ContentExtensionElement cpe = e.getValue();
+                for (Map.Entry<JingleContent, JingleContent> e : contentMap.entrySet()) {
+                    JingleContent cpe = e.getValue();
                     if (cpe == null)
                         cpe = e.getKey();
                     colibri.getOrCreateContent(JingleUtils.getMediaType(cpe).toString());
@@ -330,13 +331,13 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
             }
         }
 
-        for (ContentExtensionElement cpe : cpes) {
+        for (JingleContent cpe : cpes) {
             String contentName = cpe.getName();
-            ContentExtensionElement ourContent = findContentByName(ourAnswer, contentName);
+            JingleContent ourContent = findContentByName(ourAnswer, contentName);
 
             // it might be that we decided not to reply to this content
             if (ourContent != null) {
-                ContentExtensionElement theirContent = (theirOffer == null)
+                JingleContent theirContent = (theirOffer == null)
                         ? null : findContentByName(theirOffer, contentName);
                 RtpDescriptionExtensionElement rtpDesc
                         = ourContent.getFirstChildOfType(RtpDescriptionExtensionElement.class);
@@ -358,14 +359,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * @param ourOffer the content descriptions that we should be adding our transport lists to (although not
      * necessarily in this very instance).
      * @param transportInfoSender the <tt>TransportInfoSender</tt> to be used by this
-     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>JingleIQ</tt>s
+     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>Jingle</tt>s
      * from the local peer to the remote peer if this <tt>TransportManagerJabberImpl</tt>
      * wishes to utilize <tt>transport-info</tt>. Local candidate addresses sent by this
      * <tt>TransportManagerJabberImpl</tt> in <tt>transport-info</tt> are expected to not be
      * included in the result of {@link #wrapupCandidateHarvest()}.
      * @throws OperationFailedException if we fail to allocate a port number.
      */
-    public void startCandidateHarvest(List<ContentExtensionElement> ourOffer, TransportInfoSender transportInfoSender)
+    public void startCandidateHarvest(List<JingleContent> ourOffer, TransportInfoSender transportInfoSender)
             throws OperationFailedException
     {
         startCandidateHarvest(null, ourOffer, transportInfoSender);
@@ -378,19 +379,19 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * @return the content list that we received earlier (possibly cloned into a new instance) and
      * that we have updated with transport lists.
      */
-    public abstract List<ContentExtensionElement> wrapupCandidateHarvest();
+    public abstract List<JingleContent> wrapupCandidateHarvest();
 
     /**
-     * Looks through the <tt>cpExtList</tt> and returns the {@link ContentExtensionElement} with the specified name.
+     * Looks through the <tt>cpExtList</tt> and returns the {@link JingleContent} with the specified name.
      *
      * @param cpExtList the list that we will be searching for a specific content.
      * @param name the name of the content element we are looking for.
-     * @return the {@link ContentExtensionElement} with the specified name or <tt>null</tt> if no
+     * @return the {@link JingleContent} with the specified name or <tt>null</tt> if no
      * such content element exists.
      */
-    public static ContentExtensionElement findContentByName(Iterable<ContentExtensionElement> cpExtList, String name)
+    public static JingleContent findContentByName(Iterable<JingleContent> cpExtList, String name)
     {
-        for (ContentExtensionElement cpExt : cpExtList) {
+        for (JingleContent cpExt : cpExtList) {
             if (cpExt.getName().equals(name))
                 return cpExt;
         }
@@ -402,14 +403,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * the connectivity between the local and the remote peers given the remote counterpart of the
      * negotiation between them.
      *
-     * @param remote the collection of <tt>ContentExtensionElement</tt>s which represents the remote
+     * @param remote the collection of <tt>JingleContent</tt>s which represents the remote
      * counterpart of the negotiation between the local and the remote peer
      * @return <tt>true</tt> if connectivity establishment has been started in response to the call;
      * otherwise, <tt>false</tt>. <tt>TransportManagerJabberImpl</tt> implementations which
      * do not perform connectivity checks (e.g. raw UDP) should return <tt>true</tt>. The
      * default implementation does not perform connectivity checks and always returns <tt>true</tt>.
      */
-    public boolean startConnectivityEstablishment(Iterable<ContentExtensionElement> remote)
+    public boolean startConnectivityEstablishment(Iterable<JingleContent> remote)
             throws OperationFailedException
     {
         return true;
@@ -463,12 +464,12 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      *
      * @param contents the collection of contents to remove the content with the specified name from
      * @param name the name of the content to remove
-     * @return the removed <tt>ContentExtensionElement</tt> if any; otherwise, <tt>null</tt>
+     * @return the removed <tt>JingleContent</tt> if any; otherwise, <tt>null</tt>
      */
-    protected ContentExtensionElement removeContent(Iterable<ContentExtensionElement> contents, String name)
+    protected JingleContent removeContent(Iterable<JingleContent> contents, String name)
     {
-        for (Iterator<ContentExtensionElement> contentIter = contents.iterator(); contentIter.hasNext(); ) {
-            ContentExtensionElement content = contentIter.next();
+        for (Iterator<JingleContent> contentIter = contents.iterator(); contentIter.hasNext(); ) {
+            JingleContent content = contentIter.next();
 
             if (name.equals(content.getName())) {
                 contentIter.remove();

@@ -69,12 +69,38 @@ public interface Message
      */
     int getEncryptionType();
 
-
     /**
      * The Flag with EncryptionType | EncodeType | isRemoteFlag
      * @return the message encType
      */
     int getEncType();
+
+    /**
+     * Returns the message delivery receipt status
+     *
+     * @return the receipt status
+     */
+    int getReceiptStatus();
+
+    void setReceiptStatus(int status);
+
+    /**
+     * Returns the server message Id of the message sent - for tracking delivery receipt
+     *
+     * @return the server message Id of the message sent.
+     */
+    String getServerMsgId();
+
+    void setServerMsgId(String msgId);
+
+    /**
+     * Returns the remote message Id of the message received - for tracking delivery receipt
+     *
+     * @return the remote message Id of the message received.
+     */
+    String getRemoteMsgId();
+
+    void setRemoteMsgId(String msgId);
 
     /**
      * Returns true if the message is for remote consumption only; No local storage or Display is required.
@@ -110,4 +136,6 @@ public interface Message
      * @return a String that uniquely represents this message in the scope of this protocol.
      */
     String getMessageUID();
+
+    void setMessageUID(String msgUid);
 }

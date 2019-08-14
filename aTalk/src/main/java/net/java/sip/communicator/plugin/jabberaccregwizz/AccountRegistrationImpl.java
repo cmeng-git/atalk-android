@@ -87,7 +87,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
         if (accountProperties.get(ProtocolProviderFactory.SERVER_ADDRESS) == null) {
             String serverAddress = XmppStringUtils.parseDomain(userName);
             if (!TextUtils.isEmpty(serverAddress))
-                accountProperties.put(ProtocolProviderFactory.SERVER_ADDRESS, XmppStringUtils.parseDomain(userName));
+                accountProperties.put(ProtocolProviderFactory.SERVER_ADDRESS, serverAddress);
             else
                 throw new OperationFailedException("Should specify a server for user name "
                         + userName + ".", OperationFailedException.SERVER_NOT_SPECIFIED);

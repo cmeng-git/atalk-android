@@ -279,41 +279,26 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
             // Audio,video and security are optional and should be present in settings XML to be handled
             Preference audioEncPreference = findPreference(P_KEY_AUDIO_ENC);
             if (audioEncPreference != null) {
-                audioEncPreference.setOnPreferenceClickListener(
-                        new Preference.OnPreferenceClickListener()
-                        {
-                            public boolean onPreferenceClick(Preference preference)
-                            {
-                                startEncodingActivity(MediaType.AUDIO);
-                                return true;
-                            }
-                        });
+                audioEncPreference.setOnPreferenceClickListener(preference -> {
+                    startEncodingActivity(MediaType.AUDIO);
+                    return true;
+                });
             }
 
             Preference videoEncPreference = findPreference(P_KEY_VIDEO_ENC);
             if (videoEncPreference != null) {
-                videoEncPreference.setOnPreferenceClickListener(
-                        new Preference.OnPreferenceClickListener()
-                        {
-                            public boolean onPreferenceClick(Preference preference)
-                            {
-                                startEncodingActivity(MediaType.VIDEO);
-                                return true;
-                            }
-                        });
+                videoEncPreference.setOnPreferenceClickListener(preference -> {
+                    startEncodingActivity(MediaType.VIDEO);
+                    return true;
+                });
             }
 
             Preference encryptionOnOff = findPreference(P_KEY_CALL_ENCRYPT);
             if (encryptionOnOff != null) {
-                encryptionOnOff.setOnPreferenceClickListener(
-                        new Preference.OnPreferenceClickListener()
-                        {
-                            public boolean onPreferenceClick(Preference preference)
-                            {
-                                startSecurityActivity();
-                                return true;
-                            }
-                        });
+                encryptionOnOff.setOnPreferenceClickListener(preference -> {
+                    startSecurityActivity();
+                    return true;
+                });
             }
         }
     }
@@ -492,10 +477,10 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
         if (!uncommittedChanges)
             return;
         try {
-            mActivity.runOnUiThread(() -> displayOperationInProgressDialog());
+            mActivity.runOnUiThread(this::displayOperationInProgressDialog);
             doCommitChanges();
 
-            mActivity.runOnUiThread(() -> dismissOperationInProgressDialog());
+            mActivity.runOnUiThread(this::dismissOperationInProgressDialog);
         } catch (Exception e) {
             Timber.e(e, "Error occurred while trying to commit changes");
         }

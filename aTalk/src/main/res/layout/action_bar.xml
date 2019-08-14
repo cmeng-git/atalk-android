@@ -13,7 +13,6 @@
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:ellipsize="end"
@@ -34,7 +33,6 @@
             android:layout_width="18dip"
             android:layout_height="18dip"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginBottom="0dp" />
 
@@ -44,9 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginLeft="25dp"
             android:layout_marginStart="25dp"
             android:focusable="true"
             android:maxLines="1"

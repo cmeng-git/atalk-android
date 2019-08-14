@@ -6,7 +6,8 @@
 package org.xmpp.extensions.jingle;
 
 import org.xmpp.extensions.AbstractExtensionElement;
-import org.xmpp.extensions.jingle.ContentExtensionElement.SendersEnum;
+import org.xmpp.extensions.jingle.element.JingleContent;
+import org.xmpp.extensions.jingle.element.JingleContent.Senders;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 
@@ -30,7 +31,7 @@ public class RTPHdrExtExtensionElement extends AbstractExtensionElement
     /**
      * The name of the "candidate" element.
      */
-    public static final String ELEMENT_NAME = "rtp-hdrext";
+    public static final String ELEMENT = "rtp-hdrext";
 
     /**
      * The name of the ID attribute.
@@ -57,7 +58,7 @@ public class RTPHdrExtExtensionElement extends AbstractExtensionElement
      */
     public RTPHdrExtExtensionElement()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -116,7 +117,7 @@ public class RTPHdrExtExtensionElement extends AbstractExtensionElement
      *
      * @param senders the direction
      */
-    public void setSenders(SendersEnum senders)
+    public void setSenders(JingleContent.Senders senders)
     {
         setAttribute(SENDERS_ATTR_NAME, senders);
     }
@@ -126,11 +127,11 @@ public class RTPHdrExtExtensionElement extends AbstractExtensionElement
      *
      * @return the direction
      */
-    public SendersEnum getSenders()
+    public Senders getSenders()
     {
         String attributeVal = getAttributeAsString(SENDERS_ATTR_NAME);
 
-        return (attributeVal == null) ? null : SendersEnum.valueOf(attributeVal.toString());
+        return (attributeVal == null) ? null : Senders.valueOf(attributeVal.toString());
     }
 
     /**

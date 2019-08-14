@@ -122,7 +122,7 @@ public class CoinIQ extends IQ
      *
      * @return session ID
      */
-    public String getSID()
+    public String getSid()
     {
         return sid;
     }

@@ -20,13 +20,19 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.Jid;
 
 import java.io.*;
 import java.net.URL;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -62,6 +68,12 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * The resource associated with this contact.
      */
     private ContactResource contactResource;
+
+    /**
+     * <tt>true</tt> when a contact sends a message with XEP-0164 message delivery receipt;
+     * override contact disco#info no XEP-0184 feature advertised.
+     */
+    private static boolean isDeliveryReceiptSupported = false;
 
     /**
      * <tt>true</tt> when a contact sends a message with XEP-0085 chat state notifications;
@@ -125,16 +137,45 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         this.isDisplayResourceOnly = isDisplayResourceOnly;
         mPPS = contact.getProtocolProvider();
         ftOpSet = (OperationSetFileTransferJabberImpl) mPPS.getOperationSet(OperationSetFileTransfer.class);
-        if (mPPS.getConnection() != null)
-            httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
-
+        XMPPTCPConnection connection;
+        if ((connection = mPPS.getConnection()) != null) {
+            httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
+            checkDeliveryReceiptSupport(connection);
+        }
         presenceOpSet = mPPS.getOperationSet(OperationSetPresence.class);
         if (presenceOpSet != null)
             presenceOpSet.addContactPresenceStatusListener(this);
+
         isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
 
         // checking this can be slow so make sure its out of our way
         new Thread(this::checkImCaps).start();
+    }
+
+    /**
+     * Check for Delivery Receipt support for all registered contacts
+     * Currently isDeliveryReceiptSupported is not used - Smack autoAddDeliveryReceiptRequests support is global
+     */
+    private void checkDeliveryReceiptSupport(XMPPTCPConnection connection)
+    {
+        Jid fullJid = null;
+        isDeliveryReceiptSupported = false;
+
+        DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(connection);
+        List<Presence> presences = Roster.getInstanceFor(connection).getPresences(contact.getJid().asBareJid());
+        for (Presence presence : presences) {
+            fullJid = presence.getFrom();
+            if (fullJid != null) {
+                try {
+                    isDeliveryReceiptSupported = deliveryReceiptManager.isSupported(fullJid);
+                    if (isDeliveryReceiptSupported)
+                        break;
+                } catch (XMPPException | SmackException | InterruptedException e) {
+                    Timber.w("Check Delivery Receipt exception for %s: %s", fullJid, e.getMessage());
+                }
+            }
+        }
+        Timber.d("isDeliveryReceiptSupported for: %s = %s", fullJid, isDeliveryReceiptSupported);
     }
 
     /**
@@ -296,6 +337,25 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
+     * Returns {@code true} if this chat transport supports message delivery receipts,
+     * otherwise returns {@code false}.
+     * User SHOULD explicitly discover whether the Contact supports the protocol or negotiate the
+     * use of message delivery receipt with the Contact (e.g., via XEP-0184 Stanza Session Negotiation).
+     *
+     * @return {@code true} if this chat transport supports message delivery receipts,
+     * otherwise returns {@code false}
+     */
+    public boolean allowsMessageDeliveryReceipt()
+    {
+        return isDeliveryReceiptSupported;
+    }
+
+    public static void setMessageDeliveryReceiptSupport(boolean isEnable)
+    {
+        isDeliveryReceiptSupported = isEnable;
+    }
+
+    /**
      * Returns {@code true} if this chat transport supports chat state notifications,
      * otherwise returns {@code false}.
      * User SHOULD explicitly discover whether the Contact supports the protocol or negotiate the
@@ -345,7 +405,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
         if (!imOpSet.isContentTypeSupported(Message.ENCODE_HTML))
-                encType = encType & Message.FLAG_MODE_MASK;
+            encType = encType & Message.FLAG_MODE_MASK;
         Message msg = imOpSet.createMessage(message, encType, "");
 
         ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
