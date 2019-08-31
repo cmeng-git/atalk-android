@@ -5,8 +5,10 @@
  */
 package org.atalk.android.gui.call;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.*;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ import java.beans.PropertyChangeListener;
 import java.util.EventObject;
 import java.util.Iterator;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.*;
 import timber.log.Timber;
 
@@ -155,6 +158,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private boolean dtmfEnabled = true;
 
+    private boolean micEnabled;
+
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
      *
@@ -190,6 +195,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         microphoneButton = findViewById(R.id.button_call_microphone);
         microphoneButton.setOnClickListener(this);
         microphoneButton.setOnLongClickListener(this);
+        micEnabled = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                == PackageManager.PERMISSION_GRANTED;
 
         findViewById(R.id.button_call_hold).setOnClickListener(this);
         findViewById(R.id.button_call_hangup).setOnClickListener(this);
@@ -417,7 +424,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 break;
 
             case R.id.button_call_microphone:
-                CallManager.setMute(call, !isMuted());
+                if (micEnabled)
+                    CallManager.setMute(call, !isMuted());
                 break;
 
             case R.id.button_call_hold:
@@ -463,8 +471,10 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
             // Create and show the mic gain control dialog.
             case R.id.button_call_microphone:
-                newFragment = VolumeControlDialog.createInputVolCtrlDialog();
-                newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
+                if (micEnabled) {
+                    newFragment = VolumeControlDialog.createInputVolCtrlDialog();
+                    newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
+                }
                 return true;
         }
         return false;
@@ -503,7 +513,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
     private void doUpdateMuteStatus()
     {
-        if (isMuted()) {
+        if (!micEnabled || isMuted()) {
             microphoneButton.setImageResource(R.drawable.call_microphone_mute_dark);
             microphoneButton.setBackgroundColor(0x50000000);
         }
@@ -516,8 +526,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * {@inheritDoc}
      */
+    @SuppressLint("RestrictedApi")
     @Override
-    // @SuppressLint("RestrictedApi")
     public boolean dispatchKeyEvent(KeyEvent event)
     {
         /*

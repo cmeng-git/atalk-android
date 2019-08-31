@@ -50,7 +50,7 @@
     <string name="network">Jaringan</string>
     <string name="notification_setting">Pengaturan pemberitahuan&#8230;</string>
     <string name="password">kata sandi</string>
-    <string name="password_label">Kata Sandi:</string>
+    <string name="service_gui_PASSWORD">Kata Sandi:</string>
     <string name="reason_label">Alasan:</string>
     <string name="send_process_signal">Kirim Sinyal Proses</string>
     <string name="show_call_info">Info panggilan</string>
@@ -59,8 +59,7 @@
     <string name="store_password">Simpan kata sandi</string>
     <string name="system_settings">Pengaturan&#8230;</string>
     <string name="username_hint">namapengguna@contoh.com</string>
-    <string name="username_label">Nama pengguna:</string>
-    <string name="video_resolution">Resolusi video</string>
+    <string name="service_gui_USERNAME">Nama pengguna:</string>
 
     <string name="attachOptionDialog_picture">Gambar</string>
     <string name="attachOptionDialog_camera">Ambil gambar</string>
@@ -216,8 +215,7 @@
     <string name="service_gui_ROOM_NAME">ruang obrolan</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_Copyright">Hak Cipta @ 2014, atalk.org\nSemua hak dilindungi undang-undang.</string>
-    <string name="AboutDialog_help"><a href="http://atalk.sytes.net">Bantuan Online</a></string>
+    <string name="AboutDialog_help"><a href="http://atalk.sytes.net/atalk">Bantuan Online</a></string>
     <string name="AboutDialog_title">Tentang</string>
     <string name="AboutDialog_Version">Versi %1$s</string>
     <string name="About_action">Tentang</string>
@@ -721,7 +719,7 @@
     <string name="service_gui_CONTINUE">Lanjutkan</string>
     <string name="service_gui_SHOW_CERT">Tampilkan Sertifikat</string>
     <string name="service_gui_HIDE_CERT">Sembunyikan Sertifikat</string>
-    <string name="service_gui_UNSAVED_CHANGES">Anda memiliki perubahan yang belum disimpan. Buang perubahan dan keluar?</string>
+    <string name="service_gui_UNSAVED_CHANGES">Anda memiliki perubahan yang belum disimpan. Simpan atau Batal dan keluar</string>
     <string name="service_gui_UNSAVED_CHANGES_TITLE">Perubahan Tidak Tersimpan</string>
     <string name="service_gui_WAITING">Harap tunggu&#8230;</string>
     <string name="service_gui_SERVER_INFO_FETCH">Mengambil server yang diiklankan fitur/info&#8230;</string>
@@ -947,25 +945,17 @@
     <string name="omemo_rebuild_session">Rekonstruksi sesi baru karena hilang: %1$s</string>
     <string name="omemo_purge_inactive_device_error">Gagal menghapus perangkat omemo yang tidak aktif untuk: %1$s.</string>
 
-    <!-- Global proxy plugin -->
-    <string name="service_gui_settings_PROXY">Proksi global</string>
-    <string name="service_gui_settings_PROXY_SUMMARY">Konfigurasikan opsi proxy&#8230;</string>
-    <string name="plugin_globalproxy_PROXY_ADDRESS">Server Proksi</string>
-    <string name="plugin_globalproxy_PROXY_PASSWORD">Kata sandi proxy</string>
-    <string name="plugin_globalproxy_PROXY_PORT">Port proxy</string>
-    <string name="plugin_globalproxy_PROXY_TYPE">Tipe Proksi</string>
-    <string name="plugin_globalproxy_PROXY_USERNAME">Nama pengguna proxy</string>
-
     <!-- Account proxy plugin -->
-    <string name="service_gui_settings_ACCOUNT_PROXY">Konfigurasi Proksi</string>
-    <string name="service_gui_settings_ACCOUNT_PROXY_SUMMARY">Konfigurasikan opsi proxy akun&#8230;</string>
-    <string name="plugin_proxy_PROXY_ADDRESS">Proxy Server</string>
-    <string name="plugin_proxy_PROXY_ENABLE">Gunakan Proxy</string>
-    <string name="plugin_proxy_PROXY_ENABLE_SUMMARY">Aktifkan koneksi melalui proxy untuk akun</string>
-    <string name="plugin_proxy_PROXY_PASSWORD">Kata sandi proxy</string>
+    <string name="service_gui_settings_BOSH_PROXY">Konfigurasi Proksi</string>
+    <string name="service_gui_settings_BOSH_PROXY_SUMMARY">konfigurasikan koneksi melalui BOSH/Proxy untuk akun</string>
+    <string name="plugin_proxy_BOSHURL_NULL">Konten bidang URL BOSH tidak boleh kosong</string>
+    <string name="plugin_proxy_HOST_PORT_NULL">Konten Proxy Host dan Port tidak boleh kosong</string>
+
+    <string name="plugin_bosh_proxy_TYPE">Tipe Proksi</string>
+    <string name="plugin_proxy_PROXY_BOSH_URL">BOSH URL:</string>
+    <string name="plugin_proxy_PROXY_BOSH_USE_HTTP">Gunakan Proxy HTTP</string>
+    <string name="plugin_proxy_PROXY_HOST">Proxy Server</string>
     <string name="plugin_proxy_PROXY_PORT">Port proxy</string>
-    <string name="plugin_proxy_PROXY_TYPE">Tipe Proksi</string>
-    <string name="plugin_proxy_PROXY_USERNAME">Nama pengguna proxy</string>
 
     <!-- Provisioning Plugin-->
     <string name="plugin_provisioning_AUTO">Secara otomatis menemukan URI penyediaan</string>
@@ -1296,6 +1286,7 @@
 
     <!-- Call settings -->
     <string name="service_gui_settings_CALL">Panggil</string>
+    <string name="service_gui_settings_MEDIA_CALL">Panggilan media</string>
 
     <!-- Audio settings -->
     <string name="service_gui_settings_AUDIO">Audio</string>
@@ -1428,6 +1419,9 @@
 
     <!-- Advanced settings category -->
     <string name="service_gui_settings_ADVANCED">Lanjutan</string>
+    <string name="service_gui_settings_EXPERT">Pengaturan ahli</string>
+    <string name="service_gui_settings_EXPERT_SUMMARY">Harap berhati-hati dengan ini</string>
+    <string name="service_gui_settings_OTHER">Lain2</string>
 
     <!-- Protocol category -->
     <string name="service_gui_settings_ADDRESS">Alamat</string>
@@ -1475,7 +1469,6 @@
 
     <!-- Android Permissions -->
     <string name="app_info_permissions_button">Info Aplikasi</string>
-    <string name="app_name2">Dexter</string>
     <string name="ask_for_all_permissions_button">Meminta semua</string>
     <string name="ask_for_audio_permission_button">Audio</string>
     <string name="ask_for_camera_permission_button">Camera</string>

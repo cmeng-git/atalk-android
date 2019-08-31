@@ -236,6 +236,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
             MetaContact clickedContact = contactListFragment.getClickedContact();
             ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
             if (clickedChat != null) {
+                // force chatPanel to reload from DB
                 clickedChat.clearMsgCache();
                 contactListFragment.onCloseChat(clickedChat);
             }

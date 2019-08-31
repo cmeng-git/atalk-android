@@ -161,9 +161,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
                  */
                 if (throwable instanceof ThreadDeath)
                     throw (ThreadDeath) throwable;
-                Timber.e(throwable, "An error occurred while executing "
-                        + "RegistrationStateChangeListener#registrationStateChanged"
-                        + "(RegistrationStateChangeEvent) of %s", listener);
+                Timber.e(throwable, "Exception while sending registrationStateChanged event to: %s", listener);
             }
         Timber.log(TimberLog.FINER, "Done.");
     }

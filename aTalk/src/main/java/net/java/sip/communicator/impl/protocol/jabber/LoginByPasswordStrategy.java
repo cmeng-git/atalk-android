@@ -16,12 +16,11 @@ import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeE
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.login.IBRCaptchaProcessDialog;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.bosh.BOSHConfiguration;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.packet.StanzaError.Type;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jxmpp.jid.parts.Resourcepart;
 
 import java.io.IOException;
@@ -40,6 +39,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
 {
     private final AbstractProtocolProviderService protocolProvider;
     private final AccountID accountID;
+    private ConnectionConfiguration.Builder ccBuilder;
     private String password;
 
     /**
@@ -48,10 +48,12 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
      * @param protocolProvider protocol provider service to fire registration change events.
      * @param accountID The accountID to use for the login.
      */
-    public LoginByPasswordStrategy(AbstractProtocolProviderService protocolProvider, AccountID accountID)
+    public LoginByPasswordStrategy(AbstractProtocolProviderService protocolProvider, AccountID accountID,
+            ConnectionConfiguration.Builder ccBuilder)
     {
         this.protocolProvider = protocolProvider;
         this.accountID = accountID;
+        this.ccBuilder = ccBuilder;
     }
 
     /**
@@ -61,8 +63,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
      * @param reasonCode reasonCode why we're preparing for login
      * @param reason the reason descriptive text why we're preparing for login
      * @param isShowAlways <tt>true</tt> always show the credential prompt for user entry
-     * @return UserCredentials in case they need to be cached for this session
-     * (i.e. password is not persistent)
+     * @return UserCredentials in case they need to be cached for this session (i.e. password is not persistent)
      */
     public UserCredentials prepareLogin(SecurityAuthority authority, int reasonCode,
             String reason, Boolean isShowAlways)
@@ -89,7 +90,8 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
      * @return always true.
      * @throws XMPPException
      */
-    public boolean login(XMPPTCPConnection connection, String userName, Resourcepart resource)
+    @Override
+    public boolean login(AbstractXMPPConnection connection, String userName, Resourcepart resource)
             throws XMPPException, SmackException
     {
         try {
@@ -129,15 +131,15 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
     }
 
     /*
-     * (non-Javadoc)
+     * Requires TLS by default (i.e. it will not connect to a non-TLS server and will not fallback to clear-text)
+     * BOSH connection does not support TLS - return false always
      *
      * @see net.java.sip.communicator.impl.protocol.jabber.JabberLoginStrategy# isTlsRequired()
      */
     public boolean isTlsRequired()
     {
-        // requires TLS by default (i.e. it will not connect to a non-TLS server and will not
-        // fallback to clear-text)
-        return !accountID.getAccountPropertyBoolean(ProtocolProviderFactory.IS_ALLOW_NON_SECURE, false);
+        boolean tlsRequire = !accountID.getAccountPropertyBoolean(ProtocolProviderFactory.IS_ALLOW_NON_SECURE, false);
+        return tlsRequire && !(ccBuilder instanceof BOSHConfiguration.Builder);
     }
 
     /**
@@ -159,8 +161,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
      *
      * @param authority SecurityAuthority
      * @param reasonCode the authentication reason code. Indicates the reason of this authentication.
-     * @return The UserCredentials in case they should be cached for this session (i.e. are not
-     * persistent)
+     * @return The UserCredentials in case they should be cached for this session (i.e. are not persistent)
      */
     private UserCredentials loadPassword(SecurityAuthority authority, int reasonCode, String loginReason, boolean isShowAlways)
     {
@@ -230,5 +231,11 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
             accountID.setPassword(password);
         }
         return null;
+    }
+
+    @Override
+    public ConnectionConfiguration.Builder getConnectionConfigurationBuilder()
+    {
+        return ccBuilder;
     }
 }

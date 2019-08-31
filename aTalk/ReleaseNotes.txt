@@ -1,5 +1,29 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.0.4 (1104)
+Author:         cmeng
+Upload Date:	08/31/2019
+- Improve preference settings UI according to user experience and add advance section
+- Improve UI for BOSH-Proxy - feature suspended until smack has fully implemented the BOSH login.
+- Fix error in Regenerate OMEMO identities - must only perform initialization on the current active omemoManager.
+  Otherwise, user needs to restart aTalk.
+- Extend OMEMO key bundles index range check to allow for prekey ID == 0
+- Do not process VCardTempXUpdate from <presence/> sent by participants in chatRoom - all resolves to chatRoom entity with no VCard record.
+- waitForDisplay() must have max time to avoid apk hangs when activity is null after shutdown.
+- Port to jnsapi-0.0.3 latest source and update to confirm to smack-4.4.0
+- Change mDB.storePreKey() to use pass-in preKeyId from storeOmemoPreKey(), instead of extracting it from PreKeyRecord.
+- Add common AccountInfoPresenceActivity#getText() to check for null to avoid null pointer reference
+- Add 'Save' option on exit AccountInfoPresenceActivity to allow user to save changes
+  (fix android-P bug not displaying the 'Apply' button in form)
+- Change user exit re-confirmation dialog UI.
+- Change show/hide password icon/UI and handler implementation.
+- remove obsoleted android feature i.e. requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+- Prevent aTalk from crashing when Storage permission is not granted to aTal (Report Bugs).
+- Prevent AuthorizationRequestedDialog and RequestAuthorizationDialog from closing when user touches outside the dialog or press BackKey
+- Show mic muted state in call if RECORD_AUDIO permission is not granted.
+- Update README.md file
+
+=========================================================================
 Version:		2.0.3 (1103)
 Author:         cmeng
 Upload Date:	08/14/2019

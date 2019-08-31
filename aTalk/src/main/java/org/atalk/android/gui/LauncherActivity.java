@@ -8,11 +8,9 @@ package org.atalk.android.gui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.View;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
+import android.widget.*;
 
 import org.atalk.android.*;
 import org.atalk.impl.androidtray.NotificationHelper;
@@ -63,8 +61,6 @@ public class LauncherActivity extends OSGiActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         setupStrictMode();
-        // Request indeterminate progress for splash screen
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
 
         if (OSGiService.isShuttingDown()) {
@@ -89,16 +85,18 @@ public class LauncherActivity extends OSGiActivity
             startOnReboot = intent.getBooleanExtra(EventReceiver.AUTO_START_ONBOOT, false);
         }
 
-        setProgressBarIndeterminateVisibility(true);
         setContentView(R.layout.splash);
+        TextView stateText = findViewById(R.id.stateInfo);
+        if (restoreIntent != null)
+            stateText.setText(R.string.service_gui_RESTORING);
+
+        ProgressBar mActionBarProgress = findViewById(R.id.actionbar_progress);
+        mActionBarProgress.setVisibility(ProgressBar.VISIBLE);
 
         // Starts fade in animation
         ImageView myImageView = findViewById(R.id.loadingImage);
         Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         myImageView.startAnimation(myFadeInAnimation);
-
-        View restoreView = findViewById(R.id.restoring);
-        restoreView.setVisibility(restoreIntent != null ? View.VISIBLE : View.GONE);
     }
 
     @Override

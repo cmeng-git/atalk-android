@@ -36,7 +36,6 @@
             android:id="@+id/relaySupportCheckbox"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_marginLeft="@dimen/between_padding"
             android:layout_marginStart="@dimen/between_padding" />
     </TableRow>
 </TableLayout>

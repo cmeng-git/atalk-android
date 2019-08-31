@@ -36,10 +36,10 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.util.ViewUtil;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.bob.packet.BoBExt;
@@ -75,7 +75,7 @@ public class IBRCaptchaProcessDialog extends Dialog
     private JabberConnectionListener connectionListener;
 
     private ProtocolProviderServiceJabberImpl mPPS;
-    private XMPPTCPConnection mConnection;
+    private XMPPConnection mConnection;
 
     // Map contains extra form field label and variable not in static layout
     private Map<String, String> varMap = new HashMap<>();
@@ -91,7 +91,6 @@ public class IBRCaptchaProcessDialog extends Dialog
     private TextView mReason;
 
     private ImageView mImageView;
-    private ImageView mShowPasswordImage;
     private CheckBox mShowPasswordCheckBox;
 
     private Button mSubmitButton;
@@ -139,7 +138,6 @@ public class IBRCaptchaProcessDialog extends Dialog
 
         mPasswordField = this.findViewById(R.id.password);
         mShowPasswordCheckBox = this.findViewById(R.id.show_password);
-        mShowPasswordImage = this.findViewById(R.id.pwdviewImage);
         mServerOverrideCheckBox = this.findViewById(R.id.serverOverridden);
         mServerIpField = this.findViewById(R.id.serverIpField);
         mServerPortField = this.findViewById(R.id.serverPortField);
@@ -343,8 +341,10 @@ public class IBRCaptchaProcessDialog extends Dialog
      */
     private void initializeViewListeners()
     {
-        mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> showPassword(isChecked));
-        mServerOverrideCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> updateViewVisibility(isChecked));
+        mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
+                -> ViewUtil.showPassword(mPasswordField, isChecked));
+        mServerOverrideCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
+                -> updateViewVisibility(isChecked));
         mImageView.setOnClickListener(v -> mCaptchaText.requestFocus());
 
         mSubmitButton.setOnClickListener(v -> {
@@ -511,25 +511,6 @@ public class IBRCaptchaProcessDialog extends Dialog
     }
 
     /**
-     * Show or hide password
-     *
-     * @param show <tt>true</tt> set password visible to user
-     */
-    private void showPassword(boolean show)
-    {
-        int cursorPosition = mPasswordField.getSelectionStart();
-        if (show) {
-            mShowPasswordImage.setAlpha(1.0f);
-            mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        else {
-            mShowPasswordImage.setAlpha(0.3f);
-            mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        mPasswordField.setSelection(cursorPosition);
-    }
-
-    /**
      * Show or hide server address & port
      *
      * @param IsServerOverridden <tt>true</tt> show server address and port field for user entry
@@ -572,7 +553,7 @@ public class IBRCaptchaProcessDialog extends Dialog
         // close connection on error, else throws connectionClosedOnError on timeout
         Async.go(() -> {
             if (mConnection.isConnected())
-                mConnection.disconnect();
+                ((AbstractXMPPConnection) mConnection).disconnect();
         });
 
         mReason.setText(mReasonText);

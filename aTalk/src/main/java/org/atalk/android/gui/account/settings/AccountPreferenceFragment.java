@@ -451,7 +451,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     /**
      * Should be called by subclasses to indicate that some changes has been made to the account
      */
-    protected void setUncommittedChanges()
+    protected static void setUncommittedChanges()
     {
         uncommittedChanges = true;
     }

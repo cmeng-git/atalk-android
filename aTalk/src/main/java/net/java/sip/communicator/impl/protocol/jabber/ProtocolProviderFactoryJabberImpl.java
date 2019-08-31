@@ -6,6 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
@@ -125,7 +126,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
         ProtocolProviderServiceJabberImpl service = new ProtocolProviderServiceJabberImpl();
         try {
             EntityBareJid jid = JidCreate.entityBareFrom(userID);
-            service.initialize(jid, accountID);
+            service.initialize(jid, (JabberAccountID) accountID);
             return service;
         } catch (XmppStringprepException e) {
             Timber.e(e, "%s is not a valid JID", userID);

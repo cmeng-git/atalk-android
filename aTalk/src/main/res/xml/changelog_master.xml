@@ -6,6 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.0.4 (08/31/2019)" versioncode="1104">
+        <change>Improve preference settings UI according to user experience and add advance section</change>
+        <change>Change Regenerate OMEMO identities implementation to have change take effect without restart app</change>
+        <change>Extend OMEMO key bundles index range check to allow for prekey ID = 0</change>
+        <change>Fix aTalk hangs in endless loop when user exit while an unsuccessful login is still in progress</change>
+        <change>Close Subscription Authorization Request Dialog only on user response to prompt options</change>
+        <change>Show mic muted state in media call if RECORD_AUDIO permission is not granted</change>
+        <change>Do not process vCard update when \'presence\' is sent by participant in chatRoom</change>
+        <change>Add \'Save\' option on exit Account Info to allow user to save changes (fix android-P bug not displaying \'Apply\' button in form)</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.0.3 (08/14/2019)" versioncode="1103">
         <change>Implement XEP-0184: Message Delivery Receipts support with user enable/disable option</change>
         <change>Implement XEP-0012: Last Activity support to show the time of the last activity associated with a contact</change>

@@ -15,7 +15,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.muc.*;
@@ -74,7 +73,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
 
     private SmackInvitationListener mInvitationListener;
 
-    private XMPPTCPConnection mConnection = null;
+    private XMPPConnection mConnection = null;
 
     /**
      * Instantiates the user operation set with a currently valid instance of the Jabber protocol provider.
@@ -690,18 +689,21 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      */
     private void updateChatRoomMembers(Contact contact)
     {
-        for (ChatRoomJabberImpl chatRoom : chatRoomCache.values()) {
-            Resourcepart nick;
-            try {
-                nick = contact.getJid().getResourceOrThrow();
-            } catch (IllegalStateException e) {
-                continue;
-            }
+        // ConcurrentModificationException happens during test
+        synchronized (chatRoomCache) {
+            for (ChatRoomJabberImpl chatRoom : chatRoomCache.values()) {
+                Resourcepart nick;
+                try {
+                    nick = contact.getJid().getResourceOrThrow();
+                } catch (IllegalStateException e) {
+                    continue;
+                }
 
-            ChatRoomMemberJabberImpl member = chatRoom.findMemberForNickName(nick);
-            if (member != null) {
-                member.setContact(contact);
-                member.setAvatar(contact.getImage());
+                ChatRoomMemberJabberImpl member = chatRoom.findMemberForNickName(nick);
+                if (member != null) {
+                    member.setContact(contact);
+                    member.setAvatar(contact.getImage());
+                }
             }
         }
     }

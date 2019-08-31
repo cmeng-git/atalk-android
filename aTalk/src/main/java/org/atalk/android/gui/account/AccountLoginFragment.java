@@ -61,7 +61,6 @@ public class AccountLoginFragment extends OSGiFragment {
     private CheckBox mSavePasswordCheckBox;
     private CheckBox mServerOverrideCheckBox;
     private CheckBox mIBRegistrationCheckBox;
-    private ImageView mShowPasswordImage;
 
     private Spinner spinnerNwk;
     private Spinner spinnerDM;
@@ -107,7 +106,6 @@ public class AccountLoginFragment extends OSGiFragment {
         spinnerDM.setAdapter(adapterDM);
 
         mPasswordField = content.findViewById(R.id.passwordField);
-        mShowPasswordImage = content.findViewById(R.id.pwdviewImage);
         mShowPasswordCheckBox = content.findViewById(R.id.show_password);
         mSavePasswordCheckBox  = content.findViewById(R.id.store_password);
         mIBRegistrationCheckBox = content.findViewById(R.id.ibRegistration);
@@ -136,22 +134,10 @@ public class AccountLoginFragment extends OSGiFragment {
     }
 
     private void initializeViewListeners() {
-        mShowPasswordCheckBox.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        showPassword(isChecked);
-                    }
-                });
-
-        mServerOverrideCheckBox.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        updateViewVisibility(isChecked);
-                    }
-                });
-
+        mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
+                -> ViewUtil.showPassword(mPasswordField, isChecked));
+        mServerOverrideCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
+                -> updateViewVisibility(isChecked));
     }
 
     /**
@@ -210,18 +196,6 @@ public class AccountLoginFragment extends OSGiFragment {
             mServerIpField.setVisibility(View.GONE);
             mServerPortField.setVisibility(View.GONE);
         }
-    }
-
-    private void showPassword(boolean show) {
-        int cursorPosition = mPasswordField.getSelectionStart();
-        if (show) {
-            mShowPasswordImage.setAlpha(1.0f);
-            mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        } else {
-            mShowPasswordImage.setAlpha(0.3f);
-            mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        mPasswordField.setSelection(cursorPosition);
     }
 
     /**

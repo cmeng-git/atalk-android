@@ -50,7 +50,7 @@
     <string name="network">Сеть</string>
     <string name="notification_setting">Настройки уведомлений&#8230;</string>
     <string name="password">пароль</string>
-    <string name="password_label">Пароль:</string>
+    <string name="service_gui_PASSWORD">Пароль:</string>
     <string name="reason_label">Причина:</string>
     <string name="send_process_signal">Отправить сигнал процесса</string>
     <string name="show_call_info">Информация о вызове</string>
@@ -59,8 +59,7 @@
     <string name="store_password">Сохранить пароль</string>
     <string name="system_settings">Настройки&#8230;</string>
     <string name="username_hint">username@example.com</string>
-    <string name="username_label">Имя пользователя:</string>
-    <string name="video_resolution">Разрешение видео</string>
+    <string name="service_gui_USERNAME">Имя пользователя:</string>
 
     <string name="attachOptionDialog_picture">Картинки</string>
     <string name="attachOptionDialog_camera">Захват изображения</string>
@@ -216,8 +215,7 @@
     <string name="service_gui_ROOM_NAME">chatroom</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_Copyright">Copyright @ 2014, atalk.org\nВсе права защищены.</string>
-    <string name="AboutDialog_help"><a href="http://atalk.sytes.net">Онлайн-справка </a></string>
+    <string name="AboutDialog_help"><a href="http://atalk.sytes.net/atalk">Онлайн-справка </a></string>
     <string name="AboutDialog_title">О</string>
     <string name="AboutDialog_Version">Версия %1$s</string>
     <string name="About_action">О</string>
@@ -721,7 +719,7 @@
     <string name="service_gui_CONTINUE">Продолжить</string>
     <string name="service_gui_SHOW_CERT">Показать сертификат</string>
     <string name="service_gui_HIDE_CERT">Скрыть сертификат</string>
-    <string name="service_gui_UNSAVED_CHANGES">У вас есть несохраненные изменения. Отменить изменения и выйти?</string>
+    <string name="service_gui_UNSAVED_CHANGES">У вас есть несохраненные изменения. Сохранить или отменить и выйти.</string>
     <string name="service_gui_UNSAVED_CHANGES_TITLE">UnSaved Changes</string>
     <string name="service_gui_WAITING">Подождите&#8230;</string>
     <string name="service_gui_SERVER_INFO_FETCH">Извлечение объявленных функций/информации&#8230;</string>
@@ -951,25 +949,17 @@
     <string name="omemo_rebuild_session">Перестроить новый сеанс для отсутствия: %1$s</string>
     <string name="omemo_purge_inactive_device_error">Не удалось удалить неактивное устройство omemo для: %1$s.</string>
 
-    <!-- Global proxy plugin -->
-    <string name="service_gui_settings_PROXY">Глобальный прокси</string>
-    <string name="service_gui_settings_PROXY_SUMMARY">Настроить параметры прокси-сервера&#8230;</string>
-    <string name="plugin_globalproxy_PROXY_ADDRESS">Прокси-сервер</string>
-    <string name="plugin_globalproxy_PROXY_PASSWORD">Пароль прокси</string>
-    <string name="plugin_globalproxy_PROXY_PORT">Порт прокси</string>
-    <string name="plugin_globalproxy_PROXY_TYPE">Тип прокси</string>
-    <string name="plugin_globalproxy_PROXY_USERNAME">Имя пользователя прокси</string>
-
     <!-- Account proxy plugin -->
-    <string name="service_gui_settings_ACCOUNT_PROXY">Конфигурация прокси-сервера</string>
-    <string name="service_gui_settings_ACCOUNT_PROXY_SUMMARY">Настроить параметры прокси-сервера&#8230;</string>
-    <string name="plugin_proxy_PROXY_ADDRESS">Прокси-сервер</string>
-    <string name="plugin_proxy_PROXY_ENABLE">Использовать прокси</string>
-    <string name="plugin_proxy_PROXY_ENABLE_SUMMARY">Включить подключение через прокси для учетной записи</string>
-    <string name="plugin_proxy_PROXY_PASSWORD">Пароль прокси</string>
+    <string name="service_gui_settings_BOSH_PROXY">Конфигурация прокси-сервера</string>
+    <string name="service_gui_settings_BOSH_PROXY_SUMMARY">Настройка подключения через BOSH/Proxy для учетной записи</string>
+    <string name="plugin_proxy_BOSHURL_NULL">Содержимое поля BOSH URL не может быть пустым</string>
+    <string name="plugin_proxy_HOST_PORT_NULL">Содержимое прокси-хоста и порта не может быть пустым</string>
+
+    <string name="plugin_bosh_proxy_TYPE">Тип прокси-сервера</string>
+    <string name="plugin_proxy_PROXY_BOSH_URL">BOSH URL:</string>
+    <string name="plugin_proxy_PROXY_BOSH_USE_HTTP">Использовать HTTP-прокси</string>
+    <string name="plugin_proxy_PROXY_HOST">Прокси-сервер</string>
     <string name="plugin_proxy_PROXY_PORT">Порт прокси</string>
-    <string name="plugin_proxy_PROXY_TYPE">Тип прокси-сервера</string>
-    <string name="plugin_proxy_PROXY_USERNAME">Имя пользователя прокси</string>
 
     <!-- Provisioning Plugin-->
 	<string name="plugin_provisioning_AUTO">Автоматическое обнаружение URI инициализации</string>
@@ -1302,6 +1292,7 @@
 
     <!-- Call settings -->
     <string name="service_gui_settings_CALL">Вызов</string>
+    <string name="service_gui_settings_MEDIA_CALL">Медиа звонок</string>
 
     <!-- Audio settings -->
     <string name="service_gui_settings_AUDIO">Аудио</string>
@@ -1437,6 +1428,9 @@
 
     <!-- Advanced settings category -->
 	<string name="service_gui_settings_ADVANCED">Дополнительно</string>
+    <string name="service_gui_settings_EXPERT">Расширенные настройки</string>
+    <string name="service_gui_settings_EXPERT_SUMMARY">Пожалуйста, будьте осторожны с данными настройками</string>
+    <string name="service_gui_settings_OTHER">Другие</string>
 
     <!-- Protocol category -->
     <string name="service_gui_settings_ADDRESS">Адрес</string>
@@ -1484,7 +1478,6 @@
 
     <!-- Android Permissions -->
 	<string name="app_info_permissions_button">Информация о приложении</string>
-    <string name="app_name2">Dexter</string>
     <string name="ask_for_all_permissions_button">Запрос всех</string>
     <string name="ask_for_audio_permission_button">Аудио</string>
     <string name="ask_for_camera_permission_button">Камера</string>

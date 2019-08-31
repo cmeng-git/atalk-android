@@ -19,7 +19,6 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/label_padding"
             android:layout_marginEnd="@dimen/label_padding"
             android:layout_marginBottom="@dimen/label_padding"
             android:text="@string/service_gui_CONTACT_PHONE_NUMBER"
@@ -51,7 +50,6 @@
             android:dropDownWidth="wrap_content"
             android:imeOptions="actionNext"
             android:inputType="textNoSuggestions"
-            android:layout_marginRight="@dimen/label_padding"
             android:layout_marginEnd="@dimen/label_padding"
             android:paddingBottom="@dimen/label_padding"
             android:paddingLeft="@dimen/between_padding"
@@ -94,14 +92,12 @@
             android:id="@+id/button_cancel"
             style="@style/ButtonTop"
             android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
             android:text="@string/service_gui_CANCEL" />
 
         <Button
             android:id="@+id/button_video"
             style="@style/ButtonTop"
             android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
             android:text="@string/service_gui_CALL_VIDEO" />
 
         <Button

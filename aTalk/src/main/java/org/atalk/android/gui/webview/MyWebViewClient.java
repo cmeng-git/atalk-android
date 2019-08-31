@@ -27,6 +27,7 @@ import android.webkit.*;
 import android.widget.*;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.util.StringUtils;
 
 import java.util.regex.Pattern;
@@ -42,7 +43,6 @@ public class MyWebViewClient extends WebViewClient
     private Context mContext;
 
     private EditText mPasswordField;
-    private ImageView mShowPasswordImage;
 
     public MyWebViewClient(WebViewFragment viewFragment)
     {
@@ -108,9 +108,9 @@ public class MyWebViewClient extends WebViewClient
         mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         mPasswordField.setText(httpAuth[1]);
 
-        mShowPasswordImage = authView.findViewById(R.id.pwdviewImage);
         CheckBox showPasswordCheckBox = authView.findViewById(R.id.show_password);
-        showPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> showPassword(isChecked));
+        showPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
+                -> ViewUtil.showPassword(mPasswordField, isChecked));
 
         AlertDialog.Builder authDialog = new AlertDialog.Builder(mContext)
                 .setTitle(R.string.service_gui_USER_LOGIN)
@@ -130,20 +130,6 @@ public class MyWebViewClient extends WebViewClient
             handler.cancel();
             dialog.dismiss();
         });
-    }
-
-    private void showPassword(boolean show)
-    {
-        int cursorPosition = mPasswordField.getSelectionStart();
-        if (show) {
-            mShowPasswordImage.setAlpha(1.0f);
-            mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        else {
-            mShowPasswordImage.setAlpha(0.3f);
-            mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        mPasswordField.setSelection(cursorPosition);
     }
 
     /**

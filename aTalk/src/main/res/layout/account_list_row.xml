@@ -9,10 +9,8 @@
         android:id="@+id/accountToggleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp" />
 
     <ImageView
@@ -20,20 +18,16 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/accountToggleButton"
-        android:layout_toRightOf="@+id/accountToggleButton"
         android:src="@drawable/jabber_logo" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
         android:layout_toEndOf="@+id/accountProtoIcon"
-        android:layout_toRightOf="@+id/accountProtoIcon"
         android:gravity="center|start">
 
         <RelativeLayout
@@ -54,10 +48,8 @@
                 style="@style/MediumFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@+id/accountStatusIcon"
-                android:layout_toRightOf="@+id/accountStatusIcon"
                 android:gravity="center_vertical"
                 android:text="@string/service_gui_OFFLINE" />
         </RelativeLayout>

@@ -639,14 +639,14 @@ public class DatabaseBackend extends SQLiteOpenHelper
         return record;
     }
 
-    public void storePreKey(OmemoDevice userDevice, PreKeyRecord record)
+    public void storePreKey(OmemoDevice userDevice, int preKeyId, PreKeyRecord record)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.BARE_JID, userDevice.getJid().toString());
         values.put(SQLiteOmemoStore.DEVICE_ID, userDevice.getDeviceId());
-        values.put(SQLiteOmemoStore.PRE_KEY_ID, record.getId());
+        values.put(SQLiteOmemoStore.PRE_KEY_ID, preKeyId);
         values.put(SQLiteOmemoStore.PRE_KEYS, Base64.encodeToString(record.serialize(), Base64.DEFAULT));
         db.insert(SQLiteOmemoStore.PREKEY_TABLE_NAME, null, values);
     }

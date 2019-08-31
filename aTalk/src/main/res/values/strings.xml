@@ -55,7 +55,7 @@
     <string name="network">Network</string>
     <string name="notification_setting">Notification Settings&#8230;</string>
     <string name="password">password</string>
-    <string name="password_label">Password:</string>
+    <string name="service_gui_PASSWORD">Password:</string>
     <string name="reason_label">Reason:</string>
     <string name="send_process_signal">Send Process Signal</string>
     <string name="show_call_info">Call info</string>
@@ -63,12 +63,8 @@
     <string name="stop_osgi_framework">Stop OSGi Framework</string>
     <string name="store_password">Save password</string>
     <string name="system_settings">Settings&#8230;</string>
-
     <string name="username_hint">username@example.com</string>
-    <string name="username_label">Username:</string>
-    <string name="video_resolution">Video resolution</string>
-    <string name="video_resolution_low">320x240</string>
-    <string name="video_resolution_high">640x480</string>
+    <string name="service_gui_USERNAME">Username:</string>
     <string name="ACCOUNT_TYPE">org.atalk.android.account</string>
 
     <string name="attachOptionDialog_picture">Pictures</string>
@@ -226,7 +222,7 @@
     <string name="service_gui_ROOM_NAME">chatroom</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nAll rights reserved.</string>
+    <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\n(GNU General Public License v3.0)\nAll rights reserved.</string>
     <string name="AboutDialog_help"><a href="https://atalk.sytes.net/atalk">Online Help</a></string>
     <string name="AboutDialog_Link">https://atalk.sytes.net/atalk</string>
     <string name="AboutDialog_title">About</string>
@@ -776,7 +772,7 @@
     <string name="service_gui_CONTINUE">Continue</string>
     <string name="service_gui_SHOW_CERT">Show Certificate</string>
     <string name="service_gui_HIDE_CERT">Hide Certificate</string>
-    <string name="service_gui_UNSAVED_CHANGES">You have unsaved changes. Discard changes and exit?</string>
+    <string name="service_gui_UNSAVED_CHANGES">You have unsaved changes. Save or Cancel and exit.</string>
     <string name="service_gui_UNSAVED_CHANGES_TITLE">UnSaved Changes</string>
     <string name="service_gui_WAITING">Please wait&#8230;</string>
     <string name="service_gui_SERVER_INFO_FETCH">Fetching server advertised features/info&#8230;</string>
@@ -1005,25 +1001,18 @@
     <string name="omemo_rebuild_session">Rebuild new session for missing: %1$s</string>
     <string name="omemo_purge_inactive_device_error">Failed to remove inactive omemo device for: %1$s.</string>
 
-    <!-- Global proxy plugin -->
-    <string name="service_gui_settings_PROXY">Global proxy</string>
-    <string name="service_gui_settings_PROXY_SUMMARY">Configure proxy options&#8230;</string>
-    <string name="plugin_globalproxy_PROXY_ADDRESS">Proxy Server</string>
-    <string name="plugin_globalproxy_PROXY_PASSWORD">Proxy password</string>
-    <string name="plugin_globalproxy_PROXY_PORT">Proxy port</string>
-    <string name="plugin_globalproxy_PROXY_TYPE">Proxy Type</string>
-    <string name="plugin_globalproxy_PROXY_USERNAME">Proxy username</string>
+    <!-- Account proxy settings -->
+    <string name="service_gui_settings_BOSH_PROXY">BOSH-Proxy Configuration</string>
+    <string name="service_gui_settings_BOSH_PROXY_SUMMARY">Setup connection via BOSH/Proxy for the account</string>
+    <string name="plugin_proxy_BOSHURL_NULL">BOSH URL field content cannot be empty</string>
+    <string name="plugin_proxy_HOST_PORT_NULL">Proxy Host and Port fields content cannot be empty</string>
 
-    <!-- Account proxy plugin -->
-    <string name="service_gui_settings_ACCOUNT_PROXY">Proxy Configuration</string>
-    <string name="service_gui_settings_ACCOUNT_PROXY_SUMMARY">Configure account proxy options&#8230;</string>
-    <string name="plugin_proxy_PROXY_ADDRESS">Proxy Server</string>
-    <string name="plugin_proxy_PROXY_ENABLE">Use Proxy</string>
-    <string name="plugin_proxy_PROXY_ENABLE_SUMMARY">Enable connection via proxy for the account</string>
-    <string name="plugin_proxy_PROXY_PASSWORD">Proxy password</string>
-    <string name="plugin_proxy_PROXY_PORT">Proxy port</string>
-    <string name="plugin_proxy_PROXY_TYPE">Proxy Type</string>
-    <string name="plugin_proxy_PROXY_USERNAME">Proxy username</string>
+    <string name="plugin_bosh_proxy_TYPE">Type:</string>
+    <string name="plugin_proxy_PROXY_BOSH_URL">BOSH URL:</string>
+    <string name="plugin_proxy_PROXY_BOSH_USE_HTTP">Use HTTP Proxy</string>
+    <string name="service_gui_PROXY_BOSH_URL_HINT">https://example.org:4443/http-bind</string>
+    <string name="plugin_proxy_PROXY_HOST">Proxy Host:</string>
+    <string name="plugin_proxy_PROXY_PORT">Proxy Port:</string>
 
     <!-- Provisioning Plugin-->
     <string name="plugin_provisioning_AUTO">Automatically discover a provisioning URI</string>
@@ -1331,13 +1320,9 @@
     <string name="pref_key_resource_priority">pref_key_resource_priority</string>
 
     <!-- Account proxy -->
-    <string name="pref_key_proxy_address">pref_key_ProxyAddress</string>
     <string name="pref_key_proxy_auto_config">pref_key_proxy_auto_config</string>
-    <string name="pref_key_proxy_enable">pref_key_ProxyEnable</string>
-    <string name="pref_key_proxy_password">pref_key_ProxyPassword</string>
+    <string name="pref_key_proxy_address">pref_key_ProxyAddress</string>
     <string name="pref_key_proxy_port">pref_key_ProxyPort</string>
-    <string name="pref_key_proxy_type">pref_key_ProxyType</string>
-    <string name="pref_key_proxy_username">pref_key_ProxyUsername</string>
 
     <!-- XMPP ICE -->
     <string name="pref_key_auto_discover_stun">pref_key_auto_discover_stun</string>
@@ -1488,6 +1473,7 @@
     <!-- Call settings -->
     <string name="pref_cat_settings_call">pref.cat.settings.call</string>
     <string name="service_gui_settings_CALL">Call</string>
+    <string name="service_gui_settings_MEDIA_CALL">Media call</string>
 
     <!-- Audio settings -->
     <string name="pref_cat_settings_audio">pref.cat.settings.audio</string>
@@ -1512,6 +1498,7 @@
     <string name="service_gui_settings_AUDIO_CODECS_TITLE">Audio codecs</string>
 
     <!-- Video settings -->
+    <string name="pref_cat_settings_media_call">pref.cat.settings.media_call</string>
     <string name="pref_cat_settings_video">pref.cat.settings.video</string>
     <string name="service_gui_settings_VIDEO">Video</string>
 
@@ -1644,6 +1631,9 @@
     <!-- Advanced settings category -->
     <string name="pref_cat_settings_advanced">pref.cat.settings.advanced</string>
     <string name="service_gui_settings_ADVANCED">Advanced</string>
+    <string name="service_gui_settings_EXPERT">Expert settings</string>
+    <string name="service_gui_settings_EXPERT_SUMMARY">Please be careful with these</string>
+    <string name="service_gui_settings_OTHER">Other</string>
 
     <!-- Protocol category -->
     <string name="service_gui_settings_ADDRESS">Address</string>
@@ -1677,13 +1667,6 @@
     <string name="service_gui_settings_SILK_ASSUME_PL">Always assume packet loss</string>
     <string name="service_gui_settings_SILK_FEC_SAT">Speech activity threshold (0–1)</string>
     <string name="service_gui_settings_SILK_ADVERTISE_FEC">Advertise FEC support in SDP</string>
-
-    <!-- Global proxy -->
-    <string name="pref_key_conn_proxy_address">connectionProxyAddress</string>
-    <string name="pref_key_conn_proxy_password">connectionProxyPassword</string>
-    <string name="pref_key_conn_proxy_port">connectionProxyPort</string>
-    <string name="pref_key_conn_proxy_type">connectionProxyType</string>
-    <string name="pref_key_conn_proxy_username">connectionProxyUsername</string>
 
     <!-- SIP config -->
     <string name="pref_key_sip_client_port">SIP_PREFERRED_CLEAR_PORT</string>

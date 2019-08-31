@@ -16,8 +16,8 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
@@ -297,7 +297,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
         if (!assertConnected())
             return;
 
-        XMPPTCPConnection xmppConnection = jabberProvider.getConnection();
+        XMPPConnection xmppConnection = jabberProvider.getConnection();
         UserAvatarManager userAvatarManager = UserAvatarManager.getInstanceFor(xmppConnection);
         VCardAvatarManager vCardAvatarMgr = VCardAvatarManager.getInstanceFor(xmppConnection);
 
@@ -343,12 +343,13 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
                 if (detail.getDetailValue() != null) {
                     String strdate;
                     Object date = ((BirthDateDetail) detail).getCalendar();
-                     if (date instanceof Calendar) {
-                           DateFormat dateFormat = new SimpleDateFormat(InfoRetriever.BDAY_FORMAT_MEDIUM, Locale.US);
-                         strdate = dateFormat.format(((Calendar) date).getTime());
-                     } else {
-                         strdate = (String) date;
-                     }
+                    if (date instanceof Calendar) {
+                        DateFormat dateFormat = new SimpleDateFormat(InfoRetriever.BDAY_FORMAT_MEDIUM, Locale.US);
+                        strdate = dateFormat.format(((Calendar) date).getTime());
+                    }
+                    else {
+                        strdate = (String) date;
+                    }
                     vCard.setField("BDAY", strdate);
                 }
             }

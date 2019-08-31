@@ -50,7 +50,7 @@
     <string name="network">Netzwerk</string>
     <string name="notification_setting">Benachrichtigungseinstellungen&#8230;</string>
     <string name="password">Passwort</string>
-    <string name="password_label">Passwort:</string>
+    <string name="service_gui_PASSWORD">Passwort:</string>
     <string name="reason_label">Grund:</string>
     <string name="send_process_signal">Sende Prozess-Signal</string>
     <string name="show_call_info">Anruf Info</string>
@@ -59,8 +59,7 @@
     <string name="store_password">Passwort speichern</string>
     <string name="system_settings">Einstellungen&#8230;</string>
     <string name="username_hint">benutzername@servername.de</string>
-    <string name="username_label">Benutzername:</string>
-    <string name="video_resolution">Video-Auflösung</string>
+    <string name="service_gui_USERNAME">Benutzername:</string>
 
     <string name="attachOptionDialog_picture">Bilder</string>
     <string name="attachOptionDialog_camera">Bild aufnehmen</string>
@@ -216,8 +215,7 @@
     <string name="service_gui_ROOM_NAME">Chatraum</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nAll rights reserved.</string>
-    <string name="AboutDialog_help"><a href="http://atalk.sytes.net">Online Hilfe</a></string>
+    <string name="AboutDialog_help"><a href="http://atalk.sytes.net/atalk">Online Hilfe</a></string>
     <string name="AboutDialog_title">Über uns</string>
     <string name="AboutDialog_Version">Version %1$s</string>
     <string name="About_action">Über uns</string>
@@ -715,7 +713,7 @@
     <string name="service_gui_CONTINUE">Weiter</string>
     <string name="service_gui_SHOW_CERT">Zertifikat anzeigen</string>
     <string name="service_gui_HIDE_CERT">Zertifikat ausblenden</string>
-    <string name="service_gui_UNSAVED_CHANGES">Du hast ungespeicherte Änderungen. Änderungen verwerfen und beenden?</string>
+    <string name="service_gui_UNSAVED_CHANGES">Du hast ungespeicherte Änderungen. Speichern oder Abbrechen und beenden.</string>
     <string name="service_gui_UNSAVED_CHANGES_TITLE">Nicht gespeicherte Änderungen</string>
     <string name="service_gui_WAITING">Bitte warten&#8230;</string>
     <string name="service_gui_SERVER_INFO_FETCH">Abruf des Server-Features/info&#8230;</string>
@@ -938,25 +936,17 @@
     <string name="omemo_rebuild_session">Erstelle eine neue Sitzung für fehlenden %1$s</string>
     <string name="omemo_purge_inactive_device_error">Fehler beim Entfernen des inaktiven OMEMO-Geräts für:%1$s.</string>
 
-    <!-- Global proxy plugin -->
-    <string name="service_gui_settings_PROXY">Globaler Proxy</string>
-    <string name="service_gui_settings_PROXY_SUMMARY">Proxy-Einstellungen konfigurieren&#8230;</string>
-    <string name="plugin_globalproxy_PROXY_ADDRESS">Proxyserver</string>
-    <string name="plugin_globalproxy_PROXY_PASSWORD">Proxy-Passwort</string>
-    <string name="plugin_globalproxy_PROXY_PORT">Proxy-Port</string>
-    <string name="plugin_globalproxy_PROXY_TYPE">Proxy-Typ</string>
-    <string name="plugin_globalproxy_PROXY_USERNAME">Proxy-Benutzername</string>
-
     <!-- Account proxy plugin -->
-    <string name="service_gui_settings_ACCOUNT_PROXY">Proxykonfiguration</string>
-    <string name="service_gui_settings_ACCOUNT_PROXY_SUMMARY">Proxy-Einstellungen des Kontos&#8230;</string>
-    <string name="plugin_proxy_PROXY_ADDRESS">Proxyserver</string>
-    <string name="plugin_proxy_PROXY_ENABLE">Proxy benutzen</string>
-    <string name="plugin_proxy_PROXY_ENABLE_SUMMARY">Verbindung über Proxy für Konto aktivieren</string>
-    <string name="plugin_proxy_PROXY_PASSWORD">Proxy-Passwort</string>
+    <string name="service_gui_settings_BOSH_PROXY">BOSH/Proxy konfiguration</string>
+    <string name="service_gui_settings_BOSH_PROXY_SUMMARY">Richten Sie die Verbindung über BOSH/Proxy für das Konto ein</string>
+    <string name="plugin_proxy_BOSHURL_NULL">Der Inhalt des BOSH-URL-Felds darf nicht leer sein</string>
+    <string name="plugin_proxy_HOST_PORT_NULL">Der Inhalt der Felder "Proxy-Host" und "Port" darf nicht leer sein</string>
+
+    <string name="plugin_bosh_proxy_TYPE">Proxy-Typ</string>
+    <string name="plugin_proxy_PROXY_BOSH_URL">BOSH URL:</string>
+    <string name="plugin_proxy_PROXY_BOSH_USE_HTTP">Verwenden Sie den HTTP-Proxy</string>
+    <string name="plugin_proxy_PROXY_HOST">Proxyserver</string>
     <string name="plugin_proxy_PROXY_PORT">Proxy-Port</string>
-    <string name="plugin_proxy_PROXY_TYPE">Proxy-Typ</string>
-    <string name="plugin_proxy_PROXY_USERNAME">Proxy-Benutzername</string>
 
     <!-- Provisioning Plugin-->
     <string name="plugin_provisioning_AUTO">Automatische Erkennung von Provisioning-Diensten</string>
@@ -1192,7 +1182,7 @@
     <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Geben Sie die Standardzugriffsseite von webView ein:</string>
     <string name="service_gui_settings_WEBVIEW_TITLE">Webzugriffsseite</string>
 
-    <!-- Message settings -->
+    <!-- Messaging settings -->
     <string name="service_gui_settings_MSG">Nachrichten</string>
 
     <!-- Group messages in one window -->
@@ -1282,6 +1272,7 @@
 
     <!-- Call settings -->
     <string name="service_gui_settings_CALL">Anruf</string>
+    <string name="service_gui_settings_MEDIA_CALL">Medienanruf</string>
 
     <!-- Audio settings -->
     <string name="service_gui_settings_AUDIO">Audio</string>
@@ -1327,7 +1318,7 @@
     <string name="service_gui_settings_VIDEO_CODECS_SUMMARY">Prioritäten für Video-Codecs</string>
     <string name="service_gui_settings_VIDEO_CODECS_TITLE">Videocodecs</string>
     <!-- Video resolution -->
-    <string name="service_gui_settings_VIDEO_RESOLUTION">Videoauflösung</string>
+    <string name="service_gui_settings_VIDEO_RESOLUTION">Video-auflösung</string>
     <!-- Frame rate -->
     <string name="service_gui_settings_LIMIT_FPS_OFF">Unbegrenzt</string>
     <string name="service_gui_settings_LIMIT_FPS_ON">Angepasste Framerate</string>
@@ -1414,6 +1405,9 @@
 
     <!-- Advanced settings category -->
     <string name="service_gui_settings_ADVANCED">Erweitert</string>
+    <string name="service_gui_settings_EXPERT">Experteneinstellungen</string>
+    <string name="service_gui_settings_EXPERT_SUMMARY">Hier bitte vorsichtig sein</string>
+    <string name="service_gui_settings_OTHER">Sonstiges</string>
 
     <!-- Protocol category -->
     <string name="service_gui_settings_ADDRESS">Adresse</string>
@@ -1461,7 +1455,6 @@
 
     <!-- Android Permissions -->
     <string name="app_info_permissions_button">App Zugriffsrechte</string>
-    <string name="app_name2">Dexter</string>
     <string name="ask_for_all_permissions_button">Alle Rechte anfordern</string>
     <string name="ask_for_audio_permission_button">Audio</string>
     <string name="ask_for_camera_permission_button">Kamera</string>

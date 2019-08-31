@@ -41,7 +41,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView"
                 android:layout_toEndOf="@+id/peerCountLabel"
-                android:layout_toRightOf="@+id/peerCountLabel"
                 android:text="xx" />
 
             <TextView
@@ -49,7 +48,6 @@
                 style="@style/CallInfo.Header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textView"
                 android:layout_alignStart="@+id/textView"
                 android:layout_below="@+id/peerCountLabel"
                 android:text="@string/service_gui_callinfo_IS_CONFERENCE_FOCUS" />
@@ -61,7 +59,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/peerCountLabel"
                 android:layout_toEndOf="@+id/confFocusLabel"
-                android:layout_toRightOf="@+id/confFocusLabel"
                 android:text="true" />
 
             <TextView
@@ -69,7 +66,6 @@
                 style="@style/CallInfo.Header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textView"
                 android:layout_alignStart="@+id/textView"
                 android:layout_below="@+id/confFocusLabel"
                 android:text="@string/service_gui_callinfo_CALL_IDENTITY" />
@@ -89,7 +85,6 @@
                 style="@style/CallInfo.Header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textView"
                 android:layout_alignStart="@+id/textView"
                 android:layout_below="@+id/identityLabel"
                 android:text="@string/service_gui_callinfo_CALL_TRANSPORT" />
@@ -101,7 +96,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/identityLabel"
                 android:layout_toEndOf="@+id/signalingLabel"
-                android:layout_toRightOf="@+id/signalingLabel"
                 android:text="UDP" />
 
             <TextView
@@ -109,7 +103,6 @@
                 style="@style/CallInfo.Header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textView"
                 android:layout_alignStart="@+id/textView"
                 android:layout_below="@+id/signalingLabel"
                 android:text="CallPeer@other.server.com" />
@@ -119,7 +112,6 @@
                 style="@style/CallInfo.Header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textView"
                 android:layout_alignStart="@+id/textView"
                 android:layout_below="@+id/callPeer"
                 android:text="@string/service_gui_callinfo_CALL_DURATION" />
@@ -131,7 +123,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/callPeer"
                 android:layout_toEndOf="@+id/durationLabel"
-                android:layout_toRightOf="@+id/durationLabel"
                 android:text="xx:xx:xx" />
 
             <TextView

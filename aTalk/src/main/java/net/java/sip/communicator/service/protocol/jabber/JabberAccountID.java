@@ -7,6 +7,7 @@ package net.java.sip.communicator.service.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
 
+import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -35,12 +36,6 @@ public class JabberAccountID extends AccountID
      * Uses anonymous XMPP login if set to <tt>true</tt>.
      */
     public static final String ANONYMOUS_AUTH = "ANONYMOUS_AUTH";
-
-    /**
-     * Configures the URL which is to be used with BOSH transport. If the value
-     * is <tt>null</tt> or empty then the TCP transport will be used instead.
-     */
-    public static final String BOSH_URL = "BOSH_URL";
 
     /**
      * Account suffix for Google service.
@@ -118,24 +113,53 @@ public class JabberAccountID extends AccountID
 
     /**
      * Returns the BOSH URL which should be used to connect to the XMPP server.
-     * If the value is set then BOSH transport instead of TCP will be used.
+     * The value must not be null if BOSH transport is enabled.
      *
-     * @return a <tt>String</tt> with the URL which should be used for BOSH
-     * transport or <tt>null</tt> if disabled.
+     * @return a <tt>String</tt> with the URL which should be used for BOSH transport
      */
     public String getBoshUrl()
     {
-        return getAccountPropertyString(BOSH_URL);
+        return getAccountPropertyString(ProtocolProviderFactory.BOSH_URL);
     }
 
     /**
      * Sets new URL which should be used for the BOSH transport.
      *
-     * @param boshPath a <tt>String</tt> with the new BOSH URL or <tt>null</tt> to disable BOSH.
+     * @param boshPath a <tt>String</tt> with the new BOSH URL
      */
     public void setBoshUrl(String boshPath)
     {
-        putAccountProperty(BOSH_URL, boshPath);
+        putAccountProperty(ProtocolProviderFactory.BOSH_URL, boshPath);
+    }
+
+    /**
+     * Returns true is Type is BOSH else false.
+     *
+     * @return <tt>true</tt> if (Type == BOSH) else false
+     */
+    public boolean isBOSHEnable()
+    {
+        return BoshProxyDialog.BOSH.equals(getAccountPropertyString(ProtocolProviderFactory.PROXY_TYPE));
+    }
+
+    /**
+     * Indicates if HTTP proxy should be used for with BOSH protocol. Only HTTP proxy is supported for BOSH
+     *
+     * @return <tt>true</tt> if Bosh Http Proxy should be used, otherwise returns <tt>false</tt>
+     */
+    public boolean isBoshHttpProxyEnabled()
+    {
+        return getAccountPropertyBoolean(ProtocolProviderFactory.BOSH_PROXY_HTTP_ENABLED, false);
+    }
+
+    /**
+     * set HTTP proxy should be used for with BOSH protocol.
+     *
+     * @param isBoshHttp <code>true to enable HTTP proxy for BOSH</code>
+     */
+    public void setBoshHttpProxyEnabled(boolean isBoshHttp)
+    {
+        putAccountProperty(ProtocolProviderFactory.BOSH_PROXY_HTTP_ENABLED, isBoshHttp);
     }
 
     /**

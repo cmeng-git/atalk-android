@@ -1,17 +1,18 @@
 /*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may
- * obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for
- * the specific language governing permissions
- * and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.atalk.android.gui.chatroomslist;
 
@@ -30,6 +31,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiDialogFragment;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
@@ -70,7 +72,6 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
 
     private EditText mPasswordField;
     private CheckBox mShowPasswordCheckBox;
-    private ImageView mShowPasswordImage;
 
     // private BookmarkManager mBookmarkManager;
 
@@ -128,9 +129,9 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
         mBookmark = contentView.findViewById(R.id.cb_bookmark);
 
         mPasswordField = contentView.findViewById(R.id.passwordField);
-        mShowPasswordImage = contentView.findViewById(R.id.pwdviewImage);
         mShowPasswordCheckBox = contentView.findViewById(R.id.show_password);
-        mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> showPassword(isChecked));
+        mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
+                -> ViewUtil.showPassword(mPasswordField, isChecked));
 
         mChatRoom = contentView.findViewById(R.id.jid_chatroom);
         initBookmarkedConference();
@@ -248,20 +249,6 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
             success = false;
         }
         return success;
-    }
-
-    private void showPassword(boolean show)
-    {
-        int cursorPosition = mPasswordField.getSelectionStart();
-        if (show) {
-            mShowPasswordImage.setAlpha(1.0f);
-            mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        else {
-            mShowPasswordImage.setAlpha(0.3f);
-            mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        mPasswordField.setSelection(cursorPosition);
     }
 
     public interface OnFinishedCallback

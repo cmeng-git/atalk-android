@@ -19,15 +19,13 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.*;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.carbons.CarbonCopyReceivedListener;
 import org.jivesoftware.smackx.carbons.CarbonManager;
@@ -39,8 +37,7 @@ import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
-import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
-import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
+import org.jivesoftware.smackx.omemo.exceptions.*;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.listener.OmemoMessageListener;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
@@ -571,7 +568,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
          */
         public void registrationStateChanged(RegistrationStateChangeEvent evt)
         {
-            XMPPTCPConnection connection = jabberProvider.getConnection();
+            XMPPConnection connection = jabberProvider.getConnection();
             OmemoManager omemoManager;
 
             if (evt.getNewState() == RegistrationState.REGISTERING) {
@@ -585,7 +582,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 // omemoManager = OmemoManager.getInstanceFor(xmppConnection);
                 // registerOmemoMucListener(omemoManager);
 
-                XMPPTCPConnection jabberConnection = jabberProvider.getConnection();
+                XMPPConnection jabberConnection = jabberProvider.getConnection();
                 mChatManager = ChatManager.getInstanceFor(jabberConnection);
 
                 // make sure this listener is not already installed in this connection - ChatManager has taken care

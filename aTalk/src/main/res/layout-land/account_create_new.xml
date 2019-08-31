@@ -62,37 +62,27 @@
 
         <RelativeLayout
             android:id="@+id/pwdTypingArea"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginBottom="@dimen/between_padding"
-            android:layout_weight="1"
             android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/passwordField"
                 style="@style/EntryTextView"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/item_height"
                 android:hint="@string/password"
-                android:inputType="textPassword"
-                android:padding="8dp" />
+                android:inputType="textPassword" />
 
             <CheckBox
                 android:id="@+id/show_password"
+                android:button="@drawable/checkbox_password_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@id/passwordField"
-                android:layout_alignRight="@id/passwordField" />
-
-            <ImageView
-                android:id="@+id/pwdviewImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/show_password"
-                android:layout_alignLeft="@+id/show_password"
-                android:layout_alignStart="@+id/show_password"
-                android:alpha="0.3"
-                android:src="@drawable/pwdview" />
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -107,7 +97,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="40dp"
-            android:layout_marginRight="40dp"
             android:text="@string/store_password" />
 
         <CheckBox
@@ -129,7 +118,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
             android:text="@string/account_override_server" />
 
         <EditText
@@ -148,7 +136,6 @@
             style="@style/EntryTextView"
             android:layout_width="0dp"
             android:layout_height="@dimen/item_height"
-            android:layout_marginLeft="@dimen/screen_padding"
             android:layout_marginStart="@dimen/screen_padding"
             android:layout_weight="1"
             android:inputType="textNoSuggestions"

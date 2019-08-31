@@ -8,16 +8,13 @@
         android:id="@+id/incomingAvatarView"
         android:layout_width="@dimen/chat_avatar"
         android:layout_height="@dimen/chat_avatar"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="5dip"
         android:layout_marginStart="5dip">
 
         <ImageButton
             android:id="@+id/button_file"
             android:layout_width="64sp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:background="@android:color/transparent"
             android:contentDescription="{toolTip}"
@@ -29,11 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dip"
-        android:layout_marginLeft="@dimen/chat_text_margin"
-        android:layout_marginRight="30dip"
         android:layout_marginStart="@dimen/chat_text_margin"
         android:layout_toEndOf="@+id/incomingAvatarView"
-        android:layout_toRightOf="@+id/incomingAvatarView"
         android:background="@drawable/holder_filexfer"
         android:orientation="vertical"
         android:padding="5dip"
@@ -44,8 +38,7 @@
             style="@style/SmallFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="left"
-            android:paddingLeft="5dip"
+            android:gravity="start"
             android:paddingStart="5dip"
             android:textColor="@color/grey"
             android:visibility="gone" />
@@ -57,7 +50,6 @@
             android:maxHeight="250dp"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:paddingLeft="5dip"
             android:paddingStart="5dip" />
 
         <TextView
@@ -67,7 +59,6 @@
             android:layout_height="wrap_content"
             android:gravity="start"
             android:paddingBottom="5dip"
-            android:paddingLeft="5dip"
             android:paddingStart="5dip"
             android:text="{Title text}"
             android:textColor="@color/black" />
@@ -91,7 +82,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:paddingBottom="5dip"
-                android:layout_marginLeft="@dimen/chat_text_margin"
                 android:layout_marginStart="@dimen/chat_text_margin"
                 android:text="{FileName text}"
                 android:textColor="@color/grey" />
@@ -103,7 +93,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:paddingLeft="5dip"
             android:paddingStart="5dip"
             android:text="{Error text}"
             android:textColor="@color/red"
@@ -123,10 +112,8 @@
             style="@style/SmallFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/chat_text_margin"
             android:layout_marginStart="@dimen/chat_text_margin"
             android:gravity="start"
-            android:paddingLeft="5dip"
             android:paddingStart="5dip"
             android:text="{Transfer Speed}"
             android:textColor="@color/blue"
@@ -137,10 +124,8 @@
             style="@style/SmallFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/chat_text_margin"
             android:layout_marginStart="@dimen/chat_text_margin"
             android:gravity="start"
-            android:paddingLeft="5dip"
             android:paddingStart="5dip"
             android:paddingTop="5dip"
             android:text="{Time left}"
@@ -157,8 +142,6 @@
                 android:id="@+id/button_accept"
                 style="@style/ButtonTop"
                 android:layout_marginEnd="2dp"
-                android:layout_marginRight="2dp"
-                android:drawableLeft="@drawable/ic_accept"
                 android:drawableStart="@drawable/ic_accept"
                 android:text="@string/service_gui_ACCEPT"
                 android:visibility="gone" />
@@ -167,8 +150,6 @@
                 android:id="@+id/button_reject"
                 style="@style/ButtonTop"
                 android:layout_marginEnd="2dp"
-                android:layout_marginRight="2dp"
-                android:drawableLeft="@drawable/ic_reject"
                 android:drawableStart="@drawable/ic_cancel"
                 android:text="@string/service_gui_REJECT"
                 android:visibility="gone" />
@@ -177,8 +158,6 @@
                 android:id="@+id/button_retry"
                 style="@style/ButtonTop"
                 android:layout_marginEnd="2dp"
-                android:layout_marginRight="2dp"
-                android:drawableLeft="@drawable/ic_retry"
                 android:drawableStart="@drawable/ic_retry"
                 android:text="@string/service_gui_RETRY"
                 android:visibility="gone" />
@@ -187,8 +166,6 @@
                 android:id="@+id/buttonCancel"
                 style="@style/ButtonTop"
                 android:layout_marginEnd="2dp"
-                android:layout_marginRight="2dp"
-                android:drawableLeft="@drawable/ic_cancel"
                 android:drawableStart="@drawable/ic_cancel"
                 android:text="@string/service_gui_CANCEL"
                 android:visibility="gone" />
@@ -199,9 +176,7 @@
         android:id="@+id/filexferArrowView"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/chat_arrow_height"
-        android:layout_alignLeft="@+id/msg_body_layout"
         android:layout_alignStart="@+id/msg_body_layout"
-        android:layout_marginLeft="-10dp"
         android:layout_marginStart="-10dp"
         android:layout_marginTop="@dimen/chat_arrow_top"
         android:src="@drawable/filexferarrowout" />

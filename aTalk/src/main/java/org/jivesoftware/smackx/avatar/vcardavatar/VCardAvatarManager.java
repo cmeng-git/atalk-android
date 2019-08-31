@@ -29,6 +29,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.listener.VCardAvatarListener;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.*;
@@ -79,6 +80,8 @@ public class VCardAvatarManager extends AvatarManager
      */
     private final VCardManager vCardMgr;
 
+    private final MultiUserChatManager mucManager;
+
     /**
      * Creates a filter to only listen to presence stanza with the element name "x" and the
      * namespace "vcard-temp:x:update".
@@ -115,6 +118,7 @@ public class VCardAvatarManager extends AvatarManager
     private VCardAvatarManager(XMPPConnection connection)
     {
         super(connection);
+        mucManager = MultiUserChatManager.getInstanceFor(connection);
         vCardMgr = VCardManager.getInstanceFor(connection);
         vCardTempXUpdate = new VCardTempXUpdate(null);
         instances.put(connection, this);
@@ -250,7 +254,15 @@ public class VCardAvatarManager extends AvatarManager
     {
         // Do not process if received own <presence/> from server or from system service entity
         Jid jidFrom = stanza.getFrom();
-        if (!jidFrom.isEntityFullJid() || (mAccount != null && jidFrom.isParentOf(mAccount))) {
+        // if (!jidFrom.isEntityFullJid() || (mAccount != null && mAccount.isParentOf(jidFrom))) {
+        if (!jidFrom.isEntityFullJid() || jidFrom.equals(stanza.getTo())) {
+            return;
+        }
+
+        // Do not process <presence/>s send by chatRoom participants
+        Set<EntityBareJid> chatRooms = mucManager.getJoinedRooms();
+        if (chatRooms.contains(jidFrom.asEntityBareJidIfPossible())) {
+            // LOGGER.log(Level.INFO, "Skip process presence from chatRoom participant: " + jidFrom);
             return;
         }
 

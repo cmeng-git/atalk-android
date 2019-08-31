@@ -111,9 +111,7 @@ public class CryptoPrivateKeys extends OSGiActivity
                 OmemoFingerprint omemoFingerprint = omemoManager.getOwnFingerprint();
                 if (omemoFingerprint != null)
                     fingerprint = omemoFingerprint.toString();
-            } catch (SmackException.NotLoggedInException e) {
-                e.printStackTrace();
-            } catch (CorruptedOmemoKeyException e) {
+            } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException e) {
                 e.printStackTrace();
             }
             deviceFingerprints.put(deviceJid, fingerprint);

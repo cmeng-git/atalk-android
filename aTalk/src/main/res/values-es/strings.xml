@@ -54,7 +54,7 @@
     <string name="network">Red</string>
     <string name="notification_setting">Configuración de las notificaciones&#8230;</string>
     <string name="password">contraseña</string>
-    <string name="password_label">Contraseña:</string>
+    <string name="service_gui_PASSWORD">Contraseña:</string>
     <string name="reason_label">Motivo:</string>
     <string name="send_process_signal">Enviar señal de proceso</string>
     <string name="show_call_info">Información de la llamada</string>
@@ -63,8 +63,7 @@
     <string name="store_password">Guardar la contraseña</string>
     <string name="system_settings">Ajustes&#8230;</string>
     <string name="username_hint">usuario@ejemplo.com</string>
-    <string name="username_label">Usuario:</string>
-    <string name="video_resolution">Resolución de vídeo</string>
+    <string name="service_gui_USERNAME">Usuario:</string>
 
     <string name="attachOptionDialog_picture">Fotos</string>
     <string name="attachOptionDialog_camera">Hacer Foto</string>
@@ -124,7 +123,7 @@
     <string name="service_gui_BUSY_STATUS">Ocupado</string>
     <string name="service_gui_CALL">Llamada de audio</string>
     <string name="service_gui_CALL_FAILED">Llamada fallida</string>
-    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histŕico de llamadas</string>
+    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de llamadas</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk no ha podido inicializar %1$s\nTodas las llamadas/servicios de medios estarán deshabilitados.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Llamar con</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">No se encontró ningún dispositivo de Audio/Video activo, por lo que no se pudo hacer la llamada..</string>
@@ -220,8 +219,7 @@
 	<string name="service_gui_ROOM_NAME">Nombre de la sala</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nTodos los derechos reservados.</string>
-    <string name="AboutDialog_help"><a href="http://atalk.sytes.net">Ayuda on-line</a></string>
+    <string name="AboutDialog_help"><a href="http://atalk.sytes.net/atalk">Ayuda on-line</a></string>
     <string name="AboutDialog_title">Sobre</string>
     <string name="AboutDialog_Version">Versión %s</string>
     <string name="About_action">Sobre</string>
@@ -272,7 +270,7 @@
     <string name="location_permission_denied">Esta muestra requiere permiso de ubicación para habilitar la capa \"mi ubicación"\. Por favor, inténtalo de nuevo y concede acceso para usar la ubicación.\nSi el permiso ha sido denegado permanentemente, se puede habilitar desde la Configuración del sistema &gt; Apps &gt; \'Google Maps API Demos\'.</string>
     <string name="permission_required_toast">Se requiere permiso de ubicación para esta demostración.</string>
 
-    <!--    Persistent Store    -->
+    <!-- Persistent Store -->
     <string name="service_gui_EXPORT_SQL_DB">Exportar la base de datos aTalk SQL</string>
     <string name="service_gui_PURGE_DEBUG_LOG">Purgar el archivo de registro de depuración de aTalk</string>
     <string name="service_gui_PURGE_SQL_DB">Purgar la base de datos SQL de aTalk - ¡Peligro!</string>
@@ -338,7 +336,7 @@
     <string name="service_gui_FILE_RECEIVING_FROM">Recibiendo un archivo de %1$s</string>
 	<string name="service_gui_FILE_SEND_COMPLETED">El fichero se ha enviado correctamente a %1$s</string>
 	<string name="service_gui_FILE_SEND_FAILED">No se pudo enviar el archivo: %1$s</string>
-    <string name="service_gui_FILE_SEND_NOT_ALLOW">No se puede enviar el archivo durante la llamada de conferencia!</string>
+    <string name="service_gui_FILE_SEND_NOT_ALLOW">¡No se puede enviar el archivo durante la llamada de conferencia!</string>
 	<string name="service_gui_FILE_SEND_REFUSED">%1$s ha rechazado este archivo</string>
 	<string name="service_gui_FILE_SEND_TO">Enviar archivo adjunto</string>
 	<string name="service_gui_FILE_SENDING_TO">Enviando el archivo a %1$s</string>
@@ -371,9 +369,9 @@
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente. %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Eliminar medios de mi teléfono</string>
 
-    <string name="service_gui_CHATROOM_BOOKMARK_TITLE">ChatRoom Bookmark</string>
-    <string name="service_gui_CHATROOM_BOOKMARK">Bookmark</string>
-    <string name="service_gui_CHATROOM_AUTOJOIN">Unirse Auto</string>
+    <string name="service_gui_CHATROOM_BOOKMARK_TITLE">Salas en marcadores</string>
+    <string name="service_gui_CHATROOM_BOOKMARK">Marcadores</string>
+    <string name="service_gui_CHATROOM_AUTOJOIN">Autounirse</string>
     <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Error al actualizar Marcadores para %1$s: %2$s</string>
 
     <string name="service_gui_CHATROOM_OCCUPANT">Miembros de la sala de charla</string>
@@ -411,10 +409,9 @@
     <string name="service_gui_ADDRESS">" 7/5000 Dirección"</string>
     <string name="service_gui_CITY">Ciudad</string>
 	<string name="service_gui_CLOSE_CHAT_ROOM_DIALOG">Cerrar</string>
-
     <string name="service_gui_COUNTRY">País</string>
-    <string name="service_gui_EMAIL">Email</string>
-    <string name="service_gui_EMAILS">Emails</string>
+    <string name="service_gui_EMAIL">Correo</string>
+    <string name="service_gui_EMAILS">Correos</string>
     <string name="service_gui_FAX">Fax</string>
     <string name="service_gui_HOME">Casa</string>
     <string name="service_gui_HOME_PAGE">Página de inicio</string>
@@ -441,7 +438,7 @@
 	<string name="service_gui_JOIN_AUTOMATICALLY">Unirse automáticamente</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">No unirse automáticamente</string>
 	<string name="service_gui_KICK">Toque de atención</string>
-	<string name="service_gui_KICK_FAILED">Toque de atención fallida</string>
+	<string name="service_gui_KICK_FAILED">Toque de atención fallido</string>
 	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Error al dar un toque de atención %1$s. Se ha producido un error general del servidor.</string>
 	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Error al dar un toque de atención %1$s. El dueño y el administrador de la sala no admiten toques de atención.</string>
 	<string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Error al dar un toque de atención %1$s. No se tienen suficientes privilegios para hacerlo.</string>
@@ -653,7 +650,7 @@
     <string name="service_gui_callinfo_DECODED_WITH_FEC">Paquetes decodificados con FEC:</string>
     <string name="service_gui_callinfo_DISCARDED_PERCENT">Paquetes que se están desechando actualmente:</string>
     <string name="service_gui_callinfo_DISCARDED_TOTAL">Número de paquetes descartados:</string>
-	
+
     <!-- ICE info -->
     <string name="service_gui_callinfo_HARVESTING_DATA">%1$d ms (por %2$d recogidas)</string>
     <string name="service_gui_callinfo_HARVESTING_TIME">Tiempo de recolección:</string>
@@ -728,11 +725,11 @@
     <string name="service_gui_CONTINUE">Continuar</string>
     <string name="service_gui_SHOW_CERT">Mostrar el Certificado</string>
     <string name="service_gui_HIDE_CERT">Oculcar el certificado</string>
-    <string name="service_gui_UNSAVED_CHANGES">Hay cambios no guardados. ¿Descartar los cambios y salir?</string>
+    <string name="service_gui_UNSAVED_CHANGES">Hay cambios no guardados. Guardar o cancelar y salir.</string>
     <string name="service_gui_UNSAVED_CHANGES_TITLE">Cambios no guardados</string>
     <string name="service_gui_WAITING">Por favor, espera&#8230;</string>
     <string name="service_gui_SERVER_INFO_FETCH">Obtención de las características/información anunciadas del servidor&#8230;</string>
-    
+
     <!-- Security info -->
     <string name="service_gui_security_AUDIO_NOT_SECURED">Audio no seguro</string>
     <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">Llamada no segura.</string>
@@ -750,7 +747,6 @@
     <string name="service_gui_security_STRING_COMPARED">¡Cadenas comparadas!</string>
     <string name="service_gui_security_VERIFY_TOAST">¡Llamada segura! Presionar para comparar la cadena de seguridad ahora o utilizar el menú más tarde.</string>
     <string name="service_gui_security_VIDEO_NOT_SECURED">Video no seguro</string>
-
     <string name="service_gui_avatar_CHOOSE_ICON">Escoger imagen</string>
     <string name="service_gui_avatar_REMOVE_ICON">Eliminar la imagen actual</string>
 
@@ -962,25 +958,17 @@
     <string name="omemo_rebuild_session">Reiniciar una nueva sesión para que no aparezca: %1$s</string>
     <string name="omemo_purge_inactive_device_error">Error al eliminar el dispositivo omemo inactivo para: %1$s.</string>
 
-    <!-- Global proxy plugin -->
-    <string name="service_gui_settings_PROXY">Proxy global</string>
-    <string name="service_gui_settings_PROXY_SUMMARY">Configurar las opciones de proxy&#8230;</string>
-    <string name="plugin_globalproxy_PROXY_ADDRESS">Servidor proxy</string>
-    <string name="plugin_globalproxy_PROXY_PASSWORD">Contraseña para el proxy</string>
-    <string name="plugin_globalproxy_PROXY_PORT">Puerto del proxy</string>
-    <string name="plugin_globalproxy_PROXY_TYPE">Tipo de proxy</string>
-    <string name="plugin_globalproxy_PROXY_USERNAME">Nombre de usuario para el proxy</string>
-
     <!-- Account proxy plugin -->
-    <string name="service_gui_settings_ACCOUNT_PROXY">Configuración del proxy</string>
-    <string name="service_gui_settings_ACCOUNT_PROXY_SUMMARY">Configurar las opciones de la cuenta del proxy&#8230;</string>
-    <string name="plugin_proxy_PROXY_ADDRESS">Servidor proxy</string>
-    <string name="plugin_proxy_PROXY_ENABLE">Usar Proxy</string>
-    <string name="plugin_proxy_PROXY_ENABLE_SUMMARY">Habilitar la conexión vía proxy para la cuenta</string>
-    <string name="plugin_proxy_PROXY_PASSWORD">Contraseña para el proxy</string>
+    <string name="service_gui_settings_BOSH_PROXY">Configuración del BOSH/Proxy</string>
+    <string name="service_gui_settings_BOSH_PROXY_SUMMARY">Configurar la conexión a través de BOSH/Proxy para la cuenta</string>
+    <string name="plugin_proxy_BOSHURL_NULL">El contenido del campo URL BOSH no puede estar vacío</string>
+    <string name="plugin_proxy_HOST_PORT_NULL">El contenido de los campos de host proxy y puerto no puede estar vacío</string>
+
+    <string name="plugin_bosh_proxy_TYPE">Tipo de proxy</string>
+    <string name="plugin_proxy_PROXY_BOSH_URL">BOSH URL:</string>
+    <string name="plugin_proxy_PROXY_BOSH_USE_HTTP">Usar proxy HTTP</string>
+    <string name="plugin_proxy_PROXY_HOST">Servidor proxy</string>
     <string name="plugin_proxy_PROXY_PORT">Puerto del Proxy</string>
-    <string name="plugin_proxy_PROXY_TYPE">Tipo de proxy</string>
-    <string name="plugin_proxy_PROXY_USERNAME">Nombre de usuario para el proxy</string>
 
     <!-- Provisioning Plugin-->
     <string name="plugin_provisioning_AUTO">Descubrir automáticamente una URI de aprovisionamiento</string>
@@ -1048,14 +1036,14 @@
     <string name="service_gui_COMMIT_PROGRESS_MSG">Cambios en el almacenamiento de la cuenta, por favor espera&#8230;</string>
     <string name="service_gui_COMMIT_PROGRESS_TITLE">"Comprometiéndose&#8230;"</string>
     <string name="service_gui_SETTINGS_NOT_SET">(No fijado)</string>
-    
+
     <!-- Connection settings -->
     <string name="service_gui_CONN_NO_CERT">Ninguno</string>
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Codificando el audio</string>
     <string name="service_gui_ENC_OVERRIDE_GLOBAL">Anular global</string>
 	<string name="service_gui_ENC_VIDEO_TITLE">Codificando el vídeo</string>
-    
+
     <!-- Security protocols dialog -->
     <string name="service_gui_LIST_EMPTY">Ninguno</string>
     <string name="service_gui_SEC_ENABLE_ENCRYPTION">Encriptación</string>
@@ -1071,11 +1059,11 @@
     <string name="service_gui_SERVERS_LIST_CANCEL">Cancelar</string>
     <string name="service_gui_SERVERS_LIST_EMPTY">La lista está vacía. Hacer clic para añadir una nueva entrada&#8230;</string>
     <string name="service_gui_SERVERS_LIST_REMOVE">Eliminar</string>
-    
+
     <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">Dirección JID</string>
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Soporte relé</string>
-    
+
     <!-- STUN edit -->
     <string name="service_gui_STUN_TURN_SERVER">Servidor STUN/TURN</string>
     <string name="service_gui_STUN_EDIT_ADDRESS">Dirección IP</string>
@@ -1083,7 +1071,7 @@
     <string name="service_gui_STUN_EDIT_PORT">Puerto del Servidor</string>
     <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Soporte TURN</string>
     <string name="service_gui_STUN_EDIT_TURN_USER">Nombre usuario TURN</string>
- 
+
     <!-- Security preferences -->
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Habilitar el cifrado de llamadas</string>
     <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Protocolos de encriptación</string>
@@ -1223,7 +1211,7 @@
     <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Ingrese a la página de acceso predeterminado de webView:</string>
     <string name="service_gui_settings_WEBVIEW_TITLE">Página de acceso web</string>
 
-    <!-- Message settings -->
+    <!-- Messaging settings -->
     <string name="service_gui_settings_MSG">Mensajería</string>
 
     <!-- Group messages in one window -->
@@ -1240,7 +1228,7 @@
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">¿Cuántos mensajes recientes se deben mostrar?</string>
     <string name="service_gui_settings_CHAT_HISTORY_SIZE">Mostrar mensajes recientes</string>
     <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d mensajes recientes en nuevas charlas</string>
-    <string name="service_gui_settings_SHOW_HISTORY">Show history</string>
+    <string name="service_gui_settings_SHOW_HISTORY">Mostrar el historial</string>
 
     <!-- Tell others when we have received and read the messages -->
     <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT">Recibo de entrega del mensaje</string>
@@ -1256,16 +1244,15 @@
     <string name="service_gui_settings_ACCEPT_FILE">Acepta automáticamente el tamaño máximo de archivo</string>
 
     <!-- Setup subscription Mode: auto or manual approval -->
-    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presencia Suscribir aprobación</string>
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Aprobación de suscripción de presencia</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Suscribir aprobación - aceptar automáticamente todo</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Suscribir aprobación - manual</string>
+
     <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
-    <!-- Use task bar / dock alerts on incoming calls and chats -->
+    <!-- Use task bar/dock alerts on incoming calls and chats -->
     <string name="service_gui_settings_CHAT_ALERTS">Mostrar notificaciones de la barra de estado</string>
 
     <!-- Leave chat rooms when closing window(omitted on Android for now) -->
-    <!-- ... -->
-
     <!-- Auto away -->
     <!-- Not sure how to implement it on android - leave for now -->
 
@@ -1313,6 +1300,7 @@
 
     <!-- Call settings -->
     <string name="service_gui_settings_CALL">Llamar</string>
+    <string name="service_gui_settings_MEDIA_CALL">Llamada medios</string>
 
     <!-- Audio settings -->
     <string name="service_gui_settings_AUDIO">Audio</string>
@@ -1366,8 +1354,8 @@
     <string name="service_gui_settings_VIDEO_FRAME_RATE">Frecuencia de fotogramas de vídeo</string>
     <string name="service_gui_settings_VIDEO_FPS_DESC">Valores aceptados entre 5 y 30 fps</string>
     <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">Umbral de paso RTP (kBytes/s)</string>
-    <string name="service_gui_settings_VIDEO_TARGET_FPS">Frecuencia de imagen objetivo (por seg.)</string>
-	
+    <string name="service_gui_settings_VIDEO_TARGET_FPS">Frecuencia de objetivo en la imagen (por seg.)</string>
+
     <!-- Security settings -->
     <!-- Chat security -->
     <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">Configuración de seguridad de cifrado de mensajes</string>
@@ -1445,6 +1433,9 @@
 
     <!-- Advanced settings category -->
     <string name="service_gui_settings_ADVANCED">Advanzado</string>
+    <string name="service_gui_settings_EXPERT">Opciones para expertos</string>
+    <string name="service_gui_settings_EXPERT_SUMMARY">Por favor, cuidado con estas opciones</string>
+    <string name="service_gui_settings_OTHER">Otros</string>
 
     <!-- Protocol category -->
     <string name="service_gui_settings_ADDRESS">Dirección</string>
@@ -1493,7 +1484,6 @@
 
     <!-- Android Permissions -->
     <string name="app_info_permissions_button">Información de la App</string>
-    <string name="app_name2">Dexter</string>
     <string name="ask_for_all_permissions_button">Solicitar todo</string>
     <string name="ask_for_audio_permission_button">Audio</string>
     <string name="ask_for_camera_permission_button">Cámara</string>

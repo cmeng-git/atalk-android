@@ -6,9 +6,8 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import org.atalk.util.StringUtils;
-import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
@@ -57,7 +56,7 @@ public class JingleNodesServiceDiscovery implements Runnable
     /**
      * The connection, must be connected.
      */
-    private final XMPPTCPConnection connection;
+    private final XMPPConnection connection;
 
     /**
      * Our account.
@@ -72,7 +71,7 @@ public class JingleNodesServiceDiscovery implements Runnable
      * @param accountID our account.
      * @param syncRoot the synchronization object while discovering.
      */
-    JingleNodesServiceDiscovery(SmackServiceNode service, XMPPTCPConnection connection,
+    JingleNodesServiceDiscovery(SmackServiceNode service, XMPPConnection connection,
             JabberAccountIDImpl accountID, Object syncRoot)
     {
         this.jingleNodesSyncRoot = syncRoot;
@@ -134,7 +133,7 @@ public class JingleNodesServiceDiscovery implements Runnable
      * @return
      */
     private SmackServiceNode.MappedNodes searchServicesWithPrefix(SmackServiceNode service,
-            XMPPTCPConnection xmppConnection, int maxEntries, int maxDepth, int maxSearchNodes,
+            XMPPConnection xmppConnection, int maxEntries, int maxDepth, int maxSearchNodes,
             String protocol, boolean searchBuddies, boolean autoDiscover, String prefix)
             throws NotConnectedException, InterruptedException
     {
@@ -200,7 +199,7 @@ public class JingleNodesServiceDiscovery implements Runnable
      * @return
      */
     private static boolean searchDiscoItems(SmackServiceNode service,
-            XMPPTCPConnection xmppConnection, int maxEntries, Jid startPoint,
+            XMPPConnection xmppConnection, int maxEntries, Jid startPoint,
             SmackServiceNode.MappedNodes mappedNodes, int maxDepth, int maxSearchNodes,
             String protocol, ConcurrentHashMap<Jid, Jid> visited, String prefix)
             throws InterruptedException, NotConnectedException

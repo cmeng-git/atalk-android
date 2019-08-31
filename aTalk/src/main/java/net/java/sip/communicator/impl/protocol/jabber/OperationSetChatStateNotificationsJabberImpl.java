@@ -20,16 +20,15 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.MetaContactChatTransport;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
@@ -66,7 +65,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
     /**
      * XMPPTCPConnection connection for chat session.
      */
-    XMPPTCPConnection mConnection;
+    XMPPConnection mConnection;
 
     /**
      * The manger which send us the chat state info and through which we send inf
@@ -112,12 +111,12 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         if (!(contact instanceof ContactJabberImpl))
             throw new IllegalArgumentException("The specified contact is not a Jabber contact." + contact);
 
-            // now handle XEP-0085 chat state sending
-    //		Chat chat = opSetBasicIM.getChat((EntityJid) contact.getJid());
-    //		if (opSetBasicIM != null && mConnection != null && chat != null) {
-    //			Timber.i("Sending Chat State for : " + chatState.toString());
-    //			chatStateManager.setCurrentState(chatState, chat);
-    //		}
+        // now handle XEP-0085 chat state sending
+        //		Chat chat = opSetBasicIM.getChat((EntityJid) contact.getJid());
+        //		if (opSetBasicIM != null && mConnection != null && chat != null) {
+        //			Timber.i("Sending Chat State for : " + chatState.toString());
+        //			chatStateManager.setCurrentState(chatState, chat);
+        //		}
 
         if (opSetBasicIM != null && mConnection != null) {
             Jid toJid = opSetBasicIM.getRecentFullJidForContactIfPossible(contact);

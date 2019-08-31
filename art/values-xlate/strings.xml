@@ -50,7 +50,7 @@
     <string name="network">Network</string>
     <string name="notification_setting">Notification Settings&#8230;</string>
     <string name="password">password</string>
-    <string name="password_label">Password:</string>
+    <string name="service_gui_PASSWORD">Password:</string>
     <string name="reason_label">Reason:</string>
     <string name="send_process_signal">Send Process Signal</string>
     <string name="show_call_info">Call info</string>
@@ -59,8 +59,7 @@
     <string name="store_password">Save password</string>
     <string name="system_settings">Settings&#8230;</string>
     <string name="username_hint">username@example.com</string>
-    <string name="username_label">Username:</string>
-    <string name="video_resolution">Video resolution</string>
+    <string name="service_gui_USERNAME">Username:</string>
 
     <string name="attachOptionDialog_picture">Pictures</string>
     <string name="attachOptionDialog_camera">Take picture</string>
@@ -216,7 +215,8 @@
     <string name="service_gui_ROOM_NAME">chatroom</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\nAll rights reserved.</string>
+    <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\n(GNU General Public License v3.0)\nAll rights reserved.</string>
+    <string name="AboutDialog_help"><a href="https://atalk.sytes.net/atalk">Online Help</a></string>
     <string name="AboutDialog_title">About</string>
     <string name="AboutDialog_Version">Version %1$s</string>
     <string name="About_action">About</string>
@@ -477,6 +477,7 @@
     <string name="service_gui_MSG_NOT_DELIVERED">A network problem occurred. Please check your network configuration and try again.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s wrote</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">You must login first to send message.</string>
+
     <string name="service_gui_MISSED_CALLS_TOOL_TIP">Missed calls from:</string>
     <string name="service_gui_MULTIPLE_LOGIN">Multiple login instants not allowed. The following account: User name: %1$s, Server name: %2$s has been disconnected.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Mutually On Hold</string>
@@ -716,7 +717,7 @@
     <string name="service_gui_CONTINUE">Continue</string>
     <string name="service_gui_SHOW_CERT">Show Certificate</string>
     <string name="service_gui_HIDE_CERT">Hide Certificate</string>
-    <string name="service_gui_UNSAVED_CHANGES">You have unsaved changes. Discard changes and exit?</string>
+    <string name="service_gui_UNSAVED_CHANGES">You have unsaved changes. Save or Cancel and exit.</string>
     <string name="service_gui_UNSAVED_CHANGES_TITLE">UnSaved Changes</string>
     <string name="service_gui_WAITING">Please wait&#8230;</string>
     <string name="service_gui_SERVER_INFO_FETCH">Fetching server advertised features/info&#8230;</string>
@@ -882,7 +883,6 @@
     <string name="plugin_otr_authbuddydialog_CANCEL">Cancel</string>
     <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Please enter the fingerprint you received from %1$s.</string>
     <string name="plugin_otr_authbuddydialog_HELP">Help</string>
-    <string name="plugin_otr_authbuddydialog_HELP_URI">https://atalk.sytes.net/faq.html</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE">I have</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">I have not</string>
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint for %1$s: %2$s</string>
@@ -944,25 +944,17 @@
     <string name="omemo_rebuild_session">Rebuild new session for missing: %1$s</string>
     <string name="omemo_purge_inactive_device_error">Failed to remove inactive omemo device for: %1$s.</string>
 
-    <!-- Global proxy plugin -->
-    <string name="service_gui_settings_PROXY">Global proxy</string>
-    <string name="service_gui_settings_PROXY_SUMMARY">Configure proxy options&#8230;</string>
-    <string name="plugin_globalproxy_PROXY_ADDRESS">Proxy Server</string>
-    <string name="plugin_globalproxy_PROXY_PASSWORD">Proxy password</string>
-    <string name="plugin_globalproxy_PROXY_PORT">Proxy port</string>
-    <string name="plugin_globalproxy_PROXY_TYPE">Proxy Type</string>
-    <string name="plugin_globalproxy_PROXY_USERNAME">Proxy username</string>
+    <!-- Account proxy settings -->
+    <string name="service_gui_settings_BOSH_PROXY">BOSH-Proxy Configuration</string>
+    <string name="service_gui_settings_BOSH_PROXY_SUMMARY">Setup connection via BOSH/Proxy for the account</string>
+    <string name="plugin_proxy_BOSHURL_NULL">BOSH URL field content cannot be empty</string>
+    <string name="plugin_proxy_HOST_PORT_NULL">Proxy Host and Port fields content cannot be empty</string>
 
-    <!-- Account proxy plugin -->
-    <string name="service_gui_settings_ACCOUNT_PROXY">Proxy Configuration</string>
-    <string name="service_gui_settings_ACCOUNT_PROXY_SUMMARY">Configure account proxy options&#8230;</string>
-    <string name="plugin_proxy_PROXY_ADDRESS">Proxy Server</string>
-    <string name="plugin_proxy_PROXY_ENABLE">Use Proxy</string>
-    <string name="plugin_proxy_PROXY_ENABLE_SUMMARY">Enable connection via proxy for the account</string>
-    <string name="plugin_proxy_PROXY_PASSWORD">Proxy password</string>
-    <string name="plugin_proxy_PROXY_PORT">Proxy port</string>
-    <string name="plugin_proxy_PROXY_TYPE">Proxy Type</string>
-    <string name="plugin_proxy_PROXY_USERNAME">Proxy username</string>
+    <string name="plugin_bosh_proxy_TYPE">Type:</string>
+    <string name="plugin_proxy_PROXY_BOSH_URL">BOSH URL:</string>
+    <string name="plugin_proxy_PROXY_BOSH_USE_HTTP">Use HTTP Proxy</string>
+    <string name="plugin_proxy_PROXY_HOST">Proxy Host:</string>
+    <string name="plugin_proxy_PROXY_PORT">Proxy Port:</string>
 
     <!-- Provisioning Plugin-->
     <string name="plugin_provisioning_AUTO">Automatically discover a provisioning URI</string>
@@ -1293,6 +1285,7 @@
 
     <!-- Call settings -->
     <string name="service_gui_settings_CALL">Call</string>
+    <string name="service_gui_settings_MEDIA_CALL">Media call</string>
 
     <!-- Audio settings -->
     <string name="service_gui_settings_AUDIO">Audio</string>
@@ -1425,6 +1418,9 @@
 
     <!-- Advanced settings category -->
     <string name="service_gui_settings_ADVANCED">Advanced</string>
+    <string name="service_gui_settings_EXPERT">Expert settings</string>
+    <string name="service_gui_settings_EXPERT_SUMMARY">Please be careful with these</string>
+    <string name="service_gui_settings_OTHER">Other</string>
 
     <!-- Protocol category -->
     <string name="service_gui_settings_ADDRESS">Address</string>
@@ -1472,7 +1468,6 @@
 
     <!-- Android Permissions -->
     <string name="app_info_permissions_button">App Info</string>
-    <string name="app_name2">Dexter</string>
     <string name="ask_for_all_permissions_button">Request all</string>
     <string name="ask_for_audio_permission_button">Audio</string>
     <string name="ask_for_camera_permission_button">Camera</string>

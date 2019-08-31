@@ -64,8 +64,10 @@ public class LogsCollector
      * @param destination the possible destination archived file
      * @param optional an optional file to be added to the archive.
      * @return the resulting file in zip format
+     * @throws FileNotFoundException on file access permission denied
      */
     public static File collectLogs(File destination, File optional)
+            throws FileNotFoundException
     {
         if (destination == null)
             return null;
@@ -77,19 +79,16 @@ public class LogsCollector
         else {
             destination = new File(destination, getDefaultFileName());
         }
+        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(destination));
+        collectHomeFolderLogs(out);
+        collectJavaCrashLogs(out);
 
+        if (optional != null) {
+            addFileToZip(optional, out);
+        }
         try {
-            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(destination));
-            collectHomeFolderLogs(out);
-            collectJavaCrashLogs(out);
-
-            if (optional != null) {
-                addFileToZip(optional, out);
-            }
             out.close();
             return destination;
-        } catch (FileNotFoundException ex) {
-            Timber.e(ex, "Error creating logs file archive");
         } catch (IOException ex) {
             Timber.e(ex, "Error closing archive file");
         }

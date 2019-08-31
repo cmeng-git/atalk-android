@@ -400,6 +400,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 
         /**
          * Starts the transfer of media data from this <tt>AbstractBufferStream</tt>.
+         * WIll not proceed if mState == STATE_UNINITIALIZED (when mic is disabled)
          *
          * @throws IOException if anything goes wrong while starting the transfer of media data from this
          * <tt>AbstractBufferStream</tt>
@@ -420,7 +421,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 
             super.start();
             synchronized (this) {
-                if (audioRecord != null) {
+                if ((audioRecord != null)  && (audioRecord.getState() == AudioRecord.STATE_INITIALIZED)) {
                     setThreadPriority = true;
                     audioRecord.startRecording();
                 }
@@ -439,7 +440,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
                 throws IOException
         {
             synchronized (this) {
-                if (audioRecord != null) {
+                if ((audioRecord != null)  && (audioRecord.getState() == AudioRecord.STATE_INITIALIZED)) {
                     audioRecord.stop();
                     setThreadPriority = true;
                 }

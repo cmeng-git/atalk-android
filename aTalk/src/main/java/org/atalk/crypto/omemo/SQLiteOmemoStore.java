@@ -27,8 +27,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
@@ -237,7 +236,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
     @Override
     public void storeOmemoPreKey(OmemoDevice userDevice, int preKeyId, PreKeyRecord preKeyRecord)
     {
-        mDB.storePreKey(userDevice, preKeyRecord);
+        mDB.storePreKey(userDevice, preKeyId, preKeyRecord);
     }
 
     /**
@@ -410,9 +409,10 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
             Timber.w("%s", e.getMessage());
             throw new CorruptedOmemoKeyException(e.getMessage());
         }
-        if (identityKey == null) {
-            aTalkApp.showToastMessage(R.string.omemo_identity_key_missing, contactDevice);
-        }
+        // Hide message from user to avoid confusion
+        // if (identityKey == null) {
+            // aTalkApp.showToastMessage(R.string.omemo_identity_key_missing, contactDevice);
+        // }
         return identityKey;
     }
 
@@ -461,6 +461,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
             trustCache.remove(fingerprint);
         }
         else {
+            // Code for testing only
+            // if (contactDevice.getJid().toString().contains("atalkuser1")) {
+            //     contactDevice = new OmemoDevice(contactDevice.getJid(),1367773246);
+            //     removeOmemoIdentityKey(null, contactDevice);
+            // }
             Timber.w("Skip Update duplicated identityKey for: %s; %s; %s", contactDevice, contactKey.toString(), fingerprint);
         }
     }
@@ -816,7 +821,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
         // Purge server omemo bundle nodes for the deleted account (only if online nad registered)
         ProtocolProviderService pps = accountId.getProtocolProvider();
         if (pps != null) {
-            XMPPTCPConnection connection = pps.getConnection();
+            XMPPConnection connection = pps.getConnection();
             if ((connection != null) && connection.isAuthenticated()) {
                 PubSubManager pubsubManager = PubSubManager.getInstanceFor(connection);
                 OmemoCachedDeviceList deviceList = mDB.loadCachedDeviceList(userJid);
@@ -845,7 +850,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
     {
         ProtocolProviderService pps = accountId.getProtocolProvider();
         if (pps != null) {
-            XMPPTCPConnection connection = pps.getConnection();
+            XMPPConnection connection = pps.getConnection();
             if ((connection != null) && connection.isAuthenticated()) {
                 // Purge all omemo devices info in database and server for the specific account
                 purgeUserOmemoData(accountId);
@@ -853,16 +858,15 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
                 // Generate new omemoDevice
                 BareJid userJid = accountId.getBareJid();
                 int defaultDeviceId = OmemoManager.randomDeviceId();
+                // Update the default OmemoDevice in database omemo_devices table
                 setDefaultDeviceId(userJid, defaultDeviceId);
 
-                mOmemoManager = OmemoManager.getInstanceFor(connection, defaultDeviceId);
-                try {
-                    mOmemoManager.setTrustCallback(aTalkTrustCallback);
-                    // Publish a new device list with just our own deviceId in it.
-                    mOmemoManager.purgeDeviceList();
-                } catch (Exception e) {
-                    Timber.w("Ignoring setTrustCallBack Exception: %s", e.getMessage());
-                }
+               /*
+                * (201908024) must perform the omemo initialization with the current active omemoManager.
+                * Do not create new, otherwise subsequent omemo message will still use the old omemoDevice
+                * and result to many omemo error messages
+                */
+                mOmemoManager = OmemoManager.getInstanceFor(connection);
                 // Init and publish to server
                 mOmemoManager.initializeAsync(this);
             }
@@ -884,7 +888,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
     public void purgeInactiveUserDevices(ProtocolProviderService pps)
     {
         if (pps != null) {
-            XMPPTCPConnection connection = pps.getConnection();
+            XMPPConnection connection = pps.getConnection();
             if ((connection != null) && connection.isAuthenticated()) {
 
                 OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);

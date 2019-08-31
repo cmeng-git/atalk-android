@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         android:key="@string/pref_cat_account"
         android:title="@string/service_gui_JBR_USER_CATEGORY">
@@ -48,7 +47,6 @@
                     android:dialogTitle="@string/service_gui_JBR_DTMF_SUMMARY"
                     android:entries="@array/pref_jabber_dtmf_method"
                     android:entryValues="@array/pref_jabber_dtmf_method_values"
-
                     android:key="@string/pref_key_dtmf_method"
                     android:title="@string/service_gui_JBR_DTMF_METHOD" />
             </PreferenceCategory>
@@ -104,41 +102,11 @@
                     android:title="@string/service_gui_JBR_PRIORITY" />
             </PreferenceCategory>
         </PreferenceScreen>
-        <PreferenceScreen
-            android:summary="@string/service_gui_settings_ACCOUNT_PROXY_SUMMARY"
-            android:title="@string/service_gui_settings_ACCOUNT_PROXY">
-            <PreferenceCategory>
-                <CheckBoxPreference
-                    android:key="@string/pref_key_proxy_enable"
-                    android:summary="@string/plugin_proxy_PROXY_ENABLE_SUMMARY"
-                    android:title="@string/plugin_proxy_PROXY_ENABLE" />
-                <ListPreference
-                    android:entries="@array/pref_proxy_type"
-                    android:entryValues="@array/pref_proxy_type"
-                    android:key="@string/pref_key_proxy_type"
-                    android:title="@string/plugin_proxy_PROXY_TYPE" />
-                <EditTextPreference
-                    android:dependency="@string/pref_key_proxy_type"
-                    android:key="@string/pref_key_proxy_address"
-                    android:title="@string/plugin_proxy_PROXY_ADDRESS" />
-                <org.atalk.android.gui.settings.widget.ConfigEditText
-                    android:dependency="@string/pref_key_proxy_type"
-                    android:inputType="number"
-                    android:key="@string/pref_key_proxy_port"
-                    android:title="@string/plugin_proxy_PROXY_PORT"
-                    custom:intMax="65535"
-                    custom:intMin="0" />
-                <EditTextPreference
-                    android:dependency="@string/pref_key_proxy_type"
-                    android:key="@string/pref_key_proxy_username"
-                    android:title="@string/plugin_proxy_PROXY_USERNAME" />
-                <EditTextPreference
-                    android:dependency="@string/pref_key_proxy_type"
-                    android:inputType="textPassword"
-                    android:key="@string/pref_key_proxy_password"
-                    android:title="@string/plugin_proxy_PROXY_PASSWORD" />
-            </PreferenceCategory>
-        </PreferenceScreen>
+
+        <Preference
+            android:key="@string/service_gui_settings_BOSH_PROXY"
+            android:summary="@string/service_gui_settings_BOSH_PROXY_SUMMARY"
+            android:title="@string/service_gui_settings_BOSH_PROXY" />
         <PreferenceScreen
             android:key="@string/pref_screen_jbr_ice"
             android:summary="@string/service_gui_JBR_ICE_SUMMARY"
@@ -175,6 +143,7 @@
                     android:title="@string/service_gui_JBR_JINGLE_LIST" />
             </PreferenceCategory>
         </PreferenceScreen>
+
         <PreferenceScreen
             android:key="@string/pref_screen_jbr_tele"
             android:summary="@string/service_gui_JBR_TELEPHONY_SUMMARY"
@@ -191,13 +160,13 @@
                 android:title="@string/service_gui_JBR_GTALK_DOMAIN" />
         </PreferenceScreen>
         <Preference
-            android:key="@string/pref_cat_audio_encoding"
-            android:summary="@string/service_gui_PREF_AUDIO_ENC_SUMMARY"
-            android:title="@string/service_gui_PREF_AUDIO_ENCODING" />
-        <Preference
             android:key="@string/pref_cat_video_encoding"
             android:summary="@string/service_gui_PREF_VIDEO_ENC_SUMMARY"
             android:title="@string/service_gui_PREF_VIDEO_ENCODING" />
+        <Preference
+            android:key="@string/pref_cat_audio_encoding"
+            android:summary="@string/service_gui_PREF_AUDIO_ENC_SUMMARY"
+            android:title="@string/service_gui_PREF_AUDIO_ENCODING" />
     </PreferenceCategory>
 </PreferenceScreen>
 

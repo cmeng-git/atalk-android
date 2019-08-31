@@ -10,7 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
         android:layout_marginStart="30dp"
         android:gravity="center"
         android:text="CHATROOMS"
@@ -27,7 +26,6 @@
         android:layout_width="7dip"
         android:layout_height="fill_parent"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:background="@drawable/chatseparator" />
 
     <ImageView
@@ -35,7 +33,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="6dp"
         android:layout_marginStart="6dp"
         android:src="@drawable/collapsed_dark" />
 

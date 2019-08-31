@@ -90,9 +90,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         String localFingerprint = null;
         try {
             localFingerprint = mOmemoManager.getOwnFingerprint().toString();
-        } catch (SmackException.NotLoggedInException e) {
-            e.printStackTrace();
-        } catch (CorruptedOmemoKeyException e) {
+        } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException e) {
             e.printStackTrace();
         }
 

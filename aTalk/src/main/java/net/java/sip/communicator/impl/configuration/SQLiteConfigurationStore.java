@@ -222,7 +222,7 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
                 Timber.e("Failed to set non-system property: %s", name);
         }
 
-        // cmeng to take care of properties and accountproperties ????
+        // cmeng to take care of properties and accountProperties ????
         super.setNonSystemProperty(name, value);
         Timber.log(TimberLog.FINER, "### Set setNonSystem Property: %s: %s", name, value);
     }

@@ -5,6 +5,7 @@ buildscript {
     }
 
     dependencies {
+        // Do not change to 3.5.0 => AbractMethodException in Note-3
         classpath 'com.android.tools.build:gradle:3.4.2'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
@@ -45,6 +46,7 @@ configurations {
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-experimental'
     all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
+    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-omemo'
 }
 
 android {
@@ -58,8 +60,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1103
-        versionName "2.0.3"
+        versionCode 1104
+        versionName "2.0.4"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -258,6 +260,7 @@ dependencies {
         destinationName "smack-core_${smackVersion}.jar"
 
         classDelete 'org.jivesoftware.smack.provider.Provider'
+        classDelete 'org.jivesoftware.smack.AbstractXMPPConnection**'
         classDelete 'org.jivesoftware.smack.SmackReactor**'
         classDelete 'org.jivesoftware.smack.util.StringUtils**'
     }
@@ -283,6 +286,16 @@ dependencies {
         classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
         classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
         classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
+    }
+
+    implementation jarjar.repackage {
+        from("org.igniterealtime.smack:smack-omemo:$smackVersion") {
+            transitive = false
+        }
+        destinationDir new File("${projectDir}/libs")
+        destinationName "smack-omemo${smackVersion}.jar"
+
+        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoBundleElement'
     }
 
     implementation jarjar.repackage {

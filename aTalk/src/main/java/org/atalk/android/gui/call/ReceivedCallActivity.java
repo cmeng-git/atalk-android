@@ -164,7 +164,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     public boolean onKeyUp(int keyCode, KeyEvent event)
     {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // Hangs up the call when back is pressed as this Activity will be not displayed again.
+            // Hangs up the call when back is pressed as this Activity will not be displayed again.
             hangupCall();
             return true;
         }
