@@ -25,11 +25,11 @@
             android:title="@string/plugin_provisioning_CREDENTIALS"
             android:key="@string/pref_cat_provisioning_CREDENTIALS">
         <org.atalk.android.gui.settings.widget.ConfigEditText
-                android:title="@string/username_label"
+                android:title="@string/service_gui_USERNAME"
                 android:key="@string/pref_key_provisioning_USERNAME"
                 custom:editable="false"/>
         <org.atalk.android.gui.settings.widget.ConfigEditText
-                android:title="@string/password_label"
+                android:title="@string/service_gui_PASSWORD"
                 android:key="@string/pref_key_provisioning_PASSWORD"
                 android:inputType="textPassword"
                 custom:editable="false"/>

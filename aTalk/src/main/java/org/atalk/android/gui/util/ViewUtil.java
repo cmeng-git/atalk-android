@@ -6,6 +6,7 @@
 package org.atalk.android.gui.util;
 
 import android.os.Handler;
+import android.text.InputType;
 import android.view.View;
 import android.widget.*;
 
@@ -162,5 +163,23 @@ public class ViewUtil
         }
 
         viewHandler.post(() -> view.setVisibility(newState));
+    }
+
+    /**
+     * Show or hide password
+     *
+     * @param view the password EditText view
+     * @param show <tt>true</tt> set password visible to user
+     */
+    public static void showPassword(final EditText view, final boolean show)
+    {
+        int cursorPosition = view.getSelectionStart();
+        if (show) {
+            view.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
+        else {
+            view.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
+        view.setSelection(cursorPosition);
     }
 }

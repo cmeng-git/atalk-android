@@ -10,7 +10,7 @@
           android:title="@string/show_call_info">
     </item>
     <item android:id="@+id/video_resolution"
-          android:title="@string/video_resolution">
+          android:title="@string/service_gui_settings_VIDEO_RESOLUTION">
         <menu android:id="@+id/video_dimension">
         </menu>
     </item>

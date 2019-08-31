@@ -72,7 +72,9 @@
         <item>2</item>
         <item>1</item>
     </string-array>
-    <string-array name="pref_proxy_type">
+    <string-array name="bosh_proxy_type">
+        <item>NONE</item>
+        <!--item>BOSH</item smack not working -->
         <item>HTTP</item>
         <item>SOCKS4</item>
         <item>SOCKS5</item>

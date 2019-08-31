@@ -22,7 +22,7 @@
         android:layout_alignBottom="@+id/username"
         android:layout_alignTop="@+id/username"
         android:gravity="center_vertical|end"
-        android:text="@string/username_label" />
+        android:text="@string/service_gui_USERNAME" />
 
     <EditText
         android:id="@+id/username"
@@ -30,10 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/text"
         android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/username_label"
-        android:layout_toRightOf="@+id/username_label"
         android:hint="@string/username_hint" />
 
     <TextView
@@ -43,25 +41,20 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/password"
         android:layout_alignEnd="@+id/username_label"
-        android:layout_alignLeft="@+id/username_label"
-        android:layout_alignRight="@+id/username_label"
         android:layout_alignStart="@+id/username_label"
         android:layout_below="@+id/username"
         android:gravity="center_vertical|end"
-        android:text="@string/password_label" />
+        android:text="@string/service_gui_PASSWORD" />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/username"
-        android:layout_alignRight="@+id/username"
         android:layout_below="@+id/username"
         android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/username_label"
-        android:layout_toRightOf="@+id/username_label"
         android:hint="@string/password"
         android:inputType="textPassword" />
 

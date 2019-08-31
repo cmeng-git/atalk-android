@@ -5,6 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import org.jivesoftware.smack.*;
 import org.jxmpp.jid.*;
 import org.xmpp.extensions.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
@@ -14,8 +15,6 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
@@ -84,9 +83,9 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     private DiscoveryInfoRetriever retriever = new DiscoveryInfoRetriever();
 
     /**
-     * The {@link XMPPTCPConnection} that this manager is responsible for.
+     * The {@link XMPPConnection} that this manager is responsible for.
      */
-    private final XMPPTCPConnection connection;
+    private final XMPPConnection connection;
 
     /**
      * A {@link List} of the identities we use in our disco answers.
@@ -134,7 +133,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * and to the <tt>ServiceDiscoveryManager</tt> of the specified <tt>connection</tt> which
      * is to be wrapped by the new instance
      */
-    public ScServiceDiscoveryManager(ProtocolProviderServiceJabberImpl parentProvider, XMPPTCPConnection connection,
+    public ScServiceDiscoveryManager(ProtocolProviderServiceJabberImpl parentProvider, XMPPConnection connection,
             String[] featuresToRemove, String[] featuresToAdd, boolean cacheNonCaps)
     {
         this.parentProvider = parentProvider;

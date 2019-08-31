@@ -367,10 +367,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         }
     }
 
-    /*
-     * Need to clear msgCache onPause, forcing chatFragment to use FileRecord for view display
-     * on resume. The file transfer status is only reflected in DisplayMessage messages
-     * Taken care in chatPanel
+    /**
+     * Need to clear msgCache onPause if set, forcing chatPanel to reload messages from DB on Resume i.e.
+     * a. Use FileRecord
+     * b. Message delivery receipt status
+     * Any MessageDisplay status update during chatSession is only reflected in DisplayMessage messages (for scrolling)
+     *
+     * @see ChatPanel#clearMsgCache()
      */
     @Override
     public void onPause()
@@ -391,12 +394,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
          */
         initChatController(false);
 
-        /*
-         * Need to clear msgCache onPause, forcing chatFragment to reload messages from DB on Resume i.e.
-         * a. Use FileRecord
-         * b. Message delivery receipt status
-         * Any MessageDisplay status update during chatSession is only reflected in DisplayMessage messages (for scrolling)
-         */
         if (clearMsgCache) {
             chatPanel.clearMsgCache();
         }

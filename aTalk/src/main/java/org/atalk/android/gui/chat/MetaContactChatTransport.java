@@ -11,6 +11,7 @@ import android.media.ThumbnailUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetFileTransferJabberImpl;
 import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.MessageListener;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.FileUtils;
@@ -18,11 +19,9 @@ import net.java.sip.communicator.util.FileUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
@@ -137,7 +136,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         this.isDisplayResourceOnly = isDisplayResourceOnly;
         mPPS = contact.getProtocolProvider();
         ftOpSet = (OperationSetFileTransferJabberImpl) mPPS.getOperationSet(OperationSetFileTransfer.class);
-        XMPPTCPConnection connection;
+        XMPPConnection connection;
         if ((connection = mPPS.getConnection()) != null) {
             httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
             checkDeliveryReceiptSupport(connection);
@@ -156,7 +155,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * Check for Delivery Receipt support for all registered contacts
      * Currently isDeliveryReceiptSupported is not used - Smack autoAddDeliveryReceiptRequests support is global
      */
-    private void checkDeliveryReceiptSupport(XMPPTCPConnection connection)
+    private void checkDeliveryReceiptSupport(XMPPConnection connection)
     {
         Jid fullJid = null;
         isDeliveryReceiptSupported = false;

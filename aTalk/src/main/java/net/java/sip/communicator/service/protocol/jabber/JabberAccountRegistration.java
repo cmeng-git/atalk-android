@@ -41,7 +41,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     private boolean rememberPassword = true;
 
     /**
-     * UID of edited account
+     * UID of edited account in form: jabber:user@example.com
      */
     private String editedAccUID;
 
@@ -91,13 +91,13 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      */
     public JabberAccountRegistration()
     {
-        super(null, new HashMap<String, String>());
+        super(null, new HashMap<>());
     }
 
     /**
      * Overrides to return UID loaded from edited AccountID.
-     *
-     * @return UID of edited account.
+     *      *
+     * @return UID of edited account e.g. jabber:user@example.com.
      */
     public String getAccountUniqueID()
     {
@@ -105,7 +105,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     }
 
     /**
-     * Sets the User ID of the jabber registration account.
+     * Sets the User ID of the jabber registration account e.g. user@example.com.
      *
      * @param userID the identifier of the jabber registration account.
      */

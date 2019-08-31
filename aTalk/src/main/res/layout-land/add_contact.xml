@@ -54,7 +54,6 @@
                 style="@style/MediumFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/editContactName"
                 android:layout_alignStart="@id/editContactName"
                 android:layout_below="@id/editContactName"
                 android:layout_marginBottom="@dimen/label_padding"
@@ -64,7 +63,6 @@
                 android:id="@+id/selectGroupSpinner"
                 android:layout_width="280dp"
                 android:layout_height="@dimen/item_height"
-                android:layout_alignLeft="@id/editContactName"
                 android:layout_alignStart="@id/editContactName"
                 android:layout_below="@id/selectGroupTxt"
                 android:background="@drawable/spinner_dark" />
@@ -74,7 +72,6 @@
                 style="@style/MediumFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/editDisplayName"
                 android:layout_alignStart="@id/editDisplayName"
                 android:layout_below="@id/editContactName"
                 android:layout_marginBottom="@dimen/label_padding"
@@ -86,12 +83,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/item_height"
                 android:layout_alignEnd="@id/editContactName"
-                android:layout_alignRight="@id/editContactName"
                 android:layout_below="@id/displayNameText"
-                android:layout_marginLeft="@dimen/between_padding"
                 android:layout_marginStart="@dimen/between_padding"
                 android:layout_toEndOf="@id/selectGroupSpinner"
-                android:layout_toRightOf="@id/selectGroupSpinner"
                 android:inputType="textNoSuggestions"
                 android:padding="8dp" />
         </RelativeLayout>

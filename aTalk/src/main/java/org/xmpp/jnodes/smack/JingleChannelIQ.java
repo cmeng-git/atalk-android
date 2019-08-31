@@ -93,10 +93,10 @@ public class JingleChannelIQ extends IQ
 		return createIQ(null, null, null, IQ.Type.error);
 	}
 
-	public static IQ createIQ(String ID, Jid to, Jid from, IQ.Type type)
+	public static IQ createIQ(String id, Jid to, Jid from, IQ.Type type)
 	{
 		IQ iqPacket = new JingleChannelIQ();
-		iqPacket.setStanzaId(ID);
+		iqPacket.setStanzaId(id);
 		iqPacket.setTo(to);
 		iqPacket.setFrom(from);
 		iqPacket.setType(type);
@@ -104,8 +104,7 @@ public class JingleChannelIQ extends IQ
 	}
 
 	@Override
-	protected IQChildElementXmlStringBuilder getIQChildElementBuilder(
-			IQChildElementXmlStringBuilder xml)
+	protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
 	{
 		xml.attribute("protocol", protocol);
 		if ((localport > 0) && (remoteport > 0) && (host != null)) {

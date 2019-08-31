@@ -86,12 +86,12 @@ public class NotificationWiringActivator implements BundleActivator
         ServiceReference notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
         notificationService = (NotificationService) bundleContext.getService(notifReference);
         new NotificationManager().init();
-        Timber.i("Notification wiring plugin ...[REGISTERED]");
+        Timber.d("Notification wiring plugin ...[REGISTERED]");
     }
 
     public void stop(BundleContext bc)
             throws Exception
     {
-        Timber.i("Notification handler Service ...[STOPPED]");
+        Timber.d("Notification handler Service ...[STOPPED]");
     }
 }

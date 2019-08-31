@@ -17,6 +17,7 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.util.StringUtils;
@@ -189,7 +190,7 @@ public class AccountID
             }
         }
         mKeys = tmp;
-        Timber.i("### Set Account UUID to: %s: %s for %s", uuid, accountUID, userID);
+        Timber.d("### Set Account UUID to: %s: %s for %s", uuid, accountUID, userID);
     }
 
     /**
@@ -764,7 +765,7 @@ public class AccountID
     /**
      * Sets the server port.
      *
-     * @param port int
+     * @param port proxy server port
      */
     public void setServerPort(String port)
     {
@@ -772,21 +773,21 @@ public class AccountID
     }
 
     /**
-     * Indicates if proxy should be used for this account.
+     * Indicates if proxy should be used for this account if Type != NONE.
      *
-     * @return <tt>true</tt> if Proxy should be used for this account, otherwise returns
-     * <tt>false</tt>
+     * @return <tt>true</tt> if (Type != NONE) for this account, otherwise returns <tt>false</tt>
      */
     public boolean isUseProxy()
     {
-        return getAccountPropertyBoolean(ProtocolProviderFactory.IS_USE_PROXY, true);
+        // The isUseProxy state is to take care of old DB?
+        boolean isUseProxy = "true".equals(getAccountPropertyString(ProtocolProviderFactory.IS_USE_PROXY));
+        return isUseProxy && !BoshProxyDialog.NONE.equals(getAccountPropertyString(ProtocolProviderFactory.PROXY_TYPE));
     }
 
     /**
      * Sets the <tt>useProxy</tt> property.
      *
-     * @param isUseProxy <tt>true</tt> to indicate that Proxy should be used for this account, <tt>false</tt> -
-     * otherwise.
+     * @param isUseProxy <tt>true</tt> to indicate that Proxy should be used for this account, <tt>false</tt> - otherwise.
      */
     public void setUseProxy(boolean isUseProxy)
     {

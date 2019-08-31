@@ -42,8 +42,7 @@ import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.StringUtils;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
@@ -337,7 +336,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         if ((mMenu != null) && (selectedChatPanel != null)) {
             boolean hasUploadService = false;
             ChatSession chatSession = selectedChatPanel.getChatSession();
-            XMPPTCPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
+            XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
             if (connection != null) {
                 HttpFileUploadManager httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
                 hasUploadService = httpFileUploadManager.isUploadServiceDiscovered();
@@ -601,7 +600,11 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
      */
     public String getLastSeen()
     {
-        XMPPTCPConnection connection = mRecipient.getProtocolProvider().getConnection();
+        // cmeng: this happen if the contact remove presence subscription while still in chat session
+        if (mRecipient == null)
+            return null;
+
+        XMPPConnection connection = mRecipient.getProtocolProvider().getConnection();
         if (connection == null)
             return null;
 

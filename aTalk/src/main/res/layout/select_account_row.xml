@@ -9,7 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         android:src="@drawable/jabber_logo" />
 
@@ -20,6 +19,5 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/accountProtoIcon"
-        android:layout_toRightOf="@+id/accountProtoIcon"
         android:text="AccountName" />
 </RelativeLayout>

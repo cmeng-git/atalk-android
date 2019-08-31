@@ -5,10 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jxmpp.jid.FullJid;
-import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -22,7 +18,10 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
+import org.xmpp.extensions.colibri.ColibriConferenceIQ;
+import org.xmpp.extensions.jingle.*;
 import org.xmpp.extensions.jingle.element.*;
 
 import java.lang.ref.WeakReference;
@@ -70,8 +69,8 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * extension (i.e. will be able to be remote-controlled).
      */
     private boolean localInputEvtAware = false;
-    
-    private XMPPTCPConnection mConnection;
+
+    private XMPPConnection mConnection;
 
     /**
      * Initializes a new <tt>CallJabberImpl</tt> instance.

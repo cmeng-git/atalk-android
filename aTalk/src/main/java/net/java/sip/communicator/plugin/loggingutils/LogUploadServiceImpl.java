@@ -16,6 +16,7 @@ import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.service.log.LogUploadService;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,15 +50,17 @@ public class LogUploadServiceImpl implements LogUploadService
         File logStorageDir = FileBackend.getaTalkStore("atalk-logs");
         if (logStorageDir != null) {
             File logcatFile = null;
+            File externalStorageFile = null;
             String logcatFN = new File("log", "atalk-current-logcat.txt").toString();
             try {
                 logcatFile = LoggingUtilsActivator.getFileAccessService().getPrivatePersistentFile(logcatFN, FileCategory.LOG);
                 Runtime.getRuntime().exec("logcat -v time -f " + logcatFile);
-            } catch (Exception e) {
-                Timber.e("Couldn't save current logcat file.");
+                externalStorageFile = LogsCollector.collectLogs(logStorageDir, null);
+            } catch (Exception ex) {
+                aTalkApp.showToastMessage("Error creating logs file archive: " + ex.getMessage());
+                return;
             }
             // Stores file name to remove it on service shutdown
-            File externalStorageFile = LogsCollector.collectLogs(logStorageDir, null);
             storedLogFiles.add(externalStorageFile);
 
             Intent sendIntent = new Intent(Intent.ACTION_SEND);

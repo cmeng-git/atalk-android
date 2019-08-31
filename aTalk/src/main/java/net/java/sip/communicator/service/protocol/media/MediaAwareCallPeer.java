@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.event.*;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.XMPPConnection;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -76,7 +76,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
      */
     protected final V mProtocolProvider;
 
-    protected final XMPPTCPConnection mConnection;
+    protected final XMPPConnection mConnection;
 
     /**
      * The list of <tt>SoundLevelListener</tt>s interested in level changes in the audio we are

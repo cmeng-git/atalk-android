@@ -19,8 +19,8 @@ import org.atalk.android.R;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.BundleContext;
@@ -116,7 +116,7 @@ public class CallContactFragment extends OSGiFragment
         Collection<ProtocolProviderService> onlineProviders = AccountUtils.getOnlineProviders();
 
         for (final ProtocolProviderService provider : onlineProviders) {
-            XMPPTCPConnection connection = provider.getConnection();
+            XMPPConnection connection = provider.getConnection();
             try {
                 if (Roster.getInstanceFor(connection).contains(JidCreate.bareFrom(calleeAddress))) {
 

@@ -19,15 +19,14 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 import org.xmpp.extensions.colibri.ColibriConferenceIQ;
 import org.xmpp.extensions.colibri.SourceExtensionElement;
 import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jingle.element.JingleContent.Senders;
 import org.xmpp.extensions.jingle.element.*;
+import org.xmpp.extensions.jingle.element.JingleContent.Senders;
 import org.xmpp.extensions.jitsimeet.MediaPresenceExtensionElement;
 import org.xmpp.extensions.jitsimeet.SSRCInfoExtensionElement;
 
@@ -114,7 +113,7 @@ public class CallPeerJabberImpl
      */
     private Jingle sessionInitIQ;
 
-    private XMPPTCPConnection mConnection;
+    private XMPPConnection mConnection;
 
     /**
      * Creates a new call peer with address <tt>peerAddress</tt>.

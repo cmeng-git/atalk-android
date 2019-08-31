@@ -133,6 +133,16 @@ public abstract class ProtocolProviderFactory
     public static final String IS_USE_PROXY = "PROXY_ENABLED";
 
     /**
+     * Configures the URL which is to be used with BOSH transport.
+     */
+    public static final String BOSH_URL = "BOSH_URL";
+
+    /**
+     * Indicates HTTP proxy is enabled with BOSH protocol. Only HTTP proxy is allowwed with BOSH
+     */
+    public static final String BOSH_PROXY_HTTP_ENABLED = "BOSH_PROXY_HTTP_ENABLED";
+
+    /**
      * The name of the property under which we store the the type of the proxy stored against the
      * PROXY_ADDRESS property. Exact type values depend on protocols and among them are socks4,
      * socks5, http and possibly others.

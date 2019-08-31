@@ -8,6 +8,7 @@ package org.atalk.android.gui.settings;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
+import android.text.TextUtils;
 
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.systray.PopupMessageHandler;
@@ -48,9 +49,12 @@ import timber.log.Timber;
 public class SettingsActivity extends OSGiActivity
 {
     // PreferenceScreen and PreferenceCategories
+    static private final String PC_KEY_MEDIA_CALL = aTalkApp.getResString(R.string.pref_cat_settings_media_call);
     static private final String PC_KEY_CALL = aTalkApp.getResString(R.string.pref_cat_settings_call);
-    static private final String PC_KEY_AUDIO = aTalkApp.getResString(R.string.pref_cat_settings_audio);
+
+    // Advance video/audio settings
     static private final String PC_KEY_VIDEO = aTalkApp.getResString(R.string.pref_cat_settings_video);
+    static private final String PC_KEY_AUDIO = aTalkApp.getResString(R.string.pref_cat_settings_audio);
     static private final String PC_KEY_ADVANCED = aTalkApp.getResString(R.string.pref_cat_settings_advanced);
 
 
@@ -271,21 +275,28 @@ public class SettingsActivity extends OSGiActivity
         private void disableMediaOptions()
         {
             PreferenceScreen preferenceScreen = getPreferenceScreen();
-            PreferenceCategory myPrefCat = (PreferenceCategory) findPreference(PC_KEY_CALL);
+            PreferenceCategory myPrefCat = (PreferenceCategory) findPreference(PC_KEY_MEDIA_CALL);
             if (myPrefCat != null)
                 preferenceScreen.removePreference(myPrefCat);
 
-            myPrefCat = (PreferenceCategory) findPreference(PC_KEY_AUDIO);
+            myPrefCat = (PreferenceCategory) findPreference(PC_KEY_CALL);
             if (myPrefCat != null)
                 preferenceScreen.removePreference(myPrefCat);
 
-            myPrefCat = (PreferenceCategory) findPreference(PC_KEY_VIDEO);
-            if (myPrefCat != null)
-                preferenceScreen.removePreference(myPrefCat);
-
+            // android OS cannot support removal of nested PreferenceCategory, so just disable all advance settings
             myPrefCat = (PreferenceCategory) findPreference(PC_KEY_ADVANCED);
             if (myPrefCat != null)
                 preferenceScreen.removePreference(myPrefCat);
+
+            // myPrefCat = (PreferenceCategory) findPreference(PC_KEY_VIDEO);
+            // if (myPrefCat != null) {
+            //     preferenceScreen.removePreference(myPrefCat);
+            // }
+
+            // myPrefCat = (PreferenceCategory) findPreference(PC_KEY_AUDIO);
+            // if (myPrefCat != null) {
+            //     preferenceScreen.removePreference(myPrefCat);
+            // }
         }
 
         /**
@@ -712,7 +723,7 @@ public class SettingsActivity extends OSGiActivity
                 if (isLimitOn) {
                     EditTextPreference fpsPref = (EditTextPreference) findPreference(P_KEY_VIDEO_TARGET_FPS);
                     String fpsStr = fpsPref.getText();
-                    if (!fpsStr.isEmpty()) {
+                    if (!TextUtils.isEmpty(fpsStr)) {
                         int fps = Integer.parseInt(fpsStr);
                         if (fps > 30) {
                             fps = 30;
@@ -731,7 +742,7 @@ public class SettingsActivity extends OSGiActivity
             // Max bandwidth
             else if (key.equals(P_KEY_VIDEO_MAX_BANDWIDTH)) {
                 String resStr = shPreferences.getString(P_KEY_VIDEO_MAX_BANDWIDTH, null);
-                if (resStr != null && !resStr.isEmpty()) {
+                if (!TextUtils.isEmpty(resStr)) {
                     int maxBw = Integer.parseInt(resStr);
                     if (maxBw > 999) {
                         maxBw = 999;
@@ -752,7 +763,7 @@ public class SettingsActivity extends OSGiActivity
                 String bitrateStr = shPreferences.getString(P_KEY_VIDEO_BITRATE, "");
                 int bitrate = 0;
                 if (bitrateStr != null) {
-                    bitrate = !bitrateStr.isEmpty()
+                    bitrate = !TextUtils.isEmpty(bitrateStr)
                             ? Integer.parseInt(bitrateStr) : DeviceConfiguration.DEFAULT_VIDEO_BITRATE;
                 }
                 if (bitrate < 1) {

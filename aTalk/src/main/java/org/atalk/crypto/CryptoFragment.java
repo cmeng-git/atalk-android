@@ -40,9 +40,7 @@ import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.atalk.crypto.otr.OTRv3OutgoingSessionSwitcher;
 import org.atalk.service.osgi.OSGiFragment;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.omemo.*;
@@ -105,7 +103,7 @@ public class CryptoFragment extends OSGiFragment
     private MenuItem mOtr;
     private MenuItem mOtr_Session;
 
-    private XMPPTCPConnection mConnection;
+    private XMPPConnection mConnection;
     private Object mDescriptor;
     private OmemoManager mOmemoManager;
     private OmemoStore mOmemoStore;

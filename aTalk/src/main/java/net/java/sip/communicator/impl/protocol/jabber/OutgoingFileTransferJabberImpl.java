@@ -5,21 +5,21 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.xmpp.extensions.thumbnail.Thumbnail;
-import org.xmpp.extensions.thumbnail.ThumbnailFile;
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
 
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.bob.*;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
+import org.xmpp.extensions.thumbnail.Thumbnail;
+import org.xmpp.extensions.thumbnail.ThumbnailFile;
 
 import java.io.File;
 
@@ -176,7 +176,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
 
         Timber.d("File transfer packet intercepted to add thumbnail element.");
 
-        XMPPTCPConnection connection = protocolProvider.getConnection();
+        XMPPConnection connection = protocolProvider.getConnection();
         StreamInitiation fileTransferPacket = (StreamInitiation) stanza;
         ThumbnailedFile thumbnailedFile = (ThumbnailedFile) file;
 

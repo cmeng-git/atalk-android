@@ -41,20 +41,12 @@
 
         <CheckBox
             android:id="@+id/show_password"
+            android:button="@drawable/checkbox_password_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@id/passwordField"
-            android:layout_alignRight="@+id/passwordField" />
-
-        <ImageView
-            android:id="@+id/pwdviewImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/show_password"
-            android:layout_alignLeft="@id/show_password"
-            android:layout_alignStart="@id/show_password"
-            android:alpha="0.3"
-            android:src="@drawable/pwdview" />
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp" />
     </RelativeLayout>
 
     <CheckBox
@@ -95,7 +87,6 @@
             android:layout_width="0dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/between_padding"
-            android:layout_marginLeft="@dimen/between_padding"
             android:layout_marginStart="@dimen/between_padding"
             android:layout_weight=".30"
             android:inputType="textNoSuggestions"

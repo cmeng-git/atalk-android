@@ -19,8 +19,8 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.dialogs.ProgressDialogFragment;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -69,7 +69,7 @@ public class AndroidCallUtil
 
         // loop through all registered providers to find the calleeAddress own provider
         for (final ProtocolProviderService provider : AccountUtils.getOnlineProviders()) {
-            XMPPTCPConnection connection = provider.getConnection();
+            XMPPConnection connection = provider.getConnection();
             try {
                 if (Roster.getInstanceFor(connection).contains(JidCreate.bareFrom(calleeAddress))) {
                     String accountAddress = provider.getAccountID().getAccountJid();

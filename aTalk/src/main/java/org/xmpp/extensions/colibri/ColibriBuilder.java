@@ -349,9 +349,6 @@ public class ColibriBuilder
             }
             request.addChannelBundle(bundle);
         }
-        else if (useBundle && endpointId == null) {
-            Timber.e("Bundle requested, but no endpointId provided.");
-        }
 
         if (endpointId != null) {
             // Set the endpoint

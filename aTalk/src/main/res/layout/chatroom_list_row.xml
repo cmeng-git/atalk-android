@@ -10,7 +10,6 @@
         android:layout_width="@dimen/contact_list_avatar_width"
         android:layout_height="fill_parent"
         android:layout_margin="4dp"
-        android:paddingLeft="5dp"
         android:paddingStart="5dp">
 
         <ImageView
@@ -29,7 +28,6 @@
             android:layout_height="30dip"
             android:layout_alignBottom="@id/room_icon"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:focusable="false"
             android:visibility="visible"
             android:gravity="center_vertical" />
@@ -40,10 +38,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/avatarLayout"
-        android:layout_toRightOf="@+id/avatarLayout"
         android:layout_alignBottom="@+id/avatarLayout"
         android:orientation="vertical"
-        android:paddingLeft="8dp"
         android:paddingStart="8dp">
 
         <TextView
@@ -74,12 +70,10 @@
         android:id="@+id/cb_autojoin"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="10dp"
         android:button="@drawable/checkbox_autojoin"
         android:focusable="false"
-        android:visibility="visible"
         android:gravity="bottom" />
 
     <LinearLayout

@@ -109,7 +109,6 @@ public class CredentialsFragment extends Fragment
 
     private EditText mPasswordField;
     private CheckBox mShowPasswordCheckBox;
-    private ImageView mShowPasswordImage;
 
     /**
      * {@inheritDoc}
@@ -136,7 +135,6 @@ public class CredentialsFragment extends Fragment
         content.findViewById(R.id.username).setEnabled(loginEditable);
 
         mShowPasswordCheckBox = content.findViewById(R.id.show_password);
-        mShowPasswordImage = content.findViewById(R.id.pwdviewImage);
 
         mPasswordField = content.findViewById(R.id.password);
         mPasswordField.setText(args.getString(ARG_PASSWORD));
@@ -172,25 +170,11 @@ public class CredentialsFragment extends Fragment
 
     private void initializeViewListeners()
     {
-        mShowPasswordCheckBox.setOnCheckedChangeListener(
-                (buttonView, isChecked) -> showPassword(isChecked));
+        mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
+                -> ViewUtil.showPassword(mPasswordField, isChecked));
 
         mServerOverrideCheckBox.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> updateViewVisibility(isChecked));
-    }
-
-    private void showPassword(boolean show)
-    {
-        int cursorPosition = mPasswordField.getSelectionStart();
-        if (show) {
-            mShowPasswordImage.setAlpha(1.0f);
-            mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        else {
-            mShowPasswordImage.setAlpha(0.3f);
-            mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        mPasswordField.setSelection(cursorPosition);
     }
 
     private void updateViewVisibility(boolean IsServerOverridden)

@@ -6,8 +6,6 @@
 
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.xmpp.extensions.thumbnail.Thumbnail;
-import org.xmpp.extensions.thumbnail.ThumbnailFile;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -23,12 +21,13 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.filetransfer.FileTransfer.Status;
 import org.jivesoftware.smackx.filetransfer.*;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
+import org.xmpp.extensions.thumbnail.Thumbnail;
+import org.xmpp.extensions.thumbnail.ThumbnailFile;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -262,7 +261,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
          */
         public void registrationStateChanged(RegistrationStateChangeEvent evt)
         {
-            XMPPTCPConnection connection = jabberProvider.getConnection();
+            XMPPConnection connection = jabberProvider.getConnection();
             if (evt.getNewState() == RegistrationState.REGISTERED) {
                 opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
                         jabberProvider.getOperationSet(OperationSetPersistentPresence.class);
@@ -279,7 +278,8 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             // Must do it before UNREGISTERED state, otherwise ftManager == null
             else if (evt.getNewState() == RegistrationState.UNREGISTERING) {
                 // Must unregistered ftrListener on protocolProvider UNREGISTERING to avoid any ghost listener
-                if (ftrListener != null) {
+                // check ftManager to ensure it is still valid i..e not null
+                if ((ftrListener != null) && (ftManager != null)) {
                     // Timber.w("Remove FileTransferListener: %s", ftrListener);
                     ftManager.removeFileTransferListener(ftrListener);
                     ftrListener = null;

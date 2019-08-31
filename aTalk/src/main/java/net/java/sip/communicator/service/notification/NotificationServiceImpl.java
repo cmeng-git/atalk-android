@@ -117,14 +117,13 @@ class NotificationServiceImpl implements NotificationService
     }
 
     /**
-     * Checking an action when it is edited (property .default=false). Checking for older versions
+     * Checking an action when it is edited (property.default=false). Checking for older versions
      * of the property. If it is older one we migrate it to new configuration using the default values.
      *
      * @param eventType the event type.
      * @param defaultAction the default action which values we will use.
      */
-    private void checkDefaultAgainstLoadedNotification(String eventType,
-            NotificationAction defaultAction)
+    private void checkDefaultAgainstLoadedNotification(String eventType, NotificationAction defaultAction)
     {
         // checking for new sound action properties
         if (defaultAction instanceof SoundNotificationAction) {

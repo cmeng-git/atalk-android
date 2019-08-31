@@ -14,10 +14,9 @@
 
         <TextView
             android:id="@+id/messageView"
-            style="@style/MediumFont"
+            style="@style/SmallFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/chat_text_margin"
             android:layout_marginStart="@dimen/chat_text_margin"
             android:gravity="start"
             android:padding="7dp"

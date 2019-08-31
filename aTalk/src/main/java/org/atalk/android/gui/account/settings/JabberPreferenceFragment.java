@@ -75,12 +75,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
     private static final String P_KEY_RESOURCE_PRIORITY = aTalkApp.getResString(R.string.pref_key_resource_priority);
 
     // Proxy
-    private static final String P_KEY_PROXY_ENABLE = aTalkApp.getResString(R.string.pref_key_proxy_enable);
-    private static final String P_KEY_PROXY_TYPE = aTalkApp.getResString(R.string.pref_key_proxy_type);
-    private static final String P_KEY_PROXY_ADDRESS = aTalkApp.getResString(R.string.pref_key_proxy_address);
-    private static final String P_KEY_PROXY_PORT = aTalkApp.getResString(R.string.pref_key_proxy_port);
-    private static final String P_KEY_PROXY_USERNAME = aTalkApp.getResString(R.string.pref_key_proxy_username);
-    private static final String P_KEY_PROXY_PASSWORD = aTalkApp.getResString(R.string.pref_key_proxy_password);
+    private static final String P_KEY_PROXY_CONFIG = aTalkApp.getResString(R.string.service_gui_settings_BOSH_PROXY);
 
     // ICE (General)
     private static final String P_KEY_ICE_ENABLED = aTalkApp.getResString(R.string.pref_key_ice_enabled);
@@ -181,14 +176,6 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         editor.putString(P_KEY_RESOURCE_NAME, jbrReg.getResource());
         editor.putString(P_KEY_RESOURCE_PRIORITY, "" + jbrReg.getPriority());
 
-        // Proxy options
-        editor.putBoolean(P_KEY_PROXY_ENABLE, jbrReg.isUseProxy());
-        editor.putString(P_KEY_PROXY_TYPE, jbrReg.getProxyType());
-        editor.putString(P_KEY_PROXY_ADDRESS, jbrReg.getProxyAddress());
-        editor.putString(P_KEY_PROXY_PORT, jbrReg.getProxyPort());
-        editor.putString(P_KEY_PROXY_USERNAME, jbrReg.getProxyUserName());
-        editor.putString(P_KEY_PROXY_PASSWORD, jbrReg.getProxyPassword());
-
         // ICE options
         editor.putBoolean(P_KEY_ICE_ENABLED, jbrReg.isUseIce());
         editor.putBoolean(P_KEY_UPNP_ENABLED, jbrReg.isUseUPNP());
@@ -214,25 +201,21 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
     {
         super.onPreferencesCreated();
 
-        findPreference(P_KEY_STUN_TURN_SERVERS).setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener()
-                {
-                    public boolean onPreferenceClick(Preference pref)
-                    {
-                        startStunServerListActivity();
-                        return true;
-                    }
-                });
+        findPreference(P_KEY_PROXY_CONFIG).setOnPreferenceClickListener(pref -> {
+            BoshProxyDialog boshProxy = new BoshProxyDialog(getActivity(), jbrReg);
+            boshProxy.show();
+            return true;
+        });
 
-        findPreference(P_KEY_JINGLE_NODES_LIST).setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener()
-                {
-                    public boolean onPreferenceClick(Preference pref)
-                    {
-                        startJingleNodeListActivity();
-                        return true;
-                    }
-                });
+        findPreference(P_KEY_STUN_TURN_SERVERS).setOnPreferenceClickListener(pref -> {
+            startStunServerListActivity();
+            return true;
+        });
+
+        findPreference(P_KEY_JINGLE_NODES_LIST).setOnPreferenceClickListener(pref -> {
+            startJingleNodeListActivity();
+            return true;
+        });
     }
 
     /**
@@ -280,13 +263,6 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         // Server options
         summaryMapper.includePreference(findPreference(P_KEY_SERVER_ADDRESS), emptyStr);
         summaryMapper.includePreference(findPreference(P_KEY_SERVER_PORT), emptyStr);
-
-        // Proxy options
-        summaryMapper.includePreference(findPreference(P_KEY_PROXY_TYPE), emptyStr);
-        summaryMapper.includePreference(findPreference(P_KEY_PROXY_ADDRESS), emptyStr);
-        summaryMapper.includePreference(findPreference(P_KEY_PROXY_PORT), emptyStr);
-        summaryMapper.includePreference(findPreference(P_KEY_PROXY_USERNAME), emptyStr);
-        summaryMapper.includePreference(findPreference(P_KEY_PROXY_PASSWORD), emptyStr, new SummaryMapper.PasswordMask());
 
         // Resource
         summaryMapper.includePreference(findPreference(P_KEY_RESOURCE_NAME), emptyStr);
@@ -387,24 +363,6 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         }
         else if (key.equals(P_KEY_RESOURCE_PRIORITY)) {
             jbrReg.setPriority(Integer.valueOf(shPrefs.getString(P_KEY_RESOURCE_PRIORITY, null)));
-        }
-        else if (key.equals(P_KEY_PROXY_ENABLE)) {
-            jbrReg.setUseProxy(shPrefs.getBoolean(P_KEY_PROXY_ENABLE, false));
-        }
-        else if (key.equals(P_KEY_PROXY_TYPE)) {
-            jbrReg.setProxyType(shPrefs.getString(P_KEY_PROXY_TYPE, null));
-        }
-        else if (key.equals(P_KEY_PROXY_ADDRESS)) {
-            jbrReg.setProxyAddress(shPrefs.getString(P_KEY_PROXY_ADDRESS, null));
-        }
-        else if (key.equals(P_KEY_PROXY_PORT)) {
-            jbrReg.setProxyPort(shPrefs.getString(P_KEY_PROXY_PORT, null));
-        }
-        else if (key.equals(P_KEY_PROXY_USERNAME)) {
-            jbrReg.setProxyUserName(shPrefs.getString(P_KEY_PROXY_USERNAME, null));
-        }
-        else if (key.equals(P_KEY_PROXY_PASSWORD)) {
-            jbrReg.setProxyPassword(shPrefs.getString(P_KEY_PROXY_PASSWORD, null));
         }
         else if (key.equals(P_KEY_ICE_ENABLED)) {
             jbrReg.setUseIce(shPrefs.getBoolean(P_KEY_ICE_ENABLED, true));

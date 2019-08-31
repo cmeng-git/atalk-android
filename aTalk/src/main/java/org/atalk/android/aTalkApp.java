@@ -20,15 +20,14 @@ import net.java.sip.communicator.util.ServiceUtils;
 import org.atalk.android.gui.LauncherActivity;
 import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountLoginActivity;
-import org.atalk.android.gui.account.AccountsListActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.DrawableCache;
+import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.timberlog.TimberLogImpl;
-import org.atalk.impl.androidcertdialog.VerifyCertificateActivity;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
@@ -439,7 +438,6 @@ public class aTalkApp extends Application
         return currentActivity;
     }
 
-
     /**
      * Sets the <tt>contactListAdapter</tt> component currently used to show the contact list.
      *
@@ -459,7 +457,6 @@ public class aTalkApp extends Application
     {
         return contactListAdapter;
     }
-
 
     /**
      * Sets the <tt>contactListFragment</tt> component currently used to show the contact list.
@@ -502,8 +499,7 @@ public class aTalkApp extends Application
      */
     public static boolean isHomeActivityActive()
     {
-        return currentActivity != null && currentActivity.getClass().equals(
-                getHomeScreenActivityClass());
+        return currentActivity != null && currentActivity.getClass().equals(getHomeScreenActivityClass());
     }
 
     /**
@@ -514,9 +510,11 @@ public class aTalkApp extends Application
         LogUploadService logUpload = ServiceUtils.getService(AndroidGUIActivator.bundleContext, LogUploadService.class);
         String defaultEmail = getConfig().getString("org.atalk.android.LOG_REPORT_EMAIL");
 
-        logUpload.sendLogs(new String[]{defaultEmail},
-                getResString(R.string.service_gui_SEND_LOGS_SUBJECT),
-                getResString(R.string.service_gui_SEND_LOGS_TITLE));
+        if (logUpload != null) {
+            logUpload.sendLogs(new String[]{defaultEmail},
+                    getResString(R.string.service_gui_SEND_LOGS_SUBJECT),
+                    getResString(R.string.service_gui_SEND_LOGS_TITLE));
+        }
     }
 
     public static aTalkApp getApp(Context ctx)
@@ -531,31 +529,30 @@ public class aTalkApp extends Application
 
     /**
      * If OSGi has not started, then wait for the <tt>LauncherActivity</tt> etc to complete before
-     * showing any dialog. Dialog should only be shown while <tt>NOT in LaunchActivity</tt>
-     * and only in either: (<tt>aTalk</tt> || <tt>AccountsListActivity</tt>);
-     * Otherwise the dialog will be obscured by these activity
+     * showing any dialog. Dialog should only be shown while <tt>NOT in LaunchActivity</tt> etc
+     * Otherwise the dialog will be obscured by these activity; max wait = 10 seconds
      */
     public static void waitForDisplay()
     {
         // if (AndroidGUIActivator.bundleContext == null) { #false on first application installation
         final Object currentActivityMonitor = aTalkApp.getCurrentActivityMonitor();
         synchronized (currentActivityMonitor) {
-            while (true) {
-                Activity currentActivity = aTalkApp.getCurrentActivity();
-                if (currentActivity != null) {
-                    String activity = currentActivity.toString();
-                    if (!(currentActivity instanceof LauncherActivity)
-                            && ((currentActivity instanceof aTalk)
-                            || (currentActivity instanceof AccountsListActivity)
-                            || (currentActivity instanceof VerifyCertificateActivity))) {
+            int wait = 5; // * 2 seconds
+            while ((wait > 0)) {
+                Activity activity = aTalkApp.getCurrentActivity();
+                if (activity != null) {
+                    if (!(activity instanceof LauncherActivity
+                            || activity instanceof Splash
+                            || activity instanceof PermissionsActivity)) {
                         break;
                     }
                     else {
-                        Timber.w("Login dialog waiting for Activity to finish: %s", activity);
+                        Timber.d("Display login status waiting for Activity to exit: %s", activity);
                     }
                 }
                 try {
-                    currentActivityMonitor.wait(3000);
+                    wait--;
+                    currentActivityMonitor.wait(2000);
                 } catch (InterruptedException e) {
                     Timber.e(e, "%s", e.getMessage());
                 }

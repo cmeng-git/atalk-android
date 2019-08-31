@@ -721,7 +721,12 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Clear the old message message if underlying data changed.
+     * When user closes the chat session, this action must be performed if any updates had been done to the
+     * chatFragment MessageViewHolder contents. Otherwise the MessageViewHolder will be replaced with old
+     * content in this msgCache when user open the chat session again. Clearing the msgCache will force
+     * getHistory() to reload the updated content from DB.
+     *
+     * This the  current shortfall in the implementation - may be to remove msgCache as DB fetch is fast (page slider)?
      */
     public void clearMsgCache()
     {

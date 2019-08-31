@@ -5,9 +5,15 @@
     <a href="http://atalk.sytes.net">
         <img src="./art/atalk.png" alt="aTalk">
     </a>
+    &nbsp;
     <a href="https://play.google.com/store/apps/details?id=org.atalk.android&hl=en">
         <img src="./art/google_play.png" alt="Google PlayStore">
     </a>
+    &nbsp;
+    <a href="https://f-droid.org/en/packages/org.atalk.android/">
+        <img src="./art/fdroid-logo.png" alt="F-Droid">
+    </a>
+    &nbsp;
     <a href="https://www.youtube.com/watch?v=9w5WwphzgBc">
         <img src="./art/youtube.png" alt="YouTube">
     </a>
@@ -43,10 +49,10 @@ aTalk is an xmpp client designed for android and supports the following features
 * Multiple accounts creation
 * Multi-language UI support (Bahasa Indonesia, English, German, Russian, and Spanish). 
 
-### XMPP Features
+## XMPP Standards Implemented
 
-aTalk works seamlessly with almost every XMPP servers available on network, limited only by servers features supported.
-It supports the following XEP's, standards for XMPP client devices.
+aTalk works seamlessly with almost every XMPP servers available on network, limited only by servers features supported.<br/>
+It supports the following XEP's, standards for XMPP clients.
 
 * [XEP-0012: Last Activity](https://xmpp.org/extensions/xep-0012.html)
 * [XEP-0030: Service Discovery](https://xmpp.org/extensions/xep-0030.html)
@@ -102,9 +108,10 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0384: OMEMO Encryption](https://xmpp.org/extensions/xep-0384.html)
 * [XEP-xxxx: OMEMO Media sharing](https://xmpp.org/extensions/inbox/omemo-media-sharing.html)
 
-Libraries used in this project
-------------------------------
-* [XEP-0384: OMEMO Encryption](https://xmpp.org/extensions/xep-0384.html)
+## Acknowledgments
+
+Libraries used in this project:
+
 * [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html)
 * [android-betterpickers](https://github.com/code-troopers/android-betterpickers)
 * [Android-EasyLocation](https://github.com/akhgupta/Android-EasyLocation)
@@ -142,6 +149,20 @@ Libraries used in this project
 * [weupnp](https://github.com/bitletorg/weupnp)
 * [x264](http://git.videolan.org/git/x264.git)
 * [zrtp4j-light](https://github.com/jitsi/zrtp4j)
+
+Other contributors:
+* [Others](https://github.com/cmeng-git/atalk-android/graphs/contributors)
+
+## Documentation
+* [aTalk site](https://cmeng-git.github.io)
+* [FAQ](https://cmeng-git.github.io/faq.html)
+* [aTalk alt-site](https://atalk.sytes.net/atalk/)
+* [Release Notes](https://github.com/cmeng-git/atalk-android/blob/master/aTalk/ReleaseNotes.txt)
+
+## Feedback and Contributions
+Cannot found an UI language and would like to help; translate the content in [strings.xml](https://github.com/cmeng-git/atalk-android/blob/master/art/values-xlate/strings.xml). Create a pull request or forward the file to the developer.
+
+If you have found bug, wish for new feature, or have other questions, [file an issue](https://github.com/cmeng-git/atalk-android/issues).
 
 License
 -------
