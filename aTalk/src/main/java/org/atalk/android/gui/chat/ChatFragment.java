@@ -407,9 +407,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         chatController.onChatCloseAction();
     }
 
-    /**
-     *
-     */
+    @Override
     public void onDetach()
     {
         Timber.d("Detach chatFragment: %s", this);
@@ -452,28 +450,31 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      */
     private void initChatController(boolean inFocus)
     {
-        if (inFocus && chatListView != null) {
-            Timber.d("Init controller: %s", hashCode());
-            chatController.onShow();
-            // Also register global status listener
-            AndroidGUIActivator.getLoginRenderer().addGlobalStatusListener(globalStatusListener);
+        // chatController => NPE from field
+        if ((chatController != null)) {
+            if (!inFocus) {
+                chatController.onHide();
+                // Also remove global status listener
+                AndroidGUIActivator.getLoginRenderer().removeGlobalStatusListener(globalStatusListener);
+            }
+            else if (chatListView != null) {
+                Timber.d("Init controller: %s", hashCode());
+                chatController.onShow();
+                // Also register global status listener
+                AndroidGUIActivator.getLoginRenderer().addGlobalStatusListener(globalStatusListener);
 
-            // Init the history & ChatType background color
-            chatStateView.setVisibility(View.INVISIBLE);
-            initAdapter();
+                // Init the history & ChatType background color
+                chatStateView.setVisibility(View.INVISIBLE);
+                initAdapter();
 
-            // Seem mCFView changes on re-entry into chatFragment, so update the listener
-            mCryptoFragment.addCryptoModeListener(currentChatTransport.getDescriptor(), this);
-            // initBackgroundColor();
-            changeBackground(mCFView, chatPanel.getChatType());
-        }
-        else if (!inFocus && (chatController != null)) {
-            chatController.onHide();
-            // Also remove global status listener
-            AndroidGUIActivator.getLoginRenderer().removeGlobalStatusListener(globalStatusListener);
+                // Seem mCFView changes on re-entry into chatFragment, so update the listener
+                mCryptoFragment.addCryptoModeListener(currentChatTransport.getDescriptor(), this);
+                // initBackgroundColor();
+                changeBackground(mCFView, chatPanel.getChatType());
+            }
         }
         else {
-            Timber.d("Skipping controller init... %s", hashCode());
+            Timber.d("Skipping null controller init...");
         }
     }
 
@@ -1171,12 +1172,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
                     case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
                         fileRecord = msgDisplay.getFileRecord();
-                        clearMsgCache = FileRecord.ACTIVE.equals(fileRecord.getStatus());
+                        clearMsgCache = (FileRecord.STATUS_ACTIVE == fileRecord.getStatus());
                         FileHistoryConversation filexferH = FileHistoryConversation.newInstance(currentChatFragment,
                                 fileRecord, chatMessage);
                         viewTemp = filexferH.FileHistoryConversationForm(inflater, messageViewHolder, parent, init);
                         break;
-
                     case ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD:
                         // Must reload msgCache from DB on chat window refresh
                         clearMsgCache = true;

@@ -18,6 +18,7 @@ import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.DrawableCache;
 import org.atalk.util.StringUtils;
+import org.jxmpp.jid.DomainBareJid;
 
 import java.util.Iterator;
 
@@ -76,7 +77,9 @@ public class MetaContactRenderer implements UIContactRenderer
     @Override
     public boolean isShowCallBtn(Object contactImpl)
     {
-        return isShowButton((MetaContact) contactImpl, OperationSetBasicTelephony.class);
+        // DomainJid always show call button  
+        boolean isDomainJid = ((MetaContact) contactImpl).getDefaultContact().getJid() instanceof DomainBareJid;
+        return isDomainJid || isShowButton((MetaContact) contactImpl, OperationSetBasicTelephony.class);
     }
 
     @Override

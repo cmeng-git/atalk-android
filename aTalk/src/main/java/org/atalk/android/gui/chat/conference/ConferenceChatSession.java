@@ -427,7 +427,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     public void chatRoomPropertyChanged(ChatRoomPropertyChangeEvent evt)
     {
         if (evt.getPropertyName().equals(ChatRoomPropertyChangeEvent.CHAT_ROOM_SUBJECT)) {
-            sessionRenderer.setChatSubject((String) evt.getNewValue());
+            sessionRenderer.setChatSubject((String) evt.getNewValue(), (String) evt.getOldValue());
         }
     }
 
@@ -471,7 +471,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
         chatRoom.addMemberPresenceListener(this);
 
         // Load the subject of the chat room.
-        sessionRenderer.setChatSubject(chatRoom.getSubject());
+        sessionRenderer.setChatSubject(chatRoom.getSubject(), null);
     }
 
     /**

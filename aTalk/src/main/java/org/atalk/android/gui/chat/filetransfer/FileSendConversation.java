@@ -141,7 +141,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                 messageViewHolder.titleLabel.setText(aTalkApp.getResString(R.string.xFile_FILE_SEND_COMPLETED, mDate, mSendTo));
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
                 if (mUpdateDB) {
-                    mFHS.updateFTStatusToDB(msgUuid, FileRecord.COMPLETED, mXferFile.toString(), mEncryption);
+                    mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_COMPLETED, mXferFile.toString(), mEncryption);
                 }
                 break;
 
@@ -152,7 +152,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                 // messageViewHolder.retryButton.setVisibility(View.VISIBLE);
                 bgAlert = true;
                 if (mUpdateDB)
-                    mFHS.updateFTStatusToDB(msgUuid, FileRecord.FAILED, mXferFile.toString(), mEncryption);
+                    mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_FAILED, mXferFile.toString(), mEncryption);
                 break;
 
             case FileTransferStatusChangeEvent.CANCELED:
@@ -160,7 +160,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
                 bgAlert = true;
                 if (mUpdateDB)
-                    mFHS.updateFTStatusToDB(msgUuid, FileRecord.CANCELED, mXferFile.toString(), mEncryption);
+                    mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_CANCELED, mXferFile.toString(), mEncryption);
                 break;
 
             case FileTransferStatusChangeEvent.REFUSED:

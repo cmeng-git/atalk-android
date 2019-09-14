@@ -22,6 +22,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.history.HistoryService;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 
@@ -312,7 +313,7 @@ public class ChatHistoryMigrate extends Activity
                     // msgValues.put(ChatMessage.MSG_BODY,
                     // 		FileHistoryConversation.getStatusMessage(direction, status));
                     msgValues.put(ChatMessage.MSG_BODY, status);
-                    msgValues.put(ChatMessage.STATUS, ChatMessageImpl.statusMap.get(status));
+                    msgValues.put(ChatMessage.STATUS, status);
                     msgValues.put(ChatMessage.ENC_TYPE, Message.ENCODE_PLAIN);
 
                     content = XMLUtils.findChild((Element) recordNode, ATTR_FILE).getTextContent();

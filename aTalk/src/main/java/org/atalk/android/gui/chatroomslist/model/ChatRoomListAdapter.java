@@ -30,8 +30,7 @@ import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.model.UIGroupRenderer;
 import org.atalk.util.StringUtils;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
 import org.jivesoftware.smackx.bookmarks.BookmarkedConference;
 
@@ -262,11 +261,12 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
         if (crpWrapper != null) {
             // List<ChatRoomWrapper> crWrappers = crpWrapper.getChatRooms();
 
+            XMPPConnection connection;
             ProtocolProviderService pps = crpWrapper.getProtocolProvider();
-            if ((pps == null) || (pps.getConnection() == null))
+            if ((pps == null) || ((connection = pps.getConnection()) == null)  || !connection.isAuthenticated())
                 return null;
 
-            BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
+            BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(connection);
             try {
                 List<BookmarkedConference> bookmarksList = bookmarkManager.getBookmarkedConferences();
                 for (BookmarkedConference bookmarkedConference : bookmarksList) {

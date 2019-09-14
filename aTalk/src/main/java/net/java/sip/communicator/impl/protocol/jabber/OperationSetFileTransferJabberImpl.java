@@ -59,11 +59,6 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     private OperationSetPersistentPresenceJabberImpl opSetPersPresence = null;
 
     /**
-     * The Smack file transfer manager.
-     */
-    private static FileTransferManager ftManager = null;
-
-    /**
      * The Smack file transfer request Listener.
      */
     private FileTransferRequestListener ftrListener = null;
@@ -153,8 +148,13 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
         }
 
+        /* Must init to the correct ftManager at time of sending file with current jabberProvider; Otherwise
+         * the ftManager is the last registered jabberProvide and may not be correct in multiple users env.
+         */
+        FileTransferManager ftManager = FileTransferManager.getInstanceFor(jabberProvider.getConnection());
         OutgoingFileTransfer transfer = ftManager.createOutgoingFileTransfer((EntityFullJid) fullJid);
-        OutgoingFileTransferJabberImpl outgoingTransfer = new OutgoingFileTransferJabberImpl(toContact, file, transfer, jabberProvider);
+        OutgoingFileTransferJabberImpl outgoingTransfer
+                = new OutgoingFileTransferJabberImpl(toContact, file, transfer, jabberProvider);
 
         // Notify all interested listeners that a file transfer has been created.
         FileTransferCreatedEvent event = new FileTransferCreatedEvent(outgoingTransfer, new Date());
@@ -259,16 +259,20 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
          *
          * @param evt ProviderStatusChangeEvent the event describing the status change.
          */
+        @Override
         public void registrationStateChanged(RegistrationStateChangeEvent evt)
         {
+            FileTransferManager ftManager = null;
             XMPPConnection connection = jabberProvider.getConnection();
+            if (connection != null)
+                ftManager = FileTransferManager.getInstanceFor(connection);
+
             if (evt.getNewState() == RegistrationState.REGISTERED) {
                 opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
                         jabberProvider.getOperationSet(OperationSetPersistentPresence.class);
 
                 // cmeng: Registered only once - otherwise multiple triggers on single file request
-                if (ftrListener == null) {
-                    ftManager = FileTransferManager.getInstanceFor(connection);
+                if ((ftrListener == null) && (ftManager != null)) {
                     ftrListener = new FileTransferRequestListener();
                     // Timber.w("Add FileTransferListener: %s", ftrListener);
                     ftManager.addFileTransferListener(ftrListener);
@@ -283,7 +287,6 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                     // Timber.w("Remove FileTransferListener: %s", ftrListener);
                     ftManager.removeFileTransferListener(ftrListener);
                     ftrListener = null;
-                    ftManager = null;
                 }
             }
         }

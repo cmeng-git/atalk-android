@@ -16,6 +16,8 @@ package net.java.sip.communicator.service.protocol.event;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ChatRoomMember;
 
+import org.jxmpp.jid.Jid;
+
 import java.util.EventObject;
 
 /**
@@ -24,6 +26,7 @@ import java.util.EventObject;
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class ChatRoomMemberPresenceChangeEvent extends EventObject
 {
@@ -33,20 +36,17 @@ public class ChatRoomMemberPresenceChangeEvent extends EventObject
     private static final long serialVersionUID = 0L;
 
     /**
-     * Indicates that this event was triggered as a result of the participant joining the source
-     * chat room.
+     * Indicates that this event was triggered as a result of the participant joining the source chat room.
      */
     public static final String MEMBER_JOINED = "MemberJoined";
 
     /**
-     * Indicates that this event was triggered as a result of the participant leaving the source
-     * chat room.
+     * Indicates that this event was triggered as a result of the participant leaving the source chat room.
      */
     public static final String MEMBER_LEFT = "MemberLeft";
 
     /**
-     * Indicates that this event was triggered as a result of the participant being "kicked" out of
-     * the chat room.
+     * Indicates that this event was triggered as a result of the participant being "kicked" out of the chat room.
      */
     public static final String MEMBER_KICKED = "MemberKicked";
 
@@ -63,8 +63,7 @@ public class ChatRoomMemberPresenceChangeEvent extends EventObject
     public static final String MEMBER_UPDATED = "MemberUpdated";
 
     /**
-     * The well-known reason for a
-     * <code>ChatRoomMemberPresenceChangeEvent</code> to occur as part of an
+     * The well-known reason for a <code>ChatRoomMemberPresenceChangeEvent</code> to occur as part of an
      * operation which lists all users in a <code>ChatRoom</code>.
      */
     public static final String REASON_USER_LIST = "ReasonUserList";
@@ -73,6 +72,11 @@ public class ChatRoomMemberPresenceChangeEvent extends EventObject
      * The chat room member that the event relates to.
      */
     private final ChatRoomMember sourceMember;
+
+    /**
+     * The moderator that kicked the occupant from the room (e.g. user@host.org).
+     */
+    private final Jid actor;
 
     /**
      * The type of this event. Values can be any of the MEMBER_XXX fields.
@@ -107,18 +111,18 @@ public class ChatRoomMemberPresenceChangeEvent extends EventObject
      *
      * @param sourceRoom the <tt>ChatRoom</tt> that produced this event
      * @param sourceMember the <tt>ChatRoomMember</tt> who this event is about
-     * @param actorMember the <tt>ChatRoomMember</tt> who participated as an actor in the new event. For
-     * example, in the case of a <tt>MEMBER_KICKED</tt> event the <tt>actorMember</tt> is the
-     * moderator who kicked the <tt>sourceMember</tt>.
+     * @param actor the ChatRoom Member who participated as an actor in the new event. For
+     * example, in the case of a <tt>MEMBER_KICKED</tt> event the <tt>actor</tt> is the
+     * moderator (e.g. user@host.org) who kicked the <tt>sourceMember</tt>.
      * @param eventType the event type; one of the MEMBER_XXX constants
      * @param reason the reason explaining why this event might have occurred
      */
     public ChatRoomMemberPresenceChangeEvent(ChatRoom sourceRoom, ChatRoomMember sourceMember,
-            ChatRoomMember actorMember, String eventType, String reason)
+            Jid actor, String eventType, String reason)
     {
         super(sourceRoom);
         this.sourceMember = sourceMember;
-        // this.actorMember = actorMember;
+        this.actor = actor;
         this.eventType = eventType;
         this.reason = reason;
     }

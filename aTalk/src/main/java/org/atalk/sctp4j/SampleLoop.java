@@ -23,6 +23,7 @@ import timber.log.Timber;
  * Sample that uses two <tt>SctpSocket</tt>s with {@link DirectLink}.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class SampleLoop
 {
@@ -42,44 +43,28 @@ public class SampleLoop
         server.listen();
 
         // Client thread
-        new Thread(
-                new Runnable()
-                {
-                    public void run()
-                    {
-                        try {
-                            client.connect(server.getPort());
-                            Timber.i("Client: connect");
+        new Thread(() -> {
+            try {
+                client.connect(server.getPort());
+                Timber.i("Client: connect");
 
-                            try {
-                                Thread.sleep(1000);
-                            } catch (Exception e) {
-                            }
-
-                            int sent = client.send(new byte[200], false, 0, 0);
-                            Timber.i("Client sent: %s", sent);
-
-                        } catch (IOException e) {
-                            Timber.e("%s", e.getMessage());
-                        }
-                    }
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
                 }
+                int sent = client.send(new byte[200], false, 0, 0);
+                Timber.i("Client sent: %s", sent);
+
+            } catch (IOException e) {
+                Timber.e("%s", e.getMessage());
+            }
+        }
         ).start();
 
-        server.setDataCallback(
-                new SctpDataCallback()
-                {
-                    @Override
-                    public void onSctpPacket(byte[] data, int sid, int ssn, int tsn,
-                            long ppid,
-                            int context, int flags)
-                    {
-                        Timber.i("Server got some data: %s stream: %s payload protocol id: %s",
-                                data.length, sid, ppid);
-                    }
-                }
+        server.setDataCallback( (data, sid, ssn, tsn, ppid, context, flags)
+                -> Timber.i("Server got some data: %s stream: %s payload protocol id: %s",
+                        data.length, sid, ppid)
         );
-
         Thread.sleep(5 * 1000);
 
         server.close();

@@ -1222,16 +1222,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Goes over all system properties and outputs their names and values for debug purposes. The
-     * method has no effect if the logger is at a log level other than DEBUG or TRACE (FINE or
-     * FINEST). * Changed that system properties are printed in INFO level and this way they
+     * Goes over all system properties and outputs their names and values for debug purposes.
+     * Changed that system properties are printed in INFO level and this way they
      * are included in the beginning of every users log file.
      */
     private void debugPrintSystemProperties()
     {
-        if (!TimberLog.isTraceEnable)
-            return;
-
         try {
             // Password system properties
             Pattern exclusion = null;
@@ -1254,7 +1250,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
                 if (passwordArgs != null && "sun.java.command".equals(key)) {
                     value = PasswordUtil.replacePasswords(value, passwordArgs);
                 }
-                Timber.d("%s = %s", key, value);
+                Timber.i("%s = %s", key, value);
             }
         } catch (RuntimeException e) {
             Timber.w(e, "An exception occurred while writing debug info");
@@ -1347,13 +1343,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
         if (!clazz.isInstance(this.store)) {
             Throwable exception = null;
-
             try {
                 this.store = clazz.newInstance();
-            } catch (IllegalAccessException ex) {
+            } catch (IllegalAccessException | InstantiationException ex) {
                 exception = ex;
-            } catch (InstantiationException e) {
-                exception = e;
             }
 
             if (exception != null)

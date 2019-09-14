@@ -1187,9 +1187,12 @@ public class OperationSetPersistentPresenceJabberImpl
          */
         void processStoredEvents()
         {
+            // ConcurrentModificationException from field
             storeEvents = false;
-            for (Presence p : storedPresences) {
-                firePresenceStatusChanged(p);
+            synchronized (storedPresences) {
+                for (Presence p : storedPresences) {
+                    firePresenceStatusChanged(p);
+                }
             }
             storedPresences.clear();
             storedPresences = null;
@@ -1208,7 +1211,7 @@ public class OperationSetPersistentPresenceJabberImpl
              * cmeng - just ignore and return to see if there is any side effect while process roster is in progress
              * seem to keep double copies and all unavailable triggered from roster - need to process??
              */
-            if (storeEvents && storedPresences != null) {
+            if (storeEvents && (storedPresences != null)) {
                 storedPresences.add(presence);
                 return;
             }

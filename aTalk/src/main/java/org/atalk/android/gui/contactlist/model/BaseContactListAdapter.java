@@ -16,9 +16,12 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.util.*;
 import org.atalk.service.osgi.OSGiActivity;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.Jid;
 
 import timber.log.Timber;
 
@@ -436,6 +439,13 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
             switch (view.getId()) {
                 case R.id.contactCallButton:
+                    Jid jid = ((MetaContact) contact).getDefaultContact().getJid();
+                    if (jid instanceof DomainBareJid) {
+                        TelephonyFragment extPhone = TelephonyFragment.newInstance(jid.toString());
+                        contactListFragment.getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(android.R.id.content, extPhone).commit();
+                        break;
+                    }
                 case R.id.contactCallVideoButton:
                     boolean isVideoCall = viewHolder.callVideoButton.isPressed();
                     AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),

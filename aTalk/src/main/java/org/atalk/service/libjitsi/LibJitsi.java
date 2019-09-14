@@ -57,8 +57,7 @@ public abstract class LibJitsi
      * performed just once while the library is initialized.)
      *
      * @return the <tt>AudioNotifierService</tt> instance known to the library
-     * or <tt>null</tt> if no <tt>AudioNotifierService</tt> instance is known to
-     * the library
+     * or <tt>null</tt> if no <tt>AudioNotifierService</tt> instance is known to the library
      */
     public static AudioNotifierService getAudioNotifierService()
     {
@@ -72,8 +71,7 @@ public abstract class LibJitsi
      * performed just once while the library is initialized.)
      *
      * @return the <tt>ConfigurationService</tt> instance known to the library
-     * or <tt>null</tt> if no <tt>ConfigurationService</tt> instance is known to
-     * the library
+     * or <tt>null</tt> if no <tt>ConfigurationService</tt> instance is known to the library
      */
     public static ConfigurationService getConfigurationService()
     {
@@ -127,14 +125,12 @@ public abstract class LibJitsi
      * Invokes {@link #getService(Class)} on {@link #impl}.
      *
      * @param serviceClass the class of the service to be retrieved
-     * @return a service of the specified type if such a service is associated
-     * with the library
+     * @return a service of the specified type if such a service is associated with the library
      * @throws IllegalStateException if the library is not currently initialized
      */
     private static <T> T invokeGetServiceOnImpl(Class<T> serviceClass)
     {
         LibJitsi impl = LibJitsi.impl;
-
         if (impl == null)
             throw new IllegalStateException("impl");
         else
@@ -156,8 +152,7 @@ public abstract class LibJitsi
      * which the <tt>libjitsi</tt> library is being started and is to be
      * executed. If non-<tt>null</tt>, a <tt>LibJitsi</tt> implementation which
      * accepts it will be used. For example, <tt>BundleContext</tt> may be
-     * specified in which case an OSGi-aware <tt>LibJitsi</tt> implementation
-     * will be used.
+     * specified in which case an OSGi-aware <tt>LibJitsi</tt> implementation will be used.
      */
     static void start(Object context)
     {
@@ -186,8 +181,7 @@ public abstract class LibJitsi
             } catch (ClassNotFoundException | LinkageError ex) {
                 exception = ex;
             }
-            if ((implClass != null)
-                    && LibJitsi.class.isAssignableFrom(implClass)) {
+            if ((implClass != null) && LibJitsi.class.isAssignableFrom(implClass)) {
                 try {
                     if (context == null) {
                         impl = (LibJitsi) implClass.newInstance();
@@ -196,17 +190,13 @@ public abstract class LibJitsi
                         /*
                          * Try to find a Constructor which will accept the specified context.
                          */
-                        Constructor<?> constructor = null;
-                        for (Constructor<?> aConstructor : implClass.getConstructors()) {
-                            Class<?>[] parameterTypes = aConstructor.getParameterTypes();
-
-                            if ((parameterTypes.length == 1)
-                                    && parameterTypes[0].isInstance(context)) {
-                                constructor = aConstructor;
+                        for (Constructor<?> constructor : implClass.getConstructors()) {
+                            Class<?>[] parameterTypes = constructor.getParameterTypes();
+                            if ((parameterTypes.length == 1) && parameterTypes[0].isInstance(context)) {
+                                impl = (LibJitsi) constructor.newInstance(context);
                                 break;
                             }
                         }
-                        impl = (LibJitsi) constructor.newInstance(context);
                     }
                 } catch (Throwable t) {
                     if (t instanceof ThreadDeath)
@@ -255,13 +245,11 @@ public abstract class LibJitsi
     }
 
     /**
-     * Gets a service of a specific type associated with this implementation of
-     * the <tt>libjitsi</tt> library.
+     * Gets a service of a specific type associated with this implementation of the <tt>libjitsi</tt> library.
      *
      * @param serviceClass the type of the service to be retrieved
      * @return a service of the specified type if there is such an association
-     * known to this implementation of the <tt>libjitsi</tt> library; otherwise,
-     * <tt>null</tt>
+     * known to this implementation of the <tt>libjitsi</tt> library; otherwise, <tt>null</tt>
      */
     protected abstract <T> T getService(Class<T> serviceClass);
 }

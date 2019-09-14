@@ -204,8 +204,7 @@ public interface ConfigurationService
      *
      * @param propertyName the name of the property that is being queried.
      * @param defaultValue the value to be returned if the specified property name is not associated with a value
-     * in this
-     * <code>ConfigurationService</code>
+     * in this <code>ConfigurationService</code>
      * @return the result of calling the property's toString method and <code>defaultValue</code>
      * in case there was no value mapped against the specified <tt>propertyName</tt>, or the
      * returned string had zero length or contained whitespaces only.

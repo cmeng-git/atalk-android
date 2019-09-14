@@ -5,8 +5,8 @@ buildscript {
     }
 
     dependencies {
-        // Do not change to 3.5.0 => AbractMethodException in Note-3
-        classpath 'com.android.tools.build:gradle:3.4.2'
+        // Do not change to 3.5.0 => AbractMethodException in Note-3 (see gradle.properties)
+        classpath 'com.android.tools.build:gradle:3.5.0'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
@@ -60,8 +60,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1104
-        versionName "2.0.4"
+        versionCode 1105
+        versionName "2.0.5"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -168,7 +168,7 @@ dependencies {
 
     implementation "androidx.legacy:legacy-support-v4:${rootProject.supportLibraryVersion}"
     implementation "androidx.legacy:legacy-support-v13:${rootProject.supportLibraryVersion}"
-    implementation "androidx.appcompat:appcompat:1.0.2"
+    implementation "androidx.appcompat:appcompat:1.1.0"
     // implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation 'androidx.multidex:multidex:2.0.1'
 
@@ -262,6 +262,8 @@ dependencies {
         classDelete 'org.jivesoftware.smack.provider.Provider'
         classDelete 'org.jivesoftware.smack.AbstractXMPPConnection**'
         classDelete 'org.jivesoftware.smack.SmackReactor**'
+        classDelete 'org.jivesoftware.smack.util.PacketParserUtils**'
+        classDelete 'org.jivesoftware.smack.util.ParserUtils**'
         classDelete 'org.jivesoftware.smack.util.StringUtils**'
     }
 

@@ -114,9 +114,11 @@ public class MainMenuActivity extends ExitMenuActivity
     protected void onResume()
     {
         super.onResume();
-        AndroidGUIActivator.bundleContext.addServiceListener(this);
-        if ((videoBridgeMenuItem != null) && (menuVbItem == null)) {
-            initVideoBridge();
+        if (AndroidGUIActivator.bundleContext != null) {
+            AndroidGUIActivator.bundleContext.addServiceListener(this);
+            if ((videoBridgeMenuItem != null) && (menuVbItem == null)) {
+                initVideoBridge();
+            }
         }
     }
 

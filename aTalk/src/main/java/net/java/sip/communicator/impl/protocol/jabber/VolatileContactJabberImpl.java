@@ -51,8 +51,7 @@ public class VolatileContactJabberImpl extends ContactJabberImpl
      * @param ssclCallback a reference to the ServerStoredContactListImpl instance that created us.
      * @param isPrivateMessagingContact if <tt>true</tt> this should be private messaging contact.
      */
-    VolatileContactJabberImpl(Jid id, ServerStoredContactListJabberImpl ssclCallback,
-            boolean isPrivateMessagingContact)
+    VolatileContactJabberImpl(Jid id, ServerStoredContactListJabberImpl ssclCallback, boolean isPrivateMessagingContact)
     {
         this(id, ssclCallback, isPrivateMessagingContact, null);
     }
@@ -124,21 +123,19 @@ public class VolatileContactJabberImpl extends ContactJabberImpl
     @Override
     public String toString()
     {
-        StringBuffer buff = new StringBuffer("VolatileJabberContact[ id=");
-        buff.append(getAddress()).append("]");
-        return buff.toString();
+        return "VolatileJabberContact[ id=" + getAddress() + "]";
     }
 
     /**
-     * Determines whether or not this contact group is being stored by the server. Non persistent
-     * contact groups exist for the sole purpose of containing non persistent contacts.
+     * Determines whether or not this contact is to be stored at local DB. Non persistent
+     * contact exist for the sole purpose of displaying any received messages.
      *
      * @return true if the contact group is persistent and false otherwise.
      */
     @Override
     public boolean isPersistent()
     {
-        return false;
+        return true;
     }
 
     /**

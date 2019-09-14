@@ -78,15 +78,15 @@ public class FileHistoryConversation extends FileTransferConversation
             messageViewHolder.arrowDir.setImageResource(R.drawable.filexferarrowout);
 
         File filePath = fileRecord.getFile();
-        String status = fileRecord.getStatus();
+        int status = fileRecord.getStatus();
 
-        boolean bgAlert = !FileRecord.COMPLETED.equals(status);
+        boolean bgAlert = (FileRecord.STATUS_COMPLETED != status);
         if (filePath.exists()) {
             MyGlideApp.loadImage(messageViewHolder.stickerView, filePath, true);
         } else {
-            if (!FileRecord.ACTIVE.equals(status)) {
+            if (FileRecord.STATUS_ACTIVE != status) {
                 bgAlert = true;
-                status = FileRecord.NOT_FOUND;
+                status = FileRecord.FILE_NOT_FOUND;
             }
         }
 
@@ -118,53 +118,55 @@ public class FileHistoryConversation extends FileTransferConversation
      * @param status file transfer status
      * @return the status message to display
      */
-    public String getStatusMessage(String entityJid, String dir, String status)
+    public String getStatusMessage(String entityJid, String dir, int status)
     {
         String statusMsg = "";
+        String statusText = FileRecord.statusMap.get(status);
+
         if (dir.equals(FileRecord.IN)) {
             switch (status) {
-                case FileRecord.COMPLETED:
+                case FileRecord.STATUS_COMPLETED:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVE_COMPLETED, entityJid);
                     break;
-                case FileRecord.CANCELED:
+                case FileRecord.STATUS_CANCELED:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_CANCELED);
                     break;
-                case FileRecord.FAILED:
+                case FileRecord.STATUS_FAILED:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVE_FAILED, entityJid);
                     break;
-                case FileRecord.REFUSED:
+                case FileRecord.STATUS_REFUSED:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_REFUSED);
                     break;
-                case FileRecord.ACTIVE:
-                case FileRecord.PREPARING:
-                case FileRecord.IN_PROGRESS:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, status);
+                case FileRecord.STATUS_ACTIVE:
+                case FileRecord.STATUS_PREPARING:
+                case FileRecord.STATUS_IN_PROGRESS:
+                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, statusText);
                     break;
-                case FileRecord.NOT_FOUND:
+                case FileRecord.FILE_NOT_FOUND:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_DOES_NOT_EXIST);
                     break;
                 default: // http file transfer status containing http link
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, status);
+                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, statusText);
             }
         }
         else {
             switch (status) {
-                case FileRecord.COMPLETED:
+                case FileRecord.STATUS_COMPLETED:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_SEND_COMPLETED, entityJid);
                     break;
-                case FileRecord.CANCELED:
+                case FileRecord.STATUS_CANCELED:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_CANCELED);
                     break;
-                case FileRecord.FAILED:
+                case FileRecord.STATUS_FAILED:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_UNABLE_TO_SEND, entityJid);
                     break;
-                case FileRecord.REFUSED:
+                case FileRecord.STATUS_REFUSED:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_SEND_REFUSED, entityJid);
                     break;
-                case FileRecord.ACTIVE:
-                case FileRecord.PREPARING:
-                case FileRecord.IN_PROGRESS:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, status);
+                case FileRecord.STATUS_ACTIVE:
+                case FileRecord.STATUS_PREPARING:
+                case FileRecord.STATUS_IN_PROGRESS:
+                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, statusText);
                     break;
             }
         }

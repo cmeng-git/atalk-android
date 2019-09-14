@@ -114,7 +114,6 @@ public class FileReceiveConversation extends FileTransferConversation
             });
 
             boolean isAutoAccept = (downloadFileSize <= ConfigurationUtils.getAutoAcceptFileSize());
-
             if (isAutoAccept)
                 messageViewHolder.acceptButton.performClick();
 
@@ -175,8 +174,10 @@ public class FileReceiveConversation extends FileTransferConversation
                 }
                 MyGlideApp.loadImage(messageViewHolder.stickerView, mXferFile, false);
 
-                String fileName = getFileLabel(mXferFile.getName(), mXferFile.length());
-                messageViewHolder.fileLabel.setText(fileName);
+                // set to full for progressBar and update file label
+                long fileSize = mXferFile.length();
+                onUploadProgress(fileSize, fileSize);
+                messageViewHolder.fileLabel.setText(getFileLabel(mXferFile.getName(), fileSize));
 
                 setCompletedDownloadFile(mChatFragment, mXferFile);
                 messageViewHolder.titleLabel.setText(
@@ -305,7 +306,7 @@ public class FileReceiveConversation extends FileTransferConversation
             fileTransfer = fileTransferRequest.acceptFile(dFile);
             mChatFragment.addActiveFileTransfer(fileTransfer.getID(), fileTransfer, msgId);
 
-            // Remove previously added listener (not further required), that notify for request cancellations if any.
+            // Remove previously added listener (no further required), that notify for request cancellations if any.
             fileTransferOpSet.removeFileTransferListener(FileReceiveConversation.this);
             fileTransfer.addStatusListener(FileReceiveConversation.this);
             return "";

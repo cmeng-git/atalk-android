@@ -174,6 +174,13 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     private Presence lastPresenceSent = null;
 
     /**
+     * All <presence/>'s reason will default to REASON_USER_LIST until user own <tt>Presence</tt> has been received.
+     *
+     * @see ChatRoomMemberPresenceChangeEvent#REASON_USER_LIST
+     */
+    private boolean mucOwnPresenceReceived = false;
+
+    /**
      *
      */
     private final List<CallJabberImpl> chatRoomConferenceCalls = new ArrayList<>();
@@ -614,13 +621,15 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 else
                     mMultiUserChat.join(mNickName, new String(password));
             }
+
             // update members list only on successful joining chatRoom
-            ChatRoomMemberJabberImpl member
-                    = new ChatRoomMemberJabberImpl(this, mNickName, mProvider.getAccountID().getBareJid());
+            ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(this, mNickName, mProvider.getOurJID());
             synchronized (members) {
                 members.put(mNickName, member);
             }
-            // We don't specify a reason.
+
+            // unblock all conference event UI display on received own <presence/> stanza e.g. participants' <presence/> etc
+            mucOwnPresenceReceived = true;
             opSetMuc.fireLocalUserPresenceEvent(this, LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED, null);
         } catch (XMPPErrorException ex) {
             StanzaError xmppError = ex.getStanzaError();
@@ -938,8 +947,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
             aTalkApp.getGlobalContext().startActivity(
                     OmemoAuthenticateDialog.createIntent(omemoManager, omemoDevices, null));
+        } catch (NoOmemoSupportException e) {
+            errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, "NoOmemoSupportException");
         } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException
-                | XMPPErrorException | NoOmemoSupportException e) {
+                | XMPPErrorException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage());
         } catch (NotLoggedInException e) {
             errMessage = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
@@ -1109,7 +1120,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             // when somebody changes its nickname we first receive event for its nickname changed
             // and after that that has joined we check if this already joined and if so we skip it
-            if (!mNickName.equals(participantNick) && !members.containsKey(participantNick)) {
+            if (!mNickName.equals(participantNick) &&!members.containsKey(participantNick)) {
+                String reason = mucOwnPresenceReceived ? ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED
+                        : ChatRoomMemberPresenceChangeEvent.REASON_USER_LIST;
 
                 // smack returns fully qualified occupant names.
                 Occupant occupant = mMultiUserChat.getOccupant(participant);
@@ -1117,8 +1130,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                         = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, occupant.getNick(), occupant.getJid());
 
                 members.put(participantNick, member);
-                // we don't specify a reason
-                fireMemberPresenceEvent(member, ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED, null);
+                // REASON_USER_LIST reason will not show in chat window
+                fireMemberPresenceEvent(member, ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED, reason);
             }
         }
 
@@ -1200,13 +1213,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         public void kicked(EntityFullJid participant, Jid actor, String reason)
         {
             ChatRoomMember member = findMemberFromParticipant(participant);
-            ChatRoomMember actorMember = findMemberFromParticipant(actor);
-
             if (member != null) {
                 synchronized (members) {
                     members.remove(participant.getResourceOrThrow());
                 }
-                fireMemberPresenceEvent(member, actorMember, ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED, reason);
+                fireMemberPresenceEvent(member, actor, ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED, reason);
             }
         }
 
@@ -1521,7 +1532,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param eventID the identifier of the event
      * @param eventReason the reason of this event
      */
-    private void fireMemberPresenceEvent(ChatRoomMember member, ChatRoomMember actor, String eventID, String eventReason)
+    private void fireMemberPresenceEvent(ChatRoomMember member, Jid actor, String eventID, String eventReason)
     {
         ChatRoomMemberPresenceChangeEvent evt = new ChatRoomMemberPresenceChangeEvent(this, member,
                 actor, eventID, eventReason);
@@ -1954,7 +1965,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         public void subjectUpdated(String subject, EntityFullJid from)
         {
             // only fire event if subject has really changed, not for new one
-            if (subject != null && !subject.equals(oldSubject)) {
+            if ((subject != null) && !subject.equals(oldSubject)) {
                 Timber.d("ChatRoom subject updated to '%s'", subject);
                 ChatRoomPropertyChangeEvent evt = new ChatRoomPropertyChangeEvent(
                         ChatRoomJabberImpl.this, ChatRoomPropertyChangeEvent.CHAT_ROOM_SUBJECT, oldSubject, subject);

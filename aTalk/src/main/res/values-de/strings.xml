@@ -173,7 +173,7 @@
 	<string name="service_gui_CHAT_ROOM_OPTIONS">Chatraum Optionen</string>
 	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">Der %1$s Chatraum fragt nach einem Passwort.</string>
 	<string name="service_gui_CHAT_ROOM">Chatraum</string>
-	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s hat das Thema von %2$s geändert</string>
+	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">Raumthema geändert: \'%1$s\' => \'%2$s\'</string>
 	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Du kannst dein Gespräch in folgendem Chatraum fortsetzen: %1$s</string>
 	<string name="service_gui_CHAT_ROOMS">Chaträume</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s heißt nun %2$s</string>
@@ -486,7 +486,6 @@
     <string name="service_gui_NO">Nein</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Zum Tätigen eines Anrufs wird mindestens ein Online-Telefonie-Konto benötigt. Bitte melde dich bei einem deiner Telefonkonten an und versuche es erneut.</string>
     <string name="service_gui_NOT_AUTHORIZED">Nicht autorisiert</string>
-    <string name="service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME">NichtInKontaktliste</string>
     <string name="service_gui_OFF">Aus</string>
     <string name="service_gui_OFFLINE">Offline</string>
     <string name="service_gui_OK">OK</string>
@@ -553,6 +552,10 @@
     <string name="service_gui_SEND_LOGS_QUESTION">aTalk hat sich gerade nach einem schweren Absturz neu gestartet. Möchtest du den Fehler den Entwicklern melden?</string>
     <string name="service_gui_SEND_LOGS_SUBJECT">aTalk Fehlerbericht</string>
     <string name="service_gui_SEND_LOGS_TITLE">aTalk Fehlerbericht per E-Mail</string>
+    <string name="service_gui_SEND_LOGS_INFO">Die folgenden Informationen können dem Entwickler dabei helfen, das Problem zu beheben:\n\n
+         1. Was haben Sie zuletzt getan, bevor das Problem aufgetreten ist?\n\n\n
+         2. Was war das Problem, das Sie sehen?\n\n\n
+         3. Können Sie oder wie Sie das Problem reproduzieren?</string>
 
     <string name="service_gui_SEND_MESSAGE">Sende eine Nachricht</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Fehler beim Senden der Nachricht: %1$s</string>

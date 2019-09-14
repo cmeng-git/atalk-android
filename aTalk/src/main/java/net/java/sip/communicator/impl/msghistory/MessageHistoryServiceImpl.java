@@ -1016,7 +1016,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         Date date = new Date(Long.parseLong(mProperties.get(ChatMessage.TIME_STAMP)));
         String file = mProperties.get(ChatMessage.FILE_PATH);
         int encType = Integer.parseInt(mProperties.get(ChatMessage.ENC_TYPE));
-        String status = mProperties.get(ChatMessage.MSG_BODY); // body contains file transfer status
+        int status = Integer.parseInt(mProperties.get(ChatMessage.STATUS));
         return new FileRecord(uuid, contact, dir, date, new File(file), encType, status);
     }
 

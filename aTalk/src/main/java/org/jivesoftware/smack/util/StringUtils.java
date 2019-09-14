@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  * A collection of utility methods for String objects.
@@ -407,7 +408,7 @@ public class StringUtils {
     /**
      * Returns true if the given CharSequence is null or empty.
      *
-     * @param cs
+     * @param cs TODO javadoc me please
      * @return true if the given CharSequence is null or empty
      */
     public static boolean isNullOrEmpty(CharSequence cs) {
@@ -447,7 +448,7 @@ public class StringUtils {
     /**
      * Returns true if the given CharSequence is empty.
      *
-     * @param cs
+     * @param cs TODO javadoc me please
      * @return true if the given CharSequence is empty
      */
     public static boolean isEmpty(CharSequence cs) {
@@ -515,7 +516,7 @@ public class StringUtils {
      * @param cs CharSequence
      * @param message error message
      * @param <CS> CharSequence type
-     * @return cs
+     * @return cs TODO javadoc me please
      */
     @Deprecated
     public static <CS extends CharSequence> CS requireNotNullOrEmpty(CS cs, String message) {
@@ -528,7 +529,7 @@ public class StringUtils {
      * @param cs CharSequence
      * @param message error message
      * @param <CS> CharSequence type
-     * @return cs
+     * @return cs TODO javadoc me please
      */
     public static <CS extends CharSequence> CS requireNotNullNorEmpty(CS cs, String message) {
         if (isNullOrEmpty(cs)) {
@@ -558,5 +559,17 @@ public class StringUtils {
             return null;
         }
         return cs.toString();
+    }
+
+    /**
+     * Defined by XML 1.0 § 2.3 as:
+     *  S      ::=      (#x20 | #x9 | #xD | #xA)+
+     *
+     * @see <a href="https://www.w3.org/TR/xml/#sec-white-space">XML 1.0 § 2.3</a>
+     */
+    private static final Pattern XML_WHITESPACE = Pattern.compile("[\t\n\r ]");
+
+    public static String deleteXmlWhitespace(String string) {
+        return XML_WHITESPACE.matcher(string).replaceAll("");
     }
 }

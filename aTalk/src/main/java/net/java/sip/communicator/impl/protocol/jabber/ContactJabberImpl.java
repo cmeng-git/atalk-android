@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ContactJabberImpl extends AbstractContact
 {
     /**
-     * Contains either the bareJid as retrieved from the Roster Entry, FullJid of ownJId OR
+     * Contains either the bareJid as retrieved from the Roster Entry, FullJid of ownJid OR
      * the VolatileContact BareJid/FullJid
      */
     private Jid contactJid = null;
@@ -502,7 +502,7 @@ public class ContactJabberImpl extends AbstractContact
      */
     ContactResource getResourceFromJid(FullJid jid)
     {
-        return (resources == null) ? null : resources.get(jid);
+        return ((resources == null) || (jid == null)) ? null : resources.get(jid);
     }
 
     Map<FullJid, ContactResourceJabberImpl> getResourcesMap()

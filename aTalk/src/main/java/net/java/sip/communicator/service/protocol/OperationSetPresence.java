@@ -5,14 +5,11 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
-import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusListener;
-import net.java.sip.communicator.service.protocol.event.SubscriptionListener;
+import net.java.sip.communicator.service.protocol.event.*;
 
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -93,7 +90,6 @@ public interface OperationSetPresence extends OperationSet
      * OperationSetPersistentPresence.subscribe() method)
      *
      * @param contactIdentifier the identifier of the contact whose status updates we are subscribing for.
-     *
      * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors
      * experienced during network communication
      * @throws IllegalArgumentException if <tt>contact</tt> is not a contact known to the underlying protocol provider
@@ -105,8 +101,8 @@ public interface OperationSetPresence extends OperationSet
     /**
      * Removes a subscription for the presence status of the specified contact.
      *
-     * @param contact the contact whose status updates we are unsubscribing from.
-     * @throws OperationFailedException with code NETWORK_FAILURE if unsubscribing fails
+     * @param contact the contact whose status updates we are unsubscribe from.
+     * @throws OperationFailedException with code NETWORK_FAILURE if unsubscribe fails
      * due to errors experienced during network communication
      * @throws IllegalArgumentException if <tt>contact</tt> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.

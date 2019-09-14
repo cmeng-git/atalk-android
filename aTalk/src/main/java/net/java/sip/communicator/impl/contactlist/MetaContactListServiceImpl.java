@@ -932,14 +932,11 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         // remove the contact from the provider and do nothing else updating and/or removing the
         // corresponding meta contact would happen once a confirmation event is received from the
         // underlying protocol provider
-        OperationSetPresence opSetPresence
-                = contact.getProtocolProvider().getOperationSet(OperationSetPresence.class);
+        OperationSetPresence opSetPresence = contact.getProtocolProvider().getOperationSet(OperationSetPresence.class);
 
         // in case the provider only has a persistent operation set:
         if (opSetPresence == null) {
-            opSetPresence = contact.getProtocolProvider()
-                    .getOperationSet(OperationSetPersistentPresence.class);
-
+            opSetPresence = contact.getProtocolProvider().getOperationSet(OperationSetPersistentPresence.class);
             if (opSetPresence == null) {
                 throw new IllegalStateException(
                         "Cannot remove a contact from a provider with no presence operation set.");
@@ -1943,9 +1940,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         }
 
         /**
-         * Locates the <tt>MetaContact</tt> corresponding to the contact that has been removed and
-         * updates it. If the removed proto contact was the last one in it, then the
-         * <tt>MetaContact</tt> is also removed.
+         * Locates the <tt>MetaContact</tt> corresponding to the contact that has been removed and updates it.
+         * If the removed proto contact was the last one in it, then the <tt>MetaContact</tt> is also removed.
          *
          * @param evt the <tt>SubscriptionEvent</tt> containing the contact that has been removed.
          */
@@ -1958,15 +1954,13 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
                     findMetaContactGroupByContactGroup(evt.getParentGroup());
             metaContact.removeProtoContact(evt.getSourceContact());
 
-            // if this was the last protocol specific contact in this meta contact then remove the
-            // meta contact as well.
+            // if this was the last protocol contact in this meta contact then remove the meta contact as well.
             if (metaContact.getContactCount() == 0) {
                 metaContactGroup.removeMetaContact(metaContact);
                 fireMetaContactEvent(metaContact, metaContactGroup, MetaContactEvent.META_CONTACT_REMOVED);
             }
             else {
-                // this was not the las proto contact so only generate the
-                // corresponding event.
+                // this was not the las proto contact so only generate the corresponding event.
                 fireProtoContactEvent(evt.getSourceContact(),
                         ProtoContactEvent.PROTO_CONTACT_REMOVED, metaContact, null);
 
@@ -1980,21 +1974,18 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     private class ContactListGroupListener implements ServerStoredGroupListener
     {
         /**
-         * The method is called upon receiving notification that a new server stored group has
-         * been created.
+         * The method is called upon receiving notification that a new server stored group has been created.
          *
          * @param parent a reference to the <tt>MetaContactGroupImpl</tt> where <tt>group</tt>'s newly
          * created <tt>MetaContactGroup</tt> wrapper should be added as a subgroup.
          * @param group the newly added <tt>ContactGroup</tt>
-         * @return the <tt>MetaContactGroup</tt> that now wraps the newly created
-         * <tt>ContactGroup</tt>.
+         * @return the <tt>MetaContactGroup</tt> that now wraps the newly created <tt>ContactGroup</tt>.
          */
         private MetaContactGroup handleGroupCreatedEvent(MetaContactGroupImpl parent, ContactGroup group)
         {
             // if parent already contains a meta group with the same name, we'll
             // reuse it as the container for the new contact group.
-            MetaContactGroupImpl newMetaGroup = (MetaContactGroupImpl) parent
-                    .getMetaContactSubgroup(group.getGroupName());
+            MetaContactGroupImpl newMetaGroup = (MetaContactGroupImpl) parent.getMetaContactSubgroup(group.getGroupName());
 
             // if there was no meta group with the specified name, create a new one
             if (newMetaGroup == null) {
@@ -2035,8 +2026,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             Timber.log(TimberLog.FINER, "ContactGroup created: %s", evt);
 
             // ignore the event if the source group is in the ignore list
-            if (isGroupInEventIgnoreList(evt.getSourceGroup().getGroupName(),
-                    evt.getSourceProvider())) {
+            if (isGroupInEventIgnoreList(evt.getSourceGroup().getGroupName(), evt.getSourceProvider())) {
                 return;
             }
 
@@ -2048,8 +2038,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             }
 
             // check whether the meta group was already existing before adding proto-groups to it
-            boolean isExisting = parentMetaGroup.getMetaContactSubgroup(
-                    evt.getSourceGroup().getGroupName()) != null;
+            boolean isExisting = parentMetaGroup.getMetaContactSubgroup(evt.getSourceGroup().getGroupName()) != null;
 
             // add parent group to the ServerStoredGroupEvent
             MetaContactGroup newMetaGroup = handleGroupCreatedEvent(parentMetaGroup,
@@ -2310,9 +2299,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         ProtocolProviderService sourceProvider = currentlyInstalledProviders.get(accountID);
         OperationSetPersistentPresence presenceOpSet = sourceProvider.getOperationSet(OperationSetPersistentPresence.class);
 
-        ContactGroup newProtoGroup = presenceOpSet.createUnresolvedContactGroup(contactGroupUID,
-                persistentData, (parentProtoGroup == null)
-                        ? presenceOpSet.getServerStoredContactListRoot() : parentProtoGroup);
+        ContactGroup newProtoGroup = presenceOpSet.createUnresolvedContactGroup(contactGroupUID, persistentData,
+                (parentProtoGroup == null) ? presenceOpSet.getServerStoredContactListRoot() : parentProtoGroup);
 
         containingMetaGroup.addProtoGroup(newProtoGroup);
         return newProtoGroup;

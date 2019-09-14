@@ -23,7 +23,7 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.chat2.*;
-import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.util.StringUtils;
@@ -37,7 +37,8 @@ import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
-import org.jivesoftware.smackx.omemo.exceptions.*;
+import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
+import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.listener.OmemoMessageListener;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
@@ -82,6 +83,13 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     private CarbonManager mCarbonManager = null;
     private ChatManager mChatManager = null;
+
+    /**
+     * The smackSvrMessageListener instance listens for incoming messages.
+     * Keep a reference of it so if anything goes wrong we don't add
+     * two different instances.
+     */
+    private SmackSvrMessageListener smackSvrMessageListener = null;
 
     /**
      * Current active chat
@@ -137,6 +145,17 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Whether carbon is enabled or not.
      */
     private boolean isCarbonEnabled = false;
+
+    /**
+     * Message filter to listen for message sent from DomianJid i.e. server
+     */
+    private static final StanzaFilter MESSAGE_FILTER = new AndFilter(
+            MessageTypeFilter.NORMAL_OR_CHAT, new OrFilter(MessageWithBodiesFilter.INSTANCE,
+            new StanzaExtensionFilter(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE))
+    );
+    private static final StanzaFilter INCOMING_SVR_MESSAGE_FILTER
+            = new AndFilter(MESSAGE_FILTER, FromTypeFilter.DOMAIN_BARE_JID
+    );
 
     /**
      * Creates an instance of this operation set.
@@ -549,7 +568,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             throws IllegalStateException
     {
         if (opSetPersPresence == null) {
-            throw new IllegalStateException("The provider must be signin before able to communicate.");
+            throw new IllegalStateException("The provider must be sign in before able to communicate.");
         }
         else
             opSetPersPresence.assertConnected();
@@ -582,11 +601,19 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 // omemoManager = OmemoManager.getInstanceFor(xmppConnection);
                 // registerOmemoMucListener(omemoManager);
 
-                XMPPConnection jabberConnection = jabberProvider.getConnection();
-                mChatManager = ChatManager.getInstanceFor(jabberConnection);
+                mChatManager = ChatManager.getInstanceFor(connection);
 
-                // make sure this listener is not already installed in this connection - ChatManager has taken care
+                // make sure this listener is not already installed in this connection - ChatManager has taken care <set>
                 mChatManager.addIncomingListener(opSetBIMessaging);
+
+                if (smackSvrMessageListener == null) {
+                    smackSvrMessageListener = new SmackSvrMessageListener();
+                }
+                else {
+                    // make sure this listener is not already registered in this connection
+                    connection.removeAsyncStanzaListener(smackSvrMessageListener);
+                }
+                connection.addAsyncStanzaListener(smackSvrMessageListener, INCOMING_SVR_MESSAGE_FILTER);
             }
             else if (evt.getNewState() == RegistrationState.REGISTERED) {
                 enableDisableCarbon();
@@ -599,7 +626,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                         omemoManager = OmemoManager.getInstanceFor(connection);
                         unRegisterOmemoListener(omemoManager);
                     }
+                    if (smackSvrMessageListener != null)
+                        connection.removeAsyncStanzaListener(smackSvrMessageListener);
                 }
+                smackSvrMessageListener = null;
+
                 if (mChatManager != null) {
                     mChatManager.removeIncomingListener(opSetBIMessaging);
                     mChatManager = null;
@@ -611,6 +642,40 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                     mCarbonManager = null;
                 }
             }
+        }
+    }
+
+    /**
+     * The listener that we use in order to handle incoming server messages.
+     * Curently not supported by smack
+     */
+    private class SmackSvrMessageListener implements StanzaListener
+    {
+        /**
+         * Handles incoming messages and dispatches whatever events are necessary.
+         *
+         * @param stanza the packet that we need to handle (if it is a message).
+         */
+        @Override
+        public void processStanza(Stanza stanza)
+        {
+            final org.jivesoftware.smack.packet.Message message = (org.jivesoftware.smack.packet.Message) stanza;
+            if (message.getBodies().isEmpty())
+                return;
+
+            int encType = Message.ENCRYPTION_NONE | Message.ENCODE_PLAIN;
+            String content = message.getBody();
+            String subject = message.getSubject();
+            if (!TextUtils.isEmpty(subject)) {
+                content = subject + ": " + content;
+            }
+
+            Message newMessage = createMessageWithUID(content, encType, message.getStanzaId());
+            newMessage.setRemoteMsgId(message.getStanzaId());
+
+            Contact sourceContact = opSetPersPresence.createVolatileContact(message.getFrom());
+            MessageReceivedEvent msgEvt = new MessageReceivedEvent(newMessage, sourceContact, getTimeStamp(message));
+            fireMessageEvent(msgEvt);
         }
     }
 

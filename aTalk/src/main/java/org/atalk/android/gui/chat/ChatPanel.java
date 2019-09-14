@@ -531,13 +531,14 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Implements the <tt>Chat.isChatFocused</tt> method. Returns TRUE if this chat is
      * the currently selected and if the chat window, where it's contained is active.
-     *
+     * NPE: mChatSession == null from field
      * @return true if this chat has the focus and false otherwise.
      */
     @Override
     public boolean isChatFocused()
     {
-        return mChatSession.getChatId().equals(ChatSessionManager.getCurrentChatId());
+        return (mChatSession != null)
+                &&  mChatSession.getChatId().equals(ChatSessionManager.getCurrentChatId());
     }
 
     /**
@@ -867,7 +868,7 @@ public class ChatPanel implements Chat, MessageListener
      *
      * @param subject the subject to set
      */
-    public void setChatSubject(final String subject)
+    public void setChatSubject(final String subject, String oldSubject)
     {
         if ((subject != null) && !subject.equals(chatSubject)) {
             chatSubject = subject;
@@ -883,8 +884,10 @@ public class ChatPanel implements Chat, MessageListener
                     });
                 }
             }
-            this.addMessage(mChatSession.getChatEntity(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
-                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SUBJECT_CHANGED, mChatSession.getChatEntity(), subject));
+            // Do not display change subject message if this is the original subject
+            if (!TextUtils.isEmpty(oldSubject))
+                this.addMessage(mChatSession.getChatEntity(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
+                        aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SUBJECT_CHANGED, oldSubject, subject));
         }
     }
 

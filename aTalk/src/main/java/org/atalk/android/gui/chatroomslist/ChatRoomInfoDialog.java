@@ -104,15 +104,12 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
                 MultiUserChatManager mucManager = MultiUserChatManager.getInstanceFor(pps.getConnection());
                 try {
                     chatRoomInfo = mucManager.getRoomInfo(entityBareJid);
-                } catch (SmackException.NoResponseException e) {
+                } catch (SmackException.NoResponseException | SmackException.NotConnectedException
+                        | InterruptedException e) {
                     errMsg = e.getMessage();
                 } catch (XMPPException.XMPPErrorException e) {
                     String descriptiveText = e.getStanzaError().getDescriptiveText() + "\n";
                     errMsg = descriptiveText + e.getMessage();
-                } catch (SmackException.NotConnectedException e) {
-                    errMsg = e.getMessage();
-                } catch (InterruptedException e) {
-                    errMsg = e.getMessage();
                 }
             }
             return null;
@@ -161,11 +158,11 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
                 List<EntityBareJid> contactJids = new ArrayList<>();
                 try {
                     contactJids = chatRoomInfo.getContactJids();
+                    textValue = contactJids.get(0).toString();
+                    textView.setText(textValue);
                 } catch (NullPointerException e) {
                     Timber.e("Contact Jids exception: %s", e.getMessage());
                 }
-                textValue = contactJids.get(0).toString();
-                textView.setText(textValue);
 
                 textView = contentView.findViewById(R.id.roominfo_lang);
                 textValue = chatRoomInfo.getLang();
