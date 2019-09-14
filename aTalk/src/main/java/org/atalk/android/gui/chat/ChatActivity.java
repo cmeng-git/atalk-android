@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
@@ -26,6 +25,7 @@ import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
 import org.atalk.android.gui.chatroomslist.ChatRoomInfoChangeDialog;
@@ -43,9 +43,9 @@ import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
+import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
 import java.io.File;
@@ -101,6 +101,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     private MenuItem mCallVideoContact;
     private MenuItem mSendFile;
     private MenuItem mSendLocation;
+    private MenuItem mRoomInvite;
     private MenuItem mLeaveChatRoom;
     private MenuItem mDestroyChatRoom;
     private MenuItem mChatRoomInfo;
@@ -315,6 +316,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         mSendFile = mMenu.findItem(R.id.send_file);
         mSendLocation = mMenu.findItem(R.id.send_location);
         mHistoryErase = mMenu.findItem(R.id.erase_chat_history);
+        mRoomInvite = mMenu.findItem(R.id.muc_invite);
         mLeaveChatRoom = mMenu.findItem(R.id.leave_chat_room);
         mDestroyChatRoom = mMenu.findItem(R.id.destroy_chat_room);
         mChatRoomInfo = mMenu.findItem(R.id.chatroom_info);
@@ -348,6 +350,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mLeaveChatRoom.setVisible(false);
                 mDestroyChatRoom.setVisible(false);
                 mHistoryErase.setTitle(R.string.service_gui_HISTORY_ERASE_PER_CONTACT);
+                boolean isDomainJid = mRecipient.getJid() instanceof DomainBareJid;
 
                 // check if to show call buttons.
                 Object metaContact = chatSession.getDescriptor();
@@ -358,14 +361,16 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mCallAudioContact.setVisible(isShowCall);
                 mCallVideoContact.setVisible(isShowVideoCall);
 
-                boolean isShowFileSend = contactRenderer.isShowFileSendBtn(metaContact) || hasUploadService;
+                boolean isShowFileSend = !isDomainJid
+                        && (contactRenderer.isShowFileSendBtn(metaContact) || hasUploadService);
                 mSendFile.setVisible(isShowFileSend);
-                mSendLocation.setVisible(true);
+                mSendLocation.setVisible(!isDomainJid);
+                mRoomInvite.setVisible(!isDomainJid);
                 mChatRoomInfo.setVisible(false);
                 mChatRoomMember.setVisible(false);
                 mChatRoomSubject.setVisible(false);
-                // Let CryptoFragment handles this to take care Omemo and OTR
-                // mOtr_Session.setVisible(true);
+                // Also let CryptoFragment handles this to take care Omemo and OTR
+                mOtr_Session.setVisible(!isDomainJid);
             }
             else {
                 mLeaveChatRoom.setVisible(true);
@@ -396,6 +401,10 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        // NPE from field
+        if ((selectedChatPanel == null) || (selectedChatPanel.getChatSession() == null))
+            return super.onOptionsItemSelected(item);
+
         Object object = selectedChatPanel.getChatSession().getDescriptor();
 
         if (object instanceof ChatRoomWrapper) {
@@ -447,15 +456,16 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                         memberList.append(occupant.getNickName())
                                 .append(" - ")
                                 .append(occupant.getJabberID())
+                                .append(" (" + member.getRole().getRoleName() + ")")
                                 .append("<br/>");
-                        String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
-                        selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_HTML,
-                                memberList.toString());
                     }
+                    String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
+                    selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_HTML,
+                            memberList.toString());
                     return true;
 
                 case R.id.send_file:
-                    // Note: mReceipient is not used
+                    // Note: mRecipient is not used
                     AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this, mRecipient);
                     attachOptionDialog.show();
                     return true;
@@ -472,9 +482,17 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     return true;
 
                 case R.id.call_contact_audio: // start audio call
-                    if (mRecipient != null)
-                        AndroidCallUtil.createCall(this, mRecipient.getAddress(),
-                                mRecipient.getProtocolProvider(), false);
+                    if (mRecipient != null) {
+                        Jid jid = mRecipient.getJid();
+                        if (jid instanceof DomainBareJid) {
+                            TelephonyFragment extPhone = TelephonyFragment.newInstance(jid.toString());
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(android.R.id.content, extPhone).commit();
+                        }
+                        else
+                            AndroidCallUtil.createCall(this, mRecipient.getAddress(),
+                                    mRecipient.getProtocolProvider(), false);
+                    }
                     return true;
 
                 case R.id.call_contact_video: // start video call
@@ -561,7 +579,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 chatSession = chatPanel.getChatSession();
             }
 
-            if (chatSession == null) {
+            if ((chatSession == null) || (chatSession.getCurrentChatTransport() == null)) {
                 Timber.e("Cannot continue without the default chatSession");
                 return;
             }
@@ -605,7 +623,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             return null;
 
         XMPPConnection connection = mRecipient.getProtocolProvider().getConnection();
-        if (connection == null)
+        if ((connection == null) || !connection.isAuthenticated())
             return null;
 
         Jid jid = mRecipient.getJid();
@@ -616,24 +634,19 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         try {
             elapseTime = lastActivityManager.getLastActivity(jid).getIdleTime();
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
-                | SmackException.NotConnectedException | InterruptedException ignore) {
+                | SmackException.NotConnectedException | InterruptedException | IllegalArgumentException ignore) {
         }
 
         if (elapseTime == -1) {
             return null;
         }
         else {
-            CharSequence lastSeen;
             long dateTime = (timeNow - elapseTime * 1000L);
 
             if (DateUtils.isToday(dateTime)) {
                 DateFormat df = DateFormat.getTimeInstance(DateFormat.MEDIUM);
                 return getString(R.string.service_gui_LAST_SEEN, df.format(new Date(dateTime)));
             }
-            // else if (DateUtils.isToday(dateTime + DateUtils.DAY_IN_MILLIS)) {  // yesterday
-                // lastSeen = DateUtils.getRelativeTimeSpanString(dateTime, timeNow, DateUtils.SECOND_IN_MILLIS,
-                //        DateUtils.FORMAT_ABBREV_ALL);
-            // }
             else {
                 // lastSeen = DateUtils.getRelativeTimeSpanString(dateTime, timeNow, DateUtils.DAY_IN_MILLIS);
                 DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
@@ -689,9 +702,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         switch (attachOptionItem) {
             case pic:
                 intent.setType("image/*");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                }
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, SELECT_PHOTO);
                 break;
@@ -728,9 +739,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
 
             case share_file:
                 intent.setType("*/*");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                }
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 try {
@@ -752,6 +761,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
 
             switch (requestCode) {
                 case SELECT_PHOTO:
+                case CHOOSE_FILE_ACTIVITY_REQUEST_CODE:
                     mPendingImageUris.clear();
                     mPendingImageUris.addAll(extractUriFromIntent(data));
                     for (Iterator<Uri> i = mPendingImageUris.iterator(); i.hasNext(); i.remove()) {
@@ -789,18 +799,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                         aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                     break;
 
-                case CHOOSE_FILE_ACTIVITY_REQUEST_CODE:
-                    mPendingImageUris.clear();
-                    mPendingImageUris.addAll(extractUriFromIntent(data));
-                    for (Iterator<Uri> i = mPendingImageUris.iterator(); i.hasNext(); i.remove()) {
-                        filePath = FilePathHelper.getPath(this, i.next());
-                        if (!StringUtils.isNullOrEmpty(filePath))
-                            sendFile(filePath);
-                        else
-                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                    }
-                    break;
-
                 case OPEN_FILE_REQUEST_CODE:
                     if (data != null) {
                         Uri uri = data.getData();
@@ -825,7 +823,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             return uris;
         }
         Uri uri = intent.getData();
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) && uri == null) {
+        if (uri == null) {
             final ClipData clipData = intent.getClipData();
             if (clipData != null) {
                 for (int i = 0; i < clipData.getItemCount(); ++i) {

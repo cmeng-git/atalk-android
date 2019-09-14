@@ -49,7 +49,6 @@ public class HttpFileUploadJabberImpl extends AbstractFileTransfer
         mSendTo = sendTo;
         mFileName = file;
         mFile = new File(file);
-
         fileSize = mFile.length();
     }
 

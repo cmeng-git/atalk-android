@@ -108,20 +108,6 @@ public class ChatMessageImpl implements ChatMessage
     private HttpFileDownloadJabberImpl httpFileTransfer;
 
     /**
-     * A map between FileRecord status to statusCode saved in DB
-     */
-    public static final HashMap<String, Integer> statusMap = new HashMap<String, Integer>()
-    {{
-        put(FileRecord.COMPLETED, STATUS_COMPLETED);
-        put(FileRecord.FAILED, STATUS_FAILED);
-        put(FileRecord.CANCELED, STATUS_CANCELED);
-        put(FileRecord.REFUSED, STATUS_REFUSED);
-        put(FileRecord.ACTIVE, STATUS_ACTIVE);
-        put(FileRecord.PREPARING, STATUS_PREPARING);
-        put(FileRecord.IN_PROGRESS, STATUS_IN_PROGRESS);
-    }};
-
-    /**
      * The file transfer history record.
      */
     private FileRecord fileRecord;

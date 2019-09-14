@@ -152,8 +152,8 @@ public class MclStorageManager implements MetaContactListListener
                 parentProtoGroup = null;
             }
             else {
-                metaGroup = mclServiceImpl.loadStoredMetaContactGroup(
-                        metaGroupMap.get(parentProtoGroupUID), groupUID, groupName);
+                metaGroup = mclServiceImpl.loadStoredMetaContactGroup(metaGroupMap.get(parentProtoGroupUID),
+                        groupUID, groupName);
                 parentProtoGroup = protoGroupsMap.get(protoGroupUID);
             }
             metaGroupMap.put(protoGroupUID, metaGroup);

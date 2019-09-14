@@ -186,7 +186,12 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                             "muc#roomconfig_publicroom"};
                     Boolean[] values = {true, true, false};
                     for (int i = 0; i < fields.length; i++) {
-                        form.setAnswer(fields[i], values[i]);
+                        try {
+                            form.setAnswer(fields[i], values[i]);
+                        } catch (IllegalArgumentException ignore) {
+                            // ignore and continue
+                            Timber.w("Exception in setAnswer for field: %s = %s", fields[i], values[i]);
+                        }
                     }
                 }
                 else {
@@ -330,9 +335,9 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                     try {
                         Map<EntityBareJid, HostedRoom> hostedRooms = mMucMgr.getRoomsHostedBy(serviceName);
                         list.addAll(hostedRooms.keySet());
-                    } catch (XMPPException | NoResponseException | NotConnectedException
+                    } catch (XMPPException | NoResponseException | NotConnectedException | IllegalArgumentException
                             | MultiUserChatException.NotAMucServiceException | InterruptedException ex) {
-                        Timber.e(ex, "Failed to retrieve rooms for serviceName = %s", serviceName);
+                        Timber.e("Failed to retrieve room for %s : %s", serviceName, ex.getMessage());
                     }
                 }
             }

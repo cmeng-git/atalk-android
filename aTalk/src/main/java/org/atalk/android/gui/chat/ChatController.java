@@ -69,7 +69,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     /**
      * Cancel button's View.
      */
-    private View cancelBtn;
+    private View cancelCorrectionBtn;
     /**
      * Correction indicator.
      */
@@ -176,8 +176,9 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             msgRecordView = parent.findViewById(R.id.recordView);
 
             // Gets the cancel correction button and hooks on click action
-            cancelBtn = parent.findViewById(R.id.cancelCorrectionBtn);
-            cancelBtn.setOnClickListener(this);
+            cancelCorrectionBtn = parent.findViewById(R.id.cancelCorrectionBtn);
+            cancelCorrectionBtn.setOnClickListener(this);
+            cancelCorrectionBtn.setVisibility(View.GONE);
 
             // Gets the send message button and hooks on click action
             sendBtn = parent.findViewById(R.id.sendMessageButton);
@@ -350,6 +351,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
         if (mChatTransport instanceof MetaContactChatTransport) {
             editText(adapter, chatMessage, position);
+            cancelCorrectionBtn.setVisibility(View.VISIBLE);
         }
         // Just put the last message in edit box for Omemo send error
         else {
@@ -426,7 +428,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
             case R.id.cancelCorrectionBtn:
                 cancelCorrection();
-                // Clear edited text
+                // Clear last message text
                 msgEdit.setText("");
                 break;
 
@@ -460,7 +462,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 isRecording = true;
                 // Hide normal edit text view
                 msgEdit.setVisibility(View.GONE);
-                cancelBtn.setVisibility(View.GONE);
+                cancelCorrectionBtn.setVisibility(View.GONE);
 
                 // Show audio record information
                 msgRecordView.setVisibility(View.VISIBLE);
@@ -542,7 +544,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     mTrashAnimate.selectDrawable(0);
 
                     msgEdit.setVisibility(View.VISIBLE);
-                    cancelBtn.setVisibility(View.VISIBLE);
+                    cancelCorrectionBtn.setVisibility(View.VISIBLE);
 
                     msgRecordView.setVisibility(View.GONE);
                     mSoundMeter.clearAnimation();
@@ -601,6 +603,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             chatPanel.setCorrectionUID(null);
             updateCorrectionState();
             msgEdit.setText("");
+            cancelCorrectionBtn.setVisibility(View.GONE);
         }
     }
 

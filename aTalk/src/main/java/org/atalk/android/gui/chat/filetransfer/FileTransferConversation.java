@@ -55,14 +55,10 @@ public abstract class FileTransferConversation extends OSGiFragment
     public static boolean FT_THUMBNAIL_ENABLE = true;
 
     /**
-     * Image default width.
+     * Image default width / height.
      */
-    public static final int IMAGE_WIDTH = 64;
-
-    /**
-     * Image default height.
-     */
-    public static final int IMAGE_HEIGHT = 64;
+    private static final int IMAGE_WIDTH = 64;
+    private static final int IMAGE_HEIGHT = 64;
 
     private ChatActivity chatActivity;
 
@@ -232,6 +228,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     {
         this.chatActivity = (ChatActivity) chatFragment.getActivity();
         mXferFile = file;
+
         final String toolTip = aTalkApp.getResString(R.string.service_gui_OPEN_FILE_FROM_IMAGE);
         messageViewHolder.imageLabel.setContentDescription(toolTip);
         View.OnClickListener onAction = getOnSetListener();
@@ -275,7 +272,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     }
 
     /**
-     * Updates progress bar progress line every time a progress event has been received file transport    
+     * Updates progress bar progress line every time a progress event has been received file transport
      * Note: total size of event.getProgress() is always lag behind event.getFileTransfer().getTransferredBytes();
      *
      * @param event the <tt>FileTransferProgressEvent</tt> that notifies us
@@ -324,7 +321,8 @@ public abstract class FileTransferConversation extends OSGiFragment
             // Need to do it here as it was found that Http File Upload completed before the progress Bar is even visible
             if (!messageViewHolder.mProgressBar.isShown()) {
                 messageViewHolder.mProgressBar.setVisibility(View.VISIBLE);
-                messageViewHolder.mProgressBar.setMax((int) mXferFile.length());
+                if (mXferFile != null)
+                    messageViewHolder.mProgressBar.setMax((int) mXferFile.length());
             }
             // Note: progress bar can only handle int size (4-bytes: 2,147,483, 647);
             messageViewHolder.mProgressBar.setProgress((int) transferredBytes);
@@ -404,12 +402,14 @@ public abstract class FileTransferConversation extends OSGiFragment
 
     /**
      * Must update chatListAdapter file transfer status to actual for refresh when user scroll.
+     * Only if the chatListAdapter is not destroyed
      *
      * @param status the file transfer new status
      */
     public void setXferStatus(int status)
     {
-        mChatFragment.getChatListAdapter().setXferStatus(msgId, status);
+        if (mChatFragment.getChatListAdapter() != null)
+            mChatFragment.getChatListAdapter().setXferStatus(msgId, status);
     }
 
     /**

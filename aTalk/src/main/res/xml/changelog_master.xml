@@ -6,6 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.0.5 (09/14/2019)" versioncode="1105">
+        <change>Implement user options to cancel, retry and display status progressBar during Http file downloading</change>
+        <change>Ensure proper Http File Download clean up if user exit chat session without cancel file transfer in progress</change>
+        <change>Fix file transfer may incorrectly send to last registered user instead of intended recipient</change>
+        <change>Improve room UI in MUC session on participant join and subject change events</change>
+        <change>Add member role in chat room occupant info display and fix multiple info messages display</change>
+        <change>Revert to chat NORMAL if current chat session cannot support the default chat OMEMO on open</change>
+        <change>Hide last message correction cancel button in normal text entry to avoid accidentally discard text entered</change>
+        <change>Support the display of messages receive from server</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.0.4 (08/31/2019)" versioncode="1104">
         <change>Improve preference settings UI according to user experience and add advance section</change>
         <change>Change Regenerate OMEMO identities implementation to have change take effect without restart app</change>

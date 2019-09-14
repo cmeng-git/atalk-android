@@ -173,7 +173,7 @@
 	<string name="service_gui_CHAT_ROOM_OPTIONS">Параметры чата</string>
 	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">Чат чата %1$s запросил пароль.</string>
 	<string name="service_gui_CHAT_ROOM">Чат</string>
-	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s изменил объект на %2$s</string>
+	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">Тема номера изменилась: \'%1$s\' => \'%2$s\'</string>
 	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Вы можете продолжить разговор в следующем чате: %1$s</string>
 	<string name="service_gui_CHAT_ROOMS">Чаты</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s теперь известен как %2$s</string>
@@ -489,7 +489,6 @@
     <string name="service_gui_NO">Нет</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Для совершения звонка необходима хотя бы одна учетная запись онлайн-телефонии. Войдите в одну из своих учетных записей и повторите попытку.</string>
     <string name="service_gui_NOT_AUTHORIZED">Не разрешено</string>
-    <string name="service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME">NotInContactList</string>
     <string name="service_gui_OFF">Выкл</string>
     <string name="service_gui_OFFLINE">Offline</string>
     <string name="service_gui_OK">OK</string>
@@ -556,6 +555,10 @@
     <string name="service_gui_SEND_LOGS_QUESTION">aTalk только что восстановился после серьезного сбоя. Вы хотите сообщить об ошибках?</string>
     <string name="service_gui_SEND_LOGS_SUBJECT">отчет об ошибках aTalk</string>
     <string name="service_gui_SEND_LOGS_TITLE">отчет об ошибках aTalk по электронной почте</string>
+    <string name="service_gui_SEND_LOGS_INFO">Приведенная ниже информация может помочь разработчику решить проблему:\n\n
+         1. Что было последним, что вы сделали, прежде чем возникла проблема?\n\n\n
+         2. Какую проблему вы видите?\n\n\n
+         3. Можно или как воспроизвести проблему?</string>
 
     <string name="service_gui_SEND_MESSAGE">Отправить сообщение</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Не удалось отправить сообщение: %1$s</string>

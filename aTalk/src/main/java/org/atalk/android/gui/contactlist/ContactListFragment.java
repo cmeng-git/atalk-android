@@ -529,12 +529,9 @@ public class ContactListFragment extends OSGiFragment
             return false;
         }
 
-        // Default to telephony access if contact is not a valid entityJid
+        // Default for domainJid - always show chat session
         if (metaContact.getDefaultContact().getJid() instanceof DomainJid) {
-            String domainJid = metaContact.getDefaultContact().getAddress();
-            TelephonyFragment extPhone = TelephonyFragment.newInstance(domainJid);
-            // getFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
-            getActivity().getSupportFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
+            startChatActivity(metaContact);
             return true;
         }
         if (!metaContact.getContactsForOperationSet(OperationSetBasicInstantMessaging.class).isEmpty()) {

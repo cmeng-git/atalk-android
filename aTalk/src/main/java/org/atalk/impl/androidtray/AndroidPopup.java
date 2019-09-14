@@ -252,8 +252,7 @@ public class AndroidPopup
     }
 
     /**
-     * Builds notification and returns the builder object which can be used to extend the
-     * notification.
+     * Builds notification and returns the builder object which can be used to extend the notification.
      *
      * @return builder object describing current notification.
      */

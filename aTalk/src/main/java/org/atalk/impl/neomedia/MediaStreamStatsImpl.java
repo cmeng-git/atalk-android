@@ -924,7 +924,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
         MediaStreamTarget mediaStreamTarget = mediaStreamImpl.getTarget();
 
         // Gets this stream IP address endpoint. Stops if the endpoint is disconnected.
-        return (mediaStreamTarget == null)
+        return ((mediaStreamTarget == null) || (mediaStreamTarget.getDataAddress() == null))
                 ? null : mediaStreamTarget.getDataAddress().getAddress().getHostAddress();
     }
 

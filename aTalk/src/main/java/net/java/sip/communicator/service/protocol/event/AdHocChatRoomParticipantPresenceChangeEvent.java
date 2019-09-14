@@ -48,7 +48,7 @@ public class AdHocChatRoomParticipantPresenceChangeEvent extends EventObject
 	 * The well-known reason for a <code>AdHocChatRoomParticipantPresenceChangeEvent</code> to occur
 	 * as part of an operation which lists all users in an <code>AdHocChatRoom</code>.
 	 */
-	public static final String REASON_USER_LIST = "ReasonUserList";
+	public static final String REASON_USER_LIST = ChatRoomMemberPresenceChangeEvent.REASON_USER_LIST;
 
 	/**
 	 * The ad-hoc chat room participant that the event relates to.

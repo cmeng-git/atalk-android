@@ -26,12 +26,12 @@ import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.*;
 
 import java.io.*;
-import java.net.URL;
 import java.util.List;
+
+import javax.net.ssl.SSLHandshakeException;
 
 import timber.log.Timber;
 
@@ -72,7 +72,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * <tt>true</tt> when a contact sends a message with XEP-0164 message delivery receipt;
      * override contact disco#info no XEP-0184 feature advertised.
      */
-    private static boolean isDeliveryReceiptSupported = false;
+    private boolean isDeliveryReceiptSupported;
 
     /**
      * <tt>true</tt> when a contact sends a message with XEP-0085 chat state notifications;
@@ -99,11 +99,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * Indicates if only the resource name should be displayed.
      */
     private boolean isDisplayResourceOnly;
-
-    /**
-     * URL link to fetch the upload file
-     */
-    private static URL mURL = null;
 
     /**
      * Creates an instance of <tt>MetaContactChatTransport</tt> by specifying the parent
@@ -136,16 +131,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         this.isDisplayResourceOnly = isDisplayResourceOnly;
         mPPS = contact.getProtocolProvider();
         ftOpSet = (OperationSetFileTransferJabberImpl) mPPS.getOperationSet(OperationSetFileTransfer.class);
-        XMPPConnection connection;
-        if ((connection = mPPS.getConnection()) != null) {
-            httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
-            checkDeliveryReceiptSupport(connection);
-        }
+
         presenceOpSet = mPPS.getOperationSet(OperationSetPresence.class);
         if (presenceOpSet != null)
             presenceOpSet.addContactPresenceStatusListener(this);
 
         isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
+        isDeliveryReceiptSupported = checkDeliveryReceiptSupport(mPPS.getConnection());
 
         // checking this can be slow so make sure its out of our way
         new Thread(this::checkImCaps).start();
@@ -155,26 +147,32 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * Check for Delivery Receipt support for all registered contacts
      * Currently isDeliveryReceiptSupported is not used - Smack autoAddDeliveryReceiptRequests support is global
      */
-    private void checkDeliveryReceiptSupport(XMPPConnection connection)
+    private boolean checkDeliveryReceiptSupport(XMPPConnection connection)
     {
+        boolean isSupported = false;
         Jid fullJid = null;
-        isDeliveryReceiptSupported = false;
 
-        DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(connection);
-        List<Presence> presences = Roster.getInstanceFor(connection).getPresences(contact.getJid().asBareJid());
-        for (Presence presence : presences) {
-            fullJid = presence.getFrom();
-            if (fullJid != null) {
+        // ANR from field - check isAuthenticated() before proceed
+        if ((connection != null) && connection.isAuthenticated()) {
+            httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
+            DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(connection);
+
+            List<Presence> presences = Roster.getInstanceFor(connection).getPresences(contact.getJid().asBareJid());
+            for (Presence presence : presences) {
+                fullJid = presence.getFrom();
                 try {
-                    isDeliveryReceiptSupported = deliveryReceiptManager.isSupported(fullJid);
-                    if (isDeliveryReceiptSupported)
+                    if ((fullJid != null) && deliveryReceiptManager.isSupported(fullJid)) {
+                        isSupported = true;
                         break;
-                } catch (XMPPException | SmackException | InterruptedException e) {
+                    }
+                } catch (XMPPException | SmackException | InterruptedException | IllegalArgumentException e) {
+                    // AbstractXMPPConnection.createStanzaCollectorAndSend() throws IllegalArgumentException
                     Timber.w("Check Delivery Receipt exception for %s: %s", fullJid, e.getMessage());
                 }
             }
+            Timber.d("isDeliveryReceiptSupported for: %s = %s", fullJid, isSupported);
         }
-        Timber.d("isDeliveryReceiptSupported for: %s = %s", fullJid, isDeliveryReceiptSupported);
+        return isSupported;
     }
 
     /**
@@ -347,11 +345,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     public boolean allowsMessageDeliveryReceipt()
     {
         return isDeliveryReceiptSupported;
-    }
-
-    public static void setMessageDeliveryReceiptSupport(boolean isEnable)
-    {
-        isDeliveryReceiptSupported = isEnable;
     }
 
     /**
@@ -659,6 +652,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 }
                 xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, contact, encType);
                 return url;
+            } catch (SSLHandshakeException ex) {
+                throw new OperationNotSupportedException(ex.getCause().getMessage());
             } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());
             }
@@ -709,13 +704,14 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
 
     /**
      * Adds an instant message listener to this chat transport.
+     * Special case for DomainJid to display received messages from server
      *
      * @param l The message listener to add.
      */
     public void addInstantMessageListener(MessageListener l)
     {
-        // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage())
+        // Skip if this chat transport does not support instant messaging; except if it is a DomainJid
+        if (!allowsInstantMessage() && !(contact.getJid() instanceof DomainBareJid))
             return;
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
@@ -744,8 +740,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public void removeInstantMessageListener(MessageListener l)
     {
-        // If this chat transport does not support instant messaging we do nothing here.
-        if (!allowsInstantMessage())
+        // Skip if this chat transport does not support instant messaging; except if it is a DomainJid
+        if (!allowsInstantMessage() && !(contact.getJid() instanceof DomainBareJid))
             return;
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
@@ -759,13 +755,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
     {
-        // If the contactResource is set then the status will be updated from the
-        // MetaContactChatSession.
-        // cmeng: contactResource condition removed to fix contact goes offline<->online
+        // If the contactResource is set then the status will be updated from the MetaContactChatSession.
+        // cmeng: contactResource condition removed to fix contact goes offline<->online // && (contactResource == null)
         if (evt.getSourceContact().equals(contact)
-                && !evt.getOldStatus().equals(evt.getNewStatus())
-            //&& (contactResource == null)
-        ) {
+                && !evt.getOldStatus().equals(evt.getNewStatus())) {
             this.updateContactStatus();
         }
     }

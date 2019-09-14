@@ -173,7 +173,7 @@
     <string name="service_gui_CHAT_ROOM_OPTIONS">Opsi ruang obrolan</string>
     <string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">Ruang obrolan %1$s telah meminta kata sandi.</string>
     <string name="service_gui_CHAT_ROOM">Ruang Chat</string>
-    <string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s telah mengubah subjek menjadi %2$s</string>
+    <string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">Subjek kamar berubah: \'%1$s\' => \'%2$s\'</string>
     <string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Anda dapat melanjutkan percakapan di ruang obrolan berikut: %1$s</string>
     <string name="service_gui_CHAT_ROOMS">Ruang obrolan</string>
     <string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s sekarang dikenal sebagai %2$s</string>
@@ -486,7 +486,6 @@
     <string name="service_gui_NO">Tidak ada</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Setidaknya satu akun telepon online diperlukan untuk melakukan panggilan. Silakan masuk ke salah satu akun telepon Anda dan coba lagi.</string>
     <string name="service_gui_NOT_AUTHORIZED">Tidak diotorisasi</string>
-    <string name="service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME">TidakDalamDaftarKontak</string>
     <string name="service_gui_OFF">Tidak aktif</string>
     <string name="service_gui_OFFLINE">Offline</string>
     <string name="service_gui_OK">OK</string>
@@ -553,6 +552,10 @@
     <string name="service_gui_SEND_LOGS_QUESTION">aTalk baru saja pulih setelah kecelakaan serius. Apakah Anda ingin melaporkan bug ke devepers?</string>
     <string name="service_gui_SEND_LOGS_SUBJECT">laporan bug aTalk</string>
     <string name="service_gui_SEND_LOGS_TITLE">laporan bug aTalk melalui email</string>
+    <string name="service_gui_SEND_LOGS_INFO">Info di bawah ini dapat membantu pengembang memperbaiki masalah:\n\n
+         1. Apa hal terakhir yang Anda lakukan sebelum masalah terjadi?\n\n\n
+         2. Apa masalah yang Anda lihat?\n\n\n
+         3. Bisakah Anda atau bagaimana mereproduksi masalah?</string>
 
     <string name="service_gui_SEND_MESSAGE">Kirim pesan</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Gagal mengirim pesan: %1$s</string>

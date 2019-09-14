@@ -177,7 +177,7 @@
 	<string name="service_gui_CHAT_ROOM_OPTIONS">Opciones de la Sala</string>
 	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">En la sala %1$s se requiere contraseña para ser miembro.</string>
 	<string name="service_gui_CHAT_ROOM">Sala</string>
-	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s ha cambiado de tema a %2$s</string>
+	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">Asunto de la habitación cambiado: \'%1$s\' => \'%2$s\'</string>
 	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Se puede continuar la conversación en la siguiente sala: %1$s</string>
 	<string name="service_gui_CHAT_ROOMS">Salas</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s ahora se conoce como %2$s</string>
@@ -491,7 +491,6 @@
     <string name="service_gui_NO">No</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Se necesita al menos una cuenta de telefonía en línea para realizar una llamada. Inicie sesión en una de sus cuentas de telefonía y vuelva a intentarlo.</string>
     <string name="service_gui_NOT_AUTHORIZED">No autorizado</string>
-    <string name="service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME">NoEstáEnLaListaDeContactos</string>
     <string name="service_gui_OFF">Apagado</string>
     <string name="service_gui_OFFLINE">Fuera de línea</string>
     <string name="service_gui_OK">OK</string>
@@ -557,7 +556,10 @@
     <string name="service_gui_SEND_LOGS">Reportar Bugs</string>
     <string name="service_gui_SEND_LOGS_QUESTION">aTalk se acaba de recuperar después de un grave cierre. ¿Quieres informar de los errores a los devepers?</string>
     <string name="service_gui_SEND_LOGS_SUBJECT">Reportar bugs a aTalk</string>
-    <string name="service_gui_SEND_LOGS_TITLE">Reportar bugs a aTalk vía email</string>
+    <string name="service_gui_SEND_LOGS_TITLE">La información a continuación puede ayudar al desarrollador a solucionar el problema:\n\n
+         1. ¿Qué fue lo último que hiciste antes de que ocurriera el problema?\n\n\n
+         2. ¿Cuál fue el problema que ves?\n\n\n
+         3. ¿Puedes o cómo reproducir el problema?</string>
 
     <string name="service_gui_SEND_MESSAGE">Enviar un mensaje</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Error al enviar el mensaje: %1$s</string>

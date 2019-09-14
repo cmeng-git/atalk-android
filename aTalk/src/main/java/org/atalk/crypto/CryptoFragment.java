@@ -951,8 +951,11 @@ public class CryptoFragment extends OSGiFragment
                 } catch (PubSubException.NotALeafNodeException e) {
                     Timber.w("Exception in checking entity omemo support: %s", e.getMessage());
                 }
-                // update the result in cache
-                omemoCapable.put(mDescriptor, serverCan && entityCan);
+                // update omemoSupported in cache; revert to MSGTYPE_NORMAL if Default OMEMO not supported by session
+                boolean omemoSupported = serverCan && entityCan;
+                if (!omemoSupported && (MSGTYPE_OMEMO == mChatType))
+                    setChatType(MSGTYPE_NORMAL);
+                omemoCapable.put(mDescriptor, omemoSupported);
             }
         }.start();
     }

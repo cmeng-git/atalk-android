@@ -77,7 +77,12 @@ public class OmemoAuthenticateDialog extends OSGiActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mOmemoStore = (SQLiteOmemoStore) SignalOmemoService.getInstance().getOmemoStoreBackend();
+        try {
+            mOmemoStore = (SQLiteOmemoStore) SignalOmemoService.getInstance().getOmemoStoreBackend();
+            // IllegalStateException from field
+        } catch (IllegalStateException ex) {
+            finish();
+        }
 
         setContentView(R.layout.omemo_authenticate_dialog);
         setTitle(R.string.omemo_authbuddydialog_AUTHENTICATE_BUDDY);

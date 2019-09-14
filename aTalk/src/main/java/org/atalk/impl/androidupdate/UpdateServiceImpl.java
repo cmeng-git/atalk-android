@@ -328,7 +328,7 @@ public class UpdateServiceImpl implements UpdateService
      *
      * @return the current (software) version
      */
-    private static Version getCurrentVersion()
+    public static Version getCurrentVersion()
     {
         return getVersionService().getCurrentVersion();
     }

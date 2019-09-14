@@ -16,10 +16,12 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import android.content.BroadcastReceiver;
 import android.net.Uri;
 
 import net.java.sip.communicator.service.protocol.*;
 
+import org.atalk.android.aTalkApp;
 import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
 
 import java.io.File;
@@ -33,6 +35,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
 {
     private final String msgUuid;
     private final Contact mSender;
+    private BroadcastReceiver downloadReceiver = null;
 
     private final File mFile;
     private final String mFileName;
@@ -41,7 +44,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
     /*
      * Transfer file encryption type
      */
-    protected int mEncryption = Message.ENCRYPTION_NONE;
+    protected int mEncryption;
 
     /**
      * Creates an <tt>IncomingFileTransferJabberImpl</tt>.
@@ -69,6 +72,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
             url = dnLink;
             mEncryption = Message.ENCRYPTION_NONE;
         }
+
         Uri uri = Uri.parse(url);
         mFileName = uri.getLastPathSegment();
         mFile = new File(mFileName);
@@ -80,13 +84,20 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
             fileSize = -1;
     }
 
+    public void setDownloadReceiver (BroadcastReceiver receiver) {
+        downloadReceiver = receiver;
+    }
+
     /**
-     * Cancels the file transfer.
+     * Unregister the HttpDownload transfer downloadReceiver.
      */
     @Override
     public void cancel()
     {
-        // jabberTransfer.cancel();
+        if (downloadReceiver != null) {
+            aTalkApp.getGlobalContext().unregisterReceiver(downloadReceiver);
+            downloadReceiver = null;
+        }
     }
 
     /**

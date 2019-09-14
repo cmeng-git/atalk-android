@@ -81,10 +81,12 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
             if (mucOpSet != null)
                 privateContactRoom = mucOpSet.getChatRoom(fromJid.asBareJid());
             if (privateContactRoom != null) {
-                sender = ((OperationSetPersistentPresenceJabberImpl)
-                        jabberProvider.getOperationSet(OperationSetPersistentPresence.class))
-                        .createVolatileContact(fromJid, true);
+                sender = opSetPersPresence.createVolatileContact(fromJid, true);
                 privateContactRoom.updatePrivateContactPresenceStatus(sender);
+            }
+            // just create a volatile contact for new sender
+            else {
+                sender = opSetPersPresence.createVolatileContact(fromJid);
             }
         }
         this.id = String.valueOf(System.currentTimeMillis()) + hashCode();

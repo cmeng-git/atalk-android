@@ -1,5 +1,29 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.0.5 (1105)
+Author:         cmeng
+Upload Date:	09/14/2019
+- Implement user options to cancel, Retry and display status progressBar during HTTP file downloading.
+- Modify FileRecord saved info in DB to support Http Download retry.
+- Implement 60sec idleTime in Http File Download to end and clean up all DownloadManager setup parameters
+  if user exit chat session without Cancel the file download in-progress.
+- Implement HttpFileDownloadJabberImpl.Cancel() for all in-progress HTTPFileTransfer when user delete Chat Session history.
+- Hide last message correction cancel button in normal text entry to avoid accidentally discard text entered.
+- Improve room UI in MUC session on participant join and subject change events
+  i.e. do not display participants in room at join time.
+- Do not show change subject message if this is the room original subject.
+- Add member role in chat room occupant info display and fix multiple info messages display.
+- Revert to chat NORMAL if current chat session cannot support the default chat OMEMO on open;
+  otherwise show error null on NoOmemoSupportException
+- Fix File transfer may incorrectly send to last registered user instead of intended recipient.
+- Store all volatileGroups/Contacts in DB for later retrieval after aTalk re-launch
+- DomainJid cannot be unsubscribed hence removal of DomainJid is not supported currently
+- Support the display of messages receive from server (DomainJid)
+- Allow file transfer from volatile contact.
+- Fix ANR and NPE etc feedback from field for aTalk v2.0.4
+- Iterate all system properties and outputs their names and values for debug log purposes.
+
+=========================================================================
 Version:		2.0.4 (1104)
 Author:         cmeng
 Upload Date:	08/31/2019

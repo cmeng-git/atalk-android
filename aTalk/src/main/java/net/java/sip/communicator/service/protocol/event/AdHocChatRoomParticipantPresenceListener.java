@@ -31,5 +31,5 @@ public interface AdHocChatRoomParticipantPresenceListener extends EventListener
 	 *        the <tt>AdHocChatRoomParticipantPresenceChangeEvent</tt> instance containing the
 	 *        source chat room and type, and reason of the presence change
 	 */
-	public void participantPresenceChanged(AdHocChatRoomParticipantPresenceChangeEvent evt);
+	void participantPresenceChanged(AdHocChatRoomParticipantPresenceChangeEvent evt);
 }

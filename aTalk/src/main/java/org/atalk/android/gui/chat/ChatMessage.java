@@ -47,19 +47,9 @@ public interface ChatMessage
      * @see ChatMessage defined constant below
      */
 
-    /* chat message status */
+    /* chat message or File transfer status - see FileRecord.STATUS_XXX */
     int STATUS_SEND = 0;
     int STATUS_RECEIVED = 1;
-
-    /* File transfer status */
-    int STATUS_COMPLETED = 10;   // completed
-    int STATUS_FAILED = 11;      // failed
-    int STATUS_CANCELED = 12;    // canceled
-    int STATUS_REFUSED = 13;     // refused
-    int STATUS_ACTIVE = 14;      // active
-    int STATUS_PREPARING = 15;   // preparing
-    int STATUS_IN_PROGRESS = 16; // in_progress
-
     int STATUS_DELETE = 99;  // to be deleted
 
     /* READ - message delivery status: Do not change the order, values used in MergedMessage */
