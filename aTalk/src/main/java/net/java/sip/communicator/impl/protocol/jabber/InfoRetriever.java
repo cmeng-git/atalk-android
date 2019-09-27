@@ -83,8 +83,8 @@ public class InfoRetriever
         List<GenericDetail> details = getUserDetails(uin);
         List<GenericDetail> result = new LinkedList<>();
 
-        // stop further retrieve from server if the details is empty to prevent ANR when return from Account Settings
-        if (details.isEmpty()) {
+        // stop further retrieve from server if details is null or empty to prevent ANR when return from Account Settings
+        if ((details == null) || details.isEmpty()) {
             retrievedDetails.put(uin, result);
         }
         else {

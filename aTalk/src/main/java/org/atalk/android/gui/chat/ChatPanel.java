@@ -766,6 +766,7 @@ public class ChatPanel implements Chat, MessageListener
         // Insert error message
         Timber.e("%s", evt.getReason());
 
+        boolean mergeMessage = true;
         String errorMsg;
         Message srcMessage = (Message) evt.getSource();
 
@@ -786,17 +787,18 @@ public class ChatPanel implements Chat, MessageListener
             errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
         }
         else if (evt.getErrorCode() == MessageDeliveryFailedEvent.OMEMO_SEND_ERROR) {
-            // Just show the pass in error message
             errorMsg = evt.getReason();
-            evt.setReason(null);
+            // Just show the pass in error message
+            mergeMessage = false;
         }
         else {
             errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_ERROR);
         }
 
         String reason = evt.getReason();
-        if (!TextUtils.isEmpty(reason))
+        if (!TextUtils.isEmpty(reason) && mergeMessage) {
             errorMsg += " " + aTalkApp.getResString(R.string.service_gui_ERROR_WAS, reason);
+        }
 
         addMessage(contactJid, new Date(), ChatMessage.MESSAGE_OUT, srcMessage.getMimeType(), srcMessage.getContent());
         addMessage(contactJid, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, errorMsg);

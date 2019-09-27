@@ -23,7 +23,6 @@ import org.jxmpp.jid.EntityBareJid;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * The conference implementation of the <tt>ChatTransport</tt> interface that provides
@@ -51,7 +50,10 @@ public class ConferenceChatTransport implements ChatTransport
         this.chatSession = chatSession;
         this.chatRoom = chatRoom;
         mPPS = chatRoom.getParentProvider();
-        httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
+
+        // mPPS.getConnection() == null from field
+        if ((mPPS != null) && (mPPS.getConnection() != null))
+            httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
     }
 
     /**
@@ -146,7 +148,8 @@ public class ConferenceChatTransport implements ChatTransport
      * @return {@code true} if this chat transport supports message delivery receipts,
      * otherwise returns {@code false}
      */
-    public boolean allowsMessageDeliveryReceipt() {
+    public boolean allowsMessageDeliveryReceipt()
+    {
         return false;
     }
 

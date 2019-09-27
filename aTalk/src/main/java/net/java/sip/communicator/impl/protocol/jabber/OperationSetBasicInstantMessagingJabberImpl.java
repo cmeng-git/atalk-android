@@ -540,11 +540,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 msgDelivered = new MessageDeliveredEvent(message, to, correctedMessageUID);
             fireMessageEvent(msgDelivered);
         } catch (UndecidedOmemoIdentityException e) {
-            errMessage = aTalkApp.getResString(R.string.omemo_send_error,
-                    "Undecided Omemo Identity: " + e.getUndecidedDevices().toString());
-            Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
+            OmemoAuthenticateListener omemoAuthListener
+                    = new OmemoAuthenticateListener (to, resource, message, correctedMessageUID, omemoManager);
             aTalkApp.getGlobalContext().startActivity(
-                    OmemoAuthenticateDialog.createIntent(omemoManager, omemoDevices, null));
+                    OmemoAuthenticateDialog.createIntent(omemoManager, e.getUndecidedDevices(), omemoAuthListener));
+            return;
         } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage());
         } catch (SmackException.NotLoggedInException e) {
@@ -556,6 +556,42 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             MessageDeliveryFailedEvent failedEvent = new MessageDeliveryFailedEvent(message, to,
                     MessageDeliveryFailedEvent.OMEMO_SEND_ERROR, System.currentTimeMillis(), errMessage);
             fireMessageEvent(failedEvent);
+        }
+    }
+
+    /**
+     * Omemo listener callback on user authentication for undecided omemoDevices
+     */
+    private class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener {
+        Contact to;
+        ContactResource resource;
+        Message message;
+        String correctedMessageUID;
+        OmemoManager omemoManager;
+
+        OmemoAuthenticateListener (Contact to, ContactResource resource, Message message, String correctedMessageUID,
+                OmemoManager omemoManager) {
+            this.to = to;
+            this.resource = resource;
+            this.message = message;
+            this.correctedMessageUID = correctedMessageUID;
+            this. omemoManager = omemoManager;
+        }
+
+        @Override
+        public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices)
+        {
+            if (allTrusted) {
+                sendInstantMessage(to, resource, message, correctedMessageUID, omemoManager);
+            }
+            else {
+                String errMessage = aTalkApp.getResString(R.string.omemo_send_error,
+                        "Undecided Omemo Identity: " + omemoDevices.toString());
+                Timber.w("%s", errMessage);
+                MessageDeliveryFailedEvent failedEvent = new MessageDeliveryFailedEvent(message, to,
+                        MessageDeliveryFailedEvent.OMEMO_SEND_ERROR, System.currentTimeMillis(), errMessage);
+                fireMessageEvent(failedEvent);
+            }
         }
     }
 

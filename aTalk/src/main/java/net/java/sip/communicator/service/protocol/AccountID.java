@@ -131,12 +131,12 @@ public class AccountID
      * A String uniquely identifying this account, that can also be used for storing and
      * unambiguously retrieving details concerning it. e.g. jabber:abc123@example.org
      */
-    protected final String accountUID;
+    protected String accountUID;
 
     /**
      * A String uniquely identifying the user for this particular account. e.g. abc123@example.org
      */
-    private final String userID;
+    protected String userID;
 
     /**
      * An XMPP Jabber ID associated with this particular account. e.g. abc123@example.org
@@ -204,10 +204,10 @@ public class AccountID
      * protocol name, the current implementation places the specified <tt>defaultProtocolName</tt>
      * in a similar fashion.
      *
-     * @param accountProperties a Map containing any other protocol and implementation specific account initialization
-     * properties
-     * @param defaultProtocolName the protocol name to be used in case <tt>accountProperties</tt> doesn't provide an
-     * overriding value
+     * @param accountProperties a Map containing any other protocol and implementation specific
+     * account initialization properties
+     * @param defaultProtocolName the protocol name to be used in case <tt>accountProperties</tt>
+     * doesn't provide an overriding value
      * @return the protocol name
      */
     private static String getOverriddenProtocolName(Map<String, String> accountProperties, String defaultProtocolName)
@@ -221,13 +221,16 @@ public class AccountID
         return protocolName.trim();
     }
 
+    /**
+     * @return e.g. acc1567990097080
+     */
     public String getAccountUuid()
     {
         return this.uuid;
     }
 
     /**
-     * Returns the user id associated with this account BareJid e.g. abc123@example.org.
+     * Returns the user id associated with this account BareJid.toString e.g. abc123@example.org.
      *
      * @return A String identifying the user inside this particular service.
      */
@@ -236,7 +239,7 @@ public class AccountID
         return userID;
     }
 
-    // Override for Jabber implementation for the BareJid
+    // Override for Jabber implementation for the BareJid e.g. abc123@example.org.
     public BareJid getBareJid()
     {
         return userBareJid;

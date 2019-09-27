@@ -5,7 +5,7 @@
         android:key="@string/pref_cat_account"
         android:title="@string/service_gui_JBR_USER_CATEGORY">
         <EditTextPreference
-            android:enabled="false"
+            android:enabled="true"
             android:key="@string/pref_key_user_id"
             android:title="@string/service_gui_JBR_USER" />
         <EditTextPreference

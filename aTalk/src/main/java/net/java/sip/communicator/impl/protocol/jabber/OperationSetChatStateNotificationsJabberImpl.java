@@ -354,7 +354,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         else {
             // Invalid the last thread associated with the contact when he is gone
             if (state == ChatState.gone)
-                opSetBasicIM.purgeGoneJidThreads(message.getFrom().asBareJid());
+                opSetBasicIM.purgeGoneJidThreads(fromJid.asBareJid());
             else if (state == ChatState.active)
                 MetaContactChatTransport.setChatStateSupport(true);
 

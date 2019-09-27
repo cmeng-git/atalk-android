@@ -26,7 +26,6 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.crypto.CryptoFragment;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
 import org.jivesoftware.smack.SmackException;
@@ -55,7 +54,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
 
     private static OmemoManager mOmemoManager;
     private static Set<OmemoDevice> mOmemoDevices;
-    private static CryptoFragment mCryptoFragment;
+    private static AuthenticateListener mListener;
     private SQLiteOmemoStore mOmemoStore;
 
     private final HashMap<OmemoDevice, String> buddyFingerprints = new HashMap<>();
@@ -79,7 +78,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         super.onCreate(savedInstanceState);
         try {
             mOmemoStore = (SQLiteOmemoStore) SignalOmemoService.getInstance().getOmemoStoreBackend();
-            // IllegalStateException from field
+            // IllegalStateException from field?
         } catch (IllegalStateException ex) {
             finish();
         }
@@ -153,9 +152,11 @@ public class OmemoAuthenticateDialog extends OSGiActivity
                 fingerprint = buddyFingerprints.get(omemoDevice);
                 if (Corrupted_OmemoKey.equals(fingerprint)) {
                     mOmemoStore.purgeOwnDeviceKeys(omemoDevice);
+                    mOmemoDevices.remove(omemoDevice);
                 }
                 else {
                     trustOmemoFingerPrint(omemoDevice, fingerprint);
+                    mOmemoDevices.remove(omemoDevice);
                 }
             }
             else {
@@ -163,15 +164,9 @@ public class OmemoAuthenticateDialog extends OSGiActivity
                 Timber.w("Leaving the fingerprintStatus as it: %s", omemoDevice);
             }
         }
-
-        int chatType;
-        if (allTrusted) {
-            chatType = ChatFragment.MSGTYPE_OMEMO;
-        }
-        else {
-            chatType = ChatFragment.MSGTYPE_OMEMO_UA;
-        }
-        executeDone(chatType);
+        if (mListener != null)
+            mListener.onAuthenticate(allTrusted, mOmemoDevices);
+        finish();
     }
 
     /**
@@ -181,13 +176,8 @@ public class OmemoAuthenticateDialog extends OSGiActivity
      */
     public void onCancelClicked(View v)
     {
-        executeDone(ChatFragment.MSGTYPE_OMEMO_UA);
-    }
-
-    private void executeDone(int chatType)
-    {
-        if (mCryptoFragment != null)
-            mCryptoFragment.onOmemoAuthenticateOK(chatType);
+        if (mListener != null)
+            mListener.onAuthenticate(false, mOmemoDevices);
         finish();
     }
 
@@ -198,13 +188,13 @@ public class OmemoAuthenticateDialog extends OSGiActivity
      * @return buddy authenticate dialog parametrized with given OTR session's UUID.
      */
     public static Intent createIntent(OmemoManager omemoManager, Set<OmemoDevice> omemoDevices,
-            CryptoFragment fragment)
+            AuthenticateListener listener)
     {
         Intent intent = new Intent(aTalkApp.getGlobalContext(), OmemoAuthenticateDialog.class);
 
         mOmemoManager = omemoManager;
         mOmemoDevices = omemoDevices;
-        mCryptoFragment = fragment;
+        mListener = listener;
 
         // Started not from Activity
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -323,5 +313,19 @@ public class OmemoAuthenticateDialog extends OSGiActivity
             }
             return null;
         }
+    }
+
+    /**
+     * The listener that will be notified when user clicks the confirm button or dismisses the dialog.
+     */
+    public interface AuthenticateListener
+    {
+        /**
+         * Fired when user clicks the dialog's confirm/cancel button.
+         *
+         * @param allTrusted allTrusted state.
+         * @param omemoDevices set of unTrusted devices
+         */
+        void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices);
     }
 }

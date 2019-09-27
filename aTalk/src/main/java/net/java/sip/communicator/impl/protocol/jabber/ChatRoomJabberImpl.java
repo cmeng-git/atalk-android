@@ -232,15 +232,18 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
         // setup message listener to receive presence captcha challenge message
         StanzaFilter fromRoomFilter = FromMatchesFilter.create(multiUserChat.getRoom());
-        StanzaFilter fromRoomCaptchaFilter = new AndFilter(fromRoomFilter, MessageTypeFilter.NORMAL);
+        StanzaFilter fromRoomCaptchaFilter = new AndFilter(fromRoomFilter,
+                new OrFilter(MessageTypeFilter.NORMAL, MessageTypeFilter.ERROR));
 
+        // must perform captcha challenge check before joining chatRoom (MucMessageListener only in effect after joined)
         provider.getConnection().addAsyncStanzaListener(packet -> {
             sMessage = (org.jivesoftware.smack.packet.Message) packet;
             if (sMessage.getExtension(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE) != null) {
                 initCaptchaProcess(sMessage);
             }
-            // Show message to user in chat window
-            else {
+            // Handle only error message (currently not supported by smack)
+            else if (org.jivesoftware.smack.packet.Message.Type.error == sMessage.getType()){
+                // Timber.d("ChatRoom Message: %s", sMessage.toXML());
                 messageListener.processMessage(sMessage);
             }
 
@@ -942,11 +945,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     new Date(), message, ChatMessage.MESSAGE_MUC_OUT);
             fireMessageEvent(msgDeliveredEvt);
         } catch (UndecidedOmemoIdentityException e) {
-            errMessage = aTalkApp.getResString(R.string.omemo_send_error,
-                    "Undecided Omemo Identity: " + e.getUndecidedDevices().toString());
-            Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
+            OmemoAuthenticateListener omemoAuthListener = new OmemoAuthenticateListener(message, omemoManager);
             aTalkApp.getGlobalContext().startActivity(
-                    OmemoAuthenticateDialog.createIntent(omemoManager, omemoDevices, null));
+                    OmemoAuthenticateDialog.createIntent(omemoManager, e.getUndecidedDevices(), omemoAuthListener));
+            return;
         } catch (NoOmemoSupportException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, "NoOmemoSupportException");
         } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException
@@ -961,6 +963,37 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             ChatRoomMessageDeliveryFailedEvent failedEvent = new ChatRoomMessageDeliveryFailedEvent(ChatRoomJabberImpl.this,
                     null, ChatRoomMessageDeliveryFailedEvent.OMEMO_SEND_ERROR, errMessage, new Date(), message);
             fireMessageEvent(failedEvent);
+        }
+    }
+
+    /**
+     * Omemo listener callback on user authentication for undecided omemoDevices
+     */
+    private class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener
+    {
+        Message message;
+        OmemoManager omemoManager;
+
+        OmemoAuthenticateListener(Message message, OmemoManager omemoManager)
+        {
+            this.message = message;
+            this.omemoManager = omemoManager;
+        }
+
+        @Override
+        public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices)
+        {
+            if (allTrusted) {
+                sendMessage(message, omemoManager);
+            }
+            else {
+                String errMessage = aTalkApp.getResString(R.string.omemo_send_error,
+                        "Undecided Omemo Identity: " + omemoDevices.toString());
+                Timber.w("%s", errMessage);
+                ChatRoomMessageDeliveryFailedEvent failedEvent = new ChatRoomMessageDeliveryFailedEvent(ChatRoomJabberImpl.this,
+                        null, ChatRoomMessageDeliveryFailedEvent.OMEMO_SEND_ERROR, errMessage, new Date(), message);
+                fireMessageEvent(failedEvent);
+            }
         }
     }
 
@@ -1120,7 +1153,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             // when somebody changes its nickname we first receive event for its nickname changed
             // and after that that has joined we check if this already joined and if so we skip it
-            if (!mNickName.equals(participantNick) &&!members.containsKey(participantNick)) {
+            if (!mNickName.equals(participantNick) && !members.containsKey(participantNick)) {
                 String reason = mucOwnPresenceReceived ? ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED
                         : ChatRoomMemberPresenceChangeEvent.REASON_USER_LIST;
 
@@ -1887,32 +1920,37 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             if (member == null) {
                 member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, fromNick, jabberID);
             }
-            Timber.d("Received from %s the message %s", fromNick, msg.toString());
 
             Message newMessage = createMessage(msgBody);
             newMessage.setRemoteMsgId(msg.getStanzaId());
 
             if (msg.getType() == org.jivesoftware.smack.packet.Message.Type.error) {
-                Timber.i("Message error received from: %s", fromNick);
+                Timber.d("Message error received from: %s", jabberID);
 
                 StanzaError error = msg.getError();
-                Condition errorCode = error.getCondition();
-                int errorResultCode = ChatRoomMessageDeliveryFailedEvent.UNKNOWN_ERROR;
                 String errorReason = error.getConditionText();
+                if (TextUtils.isEmpty(errorReason))
+                    errorReason = error.getDescriptiveText();
 
-                if (errorCode == Condition.service_unavailable) {
-                    Condition errorCondition = error.getCondition();
-                    if (Condition.service_unavailable == errorCondition) {
-                        if (!member.getPresenceStatus().isOnline()) {
-                            errorResultCode = ChatRoomMessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED;
-                        }
+                // Default error
+                int errorResultCode = ChatRoomMessageDeliveryFailedEvent.UNKNOWN_ERROR;
+
+                Condition errorCondition = error.getCondition();
+                if (Condition.service_unavailable == errorCondition) {
+                    if (!member.getPresenceStatus().isOnline()) {
+                        errorResultCode = ChatRoomMessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED;
                     }
                 }
+                else if (Condition.not_acceptable == errorCondition) {
+                    errorResultCode = ChatRoomMessageDeliveryFailedEvent.NOT_ACCEPTABLE;
+                }
+
                 ChatRoomMessageDeliveryFailedEvent evt = new ChatRoomMessageDeliveryFailedEvent(ChatRoomJabberImpl.this,
                         member, errorResultCode, errorReason, new Date(), newMessage);
                 fireMessageEvent(evt);
                 return;
             }
+            Timber.d("Received from %s the message %s", fromNick, msg.toString());
 
             // Check received message for sent message: either a delivery report or a message coming from the
             // chaRoom server. Checking using nick OR jid in case user join with a different nick.

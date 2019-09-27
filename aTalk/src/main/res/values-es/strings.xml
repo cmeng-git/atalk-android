@@ -602,7 +602,8 @@
     <string name="service_gui_SECURITY_ERROR">Security error</string>
     <string name="service_gui_SECURITY_INFO">Información de seguridad</string>
     <string name="service_gui_SECURITY_WARNING">Alerta de seguridad</string>
-    <string name="service_gui_USERNAME_NULL">Por favor, introducir tu nombre de usuario y contraseña.</string>
+    <string name="service_gui_USERNAME_NULL">Por favor, introduzca el nombre de usuario o la contraseña adecuados.</string>
+    <string name="service_gui_USERNAME_CHANGE_WARN">Advertencia: Cambiar el nombre de usuario de la cuenta a \'%s\' también eliminará los mensajes de %s para la cuenta existente \'%s\'. ¿Proceder?</string>
     <string name="service_gui_USER_EXISTS_ERROR">Este usuario ya existe en la red seleccionada. Por favor, elijir otro usuario o red.</string>
 
     <string name="service_gui_JANUARY">Ene</string>
@@ -699,24 +700,24 @@
         ¿Procedemos con la conexión sólo para esta instancia?&lt;br/>
         Para más opciones e información, haz clic en "Mostrar el Certificado".&lt;/html></string>
    <string name="service_gui_PROCEED">Proceder</string>
-    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;html>&lt;b>Emitido a&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;b>Emitido a&lt;/b></string>
     <string name="service_gui_CERT_INFO_CHAIN">Cadena de certificados:</string>
     <string name="service_gui_CERT_INFO_CN">Nombre común:</string>
     <string name="service_gui_CERT_INFO_O">Organización:</string>
     <string name="service_gui_CERT_INFO_C">Nombre del país::</string>
     <string name="service_gui_CERT_INFO_ST">Nombre del Estado o Provincia:</string>
     <string name="service_gui_CERT_INFO_L">Nombre de la localidad:</string>
-    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;html>&lt;b>Emitido por&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;b>Emitido por&lt;/b></string>
     <string name="service_gui_CERT_INFO_OU">Unidad organizativa:</string>
-    <string name="service_gui_CERT_INFO_VALIDITY">&lt;html>&lt;b>Validez&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_VALIDITY">&lt;b>Validez&lt;/b></string>
     <string name="service_gui_CERT_INFO_ISSUED_ON">Emitido en:</string>
     <string name="service_gui_CERT_INFO_EXPIRES_ON">Caduca el:</string>
-    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;html>&lt;b>Huellas digitales&lt;/b>&lt;/html></string>
-    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;html>&lt;b>Información del certificadoo&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;b>Huellas digitales&lt;/b></string>
+    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;b>Información del certificadoo&lt;/b></string>
     <string name="service_gui_CERT_INFO_SER_NUM">Número de Serie:</string>
     <string name="service_gui_CERT_INFO_VER">Versión:</string>
     <string name="service_gui_CERT_INFO_SIGN_ALG">Algoritmo de firma:</string>
-    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;html>&lt;b>Información de la clave pública&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;b>Información de la clave pública&lt;/b></string>
     <string name="service_gui_CERT_INFO_ALG">Algoritmo:</string>
     <string name="service_gui_CERT_INFO_PUB_KEY">Clave pública:</string>
     <string name="service_gui_CERT_INFO_KEY_BYTES_PRINT">%1$s bytes: %2$s</string>
@@ -984,7 +985,7 @@
     <string name="plugin_provisioning_MANUAL">Especificar manualmente una URI de aprovisionamiento</string>
     <string name="plugin_provisioning_METHOD">Método de aprovisionamiento</string>
     <string name="plugin_provisioning_PROV_FAILED">Fallo en el aprovisionamiento</string>
-    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Falló el aprovisionamiento. %1$s! <br />Por favor, inténtarlo de nuevo más tarde o ponte en contacto con su administrador.</html></string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG">&lt;html>Falló el aprovisionamiento. %1$s!&lt;br/>Por favor, inténtarlo de nuevo más tarde o ponte en contacto con su administrador.&lt;/html></string>
     <string name="plugin_provisioning_PROVISIONING">Aprovisionamiento</string>
     <string name="plugin_provisioning_PROVISIONING_SUMMARY">Configurar las opciones de aprovisionamiento</string>
     <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">¿Seguro que se desea eliminar la contraseña de aprovisionamiento?</string>
@@ -1000,13 +1001,13 @@
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">Falló el cambio de estado</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Ha fallado el cambio del estado en la habilitación de DNSSEC.</string>
     <string name="plugin_dnsconfig_dnssec_MODE">Comportamiento</string>
-    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING"><html>Ten en cuenta que habilitar o deshabilitar DNSSEC deshabilita el resolvedor paralelo y sólo tendrá efecto la próxima vez que se inicie. aTalk.</html></string>
+    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING">&lt;html>Ten en cuenta que habilitar o deshabilitar DNSSEC deshabilita el resolvedor paralelo y sólo tendrá efecto la próxima vez que se inicie. aTalk.&lt;/html></string>
     <string name="plugin_dnsconfig_border_TITLE">Resolvedor de respaldo</string>
     <string name="plugin_dnsconfig_dnssec_chkAbsolute">Tratar todos los nombres de dominio como absolutos</string>
     <string name="plugin_dnsconfig_dnssec_chkEnabled">Activar el resolvedor DNSSEC</string>
     <string name="plugin_dnsconfig_dnssec_lblDefault">Comportamiento predeterminado</string>
     <string name="plugin_dnsconfig_dnssec_lblNameservers">Nombres de Servidores personalizados</string>
-    <string name="plugin_dnsconfig_dnssec_lblNameserversHint"><html>Se pueden delimitar múltiples servidores con una coma, e.j. 149.20.64.20, 149.20.64.21 (OARC\'s Abrir resolución de validación de DNSSEC)</html></string>
+    <string name="plugin_dnsconfig_dnssec_lblNameserversHint">&lt;html>Se pueden delimitar múltiples servidores con una coma, e.j. 149.20.64.20, 149.20.64.21 (OARC\'s Abrir resolución de validación de DNSSEC)&lt;/html></string>
 
     <string name="util_dns_INSECURE_ANSWER_TITLE">Fallo DNSSEC</string>
     <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">La respuesta DNS para %1$s es insegura.</string>

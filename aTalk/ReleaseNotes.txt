@@ -1,5 +1,26 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.0.6 (1106)
+Author:         cmeng
+Upload Date:	09/27/2019
+- Auto send last omemo message once all undecided omemoDevices are authenticated by user, else display error message.
+  supported by callback AuthenticateListener in OmemoAuthenticateDialog
+- Improve account UI allowing user to change userName during login and in Account Settings...; warn user if results in old messages being purged
+- Change DataBaseBackend#createAccount() to db.replace to allow accountID modification.
+- Avoid ChatPanel#messageDeliveryFailed error message being cleared when passing through multiple listeners
+- Hide contact context menu items i.e. 'Remove Contact' and 'Move to group' when user is not online
+- Allow removal of any contacts in NotInContactList (ie. VolatileContactJabberImpl) and if it is not DomainBareJid
+- Fix ANR and Exceptions from aTalk v2.0.5 release i.e.
+  Run in thread for checkDeliveryReceiptSupport() - ANR from field
+  Run in thread for ChatRoomListAdapter#initModelData to add chat rooms and avoid ANR
+- Restrict chatRoomJabberImpl#addAsyncStanzaListener() to handle only captcha and error messages from conference
+- Add support to display error messages received from conference room
+- MetaContactRenderer#getDisplayDetails changes order of equate to avoid NPE as OperationSetExtendedAuthorizationImpl#getSubscriptionStatus may return null
+- Catch exception for invalid RESOURCE_PRIORITY entry value to prevent system clashes.
+- Compile apk target for android-Q (android-10.0 API-29) - reverted has problem with webView
+- Add buildSrc build.gradle and restructure build.gradle's to conform to gradle-5.4.1 and build:gradle:3.5.0
+
+=========================================================================
 Version:		2.0.5 (1105)
 Author:         cmeng
 Upload Date:	09/14/2019

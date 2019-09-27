@@ -381,10 +381,15 @@ public class DatabaseBackend extends SQLiteOpenHelper
         }
     }
 
+    /**
+     * Create or update the AccountID table for a specified accountId
+     *
+     * @param accountId AccountID to be replaced/inserted
+     */
     public void createAccount(AccountID accountId)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(AccountID.TABLE_NAME, null, accountId.getContentValues());
+        db.replace(AccountID.TABLE_NAME, null, accountId.getContentValues());
     }
 
     public List<String> getAllAccountIDs()

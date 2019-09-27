@@ -189,7 +189,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     public Contact getContact(String id)
     {
         try {
-            return findContact(JidCreate.from(id).asBareJid());
+            return findContact(JidCreate.from(id));
         } catch (XmppStringprepException e) {
             return null;
         }
@@ -197,6 +197,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
 
     /**
      * Returns the contact encapsulating with the specified name or null if no such contact was found.
+     * The search is always based on BareJid
      *
      * @param jid the id for the contact we're looking for.
      * @return the <tt>ContactJabberImpl</tt> corresponding to the specified screenName or null

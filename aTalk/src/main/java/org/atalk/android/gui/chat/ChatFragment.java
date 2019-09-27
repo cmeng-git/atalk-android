@@ -512,7 +512,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     public void onClearCurrentEntityChatHistory()
     {
         cancelActiveFileTransfers();
-        chatListAdapter.clearMessage();
+
+        // check to ensure chatListAdapter has not been destroyed before proceed (NPE from field)
+        if (chatListAdapter != null)
+            chatListAdapter.clearMessage();
+
         chatPanel.clearMsgCache();
         historyLoaded = false;
         initChatController(true);
@@ -982,7 +986,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
         public int getXferStatus(int pos)
         {
-            return messages.get(pos).status;
+            // IndexOutOfBound from field
+            if (pos < messages.size())
+                return messages.get(pos).status;
+
+            // assuming CANCELED if not found
+            return FileTransferStatusChangeEvent.CANCELED;
         }
 
         private void setFileXfer(int pos, Object mFileXfer)

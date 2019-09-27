@@ -15,18 +15,23 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.anarres.jarjar'
 
 repositories {
+    maven {
+        url 'third_party/m2'
+    }
     google()
     jcenter()
     mavenCentral()
     maven {
         // Need manual cleanup for new SNAPSHOT update if same name with date change only:
-        // Smack official SNAPSHOT repository accepted by FDroid
+        // Smack official SNAPSHOT repository accepted by F-Droid
         url 'https://oss.sonatype.org/content/repositories/snapshots'
 
-        // Smack custom library for org.igniterealtime - not recognize by FDroid
+        // Smack custom library for org.igniterealtime - not recognize by F-Droid
         // url 'https://igniterealtime.org/repo/'
 
         // Custom library for org.jitsi - maven-metadata.xml not compatible
+        // Unable to load Maven meta-data from https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots/org/jitsi/ice4j/2.0.0-SNAPSHOT/maven-metadata.xml.
+        // org.xml.sax.SAXParseException; lineNumber: 44; columnNumber: 91; Attribute name "data-pjax-transient" associated with an element type "meta" must be followed by the ' = ' character.
         // url 'https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots'
     }
     maven {
@@ -42,11 +47,18 @@ configurations {
     // libraries duplication conflict
     all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     all*.exclude group: 'xpp3', module: 'xpp3'
+}
 
-    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
-    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-experimental'
-    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
-    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-omemo'
+configurations.all {
+    it.resolutionStrategy {
+        eachDependency { details ->
+            //multiple actions can be specified
+            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-core', 'smack-extensions', 'smack-omemo'].contains(details.requested.name)) {
+                //changing the name:
+                details.useTarget group: details.requested.group, name: "smack-jarjared", version: details.requested.version
+            }
+        }
+    }
 }
 
 android {
@@ -60,8 +72,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1105
-        versionName "2.0.5"
+        versionCode 1106
+        versionName "2.0.6"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -178,7 +190,6 @@ dependencies {
     implementation 'ch.imvs:sdes4j:1.1.4'
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
-    // butterknife >=9.0.0 uses androidx - incompatible
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
@@ -190,6 +201,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 
+    // implementation 'org.jitsi:ice4j:2.0.0-SNAPSHOT';
     implementation 'com.github.yalantis:ucrop:2.2.2'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.5'
@@ -213,25 +225,20 @@ dependencies {
     implementation 'org.jmdns:jmdns:3.5.3'
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
-    // Smack local libraries with patches or enhance features
-    // implementation files('lib/smack/smack-core-4.4.0-alpha2-SNAPSHOT.jar')
-    // implementation files('lib/smack/smack-extensions-4.4.0-alpha2-SNAPSHOT.jar')
-
     // Smack 4.4.0-alpha2 has moved to use minidns v0.4.0-alpha3
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
     implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
     implementation "org.igniterealtime.smack:smack-compression-jzlib:$smackVersion"
-    // implementation "org.igniterealtime.smack:smack-core:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-core:$smackVersion"
     implementation "org.igniterealtime.smack:smack-experimental:$smackVersion"
-    // implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
     implementation "org.igniterealtime.smack:smack-im:$smackVersion"
     implementation "org.igniterealtime.smack:smack-legacy:$smackVersion"
     implementation "org.igniterealtime.smack:smack-resolver-minidns:$smackVersion"
     implementation "org.igniterealtime.smack:smack-sasl-provided:$smackVersion"
     implementation "org.igniterealtime.smack:smack-tcp:$smackVersion"
-    // implementation "com.gitbub.igniterealtime.Smack:smack-tcp:2b9cbb978ef6f9841da09256f669fb6dbf421290"
 
-    // implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
     implementation 'org.jxmpp:jxmpp-jid:0.7.0-alpha5'
@@ -253,54 +260,6 @@ dependencies {
      * May use className and className$** to delete only the related, but excluding classes with same prefix
      */
     implementation jarjar.repackage {
-        from("org.igniterealtime.smack:smack-core:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/libs")
-        destinationName "smack-core_${smackVersion}.jar"
-
-        classDelete 'org.jivesoftware.smack.provider.Provider'
-        classDelete 'org.jivesoftware.smack.AbstractXMPPConnection**'
-        classDelete 'org.jivesoftware.smack.SmackReactor**'
-        classDelete 'org.jivesoftware.smack.util.PacketParserUtils**'
-        classDelete 'org.jivesoftware.smack.util.ParserUtils**'
-        classDelete 'org.jivesoftware.smack.util.StringUtils**'
-    }
-
-    implementation jarjar.repackage {
-        from("org.igniterealtime.smack:smack-experimental:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/libs")
-        destinationName "smack-experimental${smackVersion}.jar"
-
-        classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
-    }
-
-    implementation jarjar.repackage {
-        from("org.igniterealtime.smack:smack-extensions:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/libs")
-        destinationName "smack-extensions_${smackVersion}.jar"
-
-        classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager**'
-        classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
-        classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
-        classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
-    }
-
-    implementation jarjar.repackage {
-        from("org.igniterealtime.smack:smack-omemo:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/libs")
-        destinationName "smack-omemo${smackVersion}.jar"
-
-        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoBundleElement'
-    }
-
-    implementation jarjar.repackage {
         from files('lib/bundles/fmj-1.0-SNAPSHOT.jar')
         destinationDir new File("${projectDir}/libs")
         destinationName "fmj-1.0-SNAPSHOT.jar"
@@ -321,8 +280,6 @@ dependencies {
     // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
     // Objects class only available in API-19 and above
     implementation jarjar.repackage {
-        // from files('lib/bundles/ice4j-2.0.0-20181024.160538-12.jar') // (revision 730)
-
         // Do not use the latest master-SNAPSHOT => not compatible with aTalk
         // use only ba7e30c189 i.e. the release version of ice4j-2.0.0-20181024.160538-12.jar
         from('com.github.jitsi:ice4j:ba7e30c18980556f126e5e72ecbdb637616dd1bf') {

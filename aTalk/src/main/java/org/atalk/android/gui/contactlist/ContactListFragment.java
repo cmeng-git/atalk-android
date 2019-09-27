@@ -337,6 +337,11 @@ public class ContactListFragment extends OSGiFragment
             return;
         }
 
+        // Cannot send unsubscribed or move group if user in not online
+        boolean userRegistered = pps.isRegistered();
+        menu.findItem(R.id.remove_contact).setVisible(userRegistered);
+        menu.findItem(R.id.move_contact).setVisible(userRegistered);
+
         OperationSetExtendedAuthorizations authOpSet = pps.getOperationSet(OperationSetExtendedAuthorizations.class);
         boolean reRequestVisible = false;
         if (authOpSet != null

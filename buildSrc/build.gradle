@@ -1,0 +1,77 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
+    }
+}
+
+plugins {
+    id 'base'
+}
+
+repositories {
+    google()
+    jcenter()
+}
+
+apply plugin: 'org.anarres.jarjar'
+
+def smackVersion = '4.4.0-alpha2'
+
+def jarJarDeps = task("jarJarDeps") {
+    doFirst {
+        println "Fixed dependencies"
+    }
+}
+
+/*
+ * jarjar.repackage with generated dir/filename specified - default in build/jarjar/jarjar-xxx.jar
+ * filename must not contains colon i.e. ":" colon, treated as URL and will failed missing classes
+ * destinationName may use relative i.e. "../../libs/fileName.jar to $buildDir/jarjar
+ * classDelete must check actual jar to see if end ** is required - due to multiple components
+ * May use className and className$** to delete only the related, but excluding classes with same prefix
+ */
+jarJarDeps.dependsOn(
+    jarjar.repackage {
+        from("org.igniterealtime.smack:smack-core:$smackVersion") {
+            transitive = false
+        }
+        from("org.igniterealtime.smack:smack-experimental:$smackVersion") {
+            transitive = false
+        }
+        from("org.igniterealtime.smack:smack-extensions:$smackVersion") {
+            transitive = false
+        }
+        from("org.igniterealtime.smack:smack-omemo:$smackVersion") {
+            transitive = false
+        }
+        destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-jarjared/${smackVersion}")
+        destinationName "smack-jarjared-${smackVersion}.jar"
+
+        // smack-core
+        classDelete 'org.jivesoftware.smack.provider.Provider'
+        classDelete 'org.jivesoftware.smack.AbstractXMPPConnection**'
+        classDelete 'org.jivesoftware.smack.SmackReactor**'
+        classDelete 'org.jivesoftware.smack.util.PacketParserUtils**'
+        classDelete 'org.jivesoftware.smack.util.ParserUtils**'
+        classDelete 'org.jivesoftware.smack.util.StringUtils**'
+
+        // smack-experimental
+        classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
+
+        // smack-extensions
+        classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager**'
+        classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
+        classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
+        classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
+
+        // smack-omemo
+        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoBundleElement'
+    }
+)
+
+tasks.getByName("build").dependsOn(jarJarDeps)

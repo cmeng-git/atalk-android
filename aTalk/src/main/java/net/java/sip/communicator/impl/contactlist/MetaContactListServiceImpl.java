@@ -210,12 +210,10 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     }
 
     /**
-     * First makes the specified protocol provider create the contact as indicated by
-     * <tt>contactID</tt>, and then associates it to the _existing_ <tt>metaContact</tt> given as
-     * an argument.
+     * First makes the specified protocol provider create the contact as indicated by <tt>contactID</tt>,
+     * and then associates it to the _existing_ <tt>metaContact</tt> given as an argument.
      *
-     * @param provider the ProtocolProviderService that should create the contact indicated by
-     * <tt>contactID</tt>.
+     * @param provider the ProtocolProviderService that should create the contact indicated by <tt>contactID</tt>.
      * @param metaContact the meta contact where that the newly created contact should be associated to.
      * @param contactID the identifier of the contact that the specified provider
      * @throws MetaContactListException with an appropriate code if the operation fails for some reason.
@@ -227,9 +225,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     }
 
     /**
-     * First makes the specified protocol provider create the contact as indicated by
-     * <tt>contactID</tt>, and then associates it to the _existing_ <tt>metaContact</tt> given as
-     * an argument.
+     * First makes the specified protocol provider create the contact as indicated by <tt>contactID</tt>,
+     * and then associates it to the _existing_ <tt>metaContact</tt> given as an argument.
      *
      * @param provider the ProtocolProviderService that should create the contact indicated by
      * <tt>contactID</tt>.
@@ -254,12 +251,10 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     }
 
     /**
-     * First makes the specified protocol provider create the contact as indicated by
-     * <tt>contactID</tt>, and then associates it to the _existing_ <tt>metaContact</tt> given as
-     * an argument.
+     * First makes the specified protocol provider create the contact as indicated  <tt>contactID</tt>,
+     * and then associates it to the _existing_ <tt>metaContact</tt> given as an argument.
      *
-     * @param provider the ProtocolProviderService that should create the contact indicated by
-     * <tt>contactID</tt>.
+     * @param provider the ProtocolProviderService that should create the contact indicated by <tt>contactID</tt>.
      * @param parentMetaGroup the meta contact group which is the parent group of the newly created contact
      * @param metaContact the meta contact where that the newly created contact should be associated to.
      * @param contactID the identifier of the contact that the specified provider
@@ -448,8 +443,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      *
      * @param child the <tt>MetaContactGroup</tt> whose parent group we're looking for.
      * @param root the parent where the search should start.
-     * @return the <tt>MetaContactGroup</tt> that contains <tt>child</tt> or null if no parent was
-     * found.
+     * @return the <tt>MetaContactGroup</tt> that contains <tt>child</tt> or null if no parent was found.
      */
     private MetaContactGroup findParentMetaContactGroup(MetaContactGroupImpl root, MetaContactGroup child)
     {
@@ -929,7 +923,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     public void removeContact(Contact contact)
             throws MetaContactListException
     {
-        // remove the contact from the provider and do nothing else updating and/or removing the
+        // remove the contact from the provider and do nothing else; updating and/or removing the
         // corresponding meta contact would happen once a confirmation event is received from the
         // underlying protocol provider
         OperationSetPresence opSetPresence = contact.getProtocolProvider().getOperationSet(OperationSetPresence.class);
@@ -967,6 +961,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
     /**
      * Removes the specified <tt>metaContact</tt> as well as all of its underlying contacts.
+     * Do not fire events. that will be done by the contact listener as soon as it gets
+     * confirmation events of proto contact removal the removal of the last contact would
+     * also generate an even for the removal of the meta contact itself.
      *
      * @param metaContact the metaContact to remove.
      * @throws MetaContactListException with an appropriate code if the operation fails for some reason.
@@ -975,13 +972,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             throws MetaContactListException
     {
         Iterator<Contact> protoContactsIter = metaContact.getContacts();
-
         while (protoContactsIter.hasNext()) {
             removeContact(protoContactsIter.next());
         }
-        // do not fire events. that will be done by the contact listener as soon as it gets
-        // confirmation events of proto contact removal the removal of the last contact would
-        // also generate an even for the removal of the meta contact itself.
     }
 
     /**
@@ -1070,7 +1063,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     // cmeng - SQLite will remove all decedent of the groupToRemove base on accountUuid etc
     // need to fireEvent for all listeners.
-    private void locallyRemoveAllContactsForProvider(MetaContactGroupImpl parentMetaGroup, ContactGroup groupToRemove)
+    private void locallyRemoveAllContactsForProvider(MetaContactGroupImpl parentMetaGroup, ContactGroup
+            groupToRemove)
     {
         Iterator<MetaContact> childrenContacts = parentMetaGroup.getChildContacts();
         // first go through all direct children.
@@ -1627,18 +1621,19 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         }
 
         List<ProtocolProviderService> existingProvList = this.contactEventIgnoreList.get(contact);
-        if (existingProvList.size() < 1) {
-            groupEventIgnoreList.remove(contact);
-        }
-        else {
-            existingProvList.remove(ownerProvider);
+        if (existingProvList != null) {
+            if (existingProvList.size() < 1) {
+                groupEventIgnoreList.remove(contact);
+            }
+            else {
+                existingProvList.remove(ownerProvider);
+            }
         }
     }
 
     /**
      * Implements the <tt>ServiceListener</tt> method. Verifies whether the passed event concerns
-     * a <tt>ProtocolProviderService</tt> and modifies the list of registered protocol providers
-     * accordingly.
+     * a <tt>ProtocolProviderService</tt> and modifies the list of registered protocol providers accordingly.
      *
      * @param event The <tt>ServiceEvent</tt> object.
      */

@@ -74,7 +74,8 @@ import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_UNKNOWN;
  * @author Eng Chong Meng
  */
 public class CryptoFragment extends OSGiFragment
-        implements ChatSessionManager.CurrentChatListener, ChatRoomMemberPresenceListener
+        implements ChatSessionManager.CurrentChatListener, ChatRoomMemberPresenceListener,
+        OmemoAuthenticateDialog.AuthenticateListener
 {
     /**
      * A map of the user selected chatType. The stored key is the chatSessionId. The information
@@ -619,15 +620,17 @@ public class CryptoFragment extends OSGiFragment
 
         // activeChat must not be null; proceed if it is conference call (contact == null).
         // Do not proceed if chat session is triggered from system server (domainBareJid) i.e. welcome message
-        if ((activeChat != null)
-                && ((contact == null) || !(contact.getJid() instanceof DomainBareJid)))
-            setCurrentContact(contact, chatSessionId);
-        else {
-            mOmemo.setEnabled(false);
-            mOmemo.getIcon().setAlpha(80);
+        runOnUiThread(() -> {
+            if ((activeChat != null)
+                    && ((contact == null) || !(contact.getJid() instanceof DomainBareJid)))
+                setCurrentContact(contact, chatSessionId);
+            else {
+                mOmemo.setEnabled(false);
+                mOmemo.getIcon().setAlpha(80);
 
-            mOtr.setVisible(false);
-        }
+                mOtr.setVisible(false);
+            }
+        });
     }
 
     /**
@@ -636,7 +639,6 @@ public class CryptoFragment extends OSGiFragment
      *
      * @param contact new <tt>contact</tt> to be used.
      */
-
     private void setCurrentContact(Contact contact, String chatSessionId)
     {
         currentOtrContact = null;
@@ -662,7 +664,6 @@ public class CryptoFragment extends OSGiFragment
                 setStatusOtr(scOtrEngine.getSessionStatus(currentOtrContact));
             }
         }
-
         // Timber.w("set otr session visibility: %s %s", currentOtrContact,isOmemoMode);
         mOtr_Session.setVisible((currentOtrContact != null) && !isOmemoMode);
     }
@@ -999,16 +1000,32 @@ public class CryptoFragment extends OSGiFragment
     }
 
     /**
+     * Callback when user clicks the omemo Authentication dialog's confirm/cancel button.
+     *
+     * @param allTrusted allTrusted state.
+     * @param omemoDevices set of unTrusted devices
+     */
+    @Override
+    public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices)
+    {
+        if (allTrusted) {
+            onOmemoAuthenticate(ChatFragment.MSGTYPE_OMEMO);
+            activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
+                    getString(R.string.crypto_msg_OMEMO_SESSION_VERIFIED));
+        }
+        else {
+            onOmemoAuthenticate(ChatFragment.MSGTYPE_OMEMO_UA);
+            // activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN,
+            //         "Undecided Omemo Identity: " + omemoDevices.toString());
+        }
+    }
+
+    /**
      * @param chatType New chatType pending user verification action from omemo Authentication dialog
      * @see OmemoAuthenticateDialog
      */
-    public void onOmemoAuthenticateOK(int chatType)
+    private void onOmemoAuthenticate(int chatType)
     {
-        // Update system message if changes is from MSGTYPE_OMEMO_UA
-        if (chatType == ChatFragment.MSGTYPE_OMEMO)
-            activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
-                    getString(R.string.crypto_msg_OMEMO_SESSION_VERIFIED));
-
         // must update encryptionChoice and set ChatPanel to the new chatType
         encryptionChoice.put(mCurrentChatSessionId, chatType);
         activeChat.setChatType(chatType);
