@@ -8,9 +8,12 @@ package org.atalk.android.gui.login;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Spinner;
 
+import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
+import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
@@ -37,7 +40,12 @@ public class AndroidSecurityAuthority implements SecurityAuthority
     /**
      * If user name should be editable when asked for credentials.
      */
-    private boolean isUserNameEditable = false;
+    private boolean isUserNameEditable = true;
+
+    /**
+     * user last entered userName to check for anymore new changes in userName
+     */
+    private String userNameLastEdited;
 
     /**
      * Returns a UserCredentials object associated with the specified realm (accountID), by
@@ -78,10 +86,12 @@ public class AndroidSecurityAuthority implements SecurityAuthority
             Timber.e("Cannot obtain credentials from the main thread!");
             return credentials;
         }
+
         // Insert DialogActivity arguments
         Bundle args = new Bundle();
         // Login userName and editable state
         String userName = credentials.getUserName();
+        userNameLastEdited = userName;
         args.putString(CredentialsFragment.ARG_LOGIN, userName);
         args.putBoolean(CredentialsFragment.ARG_LOGIN_EDITABLE, isUserNameEditable);
 
@@ -114,19 +124,37 @@ public class AndroidSecurityAuthority implements SecurityAuthority
         final Object credentialsLock = new Object();
 
         // Displays the credentials dialog and waits for it to complete
-        Long dialogID = DialogActivity.showCustomDialog(aTalkApp.getGlobalContext(),
+        DialogActivity.showCustomDialog(aTalkApp.getGlobalContext(),
                 aTalkApp.getResString(R.string.service_gui_LOGIN_CREDENTIAL), CredentialsFragment.class.getName(),
                 args, aTalkApp.getResString(R.string.service_gui_SIGN_IN), new DialogActivity.DialogListener()
                 {
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
                         View dialogContent = dialog.findViewById(R.id.alertContent);
-                        String userName = ViewUtil.getTextViewValue(dialogContent, R.id.username).replaceAll("\\s", "");
+                        String userNameEntered = ViewUtil.getTextViewValue(dialogContent, R.id.username).replaceAll("\\s", "");
                         String password = ViewUtil.getTextViewValue(dialogContent, R.id.password).trim();
                         boolean storePassword = ViewUtil.isCompoundChecked(dialogContent, R.id.store_password);
                         boolean ibRegistration = ViewUtil.isCompoundChecked(dialogContent, R.id.ib_registration);
 
-                        credentials.setUserName(userName);
+                        if (!userNameLastEdited.equals(userNameEntered)) {
+                            int msgCount = checkPurgedMsgCount(accountID.getAccountUniqueID(), userNameEntered);
+                            if (msgCount < 0) {
+                                userNameLastEdited = userName;
+                                ViewUtil.setTextViewValue(dialogContent, R.id.reason_field,
+                                        aTalkApp.getResString(R.string.service_gui_USERNAME_NULL));
+                                return false;
+                            }
+                            else if (msgCount > 0) {
+                                String msgReason = aTalkApp.getResString(R.string.service_gui_USERNAME_CHANGE_WARN,
+                                        userNameEntered, msgCount, userName);
+                                ViewUtil.setTextViewValue(dialogContent, R.id.reason_field, msgReason);
+                                ViewUtil.setTextViewColor(dialogContent, R.id.reason_field, R.color.red);
+                                userNameLastEdited = userNameEntered;
+                                return false;
+                            }
+                        }
+
+                        credentials.setUserName(userNameEntered);
                         credentials.setPassword(password.toCharArray());
                         credentials.setPasswordPersistent(storePassword);
                         credentials.setIbRegistration(ibRegistration);
@@ -135,8 +163,8 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                         Spinner spinnerDM = dialogContent.findViewById(R.id.dnssecModeSpinner);
                         String[] dnssecModeValues = aTalkApp.getGlobalContext().getResources()
                                 .getStringArray(R.array.dnssec_Mode_value);
-                        String selecteDnssecMode = dnssecModeValues[spinnerDM.getSelectedItemPosition()];
-                        credentials.setDnssecMode(selecteDnssecMode);
+                        String selectedDnssecMode = dnssecModeValues[spinnerDM.getSelectedItemPosition()];
+                        credentials.setDnssecMode(selectedDnssecMode);
 
                         if (isShowServerOption) {
                             boolean isServerOverridden = ViewUtil.isCompoundChecked(dialogContent,
@@ -177,11 +205,33 @@ public class AndroidSecurityAuthority implements SecurityAuthority
     }
 
     /**
+     * Get the number of messages belong to editedAccUid
+     *
+     * @param editedAccUid current edited account Uid
+     * @param userName new userName
+     * @return count of old messages belong to editedAccUid which are to be purged or -1 if userName entered is invalid
+     */
+    private int checkPurgedMsgCount(String editedAccUid, String userName)
+    {
+        if (!TextUtils.isEmpty(userName) && userName.contains("@")) {
+            if (!editedAccUid.split(":")[1].equals(userName)) {
+                MessageHistoryServiceImpl mhs = MessageHistoryActivator.getMessageHistoryService();
+                return mhs.getMessageCountForAccountUuid(editedAccUid);
+            }
+            else
+                return 0;
+        }
+        else {
+            return -1;
+        }
+    }
+
+    /**
      * Sets the userNameEditable property, which should indicate to the implementations of
      * this interface if the user name could be changed by user or not.
      *
-     * @param isUserNameEditable indicates if the user name could be changed by user in the implementation of this
-     * interface.
+     * @param isUserNameEditable indicates if the user name could be changed by user in the
+     * implementation of this interface.
      */
     public void setUserNameEditable(boolean isUserNameEditable)
     {

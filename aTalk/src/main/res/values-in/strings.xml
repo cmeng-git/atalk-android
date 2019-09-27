@@ -598,7 +598,8 @@
     <string name="service_gui_SECURITY_ERROR">Kesalahan keamanan</string>
     <string name="service_gui_SECURITY_INFO">Informasi keamanan</string>
     <string name="service_gui_SECURITY_WARNING">Peringatan keamanan</string>
-    <string name="service_gui_USERNAME_NULL">Silakan isi nama pengguna dan kata sandi Anda.</string>
+    <string name="service_gui_USERNAME_NULL">Silakan isi nama pengguna atau/dan kata sandi yang tepat.</string>
+    <string name="service_gui_USERNAME_CHANGE_WARN">Peringatan: Mengubah nama pengguna akun menjadi \'%s\' juga akan membersihkan pesan %s untuk akun yang ada \'%s\'. Memproses?</string>
     <string name="service_gui_USER_EXISTS_ERROR">Pengguna ini sudah ada di jaringan yang dipilih. Silakan pilih pengguna atau jaringan lain.</string>
 
 	<string name="service_gui_JANUARY">Jan</string>
@@ -694,24 +695,24 @@
         Lanjutkan dengan koneksi hanya untuk contoh ini?&lt;br/>
         Untuk opsi dan info lebih lanjut, klik "Tampilkan Sertifikat".&lt;/html></string>
        <string name="service_gui_PROCEED">Lanjutkan</string>
-    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;html>&lt;b>Dikeluarkan ke&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;b>Dikeluarkan ke&lt;/b></string>
     <string name="service_gui_CERT_INFO_CHAIN">Rantai Sertifikat:</string>
     <string name="service_gui_CERT_INFO_CN">Nama Umum:</string>
     <string name="service_gui_CERT_INFO_O">Organisasi:</string>
     <string name="service_gui_CERT_INFO_C">Nama Negara:</string>
     <string name="service_gui_CERT_INFO_ST">Nama Negara atau Provinsi:</string>
     <string name="service_gui_CERT_INFO_L">Nama Lokalitas:</string>
-    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;html>&lt;b>Dikeluarkan Oleh&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;b>Dikeluarkan Oleh&lt;/b></string>
     <string name="service_gui_CERT_INFO_OU">Unit Organisasi:</string>
-    <string name="service_gui_CERT_INFO_VALIDITY">&lt;html>&lt;b>Validitas&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_VALIDITY">&lt;b>Validitas&lt;/b></string>
     <string name="service_gui_CERT_INFO_ISSUED_ON">Diterbitkan Pada:</string>
     <string name="service_gui_CERT_INFO_EXPIRES_ON">Kedaluwarsa pada:</string>
-    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;html>&lt;b>Sidik Jari&lt;/b>&lt;/html></string>
-    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;html>&lt;b>Info Sertifikat&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;b>Sidik Jari&lt;/b></string>
+    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;b>Info Sertifikat&lt;/b></string>
     <string name="service_gui_CERT_INFO_SER_NUM">Nomor Seri:</string>
     <string name="service_gui_CERT_INFO_VER">Versi:</string>
     <string name="service_gui_CERT_INFO_SIGN_ALG">Algoritme Tanda Tangan:</string>
-    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;html>&lt;b>Info Tombol Publik&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;b>Info Tombol Publik&lt;/b></string>
     <string name="service_gui_CERT_INFO_ALG">Algoritma:</string>
     <string name="service_gui_CERT_INFO_PUB_KEY">Kunci Publik:</string>
     <string name="service_gui_CERT_INFO_KEY_BYTES_PRINT">%1$s byte: %2$s</string>
@@ -972,7 +973,7 @@
     <string name="plugin_provisioning_MANUAL">Secara manual menentukan URI penyediaan</string>
     <string name="plugin_provisioning_METHOD">Metode Provisioning</string>
     <string name="plugin_provisioning_PROV_FAILED">Penyediaan gagal</string>
-    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Penyediaan gagal. %1$s!<br/>Silakan, coba lagi nanti atau hubungi administrator Anda.</html></string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG">&lt;html>Penyediaan gagal. %1$s!&lt;br/>Silakan, coba lagi nanti atau hubungi administrator Anda.&lt;/html></string>
     <string name="plugin_provisioning_PROVISIONING">Provisioning</string>
     <string name="plugin_provisioning_PROVISIONING_SUMMARY">Konfigurasikan pengaturan penyediaan</string>
     <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Anda yakin ingin menghapus kata sandi provisioning?</string>
@@ -987,13 +988,13 @@
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">Perubahan status gagal</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Perubahan status yang diaktifkan DNSSEC telah gagal.</string>
     <string name="plugin_dnsconfig_dnssec_MODE">Perilaku</string>
-    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING"><html>Perhatikan bahwa mengaktifkan atau menonaktifkan DNSSEC akan menonaktifkan resolver paralel dan hanya akan berlaku pada saat Anda memulai aTalk.</html></string>
+    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING">&lt;html>Perhatikan bahwa mengaktifkan atau menonaktifkan DNSSEC akan menonaktifkan resolver paralel dan hanya akan berlaku pada saat Anda memulai aTalk.&lt;/html></string>
     <string name="plugin_dnsconfig_border_TITLE">Penyelesai cadangan</string>
     <string name="plugin_dnsconfig_dnssec_chkAbsolute">Perlakukan semua nama domain sebagai absolut</string>
     <string name="plugin_dnsconfig_dnssec_chkEnabled">Aktifkan penyelesai DNSSEC</string>
     <string name="plugin_dnsconfig_dnssec_lblDefault">Perilaku default</string>
     <string name="plugin_dnsconfig_dnssec_lblNameservers">Server nama khusus</string>
-    <string name="plugin_dnsconfig_dnssec_lblNameserversHint"><html>Beberapa server dapat dipisahkan dengan koma, mis. 149.20.64.20, 149.20.64.21 (OARC\'s Buka DNSSEC Validating Resolver)</html></string>
+    <string name="plugin_dnsconfig_dnssec_lblNameserversHint">&lt;html>Beberapa server dapat dipisahkan dengan koma, mis. 149.20.64.20, 149.20.64.21 (OARC\'s Buka DNSSEC Validating Resolver)&lt;/html></string>
 
     <string name="util_dns_INSECURE_ANSWER_TITLE">Kegagalan DNSSEC</string>
     <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">Jawaban DNS untuk %1$s tidak aman.</string>

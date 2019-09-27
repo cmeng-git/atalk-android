@@ -230,7 +230,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
         // aTalk STUN/JN implementation can only be added/modified via account modification
         if (isModification) {
             String accountUuid = null;
-            // cmeng - editedAccUID contains the last edited account.
+            // cmeng - editedAccUID contains the last edited account e.g. jabber:xxx@atalk.org.
             if (!StringUtils.isNullOrEmpty(editedAccUID)) {
                 AccountManager accManager = ProtocolProviderActivator.getAccountManager();
                 accountUuid = accManager.getStoredAccountUUID(factory, editedAccUID);

@@ -28,7 +28,6 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
@@ -916,6 +915,8 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
                 }
             }
         }
+        // Cleanup orphan's Omemo Tables
+        cleanUpOmemoDB();
     }
 
     /**

@@ -654,7 +654,8 @@
     <string name="service_gui_SECURITY_ERROR">Security error</string>
     <string name="service_gui_SECURITY_INFO">Security information</string>
     <string name="service_gui_SECURITY_WARNING">Security warning</string>
-    <string name="service_gui_USERNAME_NULL">Please fill your username and password.</string>
+    <string name="service_gui_USERNAME_NULL">Please enter proper username or/and password.</string>
+    <string name="service_gui_USERNAME_CHANGE_WARN">Warning: Changing the account user name to \'%s\' will also purge %s messages for the existing account \'%s\'. Proceed?</string>
     <string name="service_gui_USER_EXISTS_ERROR">This user already exists on the selected network. Please choose another user or network.</string>
 
     <string name="service_gui_JANUARY">Jan</string>
@@ -746,24 +747,24 @@
         Proceed with connection for this instance only?&lt;br/>
         For more option and info, click "Show Certificate".&lt;/html></string>
     <string name="service_gui_PROCEED">Proceed</string>
-    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;html>&lt;b>Issued To&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;b>Issued To&lt;/b></string>
     <string name="service_gui_CERT_INFO_CHAIN">Certificate Chain:</string>
     <string name="service_gui_CERT_INFO_CN">Common Name:</string>
     <string name="service_gui_CERT_INFO_O">Organization:</string>
     <string name="service_gui_CERT_INFO_C">Country Name:</string>
     <string name="service_gui_CERT_INFO_ST">State or Province Name:</string>
     <string name="service_gui_CERT_INFO_L">Locality Name:</string>
-    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;html>&lt;b>Issued By&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;b>Issued By&lt;/b></string>
     <string name="service_gui_CERT_INFO_OU">Organizational Unit:</string>
-    <string name="service_gui_CERT_INFO_VALIDITY">&lt;html>&lt;b>Validity&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_VALIDITY">&lt;b>Validity&lt;/b></string>
     <string name="service_gui_CERT_INFO_ISSUED_ON">Issued On:</string>
     <string name="service_gui_CERT_INFO_EXPIRES_ON">Expires On:</string>
-    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;html>&lt;b>Fingerprints&lt;/b>&lt;/html></string>
-    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;html>&lt;b>Certificate Info&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;b>Fingerprints&lt;/b></string>
+    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;b>Certificate Info&lt;/b></string>
     <string name="service_gui_CERT_INFO_SER_NUM">Serial Number:</string>
     <string name="service_gui_CERT_INFO_VER">Version:</string>
     <string name="service_gui_CERT_INFO_SIGN_ALG">Signature Algorithm:</string>
-    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;html>&lt;b>Public Key Info&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;b>Public Key Info&lt;/b></string>
     <string name="service_gui_CERT_INFO_ALG">Algorithm:</string>
     <string name="service_gui_CERT_INFO_PUB_KEY">Public Key:</string>
     <string name="service_gui_CERT_INFO_KEY_BYTES_PRINT">%1$s bytes: %2$s</string>
@@ -1030,7 +1031,7 @@
     <string name="plugin_provisioning_MANUAL">Manually specify a provisioning URI</string>
     <string name="plugin_provisioning_METHOD">Provisioning method</string>
     <string name="plugin_provisioning_PROV_FAILED">Provisioning failed</string>
-    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Provisioning failed. %1$s!<br/>Please, try again later or contact your administrator.</html></string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG">&lt;html>Provisioning failed. %1$s!&lt;br/>Please, try again later or contact your administrator.&lt;/html></string>
     <string name="plugin_provisioning_PROVISIONING">Provisioning</string>
     <string name="plugin_provisioning_PROVISIONING_SUMMARY">Configure provisioning settings</string>
     <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Are you sure you want to remove provisioning password?</string>
@@ -1047,25 +1048,25 @@
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">State change failed</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Change of the DNSSEC enabled state has failed.</string>
     <string name="plugin_dnsconfig_dnssec_MODE">Behavior</string>
-    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING"><html>Note that enabling or disabling DNSSEC disables the parallel resolver and will only take effect the next time you start aTalk.</html></string>
+    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING">&lt;html>Note that enabling or disabling DNSSEC disables the parallel resolver and will only take effect the next time you start aTalk.&lt;/html></string>
     <string name="plugin_dnsconfig_border_TITLE">Backup resolver</string>
     <string name="plugin_dnsconfig_dnssec_chkAbsolute">Treat all domain names as absolute</string>
     <string name="plugin_dnsconfig_dnssec_chkEnabled">Enable DNSSEC resolver</string>
     <string name="plugin_dnsconfig_dnssec_lblDefault">Default behavior</string>
     <string name="plugin_dnsconfig_dnssec_lblNameservers">Custom name servers</string>
-    <string name="plugin_dnsconfig_dnssec_lblNameserversHint"><html>Multiple servers can be delimited with a comma, e.g. 149.20.64.20, 149.20.64.21 (OARC\'s Open DNSSEC Validating Resolver)</html></string>
+    <string name="plugin_dnsconfig_dnssec_lblNameserversHint">&lt;html>Multiple servers can be delimited with a comma, e.g. 149.20.64.20, 149.20.64.21 (OARC\'s Open DNSSEC Validating Resolver)&lt;/html></string>
 
     <string name="util_dns_INSECURE_ANSWER_TITLE">DNSSEC failure</string>
     <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">DNS answer for %1$s is insecure.</string>
     <string name="util_dns_INSECURE_ANSWER_MESSAGE_REASON">DNS answer for %1$s is insecure.\nReason: %2$s</string>
     <string name="util_dns_DNSSEC_ADVANCED_OPTIONS">Show advanced options</string>
-    <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>DNSSEC signed zone %1$s returned invalid data.<br/>%2$s&lt;/html></string>
+    <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>DNSSEC signed zone %1$s returned invalid data.&lt;br/>%2$s&lt;/html></string>
     <string name="util_dns_DNSSEC_ADVANCED_REASON_UNSIGNED">%1$s query for %2$s is unsigned.</string>
     <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s has tried to connect to the server at &lt;b>%2$s&lt;&lt;/b>,
         which is a domain that carries a strong protection called DNSSEC. The information that %1$s has obtained
-        from the DNS server is not in accordance with the information DNSSEC provides about this domain.<br/><br/>&lt;b>
+        from the DNS server is not in accordance with the information DNSSEC provides about this domain.&lt;br/>&lt;br/>&lt;b>
         This should not happen unless very serious mistakes were made at %2$s. It therefore is a very strong indication that something is
-        seriously wrong with the trustworthiness of your network connection.&lt;/b><br/><br/>
+        seriously wrong with the trustworthiness of your network connection.&lt;/b>&lt;br/>&lt;br/>
         If you are on someone else\'s internet connection (like a WiFi hotspot) or if there are special circumstances that make you distrust
         your regular internet provider, we strongly advise you to stop using it immediately and look for an alternative internet access point.
         When you are safely connected to another network, the problem should be resolved automatically. If this is not the case, contact your
@@ -1183,7 +1184,7 @@
 
     <!-- Common preferences -->
     <string name="service_gui_PREF_AUDIO_ENCODING">Audio encoding</string>
-    <string name="service_gui_PREF_AUDIO_ENC_SUMMARY">Override gloabal defined audio formats for this account</string>
+    <string name="service_gui_PREF_AUDIO_ENC_SUMMARY">Override global defined audio formats for this account</string>
     <string name="service_gui_PREF_ENCRYPTION">Call Encryption settings</string>
     <string name="service_gui_PREF_VIDEO_ENCODING">Video encoding</string>
     <string name="service_gui_PREF_VIDEO_ENC_SUMMARY">Override global defined video formats for this account</string>

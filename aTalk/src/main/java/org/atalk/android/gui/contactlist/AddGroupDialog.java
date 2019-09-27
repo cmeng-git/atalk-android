@@ -142,29 +142,6 @@ public class AddGroupDialog extends OSGiFragment
         }
 
         /**
-         * Shows the "in progress" dialog
-         */
-        /*
-         * private void displayOperationInProgressDialog(DialogActivity dialog) { Context context
-         * = dialog; CharSequence
-         * title = context.getText( R.string.service_gui_COMMIT_PROGRESS_TITLE); CharSequence msg
-         * = context.getText(
-         * R.string.service_gui_COMMIT_PROGRESS_MSG);
-         *
-         * this.progressDialog = ProgressDialog.show( context, title, msg, true, false); //
-         * Display the progress dialog
-         * progressDialog.show(); }
-         */
-
-        /**
-         * Hides the "in progress" dialog
-         */
-        /*
-         * private void hideOperationInProgressDialog() { if(progressDialog != null) {progressDialog.dismiss();
-         * progressDialog = null; } }
-         */
-
-        /**
          * Creates a new meta contact group in a separate thread.
          */
         private class CreateGroup extends Thread

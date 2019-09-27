@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizations.SubscriptionStatus;
 import net.java.sip.communicator.util.StatusUtil;
 
 import org.atalk.android.R;
@@ -109,20 +110,14 @@ public class MetaContactRenderer implements UIContactRenderer
         Iterator<Contact> protoContacts = metaContact.getContacts();
         while (protoContacts.hasNext()) {
             Contact protoContact = protoContacts.next();
+            OperationSetExtendedAuthorizations authOpSet
+                    = protoContact.getProtocolProvider().getOperationSet(OperationSetExtendedAuthorizations.class);
 
-            OperationSetExtendedAuthorizations authOpSet = protoContact.getProtocolProvider()
-                    .getOperationSet(OperationSetExtendedAuthorizations.class);
-
-            if ((authOpSet != null)
-                    && (authOpSet.getSubscriptionStatus(protoContact) != null)
-                    && !authOpSet.getSubscriptionStatus(protoContact).equals(
-                    OperationSetExtendedAuthorizations.SubscriptionStatus.Subscribed)) {
-                OperationSetExtendedAuthorizations.SubscriptionStatus status
-                        = authOpSet.getSubscriptionStatus(protoContact);
-
-                if (status.equals(OperationSetExtendedAuthorizations.SubscriptionStatus.SubscriptionPending))
+            SubscriptionStatus status = authOpSet.getSubscriptionStatus(protoContact);
+            if (!SubscriptionStatus.Subscribed.equals(status)) {
+                if (SubscriptionStatus.SubscriptionPending.equals(status))
                     subscriptionDetails = aTalkApp.getResString(R.string.service_gui_WAITING_AUTHORIZATION);
-                else if (status.equals(OperationSetExtendedAuthorizations.SubscriptionStatus.NotSubscribed))
+                else if (SubscriptionStatus.NotSubscribed.equals(status))
                     subscriptionDetails = aTalkApp.getResString(R.string.service_gui_NOT_AUTHORIZED);
             }
             else if (!StringUtils.isNullOrEmpty(protoContact.getStatusMessage())) {

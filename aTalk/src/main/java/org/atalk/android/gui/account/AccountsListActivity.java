@@ -177,8 +177,7 @@ public class AccountsListActivity extends OSGiActivity
     {
         int id = item.getItemId();
         if (id == R.id.remove) {
-            RemoveAccountDialog.create(this, clickedAccount,
-                    account -> listAdapter.remove(account)).show();
+            RemoveAccountDialog.create(this, clickedAccount, account -> listAdapter.remove(account)).show();
             return true;
         }
         else if (id == R.id.account_settings) {

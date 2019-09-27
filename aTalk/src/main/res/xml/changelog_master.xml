@@ -6,6 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.0.6 (09/27/2019)" versioncode="1106">
+        <change>Auto send last omemo message once all undecided omemoDevices are authenticated by user, else display error message</change>
+        <change>Improve account UI allowing user to change userName during login and in Account Settings...; warn user if resulted in old messages being purged</change>
+        <change>Hide contact context menu i.e. 'Remove Contact' and 'Move to group' when user is not online</change>
+        <change>Allow user removal of contacts in NotInContactList with exception of DomainBareJid; User need to manual purge the associated messages prior to remove contact if desired.</change>
+        <change>Add support to display error messages received from conference room</change>
+        <change>Avoid message 'Delivery Failed' error message being cleared when passing through multiple listeners</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.0.5 (09/14/2019)" versioncode="1105">
         <change>Implement user options to cancel, retry and display status progressBar during Http file downloading</change>
         <change>Ensure proper Http File Download clean up if user exit chat session without cancel file transfer in progress</change>

@@ -137,14 +137,23 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             presenceOpSet.addContactPresenceStatusListener(this);
 
         isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
-        isDeliveryReceiptSupported = checkDeliveryReceiptSupport(mPPS.getConnection());
 
-        // checking this can be slow so make sure its out of our way
-        new Thread(this::checkImCaps).start();
+        // checking these can be slow so make sure they are run in new thread
+        new Thread() {
+            @Override
+            public void run() {
+                XMPPConnection connection = mPPS.getConnection();
+                if ((connection != null)) {
+                    httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
+                    isDeliveryReceiptSupported = checkDeliveryReceiptSupport(connection);
+                }
+                checkImCaps();
+            }
+        }.start();
     }
 
     /**
-     * Check for Delivery Receipt support for all registered contacts
+     * Check for Delivery Receipt support for all registered contacts (ANR from field - so run in thread)
      * Currently isDeliveryReceiptSupported is not used - Smack autoAddDeliveryReceiptRequests support is global
      */
     private boolean checkDeliveryReceiptSupport(XMPPConnection connection)
@@ -154,7 +163,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
 
         // ANR from field - check isAuthenticated() before proceed
         if ((connection != null) && connection.isAuthenticated()) {
-            httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
             DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(connection);
 
             List<Presence> presences = Roster.getInstanceFor(connection).getPresences(contact.getJid().asBareJid());

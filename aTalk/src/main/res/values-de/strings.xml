@@ -598,7 +598,8 @@
     <string name="service_gui_SECURITY_ERROR">Sicherheitsfehler</string>
     <string name="service_gui_SECURITY_INFO">Sicherheitsinformationen</string>
     <string name="service_gui_SECURITY_WARNING">Sicherheitswarnung</string>
-    <string name="service_gui_USERNAME_NULL">Bitte gib deinen Benutzernamen und Passwort ein.</string>
+    <string name="service_gui_USERNAME_NULL">Bitte geben Sie Ihren Benutzernamen oder/und Ihr Passwort ein.</string>
+    <string name="service_gui_USERNAME_CHANGE_WARN">Warnung: Wenn Sie den Benutzernamen des Kontos in \'%s\' ändern, werden auch %s Nachrichten für das vorhandene Konto \'%s\' gelöscht. Vorgehen?</string>
     <string name="service_gui_USER_EXISTS_ERROR">Dieser Benutzer ist bereits im ausgewählten Netzwerk vorhanden. Bitte wähle einen anderen Benutzer oder ein anderes Netzwerk.</string>
 
     <string name="service_gui_JANUARY">Jan</string>
@@ -670,7 +671,7 @@
     <!-- Security certificates -->
     <string name="service_gui_ALWAYS_TRUST">Immer diesem Zertifikat vertrauen</string>
     <string name="service_gui_CERT_DIALOG_TITLE">Zertifikatsüberprüfung</string>
-    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT"><html>%1$s kann die Identität des Servers beim Verbinden mit<br/><b>%2$s</b><br/>nicht überprüfen<br/>Das Zertifikat ist nicht vertrauenswürdig (ein selbstsigniertes Zertifikat).<br/><br/>Mit dieser Verbindung fortfahren?<br/>Klicke für weitere Optionen und Informationen auf "Zertifikat anzeigen".</html></string>
+    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>%1$s kann die Identität des Servers beim Verbinden mit&lt;br/><b>%2$s</b>&lt;br/>nicht überprüfen&lt;br/>Das Zertifikat ist nicht vertrauenswürdig (ein selbstsigniertes Zertifikat).&lt;br/>&lt;br/>Mit dieser Verbindung fortfahren?&lt;br/>Klicke für weitere Optionen und Informationen auf "Zertifikat anzeigen".&lt;/html></string>
     <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%1$s kann die
         Identität des Zertifikats des Servers.&lt;br/> nicht überprüfen&lt;br/>
         Das Zertifikat ist nicht vertrauenswürdig (ein selbstsigniertes Zertifikat).&lt;br/>&lt;br/>
@@ -688,24 +689,24 @@
         Klicke für weitere Optionen und Informationen auf "Zertifikat anzeigen".&lt;/html></string>
    <string name="service_gui_PROCEED">Fortfahren</string>
 
-    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;html>&lt;b>Ausgestellt für&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;b>Ausgestellt für&lt;/b></string>
     <string name="service_gui_CERT_INFO_CHAIN">Zertifikatsdaten:</string>
     <string name="service_gui_CERT_INFO_CN">Name:</string>
     <string name="service_gui_CERT_INFO_O">Organisation:</string>
     <string name="service_gui_CERT_INFO_C">Ländername:</string>
     <string name="service_gui_CERT_INFO_ST">Bundesstaat oder Provinzname:</string>
     <string name="service_gui_CERT_INFO_L">Stadt:</string>
-    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;html>&lt;b>Ausgestellt von&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;b>Ausgestellt von&lt;/b></string>
     <string name="service_gui_CERT_INFO_OU">Organisationseinheit:</string>
-    <string name="service_gui_CERT_INFO_VALIDITY">&lt;html>&lt;b>Gültigkeit&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_VALIDITY">&lt;b>Gültigkeit&lt;/b></string>
     <string name="service_gui_CERT_INFO_ISSUED_ON">Ausgestellt am:</string>
     <string name="service_gui_CERT_INFO_EXPIRES_ON">Läuft ab am:</string>
-    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;html>&lt;b>Fingerprints&lt;/b>&lt;/html></string>
-    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;html>&lt;b>Zertifikat-Info&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;b>Fingerprints&lt;/b></string>
+    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;b>Zertifikat-Info&lt;/b></string>
     <string name="service_gui_CERT_INFO_SER_NUM">Seriennummer:</string>
     <string name="service_gui_CERT_INFO_VER">Version:</string>
     <string name="service_gui_CERT_INFO_SIGN_ALG">Signatur-Verschlüsselung:</string>
-    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;html>&lt;b>Öffentliche Schlüsselinformationen&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;b>Öffentliche Schlüsselinformationen&lt;/b></string>
     <string name="service_gui_CERT_INFO_ALG">Algorithmus:</string>
     <string name="service_gui_CERT_INFO_PUB_KEY">Öffentlicher Schlüssel:</string>
     <string name="service_gui_CERT_INFO_KEY_BYTES_PRINT">%1$s Bytes:%2$s</string>
@@ -963,7 +964,7 @@
     <string name="plugin_provisioning_MANUAL">Gebe manuell eine Provisioning-URI ein</string>ein
     <string name="plugin_provisioning_METHOD">Provisionings-Methode</string>
     <string name="plugin_provisioning_PROV_FAILED">Provisioning fehlgeschlagen</string>
-    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Provisioning fehlgeschlagen. %1$s!<br/>Bitte versuche es später erneut oder wende dich an deinen Administrator.</html></string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG">&lt;html>Provisioning fehlgeschlagen. %1$s!&lt;br/>Bitte versuche es später erneut oder wende dich an deinen Administrator.&lt;/html></string>
     <string name="plugin_provisioning_PROVISIONING">Provisioning</string>
     <string name="plugin_provisioning_PROVISIONING_SUMMARY">Provisionierungs-Einstellungen</string>
     <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Möchtest du das Provisioning-Kennwort wirklich entfernen?</string>
@@ -978,13 +979,13 @@
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">Statusänderung fehlgeschlagen</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Änderung des DNSSEC-aktivierten Status ist fehlgeschlagen.</string>
     <string name="plugin_dnsconfig_dnssec_MODE">Verhalten</string>
-    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING"><html>Beachte, dass das Aktivieren oder Deaktivieren von DNSSEC den parallelen Resolver deaktiviert und erst beim nächsten Start von aTalk wirksam wird.</html></string>
+    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING">&lt;html>Beachte, dass das Aktivieren oder Deaktivieren von DNSSEC den parallelen Resolver deaktiviert und erst beim nächsten Start von aTalk wirksam wird.&lt;/html></string>
     <string name="plugin_dnsconfig_border_TITLE">Backup-Resolver</string>
     <string name="plugin_dnsconfig_dnssec_chkAbsolute">Behandle alle Domain-Namen als absolut</string>
     <string name="plugin_dnsconfig_dnssec_chkEnabled">DNSSEC-Resolver aktivieren</string>
     <string name="plugin_dnsconfig_dnssec_lblDefault">Standardverhalten</string>
     <string name="plugin_dnsconfig_dnssec_lblNameservers">Benutzerdefinierte Nameserver</string>
-    <string name="plugin_dnsconfig_dnssec_lblNameserversHint"><html>Mehrere Server können mit einem Komma getrennt werden, z. 149.20.64.20, 149.20.64.21 (Offener DNSSEC-Validierungs-Resolver von OARC)</html></string>
+    <string name="plugin_dnsconfig_dnssec_lblNameserversHint">&lt;html>Mehrere Server können mit einem Komma getrennt werden, z. 149.20.64.20, 149.20.64.21 (Offener DNSSEC-Validierungs-Resolver von OARC)&lt;/html></string>
 
     <string name="util_dns_INSECURE_ANSWER_TITLE">DNSSEC-Fehler</string>
     <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">DNS-Antwort für %1$s ist unverschlüsselt.</string>

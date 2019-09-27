@@ -17,7 +17,6 @@
 package org.atalk.android.gui.login;
 
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.*;
 import android.widget.*;
 
@@ -130,9 +129,9 @@ public class CredentialsFragment extends Fragment
         int sPos = Arrays.asList(dnssecModeValues).indexOf(dnssecMode);
         spinnerDM.setSelection(sPos);
 
-        ViewUtil.setTextViewValue(content, R.id.username, args.getString(ARG_LOGIN));
-        boolean loginEditable = args.getBoolean(ARG_LOGIN_EDITABLE, true);
-        content.findViewById(R.id.username).setEnabled(loginEditable);
+        EditText mUserNameEdit = content.findViewById(R.id.username);
+        mUserNameEdit.setText(args.getString(ARG_LOGIN));
+        mUserNameEdit.setEnabled(args.getBoolean(ARG_LOGIN_EDITABLE, true));
 
         mShowPasswordCheckBox = content.findViewById(R.id.show_password);
 

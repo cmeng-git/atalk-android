@@ -72,6 +72,8 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
      */
     public static final int FORBIDDEN = 8;
 
+    public static final int NOT_ACCEPTABLE = 9;
+
     /**
      * An error code indicating the reason for the failure of this delivery.
      */

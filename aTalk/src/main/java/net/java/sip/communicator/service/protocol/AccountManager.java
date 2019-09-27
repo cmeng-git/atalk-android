@@ -516,6 +516,15 @@ public class AccountManager
     }
 
     /**
+     * Modify accountID table with the new AccountID parameters e.g. user changes the userID
+     *
+     * @param accountID the account in the form of <tt>AccountID</tt> to be modified
+     */
+    public void modifyAccountId(AccountID accountID){
+        databaseBackend.createAccount(accountID);
+    }
+
+    /**
      * Gets account node name under which account configuration properties are stored.
      *
      * @param factory account's protocol provider factory

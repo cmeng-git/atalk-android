@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The class can be used to set {@link Preference} value as it's summary text. Optionally the empty string can be
- * provided that will be used when value is <tt>null</tt> or empty <tt>String</tt>. To make it work it have to be
- * registered to the {@link SharedPreferences} instance containing preferences we want handle. Single instance can
- * map multiple {@link Preference} at one time.
+ * The class can be used to set {@link Preference} value as its summary text. Optionally the empty string can be
+ * provided that will be used when value is <tt>null</tt> or empty <tt>String</tt>. To make it work it has to be
+ * registered to the {@link SharedPreferences} instance containing preferences we want to handle.
+ * Single instance can map multiple {@link Preference} at one time.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

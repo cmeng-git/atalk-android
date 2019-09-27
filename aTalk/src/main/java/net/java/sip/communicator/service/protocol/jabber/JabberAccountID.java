@@ -86,19 +86,21 @@ public class JabberAccountID extends AccountID
     /**
      * Creates an account id from the specified id and account properties.
      *
-     * @param id the id identifying this account i.e hawk@example.org
+     * @param userId the id identifying this account i.e hawk@example.org
      * @param accountProperties any other properties necessary for the account.
      */
-    public JabberAccountID(String id, Map<String, String> accountProperties)
+    public JabberAccountID(String userId, Map<String, String> accountProperties)
+            throws IllegalArgumentException
     {
-        super(id, accountProperties, ProtocolNames.JABBER, getServiceName(accountProperties));
+        super(userId, accountProperties, ProtocolNames.JABBER, getServiceName(accountProperties));
 
         // id can be null on initial startup
-        if (id != null) {
+        if (userId != null) {
             try {
-                userBareJid = JidCreate.bareFrom(id);
+                userBareJid = JidCreate.bareFrom(userId);
             } catch (XmppStringprepException e) {
-                Timber.e("Unable to create BareJid for user account: %s", id);
+                Timber.e("Unable to create BareJid for user account: %s", userId);
+                throw new IllegalArgumentException("User ID is not a valid xmpp BareJid");
             }
         }
     }
@@ -109,6 +111,26 @@ public class JabberAccountID extends AccountID
     public JabberAccountID()
     {
         this(null, new HashMap<>());
+    }
+
+    /**
+     * change to the new userId for the current AccountID. Mainly use of userId change in account settings
+     * Need to change the userID, userBareJid, accountUID; and mAccountProperties.USER_ID if Account ID changed
+     *
+     * @param userId new userId
+     */
+    public void updateJabberAccountID(String userId)
+    {
+        if (userId != null) {
+            this.userID = userId;
+            this.accountUID = getProtocolName() + ":" + userID;
+            mAccountProperties.put(USER_ID, userId);
+            try {
+                userBareJid = JidCreate.bareFrom(userId);
+            } catch (XmppStringprepException e) {
+                Timber.e("Unable to create BareJid for user account: %s", userId);
+            }
+        }
     }
 
     /**
@@ -420,8 +442,7 @@ public class JabberAccountID extends AccountID
     /**
      * Indicates if the JingleNodes relay server should be automatically discovered.
      *
-     * @return <tt>true</tt> if the relay server should be automatically discovered, otherwise
-     * returns <tt>false</tt>.
+     * @return <tt>true</tt> if the relay server should be automatically discovered, otherwise returns <tt>false</tt>.
      */
     public boolean isAutoDiscoverJingleNodes()
     {
@@ -462,8 +483,7 @@ public class JabberAccountID extends AccountID
     /**
      * Sets the <tt>useUPNP</tt> property.
      *
-     * @param isUseUPNP <tt>true</tt> to indicate that UPnP should be used for this account,
-     * <tt>false</tt> - otherwise.
+     * @param isUseUPNP <tt>true</tt> to indicate that UPnP should be used for this account, <tt>false</tt> - otherwise.
      */
     public void setUseUPNP(boolean isUseUPNP)
     {

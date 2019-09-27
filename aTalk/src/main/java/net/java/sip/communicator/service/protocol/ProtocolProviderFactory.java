@@ -812,8 +812,7 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Saves the password for the specified account after scrambling it a bit so that it is not
-     * visible from first sight. (The method remains highly insecure).
+     * Saves the dnssec Mode for the specified account.
      *
      * @param accountID the AccountID for the account whose password we're storing
      * @param dnssecMode see DNSSEC_MODE definition
@@ -1139,7 +1138,7 @@ public abstract class ProtocolProviderFactory
      *
      * @return <tt>AccountManager</tt> of the protocol
      */
-    private AccountManager getAccountManager()
+    public AccountManager getAccountManager()
     {
         BundleContext bundleContext = getBundleContext();
         ServiceReference<AccountManager> serviceReference = bundleContext.getServiceReference(AccountManager.class);

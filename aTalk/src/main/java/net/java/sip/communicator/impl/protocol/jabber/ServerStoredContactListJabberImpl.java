@@ -352,7 +352,7 @@ public class ServerStoredContactListJabberImpl
     /**
      * Returns the Contact with the specified id or null if no such id was found.
      *
-     * @param id the contactJid of the contact to find.
+     * @param id the contactJid of the contact to find (BareJid in actual search).
      * @return the <tt>Contact</tt> carrying the specified <tt>screenName</tt> or <tt>null</tt> if
      * no such contact exits.
      */
@@ -522,6 +522,7 @@ public class ServerStoredContactListJabberImpl
      */
     ContactJabberImpl createVolatileContact(Jid id, boolean isPrivateMessagingContact, String displayName)
     {
+        // Timber.w(new Exception(), "Create volatile contact: %s (%s)", id, displayName);
         VolatileContactJabberImpl newVolatileContact
                 = new VolatileContactJabberImpl(id, this, isPrivateMessagingContact, displayName);
 
@@ -679,7 +680,13 @@ public class ServerStoredContactListJabberImpl
     void removeContact(ContactJabberImpl contactToRemove)
             throws OperationFailedException
     {
-        if (contactToRemove instanceof VolatileContactJabberImpl) {
+        // Allow direct removal of any VolatileContactJabberImpl if it is not DomainBareJid
+        if (contactToRemove.getJid() instanceof DomainBareJid)
+            return;
+
+        // aTalk implementation is ContactGroup.VOLATILE_GROUP is equivalent to "VolatileContactJabberImpl"
+        if (contactToRemove instanceof VolatileContactJabberImpl
+                || ContactGroup.VOLATILE_GROUP.equals(contactToRemove.getParentContactGroup().getGroupName())) {
             contactDeleted(contactToRemove);
             return;
         }

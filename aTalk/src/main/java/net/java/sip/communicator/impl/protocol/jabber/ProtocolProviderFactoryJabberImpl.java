@@ -5,17 +5,17 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import android.text.TextUtils;
+
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 
 import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import java.util.Hashtable;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -36,7 +36,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
     /**
      * Creates an instance of the ProtocolProviderFactoryJabberImpl.
      */
-    protected ProtocolProviderFactoryJabberImpl()
+    public ProtocolProviderFactoryJabberImpl()
     {
         super(JabberActivator.getBundleContext(), ProtocolNames.JABBER);
     }
@@ -80,14 +80,6 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
         String accountUuid = AccountID.ACCOUNT_UUID_PREFIX + Long.toString(System.currentTimeMillis());
         accountProperties.put(ACCOUNT_UUID, accountUuid);
 
-        /* Verify that the specified userID is a valid Jid */
-        Jid jid;
-        try {
-            jid = JidCreate.from(userID);
-        } catch (XmppStringprepException e) {
-            throw new IllegalArgumentException("User ID is not a valid xmpp Jid");
-        }
-
         String accountUID = getProtocolName() + ":" + userID;
         accountProperties.put(ACCOUNT_UID, accountUID);
         accountProperties.put(USER_ID, userID);
@@ -95,7 +87,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
         // Create new accountID
         AccountID accountID = new JabberAccountIDImpl(userID, accountProperties);
 
-        // make sure we haven't seen this account id before.
+        // make sure we haven't seen this accountID before.
         if (registeredAccounts.containsKey(accountID))
             throw new IllegalStateException("Attempt to install an existing account: " + userID);
 
@@ -157,27 +149,41 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
             return;
 
         /*
-         * Need to kill the service prior to making and account properties updates
+         * Need to kill the protocolProvider service prior to making and account properties updates
          */
         ServiceRegistration registration = registeredAccounts.get(accountID);
-        // unregister provider before removing it.
         if (registration != null) {
             try {
+                // unregister provider before removing it.
                 if (protocolProvider.isRegistered()) {
                     protocolProvider.unregister();
                     protocolProvider.shutdown();
                 }
-            } catch (Throwable e) {
+            } catch (Throwable ignore) {
                 // don't care as we are modifying and will unregister the service and will register again
             }
             registration.unregister();
         }
+
         if (accountProperties == null)
             throw new IllegalArgumentException("The specified property map is null");
 
-        accountProperties.put(USER_ID, accountID.getUserID());
         if (!accountProperties.containsKey(PROTOCOL))
             accountProperties.put(PROTOCOL, ProtocolNames.JABBER);
+
+        // If user has modified the UserId, then update the accountID parameters (userID, userBareJid and accountUID)
+        // Must unload old account if account ID has changed
+        String userId = accountProperties.get(USER_ID);
+        if (!TextUtils.isEmpty(userId) && !accountID.getAccountJid().equals(userId)) {
+            unloadAccount(accountID);
+            accountID.updateJabberAccountID(userId);
+            getAccountManager().modifyAccountId(accountID);
+            // Let purge unused identitity to clean up. incase user change the mind
+            // ((SQLiteOmemoStore) OmemoService.getInstance().getOmemoStoreBackend()).cleanUpOmemoDB();
+        }
+        else {
+            accountProperties.put(USER_ID, accountID.getUserID());
+        }
 
         // update the active accountID mAccountProperties with the modified accountProperties
         accountID.setAccountProperties(accountProperties);
@@ -187,21 +193,16 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
         // access the configuration service and check for a password.
         this.storeAccount(accountID);
 
-        Hashtable<String, String> properties = new Hashtable<>();
-        properties.put(PROTOCOL, ProtocolNames.JABBER);
-        properties.put(USER_ID, accountID.getUserID());
-
-        try {
-            EntityBareJid jid = JidCreate.entityBareFrom(accountID.getUserID());
-            ((ProtocolProviderServiceJabberImpl) protocolProvider).initialize(jid, accountID);
-        } catch (XmppStringprepException e) {
-            Timber.e(e, "%s is not a valid JID", accountID.getUserID());
-            throw new IllegalArgumentException("UserID is not a valid JID");
-        }
+        EntityBareJid jid = accountID.getBareJid().asEntityBareJidIfPossible();
+        ((ProtocolProviderServiceJabberImpl) protocolProvider).initialize(jid, accountID);
 
         // We store again the account in order to store all properties added during the protocol provider initialization.
         this.storeAccount(accountID);
-        registration = context.registerService(ProtocolProviderService.class.getName(), protocolProvider, properties);
-        registeredAccounts.put(accountID, registration);
+        loadAccount(accountID);  // to replace all below
+//        Hashtable<String, String> properties = new Hashtable<>();
+//        properties.put(PROTOCOL, ProtocolNames.JABBER);
+//        properties.put(USER_ID, accountID.getUserID());
+//        registration = context.registerService(ProtocolProviderService.class.getName(), protocolProvider, properties);
+//        registeredAccounts.put(accountID, registration);
     }
 }

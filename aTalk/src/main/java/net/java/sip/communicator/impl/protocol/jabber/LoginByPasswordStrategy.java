@@ -88,7 +88,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
      * @param userName The full Jid username for the login.
      * @param resource The XMPP resource.
      * @return always true.
-     * @throws XMPPException
+     * @throws XMPPException xmppException
      */
     @Override
     public boolean login(AbstractXMPPConnection connection, String userName, Resourcepart resource)
@@ -219,8 +219,19 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
                 accountID.setServerPort(credentials.getServerPort());
             }
 
-            // must save to DB in case user makes changes
-            JabberActivator.getProtocolProviderFactory().storeAccount(accountID);
+            // must save to DB in case user makes changes to the Account parameters
+            ProtocolProviderFactoryJabberImpl ppFactory = JabberActivator.getProtocolProviderFactory();
+            String userId = credentials.getUserName();
+            // Must unload the old account and replace with new to allow Account Settings editing for the specific account ID
+            if (!TextUtils.isEmpty(userId) && !accountID.getAccountJid().equals(userId)) {
+                ppFactory.unloadAccount(accountID);
+                ((JabberAccountIDImpl) accountID).updateJabberAccountID(credentials.getUserName());
+                ppFactory.getAccountManager().modifyAccountId(accountID);
+                ppFactory.loadAccount(accountID);
+                // Let purge unused identitity to clean up. incase user change the mind
+                // ((SQLiteOmemoStore) OmemoService.getInstance().getOmemoStoreBackend()).cleanUpOmemoDB();
+            }
+            ppFactory.storeAccount(accountID);
             return credentials;
         }
         /*

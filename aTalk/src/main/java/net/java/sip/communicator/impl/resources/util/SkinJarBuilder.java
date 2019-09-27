@@ -49,8 +49,7 @@ public class SkinJarBuilder
         if (!test(tmpDir2))
         {
             deleteDir(tmpDir);
-            throw new Exception(
-                "Zip file doesn't contain all necessary files and folders.");
+            throw new Exception("Zip file doesn't contain all necessary files and folders.");
         }
         cpTmp(tmpDir2, srv);
         File jar = insertIntoZip(tmpDir2);

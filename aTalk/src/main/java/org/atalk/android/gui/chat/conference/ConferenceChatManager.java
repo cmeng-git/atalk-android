@@ -7,6 +7,7 @@ package org.atalk.android.gui.chat.conference;
 
 import android.app.Activity;
 import android.os.*;
+import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.muc.*;
@@ -243,9 +244,6 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      */
     public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt)
     {
-        ChatRoom sourceChatRoom = evt.getSourceChatRoom();
-        String errorMsg;
-
         /*
          * FIXME ChatRoomMessageDeliveryFailedEvent#getSource() is not a Message instance at the
          * time of this writing and the attempt "(Message) evt.getSource()" seems to be to
@@ -253,6 +251,12 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
          * ChatRoomMessageDeliveryFailedEvent#getMessage() but since it's the only message I can
          * get out of ChatRoomMessageDeliveryFailedEvent, I'm using it.
          */
+
+        boolean mergeMessage = true;
+        String errorMsg;
+        String reason = evt.getReason();
+
+        ChatRoom sourceChatRoom = evt.getSourceChatRoom();
         Message srcMessage = evt.getMessage();
         ChatRoomMember destMember = evt.getDestinationChatRoomMember();
 
@@ -277,17 +281,28 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         else if (evt.getErrorCode() == ChatRoomMessageDeliveryFailedEvent.OMEMO_SEND_ERROR) {
             // Just show the pass in error message
             errorMsg = evt.getReason();
-            evt.setReason(null);
+            mergeMessage = false;
+        }
+        else if (evt.getErrorCode() == ChatRoomMessageDeliveryFailedEvent.NOT_ACCEPTABLE) {
+            // Just show the pass in error message
+            errorMsg = evt.getReason();
+            mergeMessage = false;
         }
         else {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNKNOWN_ERROR);
+            if (TextUtils.isEmpty(reason))
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNKNOWN_ERROR);
+            else {
+                errorMsg = reason;
+                mergeMessage = false;
+            }
         }
 
-        String reason = evt.getReason();
-        if (reason != null)
+        if (!TextUtils.isEmpty(reason) && mergeMessage)
             errorMsg += " " + aTalkApp.getResString(R.string.service_gui_ERROR_WAS, reason);
 
-        String sender = (destMember != null) ? destMember.getNickName() : sourceChatRoom.getName();
+        // Error message sent from conference has no nickName i.e. contains ""
+        String sender = ((destMember == null) || TextUtils.isEmpty(destMember.getNickName()))
+                ? sourceChatRoom.getName() : destMember.getNickName();
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, true);
 
         chatPanel.addMessage(sender, new Date(), ChatMessage.MESSAGE_OUT, srcMessage.getMimeType(),

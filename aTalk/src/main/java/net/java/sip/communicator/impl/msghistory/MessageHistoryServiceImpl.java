@@ -22,6 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
+import net.java.sip.communicator.plugin.jabberaccregwizz.JabberAccountRegistrationActivator;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
@@ -48,7 +49,6 @@ import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
@@ -628,6 +628,39 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         cursor.close();
         Collections.sort(result, new MessageEventComparator<>());
         return result;
+    }
+
+    /**
+     * Get and return the count of messages for the specified accountUuid
+     *
+     * @param editedAccUID the current edited account
+     * @return count of messages for the specified accountUuid
+     */
+    public int getMessageCountForAccountUuid(String editedAccUID) {
+        int msgCount = 0;
+        String sessionUuid = null;
+        List<String> sessionUuids = new ArrayList<>();;
+        String[] columns = {ChatSession.SESSION_UUID};
+        String[] args = {editedAccUID};
+
+        Cursor cursor = mDB.query(ChatSession.TABLE_NAME, columns, ChatSession.ACCOUNT_UID + "=?", args,
+                null, null, null);
+        while (cursor.moveToNext()) {
+            sessionUuid = cursor.getString(0);
+            if (!TextUtils.isEmpty(sessionUuid))
+                sessionUuids.add(sessionUuid);
+        }
+
+        if (!sessionUuids.isEmpty()) {
+            for (String sessionId : sessionUuids) {
+                args = new String[]{sessionId};
+                cursor = mDB.query(ChatMessage.TABLE_NAME, null, ChatMessage.SESSION_UUID + "=?", args,
+                        null, null, null);
+                msgCount += cursor.getCount();
+            }
+            cursor.close();
+        }
+        return msgCount;
     }
 
     /**

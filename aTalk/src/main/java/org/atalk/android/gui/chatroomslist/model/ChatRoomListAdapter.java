@@ -99,9 +99,17 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     {
         mucService = MUCActivator.getMUCService();
         if (mucService != null) {
-            addChatRooms(mucService.getChatRoomProviders());
             mucService.addChatRoomProviderWrapperListener(this);
             mucService.addChatRoomListChangeListener(this);
+
+            new Thread()
+            {
+                @Override
+                public void run()
+                {
+                    addChatRooms(mucService.getChatRoomProviders());
+                }
+            }.start();
         }
     }
 
@@ -263,7 +271,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
 
             XMPPConnection connection;
             ProtocolProviderService pps = crpWrapper.getProtocolProvider();
-            if ((pps == null) || ((connection = pps.getConnection()) == null)  || !connection.isAuthenticated())
+            if ((pps == null) || ((connection = pps.getConnection()) == null) || !connection.isAuthenticated())
                 return null;
 
             BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(connection);

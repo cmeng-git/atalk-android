@@ -601,7 +601,8 @@
     <string name="service_gui_SECURITY_ERROR">Ошибка безопасности</string>
     <string name="service_gui_SECURITY_INFO">Сведения о безопасности</string>
     <string name="service_gui_SECURITY_WARNING">Предупреждение о безопасности</string>
-    <string name="service_gui_USERNAME_NULL">Пожалуйста, заполните свое имя пользователя и пароль.</string>
+    <string name="service_gui_USERNAME_NULL">Пожалуйста, введите правильное имя пользователя или пароль.</string>
+    <string name="service_gui_USERNAME_CHANGE_WARN">Предупреждение. Изменение имени пользователя учетной записи на \'%s\' также удалит сообщения %s для существующей учетной записи \'%s\'. Продолжить?. Proceed?</string>
     <string name="service_gui_USER_EXISTS_ERROR">Этот пользователь уже существует в выбранной сети. Выберите другого пользователя или сеть.</string>
 
     <string name="service_gui_JANUARY">Jan</string>
@@ -694,24 +695,24 @@
         Продолжить подключение только для этого экземпляра? &lt;br/>
         Для получения дополнительной информации и информации нажмите «Показать сертификат». &lt;/html></string>
    <string name="service_gui_PROCEED">Продолжить</string>
-    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;html>&lt;b>Выдан To &lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;b>Выдан To &lt;/b></string>
     <string name="service_gui_CERT_INFO_CHAIN">Цепочка сертификатов:</string>
     <string name="service_gui_CERT_INFO_CN">Общее имя:</string>
     <string name="service_gui_CERT_INFO_O">Организация:</string>
     <string name="service_gui_CERT_INFO_C">Название страны:</string>
     <string name="service_gui_CERT_INFO_ST">Название штата или провинции:</string>
     <string name="service_gui_CERT_INFO_L">Локальное имя:</string>
-    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;html>&lt;b>Выдано по &lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;b>Выдано по &lt;/b></string>
     <string name="service_gui_CERT_INFO_OU">Организационное подразделение:</string>
-    <string name="service_gui_CERT_INFO_VALIDITY">&lt;html>&lt;b>Validity &lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_VALIDITY">&lt;b>Validity &lt;/b></string>
     <string name="service_gui_CERT_INFO_ISSUED_ON">Выпущено:</string>
     <string name="service_gui_CERT_INFO_EXPIRES_ON">Срок действия:</string>
-    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;html>&lt;b>Отпечатки пальцев &lt;/b>&lt;/html></string>
-    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;html>&lt;b>Информация о сертификате &lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;b>Отпечатки пальцев &lt;/b></string>
+    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;b>Информация о сертификате &lt;/b></string>
     <string name="service_gui_CERT_INFO_SER_NUM">Серийный номер:</string>
     <string name="service_gui_CERT_INFO_VER">Версия:</string>
     <string name="service_gui_CERT_INFO_SIGN_ALG">Алгоритм подписи:</string>
-    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;html>&lt;b>Информация открытого ключа &lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;b>Информация открытого ключа &lt;/b></string>
     <string name="service_gui_CERT_INFO_ALG">Алгоритм:</string>
     <string name="service_gui_CERT_INFO_PUB_KEY">Открытый ключ:</string>
     <string name="service_gui_CERT_INFO_KEY_BYTES_PRINT">%1$s bytes: %2$s</string>
@@ -976,7 +977,7 @@
     <string name="plugin_provisioning_MANUAL">Вручную укажите URI инициализации</string>
     <string name="plugin_provisioning_METHOD">Метод предоставления</string>
     <string name="plugin_provisioning_PROV_FAILED">Ошибка предоставления</string>
-    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Произошла неудача. %1$s!<br/>Повторите попытку позже или обратитесь к своему администратору.</html></string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG">&lt;html>Произошла неудача. %1$s!&lt;br/>Повторите попытку позже или обратитесь к своему администратору.&lt;/html></string>
     <string name="plugin_provisioning_PROVISIONING">Предоставление</string>
     <string name="plugin_provisioning_PROVISIONING_SUMMARY">Настроить параметры настройки</string>
     <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Вы действительно хотите удалить пароль для обеспечения безопасности?</string>
@@ -992,13 +993,13 @@
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">Ошибка состояния</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Сбой состояния включенного DNSSEC.</string>
     <string name="plugin_dnsconfig_dnssec_MODE">Поведение</string>
-    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING"><html>Обратите внимание, что включение или отключение DNSSEC отключает параллельный распознаватель и вступает в силу при следующем запуске aTalk.</html></string>
+    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING">&lt;html>Обратите внимание, что включение или отключение DNSSEC отключает параллельный распознаватель и вступает в силу при следующем запуске aTalk.&lt;/html></string>
     <string name="plugin_dnsconfig_border_TITLE">Резервное копирование</string>
     <string name="plugin_dnsconfig_dnssec_chkAbsolute">Рассматривать все доменные имена как абсолютные</string>
     <string name="plugin_dnsconfig_dnssec_chkEnabled">Включить распознаватель DNSSEC</string>
     <string name="plugin_dnsconfig_dnssec_lblDefault">Поведение по умолчанию</string>
     <string name="plugin_dnsconfig_dnssec_lblNameservers">Пользовательские серверы имен</string>
-    <string name="plugin_dnsconfig_dnssec_lblNameserversHint"><html>Несколько серверов могут быть разделены запятой, например. 149.20.64.20, 149.20.64.21 (Открытый DSSEC-реестр для проверки подлинности DNSSEC)</html></string>
+    <string name="plugin_dnsconfig_dnssec_lblNameserversHint">&lt;html>Несколько серверов могут быть разделены запятой, например. 149.20.64.20, 149.20.64.21 (Открытый DSSEC-реестр для проверки подлинности DNSSEC)&lt;/html></string>
 
     <string name="util_dns_INSECURE_ANSWER_TITLE">Ошибка DNSSEC</string>
     <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">DNS-ответ для %1$s небезопасен.</string>
