@@ -63,8 +63,7 @@ public class ThumbnailFile extends StreamInitiation.File
     @Override
     public String toXML(XmlEnvironment enclosingNamespace)
     {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.prelude(getElementName(), getNamespace());
+        XmlStringBuilder xml = new XmlStringBuilder(this);
 
         xml.optAttribute("name", getName());
         xml.optAttribute("size", getSize());

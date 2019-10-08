@@ -15,8 +15,7 @@ package org.atalk.service.neomedia.codec;
 public class Constants
 {
 	/**
-	 * The <tt>/rtp</tt> constant. Introduced in order to achieve consistency in the casing of the
-	 * <tt>String</tt>.
+	 * The <tt>/rtp</tt> constant. Introduced in order to achieve consistency in the casing of the <tt>String</tt>.
 	 */
 	public static final String _RTP = "/rtp";
 
@@ -112,8 +111,7 @@ public class Constants
 	/**
 	 * The name of the property used to control the Opus encoder "audio bandwidth" setting
 	 */
-	public static final String PROP_OPUS_BANDWIDTH
-			= "neomedia.codec.audio.opus.encoder.AUDIO_BANDWIDTH";
+	public static final String PROP_OPUS_BANDWIDTH = "neomedia.codec.audio.opus.encoder.AUDIO_BANDWIDTH";
 
 	/**
 	 * The name of the property used to control the Opus encoder bitrate setting

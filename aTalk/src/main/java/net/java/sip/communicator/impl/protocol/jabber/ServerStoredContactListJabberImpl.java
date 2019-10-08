@@ -685,8 +685,8 @@ public class ServerStoredContactListJabberImpl
             return;
 
         // aTalk implementation is ContactGroup.VOLATILE_GROUP is equivalent to "VolatileContactJabberImpl"
-        if (contactToRemove instanceof VolatileContactJabberImpl
-                || ContactGroup.VOLATILE_GROUP.equals(contactToRemove.getParentContactGroup().getGroupName())) {
+        if ((contactToRemove instanceof VolatileContactJabberImpl) || ((contactToRemove.getParentContactGroup() != null)
+                &&  ContactGroup.VOLATILE_GROUP.equals(contactToRemove.getParentContactGroup().getGroupName()))) {
             contactDeleted(contactToRemove);
             return;
         }
@@ -1098,6 +1098,14 @@ public class ServerStoredContactListJabberImpl
             imageRetriever.start();
         }
         imageRetriever.addContact(contact);
+    }
+
+    /**
+     *
+     * @param enable if set enable the retrieval of avatar from server if null
+     */
+    public void setRetrieveOnStart(boolean enable) {
+        infoRetrieveOnStart = enable;
     }
 
     /**
@@ -1618,14 +1626,14 @@ public class ServerStoredContactListJabberImpl
     }
 
     /**
-     * Return all the presences for the user.
+     * Return all the presences for the user or an EMPTY_LIST.
      *
      * @param userJid the bareJid of the user to check for presences.
-     * @return all the presences available for the user.
+     * @return all the presences available for the user or an EMPTY_LIST.
      */
     public List<Presence> getPresences(BareJid userJid)
     {
-        return mRoster.getPresences(userJid);
+        return ((mRoster == null) || (userJid == null)) ? Collections.EMPTY_LIST : mRoster.getPresences(userJid);
     }
 
     /**

@@ -43,6 +43,7 @@ import org.whispersystems.libsignal.IdentityKey;
 import org.whispersystems.libsignal.IdentityKeyPair;
 import org.whispersystems.libsignal.state.*;
 
+import java.io.IOException;
 import java.util.*;
 
 import timber.log.Timber;
@@ -910,7 +911,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
                     int count = mDB.deleteNullIdentyKeyDevices();
                     Timber.d("Number of null identities deleted: %s", count);
 
-                } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
+                } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException | IOException e) {
                     aTalkApp.showToastMessage(R.string.omemo_purge_inactive_device_error, userJid);
                 }
             }

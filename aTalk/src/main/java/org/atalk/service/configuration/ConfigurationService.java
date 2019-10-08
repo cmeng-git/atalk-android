@@ -125,7 +125,7 @@ public interface ConfigurationService
      * @param propertyName the name of the property to change.
      * @throws ConfigPropertyVetoException in case the changed has been refused by at least one propertyChange listener.
      */
-    void removeProperty(String propertyName);
+    int removeProperty(String propertyName);
 
     /**
      * Returns a <tt>java.util.List</tt> of <tt>String</tt>s containing all property names.

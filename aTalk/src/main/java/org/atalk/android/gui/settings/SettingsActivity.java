@@ -41,7 +41,7 @@ import javax.media.MediaLocator;
 import timber.log.Timber;
 
 /**
- * <tt>Activity</tt> implements Jitsi settings.
+ * <tt>Activity</tt> implements aTalk global settings.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

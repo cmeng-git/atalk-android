@@ -486,6 +486,7 @@
     <string name="service_gui_NO">Tidak ada</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Setidaknya satu akun telepon online diperlukan untuk melakukan panggilan. Silakan masuk ke salah satu akun telepon Anda dan coba lagi.</string>
     <string name="service_gui_NOT_AUTHORIZED">Tidak diotorisasi</string>
+    <string name="service_gui_NOT_AUTHORIZED_HINT">Anda tidak berwenang mengakses server. Periksa pengaturan akun, kata sandi atau aktifkan Registrasi IB dan coba lagi:\n%s"</string>
     <string name="service_gui_OFF">Tidak aktif</string>
     <string name="service_gui_OFFLINE">Offline</string>
     <string name="service_gui_OK">OK</string>
@@ -499,7 +500,8 @@
     <string name="service_gui_PHONE">Telepon</string>
     <string name="service_gui_PHONES">Ponsel</string>
     <string name="service_gui_POSTAL_CODE">Kode Pos</string>
-    <string name="service_gui_RENAME">Ganti nama</string>
+    <string name="service_gui_RENAME">Nama baru</string>
+    <string name="service_gui_REGISTRATION_REQUIRED">Kesalahan dalam pendaftaran akun di server:\n%s"</string>
     <string name="service_gui_SAVE">Simpan</string>
     <string name="service_gui_SHOW_STACK_TRACE">Tampilkan tumpukan Jejak</string>
     <string name="service_gui_STREET">Jalan</string>
@@ -507,6 +509,7 @@
     <string name="service_gui_USER_LOGIN">Silahkan masuk</string>
     <string name="service_gui_VIDEO_PHONE">Video</string>
     <string name="service_gui_WORK_PHONE">Bekerja</string>
+    <string name="service_gui_XMPP_EXCEPTION">Menemukan masalah selama koneksi XMPP:\n%s"</string>
 
     <!-- Call -->
     <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Alihkan video</string>
@@ -599,7 +602,7 @@
     <string name="service_gui_SECURITY_INFO">Informasi keamanan</string>
     <string name="service_gui_SECURITY_WARNING">Peringatan keamanan</string>
     <string name="service_gui_USERNAME_NULL">Silakan isi nama pengguna atau/dan kata sandi yang tepat.</string>
-    <string name="service_gui_USERNAME_CHANGE_WARN">Peringatan: Mengubah nama pengguna akun menjadi \'%s\' juga akan membersihkan pesan %s untuk akun yang ada \'%s\'. Memproses?</string>
+    <string name="service_gui_USERNAME_CHANGE_WARN">Peringatan: Mengubah nama pengguna akun menjadi \'%1$s\' juga akan membersihkan pesan %2$s untuk akun yang ada \'%3$s\'. Memproses?</string>
     <string name="service_gui_USER_EXISTS_ERROR">Pengguna ini sudah ada di jaringan yang dipilih. Silakan pilih pengguna atau jaringan lain.</string>
 
 	<string name="service_gui_JANUARY">Jan</string>
@@ -827,7 +830,7 @@
     <string name="plugin_notificationconfig_event_IncomingMessage">Pesan Masuk</string>
     <string name="plugin_notificationconfig_event_IncomingMessage_description">Deskripsi pesan masuk</string>
     <string name="plugin_notificationconfig_event_LogFilesArchived">Fail Log Diarsipkan</string>
-    <string name="plugin_notificationconfig_event_missed_call">Panggilan Tak Terjawab</string>
+    <string name="plugin_notificationconfig_event_MissedCall">Panggilan Tak Terjawab</string>
     <string name="plugin_notificationconfig_event_NetworkNotifications">Pemberitahuan Jaringan</string>
     <string name="plugin_notificationconfig_event_NetworkNotifications_description">Deskripsi notifikasi jaringan</string>
     <string name="plugin_notificationconfig_event_ProactiveNotification">Pemberitahuan Pengetikan</string>
@@ -840,6 +843,7 @@
     <string name="plugin_notificationconfig_playback_sound">​​Suara pada perangkat pemutaran</string>
     <string name="plugin_notificationconfig_popup_notification">Pemberitahuan popup</string>
     <string name="plugin_notificationconfig_vibration">Getaran</string>
+    <string name="plugin_notificationconfig_sound_file">File suara:</string>
 
     <!-- call recordingconfig -->
     <string name="plugin_callrecordingconfig_CALL_SAVED">Panggilan berhasil disimpan</string>

@@ -75,6 +75,11 @@ public class FMJPlugInConfiguration
             "org.atalk.impl.neomedia.codec.video.vp8.Packetizer",
             "org.atalk.impl.neomedia.codec.video.vp8.VPXDecoder",
             "org.atalk.impl.neomedia.codec.video.vp8.VPXEncoder",
+
+            // VP9 (FMJPlugInConfiguration.java:228)#registerCustomCodecs:
+            // vp9.DePacketizer is NOT successfully registered: org.atalk.impl.neomedia.codec.video.vp9.DePacketizer
+            // cannot be cast to javax.media.Codec
+            // "org.atalk.impl.neomedia.codec.video.vp9.DePacketizer",
     };
 
     /**

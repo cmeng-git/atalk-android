@@ -485,13 +485,19 @@ class NotificationServiceImpl implements NotificationService
     private void loadNotifications()
     {
         List<String> eventTypes = configService.getPropertyNamesByPrefix(NOTIFICATIONS_PREFIX, true);
-
         for (String eventTypeRootPropName : eventTypes) {
             boolean isEventActive = isEnabled(eventTypeRootPropName + ".active");
-
             String eventType = configService.getString(eventTypeRootPropName);
-            List<String> actions = configService.getPropertyNamesByPrefix(
-                    eventTypeRootPropName + ".actions", true);
+
+            // cmeng: Patch to purge old eventType "missed_call" which has been replaced with MissedCall;
+            // Will be removed in future aTalk releases > e.g. v2.1.0
+            if ("missed_call".equals(eventType)) {
+                configService.removeProperty(eventTypeRootPropName);
+                continue;
+            }
+
+            List<String> actions
+                    = configService.getPropertyNamesByPrefix(eventTypeRootPropName + ".actions", true);
             for (String actionPropName : actions) {
                 String actionType = configService.getString(actionPropName);
                 NotificationAction action = null;
@@ -507,7 +513,6 @@ class NotificationServiceImpl implements NotificationService
                                 actionPropName + ".isSoundPlaybackEnabled", false);
                         boolean isSoundPCSpeakerEnabled = configService.getBoolean(
                                 actionPropName + ".isSoundPCSpeakerEnabled", false);
-
                         action = new SoundNotificationAction(soundFileDescriptor, Integer.parseInt(loopInterval),
                                 isSoundNotificationEnabled, isSoundPlaybackEnabled, isSoundPCSpeakerEnabled);
                         break;
@@ -532,7 +537,6 @@ class NotificationServiceImpl implements NotificationService
                             Timber.e("Invalid pattern length: %s", patternLen);
                             continue;
                         }
-
                         long[] pattern = new long[patternLen];
                         for (int pIdx = 0; pIdx < patternLen; pIdx++) {
                             pattern[pIdx] = configService.getLong(actionPropName + ".patternItem" + pIdx, -1);
@@ -544,7 +548,6 @@ class NotificationServiceImpl implements NotificationService
                         action = new VibrateNotificationAction(descriptor, pattern, repeat);
                         break;
                 }
-
                 action.setEnabled(isEnabled(actionPropName + ".enabled"));
 
                 // Load the data in the notifications table.
@@ -595,7 +598,6 @@ class NotificationServiceImpl implements NotificationService
 
         // now store this default events if we want to restore them
         Notification notification;
-
         if (defaultNotifications.containsKey(eventType))
             notification = defaultNotifications.get(eventType);
         else {
@@ -621,7 +623,7 @@ class NotificationServiceImpl implements NotificationService
     public void registerDefaultNotificationForEvent(String eventType, String actionType,
             String actionDescriptor, String defaultMessage)
     {
-        Timber.log(TimberLog.FINER,"Registering default event Type: %s; Action: %s; Descriptor: %s; Message: %s",
+        Timber.log(TimberLog.FINER, "Registering default event Type: %s; Action: %s; Descriptor: %s; Message: %s",
                 eventType, actionType, actionDescriptor, defaultMessage);
 
         if (isDefault(eventType, actionType)) {
@@ -663,7 +665,6 @@ class NotificationServiceImpl implements NotificationService
 
         // now store this default events if we want to restore them
         Notification notification;
-
         if (defaultNotifications.containsKey(eventType))
             notification = defaultNotifications.get(eventType);
         else {
@@ -892,7 +893,6 @@ class NotificationServiceImpl implements NotificationService
         // If we didn't find the given actionType in the configuration we save it here.
         if (actionTypeNodeName == null) {
             actionTypeNodeName = actionPrefix + ".actionType" + System.currentTimeMillis();
-
             configProperties.put(actionTypeNodeName, action.getActionType());
         }
 
@@ -900,17 +900,13 @@ class NotificationServiceImpl implements NotificationService
             SoundNotificationAction soundAction = (SoundNotificationAction) action;
             configProperties.put(actionTypeNodeName + ".soundFileDescriptor", soundAction.getDescriptor());
             configProperties.put(actionTypeNodeName + ".loopInterval", soundAction.getLoopInterval());
-            configProperties.put(actionTypeNodeName + ".isSoundNotificationEnabled",
-                    soundAction.isSoundNotificationEnabled());
-            configProperties.put(actionTypeNodeName + ".isSoundPlaybackEnabled",
-                    soundAction.isSoundPlaybackEnabled());
-            configProperties.put(actionTypeNodeName + ".isSoundPCSpeakerEnabled",
-                    soundAction.isSoundPCSpeakerEnabled());
+            configProperties.put(actionTypeNodeName + ".isSoundNotificationEnabled", soundAction.isSoundNotificationEnabled());
+            configProperties.put(actionTypeNodeName + ".isSoundPlaybackEnabled", soundAction.isSoundPlaybackEnabled());
+            configProperties.put(actionTypeNodeName + ".isSoundPCSpeakerEnabled", soundAction.isSoundPCSpeakerEnabled());
         }
         else if (action instanceof PopupMessageNotificationAction) {
             PopupMessageNotificationAction messageAction = (PopupMessageNotificationAction) action;
-            configProperties.put(actionTypeNodeName + ".defaultMessage",
-                    messageAction.getDefaultMessage());
+            configProperties.put(actionTypeNodeName + ".defaultMessage", messageAction.getDefaultMessage());
             configProperties.put(actionTypeNodeName + ".timeout", messageAction.getTimeout());
             configProperties.put(actionTypeNodeName + ".groupName", messageAction.getGroupName());
         }
@@ -920,13 +916,11 @@ class NotificationServiceImpl implements NotificationService
         }
         else if (action instanceof CommandNotificationAction) {
             CommandNotificationAction commandAction = (CommandNotificationAction) action;
-            configProperties.put(actionTypeNodeName + ".commandDescriptor",
-                    commandAction.getDescriptor());
+            configProperties.put(actionTypeNodeName + ".commandDescriptor", commandAction.getDescriptor());
         }
         else if (action instanceof VibrateNotificationAction) {
             VibrateNotificationAction vibrateAction = (VibrateNotificationAction) action;
-            configProperties.put(actionTypeNodeName + ".descriptor",
-                    vibrateAction.getDescriptor());
+            configProperties.put(actionTypeNodeName + ".descriptor", vibrateAction.getDescriptor());
             long[] pattern = vibrateAction.getPattern();
             configProperties.put(actionTypeNodeName + ".patternLength", pattern.length);
 

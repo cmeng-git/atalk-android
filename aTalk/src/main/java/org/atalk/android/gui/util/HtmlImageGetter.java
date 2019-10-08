@@ -37,29 +37,19 @@ public class HtmlImageGetter implements Html.ImageGetter
 	{
 		try {
 			// Image resource id is returned here in form:
-			// atalk.resource://{Integer drawable id}
-			// Example: atalk.resource://2130837599
+			// atalk.resource://{Integer drawable id} e.g.: atalk.resource://2130837599
 			Integer resId = Integer.parseInt(source.substring(17));
 
 			// Gets application global bitmap cache
 			DrawableCache cache = aTalkApp.getImageCache();
-
 			return cache.getBitmapFromMemCache(resId);
 		}
-		catch (IndexOutOfBoundsException e) {
-			// Invalid string format for source.substring(17)
+		catch (IndexOutOfBoundsException | NumberFormatException | Resources.NotFoundException e) {
+			// Invalid string format for source.substring(17); Error parsing Integer.parseInt(source.substring(17));
+            // Resource for given id is not found
 			Timber.e(e, "Error parsing: %s", source);
 			return null;
 		}
-		catch (NumberFormatException e) {
-			// Error parsing Integer.parseInt(source.substring(17))
-			Timber.e(e, "Error parsing: %s", source);
-			return null;
-		}
-		catch (Resources.NotFoundException e) {
-			// Resource for given id is not found
-			Timber.e(e, "Error parsing: %s", source);
-			return null;
-		}
-	}
+
+    }
 }

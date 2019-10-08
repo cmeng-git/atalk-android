@@ -17,6 +17,7 @@
 package org.atalk.android.gui.login;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.view.*;
 import android.widget.*;
 
@@ -159,8 +160,10 @@ public class CredentialsFragment extends Fragment
             mServerPortField.setVisibility(View.GONE);
         }
 
-        String loginReason = args.getString(ARG_LOGIN_REASON);
+        // make xml text more human readable and link clickable
         TextView reasonField = content.findViewById(R.id.reason_field);
+        String xmlText = args.getString(ARG_LOGIN_REASON);
+        String loginReason = Html.fromHtml(xmlText.replace("\n", "<br/>")).toString();
         reasonField.setText(loginReason);
 
         initializeViewListeners();

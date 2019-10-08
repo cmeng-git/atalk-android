@@ -2176,7 +2176,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             Exception result = null;
             try {
                 if (mStickerMode)
-                    // mStckerMode does not attempt to send image thumbnail preview
+                    // mStickerMode does not attempt to send image thumbnail preview
                     fileXfer = currentChatTransport.sendSticker(mFile, mChatType, sendFTConversion);
                 else
                     fileXfer = currentChatTransport.sendFile(mFile, mChatType, sendFTConversion);

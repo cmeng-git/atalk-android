@@ -134,7 +134,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     {
         // no change - throws exception to trace the root; otherwise too many unnecessary events
         if (newState == oldState) {
-            String msg = "The provider state unchange" + newState + ". Reason: " + reason;
+            String msg = "The provider state unchanged: " + newState + ". Reason: " + reason;
             (new Exception(msg)).printStackTrace();
         }
         Timber.d("The provider state changed: %s => %s. Reason: %s", oldState, newState, reason);

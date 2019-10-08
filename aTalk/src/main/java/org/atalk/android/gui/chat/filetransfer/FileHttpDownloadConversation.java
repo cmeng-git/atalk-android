@@ -256,8 +256,13 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             }
 
             // unregistered downloadReceiver
+            // Receiver not registered exception - may occur if window is refreshed while download is in progress?
             if (downloadReceiver != null) {
-                aTalkApp.getGlobalContext().unregisterReceiver(downloadReceiver);
+                try {
+                    aTalkApp.getGlobalContext().unregisterReceiver(downloadReceiver);
+                } catch (IllegalArgumentException ie) {
+                    Timber.w("Unregistration download receiver exception: %s", ie.getMessage());
+                }
                 downloadReceiver = null;
             }
             Timber.d("Cleaning up Download Manager for JobId: %s; Received file size: %s ", jobId, fileSize);

@@ -488,6 +488,7 @@
     <string name="service_gui_NO">No</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">At least one online telephony account is needed in order to make a call. Please login to one of your telephony accounts and try again.</string>
     <string name="service_gui_NOT_AUTHORIZED">Not authorized</string>
+    <string name="service_gui_NOT_AUTHORIZED_HINT">You are not authorized to access the server. Check account settings, password or enable IB Registration and try again:\n%s"</string>
     <string name="service_gui_OFF">Off</string>
     <string name="service_gui_OFFLINE">Offline</string>
     <string name="service_gui_OK">OK</string>
@@ -502,6 +503,7 @@
     <string name="service_gui_PHONES">Phones</string>
     <string name="service_gui_POSTAL_CODE">Postal Code</string>
     <string name="service_gui_RENAME">Rename</string>
+    <string name="service_gui_REGISTRATION_REQUIRED">Error in account registration on server:\n%s"</string>
     <string name="service_gui_SAVE">Save</string>
     <string name="service_gui_SHOW_STACK_TRACE">Show stack Trace</string>
     <string name="service_gui_STREET">Street</string>
@@ -509,6 +511,7 @@
     <string name="service_gui_USER_LOGIN">Please Login</string>
     <string name="service_gui_VIDEO_PHONE">Video</string>
     <string name="service_gui_WORK_PHONE">Work</string>
+    <string name="service_gui_XMPP_EXCEPTION">Encounter problem during XMPP Connection:\n%s"</string>
 
     <!-- Call -->
     <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Toggle video</string>
@@ -601,7 +604,7 @@
     <string name="service_gui_SECURITY_INFO">Security information</string>
     <string name="service_gui_SECURITY_WARNING">Security warning</string>
     <string name="service_gui_USERNAME_NULL">Please enter proper username or/and password.</string>
-    <string name="service_gui_USERNAME_CHANGE_WARN">Warning: Changing the account user name to \'%s\' will also purge %s messages for the existing account \'%s\'. Proceed?</string>
+    <string name="service_gui_USERNAME_CHANGE_WARN">Warning: Changing the account user name to \'%1$s\' will also purge %2$s messages for the existing account \'%3$s\'. Proceed?</string>
     <string name="service_gui_USER_EXISTS_ERROR">This user already exists on the selected network. Please choose another user or network.</string>
 
     <string name="service_gui_JANUARY">Jan</string>
@@ -825,7 +828,7 @@
     <string name="plugin_notificationconfig_event_IncomingMessage">Incoming Message</string>
     <string name="plugin_notificationconfig_event_IncomingMessage_description">Incoming message description</string>
     <string name="plugin_notificationconfig_event_LogFilesArchived">Log Files Archived</string>
-    <string name="plugin_notificationconfig_event_missed_call">Missed Call</string>
+    <string name="plugin_notificationconfig_event_MissedCall">Missed Call</string>
     <string name="plugin_notificationconfig_event_NetworkNotifications">Network Notifications</string>
     <string name="plugin_notificationconfig_event_NetworkNotifications_description">Network notification description</string>
     <string name="plugin_notificationconfig_event_ProactiveNotification">Typing Notifications</string>
@@ -838,6 +841,7 @@
     <string name="plugin_notificationconfig_playback_sound">Sound on playback device</string>
     <string name="plugin_notificationconfig_popup_notification">Popup notification</string>
     <string name="plugin_notificationconfig_vibration">Vibration</string>
+    <string name="plugin_notificationconfig_sound_file">Sound file:</string>
 
     <!-- call recordingconfig -->
     <string name="plugin_callrecordingconfig_CALL_SAVED">Call saved successfully</string>

@@ -91,11 +91,9 @@ public class StatsId implements ExtensionElement
      * Returns xml representation of this extension.
      * @return xml representation of this extension.
      */
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
-        return new XmlStringBuilder()
-            .element(ELEMENT_NAME, getStatsId())
-            .toString();
+        return new XmlStringBuilder().element(ELEMENT_NAME, getStatsId());
     }
 
     /**

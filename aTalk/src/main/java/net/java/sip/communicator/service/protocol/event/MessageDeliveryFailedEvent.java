@@ -22,6 +22,7 @@ import java.util.EventObject;
  * <tt>MessageDeliveryFailedEvent</tt>s inform of failed delivery of an instant message.
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public class MessageDeliveryFailedEvent extends EventObject
 {
@@ -68,20 +69,27 @@ public class MessageDeliveryFailedEvent extends EventObject
 
     /**
      * Set when delivery fails because of dependency on an operation that is unsupported. For
-     * example, because it is unknown or not supported at that particular moment. (Skipped value 6
-     * just in case, since it is used in ChatRoomMessageDeliveryFailedEvent.)
+     * example, because it is unknown or not supported at that particular moment.
      */
     public static final int UNSUPPORTED_OPERATION = 7;
 
     /**
+     * Set when delivery fails because we're trying to send a message to a a room where we are not
+     * allowed to send messages.
+     */
+    public static final int FORBIDDEN = 8;
+
+    public static final int NOT_ACCEPTABLE = 9;
+
+    /**
      * An error code indicating the reason for the failure of this delivery.
      */
-    private int errorCode = UNKNOWN_ERROR;
+    private final int errorCode;
 
     /**
      * Contains a human readable message indicating the reason for the failure or null if the reason is unknown.
      */
-    private String reasonPhrase = null;
+    private final String reason;
 
     /**
      * A timestamp indicating the exact date when the event occurred.
@@ -91,7 +99,21 @@ public class MessageDeliveryFailedEvent extends EventObject
     /**
      * The ID of the message being corrected, or null if this was a new message and not a message correction.
      */
-    private String correctedMessageUID;
+    private String correctedMessageUID = null;
+
+    /**
+     * Constructor.
+     *
+     * @param source the message
+     * @param to the "to" contact
+     * @param errorCode error code
+     * @param correctedMessageUID The ID of the message being corrected.
+     */
+    public MessageDeliveryFailedEvent(Message source, Contact to, int errorCode, String correctedMessageUID)
+    {
+        this(source, to, errorCode, System.currentTimeMillis(), null);
+        this.correctedMessageUID = correctedMessageUID;
+    }
 
     /**
      * Constructor.
@@ -103,34 +125,6 @@ public class MessageDeliveryFailedEvent extends EventObject
     public MessageDeliveryFailedEvent(Message source, Contact to, int errorCode)
     {
         this(source, to, errorCode, System.currentTimeMillis(), null);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param source the message
-     * @param to the "to" contact
-     * @param correctedMessageUID The ID of the message being corrected.
-     * @param errorCode error code
-     */
-    public MessageDeliveryFailedEvent(Message source, Contact to, String correctedMessageUID, int errorCode)
-    {
-        this(source, to, errorCode, System.currentTimeMillis(), null);
-        this.correctedMessageUID = correctedMessageUID;
-    }
-
-    /**
-     * Creates a <tt>MessageDeliveryFailedEvent</tt> indicating failure of delivery of the
-     * <tt>source</tt> message to the specified <tt>to</tt> contact.
-     *
-     * @param source the <tt>Message</tt> whose delivery this event represents.
-     * @param to the <tt>Contact</tt> that this message was sent to.
-     * @param errorCode an errorCode indicating the reason of the failure.
-     * @param timestamp the exact Date when it was determined that delivery had failed.
-     */
-    public MessageDeliveryFailedEvent(Message source, Contact to, int errorCode, long timestamp)
-    {
-        this(source, to, errorCode, timestamp, null);
     }
 
     /**
@@ -146,11 +140,10 @@ public class MessageDeliveryFailedEvent extends EventObject
     public MessageDeliveryFailedEvent(Message source, Contact to, int errorCode, long timestamp, String reason)
     {
         super(source);
-
         this.to = to;
         this.errorCode = errorCode;
         this.timestamp = timestamp;
-        this.reasonPhrase = reason;
+        this.reason = reason;
     }
 
     /**
@@ -184,6 +177,16 @@ public class MessageDeliveryFailedEvent extends EventObject
     }
 
     /**
+     * Returns a human readable message indicating the reason for the failure or null if the reason is unknown.
+     *
+     * @return a human readable message indicating the reason for the failure or null if the reason is unknown.
+     */
+    public String getReason()
+    {
+        return reason;
+    }
+
+    /**
      * A timestamp indicating the exact date when the event occurred (in this case it is the moment
      * when it was determined that message delivery has failed).
      *
@@ -192,21 +195,6 @@ public class MessageDeliveryFailedEvent extends EventObject
     public long getTimestamp()
     {
         return timestamp;
-    }
-
-    /**
-     * Returns a human readable message indicating the reason for the failure or null if the reason is unknown.
-     *
-     * @return a human readable message indicating the reason for the failure or null if the reason is unknown.
-     */
-    public String getReason()
-    {
-        return reasonPhrase;
-    }
-
-    public void setReason(String reason)
-    {
-        reasonPhrase = reason;
     }
 
     /**

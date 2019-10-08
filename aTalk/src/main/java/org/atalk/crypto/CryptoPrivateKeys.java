@@ -41,7 +41,10 @@ import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 
+import java.io.IOException;
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Settings screen displays local private keys. Allows user to generate new or regenerate
@@ -111,8 +114,8 @@ public class CryptoPrivateKeys extends OSGiActivity
                 OmemoFingerprint omemoFingerprint = omemoManager.getOwnFingerprint();
                 if (omemoFingerprint != null)
                     fingerprint = omemoFingerprint.toString();
-            } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException e) {
-                e.printStackTrace();
+            } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | IOException e) {
+                Timber.w("Get own fingerprint Exception: %s", e.getMessage());
             }
             deviceFingerprints.put(deviceJid, fingerprint);
             accountList.put(deviceJid, accountId);

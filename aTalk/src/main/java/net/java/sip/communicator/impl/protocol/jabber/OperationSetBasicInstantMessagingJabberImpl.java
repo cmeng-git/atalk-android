@@ -46,6 +46,7 @@ import org.jivesoftware.smackx.xhtmlim.XHTMLText;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 import org.jxmpp.jid.*;
 
+import java.io.IOException;
 import java.util.*;
 
 import timber.log.Timber;
@@ -407,7 +408,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                     msg.setBody(Html.fromHtml(content));
 
                 // cmeng: Just add XHTML element as it will be ignored by buddy without XEP-0071: XHTML-IM support
-                // Also carbon messages may send to buddy on difference clients with different capabalities
+                // Also carbon messages may send to buddy on difference clients with different capabilities
                 // Note isFeatureListSupported must use FullJid unless it is for service e.g. conference.atalk.org
 
                 // Check if the buddy supports XHTML messages make sure we use our discovery manager as it caches calls
@@ -545,7 +546,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             aTalkApp.getGlobalContext().startActivity(
                     OmemoAuthenticateDialog.createIntent(omemoManager, e.getUndecidedDevices(), omemoAuthListener));
             return;
-        } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException e) {
+        } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException | IOException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage());
         } catch (SmackException.NotLoggedInException e) {
             errMessage = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
@@ -838,22 +839,21 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             // error which is missing muc extension and is coming from the room, when we try
             // to send message to room which was deleted or offline on the server
             StanzaError error = message.getError();
+            int errorResultCode = MessageDeliveryFailedEvent.UNKNOWN_ERROR;
+
             if (isPrivateMessaging && sourceContact == null) {
-                int errorResultCode = ChatRoomMessageDeliveryFailedEvent.UNKNOWN_ERROR;
                 if ((error != null) && (Condition.forbidden == error.getCondition())) {
-                    errorResultCode = ChatRoomMessageDeliveryFailedEvent.FORBIDDEN;
+                    errorResultCode = MessageDeliveryFailedEvent.FORBIDDEN;
                 }
 
                 String errorReason = (error != null) ? error.toString() : "";
                 ChatRoomMessageDeliveryFailedEvent msgDeliveryFailed = new ChatRoomMessageDeliveryFailedEvent(privateContactRoom,
-                        null, errorResultCode, errorReason, new Date(), newMessage);
+                        null, errorResultCode, System.currentTimeMillis(), errorReason, newMessage);
                 privateContactRoom.fireMessageEvent(msgDeliveryFailed);
                 return;
             }
 
             Timber.i("Message error received from %s", userBareID);
-
-            int errorResultCode = MessageDeliveryFailedEvent.UNKNOWN_ERROR;
             if (error != null) {
                 Condition errorCondition = error.getCondition();
                 if (Condition.service_unavailable == errorCondition) {
@@ -867,7 +867,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             }
 
             MessageDeliveryFailedEvent msgDeliveryFailed
-                    = new MessageDeliveryFailedEvent(newMessage, sourceContact, correctedMessageUID, errorResultCode);
+                    = new MessageDeliveryFailedEvent(newMessage, sourceContact, errorResultCode, correctedMessageUID);
             fireMessageEvent(msgDeliveryFailed);
             return;
         }

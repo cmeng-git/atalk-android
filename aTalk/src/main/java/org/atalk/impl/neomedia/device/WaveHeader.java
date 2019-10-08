@@ -16,9 +16,7 @@ package org.atalk.impl.neomedia.device;
 
 /**
  * Wave header
- *
  */
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,7 +24,6 @@ import java.io.InputStream;
 
 public class WaveHeader
 {
-
 	public static final String RIFF_HEADER = "RIFF";
 	public static final String WAVE_HEADER = "WAVE";
 	public static final String FMT_HEADER = "fmt ";
@@ -50,7 +47,6 @@ public class WaveHeader
 
 	public WaveHeader(String filename)
 	{
-
 		try {
 			InputStream inputStream = new FileInputStream(filename);
 			valid = loadHeader(inputStream);
@@ -62,7 +58,6 @@ public class WaveHeader
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public WaveHeader(InputStream inputStream)
@@ -75,7 +70,6 @@ public class WaveHeader
 	 */
 	private boolean loadHeader(InputStream inputStream)
 	{
-
 		byte[] headerBuffer = new byte[44]; // wav header is 44 bytes
 		try {
 			inputStream.read(headerBuffer);
@@ -118,7 +112,6 @@ public class WaveHeader
 			// end read header
 
 			// the inputStream should be closed outside this method
-
 			// dis.close();
 
 		}
@@ -132,7 +125,6 @@ public class WaveHeader
 			&& audioFormat == 1) {
 			return true;
 		}
-
 		return false;
 	}
 
@@ -233,7 +225,6 @@ public class WaveHeader
 
 	public String toString()
 	{
-
 		StringBuffer sb = new StringBuffer();
 		sb.append("chunkId: " + chunkId);
 		sb.append("\n");

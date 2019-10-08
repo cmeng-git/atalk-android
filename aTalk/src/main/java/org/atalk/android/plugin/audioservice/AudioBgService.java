@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.media.*;
 import android.net.Uri;
 import android.os.*;
-import android.util.Log;
 
 import org.atalk.persistance.FileBackend;
 
@@ -31,11 +30,10 @@ import java.util.Locale;
 
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import timber.log.Timber;
 
 public class AudioBgService extends Service implements MediaPlayer.OnCompletionListener
 {
-    private static final String TAG = "AudioBgService";
-
     public static final String ACTION_RECORDING = "recording";
     public static final String ACTION_PLAYBACK = "playback";
     public static final String ACTION_CANCEL = "cancel";
@@ -49,8 +47,6 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     public static final String RECORD_TIMER = "record_timer";
 
     private File audioFile = null;
-    private String filePath = null;
-    private Uri fileUri = null;
 
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
@@ -100,7 +96,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
                 break;
 
             case ACTION_PLAYBACK:
-                fileUri = intent.getData();
+                Uri fileUri = intent.getData();
                 playAudio(fileUri);
                 break;
 
@@ -109,7 +105,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
                 stopRecording();
                 if (audioFile != null) {
                     // sendBroadcast(FileAccess.getUriForFile(this, audioFile));
-                    filePath = audioFile.getAbsolutePath();
+                    String filePath = audioFile.getAbsolutePath();
                     sendBroadcast(filePath);
                 }
                 break;
@@ -120,7 +116,6 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
                 if (audioFile != null) {
                     File soundFile = new File(audioFile.getAbsolutePath());
                     soundFile.delete();
-                    soundFile = null;
                     audioFile = null;
                 }
                 stopSelf();
@@ -148,7 +143,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            Log.e(TAG, "io problems while recording [" + audioFile.getAbsolutePath() + "]: " + e.getMessage());
+            Timber.e("io problems while recording [%s]: %s", audioFile.getAbsolutePath(), e.getMessage());
         }
 
         startTime = SystemClock.uptimeMillis();
@@ -172,7 +167,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
             mPlayer.prepare();
             mPlayer.start();
         } catch (IOException e) {
-            Log.e(TAG, "Unable to play audio file: %s!".replace("%s", uri.getPath()));
+            Timber.e("Unable to play audio file: %s!", uri.getPath());
             e.printStackTrace();
             stopSelf();
         }
@@ -284,14 +279,14 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
         File voiceFile = null;
         File mediaDir = FileBackend.getaTalkStore(FileBackend.MEDIA_VOICE_SEND);
         if (!mediaDir.exists() && !mediaDir.mkdirs()) {
-            Log.d(TAG, "Fail to create Media voice directory!");
-            return voiceFile;
+            Timber.d("Fail to create Media voice directory!");
+            return null;
         }
 
         try {
             voiceFile = File.createTempFile("voice-", ".3gp", mediaDir);
         } catch (IOException e) {
-            Log.d(TAG, "Fail to create Media voice file!");
+            Timber.d("Fail to create Media voice file!");
         }
         return voiceFile;
     }

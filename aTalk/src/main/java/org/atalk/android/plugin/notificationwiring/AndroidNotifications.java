@@ -51,34 +51,30 @@ public class AndroidNotifications implements BundleActivator
     public static List<String> notificationIds = Arrays.asList(DEFAULT_GROUP, MESSAGE_GROUP, FILE_GROUP, CALL_GROUP, MISSED_CALL);
 
     /**
+     // Overrides default notifications to suit Android devices
      * {@inheritDoc}
      */
     public void start(BundleContext bundleContext)
             throws Exception
     {
-        // Overrides default notifications to fit Android
         NotificationService notificationService = ServiceUtils.getService(bundleContext, NotificationService.class);
 
-        /*
-         * Override default incoming call notification to be played only on notification stream.
-         */
+        // Incoming call: Removes popup message
+        notificationService.removeEventNotificationAction(NotificationManager.INCOMING_CALL,
+                NotificationAction.ACTION_POPUP_MESSAGE);
+
+        // Incoming call: Override default incoming call notification to be played only on notification stream.
         SoundNotificationAction inCallSoundHandler = new SoundNotificationAction(SoundProperties.INCOMING_CALL,
                 2000, true, false, false);
         notificationService.registerDefaultNotificationForEvent(NotificationManager.INCOMING_CALL, inCallSoundHandler);
 
-        /*
-         * Adds basic vibrate notification for incoming call
-         */
-        VibrateNotificationAction inCallVibrate = new VibrateNotificationAction("incoming_call",
+        // Incoming call: Adds basic vibrate notification for incoming call
+        VibrateNotificationAction inCallVibrate = new VibrateNotificationAction(NotificationManager.INCOMING_CALL,
                 new long[]{1800, 1000}, 0);
         notificationService.registerDefaultNotificationForEvent(NotificationManager.INCOMING_CALL, inCallVibrate);
 
-        // Removes popup for incoming call
-        notificationService.removeEventNotificationAction(NotificationManager.INCOMING_CALL,
-                NotificationAction.ACTION_POPUP_MESSAGE);
-
         // Missed call : new(No default message, Notification hide timeout, displayed on aTalk icon)
-        notificationService.registerDefaultNotificationForEvent(MISSED_CALL,
+        notificationService.registerDefaultNotificationForEvent(NotificationManager.MISSED_CALL,
                 new PopupMessageNotificationAction(null, -1, CALL_GROUP));
 
         // Incoming message: new(No default message, Notification hide timeout, displayed on aTalk icon)

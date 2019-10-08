@@ -1,6 +1,6 @@
---- /home/cmeng/source/smack/Smack/trunk/smack-core/src/main/java/org/jivesoftware/smack/SmackReactor.java	2019-06-03 23:41:49.000000000 
-+++ /home/cmeng/workspace/android/smack/smack-core/src/main/java/org/jivesoftware/smack/SmackReactor.java	2019-06-04 11:06:21.000000000 
-@@ -201,30 +201,30 @@
+--- /home/cmeng/source/smack/smack-4.4.0-alpha3-SNAPSHOT-jar/smack-4.4.0-alpha3-SNAPSHOT/org/jivesoftware/smack/SmackReactor.java	2019-07-26 01:00:02.000000000 
++++ /home/cmeng/workspace/android/atalk-android/aTalk/src/main/java/org/jivesoftware/smack/SmackReactor.java	2019-07-29 10:36:11.000000000 
+@@ -201,31 +201,31 @@
  
              if (dueScheduledAction != null) {
                  dueScheduledAction.action.run();
@@ -15,14 +15,14 @@
  
 -            long selectWait;
 -            if (nextScheduledAction == null) {
--                // There is no next scheduled action, wait indefinitely in select().
++                long selectWait;
++                if (nextScheduledAction == null) {
+                 // There is no next scheduled action, wait indefinitely in select() or until another thread invokes
+                 // selector.wakeup().
 -                selectWait = 0;
 -            } else {
 -                selectWait = nextScheduledAction.getTimeToDueMillis();
 -            }
-+                long selectWait;
-+                if (nextScheduledAction == null) {
-+                    // There is no next scheduled action, wait indefinitely in select().
 +                    selectWait = 0;
 +                } else {
 +                    selectWait = nextScheduledAction.getTimeToDueMillis();

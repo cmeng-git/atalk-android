@@ -532,13 +532,14 @@ public class ChatPanel implements Chat, MessageListener
      * Implements the <tt>Chat.isChatFocused</tt> method. Returns TRUE if this chat is
      * the currently selected and if the chat window, where it's contained is active.
      * NPE: mChatSession == null from field
+     *
      * @return true if this chat has the focus and false otherwise.
      */
     @Override
     public boolean isChatFocused()
     {
         return (mChatSession != null)
-                &&  mChatSession.getChatId().equals(ChatSessionManager.getCurrentChatId());
+                && mChatSession.getChatId().equals(ChatSessionManager.getCurrentChatId());
     }
 
     /**
@@ -763,9 +764,11 @@ public class ChatPanel implements Chat, MessageListener
         for (MessageListener l : msgListeners) {
             l.messageDeliveryFailed(evt);
         }
-        // Insert error message
-        Timber.e("%s", evt.getReason());
 
+        // Insert error message
+        Timber.d("%s", evt.getReason());
+
+        // Just show the pass in error message if false
         boolean mergeMessage = true;
         String errorMsg;
         Message srcMessage = (Message) evt.getSource();
@@ -773,26 +776,26 @@ public class ChatPanel implements Chat, MessageListener
         // contactJid cannot be nick name, otherwise message will not be displayed
         String contactJid = evt.getDestinationContact().getAddress();
 
-        if (evt.getErrorCode() == MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED) {
-            errorMsg = aTalkApp.getResString(
-                    R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED, contactJid);
-        }
-        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.NETWORK_FAILURE) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_NOT_DELIVERED);
-        }
-        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
-        }
-        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.INTERNAL_ERROR) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
-        }
-        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.OMEMO_SEND_ERROR) {
-            errorMsg = evt.getReason();
-            // Just show the pass in error message
-            mergeMessage = false;
-        }
-        else {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_ERROR);
+        switch (evt.getErrorCode()) {
+            case MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED:
+                errorMsg = aTalkApp.getResString(
+                        R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED, contactJid);
+                break;
+            case MessageDeliveryFailedEvent.NETWORK_FAILURE:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_NOT_DELIVERED);
+                break;
+            case MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+                break;
+            case MessageDeliveryFailedEvent.INTERNAL_ERROR:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
+                break;
+            case MessageDeliveryFailedEvent.OMEMO_SEND_ERROR:
+                errorMsg = evt.getReason();
+                mergeMessage = false;
+                break;
+            default:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_ERROR);
         }
 
         String reason = evt.getReason();

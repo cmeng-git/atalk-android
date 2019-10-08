@@ -57,6 +57,9 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
 
     public static final String LOCATOR_PROTOCOL_IMGSTREAMING = "imgstreaming";
 
+    /**
+     * The protocol of the <tt>MediaLocator</tt>s identifying <tt>MediaRecorder</tt> capture devices.
+     */
     public static final String LOCATOR_PROTOCOL_MEDIARECORDER = "mediarecorder";
 
     public static final String LOCATOR_PROTOCOL_QUICKTIME = "quicktime";
@@ -75,8 +78,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
 
     /**
      * Returns a <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s which are elements of a specific
-     * <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s and have a specific <tt>MediaLocator</tt>
-     * protocol.
+     * <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s and have a specific <tt>MediaLocator</tt> protocol.
      *
      * @param deviceList the <tt>List</tt> of <tt>CaptureDeviceInfo</tt> which are to be filtered based on the
      * specified <tt>MediaLocator</tt> protocol

@@ -64,7 +64,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
      *
      * @param action The action to act upon.
      * @param data Additional data for the event.
-     * @param device
+     * @param device Audio clip playback device
      */
     private void play(SoundNotificationAction action, NotificationData data, SCAudioClipDevice device)
     {

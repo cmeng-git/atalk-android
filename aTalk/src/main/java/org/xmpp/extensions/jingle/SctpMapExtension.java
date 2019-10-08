@@ -83,8 +83,7 @@ public class SctpMapExtension implements ExtensionElement
     @Override
     public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.prelude(getElementName(), getNamespace());
+        XmlStringBuilder xml = new XmlStringBuilder(this);
 
         xml.optIntAttribute(PORT_ATTR_NAME, port);
         xml.optAttribute(PROTOCOL_ATTR_NAME, protocol);

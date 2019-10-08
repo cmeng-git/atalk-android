@@ -33,7 +33,8 @@ public class OSGiService extends Service
     private static int GENERAL_NOTIFICATION_ID = R.string.APPLICATION_NAME;
 
     /**
-     * Indicates that aTalk is running in foreground mode and it's icon is constantly displayed.
+     * Indicates that aTalk is running in foreground mode and its icon is being displayed on android notification tray.
+     * If user disable show aTalk icon, then running_foreground = false
      */
     private static boolean running_foreground = false;
 
@@ -175,6 +176,7 @@ public class OSGiService extends Service
 
     /**
      * Returns general notification ID that can be used to post notification bound to our global icon
+     * in android notification tray
      *
      * @return the notification ID greater than 0 or -1 if service is not running
      */

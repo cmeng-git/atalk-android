@@ -25,6 +25,7 @@ import org.atalk.service.resources.ResourceManagementService;
  * Activity displays table of all notification events allowing user to change their settings.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class NotificationsTableSettings extends OSGiActivity implements NotificationChangeListener
 {

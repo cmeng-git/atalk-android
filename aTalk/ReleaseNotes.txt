@@ -1,5 +1,24 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.1.0 (1110)
+Author:         cmeng
+Upload Date:	10/08/2019
+- Enhance Event UI: allow user to pick android ringtone for playback and sort Events in ascending order for easy user reference
+- Add support for user defined ringTone. Modify AbstractSCAudioClip class for ringtone playback using android RingTone class;
+  AudioSystemClipImpl support only WAV format; android ringtone's are in ogg format etc
+- Add SoundProperties#getSoundDescriptor to get aTalk default ringTone included in user selection
+- Add support for user manual update the avatar in contactList - long press avatar (even when user is not online)
+- Launch login prompt when user is disconnected due to multiple instance login i.e. conflict: Replaced by new connection
+- Make xml error text more human readable and link clickable in login Reason field
+- Standardize pass parameters and event code between MessageDeliveryFailedEvent and ChatRoomMessageDeliveryFailedEvent
+- Add a temporary patch to purge obsoleted "missed_call" event in NotificationServiceImpl#loadNotifications
+  Will remove in later aTalk v2.1.x releases.
+- Update Thumbnail to confirm XEP-0264 Jingle Content Thumbnails v0.4 release i.e. change cid to uri; and implements ExtensionElement
+- Update smack library to v4.4.0-alpha3-SNAPSHOT release;
+- Remove dependency on XmlStringBuilder.prelude, use XmlStringBuilder xml = new XmlStringBuilder(this) instead
+- Remove unused FileUtils.java - change to use FileBackend.isMediaFile() with support to guess ContentType From FileInputStream
+
+=========================================================================
 Version:		2.0.6 (1106)
 Author:         cmeng
 Upload Date:	09/27/2019

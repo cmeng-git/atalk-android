@@ -55,4 +55,42 @@
         android:text="@string/plugin_notificationconfig_vibration"
         android:textAppearance="@style/MediumFont" />
 
+    <LinearLayout
+        android:id="@+id/soundAttributes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            style="@style/MediumFont"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/plugin_notificationconfig_sound_file" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/between_padding"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_Play"
+                style="@style/ButtonTop"
+                android:onClick="onPlayBackClicked"
+                android:drawableStart="@drawable/ic_play_pause" />
+
+            <Button
+                android:id="@+id/sound_descriptor"
+                style="@style/ButtonTop"
+                android:layout_weight="4"
+                android:layout_width="0dp"
+                android:layout_marginStart="5dp"
+                android:onClick="onDescriptorClicked"
+                android:drawableStart="@drawable/ic_ringtone"/>
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>

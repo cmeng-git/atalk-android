@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.service.audionotifier;
@@ -13,48 +13,45 @@ package org.atalk.service.audionotifier;
  *
  * @author Yana Stamcheva
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public interface AudioNotifierService
 {
-	/**
-	 * Checks whether the playback and notification configuration share the same device.
-	 *
-	 * @return are audio out and notifications using the same device.
-	 */
-	public boolean audioOutAndNotificationsShareSameDevice();
+    /**
+     * Checks whether the playback and notification configuration share the same device.
+     *
+     * @return are audio out and notifications using the same device.
+     */
+    boolean audioOutAndNotificationsShareSameDevice();
 
-	/**
-	 * Creates an SCAudioClip and returns it. By default using notification device.
-	 *
-	 * @param uri
-	 * 		the uri, which will be the source of the audio
-	 * @return the created SCAudioClip, that could be played.
-	 */
-	public SCAudioClip createAudio(String uri);
+    /**
+     * Creates an SCAudioClip and returns it. By default using notification device.
+     *
+     * @param uri the uri, which will be the source of the audio
+     * @return the created SCAudioClip, that could be played.
+     */
+    SCAudioClip createAudio(String uri);
 
-	/**
-	 * Creates an SCAudioClip and returns it.
-	 *
-	 * @param uri
-	 * 		the uri, which will be the source of the audio
-	 * @param playback
-	 * 		use or not the playback device.
-	 * @return the created SCAudioClip, that could be played.
-	 */
-	public SCAudioClip createAudio(String uri, boolean playback);
+    /**
+     * Creates an SCAudioClip and returns it.
+     *
+     * @param uri the uri, which will be the source of the audio
+     * @param playback use or not the playback device.
+     * @return the created SCAudioClip, that could be played.
+     */
+    SCAudioClip createAudio(String uri, boolean playback);
 
-	/**
-	 * Specifies if currently the sound is off.
-	 *
-	 * @return TRUE if currently the sound is off, FALSE otherwise
-	 */
-	public boolean isMute();
+    /**
+     * Specifies if currently the sound is off.
+     *
+     * @return TRUE if currently the sound is off, FALSE otherwise
+     */
+    boolean isMute();
 
-	/**
-	 * Stops/Restores all currently playing sounds.
-	 *
-	 * @param isMute
-	 * 		mute or not currently playing sounds
-	 */
-	public void setMute(boolean isMute);
+    /**
+     * Stops/Restores all currently playing sounds.
+     *
+     * @param isMute mute or not currently playing sounds
+     */
+    void setMute(boolean isMute);
 }
