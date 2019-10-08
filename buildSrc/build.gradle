@@ -16,11 +16,15 @@ plugins {
 repositories {
     google()
     jcenter()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
 }
 
 apply plugin: 'org.anarres.jarjar'
 
-def smackVersion = '4.4.0-alpha2'
+// def smackVersion = '4.4.0-alpha2'
+def smackVersion = '4.4.0-alpha3-SNAPSHOT'
 
 def jarJarDeps = task("jarJarDeps") {
     doFirst {
@@ -46,19 +50,14 @@ jarJarDeps.dependsOn(
         from("org.igniterealtime.smack:smack-extensions:$smackVersion") {
             transitive = false
         }
-        from("org.igniterealtime.smack:smack-omemo:$smackVersion") {
-            transitive = false
-        }
         destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-jarjared/${smackVersion}")
         destinationName "smack-jarjared-${smackVersion}.jar"
 
         // smack-core
         classDelete 'org.jivesoftware.smack.provider.Provider'
-        classDelete 'org.jivesoftware.smack.AbstractXMPPConnection**'
         classDelete 'org.jivesoftware.smack.SmackReactor**'
-        classDelete 'org.jivesoftware.smack.util.PacketParserUtils**'
-        classDelete 'org.jivesoftware.smack.util.ParserUtils**'
         classDelete 'org.jivesoftware.smack.util.StringUtils**'
+        classDelete 'org.jivesoftware.smack.util.XmlStringBuilder**'
 
         // smack-experimental
         classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
@@ -68,9 +67,6 @@ jarJarDeps.dependsOn(
         classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
         classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
         classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
-
-        // smack-omemo
-        classDelete 'org.jivesoftware.smackx.omemo.element.OmemoBundleElement'
     }
 )
 

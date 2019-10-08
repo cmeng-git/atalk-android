@@ -213,6 +213,17 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
+     * Retrieve avatar from server and update the contact avatar image - manual download
+     *
+     * @param retrieveOnStart force to download from server if avatar is null
+     */
+    public void getAvatar(boolean retrieveOnStart)
+    {
+        ssclCallback.setRetrieveOnStart(retrieveOnStart);
+        ssclCallback.addContactForImageUpdate(this);
+    }
+
+    /**
      * Set the image of the contact
      *
      * @param imgBytes the bytes of the image that we'd like to set.

@@ -145,7 +145,7 @@ public class IdentityExtensionElement implements ExtensionElement
      * {@inheritDoc}
      */
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
 
@@ -167,7 +167,7 @@ public class IdentityExtensionElement implements ExtensionElement
 
         // end identity
         xml.closeElement(ELEMENT_NAME);
-        return xml.toString();
+        return xml;
     }
 
     /**

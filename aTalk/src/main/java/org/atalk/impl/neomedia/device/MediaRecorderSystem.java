@@ -41,11 +41,6 @@ public class MediaRecorderSystem extends DeviceSystem
 
     private static final String CAMERA_FACING_FRONT = "CAMERA_FACING_FRONT";
 
-    /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying <tt>MediaRecorder</tt> capture devices.
-     */
-    private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_MEDIARECORDER;
-
     public static Dimension[] SUPPORTED_SIZES = new Dimension[]{};
 
     private static boolean isMediaRecorderInitialized = false;
@@ -62,7 +57,7 @@ public class MediaRecorderSystem extends DeviceSystem
     public MediaRecorderSystem()
             throws Exception
     {
-        super(MediaType.VIDEO, LOCATOR_PROTOCOL);
+        super(MediaType.VIDEO, LOCATOR_PROTOCOL_MEDIARECORDER);
     }
 
     /**
@@ -122,7 +117,7 @@ public class MediaRecorderSystem extends DeviceSystem
             List<Dimension> sizes = new ArrayList<>(CameraUtils.PREFERRED_SIZES.length);
 
             // Locator protocol contains camera id and it's facing
-            MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL, cameraId, cameraInfo);
+            MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL_MEDIARECORDER, cameraId, cameraInfo);
             Camera camera = null;
             try {
                 camera = Camera.open(cameraId);

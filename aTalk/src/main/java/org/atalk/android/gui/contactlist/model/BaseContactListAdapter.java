@@ -12,7 +12,9 @@ import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
 
+import net.java.sip.communicator.impl.protocol.jabber.ContactJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.protocol.Contact;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -33,7 +35,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
-        implements View.OnClickListener
+        implements View.OnClickListener, View.OnLongClickListener
 {
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
@@ -256,6 +258,8 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
             contactViewHolder.avatarView = convertView.findViewById(R.id.avatarIcon);
             contactViewHolder.avatarView.setOnClickListener(this);
+            contactViewHolder.avatarView.setOnLongClickListener(this);
+
             contactViewHolder.avatarView.setTag(contactViewHolder);
             contactViewHolder.statusView = convertView.findViewById(R.id.contactStatusIcon);
 
@@ -439,12 +443,14 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
             switch (view.getId()) {
                 case R.id.contactCallButton:
-                    Jid jid = ((MetaContact) contact).getDefaultContact().getJid();
-                    if (jid instanceof DomainBareJid) {
-                        TelephonyFragment extPhone = TelephonyFragment.newInstance(jid.toString());
-                        contactListFragment.getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(android.R.id.content, extPhone).commit();
-                        break;
+                    if (contact instanceof MetaContact) {
+                        Jid jid = ((MetaContact) contact).getDefaultContact().getJid();
+                        if (jid instanceof DomainBareJid) {
+                            TelephonyFragment extPhone = TelephonyFragment.newInstance(jid.toString());
+                            contactListFragment.getActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(android.R.id.content, extPhone).commit();
+                            break;
+                        }
                     }
                 case R.id.contactCallVideoButton:
                     boolean isVideoCall = viewHolder.callVideoButton.isPressed();
@@ -463,6 +469,37 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         else {
             Timber.w("No valid contact found at this position: %s:%s", groupPos, childPos);
         }
+    }
+
+    /**
+     * Retrieve the contact avatar from server when user longClick on the avatar in contact list.
+     * Clicked position/contact is derived from the view holder group/child positions.
+     */
+    public boolean onLongClick(View view)
+    {
+        if (!(view.getTag() instanceof ContactViewHolder)
+                && !(view.getId() == R.id.avatarIcon)) {
+            return false;
+        }
+
+        // proceed to retrieve avatar for the clicked contact
+        ContactViewHolder viewHolder = (ContactViewHolder) view.getTag();
+        int groupPos = viewHolder.groupPosition;
+        int childPos = viewHolder.childPosition;
+        Object clicked = getChild(groupPos, childPos);
+
+        if (clicked instanceof MetaContact) {
+            Contact contact = ((MetaContact) clicked).getDefaultContact();
+            if (!(contact.getJid() instanceof DomainBareJid)) {
+                ((ContactJabberImpl) contact).getAvatar(true);
+                aTalkApp.showToastMessage("Retrieving avatar for: " + contact.getAddress());
+            }
+            else {
+                aTalkApp.showToastMessage("No a valid contact");
+            }
+            return true;
+        }
+        return false;
     }
 
     /**

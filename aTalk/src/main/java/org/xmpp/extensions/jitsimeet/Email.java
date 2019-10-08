@@ -90,7 +90,7 @@ public class Email implements ExtensionElement
      * @return xml representation of this extension.
      */
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.element(ELEMENT_NAME, getAddress());

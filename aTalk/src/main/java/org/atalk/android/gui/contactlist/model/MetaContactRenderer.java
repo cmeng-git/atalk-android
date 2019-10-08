@@ -78,9 +78,16 @@ public class MetaContactRenderer implements UIContactRenderer
     @Override
     public boolean isShowCallBtn(Object contactImpl)
     {
-        // DomainJid always show call button  
-        boolean isDomainJid = ((MetaContact) contactImpl).getDefaultContact().getJid() instanceof DomainBareJid;
-        return isDomainJid || isShowButton((MetaContact) contactImpl, OperationSetBasicTelephony.class);
+        // Handle only if contactImpl instanceof MetaContact; DomainJid always show call button option
+        if (contactImpl instanceof MetaContact) {
+            MetaContact metaContact = (MetaContact) contactImpl;
+
+            boolean isDomainJid = false;
+            if (metaContact.getDefaultContact() != null)
+                isDomainJid = metaContact.getDefaultContact().getJid() instanceof DomainBareJid;
+            return isDomainJid || isShowButton(metaContact, OperationSetBasicTelephony.class);
+        }
+        return false;
     }
 
     @Override

@@ -75,10 +75,9 @@ public class UserLanguagesExtensionElement extends AbstractExtensionElement
      * @return XML string representation
      */
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.prelude(getElementName(), getNamespace());
+        XmlStringBuilder xml = new XmlStringBuilder(this);
 
         // add the rest of the attributes if any
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {

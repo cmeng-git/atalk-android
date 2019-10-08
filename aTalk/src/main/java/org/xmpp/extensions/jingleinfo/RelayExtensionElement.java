@@ -68,7 +68,7 @@ public class RelayExtensionElement extends AbstractExtensionElement
      * @return XML string representation
      */
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
 

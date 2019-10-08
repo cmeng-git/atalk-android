@@ -91,14 +91,6 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         return adHocChatRoomList;
     }
 
-    /**
-     * Handles <tt>ChatRoomInvitationReceivedEvent</tt>-s.
-     */
-
-    public static final String CC_MANAGER = "multiUserChatManager";
-    public static final String OPS_MUC = "multiUserChatOpSet";
-    public static final String CR_INVITATION = "invitation";
-
     public void invitationReceived(ChatRoomInvitationReceivedEvent evt)
     {
         final OperationSetMultiUserChat multiUserChatOpSet = evt.getSourceOperationSet();
@@ -252,6 +244,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
          * get out of ChatRoomMessageDeliveryFailedEvent, I'm using it.
          */
 
+        // Just show the pass in error message if false
         boolean mergeMessage = true;
         String errorMsg;
         String reason = evt.getReason();
@@ -260,41 +253,37 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         Message srcMessage = evt.getMessage();
         ChatRoomMember destMember = evt.getDestinationChatRoomMember();
 
-        if (evt.getErrorCode() == MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED, destMember.getNickName());
-        }
-        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.NETWORK_FAILURE) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_NOT_DELIVERED);
-        }
-        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
-        }
-        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.INTERNAL_ERROR) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
-        }
-        else if (evt.getErrorCode() == ChatRoomMessageDeliveryFailedEvent.FORBIDDEN) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SEND_MSG_FORBIDDEN);
-        }
-        else if (evt.getErrorCode() == ChatRoomMessageDeliveryFailedEvent.UNSUPPORTED_OPERATION) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION);
-        }
-        else if (evt.getErrorCode() == ChatRoomMessageDeliveryFailedEvent.OMEMO_SEND_ERROR) {
-            // Just show the pass in error message
-            errorMsg = evt.getReason();
-            mergeMessage = false;
-        }
-        else if (evt.getErrorCode() == ChatRoomMessageDeliveryFailedEvent.NOT_ACCEPTABLE) {
-            // Just show the pass in error message
-            errorMsg = evt.getReason();
-            mergeMessage = false;
-        }
-        else {
-            if (TextUtils.isEmpty(reason))
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNKNOWN_ERROR);
-            else {
-                errorMsg = reason;
+        switch (evt.getErrorCode()) {
+            case MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED, destMember.getNickName());
+                break;
+            case MessageDeliveryFailedEvent.NETWORK_FAILURE:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_NOT_DELIVERED);
+                break;
+            case MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+                break;
+            case MessageDeliveryFailedEvent.INTERNAL_ERROR:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
+                break;
+            case MessageDeliveryFailedEvent.FORBIDDEN:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SEND_MSG_FORBIDDEN);
+                break;
+            case MessageDeliveryFailedEvent.UNSUPPORTED_OPERATION:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION);
+                break;
+            case MessageDeliveryFailedEvent.OMEMO_SEND_ERROR:
+            case MessageDeliveryFailedEvent.NOT_ACCEPTABLE:
+                errorMsg = evt.getReason();
                 mergeMessage = false;
-            }
+                break;
+            default:
+                if (TextUtils.isEmpty(reason))
+                    errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNKNOWN_ERROR);
+                else {
+                    errorMsg = reason;
+                    mergeMessage = false;
+                }
         }
 
         if (!TextUtils.isEmpty(reason) && mergeMessage)
@@ -717,7 +706,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         /**
          * @return SUCCESS if success, otherwise the error code
-         * @override {@link AsyncTask}{@link #doInBackground(Void... params)} to perform all asynchronous tasks.
+         * {@link AsyncTask #doInBackground(Void... params)} to perform all asynchronous tasks.
          */
         @Override
         protected String doInBackground(Void... params)
@@ -746,7 +735,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         }
 
         /**
-         * {@link AsyncTask}{@link #onPostExecute(String)} onPostExecute()} to perform
+         * {@link AsyncTask #onPostExecute(String)} onPostExecute()} to perform
          * UI changes after the ad-hoc chat room join task has finished.
          */
         @Override
@@ -761,7 +750,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             ConfigurationUtils.updateChatRoomStatus(adHocChatRoomWrapper.getParentProvider().getProtocolProvider(),
                     adHocChatRoomWrapper.getAdHocChatRoomID(), GlobalStatusEnum.ONLINE_STATUS);
 
-            String errorMessage = null;
+            String errorMessage;
             if (PROVIDER_NOT_REGISTERED.equals(returnCode)) {
                 errorMessage = aTalkApp.getResString(
                         R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, adHocChatRoomWrapper.getAdHocChatRoomName());

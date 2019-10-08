@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
 import org.apache.commons.io.IOUtils;
+import org.atalk.android.aTalkApp;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -250,5 +251,187 @@ public class FileBackend
                 mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension.toLowerCase());
         }
         return mimeType;
+    }
+
+    /*
+     * Check if the file has media content
+     */
+    public static boolean isMediaFile(File file)
+    {
+        Context ctx = aTalkApp.getGlobalContext();
+        Uri uri = getUriForFile(ctx, file);
+        String mimeType = getMimeType(ctx, uri);
+
+        // Make a last ditch to guess ContentType From FileInputStream
+        if ((mimeType == null) || mimeType.equals(("application/octet-stream"))) {
+            try {
+                InputStream is = new FileInputStream(file);
+                mimeType = guessContentTypeFromStream(is);
+            } catch (IOException ignore) {
+            }
+        }
+
+        // mimeType is null if file contains no ext on old android or else "application/octet-stream"
+        if (TextUtils.isEmpty(mimeType)) {
+            Timber.e("File mimeType is null: %s", file.getPath());
+            return false;
+        }
+
+        // Android returns 3gp and vidoe/3gp
+        return !mimeType.contains("3gp") && (mimeType.contains("image") || mimeType.contains("video"));
+    }
+
+    /**
+     * cmeng: modified from URLConnection class
+     *
+     * Tries to determine the type of an input stream based on the characters at the beginning of the input stream.
+     * This method  be used by subclasses that override the {@code getContentType} method.
+     * <p>
+     * Ideally, this routine would not be needed. But many {@code http} servers return the incorrect content type;
+     * in addition, there are many nonstandard extensions. Direct inspection of the bytes to determine the content
+     * type is often more accurate than believing the content type claimed by the {@code http} server.
+     *
+     * @param is an input stream that supports marks.
+     * @return a guess at the content type, or {@code null} if none can be determined.
+     * @throws IOException if an I/O error occurs while reading the input stream.
+     * @see java.io.InputStream#mark(int)
+     * @see java.io.InputStream#markSupported()
+     * @see java.net.URLConnection#getContentType()
+     */
+    public static String guessContentTypeFromStream(InputStream is)
+            throws IOException
+    {
+        int c1 = is.read();
+        int c2 = is.read();
+        int c3 = is.read();
+        int c4 = is.read();
+        int c5 = is.read();
+        int c6 = is.read();
+        int c7 = is.read();
+        int c8 = is.read();
+        int c9 = is.read();
+        int c10 = is.read();
+        int c11 = is.read();
+        int c12 = is.read();
+        int c13 = is.read();
+        int c14 = is.read();
+        int c15 = is.read();
+        int c16 = is.read();
+
+        if (c1 == 'G' && c2 == 'I' && c3 == 'F' && c4 == '8') {
+            return "image/gif";
+        }
+
+        if (c1 == '#' && c2 == 'd' && c3 == 'e' && c4 == 'f') {
+            return "image/x-bitmap";
+        }
+
+        if (c1 == '!' && c2 == ' ' && c3 == 'X' && c4 == 'P' &&
+                c5 == 'M' && c6 == '2') {
+            return "image/x-pixmap";
+        }
+
+        if (c1 == 137 && c2 == 80 && c3 == 78 &&
+                c4 == 71 && c5 == 13 && c6 == 10 &&
+                c7 == 26 && c8 == 10) {
+            return "image/png";
+        }
+
+        if (c1 == 0xFF && c2 == 0xD8 && c3 == 0xFF) {
+            if (c4 == 0xE0 || c4 == 0xEE) {
+                return "image/jpeg";
+            }
+
+            /*
+             * File format used by digital cameras to store images.
+             * Exif Format can be read by any application supporting
+             * JPEG. Exif Spec can be found at:
+             * http://www.pima.net/standards/it10/PIMA15740/Exif_2-1.PDF
+             */
+            if ((c4 == 0xE1) &&
+                    (c7 == 'E' && c8 == 'x' && c9 == 'i' && c10 == 'f' && c11 == 0)) {
+                return "image/jpeg";
+            }
+        }
+
+        if (c1 == 0x2E && c2 == 0x73 && c3 == 0x6E && c4 == 0x64) {
+            return "audio/basic";  // .au format, big endian
+        }
+
+        if (c1 == 0x64 && c2 == 0x6E && c3 == 0x73 && c4 == 0x2E) {
+            return "audio/basic";  // .au format, little endian
+        }
+
+        if (c1 == 'R' && c2 == 'I' && c3 == 'F' && c4 == 'F') {
+            /* I don't know if this is official but evidence
+             * suggests that .wav files start with "RIFF" - brown
+             */
+            return "audio/x-wav";
+        }
+
+        if (c1 == 0xCA && c2 == 0xFE && c3 == 0xBA && c4 == 0xBE) {
+            return "application/java-vm";
+        }
+
+        if (c1 == 0xAC && c2 == 0xED) {
+            // next two bytes are version number, currently 0x00 0x05
+            return "application/x-java-serialized-object";
+        }
+
+        if (c1 == '<') {
+            if (c2 == '!'
+                    || ((c2 == 'h' && (c3 == 't' && c4 == 'm' && c5 == 'l' ||
+                    c3 == 'e' && c4 == 'a' && c5 == 'd') ||
+                    (c2 == 'b' && c3 == 'o' && c4 == 'd' && c5 == 'y'))) ||
+                    ((c2 == 'H' && (c3 == 'T' && c4 == 'M' && c5 == 'L' ||
+                            c3 == 'E' && c4 == 'A' && c5 == 'D') ||
+                            (c2 == 'B' && c3 == 'O' && c4 == 'D' && c5 == 'Y')))) {
+                return "text/html";
+            }
+
+            if (c2 == '?' && c3 == 'x' && c4 == 'm' && c5 == 'l' && c6 == ' ') {
+                return "application/xml";
+            }
+        }
+
+        // big and little (identical) endian UTF-8 encodings, with BOM
+        if (c1 == 0xef && c2 == 0xbb && c3 == 0xbf) {
+            if (c4 == '<' && c5 == '?' && c6 == 'x') {
+                return "application/xml";
+            }
+        }
+
+        // big and little endian UTF-16 encodings, with byte order mark
+        if (c1 == 0xfe && c2 == 0xff) {
+            if (c3 == 0 && c4 == '<' && c5 == 0 && c6 == '?' &&
+                    c7 == 0 && c8 == 'x') {
+                return "application/xml";
+            }
+        }
+
+        if (c1 == 0xff && c2 == 0xfe) {
+            if (c3 == '<' && c4 == 0 && c5 == '?' && c6 == 0 &&
+                    c7 == 'x' && c8 == 0) {
+                return "application/xml";
+            }
+        }
+
+        // big and little endian UTF-32 encodings, with BOM
+        if (c1 == 0x00 && c2 == 0x00 && c3 == 0xfe && c4 == 0xff) {
+            if (c5 == 0 && c6 == 0 && c7 == 0 && c8 == '<' &&
+                    c9 == 0 && c10 == 0 && c11 == 0 && c12 == '?' &&
+                    c13 == 0 && c14 == 0 && c15 == 0 && c16 == 'x') {
+                return "application/xml";
+            }
+        }
+
+        if (c1 == 0xff && c2 == 0xfe && c3 == 0x00 && c4 == 0x00) {
+            if (c5 == '<' && c6 == 0 && c7 == 0 && c8 == 0 &&
+                    c9 == '?' && c10 == 0 && c11 == 0 && c12 == 0 &&
+                    c13 == 'x' && c14 == 0 && c15 == 0 && c16 == 0) {
+                return "application/xml";
+            }
+        }
+        return null;
     }
 }

@@ -59,6 +59,7 @@ import org.xmpp.extensions.condesc.TransportExtensionElement;
 import org.xmpp.extensions.jitsimeet.*;
 
 import java.beans.PropertyChangeEvent;
+import java.io.IOException;
 import java.util.*;
 
 import timber.log.Timber;
@@ -952,7 +953,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         } catch (NoOmemoSupportException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, "NoOmemoSupportException");
         } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException
-                | XMPPErrorException e) {
+                | XMPPErrorException | IOException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage());
         } catch (NotLoggedInException e) {
             errMessage = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
@@ -960,8 +961,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
         if (!TextUtils.isEmpty(errMessage)) {
             Timber.w("%s", errMessage);
-            ChatRoomMessageDeliveryFailedEvent failedEvent = new ChatRoomMessageDeliveryFailedEvent(ChatRoomJabberImpl.this,
-                    null, ChatRoomMessageDeliveryFailedEvent.OMEMO_SEND_ERROR, errMessage, new Date(), message);
+            ChatRoomMessageDeliveryFailedEvent failedEvent = new ChatRoomMessageDeliveryFailedEvent(this,
+                    null, MessageDeliveryFailedEvent.OMEMO_SEND_ERROR, System.currentTimeMillis(), errMessage, message);
             fireMessageEvent(failedEvent);
         }
     }
@@ -991,7 +992,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                         "Undecided Omemo Identity: " + omemoDevices.toString());
                 Timber.w("%s", errMessage);
                 ChatRoomMessageDeliveryFailedEvent failedEvent = new ChatRoomMessageDeliveryFailedEvent(ChatRoomJabberImpl.this,
-                        null, ChatRoomMessageDeliveryFailedEvent.OMEMO_SEND_ERROR, errMessage, new Date(), message);
+                        null, MessageDeliveryFailedEvent.OMEMO_SEND_ERROR, System.currentTimeMillis(), errMessage, message);
                 fireMessageEvent(failedEvent);
             }
         }
@@ -1933,20 +1934,19 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     errorReason = error.getDescriptiveText();
 
                 // Default error
-                int errorResultCode = ChatRoomMessageDeliveryFailedEvent.UNKNOWN_ERROR;
-
+                int errorResultCode = MessageDeliveryFailedEvent.UNKNOWN_ERROR;
                 Condition errorCondition = error.getCondition();
                 if (Condition.service_unavailable == errorCondition) {
                     if (!member.getPresenceStatus().isOnline()) {
-                        errorResultCode = ChatRoomMessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED;
+                        errorResultCode = MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED;
                     }
                 }
                 else if (Condition.not_acceptable == errorCondition) {
-                    errorResultCode = ChatRoomMessageDeliveryFailedEvent.NOT_ACCEPTABLE;
+                    errorResultCode = MessageDeliveryFailedEvent.NOT_ACCEPTABLE;
                 }
 
                 ChatRoomMessageDeliveryFailedEvent evt = new ChatRoomMessageDeliveryFailedEvent(ChatRoomJabberImpl.this,
-                        member, errorResultCode, errorReason, new Date(), newMessage);
+                        member, errorResultCode, System.currentTimeMillis(), errorReason, newMessage);
                 fireMessageEvent(evt);
                 return;
             }

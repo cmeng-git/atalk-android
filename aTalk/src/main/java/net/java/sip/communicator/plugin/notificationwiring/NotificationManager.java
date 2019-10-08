@@ -11,7 +11,6 @@ import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.service.resources.ImageID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.atalk.android.R;
@@ -69,12 +68,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     public static final String CALL_SECURITY_ON = "CallSecurityOn";
 
     /**
-     * The image used, when a contact has no photo specified.
-     */
-    public static final ImageID DEFAULT_USER_PHOTO
-            = new ImageID(aTalkApp.getResString(R.string.service_gui_DEFAULT_USER_PHOTO));
-
-    /**
      * Default event type for dialing.
      */
     public static final String DIALING = "Dialing";
@@ -98,6 +91,12 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      * Default event type for receiving messages.
      */
     public static final String INCOMING_MESSAGE = "IncomingMessage";
+
+    /**
+     * Default event type for missed call.
+     */
+    public static final String MISSED_CALL = "MissedCall";
+
     /**
      * Default event type for outgoing calls.
      */
@@ -121,8 +120,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     private final Map<Contact, Long> proactiveTimer = new HashMap<>();
 
     /**
-     * Fires a chat message notification for the given event type through the
-     * <tt>NotificationService</tt>.
+     * Fires a chat message notification for the given event type through the <tt>NotificationService</tt>.
      *
      * @param chatDescriptor the chat contact to which the chat message corresponds; the chat contact could be a
      * Contact or a ChatRoom.
@@ -151,7 +149,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
 
             contactIcon = contact.getImage();
             if (contactIcon == null) {
-                // contactIcon = NotificationWiringActivator.getImageLoaderService().getImageBytes(DEFAULT_USER_PHOTO);
                 contactIcon = AndroidImageUtil.getImageBytes(aTalkApp.getGlobalContext(), R.drawable.personphoto);
             }
         }
@@ -167,15 +164,12 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             }
         }
 
-        // cmeng - pop up message for MESSAGE_INCOMING & INCOMING_FILE
-        if (chatPanel != null) {
-            if (chatPanel.isChatFocused() && ((eventType.equals(INCOMING_MESSAGE) || eventType.equals(INCOMING_FILE)))) {
-                // if (chatPanel.isChatFocused() && eventType.equals(MESSAGE_INCOMING)) {
-                popupActionHandler = notificationService.getEventNotificationAction(eventType,
-                        NotificationAction.ACTION_POPUP_MESSAGE);
-                // Disable pop message notification if the chatPanel is focused
-                popupActionHandler.setEnabled(false);
-            }
+        // Do not popup notification if the chatPanel is focused and for INCOMING_MESSAGE or INCOMING_FILE
+        if ((chatPanel != null) && chatPanel.isChatFocused()
+                && (eventType.equals(INCOMING_MESSAGE) || eventType.equals(INCOMING_FILE))) {
+            popupActionHandler
+                    = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_POPUP_MESSAGE);
+            popupActionHandler.setEnabled(false);
         }
 
         Map<String, Object> extras = new HashMap<>();
@@ -243,8 +237,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     }
 
     /**
-     * Fires a message notification for the given event type through the
-     * <tt>NotificationService</tt>.
+     * Fires a message notification for the given event type through the <tt>NotificationService</tt>.
      *
      * @param eventType the event type for which we fire a notification
      * @param messageTitle the title of the message
@@ -334,20 +327,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      * {@code ChatRoom} is obviously not private and (2) a {@code ChatRoom} is private
      * if it has only one {@code ChatRoomMember} who is not the local user.
      *
-     * @return <tt>true</tt> if the specified {@code ChatRoom} is private; otherwise, <tt>false</tt>
-     */
-    private static boolean isPrivate()
-    {
-        return isPrivate();
-    }
-
-    /**
-     * Determines whether a specific {@code ChatRoom} is private i.e. represents a one-to-one
-     * conversation which is not a channel. Since the interface {@link ChatRoom} does not expose
-     * the private property, an heuristic is used as a workaround: (1) a system
-     * {@code ChatRoom} is obviously not private and (2) a {@code ChatRoom} is private
-     * if it has only one {@code ChatRoomMember} who is not the local user.
-     *
      * @param chatRoom the {@code ChatRoom} to be determined as private or not
      * @return <tt>true</tt> if the specified {@code ChatRoom} is private; otherwise, <tt>false</tt>
      */
@@ -356,9 +335,10 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
         if (!chatRoom.isSystem() && chatRoom.isJoined() && (chatRoom.getMembersCount() == 1)) {
             String nickname = chatRoom.getUserNickname().toString();
 
-            for (ChatRoomMember member : chatRoom.getMembers())
+            for (ChatRoomMember member : chatRoom.getMembers()) {
                 if (nickname.equals(member.getNickName()))
                     return false;
+            }
             return true;
         }
         return false;

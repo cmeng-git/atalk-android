@@ -83,6 +83,11 @@ public interface SecurityAuthority
     public static final int DNSSEC_NOT_ALLOWED = 11;
 
     /**
+     * Indicates that reason for login failure is due to conflict e.g. multiple login instances
+     */
+    public static final int CONFLICT = 12;
+
+    /**
      * Returns a UserCredentials object associated with the specified realm, by specifying the
      * reason of this operation.
      * <p>

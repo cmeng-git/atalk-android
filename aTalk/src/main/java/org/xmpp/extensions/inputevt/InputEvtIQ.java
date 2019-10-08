@@ -71,8 +71,7 @@ public class InputEvtIQ extends IQ
      * @return XML representation of the IQ
      */
     @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(
-            IQChildElementXmlStringBuilder xml)
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
     {
         xml.attribute(ACTION_ATTR_NAME, getAction());
 

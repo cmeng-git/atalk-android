@@ -87,7 +87,7 @@ public class SoundFileUtils
     {
         // If there is no specific filters, then compare the file to all sound extension available.
         if (soundFormats == null) {
-            return SoundFileUtils.isSoundFile(f);
+            return isSoundFile(f);
         }
         // Compare the file extension to the sound formats provided in parameter.
         else {

@@ -81,6 +81,9 @@ public abstract class AudioSystem extends DeviceSystem
      */
     public static final int FEATURE_NOTIFY_AND_PLAYBACK_DEVICES = 1 << 3;
 
+    /**
+     * The protocol of the <tt>MediaLocator</tt>s identifying <tt>AudioRecord</tt> capture devices.
+     */
     public static final String LOCATOR_PROTOCOL_AUDIORECORD = "audiorecord";
 
     public static final String LOCATOR_PROTOCOL_AUDIOSILENCE = "audiosilence";
@@ -93,6 +96,9 @@ public abstract class AudioSystem extends DeviceSystem
      */
     public static final String LOCATOR_PROTOCOL_MACCOREAUDIO = "maccoreaudio";
 
+    /**
+     * The protocol of the <tt>MediaLocator</tt>s identifying OpenSL ES capture devices.
+     */
     public static final String LOCATOR_PROTOCOL_OPENSLES = "opensles";
 
     public static final String LOCATOR_PROTOCOL_PORTAUDIO = "portaudio";
@@ -316,8 +322,8 @@ public abstract class AudioSystem extends DeviceSystem
     {
         ResourceManagementService resources = LibJitsi.getResourceManagementService();
         URL url = (resources == null) ? null : resources.getSoundURLForPath(uri);
-        AudioInputStream audioStream = null;
 
+        AudioInputStream audioStream = null;
         try {
             // Not found by the class loader? Perhaps it is a local file.
             if (url == null)

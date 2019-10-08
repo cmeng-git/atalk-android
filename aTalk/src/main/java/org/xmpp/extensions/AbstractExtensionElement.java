@@ -133,10 +133,9 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @return an XML representation of this extension.
      */
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.prelude(getElementName(), getNamespace());
+        XmlStringBuilder xml = new XmlStringBuilder(this);
 
         // add the rest of the attributes if any
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
@@ -170,7 +169,6 @@ public abstract class AbstractExtensionElement implements ExtensionElement
                 }
             }
         }
-
         // text content if any
         if(!StringUtils.isNullOrEmpty(text))
             xml.optEscape(text);

@@ -5,13 +5,17 @@
  */
 package org.atalk.android.gui.settings.notification;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.TextView;
+import android.widget.*;
 
+import net.java.sip.communicator.plugin.notificationwiring.SoundProperties;
 import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
 import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
@@ -21,6 +25,7 @@ import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.fragment.ActionBarToggleFragment;
 import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.impl.androidresources.AndroidResourceServiceImpl;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.resources.ResourceManagementService;
 
@@ -29,9 +34,12 @@ import org.atalk.service.resources.ResourceManagementService;
  * adjust particular notification handlers like popups, sound or vibration.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class NotificationDetails extends OSGiActivity implements NotificationChangeListener, ActionBarToggleFragment.ActionBarToggleModel
 {
+    private static final int SELECT_RING_TONE = 100;
+
     /**
      * Event type extra key
      */
@@ -77,6 +85,17 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
      */
     private CompoundButton vibrate;
 
+    // Sound Descriptor variable
+    private Button mSoundDescriptor;
+
+    private String eventTitle;
+    private String ringToneTitle;
+
+    private Uri soundDefaultUri;
+    private Uri soundDescriptorUri;
+    Ringtone ringTone = null;
+    SoundNotificationAction soundHandler;
+
     /**
      * {@inheritDoc}
      */
@@ -97,13 +116,42 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
         this.soundNotification = findViewById(R.id.soundNotification);
         this.soundPlayback = findViewById(R.id.soundPlayback);
         this.vibrate = findViewById(R.id.vibrate);
+        mSoundDescriptor = findViewById(R.id.sound_descriptor);
 
         // ActionBarUtil.setTitle(this, aTalkApp.getStringResourceByName(NotificationSettings.N_PREFIX + eventType));
+        eventTitle = rms.getI18NString(NotificationSettings.NOTICE_PREFIX + eventType);
+        ActionBarUtil.setTitle(this, eventTitle);
 
-        ActionBarUtil.setTitle(this, rms.getI18NString("plugin.notificationconfig.event." + eventType));
+        // The SoundNotification init
+        initSoundNotification();
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(ActionBarToggleFragment.create(""),
                     "action_bar_toggle").commit();
+        }
+    }
+
+    /**
+     * Initialize all the sound Notification parameters on entry
+     */
+    private void initSoundNotification()
+    {
+        soundHandler = (SoundNotificationAction)
+                notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
+
+        if (soundHandler != null) {
+            String soundFile = "android.resource://" + getPackageName() + "/" + SoundProperties.getSoundDescriptor(eventType);
+            soundDefaultUri = Uri.parse(soundFile);
+
+            String descriptor = soundHandler.getDescriptor();
+            if (descriptor.startsWith(AndroidResourceServiceImpl.PROTOCOL)) {
+                soundDescriptorUri = soundDefaultUri;
+                ringToneTitle = eventTitle;
+            }
+            else {
+                soundDescriptorUri = Uri.parse(descriptor);
+                ringToneTitle = RingtoneManager.getRingtone(this, soundDescriptorUri).getTitle(this);
+            }
         }
     }
 
@@ -126,6 +174,10 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
     {
         super.onPause();
         notificationService.removeNotificationChangeListener(this);
+        if (ringTone != null) {
+            ringTone.stop();
+            ringTone = null;
+        }
     }
 
     /**
@@ -137,7 +189,7 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
 
         // Description
         // description.setText(aTalkApp.getStringResourceByName(NotificationSettings.N_PREFIX + eventType + "_description"));
-        description.setText(rms.getI18NString("plugin.notificationconfig.event." + eventType + ".description"));
+        description.setText(rms.getI18NString(NotificationSettings.NOTICE_PREFIX + eventType + ".description"));
         description.setEnabled(enable);
 
         // The popup
@@ -147,16 +199,17 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
         if (popupHandler != null)
             popup.setChecked(popupHandler.isEnabled());
 
-        // The sound
-        SoundNotificationAction soundHandler = (SoundNotificationAction)
-                notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
-
         soundNotification.setEnabled(enable && soundHandler != null);
         soundPlayback.setEnabled(enable && soundHandler != null);
 
+        // if soundHandler is null then hide the sound file selection else init its attributes
         if (soundHandler != null) {
             soundNotification.setChecked(soundHandler.isSoundNotificationEnabled());
             soundPlayback.setChecked(soundHandler.isSoundPlaybackEnabled());
+            mSoundDescriptor.setText(ringToneTitle);
+        }
+        else {
+            findViewById(R.id.soundAttributes).setVisibility(View.GONE);
         }
 
         // Vibrate action
@@ -189,10 +242,7 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
     public void onSoundNotificationClicked(View v)
     {
         boolean enabled = ((CompoundButton) v).isChecked();
-
-        SoundNotificationAction action = (SoundNotificationAction)
-                notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
-        action.setSoundNotificationEnabled(enabled);
+        soundHandler.setSoundNotificationEnabled(enabled);
     }
 
     /**
@@ -203,10 +253,7 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
     public void onSoundPlaybackClicked(View v)
     {
         boolean enabled = ((CompoundButton) v).isChecked();
-
-        SoundNotificationAction action = (SoundNotificationAction)
-                notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
-        action.setSoundPlaybackEnabled(enabled);
+        soundHandler.setSoundPlaybackEnabled(enabled);
     }
 
     /**
@@ -221,6 +268,96 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
         NotificationAction action
                 = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_VIBRATE);
         action.setEnabled(enabled);
+    }
+
+    /**
+     * Toggle play mode for the ringtone when user clicks the play/pause button;
+     *
+     * @param v playback view
+     */
+    public void onPlayBackClicked(View v)
+    {
+        if (ringTone == null) {
+            ringTone = RingtoneManager.getRingtone(this, soundDescriptorUri);
+        }
+
+        if (ringTone.isPlaying()) {
+            ringTone.stop();
+            ringTone = null;
+        }
+        else
+            ringTone.play();
+    }
+
+    /**
+     * Launch the RingToneManager when user click on the sound descriptor button
+     *
+     * @param v sound file descriptor button view
+     */
+    public void onDescriptorClicked(View v)
+    {
+        final Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, eventTitle);
+        // set RingTone picker to show only the relevant notification or ringtone
+        if (soundHandler.getLoopInterval() < 0)
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+        else
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE);
+
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, soundDefaultUri);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, soundDescriptorUri);
+        startActivityForResult(intent, SELECT_RING_TONE);
+    }
+
+    /**
+     * Process the user selected RingTone
+     *
+     * @param requestCode RingTone request code
+     * @param resultCode result
+     * @param intent return intent from RingTone Manager
+     */
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent)
+    {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode == Activity.RESULT_OK && requestCode == SELECT_RING_TONE) {
+            Uri ringToneUri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+
+            if (ringToneUri == null)
+                ringToneUri = soundDefaultUri;
+
+            updateSoundNotification(ringToneUri);
+        }
+    }
+
+    /**
+     * Update the display and setup the SoundNotification with the newly user selected ringTone
+     *
+     * @param ringToneUri user selected ringtone Uri
+     */
+    private void updateSoundNotification(Uri ringToneUri)
+    {
+        String soundDescriptor;
+        if (soundDefaultUri.equals(ringToneUri)) {
+            ringToneTitle = eventTitle;
+            soundDescriptor = SoundProperties.getSoundDescriptor(eventType);
+        }
+        else {
+            ringTone = RingtoneManager.getRingtone(this, ringToneUri);
+            ringToneTitle = ringTone.getTitle(this);
+            soundDescriptor = ringToneUri.toString();
+        }
+        soundDescriptorUri = ringToneUri;
+
+        SoundNotificationAction origSoundAction = (SoundNotificationAction)
+                notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
+
+        notificationService.registerNotificationForEvent(eventType, new SoundNotificationAction(
+                soundDescriptor,
+                origSoundAction.getLoopInterval(),
+                origSoundAction.isSoundNotificationEnabled(),
+                origSoundAction.isSoundPlaybackEnabled(),
+                origSoundAction.isSoundPCSpeakerEnabled()));
     }
 
     /**

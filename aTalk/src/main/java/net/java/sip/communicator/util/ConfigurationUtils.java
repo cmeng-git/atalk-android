@@ -1476,8 +1476,8 @@ public class ConfigurationUtils
     public static String getWebPage()
     {
         WebViewFragment.initWebView();
-        return StringUtils.isNullOrEmpty(mWebPage, true)?
-                aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY) : mWebPage;
+        return StringUtils.isNullOrEmpty(mWebPage, true)
+                ? aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY) : mWebPage;
     }
 
     /**

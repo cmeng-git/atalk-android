@@ -37,6 +37,7 @@ import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
 
+import java.io.IOException;
 import java.util.*;
 
 import timber.log.Timber;
@@ -94,8 +95,8 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         String localFingerprint = null;
         try {
             localFingerprint = mOmemoManager.getOwnFingerprint().toString();
-        } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException e) {
-            e.printStackTrace();
+        } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | IOException e) {
+            Timber.w("Get own fingerprint exception: %s", e.getMessage());
         }
 
         View content = findViewById(android.R.id.content);
@@ -127,7 +128,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
                 buddyFingerprints.put(device, Corrupted_OmemoKey);
                 deviceFPStatus.put(device, null);
             } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException
-                    | SmackException.NoResponseException | InterruptedException e) {
+                    | SmackException.NoResponseException | InterruptedException | IOException e) {
                 Timber.w("Smack exception in fingerPrint fetch for omemo device: %s", device);
             }
         }

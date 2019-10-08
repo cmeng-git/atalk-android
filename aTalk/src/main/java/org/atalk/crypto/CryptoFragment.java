@@ -51,6 +51,7 @@ import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jxmpp.jid.*;
 
+import java.io.IOException;
 import java.net.URI;
 import java.security.PublicKey;
 import java.util.*;
@@ -324,7 +325,7 @@ public class CryptoFragment extends OSGiFragment
             } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException
                     | InterruptedException | SmackException.NoResponseException
-                    | IllegalArgumentException e) {
+                    | IllegalArgumentException | IOException e) {
                 // IllegalArgumentException is throw when IdentityKeyPair is null
                 Timber.w("Fetching active fingerPrints has failed: %s", e.getMessage());
             }
@@ -435,7 +436,12 @@ public class CryptoFragment extends OSGiFragment
 
         for (EntityFullJid e : multiUserChat.getOccupants()) {
             recipient = multiUserChat.getOccupant(e).getJid().asBareJid();
-            OmemoCachedDeviceList theirDevices = mOmemoStore.loadCachedDeviceList(mOmemoManager.getOwnDevice(), recipient);
+            OmemoCachedDeviceList theirDevices = null;
+            try {
+                theirDevices = mOmemoStore.loadCachedDeviceList(mOmemoManager.getOwnDevice(), recipient);
+            } catch (IOException ex) {
+                Timber.w("IOException: %s", ex.getMessage());
+            }
             for (int id : theirDevices.getActiveDevices()) {
                 OmemoDevice recipientDevice = new OmemoDevice(recipient, id);
                 try {
@@ -445,7 +451,7 @@ public class CryptoFragment extends OSGiFragment
                 } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException e1) {
                     Timber.w("AllTrusted check exception: %s", e1.getMessage());
                 } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException
-                        | SmackException.NoResponseException | InterruptedException e1) {
+                        | SmackException.NoResponseException | InterruptedException | IOException e1) {
                     e1.printStackTrace();
                 }
             }
@@ -471,7 +477,7 @@ public class CryptoFragment extends OSGiFragment
                 Timber.w("There are undecided Omemo devices: %s", omemoDevices);
                 startActivity(OmemoAuthenticateDialog.createIntent(mOmemoManager, omemoDevices, this));
             } catch (NoOmemoSupportException | InterruptedException | SmackException.NoResponseException
-                    | XMPPException.XMPPErrorException | CryptoFailedException
+                    | XMPPException.XMPPErrorException | CryptoFailedException | IOException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {
                 Timber.w("UndecidedOmemoIdentity check failed: %s", e.getMessage());
             }
@@ -947,7 +953,7 @@ public class CryptoFragment extends OSGiFragment
                         // entityCan = ((SQLiteOmemoStore) mOmemoStore).getContactNumTrustedKeys(usrID) > 0;
                     }
                 } catch (XMPPException.XMPPErrorException | SmackException.NoResponseException
-                        | InterruptedException | SmackException.NotConnectedException e) {
+                        | InterruptedException | SmackException.NotConnectedException | IOException e) {
                     Timber.w("Exception in omemo support checking: %s", e.getMessage());
                 } catch (PubSubException.NotALeafNodeException e) {
                     Timber.w("Exception in checking entity omemo support: %s", e.getMessage());

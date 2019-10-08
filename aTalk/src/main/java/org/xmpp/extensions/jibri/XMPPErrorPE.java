@@ -17,6 +17,7 @@ package org.xmpp.extensions.jibri;
 
 import org.atalk.android.util.ApiLib;
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Wraps Smack's <tt>XMPPError</tt> into <tt>PacketExtension</tt>, so that it
@@ -84,8 +85,8 @@ public class XMPPErrorPE implements ExtensionElement
      * {@inheritDoc}
      */
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
-        return error.toXML(XmlEnvironment.EMPTY).toString();
+        return error.toXML(XmlEnvironment.EMPTY);
     }
 }

@@ -491,6 +491,7 @@
     <string name="service_gui_NO">No</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Se necesita al menos una cuenta de telefonía en línea para realizar una llamada. Inicie sesión en una de sus cuentas de telefonía y vuelva a intentarlo.</string>
     <string name="service_gui_NOT_AUTHORIZED">No autorizado</string>
+    <string name="service_gui_NOT_AUTHORIZED_HINT">No tiene autorización para acceder al servidor. Verifique la configuración de la cuenta, la contraseña o habilite el registro IB e intente nuevamente:\n%s"</string>
     <string name="service_gui_OFF">Apagado</string>
     <string name="service_gui_OFFLINE">Fuera de línea</string>
     <string name="service_gui_OK">OK</string>
@@ -505,6 +506,7 @@
     <string name="service_gui_PHONES">Teléfonos</string>
     <string name="service_gui_POSTAL_CODE">Código postal</string>
     <string name="service_gui_RENAME">Renombrar</string>
+    <string name="service_gui_REGISTRATION_REQUIRED">Error en el registro de la cuenta en el servidor:\n%s"</string>
     <string name="service_gui_SAVE">Guardar</string>
     <string name="service_gui_SHOW_STACK_TRACE">Mostrar stack Trace</string>
     <string name="service_gui_STREET">Calle</string>
@@ -512,6 +514,7 @@
     <string name="service_gui_USER_LOGIN">Por favor Iniciar sesión</string>
     <string name="service_gui_VIDEO_PHONE">Video</string>
     <string name="service_gui_WORK_PHONE">"Trabajo "</string>
+    <string name="service_gui_XMPP_EXCEPTION">Problema de encuentro durante la conexión XMPP:\n%s"</string>
 
     <!-- Call -->
     <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Alternar vídeo</string>
@@ -603,7 +606,7 @@
     <string name="service_gui_SECURITY_INFO">Información de seguridad</string>
     <string name="service_gui_SECURITY_WARNING">Alerta de seguridad</string>
     <string name="service_gui_USERNAME_NULL">Por favor, introduzca el nombre de usuario o la contraseña adecuados.</string>
-    <string name="service_gui_USERNAME_CHANGE_WARN">Advertencia: Cambiar el nombre de usuario de la cuenta a \'%s\' también eliminará los mensajes de %s para la cuenta existente \'%s\'. ¿Proceder?</string>
+    <string name="service_gui_USERNAME_CHANGE_WARN">Advertencia: Cambiar el nombre de usuario de la cuenta a \'%1$s\' también eliminará los mensajes de %2$s para la cuenta existente \'%3$s\'. ¿Proceder?</string>
     <string name="service_gui_USER_EXISTS_ERROR">Este usuario ya existe en la red seleccionada. Por favor, elijir otro usuario o red.</string>
 
     <string name="service_gui_JANUARY">Ene</string>
@@ -832,7 +835,7 @@
     <string name="plugin_notificationconfig_event_IncomingMessage">Mensaje entrante</string>
     <string name="plugin_notificationconfig_event_IncomingMessage_description">Descripción del mensaje entrante</string>
     <string name="plugin_notificationconfig_event_LogFilesArchived">Archivos de registro archivados</string>
-    <string name="plugin_notificationconfig_event_missed_call">Llamada perdida</string>
+    <string name="plugin_notificationconfig_event_MissedCall">Llamada perdida</string>
     <string name="plugin_notificationconfig_event_NetworkNotifications">Notificaciones de red</string>
     <string name="plugin_notificationconfig_event_NetworkNotifications_description">Descripción de las notificaciones de red</string>
     <string name="plugin_notificationconfig_event_ProactiveNotification">Escribiendo notificaciones</string>
@@ -845,6 +848,7 @@
     <string name="plugin_notificationconfig_playback_sound">Sonido de reproducción en el dispositivo</string>
     <string name="plugin_notificationconfig_popup_notification">Notificación emergente</string>
     <string name="plugin_notificationconfig_vibration">Vibración</string>
+    <string name="plugin_notificationconfig_sound_file">Archivo de sonido:</string>
 
     <!-- call recordingconfig -->
     <string name="plugin_callrecordingconfig_CALL_SAVED">Llamada guardada exitosamente</string>

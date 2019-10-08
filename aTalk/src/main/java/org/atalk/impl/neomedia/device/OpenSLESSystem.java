@@ -25,11 +25,6 @@ import javax.media.format.AudioFormat;
 public class OpenSLESSystem extends AudioSystem
 {
     /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying OpenSL ES capture devices.
-     */
-    private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_OPENSLES;
-
-    /**
      * The identifier denoting the set of input devices that the implementation receives audio from
      * by default.
      */
@@ -55,13 +50,13 @@ public class OpenSLESSystem extends AudioSystem
      * Initializes a new <tt>OpenSLESSystem</tt> instance which discovers and registers OpenSL ES
      * capture devices with FMJ.
      *
-     * @throws Exception if anything goes wrong while discovering and registering OpenSL ES capture devices
-     * with FMJ
+     * @throws Exception if anything goes wrong while discovering and registering OpenSL ES capture
+     * devices with FMJ
      */
     public OpenSLESSystem()
             throws Exception
     {
-        super(LOCATOR_PROTOCOL);
+        super(LOCATOR_PROTOCOL_OPENSLES);
     }
 
     @Override
@@ -88,8 +83,7 @@ public class OpenSLESSystem extends AudioSystem
                 int sampleSizeInBitsIndex = audioInputCapabilities[audioInputCapabilitiesIndex++];
                 int channelIndex = audioInputCapabilities[audioInputCapabilitiesIndex++];
 
-                if ((sampleRateIndex == -1) || (sampleSizeInBitsIndex == -1)
-                        || (channelIndex == -1))
+                if ((sampleRateIndex == -1) || (sampleSizeInBitsIndex == -1) || (channelIndex == -1))
                     break;
 
                 double sampleRate = supportedSampleRates[sampleRateIndex];
@@ -116,9 +110,9 @@ public class OpenSLESSystem extends AudioSystem
         if (formats.isEmpty()) {
             formats.add(new AudioFormat(
                     AudioFormat.LINEAR,
-                    48000 /* sampleRate */,
-                    16 /* sampleSizeInBits */,
-                    1 /* channels */,
+                    48000,
+                    16,
+                    1,
                     AudioFormat.LITTLE_ENDIAN,
                     AudioFormat.SIGNED,
                     Format.NOT_SPECIFIED /* frameSizeInBits */,
@@ -128,8 +122,8 @@ public class OpenSLESSystem extends AudioSystem
 
         if (!formats.isEmpty()) {
             CaptureDeviceInfo2 captureDevice = new CaptureDeviceInfo2("OpenSL ES",
-                    new MediaLocator(LOCATOR_PROTOCOL + ":"),
-                    formats.toArray(new Format[formats.size()]), null, null, null);
+                    new MediaLocator(LOCATOR_PROTOCOL_OPENSLES + ":"),
+                    formats.toArray(new Format[0]), null, null, null);
 
             List<CaptureDeviceInfo2> captureDevices = new ArrayList<>(1);
             captureDevices.add(captureDevice);

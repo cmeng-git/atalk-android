@@ -22,17 +22,17 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.resources.ResourceManagementService;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * The <tt>Activity</tt> lists all notification events. When user selects one of them the details screen is opened.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class NotificationSettings extends OSGiActivity
 {
-    public static final String N_PREFIX = "plugin_notificationconfig_event_";
+    public static final String NOTICE_PREFIX = "plugin.notificationconfig.event.";
 
     /**
      * Notifications adapter.
@@ -90,24 +90,31 @@ public class NotificationSettings extends OSGiActivity
         /**
          * List of event types
          */
-        private final ArrayList<String> events;
+        private final ArrayList<String> events = new ArrayList<>();
 
         /**
-         * Resources service instance
+         * Map of events => eventType : eventName in ascending order by eventName
          */
-        private final ResourceManagementService rms;
+        private final Map<String, String> sortedEvents = new TreeMap<>();
 
         /**
-         * Creates new instance of <tt>NotificationsAdapter</tt>.
+         * Creates new instance of <tt>NotificationsAdapter</tt>;
+         * Values are sorted in ascending order by eventNames for user easy reference.
          */
         NotificationsAdapter()
         {
-            Iterator<String> eventsIter = notificationService.getRegisteredEvents().iterator();
-            this.events = new ArrayList<>();
-            while (eventsIter.hasNext()) {
-                events.add(eventsIter.next());
+            ResourceManagementService rms = AndroidGUIActivator.getResources();
+            Map<String, String> unSortedMap = new HashMap<>();
+            for (String event : notificationService.getRegisteredEvents()) {
+                unSortedMap.put(rms.getI18NString(NOTICE_PREFIX + event), event);
             }
-            this.rms = AndroidGUIActivator.getResources();
+
+            // sort and save copies in sortedEvents and events
+            Map<String, String> sortedMap = new TreeMap<>(unSortedMap);
+            for (Map.Entry<String, String> entry : sortedMap.entrySet()) {
+                sortedEvents.put(entry.getValue(), entry.getKey());
+                events.add(entry.getValue());
+            }
         }
 
         /**
@@ -125,8 +132,7 @@ public class NotificationSettings extends OSGiActivity
         @Override
         public Object getItem(int position)
         {
-            // return aTalkApp.getStringResourceByName(N_PREFIX + events.get(position));
-            return rms.getI18NString("plugin.notificationconfig.event." + events.get(position));
+            return sortedEvents.get(events.get(position));
         }
 
         /**
@@ -142,22 +148,26 @@ public class NotificationSettings extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent)
+        public View getView(final int position, View rowView, ViewGroup parent)
         {
-            View row = getLayoutInflater().inflate(R.layout.notification_item, parent, false);
-            row.setOnClickListener(v -> {
-                Intent details = NotificationDetails.getIntent(NotificationSettings.this, events.get(position));
+            //if (rowView == null) cmeng would not update properly the status on enter/return
+            rowView = getLayoutInflater().inflate(R.layout.notification_item, parent, false);
+
+            String eventType = events.get(position);
+            rowView.setOnClickListener(v -> {
+                Intent details = NotificationDetails.getIntent(NotificationSettings.this, eventType);
                 startActivity(details);
             });
 
-            TextView textView = row.findViewById(R.id.text1);
+            TextView textView = rowView.findViewById(R.id.descriptor);
             textView.setText((String) getItem(position));
-            CompoundButton enableBtn = row.findViewById(R.id.enable);
-            enableBtn.setChecked(notificationService.isActive(events.get(position)));
+
+            CompoundButton enableBtn = rowView.findViewById(R.id.enable);
+            enableBtn.setChecked(notificationService.isActive(eventType));
 
             enableBtn.setOnCheckedChangeListener((buttonView, isChecked)
-                    -> notificationService.setActive(events.get(position), isChecked));
-            return row;
+                    -> notificationService.setActive(eventType, isChecked));
+            return rowView;
         }
 
         /**

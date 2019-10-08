@@ -6,7 +6,7 @@ buildscript {
 
     dependencies {
         // Do not change to 3.5.0 => AbractMethodException in Note-3 (see gradle.properties)
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.5.1'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
@@ -53,7 +53,7 @@ configurations.all {
     it.resolutionStrategy {
         eachDependency { details ->
             //multiple actions can be specified
-            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-core', 'smack-extensions', 'smack-omemo'].contains(details.requested.name)) {
+            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-core', 'smack-extensions'].contains(details.requested.name)) {
                 //changing the name:
                 details.useTarget group: details.requested.group, name: "smack-jarjared", version: details.requested.version
             }
@@ -72,8 +72,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1106
-        versionName "2.0.6"
+        versionCode 1110
+        versionName "2.1.0"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -167,10 +167,10 @@ ext {
     // Remove source reference in .idea/libraries if source mismatched with class jar
 
     // for official maven release
-    smackVersion = '4.4.0-alpha2'
+    // smackVersion = '4.4.0-alpha2'
 
     // For smack own repository SNAPSHOT release
-    // smackVersion = '4.4.0-alpha2-SNAPSHOT'
+    smackVersion = '4.4.0-alpha3-SNAPSHOT' // 20190916.073603
 }
 
 dependencies {

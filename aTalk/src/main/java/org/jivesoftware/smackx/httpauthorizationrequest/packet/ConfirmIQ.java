@@ -87,12 +87,13 @@ public class ConfirmIQ extends IQ
     }
 
     /**
-     * Append an XMPPError is this stanza has one set.
+     * Append both iqChildElement and XMPPError if this stanza has one set.
+     * Override to support XEP-0070 cancel reply
      *
      * @param xml the XmlStringBuilder to append the error to.
      */
     @Override
-    protected void appendErrorIfExists(XmlStringBuilder xml, XmlEnvironment enclosingXmlEnvironment)
+    protected void appendErrorIfExists(XmlStringBuilder xml)
     {
         IQChildElementXmlStringBuilder iqChildElement
                 = getIQChildElementBuilder(new IQChildElementXmlStringBuilder(confirmExtension));
@@ -103,7 +104,7 @@ public class ConfirmIQ extends IQ
         }
 
         if (stanzaError != null) {
-            xml.append(stanzaError.toXML(enclosingXmlEnvironment));
+            xml.append(stanzaError.toXML());
         }
     }
 }

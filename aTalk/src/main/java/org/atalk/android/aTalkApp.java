@@ -369,7 +369,7 @@ public class aTalkApp extends Application
      */
     public static boolean isIconEnabled()
     {
-        return (getConfig() == null) || getConfig().getBoolean(SHOW_ICON_PROPERTY_NAME, true);
+        return (getConfig() == null) || getConfig().getBoolean(SHOW_ICON_PROPERTY_NAME, false);
     }
 
     /**

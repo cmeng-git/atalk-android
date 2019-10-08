@@ -1008,7 +1008,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         // Active devices
         values.put(SQLiteOmemoStore.ACTIVE, 1);
         Set<Integer> activeDevices = deviceList.getActiveDevices();
-        Timber.i("Identities table - updating for activeDevice: %s:%s", contact, activeDevices);
+        Timber.d("Identities table - updating for activeDevice: %s:%s", contact, activeDevices);
         for (int deviceId : activeDevices) {
             String[] selectionArgs = {contact.toString(), Integer.toString(deviceId)};
 
@@ -1021,7 +1021,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
                  * Just logged the error. Any missing buddy identityKey will be handled by
                  * AndroidOmemoService#buddyDeviceListUpdateListener()
                  */
-                Timber.w("Identities table - create new activeDevice: %s:%s ", contact, deviceId);
+                Timber.d("Identities table - create new activeDevice: %s:%s ", contact, deviceId);
                 values.put(SQLiteOmemoStore.BARE_JID, contact.toString());
                 values.put(SQLiteOmemoStore.DEVICE_ID, deviceId);
                 db.insert(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, null, values);

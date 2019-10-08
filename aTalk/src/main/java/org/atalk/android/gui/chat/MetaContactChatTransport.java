@@ -14,11 +14,11 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.FileUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
+import org.atalk.persistance.FileBackend;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
@@ -139,9 +139,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
 
         // checking these can be slow so make sure they are run in new thread
-        new Thread() {
+        new Thread()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 XMPPConnection connection = mPPS.getConnection();
                 if ((connection != null)) {
                     httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
@@ -603,8 +605,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         if (!allowsFileTransfer())
             return null;
 
-        // Create a thumbNailed file if possible. Skip if OMEMO message
-        if (FileUtils.isImage(file.getName()) && (ChatFragment.MSGTYPE_OMEMO != chatType)) {
+        // Create a thumbNailed file if possible. Skip for OMEMO message
+        if (FileBackend.isMediaFile(file) && (ChatFragment.MSGTYPE_OMEMO != chatType)) {
             OperationSetThumbnailedFileFactory tfOpSet = mPPS.getOperationSet(OperationSetThumbnailedFileFactory.class);
             if (tfOpSet != null) {
                 byte[] thumbnail = getFileThumbnail(file);
@@ -809,7 +811,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     {
         byte[] imageData = null;
 
-        if (FileUtils.isImage(file.getName())) {
+        if (FileBackend.isMediaFile(file)) {
             String imagePath = file.toString();
             try {
                 FileInputStream fis = new FileInputStream(imagePath);
@@ -831,8 +833,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                     imageData = baos.toByteArray();
                 }
             } catch (FileNotFoundException e) {
-                Timber.d(e, "Could not locate image file.");
-                e.printStackTrace();
+                Timber.d("Could not locate image file. %s", e.getMessage());
             }
         }
         return imageData;

@@ -1085,7 +1085,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 //            if (ex.getCause() instanceof SSLHandshakeException) {
 //                Timber.e(ex.getCause());
 //            }
-            String errMsg = "Encounter problem during XMPPConnection: " + ex.getMessage();
+            String errMsg = aTalkApp.getResString(R.string.service_gui_XMPP_EXCEPTION, ex.getMessage());
             Timber.e("%s", errMsg);
             StanzaError stanzaError = StanzaError.from(Condition.remote_server_timeout, errMsg).build();
             throw new XMPPErrorException(null, stanzaError);
@@ -1166,7 +1166,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
                         errMsg = err.getMessage();
                         if (!errMsg.contains("registration-required")) {
-                            errMsg = "Error in account registration on server: " + errMsg;
+                            errMsg = aTalkApp.getResString(R.string.service_gui_REGISTRATION_REQUIRED, errMsg);
                             Timber.e("%s", errMsg);
                             StanzaError stanzaError = StanzaError.from(Condition.forbidden, errMsg).build();
                             throw new XMPPErrorException(null, stanzaError);
@@ -1179,8 +1179,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     }
                 }
                 else {
-                    errMsg = "You are not authorized to access the server. Check account settings, password"
-                            + " or enable IB Registration and try again: " + errMsg;
+                    errMsg = aTalkApp.getResString(R.string.service_gui_NOT_AUTHORIZED_HINT, errMsg);
                     StanzaError stanzaError = StanzaError.from(Condition.not_authorized, errMsg).build();
                     throw new XMPPErrorException(null, stanzaError);
                 }
@@ -1267,6 +1266,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         {
             String errMsg = exception.getMessage();
             int regEvent = RegistrationStateChangeEvent.REASON_NOT_SPECIFIED;
+            StanzaError.Condition seCondition = Condition.remote_server_not_found;
 
             if (exception instanceof SSLException) {
                 regEvent = RegistrationStateChangeEvent.REASON_SERVER_NOT_FOUND;
@@ -1276,21 +1276,25 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 StreamError.Condition condition = err.getCondition();
                 errMsg = err.getDescriptiveText();
 
-                if ((condition == StreamError.Condition.conflict)
-                        || (condition == StreamError.Condition.policy_violation)) {
+                if (condition == StreamError.Condition.conflict) {
+                    seCondition = Condition.conflict;
                     regEvent = RegistrationStateChangeEvent.REASON_MULTIPLE_LOGIN;
-                    if (errMsg.contains("removed"))
+                    if (errMsg.contains("removed")) {
                         regEvent = RegistrationStateChangeEvent.REASON_NON_EXISTING_USER_ID;
-                    else if (condition == StreamError.Condition.policy_violation)
-                        regEvent = RegistrationStateChangeEvent.REASON_POLICY_VIOLATION;
+                    }
+                }
+                else if (condition == StreamError.Condition.policy_violation) {
+                    seCondition = Condition.policy_violation;
+                    regEvent = RegistrationStateChangeEvent.REASON_POLICY_VIOLATION;
                 }
             }
             else if (exception instanceof XmlPullParserException) {
+                seCondition = Condition.unexpected_request;
                 regEvent = RegistrationStateChangeEvent.REASON_AUTHENTICATION_FAILED;
             }
 
             // Timber.e(exception, "Smack connection Closed OnError: %s", errMsg);
-            StanzaError stanzaError = StanzaError.from(Condition.remote_server_not_found, errMsg).build();
+            StanzaError stanzaError = StanzaError.from(seCondition, errMsg).build();
             XMPPErrorException xmppException = new XMPPErrorException(null, stanzaError);
             xmppConnected.reportFailure(xmppException);
 
@@ -1304,8 +1308,15 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     return;
                 }
             }
-            // Reconnecting state - keep all contacts' status
-            fireRegistrationStateChanged(getRegistrationState(), RegistrationState.RECONNECTING, regEvent, errMsg);
+
+            // if ((seCondition == Condition.conflict) || (seCondition == Condition.policy_violation)) {
+            if (seCondition == Condition.conflict) {
+                // launch re-login prompt with reason for disconnect "replace with new connection"
+                fireRegistrationStateChanged(exception);
+            }
+            else
+                // Reconnecting state - keep all contacts' status
+                fireRegistrationStateChanged(getRegistrationState(), RegistrationState.RECONNECTING, regEvent, errMsg);
         }
 
         /**
@@ -1501,7 +1512,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             if ((OpSetPP != null) && !StringUtils.isNullOrEmpty(OpSetPP.getCurrentStatusMessage())) {
                 unavailablePresence.setStatus(OpSetPP.getCurrentStatusMessage());
             }
-            mConnection.disconnect(unavailablePresence);
+            if (mConnection.isConnected())
+                mConnection.disconnect(unavailablePresence);
         } catch (Exception ex) {
             Timber.w("Exception while disconnect and clean connection!!!");
         }
@@ -2423,6 +2435,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 || exMsg.contains("internal-server-error")) {
             failureMode = SecurityAuthority.NO_SERVER_FOUND;
         }
+        else if (exMsg.contains("conflict")) {
+            failureMode = SecurityAuthority.CONFLICT;
+        }
         else if (exMsg.contains("policy-violation")) {
             failureMode = SecurityAuthority.POLICY_VIOLATION;
         }
@@ -2463,6 +2478,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         else if (failMode == SecurityAuthority.AUTHENTICATION_FAILED) {
             regState = RegistrationState.AUTHENTICATION_FAILED;
             reasonCode = RegistrationStateChangeEvent.REASON_TLS_REQUIRED;
+        }
+        else if (failMode == SecurityAuthority.CONFLICT) {
+            regState = RegistrationState.CONNECTION_FAILED;
+            reasonCode = RegistrationStateChangeEvent.REASON_MULTIPLE_LOGIN;
         }
 
         if (regState == RegistrationState.UNREGISTERED

@@ -278,19 +278,23 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param propertyName the name of the property to change.
      */
     @Override
-    public void removeProperty(String propertyName)
+    public int removeProperty(String propertyName)
     {
         List<String> childPropertyNames = getPropertyNamesByPrefix(propertyName, false);
-
-        // remove all properties
+        int size = childPropertyNames.size() + 1;
+        // remove all child properties
         for (String pName : childPropertyNames) {
             removePropertyInternal(pName);
         }
+        // remove the parent properties if any
+        removePropertyInternal(propertyName);
+
         try {
             storeConfiguration();
         } catch (IOException ex) {
             Timber.e("Failed to store configuration after a property change");
         }
+        return size;
     }
 
     /**
@@ -380,8 +384,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
-     * @param exactPrefixMatch a boolean indicating whether the returned property names should all have a prefix that
-     * is an exact match of the the <tt>prefix</tt> param or whether properties with
+     * @param exactPrefixMatch a boolean indicating whether the returned property names should all have
+     * a prefix that is an exact match of the the <tt>prefix</tt> param or whether properties with
      * prefixes that contain it but are longer than it are also accepted.
      * @return a <tt>java.util.List</tt>containing all property name String-s matching the
      * specified conditions.
@@ -402,8 +406,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         }
 
         // now get property names from the current store.
-        getPropertyNamesByPrefix(prefix, exactPrefixMatch,
-                store.getPropertyNames(prefix), resultKeySet);
+        getPropertyNamesByPrefix(prefix, exactPrefixMatch, store.getPropertyNames(prefix), resultKeySet);
 
         // finally, get property names from mutable default property set.
         if (defaultProperties.size() > 0) {
@@ -423,8 +426,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
-     * @param exactPrefixMatch a boolean indicating whether the returned property names should all have a prefix that
-     * is an exact match of the the <tt>prefix</tt> param or whether properties with
+     * @param exactPrefixMatch a boolean indicating whether the returned property names should all have
+     * a prefix that is an exact match of the the <tt>prefix</tt> param or whether properties with
      * prefixes that contain it but are longer than it are also accepted.
      * @param names the list of names that we'd like to search.
      * @return a reference to the updated result set.

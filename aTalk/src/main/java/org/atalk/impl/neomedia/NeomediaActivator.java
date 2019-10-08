@@ -322,7 +322,7 @@ public class NeomediaActivator implements BundleActivator
                 // Register a popup message for a device configuration changed notification.
                 notificationService.registerDefaultNotificationForEvent(DEVICE_CONFIGURATION_HAS_CHANGED,
                         net.java.sip.communicator.service.notification.NotificationAction.ACTION_POPUP_MESSAGE,
-                        "Device onfiguration has changed", null);
+                        "Device configuration has changed", null);
             }
         }
         return notificationService;
