@@ -23,6 +23,7 @@ import net.java.sip.communicator.service.protocol.*;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.omemo.*;
 import org.jxmpp.jid.BareJid;
@@ -120,12 +121,12 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
     {
         isOmemoInitSuccessful = false;
         String title = aTalkApp.getResString(R.string.omemo_init_failed_title);
-        Timber.e(cause, "%s", title);
         String errMsg = cause.getMessage();
+        Timber.w("%s: %s", title, errMsg);
         if (errMsg != null) {
             if (errMsg.contains("CorruptedOmemoKeyException")) {
                 String msg = aTalkApp.getResString(R.string.omemo_init_failed_CorruptedOmemoKeyException,
-                        mOmemoManager.getOwnDevice(), cause.getMessage());
+                        mOmemoManager.getOwnDevice(), errMsg);
                 DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);
             }
             else {

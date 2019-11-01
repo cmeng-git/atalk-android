@@ -55,6 +55,7 @@ public abstract class Provider<E extends Element> {
         Type[] actualTypeArguments = parameterizedGenericSuperclass.getActualTypeArguments();
         Type elementType = actualTypeArguments[0];
 
+        // required by aTalk class otherwise elementType is only resolved to <EE>
         if (!(elementType instanceof Class))
             elementType = elementType.getClass();
 

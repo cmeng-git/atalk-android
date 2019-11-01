@@ -5,7 +5,6 @@ buildscript {
     }
 
     dependencies {
-        // Do not change to 3.5.0 => AbractMethodException in Note-3 (see gradle.properties)
         classpath 'com.android.tools.build:gradle:3.5.1'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
@@ -53,7 +52,7 @@ configurations.all {
     it.resolutionStrategy {
         eachDependency { details ->
             //multiple actions can be specified
-            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-core', 'smack-extensions'].contains(details.requested.name)) {
+            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-core', 'smack-extensions', 'smack-tcp'].contains(details.requested.name)) {
                 //changing the name:
                 details.useTarget group: details.requested.group, name: "smack-jarjared", version: details.requested.version
             }
@@ -72,8 +71,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1110
-        versionName "2.1.0"
+        versionCode 1111
+        versionName "2.1.1"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -225,9 +224,10 @@ dependencies {
     implementation 'org.jmdns:jmdns:3.5.3'
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
-    // Smack 4.4.0-alpha2 has moved to use minidns v0.4.0-alpha3
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
-    implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
+    // implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
+    implementation "org.igniterealtime.jbosh:jbosh:0.9.1"
+
     implementation "org.igniterealtime.smack:smack-compression-jzlib:$smackVersion"
     implementation "org.igniterealtime.smack:smack-core:$smackVersion"
     implementation "org.igniterealtime.smack:smack-experimental:$smackVersion"

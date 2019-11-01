@@ -74,7 +74,7 @@
     </string-array>
     <string-array name="bosh_proxy_type">
         <item>NONE</item>
-        <!--item>BOSH</item smack not working -->
+        <item>BOSH</item>
         <item>HTTP</item>
         <item>SOCKS4</item>
         <item>SOCKS5</item>

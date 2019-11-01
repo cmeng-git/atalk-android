@@ -1,5 +1,25 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.1.1 (1111)
+Author:         cmeng
+Upload Date:	11/01/2019
+- Implement XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH) & XEP-0206: XMPP Over BOSH standard; Certificates issue by android trusted CAs only
+- Note-5 API-21 does not support self signed certificate for BOSHConnection - failed in android OS - Alert (Level: Fatal, Description: Certificate Unknown)
+- Fix all problems in smack#XMPPBOSHConnection class for BOSH Connection support
+- PPS should disable TLS for Bosh connection; XEP-206: The client SHOULD ignore any Transport Layer Security (TLS) feature since BOSH channel encryption SHOULD be negotiated at the HTTP layer.
+- View certificate is not available for XMPPBOSHConnection - Show Toast message to user
+- Ensure all notification events parameters' changes are saved to persistent store (dB)
+- Fix non-loop ringtone prematurely stop during playback - always wait for 3 seconds to allow non-loop ringtone to play at
+  least once in AbstractSCAudioClip#runInPlayRingtoneThread before proceed; allow ringTonePlayBack throw Exception
+- Fix AndroidCallListener#fireMissedCallNotification() with incorrect eventType, must use NotificationManager.MISSED_CALL
+- Clean up NotificationServiceImpl#saveNotification implementation/coding
+- Playback ringtone in accordance with device ring tone volume adjusted or silent when muted.
+- Remove main menu android Notification Settings... option - use aTalk notification events instead
+- ChatFragment#SendFile(): Change to display actual send file exception message
+- Note-5 API-21 has media sharing error during inputStream.close() i.e. IllegalStateException: GCM cipher cannot be reused for encrypt - just ignored unimportant
+- UpdateServiceImpl.checkForUpdate must validate the downloaded apk is valid before install
+
+=========================================================================
 Version:		2.1.0 (1110)
 Author:         cmeng
 Upload Date:	10/08/2019
@@ -38,6 +58,9 @@ Upload Date:	09/27/2019
 - Catch exception for invalid RESOURCE_PRIORITY entry value to prevent system clashes.
 - Compile apk target for android-Q (android-10.0 API-29) - reverted has problem with webView
 - Add buildSrc build.gradle and restructure build.gradle's to conform to gradle-5.4.1 and build:gradle:3.5.0
+
+- Fix strictmode-java-lang-throwable-untagged-socket-detected with TrafficStats.setThreadStatsTag(THREAD_ID)
+ needed for UpdateServiceImpl
 
 =========================================================================
 Version:		2.0.5 (1105)
@@ -220,7 +243,7 @@ Upload Date:	06/05/2019
 Version:		1.8.3 (1083)
 Author:         cmeng
 Upload Date:	05/23/2019
-- Implement \'OMEMO Media Sharing\' to support end-to-end encrypted files and stickers sharing
+- Implement 'OMEMO Media Sharing' to support end-to-end encrypted files and stickers sharing
 - Include http file upload service in fault-tolerance file transfer implementation;
   to handle clients that do not support legacy SOCK5 and IBB protocols e.g. conversations
 - Support Stickers, Bitmoji and Emoji rich content sharing in chat room

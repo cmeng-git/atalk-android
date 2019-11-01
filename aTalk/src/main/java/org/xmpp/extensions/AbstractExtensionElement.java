@@ -103,6 +103,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @return the name of the <tt>encryption</tt> element.
      */
+    @Override
     public String getElementName()
     {
         return elementName;
@@ -123,6 +124,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @return the XML namespace for this element or <tt>null</tt> if the element does not live in a namespace of its own.
      */
+    @Override
     public String getNamespace()
     {
         return namespace;

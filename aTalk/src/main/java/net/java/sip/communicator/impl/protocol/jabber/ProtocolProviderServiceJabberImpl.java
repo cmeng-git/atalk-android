@@ -141,8 +141,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.net.*;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -271,7 +270,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Smack packet maximum reply timeout - Smack will immediately return on reply or until timeout
      * before issues exception. Need this to take care for some servers response on some packages
-     * e.g. disco#info (30 seconds). Also on some slow client e.g. Samsung S3 takes up to 30
+     * e.g. disco#info (30 seconds). Also on some slow client e.g. Samsung SII takes up to 30
      * Sec to response to sasl authentication challenge on first login
      */
     public static final int SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30 = 30000;  // 30 seconds
@@ -991,10 +990,23 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         if (DNSSEC_DISABLE.equals(dnssecMode)) {
             config.setDnssecMode(DnssecMode.disabled);
 
-            // user have the possibility to disable TLS but in this case, it will not be able to
-            // connect to a server which requires TLS; BOSH connection does not support TLS
-            boolean tlsRequired = loginStrategy.isTlsRequired();
-            config.setSecurityMode(tlsRequired ? SecurityMode.required : SecurityMode.ifpossible);
+            /*
+             * BOSH connection does not support TLS;
+             * XEP-206 Note: The client SHOULD ignore any Transport Layer Security (TLS) feature since
+             * BOSH channel encryption SHOULD be negotiated at the HTTP layer.
+            */
+            boolean tlsRequired;
+            if (isBosh) {
+                tlsRequired = false;
+                config.setSecurityMode(SecurityMode.disabled);
+            } else {
+                /*
+                 * user have the possibility to disable TLS but in this case, it will not be able to
+                 * connect to a server which requires TLS;
+                 */
+                tlsRequired = loginStrategy.isTlsRequired();
+                config.setSecurityMode(tlsRequired ? SecurityMode.required : SecurityMode.ifpossible);
+            }
 
             CertificateService cvs = getCertificateVerificationService();
             if (cvs != null) {

@@ -50,14 +50,33 @@ jarJarDeps.dependsOn(
         from("org.igniterealtime.smack:smack-extensions:$smackVersion") {
             transitive = false
         }
+        from("org.igniterealtime.smack:smack-tcp:$smackVersion") {
+            transitive = false
+        }
         destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-jarjared/${smackVersion}")
         destinationName "smack-jarjared-${smackVersion}.jar"
 
         // smack-core
+        classDelete 'org.jivesoftware.smack.fsm.AbstractXmppStateMachineConnection**'
+        classDelete 'org.jivesoftware.smack.fsm.StateDescriptorGraph**'
+        classDelete 'org.jivesoftware.smack.packet.Stanza'
+        classDelete 'org.jivesoftware.smack.packet.XmlEnvironment**'
         classDelete 'org.jivesoftware.smack.provider.Provider'
-        classDelete 'org.jivesoftware.smack.SmackReactor**'
+        classDelete 'org.jivesoftware.smack.sasl.packet.SaslStreamElements**'
+        classDelete 'org.jivesoftware.smack.sasl.SASLErrorException'
+        classDelete 'org.jivesoftware.smack.sasl.SASLMechanism'
+        classDelete 'org.jivesoftware.smack.util.CollectionUtil**'
+        classDelete 'org.jivesoftware.smack.util.PacketParseUtils**'
         classDelete 'org.jivesoftware.smack.util.StringUtils**'
         classDelete 'org.jivesoftware.smack.util.XmlStringBuilder**'
+
+        classDelete 'org.jivesoftware.smack.AbstractXMPPConnection**'
+        classDelete 'org.jivesoftware.smack.GenericElementListener'
+        classDelete 'org.jivesoftware.smack.NonzaCallback**'
+        classDelete 'org.jivesoftware.smack.SASLAuthentication'
+        classDelete 'org.jivesoftware.smack.SmackConfiguration**'
+        classDelete 'org.jivesoftware.smack.SmackInitialization'
+        classDelete 'org.jivesoftware.smack.SmackReactor**'
 
         // smack-experimental
         classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
@@ -67,6 +86,11 @@ jarJarDeps.dependsOn(
         classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
         classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
         classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
+        classDelete 'org.jivesoftware.smackx.si.packet.StreamInitiation**'
+
+        // smack-tcp
+        classDelete 'org.jivesoftware.smack.tcp.XmppNioTcpConnection**'
+        classDelete 'org.jivesoftware.smack.tcp.XMPPTCPConnection**'
     }
 )
 

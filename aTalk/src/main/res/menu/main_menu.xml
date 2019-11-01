@@ -41,7 +41,8 @@
         android:title="@string/service_gui_ACCOUNT_SETTINGS" />
     <item
         android:id="@+id/notification_setting"
-        android:title="@string/notification_setting" />
+        android:title="@string/notification_setting"
+        android:visible="false" />
     <item
         android:id="@+id/show_hide_offline"
         android:icon="@drawable/show_hide_offline_light"

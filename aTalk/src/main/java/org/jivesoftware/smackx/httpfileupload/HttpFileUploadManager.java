@@ -261,7 +261,7 @@ public final class HttpFileUploadManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
      * @throws SmackException if Smack detected an exceptional situation.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     public URL uploadFile(File file, UploadProgressListener listener) throws InterruptedException,
             XMPPException.XMPPErrorException, SmackException, IOException {
@@ -486,7 +486,7 @@ public final class HttpFileUploadManager extends Manager {
         urlConnection.setDoOutput(true);
         // TODO Change to using fileSize once Smack's minimum Android API level is 19 or higher.
         urlConnection.setFixedLengthStreamingMode((int) fileSize);
-        urlConnection.setRequestProperty("Content-Type", "application/octet-stream;");
+        urlConnection.setRequestProperty("Content-Type", "application/octet-stream");
         for (Entry<String, String> header : slot.getHeaders().entrySet()) {
             urlConnection.setRequestProperty(header.getKey(), header.getValue());
         }
@@ -525,7 +525,7 @@ public final class HttpFileUploadManager extends Manager {
                 try {
                     inputStream.close();
                 }
-                catch (IOException e) {
+                catch (IllegalStateException | IOException e) {
                     LOGGER.log(Level.WARNING, "Exception while closing input stream", e);
                 }
                 try {

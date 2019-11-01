@@ -138,7 +138,5 @@ public class LauncherActivity extends OSGiActivity
                 .permitDiskReads()
                 .permitDiskWrites()
                 .build());
-
-        //	StrictMode.setThreadPolicy(old);
     }
 }

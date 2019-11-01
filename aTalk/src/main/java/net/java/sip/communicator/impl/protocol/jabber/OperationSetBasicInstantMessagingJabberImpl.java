@@ -741,7 +741,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             Timber.i("Successfully setting carbon new state for: %s to %s", userJid, isCarbonEnabled);
         } catch (NoResponseException | InterruptedException | NotConnectedException
                 | XMPPException.XMPPErrorException e) {
-            Timber.e(e, "Failed to set carbon state for: %s to %S", userJid, enableCarbon);
+            Timber.e("Failed to set carbon state for: %s to %S\n%s", userJid, enableCarbon, e.getMessage());
         }
     }
 

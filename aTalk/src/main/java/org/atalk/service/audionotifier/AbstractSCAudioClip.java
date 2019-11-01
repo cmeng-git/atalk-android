@@ -5,6 +5,7 @@
  */
 package org.atalk.service.audionotifier;
 
+import android.content.Context;
 import android.media.*;
 import android.net.Uri;
 import android.os.Build;
@@ -299,6 +300,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                         int loopInterval = getLoopInterval();
                         if (loopInterval > 0)
                             sync.wait(loopInterval);
+
                     } catch (InterruptedException ie) {
                         interrupted = true;
                     }
@@ -355,6 +357,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * Runs in a background/separate thread dedicated to the actual playback of the android ringtone
      * Plays this audio once or in a loop is controlled by RingTone player. So setup to check external
      * condition changes to stop playing if triggered
+     * There is always a wait of 3 seconds for non-loop tone to complete playing at least once
      *
      * @param loopCondition a <tt>Callback&lt;Boolean&gt;</tt> which represents the condition on which this
      * audio will play more than once. If <tt>null</tt>, this audio will play once only. If an invocation of
@@ -382,17 +385,16 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                 else {
                     if ((ringtone == null) || !ringtone.isPlaying()) {
                         try {
-                            ringTonePlayBack(loopCondition);
+                            if (!ringTonePlayBack(loopCondition))
+                                break;
                         } catch (Exception ex) {
-                            ringToneStop();
                             break;
                         }
                     }
                 }
 
-                // Do nothing for ringtone assuming it is already setup to play only once
-                if (!isLooping())
-                    break;
+                // Do nothing for ringtone playback assuming it is already setup to play only once
+                // if (!isLooping()) break;
 
                 synchronized (sync) {
                     /*
@@ -402,14 +404,12 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                     if (!isStarted())
                         break;
 
+                    /*
+                     * Playback by ringTone is auto-looping; but need to wait for some time before proceed;
+                     * This is to allow notification non-loop alert to play for at least 3 seconds
+                     */
                     try {
-                        int loopInterval = getLoopInterval();
-                        /*
-                         * XXX The value 0 means that this instance should loop playing without
-                         * waiting but it means infinity to Object.wait(long).
-                         */
-                        if (loopInterval > 0)
-                            sync.wait(3000);
+                        sync.wait(3000);
                     } catch (InterruptedException ie) {
                         interrupted = true;
                     }
@@ -421,7 +421,6 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                  * to execute, make sure that this instance has not been stopped while it waited for loopInterval.
                  */
                 if (!isStarted()) {
-                    ringToneStop();
                     break;
                 }
 
@@ -429,7 +428,6 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                  * The interface contract is that this audio plays once only if the loopCondition is null.
                  */
                 if (loopCondition == null) {
-                    ringToneStop();
                     break;
                 }
 
@@ -437,25 +435,16 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                  * The contract of the SCAudioClip interface with respect to loopCondition is that
                  * the loop will continue only if loopCondition successfully and explicitly evaluates to true.
                  */
-                boolean loop = false;
                 try {
-                    loop = loopCondition.call();
-                } catch (Throwable t) {
-                    if (t instanceof ThreadDeath)
-                        throw (ThreadDeath) t;
+                    if (!loopCondition.call())
+                        break;
+                } catch (Exception t) {
                     /*
                      * If loopCondition fails to successfully and explicitly evaluate to true,
                      * this audio should cease to play in a loop. Otherwise, there is a risk that
                      * whoever requested this audio to be played in a loop and provided the
                      * loopCondition will continue to play it forever.
                      */
-                }
-                /*
-                 * The loopCondition failed to successfully and explicitly evaluate to true so stop ringtone playing
-                 * and the loop is exited.
-                 */
-                if (!loop) {
-                    ringToneStop();
                     break;
                 }
             }
@@ -468,41 +457,58 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
 
     /**
      * Use RingTone to play android OS ringtone; AudioSystemClipImpl support only Wav media
-     * Warn: looping not support for < android-P
+     * Warn: looping and setVolume support only for android-P and above
      *
      * @param loopCondition check for loop
      */
-    private void ringTonePlayBack(Callable<Boolean> loopCondition)
+    private boolean ringTonePlayBack(Callable<Boolean> loopCondition)
+            throws Exception
     {
         // stop previously play ringTone if any and create new ringTone
         if (ringtone != null) {
             try {
                 ringtone.stop();
                 ringtone = null;
-            } catch (IllegalStateException ignore) {
+            } catch (IllegalStateException ex) {
+                // just ignore any ringtone stop exception
+                Timber.w("Ringtone stopping exception %s", ex.getMessage());
             }
         }
-        ringtone = RingtoneManager.getRingtone(aTalkApp.getGlobalContext(), Uri.parse(uri));
 
-        boolean loop = false;
-        try {
-            loop = (loopCondition != null) && loopCondition.call() && (getLoopInterval() > 0);
-            Timber.d("RingTone loopCondition %s: %s", loopCondition.call(), uri);
-        } catch (Exception e) {
-            Timber.w("Error in call to loopCondition: %s", e.getMessage());
-        }
+        Context ctx = aTalkApp.getGlobalContext();
+        ringtone = RingtoneManager.getRingtone(ctx, Uri.parse(uri));
+        if (ringtone == null)
+            return false;
+
+        boolean loop = (loopCondition != null) && loopCondition.call() && (getLoopInterval() > 0);
+
+        // cmeng: seem android ring tone already follow the system ring tone setting or mute state.
+        // AudioManager am = aTalkApp.getAudioManager();
+        // int currentVolume = am.getStreamVolume(AudioManager.STREAM_RING);
+        // am.setStreamVolume(AudioManager.STREAM_RING, currentVolume, AudioManager.FLAG_SHOW_UI);
+        // Timber.d(new Exception(), "RingTone playing loop = %s; volume = %s; %s",
+        //        loop, currentVolume, ringtone.getTitle(ctx));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ringtone.setLooping(loop);
+            ringtone.setLooping(loop);  // may not be necessary as this is taken care by RingTone playing
+            /*
+             * Set the ringTone playback volume according to system RingTone setting
+             * Seem above am.setStreamVolume() is also working for all android devices
+             */
+            // int maxVolume = am.getStreamMaxVolume(AudioManager.STREAM_RING);
+            // float ringVolume = (float) (1.0 - Math.log(maxVolume - currentVolume) / Math.log(maxVolume));
+            // Timber.d("RingTone playing volume %s/%s, %s", currentVolume, maxVolume, ringVolume);
+            // ringtone.setVolume(ringVolume);
         }
-        // AudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
         ringtone.play();
+        return true;
     }
 
     private void ringToneStop()
     {
         if (!uri.startsWith(AndroidResourceServiceImpl.PROTOCOL)) {
             if (ringtone != null) {
-                Timber.d("RingTone stopping: %s = %s", ringtone.getTitle(aTalkApp.getGlobalContext()), uri);
+                Timber.d(new Exception(), "RingTone stopping: %s = %s", ringtone.getTitle(aTalkApp.getGlobalContext()), uri);
                 try {
                     ringtone.stop();
                     ringtone = null;

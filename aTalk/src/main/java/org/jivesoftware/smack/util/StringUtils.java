@@ -445,6 +445,13 @@ public class StringUtils {
         return true;
     }
 
+    public static boolean isNullOrNotEmpty(CharSequence cs) {
+        if (cs == null) {
+            return true;
+        }
+        return !cs.toString().isEmpty();
+    }
+
     /**
      * Returns true if the given CharSequence is empty.
      *
@@ -474,6 +481,11 @@ public class StringUtils {
      */
     public static StringBuilder toStringBuilder(Collection<? extends Object> collection, String delimiter) {
         StringBuilder sb = new StringBuilder(collection.size() * 20);
+        appendTo(collection, delimiter, sb);
+        return sb;
+    }
+
+    public static void appendTo(Collection<? extends Object> collection, String delimiter, StringBuilder sb) {
         for (Iterator<? extends Object> it = collection.iterator(); it.hasNext();) {
             Object cs = it.next();
             sb.append(cs);
@@ -481,7 +493,6 @@ public class StringUtils {
                 sb.append(delimiter);
             }
         }
-        return sb;
     }
 
     public static String returnIfNotEmptyTrimmed(String string) {
@@ -542,7 +553,7 @@ public class StringUtils {
         if (cs == null) {
             return null;
         }
-        if (cs.toString().isEmpty()) {
+        if (isEmpty(cs)) {
             throw new IllegalArgumentException(message);
         }
         return cs;
