@@ -244,7 +244,6 @@ public class AndroidLoginRenderer implements LoginRenderer
 
         int notificationID = OSGiService.getGeneralNotificationId();
         if (notificationID == -1) {
-            Timber.d("Not displaying status notification because there's no global notification icon available.");
             return;
         }
 

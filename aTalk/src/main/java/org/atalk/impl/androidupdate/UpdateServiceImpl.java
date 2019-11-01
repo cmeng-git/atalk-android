@@ -7,7 +7,10 @@ package org.atalk.impl.androidupdate;
 
 import android.app.DownloadManager;
 import android.content.*;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Environment;
 
@@ -62,7 +65,6 @@ public class UpdateServiceImpl implements UpdateService
     private int latestVersionCode;
 
     /* DownloadManager Broadcast Receiver Handler */
-    private DownloadManager downloadManager;
     private DownloadReceiver downloadReceiver = null;
 
     /**
@@ -109,8 +111,8 @@ public class UpdateServiceImpl implements UpdateService
                     Uri fileUri = downloadManager.getUriForDownloadedFile(lastDownload);
                     File apkFile = new File(FilePathHelper.getPath(aTalkApp.getGlobalContext(), fileUri));
 
-                    if (apkFile.exists()) {
-                        // Ask the user if he wants to install
+                    // Ask the user if he wants to install if available and valid apk is found
+                    if (apkFile.exists() && isVersionCodeValid(apkFile, latestVersionCode)) {
                         askInstallDownloadedApk(fileUri);
                         return;
                     }
@@ -238,14 +240,6 @@ public class UpdateServiceImpl implements UpdateService
         rememberDownloadId(jobId);
     }
 
-    private void rememberDownloadId(long id)
-    {
-        SharedPreferences store = getStore();
-        String storeStr = store.getString(ENTRY_NAME, "");
-        storeStr += id + ",";
-        store.edit().putString(ENTRY_NAME, storeStr).apply();
-    }
-
     private class DownloadReceiver extends BroadcastReceiver
     {
         @Override
@@ -261,8 +255,8 @@ public class UpdateServiceImpl implements UpdateService
                     Uri fileUri = downloadManager.getUriForDownloadedFile(lastDownload);
                     File apkFile = new File(FilePathHelper.getPath(aTalkApp.getGlobalContext(), fileUri));
 
-                    if (apkFile.exists()) {
-                        // Ask the user if he wants to install
+                    // Ask the user if he wants to install if available and valid apk is found
+                    if (apkFile.exists() && isVersionCodeValid(apkFile, latestVersionCode)) {
                         askInstallDownloadedApk(fileUri);
                         return;
                     }
@@ -290,6 +284,14 @@ public class UpdateServiceImpl implements UpdateService
             store = aTalkApp.getGlobalContext().getSharedPreferences("store", Context.MODE_PRIVATE);
         }
         return store;
+    }
+
+    private void rememberDownloadId(long id)
+    {
+        SharedPreferences store = getStore();
+        String storeStr = store.getString(ENTRY_NAME, "");
+        storeStr += id + ",";
+        store.edit().putString(ENTRY_NAME, storeStr).apply();
     }
 
     private List<Long> getOldDownloads()
@@ -321,6 +323,20 @@ public class UpdateServiceImpl implements UpdateService
             downloadManager.remove(id);
         }
         getStore().edit().remove(ENTRY_NAME).apply();
+    }
+
+    /**
+     * Validate the downloaded apk file for correct versionCode
+     *
+     * @param apkFile apk File
+     * @param versionCode apk versionCode
+     * @return true if apkFile has the specified versionCode
+     */
+    private boolean isVersionCodeValid(File apkFile, int versionCode)
+    {
+        PackageManager pm = aTalkApp.getGlobalContext().getPackageManager();
+        PackageInfo info = pm.getPackageArchiveInfo(apkFile.getPath(), 0);
+        return (info != null) && (versionCode == info.versionCode);
     }
 
     /**

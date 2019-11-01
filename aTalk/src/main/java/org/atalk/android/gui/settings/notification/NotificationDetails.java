@@ -30,8 +30,8 @@ import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.resources.ResourceManagementService;
 
 /**
- * The screen that displays notification event details. It allows user to enable/disable the whole event as well as
- * adjust particular notification handlers like popups, sound or vibration.
+ * The screen that displays notification event details. It allows user to enable/disable the whole
+ * event as well as adjust particular notification handlers like popups, sound or vibration.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -232,6 +232,7 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
         NotificationAction action
                 = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_POPUP_MESSAGE);
         action.setEnabled(enabled);
+        notificationService.registerNotificationForEvent(eventType, action);
     }
 
     /**
@@ -243,6 +244,7 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
     {
         boolean enabled = ((CompoundButton) v).isChecked();
         soundHandler.setSoundNotificationEnabled(enabled);
+        notificationService.registerNotificationForEvent(eventType, soundHandler);
     }
 
     /**
@@ -254,6 +256,7 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
     {
         boolean enabled = ((CompoundButton) v).isChecked();
         soundHandler.setSoundPlaybackEnabled(enabled);
+        notificationService.registerNotificationForEvent(eventType, soundHandler);
     }
 
     /**
@@ -268,6 +271,7 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
         NotificationAction action
                 = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_VIBRATE);
         action.setEnabled(enabled);
+        notificationService.registerNotificationForEvent(eventType, action);
     }
 
     /**
@@ -349,15 +353,18 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
         }
         soundDescriptorUri = ringToneUri;
 
-        SoundNotificationAction origSoundAction = (SoundNotificationAction)
-                notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
+        soundHandler.setDescriptor(soundDescriptor);
+        notificationService.registerNotificationForEvent(eventType, soundHandler);
 
-        notificationService.registerNotificationForEvent(eventType, new SoundNotificationAction(
-                soundDescriptor,
-                origSoundAction.getLoopInterval(),
-                origSoundAction.isSoundNotificationEnabled(),
-                origSoundAction.isSoundPlaybackEnabled(),
-                origSoundAction.isSoundPCSpeakerEnabled()));
+//        SoundNotificationAction origSoundAction = (SoundNotificationAction)
+//                notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
+//
+//        notificationService.registerNotificationForEvent(eventType, new SoundNotificationAction(
+//                soundDescriptor,
+//                origSoundAction.getLoopInterval(),
+//                origSoundAction.isSoundNotificationEnabled(),
+//                origSoundAction.isSoundPlaybackEnabled(),
+//                origSoundAction.isSoundPCSpeakerEnabled()));
     }
 
     /**

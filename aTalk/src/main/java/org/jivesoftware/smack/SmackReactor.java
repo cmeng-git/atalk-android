@@ -211,15 +211,15 @@ public class SmackReactor {
 
                 long selectWait;
                 if (nextScheduledAction == null) {
-                // There is no next scheduled action, wait indefinitely in select() or until another thread invokes
-                // selector.wakeup().
+                    // There is no next scheduled action, wait indefinitely in select() or until another thread invokes
+                    // selector.wakeup().
                     selectWait = 0;
                 } else {
                     selectWait = nextScheduledAction.getTimeToDueMillis();
                 }
 
                 if (selectWait < 0) {
-                    // A scheduled action was just released and become ready to execute.
+                    // A scheduled action was just released and became ready to execute.
                     return;
                 }
 

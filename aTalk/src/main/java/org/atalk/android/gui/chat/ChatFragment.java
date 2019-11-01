@@ -2220,14 +2220,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         {
             if (ex != null) {
                 Timber.e(ex, "Failed to send file.");
-                if (ex instanceof IllegalStateException) {
-                    chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
-                            Message.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM));
-                }
-                else {
-                    chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
-                            Message.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_DELIVERY_ERROR, ex.getMessage()));
-                }
+                chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
+                        Message.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_DELIVERY_ERROR, ex.getMessage()));
             }
         }
 

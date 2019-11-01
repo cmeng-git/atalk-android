@@ -124,8 +124,10 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
         aTalkApp.waitForDisplay();
         new Handler(Looper.getMainLooper()).post(() -> {
             Context context = aTalkApp.getCurrentActivity();
-            IBRCaptchaProcessDialog mCaptchaDialog = new IBRCaptchaProcessDialog(context, pps, accountId, password);
-            mCaptchaDialog.show();
+            if (context != null) {
+                IBRCaptchaProcessDialog mCaptchaDialog = new IBRCaptchaProcessDialog(context, pps, accountId, password);
+                mCaptchaDialog.show();
+            }
         });
         return true;
     }

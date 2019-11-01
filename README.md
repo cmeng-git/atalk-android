@@ -35,6 +35,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * XEP-0048: Bookmarks for conference room and autoJoin on login
 * XEP-0070: Verifying HTTP Requests via XMPP entity to confirm it made the request
 * XEP-0184: Message Delivery Receipts with user enable/disable option
+* Bidirectional-streams Over Synchronous HTTP (BOSH) with Proxy support
 * Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway (experimental)
 * Support multi-user chat in room creation, server chat rooms discovery and joining chat room with captcha protection 
 * Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
@@ -72,6 +73,7 @@ It supports the following XEP's, standards for XMPP clients.
 * [XEP-0096: SI File Transfer](https://xmpp.org/extensions/xep-0096.html)
 * [XEP-0100: Gateway Interaction](https://xmpp.org/extensions/xep-0100.html)
 * [XEP-0115: Entity Capabilities](https://xmpp.org/extensions/xep-0115.html)
+* [XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH)](https://xmpp.org/extensions/xep-0124.html),
 * [XEP-0138: Stream Compression](https://xmpp.org/extensions/xep-0138.html)
 * [XEP-0153: vCard-Based Avatar](https://xmpp.org/extensions/xep-0153.html)
 * [XEP-0158: CAPTCHA Forms](https://xmpp.org/extensions/xep-0158.html)
@@ -86,6 +88,7 @@ It supports the following XEP's, standards for XMPP clients.
 * [XEP-0198: Stream Management](https://xmpp.org/extensions/xep-0198.html)
 * [XEP-0199: XMPP Ping](https://xmpp.org/extensions/xep-0199.html)
 * [XEP-0203: Delayed Delivery](https://xmpp.org/extensions/xep-0203.html)
+* [XEP-0206: XMPP Over BOSH](https://xmpp.org/extensions/xep-0206.html)
 * [XEP-0231: Bits of Binary](https://xmpp.org/extensions/xep-0231.html)
 * [XEP-0234: Jingle File Transfer](https://xmpp.org/extensions/xep-0234.html)
 * [XEP-0237: Roster Versioning](https://xmpp.org/extensions/xep-0237.html)

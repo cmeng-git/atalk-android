@@ -129,6 +129,8 @@ public class ConnectionInfo extends OSGiActivity
                 viewCertDialog = new X509CertificateView(this, chain);
                 viewCertDialog.show();
             }
+            else
+                aTalkApp.showToastMessage(aTalkApp.getResString(R.string.service_gui_callinfo_TLS_CERTIFICATE_CONTENT) + ": null!");
         }
         else {
             aTalkApp.showToastMessage(R.string.service_gui_ACCOUNT_UNREGISTERED, pps.getOurJID());

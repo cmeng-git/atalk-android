@@ -143,7 +143,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         synchronized (contactPresenceStatusListeners) {
             listeners = new ArrayList<>(contactPresenceStatusListeners);
         }
-        Timber.d("Dispatching Contact Status Change. Listeners = %s evt = %s", listeners.size(), evt);
+        // Timber.d("Dispatching Contact Status Change. Listeners = %s evt = %s", listeners.size(), evt);
 
         for (ContactPresenceStatusListener listener : listeners)
             listener.contactPresenceStatusChanged(evt);
@@ -165,7 +165,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         synchronized (subscriptionListeners) {
             listeners = new ArrayList<>(subscriptionListeners);
         }
-        Timber.d("Dispatching a Contact Property Change Event to %d listeners. Evt = %S", listeners.size(), evt);
+        // Timber.d("Dispatching a Contact Property Change Event to %d listeners. Evt = %S", listeners.size(), evt);
         for (SubscriptionListener listener : listeners)
             listener.contactModified(evt);
     }

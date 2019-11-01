@@ -149,6 +149,7 @@ class NotificationServiceImpl implements NotificationService
                 soundAction.setSoundPCSpeakerEnabled(soundDefaultAction.isSoundPCSpeakerEnabled());
             }
 
+            // cmeng: does not apply to aTalk - can be removed
             boolean fixDialingLoop = false;
             // hack to fix wrong value:just check whether loop for outgoing call (dialing) has
             // gone into config as 0, should be -1
@@ -167,7 +168,10 @@ class NotificationServiceImpl implements NotificationService
     }
 
     /**
-     * Executes a notification data object on the handlers.
+     * Executes a notification data object on the handlers on conditions:
+     * a. EvenType is active
+     * b. The specific action of the eventype is enabled
+     * c. There is a valid handler for the action
      *
      * @param data The notification data to act upon.
      */
@@ -177,6 +181,7 @@ class NotificationServiceImpl implements NotificationService
         if ((notification == null) || !notification.isActive())
             return;
 
+        // Loop and take action for each action that is enabled
         for (NotificationAction action : notification.getActions().values()) {
             String actionType = action.getActionType();
             if (!action.isEnabled())
@@ -188,12 +193,6 @@ class NotificationServiceImpl implements NotificationService
 
             try {
                 switch (actionType) {
-                    case ACTION_POPUP_MESSAGE:
-                        ((PopupMessageNotificationHandler) handler).popupMessage(
-                                (PopupMessageNotificationAction) action, data.getTitle(),
-                                data.getMessage(), data.getIcon(),
-                                data.getExtra(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA));
-                        break;
                     case ACTION_LOG_MESSAGE:
                         ((LogMessageNotificationHandler) handler).logMessage(
                                 (LogMessageNotificationAction) action, data.getMessage());
@@ -215,10 +214,11 @@ class NotificationServiceImpl implements NotificationService
                     case ACTION_VIBRATE:
                         ((VibrateNotificationHandler) handler).vibrate((VibrateNotificationAction) action);
                         break;
+                    case ACTION_POPUP_MESSAGE:
                     default:
                         ((PopupMessageNotificationHandler) handler).popupMessage(
-                                (PopupMessageNotificationAction) action, data.getTitle(),
-                                data.getMessage(), data.getIcon(),
+                                (PopupMessageNotificationAction) action,
+                                data.getTitle(), data.getMessage(), data.getIcon(),
                                 data.getExtra(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA));
                         break;
                 }
@@ -280,6 +280,7 @@ class NotificationServiceImpl implements NotificationService
 
         NotificationData data = new NotificationData(eventType, title, message, icon, extras);
         // cache the notification when the handlers are not yet ready
+        // Timber.d("Fire notification for: %s %s", eventType, notificationCache);
         if (notificationCache != null)
             notificationCache.add(data);
         else
@@ -808,6 +809,7 @@ class NotificationServiceImpl implements NotificationService
             return;
 
         notification.removeAction(actionType);
+        action.setEnabled(false);
         saveNotification(eventType, action, false, false);
         fireNotificationActionTypeEvent(ACTION_REMOVED, eventType, action);
     }
@@ -846,11 +848,12 @@ class NotificationServiceImpl implements NotificationService
     }
 
     /**
-     * Saves the event notification given by these parameters through the <tt>ConfigurationService</tt>.
+     * Saves the event notification action given by these parameters through the <tt>ConfigurationService</tt>.
+     * OR globally set the active state if action is null.
      *
      * @param eventType the name of the event
-     * @param action the notification action to change
-     * @param isActive is the event active
+     * @param action the notification action of the event to be changed
+     * @param isActive is the global notification event active state, valid only if action is null
      * @param isDefault is it a default one
      */
     private void saveNotification(String eventType, NotificationAction action, boolean isActive, boolean isDefault)
@@ -859,38 +862,41 @@ class NotificationServiceImpl implements NotificationService
         String actionTypeNodeName = null;
 
         List<String> eventTypes = configService.getPropertyNamesByPrefix(NOTIFICATIONS_PREFIX, true);
-
         for (String eventTypeRootPropName : eventTypes) {
             String eType = configService.getString(eventTypeRootPropName);
-            if (eType.equals(eventType))
+            if (eType.equals(eventType)) {
                 eventTypeNodeName = eventTypeRootPropName;
+                break;
+            }
         }
 
-        // If we didn't find the given event type in the configuration we save it here.
+        // If we didn't find the given event type in the configuration we create new here.
         if (eventTypeNodeName == null) {
             eventTypeNodeName = NOTIFICATIONS_PREFIX + ".eventType" + System.currentTimeMillis();
             configService.setProperty(eventTypeNodeName, eventType);
         }
 
-        // if we set active/inactive for the whole event notification
+        // We set active/inactive for the whole event notification if action is null
         if (action == null) {
             configService.setProperty(eventTypeNodeName + ".active", Boolean.toString(isActive));
             return;
         }
 
-        // Go through contained actions.
+        // Go through contained actions to find the specific action
         String actionPrefix = eventTypeNodeName + ".actions";
         List<String> actionTypes = configService.getPropertyNamesByPrefix(actionPrefix, true);
-
         for (String actionTypeRootPropName : actionTypes) {
             String aType = configService.getString(actionTypeRootPropName);
-            if (aType.equals(action.getActionType()))
+            if (aType.equals(action.getActionType())) {
                 actionTypeNodeName = actionTypeRootPropName;
+                break;
+            }
         }
 
+        // List of specific action properties to be updated in database
         Map<String, Object> configProperties = new HashMap<>();
 
-        // If we didn't find the given actionType in the configuration we save it here.
+        // If we didn't find the given actionType in the configuration we create new here.
         if (actionTypeNodeName == null) {
             actionTypeNodeName = actionPrefix + ".actionType" + System.currentTimeMillis();
             configProperties.put(actionTypeNodeName, action.getActionType());
@@ -929,7 +935,9 @@ class NotificationServiceImpl implements NotificationService
             }
             configProperties.put(actionTypeNodeName + ".repeat", vibrateAction.getRepeat());
         }
-        configProperties.put(actionTypeNodeName + ".enabled", Boolean.toString(isActive));
+
+        // cmeng: should update based on action.isEnabled() instead of active meant for the global event state
+        configProperties.put(actionTypeNodeName + ".enabled", Boolean.toString(action.isEnabled()));
         configProperties.put(actionTypeNodeName + ".default", Boolean.toString(isDefault));
         configService.setProperties(configProperties);
     }

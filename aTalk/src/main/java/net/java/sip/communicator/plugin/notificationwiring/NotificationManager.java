@@ -407,12 +407,11 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             // Stop all telephony related sounds.
             // stopAllTelephonySounds();
             NotificationData notification = callNotifications.get(ev.getSourceCall());
-
             if (notification != null)
                 stopSound(notification);
 
-            // Play the hangup sound.
-            fireNotification(HANG_UP);
+            // Play the hangup sound - Let peerStateChanged() fire HANG_UP; else double firing
+            // fireNotification(HANG_UP);
         } catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
@@ -1385,9 +1384,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             return;
 
         try {
-            NotificationService notificationService
-                    = NotificationWiringActivator.getNotificationService();
-
+            NotificationService notificationService = NotificationWiringActivator.getNotificationService();
             if (notificationService != null)
                 notificationService.stopNotification(data);
         } finally {

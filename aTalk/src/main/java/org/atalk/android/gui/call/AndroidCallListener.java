@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 
+import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.service.notification.NotificationData;
 import net.java.sip.communicator.service.notification.NotificationService;
 import net.java.sip.communicator.service.protocol.*;
@@ -212,8 +213,8 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     {
         if (CallState.CALL_ENDED.equals(evt.getNewValue())) {
             if (CallState.CALL_INITIALIZATION.equals(evt.getOldValue())) {
-                if (evt.getCause() != null
-                        && evt.getCause().getReasonCode() != CallPeerChangeEvent.NORMAL_CALL_CLEARING) {
+                if ((evt.getCause() != null)
+                        && (evt.getCause().getReasonCode() != CallPeerChangeEvent.NORMAL_CALL_CLEARING)) {
                     // Missed call
                     fireMissedCallNotification(evt);
                 }
@@ -243,7 +244,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
         byte[] contactIcon = contact.getImage();
         Date when = new Date();
 
-        notificationService.fireNotification(AndroidNotifications.MISSED_CALL,
+        notificationService.fireNotification(NotificationManager.MISSED_CALL,
                 aTalkApp.getResString(R.string.service_gui_MISSED_CALLS_TOOL_TIP), contact.getDisplayName() + " "
                         + GuiUtils.formatTime(when) + " " + GuiUtils.formatDate(when), contactIcon, extras);
     }

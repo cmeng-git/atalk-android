@@ -264,6 +264,7 @@ public class FilePathHelper
                 // Get column value which is the uri related file local path.
                 filePath = cursor.getString(columnIndex);
             }
+            cursor.close();
         }
         else {
             // throw exception to try using stream copy
