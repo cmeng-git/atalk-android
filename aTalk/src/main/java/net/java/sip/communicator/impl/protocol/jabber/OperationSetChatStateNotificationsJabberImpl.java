@@ -344,7 +344,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
             if (message.getError() != null)
                 sourceContact = opSetPeersPresence.findContactByID(fromJid);
 
-            if (sourceContact == null) {
+            if ((message.getType() != Message.Type.groupchat) && (sourceContact == null)) {
                 // create the volatile contact
                 sourceContact = opSetPeersPresence.createVolatileContact(fromJid, isPrivateMessagingAddress);
             }

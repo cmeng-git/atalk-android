@@ -253,7 +253,8 @@ public class OperationSetPersistentPresenceJabberImpl
     public synchronized ContactJabberImpl createVolatileContact(Jid id, boolean isPrivateMessagingContact,
             String displayName)
     {
-        // first check for already created one.
+        // Timber.w(new Exception(), "Created volatile contact %s", id);
+        // first check for existing before created new.
         ContactGroupJabberImpl notInContactListGroup = ssContactList.getNonPersistentGroup();
         ContactJabberImpl sourceContact = null;
         if (notInContactListGroup != null) {

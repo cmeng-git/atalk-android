@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.android.tools.build:gradle:3.5.2'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
@@ -44,8 +44,10 @@ configurations {
     playstoreImplementation
 
     // libraries duplication conflict
-    all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     all*.exclude group: 'xpp3', module: 'xpp3'
+
+    // no further required; found also fixes: Could not load org.igniterealtime.jbosh.HTTPSender implementation with fdroidDebug apk
+    // all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
 }
 
 configurations.all {
@@ -71,8 +73,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1111
-        versionName "2.1.1"
+        versionCode 1112
+        versionName "2.1.2"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -92,7 +94,7 @@ android {
 
     buildTypes {
         release {
-            // cannot enable for aTalk string resource as not all are per android style
+            // cannot enable for aTalk string resource as not all usages are per android style
             shrinkResources false
             // too many missing references when enable
             minifyEnabled false
@@ -130,6 +132,7 @@ android {
 
     sourceSets {
         main {
+            java.srcDirs = ['src/main/java']
             resources.srcDirs = ['src']
 
             // disable gradle automatic ndk-build call, which ignore our Android.mk
@@ -137,7 +140,6 @@ android {
 
             // This is necessary if you have pre-compiled libraries .jar/.so in your project.
             jniLibs.srcDirs = ['libs']
-            java.srcDirs = ['src/main/java']
         }
         release { java.srcDirs = ['src/release/java'] }
         debug { java.srcDirs = ['src/debug/java'] }
@@ -207,7 +209,7 @@ dependencies {
     implementation 'com.splitwise:tokenautocomplete:2.0.8'
 
     // when targeting Android API 23 and newer - class obsoleted
-    implementation 'cz.msebera.android:httpclient:4.4.1.2' // duplicate class
+    implementation 'cz.msebera.android:httpclient:4.5.8' // duplicate class
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
 
     implementation 'org.apache.commons:commons-lang3:3.8.1'

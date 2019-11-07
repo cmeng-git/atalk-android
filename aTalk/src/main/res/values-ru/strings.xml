@@ -356,7 +356,7 @@
 	<string name="service_gui_FOLDER_OPEN_NO_APPLICATION">Мы не смогли найти приложение для открытия этой папки</string>
     <string name="service_gui_GROUP_CHAT">Групповой чат</string>
 	<string name="service_gui_HIDE">Скрыть</string>
-	<string name="service_gui_HIDE_OFFLINE_CONTACTS">Скрыть автономные контакты</string>
+	<string name="service_gui_HIDE_OFFLINE_CONTACTS">Скрыть отключенных</string>
 	<string name="service_gui_HISTORY">История</string>
 	<string name="service_gui_HISTORY_CONTACT">История - %1$s</string>
 	<string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Отключить историю для этого контакта</string>

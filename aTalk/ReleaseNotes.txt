@@ -1,5 +1,16 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.1.2 (1112)
+Author:         cmeng
+Upload Date:	11/07/2019
+- Modify MediaRecorderSystem and AndroidCameraSystem to save camera parameters to persistent store and limit camera.open to one time only.
+- Number front and back camera for identification, as android may have multiple cameras.
+- Do not create volatile contact for muc user - Block OperationSetChatStateNotificationsJabberImpl#stateChanged to createVolatileContact when getType == Type.group
+- Remove build.gradle unneeded "all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'". This also fixes fdroidDebug built with
+  Encounter problem during XMPP Connection: java.lang.IllegalStateException: Could not load org.igniterealtime.jbosh.HTTPSender implementation
+- update library for cz.msebera.android:httpclient:4.4.1.2 => 4.5.8
+
+=========================================================================
 Version:		2.1.1 (1111)
 Author:         cmeng
 Upload Date:	11/01/2019

@@ -710,6 +710,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             Message newMessage = createMessageWithUID(content, encType, message.getStanzaId());
             newMessage.setRemoteMsgId(message.getStanzaId());
 
+            // createVolatileContact will check before create
             Contact sourceContact = opSetPersPresence.createVolatileContact(message.getFrom());
             MessageReceivedEvent msgEvt = new MessageReceivedEvent(newMessage, sourceContact, getTimeStamp(message));
             fireMessageEvent(msgEvt);

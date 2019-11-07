@@ -45,8 +45,7 @@ import cz.msebera.android.httpclient.params.HttpParams;
  *
  * @author Damian Minkov
  */
-public class SSLSocketFactoryEx
-    extends SSLSocketFactory
+public class SSLSocketFactoryEx extends SSLSocketFactory
 {
     /**
      * The context that will be used to create sockets.
