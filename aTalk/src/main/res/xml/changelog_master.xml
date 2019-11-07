@@ -6,6 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.1.2 (11/07/2019)" versioncode="1112">
+        <change>Fix Fdroid built to support BOSH connectivity option</change>
+        <change>Save camera parameters to persistent store hence limit camera access setup to one time only</change>
+        <change>Number cameras for identification in preference selection as android devices may have multiple cameras</change>
+        <change>Do not create volatile contact in NotInContactList section for conference users</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.1.1 (11/01/2019)" versioncode="1111">
         <change>Implement Bidirectional-streams Over Synchronous HTTP (BOSH); Certificates issue by android trusted CAs only</change>
         <change>Ensure all notification events parameters' changes are saved to persistent store</change>
