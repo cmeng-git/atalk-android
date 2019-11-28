@@ -38,6 +38,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.menu.MainMenuActivity;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.util.ComboBox;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -194,10 +195,10 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      */
     private void updateJoinButtonEnableState()
     {
-        String nickName = nicknameField.getText().toString().trim();
-        String chatRoomField = chatRoomComboBox.getText().trim();
+        String nickName = ViewUtil.toString(nicknameField);
+        String chatRoomField = chatRoomComboBox.getText();
 
-        boolean mEnable = (!TextUtils.isEmpty(chatRoomField) && !TextUtils.isEmpty(nickName));
+        boolean mEnable = (!TextUtils.isEmpty(chatRoomField) && (nickName != null));
         if (mEnable) {
             mJoinButton.setEnabled(true);
             mJoinButton.setAlpha(1.0f);
@@ -241,16 +242,6 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     }
 
     /**
-     * Gets the (chat room) subject displayed in this <tt>ChatRoomSubjectPanel</tt>.
-     *
-     * @return the (chat room) subject displayed in this <tt>ChatRoomSubjectPanel</tt>
-     */
-    public String getSubject()
-    {
-        return subjectField.getText().toString();
-    }
-
-    /**
      * Sets the (chat room) subject to be displayed in this <tt>ChatRoomSubjectPanel</tt>.
      *
      * @param subject the (chat room) subject to be displayed in this <tt>ChatRoomSubjectPanel</tt>
@@ -288,13 +279,13 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     private boolean createOrJoinChatRoom()
     {
         // allow nickName to contain spaces
-        String nickName = nicknameField.getText().toString().trim();
-        String subject = subjectField.getText().toString().trim();
+        String nickName = ViewUtil.toString(nicknameField);
+        String subject = ViewUtil.toString(subjectField);
         String chatRoomID = chatRoomComboBox.getText().replaceAll("\\s", "");
         Collection<String> contacts = new ArrayList<>();
         String reason = "Let's chat";
 
-        if (!TextUtils.isEmpty(chatRoomID) && !TextUtils.isEmpty(nickName)) {
+        if (!TextUtils.isEmpty(chatRoomID) && (nickName != null)) {
             ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
 
             // create new if chatRoom does not exist

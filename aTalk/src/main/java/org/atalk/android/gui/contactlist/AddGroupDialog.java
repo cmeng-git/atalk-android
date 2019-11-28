@@ -9,16 +9,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.EditText;
 
 import net.java.sip.communicator.service.contactlist.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.service.osgi.OSGiFragment;
 
@@ -96,11 +95,9 @@ public class AddGroupDialog extends OSGiFragment
             if (createThread != null)
                 return false;
 
-            AddGroupDialog content = (AddGroupDialog) dialog.getContentFragment();
-            EditText editText = content.getView().findViewById(R.id.editText);
-
-            String groupName = editText.getText().toString().trim();
-            if (groupName.length() == 0) {
+            View view = dialog.getContentFragment().getView();
+            String groupName = (view == null) ? null : ViewUtil.toString(view.findViewById(R.id.editText));
+            if (groupName == null) {
                 showErrorMessage(dialog.getString(R.string.service_gui_ADD_GROUP_EMPTY_NAME));
                 return false;
             }

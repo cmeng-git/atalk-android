@@ -304,34 +304,34 @@ public interface ChatRoom
     void removeMessageListener(ChatRoomMessageListener listener);
 
     /**
-     * Create a Message instance for sending a simple text messages with default (text/plain)
+     * Create a IMessage instance for sending a simple text messages with default (text/plain)
      * content type and encoding.
      *
      * @param messageText the string content of the message.
-     * @return Message the newly created message
+     * @return IMessage the newly created message
      */
-    Message createMessage(String messageText);
+    IMessage createMessage(String messageText);
 
     /**
-     * Create a Message instance for sending arbitrary MIME-encoding content.
+     * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
      * @return the newly created message.
      */
-    Message createMessage(String content, int encType, String subject);
+    IMessage createMessage(String content, int encType, String subject);
 
     /**
      * Sends the <tt>message</tt> to this chat room.
      *
-     * @param message the <tt>Message</tt> to send.
+     * @param message the <tt>IMessage</tt> to send.
      * @throws OperationFailedException if sending the message fails for some reason.
      */
-    void sendMessage(Message message)
+    void sendMessage(IMessage message)
             throws OperationFailedException;
 
-    void sendMessage(Message message, OmemoManager omemoManager);
+    void sendMessage(IMessage message, OmemoManager omemoManager);
 
     /**
      * Returns a reference to the provider that created this room.

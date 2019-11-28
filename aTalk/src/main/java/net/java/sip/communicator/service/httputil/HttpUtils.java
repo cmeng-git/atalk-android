@@ -17,6 +17,27 @@ package net.java.sip.communicator.service.httputil;
 
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
 
+import org.apache.http.Header;
+import org.apache.http.ProtocolException;
+import org.apache.http.*;
+import org.apache.http.auth.*;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.*;
+import org.apache.http.client.params.ClientPNames;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.*;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.*;
+import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.*;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.util.StringUtils;
@@ -29,25 +50,6 @@ import java.util.List;
 
 import javax.net.ssl.SSLContext;
 
-import cz.msebera.android.httpclient.ProtocolException;
-import cz.msebera.android.httpclient.*;
-import cz.msebera.android.httpclient.auth.*;
-import cz.msebera.android.httpclient.client.CredentialsProvider;
-import cz.msebera.android.httpclient.client.HttpClient;
-import cz.msebera.android.httpclient.client.methods.*;
-import cz.msebera.android.httpclient.client.params.ClientPNames;
-import cz.msebera.android.httpclient.client.utils.URLEncodedUtils;
-import cz.msebera.android.httpclient.conn.scheme.Scheme;
-import cz.msebera.android.httpclient.entity.StringEntity;
-import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
-import cz.msebera.android.httpclient.entity.mime.content.FileBody;
-import cz.msebera.android.httpclient.impl.client.*;
-import cz.msebera.android.httpclient.impl.conn.ProxySelectorRoutePlanner;
-import cz.msebera.android.httpclient.message.BasicHeader;
-import cz.msebera.android.httpclient.message.BasicNameValuePair;
-import cz.msebera.android.httpclient.params.*;
-import cz.msebera.android.httpclient.protocol.HttpContext;
-import cz.msebera.android.httpclient.util.EntityUtils;
 import timber.log.Timber;
 
 /**
@@ -107,8 +109,7 @@ public class HttpUtils
      * CredentialsStorageService service is used.
      * @param headerParamNames additional header name to include
      * @param headerParamValues corresponding header value to include
-     * @return the result if any or null if connection was not possible
-     * or canceled by user.
+     * @return the result if any or null if connection was not possible or canceled by user.
      */
     public static HTTPResponseResult openURLConnection(String address,
             String usernamePropertyName, String passwordPropertyName,
@@ -141,8 +142,7 @@ public class HttpUtils
      * when hitting password protected site.
      * Keep asking for password till user clicks cancel or enters correct
      * password. When 'remember password' is checked password is saved, if this
-     * password and username are not correct clear them, if there are correct
-     * they stay saved.
+     * password and username are not correct clear them, if there are correct they stay saved.
      *
      * @param httpClient the configured http client to use.
      * @param req the request for now it is get or post.
@@ -182,10 +182,8 @@ public class HttpUtils
                 break;
             }
 
-            // check for post redirect as post redirects are not handled
-            // automatically
-            // RFC2616 (10.3 Redirection 3xx).
-            // The second request (forwarded method) can only be a GET or HEAD.
+            // check for post redirect as post redirects are not handled automatically
+            // RFC2616 (10.3 Redirection 3xx). The second request (forwarded method) can only be a GET or HEAD.
             Header locationHeader = response.getFirstHeader("location");
 
             if (locationHeader != null
@@ -243,13 +241,10 @@ public class HttpUtils
      * @param fileParamName the name of the param for the file.
      * @param file the file we will send.
      * @param usernamePropertyName the property to use to retrieve/store
-     * username value if protected site is hit, for username
-     * ConfigurationService service is used.
+     * username value if protected site is hit, for username ConfigurationService service is used.
      * @param passwordPropertyName the property to use to retrieve/store
-     * password value if protected site is hit, for password
-     * CredentialsStorageService service is used.
-     * @return the result or null if send was not possible or
-     * credentials ask if any was canceled.
+     * password value if protected site is hit, for password CredentialsStorageService service is used.
+     * @return the result or null if send was not possible or credentials ask if any was canceled.
      */
     public static HTTPResponseResult postFile(String address, String fileParamName, File file,
             String usernamePropertyName, String passwordPropertyName)
@@ -257,20 +252,23 @@ public class HttpUtils
         DefaultHttpClient httpClient;
         try {
             HttpPost postMethod = new HttpPost(address);
-            httpClient = getHttpClient(
-                    usernamePropertyName, passwordPropertyName,
+            httpClient = getHttpClient(usernamePropertyName, passwordPropertyName,
                     postMethod.getURI().getHost(), null);
 
             String mimeType = URLConnection.guessContentTypeFromName(file.getPath());
             if (mimeType == null)
                 mimeType = "application/octet-stream";
 
-            FileBody bin = new FileBody(file, mimeType);
-            MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create();
-            reqEntity.addPart(fileParamName, bin);
+            FileBody fileBody = new FileBody(file, ContentType.create(mimeType));
+            // MultipartEntity reqEntity = new MultipartEntity();
+            // reqEntity.addPart(fileParamName, fileBody);
 
+            HttpEntity reqEntity = MultipartEntityBuilder.create()
+                    .addPart(fileParamName, fileBody)
+                    .build();
+
+            postMethod.setEntity(reqEntity);
             HttpEntity resEntity = executeMethod(httpClient, postMethod, null, null);
-            postMethod.setEntity(resEntity);
 
             if (resEntity == null)
                 return null;
@@ -295,13 +293,10 @@ public class HttpUtils
      * @param formParamNames the parameter names to include in post.
      * @param formParamValues the corresponding parameter values to use.
      * @param usernameParamIx the index of the username parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt>
-     * if any, otherwise -1.
+     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
      * @param passwordParamIx the index of the password parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt>
-     * if any, otherwise -1.
-     * @return the result or null if send was not possible or
-     * credentials ask if any was canceled.
+     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
+     * @return the result or null if send was not possible or credentials ask if any was canceled.
      */
     public static HTTPResponseResult postForm(String address,
             String usernamePropertyName, String passwordPropertyName,
@@ -330,12 +325,9 @@ public class HttpUtils
      * <tt>formParamNames</tt> and <tt>formParamValues</tt>
      * if any, otherwise -1.
      * @param passwordParamIx the index of the password parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt>
-     * if any, otherwise -1.
-     * @param redirectHandler handles redirection, should we redirect and
-     * the actual redirect.
-     * @return the result or null if send was not possible or
-     * credentials ask if any was canceled.
+     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
+     * @param redirectHandler handles redirection, should we redirect and the actual redirect.
+     * @return the result or null if send was not possible or credentials ask if any was canceled.
      */
     public static HTTPResponseResult postForm(String address,
             String usernamePropertyName,
@@ -363,8 +355,7 @@ public class HttpUtils
      * @param address HTTP address.
      * @param headerParamNames additional header name to include
      * @param headerParamValues corresponding header value to include
-     * @return the result or null if send was not possible or
-     * credentials ask if any was canceled.
+     * @return the result or null if send was not possible or credentials ask if any was canceled.
      */
     public static HTTPResponseResult postForm(String address,
             List<String> headerParamNames,
@@ -381,25 +372,19 @@ public class HttpUtils
      *
      * @param address HTTP address.
      * @param usernamePropertyName the property to use to retrieve/store
-     * username value if protected site is hit, for username
-     * ConfigurationService service is used.
+     * username value if protected site is hit, for username ConfigurationService service is used.
      * @param passwordPropertyName the property to use to retrieve/store
-     * password value if protected site is hit, for password
-     * CredentialsStorageService service is used.
+     * password value if protected site is hit, for password CredentialsStorageService service is used.
      * @param formParamNames the parameter names to include in post.
      * @param formParamValues the corresponding parameter values to use.
      * @param usernameParamIx the index of the username parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt>
-     * if any, otherwise -1.
+     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
      * @param passwordParamIx the index of the password parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt>
-     * if any, otherwise -1.
-     * @param redirectHandler handles redirection, should we redirect and
-     * the actual redirect.
+     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
+     * @param redirectHandler handles redirection, should we redirect and the actual redirect.
      * @param headerParamNames additional header name to include
      * @param headerParamValues corresponding header value to include
-     * @return the result or null if send was not possible or
-     * credentials ask if any was canceled.
+     * @return the result or null if send was not possible or credentials ask if any was canceled.
      */
     public static HTTPResponseResult postForm(String address,
             String usernamePropertyName,
@@ -476,15 +461,12 @@ public class HttpUtils
      * @param formParamNames the parameter names to include in post.
      * @param formParamValues the corresponding parameter values to use.
      * @param usernameParamIx the index of the username parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt>
-     * if any, otherwise -1.
+     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
      * @param passwordParamIx the index of the password parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt>
-     * if any, otherwise -1.
+     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
      * @param headerParamNames additional header name to include
      * @param headerParamValues corresponding header value to include
-     * @return the result or null if send was not possible or
-     * credentials ask if any was canceled.
+     * @return the result or null if send was not possible or credentials ask if any was canceled.
      */
     private static HttpEntity postForm(
             DefaultHttpClient httpClient,
@@ -531,7 +513,7 @@ public class HttpUtils
         }
 
         // construct the name value pairs we will be sending
-        List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+        List<NameValuePair> parameters = new ArrayList<>();
         // there can be no params
         if (formParamNames != null) {
             for (int i = 0; i < formParamNames.size(); i++) {
@@ -554,8 +536,7 @@ public class HttpUtils
         httpClient.setRedirectStrategy(new CustomRedirectStrategy(redirectHandler, parameters));
 
         // Uses String UTF-8 to keep compatible with android version and
-        // older versions of the http client libs, as the one used
-        // in debian (4.1.x)
+        // older versions of the http client libs, as the one used in debian (4.1.x)
         String s = URLEncodedUtils.format(parameters, "UTF-8");
         StringEntity entity = new StringEntity(s, "UTF-8");
         // set content type to "application/x-www-form-urlencoded"
@@ -661,16 +642,14 @@ public class HttpUtils
         private AuthScope usedScope = null;
 
         /**
-         * The property to use to retrieve/store
-         * username value if protected site is hit, for username
-         * ConfigurationService service is used.
+         * The property to use to retrieve/store username value if protected site is hit,
+         * for username ConfigurationService service is used.
          */
         private String usernamePropertyName;
 
         /**
-         * The property to use to retrieve/store
-         * password value if protected site is hit, for password
-         * CredentialsStorageService service is used.
+         * The property to use to retrieve/store password value if protected site is hit,
+         * for password CredentialsStorageService service is used.
          */
         private String passwordPropertyName;
 
@@ -693,11 +672,9 @@ public class HttpUtils
          * Creates HTTPCredentialsProvider.
          *
          * @param usernamePropertyName the property to use to retrieve/store
-         * username value if protected site is hit, for username
-         * ConfigurationService service is used.
+         * username value if protected site is hit, for username ConfigurationService service is used.
          * @param passwordPropertyName the property to use to retrieve/store
-         * password value if protected site is hit, for password
-         * CredentialsStorageService service is used.
+         * password value if protected site is hit, for password CredentialsStorageService service is used.
          */
         HTTPCredentialsProvider(String usernamePropertyName,
                 String passwordPropertyName)
@@ -714,14 +691,11 @@ public class HttpUtils
         }
 
         /**
-         * Get the {@link cz.msebera.android.httpclient.auth.Credentials credentials} for the
-         * given authentication scope.
+         * Get the {@link org.apache.http.auth.Credentials credentials} for the given authentication scope.
          *
-         * @param authscope the {@link cz.msebera.android.httpclient.auth.AuthScope
-         * authentication scope}
+         * @param authscope the {@link org.apache.http.auth.AuthScope authentication scope}
          * @return the credentials
-         * @see #setCredentials(cz.msebera.android.httpclient.auth.AuthScope,
-         * cz.msebera.android.httpclient.auth.Credentials)
+         * @see #setCredentials(org.apache.http.auth.AuthScope, org.apache.http.auth.Credentials)
          */
         public Credentials getCredentials(AuthScope authscope)
         {
@@ -739,8 +713,8 @@ public class HttpUtils
 
             // if password is not saved ask user for credentials
             if (pass == null) {
-                AuthenticationWindowService authenticationWindowService =
-                        HttpUtilActivator.getAuthenticationWindowService();
+                AuthenticationWindowService authenticationWindowService
+                        = HttpUtilActivator.getAuthenticationWindowService();
 
                 if (authenticationWindowService == null) {
                     Timber.e("No AuthenticationWindowService implementation");
@@ -749,14 +723,10 @@ public class HttpUtils
 
                 AuthenticationWindowService.AuthenticationWindow authWindow =
                         authenticationWindowService.create(
-                                authUsername, null,
-                                authscope.getHost(),
-                                true,
-                                false,
+                                authUsername, null, authscope.getHost(), true, false,
                                 null, null, null, null, null,
                                 errorMessage,
-                                HttpUtilActivator.getResources().getSettingsString(
-                                        "plugin.provisioning.SIGN_UP_LINK"));
+                                HttpUtilActivator.getResources().getSettingsString("plugin.provisioning.SIGN_UP_LINK"));
                 authWindow.setVisible(true);
 
                 if (!authWindow.isCanceled()) {
@@ -770,10 +740,10 @@ public class HttpUtils
                     // if password remember is checked lets save passwords,
                     // if they seem not correct later will be removed.
                     if (authWindow.isRememberPassword()) {
-                        HttpUtilActivator.getConfigurationService().setProperty(
-                                usernamePropertyName, authWindow.getUserName());
-                        HttpUtilActivator.getCredentialsService().storePassword(
-                                passwordPropertyName, new String(authWindow.getPassword())
+                        HttpUtilActivator.getConfigurationService()
+                                .setProperty(usernamePropertyName, authWindow.getUserName());
+                        HttpUtilActivator.getCredentialsService()
+                                .storePassword(passwordPropertyName, new String(authWindow.getPassword())
                         );
                     }
 
@@ -787,8 +757,7 @@ public class HttpUtils
             else {
                 // we have saved values lets return them
                 authUsername =
-                        HttpUtilActivator.getConfigurationService().getString(
-                                usernamePropertyName);
+                        HttpUtilActivator.getConfigurationService().getString(usernamePropertyName);
                 authPassword = pass;
 
                 return new UsernamePasswordCredentials(
@@ -827,13 +796,10 @@ public class HttpUtils
          */
         private static String getCredentialProperty(AuthScope authscope)
         {
-            StringBuilder pref = new StringBuilder();
-
-            pref.append(HTTP_CREDENTIALS_PREFIX).append(authscope.getHost())
-                    .append(".").append(authscope.getRealm())
-                    .append(".").append(authscope.getPort());
-
-            return pref.toString();
+            String pref = HTTP_CREDENTIALS_PREFIX + authscope.getHost() +
+                    "." + authscope.getRealm() +
+                    "." + authscope.getPort();
+            return pref;
         }
 
         /**
@@ -922,8 +888,7 @@ public class HttpUtils
         {
             super.close();
 
-            // When HttpClient instance is no longer needed,
-            // shut down the connection manager to ensure
+            // When HttpClient instance is no longer needed, shut down the connection manager to ensure
             // immediate de-allocation of all system resources
             httpClient.getConnectionManager().shutdown();
         }
@@ -1050,11 +1015,9 @@ public class HttpUtils
          * Check whether we need to redirect.
          *
          * @param request the initial request
-         * @param response the response containing the location param for
-         * redirect.
+         * @param response the response containing the location param for redirect.
          * @param context the http context.
          * @return should we redirect.
-         * @throws ProtocolException
          */
         @Override
         public boolean isRedirected(

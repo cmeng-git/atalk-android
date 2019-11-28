@@ -1,5 +1,38 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.1.3 (1113)
+Author:         cmeng
+Upload Date:	11/28/2019
+- Support send and receive of instant messages that contain lightweight text markup (XEP-0071: XHTML-IM)
+- Send OMEMO lightweight text markup in message body instead of XHTML extension (work only with aTalk)
+- Enhance UI - add unread message badges for contacts and chatRooms list views
+- Block all notification events for muc history messages and from chatRooms with autoJoin options enabled
+- Add support for audio chat message with offline buddy and during conference
+- Port to use smack ChatStateManager and add enhancement to support group chat state notification
+- Enhance chatState notification event support for group chat.
+- Fixed missing Cancel and Apply buttons in account info view when running in android-9 (API-28);
+  Root cause problem in >= android-9 (API-28)
+  * Remove aboutMeArea.setEnabled(false) as it causes softKeyboard to auto-launch
+  * All view Dimensions are incorrectly init by android OS when soffKeyboard is auto launched.
+- Eliminate all potential "null object reference" in TextView.getText.toString() - lead to ChatRoomBookmarksDialog crashes
+- Improve ChatController UI on message correction and prevent text entry past boundary - combined correct and cancel as one
+- Ensure HtmlImageGetter.HtmlImageGetter() to check for valid 'Image resource id' before fetching drawable image
+- MessageReceivedEvent must check (getLastPathSegment() != null) before set eventType = ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD
+  e.g.This is an invalid http download link https://cmeng-git.github.io
+- Update aTalk#MainPagerAdapter method to allow others to findFragmentByTag
+- Remove all static references to context classes for contactListFragment and contactListAdapter in aTalkApp
+- Revert HttpUtils.java to use org.apache library and remove dependency cz.msebera.android:httpclient:4.5.8
+- Change online help link in About to use https://cmeng-git.github.io instead of https://atalk.sytes.net/atalk
+- Rename net.java.sip.communicator.service.protocol.Message => IMessage (avoid same naming as smack Message)
+- create FileBackend#copy(is, os) and remove dependency for 'org.apache.commons:commons-io:1.3.2'
+- Remove unused Html.java class; replacing it with StringEscapeUtils.escapeHtml4();
+- Change or bounce library versions for:
+  org.apache.commons:commons-lang3:3.8.1 => 'org.apache.commons:commons-text:1.8';
+  org.apache.james:apache-mime4j-core:0.8.2 => 0.8.3
+  org.bouncycastle:bcpkix-jdk15on:1.61 => 1.62
+- Change build.gradle to have smack libraries as individual jar for easy reference, instead of merged jarjar
+
+=========================================================================
 Version:		2.1.2 (1112)
 Author:         cmeng
 Upload Date:	11/07/2019

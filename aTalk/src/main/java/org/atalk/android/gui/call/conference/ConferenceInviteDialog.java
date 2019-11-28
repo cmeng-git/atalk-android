@@ -28,7 +28,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.*;
@@ -264,12 +264,13 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
 
     private MetaContactListAdapter getContactListAdapter()
     {
-        ContactListFragment clf = aTalkApp.getContactListFragment();
+        ContactListFragment clf = (ContactListFragment) aTalk.getFragment(aTalk.CL_FRAGMENT);
         if (contactListAdapter == null) {
             // Disable call button options
             contactListAdapter = new MetaContactListAdapter(clf, false);
             contactListAdapter.initModelData();
         }
+        // Do not include groups with zero member in main contact list
         contactListAdapter.nonZeroContactGroupList();
         return contactListAdapter;
     }
@@ -294,8 +295,7 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
         if ((clicked instanceof MetaContact)) {
             MetaContact metaContact = (MetaContact) clicked;
             if (MUC_OFFLINE_ALLOW
-                    || !metaContact.getContactsForOperationSet(OperationSetMultiUserChat.class)
-                    .isEmpty()) {
+                    || !metaContact.getContactsForOperationSet(OperationSetMultiUserChat.class).isEmpty()) {
                 // Toggle muc Contact Selection
                 String key = metaContact.getMetaUID();
                 if (mucContactList.containsKey(key)) {
@@ -491,11 +491,11 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
         if (callees.size() > 0) {
             if (conference != null) {
                 CallManager.inviteToJitsiVideobridgeConfCall(
-                        callees.toArray(new String[callees.size()]), conference.getCalls().get(0));
+                        callees.toArray(new String[0]), conference.getCalls().get(0));
             }
             else {
                 CallManager.createJitsiVideobridgeConfCall(preselectedProvider,
-                        callees.toArray(new String[callees.size()]));
+                        callees.toArray(new String[0]));
             }
         }
     }

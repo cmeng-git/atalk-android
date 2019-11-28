@@ -10,7 +10,7 @@ import net.java.otr4j.io.SerializationConstants;
 import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.TransformLayer;
 import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
@@ -73,7 +73,7 @@ public class OtrTransformLayer implements TransformLayer {
 			// Forge a new message based on the new contents.
 			OperationSetBasicInstantMessaging imOpSet
                     = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
-			Message processedMessage = imOpSet.createMessage(fragmentContent,
+			IMessage processedMessage = imOpSet.createMessage(fragmentContent,
                     ((MessageJabberImpl) evt.getSourceMessage()).getEncType(), evt.getSourceMessage().getSubject());
 
 			// Create a new event and return.
@@ -107,7 +107,7 @@ public class OtrTransformLayer implements TransformLayer {
 		// Forge a new message based on the new contents.
 		OperationSetBasicInstantMessaging imOpSet
                 = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
-		Message processedMessage = imOpSet.createMessageWithUID(processedMessageContent,
+		IMessage processedMessage = imOpSet.createMessageWithUID(processedMessageContent,
                 ((MessageJabberImpl) evt.getSourceMessage()).getEncType(), evt.getSourceMessage().getMessageUID());
 
 		// Create a new event and return.

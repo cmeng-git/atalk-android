@@ -108,9 +108,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
         boshURL.addTextChangedListener(this);
 
         cbHttpProxy = this.findViewById(R.id.cbHttpProxy);
-        cbHttpProxy.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            hasChanges = true;
-        });
+        cbHttpProxy.setOnCheckedChangeListener((buttonView, isChecked) -> hasChanges = true);
 
         proxyHost = this.findViewById(R.id.proxyHost);
         proxyHost.addTextChangedListener(this);
@@ -212,12 +210,14 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
      */
     private boolean saveBoshProxySettings()
     {
-        String type = spinnerType.getSelectedItem().toString();
-        String boshUrl = getString(boshURL);
-        String host = getString(proxyHost);
-        String port = getString(proxyPort);
-        String userName = getString(proxyUserName);
-        String password = getString(proxyPassword);
+        Object sType = spinnerType.getSelectedItem();
+        String type = (sType == null) ? NONE : sType.toString();
+
+        String boshUrl = ViewUtil.toString(boshURL);
+        String host = ViewUtil.toString(proxyHost);
+        String port = ViewUtil.toString(proxyPort);
+        String userName = ViewUtil.toString(proxyUserName);
+        String password = ViewUtil.toString(proxyPassword);
 
         String accPrefix = mAccountUuid + ".";
         ConfigurationService configSrvc = ProtocolProviderActivator.getConfigurationService();
@@ -225,11 +225,8 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
         jbrReg.setProxyType(type);
 
         switch (type) {
-            case NONE:
-                break;
-
             case BOSH:
-                if (TextUtils.isEmpty(boshUrl)) {
+                if (boshUrl == null) {
                     aTalkApp.showToastMessage(R.string.plugin_proxy_BOSHURL_NULL);
                     return false;
                 }
@@ -240,17 +237,18 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
                 configSrvc.setProperty(accPrefix + ProtocolProviderFactory.BOSH_PROXY_HTTP_ENABLED, isHttpProxy);
                 jbrReg.setBoshHttpProxyEnabled(isHttpProxy);
 
-                // Not further proxy settings checking if BOSH HTTP Proxy is not enabled
+                // Continue with proxy settings checking if BOSH HTTP Proxy is enabled
                 if (!isHttpProxy)
                     break;
             case HTTP:
             case SOCKS4:
             case SOCKS5:
-                if ((TextUtils.isEmpty(host) || TextUtils.isEmpty(port))) {
+                if ((host == null) || (port == null)) {
                     aTalkApp.showToastMessage(R.string.plugin_proxy_HOST_PORT_NULL);
                     return false;
                 }
                 break;
+            case NONE:
             default:
                 break;
         }
@@ -273,18 +271,6 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
 
         AccountPreferenceFragment.setUncommittedChanges();
         return true;
-    }
-
-    /**
-     * Get the Text from the EditText field
-     *
-     * @param editText EditText
-     * @return String or null
-     */
-    private String getString(EditText editText)
-    {
-        Editable editable = editText.getText();
-        return (editable != null) ? editable.toString().trim() : null;
     }
 
     /**

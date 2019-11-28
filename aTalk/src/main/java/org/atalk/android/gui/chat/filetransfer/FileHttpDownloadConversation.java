@@ -383,7 +383,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             url = dnLink;
         }
         // for testing only to display url in chat window
-        // mChatFragment.getChatPanel().addMessage("", new Date(), Message.ENCODE_PLAIN, Message.ENCODE_PLAIN, aesgcmUrl.getAesgcmUrl());
+        // mChatFragment.getChatPanel().addMessage("", new Date(), IMessage.ENCODE_PLAIN, IMessage.ENCODE_PLAIN, aesgcmUrl.getAesgcmUrl());
 
         Uri uri = Uri.parse(url);
         Long jobId = download(uri);

@@ -21,8 +21,6 @@ import org.atalk.android.gui.LauncherActivity;
 import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
-import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.DrawableCache;
@@ -79,13 +77,6 @@ public class aTalkApp extends Application
      * The currently shown activity.
      */
     private static Activity currentActivity = null;
-
-    /**
-     * The contact list object.
-     */
-    private static MetaContactListAdapter contactListAdapter;
-
-    private static ContactListFragment contactListFragment;
 
     /**
      * Bitmap cache instance.
@@ -436,46 +427,6 @@ public class aTalkApp extends Application
     public static Activity getCurrentActivity()
     {
         return currentActivity;
-    }
-
-    /**
-     * Sets the <tt>contactListAdapter</tt> component currently used to show the contact list.
-     *
-     * @param cList the contact list object to set
-     */
-    public static void setContactListAdapter(MetaContactListAdapter cList)
-    {
-        contactListAdapter = cList;
-    }
-
-    /**
-     * Returns the component used to show the contact list.
-     *
-     * @return the component used to show the contact list
-     */
-    public static MetaContactListAdapter getContactListAdapter()
-    {
-        return contactListAdapter;
-    }
-
-    /**
-     * Sets the <tt>contactListFragment</tt> component currently used to show the contact list.
-     *
-     * @param cListFragment the contact list fragment object to set
-     */
-    public static void setContactListFragment(ContactListFragment cListFragment)
-    {
-        contactListFragment = cListFragment;
-    }
-
-    /**
-     * Returns the ContactListFragment that contains the contact list.
-     *
-     * @return the ContactListFragment that contains the contact lists
-     */
-    public static ContactListFragment getContactListFragment()
-    {
-        return contactListFragment;
     }
 
     /**

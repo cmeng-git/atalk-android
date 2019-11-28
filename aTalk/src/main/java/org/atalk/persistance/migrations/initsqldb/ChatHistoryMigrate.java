@@ -22,7 +22,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.history.HistoryService;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 
@@ -41,7 +40,7 @@ import javax.xml.parsers.DocumentBuilder;
 
 import timber.log.Timber;
 
-import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.IMessage;
 import static org.atalk.android.gui.chat.ChatMessage.STATUS_RECEIVED;
 import static org.atalk.android.gui.chat.ChatMessage.STATUS_SEND;
 
@@ -248,7 +247,7 @@ public class ChatHistoryMigrate extends Activity
                         = XMLUtils.findChild((Element) recordNode, ATTR_DIR).getTextContent();
                 msgValues.put(ChatMessage.DIRECTION, direction);
 
-                // default setting for Message and File History in/out
+                // default setting for IMessage and File History in/out
                 msgValues.put(ChatMessage.ENTITY_JID, entityJid);
 
                 if ((chatType == Type_Chat) || (chatType == Type_Muc)) {
@@ -261,7 +260,7 @@ public class ChatHistoryMigrate extends Activity
 
                     //					content = XMLUtils.findChild((Element) recordNode, ATTR_ENC).getTextContent();
                     //					msgValues.put(ChatMessage.ENC_TYPE, content);
-                    msgValues.put(ChatMessage.ENC_TYPE, Message.ENCODE_PLAIN);
+                    msgValues.put(ChatMessage.ENC_TYPE, IMessage.ENCODE_PLAIN);
 
                     timeDate = XMLUtils.findChild((Element) recordNode, ATTR_TS).getTextContent();
 
@@ -314,7 +313,7 @@ public class ChatHistoryMigrate extends Activity
                     // 		FileHistoryConversation.getStatusMessage(direction, status));
                     msgValues.put(ChatMessage.MSG_BODY, status);
                     msgValues.put(ChatMessage.STATUS, status);
-                    msgValues.put(ChatMessage.ENC_TYPE, Message.ENCODE_PLAIN);
+                    msgValues.put(ChatMessage.ENC_TYPE, IMessage.ENCODE_PLAIN);
 
                     content = XMLUtils.findChild((Element) recordNode, ATTR_FILE).getTextContent();
                     msgValues.put(ChatMessage.FILE_PATH, content);

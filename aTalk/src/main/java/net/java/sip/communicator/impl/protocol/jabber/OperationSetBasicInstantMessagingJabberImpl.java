@@ -9,7 +9,6 @@ import android.os.Build;
 import android.text.Html;
 import android.text.TextUtils;
 
-import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
@@ -172,34 +171,34 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     /**
-     * Create a Message instance with the specified UID, content type and a default encoding. This
+     * Create a IMessage instance with the specified UID, content type and a default encoding. This
      * method can be useful when message correction is required. One can construct the corrected
      * message to have the same UID as the message before correction.
      *
      * @param messageText the string content of the message.
      * @param encType the encryption type for the <tt>content</tt>
      * @param messageUID the unique identifier of this message.
-     * @return Message the newly created message
+     * @return IMessage the newly created message
      */
-    public Message createMessageWithUID(String messageText, int encType, String messageUID)
+    public IMessage createMessageWithUID(String messageText, int encType, String messageUID)
     {
         return new MessageJabberImpl(messageText, encType, null, messageUID);
     }
 
     /**
-     * Create a Message instance for sending arbitrary MIME-encoding content.
+     * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
      * @param encType the encryption type for the <tt>content</tt>
      * @return the newly created message.
      */
-    public Message createMessage(String content, int encType)
+    public IMessage createMessage(String content, int encType)
     {
         return createMessage(content, encType, null);
     }
 
     /**
-     * Create a Message instance for sending arbitrary MIME-encoding content.
+     * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
      * @param encType the encryption type for the <tt>content</tt>
@@ -207,7 +206,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @return the newly created message.
      */
     @Override
-    public Message createMessage(String content, int encType, String subject)
+    public IMessage createMessage(String content, int encType, String subject)
     {
         return new MessageJabberImpl(content, encType, subject, null);
     }
@@ -236,7 +235,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     public boolean isContentTypeSupported(int mimeType)
     {
-        return ((Message.ENCODE_PLAIN == mimeType) || (Message.ENCODE_HTML == mimeType));
+        return ((IMessage.ENCODE_PLAIN == mimeType) || (IMessage.ENCODE_HTML == mimeType));
     }
 
     /**
@@ -250,10 +249,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     public boolean isContentTypeSupported(int mimeType, Contact contact)
     {
         // by default we support default mime type, for other mime types method must be overridden
-        if (Message.ENCODE_PLAIN == mimeType) {
+        if (IMessage.ENCODE_PLAIN == mimeType) {
             return true;
         }
-        else if (Message.ENCODE_HTML == mimeType) {
+        else if (IMessage.ENCODE_HTML == mimeType) {
             Jid toJid = getRecentFullJidForContactIfPossible(contact);
             return jabberProvider.isFeatureListSupported(toJid, XHTMLExtension.NAMESPACE);
         }
@@ -360,7 +359,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * calling function can modify it if needed.
      */
     private MessageDeliveredEvent sendMessage(Contact to, ContactResource toResource,
-            Message message, ExtensionElement[] extensions)
+            IMessage message, ExtensionElement[] extensions)
     {
         if (!(to instanceof ContactJabberImpl))
             throw new IllegalArgumentException("The specified contact is not a Jabber contact: " + to);
@@ -374,7 +373,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             return null;
         }
 
-        org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message();
+        Message msg = new Message();
         EntityBareJid toJid = to.getJid().asEntityBareJidIfPossible();
         mChat = mChatManager.chatWith(toJid);
         msg.setStanzaId(message.getMessageUID());
@@ -400,14 +399,13 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         for (MessageDeliveredEvent event : transformedEvents) {
             String content = event.getSourceMessage().getContent();
 
-            if (Message.ENCODE_HTML == message.getMimeType()) {
-                // msg.setBody(Html2Text.extractText(content));
+            if (IMessage.ENCODE_HTML == message.getMimeType()) {
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
                     msg.setBody(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
                 else
                     msg.setBody(Html.fromHtml(content));
 
-                // cmeng: Just add XHTML element as it will be ignored by buddy without XEP-0071: XHTML-IM support
+                // Just add XHTML element as it will be ignored by buddy without XEP-0071: XHTML-IM support
                 // Also carbon messages may send to buddy on difference clients with different capabilities
                 // Note isFeatureListSupported must use FullJid unless it is for service e.g. conference.atalk.org
 
@@ -416,7 +414,6 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 // Add the XHTML text to the message
                 XHTMLText htmlText = new XHTMLText("", "us").append(content).appendCloseBodyTag();
                 XHTMLManager.addBody(msg, htmlText);
-                //}
             }
             else {
                 // this is plain text so keep it as it is.
@@ -437,7 +434,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
             String threadID = getThreadIDForAddress(toJid, true);
             msg.setThread(threadID);
-            msg.setType(org.jivesoftware.smack.packet.Message.Type.chat);
+            msg.setType(Message.Type.chat);
             msg.setFrom(jabberProvider.getConnection().getUser());
 
             try {
@@ -454,11 +451,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Sends the <tt>message</tt> to the destination indicated by the <tt>to</tt> contact.
      *
      * @param to the <tt>Contact</tt> to send <tt>message</tt> to
-     * @param message the <tt>Message</tt> to send.
+     * @param message the <tt>IMessage</tt> to send.
      * @throws java.lang.IllegalStateException if the underlying stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <tt>to</tt> is not an instance of ContactImpl.
      */
-    public void sendInstantMessage(Contact to, Message message)
+    public void sendInstantMessage(Contact to, IMessage message)
     {
         sendInstantMessage(to, null, message);
     }
@@ -469,12 +466,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param to the <tt>Contact</tt> to send <tt>message</tt> to
      * @param resource the resource to which the message should be send
-     * @param message the <tt>Message</tt> to send.
+     * @param message the <tt>IMessage</tt> to send.
      * @throws java.lang.IllegalStateException if the underlying ICQ stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <tt>to</tt> is not an instance belonging to the underlying implementation.
      */
     @Override
-    public void sendInstantMessage(Contact to, ContactResource resource, Message message)
+    public void sendInstantMessage(Contact to, ContactResource resource, IMessage message)
     {
         MessageDeliveredEvent msgDelivered = sendMessage(to, resource, message, new ExtensionElement[0]);
         if (msgDelivered != null) {
@@ -490,7 +487,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param message The new message.
      * @param correctedMessageUID The ID of the message being replaced.
      */
-    public void sendInstantMessage(Contact to, ContactResource resource, Message message, String correctedMessageUID)
+    public void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID)
     {
         ExtensionElement[] exts = new ExtensionElement[1];
         exts[0] = new MessageCorrectExtension(correctedMessageUID);
@@ -501,29 +498,29 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         }
     }
 
-    public void sendInstantMessage(Contact to, ContactResource resource, Message message, String correctedMessageUID,
+    public void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
             OmemoManager omemoManager)
     {
         Jid toJid = to.getJid();
-        String content = message.getContent();
-        String msgContent;
+        String msgContent = message.getContent();
         OmemoMessage.Sent encryptedMessage;
         String errMessage = null;
 
-        // OMEMO message content will strip off any html tags info for now => #TODO
-        if (Message.ENCODE_HTML == message.getMimeType()) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-                msgContent = Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY).toString();
-            else
-                msgContent = Html.fromHtml(content).toString();
-        }
-        else {
-            msgContent = content;
-        }
+        /*
+         * Temporary comment out to support lightweight text markup chat message for OMEMO
+         * Send html tags in OMEMO encrypted body
+         */
+        // OMEMO message content will strip off any html tags info => XHTML not supported
+//        if (IMessage.ENCODE_HTML == message.getMimeType()) {
+//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+//                msgContent = Html.fromHtml(msgContent, Html.FROM_HTML_MODE_LEGACY).toString();
+//            else
+//                msgContent = Html.fromHtml(msgContent).toString();
+//        }
 
         try {
             encryptedMessage = omemoManager.encrypt(toJid.asBareJid(), msgContent);
-            org.jivesoftware.smack.packet.Message sendMessage = encryptedMessage.asMessage(toJid);
+            Message sendMessage = encryptedMessage.asMessage(toJid);
             if (correctedMessageUID != null)
                 sendMessage.addExtension(new MessageCorrectExtension(correctedMessageUID));
             sendMessage.setStanzaId(message.getMessageUID());
@@ -542,7 +539,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             fireMessageEvent(msgDelivered);
         } catch (UndecidedOmemoIdentityException e) {
             OmemoAuthenticateListener omemoAuthListener
-                    = new OmemoAuthenticateListener (to, resource, message, correctedMessageUID, omemoManager);
+                    = new OmemoAuthenticateListener(to, resource, message, correctedMessageUID, omemoManager);
             aTalkApp.getGlobalContext().startActivity(
                     OmemoAuthenticateDialog.createIntent(omemoManager, e.getUndecidedDevices(), omemoAuthListener));
             return;
@@ -563,20 +560,22 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * Omemo listener callback on user authentication for undecided omemoDevices
      */
-    private class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener {
+    private class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener
+    {
         Contact to;
         ContactResource resource;
-        Message message;
+        IMessage message;
         String correctedMessageUID;
         OmemoManager omemoManager;
 
-        OmemoAuthenticateListener (Contact to, ContactResource resource, Message message, String correctedMessageUID,
-                OmemoManager omemoManager) {
+        OmemoAuthenticateListener(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
+                OmemoManager omemoManager)
+        {
             this.to = to;
             this.resource = resource;
             this.message = message;
             this.correctedMessageUID = correctedMessageUID;
-            this. omemoManager = omemoManager;
+            this.omemoManager = omemoManager;
         }
 
         @Override
@@ -683,8 +682,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     /**
-     * The listener that we use in order to handle incoming server messages.
-     * Curently not supported by smack
+     * The listener that we use in order to handle incoming server messages-currently not supported by smack
      */
     private class SmackSvrMessageListener implements StanzaListener
     {
@@ -696,18 +694,18 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         @Override
         public void processStanza(Stanza stanza)
         {
-            final org.jivesoftware.smack.packet.Message message = (org.jivesoftware.smack.packet.Message) stanza;
+            final Message message = (Message) stanza;
             if (message.getBodies().isEmpty())
                 return;
 
-            int encType = Message.ENCRYPTION_NONE | Message.ENCODE_PLAIN;
+            int encType = IMessage.ENCRYPTION_NONE | IMessage.ENCODE_PLAIN;
             String content = message.getBody();
             String subject = message.getSubject();
             if (!TextUtils.isEmpty(subject)) {
                 content = subject + ": " + content;
             }
 
-            Message newMessage = createMessageWithUID(content, encType, message.getStanzaId());
+            IMessage newMessage = createMessageWithUID(content, encType, message.getStanzaId());
             newMessage.setRemoteMsgId(message.getStanzaId());
 
             // createVolatileContact will check before create
@@ -753,7 +751,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
     @Override
     public void onCarbonCopyReceived(CarbonExtension.Direction direction,
-            org.jivesoftware.smack.packet.Message carbonCopy, org.jivesoftware.smack.packet.Message wrappingMessage)
+            Message carbonCopy, Message wrappingMessage)
     {
         isForwardedSentMessage = CarbonExtension.Direction.sent.equals(direction);
         Jid userJId = isForwardedSentMessage ? carbonCopy.getTo() : carbonCopy.getFrom();
@@ -766,19 +764,18 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param message the message that we need to handle.
      */
-    public void newIncomingMessage(EntityBareJid from, org.jivesoftware.smack.packet.Message message, Chat chat)
+    public void newIncomingMessage(EntityBareJid from, Message message, Chat chat)
     {
-        // Leave handling of omemo message to onOmemoMessageReceived()
-        OmemoElement omemoMessage = message.getExtension(OmemoElement.NAME_ENCRYPTED, OMEMO_NAMESPACE_V_AXOLOTL);
-        if (omemoMessage != null)
+        // Leave handling of omemo messages to onOmemoMessageReceived()
+        if ((message == null) || message.hasExtension(OmemoElement.NAME_ENCRYPTED, OMEMO_NAMESPACE_V_AXOLOTL))
             return;
 
-        if (message.getBody() == null) {
+        // Return if it is for group chat
+        if (message.hasExtension("x", "http://jabber.org/protocol/muc#user"))
             return;
-        }
-        // Return if it is not for us
-        ExtensionElement multiChatExtension = message.getExtension("x", "http://jabber.org/protocol/muc#user");
-        if (multiChatExtension != null)
+
+        String msgBody = message.getBody();
+        if (msgBody == null)
             return;
 
         Jid userFullJId = isForwardedSentMessage ? message.getTo() : message.getFrom();
@@ -794,17 +791,24 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 isPrivateMessaging = true;
             }
         }
-        // Timber.d("Received from %s the message %s", userBareID, message.toString());
 
+        // Timber.d("Received from %s the message %s", userBareID, message.toString());
         String msgID = message.getStanzaId();
         String correctedMessageUID = getCorrectionMessageId(message);
 
         // Get the message type i.e. OTR or NONE for incoming message encryption state display
-        String msgBody = message.getBody();
-        int encryption = msgBody.startsWith("?OTR") ? Message.ENCRYPTION_OTR : Message.ENCRYPTION_NONE;
-        int encType = encryption | Message.ENCODE_PLAIN;
-        Message newMessage = createMessageWithUID(message.getBody(), encType, msgID);
-        newMessage.setRemoteMsgId(message.getStanzaId());
+        int encryption = msgBody.startsWith("?OTR") ? IMessage.ENCRYPTION_OTR : IMessage.ENCRYPTION_NONE;
+        int encType;
+
+        // set up default in case XHTMLExtension contains no message
+        // if msgBody contains markup text then set as ENCODE_HTML mode
+        if (msgBody.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+            encType = encryption | IMessage.ENCODE_HTML;
+        }
+        else {
+            encType = encryption | IMessage.ENCODE_PLAIN;
+        }
+        IMessage newMessage = createMessageWithUID(msgBody, encType, msgID);
 
         // check if the message is available in xhtml
         if (XHTMLManager.isXHTMLMessage(message)) {
@@ -821,21 +825,22 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 // we remove body tags around message cause their end body tag is breaking the
                 // visualization as html in the UI
                 String receivedMessage = messageBuff.toString()
-                        // removes body start tag
+                        // removes <body> start tag
                         .replaceAll("<[bB][oO][dD][yY].*?>", "")
-                        // removes body end tag
+                        // removes </body> end tag
                         .replaceAll("</[bB][oO][dD][yY].*?>", "");
 
                 // for some reason &apos; is not rendered correctly from our ui, lets use its
                 // equivalent. Other similar chars(< > & ") seem ok.
                 receivedMessage = receivedMessage.replaceAll("&apos;", "&#39;");
-                encType = encryption | Message.ENCODE_HTML;
+                encType = encryption | IMessage.ENCODE_HTML;
                 newMessage = createMessageWithUID(receivedMessage, encType, msgID);
             }
         }
+        newMessage.setRemoteMsgId(message.getStanzaId());
 
         Contact sourceContact = opSetPersPresence.findContactByID(isPrivateMessaging ? userFullJId : userBareID);
-        if (message.getType() == org.jivesoftware.smack.packet.Message.Type.error) {
+        if (message.getType() == Message.Type.error) {
             // error which is multi-chat and we don't know about the contact is a muc message
             // error which is missing muc extension and is coming from the room, when we try
             // to send message to room which was deleted or offline on the server
@@ -909,11 +914,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         @Override
         public boolean accept(Stanza packet)
         {
-            if (!(packet instanceof org.jivesoftware.smack.packet.Message))
+            if (!(packet instanceof Message))
                 return false;
 
-            org.jivesoftware.smack.packet.Message msg = (org.jivesoftware.smack.packet.Message) packet;
-            return (!(msg.getType() == org.jivesoftware.smack.packet.Message.Type.groupchat));
+            Message msg = (Message) packet;
+            return (!(msg.getType() == Message.Type.groupchat));
         }
     }
 
@@ -953,7 +958,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param msg Message
      * @return the correct message timeStamp
      */
-    private Date getTimeStamp(org.jivesoftware.smack.packet.Message msg)
+    private Date getTimeStamp(Message msg)
     {
         Date timeStamp;
         DelayInformation delayInfo = msg.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
@@ -972,7 +977,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param message Message
      * @return messageCorrectionID if presence or null
      */
-    private String getCorrectionMessageId(org.jivesoftware.smack.packet.Message message)
+    private String getCorrectionMessageId(Message message)
     {
         MessageCorrectExtension correctionExtension = MessageCorrectExtension.from(message);
         if (correctionExtension != null) {
@@ -1012,7 +1017,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
          OmemoManager.isTrustedOmemoIdentity(decryptedMessage.getSenderDevice(), decryptedMessage.getSendersFingerprint())
         */
 
-        org.jivesoftware.smack.packet.Message encryptedMessage = (org.jivesoftware.smack.packet.Message) stanza;
+        Message encryptedMessage = (Message) stanza;
         Date timeStamp = getTimeStamp(encryptedMessage);
 
         Jid userFullJid = isForwardedSentOmemoMessage ? encryptedMessage.getTo() : encryptedMessage.getFrom();
@@ -1026,10 +1031,18 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
         String msgID = encryptedMessage.getStanzaId();
         String correctedMsgID = getCorrectionMessageId(encryptedMessage);
-        int encType = Message.ENCRYPTION_OMEMO | Message.ENCODE_PLAIN;
-
+        int encType = IMessage.ENCRYPTION_OMEMO;
         String msgBody = decryptedMessage.getBody();
-        Message newMessage = createMessageWithUID(msgBody, encType, msgID);
+
+        // aTalk OMEMO msgBody may contains markup text then set as ENCODE_HTML mode
+        if (msgBody.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+            encType |= IMessage.ENCODE_HTML;
+        }
+        else {
+            encType |= IMessage.ENCODE_PLAIN;
+        }
+
+        IMessage newMessage = createMessageWithUID(msgBody, encType, msgID);
         newMessage.setRemoteMsgId(msgID);
 
         EventObject msgEvt;
@@ -1042,8 +1055,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     public void onOmemoCarbonCopyReceived(CarbonExtension.Direction direction,
-            org.jivesoftware.smack.packet.Message carbonCopy,
-            org.jivesoftware.smack.packet.Message wrappingMessage,
+            Message carbonCopy,
+            Message wrappingMessage,
             OmemoMessage.Received decryptedCarbonCopy)
     {
         isForwardedSentOmemoMessage = CarbonExtension.Direction.sent.equals(direction);

@@ -4,6 +4,7 @@ import net.java.sip.communicator.service.httputil.HttpUtils;
 import net.java.sip.communicator.service.provisioning.ProvisioningService;
 import net.java.sip.communicator.util.OrderedProperties;
 
+import org.apache.http.NameValuePair;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.AndroidUtils;
@@ -20,7 +21,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cz.msebera.android.httpclient.NameValuePair;
 import timber.log.Timber;
 
 // disambiguation

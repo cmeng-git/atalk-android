@@ -87,4 +87,7 @@
     <color name="goldenrod">#daa520</color>
     <color name="goldenrod_dark">#b8860b</color>
 
+    <color name="green700_desaturated">#ff4d8e50</color> <!-- desaturated by 15 -->
+    <color name="green900_desaturated">#ff295e2d</color> <!-- desaturated by 15 -->
+
 </resources>

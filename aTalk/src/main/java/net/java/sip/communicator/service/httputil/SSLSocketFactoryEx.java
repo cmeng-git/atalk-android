@@ -15,25 +15,19 @@
  */
 package net.java.sip.communicator.service.httputil;
 
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.HttpInetSocketAddress;
+import org.apache.http.conn.scheme.SchemeSocketFactory;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+import java.net.*;
+import java.security.*;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
-
-import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
-import cz.msebera.android.httpclient.conn.HttpInetSocketAddress;
-import cz.msebera.android.httpclient.conn.ssl.SSLSocketFactory;
-import cz.msebera.android.httpclient.params.HttpConnectionParams;
-import cz.msebera.android.httpclient.params.HttpParams;
 
 /**
  * Wrapper for SSLSocketFactory to use the constructor which is available
@@ -45,7 +39,7 @@ import cz.msebera.android.httpclient.params.HttpParams;
  *
  * @author Damian Minkov
  */
-public class SSLSocketFactoryEx extends SSLSocketFactory
+public class SSLSocketFactoryEx extends SSLSocketFactory implements SchemeSocketFactory
 {
     /**
      * The context that will be used to create sockets.
@@ -62,27 +56,22 @@ public class SSLSocketFactoryEx extends SSLSocketFactory
      * @throws NoSuchAlgorithmException
      */
     public SSLSocketFactoryEx(SSLContext context)
-        throws
-        UnrecoverableKeyException,
-        KeyStoreException,
-        KeyManagementException,
-        NoSuchAlgorithmException
+            throws UnrecoverableKeyException, KeyStoreException, KeyManagementException, NoSuchAlgorithmException
     {
         super((KeyStore) null);
-
         this.context = context;
     }
 
     /**
      * Creates socket.
-     * @param params
-     * @return
+     *
+     * @param params HTTP parameters
+     * @return Socket
      * @throws IOException
      */
     @Override
     public Socket createSocket(final HttpParams params)
-        throws
-        IOException
+            throws IOException
     {
         return this.context.getSocketFactory().createSocket();
     }
@@ -90,90 +79,60 @@ public class SSLSocketFactoryEx extends SSLSocketFactory
     /**
      * @since 4.2
      */
-    @Override
-    public Socket createLayeredSocket(
-        final Socket socket,
-        final String host,
-        final int port,
-        final HttpParams params)
-            throws IOException,
-                   UnknownHostException
+    // @Override
+    public Socket createLayeredSocket(final Socket socket, final String host, final int port, final HttpParams params)
+            throws IOException, UnknownHostException
     {
-        return this.context.getSocketFactory()
-            .createSocket(
-                socket,
-                host,
-                port,
-                true);
+        return this.context.getSocketFactory().createSocket( socket, host, port, true);
     }
 
     /**
      * @since 4.1
      */
     @Override
-    public Socket connectSocket(
-        final Socket socket,
-        final InetSocketAddress remoteAddress,
-        final InetSocketAddress localAddress,
-        final HttpParams params)
-            throws IOException,
-                   UnknownHostException,
-                   ConnectTimeoutException
+    public Socket connectSocket(final Socket socket, final InetSocketAddress remoteAddress,
+            final InetSocketAddress localAddress, final HttpParams params)
+            throws IOException, UnknownHostException, ConnectTimeoutException
     {
-        if(remoteAddress == null)
-        {
+        if (remoteAddress == null) {
             throw new IllegalArgumentException("Remote address may not be null");
         }
-        if(params == null)
-        {
+        if (params == null) {
             throw new IllegalArgumentException("HTTP parameters may not be null");
         }
-        Socket sock = socket != null ?
-            socket : this.context.getSocketFactory().createSocket();
-        if(localAddress != null)
-        {
-            sock.setReuseAddress(HttpConnectionParams.getSoReuseaddr(params));
+        Socket sock = socket != null ? socket : this.context.getSocketFactory().createSocket();
+        if (localAddress != null) {
+            sock.setReuseAddress(true);
             sock.bind(localAddress);
         }
 
         int connTimeout = HttpConnectionParams.getConnectionTimeout(params);
         int soTimeout = HttpConnectionParams.getSoTimeout(params);
 
-        try
-        {
+        try {
             sock.setSoTimeout(soTimeout);
             sock.connect(remoteAddress, connTimeout);
-        }
-        catch(SocketTimeoutException ex)
-        {
-            throw new ConnectTimeoutException(
-                    "Connect to " + remoteAddress + " timed out");
+        } catch (SocketTimeoutException ex) {
+            throw new ConnectTimeoutException("Connect to " + remoteAddress + " timed out");
         }
 
         String hostname;
-        if(remoteAddress instanceof HttpInetSocketAddress)
-        {
-            hostname = ((HttpInetSocketAddress) remoteAddress)
-                .getHttpHost().getHostName();
+        if (remoteAddress instanceof HttpInetSocketAddress) {
+            hostname = ((HttpInetSocketAddress) remoteAddress).getHttpHost().getHostName();
         }
-        else
-        {
+        else {
             hostname = remoteAddress.getHostName();
         }
 
         SSLSocket sslsock;
         // Setup SSL layering if necessary
-        if(sock instanceof SSLSocket)
-        {
+        if (sock instanceof SSLSocket) {
             sslsock = (SSLSocket) sock;
         }
-        else
-        {
+        else {
             int port = remoteAddress.getPort();
-            sslsock = (SSLSocket) this.context.getSocketFactory()
-                .createSocket(sock, hostname, port, true);
+            sslsock = (SSLSocket) this.context.getSocketFactory().createSocket(sock, hostname, port, true);
         }
-
         return sslsock;
     }
 }

@@ -66,16 +66,16 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
         if (dnLink.matches("^aesgcm:.*")) {
             AesgcmUrl aesgcmUrl = new AesgcmUrl(dnLink);
             url = aesgcmUrl.getDownloadUrl().toString();
-            mEncryption = Message.ENCRYPTION_OMEMO;
+            mEncryption = IMessage.ENCRYPTION_OMEMO;
         }
         else {
             url = dnLink;
-            mEncryption = Message.ENCRYPTION_NONE;
+            mEncryption = IMessage.ENCRYPTION_NONE;
         }
 
         Uri uri = Uri.parse(url);
         mFileName = uri.getLastPathSegment();
-        mFile = new File(mFileName);
+        mFile = (mFileName != null) ? new File(mFileName) : null;
 
         if (dnLinkInfos.length > 1 && "fileSize".matches(dnLinkInfos[1])) {
             fileSize = Long.parseLong(dnLinkInfos[1].split("[:=]")[1]);

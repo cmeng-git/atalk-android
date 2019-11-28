@@ -9,7 +9,7 @@ package net.java.sip.communicator.service.protocol;
  * Used to access the content of instant messages that are sent or received via the instant
  * messaging operation set.
  * <p>
- * This class provides easy access to the content and key fields of an instant Message. Content
+ * This class provides easy access to the content and key fields of an instant IMessage. Content
  * types are represented using MIME types. [IETF RFC 2045-2048].
  * <p>
  * Messages are created through the <tt>OperationSetBasicInstanceMessaging</tt> operation set.
@@ -20,10 +20,10 @@ package net.java.sip.communicator.service.protocol;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public interface Message
+public interface IMessage
 {
     /*
-     * ENC_TYPE type defined in DB; use by Message Local to define the required actions
+     * ENC_TYPE type defined in DB; use by IMessage Local to define the required actions
      * Upper nibble (b7...b4) for body encryption Type i.e. OMEMO, OTR, NONE
      * Lower nibble (b3...b2) for special mode flag - may not be included in DB e.g FLAG_REMOTE_ONLY etc
      * Lower nibble (b1...b0) for body mimeType i.e. HTML or PLAIN
@@ -43,7 +43,7 @@ public interface Message
      */
     int FLAG_REMOTE_ONLY = 0x08;
 
-    int ENCODE_HTML = 0x01;    // text/html
+    int ENCODE_HTML = 0x01;  // text/html
     int ENCODE_PLAIN = 0x00; // text/plain (UTF-8)
 
     /**
@@ -71,6 +71,7 @@ public interface Message
 
     /**
      * The Flag with EncryptionType | EncodeType | isRemoteFlag
+     *
      * @return the message encType
      */
     int getEncType();

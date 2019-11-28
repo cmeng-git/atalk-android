@@ -44,9 +44,9 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
     private final long timestamp;
 
     /**
-     * The received <tt>Message</tt>.
+     * The received <tt>IMessage</tt>.
      */
-    private final Message message;
+    private final IMessage message;
 
     /**
      * Creates a <tt>ChatRoomMessageDeliveryFailedEvent</tt> indicating failure of delivery of a
@@ -57,10 +57,10 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
      * @param errorCode an errorCode indicating the reason of the failure.
      * @param timestamp the exact timestamp when it was determined that delivery had failed.
      * @param reason a human readable message indicating the reason for the failure or null if the reason is unknown.
-     * @param message the received <tt>Message</tt>.
+     * @param message the received <tt>IMessage</tt>.
      */
     public ChatRoomMessageDeliveryFailedEvent(ChatRoom source, ChatRoomMember to, int errorCode, long timestamp,
-            String reason, Message message)
+            String reason, IMessage message)
     {
         super(source);
         this.to = to;
@@ -71,10 +71,10 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>ChatRoomMember</tt> that the source (failed) <tt>Message</tt>
+     * Returns a reference to the <tt>ChatRoomMember</tt> that the source (failed) <tt>IMessage</tt>
      * was sent to.
      *
-     * @return a reference to the <tt>ChatRoomMember</tt> that the source failed <tt>Message</tt>
+     * @return a reference to the <tt>ChatRoomMember</tt> that the source failed <tt>IMessage</tt>
      * was sent to.
      */
     public ChatRoomMember getDestinationChatRoomMember()
@@ -85,9 +85,9 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
     /**
      * Returns the received message.
      *
-     * @return the <tt>Message</tt> that triggered this event.
+     * @return the <tt>IMessage</tt> that triggered this event.
      */
-    public Message getMessage()
+    public IMessage getMessage()
     {
         return message;
     }

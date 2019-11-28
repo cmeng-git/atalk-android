@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.util;
@@ -8,8 +8,7 @@ package org.atalk.android.gui.util;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
-
-import net.java.sip.communicator.util.Logger;
+import android.text.TextUtils;
 
 import org.atalk.android.aTalkApp;
 
@@ -29,27 +28,27 @@ import timber.log.Timber;
  */
 public class HtmlImageGetter implements Html.ImageGetter
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Drawable getDrawable(String source)
-	{
-		try {
-			// Image resource id is returned here in form:
-			// atalk.resource://{Integer drawable id} e.g.: atalk.resource://2130837599
-			Integer resId = Integer.parseInt(source.substring(17));
-
-			// Gets application global bitmap cache
-			DrawableCache cache = aTalkApp.getImageCache();
-			return cache.getBitmapFromMemCache(resId);
-		}
-		catch (IndexOutOfBoundsException | NumberFormatException | Resources.NotFoundException e) {
-			// Invalid string format for source.substring(17); Error parsing Integer.parseInt(source.substring(17));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Drawable getDrawable(String source)
+    {
+        try {
+            // Image resource id is returned here in form:
+            // atalk.resource://{Integer drawable id} e.g.: atalk.resource://2130837599
+            String resIdStr = source.replaceAll(".*?//(\\d+)", "$1");
+            if (!source.equals(resIdStr) && !TextUtils.isEmpty(resIdStr)) {
+                Integer resId = Integer.parseInt(resIdStr);
+                // Gets application global bitmap cache
+                DrawableCache cache = aTalkApp.getImageCache();
+                return cache.getBitmapFromMemCache(resId);
+            }
+        } catch (IndexOutOfBoundsException | NumberFormatException | Resources.NotFoundException e) {
+            // Invalid string format for source.substring(17); Error parsing Integer.parseInt(source.substring(17));
             // Resource for given id is not found
-			Timber.e(e, "Error parsing: %s", source);
-			return null;
-		}
-
+            Timber.e(e, "Error parsing: %s", source);
+        }
+        return null;
     }
 }

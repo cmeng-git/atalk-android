@@ -2,7 +2,7 @@
 - an encrypted instant messaging with video call and GPS features for android
 
 <p align="center">
-    <a href="http://atalk.sytes.net">
+    <a href="https://cmeng-git.github.io">
         <img src="./art/atalk.png" alt="aTalk">
     </a>
     &nbsp;
@@ -31,9 +31,11 @@ aTalk is an xmpp client designed for android and supports the following features
 * Auto accept file transfer request with max file size option
 * Implement fault-tolerance file transfer to ease and enhance file sharing reliability (1-1 chat and chatRoom) 
 * Enhance and harmonize UI for file sharing in chat and chatRoom
+* Support unread message badges in contact and chatRoom list views
 * XEP-0012: Last Activity to show the time of the last activity associated with a contact
 * XEP-0048: Bookmarks for conference room and autoJoin on login
 * XEP-0070: Verifying HTTP Requests via XMPP entity to confirm it made the request
+* XEP-0071: Support send and receive of instant messages that contain lightweight text markup
 * XEP-0184: Message Delivery Receipts with user enable/disable option
 * Bidirectional-streams Over Synchronous HTTP (BOSH) with Proxy support
 * Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway (experimental)
@@ -119,16 +121,16 @@ Libraries used in this project:
 * [android-betterpickers](https://github.com/code-troopers/android-betterpickers)
 * [Android-EasyLocation](https://github.com/akhgupta/Android-EasyLocation)
 * [annotations-java5](https://mvnrepository.com/artifact/org.jetbrains/annotations)
+* [apache-mime4j-core](https://github.com/apache/james-mime4j)
 * [bouncycastle](https://github.com/bcgit/bc-java)
 * [butterknife](https://github.com/JakeWharton/butterknife)
 * [ckChangeLog](https://github.com/cketti/ckChangeLog)
-* [commons-lang](http://commons.apache.org/proper/commons-lang/)
+* [commons-text](http://commons.apache.org/proper/commons-text/)
 * [Dexter](https://github.com/Karumi/Dexter)
-* [dhcp4java](https://github.com/ggrandes-clones/dhcp4java)
 * [FFmpeg](https://github.com/FFmpeg/FFmpeg)
 * [glide](https://github.com/bumptech/glide)
 * [Google Play Services](https://developers.google.com/android/guides/overview)
-* [httpclient-android](https://github.com/smarek/httpclient-android)
+* [httpmime](https://hc.apache.org/httpcomponents-client-4.5.x/)
 * [ice4j](https://github.com/jitsi/ice4j)
 * [jitsi](https://github.com/jitsi/jitsi)
 * [jitsi-android](https://github.com/jitsi/jitsi-android)
@@ -137,7 +139,6 @@ Libraries used in this project:
 * [libjitsi](https://github.com/jitsi/libjitsi)
 * [libphonenumber](https://github.com/googlei18n/libphonenumber)
 * [libvpx](https://github.com/webmproject/libvpx)
-* [Mime4j](https://james.apache.org/mime4j/)
 * [miniDNS](https://github.com/MiniDNS/minidns)
 * [otr4j](https://github.com/jitsi/otr4j)
 * [opensles](https://github.com/openssl/openssl )

@@ -7,6 +7,7 @@ package org.atalk.android.gui.account.settings;
 
 import android.app.*;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
@@ -15,6 +16,7 @@ import net.java.sip.communicator.service.protocol.StunServerDescriptor;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.util.ViewUtil;
 
 import static net.java.sip.communicator.service.protocol.jabber.JabberAccountID.DEFAULT_STUN_PORT;
 
@@ -120,8 +122,8 @@ public class StunTurnDialogFragment extends DialogFragment
     }
 
     /**
-     * Save the changes to the edited descriptor and notifies parent about the changes. Returns <tt>true</tt> if all
-     * fields are correct.
+     * Save the changes to the edited descriptor and notifies parent about the changes.
+     * Returns <tt>true</tt> if all fields are correct.
      *
      * @return <tt>true</tt> if all field are correct and changes have been submitted to the parent adapter.
      */
@@ -129,13 +131,14 @@ public class StunTurnDialogFragment extends DialogFragment
     {
         Dialog dialog = getDialog();
         boolean useTurn = ((CompoundButton) dialog.findViewById(R.id.useTurnCheckbox)).isChecked();
-        String ipAddress = ((TextView) dialog.findViewById(R.id.ipAddress)).getText().toString();
-        String turnUser = ((TextView) dialog.findViewById(R.id.usernameField)).getText().toString().trim();
-        String password = ((TextView) dialog.findViewById(R.id.passwordField)).getText().toString().trim();
+        String ipAddress = ViewUtil.toString(dialog.findViewById(R.id.ipAddress));
+        String portStr = ViewUtil.toString(dialog.findViewById(R.id.serverPort));
 
-        String portStr = ((TextView) dialog.findViewById(R.id.serverPort)).getText().toString();
-        if (portStr.isEmpty()) {
-            aTalkApp.showToastMessage("The port can not be empty");
+        String turnUser = ViewUtil.toString(dialog.findViewById(R.id.usernameField));
+        String password = ViewUtil.toString(dialog.findViewById(R.id.passwordField));
+
+        if ((ipAddress == null) || (portStr == null)) {
+            aTalkApp.showToastMessage("The ip and port can not be empty");
             return false;
         }
         int port = Integer.parseInt(portStr);

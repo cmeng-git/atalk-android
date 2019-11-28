@@ -102,6 +102,20 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
     String getChatRoomName();
 
     /**
+     * Set the unread message count for this wrapper represent
+     *
+     * @param count unread message count
+     */
+    void setUnreadCount(int count);
+
+    /**
+     * Returns the unread message count for this chat room
+     *
+     * @return the unread message count
+     */
+    int getUnreadCount();
+
+    /**
      * Returns the identifier of the chat room.
      *
      * @return the identifier of the chat room

@@ -25,6 +25,7 @@ project.ext {
     testCoverage = project.hasProperty('testCoverage')
 
     minSdkVersion = 19
+    // SDK-29 has SSL certificate webView problem
     compileSdkVersion = 28
     buildToolsVersion = '29.0.2'
     supportLibraryVersion = '1.0.0'

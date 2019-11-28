@@ -11,7 +11,7 @@ import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.muc.*;
-import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
@@ -135,7 +135,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, false);
         if (chatPanel != null) {
-            Message message = evt.getMessage();
+            IMessage message = evt.getMessage();
             // just return if the delivered message is for remote client consumption only
             if (message.isRemoteOnly())
                 return;
@@ -160,7 +160,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         int messageType = evt.getEventType();
 
         Timber.d("Message received from contact: %s", sourceMember.getContact());
-        Message message = evt.getMessage();
+        IMessage message = evt.getMessage();
         ChatPanel chatPanel;
 
         boolean createWindow = false;
@@ -209,7 +209,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                         break;
                     }
                 }
-                Message m2 = evt.getMessage();
+                IMessage m2 = evt.getMessage();
                 if (m2 != null && m2.getContent().equals(messageContent)) {
                     hasMatch = true;
                     break;
@@ -237,8 +237,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt)
     {
         /*
-         * FIXME ChatRoomMessageDeliveryFailedEvent#getSource() is not a Message instance at the
-         * time of this writing and the attempt "(Message) evt.getSource()" seems to be to
+         * FIXME ChatRoomMessageDeliveryFailedEvent#getSource() is not a IMessage instance at the
+         * time of this writing and the attempt "(IMessage) evt.getSource()" seems to be to
          * get the message which failed to be delivered. I'm not sure it's
          * ChatRoomMessageDeliveryFailedEvent#getMessage() but since it's the only message I can
          * get out of ChatRoomMessageDeliveryFailedEvent, I'm using it.
@@ -250,7 +250,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         String reason = evt.getReason();
 
         ChatRoom sourceChatRoom = evt.getSourceChatRoom();
-        Message srcMessage = evt.getMessage();
+        IMessage srcMessage = evt.getMessage();
         ChatRoomMember destMember = evt.getDestinationChatRoomMember();
 
         switch (evt.getErrorCode()) {
@@ -296,7 +296,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         chatPanel.addMessage(sender, new Date(), ChatMessage.MESSAGE_OUT, srcMessage.getMimeType(),
                 srcMessage.getContent());
-        chatPanel.addMessage(sender, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, errorMsg);
+        chatPanel.addMessage(sender, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN, errorMsg);
 
         ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());
     }
@@ -417,12 +417,12 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
                     if (chatPanel != null) {
                         chatPanel.addMessage(sourceChatRoom.getName(), new Date(), ChatMessage.MESSAGE_SYSTEM,
-                                Message.ENCODE_PLAIN, evt.getReason());
+                                IMessage.ENCODE_PLAIN, evt.getReason());
 
                         // print and the alternate address
                         if (!StringUtils.isNullOrEmpty(evt.getAlternateAddress())) {
                             chatPanel.addMessage(sourceChatRoom.getName(), new Date(),
-                                    ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
+                                    ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
                                     aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_ALTERNATE_ADDRESS,
                                             evt.getAlternateAddress()));
                         }
@@ -802,7 +802,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         // Timber.i("Message delivered to ad-hoc chat room: %s", sourceChatRoom.getName());
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, false);
         if (chatPanel != null) {
-            Message message = evt.getMessage();
+            IMessage message = evt.getMessage();
 
             // just return if the delivered message is for remote client consumption only
             if (message.isRemoteOnly())
@@ -827,7 +827,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt)
     {
         AdHocChatRoom sourceChatRoom = evt.getSourceChatRoom();
-        Message sourceMessage = evt.getMessage();
+        IMessage sourceMessage = evt.getMessage();
         Contact destParticipant = evt.getDestinationParticipant();
 
         String errorMsg;
@@ -858,7 +858,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         chatPanel.addMessage(sender, new Date(), ChatMessage.MESSAGE_OUT,
                 sourceMessage.getMimeType(), sourceMessage.getContent());
-        chatPanel.addMessage(sender, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, errorMsg);
+        chatPanel.addMessage(sender, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN, errorMsg);
         ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());
     }
 
@@ -876,7 +876,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         int messageType = evt.getEventType();
         Timber.i("Message received from contact: %s", sourceParticipant);
 
-        Message message = evt.getMessage();
+        IMessage message = evt.getMessage();
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, true, message.getMessageUID());
 
         chatPanel.addMessage(sourceParticipant, sourceParticipant, evt.getTimestamp(),

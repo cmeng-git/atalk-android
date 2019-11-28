@@ -10,13 +10,13 @@ import org.atalk.android.gui.chat.ChatMessage;
 import java.util.Objects;
 
 /**
- * Represents a default implementation of {@link Message} in order to make it easier for
+ * Represents a default implementation of {@link IMessage} in order to make it easier for
  * implementers to provide complete solutions while focusing on implementation-specific details.
  *
  * @author Lubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractMessage implements Message
+public abstract class AbstractMessage implements IMessage
 {
     private String mContent;
     private final int mEncType;
@@ -50,7 +50,7 @@ public abstract class AbstractMessage implements Message
      * @param content the text content of the message.
      * @param encType contains both mime and encryption types @see ChatMessage.ENC_TYPE definition and other flags
      * @param subject the subject of the message or null for empty.
-     * @param messageUID @see net.java.sip.communicator.service.protocol.Message#getMessageUID()
+     * @param messageUID @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
      */
     protected AbstractMessage(String content, int encType, String subject, String messageUID, int receiptStatus,
             String serverMessageId, String remoteMessageId)
@@ -77,7 +77,7 @@ public abstract class AbstractMessage implements Message
     /*
      * (non-Javadoc)
      *
-     * @see net.java.sip.communicator.service.protocol.Message#getMimeType()
+     * @see net.java.sip.communicator.service.protocol.IMessage#getMimeType()
      */
     public int getMimeType()
     {
@@ -159,7 +159,7 @@ public abstract class AbstractMessage implements Message
     /*
      * (non-Javadoc)
      *
-     * @see net.java.sip.communicator.service.protocol.Message#getMessageUID()
+     * @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
      */
     public String getMessageUID()
     {
@@ -174,7 +174,7 @@ public abstract class AbstractMessage implements Message
     /*
      * (non-Javadoc)
      *
-     * @see net.java.sip.communicator.service.protocol.Message#getRawData()
+     * @see net.java.sip.communicator.service.protocol.IMessage#getRawData()
      */
     public byte[] getRawData()
     {
@@ -188,7 +188,7 @@ public abstract class AbstractMessage implements Message
     /*
      * (non-Javadoc)
      *
-     * @see net.java.sip.communicator.service.protocol.Message#getSize()
+     * @see net.java.sip.communicator.service.protocol.IMessage#getSize()
      */
     public int getSize()
     {
@@ -198,7 +198,7 @@ public abstract class AbstractMessage implements Message
     /*
      * (non-Javadoc)
      *
-     * @see net.java.sip.communicator.service.protocol.Message#getSubject()
+     * @see net.java.sip.communicator.service.protocol.IMessage#getSubject()
      */
     public String getSubject()
     {

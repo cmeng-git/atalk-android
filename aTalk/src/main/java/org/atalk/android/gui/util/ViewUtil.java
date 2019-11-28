@@ -56,7 +56,7 @@ public class ViewUtil
 
     public static String getTextViewValue(View container, int id)
     {
-        return ((TextView) container.findViewById(id)).getText().toString();
+        return toString(container.findViewById(id));
     }
 
     public static boolean isCompoundChecked(View container, int id)
@@ -163,6 +163,19 @@ public class ViewUtil
         }
 
         viewHandler.post(() -> view.setVisibility(newState));
+    }
+
+    /**
+     * get the textView string value or null (length == 0)
+     *
+     * @param textView TextView or EditText
+     * @return String or null
+     */
+    public static String toString(final TextView textView)
+    {
+        CharSequence editText = (textView == null)? null : textView.getText();
+        String text = (editText == null)? null : editText.toString().trim();
+        return ((text == null) || (text.length() == 0))? null : text;
     }
 
     /**

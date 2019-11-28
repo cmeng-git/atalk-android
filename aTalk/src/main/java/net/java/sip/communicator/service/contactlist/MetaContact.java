@@ -153,6 +153,20 @@ public interface MetaContact extends Comparable<MetaContact>
     String getMetaUID();
 
     /**
+     * Set the unread message count for this metaCount represent
+     *
+     * @param count unread message count
+     */
+    void setUnreadCount(int count);
+
+    /**
+     * Returns the unread message count for this metaContact
+     *
+     * @return the unread message count
+     */
+    int getUnreadCount();
+
+    /**
      * Returns a characteristic display name that can be used when including
      * this <tt>MetaContact</tt> in user interface.
      *

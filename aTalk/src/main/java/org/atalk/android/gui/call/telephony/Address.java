@@ -5,6 +5,7 @@ import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
 import org.apache.james.mime4j.codec.EncoderUtil;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,17 +45,15 @@ public class Address implements Serializable
                 Rfc822Token token = tokens[0];
                 mAddress = token.getAddress();
                 String name = token.getName();
-                if (!TextUtils.isEmpty(name)) {
-                    /*
-                     * Don't use the "person" argument if "address" is of the form:
-                     * James Bond <james.bond@mi6.uk>
-                     * See issue 2920
-                     */
-                    mPerson = name;
-                }
-                else {
-                    mPerson = (person == null) ? null : person.trim();
-                }
+
+                /*
+                 * Don't use the "person" argument if "address" is of the form:
+                 * James Bond <james.bond@mi6.uk>
+                 * See issue 2920
+                 */
+                mPerson = StringUtils.returnIfNotEmptyTrimmed(name);
+                if ((mPerson == null) && (person != null))
+                    mPerson = person.trim();
             }
             else {
                 Timber.e("Invalid address: %s", address);
@@ -73,7 +72,7 @@ public class Address implements Serializable
 
     public void setAddress(String address)
     {
-        this.mAddress = address;
+        mAddress = address;
     }
 
     public String getPerson()
@@ -81,16 +80,9 @@ public class Address implements Serializable
         return mPerson;
     }
 
-    public void setPerson(String newPerson)
+    public void setPerson(String person)
     {
-        String person = newPerson;
-        if ("".equals(person)) {
-            person = null;
-        }
-        if (person != null) {
-            person = person.trim();
-        }
-        this.mPerson = person;
+        mPerson = StringUtils.returnIfNotEmptyTrimmed(person);
     }
 
     /**
@@ -103,7 +95,7 @@ public class Address implements Serializable
     public static Address[] parseUnencoded(String addressList)
     {
         List<Address> addresses = new ArrayList<>();
-        if (!TextUtils.isEmpty(addressList)) {
+        if (!StringUtils.isNullOrEmpty(addressList)) {
             Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(addressList);
             for (Rfc822Token token : tokens) {
                 String address = token.getAddress();
@@ -123,9 +115,11 @@ public class Address implements Serializable
      */
     public static Address[] parse(String addressList)
     {
-        if (TextUtils.isEmpty(addressList)) {
+        if (StringUtils.isNullOrEmpty(addressList)) {
             return EMPTY_ADDRESS_ARRAY;
         }
+        // parseUnencoded(addressList);
+
         List<Address> addresses = new ArrayList<>();
         return addresses.toArray(EMPTY_ADDRESS_ARRAY);
     }
@@ -180,7 +174,7 @@ public class Address implements Serializable
         return TextUtils.join(", ", addresses);
     }
 
-    public String toEncodedString()
+    private String toEncodedString()
     {
         if (!TextUtils.isEmpty(mPerson)) {
             return EncoderUtil.encodeAddressDisplayName(mPerson) + " <" + mAddress + ">";
@@ -281,7 +275,7 @@ public class Address implements Serializable
      * @param text String to quote.
      * @return Possibly quoted string.
      */
-    public static String quoteAtoms(final String text)
+    private static String quoteAtoms(final String text)
     {
         if (ATOM.matcher(text).matches()) {
             return text;

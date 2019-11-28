@@ -17,7 +17,7 @@ import java.io.*;
 public interface OperationSetSmsMessaging extends OperationSet
 {
 	/**
-	 * Create a Message instance for sending arbitrary MIME-encoding content.
+	 * Create a IMessage instance for sending arbitrary MIME-encoding content.
 	 *
 	 * @param content
 	 *        content value
@@ -27,17 +27,17 @@ public interface OperationSetSmsMessaging extends OperationSet
 	 *        encoding used for <tt>content</tt>
 	 * @return the newly created message.
 	 */
-	public Message createMessage(byte[] content, String contentType, String contentEncoding);
+	public IMessage createMessage(byte[] content, String contentType, String contentEncoding);
 
 	/**
-	 * Create a Message instance for sending a sms messages with default (text/plain) content type
+	 * Create a IMessage instance for sending a sms messages with default (text/plain) content type
 	 * and encoding.
 	 *
 	 * @param messageText
 	 *        the string content of the message.
-	 * @return Message the newly created message
+	 * @return IMessage the newly created message
 	 */
-	public Message createMessage(String messageText);
+	public IMessage createMessage(String messageText);
 
 	/**
 	 * Sends the <tt>message</tt> to the destination indicated by the <tt>to</tt> contact.
@@ -45,13 +45,13 @@ public interface OperationSetSmsMessaging extends OperationSet
 	 * @param to
 	 *        the <tt>Contact</tt> to send <tt>message</tt> to
 	 * @param message
-	 *        the <tt>Message</tt> to send.
+	 *        the <tt>IMessage</tt> to send.
 	 * @throws java.lang.IllegalStateException
 	 *         if the underlying stack is not registered and initialized.
 	 * @throws java.lang.IllegalArgumentException
 	 *         if <tt>to</tt> is not an instance belonging to the underlying implementation.
 	 */
-	public void sendSmsMessage(Contact to, Message message)
+	public void sendSmsMessage(Contact to, IMessage message)
 		throws IllegalStateException, IllegalArgumentException;
 
 	/**
@@ -60,13 +60,13 @@ public interface OperationSetSmsMessaging extends OperationSet
 	 * @param to
 	 *        the destination to send <tt>message</tt> to
 	 * @param message
-	 *        the <tt>Message</tt> to send.
+	 *        the <tt>IMessage</tt> to send.
 	 * @throws java.lang.IllegalStateException
 	 *         if the underlying stack is not registered and initialized.
 	 * @throws java.lang.IllegalArgumentException
 	 *         if <tt>to</tt> is not an instance belonging to the underlying implementation.
 	 */
-	public void sendSmsMessage(String to, Message message)
+	public void sendSmsMessage(String to, IMessage message)
 		throws IllegalStateException, IllegalArgumentException;
 
 	/**

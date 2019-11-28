@@ -33,13 +33,16 @@ import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.*;
+import org.atalk.android.gui.util.ViewUtil;
 
 import java.util.*;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import timber.log.Timber;
 
 /**
@@ -56,7 +59,6 @@ public class ChatInviteDialog extends Dialog
     private final ChatPanel chatPanel;
     private ChatTransport inviteChatTransport;
 
-    private EditText reasonText;
     private Button mInviteButton;
 
     /**
@@ -110,7 +112,6 @@ public class ChatInviteDialog extends Dialog
         setTitle(R.string.service_gui_INVITE_CONTACT_TO_CHAT);
 
         this.setContentView(R.layout.muc_invite_dialog);
-        reasonText = this.findViewById(R.id.text_reason);
 
         contactListView = this.findViewById(R.id.ContactListView);
         contactListView.setSelector(R.drawable.array_list_selector);
@@ -164,11 +165,12 @@ public class ChatInviteDialog extends Dialog
 
     private MetaContactListAdapter getContactListAdapter()
     {
-        ContactListFragment clf = aTalkApp.getContactListFragment();
+        ContactListFragment clf = (ContactListFragment) aTalk.getFragment(aTalk.CL_FRAGMENT);
         if (contactListAdapter == null) {
             contactListAdapter = new MetaContactListAdapter(clf, false);
             contactListAdapter.initModelData();
         }
+        // Do not include groups with zero member in main contact list
         contactListAdapter.nonZeroContactGroupList();
         return contactListAdapter;
     }
@@ -353,16 +355,6 @@ public class ChatInviteDialog extends Dialog
     }
 
     /**
-     * Returns the reason of this invite, if the user has specified one.
-     *
-     * @return the reason of this invite
-     */
-    public String getReason()
-    {
-        return reasonText.getText().toString();
-    }
-
-    /**
      * The <tt>ChatInviteContactListFilter</tt> is <tt>InviteContactListFilter</tt> which doesn't list
      * contact that don't have persistence addresses (for example private messaging contacts are not listed).
      */
@@ -416,7 +408,8 @@ public class ChatInviteDialog extends Dialog
 
         // Invite all selected.
         if (selectedContactAddresses.size() > 0) {
-            chatPanel.inviteContacts(inviteChatTransport, selectedContactAddresses, this.getReason());
+            chatPanel.inviteContacts(inviteChatTransport, selectedContactAddresses,
+                    ViewUtil.toString(this.findViewById(R.id.text_reason)));
         }
     }
 

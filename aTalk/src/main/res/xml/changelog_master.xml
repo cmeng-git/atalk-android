@@ -6,6 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.1.3 (11/28/2019)" versioncode="1113">
+        <change>Support send and receive of instant messages that contain lightweight text markup (XEP-0071: XHTML-IM) e.g &lt;em>Wow&lt;/em>, I&apos;m &lt;span style='color:green'>green&lt;/span></change>
+        <change>Enhance UI to add unread message badges in contact and chatRoom list views</change>
+        <change>Block all notification events for muc history messages and from chatRooms with autoJoin options enabled</change>
+        <change>Support audio chat messages with offline buddy and during conference</change>
+        <change>Enhance chatState notification event support for group chat</change>
+        <change>Fix missing 'Cancel' and 'Apply' buttons in account info view when running in android-9 (API-28)</change>
+        <change>Fix menu 'ChatRoom Bookmark' crashes - eliminate all potential 'null object reference'</change>
+        <change>Improve UI on message correction and prevent text entry past defined boundary</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.1.2 (11/07/2019)" versioncode="1112">
         <change>Fix Fdroid built to support BOSH connectivity option</change>
         <change>Save camera parameters to persistent store hence limit camera access setup to one time only</change>

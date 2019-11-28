@@ -13,6 +13,8 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
+import android.net.Uri;
+
 import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.gui.chat.ChatMessage;
@@ -62,9 +64,9 @@ public class AdHocChatRoomMessageReceivedEvent extends EventObject
     private final Date timestamp;
 
     /**
-     * The received <tt>Message</tt>.
+     * The received <tt>IMessage</tt>.
      */
-    private final Message message;
+    private final IMessage message;
 
     /**
      * The type of message event that this instance represents.
@@ -78,17 +80,20 @@ public class AdHocChatRoomMessageReceivedEvent extends EventObject
      * @param source the <tt>AdHocChatRoom</tt> for which the message is received.
      * @param from the <tt>Contact</tt> that has sent this message.
      * @param timestamp the exact date when the event occurred.
-     * @param message the received <tt>Message</tt>.
+     * @param message the received <tt>IMessage</tt>.
      * @param eventType the type of message event that this instance represents (one of the
      * XXX_MESSAGE_RECEIVED static fields).
      */
     public AdHocChatRoomMessageReceivedEvent(AdHocChatRoom source, Contact from, Date timestamp,
-            Message message, int eventType)
+            IMessage message, int eventType)
     {
         super(source);
         // Convert to MESSAGE_HTTP_FILE_DOWNLOAD if it is http download link
-        if (message.getContent().matches("(?s)^aesgcm:.*|^http[s]:.*"))
-            eventType = ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD;
+        if (message.getContent().matches("(?s)^aesgcm:.*|^http[s]:.*")) {
+            Uri uri = Uri.parse(message.getContent());
+            if (uri.getLastPathSegment() != null)
+                eventType = ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD;
+        }
 
         this.from = from;
         this.timestamp = timestamp;
@@ -97,10 +102,10 @@ public class AdHocChatRoomMessageReceivedEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>Contact</tt> that has send the <tt>Message</tt> whose
+     * Returns a reference to the <tt>Contact</tt> that has send the <tt>IMessage</tt> whose
      * reception this event represents.
      *
-     * @return a reference to the <tt>Contact</tt> that has send the <tt>Message</tt> whose
+     * @return a reference to the <tt>Contact</tt> that has send the <tt>IMessage</tt> whose
      * reception this event represents.
      */
     public Contact getSourceChatRoomParticipant()
@@ -111,9 +116,9 @@ public class AdHocChatRoomMessageReceivedEvent extends EventObject
     /**
      * Returns the received message.
      *
-     * @return the <tt>Message</tt> that triggered this event.
+     * @return the <tt>IMessage</tt> that triggered this event.
      */
-    public Message getMessage()
+    public IMessage getMessage()
     {
         return message;
     }
@@ -139,7 +144,7 @@ public class AdHocChatRoomMessageReceivedEvent extends EventObject
     }
 
     /**
-     * Returns the type of message event represented by this event instance. Message event type is
+     * Returns the type of message event represented by this event instance. IMessage event type is
      * one of the XXX_MESSAGE_RECEIVED fields of this class.
      *
      * @return one of the XXX_MESSAGE_RECEIVED fields of this class indicating the type of this

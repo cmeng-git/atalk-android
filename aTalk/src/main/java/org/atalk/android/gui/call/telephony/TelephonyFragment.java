@@ -31,6 +31,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountsListAdapter;
 import org.atalk.android.gui.util.AndroidCallUtil;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -97,7 +98,7 @@ public class TelephonyFragment extends OSGiFragment
                 }
                 // to prevent device rotate from changing it to null - not working
                 else {
-                    mLastJid = vRecipient.getText().toString();
+                    mLastJid = ViewUtil.toString(vRecipient);
                 }
             }
 
@@ -217,15 +218,15 @@ public class TelephonyFragment extends OSGiFragment
             recipient = vRecipient.getAddresses()[0].getAddress();
         }
         else {
-            recipient = vRecipient.getText().toString();
+            recipient = ViewUtil.toString(vRecipient);
         }
-        recipient = recipient.replace(" ", "");
-        if (TextUtils.isEmpty(recipient)) {
+        if (recipient == null) {
             // aTalkApp.showToastMessage(R.string.service_gui_NO_ONLINE_TELEPHONY_ACCOUNT);
             aTalkApp.showToastMessage(R.string.service_gui_NO_CONTACT_PHONE);
             return;
         }
 
+        recipient = recipient.replace(" ", "");
         mLastJid = recipient;
         if (recipient.contains("@")) {
             try {
@@ -236,7 +237,7 @@ public class TelephonyFragment extends OSGiFragment
             }
         }
         else {
-            String telephonyDomain = vTelephonyDomain.getText().toString();
+            String telephonyDomain = ViewUtil.toString(vTelephonyDomain);
             recipient += "@" + telephonyDomain;
         }
 

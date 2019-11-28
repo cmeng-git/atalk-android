@@ -48,9 +48,9 @@ public class AdHocChatRoomMessageDeliveredEvent extends EventObject
 	private final Date timestamp;
 
 	/**
-	 * The received <tt>Message</tt>.
+	 * The received <tt>IMessage</tt>.
 	 */
-	private Message message = null;
+	private IMessage message = null;
 
 	/**
 	 * The type of message event that this instance represents.
@@ -72,7 +72,7 @@ public class AdHocChatRoomMessageDeliveredEvent extends EventObject
 	 *        a CONVERSATION_MESSAGE_DELIVERED.
 	 */
 	public AdHocChatRoomMessageDeliveredEvent(AdHocChatRoom source, Date timestamp,
-		Message message, int eventType)
+		IMessage message, int eventType)
 	{
 		super(source);
 
@@ -84,9 +84,9 @@ public class AdHocChatRoomMessageDeliveredEvent extends EventObject
 	/**
 	 * Returns the received message.
 	 *
-	 * @return the <tt>Message</tt> that triggered this event.
+	 * @return the <tt>IMessage</tt> that triggered this event.
 	 */
-	public Message getMessage()
+	public IMessage getMessage()
 	{
 		return this.message;
 	}
@@ -112,7 +112,7 @@ public class AdHocChatRoomMessageDeliveredEvent extends EventObject
 	}
 
 	/**
-	 * Returns the type of message event represented by this event instance. Message event type is
+	 * Returns the type of message event represented by this event instance. IMessage event type is
 	 * one of the XXX_MESSAGE_DELIVERED fields of this class.
 	 *
 	 * @return one of the XXX_MESSAGE_DELIVERED fields of this class indicating the type of this

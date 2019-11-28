@@ -9,6 +9,7 @@ import android.Manifest;
 import android.accounts.Account;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
 
@@ -75,16 +76,14 @@ public class CallContactFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         final View content = inflater.inflate(R.layout.call_contact, container, false);
 
         final ImageView callButton = content.findViewById(R.id.callButtonFull);
         callButton.setOnClickListener(v -> {
-            final EditText callField = content.findViewById(R.id.callField);
-            String contact = callField.getText().toString();
-            if (contact.isEmpty()) {
+            String contact = ViewUtil.toString(content.findViewById(R.id.callField));
+            if (contact == null) {
                 System.err.println("Contact is empty");
             }
             else {
@@ -95,7 +94,7 @@ public class CallContactFragment extends OSGiFragment
         // Call intent handling
         Bundle arguments = getArguments();
         String phoneNumber = arguments.getString(ARG_PHONE_NUMBER);
-        if (phoneNumber != null && phoneNumber.length() > 0) {
+        if (!TextUtils.isEmpty(phoneNumber)) {
             ViewUtil.setTextViewValue(content, R.id.callField, phoneNumber);
         }
         return content;

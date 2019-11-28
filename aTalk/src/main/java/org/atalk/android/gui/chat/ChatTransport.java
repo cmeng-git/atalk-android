@@ -127,7 +127,7 @@ public interface ChatTransport
      * the mime type (html or plain text).
      *
      * @param message The message to send.
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @throws Exception if the send doesn't succeed
      */
     void sendInstantMessage(String message, int encType)
@@ -138,7 +138,7 @@ public interface ChatTransport
      * specifying the mime type (html or plain text) and the id of the
      *
      * @param message The message to send.
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param correctedMessageUID The ID of the message being corrected by this message.
      */
     void sendInstantMessage(String message, int encType, String correctedMessageUID);

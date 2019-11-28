@@ -215,7 +215,7 @@
     <string name="service_gui_ROOM_NAME">ruang obrolan</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="http://atalk.sytes.net/atalk">Bantuan Online</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Bantuan Online</a></string>
     <string name="AboutDialog_title">Tentang</string>
     <string name="AboutDialog_Version">Versi %1$s</string>
     <string name="About_action">Tentang</string>

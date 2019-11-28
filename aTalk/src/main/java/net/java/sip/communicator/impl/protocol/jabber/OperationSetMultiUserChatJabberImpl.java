@@ -35,8 +35,8 @@ import java.util.*;
 
 import timber.log.Timber;
 
-import static net.java.sip.communicator.service.protocol.Message.ENCODE_PLAIN;
-import static net.java.sip.communicator.service.protocol.Message.ENCRYPTION_OMEMO;
+import static net.java.sip.communicator.service.protocol.IMessage.ENCODE_PLAIN;
+import static net.java.sip.communicator.service.protocol.IMessage.ENCRYPTION_OMEMO;
 
 /**
  * A jabber implementation of the multi user chat operation set.
@@ -278,14 +278,11 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
 //    /**
 //     * Returns a list of the names of all chat rooms that <tt>contact</tt> is currently a member of.
 //     *
-//     * @param contact
-//     * 		the contact whose current ChatRooms we will be querying.
+//     * @param contact the contact whose current ChatRooms we will be querying.
 //     * @return a list of <tt>String</tt> indicating the names of the chat rooms that
 //     * <tt>contact</tt> has joined and is currently active in.
-//     * @throws OperationFailedException
-//     * 		if an error occurs while trying to discover the room on the server.
-//     * @throws OperationNotSupportedException
-//     * 		if the server does not support multi user chat
+//     * @throws OperationFailedException if an error occurs while trying to discover the room on the server.
+//     * @throws OperationNotSupportedException if the server does not support multi user chat
 //     */
 //    /* this method is not used */
 //	public List getCurrentlyJoinedChatRooms(Contact contact)
@@ -328,17 +325,15 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                         OperationFailedException.GENERAL_ERROR, ex);
             }
 
-            // Now retrieve all hostedRooms available for each service name and add the room EntityBareJid
-            // the list of room names we are returning
-            if (serviceNames != null) {
-                for (DomainBareJid serviceName : serviceNames) {
-                    try {
-                        Map<EntityBareJid, HostedRoom> hostedRooms = mMucMgr.getRoomsHostedBy(serviceName);
-                        list.addAll(hostedRooms.keySet());
-                    } catch (XMPPException | NoResponseException | NotConnectedException | IllegalArgumentException
-                            | MultiUserChatException.NotAMucServiceException | InterruptedException ex) {
-                        Timber.e("Failed to retrieve room for %s : %s", serviceName, ex.getMessage());
-                    }
+            // Now retrieve all hostedRooms available for each service name and
+            // add the room EntityBareJid the list of room names we are returning
+            for (DomainBareJid serviceName : serviceNames) {
+                try {
+                    Map<EntityBareJid, HostedRoom> hostedRooms = mMucMgr.getRoomsHostedBy(serviceName);
+                    list.addAll(hostedRooms.keySet());
+                } catch (XMPPException | NoResponseException | NotConnectedException | IllegalArgumentException
+                        | MultiUserChatException.NotAMucServiceException | InterruptedException ex) {
+                    Timber.e("Failed to retrieve room for %s : %s", serviceName, ex.getMessage());
                 }
             }
         }
@@ -719,7 +714,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * @param msg Message
      * @return the correct message timeStamp
      */
-    private Date getTimeStamp(org.jivesoftware.smack.packet.Message msg)
+    private Date getTimeStamp(Message msg)
     {
         Date timeStamp;
         DelayInformation delayInfo
@@ -765,7 +760,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         ChatRoomMemberJabberImpl member = chatRoom.findMemberFromParticipant(msgFrom);
 
         int encType = ENCRYPTION_OMEMO | ENCODE_PLAIN;
-        net.java.sip.communicator.service.protocol.Message newMessage
+        IMessage newMessage
                 = new MessageJabberImpl(decryptedBody, encType, "", message.getStanzaId());
         newMessage.setRemoteMsgId(message.getStanzaId());
         ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(

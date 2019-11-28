@@ -56,4 +56,5 @@
     <dimen name="feedback_margin_left">10dp</dimen>
     <dimen name="all_permission_button_margin_right">10dp</dimen>
 
+    <dimen name="IconSize">18sp</dimen>
 </resources>

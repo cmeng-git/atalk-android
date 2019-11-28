@@ -119,8 +119,8 @@ public class MyWebViewClient extends WebViewClient
         final AlertDialog dialog = authDialog.show();
 
         authView.findViewById(R.id.button_signin).setOnClickListener(v -> {
-            httpAuth[0] = usernameInput.getText().toString().trim();
-            httpAuth[1] = mPasswordField.getText().toString().trim();
+            httpAuth[0] = ViewUtil.toString(usernameInput);
+            httpAuth[1] = ViewUtil.toString(mPasswordField);
             view.setHttpAuthUsernamePassword(host, realm, httpAuth[0], httpAuth[1]);
             handler.proceed(httpAuth[0], httpAuth[1]);
             dialog.dismiss();

@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
-import org.apache.commons.io.IOUtils;
 import org.atalk.android.aTalkApp;
 
 import java.io.*;
@@ -30,6 +29,10 @@ public class FileBackend
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
+    /**
+     * The default buffer size to use.
+     */
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
     public static String FP_aTALK = "aTalk";
     public static String EXPROT_DB = "EXPROT_DB";
@@ -137,7 +140,7 @@ public class FileBackend
             try {
                 InputStream inputStream = new FileInputStream(srcPath);
                 OutputStream outputStream = new FileOutputStream(dstPath);
-                IOUtils.copy(inputStream, outputStream); // org.apache.commons.io
+                copy(inputStream, outputStream); // org.apache.commons.io
                 inputStream.close();
                 outputStream.close();
             } catch (Exception e) { // IOException
@@ -169,6 +172,32 @@ public class FileBackend
                 throw new IOException("Could not deleteRecursive: " + filePath);
             }
         }
+    }
+
+    /**
+     * Copy bytes from a large (over 2GB) <code>InputStream</code> to an
+     * <code>OutputStream</code>.
+     * <p>
+     * This method buffers the input internally, so there is no need to use a
+     * <code>BufferedInputStream</code>.
+     *
+     * @param input  the <code>InputStream</code> to read from
+     * @param output  the <code>OutputStream</code> to write to
+     * @return the number of bytes copied
+     * @throws NullPointerException if the input or output is null
+     * @throws IOException if an I/O error occurs
+     * @since Commons IO 1.3
+     */
+    public static long copy(InputStream input, OutputStream output)
+            throws IOException {
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+        long count = 0;
+        int n = 0;
+        while (-1 != (n = input.read(buffer))) {
+            output.write(buffer, 0, n);
+            count += n;
+        }
+        return count;
     }
 
     /**

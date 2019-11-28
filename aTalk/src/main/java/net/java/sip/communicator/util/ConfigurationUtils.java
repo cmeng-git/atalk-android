@@ -9,7 +9,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetContactCapabilitiesJabberImpl;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
@@ -20,7 +19,8 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatFragment;
+import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.android.util.java.awt.Color;
@@ -1487,7 +1487,7 @@ public class ConfigurationUtils
      */
     public static void setWebPage(String webPage)
     {
-        mWebPage = StringUtils.isNullOrEmpty(webPage)? webPage: webPage.trim();
+        mWebPage = StringUtils.isNullOrEmpty(webPage) ? webPage : webPage.trim();
         configService.setProperty(pWebPage, webPage);
     }
 
@@ -2530,7 +2530,9 @@ public class ConfigurationUtils
                 ServiceDiscoveryManager discoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
 
                 OperationSetContactCapabilitiesJabberImpl.setOperationSetChatStateFeatures(isChatStateEnable);
-                MetaContactChatTransport.setChatStateSupport(isChatStateEnable);
+                // cmeng: not required for both?
+                // MetaContactChatTransport.setChatStateSupport(isChatStateEnable);
+                // ConferenceChatTransport.setChatStateSupport(isChatStateEnable);
 
                 if (isChatStateEnable) {
                     discoveryManager.addFeature(ChatStateManager.NAMESPACE);

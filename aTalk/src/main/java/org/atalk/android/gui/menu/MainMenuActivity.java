@@ -36,14 +36,14 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.*;
-import org.atalk.android.gui.About;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountsListActivity;
 import org.atalk.android.gui.call.conference.ConferenceInviteDialog;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chatroomslist.ChatRoomBookmarksDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomCreateDialog;
 import org.atalk.android.gui.contactlist.AddContactActivity;
+import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.ActionBarUtil;
@@ -53,6 +53,8 @@ import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.*;
 
 import java.util.*;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * The main options menu. Every <tt>Activity</tt> that desires to have the general options menu
@@ -202,7 +204,7 @@ public class MainMenuActivity extends ExitMenuActivity
      */
     private void initVideoBridge_task()
     {
-        final Boolean enableMenu;
+        final boolean enableMenu;
         if (menuVbItem == null)
             this.menuVbItem = new VideoBridgeProviderMenuItem();
 
@@ -308,9 +310,11 @@ public class MainMenuActivity extends ExitMenuActivity
             case R.id.show_hide_offline:
                 boolean isShowOffline = ConfigurationUtils.isShowOffline();
                 MetaContactListAdapter.presenceFilter.setShowOffline(!isShowOffline);
-                MetaContactListAdapter contactListAdapter = aTalkApp.getContactListAdapter();
-                contactListAdapter.filterData("");
-
+                Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
+                if (clf instanceof ContactListFragment) {
+                    MetaContactListAdapter contactListAdapter = ((ContactListFragment) clf).getContactListAdapter();
+                    contactListAdapter.filterData("");
+                }
                 String onOffLine = aTalkApp.getResString(!isShowOffline
                         ? R.string.service_gui_HIDE_OFFLINE_CONTACTS : R.string.service_gui_SHOW_OFFLINE_CONTACTS);
                 mShowHideOffline.setTitle(onOffLine);

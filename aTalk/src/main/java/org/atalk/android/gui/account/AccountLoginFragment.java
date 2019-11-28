@@ -9,12 +9,12 @@ import android.accounts.Account;
 import android.accounts.*;
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.InputType;
-import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
+
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
@@ -31,7 +31,8 @@ import java.util.Map;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AccountLoginFragment extends OSGiFragment {
+public class AccountLoginFragment extends OSGiFragment
+{
     /**
      * The username property name.
      */
@@ -69,11 +70,13 @@ public class AccountLoginFragment extends OSGiFragment {
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Activity activity)
+    {
         super.onAttach(activity);
         if (activity instanceof AccountLoginListener) {
             this.loginListener = (AccountLoginListener) activity;
-        } else {
+        }
+        else {
             throw new RuntimeException("Account login listener unspecified");
         }
     }
@@ -82,7 +85,8 @@ public class AccountLoginFragment extends OSGiFragment {
      * {@inheritDoc}
      */
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         loginListener = null;
     }
@@ -91,7 +95,8 @@ public class AccountLoginFragment extends OSGiFragment {
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         View content = inflater.inflate(R.layout.account_create_new, container, false);
         spinnerNwk = content.findViewById(R.id.networkSpinner);
         ArrayAdapter<CharSequence> adapterNwk = ArrayAdapter.createFromResource(getActivity(),
@@ -107,7 +112,7 @@ public class AccountLoginFragment extends OSGiFragment {
 
         mPasswordField = content.findViewById(R.id.passwordField);
         mShowPasswordCheckBox = content.findViewById(R.id.show_password);
-        mSavePasswordCheckBox  = content.findViewById(R.id.store_password);
+        mSavePasswordCheckBox = content.findViewById(R.id.store_password);
         mIBRegistrationCheckBox = content.findViewById(R.id.ibRegistration);
         mServerOverrideCheckBox = content.findViewById(R.id.serverOverridden);
         mServerIpField = content.findViewById(R.id.serverIpField);
@@ -133,7 +138,8 @@ public class AccountLoginFragment extends OSGiFragment {
         return content;
     }
 
-    private void initializeViewListeners() {
+    private void initializeViewListeners()
+    {
         mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
                 -> ViewUtil.showPassword(mPasswordField, isChecked));
         mServerOverrideCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
@@ -143,7 +149,8 @@ public class AccountLoginFragment extends OSGiFragment {
     /**
      * Initializes the sign in button.
      */
-    private void initButton(final View content) {
+    private void initButton(final View content)
+    {
         final Button signInButton = content.findViewById(R.id.buttonSignIn);
         signInButton.setEnabled(true);
 
@@ -157,14 +164,14 @@ public class AccountLoginFragment extends OSGiFragment {
             String selectedDnssecMode = dnssecModeValues[spinnerDM.getSelectedItemPosition()];
             accountProperties.put(ProtocolProviderFactory.DNSSEC_MODE, selectedDnssecMode);
 
-            // cmeng - must trim all inline, leading and ending whitespace character entered by
-            // user accidentally or included by android from spelling checker
-            final EditText userNameField = content.findViewById(R.id.usernameField);
-            String userName = userNameField.getText().toString().replaceAll("\\s", "");
-            String password = mPasswordField.getText().toString().trim();
+            // cmeng - must trim all inline, leading and ending whitespace character entered
+            // by user accidentally or included by android from auto correction checker
+            String userName = ViewUtil.toString(content.findViewById(R.id.usernameField));
+            userName = (userName == null) ? null : userName.replaceAll("\\s", "");
+            String password = ViewUtil.toString(mPasswordField);
 
-            String serverAddress = mServerIpField.getText().toString().replaceAll("\\s", "");
-            String serverPort = mServerPortField.getText().toString().replaceAll("\\s", "");
+            String serverAddress = ViewUtil.toString(mServerIpField);
+            String serverPort = ViewUtil.toString(mServerPortField);
 
             String savePassword = Boolean.toString(mSavePasswordCheckBox.isChecked());
             accountProperties.put(ProtocolProviderFactory.PASSWORD_PERSISTENT, savePassword);
@@ -173,26 +180,29 @@ public class AccountLoginFragment extends OSGiFragment {
             accountProperties.put(ProtocolProviderFactory.IBR_REGISTRATION, ibRegistration);
 
             // Update server override options
-            if (mServerOverrideCheckBox.isChecked()
-                    && !TextUtils.isEmpty(serverAddress) && !TextUtils.isEmpty(serverPort)) {
+            if (mServerOverrideCheckBox.isChecked() && (serverAddress != null) && (serverPort != null)) {
                 accountProperties.put(ProtocolProviderFactory.IS_SERVER_OVERRIDDEN, "true");
                 accountProperties.put(ProtocolProviderFactory.SERVER_ADDRESS, serverAddress);
                 accountProperties.put(ProtocolProviderFactory.SERVER_PORT, serverPort);
-            } else {
+            }
+            else {
                 accountProperties.put(ProtocolProviderFactory.IS_SERVER_OVERRIDDEN, "false");
             }
             loginListener.onLoginPerformed(userName, password, selectedNetwork, accountProperties);
         });
 
         final Button cancelButton = content.findViewById(R.id.buttonCancel);
-        cancelButton.setOnClickListener(v -> getActivity().finish());
+        if (getActivity() != null)
+            cancelButton.setOnClickListener(v -> getActivity().finish());
     }
 
-    private void updateViewVisibility(boolean IsServerOverridden) {
+    private void updateViewVisibility(boolean IsServerOverridden)
+    {
         if (IsServerOverridden) {
             mServerIpField.setVisibility(View.VISIBLE);
             mServerPortField.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else {
             mServerIpField.setVisibility(View.GONE);
             mServerPortField.setVisibility(View.GONE);
         }
@@ -203,7 +213,8 @@ public class AccountLoginFragment extends OSGiFragment {
      *
      * @param protocolProvider the <tt>ProtocolProviderService</tt>, corresponding to the account to store
      */
-    private void storeAndroidAccount(ProtocolProviderService protocolProvider) {
+    private void storeAndroidAccount(ProtocolProviderService protocolProvider)
+    {
         Map<String, String> accountProps = protocolProvider.getAccountID().getAccountProperties();
 
         String username = accountProps.get(ProtocolProviderFactory.USER_ID);
@@ -238,11 +249,12 @@ public class AccountLoginFragment extends OSGiFragment {
     /**
      * Creates new <tt>AccountLoginFragment</tt> with optionally filled login and password fields.
      *
-     * @param login    optional login text that will be filled on the form.
+     * @param login optional login text that will be filled on the form.
      * @param password optional password text that will be filled on the form.
      * @return new instance of parametrized <tt>AccountLoginFragment</tt>.
      */
-    public static AccountLoginFragment createInstance(String login, String password) {
+    public static AccountLoginFragment createInstance(String login, String password)
+    {
         AccountLoginFragment fragment = new AccountLoginFragment();
 
         Bundle args = new Bundle();
@@ -255,15 +267,16 @@ public class AccountLoginFragment extends OSGiFragment {
     /**
      * The interface is used to notify listener when user click the sign-in button.
      */
-    public interface AccountLoginListener {
+    public interface AccountLoginListener
+    {
         /**
          * Method is called when user click the sign in button.
          *
          * @param userName the login account entered by the user.
          * @param password the password entered by the user.
-         * @param network  the network name selected by the user.
+         * @param network the network name selected by the user.
          */
         public void onLoginPerformed(String userName, String password, String network,
-                                     Map<String, String> accountProperties);
+                Map<String, String> accountProperties);
     }
 }

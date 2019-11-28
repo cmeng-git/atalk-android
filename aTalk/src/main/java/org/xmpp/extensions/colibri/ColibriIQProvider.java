@@ -6,10 +6,10 @@
 package org.xmpp.extensions.colibri;
 
 import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.*;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jxmpp.jid.parts.Localpart;
@@ -244,8 +244,8 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                             conferenceEndpoint = null;
                         }
                         else if (ColibriConferenceIQ.Channel.SSRC_ELEMENT_NAME.equals(name)) {
-                            String s = ssrc.toString().trim();
-                            if (s.length() != 0) {
+                            String s =  (ssrc == null) ? null :  ssrc.toString().trim();
+                            if (!StringUtils.isNullOrEmpty(s)) {
                                 int i;
 
                                 /*

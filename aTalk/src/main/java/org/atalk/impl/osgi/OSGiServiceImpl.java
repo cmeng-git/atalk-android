@@ -40,7 +40,7 @@ public class OSGiServiceImpl
 {
     private final OSGiServiceBundleContextHolder bundleContextHolder = new OSGiServiceBundleContextHolder();
 
-    private final AsyncExecutor<Runnable> executor = new AsyncExecutor<Runnable>(5, TimeUnit.MINUTES);
+    private final AsyncExecutor<Runnable> executor = new AsyncExecutor<>(5, TimeUnit.MINUTES);
 
     /**
      * The <tt>org.osgi.framework.launch.Framework</tt> instance which represents the OSGi
@@ -200,7 +200,7 @@ public class OSGiServiceImpl
         public void run()
         {
             FrameworkFactory frameworkFactory = new FrameworkFactoryImpl();
-            Map<String, String> configuration = new HashMap<String, String>();
+            Map<String, String> configuration = new HashMap<>();
 
             TreeMap<Integer, List<String>> BUNDLES = getBundlesConfig(service);
             configuration.put(Constants.FRAMEWORK_BEGINNING_STARTLEVEL, Integer.toString(BUNDLES.lastKey()));
@@ -272,11 +272,11 @@ public class OSGiServiceImpl
                 try {
                     if (is != null)
                         is.close();
-                } catch (IOException ioe) {
+                } catch (IOException ignore) {
                 }
             }
 
-            TreeMap<Integer, List<String>> startLevels = new TreeMap<Integer, List<String>>();
+            TreeMap<Integer, List<String>> startLevels = new TreeMap<>();
 
             for (Map.Entry<Object, Object> e : props.entrySet()) {
                 String prop = e.getKey().toString().trim();
@@ -288,7 +288,7 @@ public class OSGiServiceImpl
                         int startLevelInt = Integer.parseInt(startLevelStr);
 
                         StringTokenizer classTokens = new StringTokenizer(value.toString(), " ");
-                        List<String> classNames = new ArrayList<String>();
+                        List<String> classNames = new ArrayList<>();
 
                         while (classTokens.hasMoreTokens()) {
                             String className = classTokens.nextToken().trim();

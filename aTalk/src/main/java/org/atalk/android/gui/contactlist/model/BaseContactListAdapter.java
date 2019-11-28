@@ -21,9 +21,13 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.widgets.UnreadCountCustomView;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -53,6 +57,11 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      */
     private final ExpandableListView contactListView;
 
+    /**
+     * A map reference of MetaContact to ContactViewHolder for the unread message count update
+     */
+    private Map<MetaContact, ContactViewHolder> mContactViewHolder = new HashMap<>();
+    
     private final boolean isShownCallButton;
 
     private LayoutInflater mInflater;
@@ -197,6 +206,26 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     }
 
     /**
+     * Updates the contact message unread count. Hide the unread message badge if the count is zero
+     *
+     * @param metaContact MetaContact object
+     * @param count unread message count
+     */
+    public void updateUnreadCount(final MetaContact metaContact, final int count)
+    {
+        ContactViewHolder contactViewHolder = mContactViewHolder.get(metaContact);
+        if (contactViewHolder == null)
+            return;
+
+        if (count == 0) {
+            contactViewHolder.unreadCount.setVisibility(View.GONE);
+        } else {
+            contactViewHolder.unreadCount.setVisibility(View.VISIBLE);
+            contactViewHolder.unreadCount.setUnreadCount(count);
+        }
+    }
+
+    /**
      * Returns the flat list index for the given <tt>groupIndex</tt> and <tt>contactIndex</tt>.
      *
      * @param groupIndex the index of the group
@@ -263,6 +292,9 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             contactViewHolder.avatarView.setTag(contactViewHolder);
             contactViewHolder.statusView = convertView.findViewById(R.id.contactStatusIcon);
 
+            contactViewHolder.unreadCount = convertView.findViewById(R.id.unread_count);
+            contactViewHolder.unreadCount.setTag(contactViewHolder);
+
             // Create call button listener and add bind holder tag
             contactViewHolder.callButtonLayout = convertView.findViewById(R.id.callButtonLayout);
             contactViewHolder.callButton = convertView.findViewById(R.id.contactCallButton);
@@ -303,6 +335,11 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
         if ((child instanceof MetaContact)
                 && (((MetaContact) child).getDefaultContact() != null)) {
+
+            MetaContact metaContact = (MetaContact) child;
+            mContactViewHolder.put(metaContact, contactViewHolder);
+            updateUnreadCount(metaContact, metaContact.getUnreadCount());
+
             String sJid = sDisplayName;
             if (TextUtils.isEmpty(statusMessage)) {
                 if (sJid.contains("@")) {
@@ -526,6 +563,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         ImageView selectedBgView;
         ImageView buttonSeparatorView;
         View callButtonLayout;
+        UnreadCountCustomView unreadCount;
         int groupPosition;
         int childPosition;
     }

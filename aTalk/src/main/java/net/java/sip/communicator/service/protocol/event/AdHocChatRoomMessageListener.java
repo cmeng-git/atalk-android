@@ -25,7 +25,7 @@ import java.util.EventListener;
 public interface AdHocChatRoomMessageListener extends EventListener
 {
     /**
-     * Called when a new incoming <tt>Message</tt> has been received.
+     * Called when a new incoming <tt>IMessage</tt> has been received.
      *
      * @param evt the <tt>AdHocChatRoomMessageReceivedEvent</tt> containing the newly received
      * message, its sender and other details.

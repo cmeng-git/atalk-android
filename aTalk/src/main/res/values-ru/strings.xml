@@ -215,7 +215,7 @@
     <string name="service_gui_ROOM_NAME">chatroom</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="http://atalk.sytes.net/atalk">Онлайн-справка </a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Онлайн-справка </a></string>
     <string name="AboutDialog_title">О</string>
     <string name="AboutDialog_Version">Версия %1$s</string>
     <string name="About_action">О</string>
