@@ -28,7 +28,6 @@ import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.Jid;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.File;
@@ -87,10 +86,11 @@ public class AccountsListActivity extends OSGiActivity
     @Override
     protected void onResume()
     {
+        super.onResume();
+
         // Need to refresh the list each time in case account might be removed in other Activity.
         // Also it can't be removed on "unregistered" event, because on/off buttons will cause the account to disappear
         accountsInit();
-        super.onResume();
     }
 
     @Override

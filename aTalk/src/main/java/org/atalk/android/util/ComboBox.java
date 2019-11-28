@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.util.ViewUtil;
 
 import java.util.List;
 
@@ -130,7 +131,7 @@ public class ComboBox extends LinearLayout
      */
     public String getText()
     {
-        return _text.getText().toString();
+        return ViewUtil.toString(_text);
     }
 
     /**

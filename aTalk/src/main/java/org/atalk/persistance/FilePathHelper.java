@@ -10,8 +10,6 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.*;
 
 import androidx.annotation.RequiresApi;
@@ -88,7 +86,7 @@ public class FilePathHelper
             if (inputStream == null)
                 return;
             OutputStream outputStream = new FileOutputStream(dstFile);
-            IOUtils.copy(inputStream, outputStream); // org.apache.commons.io
+            FileBackend.copy(inputStream, outputStream); // org.apache.commons.io
             inputStream.close();
             outputStream.close();
         } catch (Exception e) { // IOException

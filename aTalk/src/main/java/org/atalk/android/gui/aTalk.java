@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.ViewGroup;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 
@@ -35,9 +36,10 @@ import org.atalk.android.gui.fragment.ActionBarStatusFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.webview.WebViewFragment;
+import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
 
-import java.util.List;
+import java.util.*;
 
 import androidx.fragment.app.*;
 import androidx.viewpager.widget.PagerAdapter;
@@ -52,9 +54,16 @@ import timber.log.Timber;
  */
 public class aTalk extends MainMenuActivity implements EntityListHelper.TaskCompleted
 {
-    private final static int CONTACT_LIST = 0;
-    private final static int CONFERENCE_LIST = 1;
-    private final static int WEB_PAGE = 2;
+    /**
+     * A map reference to find the FragmentPagerAdapter's fragmentTag (String) by a given position (Integer)
+      */
+    private static Map<Integer, String> mFragmentTags = new HashMap<>();
+
+    private static FragmentManager mFragmentManager;
+
+    public final static int CL_FRAGMENT = 0;
+    public final static int CRL_FRAGMENT = 1;
+    public final static int WP_FRAGMENT = 2;
     /**
      * The action that will show contacts.
      */
@@ -110,7 +119,8 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = findViewById(R.id.mainViewPager);
         // The pager adapter, which provides the pages to the view pager widget.
-        PagerAdapter mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
+        mFragmentManager = getSupportFragmentManager();
+        PagerAdapter mPagerAdapter = new MainPagerAdapter(mFragmentManager);
         mPager.setAdapter(mPagerAdapter);
         mPager.setPageTransformer(true, new DepthPageTransformer());
 
@@ -258,23 +268,44 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     {
         private MainPagerAdapter(FragmentManager fm)
         {
-            super(fm);
+            // Must use BEHAVIOR_SET_USER_VISIBLE_HINT to see conference list on first slide to conference view
+            super(fm, BEHAVIOR_SET_USER_VISIBLE_HINT);
         }
 
+        @NotNull
         @Override
         public Fragment getItem(int position)
         {
-            if (position == CONTACT_LIST) {
+            if (position == CL_FRAGMENT) {
                 contactListFragment = new ContactListFragment();
-                aTalkApp.setContactListFragment(contactListFragment);
                 return contactListFragment;
             }
-            else if (position == CONFERENCE_LIST) {
+            else if (position == CRL_FRAGMENT) {
                 return new ChatRoomListFragment();
             }
-            else { // if (position == WEB_PAGE){
+            else { // if (position == WP_FRAGMENT){
                 return new WebViewFragment();
             }
+        }
+
+        /**
+         * Save the reference of position to FragmentPagerAdapter fragmentTag in mFragmentTags
+         *
+         * @param container The viewGroup
+         * @param position The pager position
+         *
+         * @return Fragment object at the specific location
+         */
+        @NotNull
+        @Override
+        public Object instantiateItem(@NotNull ViewGroup container, int position) {
+            Object obj = super.instantiateItem(container, position);
+            if (obj instanceof Fragment) {
+                Fragment f = (Fragment) obj;
+                assert f.getTag() != null;
+                mFragmentTags.put(position, f.getTag());
+            }
+            return obj;
         }
 
         @Override
@@ -282,6 +313,18 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         {
             return NUM_PAGES;
         }
+    }
+
+    /**
+     * Get the fragment reference for the given position in pager
+     *
+     * @param position position in the mFragmentTags
+     *
+     * @return the requested fragment for the specified postion or null
+     */
+    public static Fragment getFragment(int position) {
+        String tag = mFragmentTags.get(position);
+        return (mFragmentManager != null)? mFragmentManager.findFragmentByTag(tag) : null;
     }
 
     private class DepthPageTransformer implements ViewPager.PageTransformer

@@ -223,8 +223,8 @@
 
     <!-- About Dialog -->
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\n(GNU General Public License v3.0)\nAll rights reserved.</string>
-    <string name="AboutDialog_help"><a href="https://atalk.sytes.net/atalk">Online Help</a></string>
-    <string name="AboutDialog_Link">https://atalk.sytes.net/atalk</string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Online Help</a></string>
+    <string name="AboutDialog_Link">https://cmeng-git.github.io</string>
     <string name="AboutDialog_title">About</string>
     <string name="AboutDialog_Version">Version %1$s</string>
     <string name="About_action">About</string>
@@ -946,7 +946,7 @@
     <string name="plugin_otr_authbuddydialog_CANCEL">Cancel</string>
     <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Please enter the fingerprint you received from %1$s.</string>
     <string name="plugin_otr_authbuddydialog_HELP">Help</string>
-    <string name="plugin_otr_authbuddydialog_HELP_URI">https://atalk.sytes.net/faq.html</string>
+    <string name="plugin_otr_authbuddydialog_HELP_URI">https://cmeng-git.github.io</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE">I have</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">I have not</string>
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint for %1$s: %2$s</string>

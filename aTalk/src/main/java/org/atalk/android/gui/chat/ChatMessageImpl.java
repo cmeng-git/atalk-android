@@ -14,14 +14,12 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.GuiUtils;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.util.Html;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -115,16 +113,16 @@ public class ChatMessageImpl implements ChatMessage
     public ChatMessageImpl(String contactName, String displayName, Date date, int messageType, int mimeType, String content)
     {
         this(contactName, displayName, date, messageType, mimeType, content,
-                Message.ENCRYPTION_NONE, null, null,
+                IMessage.ENCRYPTION_NONE, null, null,
                 ChatMessage.MESSAGE_DELIVERY_NONE, "", "",
                 null, null, null);
     }
 
 
-    public ChatMessageImpl(String contactName, String displayName, Date date, int messageType, Message msg,
+    public ChatMessageImpl(String contactName, String displayName, Date date, int messageType, IMessage msg,
             String correctedMessageUID)
     {
-        this(contactName, displayName, date, messageType, msg.getEncType(), msg.getContent(),
+        this(contactName, displayName, date, messageType, msg.getMimeType(), msg.getContent(),
                 msg.getEncryptionType(), msg.getMessageUID(), correctedMessageUID,
                 msg.getReceiptStatus(), msg.getServerMsgId(), msg.getRemoteMsgId(),
                 null, null, null);
@@ -134,7 +132,7 @@ public class ChatMessageImpl implements ChatMessage
             String messageUID, OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
     {
         this(contactName, contactName, date, messageType, mimeType, content,
-                Message.ENCRYPTION_NONE, messageUID, null,
+                IMessage.ENCRYPTION_NONE, messageUID, null,
                 ChatMessage.MESSAGE_DELIVERY_NONE, null, null,
                 opSet, request, fileRecord);
     }
@@ -274,13 +272,11 @@ public class ChatMessageImpl implements ChatMessage
             return null;
 
         String output = message;
-        // Escape HTML content (getMimeType() can be null)
-        if (Message.ENCODE_HTML != getMimeType()) {
-            output = Html.escapeHtml(output);
+        // Escape HTML content -  seems not necessary for android OS (getMimeType() can be null)
+        if (IMessage.ENCODE_HTML != getMimeType()) {
+            output = StringEscapeUtils.escapeHtml4(message);
         }
-
         // Process replacements (cmeng - just do a direct unicode conversion for std emojis)
-        // output = processReplacements(output);
         output = StringEscapeUtils.unescapeXml(output);
 
         // Apply the "edited at" tag for corrected message
@@ -481,7 +477,7 @@ public class ChatMessageImpl implements ChatMessage
     static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt)
     {
         final Contact contact = evt.getDestinationContact();
-        final Message message = evt.getSourceMessage();
+        final IMessage message = evt.getSourceMessage();
 
         return new ChatMessageImpl(contact.getProtocolProvider().getAccountID().getAccountJid(),
                 getAccountDisplayName(contact.getProtocolProvider()), evt.getTimestamp(),
@@ -490,7 +486,7 @@ public class ChatMessageImpl implements ChatMessage
 
     static public ChatMessageImpl getMsgForEvent(final MessageReceivedEvent evt)
     {
-        final Message message = evt.getSourceMessage();
+        final IMessage message = evt.getSourceMessage();
         final Contact protocolContact = evt.getSourceContact();
         final MetaContact metaContact
                 = AndroidGUIActivator.getContactListService().findMetaContactByContact(protocolContact);
@@ -502,7 +498,7 @@ public class ChatMessageImpl implements ChatMessage
     static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageDeliveredEvent evt)
     {
         ChatRoom chatRoom = evt.getSourceChatRoom();
-        final Message message = evt.getMessage();
+        final IMessage message = evt.getMessage();
 
         return new ChatMessageImpl(chatRoom.toString(), chatRoom.getName(), evt.getTimestamp(),
                 ChatMessage.MESSAGE_MUC_OUT, message, null);
@@ -514,14 +510,14 @@ public class ChatMessageImpl implements ChatMessage
         // Extract the contact with the resource part
         String contact = evt.getSourceChatRoomMember().getContactAddress(); //.split("/")[0];
 
-        final Message message = evt.getMessage();
+        final IMessage message = evt.getMessage();
         return new ChatMessageImpl(contact, nickName, evt.getTimestamp(), evt.getEventType(), message, null);
     }
 
     static public ChatMessageImpl getMsgForEvent(final FileRecord fileRecord)
     {
         return new ChatMessageImpl(fileRecord.getJidAddress(), fileRecord.getDate(),
-                ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY, Message.ENCODE_PLAIN, null,
+                ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY, IMessage.ENCODE_PLAIN, null,
                 fileRecord.getID(), null, null, fileRecord);
     }
 

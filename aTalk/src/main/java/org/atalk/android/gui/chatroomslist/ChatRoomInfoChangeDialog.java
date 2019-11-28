@@ -19,7 +19,6 @@ package org.atalk.android.gui.chatroomslist;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -30,6 +29,7 @@ import net.java.sip.communicator.service.protocol.ChatRoom;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.ViewUtil;
 
 /**
  * The dialog allows user to change nickName and/or Subject.
@@ -104,10 +104,10 @@ public class ChatRoomInfoChangeDialog extends Dialog
     private boolean applyChatRoomChanges()
     {
         // allow nickName to contain spaces
-        String nickName = nicknameField.getText().toString().trim();
-        String subject = subjectField.getText().toString().trim();
+        String nickName = ViewUtil.toString(nicknameField);
+        String subject = ViewUtil.toString(subjectField);
 
-        if (TextUtils.isEmpty(nickName)) {
+        if (nickName == null) {
             AndroidUtils.showAlertDialog(mContext, R.string.service_gui_CHANGE_ROOM_INFO,
                     R.string.service_gui_CHANGE_NICKNAME_NULL);
             return false;

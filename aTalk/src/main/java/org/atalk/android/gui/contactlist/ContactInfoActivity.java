@@ -15,6 +15,7 @@ import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.util.ActionBarUtil;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.service.osgi.OSGiActivity;
@@ -23,6 +24,7 @@ import org.atalk.util.StringUtils;
 import java.text.DateFormat;
 import java.util.*;
 
+import androidx.fragment.app.Fragment;
 import timber.log.Timber;
 
 /**
@@ -81,23 +83,25 @@ public class ContactInfoActivity extends OSGiActivity
         // Get contact ID from intent extras - but cannot link to mContact
         String contactId = getIntent().getStringExtra(INTENT_CONTACT_ID);
 
-        ContactListFragment clFragment = aTalkApp.getContactListFragment();
-        MetaContact metaContact = clFragment.getClickedContact();
-        if (metaContact == null) {
-            Timber.e("Requested contact info not found: %s", contactId);
-            finish();
-        }
-        else {
-            mContact = metaContact.getDefaultContact();
-            ProtocolProviderService pps = mContact.getProtocolProvider();
-            contactInfoOpSet = pps.getOperationSet(OperationSetServerStoredContactInfo.class);
-            if ((contactInfoOpSet != null) && pps.isRegistered()) {
-                initPresenceStatus();
-                initSummaryPanel();
+        Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
+        if (clf instanceof ContactListFragment) {
+            MetaContact metaContact = ((ContactListFragment) clf).getClickedContact();
+            if (metaContact == null) {
+                Timber.e("Requested contact info not found: %s", contactId);
+                finish();
+            }
+            else {
+                mContact = metaContact.getDefaultContact();
+                ProtocolProviderService pps = mContact.getProtocolProvider();
+                contactInfoOpSet = pps.getOperationSet(OperationSetServerStoredContactInfo.class);
+                if ((contactInfoOpSet != null) && pps.isRegistered()) {
+                    initPresenceStatus();
+                    initSummaryPanel();
 
-                // Always retrieve new contact vCard-temp info from server. Otherwise contact
-                // info changes after account login will not be reflected in the display info.
-                contactInfoOpSet.requestAllDetailsForContact(mContact, this);
+                    // Always retrieve new contact vCard-temp info from server. Otherwise contact
+                    // info changes after account login will not be reflected in the display info.
+                    contactInfoOpSet.requestAllDetailsForContact(mContact, this);
+                }
             }
         }
     }

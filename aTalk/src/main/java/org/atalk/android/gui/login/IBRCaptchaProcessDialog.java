@@ -392,13 +392,14 @@ public class IBRCaptchaProcessDialog extends Dialog
         }
 
         // Update server override options
-        String serverAddress = mServerIpField.getText().toString().replaceAll("\\s", "");
-        String serverPort = mServerPortField.getText().toString().replaceAll("\\s", "");
+        String serverAddress = ViewUtil.toString(mServerIpField);
+        String serverPort = ViewUtil.toString(mServerPortField);
+
         boolean isServerOverride = mServerOverrideCheckBox.isChecked();
         mAccountId.setServerOverridden(isServerOverride);
-        if ((isServerOverride) && !TextUtils.isEmpty(serverAddress) && !TextUtils.isEmpty(serverPort)) {
-            mAccountId.setServerAddress(mServerIpField.getText().toString());
-            mAccountId.setServerPort(mServerPortField.getText().toString());
+        if ((isServerOverride) && (serverAddress != null) && (serverPort != null)) {
+            mAccountId.setServerAddress(serverAddress);
+            mAccountId.setServerPort(serverPort);
         }
         return true;
     }
@@ -428,11 +429,11 @@ public class IBRCaptchaProcessDialog extends Dialog
                     int varCount = entryFields.getChildCount();
                     for (int i = 0; i < varCount; i++) {
                         final View row = entryFields.getChildAt(i);
-                        String label = ((TextView) row.findViewById(R.id.field_label)).getText().toString();
+                        String label = ViewUtil.toString(row.findViewById(R.id.field_label));
                         if (varMap.containsKey(label)) {
-                            CharSequence data = ((TextView) row.findViewById(R.id.field_value)).getText();
-                            if (!TextUtils.isEmpty(data))
-                                addField(varMap.get(label), data.toString());
+                            String data = ViewUtil.toString(row.findViewById(R.id.field_value));
+                            if (data != null)
+                                addField(varMap.get(label), data);
                         }
                     }
 

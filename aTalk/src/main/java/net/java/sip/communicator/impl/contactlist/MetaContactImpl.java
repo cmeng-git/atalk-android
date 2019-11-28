@@ -57,6 +57,11 @@ public class MetaContactImpl extends DataObject implements MetaContact
     private int contactsOnline = 0;
 
     /**
+     * The number of unread messages
+     */
+    private int unreadCount = 0;
+
+    /**
      * An id uniquely identifying the meta contact in this contact list.
      */
     private final String uid;
@@ -383,6 +388,24 @@ public class MetaContactImpl extends DataObject implements MetaContact
     public String getMetaUID()
     {
         return uid;
+    }
+
+    /**
+     * Set the unread message count for this metaContact
+     *
+     * @param count unread message count
+     */
+    public void setUnreadCount(int count) {
+        unreadCount = count;
+    }
+
+    /**
+     * Returns the unread message count for this metaContact
+     *
+     * @return the unread message count
+     */
+    public int getUnreadCount() {
+        return unreadCount;
     }
 
     /**

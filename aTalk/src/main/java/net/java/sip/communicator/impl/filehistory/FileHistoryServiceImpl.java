@@ -299,7 +299,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         contentValues.put(ChatMessage.TIME_STAMP, timeStamp);
         contentValues.put(ChatMessage.ENTITY_JID, mEntityJid);
         contentValues.put(ChatMessage.JID, mJid);
-        contentValues.put(ChatMessage.ENC_TYPE, Message.ENCODE_PLAIN);
+        contentValues.put(ChatMessage.ENC_TYPE, IMessage.ENCODE_PLAIN);
         contentValues.put(ChatMessage.MSG_TYPE, msgType);
         contentValues.put(ChatMessage.DIRECTION, direction);
         contentValues.put(ChatMessage.STATUS, FileRecord.STATUS_ACTIVE);
@@ -320,7 +320,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
 
         // ignore events if status is unknown
         if (status != FileRecord.STATUS_UNKNOWN)
-            updateFTStatusToDB(ft.getID(), status, null, Message.ENCRYPTION_NONE);
+            updateFTStatusToDB(ft.getID(), status, null, IMessage.ENCRYPTION_NONE);
     }
 
     /**
@@ -331,7 +331,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     public void fileTransferRequestRejected(FileTransferRequestEvent event)
     {
         IncomingFileTransferRequest req = event.getRequest();
-        updateFTStatusToDB(req.getID(), FileRecord.STATUS_REFUSED, null, Message.ENCRYPTION_NONE);
+        updateFTStatusToDB(req.getID(), FileRecord.STATUS_REFUSED, null, IMessage.ENCRYPTION_NONE);
     }
 
     /**
@@ -342,7 +342,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     public void fileTransferRequestCanceled(FileTransferRequestEvent event)
     {
         IncomingFileTransferRequest req = event.getRequest();
-        updateFTStatusToDB(req.getID(), FileRecord.STATUS_CANCELED, null, Message.ENCRYPTION_NONE);
+        updateFTStatusToDB(req.getID(), FileRecord.STATUS_CANCELED, null, IMessage.ENCRYPTION_NONE);
     }
 
     /**
@@ -351,7 +351,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      * @param msgUuid message UUID
      * @param status New status for update
      * @param fileName local fileName path for http downloaded file; null => no change and keep the link in MSG_BODY
-     * @param encType Message.ENCRYPTION_NONE, ENCRYPTION_OMEMO, ENCRYPTION_OTR
+     * @param encType IMessage.ENCRYPTION_NONE, ENCRYPTION_OMEMO, ENCRYPTION_OTR
      */
     public void updateFTStatusToDB(String msgUuid, int status, String fileName, int encType)
     {
@@ -365,7 +365,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      * @param msgUuid message UUID
      * @param status New status for update
      * @param fileName local fileName path for http downloaded file; null => no change and keep the link in MSG_BODY
-     * @param encType Message.ENCRYPTION_NONE, ENCRYPTION_OMEMO, ENCRYPTION_OTR
+     * @param encType IMessage.ENCRYPTION_NONE, ENCRYPTION_OMEMO, ENCRYPTION_OTR
      * @param recordType File Transfer record type
      */
     public void updateFTStatusToDB(String msgUuid, int status, String fileName, int encType, int recordType)

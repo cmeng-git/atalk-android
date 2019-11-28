@@ -27,7 +27,7 @@ public interface ChatMessage
     String ENTITY_JID = "entityJid"; // contactJid or chatRoomJid (nick)
     String JID = "Jid";                // chatRoom member FullJid
     String MSG_BODY = "msgBody";    // message content
-    String ENC_TYPE = "encType";    // see Message for the ENCRYPTION_xxx & MASK definitions
+    String ENC_TYPE = "encType";    // see IMessage for the ENCRYPTION_xxx & MASK definitions
     String MSG_TYPE = "msgType";    // as defined in below * message type *
     String DIRECTION = "direction"; // in or out
     String STATUS = "status";        // see STATUS_xxx

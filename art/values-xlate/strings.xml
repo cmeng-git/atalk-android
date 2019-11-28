@@ -216,7 +216,7 @@
 
     <!-- About Dialog -->
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\n(GNU General Public License v3.0)\nAll rights reserved.</string>
-    <string name="AboutDialog_help"><a href="https://atalk.sytes.net/atalk">Online Help</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Online Help</a></string>
     <string name="AboutDialog_title">About</string>
     <string name="AboutDialog_Version">Version %1$s</string>
     <string name="About_action">About</string>

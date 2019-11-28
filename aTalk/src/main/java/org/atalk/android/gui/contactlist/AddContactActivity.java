@@ -118,9 +118,9 @@ public class AddContactActivity extends OSGiActivity
             return;
         }
         View content = findViewById(android.R.id.content);
-        String contactAddress = ViewUtil.getTextViewValue(content, R.id.editContactName).trim();
+        String contactAddress = ViewUtil.getTextViewValue(content, R.id.editContactName);
 
-        String displayName = ViewUtil.getTextViewValue(content, R.id.editDisplayName).trim();
+        String displayName = ViewUtil.getTextViewValue(content, R.id.editDisplayName);
         if (!TextUtils.isEmpty(displayName)) {
             addRenameListener(pps, null, contactAddress, displayName);
         }

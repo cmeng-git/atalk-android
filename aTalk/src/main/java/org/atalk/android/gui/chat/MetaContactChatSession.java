@@ -676,8 +676,8 @@ public class MetaContactChatSession extends ChatSession
     {
         if (currentChatTransport != null) {
             boolean isSelectedContact = ((MetaContactChatTransport) currentChatTransport).getContact().equals(contact);
-            boolean isResourceSelected = isSelectedContact && (currentChatTransport.getResourceName() != null);
             String resourceName = currentChatTransport.getResourceName();
+            boolean isResourceSelected = isSelectedContact && (resourceName != null);
 
             removeChatTransports(contact);
             if (isResourceSelected)

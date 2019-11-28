@@ -131,8 +131,9 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
                         View dialogContent = dialog.findViewById(R.id.alertContent);
-                        String userNameEntered = ViewUtil.getTextViewValue(dialogContent, R.id.username).replaceAll("\\s", "");
-                        String password = ViewUtil.getTextViewValue(dialogContent, R.id.password).trim();
+                        String userNameEntered = ViewUtil.getTextViewValue(dialogContent, R.id.username);
+                        String password = ViewUtil.getTextViewValue(dialogContent, R.id.password);
+
                         boolean storePassword = ViewUtil.isCompoundChecked(dialogContent, R.id.store_password);
                         boolean ibRegistration = ViewUtil.isCompoundChecked(dialogContent, R.id.ib_registration);
 

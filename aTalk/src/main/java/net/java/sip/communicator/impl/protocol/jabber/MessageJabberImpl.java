@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.protocol.AbstractMessage;
 import org.atalk.android.gui.chat.ChatMessage;
 
 /**
- * A simple implementation of the <tt>Message</tt> interface. Right now the message only supports
+ * A simple implementation of the <tt>IMessage</tt> interface. Right now the message only supports
  * test contents and no binary data.
  *
  * @author Damian Minkov
@@ -25,7 +25,7 @@ public class MessageJabberImpl extends AbstractMessage
      * @param content the text content of the message.
      * @param encType contains both mime and encryption types @see ChatMessage.ENC_TYPE definition
      * @param subject the subject of the message or null for empty.
-     * @param messageUID @see net.java.sip.communicator.service.protocol.Message#getMessageUID()
+     * @param messageUID @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
      */
     public MessageJabberImpl(String content, int encType, String subject, String messageUID)
     {

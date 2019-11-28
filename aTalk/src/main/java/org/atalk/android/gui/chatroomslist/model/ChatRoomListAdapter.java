@@ -20,8 +20,9 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import net.java.sip.communicator.impl.muc.*;
+import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.*;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -566,8 +567,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
         if (TextUtils.isEmpty(query))
             return true;
 
-        String userUuid = chatRoomProviderWrapper.getProtocolProvider()
-                .getAccountID().getAccountUniqueID();
+        String userUuid = chatRoomProviderWrapper.getProtocolProvider().getAccountID().getAccountUniqueID();
         Pattern queryPattern = Pattern.compile(query, Pattern.CASE_INSENSITIVE | Pattern.LITERAL);
         return (queryPattern.matcher(userUuid).find());
     }
@@ -593,8 +593,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     @Override
     public String getDisplayName(Object groupImpl)
     {
-        return ((ChatRoomProviderWrapper) groupImpl).getProtocolProvider()
-                .getAccountID().getAccountUniqueID();
+        return ((ChatRoomProviderWrapper) groupImpl).getProtocolProvider().getAccountID().getAccountUniqueID();
     }
 
     /**

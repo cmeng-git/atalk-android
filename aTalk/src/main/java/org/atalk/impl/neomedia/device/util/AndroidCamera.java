@@ -7,6 +7,7 @@ package org.atalk.impl.neomedia.device.util;
 
 import android.hardware.Camera;
 
+import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.service.neomedia.MediaUseCase;
@@ -133,7 +134,7 @@ public class AndroidCamera extends CaptureDeviceInfo
     public static AndroidCamera getCameraFromCurrentDeviceSystem(int facing)
     {
         AndroidCamera currentCamera = getSelectedCameraDevInfo();
-        String currentProtocol = currentCamera != null ? currentCamera.getCameraProtocol() : null;
+        String currentProtocol = (currentCamera != null) ? currentCamera.getCameraProtocol() : null;
 
         AndroidCamera[] cameras = getCameras();
         for (AndroidCamera camera : cameras) {
@@ -160,8 +161,9 @@ public class AndroidCamera extends CaptureDeviceInfo
      */
     public static AndroidCamera getSelectedCameraDevInfo()
     {
-        DeviceConfiguration devConfig = NeomediaActivator.getMediaServiceImpl().getDeviceConfiguration();
-        return (AndroidCamera) devConfig.getVideoCaptureDevice(MediaUseCase.CALL);
+        MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
+        return (mediaServiceImpl == null) ? null
+                : (AndroidCamera) mediaServiceImpl.getDeviceConfiguration().getVideoCaptureDevice(MediaUseCase.CALL);
     }
 
     /**

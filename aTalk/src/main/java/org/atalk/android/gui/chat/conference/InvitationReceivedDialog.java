@@ -31,6 +31,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.ViewUtil;
 import org.jxmpp.jid.EntityJid;
 
 /**
@@ -178,7 +179,7 @@ public class InvitationReceivedDialog extends Dialog
 
     private void onRejectClicked()
     {
-        String reasonField = reasonTextArea.getText().toString().trim();
+        String reasonField = ViewUtil.toString(reasonTextArea);
         if (mMultiUserChatAdHocOpSet == null && mInvitationAdHoc == null) {
             try {
                 AndroidGUIActivator.getMUCService().rejectInvitation(mMultiUserChatOpSet, mInvitation, reasonField);
@@ -186,9 +187,8 @@ public class InvitationReceivedDialog extends Dialog
                 e.printStackTrace();
             }
         }
-        else {
+        if (mMultiUserChatAdHocOpSet != null)
             mMultiUserChatManager.rejectInvitation(mMultiUserChatAdHocOpSet, mInvitationAdHoc, reasonField);
-        }
     }
 
     /**

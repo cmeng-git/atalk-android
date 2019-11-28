@@ -14,7 +14,7 @@
 package net.java.sip.communicator.service.protocol.event;
 
 import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.IMessage;
 
 import java.util.EventObject;
 
@@ -109,7 +109,7 @@ public class MessageDeliveryFailedEvent extends EventObject
      * @param errorCode error code
      * @param correctedMessageUID The ID of the message being corrected.
      */
-    public MessageDeliveryFailedEvent(Message source, Contact to, int errorCode, String correctedMessageUID)
+    public MessageDeliveryFailedEvent(IMessage source, Contact to, int errorCode, String correctedMessageUID)
     {
         this(source, to, errorCode, System.currentTimeMillis(), null);
         this.correctedMessageUID = correctedMessageUID;
@@ -122,7 +122,7 @@ public class MessageDeliveryFailedEvent extends EventObject
      * @param to the "to" contact
      * @param errorCode error code
      */
-    public MessageDeliveryFailedEvent(Message source, Contact to, int errorCode)
+    public MessageDeliveryFailedEvent(IMessage source, Contact to, int errorCode)
     {
         this(source, to, errorCode, System.currentTimeMillis(), null);
     }
@@ -131,13 +131,13 @@ public class MessageDeliveryFailedEvent extends EventObject
      * Creates a <tt>MessageDeliveryFailedEvent</tt> indicating failure of delivery of the
      * <tt>source</tt> message to the specified <tt>to</tt> contact.
      *
-     * @param source the <tt>Message</tt> whose delivery this event represents.
+     * @param source the <tt>IMessage</tt> whose delivery this event represents.
      * @param to the <tt>Contact</tt> that this message was sent to.
      * @param errorCode an errorCode indicating the reason of the failure.
      * @param timestamp the exact timestamp when it was determined that delivery had failed.
      * @param reason a human readable message indicating the reason for the failure or null if the reason is unknown.
      */
-    public MessageDeliveryFailedEvent(Message source, Contact to, int errorCode, long timestamp, String reason)
+    public MessageDeliveryFailedEvent(IMessage source, Contact to, int errorCode, long timestamp, String reason)
     {
         super(source);
         this.to = to;
@@ -147,9 +147,9 @@ public class MessageDeliveryFailedEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>Contact</tt> that the source (failed) <tt>Message</tt> was sent to.
+     * Returns a reference to the <tt>Contact</tt> that the source (failed) <tt>IMessage</tt> was sent to.
      *
-     * @return a reference to the <tt>Contact</tt> that the source failed <tt>Message</tt> was sent to.
+     * @return a reference to the <tt>Contact</tt> that the source failed <tt>IMessage</tt> was sent to.
      */
     public Contact getDestinationContact()
     {
@@ -159,11 +159,11 @@ public class MessageDeliveryFailedEvent extends EventObject
     /**
      * Returns the message that triggered this event
      *
-     * @return the <tt>Message</tt> that triggered this event.
+     * @return the <tt>IMessage</tt> that triggered this event.
      */
-    public Message getSourceMessage()
+    public IMessage getSourceMessage()
     {
-        return (Message) getSource();
+        return (IMessage) getSource();
     }
 
     /**

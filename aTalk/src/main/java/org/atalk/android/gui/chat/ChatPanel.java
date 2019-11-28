@@ -305,43 +305,55 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Adds the given <tt>ChatStateNotificationsListener</tt> to listen for message events
-     * in this metaContact chat session.
+     * Adds the given <tt>ChatStateNotificationsListener</tt> to listen for chat state events
+     * in this chat session (Contact or ChatRoom).
      *
      * @param l the <tt>ChatStateNotificationsListener</tt> to add
      */
     public void addChatStateListener(ChatStateNotificationsListener l)
     {
-        Iterator<Contact> protoContacts = mMetaContact.getContacts();
+//        Iterator<Contact> protoContacts = mMetaContact.getContacts();
+//        while (protoContacts.hasNext()) {
+//            Contact protoContact = protoContacts.next();
+//            OperationSetChatStateNotifications chatStateOpSet
+//                    = protoContact.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
+//
+//            if (chatStateOpSet != null) {
+//                chatStateOpSet.addChatStateNotificationsListener(l);
+//            }
+//        }
 
-        while (protoContacts.hasNext()) {
-            Contact protoContact = protoContacts.next();
-            OperationSetChatStateNotifications chatStateOpSet
-                    = protoContact.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
+        OperationSetChatStateNotifications chatStateOpSet
+                = mCurrentChatTransport.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
 
-            if (chatStateOpSet != null) {
-                chatStateOpSet.addChatStateNotificationsListener(l);
-            }
+        if (chatStateOpSet != null) {
+            chatStateOpSet.addChatStateNotificationsListener(l);
         }
     }
 
     /**
-     * Removes the given <tt>ChatStateNotificationsListener</tt> from this chat session.
+     * Removes the given <tt>ChatStateNotificationsListener</tt> from this chat session (Contact or ChatRoom)..
      *
      * @param l the <tt>ChatStateNotificationsListener</tt> to remove
      */
     public void removeChatStateListener(ChatStateNotificationsListener l)
     {
-        Iterator<Contact> protoContacts = mMetaContact.getContacts();
+//        Iterator<Contact> protoContacts = mMetaContact.getContacts();
+//        while (protoContacts.hasNext()) {
+//            Contact protoContact = protoContacts.next();
+//            OperationSetChatStateNotifications chatStateOpSet
+//                    = protoContact.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
+//
+//            if (chatStateOpSet != null) {
+//                chatStateOpSet.removeChatStateNotificationsListener(l);
+//            }
+//        }
 
-        while (protoContacts.hasNext()) {
-            Contact protoContact = protoContacts.next();
-            OperationSetChatStateNotifications chatStateOpSet
-                    = protoContact.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
+        OperationSetChatStateNotifications chatStateOpSet
+                = mCurrentChatTransport.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
 
-            if (chatStateOpSet != null) {
-                chatStateOpSet.removeChatStateNotificationsListener(l);
-            }
+        if (chatStateOpSet != null) {
+            chatStateOpSet.removeChatStateNotificationsListener(l);
         }
     }
 
@@ -373,7 +385,6 @@ public class ChatPanel implements Chat, MessageListener
     public void removeContactStatusListener(ContactPresenceStatusListener l)
     {
         Iterator<Contact> protoContacts = mMetaContact.getContacts();
-
         while (protoContacts.hasNext()) {
             Contact protoContact = protoContacts.next();
             OperationSetPresence presenceOpSet
@@ -384,7 +395,6 @@ public class ChatPanel implements Chat, MessageListener
             }
         }
     }
-
 
     /**
      * Set the cache refresh flag from send file status change event.
@@ -597,10 +607,10 @@ public class ChatPanel implements Chat, MessageListener
      * @param displayName the display name of the contact
      * @param date the time at which the message is sent or received
      * @param chatMsgType the type of the message. See ChatMessage
-     * @param message the Message
+     * @param message the IMessage
      */
     public void addMessage(String contactName, String displayName, Date date, int chatMsgType,
-            Message message, String correctedMessageUID)
+            IMessage message, String correctedMessageUID)
     {
         addMessage(new ChatMessageImpl(contactName, displayName, date, chatMsgType, message, correctedMessageUID));
     }
@@ -643,7 +653,7 @@ public class ChatPanel implements Chat, MessageListener
                 R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, date.toString(), senderName);
 
         int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
-        int encType = Message.ENCODE_PLAIN;
+        int encType = IMessage.ENCODE_PLAIN;
         ChatMessageImpl chatMsg = new ChatMessageImpl(senderName, date, msgType, encType,
                 msgContent, null, opSet, request, null);
 
@@ -675,25 +685,24 @@ public class ChatPanel implements Chat, MessageListener
         ChatSessionManager.addChatLinkListener(chatLinkClickedListener);
     }
 
-    /**
-     * Returns the shortened display name of this chat.
-     *
-     * @return the shortened display name of this chat
-     */
-    public String getShortDisplayName()
-    {
-        String transportDisplayName = mCurrentChatTransport.getDisplayName().trim();
-        int atIndex = transportDisplayName.indexOf("@");
-
-        if (atIndex > -1)
-            transportDisplayName = transportDisplayName.substring(0, atIndex);
-
-        int spaceIndex = transportDisplayName.indexOf(" ");
-        if (spaceIndex > -1)
-            transportDisplayName = transportDisplayName.substring(0, spaceIndex);
-
-        return transportDisplayName;
-    }
+//    /**
+//     * Returns the shortened display name of this chat.
+//     *
+//     * @return the shortened display name of this chat
+//     */
+//    public String getShortDisplayName()
+//    {
+//        String sender = mCurrentChatTransport.getDisplayName().trim();
+//        int atIndex = sender.indexOf("@");
+//        if (atIndex > -1)
+//            sender = sender.substring(0, atIndex);
+//
+//        int spaceIndex = sender.indexOf(" ");
+//        if (spaceIndex > -1)
+//            sender = sender.substring(0, spaceIndex);
+//
+//        return sender;
+//    }
 
     @Override
     public void messageReceived(MessageReceivedEvent messageReceivedEvent)
@@ -771,7 +780,7 @@ public class ChatPanel implements Chat, MessageListener
         // Just show the pass in error message if false
         boolean mergeMessage = true;
         String errorMsg;
-        Message srcMessage = (Message) evt.getSource();
+        IMessage srcMessage = (IMessage) evt.getSource();
 
         // contactJid cannot be nick name, otherwise message will not be displayed
         String contactJid = evt.getDestinationContact().getAddress();
@@ -804,7 +813,7 @@ public class ChatPanel implements Chat, MessageListener
         }
 
         addMessage(contactJid, new Date(), ChatMessage.MESSAGE_OUT, srcMessage.getMimeType(), srcMessage.getContent());
-        addMessage(contactJid, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, errorMsg);
+        addMessage(contactJid, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN, errorMsg);
     }
 
     /**
@@ -842,10 +851,10 @@ public class ChatPanel implements Chat, MessageListener
         String contactName = ((MetaContactChatTransport) chatTransport).getContact().getAddress();
         if (ConfigurationUtils.isShowStatusChangedInChat()) {
             // Show a status message to the user.
-            // addMessage(contactName, chatTransport.getName(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
+            // addMessage(contactName, chatTransport.getName(), new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN,
             //        aTalkApp.getResString(R.string.service_gui_STATUS_CHANGED_CHAT_MESSAGE, chatTransport.getStatus().getStatusName()),
-            //        Message.ENCRYPTION_NONE, null, null);
-            addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
+            //        IMessage.ENCRYPTION_NONE, null, null);
+            addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN,
                     aTalkApp.getResString(R.string.service_gui_STATUS_CHANGED_CHAT_MESSAGE, chatTransport.getStatus().getStatusName()));
         }
     }
@@ -891,7 +900,7 @@ public class ChatPanel implements Chat, MessageListener
             }
             // Do not display change subject message if this is the original subject
             if (!TextUtils.isEmpty(oldSubject))
-                this.addMessage(mChatSession.getChatEntity(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
+                this.addMessage(mChatSession.getChatEntity(), new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN,
                         aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SUBJECT_CHANGED, oldSubject, subject));
         }
     }
@@ -906,7 +915,7 @@ public class ChatPanel implements Chat, MessageListener
     {
         if (!StringUtils.isNullOrEmpty(statusMessage)) {
             String contactName = ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getContactAddress();
-            addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN, statusMessage);
+            addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN, statusMessage);
 
         }
     }

@@ -24,8 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_toStartOf="@+id/cancelCorrectionBtn"
-        android:layout_toEndOf="@+id/editingImage"
+        android:layout_toEndOf="@+id/cancelCorrectionBtn"
+        android:layout_alignEnd="@+id/chatWriteTextBg"
         android:background="@null"
         android:inputType="textMultiLine|textCapSentences"
         android:maxLines="4"
@@ -137,7 +137,7 @@
         android:src="@drawable/send_audio_dark"/>
 
     <ImageView
-        android:id="@+id/editingImage"
+        android:id="@+id/cancelCorrectionBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/chatWriteText"
@@ -146,18 +146,7 @@
         android:layout_marginRight="6dp"
         android:background="@null"
         android:minHeight="40dp"
-        android:minWidth="20dp"
-        android:src="@drawable/editing"/>
-
-    <ImageButton
-        android:id="@+id/cancelCorrectionBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/chatWriteText"
-        android:layout_alignEnd="@+id/chatWriteTextBg"
-        android:background="@null"
-        android:minHeight="40dp"
-        android:minWidth="30dp"
-        android:src="@drawable/reset_editing_light"/>
+        android:minWidth="24dp"
+        android:src="@drawable/correction_cancel"/>
 
 </RelativeLayout>

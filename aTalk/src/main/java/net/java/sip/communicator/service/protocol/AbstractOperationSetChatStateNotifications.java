@@ -8,9 +8,6 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.ChatStateNotificationEvent;
 import net.java.sip.communicator.service.protocol.event.ChatStateNotificationsListener;
 
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smackx.chatstates.ChatState;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +15,11 @@ import timber.log.Timber;
 
 /**
  * Represents a default implementation of <tt>OperationSetChatStateNotifications</tt> in order to make
- * it easier for implementers to provide complete solutions while focusing on
- * implementation-specific details.
+ * it easier for implementers to provide complete solutions while focusing on implementation-specific details.
  *
  * @param <T> the type of the <tt>ProtocolProviderService</tt> implementation providing the
  * <tt>AbstractOperationSetChatStateNotifications</tt> implementation
+ *
  * @author Lubomir Marinov
  * @author Eng Chong Meng
  */
@@ -51,8 +48,7 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
     }
 
     /**
-     * Adds <tt>listener</tt> to the list of listeners registered for receiving
-     * <tt>ChatStateNotificationEvent</tt>s.
+     * Adds <tt>listener</tt> to the list of listeners registered for receiving <tt>ChatStateNotificationEvent</tt>s.
      *
      * @param listener the <tt>TypingNotificationsListener</tt> listener that we'd like to add
      * @see OperationSetChatStateNotifications#addChatStateNotificationsListener(ChatStateNotificationsListener)
@@ -85,43 +81,33 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
      * @param sourceContact the contact who has sent the notification
      * @param chatState the chat state from event delivery
      */
-    public void fireChatStateNotificationsEvent(Contact sourceContact, ChatState chatState,
-            Message message)
+    public void fireChatStateNotificationsEvent(ChatStateNotificationEvent evt)
     {
         ChatStateNotificationsListener[] listeners;
         synchronized (chatStateNotificationsListeners) {
-            listeners = chatStateNotificationsListeners
-                    .toArray(new ChatStateNotificationsListener[chatStateNotificationsListeners.size()]);
+            listeners = chatStateNotificationsListeners.toArray(new ChatStateNotificationsListener[0]);
         }
 
-        Timber.d("Dispatching a ChatStateNotificationEvent to %d listeners. Contact %s has now a chat state of %s",
-                listeners.length, sourceContact.getAddress(), chatState);
-
-        ChatStateNotificationEvent evt = new ChatStateNotificationEvent(sourceContact, chatState, message);
-
+        // Timber.d("Dispatching ChatState Event to %d listeners with  chatState: %s", listeners.length, evt.getChatState());
         for (ChatStateNotificationsListener listener : listeners)
             listener.chatStateNotificationReceived(evt);
     }
 
     /**
-     * Delivers a <tt>ChatStateNotificationEvent</tt> to all registered listeners for delivery failed
-     * event.
+     * Delivers a <tt>ChatStateNotificationEvent</tt> to all registered listeners for delivery failed event.
      *
      * @param sourceContact the contact who has sent the notification
      * @param evtCode the code of the event to deliver
      */
-    public void fireChatStateNotificationsDeliveryFailedEvent(Contact sourceContact, ChatState evtCode)
+    public void fireChatStateNotificationsDeliveryFailedEvent(ChatStateNotificationEvent evt)
     {
         ChatStateNotificationsListener[] listeners;
         synchronized (chatStateNotificationsListeners) {
-            listeners = chatStateNotificationsListeners
-                    .toArray(new ChatStateNotificationsListener[chatStateNotificationsListeners.size()]);
+            listeners = chatStateNotificationsListeners.toArray(new ChatStateNotificationsListener[0]);
         }
 
-        Timber.d("Dispatching a ChatStateNotificationEvent to %d listeners for chatStateNotificationDeliveryFailed. Contact %s has now a chat status of %s",
-                listeners.length, sourceContact.getAddress(), evtCode);
-
-        ChatStateNotificationEvent evt = new ChatStateNotificationEvent(sourceContact, evtCode, null);
+        Timber.d("Dispatching Delivery Failure ChatState Event to %d listeners. ChatDescriptor '%s' has chatState: %s",
+                listeners.length, evt.getChatDescriptor().toString(), evt.getChatState());
 
         for (ChatStateNotificationsListener listener : listeners)
             listener.chatStateNotificationDeliveryFailed(evt);

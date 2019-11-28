@@ -28,11 +28,11 @@ public interface MessageHistoryAdvancedService
 	 * @param destination
 	 *        The destination Contact
 	 * @param message
-	 *        Message message to be written
+	 *        IMessage message to be written
 	 * @param messageTimestamp
 	 *        Date this is the timestamp when was message received that came from the protocol provider
 	 * @param isSmsSubtype
 	 *        whether message to write is an sms
 	 */
-	public void insertMessage(String direction, Contact source, Contact destination, Message message, Date messageTimestamp, boolean isSmsSubtype);
+	public void insertMessage(String direction, Contact source, Contact destination, IMessage message, Date messageTimestamp, boolean isSmsSubtype);
 }

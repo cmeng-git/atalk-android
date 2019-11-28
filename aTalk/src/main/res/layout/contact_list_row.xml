@@ -66,6 +66,14 @@
             android:textColor="@color/list_details_selection_color" />
     </RelativeLayout>
 
+    <org.atalk.android.gui.widgets.UnreadCountCustomView
+        android:id="@+id/unread_count"
+        android:layout_width="@dimen/IconSize"
+        android:layout_height="@dimen/IconSize"
+        android:layout_toStartOf="@+id/callButtonLayout"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/callButtonLayout"
         android:layout_width="wrap_content"
@@ -122,12 +130,6 @@
             android:src="@drawable/contact_call_video" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/contact_list_h_separator_dark" />
-
     <ImageView
         android:id="@+id/selectedBackgroundIcon"
         android:layout_width="wrap_content"
@@ -156,5 +158,11 @@
         android:background="@drawable/chatseparator"
         android:orientation="horizontal"
         android:visibility="invisible" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/contact_list_h_separator_dark" />
 
 </RelativeLayout>

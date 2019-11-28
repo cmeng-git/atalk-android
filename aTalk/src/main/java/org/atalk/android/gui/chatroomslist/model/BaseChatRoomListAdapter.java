@@ -32,11 +32,15 @@ import org.atalk.android.gui.chatroomslist.ChatRoomBookmarkDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.model.UIGroupRenderer;
 import org.atalk.android.gui.util.ViewUtil;
+import org.atalk.android.gui.widgets.UnreadCountCustomView;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
 import org.jxmpp.jid.EntityBareJid;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
@@ -66,6 +70,11 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     private final ExpandableListView chatRoomListView;
 
     private ChatRoomViewHolder mViewHolder;
+
+    /**
+     * A map reference of ChatRoomWrapper to ChatRoomViewHolder for the unread message count update
+     */
+    private Map<ChatRoomWrapper, ChatRoomViewHolder> crwViewHolder = new HashMap<>();
 
     /**
      * Creates the chatRoom list adapter.
@@ -162,8 +171,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * @param chatRoomIndex the index of the chatRoom to update
      * @param chatRoomWrapper ChatRoomWrapper implementation object instance
      */
-    protected void updateChatRoomIcon(final int groupIndex, final int chatRoomIndex,
-            final Object chatRoomWrapper)
+    protected void updateChatRoomIcon(final int groupIndex, final int chatRoomIndex, final Object chatRoomWrapper)
     {
         int firstIndex = chatRoomListView.getFirstVisiblePosition();
         View chatRoomView = chatRoomListView.getChildAt(getListIndex(groupIndex, chatRoomIndex) - firstIndex);
@@ -173,6 +181,27 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 
             if (avatarView != null)
                 setRoomIcon(avatarView, getChatRoomRenderer(groupIndex).getChatRoomIcon(chatRoomWrapper));
+        }
+    }
+
+    /**
+     * Updates the chatRoomWrapper unread message count.
+     * Hide widge if (count == 0)
+     *
+     * @param groupIndex the index of the group to update
+     * @param chatRoomIndex the index of the chatRoomWrapper to update
+     */
+    public void updateUnreadCount(final ChatRoomWrapper chatRoomWrapper, final int count)
+    {
+        ChatRoomViewHolder chatRoomViewHolder = crwViewHolder.get(chatRoomWrapper);
+        if (chatRoomViewHolder == null)
+            return;
+
+        if (count == 0) {
+            chatRoomViewHolder.unreadCount.setVisibility(View.GONE);
+        } else {
+            chatRoomViewHolder.unreadCount.setVisibility(View.VISIBLE);
+            chatRoomViewHolder.unreadCount.setUnreadCount(count);
         }
     }
 
@@ -249,6 +278,9 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
             chatRoomViewHolder.bookmark.setOnClickListener(this);
             chatRoomViewHolder.bookmark.setTag(chatRoomViewHolder);
 
+            chatRoomViewHolder.unreadCount = convertView.findViewById(R.id.unread_count);
+            chatRoomViewHolder.unreadCount.setTag(chatRoomViewHolder);
+
             convertView.setTag(chatRoomViewHolder);
         }
         else {
@@ -263,6 +295,10 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         if (!(child instanceof ChatRoomWrapper))
             return convertView;
 
+        ChatRoomWrapper crWrapper = (ChatRoomWrapper) child;
+        crwViewHolder.put(crWrapper, chatRoomViewHolder);
+        updateUnreadCount(crWrapper, crWrapper.getUnreadCount());
+        
         UIChatRoomRenderer renderer = getChatRoomRenderer(groupPosition);
         if (renderer.isSelected(child)) {
             convertView.setBackgroundResource(R.drawable.list_selection_gradient);
@@ -457,6 +493,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         ImageView roomIcon;
         CheckBox autojoin;
         CheckBox bookmark;
+        UnreadCountCustomView unreadCount;
         ImageView selectedBgView;
         int groupPosition;
         int childPosition;

@@ -17,26 +17,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import timber.log.Timber;
+
 public class SoftKeyboard implements View.OnFocusChangeListener
 {
 	private static final int CLEAR_FOCUS = 0;
 
 	private ViewGroup layout;
 	private int layoutBottom;
-	private InputMethodManager im;
+	private InputMethodManager imm;
 	private int[] coords;
 	private boolean isKeyboardShow;
 	private SoftKeyboardChangesThread softKeyboardThread;
 	private List<EditText> editTextList;
 
-	private View tempView; // reference to a focused EditText
+    // reference to a focused EditText
+    private View tempView;
 
-	public SoftKeyboard(ViewGroup layout, InputMethodManager im)
+	public SoftKeyboard(ViewGroup layout, InputMethodManager imm)
 	{
 		this.layout = layout;
-		keyboardHideByDefault();
+        keyboardHideByDefault();
 		initEditTexts(layout);
-		this.im = im;
+		this.imm = imm;
 		this.coords = new int[2];
 		this.isKeyboardShow = false;
 		this.softKeyboardThread = new SoftKeyboardChangesThread();
@@ -47,7 +50,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener
 	{
 		if (!isKeyboardShow) {
 			layoutBottom = getLayoutCoordinates();
-			im.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+			imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 			softKeyboardThread.keyboardOpened();
 			isKeyboardShow = true;
 		}
@@ -56,7 +59,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener
 	public void closeSoftKeyboard()
 	{
 		if (isKeyboardShow) {
-			im.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+			imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 			isKeyboardShow = false;
 		}
 	}
@@ -73,8 +76,8 @@ public class SoftKeyboard implements View.OnFocusChangeListener
 
 	public interface SoftKeyboardChanged
 	{
-		public void onSoftKeyboardHide();
-		public void onSoftKeyboardShow();
+		void onSoftKeyboardHide();
+		void onSoftKeyboardShow();
 	}
 
 	private int getLayoutCoordinates()
@@ -96,7 +99,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener
 	private void initEditTexts(ViewGroup viewgroup)
 	{
 		if (editTextList == null)
-			editTextList = new ArrayList<EditText>();
+			editTextList = new ArrayList<>();
 
 		int childCount = viewgroup.getChildCount();
 		for (int i = 0; i <= childCount - 1; i++) {
@@ -174,23 +177,24 @@ public class SoftKeyboard implements View.OnFocusChangeListener
 						wait();
 					}
 					catch (InterruptedException e) {
-						e.printStackTrace();
+                        Timber.w("Exception in starting keyboard thread: %s", e.getMessage());
 					}
 				}
 
 				int currentBottomLocation = getLayoutCoordinates();
+                // Timber.d("SoftKeyboard Current Bottom Location #1: %s (%s)", currentBottomLocation, layoutBottom);
 
-				// There is some lag between open soft-keyboard function and when it really
-				// appears.
+				// There is some lag between open soft-keyboard function and when it really appears.
 				while (currentBottomLocation == layoutBottom && started.get()) {
 					currentBottomLocation = getLayoutCoordinates();
 				}
+                // Timber.d("SoftKeyboard Current Bottom Location #2: %s (%s)", currentBottomLocation, layoutBottom);
 
 				if (started.get())
 					mCallback.onSoftKeyboardShow();
 
 				// When keyboard is opened from EditText, initial bottom location is greater than
-				// layoutBottom and at some moment equals layoutBottom.
+				// layoutBottom and at some moment later <= layoutBottom.
 				// That broke the previous logic, so I added this new loop to handle this.
 				while (currentBottomLocation >= layoutBottom && started.get()) {
 					currentBottomLocation = getLayoutCoordinates();
@@ -198,13 +202,13 @@ public class SoftKeyboard implements View.OnFocusChangeListener
 
 				// Now Keyboard is shown, keep checking layout dimensions until keyboard is gone
 				while (currentBottomLocation != layoutBottom && started.get()) {
+                    // Timber.d("SoftKeyboard Current Bottom Location #3x %s (%s)", currentBottomLocation, layoutBottom);
 					synchronized (this) {
 						try {
 							wait(500);
 						}
 						catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							Timber.w("Exception in waiting for keyboard hide: %s", e.getMessage());
 						}
 					}
 					currentBottomLocation = getLayoutCoordinates();

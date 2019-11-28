@@ -9,7 +9,6 @@ import android.os.*;
 import android.text.Html;
 import android.text.TextUtils;
 
-import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
@@ -30,10 +29,12 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.*;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
+import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -49,6 +50,9 @@ import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
+import org.jivesoftware.smackx.xhtmlim.XHTMLText;
+import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -81,6 +85,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * The multi user chat smack object that we encapsulate in this room.
      */
     private MultiUserChat mMultiUserChat;
+
+    private ChatStateManager chatStateManager;
 
     /**
      * Listeners that will be notified of changes in member status in the room such as member
@@ -181,6 +187,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     private boolean mucOwnPresenceReceived = false;
 
+    private boolean isChatStateSupported;
+
     /**
      *
      */
@@ -202,7 +210,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     private ParticipantListener participantListener;
 
     private final MucMessageListener messageListener;
-    private org.jivesoftware.smack.packet.Message sMessage;
+    private Message sMessage;
     private int mCaptchaState = CaptchaDialog.unknown;
 
     /**
@@ -215,6 +223,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     {
         mMultiUserChat = multiUserChat;
         mProvider = provider;
+        isChatStateSupported = (mProvider.getOperationSet(OperationSetChatStateNotifications.class) != null);
+        chatStateManager = ChatStateManager.getInstance(mProvider.getConnection());
 
         this.opSetMuc = (OperationSetMultiUserChatJabberImpl) provider.getOperationSet(OperationSetMultiUserChat.class);
         this.oldSubject = multiUserChat.getSubject();
@@ -238,12 +248,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
         // must perform captcha challenge check before joining chatRoom (MucMessageListener only in effect after joined)
         provider.getConnection().addAsyncStanzaListener(packet -> {
-            sMessage = (org.jivesoftware.smack.packet.Message) packet;
+            sMessage = (Message) packet;
             if (sMessage.getExtension(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE) != null) {
                 initCaptchaProcess(sMessage);
             }
             // Handle only error message (currently not supported by smack)
-            else if (org.jivesoftware.smack.packet.Message.Type.error == sMessage.getType()){
+            else if (Message.Type.error == sMessage.getType()) {
                 // Timber.d("ChatRoom Message: %s", sMessage.toXML());
                 messageListener.processMessage(sMessage);
             }
@@ -259,7 +269,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param message message containing captcha challenge info
      */
-    private void initCaptchaProcess(final org.jivesoftware.smack.packet.Message message)
+    private void initCaptchaProcess(final Message message)
     {
         new Handler(Looper.getMainLooper()).post(() -> {
             if (aTalkApp.getCurrentActivity() == null)
@@ -414,11 +424,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Create a Message instance for sending arbitrary MIME-encoding content.
      *
      * @param content message content value
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
      * @return the newly created message.
      */
-    public Message createMessage(String content, int encType, String subject)
+    public IMessage createMessage(String content, int encType, String subject)
     {
         return new MessageJabberImpl(content, encType, subject, null);
     }
@@ -428,11 +438,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * content type and encoding.
      *
      * @param messageText the string content of the message.
-     * @return Message the newly created message
+     * @return IMessage the newly created message
      */
-    public Message createMessage(String messageText)
+    public IMessage createMessage(String messageText)
     {
-        return new MessageJabberImpl(messageText, Message.ENCODE_PLAIN, "", null);
+        return new MessageJabberImpl(messageText, IMessage.ENCODE_PLAIN, "", null);
     }
 
     /**
@@ -834,7 +844,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         XMPPConnection connection = mProvider.getConnection();
         try {
             // if we are already disconnected leave may be called from gui when closing chat window
-            if (connection != null)
+            if ((connection != null) && mMultiUserChat.isJoined())
                 mMultiUserChat.leave();
         } catch (Throwable e) {
             Timber.w(e, "Error occurred while leaving, maybe just disconnected before leaving");
@@ -865,17 +875,38 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Sends the <tt>message</tt> to the destination indicated by the <tt>to</tt> contact.
+     * Construct the <tt>message</tt> for the required ENCODE mode for sending.
      *
-     * @param message the <tt>Message</tt> to send.
+     * @param message the <tt>IMessage</tt> to send.
      * @throws OperationFailedException if sending the message fails for some reason.
      */
-    public void sendMessage(Message message)
+    public void sendMessage(IMessage message)
             throws OperationFailedException
     {
         mEncType = message.getEncType();
-        org.jivesoftware.smack.packet.Message sendMessage = new org.jivesoftware.smack.packet.Message();
-        sendMessage.setBody(message.getContent());
+        String content = message.getContent();
+        Message sendMessage = new Message();
+
+        if (IMessage.ENCODE_HTML == message.getMimeType()) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+                sendMessage.setBody(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
+            else
+                sendMessage.setBody(Html.fromHtml(content));
+
+            // Just add XHTML element as it will be ignored by buddy without XEP-0071: XHTML-IM support
+            // Also carbon messages may send to buddy on difference clients with different capabilities
+            // Note isFeatureListSupported must use FullJid unless it is for service e.g. conference.atalk.org
+
+            // Check if the buddy supports XHTML messages make sure we use our discovery manager as it caches calls
+            // if (jabberProvider.isFeatureListSupported(toJid, XHTMLExtension.NAMESPACE)) {
+            // Add the XHTML text to the message
+            XHTMLText htmlText = new XHTMLText("", "us").append(content).appendCloseBodyTag();
+            XHTMLManager.addBody(sendMessage, htmlText);
+        }
+        else {
+            // this is plain text so keep it as it is.
+            sendMessage.setBody(content);
+        }
         sendMessage(sendMessage);
     }
 
@@ -888,59 +919,55 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     public void sendJsonMessage(String json)
             throws OperationFailedException
     {
-        org.jivesoftware.smack.packet.Message sendMessage = new org.jivesoftware.smack.packet.Message();
+        Message sendMessage = new Message();
         sendMessage.addExtension(new JsonMessageExtensionElement(json));
         sendMessage(sendMessage);
     }
 
     /**
-     * Sends the <tt>message</tt> to the destination indicated by the <tt>multiUserChat</tt> contact.
+     * Sends the <tt>message</tt> to the destination <tt>multiUserChat</tt> chatRoom.
      *
-     * @param message the {@link org.jivesoftware.smack.packet.Message} to be sent.
+     * @param message the {@link Message} to be sent.
      * @throws OperationFailedException if sending the message fails for some reason.
      */
-    private void sendMessage(org.jivesoftware.smack.packet.Message message)
+    private void sendMessage(Message message)
             throws OperationFailedException
     {
         try {
             assertConnected();
-            message.setType(org.jivesoftware.smack.packet.Message.Type.groupchat);
-
-            // XEP-0022 is obsoleted
-            // MessageEventManager.addNotificationsRequests(msg, true, false, false, true);
             mMultiUserChat.sendMessage(message);
         } catch (NotConnectedException | InterruptedException e) {
-            Timber.e(e, "Failed to send message %s", message);
+            Timber.e("Failed to send message: %s", e.getMessage());
             throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_SEND_MESSAGE_FAIL, message),
                     OperationFailedException.GENERAL_ERROR, e);
         }
     }
 
-    public void sendMessage(Message message, OmemoManager omemoManager)
+    public void sendMessage(IMessage message, OmemoManager omemoManager)
     {
-        String content = message.getContent();
-        String msgContent;
+        String msgContent = message.getContent();
         OmemoMessage.Sent encryptedMessage;
         String errMessage = null;
 
-        // OMEMO message content will strip off any html tags info for now => #TODO
-        if (Message.ENCODE_HTML == message.getMimeType()) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-                msgContent = Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY).toString();
-            else
-                msgContent = Html.fromHtml(content).toString();
-        }
-        else {
-            msgContent = content;
-        }
+        /*
+         * Temporary comment out to support lightweight text markup chat message for OMEMO
+         * Send html tags in OMEMO encrypted body
+         */
+        // OMEMO message content will strip off any html tags info => XHTML not supported
+//        if (IMessage.ENCODE_HTML == message.getMimeType()) {
+//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+//                msgContent = Html.fromHtml(msgContent, Html.FROM_HTML_MODE_LEGACY).toString();
+//            else
+//                msgContent = Html.fromHtml(msgContent).toString();
+//        }
 
         try {
             encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
-            org.jivesoftware.smack.packet.Message sendMessage = encryptedMessage.asMessage(this.getIdentifier());
-            message.setServerMsgId(sendMessage.getStanzaId());
+            Message sendMessage = encryptedMessage.asMessage(this.getIdentifier());
             mMultiUserChat.sendMessage(sendMessage);
 
             // message delivered for own outgoing message view display
+            message.setServerMsgId(sendMessage.getStanzaId());
             message.setReceiptStatus(ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
             ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(ChatRoomJabberImpl.this,
                     new Date(), message, ChatMessage.MESSAGE_MUC_OUT);
@@ -972,10 +999,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     private class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener
     {
-        Message message;
+        IMessage message;
         OmemoManager omemoManager;
 
-        OmemoAuthenticateListener(Message message, OmemoManager omemoManager)
+        OmemoAuthenticateListener(IMessage message, OmemoManager omemoManager)
         {
             this.message = message;
             this.omemoManager = omemoManager;
@@ -1838,7 +1865,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * The timestamp of the last history message sent to the UI. Do not send earlier or
          * messages with the same timestamp.
          */
-        private Date lastSeenDelayedMessage = null;
+        private Date lsdMessageTime = null;
 
         /**
          * The property to store the timestamp.
@@ -1846,65 +1873,65 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         private static final String LAST_SEEN_DELAYED_MESSAGE_PROP = "lastSeenDelayedMessage";
 
         /**
-         * Process a Message packet.
+         * Process a Message stanza.
          *
-         * @param msg Smack Message to process.
+         * @param message Smack Message to process.
          */
         @Override
-        public void processMessage(org.jivesoftware.smack.packet.Message msg)
+        public void processMessage(Message message)
         {
-            // Do not process Omemo message
-            if ((msg == null) || msg.hasExtension(OmemoElement.NAME_ENCRYPTED, OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL))
+            // Leave handling of omemo messages to onOmemoMessageReceived()
+            if ((message == null) || message.hasExtension(OmemoElement.NAME_ENCRYPTED, OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL))
+                return;
+
+            String msgBody = message.getBody();
+            if (msgBody == null)
                 return;
 
             Date timeStamp;
-            DelayInformation delayInfo = msg.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
+            DelayInformation delayInfo = message.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
             if (delayInfo != null) {
                 timeStamp = delayInfo.getStamp();
 
                 // This is a delayed chat room message, a history message for the room coming from
                 // server. Lets check have we already shown this message and if this is the case
                 // skip it otherwise save it as last seen delayed message
-                if (lastSeenDelayedMessage == null) {
+                if (lsdMessageTime == null) {
                     // initialise this from configuration
-                    String sTimestamp = ConfigurationUtils.getChatRoomProperty(mProvider,
-                            getName(), LAST_SEEN_DELAYED_MESSAGE_PROP);
+                    String sTimestamp = ConfigurationUtils.getChatRoomProperty(mProvider, getName(),
+                            LAST_SEEN_DELAYED_MESSAGE_PROP);
 
                     try {
                         if (!TextUtils.isEmpty(sTimestamp))
-                            lastSeenDelayedMessage = new Date(Long.parseLong(sTimestamp));
+                            lsdMessageTime = new Date(Long.parseLong(sTimestamp));
                     } catch (Throwable ex) {
                         Timber.w("TimeStamp property is null! %s", timeStamp);
                     }
                 }
 
-                if (lastSeenDelayedMessage != null && !timeStamp.after(lastSeenDelayedMessage))
+                if (lsdMessageTime != null && !timeStamp.after(lsdMessageTime))
                     return;
 
                 // save it in configuration
                 ConfigurationUtils.updateChatRoomProperty(mProvider, getName(),
                         LAST_SEEN_DELAYED_MESSAGE_PROP, String.valueOf(timeStamp.getTime()));
-                lastSeenDelayedMessage = timeStamp;
+                lsdMessageTime = timeStamp;
             }
             else {
                 timeStamp = new Date();
             }
 
             // for delay message only
-            Jid jabberID = msg.getFrom();
-            MultipleAddresses mAddress = msg.getExtension(MultipleAddresses.ELEMENT, MultipleAddresses.NAMESPACE);
+            Jid jabberID = message.getFrom();
+            MultipleAddresses mAddress = message.getExtension(MultipleAddresses.ELEMENT, MultipleAddresses.NAMESPACE);
             if (mAddress != null) {
                 List<MultipleAddresses.Address> addresses = mAddress.getAddressesOfType(MultipleAddresses.Type.ofrom);
                 jabberID = addresses.get(0).getJid().asBareJid();
             }
 
-            String msgBody = msg.getBody();
-            if (msgBody == null)
-                return;
-
             ChatRoomMember member;
             int messageReceivedEventType = ChatMessage.MESSAGE_MUC_IN;
-            Jid entityJid = msg.getFrom();  // chatRoom entityJid
+            Jid entityJid = message.getFrom();  // chatRoom entityJid
             Resourcepart fromNick = entityJid.getResourceOrNull();
 
             // when the message comes from the room itself, it is a system message
@@ -1922,13 +1949,46 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, fromNick, jabberID);
             }
 
-            Message newMessage = createMessage(msgBody);
-            newMessage.setRemoteMsgId(msg.getStanzaId());
+            // set up default in case XHTMLExtension contains no message
+            // if msgBody contains markup text then set as ENCODE_HTML mode
+            int encType = IMessage.ENCODE_PLAIN;
+            if (msgBody.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+                encType = IMessage.ENCODE_HTML;
+            }
+            IMessage newMessage = createMessage(msgBody, encType, null);
 
-            if (msg.getType() == org.jivesoftware.smack.packet.Message.Type.error) {
+            // check if the message is available in xhtml
+            if (XHTMLManager.isXHTMLMessage(message)) {
+                XHTMLExtension xhtmlExt = (XHTMLExtension) message.getExtension(XHTMLExtension.NAMESPACE);
+
+                // parse all bodies
+                List<CharSequence> bodies = xhtmlExt.getBodies();
+                StringBuilder messageBuff = new StringBuilder();
+                for (CharSequence body : bodies) {
+                    messageBuff.append(body);
+                }
+
+                if (messageBuff.length() > 0) {
+                    // we remove body tags around message cause their end body tag is breaking the
+                    // visualization as html in the UI
+                    String receivedMessage = messageBuff.toString()
+                            // removes <body> start tag
+                            .replaceAll("<[bB][oO][dD][yY].*?>", "")
+                            // removes </body> end tag
+                            .replaceAll("</[bB][oO][dD][yY].*?>", "");
+
+                    // for some reason &apos; is not rendered correctly from our ui, lets use its
+                    // equivalent. Other similar chars(< > & ") seem ok.
+                    receivedMessage = receivedMessage.replaceAll("&apos;", "&#39;");
+                    newMessage = createMessage(receivedMessage, IMessage.ENCODE_HTML, null);
+                }
+            }
+            newMessage.setRemoteMsgId(message.getStanzaId());
+
+            if (message.getType() == Message.Type.error) {
                 Timber.d("Message error received from: %s", jabberID);
 
-                StanzaError error = msg.getError();
+                StanzaError error = message.getError();
                 String errorReason = error.getConditionText();
                 if (TextUtils.isEmpty(errorReason))
                     errorReason = error.getDescriptiveText();
@@ -1950,21 +2010,21 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 fireMessageEvent(evt);
                 return;
             }
-            Timber.d("Received from %s the message %s", fromNick, msg.toString());
 
             // Check received message for sent message: either a delivery report or a message coming from the
             // chaRoom server. Checking using nick OR jid in case user join with a different nick.
-            if (((getUserNickname() != null) && getUserNickname().equals(fromNick)) || ((jabberID != null)
-                    && jabberID.equals(getAccountId(member.getChatRoom())))) {
+            Timber.d("Received from %s the message %s", fromNick, message.toString());
+            if (((getUserNickname() != null) && getUserNickname().equals(fromNick))
+                    || ((jabberID != null) && jabberID.equals(getAccountId(member.getChatRoom())))) {
 
-                // MUC received message may be relayed from server on message sent hence reCreate the message is required
-                if (Message.FLAG_REMOTE_ONLY == (mEncType & Message.FLAG_MODE_MASK)) {
+                // MUC received message may be relayed from server on message sent hence reCreate the message if required
+                if (IMessage.FLAG_REMOTE_ONLY == (mEncType & IMessage.FLAG_MODE_MASK)) {
                     newMessage = createMessage(msgBody, mEncType, "");
-                    newMessage.setRemoteMsgId(msg.getStanzaId());
+                    newMessage.setRemoteMsgId(message.getStanzaId());
                 }
 
                 // message delivered for own outgoing message view display
-                newMessage.setServerMsgId(msg.getStanzaId());
+                newMessage.setServerMsgId(message.getStanzaId());
                 newMessage.setReceiptStatus(ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
                 ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(
                         ChatRoomJabberImpl.this, timeStamp, newMessage, ChatMessage.MESSAGE_MUC_OUT);
@@ -2306,7 +2366,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             if (info != null)
                 persistent = info.containsFeature("muc_persistent");
         } catch (Exception ex) {
-            Timber.w(ex, "could not get persistent state for room : %s", roomName);
+            Timber.w("could not get persistent state for room '%s':%s", roomName, ex.getMessage());
         }
         return persistent;
     }
@@ -2695,14 +2755,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          */
 
         public void invitationDeclined(EntityBareJid invitee, String reason,
-                org.jivesoftware.smack.packet.Message message, MUCUser.Decline rejection)
+                Message message, MUCUser.Decline rejection)
         {
             // MUCUser mucUser = packet.getExtension(MUCUser.ELEMENT, MUCUser.NAMESPACE);
             MUCUser mucUser = MUCUser.from(message);
 
             // Check if the MUCUser informs that the invitee has declined the invitation
             if ((mucUser != null) && (rejection != null)
-                    && (message.getType() != org.jivesoftware.smack.packet.Message.Type.error)) {
+                    && (message.getType() != Message.Type.error)) {
                 ChatRoomMemberJabberImpl member
                         = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, Resourcepart.EMPTY, getIdentifier());
                 EntityBareJid from = rejection.getFrom();

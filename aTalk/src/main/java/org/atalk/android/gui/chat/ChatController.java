@@ -30,6 +30,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.call.notification.CallNotificationManager;
 import org.atalk.android.gui.util.ContentEditText;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.audioservice.SoundMeter;
 import org.atalk.persistance.FilePathHelper;
@@ -67,13 +68,9 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     private boolean isAttached;
     /**
-     * Cancel button's View.
+     * Correction indicator / cancel button.
      */
     private View cancelCorrectionBtn;
-    /**
-     * Correction indicator.
-     */
-    private View editingImage;
     /**
      * Send button's View.
      */
@@ -178,7 +175,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             // Gets the cancel correction button and hooks on click action
             cancelCorrectionBtn = parent.findViewById(R.id.cancelCorrectionBtn);
             cancelCorrectionBtn.setOnClickListener(this);
-            cancelCorrectionBtn.setVisibility(View.GONE);
 
             // Gets the send message button and hooks on click action
             sendBtn = parent.findViewById(R.id.sendMessageButton);
@@ -212,7 +208,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             animSlideUp = AnimationUtils.loadAnimation(parent, R.anim.slide_up);
             animSlideUp.setDuration(1000);
 
-            this.editingImage = parent.findViewById(R.id.editingImage);
             updateCorrectionState();
             initChatController();
             showSendModeButton();
@@ -222,7 +217,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     /**
      * Init to correct mChatTransport; if chatTransPort allows, then enable chatState
      * notifications thread. Perform only if the chatFragment is really visible to user
-     * <p>
+     * <p>this
      * Otherwise the non-focus chatFragment will cause out-of-sync between chatFragment and
      * chatController i.e. entered msg display in wrong chatFragment
      */
@@ -284,11 +279,11 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     {
         String correctionUID = chatPanel.getCorrectionUID();
 
-        int encryption = Message.ENCRYPTION_NONE;
+        int encryption = IMessage.ENCRYPTION_NONE;
         if (chatPanel.isOmemoChat())
-            encryption = Message.ENCRYPTION_OMEMO;
+            encryption = IMessage.ENCRYPTION_OMEMO;
         else if (chatPanel.isOTRChat())
-            encryption = Message.ENCRYPTION_OTR;
+            encryption = IMessage.ENCRYPTION_OTR;
 
         if (correctionUID == null) {
             try {
@@ -324,7 +319,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      * Method fired when the chat message is clicked. {@inheritDoc}
      * Trigger from @see ChatFragment#
      */
-    // @Override
     public void onItemClick(AdapterView<?> adapter, View view, int position, long id)
     {
         // Detect outgoing message area
@@ -351,7 +345,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
         if (mChatTransport instanceof MetaContactChatTransport) {
             editText(adapter, chatMessage, position);
-            cancelCorrectionBtn.setVisibility(View.VISIBLE);
         }
         // Just put the last message in edit box for Omemo send error
         else {
@@ -400,25 +393,22 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 if (chatPanel.getProtocolProvider().isRegistered()) {
                     String correctionUID = chatPanel.getCorrectionUID();
 
-                    String textEdit;
-                    if (TextUtils.isEmpty(msgEdit.getText())) {
-                        // allow last message correction to send empty string to clear last sent text
-                        if (correctionUID != null) {
+                    // allow last message correction to send empty string to clear last sent text
+                    String textEdit = ViewUtil.toString(msgEdit);
+                    if ((textEdit == null) && (correctionUID != null)) {
                             textEdit = " ";
-                        }
-                        else
-                            return;
                     }
-                    else {
-                        textEdit = msgEdit.getText().toString();
-                    }
+                    if (textEdit == null)
+                        return;
 
-                    if (textEdit.contains("<html>")) {
-                        msgEdit.setText(textEdit.substring(7));
-                        sendMessage(textEdit, Message.ENCODE_HTML);
+                    // if text contains markup tag then send message as ENCODE_HTML mode
+                    if (textEdit.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+                        Timber.d("HTML text entry detected: %s", textEdit);
+                        msgEdit.setText(textEdit);
+                        sendMessage(textEdit, IMessage.ENCODE_HTML);
                     }
                     else
-                        sendMessage(textEdit, Message.ENCODE_PLAIN);
+                        sendMessage(textEdit, IMessage.ENCODE_PLAIN);
                     showSendModeButton();
                 }
                 else {
@@ -447,35 +437,30 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     }
 
     /**
-     * Audio sending is disabled if permission.RECORD_AUDIO is denied
+     * Audio sending is disabled if permission.RECORD_AUDIO is denied.
+     * Audid chat message is allowed even for offline contact and in conference
      */
     @Override
     public boolean onLongClick(View v)
     {
         if (v.getId() == R.id.audioRecordButton) {
-            Timber.w("Current Chat Transport for audio: %s", mChatTransport.toString());
-            if (!(mChatTransport instanceof MetaContactChatTransport) || !mChatTransport.getStatus().isOnline()) {
-                aTalkApp.showToastMessage(R.string.chat_noaudio_buddyOffline);
-            }
-            else {
-                Timber.d("Audio recording started!!!");
-                isRecording = true;
-                // Hide normal edit text view
-                msgEdit.setVisibility(View.GONE);
-                cancelCorrectionBtn.setVisibility(View.GONE);
+            Timber.d("Current Chat Transport for audio: %s", mChatTransport.toString());
+            Timber.d("Audio recording started!!!");
+            isRecording = true;
+            // Hide normal edit text view
+            msgEdit.setVisibility(View.GONE);
 
-                // Show audio record information
-                msgRecordView.setVisibility(View.VISIBLE);
-                mTrash.setImageResource(R.drawable.ic_record);
-                mTrash.startAnimation(animBlink);
+            // Show audio record information
+            msgRecordView.setVisibility(View.VISIBLE);
+            mTrash.setImageResource(R.drawable.ic_record);
+            mTrash.startAnimation(animBlink);
 
-                // Set up audio background service and receiver
-                IntentFilter filter = new IntentFilter();
-                filter.addAction(AudioBgService.ACTION_AUDIO_RECORD);
-                filter.addAction(AudioBgService.ACTION_SMI);
-                LocalBroadcastManager.getInstance(parent).registerReceiver(mReceiver, filter);
-                startAudioService(AudioBgService.ACTION_RECORDING);
-            }
+            // Set up audio background service and receiver
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(AudioBgService.ACTION_AUDIO_RECORD);
+            filter.addAction(AudioBgService.ACTION_SMI);
+            LocalBroadcastManager.getInstance(parent).registerReceiver(mReceiver, filter);
+            startAudioService(AudioBgService.ACTION_RECORDING);
         }
         return true;
     }
@@ -544,7 +529,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     mTrashAnimate.selectDrawable(0);
 
                     msgEdit.setVisibility(View.VISIBLE);
-                    cancelCorrectionBtn.setVisibility(View.VISIBLE);
 
                     msgRecordView.setVisibility(View.GONE);
                     mSoundMeter.clearAnimation();
@@ -603,7 +587,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             chatPanel.setCorrectionUID(null);
             updateCorrectionState();
             msgEdit.setText("");
-            cancelCorrectionBtn.setVisibility(View.GONE);
         }
     }
 
@@ -612,11 +595,11 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     private void updateCorrectionState()
     {
-        boolean correction = chatPanel.getCorrectionUID() != null;
-        int bgColorId = correction ? R.color.msg_input_correction_bg : R.color.msg_input_bar_bg;
+        boolean correctionMode = (chatPanel.getCorrectionUID() != null);
+        int bgColorId = correctionMode ? R.color.msg_input_correction_bg : R.color.msg_input_bar_bg;
 
         msgEditBg.setBackgroundColor(parent.getResources().getColor(bgColorId));
-        editingImage.setVisibility(correction ? View.VISIBLE : View.GONE);
+        cancelCorrectionBtn.setVisibility(correctionMode ? View.VISIBLE : View.GONE);
         chatFragment.getChatListView().invalidateViews();
     }
 
@@ -662,10 +645,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         callBtn.setVisibility(View.INVISIBLE);
         audioBtn.setVisibility(View.INVISIBLE);
 
-        // Enabled send text button if text entry box contains text or in correction mode or ...
-        // audio message sending is not allow if it is not MetaContact
-        if (!TextUtils.isEmpty(msgEdit.getText()) || (chatPanel.getCorrectionUID() != null)
-                || !(mChatTransport instanceof MetaContactChatTransport)) {
+        // Enabled send text button if text entry box contains text or in correction mode
+        if (!TextUtils.isEmpty(msgEdit.getText()) || (chatPanel.getCorrectionUID() != null)) {
             sendBtn.setVisibility(View.VISIBLE);
         }
         else {
@@ -748,20 +729,19 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             Object sender = mChatTransport.getDescriptor();
             if (sender instanceof Contact) {
                 sendTo = ((Contact) sender).getAddress();
-                chatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_STICKER_SEND, Message.ENCODE_PLAIN, filePath);
+                chatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_STICKER_SEND, IMessage.ENCODE_PLAIN, filePath);
             }
             // chatRoom always use Http File Upload service
             else {
                 sendTo = ((ChatRoom) sender).getName();
-                chatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_STICKER_SEND, Message.ENCODE_PLAIN, filePath);
+                chatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_STICKER_SEND, IMessage.ENCODE_PLAIN, filePath);
             }
         }
     }
 
     /**
      * The thread lowers chat state from composing to inactive state. When
-     * <tt>refreshChatState</tt>
-     * is called checks for eventual chat state refreshComposing.
+     * <tt>refreshChatState</tt> is called checks for eventual chat state refreshComposing.
      */
     class ChatStateControl extends Thread
     {

@@ -47,7 +47,7 @@
             style="@style/MediumFont"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:gravity="bottom"
             android:maxLines="1"
             android:text="chatroom@conference.server.com"
@@ -58,13 +58,21 @@
             style="@style/SmallFont"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:ellipsize="end"
             android:gravity="bottom"
             android:maxLines="1"
             android:text="chatroom@conference.server.com"
             android:textColor="@color/list_text_selection_color" />
     </LinearLayout>
+
+    <org.atalk.android.gui.widgets.UnreadCountCustomView
+        android:id="@+id/unread_count"
+        android:layout_width="@dimen/IconSize"
+        android:layout_height="@dimen/IconSize"
+        android:layout_toStartOf="@+id/cb_autojoin"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
 
     <CheckBox
         android:id="@+id/cb_autojoin"

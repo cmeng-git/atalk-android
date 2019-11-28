@@ -46,10 +46,10 @@ public class ServiceUtils
      */
     public static ServiceReference[] getServiceReferences(BundleContext bundleContext, Class<?> serviceClass)
     {
-        ServiceReference[] serviceReferences = null;
+        ServiceReference[] serviceReferences;
         try {
             serviceReferences = bundleContext.getServiceReferences(serviceClass.getName(), null);
-        } catch (InvalidSyntaxException ex) {
+        } catch (InvalidSyntaxException | NullPointerException ex) {
             serviceReferences = null;
         }
 

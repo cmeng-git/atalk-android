@@ -219,7 +219,7 @@
 	<string name="service_gui_ROOM_NAME">Nombre de la sala</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="http://atalk.sytes.net/atalk">Ayuda on-line</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Ayuda on-line</a></string>
     <string name="AboutDialog_title">Sobre</string>
     <string name="AboutDialog_Version">Versión %s</string>
     <string name="About_action">Sobre</string>

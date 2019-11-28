@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
+import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
@@ -234,6 +235,17 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     @Override
     protected void onPause()
     {
+        // Must reset unread message counter on chatSession closed
+        // Otherwise value not clear when user enter and exit chatSession without page slide
+        if (selectedChatPanel != null) {
+            Object descriptor = selectedChatPanel.getChatSession().getDescriptor();
+            if (descriptor instanceof MetaContact) {
+                ((MetaContact) descriptor).setUnreadCount(0);
+            }
+            else if (descriptor instanceof ChatRoomWrapper) {
+                ((ChatRoomWrapper) descriptor).setUnreadCount(0);
+            }
+        }
         ChatSessionManager.setCurrentChatId(null);
         super.onPause();
     }
@@ -460,7 +472,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                                 .append("<br/>");
                     }
                     String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
-                    selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_HTML,
+                    selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_HTML,
                             memberList.toString());
                     return true;
 
@@ -585,7 +597,11 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             }
 
             ActionBarUtil.setTitle(this, chatSession.getCurrentChatTransport().getDisplayName());
+
             if (chatSession instanceof MetaContactChatSession) {
+                // Reset unread message count when user slides to view this chat session
+                ((MetaContact) chatSession.getDescriptor()).setUnreadCount(0);
+
                 ActionBarUtil.setAvatar(this, chatSession.getChatAvatar());
 
                 PresenceStatus status = chatSession.getCurrentChatTransport().getStatus();
@@ -602,6 +618,9 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 }
             }
             else if (chatSession instanceof ConferenceChatSession) {
+                // Reset unread message count when user slides to view this chat session
+                ((ChatRoomWrapper) chatSession.getDescriptor()).setUnreadCount(0);
+
                 ConferenceChatSession ccSession = (ConferenceChatSession) chatSession;
                 ActionBarUtil.setAvatar(this, AndroidImageUtil.convertToBytes(BitmapFactory
                         .decodeResource(getResources(), R.drawable.ic_chatroom), 100));
@@ -665,7 +684,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     {
         Date date = Calendar.getInstance().getTime();
         String sendTo = selectedChatPanel.getChatSession().getCurrentChatTransport().getName();
-        selectedChatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_FILE_TRANSFER_SEND, Message.ENCODE_PLAIN, filePath);
+        selectedChatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_FILE_TRANSFER_SEND, IMessage.ENCODE_PLAIN, filePath);
     }
 
     public static void sendLocation(String location)
@@ -676,15 +695,15 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             if (mRecipient != null) {
                 chatPanel = (ChatPanel) uiService.getChat(mRecipient);
                 if (chatPanel != null) {
-                    int encryption = Message.ENCRYPTION_NONE;
+                    int encryption = IMessage.ENCRYPTION_NONE;
                     if (chatPanel.isOmemoChat())
-                        encryption = Message.ENCRYPTION_OMEMO;
+                        encryption = IMessage.ENCRYPTION_OMEMO;
                     else if (chatPanel.isOTRChat())
-                        encryption = Message.ENCRYPTION_OTR;
+                        encryption = IMessage.ENCRYPTION_OTR;
 
                     ChatTransport mChatTransport = chatPanel.getChatSession().getCurrentChatTransport();
                     try {
-                        mChatTransport.sendInstantMessage(location, encryption | Message.ENCODE_PLAIN);
+                        mChatTransport.sendInstantMessage(location, encryption | IMessage.ENCODE_PLAIN);
                     } catch (Exception e) {
                         aTalkApp.showToastMessage(e.getMessage());
                     }

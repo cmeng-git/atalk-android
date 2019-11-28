@@ -56,6 +56,10 @@
         android:logo="@drawable/ic_notification"
         android:networkSecurityConfig="@xml/network_security_configuration"
         android:theme="@style/Theme.App">
+
+        <!-- Apache HTTP client deprecation: (no effect so far)
+         https://developer.android.com/about/versions/pie/android-9.0-changes-28#apache-p
+        uses-library android:name="org.apache.http.legacy" android:required="false"/-->
         <!--
             android:vmSafeMode="true"
             resolved issue in https://issuetracker.google.com/issues/64425255

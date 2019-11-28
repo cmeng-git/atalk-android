@@ -24,9 +24,12 @@ import android.view.*;
 import android.widget.*;
 import android.widget.ExpandableListView.*;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
+import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
@@ -537,6 +540,24 @@ public class ChatRoomListFragment extends OSGiFragment
         {
             filterChatRoomWrapperList(query);
             return true;
+        }
+    }
+
+    /**
+     * Update the unread message badge for the specified ChatRoomWrapper
+     * The unread count is pre-stored in the crWrapper
+     *
+     * @param crWrapper The ChatRoomWrapper to be updated
+     */
+    public void updateUnreadCount(ChatRoomWrapper crWrapper)
+    {
+        if (crWrapper != null) {
+            int unreadCount = crWrapper.getUnreadCount();
+            if (chatRoomListAdapter != null) {
+                runOnUiThread(() -> {
+                    chatRoomListAdapter.updateUnreadCount(crWrapper, unreadCount);
+                });
+            }
         }
     }
 }

@@ -26,7 +26,6 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountInfoPresenceActivity;
-import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.contactlist.model.*;
@@ -48,8 +47,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ContactListFragment extends OSGiFragment
-        implements OnChildClickListener, OnGroupClickListener
+public class ContactListFragment extends OSGiFragment implements OnChildClickListener, OnGroupClickListener
 {
     /**
      * Search options menu items.
@@ -240,14 +238,19 @@ public class ContactListFragment extends OSGiFragment
         }
     }
 
-    private MetaContactListAdapter getContactListAdapter()
+    /**
+     * Get the MetaContact list with media buttons
+     *
+     * @return MetaContact list showing the media buttons
+     */
+    public MetaContactListAdapter getContactListAdapter()
     {
         if (contactListAdapter == null) {
-            // enable the display of call buttons
             contactListAdapter = new MetaContactListAdapter(this, true);
             contactListAdapter.initModelData();
-            aTalkApp.setContactListAdapter(contactListAdapter);
         }
+        // allow to show groups with zero member in main contact list
+        // contactListAdapter.nonZeroContactGroupList();
         return contactListAdapter;
     }
 
@@ -539,6 +542,7 @@ public class ContactListFragment extends OSGiFragment
             startChatActivity(metaContact);
             return true;
         }
+
         if (!metaContact.getContactsForOperationSet(OperationSetBasicInstantMessaging.class).isEmpty()) {
             startChatActivity(metaContact);
             return true;
@@ -648,6 +652,24 @@ public class ContactListFragment extends OSGiFragment
         {
             filterContactList(query);
             return true;
+        }
+    }
+
+    /**
+     * Update the unread message badge for the specified metaContact
+     * The unread count is pre-stored in the metaContact
+     *
+     * @param metaContact The MetaContact to be updated
+     */
+    public void updateUnreadCount(MetaContact metaContact)
+    {
+        if (metaContact != null) {
+            int unreadCount = metaContact.getUnreadCount();
+            if (contactListAdapter != null) {
+                runOnUiThread(() -> {
+                    contactListAdapter.updateUnreadCount(metaContact, unreadCount);
+                });
+            }
         }
     }
 }

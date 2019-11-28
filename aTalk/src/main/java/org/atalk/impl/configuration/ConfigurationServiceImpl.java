@@ -11,8 +11,10 @@ import org.atalk.service.configuration.*;
 import org.atalk.service.fileaccess.FailSafeTransaction;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.*;
+import org.atalk.util.OSUtils;
+import org.atalk.util.PasswordUtil;
 import org.atalk.util.xml.XMLException;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.beans.PropertyChangeListener;
 import java.io.*;
@@ -62,13 +64,13 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * Specify names of command line arguments which are password, so that their values will be
      * masked when 'sun.java.command' is printed to the logs. Separate each name with a comma.
      */
-    public static String PASSWORD_CMD_LINE_ARGS;
+    private static String PASSWORD_CMD_LINE_ARGS;
 
     /**
      * Set this filed value to a regular expression which will be used to select system
      * properties mKeys whose values should be masked when printed out to the logs.
      */
-    public static String PASSWORD_SYS_PROPS;
+    private static String PASSWORD_SYS_PROPS;
 
     /**
      * A reference to the currently used configuration file.
@@ -983,7 +985,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
             try {
                 clazz = Class.forName(DEFAULT_CONFIGURATION_STORE_CLASS_NAME);
-            } catch (ClassNotFoundException cnfe) {
+            } catch (ClassNotFoundException ignore) {
             }
             if ((clazz != null) && ConfigurationStore.class.isAssignableFrom(clazz))
                 defaultConfigurationStoreClass = (Class<? extends ConfigurationStore>) clazz;
@@ -1007,7 +1009,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param inputStream the {@code InputStream} the contents of which is to be output in the specified {@code File}
      * @param outputFile the {@code File} to write the contents of the specified {@code InputStream} into
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     private static void copy(InputStream inputStream, File outputFile)
             throws IOException
@@ -1036,9 +1038,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
     private static String getSystemProperty(String propertyName)
     {
         String retval = System.getProperty(propertyName);
-        if ((retval != null) && (retval.trim().length() == 0))
-            retval = null;
-        return retval;
+        return StringUtils.returnIfNotEmptyTrimmed(retval);
     }
 
     /**
@@ -1058,8 +1058,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         if (propValue == null)
             return null;
 
-        String propStrValue = propValue.toString().trim();
-        return (propStrValue.length() > 0) ? propStrValue : null;
+        return StringUtils.returnIfNotEmptyTrimmed(propValue.toString());
     }
 
     /**
@@ -1296,13 +1295,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
      */
     private void preloadSystemPropertyFiles()
     {
-        String propertyFilesListStr = System.getProperty(SYS_PROPS_FILE_NAME_PROPERTY);
-
-        if (propertyFilesListStr == null || propertyFilesListStr.trim().length() == 0)
+        String propFilesListStr
+                = StringUtils.returnIfNotEmptyTrimmed(System.getProperty(SYS_PROPS_FILE_NAME_PROPERTY));
+        if (propFilesListStr == null)
             return;
 
-        StringTokenizer tokenizer = new StringTokenizer(propertyFilesListStr, ";,", false);
-
+        StringTokenizer tokenizer = new StringTokenizer(propFilesListStr, ";,", false);
         while (tokenizer.hasMoreTokens()) {
             String fileName = tokenizer.nextToken();
             try {

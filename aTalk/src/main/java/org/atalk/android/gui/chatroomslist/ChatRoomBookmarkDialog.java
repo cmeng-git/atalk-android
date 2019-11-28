@@ -19,6 +19,7 @@ package org.atalk.android.gui.chatroomslist;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
 
@@ -214,9 +215,10 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
                 bookmarkedEntityList.add(bookmarkedConference.getJid());
             }
 
-            String name = mucNameField.getText().toString();
-            Resourcepart nickName = Resourcepart.from(nicknameField.getText().toString());
-            String password = mPasswordField.getText().toString();
+            String name = ViewUtil.toString(mucNameField);
+            String nickStr = ViewUtil.toString(nicknameField);
+            Resourcepart nickName = (nickStr == null)? null : Resourcepart.from(nickStr);
+            String password = ViewUtil.toString(mPasswordField);
 
             boolean autoJoin = mAutoJoin.isChecked();
             boolean bookmark = mBookmark.isChecked();
@@ -232,13 +234,14 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
 
             mChatRoomWrapper.setBookmarkName(name);
             mChatRoomWrapper.savePassword(password);
-            mChatRoomWrapper.setNickName(nickName.toString());
+            mChatRoomWrapper.setNickName(nickStr);
             mChatRoomWrapper.setBookmark(bookmark);
             mChatRoomWrapper.setAutoJoin(autoJoin);
 
             // save info to local chatRoomWrapper
+            byte[] pwd = (password == null) ? null : password.getBytes();
             if (autoJoin) {
-                mucService.joinChatRoom(mChatRoomWrapper, nickName.toString(), password.getBytes());
+                mucService.joinChatRoom(mChatRoomWrapper, nickStr, pwd);
             }
         } catch (SmackException.NoResponseException | SmackException.NotConnectedException
                 | XMPPException.XMPPErrorException | InterruptedException | XmppStringprepException e) {

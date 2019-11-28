@@ -196,7 +196,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
 
             if (imOpSet != null)
-                imOpSet.isContentTypeSupported(Message.ENCODE_HTML, contact);
+                imOpSet.isContentTypeSupported(IMessage.ENCODE_HTML, contact);
         }
     }
 
@@ -306,11 +306,9 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Returns {@code true} if this chat transport supports message corrections and false
-     * otherwise.
+     * Returns {@code true} if this chat transport supports message corrections and false otherwise.
      *
-     * @return {@code true} if this chat transport supports message corrections and false
-     * otherwise.
+     * @return {@code true} if this chat transport supports message corrections and false otherwise.
      */
     public boolean allowsMessageCorrections()
     {
@@ -358,8 +356,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Returns {@code true} if this chat transport supports chat state notifications,
-     * otherwise returns {@code false}.
+     * Returns {@code true} if this chat transport supports chat state notifications, otherwise returns {@code false}.
      * User SHOULD explicitly discover whether the Contact supports the protocol or negotiate the
      * use of chat state notifications with the Contact (e.g., via XEP-0155 Stanza Session Negotiation).
      *
@@ -395,7 +392,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * (html or plain text).
      *
      * @param message The message to send.
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      */
     public void sendInstantMessage(String message, int encType)
     {
@@ -406,12 +403,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         }
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-        if (!imOpSet.isContentTypeSupported(Message.ENCODE_HTML))
-            encType = encType & Message.FLAG_MODE_MASK;
-        Message msg = imOpSet.createMessage(message, encType, "");
+        // Strip HTML flag if ENCODE_HTML not supported by the operation
+        if (!imOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
+            encType = encType & IMessage.FLAG_MODE_MASK;
 
+        IMessage msg = imOpSet.createMessage(message, encType, "");
         ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
-        if (Message.ENCRYPTION_OMEMO == (encType & Message.ENCRYPTION_MASK)) {
+        if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             imOpSet.sendInstantMessage(contact, toResource, msg, null, omemoManager);
         }
@@ -425,7 +423,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * type (html or plain text) and the id of the message to replace.
      *
      * @param message The message to send.
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param correctedMessageUID The ID of the message being corrected by this message.
      */
     public void sendInstantMessage(String message, int encType, String correctedMessageUID)
@@ -435,12 +433,12 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         }
 
         OperationSetMessageCorrection mcOpSet = mPPS.getOperationSet(OperationSetMessageCorrection.class);
-        if (!mcOpSet.isContentTypeSupported(Message.ENCODE_HTML))
-            encType = encType & Message.FLAG_MODE_MASK;
-        Message msg = mcOpSet.createMessage(message, encType, "");
+        if (!mcOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
+            encType = encType & IMessage.FLAG_MODE_MASK;
+        IMessage msg = mcOpSet.createMessage(message, encType, "");
 
         ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
-        if (Message.ENCRYPTION_OMEMO == (encType & Message.ENCRYPTION_MASK)) {
+        if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             mcOpSet.sendInstantMessage(contact, toResource, msg, correctedMessageUID, omemoManager);
         }
@@ -518,9 +516,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     {
         // If this chat transport does not allow chat state notification then just return
         if (allowsChatStateNotifications()) {
-
-            // if protocol is not registered or contact is offline don't try to send chat state
-            // notifications
+            // if protocol is not registered or contact is offline don't try to send chat state notifications
             if (mPPS.isRegistered()
                     && (contact.getPresenceStatus().getStatus() >= PresenceStatus.ONLINE_THRESHOLD)) {
 
@@ -650,11 +646,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     {
         // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed
         if (httpFileUploadManager.isUploadServiceDiscovered()) {
-            int encType = Message.ENCRYPTION_NONE;
+            int encType = IMessage.ENCRYPTION_NONE;
             Object url;
             try {
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
-                    encType = Message.ENCRYPTION_OMEMO;
+                    encType = IMessage.ENCRYPTION_OMEMO;
                     url = httpFileUploadManager.uploadFileEncrypted(file, xferCon);
                 }
                 else {

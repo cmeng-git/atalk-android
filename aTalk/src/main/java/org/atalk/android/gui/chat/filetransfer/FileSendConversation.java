@@ -22,7 +22,7 @@ import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileUploadJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
-import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.android.*;
@@ -32,8 +32,6 @@ import org.atalk.android.gui.chat.ChatFragment;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
-
-import timber.log.Timber;
 
 /**
  * The <tt>SendFileConversationComponent</tt> is the component added in the chat conversation
@@ -184,7 +182,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
         final int status = event.getNewStatus();
 
         // Presently statusChanged event is only trigger by non-encrypted file transfer protocol
-        mEncryption = Message.ENCRYPTION_NONE;
+        mEncryption = IMessage.ENCRYPTION_NONE;
 
         // Must execute in UiThread to Update UI information
         runOnUiThread(() -> {

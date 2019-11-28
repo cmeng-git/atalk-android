@@ -390,22 +390,22 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
     private boolean updateBookmarkFocus()
     {
         if (mBookmarkFocus != null) {
-            hasChanges = !(mBookmarkFocus.getName().equals(mucNameField.getText().toString())
-                    && mBookmarkFocus.getNickname().toString().equals(nicknameField.getText().toString())
-                    && mBookmarkFocus.getPassword().equals(mPasswordField.getText().toString())
+            hasChanges = !(mBookmarkFocus.getName().equals(ViewUtil.toString(mucNameField))
+                    && mBookmarkFocus.getNickname().toString().equals(ViewUtil.toString(nicknameField))
+                    && mBookmarkFocus.getPassword().equals(ViewUtil.toString(mPasswordField))
                     && mBookmarkFocus.isAutoJoin() == mAutoJoin.isChecked()
                     && mBookmarkFocus.isBookmark() == mBookmark.isChecked());
 
             // Timber.w("Fields have changes: %s", hasChanges);
             if (hasChanges) {
-                mBookmarkFocus.setName(mucNameField.getText().toString());
-                mBookmarkFocus.setPassword(mPasswordField.getText().toString());
+                mBookmarkFocus.setName(ViewUtil.toString(mucNameField));
+                mBookmarkFocus.setPassword(ViewUtil.toString(mPasswordField));
                 mBookmarkFocus.setAutoJoin(mAutoJoin.isChecked());
                 mBookmarkFocus.setBookmark(mBookmark.isChecked());
 
                 try {
                     // nickName cannot be null => exception
-                    mBookmarkFocus.setNickname(Resourcepart.from(nicknameField.getText().toString()));
+                    mBookmarkFocus.setNickname(Resourcepart.from(ViewUtil.toString(nicknameField)));
                 } catch (XmppStringprepException e) {
                     aTalkApp.showToastMessage(R.string.service_gui_CHANGE_NICKNAME_ERROR,
                             mBookmarkFocus.getJid(), e.getMessage());

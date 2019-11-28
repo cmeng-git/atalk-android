@@ -22,6 +22,7 @@ import android.content.ClipboardManager;
 import android.content.*;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.*;
@@ -149,7 +150,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      */
     private boolean primarySelected = false;
 
-    // Message chatType definitions - persistent storge constants
+    // Message chatType definitions - persistent storage constants
     public final static int MSGTYPE_UNKNOWN = 0x0;
     public final static int MSGTYPE_NORMAL = 0x1;
 
@@ -179,6 +180,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      * The current chat transport.
      */
     private ChatTransport currentChatTransport;
+
+    private ProtocolProviderService mProvider;
 
     /**
      * The current chatFragment.
@@ -255,9 +258,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         currentChatTransport = chatPanel.getChatSession().getCurrentChatTransport();
         currentChatFragment = this;
 
-        ProtocolProviderService pps = currentChatTransport.getProtocolProvider();
-        if ((mChatMetaContact != null) && pps.isRegistered()) {
-            DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(pps.getConnection());
+        mProvider = currentChatTransport.getProtocolProvider();
+        if ((mChatMetaContact != null) && mProvider.isRegistered()) {
+            DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(mProvider.getConnection());
             deliveryReceiptManager.addReceiptReceivedListener(this);
         }
 
@@ -297,7 +300,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 // Remembers scrolling position to restore after new history messages are loaded
                 scrollFirstVisible = firstVisibleItem;
                 View firstVisible = view.getChildAt(0);
-                scrollTopOffset = firstVisible != null ? firstVisible.getTop() : 0;
+                scrollTopOffset = (firstVisible != null) ? firstVisible.getTop() : 0;
             }
         });
 
@@ -358,8 +361,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             // Invoke the listener valid only of metaContactChatSession
             if (chatPanel.getChatSession() instanceof MetaContactChatSession) {
                 chatPanel.addContactStatusListener(chatListAdapter);
-                chatPanel.addChatStateListener(chatListAdapter);
             }
+            chatPanel.addChatStateListener(chatListAdapter);
 
             ChatSessionManager.addCurrentChatListener(this);
             mSVP_Started = false;
@@ -381,8 +384,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         // Remove the listener valid only of metaContactChatSession
         if (chatPanel.getChatSession() instanceof MetaContactChatSession) {
             chatPanel.removeContactStatusListener(chatListAdapter);
-            chatPanel.removeChatStateListener(chatListAdapter);
         }
+        chatPanel.removeChatStateListener(chatListAdapter);
 
         // Not required - implemented as static map
         // cryptoFragment.removeCryptoModeListener(this);
@@ -745,9 +748,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         if (StringUtils.isNullOrEmpty(sender))
             return null;
 
-        ProtocolProviderService provider = chatPanel.getProtocolProvider();
         OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
-                provider.getOperationSet(OperationSetPersistentPresence.class);
+                mProvider.getOperationSet(OperationSetPersistentPresence.class);
         return presenceOpSet.findContactByID(XmppStringUtils.parseBareJid(sender));
     }
 
@@ -829,7 +831,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 }
 
                 // Auto enable Omemo option on receive omemo encrypted messages and view is in focus
-                if (primarySelected && (Message.ENCRYPTION_OMEMO == newMessage.getEncryptionType())
+                if (primarySelected && (IMessage.ENCRYPTION_OMEMO == newMessage.getEncryptionType())
                         && !chatPanel.isOmemoChat()) {
                     mCryptoFragment.setChatType(ChatFragment.MSGTYPE_OMEMO);
                 }
@@ -1098,10 +1100,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 // MessageHistoryServiceImpl mMHS = (MessageHistoryServiceImpl) AndroidGUIActivator.getMessageHistoryService();
                 // mMHS.convertToMessageType(msgUuid, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
 
-                // Local cache update
-                ((ChatMessageImpl) chatMessage).setMessageType(ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
-                this.notifyDataSetChanged();
-                return true;
+                Uri uri = Uri.parse(body);
+                if (uri.getLastPathSegment() != null) {
+                    // Local cache update
+                    ((ChatMessageImpl) chatMessage).setMessageType(ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
+                    this.notifyDataSetChanged();
+                    return true;
+                }
             }
             return false;
         }
@@ -1287,7 +1292,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     messageViewHolder.messageView.setMovementMethod(LinkMovementMethod.getInstance());
                 }
                 else if (!TextUtils.isEmpty(body) && !body.toString().matches("(?s)^aesgcm:.*")) {
-                    Linkify.addLinks(body, Linkify.ALL);
                     // Set up link movement method i.e. make all links in TextView clickable
                     messageViewHolder.messageView.setMovementMethod(LinkMovementMethod.getInstance());
                 }
@@ -1373,9 +1377,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             }
             else if (viewHolder.viewType == OUTGOING_MESSAGE_VIEW
                     || viewHolder.viewType == CORRECTED_MESSAGE_VIEW) {
-                ProtocolProviderService pps = currentChatTransport.getProtocolProvider();
                 AndroidLoginRenderer loginRenderer = AndroidGUIActivator.getLoginRenderer();
-                avatar = loginRenderer.getLocalAvatarDrawable(pps);
+                avatar = loginRenderer.getLocalAvatarDrawable(mProvider);
                 status = loginRenderer.getLocalStatusDrawable();
             }
             else {
@@ -1452,7 +1455,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         @Override
         public void chatStateNotificationReceived(ChatStateNotificationEvent evt)
         {
-            Timber.d("Typing notification received: %s", evt.getSourceContact().getAddress());
+            // Timber.d("Chat state notification received: %s", evt.getChatDescriptor().toString());
             ChatStateNotificationHandler.handleChatStateNotificationReceived(evt, ChatFragment.this);
         }
 
@@ -1524,7 +1527,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             /**
              * Message body cache
              */
-            private Spanned body;
+            private Spanned msgBody;
 
             /**
              * Incoming message has LatLng info
@@ -1686,16 +1689,29 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
              */
             public Spanned getBody()
             {
-                if ((body == null) && !TextUtils.isEmpty(msg.getMessage())) {
-                    try { // cannot assume null body = html message
-                        body = Html.fromHtml(msg.getMessage(), imageGetter, null);
-                        Pattern urlMatcher = Pattern.compile("\\b[A-Za-z]+://[A-Za-z0-9:./?=]+\\b");
-                        Linkify.addLinks((Spannable) body, urlMatcher, null);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                String body = msg.getMessage();
+                if ((msgBody == null) && !TextUtils.isEmpty(body)) {
+                    // need to replace '\n' with <br/> to avoid stripped off by fromHtml()
+                    body = body.replace("\n", "<br/>");
+                    // Convert to Spanned body to support text mark up display
+                    msgBody = Html.fromHtml(body, imageGetter, null);
+
+                    // Proceed with Linkify process if msgBody contains no HTML tags
+                    if (!msgBody.toString().matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+                        try {
+                            Pattern urlMatcher = Pattern.compile("\\b[A-Za-z]+://[A-Za-z0-9:./?=]+\\b");
+                            Linkify.addLinks((Spannable) msgBody, urlMatcher, null);
+
+                            // second level of adding links if not aesgcm link
+                            if (!msgBody.toString().matches("(?s)^aesgcm:.*")) {
+                                Linkify.addLinks((Spannable) msgBody, Linkify.ALL);
+                            }
+                        } catch (Exception ex) {
+                            Timber.w("Error in Linkify process: %s", msgBody);
+                        }
                     }
                 }
-                return body;
+                return msgBody;
             }
 
             /**
@@ -1707,7 +1723,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             public void update(ChatMessage chatMessage)
             {
                 dateStr = null;
-                body = null;
+                msgBody = null;
                 msg = chatMessage;
 
                 receiptStatus = chatMessage.getReceiptStatus();
@@ -1927,13 +1943,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     private void setEncState(ImageView encStateView, int encType)
     {
         switch (encType) {
-            case Message.ENCRYPTION_NONE:
+            case IMessage.ENCRYPTION_NONE:
                 encStateView.setImageResource(R.drawable.encryption_none);
                 break;
-            case Message.ENCRYPTION_OMEMO:
+            case IMessage.ENCRYPTION_OMEMO:
                 encStateView.setImageResource(R.drawable.encryption_omemo);
                 break;
-            case Message.ENCRYPTION_OTR:
+            case IMessage.ENCRYPTION_OTR:
                 encStateView.setImageResource(R.drawable.encryption_otr);
                 break;
         }
@@ -1944,7 +1960,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      *
      * @param chatState the chat state that should be represented in the view
      */
-    public void setChatState(final ChatState chatState)
+    public void setChatState(final ChatState chatState, String sender)
     {
         if (chatStateView == null) {
             return;
@@ -1955,7 +1971,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 TextView chatStateTextView = chatStateView.findViewById(R.id.chatStateTextView);
                 ImageView chatStateImgView = chatStateView.findViewById(R.id.chatStateImageView);
 
-                String buddy = chatPanel.getShortDisplayName();
                 switch (chatState) {
                     case composing:
                         Drawable chatStateDrawable = chatStateImgView.getDrawable();
@@ -1969,23 +1984,23 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                             animatedDrawable.setOneShot(false);
                             animatedDrawable.start();
                         }
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_COMPOSING, buddy));
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_COMPOSING, sender));
                         break;
                     case paused:
                         chatStateImgView.setImageResource(R.drawable.typing1);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_PAUSED_TYPING, buddy));
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_PAUSED_TYPING, sender));
                         break;
                     case active:
                         chatStateImgView.setImageResource(R.drawable.global_ffc);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_ACTIVE, buddy));
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_ACTIVE, sender));
                         break;
                     case inactive:
                         chatStateImgView.setImageResource(R.drawable.global_away);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_INACTIVE, buddy));
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_INACTIVE, sender));
                         break;
                     case gone:
                         chatStateImgView.setImageResource(R.drawable.global_extended_away);
-                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_GONE, buddy));
+                        chatStateTextView.setText(aTalkApp.getResString(R.string.service_gui_CONTACT_GONE, sender));
                         break;
                 }
                 chatStateImgView.getLayoutParams().height = LayoutParams.WRAP_CONTENT;
@@ -2094,7 +2109,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 // chatPanel.sendMessage(msg);
                 try {
                     chatPanel.getChatSession().getCurrentChatTransport().sendInstantMessage(msg,
-                            Message.ENCRYPTION_NONE | Message.ENCODE_PLAIN);
+                            IMessage.ENCRYPTION_NONE | IMessage.ENCODE_PLAIN);
                 } catch (Exception e) {
                     aTalkApp.showToastMessage(e.getMessage());
                 }
@@ -2131,7 +2146,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         private final Object entityJid;
         private boolean chkMaxSize = true;
         private boolean mStickerMode;
-        private int mEncryption = Message.ENCRYPTION_NONE;
+        private int mEncryption = IMessage.ENCRYPTION_NONE;
 
         public SendFile(File file, FileSendConversation sFilexferCon, int mId, boolean stickerMode)
         {
@@ -2148,7 +2163,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             long maxFileLength = currentChatTransport.getMaximumFileLength();
             if (mFile.length() > maxFileLength) {
                 chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
-                        Message.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG,
+                        IMessage.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG,
                                 ByteFormat.format(maxFileLength)));
 
                 // stop background task to proceed and update status
@@ -2193,11 +2208,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 else {
                     if (fileXfer instanceof AesgcmUrl) {
                         urlLink = ((AesgcmUrl) fileXfer).getAesgcmUrl();
-                        mEncryption = Message.ENCRYPTION_OMEMO;
+                        mEncryption = IMessage.ENCRYPTION_OMEMO;
                     }
                     else {
                         urlLink = (fileXfer == null) ? null : fileXfer.toString();
-                        mEncryption = Message.ENCRYPTION_NONE;
+                        mEncryption = IMessage.ENCRYPTION_NONE;
                     }
                     // Timber.w("HTTP link: %s: %s", mFile.getName(), urlLink);
                     if (StringUtils.isNullOrEmpty(urlLink)) {
@@ -2205,7 +2220,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     }
                     else {
                         sendFTConversion.setStatus(FileTransferStatusChangeEvent.COMPLETED, entityJid, mEncryption);
-                        chatController.sendMessage(urlLink, Message.FLAG_REMOTE_ONLY | Message.ENCODE_PLAIN);
+                        chatController.sendMessage(urlLink, IMessage.FLAG_REMOTE_ONLY | IMessage.ENCODE_PLAIN);
                     }
                 }
             } catch (Exception e) {
@@ -2221,7 +2236,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             if (ex != null) {
                 Timber.e(ex, "Failed to send file.");
                 chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
-                        Message.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_DELIVERY_ERROR, ex.getMessage()));
+                        IMessage.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_DELIVERY_ERROR, ex.getMessage()));
             }
         }
 

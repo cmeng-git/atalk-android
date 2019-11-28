@@ -24,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.java.sip.communicator.service.protocol.FileTransfer;
-import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ByteFormat;
 import net.java.sip.communicator.util.GuiUtils;
@@ -115,7 +115,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     /*
      * Transfer file encryption type
      */
-    protected int mEncryption = Message.ENCRYPTION_NONE;
+    protected int mEncryption = IMessage.ENCRYPTION_NONE;
 
     /**
      * For Http file Upload and Download must set to true to update the message in the DB
@@ -190,7 +190,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      */
     protected void setEncState(int encType)
     {
-        if (Message.ENCRYPTION_OMEMO == encType)
+        if (IMessage.ENCRYPTION_OMEMO == encType)
             messageViewHolder.encStateView.setImageResource(R.drawable.encryption_omemo);
         else
             messageViewHolder.encStateView.setImageResource(R.drawable.encryption_none);

@@ -54,6 +54,11 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     private final ProtocolProviderService mPPS;
 
     /**
+     * The number of unread messages
+     */
+    private int unreadCount = 0;
+
+    /**
      * The room that is wrapped.
      */
     private ChatRoom chatRoom;
@@ -192,6 +197,24 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     public String getChatRoomID()
     {
         return chatRoomID;
+    }
+
+    /**
+     * Set the unread message count for this wrapper represent
+     *
+     * @param count unread message count
+     */
+    public void setUnreadCount(int count) {
+        unreadCount = count;
+    }
+
+    /**
+     * Returns the unread message count for this chat room
+     *
+     * @return the unread message count
+     */
+    public int getUnreadCount() {
+        return unreadCount;
     }
 
     /**

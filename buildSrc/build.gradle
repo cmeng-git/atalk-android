@@ -5,7 +5,8 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
+        // working jarjar.repackage version
+        classpath "org.anarres.jarjar:jarjar-gradle:1.0.1"
     }
 }
 
@@ -34,8 +35,8 @@ def jarJarDeps = task("jarJarDeps") {
 
 /*
  * jarjar.repackage with generated dir/filename specified - default in build/jarjar/jarjar-xxx.jar
+ * destinationDir may use relative i.e. "../../libs to $buildDir/jarjar or as per below
  * filename must not contains colon i.e. ":" colon, treated as URL and will failed missing classes
- * destinationName may use relative i.e. "../../libs/fileName.jar to $buildDir/jarjar
  * classDelete must check actual jar to see if end ** is required - due to multiple components
  * May use className and className$** to delete only the related, but excluding classes with same prefix
  */
@@ -44,17 +45,8 @@ jarJarDeps.dependsOn(
         from("org.igniterealtime.smack:smack-core:$smackVersion") {
             transitive = false
         }
-        from("org.igniterealtime.smack:smack-experimental:$smackVersion") {
-            transitive = false
-        }
-        from("org.igniterealtime.smack:smack-extensions:$smackVersion") {
-            transitive = false
-        }
-        from("org.igniterealtime.smack:smack-tcp:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-jarjared/${smackVersion}")
-        destinationName "smack-jarjared-${smackVersion}.jar"
+        destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-core-jarjar/${smackVersion}")
+        destinationName "smack-core-jarjar-${smackVersion}.jar"
 
         // smack-core
         classDelete 'org.jivesoftware.smack.fsm.AbstractXmppStateMachineConnection**'
@@ -77,16 +69,41 @@ jarJarDeps.dependsOn(
         classDelete 'org.jivesoftware.smack.SmackConfiguration**'
         classDelete 'org.jivesoftware.smack.SmackInitialization'
         classDelete 'org.jivesoftware.smack.SmackReactor**'
+    },
+
+    jarjar.repackage {
+        from("org.igniterealtime.smack:smack-experimental:$smackVersion") {
+            transitive = false
+        }
+        destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-experimental-jarjar/${smackVersion}")
+        destinationName "smack-experimental-jarjar-${smackVersion}.jar"
 
         // smack-experimental
         classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
+    },
+
+    jarjar.repackage {
+        from("org.igniterealtime.smack:smack-extensions:$smackVersion") {
+            transitive = false
+        }
+        destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-extensions-jarjar/${smackVersion}")
+        destinationName "smack-extensions-jarjar-${smackVersion}.jar"
 
         // smack-extensions
         classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager**'
         classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
+        classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
         classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
         classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
         classDelete 'org.jivesoftware.smackx.si.packet.StreamInitiation**'
+    },
+
+    jarjar.repackage {
+        from("org.igniterealtime.smack:smack-tcp:$smackVersion") {
+            transitive = false
+        }
+        destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-tcp-jarjar/${smackVersion}")
+        destinationName "smack-tcp-jarjar-${smackVersion}.jar"
 
         // smack-tcp
         classDelete 'org.jivesoftware.smack.tcp.XmppNioTcpConnection**'

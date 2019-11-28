@@ -8,6 +8,7 @@ package org.atalk.impl.fileaccess;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.*;
 import org.atalk.service.libjitsi.LibJitsi;
+import org.atalk.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,12 +27,12 @@ public class FileAccessServiceImpl implements FileAccessService
     /**
      * The file prefix for all temp files.
      */
-    public static final String TEMP_FILE_PREFIX = "SIPCOMM";
+    private static final String TEMP_FILE_PREFIX = "SIPCOMM";
 
     /**
      * The file suffix for all temp files.
      */
-    public static final String TEMP_FILE_SUFFIX = "TEMP";
+    private static final String TEMP_FILE_SUFFIX = "TEMP";
 
     private String profileDirLocation;
     private String cacheDirLocation;
@@ -61,10 +62,7 @@ public class FileAccessServiceImpl implements FileAccessService
     public File getTemporaryFile()
             throws IOException
     {
-        File retVal = null;
-        retVal = TempFileManager.createTempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX);
-
-        return retVal;
+        return TempFileManager.createTempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX);
     }
 
     /**
@@ -117,8 +115,7 @@ public class FileAccessServiceImpl implements FileAccessService
     public File getPrivatePersistentFile(String fileName, FileCategory category)
             throws Exception
     {
-        File file = null;
-        file = accessibleFile(getFullPath(category), fileName);
+        File file = accessibleFile(getFullPath(category), fileName);
         if (file == null) {
             throw new SecurityException("Insufficient rights to access this file in current user's home directory: "
                     + new File(getFullPath(category), fileName).getPath());
@@ -210,14 +207,7 @@ public class FileAccessServiceImpl implements FileAccessService
     private static String getSystemProperty(String propertyName)
     {
         String retval = System.getProperty(propertyName);
-        if (retval == null) {
-            return retval;
-        }
-
-        if (retval.trim().length() == 0) {
-            return null;
-        }
-        return retval;
+        return StringUtils.isNullOrEmpty(retval, true) ? null : retval;
     }
 
     /**
@@ -234,9 +224,7 @@ public class FileAccessServiceImpl implements FileAccessService
     private static File accessibleFile(File homedir, String fileName)
             throws IOException
     {
-        File file = null;
-
-        file = new File(homedir, fileName);
+        File file = new File(homedir, fileName);
         if (file.canRead() || file.canWrite()) {
             return file;
         }
@@ -270,11 +258,9 @@ public class FileAccessServiceImpl implements FileAccessService
      * Returns the default download directory.
      *
      * @return the default download directory
-     * @throws IOException if it I/O error occurred
      */
     @Override
     public File getDefaultDownloadDirectory()
-            throws IOException
     {
         // For all other operating systems we return the Downloads folder.
         return new File(getSystemProperty("user.home"), "Downloads");

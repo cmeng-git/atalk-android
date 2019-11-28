@@ -22,7 +22,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
-import net.java.sip.communicator.plugin.jabberaccregwizz.JabberAccountRegistrationActivator;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
@@ -1100,7 +1099,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
     public void messageDelivered(MessageDeliveredEvent evt)
     {
-        Message message = evt.getSourceMessage();
+        IMessage message = evt.getSourceMessage();
         Contact entityJid = evt.getDestinationContact();
         MetaContact metaContact = MessageHistoryActivator.getContactListService().findMetaContactByContact(entityJid);
 
@@ -1167,8 +1166,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                         break;
                     }
                     // also check and message content
-                    Message m1 = cev.getMessage();
-                    Message m2 = evt.getMessage();
+                    IMessage m1 = cev.getMessage();
+                    IMessage m2 = evt.getMessage();
 
                     if ((m1 != null) && (m2 != null)
                             && m1.getContent().equals(m2.getContent())) {
@@ -1191,7 +1190,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     {
         // return if logging is switched off for this particular chat room
         ChatRoom room = evt.getSourceChatRoom();
-        Message message = evt.getMessage();
+        IMessage message = evt.getMessage();
 
         if (!isHistoryLoggingEnabled(room.getName()) || message.isRemoteOnly()) {
             return;
@@ -1215,8 +1214,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                     }
 
                     // also check and message content
-                    Message m1 = cev.getMessage();
-                    Message m2 = evt.getMessage();
+                    IMessage m1 = cev.getMessage();
+                    IMessage m2 = evt.getMessage();
                     if ((m1 != null) && (m2 != null)
                             && m1.getContent().equals(m2.getContent())) {
                         hasMatch = true;
@@ -1260,7 +1259,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     {
         // return if logging is switched off for this particular chat room
         AdHocChatRoom room = evt.getSourceChatRoom();
-        Message message = evt.getMessage();
+        IMessage message = evt.getMessage();
 
         if (!isHistoryLoggingEnabled(room.getName()) || message.isRemoteOnly()) {
             return;
@@ -1283,11 +1282,11 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param sessionUuid The entry with sessionUuid to which it will store the message
      * @param direction coming from
      * @param room ChatRoom or AdHocChatRoom (icq implementation)
-     * @param message Message
+     * @param message IMessage
      * @param messageTimestamp the timestamp when was message received that came from the protocol provider
      */
     private void writeMessage(String sessionUuid, String direction, Object room,
-            Message message, Date messageTimestamp, int msgType)
+            IMessage message, Date messageTimestamp, int msgType)
     {
         // String entityJid = null;
         String nick = null;
@@ -1326,11 +1325,11 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param sessionUuid The entry with sessionUuid to which it will store the message
      * @param direction the direction of the message.
      * @param from coming from
-     * @param message Message
+     * @param message IMessage
      * @param messageTimestamp the timestamp when was message received that came from the protocol provider
      */
     private void writeMessage(String sessionUuid, String direction, ChatRoomMember from,
-            Message message, Date messageTimestamp, int msgType)
+            IMessage message, Date messageTimestamp, int msgType)
     {
         // missing from, strange messages, most probably a history coming from server and
         // probably already written
@@ -1357,11 +1356,11 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param sessionUuid The entry with sessionUuid to which it will store the message
      * @param direction the direction of the message.
      * @param entity the communicator nick for this chat
-     * @param message Message
+     * @param message IMessage
      * @param messageTimestamp the timestamp when was message received that came from the protocol provider
      */
     private void writeMessage(String sessionUuid, String direction, Contact entity,
-            Message message, Date messageTimestamp, int msgType)
+            IMessage message, Date messageTimestamp, int msgType)
     {
         contentValues.clear();
         contentValues.put(ChatMessage.SESSION_UUID, sessionUuid);
@@ -1379,12 +1378,12 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param direction String direction of the message in or out.
      * @param source The source Contact
      * @param destination The destination Contact
-     * @param message Message message to be written
+     * @param message IMessage message to be written
      * @param messageTimestamp the timestamp when was message received that came from the protocol provider
      * @param isSmsSubtype whether message to write is an sms
      */
     public void insertMessage(String direction, Contact source, Contact destination,
-            Message message, Date messageTimestamp, boolean isSmsSubtype)
+            IMessage message, Date messageTimestamp, boolean isSmsSubtype)
     {
         // return if logging is switched off for this particular contact
         MetaContact metaContact = MessageHistoryActivator.getContactListService()
@@ -1409,9 +1408,9 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     /**
      * Update the reset of the message content and write to the dataBase
      *
-     * @param message Message message to be written
+     * @param message IMessage message to be written
      */
-    private void writeMessageToDB(Message message, String direction)
+    private void writeMessageToDB(IMessage message, String direction)
     {
         contentValues.put(ChatMessage.UUID, message.getMessageUID());
         contentValues.put(ChatMessage.MSG_BODY, message.getContent());

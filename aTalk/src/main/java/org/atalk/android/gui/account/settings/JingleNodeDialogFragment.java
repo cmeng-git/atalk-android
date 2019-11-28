@@ -8,7 +8,6 @@ package org.atalk.android.gui.account.settings;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +19,7 @@ import android.widget.Toast;
 import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.util.ViewUtil;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -116,10 +116,10 @@ public class JingleNodeDialogFragment extends DialogFragment
     {
         Dialog dialog = getDialog();
         boolean relaySupport = ((CompoundButton) dialog.findViewById(R.id.relaySupportCheckbox)).isChecked();
-        String jingleAddress = ((TextView) dialog.findViewById(R.id.jidAddress)).getText().toString();
+        String jingleAddress = ViewUtil.toString(dialog.findViewById(R.id.jidAddress));
 
-        if (jingleAddress.isEmpty()) {
-            Toast.makeText(getActivity(), "The JID address can not be empty", Toast.LENGTH_LONG).show();
+        if (jingleAddress == null) {
+            Toast.makeText(getActivity(), "The Jid address can not be empty", Toast.LENGTH_LONG).show();
             return false;
         }
 

@@ -340,14 +340,14 @@ public class CryptoFragment extends OSGiFragment
             } catch (InterruptedException | SmackException.NoResponseException | CryptoFailedException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
                 Timber.i("OMEMO changes mChatType to: %s", mChatType);
                 return;
             } catch (Exception e) { // catch any non-advertised exception
                 Timber.w("UndecidedOmemoIdentity check failed: %s", e.getMessage());
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
                 Timber.w("Revert OMEMO mChatType to: %s", mChatType);
                 return;
@@ -367,7 +367,7 @@ public class CryptoFragment extends OSGiFragment
              */
             if ((numUntrusted > 0) && (numUntrusted == fingerPrints.size())) {
                 mChatType = ChatFragment.MSGTYPE_OMEMO_UT;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_UNTRUSTED));
             }
             else if (allTrusted) {
@@ -375,7 +375,7 @@ public class CryptoFragment extends OSGiFragment
             }
             else {
                 mChatType = ChatFragment.MSGTYPE_OMEMO_UA;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_UNVERIFIED));
             }
         }
@@ -397,13 +397,13 @@ public class CryptoFragment extends OSGiFragment
                     | XMPPException.XMPPErrorException | CryptoFailedException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
                 return;
             } catch (Exception e) { // catch any non-advertised exception
                 Timber.w("UndecidedOmemoIdentity check failed: %s", e.getMessage());
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
             }
 
@@ -413,7 +413,7 @@ public class CryptoFragment extends OSGiFragment
             }
             else {
                 mChatType = ChatFragment.MSGTYPE_OMEMO_UA;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_UNVERIFIED_UNTRUSTED));
             }
         }
@@ -1016,12 +1016,12 @@ public class CryptoFragment extends OSGiFragment
     {
         if (allTrusted) {
             onOmemoAuthenticate(ChatFragment.MSGTYPE_OMEMO);
-            activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
+            activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
                     getString(R.string.crypto_msg_OMEMO_SESSION_VERIFIED));
         }
         else {
             onOmemoAuthenticate(ChatFragment.MSGTYPE_OMEMO_UA);
-            // activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN,
+            // activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN,
             //         "Undecided Omemo Identity: " + omemoDevices.toString());
         }
     }

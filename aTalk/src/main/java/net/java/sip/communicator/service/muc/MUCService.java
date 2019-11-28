@@ -21,6 +21,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.parts.Resourcepart;
 
 import java.util.*;
 
@@ -223,11 +224,12 @@ public abstract class MUCService
     public static boolean isPrivate(ChatRoom chatRoom)
     {
         if (!chatRoom.isSystem() && chatRoom.isJoined() && (chatRoom.getMembersCount() == 1)) {
-            String nickname = chatRoom.getUserNickname().toString();
+            Resourcepart nickResource = chatRoom.getUserNickname();
 
-            if (nickname != null) {
+            if (nickResource != null) {
+                String nickName = nickResource.toString();
                 for (ChatRoomMember member : chatRoom.getMembers())
-                    if (nickname.equals(member.getNickName()))
+                    if (nickName.equals(member.getNickName()))
                         return false;
                 return true;
             }

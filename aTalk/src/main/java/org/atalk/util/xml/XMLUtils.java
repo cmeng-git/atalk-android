@@ -6,6 +6,7 @@
 package org.atalk.util.xml;
 
 import org.atalk.util.OSUtils;
+import org.atalk.util.StringUtils;
 import org.w3c.dom.*;
 
 import java.io.*;
@@ -323,11 +324,11 @@ public class XMLUtils
         out.println(">");
 
         String data = getText(root);
-        if (data != null && data.trim().length() > 0)
+        if (!StringUtils.isNullOrEmpty(data, true))
             out.println(prefix + "\t" + data);
 
         data = getCData(root);
-        if (data != null && data.trim().length() > 0)
+        if (!StringUtils.isNullOrEmpty(data, true))
             out.println(prefix + "\t<![CDATA[" + data + "]]>");
 
         NodeList nodes = root.getChildNodes();

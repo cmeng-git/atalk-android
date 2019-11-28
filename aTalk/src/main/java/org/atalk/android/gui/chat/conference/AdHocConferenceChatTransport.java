@@ -165,7 +165,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
      * Sends the given instant message trough this chat transport, by specifying the mime type (html or plain text).
      *
      * @param messageText The message to send.
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      */
     public void sendInstantMessage(String messageText, int encType)
     {
@@ -175,8 +175,8 @@ public class AdHocConferenceChatTransport implements ChatTransport
             return;
         }
 
-        Message message = adHocChatRoom.createMessage(messageText, encType, null);
-        if (Message.ENCRYPTION_OMEMO == (encType & Message.ENCRYPTION_MASK)) {
+        IMessage message = adHocChatRoom.createMessage(messageText, encType, null);
+        if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             adHocChatRoom.sendMessage(message, omemoManager);
         }
@@ -190,7 +190,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
      * mime type (html or plain text) and the id of the message to replace.
      *
      * @param message The message to send.
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param correctedMessageUID The ID of the message being corrected by this message.
      * @see ChatMessage Encryption Type
      */
@@ -207,7 +207,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
     public boolean isContentTypeSupported(int mimeType)
     {
         // we only support plain text for chat rooms for now
-        return (Message.ENCODE_PLAIN == mimeType);
+        return (IMessage.ENCODE_PLAIN == mimeType);
     }
 
     /**
@@ -280,11 +280,11 @@ public class AdHocConferenceChatTransport implements ChatTransport
     {
         // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed
         if (httpFileUploadManager.isUploadServiceDiscovered()) {
-            int encType = Message.ENCRYPTION_NONE;
+            int encType = IMessage.ENCRYPTION_NONE;
             Object url;
             try {
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
-                    encType = Message.ENCRYPTION_OMEMO;
+                    encType = IMessage.ENCRYPTION_OMEMO;
                     url = httpFileUploadManager.uploadFileEncrypted(file, xferCon);
                 }
                 else {
